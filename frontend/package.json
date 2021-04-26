@@ -1,0 +1,17 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": " ",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "postinstall": "rexreplace \"followSymlinks: false\" \"followSymlinks: true\" ./node_modules/watchpack/lib/DirectoryWatcher.js -V"
+  },
+  "devDependencies": {
+    "rexreplace": "^4.1.1"
+  },
+  "workspaces": [
+    "kesaseteli",
+    "shared"
+  ]
+}
