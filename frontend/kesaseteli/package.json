@@ -5,7 +5,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "next",
-    "build": "next build"
+    "build": "next build",
+    "lint": "eslint --ext js,ts,tsx pages",
+    "pre-commit": "yarn -s lint",
+    "test": "jest"
   },
   "dependencies": {
     "@frontend/shared": "*",
@@ -22,5 +25,8 @@
     "rexreplace": "^4.1.1",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.2"
+  },
+  "devDependencies": {
+    "eslint-config-adjunct": "^4.11.1"
   }
 }

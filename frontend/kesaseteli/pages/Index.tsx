@@ -1,7 +1,7 @@
-import * as React from "react";
-import Link from "next/link";
-import { Layout } from "@frontend/shared/components/Layout";
+import Layout from "@frontend/shared/components/Layout";
 import { NextPage } from "next";
+import Link from "next/link";
+import * as React from "react";
 
 type Application = {
   id: number,
@@ -12,8 +12,7 @@ type Props = {
   posts: Application[];
 }
 
-const KesaseteliIndex: NextPage<Props> = ({ posts }) => {
-  return (
+const KesaseteliIndex: NextPage<Props> = ({ posts }) => (
     <Layout>
       <ul>
         {posts.map(post => (
@@ -26,7 +25,6 @@ const KesaseteliIndex: NextPage<Props> = ({ posts }) => {
       </ul>
     </Layout>
   );
-};
 
 KesaseteliIndex.getInitialProps = async () => {
   const posts = [

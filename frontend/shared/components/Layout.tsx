@@ -1,5 +1,5 @@
-import * as React from "react";
-import styled from "styled-components";
+import * as React from 'react';
+import styled from 'styled-components';
 
 const Heading = styled.h1`
   font-size: 2rem;
@@ -11,11 +11,12 @@ const Main = styled.main`
   padding: 1rem;
 `;
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <Main>
-      <Heading>Kesaseteli</Heading>
-      {children}
-    </Main>
-  );
-}
+const Layout = ({ children }: { children: React.ReactNode }): JSX.Element => (
+  <Main>
+    <Heading>Kesaseteli</Heading>
+    {children}
+  </Main>
+);
+
+
+export default Layout;
