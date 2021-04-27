@@ -5,6 +5,7 @@ RUN mkdir /entrypoint
 
 COPY --chown=appuser:appuser requirements.txt /app/requirements.txt
 COPY --chown=appuser:appuser requirements-prod.txt /app/requirements-prod.txt
+COPY --chown=appuser:appuser .prod/escape_json.c /app/.prod/escape_json.c
 
 RUN apt-install.sh \
         git \
@@ -14,6 +15,8 @@ RUN apt-install.sh \
     && pip install -U pip \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir  -r /app/requirements-prod.txt \
+    && uwsgi --build-plugin /app/.prod/escape_json.c \
+    && mv /app/escape_json_plugin.so /app/.prod/escape_json_plugin.so \
     && apt-cleanup.sh build-essential
 
 COPY --chown=appuser:appuser docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
