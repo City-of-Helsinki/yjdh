@@ -1,5 +1,6 @@
 Django~=3.2
 django-cors-headers
 django-environ
+djangorestframework
 psycopg2
 sentry-sdk

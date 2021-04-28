@@ -16,6 +16,9 @@ django==3.2
     # via
     #   -r requirements.in
     #   django-cors-headers
+    #   djangorestframework
+djangorestframework==3.12.4
+    # via -r requirements.in
 psycopg2==2.8.6
     # via -r requirements.in
 pytz==2021.1

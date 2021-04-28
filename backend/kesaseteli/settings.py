@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
+    "rest_framework",
     # local apps
 ]
 
@@ -125,6 +126,11 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {"django": {"handlers": ["console"], "level": "ERROR"}},
 }
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": [],
+}  # TODO: Replace with actual authentication & permissions.
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
