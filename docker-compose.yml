@@ -32,7 +32,8 @@ services:
 
     frontend:
         build:
-            context: ./frontend/kesaseteli
+            context: ./frontend
+            dockerfile: kesaseteli/Dockerfile
             target: ${DOCKER_TARGET:-development}
         env_file:
             - .env
