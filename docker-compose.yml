@@ -30,6 +30,16 @@ services:
             - postgres
         container_name: kesaseteli-backend
 
+    frontend:
+        build:
+            context: ./frontend/kesaseteli
+            target: ${DOCKER_TARGET:-development}
+        env_file:
+            - .env
+        ports:
+            - '${KESASETELI_PORT}:${KESASETELI_PORT}'
+        container_name: kesaseteli-frontend
+
 volumes:
     pgdata:
         driver: local

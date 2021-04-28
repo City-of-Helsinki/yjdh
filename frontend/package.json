@@ -13,6 +13,8 @@
     "build:kesaseteli": "lerna run --scope @frontend/kesaseteli build",
     "dev": "yarn dev:kesaseteli",
     "dev:kesaseteli": "lerna run --scope @frontend/kesaseteli dev",
+    "start": "yarn start:kesaseteli",
+    "start:kesaseteli": "lerna run --scope @frontend/kesaseteli start",
     "release": "cross-env HUSKY_BYPASS=true lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit"
   },
