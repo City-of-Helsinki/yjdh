@@ -1,3 +1,0 @@
-.git*
-frontend/*/node_modules
-*Dockerfile*

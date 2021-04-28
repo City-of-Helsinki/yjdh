@@ -35,6 +35,11 @@ services:
             context: ./frontend
             dockerfile: kesaseteli/Dockerfile
             target: ${DOCKER_TARGET:-development}
+        volumes:
+            - ./frontend/kesaseteli:/app/kesaseteli
+            - ./frontend/shared:/app/shared
+            - /app/node_modules
+            - /app/.next
         env_file:
             - .env
         ports:

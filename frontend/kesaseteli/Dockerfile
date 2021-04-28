@@ -8,14 +8,17 @@ USER appuser
 # Yarn
 ENV YARN_VERSION 1.22.10
 RUN yarn policies set-version $YARN_VERSION
+RUN yarn config set ignore-engines true
 
+
+WORKDIR /app
 
 # Install dependencies
-COPY --chown=appuser:appuser package.json yarn.lock /app/
-COPY --chown=appuser:appuser kesaseteli/package.json /app/kesaseteli/package.json
-COPY --chown=appuser:appuser shared/package.json /app/shared/package.json
+COPY --chown=appuser:appuser package.json yarn.lock ./
+COPY --chown=appuser:appuser kesaseteli/package.json kesaseteli/package.json
+COPY --chown=appuser:appuser shared/package.json shared/package.json
 
-RUN yarn && yarn cache clean --force
+RUN yarn --frozen-lockfile && yarn cache clean --force
 
 # Copy all files
 COPY --chown=appuser:appuser . .
@@ -26,11 +29,10 @@ FROM appbase as development
 
 # Use non-root user
 USER appuser
-
+WORKDIR /app
 # copy all files
-COPY --chown=appuser:appuser . .
-COPY --chown=appuser:appuser shared shared
-COPY --chown=appuser:appuser kesaseteli kesaseteli
+COPY --chown=appuser:appuser shared/ shared/
+COPY --chown=appuser:appuser kesaseteli/ kesaseteli/
 
 # Bake package.json start command into the image
 CMD ["yarn", "dev"]
@@ -44,7 +46,7 @@ ARG NEXT_PUBLIC_API_BASE_URL
 
 # Use non-root user
 USER appuser
-
+WORKDIR /app
 # copy all files
 COPY --chown=appuser:appuser . .
 
@@ -58,16 +60,18 @@ FROM helsinkitest/node:12-slim AS production
 # Use non-root user
 USER appuser
 
+WORKDIR /app
 # Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser /app/kesaseteli/.next /app/kesaseteli/.next
+COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/.next /app/kesaseteli/.next
 
 # Copy next.js config
-COPY --chown=appuser:appuser kesaseteli/next.config.js /app/kesaseteli/
+COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/next.config.js kesaseteli/
 
 # Copy public package.json and yarn.lock files
-COPY --chown=appuser:appuser kesaseteli/package.json /app/kesaseteli/
-COPY --chown=appuser:appuser shared/package.json /app/shared/
-COPY --chown=appuser:appuser package.json yarn.lock lerna.json /app/
+COPY --from=staticbuilder --chown=appuser:appuser package.json yarn.lock lerna.json ./
+COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/package.json kesaseteli/
+COPY --from=staticbuilder --chown=appuser:appuser shared/package.json shared/
+
 
 # Install production dependencies
 RUN yarn install --production
