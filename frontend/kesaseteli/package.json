@@ -1,7 +1,6 @@
 {
   "name": "@frontend/kesaseteli",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "next",
@@ -13,16 +12,17 @@
   },
   "dependencies": {
     "@frontend/shared": "*",
-    "@types/next": "^7.0.5",
-    "@types/react": "^16.7.18",
-    "@types/react-dom": "^16.0.11",
+    "@types/next": "^8.0.7",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
     "babel-plugin-styled-components": "^1.10.0",
-    "next": "^9.4.0",
+    "graphql": "^15.5.0",
+    "next": "^10.2.0",
     "next-compose-plugins": "^2.2.0",
     "next-plugin-custom-babel-config": "^1.0.2",
     "next-transpile-modules": "^3.0.0",
-    "react": "16.8",
-    "react-dom": "^16.7.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "rexreplace": "^4.1.1",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.2"

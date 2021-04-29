@@ -10,7 +10,6 @@ ENV YARN_VERSION 1.22.10
 RUN yarn policies set-version $YARN_VERSION
 RUN yarn config set ignore-engines true
 
-
 WORKDIR /app
 
 # Install dependencies
@@ -30,9 +29,9 @@ FROM appbase as development
 # Use non-root user
 USER appuser
 WORKDIR /app
-# copy all files
-COPY --chown=appuser:appuser shared/ shared/
-COPY --chown=appuser:appuser kesaseteli/ kesaseteli/
+
+# Copy all files
+COPY --chown=appuser:appuser . .
 
 # Bake package.json start command into the image
 CMD ["yarn", "dev"]
@@ -71,7 +70,6 @@ COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/next.config.js kesa
 COPY --from=staticbuilder --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/package.json kesaseteli/
 COPY --from=staticbuilder --chown=appuser:appuser shared/package.json shared/
-
 
 # Install production dependencies
 RUN yarn install --production

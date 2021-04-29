@@ -1,4 +1,4 @@
-import Layout from "@frontend/shared/components/Layout";
+import Layout from "shared/components/Layout";
 import { NextPage } from "next";
 import Link from "next/link";
 import * as React from "react";

@@ -7,7 +7,15 @@
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "sourceMap": true,
-    "lib": ["dom", "es7"]
-  }
+    "lib": ["dom", "esnext"],
+    "baseUrl": "./",
+    "paths": {
+      "kesaseteli/*": ["kesaseteli/src/*"],
+      "shared/*": ["shared/src/*"],
+      "test-utils": ["shared/test/test.utils"]
+    }
+  },
+  "exclude": ["node_modules"]
 }

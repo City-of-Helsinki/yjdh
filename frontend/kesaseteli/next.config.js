@@ -1,12 +1,17 @@
+const webpack = require('webpack')
 const path = require("path");
 const withPlugins = require("next-compose-plugins");
 const withCustomBabelConfig = require("next-plugin-custom-babel-config");
 const withTranspileModules = require("next-transpile-modules");
 
-function withCustomWebpack(config = {}) {
-  const { webpack } = config;
-
-  config.webpack = (config, ...rest) => {
+const nextConfig = {
+  webpack: (config, { dev, isServer }) => {
+    if (!isServer) {
+      // Fixes npm packages that depend on `fs` module
+      config.node = {
+        fs: 'empty',
+      }
+    }
     const babelRule = config.module.rules.find((rule) =>
       rule.use && Array.isArray(rule.use)
         ? rule.use.find((u) => u.loader === "next-babel-loader")
@@ -15,11 +20,15 @@ function withCustomWebpack(config = {}) {
     if (babelRule) {
       babelRule.include.push(path.resolve("../"));
     }
-
-    return webpack(config, ...rest);
-  };
-
-  return config;
+    config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//));
+    config.module.rules.push(
+      {
+        test: /\.test.tsx$/,
+        loader: 'ignore-loader'
+      }
+    );
+    return config
+  }
 }
 
 const plugins = [
@@ -27,10 +36,7 @@ const plugins = [
   [
     withCustomBabelConfig,
     { babelConfigFile: path.resolve("../babel.config.js") },
-  ],
-  [withCustomWebpack],
+  ]
 ];
 
-const config = {};
-
-module.exports = withPlugins(plugins, config);
+module.exports = withPlugins(plugins, nextConfig);
