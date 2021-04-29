@@ -1,4 +1,5 @@
 black
+factory-boy
 flake8
 ipython
 isort

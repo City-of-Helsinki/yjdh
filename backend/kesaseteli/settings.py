@@ -2,7 +2,7 @@ import os
 
 import environ
 import sentry_sdk
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
 
 checkout_dir = environ.Path(__file__) - 2
@@ -87,6 +87,9 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     # local apps
+    "applications",
+    "companies",
+    "utils",
 ]
 
 MIDDLEWARE = [
