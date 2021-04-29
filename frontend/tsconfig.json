@@ -9,12 +9,12 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "lib": ["dom", "esnext"],
     "baseUrl": "./",
     "paths": {
-      "kesaseteli/*": ["kesaseteli/src/*"],
+      "testcafe/*": ["shared/testcafe/*"],
       "shared/*": ["shared/src/*"],
-      "test-utils": ["shared/test/test.utils"]
     }
   },
   "exclude": ["node_modules"]

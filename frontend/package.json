@@ -17,7 +17,9 @@
     "start:kesaseteli": "lerna run --scope  @frontend/kesaseteli --stream start",
     "release": "cross-env HUSKY_BYPASS=true lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
-    "test": "yarn jest"
+    "test": "yarn jest",
+    "browser-test": "testcafe \"chrome --window-size='1249,720'\" browser-tests/",
+    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,custom,html:report/index.html browser-tests/"
   },
   "devDependencies": {
     "@apollo/react-testing": "^4.0.0",
@@ -28,6 +30,7 @@
     "@commitlint/config-conventional": "^12.1.1",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
+    "@testing-library/testcafe": "^4.4.0",
     "@testing-library/user-event": "^13.1.5",
     "@types/jest": "^26.0.23",
     "@types/jest-axe": "^3.5.1",
@@ -69,6 +72,9 @@
     "jest-axe": "^4.1.0",
     "lerna": "^4.0.0",
     "prettier": "^2.2.1",
+    "pretty": "^2.0.0",
+    "slack-node": "^0.1.8",
+    "testcafe": "^1.14.0",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4"
   }
