@@ -36,8 +36,8 @@ const customRender: CustomRender = (
     </MockedProvider>
   );
 
-  const renderResult = render(ui, { wrapper: Wrapper });
-  return { ...renderResult };
+  const utils = render(ui, { wrapper: Wrapper });
+  return { ...utils };
 };
 
 export type CustomRenderOptions = {

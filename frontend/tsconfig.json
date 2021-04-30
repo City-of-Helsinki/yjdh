@@ -15,6 +15,7 @@
     "paths": {
       "testcafe/*": ["shared/testcafe/*"],
       "shared/*": ["shared/src/*"],
+      "test-utils": ["shared/test/test-utils"]
     }
   },
   "exclude": ["node_modules"]

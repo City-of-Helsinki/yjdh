@@ -5,7 +5,7 @@ import {
   getErrorMessage,
   screenContext,
   withinContext,
-} from '../utils/testcafe.utils';
+} from '../../shared/browser-tests/utils/testcafe.utils';
 
 export const getFrontPageComponents = (t: TestController) => {
   const within = withinContext(t);

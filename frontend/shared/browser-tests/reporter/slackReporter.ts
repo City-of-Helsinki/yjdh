@@ -1,4 +1,5 @@
-import { formatDate } from '../../shared/src/utils/date.utils';
+import { formatDate } from 'shared/utils/date.utils';
+
 import { getEnvUrl } from '../utils/settings';
 import { createSlackMessageSender } from './slackMessageSender';
 import { emojis } from './utils/emojis';
@@ -36,10 +37,11 @@ type Reporter = {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const SlackReporter = (): Reporter => {
-  let startTime: number, testCount: number;
+  let startTime: number
+  let testCount: number;
   const slack = createSlackMessageSender();
 
-  const reportTaskStart = (start: number, userAgents: string, test: number) => {
+  const reportTaskStart = (start: number, userAgents: string, test: number): void => {
     startTime = start;
     testCount = test;
     const githubWorkflow = process.env.GITHUB_WORKFLOW_NAME || '';
@@ -56,11 +58,12 @@ const SlackReporter = (): Reporter => {
   const getTestDoneMessage = (
     name: string,
     testRunInfo: TestRunInfo
+    // eslint-disable-next-line unicorn/consistent-function-scoping
   ): string => {
-    let message;
+    let message: string;
     if (testRunInfo.skipped) {
       message = `${emojis.fastForward} ${italics(name)} - ${bold('skipped')}`;
-    } else if (testRunInfo.errs.length) {
+    } else if (testRunInfo.errs.length > 0) {
       /* prettier-ignore */
       message = `${emojis.heavyMultiplication} ${italics(name)} - ${bold('failed')}`;
     } else {
@@ -69,11 +72,11 @@ const SlackReporter = (): Reporter => {
     return message;
   };
 
-  const reportTestDone = (name: string, testRunInfo: TestRunInfo) => {
+  const reportTestDone = (name: string, testRunInfo: TestRunInfo): void => {
     slack.addMessage(getTestDoneMessage(name, testRunInfo));
   };
 
-  const reportFixtureStart = (fixtureName: string) => {
+  const reportFixtureStart = (fixtureName: string): void => {
     slack.addMessage(bold(fixtureName));
   };
 
@@ -82,7 +85,7 @@ const SlackReporter = (): Reporter => {
     passed: number,
     warnings: TestRunInfo['warnings'],
     result: Result
-  ) => {
+  ): void => {
     const endTimeFormatted = formatDate(endTime, 'dd.MM.yyyy HH:mm:ss');
     const durationMs = endTime - startTime;
     const durationFormatted = formatDate(durationMs, "mm'm' ss's'");
@@ -96,13 +99,7 @@ const SlackReporter = (): Reporter => {
       // prettier-ignore
       summaryStr += `${emojis.fastForward} ${bold(`${result.skippedCount} skipped`)}\n`;
     }
-    if (result.failedCount) {
-      // prettier-ignore
-      summaryStr += `${emojis.noEntry} ${bold(`${result.failedCount}/${testCount} failed`)}`;
-    } else {
-      // prettier-ignore
-      summaryStr += `${emojis.checkMark} ${bold(`${result.passedCount}/${testCount} passed`)}`;
-    }
+    summaryStr += result.failedCount ? `${emojis.noEntry} ${bold(`${result.failedCount}/${testCount} failed`)}` : `${emojis.checkMark} ${bold(`${result.passedCount}/${testCount} passed`)}`;
     slack.addMessage(`\n\n${finishedStr} ${durationStr} ${summaryStr}`);
 
     slack.sendTestReport(testCount - passed);

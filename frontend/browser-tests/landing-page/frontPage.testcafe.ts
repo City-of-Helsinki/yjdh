@@ -1,6 +1,6 @@
-import { getEnvUrl } from '../utils/settings';
-import { clearDataToPrintOnFailure } from '../utils/testcafe.utils';
-import { getUrlUtils } from '../utils/url.utils';
+import { getEnvUrl } from '../../shared/browser-tests/utils/settings';
+import { clearDataToPrintOnFailure } from '../../shared/browser-tests/utils/testcafe.utils';
+import { getUrlUtils } from '../../shared/browser-tests/utils/url.utils';
 import { getFrontPageComponents } from './frontPage.components';
 
 let components: ReturnType<typeof getFrontPageComponents>;

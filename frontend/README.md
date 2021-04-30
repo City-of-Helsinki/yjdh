@@ -21,6 +21,11 @@ Project is automatically deployed to testing environment when pushing to develop
 - Git
 - Docker
 
+### install node with nvm
+
+    nvm install 14 --lts
+
+
 ## Available Scripts
 
 In the project directory, you can run:

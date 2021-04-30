@@ -9,7 +9,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   moduleNameMapper: {
-    ["test-utils"]: "<rootDir>/shared/test/test.utils",
+    ["test-utils"]: "<rootDir>/shared/test/test-utils",
     ...packages.reduce(
       (acc, package) => ({
         ...acc,

@@ -1,7 +1,7 @@
 import { axe } from 'jest-axe';
+import KesaseteliIndex from 'kesaseteli/pages/Index';
 import React from 'react';
 import { render } from 'test-utils';
-import KesaseteliIndex from 'kesaseteli/pages/Index';
 
 test('test for accessibility violations', async () => {
   const { container } = render(<KesaseteliIndex posts={[]} />);

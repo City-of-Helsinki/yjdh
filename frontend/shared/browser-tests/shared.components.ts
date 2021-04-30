@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import TestController from 'testcafe';
 
 import { getErrorMessage, screenContext } from './utils/testcafe.utils';
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types
 export const getSharedComponents = (t: TestController) => {
   const screen = screenContext(t);
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const loadingSpinner = () => {
     const selectors = {
       spinner() {
@@ -14,6 +15,7 @@ export const getSharedComponents = (t: TestController) => {
     const expectations = {
       async isNotPresent({ timeout } = { timeout: 10000 }) {
         await t
+          // eslint-disable-next-line security/detect-non-literal-fs-filename
           .expect(selectors.spinner().exists)
           .notOk(await getErrorMessage(t), { timeout });
       },

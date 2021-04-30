@@ -1,5 +1,4 @@
-export const selectRandomValueFromArray = <T>(array: Array<T>): T =>
-  selectRandomValuesFromArray(array, 1)[0];
+const randomCompareFn = () : number => 0.5 - Math.random();
 
 export const selectRandomValuesFromArray = <T>(
   array: Array<T>,
@@ -10,4 +9,8 @@ export const selectRandomValuesFromArray = <T>(
   return shuffled.slice(0, index);
 };
 
-const randomCompareFn = () => 0.5 - Math.random();
+export const selectRandomValueFromArray = <T>(array: Array<T>): T =>
+  selectRandomValuesFromArray(array, 1)[0];
+
+
+

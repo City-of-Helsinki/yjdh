@@ -19,7 +19,7 @@ export const formatDate = (
   }
 
   return formatDateStr(date, format, {
-    locale: locales[locale],
+    locale: locales[locale] as Locale,
   }).trim();
 };
 

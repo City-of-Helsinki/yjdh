@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import TestController, { ClientFunction } from 'testcafe';
 
 import { getSharedComponents } from '../shared.components';
@@ -7,8 +7,9 @@ import { getErrorMessage } from './testcafe.utils';
 
 const getPathname = ClientFunction(() => document.location.pathname);
 
+/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type */
 export const getUrlUtils = (t: TestController) => {
-  const pageIsLoaded = async () => {
+  const pageIsLoaded = async (): Promise<void> => {
     await getSharedComponents(t).loadingSpinner().expectations.isNotPresent();
   };
 
