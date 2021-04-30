@@ -6,6 +6,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 ]
 
+
 #
 # Kubernetes liveness & readiness probes
 #

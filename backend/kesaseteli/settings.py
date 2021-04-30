@@ -1,5 +1,6 @@
-import environ
 import os
+
+import environ
 import sentry_sdk
 from django.utils.translation import ugettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -26,8 +27,7 @@ env = environ.Env(
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
         str,
-        "postgres://kesaseteli:kesaseteli"
-        "@localhost/kesaseteli",
+        "postgres:///kesaseteli",
     ),
     CACHE_URL=(str, "locmemcache://"),
     MAIL_MAILGUN_KEY=(str, ""),
@@ -86,7 +86,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     # local apps
-    "utils",
 ]
 
 MIDDLEWARE = [
