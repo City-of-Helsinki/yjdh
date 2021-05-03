@@ -13,9 +13,10 @@ RUN yarn config set ignore-engines true
 WORKDIR /app
 
 # Install dependencies
-COPY --chown=appuser:appuser package.json yarn.lock ./
+COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser kesaseteli/package.json kesaseteli/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
+
 
 RUN yarn --frozen-lockfile && yarn cache clean --force
 
@@ -32,7 +33,6 @@ WORKDIR /app
 
 # Copy all files
 COPY --chown=appuser:appuser . .
-
 # Bake package.json start command into the image
 CMD ["yarn", "dev"]
 
@@ -60,22 +60,23 @@ FROM helsinkitest/node:12-slim AS production
 USER appuser
 
 WORKDIR /app
+
 # Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/.next /app/kesaseteli/.next
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/.next kesaseteli/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/next.config.js kesaseteli/
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/next.config.js kesaseteli/
 
-# Copy public package.json and yarn.lock files
-COPY --from=staticbuilder --chown=appuser:appuser package.json yarn.lock lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser kesaseteli/package.json kesaseteli/
-COPY --from=staticbuilder --chown=appuser:appuser shared/package.json shared/
+# Copy package.json and yarn.lock files
+# TODO: add public folder when we have static assets
+COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/package.json kesaseteli/
+
+# shared data
+COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 
 # Install production dependencies
 RUN yarn install --production
-
-# Copy public folder
-COPY --chown=appuser:appuser kesaseteli/public /app/kesaseteli/public
 
 # Expose port
 EXPOSE $KESASETELI_PORT

@@ -36,7 +36,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dir: ["backend"]
+        service: [ 'backend', 'corporate' ]
+        include:
+          dir: [ 'backend', 'frontend/kesaseteli' ]
+          context: ['backend','frontend']
     runs-on: ubuntu-latest
     name: Build
     steps:
@@ -49,7 +52,7 @@ jobs:
         uses: andersinno/kolga-build-action@v2
         env:
           DOCKER_BUILD_SOURCE: ./${{ matrix.dir }}/Dockerfile
-          DOCKER_BUILD_CONTEXT: ./${{ matrix.dir }}
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.dir }}
 
   staging:
@@ -57,10 +60,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["backend"]
+        service: [ 'backend', 'kesaseteli' ]
         include:
-        - service: "backend"
-          dir: "backend"
+          - service: "backend"
+            dir: "backend"
+          - service: "kesaseteli"
+            dir: "frontend"
     runs-on: ubuntu-latest
     needs: build
     name: Staging
@@ -86,3 +91,61 @@ jobs:
           K8S_SECRET_VERSION: ${{ github.sha }}
           VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-staging
           VAULT_KV_SECRET_MOUNT_POINT: staging
+      - name: staging deploy failure notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_USERNAME: DeployManager
+          SLACK_ICON: https://a.slack-edge.com/80588/img/services/outgoing-webhook_48.png
+          SLACK_TITLE: Deploying to ${{ matrix.DOCKER_BUILD_ARG_PUBLIC_URL }} has *FAILED!*
+          SLACK_MESSAGE: Deploying to ${{ matrix.DOCKER_BUILD_ARG_PUBLIC_URL }} has *FAILED!*
+          SLACK_CHANNEL: yjdh-alerts
+        if: failure()
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: '12'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
+      - name: Run TestCafe tests For ${{matrix.DOCKER_BUILD_ARG_PUBLIC_URL}}
+        id: testcafe
+        run: yarn browser-test:ci
+        env:
+          BROWSER_TESTS_LOCAL_ENV_URL: https://${{ env.ENVIRONMENT_URL }}
+          GITHUB_WORKFLOW_NAME: ${{  github.workflow }}
+          GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TESTCAFE_SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          TESTCAFE_SLACK_CHANNEL: "#yjdh-alerts"
+          TESTCAFE_SLACK_USERNAME: TestCafé
+      - name: Upload results
+        run: |
+          zip -r report.zip report/ > no_output 2>&1
+          curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
+          echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
+        if: always() && steps.testcafe.outcome == 'failure'
+      - name: link screenshots url to slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_USERNAME: TestCafé
+          SLACK_TITLE: ${{ github.workflow }} have *FAILED*!
+          SLACK_MESSAGE: "*Check the testcafe report here for ${{ env.ENVIRONMENT_URL }}: ${{env.REPORT_URL}}*"
+          SLACK_CHANNEL: yjdh-alerts
+        if: always() && steps.testcafe.outcome == 'failure'
+      - name: Upload screenshots and videos of failed tests to artifact for ${{env.ENVIRONMENT_URL}}
+        uses: actions/upload-artifact@v2
+        with:
+          name: report
+          path: report/
+        if: always() && steps.testcafe.outcome == 'failure'

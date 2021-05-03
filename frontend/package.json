@@ -17,6 +17,7 @@
     "start:kesaseteli": "lerna run --scope  @frontend/kesaseteli --stream start",
     "release": "cross-env HUSKY_BYPASS=true lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
+    "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "browser-test": "testcafe \"chrome --window-size='1249,720'\" browser-tests/",
     "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,custom,html:report/index.html browser-tests/"
@@ -50,6 +51,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.3.5",
     "eslint-plugin-jest-async": "^1.0.3",
+    "eslint-plugin-jest-dom": "^3.8.1",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-markdown": "^2.0.1",
@@ -66,6 +68,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-sonarjs": "^0.7.0",
     "eslint-plugin-switch-case": "^1.1.2",
+    "eslint-plugin-testing-library": "^4.1.2",
     "eslint-plugin-unicorn": "^31.0.0",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
