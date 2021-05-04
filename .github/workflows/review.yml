@@ -20,7 +20,6 @@ env:
   KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW }}
   BUILD_ARTIFACT_FOLDER: 'build_artifacts'
   SERVICE_ARTIFACT_FOLDER: 'service_artifacts'
-  APP_MIGRATE_COMMAND: /app/.prod/on_deploy.sh
   BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STAGING }}
   DATABASE_USER: user
   DATABASE_PASSWORD: testing-password
@@ -102,6 +101,7 @@ jobs:
           VAULT_KV_VERSION: "2"
           VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
           VAULT_KV_SECRET_MOUNT_POINT: review
+          APP_MIGRATE_COMMAND: ${{ matrix.context == 'backend' && '/app/.prod/on_deploy.sh'}}
       - name: Setup kubectl
         if: matrix.context == 'frontend'
         run: |
