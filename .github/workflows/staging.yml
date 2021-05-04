@@ -28,6 +28,7 @@ env:
   VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_STAGING }}
   VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
   VAULT_KV_VERSION: "2"
+  EMPLOYER_PORT: 3000
 
 jobs:
   build:

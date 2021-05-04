@@ -27,7 +27,7 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 250Mi
-
+  EMPLOYER_PORT: 3000
 jobs:
   build:
     strategy:
