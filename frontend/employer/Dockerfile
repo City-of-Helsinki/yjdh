@@ -79,12 +79,12 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared
 # Install production dependencies
 RUN yarn install --production
 
-RUN echo EMPLOYER_PORT=$EMPLOYER_PORT
 # Expose port
-EXPOSE $EMPLOYER_PORT
+EXPOSE 3000
 
 # install lerna
 RUN yarn global add lerna
 
 # Start nextjs server
-CMD ["yarn", "start"]
+# https://github.com/lerna/lerna/issues/2428
+CMD ["yarn", "start:employer"]

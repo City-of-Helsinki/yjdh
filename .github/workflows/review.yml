@@ -27,7 +27,6 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 250Mi
-  EMPLOYER_PORT: 3000
 jobs:
   build:
     strategy:
@@ -105,6 +104,7 @@ jobs:
           VAULT_KV_VERSION: "2"
           VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
           VAULT_KV_SECRET_MOUNT_POINT: review
+          SERVICE_PORT: ${{ matrix.port }}
           APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
       - name: Create PR comment for kesaseteli-V${{ matrix.service }}
         if: matrix.context == 'frontend'
@@ -125,9 +125,7 @@ jobs:
       - name: Service with ingress
         run: |
           echo "EMPLOYER_URL=https://employer.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
-          echo "EMPLOYER_PORT=3000" >> $GITHUB_ENV
           echo "HANDLER_URL=https://handler.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
-          echo "HANDLER_PORT=3100" >> $GITHUB_ENV
       - name: Setup kubectl
         run: |
           echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig

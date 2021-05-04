@@ -28,7 +28,6 @@ env:
   VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_STAGING }}
   VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
   VAULT_KV_VERSION: "2"
-  EMPLOYER_PORT: 3000
 
 jobs:
   build:
@@ -124,9 +123,7 @@ jobs:
       - name: Service with ingress
         run: |
           echo "EMPLOYER_URL=https://employer.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
-          echo "EMPLOYER_PORT=3000" >> $GITHUB_ENV
           echo "HANDLER_URL=https://handler.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
-          echo "HANDLER_PORT=3100" >> $GITHUB_ENV
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
