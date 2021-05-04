@@ -27,7 +27,6 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 250Mi
-  EMPLOYER_PORT: 3000
 
 jobs:
   build:
@@ -67,10 +66,12 @@ jobs:
             context: backend
             dockerfile: ./backend/Dockerfile
             database: true
+            port: 8000
           - service: employer
             context: frontend
             dockerfile: ./frontend/employer/Dockerfile
             database: false
+            port: 3000
     runs-on: ubuntu-latest
     needs: build
     name: Review
@@ -89,6 +90,7 @@ jobs:
       - name: Service with ingress
         run: |
           echo "ENVIRONMENT_URL=https://${{ matrix.service }}.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "SERVICE_PORT=${{ matrix.port }}" >> $GITHUB_ENV
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
       - name: Deploy
         uses: andersinno/kolga-deploy-action@v2
@@ -97,7 +99,6 @@ jobs:
           DOCKER_BUILD_CONTEXT: ./${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ github.event.repository.name }}-${{ matrix.service }}
-          ENVIRONMENT_URL: https://${{ env.K8S_NAMESPACE }}.${{ env.BASE_DOMAIN }}
           K8S_SECRET_VERSION: ${{ github.sha }}
           VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_REVIEW }}
           VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
@@ -105,31 +106,41 @@ jobs:
           VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
           VAULT_KV_SECRET_MOUNT_POINT: review
           APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
-      - name: Setup kubectl
-        if: matrix.context == 'frontend'
-        run: |
-          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
-          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
-        shell: bash
-      - name: Create PR comment for version V${{ matrix.service }}
+      - name: Create PR comment for kesaseteli-V${{ matrix.service }}
         if: matrix.context == 'frontend'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: deployment-${{ matrix.service }}
+          header: deployment-kesaseteli-${{ matrix.service }}
           message: |
-            **${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
+            **Kesäseteli-${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
+  acceptance-tests:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    needs: review
+    name: Acceptance tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Service with ingress
+        run: |
+          echo "EMPLOYER_URL=https://employer.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "EMPLOYER_PORT=3000" >> $GITHUB_ENV
+          echo "HANDLER_URL=https://handler.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "HANDLER_PORT=3100" >> $GITHUB_ENV
+      - name: Setup kubectl
+        run: |
+          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
+          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
+        shell: bash
       - name: Setup Node.js environment
-        if: matrix.context == 'frontend'
         uses: actions/setup-node@v2.1.2
         with:
           node-version: '14'
       - name: Get yarn cache directory path
-        if: matrix.context == 'frontend'
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
-        if: matrix.context == 'frontend'
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -137,43 +148,41 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Install dependencies
-        if: matrix.context == 'frontend'
         run: yarn --prefer-offline --frozen-lockfile --check-files
-      - name: Run Acceptance Tests for V${{ matrix.service }}
-        if: matrix.context == 'frontend'
+      - name: Run Acceptance Tests
         id: testcafe
         run: yarn browser-test:ci
         env:
-          BROWSER_TESTS_LOCAL_ENV_URL: ${{ env.ENVIRONMENT_URL }}
+          BROWSER_TESTS_LOCAL_ENV_URL: ${{ env.EMPLOYER_URL }}
           GITHUB_WORKFLOW_NAME: ${{  github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      - name: Upload Acceptance Test results for V${{ matrix.service }}
+      - name: Upload Acceptance Test results
         run: |
           zip -r report.zip report/ > no_output 2>&1
           curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
           echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
-        if: always() && steps.testcafe.outcome == 'failure' && matrix.context == 'frontend'
-      - name: Create/update PR comment for Acceptance Test results for V${{ matrix.service }}
+        if: always() && steps.testcafe.outcome == 'failure'
+      - name: Create/update PR comment for Acceptance Test results
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: testcafe-results-${{matrix.service}}
+          header: testcafe-results-kesaseteli
           append: true
           message: |
-            ## TestCafe result is __${{ steps.testcafe.outcome }}__ for ${{ matrix.description }}! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
-        if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure') && matrix.context == 'frontend'
-      - name: Create/update PR comment for Acceptance Test results for V${{ matrix.service }}
+            ## TestCafe result is __${{ steps.testcafe.outcome }}__ for Kesäseteli! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
+        if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
+      - name: Create/update PR comment for Acceptance Test results
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: testcafe-results-${{matrix.service}}
+          header: testcafe-results-kesaseteli
           append: true
           message: |
             **Check the report on: [${{ env.REPORT_URL }}](${{ env.REPORT_URL }})**
-        if: always() && steps.testcafe.outcome == 'failure' && matrix.context == 'frontend'
-      - name: Upload screenshots and videos of failed tests to artifact for V${{ matrix.service }}
+        if: always() && steps.testcafe.outcome == 'failure'
+      - name: Upload screenshots and videos of failed tests to artifact
         uses: actions/upload-artifact@v2
         with:
           name: report
           path: report/
-        if: always() && steps.testcafe.outcome == 'failure' && matrix.context == 'frontend'
+        if: always() && steps.testcafe.outcome == 'failure'

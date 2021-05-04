@@ -112,10 +112,24 @@ jobs:
           SLACK_MESSAGE: Deploying to ${{ env.ENVIRONMENT_URL }} has *FAILED!*
           SLACK_CHANNEL: yjdh-alerts
         if: failure()
+  acceptance-tests:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    needs: deploy
+    name: Acceptance tests for Staging
+    steps:
+      - uses: actions/checkout@v2
+      - name: Service with ingress
+        run: |
+          echo "EMPLOYER_URL=https://employer.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "EMPLOYER_PORT=3000" >> $GITHUB_ENV
+          echo "HANDLER_URL=https://handler.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "HANDLER_PORT=3100" >> $GITHUB_ENV
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: '12'
+          node-version: '14'
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -132,7 +146,7 @@ jobs:
         id: testcafe
         run: yarn browser-test:ci
         env:
-          BROWSER_TESTS_LOCAL_ENV_URL: https://${{ env.ENVIRONMENT_URL }}
+          BROWSER_TESTS_LOCAL_ENV_URL: https://${{ env.EMPLOYER_URL }}
           GITHUB_WORKFLOW_NAME: ${{  github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           TESTCAFE_SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
@@ -154,7 +168,7 @@ jobs:
           SLACK_MESSAGE: "*Check the testcafe report here for ${{ env.ENVIRONMENT_URL }}: ${{env.REPORT_URL}}*"
           SLACK_CHANNEL: yjdh-alerts
         if: always() && steps.testcafe.outcome == 'failure'
-      - name: Upload screenshots and videos of failed tests to artifact for ${{env.ENVIRONMENT_URL}}
+      - name: Upload screenshots and videos of failed tests to artifact for ${{env.EMPLOYER_URL}}
         uses: actions/upload-artifact@v2
         with:
           name: report
