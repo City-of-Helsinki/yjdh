@@ -1,5 +1,0 @@
-{
-  "hooks": {
-    "pre-commit": "lint-staged -c ya.lintstagedrc.js"
-  }
-}

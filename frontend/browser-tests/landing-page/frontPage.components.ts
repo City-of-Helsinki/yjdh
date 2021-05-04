@@ -15,6 +15,7 @@ export const getFrontPageComponents = (t: TestController) => {
     const withinHeader = () =>
       within(screen.getByRole('heading', {
         name: /employer/i
+
       }));
 
     await t

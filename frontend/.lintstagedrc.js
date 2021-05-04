@@ -11,7 +11,7 @@ const cli = new CLIEngine({});
  * See also: https://openbase.io/js/lint-staged/documentation
  */
 module.exports = {
-  '**/*.{ts,tsx,js,jsx}': [
+  './**/*.{ts,tsx,js,jsx}': [
     (changedFiles) =>
       'eslint --fix --max-warnings=0 ' +
       changedFiles.filter((file) => !cli.isPathIgnored(file)).join(' '),
