@@ -101,7 +101,7 @@ jobs:
           VAULT_KV_VERSION: "2"
           VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
           VAULT_KV_SECRET_MOUNT_POINT: review
-          APP_MIGRATE_COMMAND: ${{ matrix.context == 'backend' && '/app/.prod/on_deploy.sh'}}
+          APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
       - name: Setup kubectl
         if: matrix.context == 'frontend'
         run: |
