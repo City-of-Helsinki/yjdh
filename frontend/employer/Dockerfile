@@ -46,11 +46,13 @@ ARG NEXT_PUBLIC_API_BASE_URL
 # Use non-root user
 USER appuser
 WORKDIR /app
-# copy all files
-COPY --chown=appuser:appuser . .
 
 # Build application
 RUN yarn build
+
+# copy all files
+COPY --chown=appuser:appuser . .
+
 
 # ==========================================
 FROM helsinkitest/node:12-slim AS production
