@@ -86,7 +86,10 @@ jobs:
           projects: ${{ github.event.repository.name }}-${{ matrix.service }}
         env:
           POSTGRES_IMAGE: "docker.io/andersinnovations/postgis:11-bitnami"
-
+      - name: Service with ingress
+        run: |
+          echo "ENVIRONMENT_URL=https://${{ matrix.service }}.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
       - name: Deploy
         uses: andersinno/kolga-deploy-action@v2
         env:
@@ -108,13 +111,6 @@ jobs:
           echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
         shell: bash
-      - name: Get Review Deploy URL for ${{ matrix.service }}
-        if: matrix.context == 'frontend'
-        id: deploy-url
-        run: |
-          DEPLOY_URL=$(kubectl get ingress "${{ env.ENVIRONMENT_SLUG }}-${{ matrix.service }}-ingress" -n ${{env.K8S_NAMESPACE}} -o jsonpath='{.spec.rules[0].host}')
-          echo "BROWSER_TESTS_LOCAL_ENV_URL=https://$DEPLOY_URL" >> $GITHUB_ENV
-        shell: bash
       - name: Create PR comment for version V${{ matrix.service }}
         if: matrix.context == 'frontend'
         uses: marocchino/sticky-pull-request-comment@v2
@@ -122,7 +118,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: deployment-${{ matrix.service }}
           message: |
-            **${{ matrix.service }} is deployed to: ${{ env.BROWSER_TESTS_LOCAL_ENV_URL }}** :rocket::rocket::rocket:
+            **${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
       - name: Setup Node.js environment
         if: matrix.context == 'frontend'
         uses: actions/setup-node@v2.1.2
@@ -148,6 +144,7 @@ jobs:
         id: testcafe
         run: yarn browser-test:ci
         env:
+          BROWSER_TESTS_LOCAL_ENV_URL: ${{ env.ENVIRONMENT_URL }}
           GITHUB_WORKFLOW_NAME: ${{  github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Upload Acceptance Test results for V${{ matrix.service }}
