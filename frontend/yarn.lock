@@ -5167,7 +5167,7 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-adjunct@>=4.11.1:
+eslint-config-adjunct@>=4.11.1, eslint-config-adjunct@^4.11.1:
   version "4.11.1"
   resolved "https://registry.yarnpkg.com/eslint-config-adjunct/-/eslint-config-adjunct-4.11.1.tgz#a7194c58bf0f62d73d76208d8389af852de3b589"
   integrity sha512-vZ2sYJpYXuvetCrIXDuDXwJUbUuh9+3co8gAUxlX6Avjsj9J2qvm0wZxDC7m/u5FnjEB3T/15HufcL8w9MuaGw==

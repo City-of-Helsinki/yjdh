@@ -1,5 +1,5 @@
+import EmployerIndex from 'employer/pages/index';
 import { axe } from 'jest-axe';
-import employerIndex from 'employer/pages/index';
 import React from 'react';
 import { render } from 'test-utils';
 
