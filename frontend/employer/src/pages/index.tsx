@@ -13,7 +13,7 @@ type Props = {
   posts: Application[];
 }
 
-const KesaseteliIndex: NextPage<Props> = ({ posts }) => (
+const EmployerIndex: NextPage<Props> = ({ posts }) => (
     <Layout>
       <ul>
         {posts.map(post => (
@@ -27,7 +27,7 @@ const KesaseteliIndex: NextPage<Props> = ({ posts }) => (
     </Layout>
   );
 
-KesaseteliIndex.getInitialProps = async () => {
+EmployerIndex.getInitialProps = async () => {
   const posts = [
     { id: 1, title: "hakemus 1" },
     { id: 2, title: "hakemus 2" }
@@ -35,4 +35,4 @@ KesaseteliIndex.getInitialProps = async () => {
   return { posts };
 };
 
-export default KesaseteliIndex;
+export default EmployerIndex;

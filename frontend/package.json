@@ -5,16 +5,16 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "kesaseteli",
+    "employer",
     "shared"
   ],
   "scripts": {
-    "build": "yarn build:kesaseteli",
-    "build:kesaseteli": "lerna run --scope @frontend/kesaseteli --stream build",
-    "dev": "yarn dev:kesaseteli",
-    "dev:kesaseteli": "lerna run --scope @frontend/kesaseteli --stream dev",
-    "start": "yarn start:kesaseteli",
-    "start:kesaseteli": "lerna run --scope  @frontend/kesaseteli --stream start",
+    "build": "yarn build:employer",
+    "build:employer": "lerna run --scope @frontend/employer --stream build",
+    "dev": "yarn dev:employer",
+    "dev:employer": "lerna run --scope @frontend/employer --stream dev",
+    "start": "yarn start:employer",
+    "start:employer": "lerna run --scope  @frontend/employer --stream start",
     "release": "cross-env HUSKY_BYPASS=true lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
     "lint": "lerna run --stream lint",

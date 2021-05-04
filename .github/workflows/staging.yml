@@ -38,7 +38,7 @@ jobs:
       matrix:
         service: [ 'backend', 'corporate' ]
         include:
-          dir: [ 'backend', 'frontend/kesaseteli' ]
+          dir: [ 'backend', 'frontend/employer' ]
           context: ['backend','frontend']
     runs-on: ubuntu-latest
     name: Build
@@ -60,11 +60,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'backend', 'kesaseteli' ]
+        service: [ 'backend', 'employer' ]
         include:
           - service: "backend"
             dir: "backend"
-          - service: "kesaseteli"
+          - service: "employer"
             dir: "frontend"
     runs-on: ubuntu-latest
     needs: build

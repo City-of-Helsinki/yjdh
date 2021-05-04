@@ -14,12 +14,12 @@ export const getFrontPageComponents = (t: TestController) => {
   const header = async () => {
     const withinHeader = () =>
       within(screen.getByRole('heading', {
-        name: /kesaseteli/i
+        name: /employer/i
       }));
 
     await t
       .expect(screen.findByRole('heading', {
-        name: /kesaseteli/i
+        name: /employer/i
       }))
       .ok(await getErrorMessage(t));
 

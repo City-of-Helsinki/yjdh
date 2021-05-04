@@ -30,10 +30,10 @@ services:
             - postgres
         container_name: kesaseteli-backend
 
-    frontend:
+    employer:
         build:
             context: ./frontend
-            dockerfile: kesaseteli/Dockerfile
+            dockerfile: frontend/employer/Dockerfile
             target: ${DOCKER_TARGET:-development}
         volumes:
             - ./frontend/kesaseteli:/app/kesaseteli
@@ -43,7 +43,7 @@ services:
         env_file:
             - .env
         ports:
-            - '${KESASETELI_PORT}:${KESASETELI_PORT}'
+            - '${EMPLOYER_PORT}:${EMPLOYER_PORT}'
         container_name: kesaseteli-frontend
 
 volumes:

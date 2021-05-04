@@ -13,7 +13,7 @@ const Main = styled.main`
 
 const Layout = ({ children }: { children: React.ReactNode }): JSX.Element => (
   <Main>
-    <Heading>Kesaseteli</Heading>
+    <Heading>employer</Heading>
     {children}
   </Main>
 );

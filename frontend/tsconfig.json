@@ -14,7 +14,7 @@
     "baseUrl": "./",
     "paths": {
       "testcafe/*": ["shared/testcafe/*"],
-      "kesaseteli/*": ["kesaseteli/src/*"],
+      "employer/*": ["employer/src/*"],
       "shared/*": ["shared/src/*"],
       "test-utils": ["shared/test/test-utils"]
     }

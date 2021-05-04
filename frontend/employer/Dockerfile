@@ -14,7 +14,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
-COPY --chown=appuser:appuser kesaseteli/package.json kesaseteli/package.json
+COPY --chown=appuser:appuser employer/package.json employer/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 
@@ -62,15 +62,15 @@ USER appuser
 WORKDIR /app
 
 # Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/.next kesaseteli/.next
+COPY --from=staticbuilder --chown=appuser:appuser app/employer/.next employer/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/next.config.js kesaseteli/
+COPY --from=staticbuilder --chown=appuser:appuser app/employer/next.config.js employer/
 
 # Copy package.json and yarn.lock files
 # TODO: add public folder when we have static assets
 COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/package.json kesaseteli/
+COPY --from=staticbuilder --chown=appuser:appuser app/employer/package.json employer/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
@@ -79,7 +79,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared
 RUN yarn install --production
 
 # Expose port
-EXPOSE $KESASETELI_PORT
+EXPOSE $EMPLOYER_PORT
 
 # install lerna
 RUN yarn global add lerna

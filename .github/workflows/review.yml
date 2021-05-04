@@ -28,22 +28,22 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 250Mi
-  KESASETELI_PORT: 3000
+  EMPLOYER_PORT: 3000
 
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'backend', 'kesaseteli' ]
+        service: [ 'backend', 'employer' ]
         include:
           - service: backend
             context: ./backend
             dockerfile: ./backend/Dockerfile
             port: 8000
-          - service: kesaseteli
+          - service: employer
             context: ./frontend
-            dockerfile: ./frontend/kesaseteli/Dockerfile
+            dockerfile: ./frontend/employer/Dockerfile
             port: 3000
     runs-on: ubuntu-latest
     name: Build
@@ -62,15 +62,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'backend', 'kesaseteli' ]
+        service: [ 'backend', 'employer' ]
         include:
           - service: backend
             context: backend
             dockerfile: ./backend/Dockerfile
             database: true
-          - service: kesaseteli
+          - service: employer
             context: frontend
-            dockerfile: ./frontend/kesaseteli/Dockerfile
+            dockerfile: ./frontend/employer/Dockerfile
             database: false
     runs-on: ubuntu-latest
     needs: build
