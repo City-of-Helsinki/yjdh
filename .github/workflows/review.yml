@@ -89,7 +89,7 @@ jobs:
           POSTGRES_IMAGE: "docker.io/andersinnovations/postgis:11-bitnami"
       - name: Service with ingress
         run: |
-          echo "ENVIRONMENT_URL=https://${{ matrix.service }}.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT_URL=https://${{ matrix.service }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
           echo "SERVICE_PORT=${{ matrix.port }}" >> $GITHUB_ENV
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
       - name: Deploy
