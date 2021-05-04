@@ -133,6 +133,7 @@ LOGGING = {
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": [],
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }  # TODO: Replace with actual authentication & permissions.
 
 # local_settings.py can be used to override environment-specific settings
