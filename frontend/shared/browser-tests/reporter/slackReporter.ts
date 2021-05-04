@@ -1,6 +1,6 @@
 import { formatDate } from 'shared/utils/date.utils';
 
-import { getEnvUrl } from '../utils/settings';
+import { getEmployerUiUrl } from '../utils/settings';
 import { createSlackMessageSender } from './slackMessageSender';
 import { emojis } from './utils/emojis';
 import { bold, italics } from './utils/slackTextFormatters';
@@ -48,7 +48,7 @@ const SlackReporter = (): Reporter => {
     const githubWorkflowUrl = process.env.GITHUB_WORKFLOW_URL || '';
     // prettier-ignore
     slack.addMessage(
-    `${githubWorkflow}: ${getEnvUrl()}\n
+    `${githubWorkflow}: ${getEmployerUiUrl()}\n
     Workflow Url: ${githubWorkflowUrl}\n
     ${emojis.rocket} ${'Started TestCafe:'} ${bold(formatDate(startTime, 'dd.MM.yyyy HH:mm:ss'))}\n
     ${emojis.computer} Runned ${bold(String(testCount))} tests in: ${bold(userAgents)}\n`
