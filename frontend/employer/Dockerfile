@@ -79,6 +79,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared
 # Install production dependencies
 RUN yarn install --production
 
+RUN echo EMPLOYER_PORT=$EMPLOYER_PORT
 # Expose port
 EXPOSE $EMPLOYER_PORT
 
