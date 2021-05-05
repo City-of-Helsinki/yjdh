@@ -76,9 +76,6 @@ jobs:
     name: Review
     steps:
       - uses: actions/checkout@v2
-      - name: Service with ingress
-        run: |
-          echo "ENVIRONMENT_URL=https://${{ env.K8S_NAMESPACE }}.${{ matrix.service }}.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
@@ -89,6 +86,9 @@ jobs:
           projects: ${{ github.event.repository.name }}-${{ matrix.service }}
         env:
           POSTGRES_IMAGE: "docker.io/andersinnovations/postgis:11-bitnami"
+      - name: Service with ingress
+        run: |
+          echo "ENVIRONMENT_URL=https://${{ env.K8S_NAMESPACE }}-${{ matrix.service }}.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Deploy
         uses: andersinno/kolga-deploy-action@v2
         env:
@@ -123,8 +123,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Service with ingress
         run: |
-          echo "EMPLOYER_URL=https://${{ env.K8S_NAMESPACE }}.employer.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
-          echo "HANDLER_URL=https://${{ env.K8S_NAMESPACE }}.handler.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "EMPLOYER_URL=https://${{ env.K8S_NAMESPACE }}-employer.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "HANDLER_URL=https://${{ env.K8S_NAMESPACE }}-handler.kesaseteli.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Setup kubectl
         run: |
           echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
