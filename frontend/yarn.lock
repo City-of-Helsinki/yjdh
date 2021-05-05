@@ -11914,6 +11914,16 @@ testcafe-legacy-api@5.0.0:
     strip-bom "^2.0.0"
     testcafe-hammerhead ">=19.4.0"
 
+testcafe-reporter-custom@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/testcafe-reporter-custom/-/testcafe-reporter-custom-1.1.1.tgz#eae712baad88266ea7db9fee518df6545f1dc3de"
+  integrity sha512-F4U0kq5Veu6BZwhGFfS1jtWDM1eAMWXZJfSpkZvJ/5JUdHRCIJkdDlOoRsToIXeYwwzvWkWtFjFWq8vMe21JlA==
+
+testcafe-reporter-html@^1.4.6:
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/testcafe-reporter-html/-/testcafe-reporter-html-1.4.6.tgz#f62dc46f4a4dd99ef1cd9fa64d87e95bb4ee5be7"
+  integrity sha512-P3JNxLnl0UaL5hc3Cn4LYYioHgASF5PNTOS34Ym7ClOIU4CnPAe+JruruNvLA3Jf5ZHSd+ix57xAci/Y7mEDmw==
+
 testcafe-reporter-json@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/testcafe-reporter-json/-/testcafe-reporter-json-2.2.0.tgz#bb061e054489abdb62add745dd979896b618ea91"

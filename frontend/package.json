@@ -81,6 +81,8 @@
     "pretty": "^2.0.0",
     "slack-node": "^0.1.8",
     "testcafe": "^1.14.0",
+    "testcafe-reporter-custom": "^1.1.1",
+    "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4"
   }
