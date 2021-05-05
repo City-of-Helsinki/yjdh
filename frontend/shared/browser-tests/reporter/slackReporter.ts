@@ -1,5 +1,4 @@
-import { formatDate } from 'shared/utils/date.utils';
-
+import { formatDate } from '../../src/utils/date.utils';
 import { getEmployerUiUrl } from '../utils/settings';
 import { createSlackMessageSender } from './slackMessageSender';
 import { emojis } from './utils/emojis';
@@ -37,20 +36,24 @@ type Reporter = {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const SlackReporter = (): Reporter => {
-  let startTime: number
+  let startTime: number;
   let testCount: number;
   const slack = createSlackMessageSender();
 
-  const reportTaskStart = (start: number, userAgents: string, test: number): void => {
+  const reportTaskStart = (
+    start: number,
+    userAgents: string,
+    test: number
+  ): void => {
     startTime = start;
     testCount = test;
     const githubWorkflow = process.env.GITHUB_WORKFLOW_NAME || '';
     const githubWorkflowUrl = process.env.GITHUB_WORKFLOW_URL || '';
     // prettier-ignore
-    slack.addMessage(
-    `${githubWorkflow}: ${getEmployerUiUrl()}\n
-    Workflow Url: ${githubWorkflowUrl}\n
-    ${emojis.rocket} ${'Started TestCafe:'} ${bold(formatDate(startTime, 'dd.MM.yyyy HH:mm:ss'))}\n
+    slack.addMessage(`${githubWorkflow}: ${getEmployerUiUrl()}\n
+    Workflow Url: ${githubWorkflowUrl}\n` +
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+    `${emojis.rocket} ${'Started TestCafe:'} ${bold(formatDate(startTime, 'dd.MM.yyyy HH:mm:ss'))}\n
     ${emojis.computer} Runned ${bold(String(testCount))} tests in: ${bold(userAgents)}\n`
     );
   };
@@ -86,8 +89,10 @@ const SlackReporter = (): Reporter => {
     warnings: TestRunInfo['warnings'],
     result: Result
   ): void => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
     const endTimeFormatted = formatDate(endTime, 'dd.MM.yyyy HH:mm:ss');
     const durationMs = endTime - startTime;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
     const durationFormatted = formatDate(durationMs, "mm'm' ss's'");
     // prettier-ignore
     const finishedStr = `${emojis.finishFlag} Testing finished at ${bold(endTimeFormatted)}\n`;
@@ -99,7 +104,11 @@ const SlackReporter = (): Reporter => {
       // prettier-ignore
       summaryStr += `${emojis.fastForward} ${bold(`${result.skippedCount} skipped`)}\n`;
     }
-    summaryStr += result.failedCount ? `${emojis.noEntry} ${bold(`${result.failedCount}/${testCount} failed`)}` : `${emojis.checkMark} ${bold(`${result.passedCount}/${testCount} passed`)}`;
+    summaryStr += result.failedCount
+      ? `${emojis.noEntry} ${bold(`${result.failedCount}/${testCount} failed`)}`
+      : `${emojis.checkMark} ${bold(
+          `${result.passedCount}/${testCount} passed`
+        )}`;
     slack.addMessage(`\n\n${finishedStr} ${durationStr} ${summaryStr}`);
 
     slack.sendTestReport(testCount - passed);
