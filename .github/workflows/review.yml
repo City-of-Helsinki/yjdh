@@ -119,6 +119,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: review
     name: Acceptance tests
+    defaults:
+      run:
+        working-directory: ./frontend
     steps:
       - uses: actions/checkout@v2
       - name: Service with ingress
