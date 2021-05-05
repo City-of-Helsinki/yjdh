@@ -23,10 +23,10 @@ env:
   BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STAGING }}
   DATABASE_USER: user
   DATABASE_PASSWORD: testing-password
-  K8S_REQUEST_CPU: 2m
+  K8S_REQUEST_CPU: 50m
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
-  K8S_LIMIT_RAM: 250Mi
+  K8S_LIMIT_RAM: 400Mi
 jobs:
   build:
     strategy:
