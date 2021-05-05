@@ -126,8 +126,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Service with ingress
         run: |
-          echo "EMPLOYER_URL=https://kesaseteli-employer-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-          echo "HANDLER_URL=https://kesaseteli-hendler-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "EMPLOYER_URL=https://kesaseteli-employer-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "HANDLER_URL=https://kesaseteli-hendler-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Setup kubectl
         run: |
           echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
