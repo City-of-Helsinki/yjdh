@@ -18,7 +18,7 @@ COPY --chown=appuser:appuser employer/package.json employer/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 
-RUN yarn --frozen-lockfile && yarn cache clean --force
+RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
 
 # Copy all files
 COPY --chown=appuser:appuser . .
@@ -71,13 +71,15 @@ COPY --from=staticbuilder --chown=appuser:appuser app/employer/next.config.js em
 # Copy package.json and yarn.lock files
 # TODO: add public folder when we have static assets
 COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/employer/package.json employer/
+COPY --from=staticbuilder --chown=appuser:appuser app/employer/package.json app/employer/start.js employer/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
+COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
 # Install production dependencies
-RUN yarn install --production
+RUN yarn install --production --frozen-lockfile --check-files
+
 
 # Expose port
 EXPOSE 3000

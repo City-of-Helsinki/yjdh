@@ -20,4 +20,10 @@ module.exports = {
     ),
   },
   setupFilesAfterEnv: ['<rootDir>/shared/test/setupTests.ts'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/employer/src/pages/',
+    '<rootDir>/shared/src/server/next-server.js',
+    '<rootDir>/shared/test/',
+  ],
+  collectCoverageFrom: ['./**/*.{ts,tsx,js,jsx}'],
 };
