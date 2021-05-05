@@ -166,7 +166,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: testcafe-results-kesaseteli
-          append: true
           message: |
             ## TestCafe result is __${{ steps.testcafe.outcome }}__ for Kesäseteli! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
         if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
