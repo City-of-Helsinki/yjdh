@@ -1,0 +1,19 @@
+# exclude all
+*
+# except include following
+# https://github.com/moby/moby/issues/30018
+!lerna.json
+!babel.config.js
+!employer/next.config.js
+!employer/public
+!employer/src
+!shared/src
+!package.json
+!employer/package.json
+!shared/package.json
+!tsconfig.json
+!employer/tsconfig.json
+!shared/tsconfig.json
+!yarn.lock
+!employer/start.js
+
