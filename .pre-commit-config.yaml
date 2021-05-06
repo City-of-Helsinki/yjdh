@@ -5,12 +5,17 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
+        files: ^backend/
   - repo: https://github.com/pycqa/flake8
     rev: 3.9.1
     hooks:
       - id: flake8
         exclude: migrations|snapshots
+        files: ^backend/
+        args: [--config, backend/setup.cfg]
   - repo: https://github.com/pycqa/isort
     rev: 5.8.0
     hooks:
       - id: isort
+        files: ^backend/
+        args: [--settings-path, backend/setup.cfg]

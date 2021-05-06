@@ -2,7 +2,7 @@ import os
 
 import environ
 import sentry_sdk
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
 
 checkout_dir = environ.Path(__file__) - 2
@@ -85,7 +85,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
+    "rest_framework",
     # local apps
+    "applications",
+    "companies",
+    "utils",
 ]
 
 MIDDLEWARE = [
@@ -125,6 +129,12 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {"django": {"handlers": ["console"], "level": "ERROR"}},
 }
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": [],
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}  # TODO: Replace with actual authentication & permissions.
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
