@@ -37,6 +37,8 @@ env = environ.Env(
     SENTRY_ENVIRONMENT=(str, ""),
     CORS_ORIGIN_WHITELIST=(list, []),
     CORS_ORIGIN_ALLOW_ALL=(bool, False),
+    YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
+    YTJ_TIMEOUT=(int, 30),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -135,6 +137,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }  # TODO: Replace with actual authentication & permissions.
+
+YTJ_BASE_URL = env.str("YTJ_BASE_URL")
+YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
