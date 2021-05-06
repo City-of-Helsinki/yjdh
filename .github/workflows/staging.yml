@@ -84,7 +84,7 @@ jobs:
 
       - name: Service with ingress
         run: |
-          echo "ENVIRONMENT_URL=https://kesaseteli-${{ matrix.service }}-${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT_URL=https://kesaseteli-${{ matrix.service }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
 
       - name: Deploy
