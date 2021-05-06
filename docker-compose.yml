@@ -34,7 +34,7 @@ services:
         build:
             context: ./frontend
             dockerfile: employer/Dockerfile
-            target: production
+            target: development
         volumes:
             - ./frontend/employer:/app/employer
             - ./frontend/shared:/app/shared
