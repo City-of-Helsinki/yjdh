@@ -11,12 +11,13 @@ const Main = styled.main`
   padding: 1rem;
 `;
 
-const Layout = ({ children }: { children: React.ReactNode }): JSX.Element => (
+type Props = { children: React.ReactNode; headingText: string };
+
+const Layout = ({ children, headingText }: Props): JSX.Element => (
   <Main>
-    <Heading>employer</Heading>
+    <Heading>{headingText}</Heading>
     {children}
   </Main>
 );
-
 
 export default Layout;

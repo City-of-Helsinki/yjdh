@@ -105,6 +105,7 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
+          DOCKER_BUILD_ARG_BACKEND_URL: https://kesaseteli-yjdh-57-add-company-service-5.test.kuva.hel.ninja
       - name: Create PR comment for kesaseteli-V${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
