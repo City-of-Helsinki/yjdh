@@ -53,8 +53,8 @@ const SlackReporter = (): Reporter => {
     slack.addMessage(`${githubWorkflow}: ${getEmployerUiUrl()}\n
     Workflow Url: ${githubWorkflowUrl}\n` +
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
-    `${emojis.rocket} ${'Started TestCafe:'} ${bold(formatDate(startTime, 'dd.MM.yyyy HH:mm:ss'))}\n
-    ${emojis.computer} Runned ${bold(String(testCount))} tests in: ${bold(userAgents)}\n`
+    `${emojis.ROCKET} ${'Started TestCafe:'} ${bold(formatDate(startTime, 'dd.MM.yyyy HH:mm:ss'))}\n
+    ${emojis.COMPUTER} Runned ${bold(String(testCount))} tests in: ${bold(userAgents)}\n`
     );
   };
 
@@ -65,12 +65,12 @@ const SlackReporter = (): Reporter => {
   ): string => {
     let message: string;
     if (testRunInfo.skipped) {
-      message = `${emojis.fastForward} ${italics(name)} - ${bold('skipped')}`;
+      message = `${emojis.FAST_FORWARD} ${italics(name)} - ${bold('skipped')}`;
     } else if (testRunInfo.errs.length > 0) {
       /* prettier-ignore */
-      message = `${emojis.heavyMultiplication} ${italics(name)} - ${bold('failed')}`;
+      message = `${emojis.HEAVY_MULTIPLICATION} ${italics(name)} - ${bold('failed')}`;
     } else {
-      message = `${emojis.heavyCheckMark} ${italics(name)}`;
+      message = `${emojis.HEAVY_CHECKMARK} ${italics(name)}`;
     }
     return message;
   };
@@ -95,18 +95,20 @@ const SlackReporter = (): Reporter => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
     const durationFormatted = formatDate(durationMs, "mm'm' ss's'");
     // prettier-ignore
-    const finishedStr = `${emojis.finishFlag} Testing finished at ${bold(endTimeFormatted)}\n`;
+    const finishedStr = `${emojis.FINISH_FLAG} Testing finished at ${bold(endTimeFormatted)}\n`;
     // prettier-ignore
-    const durationStr = `${emojis.stopWatch} Duration: ${bold(durationFormatted)}\n`;
+    const durationStr = `${emojis.STOP_WATCH} Duration: ${bold(durationFormatted)}\n`;
     let summaryStr = '';
 
     if (result.skippedCount) {
       // prettier-ignore
-      summaryStr += `${emojis.fastForward} ${bold(`${result.skippedCount} skipped`)}\n`;
+      summaryStr += `${emojis.FAST_FORWARD} ${bold(`${result.skippedCount} skipped`)}\n`;
     }
     summaryStr += result.failedCount
-      ? `${emojis.noEntry} ${bold(`${result.failedCount}/${testCount} failed`)}`
-      : `${emojis.checkMark} ${bold(
+      ? `${emojis.NO_ENTRY} ${bold(
+          `${result.failedCount}/${testCount} failed`
+        )}`
+      : `${emojis.CHECK_MARK} ${bold(
           `${result.passedCount}/${testCount} passed`
         )}`;
     slack.addMessage(`\n\n${finishedStr} ${durationStr} ${summaryStr}`);
