@@ -4,13 +4,13 @@ import * as React from 'react';
 import Layout from 'shared/components/Layout';
 
 const Company: NextPage = () => {
-  const { isLoading, data: company, error } = useCompanyQuery();
+  const { isLoading, data: company, error, isLoadingError } = useCompanyQuery();
   if (isLoading) {
     return <span>Ladataan...</span>;
   }
 
-  if (error) {
-    return <span>Virhe: {error.message}</span>;
+  if (error || isLoadingError) {
+    return <span>Virhe: {error?.message}</span>;
   }
 
   if (!company) {

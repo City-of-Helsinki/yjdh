@@ -8,7 +8,7 @@ const queryClient = new QueryClient();
 const App = ({ Component, pageProps }: AppProps): React.ReactNode => (
   <QueryClientProvider client={queryClient}>
     <Component {...pageProps} />
-    <ReactQueryDevtools />
+    {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
   </QueryClientProvider>
 );
 

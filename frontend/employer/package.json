@@ -21,8 +21,6 @@
     "dotenv": "^9.0.0",
     "esm": "^3.2.25",
     "graphql": "^15.5.0",
-    "ky": "^0.28.0",
-    "ky-universal": "^0.9.1",
     "next": "^10.2.0",
     "next-compose-plugins": "^2.2.0",
     "next-plugin-custom-babel-config": "^1.0.2",
