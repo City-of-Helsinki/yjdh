@@ -2,12 +2,25 @@
   "compileOnSave": false,
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
-    "jsx": "react",
+    "lib": ["dom", "esnext"],
     "allowJs": true,
-    "moduleResolution": "node",
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "lib": ["dom", "es7"]
-  }
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "testcafe/*": ["shared/testcafe/*"],
+      "employer/*": ["employer/src/*"],
+      "shared/*": ["shared/src/*"],
+      "test-utils": ["shared/test/test-utils"]
+    }
+  },
+  "exclude": ["node_modules"]
 }

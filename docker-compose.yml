@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 services:
     postgres:
         image: postgres:12
@@ -29,6 +29,22 @@ services:
         depends_on:
             - postgres
         container_name: kesaseteli-backend
+
+    employer:
+        build:
+            context: ./frontend
+            dockerfile: employer/Dockerfile
+            target: development
+        volumes:
+            - ./frontend/employer:/app/employer
+            - ./frontend/shared:/app/shared
+            - /app/node_modules
+            - /app/.next
+        env_file:
+            - .env
+        ports:
+            - '3000:3000'
+        container_name: kesaseteli-employer
 
 volumes:
     pgdata:
