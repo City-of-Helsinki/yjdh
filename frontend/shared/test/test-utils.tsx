@@ -1,10 +1,7 @@
-import { MockedProvider, MockedResponse } from '@apollo/react-testing';
-import { fireEvent,render, RenderResult } from '@testing-library/react';
+import { fireEvent, render, RenderResult } from '@testing-library/react';
 import * as router from 'next/router';
 import { NextRouter } from 'next/router';
 import React from 'react';
-
-
 
 export const arrowUpKeyPressHelper = (): boolean =>
   fireEvent.keyDown(document, { code: 38, key: 'ArrowUp' });
@@ -18,10 +15,9 @@ export const enterKeyPressHelper = (): boolean =>
 export const escKeyPressHelper = (): boolean =>
   fireEvent.keyDown(document, { code: 27, key: 'Escape' });
 
-const customRender: CustomRender = (
-  ui,
-  { mocks = [], path = '/', query = {} } = {}
-) => {
+const Wrapper: React.FC = ({ children }) => <>{children}</>;
+
+const customRender: CustomRender = (ui, { path = '/', query = {} } = {}) => {
   jest.spyOn(router, 'useRouter').mockReturnValue({
     query,
     pathname: path,
@@ -30,18 +26,11 @@ const customRender: CustomRender = (
     basePath: path,
   } as NextRouter);
 
-  const Wrapper: React.FC = ({ children }) => (
-    <MockedProvider mocks={mocks}>
-      {children}
-    </MockedProvider>
-  );
-
   const utils = render(ui, { wrapper: Wrapper });
   return { ...utils };
 };
 
 export type CustomRenderOptions = {
-  mocks?: MockedResponse[];
   path?: string;
   query?: Record<string, unknown>;
 };
