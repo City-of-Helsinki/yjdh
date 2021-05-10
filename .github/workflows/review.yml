@@ -51,7 +51,7 @@ jobs:
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
         uses: andersinno/kolga-build-action@v2
         env:
-          DOCKER_BUILD_ARG_BACKEND_URL: https://kesaseteli-yjdh-57-add-company-service-5.test.kuva.hel.ninja
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: https://kesaseteli-yjdh-57-add-company-service-5.test.kuva.hel.ninja
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}

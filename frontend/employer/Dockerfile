@@ -40,7 +40,7 @@ CMD ["yarn", "dev"]
 FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
-ARG BACKEND_URL
+ARG NEXT_PUBLIC_BACKEND_URL
 
 # Use non-root user
 USER appuser
