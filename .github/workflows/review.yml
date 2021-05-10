@@ -51,6 +51,7 @@ jobs:
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
         uses: andersinno/kolga-build-action@v2
         env:
+          DOCKER_BUILD_ARG_BACKEND_URL: https://kesaseteli-yjdh-57-add-company-service-5.test.kuva.hel.ninja
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
@@ -105,7 +106,6 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
-          DOCKER_BUILD_ARG_BACKEND_URL: https://kesaseteli-yjdh-57-add-company-service-5.test.kuva.hel.ninja
       - name: Create PR comment for kesaseteli-V${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:

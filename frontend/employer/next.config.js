@@ -9,14 +9,6 @@ const { parsed: env } = require('dotenv').config({
 });
 
 const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/:path*',
-        destination: `${env.BACKEND_URL}/:path*`,
-      },
-    ];
-  },
   webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       // Fixes npm packages that depend on `fs` module
