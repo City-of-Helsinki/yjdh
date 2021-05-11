@@ -17,7 +17,6 @@
     "start:employer": "lerna run --scope  @frontend/employer --stream start",
     "release": "cross-env HUSKY_BYPASS=true lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
-    "husky:pre-push": "lerna run --concurrency 1 --stream pre-push",
     "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",

@@ -18,7 +18,7 @@ const expectedCompany: Company = {
   city: 'Vaasa',
 };
 
-fixture('Frontpage')
+fixture('Companypage')
   .page(getEmployerUiUrl('/company'))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);

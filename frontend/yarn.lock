@@ -5287,13 +5287,6 @@ eslint-config-adjunct@>=4.11.1, eslint-config-adjunct@^4.11.1:
     read-pkg-up "7.0.1"
     rimraf "^3.0.2"
 
-eslint-config-airbnb-babel@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/eslint-config-airbnb-babel/-/eslint-config-airbnb-babel-0.2.1.tgz#c470391c89ccc1dbe6b4aafd95c8749c1a8a32a4"
-  integrity sha512-HgsYEp3D635B8KX2TMZzNsCmUJWPb9wyzTVzVidbglKfp+Jl+rhkV3FKTr4vqQIlT1v5PdqxVvrCA/qMoyo1dw==
-  dependencies:
-    eslint-config-airbnb-base "^14.2.0"
-
 eslint-config-airbnb-base@>=14.2.1, eslint-config-airbnb-base@^14.2.0, eslint-config-airbnb-base@^14.2.1:
   version "14.2.1"
   resolved "https://registry.yarnpkg.com/eslint-config-airbnb-base/-/eslint-config-airbnb-base-14.2.1.tgz#8a2eb38455dc5a312550193b319cdaeef042cd1e"
@@ -5362,13 +5355,6 @@ eslint-plugin-array-func@^3.1.7:
   version "3.1.7"
   resolved "https://registry.yarnpkg.com/eslint-plugin-array-func/-/eslint-plugin-array-func-3.1.7.tgz#c47ce735eed2d9cb4129984d514898df4e0393ba"
   integrity sha512-fB5TBICjHSTGToNTbCCgR8zsngpUkoCM31EMh/M/NEAyNg90i5rUuG0dnNNBML2n0BzM0nBE3sPvo2SEWf6jlA==
-
-eslint-plugin-babel@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-5.3.1.tgz#75a2413ffbf17e7be57458301c60291f2cfbf560"
-  integrity sha512-VsQEr6NH3dj664+EyxJwO4FCYm/00JhYb3Sk3ft8o+fpKuIfQ9TaW6uVUfvwMXHcf/lsnRIoyFPsLMyiWCSL/g==
-  dependencies:
-    eslint-rule-composer "^0.3.0"
 
 eslint-plugin-chai-expect@^2.2.0:
   version "2.2.0"
@@ -5591,11 +5577,6 @@ eslint-plugin-unicorn@^31.0.0:
     reserved-words "^0.1.2"
     safe-regex "^2.1.1"
     semver "^7.3.5"
-
-eslint-rule-composer@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz#79320c927b0c5c0d3d3d2b76c8b4a488f25bbaf9"
-  integrity sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==
 
 eslint-scope@^5.0.0, eslint-scope@^5.1.0, eslint-scope@^5.1.1:
   version "5.1.1"

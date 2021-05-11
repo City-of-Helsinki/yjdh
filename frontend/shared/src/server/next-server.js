@@ -1,4 +1,3 @@
-import cors from 'cors';
 import express from 'express';
 import next from 'next';
 
@@ -12,8 +11,6 @@ const RESPONSES = {
 };
 
 let serverIsReady = false;
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 const signalReady = () => {
   serverIsReady = true;
@@ -30,7 +27,6 @@ const checkIsServerReady = (response) => {
 (async () => {
   await app.prepare();
   const server = express();
-  server.use(cors());
 
   server.get('/healthz', (req, res) => {
     checkIsServerReady(res);
