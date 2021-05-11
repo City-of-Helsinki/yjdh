@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { getBackendUrl } from 'employer/backend-api/backend-url';
 import { COMPANY_URL } from 'employer/hooks/useCompanyQuery';
-import CompanyPage from 'employer/pages/companyPage';
+import CompanyPage from 'employer/pages/company';
 import {
   createQueryClient,
   renderComponent,
@@ -37,7 +37,7 @@ const waitForPageIsLoaded = (): Promise<HTMLElement> =>
   screen.findByRole('heading', { name: /hakemus/i });
 
 const waitForShowingCompanyData = async (
-  company = expectedCompany
+  company: Company = expectedCompany
 ): Promise<void> => {
   await waitForPageIsLoaded();
   expect(screen.queryByText(company.name)).toBeInTheDocument();

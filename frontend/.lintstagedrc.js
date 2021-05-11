@@ -16,5 +16,6 @@ module.exports = {
     (changedFiles) =>
       'eslint --fix --max-warnings=0 ' +
       changedFiles.filter((file) => !cli.isPathIgnored(file)).join(' '),
+    'yarn test:staged',
   ],
 };
