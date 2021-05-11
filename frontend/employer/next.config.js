@@ -24,7 +24,7 @@ const nextConfig = {
     if (babelRule) {
       babelRule.include.push(path.resolve('../'));
     }
-    config.plugins.push(new webpack.IgnorePlugin(/\/__tests__\//));
+    config.plugins.push(new webpack.IgnorePlugin(/\/(__tests__|test)\//));
     config.module.rules.push({
       test: /\.test.tsx$/,
       loader: 'ignore-loader',
