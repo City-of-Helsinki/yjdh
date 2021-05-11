@@ -1,21 +1,14 @@
-import { AxiosError } from 'axios';
 import useAxios from 'employer/hooks/useAxios';
 import Company from 'employer/types/company';
 import { useQuery, UseQueryResult } from 'react-query';
 
-const useCompanyQuery = (): UseQueryResult<Company, AxiosError> => {
+export const COMPANY_URL = '/v1/company/';
+
+const useCompanyQuery = (): UseQueryResult<Company, Error> => {
   const axios = useAxios();
-  return useQuery<Company, Error>(
-    'company',
-    async () => {
-      const { data } = await axios.get<Company>('/v1/company/');
-      return data;
-    },
-    {
-      retry: (failureCount, error) =>
-        (error as AxiosError).response?.status === 404 && failureCount <= 3,
-      retryDelay: (retryCount) => (retryCount === 0 ? 0 : 20000),
-    }
-  );
+  return useQuery<Company, Error>('company', async () => {
+    const { data } = await axios.get<Company>(COMPANY_URL);
+    return data;
+  });
 };
 export default useCompanyQuery;

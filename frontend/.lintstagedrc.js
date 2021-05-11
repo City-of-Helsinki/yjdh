@@ -12,10 +12,9 @@ const cli = new CLIEngine({});
  */
 module.exports = {
   './**/*.{ts,tsx,js,jsx}': [
+    'prettier --write',
     (changedFiles) =>
       'eslint --fix --max-warnings=0 ' +
       changedFiles.filter((file) => !cli.isPathIgnored(file)).join(' '),
-    'yarn test:staged',
-    'prettier --write',
   ],
 };

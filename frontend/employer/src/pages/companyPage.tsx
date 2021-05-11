@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import * as React from 'react';
 import Layout from 'shared/components/Layout';
 
-const Company: NextPage = () => {
+const CompanyPage: NextPage = () => {
   const { isLoading, data: company, error, isLoadingError } = useCompanyQuery();
   if (isLoading) {
     return <span>Ladataan...</span>;
@@ -31,4 +31,4 @@ const Company: NextPage = () => {
   );
 };
 
-export default Company;
+export default CompanyPage;
