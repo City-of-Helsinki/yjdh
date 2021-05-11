@@ -2,15 +2,13 @@ import { screen } from '@testing-library/react';
 import { getBackendUrl } from 'employer/backend-api/backend-url';
 import { COMPANY_URL } from 'employer/hooks/useCompanyQuery';
 import CompanyPage from 'employer/pages/company';
-import {
-  createQueryClient,
-  renderComponent,
-} from 'employer/test/react-query-utils';
 import Company from 'employer/types/company';
 import { axe } from 'jest-axe';
 import nock from 'nock';
 import React from 'react';
 import { QueryClient } from 'react-query';
+
+import { createQueryClient, renderComponent } from './utils/react-query-utils';
 
 const expectedCompany: Company = {
   id: 'id',
