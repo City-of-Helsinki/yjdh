@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
-import { getBackendUrl } from 'employer/backend-api/backend-url';
-import { COMPANY_URL } from 'employer/hooks/useCompanyQuery';
+import endpoint from 'employer/backend-api/backend-endpoints';
+import getBackendUrl from 'employer/backend-api/backend-url';
 import CompanyPage from 'employer/pages/company';
 import Company from 'employer/types/company';
 import { axe } from 'jest-axe';
@@ -22,12 +22,12 @@ const expectedCompany: Company = {
 
 const expectToReplyOk = (): nock.Scope =>
   nock(getBackendUrl())
-    .get(COMPANY_URL)
+    .get(endpoint.COMPANY)
     .reply(200, expectedCompany, { 'Access-Control-Allow-Origin': '*' });
 
 const expectToReplyError = (times = 1): nock.Scope =>
   nock(getBackendUrl())
-    .get(COMPANY_URL)
+    .get(endpoint.COMPANY)
     .times(times)
     .replyWithError('Expected error');
 
