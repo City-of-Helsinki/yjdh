@@ -26,4 +26,5 @@ module.exports = {
     '<rootDir>/shared/test/',
   ],
   collectCoverageFrom: ['./**/*.{ts,tsx,js,jsx}'],
+  testPathIgnorePatterns : ['utils']
 };
