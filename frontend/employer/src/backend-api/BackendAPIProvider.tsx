@@ -2,9 +2,9 @@ import Axios from 'axios';
 import { getBackendUrl } from 'employer/backend-api/backend-url';
 import React from 'react';
 
-import AxiosContext from './AxiosContext';
+import BackendAPIContext from './BackendAPIContext';
 
-const AxiosProvider = ({
+const BackendAPIProvider = ({
   children,
 }: React.PropsWithChildren<unknown>): JSX.Element => {
   const axiosContext = React.useMemo(() => {
@@ -30,10 +30,10 @@ const AxiosProvider = ({
   }, []);
 
   return (
-    <AxiosContext.Provider value={axiosContext}>
+    <BackendAPIContext.Provider value={axiosContext}>
       {children}
-    </AxiosContext.Provider>
+    </BackendAPIContext.Provider>
   );
 };
 
-export default AxiosProvider;
+export default BackendAPIProvider;

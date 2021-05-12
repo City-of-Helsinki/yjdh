@@ -1,5 +1,5 @@
 // import/prefer-default-export
-import AxiosProvider from 'employer/backend-api/AxiosProvider';
+import BackendAPIProvider from 'employer/backend-api/BackendAPIProvider';
 import React from 'react';
 import {
   DefaultOptions,
@@ -38,7 +38,7 @@ export const renderComponent = (
   client: QueryClient = defaultClient
 ): RenderResult =>
   render(
-    <AxiosProvider>
+    <BackendAPIProvider>
       <QueryClientProvider client={client}>{Component}</QueryClientProvider>
-    </AxiosProvider>
+    </BackendAPIProvider>
   );
