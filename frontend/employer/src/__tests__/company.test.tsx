@@ -46,14 +46,15 @@ const waitForShowingCompanyData = async (
   expect(screen.queryByText(company.city)).toBeInTheDocument();
 };
 
-test('test for accessibility violations', async () => {
-  const { container } = renderComponent(<CompanyPage />);
-  const results = await axe(container);
-  expect(results).toHaveNoViolations();
-});
-
 describe('frontend/employer/src/pages/companyPage.tsx', () => {
   let queryClient: QueryClient;
+
+  it('should not violate accessibility', async () => {
+    const { container } = renderComponent(<CompanyPage />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
   describe('loading data', () => {
     queryClient = createQueryClient();
     beforeEach(() => {
