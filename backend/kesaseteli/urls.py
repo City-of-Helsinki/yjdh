@@ -4,6 +4,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from applications.api.v1 import views as application_views
+from companies.api.v1.views import GetCompanyView
 
 router = routers.DefaultRouter()
 router.register(r"applications", application_views.ApplicationViewSet)
@@ -11,6 +12,7 @@ router.register(r"applications", application_views.ApplicationViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
+    path("v1/company/", GetCompanyView.as_view()),
 ]
 
 
