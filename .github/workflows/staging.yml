@@ -102,7 +102,7 @@ jobs:
           K8S_SECRET_VERSION: ${{ github.sha }}
           VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-staging
           VAULT_KV_SECRET_MOUNT_POINT: staging
-          APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
+          APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           ENVIRONMENT_URL: ${{ matrix.url }}
       - name: staging deploy failure notification
