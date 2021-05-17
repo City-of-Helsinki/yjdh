@@ -40,6 +40,7 @@ env = environ.Env(
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     MOCK_FLAG=(bool, False),
+    SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_AUTHORIZATION_ENDPOINT=(str, ""),
@@ -103,6 +104,7 @@ INSTALLED_APPS = [
     # local apps
     "applications",
     "companies",
+    "oidc",
     "utils",
 ]
 
@@ -134,6 +136,7 @@ TEMPLATES = [
     }
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
 
@@ -157,6 +160,12 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 MOCK_FLAG = env.bool("MOCK_FLAG")
 
 # Authentication
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
+
+AUTHENTICATION_BACKENDS = (
+    "oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid profile"
