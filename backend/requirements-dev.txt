@@ -87,7 +87,7 @@ requests-mock==1.9.2
     # via -r requirements-dev.in
 requests==2.25.1
     # via requests-mock
-six==1.15.0
+six==1.16.0
     # via
     #   python-dateutil
     #   requests-mock
