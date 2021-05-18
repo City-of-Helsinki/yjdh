@@ -1,2 +1,4 @@
 start.js
 next.config.js
+.eslintrc.js
+jest.config.js

@@ -13,7 +13,7 @@ type Props = {
 };
 
 const EmployerIndex: NextPage<Props> = ({ posts }) => (
-  <Layout>
+  <Layout headingText="Työnantajan liittymä">
     <ul>
       {posts.map((post) => (
         <li key={post.id}>
