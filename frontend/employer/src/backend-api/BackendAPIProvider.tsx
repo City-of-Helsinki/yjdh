@@ -13,6 +13,7 @@ const BackendAPIProvider = ({
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: false,
     });
 
     axiosClient.interceptors.request.use((config) => {
