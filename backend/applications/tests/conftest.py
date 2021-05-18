@@ -18,3 +18,8 @@ def api_client():
 @pytest.fixture
 def application():
     return ApplicationFactory()
+
+
+@pytest.fixture
+def user():
+    return UserFactory()
