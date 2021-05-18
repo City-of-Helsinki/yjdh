@@ -1,4 +1,3 @@
-// import/prefer-default-export
 import BackendAPIProvider from 'employer/backend-api/BackendAPIProvider';
 import React from 'react';
 import {
