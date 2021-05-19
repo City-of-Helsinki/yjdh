@@ -157,7 +157,7 @@ jobs:
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Upload Acceptance Test results
         run: |
-          zip -r report.zip report/ > no_output 2>&1
+          zip -r report.zip frontend/report/ > no_output 2>&1
           curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
           echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
         if: always() && steps.testcafe.outcome == 'failure'
@@ -182,5 +182,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: report
-          path: report/
+          path: frontend/report/
         if: always() && steps.testcafe.outcome == 'failure'
