@@ -11,25 +11,26 @@ export const getFrontPageComponents = (t: TestController) => {
   const within = withinContext(t);
   const screen = screenContext(t);
 
+  const withinFrontPage = () =>
+    within(screen.getByRole('main'));
+
   const header = async () => {
-    const withinHeader = () =>
-      within(screen.getByRole('heading', {
-        name: /employer/i
-
-      }));
-
-    await t
-      .expect(screen.findByRole('heading', {
-        name: /employer/i
-      }))
-      .ok(await getErrorMessage(t));
 
     const selectors = {
+      header() {
+        return screen.findByRole('heading', {
+        name: /employer/i
+      })
+      }
     };
     const expectations = {
+      async isPresent() {
+        await t.expect(selectors.header().exists)
+          .ok(await getErrorMessage(t));
+      }
     };
-    const actions = {
-    };
+    const actions = {};
+    await expectations.isPresent();
     return {
       selectors,
       expectations,
