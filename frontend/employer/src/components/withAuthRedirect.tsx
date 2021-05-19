@@ -3,7 +3,9 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import isServerSide from 'shared/server/is-server-side';
 
-const DefaultLoadingFallback = (): JSX.Element => <p>Uudelleenohjataan...</p>;
+const DefaultLoadingFallback = (): React.ReactElement<unknown> => (
+  <p>Uudelleenohjataan...</p>
+);
 
 type Props<P> = {
   WrappedComponent: React.FC<P>;

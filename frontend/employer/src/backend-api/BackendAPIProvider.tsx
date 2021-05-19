@@ -13,19 +13,18 @@ const BackendAPIProvider = ({
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: false,
     });
 
-    axiosClient.interceptors.request.use((config) => {
+    axiosClient.interceptors.request.use((config) => 
       // Read token for anywhere, in this case directly from localStorage
       // eslint-disable-next-line scanjs-rules/identifier_localStorage
-      const token = localStorage.getItem('token');
+      /* const token = localStorage.getItem('token');
       if (token) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,no-param-reassign
         config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    });
+      } */
+       config
+    );
 
     return axiosClient;
   }, []);
