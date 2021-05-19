@@ -41,9 +41,6 @@ FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
-ARG LOGIN_REDIRECT_URL
-ARG LOGIN_REDIRECT_URL_FAILURE
-ARG LOGOUT_REDIRECT_URL
 
 # Use non-root user
 USER appuser
