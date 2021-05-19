@@ -15,12 +15,12 @@
     "dev:employer": "lerna run --scope @frontend/employer --stream dev",
     "start": "yarn start:employer",
     "start:employer": "lerna run --scope  @frontend/employer --stream start",
-    "release": "cross-env HUSKY_BYPASS=true lerna publish",
+    "release": "cross-env HUSKY_BYPASS=true && lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
     "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "browser-test": "testcafe \"chrome --window-size='1249,720'\" browser-tests/",
+    "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",
     "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,custom,html:report/index.html browser-tests/"
   },
   "devDependencies": {

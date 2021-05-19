@@ -7,7 +7,6 @@ import Company from '../../employer/src/types/company';
 let components: ReturnType<typeof getCompanyPageComponents>;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
-
 const expectedCompany: Company = {
   id: 'id',
   name: 'I. Haanpää Oy',
@@ -28,5 +27,5 @@ fixture('Companypage')
 
 test('company data is present', async () => {
   const companyData = await components.companyData(expectedCompany);
-  await companyData.expectations.isPresent();
+  await companyData.expectations.isCompanyDataPresent();
 });
