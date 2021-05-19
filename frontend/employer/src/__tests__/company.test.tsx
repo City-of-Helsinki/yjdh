@@ -29,7 +29,7 @@ const expectToReplyError = (times = 1): nock.Scope =>
   nock(getBackendUrl())
     .get(endpoint.COMPANY)
     .times(times)
-    .replyWithError('Expected error');
+    .replyWithError('This is a test error. Please ignore this error message.');
 
 const waitForPageIsLoaded = (): Promise<HTMLElement> =>
   screen.findByRole('heading', { name: /hakemus/i });
@@ -58,7 +58,6 @@ describe('frontend/employer/src/pages/companyPage.tsx', () => {
   describe('loading data', () => {
     queryClient = createQueryClient();
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       queryClient.clear();
     });
 

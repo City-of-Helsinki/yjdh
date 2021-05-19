@@ -3,18 +3,18 @@ import React from 'react';
 export type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
-  error: string | undefined;
+  isError: boolean;
   setAuthenticated: (value: boolean) => void;
-  setError: (value: string) => void;
+  setError: (value: boolean) => void;
 };
 
 const AuthContext = React.createContext<AuthContextType>({
   isAuthenticated: false,
   isLoading: true,
   setAuthenticated: () => {},
-  error: undefined,
+  isError: false,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setError: (value: string) => {},
+  setError: (value: boolean) => {},
 });
 
 export default AuthContext;

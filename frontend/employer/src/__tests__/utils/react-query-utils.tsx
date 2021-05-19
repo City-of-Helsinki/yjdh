@@ -1,4 +1,7 @@
+import AuthProvider from 'employer/auth/AuthProvider';
 import BackendAPIProvider from 'employer/backend-api/BackendAPIProvider';
+import { NextPage } from 'next';
+import { NextRouter } from 'next/router';
 import React from 'react';
 import {
   DefaultOptions,
@@ -34,10 +37,28 @@ export const createQueryClient = (options?: DefaultOptions): QueryClient =>
 
 export const renderComponent = (
   Component: JSX.Element,
-  client: QueryClient = defaultClient
+  client: QueryClient = defaultClient,
+  router: Partial<NextRouter> = {}
 ): RenderResult =>
   render(
     <BackendAPIProvider>
       <QueryClientProvider client={client}>{Component}</QueryClientProvider>
-    </BackendAPIProvider>
+    </BackendAPIProvider>,
+    router
+  );
+
+export const renderPage = (
+  Page: NextPage,
+  client: QueryClient = defaultClient,
+  router: Partial<NextRouter> = {}
+): RenderResult =>
+  render(
+    <BackendAPIProvider>
+      <QueryClientProvider client={client}>
+        <AuthProvider>
+          <Page />
+        </AuthProvider>
+      </QueryClientProvider>
+    </BackendAPIProvider>,
+    router
   );

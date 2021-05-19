@@ -17,26 +17,15 @@ export const escKeyPressHelper = (): boolean =>
 
 const Wrapper: React.FC = ({ children }) => <>{children}</>;
 
-const customRender: CustomRender = (ui, { path = '/', query = {} } = {}) => {
-  jest.spyOn(router, 'useRouter').mockReturnValue({
-    query,
-    pathname: path,
-    asPath: path,
-    route: '',
-    basePath: path,
-  } as NextRouter);
+const customRender: CustomRender = (ui, routerOverride) => {
+  jest.spyOn(router, 'useRouter').mockReturnValue(routerOverride as NextRouter);
 
   const utils = render(ui, { wrapper: Wrapper });
   return { ...utils };
 };
 
-export type CustomRenderOptions = {
-  path?: string;
-  query?: Record<string, unknown>;
-};
-
 type CustomRender = {
-  (ui: React.ReactElement, options?: CustomRenderOptions): CustomRenderResult;
+  (ui: React.ReactElement, router?: Partial<NextRouter>): CustomRenderResult;
 };
 
 type CustomRenderResult = RenderResult;
