@@ -1,8 +1,9 @@
+import backendEndpoint from 'employer/backend-api/backend-endpoints';
 import getBackendUrl from 'employer/backend-api/backend-url';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-const loginUrl = `${getBackendUrl()}/oidc/authenticate/`;
+const loginUrl = `${getBackendUrl()}${backendEndpoint.LOGIN}`;
 
 const useLogin = (): ((event: React.SyntheticEvent) => Promise<boolean>) => {
   const router = useRouter();
