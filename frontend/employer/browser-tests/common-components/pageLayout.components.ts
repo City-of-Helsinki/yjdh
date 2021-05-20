@@ -1,7 +1,12 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, testing-library/await-async-query */
 import TestController from 'testcafe';
 
-import { getErrorMessage, screenContext, withinContext } from '../../shared/browser-tests/utils/testcafe.utils';
+import {
+  getErrorMessage,
+  screenContext,
+  withinContext,
+} from '../../../shared/browser-tests/utils/testcafe.utils';
 
 export const getPageLayoutComponents = (t: TestController) => {
   const within = withinContext(t);
@@ -22,6 +27,7 @@ export const getPageLayoutComponents = (t: TestController) => {
     };
     const expectations = {
       async isPresent() {
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         await t.expect(selectors.header().exists).ok(await getErrorMessage(t));
       },
     };

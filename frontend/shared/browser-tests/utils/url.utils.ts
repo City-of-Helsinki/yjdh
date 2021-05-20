@@ -1,7 +1,7 @@
 import TestController, { ClientFunction } from 'testcafe';
 
 import { getSharedComponents } from '../shared.components';
-import { getAuthorizationEndpointUrl, getEmployerUiUrl } from './settings';
+import { getEmployerUiUrl, SuomiFiAuthorizationUrl } from './settings';
 import { getErrorMessage } from './testcafe.utils';
 
 const getCurrentPathname = ClientFunction(() => document.location.pathname);
@@ -24,7 +24,7 @@ export const getUrlUtils = (t: TestController) => {
       await t.expect(getCurrentPathname()).eql(`/`, await getErrorMessage(t));
     },
     async urlChangedToAuthorizationEndpoint() {
-      await t.expect(getCurrentUrl()).contains(getAuthorizationEndpointUrl());
+      await t.expect(getCurrentUrl()).contains(SuomiFiAuthorizationUrl);
     },
   };
   return {

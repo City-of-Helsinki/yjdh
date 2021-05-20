@@ -1,4 +1,4 @@
-const getUrl = (baseUrl = '', path: string): string =>
+const getUrl = (baseUrl = '', path?: string): string =>
   `${baseUrl}${path?.startsWith('/') ? path : path ? `/${path}` : ''}`;
 
 export const getEmployerUiUrl = (path = ''): string =>
@@ -7,5 +7,4 @@ export const getEmployerUiUrl = (path = ''): string =>
 export const getHandlerUiUrl = (path = ''): string =>
   getUrl(process.env.HANDLER_URL, path);
 
-export const getAuthorizationEndpointUrl = (path = ''): string =>
-  getUrl(process.env.OIDC_OP_AUTHORIZATION_ENDPOINT, path);
+export const SuomiFiAuthorizationUrl = 'https://testi.apro.tunnistus.fi/';

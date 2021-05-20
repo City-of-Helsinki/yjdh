@@ -30,7 +30,6 @@ env:
   EMPLOYER_URL: https://kesaseteli-employer-staging.${{ secrets.BASE_DOMAIN_STAGING }}
   HANDLER_URL: https://kesaseteli-hendler-staging.${{ env.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://kesaseteli-backend-staging.${{ secrets.BASE_DOMAIN_STAGING }}
-  OIDC_OP_AUTHORIZATION_ENDPOINT: https://tunnistus.dev.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect/auth
 jobs:
   build:
     if: github.event_name == 'push' || github.ref == 'refs/heads/main'
