@@ -1,8 +1,8 @@
 import backendEndpoint from 'employer/backend-api/backend-endpoints';
 import handleResponse from 'employer/backend-api/handle-response';
 import useBackendAPI from 'employer/hooks/useBackendAPI';
-import User from 'employer/types/user';
 import { useQuery, UseQueryResult } from 'react-query';
+import User from 'shared/types/user';
 
 const useUserQuery = (): UseQueryResult<User, Error> => {
   const { axios } = useBackendAPI();

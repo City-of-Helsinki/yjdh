@@ -20,7 +20,8 @@ const App = ({ Component, pageProps }: AppProps): React.ReactNode => (
       <AuthProvider>
         <Component {...pageProps} />
       </AuthProvider>
-      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
+      {process.env.NODE_ENV === 'development' &&
+        process.env.TEST_CAFE !== 'true' && <ReactQueryDevtools />}
     </QueryClientProvider>
   </BackendAPIProvider>
 );

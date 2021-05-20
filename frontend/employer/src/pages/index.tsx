@@ -1,5 +1,5 @@
 import withAuth from 'employer/components/withAuth';
-import useLogout from 'employer/hooks/useLogout';
+import useLogoutQuery from 'employer/hooks/useLogoutQuery';
 import useUserQuery from 'employer/hooks/useUserQuery';
 import { Button } from 'hds-react';
 import { NextPage } from 'next';
@@ -7,15 +7,34 @@ import * as React from 'react';
 import Layout from 'shared/components/Layout';
 
 const EmployerIndex: NextPage = () => {
-  const { data: user, isLoading, error: loadingUserError } = useUserQuery();
-  const logout = useLogout();
+  const {
+    data: user,
+    isLoading: isLoadingUser,
+    error: loadingUserError,
+  } = useUserQuery();
+  const {
+    mutate: logout,
+    isLoading: isLoadingLogout,
+    error: logoutError,
+  } = useLogoutQuery();
+  const isLoading = isLoadingUser ?? isLoadingLogout;
+  const errorMessage = !user
+    ? 'Käyttäjää ei löytynyt.'
+    : (loadingUserError ?? logoutError)?.message;
+
+  const onLogout = (event: React.SyntheticEvent): void => {
+    event.preventDefault();
+    logout();
+  };
+
   return (
     <Layout headingText="Työnantajan liittymä">
-      {isLoading ? 'Ladataan...' : `Hello ${JSON.stringify(user)}!`}
-      {loadingUserError && `Tapahtui virhe: ${loadingUserError.message}`}
-      <Button onClick={logout} disabled={isLoading}>
+      {isLoading && <p>Ladataan...</p>}
+      {user && <p>Tervetuloa {user.name}!</p>}
+      <Button onClick={onLogout} disabled={isLoading}>
         Kirjaudu ulos
       </Button>
+      {errorMessage && <p>Tapahtui virhe: {errorMessage}</p>}
     </Layout>
   );
 };

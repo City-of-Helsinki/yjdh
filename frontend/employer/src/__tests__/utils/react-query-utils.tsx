@@ -1,5 +1,7 @@
+import Axios from 'axios';
 import AuthProvider from 'employer/auth/AuthProvider';
-import BackendAPIProvider from 'employer/backend-api/BackendAPIProvider';
+import getBackendUrl from 'employer/backend-api/backend-url';
+import BackendAPIContext from 'employer/backend-api/BackendAPIContext';
 import { NextPage } from 'next';
 import { NextRouter } from 'next/router';
 import React from 'react';
@@ -35,15 +37,23 @@ export const createQueryClient = (options?: DefaultOptions): QueryClient =>
     },
   });
 
+const axiosContext = Axios.create({
+  baseURL: getBackendUrl(),
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: false,
+});
+
 export const renderComponent = (
   Component: JSX.Element,
   client: QueryClient = defaultClient,
   router: Partial<NextRouter> = {}
 ): RenderResult =>
   render(
-    <BackendAPIProvider>
+    <BackendAPIContext.Provider value={axiosContext}>
       <QueryClientProvider client={client}>{Component}</QueryClientProvider>
-    </BackendAPIProvider>,
+    </BackendAPIContext.Provider>,
     router
   );
 
@@ -53,12 +63,12 @@ export const renderPage = (
   router: Partial<NextRouter> = {}
 ): RenderResult =>
   render(
-    <BackendAPIProvider>
+    <BackendAPIContext.Provider value={axiosContext}>
       <QueryClientProvider client={client}>
         <AuthProvider>
           <Page />
         </AuthProvider>
       </QueryClientProvider>
-    </BackendAPIProvider>,
+    </BackendAPIContext.Provider>,
     router
   );
