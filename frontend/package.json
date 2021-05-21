@@ -36,6 +36,7 @@
     "@testing-library/user-event": "^13.1.5",
     "@types/jest": "^26.0.23",
     "@types/jest-axe": "^3.5.1",
+    "@types/pretty": "^2.0.0",
     "@types/slack-node": "^0.1.3",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
