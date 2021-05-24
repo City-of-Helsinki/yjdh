@@ -13,7 +13,7 @@ module.exports = {
     ...packages.reduce(
       (acc, package) => ({
         ...acc,
-        [`${package}\/(.*)$`]:
+        [`^${package}\/(.*)$`]:
           `<rootDir>/${package}/src/$1`,
       }),
       {},
