@@ -1,5 +1,6 @@
-import { getEmployerUiUrl } from '../../../shared/browser-tests/utils/settings';
-import { clearDataToPrintOnFailure } from '../../../shared/browser-tests/utils/testcafe.utils';
+import { getEmployerUiUrl } from '@frontend/shared/browser-tests/utils/settings';
+import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+
 import Company from '../../src/types/company';
 import { getCompanyPageComponents } from './companyPage.components';
 

@@ -1,4 +1,4 @@
-import useAuth from 'employer/hooks/useAuth';
+import useAuth from 'kesaseteli/employer/hooks/useAuth';
 import { useRouter } from 'next/router';
 import React from 'react';
 import isServerSide from 'shared/server/is-server-side';

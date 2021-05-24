@@ -1,5 +1,5 @@
-import backendEndpoint from 'employer/backend-api/backend-endpoints';
-import getBackendUrl from 'employer/backend-api/backend-url';
+import backendEndpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
+import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
 import { useRouter } from 'next/router';
 import React from 'react';
 

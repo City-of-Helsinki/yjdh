@@ -1,7 +1,7 @@
 import Axios from 'axios';
-import AuthProvider from 'employer/auth/AuthProvider';
-import getBackendUrl from 'employer/backend-api/backend-url';
-import BackendAPIContext from 'employer/backend-api/BackendAPIContext';
+import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
+import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
+import BackendAPIContext from 'kesaseteli/employer/backend-api/BackendAPIContext';
 import { NextPage } from 'next';
 import { NextRouter } from 'next/router';
 import React from 'react';

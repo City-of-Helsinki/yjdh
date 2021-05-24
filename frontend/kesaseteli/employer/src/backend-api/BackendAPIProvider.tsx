@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import getBackendUrl from 'employer/backend-api/backend-url';
+import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
 import React from 'react';
 
 import BackendAPIContext from './BackendAPIContext';

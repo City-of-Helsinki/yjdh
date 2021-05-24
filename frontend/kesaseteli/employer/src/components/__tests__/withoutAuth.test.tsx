@@ -2,17 +2,17 @@ import { screen, waitFor } from '@testing-library/react';
 import {
   expectAuthorized,
   expectUnauthorized,
-} from 'employer/__tests__/utils/auth-utils';
+} from 'kesaseteli/employer/__tests__/utils/auth-utils';
 import {
   createQueryClient,
   renderPage,
-} from 'employer/__tests__/utils/react-query-utils';
-import withoutAuth from 'employer/components/withoutAuth';
+} from 'kesaseteli/employer/__tests__/utils/react-query-utils';
+import withoutAuth from 'kesaseteli/employer/components/withoutAuth';
 import React from 'react';
 
 const Component = (): JSX.Element => <h1>Hello world!</h1>;
 
-describe('frontend/employer/src/components/withoutAuth.tsx', () => {
+describe('frontend/kesaseteli/employer/src/components/withoutAuth.tsx', () => {
   const queryClient = createQueryClient();
   beforeEach(() => {
     queryClient.clear();

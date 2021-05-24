@@ -5,7 +5,7 @@ const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
 
 const { parsed: env } = require('dotenv').config({
-  path: '../../.env',
+  path: '../../../.env',
 });
 
 const nextConfig = {
@@ -22,7 +22,7 @@ const nextConfig = {
         : rule.use.loader === 'next-babel-loader'
     );
     if (babelRule) {
-      babelRule.include.push(path.resolve('../'));
+      babelRule.include.push(path.resolve('../../'));
     }
     config.plugins.push(new webpack.IgnorePlugin(/\/(__tests__|test)\//));
     config.module.rules.push({
@@ -38,7 +38,7 @@ const plugins = [
   [withTranspileModules, { transpileModules: ['@frontend'] }],
   [
     withCustomBabelConfig,
-    { babelConfigFile: path.resolve('../babel.config.js') },
+    { babelConfigFile: path.resolve('../../babel.config.js') },
   ],
 ];
 

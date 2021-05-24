@@ -14,7 +14,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
-COPY --chown=appuser:appuser employer/package.json employer/package.json
+COPY --chown=appuser:appuser kesaseteli/employer/package.json kesaseteli/employer/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 
@@ -62,15 +62,15 @@ USER appuser
 WORKDIR /app
 
 # Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser app/employer/.next employer/.next
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/.next kesaseteli/employer/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/employer/next.config.js employer/
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.config.js kesaseteli/employer/
 
 # Copy package.json and yarn.lock files
 # TODO: add public folder when we have static assets
 COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/employer/package.json app/employer/start.js employer/
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/package.json app/kesaseteli/employer/start.js kesaseteli/employer/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/

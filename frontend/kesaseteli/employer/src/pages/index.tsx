@@ -1,7 +1,7 @@
-import withAuth from 'employer/components/withAuth';
-import useLogoutQuery from 'employer/hooks/useLogoutQuery';
-import useUserQuery from 'employer/hooks/useUserQuery';
 import { Button } from 'hds-react';
+import withAuth from 'kesaseteli/employer/components/withAuth';
+import useLogoutQuery from 'kesaseteli/employer/hooks/useLogoutQuery';
+import useUserQuery from 'kesaseteli/employer/hooks/useUserQuery';
 import { NextPage } from 'next';
 import * as React from 'react';
 import Layout from 'shared/components/Layout';

@@ -33,10 +33,10 @@ services:
     employer:
         build:
             context: ./frontend
-            dockerfile: employer/Dockerfile
+            dockerfile: kesaseteli/employer/Dockerfile
             target: development
         volumes:
-            - ./frontend/employer:/app/employer
+            - ./frontend/kesaseteli/employer:/app/employer
             - ./frontend/shared:/app/shared
             - /app/node_modules
             - /app/.next

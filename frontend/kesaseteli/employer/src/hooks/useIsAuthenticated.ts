@@ -1,4 +1,4 @@
-import useAuthentication from 'employer/hooks/useAuth';
+import useAuthentication from 'kesaseteli/employer/hooks/useAuth';
 
 const useIsAuthenticated = (): boolean => {
   const client = useAuthentication();

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "NODE_ENV=production node start.js",
     "lint": "eslint --ext js,ts,tsx src",
-    "pre-commit": "lint-staged -c ../.lintstagedrc.js",
+    "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",

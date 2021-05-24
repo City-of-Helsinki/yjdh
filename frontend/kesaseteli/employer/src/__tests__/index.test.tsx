@@ -1,20 +1,20 @@
 import { screen, waitFor } from '@testing-library/react';
+import { axe } from 'jest-axe';
 import {
   authenticatedUser,
   expectAuthorized,
   expectUnauthorized,
-} from 'employer/__tests__/utils/auth-utils';
+} from 'kesaseteli/employer/__tests__/utils/auth-utils';
 import {
   createQueryClient,
   renderPage,
-} from 'employer/__tests__/utils/react-query-utils';
-import withAuth from 'employer/components/withAuth';
-import EmployerIndex from 'employer/pages/index';
-import { axe } from 'jest-axe';
+} from 'kesaseteli/employer/__tests__/utils/react-query-utils';
+import withAuth from 'kesaseteli/employer/components/withAuth';
+import EmployerIndex from 'kesaseteli/employer/pages/index';
 import React from 'react';
 import { render } from 'test-utils';
 
-describe('frontend/employer/src/pages/index.tsx', () => {
+describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   const queryClient = createQueryClient();
   beforeEach(() => {
     queryClient.clear();

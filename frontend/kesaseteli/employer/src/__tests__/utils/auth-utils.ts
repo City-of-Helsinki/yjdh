@@ -1,6 +1,6 @@
-import endpoint from 'employer/backend-api/backend-endpoints';
-import getBackendUrl from 'employer/backend-api/backend-url';
 import faker from 'faker';
+import endpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
+import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
 import nock from 'nock';
 import User from 'shared/types/user';
 

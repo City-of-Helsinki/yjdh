@@ -1,4 +1,4 @@
-import useCompanyQuery from 'employer/hooks/useCompanyQuery';
+import useCompanyQuery from 'kesaseteli/employer/hooks/useCompanyQuery';
 import { NextPage } from 'next';
 import * as React from 'react';
 import Layout from 'shared/components/Layout';

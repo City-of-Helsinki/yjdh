@@ -44,7 +44,7 @@ jobs:
             port: 8000
           - service: employer
             context: ./frontend
-            dockerfile: ./frontend/employer/Dockerfile
+            dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             port: 3000
     runs-on: ubuntu-latest
     name: Build
@@ -76,7 +76,7 @@ jobs:
             database: true
           - service: employer
             context: frontend
-            dockerfile: ./frontend/employer/Dockerfile
+            dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             database: false
     runs-on: ubuntu-latest
     needs: build

@@ -1,7 +1,7 @@
-import backendEndpoint from 'employer/backend-api/backend-endpoints';
-import handleResponse from 'employer/backend-api/handle-response';
-import useBackendAPI from 'employer/hooks/useBackendAPI';
-import Company from 'employer/types/company';
+import backendEndpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
+import handleResponse from 'kesaseteli/employer/backend-api/handle-response';
+import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
+import Company from 'kesaseteli/employer/types/company';
 import { useQuery, UseQueryResult } from 'react-query';
 
 const useCompanyQuery = (): UseQueryResult<Company, Error> => {

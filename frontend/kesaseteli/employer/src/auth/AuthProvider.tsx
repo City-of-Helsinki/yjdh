@@ -1,4 +1,4 @@
-import useUserQuery from 'employer/hooks/useUserQuery';
+import useUserQuery from 'kesaseteli/employer/hooks/useUserQuery';
 import React from 'react';
 
 import AuthContext from './AuthContext';

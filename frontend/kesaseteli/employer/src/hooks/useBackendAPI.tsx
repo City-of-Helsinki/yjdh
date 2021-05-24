@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import BackendAPIContext from 'employer/backend-api/BackendAPIContext';
+import BackendAPIContext from 'kesaseteli/employer/backend-api/BackendAPIContext';
 import React from 'react';
 
 const useBackendAPI = (): { axios: AxiosInstance } => {

@@ -1,12 +1,11 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type, testing-library/await-async-query */
-import TestController from 'testcafe';
-
 import {
   getErrorMessage,
   screenContext,
   withinContext,
-} from '../../../shared/browser-tests/utils/testcafe.utils';
+} from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import TestController from 'testcafe';
 
 export const getPageLayoutComponents = (t: TestController) => {
   const within = withinContext(t);

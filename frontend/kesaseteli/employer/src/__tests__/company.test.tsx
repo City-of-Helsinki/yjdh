@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
-import endpoint from 'employer/backend-api/backend-endpoints';
-import getBackendUrl from 'employer/backend-api/backend-url';
-import CompanyPage from 'employer/pages/company';
-import Company from 'employer/types/company';
 import { axe } from 'jest-axe';
+import endpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
+import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
+import CompanyPage from 'kesaseteli/employer/pages/company';
+import Company from 'kesaseteli/employer/types/company';
 import nock from 'nock';
 import React from 'react';
 import { QueryClient } from 'react-query';
@@ -46,7 +46,7 @@ const waitForShowingCompanyData = async (
   expect(screen.queryByText(company.city)).toBeInTheDocument();
 };
 
-describe('frontend/employer/src/pages/companyPage.tsx', () => {
+describe('frontend/kesaseteli/employer/src/pages/companyPage.tsx', () => {
   let queryClient: QueryClient;
 
   it('should not violate accessibility', async () => {

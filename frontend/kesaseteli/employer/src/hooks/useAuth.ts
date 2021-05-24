@@ -1,4 +1,6 @@
-import AuthContext, { AuthContextType } from 'employer/auth/AuthContext';
+import AuthContext, {
+  AuthContextType,
+} from 'kesaseteli/employer/auth/AuthContext';
 import React from 'react';
 
 const useAuth = (): AuthContextType => {

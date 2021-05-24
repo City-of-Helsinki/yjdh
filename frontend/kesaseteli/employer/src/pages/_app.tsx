@@ -1,5 +1,5 @@
-import AuthProvider from 'employer/auth/AuthProvider';
-import BackendAPIProvider from 'employer/backend-api/BackendAPIProvider';
+import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
+import BackendAPIProvider from 'kesaseteli/employer/backend-api/BackendAPIProvider';
 import { AppProps } from 'next/app';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
