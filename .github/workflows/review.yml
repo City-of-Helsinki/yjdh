@@ -27,21 +27,21 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 400Mi
-  EMPLOYER_URL: https://yjdh-kesaseteli-employer-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  HANDLER_URL: https://yjdh-kesaseteli-hendler-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  NEXT_PUBLIC_BACKEND_URL: https://yjdh-kesaseteli-backend-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  EMPLOYER_URL: https://${{ github.event.repository.name }}-kesaseteli-employer-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  HANDLER_URL: https://${{ github.event.repository.name }}-kesaseteli-hendler-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  NEXT_PUBLIC_BACKEND_URL: https://${{ github.event.repository.name }}-kesaseteli-backend-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'backend', 'employer' ]
+        service: [ 'kesaseteli-backend', 'kesaseteli-employer' ]
         include:
-          - service: backend
+          - service: kesaseteli-backend
             context: ./backend
             dockerfile: ./backend/Dockerfile
             port: 8000
-          - service: employer
+          - service: kesaseteli-employer
             context: ./frontend
             dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             port: 3000
@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'backend', 'employer' ]
+        service: [ 'kesaseteli-backend', 'kesaseteli-backend' ]
         include:
           - service: kesaseteli-backend
             context: backend
@@ -92,7 +92,7 @@ jobs:
           POSTGRES_IMAGE: "docker.io/andersinnovations/postgis:11-bitnami"
       - name: Service with ingress
         run: |
-          echo "ENVIRONMENT_URL=https://yjdh-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT_URL=https://${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Deploy
         uses: andersinno/kolga-deploy-action@v2
         env:
@@ -146,7 +146,7 @@ jobs:
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Service with ingress
         run: |
-          echo "ENVIRONMENT_URL=https://yjdh-kesaseteli-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT_URL=https://${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
         run: yarn browser-test:${{ matrix.service }}:ci

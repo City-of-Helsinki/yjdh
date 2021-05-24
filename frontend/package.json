@@ -20,8 +20,8 @@
     "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "browser-test:employer": "lerna run --scope @frontend/employer --stream browser-test",
-    "browser-test:employer:ci": "lerna run --stream browser-test:ci"
+    "browser-test:kesaseteli-employer": "lerna run --scope @frontend/employer --stream browser-test",
+    "browser-test:kesaseteli-employer:ci": "lerna run --stream browser-test:ci"
   },
   "devDependencies": {
     "@axe-core/react": "^4.1.1",
