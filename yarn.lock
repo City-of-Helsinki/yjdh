@@ -6,3 +6,8 @@ husky@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/husky/-/husky-6.0.0.tgz#810f11869adf51604c32ea577edbc377d7f9319e"
   integrity sha512-SQS2gDTB7tBN486QSoKPKQItZw97BMOd+Kdb6ghfpBc0yXyzrddI0oDV5MkDAbuB4X2mO3/nj60TRMcYxwzZeQ==
+
+yarn-audit-ci@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/yarn-audit-ci/-/yarn-audit-ci-1.2.0.tgz#bed9baf7d9d661d30e2ffafef685bf7638a9147e"
+  integrity sha512-6FIqZP0rFNIW29VyQmKZ7RleFLbMyH4VlY6MyfKDJUiCgdchj/paf7W5Ue1sTcWy16ex/dTVNadEnfSQAK7uFA==
