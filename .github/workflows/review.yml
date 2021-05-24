@@ -69,12 +69,10 @@ jobs:
             context: backend
             dockerfile: ./backend/Dockerfile
             database: true
-            port: 8000
           - service: kesaseteli-employer
             context: frontend
             dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             database: false
-            port: 3000
     runs-on: ubuntu-latest
     needs: build
     name: Review
@@ -101,11 +99,6 @@ jobs:
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ github.event.repository.name }}-${{ matrix.service }}
           K8S_SECRET_VERSION: ${{ github.sha }}
-          VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_REVIEW }}
-          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-          VAULT_KV_VERSION: "2"
-          VAULT_JWT_AUTH_PATH: kesaseteli-${{ matrix.service }}-review
-          VAULT_KV_SECRET_MOUNT_POINT: review
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
       - name: Create PR comment for ${{ matrix.service }}
