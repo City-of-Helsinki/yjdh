@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'kesaseteli-backend', 'kesaseteli-backend' ]
+        service: [ 'kesaseteli-backend', 'kesaseteli-employer' ]
         include:
           - service: kesaseteli-backend
             context: backend
