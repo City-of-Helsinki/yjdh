@@ -9,7 +9,9 @@
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../.lintstagedrc.js",
     "test": "jest",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests"
+    "test:staged": "yarn test --watchAll=false --findRelatedTests",
+    "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",
+    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,html:report/index.html testcafe.config.js browser-tests/"
   },
   "dependencies": {
     "@frontend/shared": "*",
@@ -21,6 +23,7 @@
     "dotenv": "^9.0.0",
     "esm": "^3.2.25",
     "graphql": "^15.5.0",
+    "hds-react": "^1.0.0",
     "next": "^10.2.0",
     "next-compose-plugins": "^2.2.0",
     "next-plugin-custom-babel-config": "^1.0.2",
@@ -33,6 +36,8 @@
     "typescript": "^3.2.2"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1"
+    "@types/faker": "^5.5.5",
+    "eslint-config-adjunct": "^4.11.1",
+    "faker": "^5.5.3"
   }
 }
