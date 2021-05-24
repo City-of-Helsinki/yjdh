@@ -101,10 +101,9 @@ jobs:
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ github.event.repository.name }}-${{ matrix.service }}
           K8S_SECRET_VERSION: ${{ github.sha }}
-          SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
-      - name: Create PR comment for kesaseteli-V${{ matrix.service }}
+      - name: Create PR comment for ${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
