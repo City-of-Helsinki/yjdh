@@ -36,8 +36,6 @@
     "typescript": "^3.2.2"
   },
   "devDependencies": {
-    "@types/faker": "^5.5.5",
-    "eslint-config-adjunct": "^4.11.1",
-    "faker": "^5.5.3"
+    "eslint-config-adjunct": "^4.11.1"
   }
 }

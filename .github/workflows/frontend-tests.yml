@@ -32,14 +32,14 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
+      - name: Run audit
+        run: yarn audit
       - name: Run linter
         run: yarn lint
       - name: Run tests
         run: yarn test
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-      - name: Run audit
-        run: yarn audit
   build:
     name: Build
     runs-on: ubuntu-latest

@@ -17,7 +17,7 @@
     "start": "yarn start:employer",
     "start:employer": "lerna run --scope  @frontend/employer --stream start",
     "release": "cross-env HUSKY_BYPASS=true && lerna publish",
-    "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
+    "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit && yarn audit -- --fix",
     "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
@@ -58,7 +58,7 @@
     "eslint-plugin-jest-dom": "^3.8.1",
     "eslint-plugin-json": "^3.0.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-markdown": "^2.0.1",
+    "eslint-plugin-markdown": "^2.1.0",
     "eslint-plugin-no-constructor-bind": "^2.0.4",
     "eslint-plugin-no-secrets": "^0.8.9",
     "eslint-plugin-no-unsanitized": "^3.1.5",
@@ -89,6 +89,12 @@
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4",
-    "yarn-audit-ci": "^1.2.0"
+    "yarn-audit-ci": "^1.2.0",
+    "@types/faker": "^5.5.5",
+    "faker": "^5.5.3"
+  },
+  "resolutions": {
+    "trim": "^0.0.3",
+    "node-fetch": "^2.6.1"
   }
 }
