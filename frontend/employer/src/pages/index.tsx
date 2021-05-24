@@ -1,42 +1,37 @@
-import withAuth from 'employer/components/withAuth';
-import useLogoutQuery from 'employer/hooks/useLogoutQuery';
-import useUserQuery from 'employer/hooks/useUserQuery';
-import { Button } from 'hds-react';
 import { NextPage } from 'next';
+import Link from 'next/link';
 import * as React from 'react';
 import Layout from 'shared/components/Layout';
 
-const EmployerIndex: NextPage = () => {
-  const {
-    data: user,
-    isLoading: isLoadingUser,
-    error: loadingUserError,
-  } = useUserQuery();
-  const {
-    mutate: logout,
-    isLoading: isLoadingLogout,
-    error: logoutError,
-  } = useLogoutQuery();
-  const isLoading = isLoadingUser ?? isLoadingLogout;
-  const errorMessage = !user
-    ? 'Käyttäjää ei löytynyt.'
-    : (loadingUserError ?? logoutError)?.message;
-
-  const onLogout = (event: React.SyntheticEvent): void => {
-    event.preventDefault();
-    logout();
-  };
-
-  return (
-    <Layout headingText="Työnantajan liittymä">
-      {isLoading && <p>Ladataan...</p>}
-      {user && <p>Tervetuloa {user.name}!</p>}
-      <Button onClick={onLogout} disabled={isLoading}>
-        Kirjaudu ulos
-      </Button>
-      {errorMessage && <p>Tapahtui virhe: {errorMessage}</p>}
-    </Layout>
-  );
+type Application = {
+  id: number;
+  title: string;
 };
 
-export default withAuth(EmployerIndex);
+type Props = {
+  posts: Application[];
+};
+
+const EmployerIndex: NextPage<Props> = ({ posts }) => (
+  <Layout headingText="Työnantajan liittymä">
+    <ul>
+      {posts.map((post) => (
+        <li key={post.id}>
+          <Link passHref href={`/${post.id}`}>
+            <a>{post.title}</a>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </Layout>
+);
+
+EmployerIndex.getInitialProps = async () => {
+  const posts = [
+    { id: 1, title: 'hakemus 1' },
+    { id: 2, title: 'hakemus 2' },
+  ];
+  return { posts };
+};
+
+export default EmployerIndex;

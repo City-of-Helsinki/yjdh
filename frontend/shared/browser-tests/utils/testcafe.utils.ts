@@ -2,43 +2,42 @@ import { screen, within } from '@testing-library/testcafe';
 import pretty from 'pretty';
 import TestController, { ClientFunction } from 'testcafe';
 
-export const setDataToPrintOnFailure = <V>(
+export const setDataToPrintOnFailure = (
   t: TestController,
   key: string,
-  value: V
+  value: unknown
 ): void => {
   // eslint-disable-next-line no-param-reassign
   t.ctx[key] = value;
 };
 
-const injectCallback = (
-  obj: typeof screen | typeof within,
-  callback: (...args: unknown[]) => void
-): typeof obj =>
+const injectCallback = <
+  Key extends string,
+  Obj extends Record<Key, (...args) => Selector | SelectorPromise>
+  >(
+  obj: Obj,
+  callback: (...args) => void
+): Obj =>
   Object.keys(obj)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    .filter((key: Key) => typeof obj[key] === 'function')
+    .filter((key) => typeof obj[key] === 'function')
     // eslint-disable-next-line unicorn/no-array-reduce
     .reduce(
       (acc, key) => ({
         ...acc,
-        [key]: (...params: unknown[]) => {
+        [key]: (...params) => {
           callback(key, params);
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return
           return obj[key](...params);
         },
       }),
       {}
-    ) as typeof obj;
+    ) as Obj;
+
 
 export const screenContext = (t: TestController): typeof screen =>
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  injectCallback(screen, (key: string, matcher: unknown, options: unknown) => {
+  injectCallback(screen, (key: string, params) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const [matcher, options] = params;
     setDataToPrintOnFailure(
       t,
       key?.startsWith('get') ? 'within' : 'latestSearch',
@@ -53,16 +52,17 @@ export const screenContext = (t: TestController): typeof screen =>
   });
 
 export const withinContext = (t: TestController): typeof within => (selector) =>
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  injectCallback(within(selector), (key, params: unknown[]) => {
+  injectCallback(within(selector), (key, params) => {
     setDataToPrintOnFailure(t, 'latestSearch', {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       ...(t.ctx.within && { within: t.ctx.within }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       key,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
       params: params?.length === 1 ? params[0] : params,
     });
   });
+
 
 const getHtml = ClientFunction(
   // eslint-disable-next-line testing-library/no-node-access
@@ -72,20 +72,19 @@ const getHtml = ClientFunction(
 export const getErrorMessage = async (t: TestController): Promise<string> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
   const testIdSelector = t.ctx.within?.key?.match(/testid/gi)
-    ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions
-      `[data-testid="${t.ctx.within.matcher}"]`
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions
+    ? `[data-testid="${t.ctx.within.matcher}"]`
     : 'body';
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
-  const componentHtml = pretty((await getHtml(testIdSelector)) ?? '') as string;
-  return `Expectation failed on test context:
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const componentHtml = pretty(await getHtml(testIdSelector)) as string;
+  return `Expectation failed on test context: 
   ------------------------------------------------
   ${JSON.stringify(t.ctx, null, '\t')}
   ------------------------------------------------
   Failure occured within '${testIdSelector}' component:
   ------------------------------------------------
   ${componentHtml}
-  ------------------------------------------------
+  ------------------------------------------------  
   `;
 };
 

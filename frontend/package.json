@@ -15,13 +15,13 @@
     "dev:employer": "lerna run --scope @frontend/employer --stream dev",
     "start": "yarn start:employer",
     "start:employer": "lerna run --scope  @frontend/employer --stream start",
-    "release": "cross-env HUSKY_BYPASS=true && lerna publish",
+    "release": "cross-env HUSKY_BYPASS=true lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
     "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "browser-test:employer": "lerna run --scope @frontend/employer --stream browser-test",
-    "browser-test:employer:ci": "lerna run --stream browser-test:ci"
+    "browser-test": "testcafe \"chrome --window-size='1249,720'\" browser-tests/",
+    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,custom,html:report/index.html browser-tests/"
   },
   "devDependencies": {
     "@axe-core/react": "^4.1.1",
@@ -36,7 +36,6 @@
     "@testing-library/user-event": "^13.1.5",
     "@types/jest": "^26.0.23",
     "@types/jest-axe": "^3.5.1",
-    "@types/pretty": "^2.0.0",
     "@types/slack-node": "^0.1.3",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",

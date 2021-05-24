@@ -1,9 +1,12 @@
-import { getEmployerUiUrl } from '../../../shared/browser-tests/utils/settings';
-import { clearDataToPrintOnFailure } from '../../../shared/browser-tests/utils/testcafe.utils';
-import Company from '../../src/types/company';
+import { getEmployerUiUrl } from '../../shared/browser-tests/utils/settings';
+import { clearDataToPrintOnFailure } from '../../shared/browser-tests/utils/testcafe.utils';
+import { getUrlUtils } from '../../shared/browser-tests/utils/url.utils';
 import { getCompanyPageComponents } from './companyPage.components';
+import Company from '../../employer/src/types/company';
 
 let components: ReturnType<typeof getCompanyPageComponents>;
+let urlUtils: ReturnType<typeof getUrlUtils>;
+
 
 const expectedCompany: Company = {
   id: 'id',
@@ -20,10 +23,10 @@ fixture('Companypage')
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     components = getCompanyPageComponents(t);
+    urlUtils = getUrlUtils(t);
   });
 
-// eslint-disable-next-line jest/expect-expect
 test('company data is present', async () => {
   const companyData = await components.companyData(expectedCompany);
-  await companyData.expectations.isCompanyDataPresent();
+  await companyData.expectations.isPresent();
 });
