@@ -42,7 +42,7 @@ jobs:
             dockerfile: ./backend/Dockerfile
             port: 8000
           - service: kesaseteli-employer
-            context: ./frontend/kesaseteli
+            context: ./frontend
             dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             port: 3000
     runs-on: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
             database: true
             port: 8000
           - service: kesaseteli-employer
-            context: frontend/kesaseteli
+            context: frontend
             dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             database: false
             port: 3000
