@@ -13,7 +13,7 @@ if os.path.isdir(parent_dir("etc")):
     env_file = parent_dir("etc/env")
     default_var_root = environ.Path(parent_dir("var"))
 else:
-    env_file = checkout_dir(".env")
+    env_file = checkout_dir(".env.kesaseteli")
     default_var_root = environ.Path(checkout_dir("var"))
 
 env = environ.Env(
