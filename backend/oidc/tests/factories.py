@@ -2,11 +2,11 @@ import factory
 from django.utils import timezone
 
 from applications.tests.factories import UserFactory
-from oidc.models import OIDCProfile
+from companies.tests.factories import CompanyFactory
+from oidc.models import EAuthorizationProfile, OIDCProfile
 
 
-class OIDCProfileFactory(factory.django.DjangoModelFactory):
-    user = factory.SubFactory(UserFactory)
+class AbstractProfileFactory(factory.django.DjangoModelFactory):
     id_token = factory.Faker("md5")
 
     access_token = factory.Faker("md5")
@@ -20,4 +20,19 @@ class OIDCProfileFactory(factory.django.DjangoModelFactory):
     )
 
     class Meta:
+        abstract = True
+
+
+class OIDCProfileFactory(AbstractProfileFactory):
+    user = factory.SubFactory(UserFactory)
+
+    class Meta:
         model = OIDCProfile
+
+
+class EAuthorizationProfileFactory(AbstractProfileFactory):
+    company = factory.SubFactory(CompanyFactory)
+    oidc_profile = factory.SubFactory(OIDCProfileFactory)
+
+    class Meta:
+        model = EAuthorizationProfile

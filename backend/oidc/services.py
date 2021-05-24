@@ -1,8 +1,10 @@
 from datetime import timedelta
+from typing import Union
 
+from django.db.models import QuerySet
 from django.utils import timezone
 
-from oidc.models import OIDCProfile
+from oidc.models import EAuthorizationProfile, OIDCProfile
 
 
 def update_or_create_oidc_profile(user, defaults) -> OIDCProfile:
@@ -13,8 +15,16 @@ def update_or_create_oidc_profile(user, defaults) -> OIDCProfile:
     return oidc_profile
 
 
-def clear_oidc_profile(oidc_profile: OIDCProfile) -> None:
-    oidc_profile.delete()
+def clear_oidc_profiles(
+    oidc_profiles: Union[OIDCProfile, "QuerySet[OIDCProfile]"]
+) -> None:
+    oidc_profiles.delete()
+
+
+def clear_eauthorization_profiles(
+    eauthorization_profiles: "QuerySet[EAuthorizationProfile]",
+) -> None:
+    eauthorization_profiles.delete()
 
 
 def store_token_info_in_oidc_profile(user, token_info):
