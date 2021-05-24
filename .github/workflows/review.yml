@@ -71,7 +71,7 @@ jobs:
             database: true
             port: 8000
           - service: kesaseteli-employer
-            context: frontend
+            context: frontend/kesaseteli
             dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             database: false
             port: 3000

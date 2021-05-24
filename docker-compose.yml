@@ -18,7 +18,7 @@ services:
             context: ./backend
             target: development
         env_file:
-            - .env
+            - .env.kesaseteli
         environment:
             DATABASE_URL: postgres://kesaseteli:kesaseteli@kesaseteli-db/kesaseteli
             DATABASE_HOST: kesaseteli-db.helsinki
@@ -41,7 +41,7 @@ services:
             - /app/node_modules
             - /app/.next
         env_file:
-            - .env
+            - .env.kesaseteli
         ports:
             - '3000:3000'
         container_name: kesaseteli-employer

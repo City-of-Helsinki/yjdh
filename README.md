@@ -3,7 +3,7 @@ YJDH-Kesäseteli
 
 ## Development with Docker
 
-1. Copy the contents of `.env.example` to `.env` and modify it if needed.
+1. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
 
 2. Run `docker-compose up`
 

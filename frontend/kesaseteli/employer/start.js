@@ -9,4 +9,4 @@ const jsdom = require('jsdom');
 const document = new jsdom.JSDOM('<!DOCTYPE html>').window.document;
 global.document = document;
 
-module.exports = require('../shared/src/server/next-server');
+module.exports = require('../../shared/src/server/next-server');

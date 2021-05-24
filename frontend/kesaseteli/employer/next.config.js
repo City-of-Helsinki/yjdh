@@ -5,7 +5,7 @@ const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
 
 const { parsed: env } = require('dotenv').config({
-  path: '../../../.env',
+  path: '../../../.env.kesaseteli',
 });
 
 const nextConfig = {
