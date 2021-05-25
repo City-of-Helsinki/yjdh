@@ -13721,11 +13721,6 @@ yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yarn-audit-ci@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/yarn-audit-ci/-/yarn-audit-ci-1.2.0.tgz#bed9baf7d9d661d30e2ffafef685bf7638a9147e"
-  integrity sha512-6FIqZP0rFNIW29VyQmKZ7RleFLbMyH4VlY6MyfKDJUiCgdchj/paf7W5Ue1sTcWy16ex/dTVNadEnfSQAK7uFA==
-
 yn@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"

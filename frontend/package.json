@@ -6,23 +6,29 @@
   "private": true,
   "workspaces": [
     "kesaseteli/*",
+    "benefit/*",
     "shared"
   ],
   "scripts": {
     "audit": "lerna-audit --level=high --groups=dependencies",
     "build": "yarn build:employer",
     "build:employer": "lerna run --scope @frontend/employer --stream build",
+    "build:applicant": "lerna run --scope @frontend/applicant --stream build",
     "dev": "yarn dev:employer",
     "dev:employer": "lerna run --scope @frontend/employer --stream dev",
+    "dev:applicant": "lerna run --scope @frontend/applicant --stream dev",
     "start": "yarn start:employer",
     "start:employer": "lerna run --scope  @frontend/employer --stream start",
+    "start:applicant": "lerna run --scope  @frontend/applicant --stream start",
     "release": "cross-env HUSKY_BYPASS=true && lerna publish",
     "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
     "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "browser-test:kesaseteli-employer": "lerna run --scope @frontend/employer --stream browser-test",
-    "browser-test:kesaseteli-employer:ci": "lerna run --stream browser-test:ci"
+    "browser-test:kesaseteli-employer:ci": "lerna run --stream browser-test:ci",
+    "browser-test:benefit-applicant": "lerna run --scope @frontend/applicant --stream browser-test",
+    "browser-test:benefit-applicant:ci": "lerna run --stream browser-test:ci"
   },
   "devDependencies": {
     "@axe-core/react": "^4.1.1",
