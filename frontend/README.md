@@ -1,15 +1,5 @@
-# Employer UI
-
-User interface for employers to send Kesäseteli applications
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-# Handler UI
-
-User interface for application handlers (City of Helsinki users) of Kesäseteli
 
 ## Environments
-
 Production environment:
 [TODO: Add url when deployed]
 Project is automatically deployed to production when adding new relase tag, e.g. release-v0.1.0, to repo
@@ -54,6 +44,35 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.
+
+### `yarn audit`
+
+Audit report for npm packages.
+
+#### how to fix audit errors
+
+For example if you got something like this:
+┌───────────────┬──────────────────────────────────────────────────────────────┐
+│ moderate      │ Regular Expression Denial of Service                         │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Package       │ browserslist                                                 │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Patched in    │ >=4.16.5                                                     │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Dependency of │ @frontend/shared                                             │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Path          │ @frontend/shared > next > browserslist                       │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ More info     │ https://www.npmjs.com/advisories/1747                        │
+└───────────────┴──────────────────────────────────────────────────────────────┘
+
+This can be fixed usually by:
+Adding `"browserslist" : "^4.16.5"`
+to the `"resolutions"` part of the [package.json](./package.json)
+Run `yarn`
+Then `yarn audit` again and error should be vanished :)
+
+More info: https://stackoverflow.com/questions/51699564/how-to-fix-npm-audit-fix-issues
 
 ## Learn More
 

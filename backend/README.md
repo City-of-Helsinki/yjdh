@@ -25,7 +25,7 @@ Allow user to create test database
 
 ### Daily running
 
-* Create `.env` file: `touch .env`
+* Create `.env.kesaseteli` file: `touch .env.kesaseteli`
 * Set the `DEBUG` environment variable to `1`.
 * Run `python manage.py migrate`
 * Run `python manage.py runserver 0:8000`
