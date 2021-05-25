@@ -89,7 +89,6 @@
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4",
-    "yarn-audit-ci": "^1.2.0",
     "@types/faker": "^5.5.5",
     "faker": "^5.5.3"
   },
