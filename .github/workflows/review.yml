@@ -35,13 +35,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'kesaseteli-backend', 'kesaseteli-employer' ]
+        service: [ 'backend', 'employer' ]
         include:
-          - service: kesaseteli-backend
+          - service: backend
             context: ./backend
             dockerfile: ./backend/Dockerfile
             port: 8000
-          - service: kesaseteli-employer
+          - service: employer
             context: ./frontend
             dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             port: 3000
@@ -65,12 +65,12 @@ jobs:
       matrix:
         service: [ 'backend', 'employer' ]
         include:
-          - service: kesaseteli-backend
+          - service: backend
             context: backend
             dockerfile: ./backend/Dockerfile
             database: true
             port: 8000
-          - service: kesaseteli-employer
+          - service: employer
             context: frontend
             dockerfile: ./frontend/kesaseteli/employer/Dockerfile
             database: false
@@ -120,7 +120,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'kesaseteli-employer' ]
+        service: [ 'employer' ]
     runs-on: ubuntu-latest
     needs: review
     name: Acceptance tests
