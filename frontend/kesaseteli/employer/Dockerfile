@@ -64,6 +64,7 @@ WORKDIR /app
 # Copy build folder from stage 1
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/.next kesaseteli/employer/.next
 
+
 # Copy next.js config
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.config.js kesaseteli/employer/
 
@@ -75,6 +76,10 @@ COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/packag
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
+
+# Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
+RUN chgrp -R 0 ./ && \
+    chmod -R g+rwX ./
 
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
