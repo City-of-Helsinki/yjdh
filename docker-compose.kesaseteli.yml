@@ -15,7 +15,7 @@ services:
 
     django:
         build:
-            context: ./backend
+            context: ./backend/kesaseteli
             target: development
         env_file:
             - .env.kesaseteli
@@ -23,7 +23,7 @@ services:
             DATABASE_URL: postgres://kesaseteli:kesaseteli@kesaseteli-db/kesaseteli
             DATABASE_HOST: kesaseteli-db.helsinki
         volumes:
-            - ./backend:/app
+            - ./backend/kesaseteli:/app
         ports:
             - "127.0.0.1:8000:8000"
         depends_on:
