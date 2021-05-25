@@ -1,4 +1,4 @@
-name: Lint, Unit and Component tests
+name: Audit, Lint, Unit and Component tests
 
 on:
   pull_request:
