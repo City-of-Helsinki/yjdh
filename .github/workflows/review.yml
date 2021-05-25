@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'kesaseteli-backend', 'kesaseteli-employer' ]
+        service: [ 'backend', 'employer' ]
         include:
           - service: kesaseteli-backend
             context: backend
@@ -101,11 +101,11 @@ jobs:
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ github.event.repository.name }}-${{ matrix.service }}
           K8S_SECRET_VERSION: ${{ github.sha }}
-          VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_REVIEW }}
-          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-          VAULT_KV_VERSION: "2"
-          VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
-          VAULT_KV_SECRET_MOUNT_POINT: review
+          #VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_REVIEW }}
+          #VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          #VAULT_KV_VERSION: "2"
+          #VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
+          #VAULT_KV_SECRET_MOUNT_POINT: review
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
