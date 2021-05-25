@@ -73,16 +73,19 @@ COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.c
 COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/package.json app/kesaseteli/employer/start.js kesaseteli/employer/
 
+
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
-# Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
-RUN find kesaseteli/employer/.next -mount -exec chgrp 0 {} && \
-    find kesaseteli/employer/.next -mount -exec chmod g+rwX {}
 
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
+
+# Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
+# https://docs.openshift.com/enterprise/3.2/creating_images/guidelines.html
+RUN chgrp -R 0 ./package.json ./yarn.lock ./lerna.json shared/package.json shared/src ./node_modules && \
+    chmod -R g+rwX ./package.json ./yarn.lock ./lerna.json shared/package.json shared/src ./node_modules
 
 
 # Expose port
