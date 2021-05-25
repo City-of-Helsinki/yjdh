@@ -101,8 +101,13 @@ jobs:
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           PROJECT_NAME: ${{ github.event.repository.name }}-${{ matrix.service }}
           K8S_SECRET_VERSION: ${{ github.sha }}
-          K8S_SECRET_ALLOWED_HOSTS: "*"
+          VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_REVIEW }}
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          VAULT_KV_VERSION: "2"
+          VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
+          VAULT_KV_SECRET_MOUNT_POINT: review
           SERVICE_PORT: ${{ matrix.port }}
+          K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
       - name: Create PR comment for ${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
@@ -144,7 +149,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Install dependencies
-        run: yarn --prefer-offline --frozen-lockfile --check-files
+        run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
       - name: Service with ingress
         run: |
           echo "ENVIRONMENT_URL=https://${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
