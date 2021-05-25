@@ -84,9 +84,10 @@ RUN yarn install --production --frozen-lockfile --check-files
 
 # Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
 # https://docs.openshift.com/enterprise/3.2/creating_images/guidelines.html
-RUN chgrp -R 0 ./package.json ./yarn.lock ./lerna.json shared/package.json shared/src ./node_modules && \
-    chmod -R g+rwX ./package.json ./yarn.lock ./lerna.json shared/package.json shared/src ./node_modules
-
+USER root
+RUN chgrp -R 0 . \
+  && chmod -R g+rwX .
+USER appuser
 
 # Expose port
 EXPOSE 3000
