@@ -74,7 +74,7 @@ pytest-cov==2.11.1
     # via -r requirements-dev.in
 pytest-django==4.2.0
     # via -r requirements-dev.in
-pytest==6.2.3
+pytest==6.2.4
     # via
     #   -r requirements-dev.in
     #   pytest-cov
@@ -87,7 +87,7 @@ requests-mock==1.9.2
     # via -r requirements-dev.in
 requests==2.25.1
     # via requests-mock
-six==1.15.0
+six==1.16.0
     # via
     #   python-dateutil
     #   requests-mock
