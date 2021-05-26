@@ -1,4 +1,4 @@
-import type { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import React from 'react';
 
 import { appWithTranslation } from '../../i18n';

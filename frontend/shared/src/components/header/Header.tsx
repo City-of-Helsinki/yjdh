@@ -36,9 +36,9 @@ const Header: React.FC<HeaderProps> = ({
     <Navigation
       menuOpen={menuOpen}
       onMenuToggle={toggleMenu}
-      menuToggleAriaLabel={'header:menuToggleAriaLabel'}
+      menuToggleAriaLabel={'Menu'}
       skipTo="main_content"
-      skipToContentLabel={'common:linkSkipToContent'}
+      skipToContentLabel={'main_content'}
       onTitleClick={() => onTitleClick(closeMenu)}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
@@ -60,8 +60,8 @@ const Header: React.FC<HeaderProps> = ({
       {languages && (
         <Navigation.Actions>
           <Navigation.LanguageSelector
-            buttonAriaLabel={'header:changeLanguage'}
-            label={`header:languages:${locale}`}
+            buttonAriaLabel={'Suomeksi'}
+            label={'Suomeksi'}
             icon={<IconGlobe />}
             closeOnItemClick
           >
