@@ -1,0 +1,9 @@
+{
+  "appName": "Benefit EN",
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In english"
+  },
+  "menuToggleAriaLabel": "Menu"
+}

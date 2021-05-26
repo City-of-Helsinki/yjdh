@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { StyledContainer } from './styled';
+import { StyledContainer, StyledInner } from './styled';
 
 type ContentProps = { children: React.ReactNode };
 
 const Content = ({ children }: ContentProps): JSX.Element => (
-  <StyledContainer>{children}</StyledContainer>
+  <StyledContainer>
+    <StyledInner>{children}</StyledInner>
+  </StyledContainer>
 );
 
 export default Content;
