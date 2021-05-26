@@ -16,6 +16,7 @@ const Header: React.FC = () => {
   return (
     <BaseHeader
       title={t('common:appName')}
+      menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
       languages={languageOptions}
       navigationItems={navigationItems}
       locale={locale}

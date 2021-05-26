@@ -5,5 +5,12 @@
     "sv": "På svenska",
     "en": "In english"
   },
+  "mainIngress": {
+    "heading": "Hakemukset",
+    "description1": "Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä ",
+    "description2": "Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
+    "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
+    "newApplicationBtnText": "Tee uusi hakemus"
+  },
   "menuToggleAriaLabel": "Valikko"
 }

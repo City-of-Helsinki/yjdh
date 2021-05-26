@@ -9,26 +9,27 @@ import {
   StyledActionContainer,
   StyledButton,
 } from './styled';
+import { useComponent } from './extended';
 
 const MainIngress: React.FC = () => {
-  const handleMoreInfoClick = () => {};
+  const { handleMoreInfoClick, t } = useComponent();
 
   return (
     <StyledContainer>
       <StyledTextContainer>
-        <StyledHeading>Hakemukset</StyledHeading>
+        <StyledHeading>{t('common:mainIngress.heading')}</StyledHeading>
         <StyledDescription>
-          Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä
+          {t('common:mainIngress.description1')}
           <StyledLink onClick={handleMoreInfoClick}>
-            {' '}
-            hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin
+            {t('common:mainIngress.linkText')}
           </StyledLink>
-          . Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen
-          täyttämistä myöhemmin.
+          {t('common:mainIngress.description2')}
         </StyledDescription>
       </StyledTextContainer>
       <StyledActionContainer>
-        <StyledButton iconLeft={<IconPlus />}>Tee uusi hakemus</StyledButton>
+        <StyledButton iconLeft={<IconPlus />}>
+          {t('common:mainIngress.newApplicationBtnText')}
+        </StyledButton>
       </StyledActionContainer>
     </StyledContainer>
   );

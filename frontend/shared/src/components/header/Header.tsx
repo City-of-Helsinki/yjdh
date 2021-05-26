@@ -1,11 +1,13 @@
 import { Navigation, IconGlobe, LogoLanguage } from 'hds-react';
 import React from 'react';
+import { MAIN_CONTENT_ID } from '../../../constants';
 
 import { OptionType, NavigationItem } from 'shared/types/common';
 import { useComponent } from './extended';
 
 export type HeaderProps = {
   title?: string;
+  menuToggleAriaLabel?: string;
   locale: string;
   languages: OptionType[];
   navigationItems?: NavigationItem[];
@@ -16,6 +18,7 @@ export type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({
   title,
+  menuToggleAriaLabel,
   languages,
   locale,
   navigationItems,
@@ -36,9 +39,9 @@ const Header: React.FC<HeaderProps> = ({
     <Navigation
       menuOpen={menuOpen}
       onMenuToggle={toggleMenu}
-      menuToggleAriaLabel={'Menu'}
-      skipTo="main_content"
-      skipToContentLabel={'main_content'}
+      menuToggleAriaLabel={menuToggleAriaLabel || ''}
+      skipTo={MAIN_CONTENT_ID}
+      skipToContentLabel={MAIN_CONTENT_ID}
       onTitleClick={() => onTitleClick(closeMenu)}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
@@ -60,8 +63,8 @@ const Header: React.FC<HeaderProps> = ({
       {languages && (
         <Navigation.Actions>
           <Navigation.LanguageSelector
-            buttonAriaLabel={'Suomeksi'}
-            label={'Suomeksi'}
+            buttonAriaLabel={locale?.toUpperCase()}
+            label={locale?.toUpperCase()}
             icon={<IconGlobe />}
             closeOnItemClick
           >
