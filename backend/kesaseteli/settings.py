@@ -40,6 +40,17 @@ env = environ.Env(
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     MOCK_FLAG=(bool, False),
+    SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
+    OIDC_RP_CLIENT_ID=(str, ""),
+    OIDC_RP_CLIENT_SECRET=(str, ""),
+    OIDC_OP_AUTHORIZATION_ENDPOINT=(str, ""),
+    OIDC_OP_TOKEN_ENDPOINT=(str, ""),
+    OIDC_OP_USER_ENDPOINT=(str, ""),
+    OIDC_OP_JWKS_ENDPOINT=(str, ""),
+    OIDC_OP_LOGOUT_ENDPOINT=(str, ""),
+    LOGIN_REDIRECT_URL=(str, ""),
+    LOGIN_REDIRECT_URL_FAILURE=(str, ""),
+    LOGOUT_REDIRECT_URL=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -89,9 +100,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "mozilla_django_oidc",
     # local apps
     "applications",
     "companies",
+    "oidc",
     "utils",
 ]
 
@@ -123,6 +136,7 @@ TEMPLATES = [
     }
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
 
@@ -144,6 +158,30 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
+
+# Authentication
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
+
+AUTHENTICATION_BACKENDS = (
+    "oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_RP_SCOPES = "openid profile"
+
+OIDC_RP_CLIENT_ID = env.str("OIDC_RP_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = env.str("OIDC_RP_CLIENT_SECRET")
+
+OIDC_OP_AUTHORIZATION_ENDPOINT = env.str("OIDC_OP_AUTHORIZATION_ENDPOINT")
+OIDC_OP_TOKEN_ENDPOINT = env.str("OIDC_OP_TOKEN_ENDPOINT")
+OIDC_OP_USER_ENDPOINT = env.str("OIDC_OP_USER_ENDPOINT")
+OIDC_OP_JWKS_ENDPOINT = env.str("OIDC_OP_JWKS_ENDPOINT")
+OIDC_OP_LOGOUT_ENDPOINT = env.str("OIDC_OP_LOGOUT_ENDPOINT")
+
+LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
+LOGOUT_REDIRECT_URL = env.str("LOGOUT_REDIRECT_URL")
+LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
