@@ -30,7 +30,7 @@ django-environ==0.4.5
     # via -r requirements.in
 django-simple-history==3.0.0
     # via -r requirements.in
-django==3.2
+django==3.2.3
     # via
     #   -r requirements.in
     #   django-appconf
