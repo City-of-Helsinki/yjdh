@@ -10,7 +10,7 @@ import MainIngress from '../components/mainIngress/MainIngress';
 
 const ApplicantIndex: NextPage = () => (
   <React.Fragment>
-    <Container backgroundColor={theme.colors.primaryGray}>
+    <Container backgroundColor={theme.colors.silverLight}>
       <MainIngress />
     </Container>
   </React.Fragment>
