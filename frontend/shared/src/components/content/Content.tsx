@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { StyledContent } from './styled';
 
 type ContentProps = { children: React.ReactNode };

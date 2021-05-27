@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { StyledContainer, StyledInner } from './styled';
 
 type ContainerProps = { children: React.ReactNode; backgroundColor?: string };

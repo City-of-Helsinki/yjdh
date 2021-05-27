@@ -9,17 +9,11 @@ export const breakpoints: {[key:string]: number} = {
   xlg: 1600,
 }
 
-export const respondAbove = (key: keyof typeof breakpoints) => {
-  return (style: TemplateStringsArray | String) =>
+export const respondAbove = (key: keyof typeof breakpoints) => (style: TemplateStringsArray | string) =>
     `@media screen and (min-width: ${breakpoints[key]}px) { ${style} }`;
-};
 
-export const respondBelow = (key: keyof typeof breakpoints) => {
-  return (style: TemplateStringsArray | String) =>
+export const respondBelow = (key: keyof typeof breakpoints) => (style: TemplateStringsArray | string) =>
     `@media screen and (max-width: ${breakpoints[key] - 1}px) { ${style} }`;
-};
 
-export const respondBetween = (min: keyof typeof breakpoints, max: keyof typeof breakpoints) => {
-  return (style: TemplateStringsArray | String) =>
+export const respondBetween = (min: keyof typeof breakpoints, max: keyof typeof breakpoints) => (style: TemplateStringsArray | string) =>
     `@media screen and (min-width: ${breakpoints[min]}px) and (max-width: ${breakpoints[max] - 1}px) { ${style} }`;
-};

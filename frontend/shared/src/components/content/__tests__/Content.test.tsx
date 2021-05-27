@@ -1,7 +1,8 @@
 import { axe } from 'jest-axe';
 import React from 'react';
-import Content from '../Content';
 import { render } from 'test-utils';
+
+import Content from '../Content';
 
 test('test for accessibility violations', async () => {
   const { container } = render(<Content>content</Content>);

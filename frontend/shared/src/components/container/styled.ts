@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { respondAbove, respondBetween} from 'shared/styles/mediaQueries';
+import styled from 'styled-components';
 
 interface ContainerProps {
   backgroundColor: string

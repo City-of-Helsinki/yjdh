@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+
 import {Fonts} from './fonts'
 import {Main} from './main'
 

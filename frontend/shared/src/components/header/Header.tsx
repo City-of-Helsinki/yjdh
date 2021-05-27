@@ -1,8 +1,8 @@
-import { Navigation, IconGlobe, LogoLanguage } from 'hds-react';
+import { IconGlobe, LogoLanguage,Navigation } from 'hds-react';
 import React from 'react';
-import { MAIN_CONTENT_ID } from '../../../constants';
+import { NavigationItem,OptionType } from 'shared/types/common';
 
-import { OptionType, NavigationItem } from 'shared/types/common';
+import { MAIN_CONTENT_ID } from '../../../constants';
 import { useComponent } from './extended';
 
 export type HeaderProps = {

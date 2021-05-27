@@ -8,12 +8,10 @@ const useComponent = (locale: string, onNavigationItemClick?: (pathname: string)
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
-  const isTabActive = (pathname: string): boolean => {
-    return (
+  const isTabActive = (pathname: string): boolean => (
       typeof window !== 'undefined' &&
       window.location.pathname.startsWith(pathname)
     );
-  };
 
   const handleNavigationItemClick = (pathname: string) => (
     event?: React.MouseEvent<HTMLAnchorElement>
