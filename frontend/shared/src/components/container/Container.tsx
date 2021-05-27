@@ -6,11 +6,17 @@ type ContainerProps = { children: React.ReactNode; backgroundColor?: string };
 
 const Container = ({
   children,
-  backgroundColor,
+  backgroundColor = '',
 }: ContainerProps): JSX.Element => (
-  <StyledContainer backgroundColor={backgroundColor || ''}>
+  <StyledContainer backgroundColor={backgroundColor}>
     <StyledInner>{children}</StyledInner>
   </StyledContainer>
 );
+
+const defaultProps = {
+  backgroundColor: '',
+};
+
+Container.defaultProps = defaultProps;
 
 export default Container;

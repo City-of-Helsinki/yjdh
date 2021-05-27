@@ -1,4 +1,51 @@
-const theme = {
+type Colors = {
+  [key: string]: string;
+}
+
+type Fonts = {
+  [key: string]: string;
+}
+
+type Body = {
+  [key: string]: string;
+}
+
+type Heading = {
+  [key: string]: string;
+}
+
+type FontSize = {
+  body: Body;
+  heading: Heading;
+}
+
+type ContainerWidth = {
+  [key: string]: string;
+}
+
+type Spacing = {
+  [key: string]: string;
+}
+
+type SpacingLayout = {
+  [key: string]: string;
+}
+
+type LineHeight = {
+  [key: string]: number;
+}
+
+export interface Theme {
+  colors: Colors;
+  fonts: Fonts;
+  fontSize: FontSize;
+  containerWidth: ContainerWidth;
+  spacing: Spacing;
+  spacingLayout: SpacingLayout;
+  lineHeight: LineHeight;
+}
+
+const theme: Theme = {
   colors: {
     brick: '#bd2719',
     brickLight: '#ffeeed',

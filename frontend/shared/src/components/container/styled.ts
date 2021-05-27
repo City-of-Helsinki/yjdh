@@ -1,4 +1,5 @@
 import { respondAbove, respondBetween} from 'shared/styles/mediaQueries';
+import { Theme } from 'shared/styles/theme';
 import styled from 'styled-components';
 
 interface ContainerProps {
@@ -8,7 +9,7 @@ interface ContainerProps {
 const StyledContainer = styled.div<ContainerProps>`
   display: grid;
   background-color: ${props => props.backgroundColor};
-  grid-template-columns: ${props => props.theme.spacing.xs2} 1fr ${props => props.theme.spacing.xs2};
+  grid-template-columns: ${props => (props.theme as Theme).spacing.xs2} 1fr ${props => (props.theme as Theme).spacing.xs2};
 
   ${respondBetween("sm", "xlg")`
     grid-template-columns: 1fr 10fr 1fr;
@@ -24,7 +25,7 @@ const StyledContainer = styled.div<ContainerProps>`
 `;
 
 const StyledInner = styled.div`
-  padding: ${props => props.theme.spacing.xs};
+  padding: ${props => (props.theme as Theme).spacing.xs};
 `;
 
 export {

@@ -1,6 +1,6 @@
-import { IconGlobe, LogoLanguage,Navigation } from 'hds-react';
+import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
 import React from 'react';
-import { NavigationItem,OptionType } from 'shared/types/common';
+import { NavigationItem, OptionType } from 'shared/types/common';
 
 import { MAIN_CONTENT_ID } from '../../../constants';
 import { useComponent } from './extended';
@@ -48,9 +48,9 @@ const Header: React.FC<HeaderProps> = ({
     >
       {navigationItems && (
         <Navigation.Row variant="inline">
-          {navigationItems?.map((item, index) => (
+          {navigationItems?.map((item) => (
             <Navigation.Item
-              key={index}
+              key={item.url}
               active={isTabActive(item.url)}
               href={item.url}
               label={item.label}
