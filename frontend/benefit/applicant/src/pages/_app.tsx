@@ -10,8 +10,8 @@ import theme from 'shared/styles/theme';
 
 import Layout from 'shared/components/layout/Layout';
 import Content from 'shared/components/content/Content';
-import Footer from 'shared/components/footer/Footer';
 
+import Footer from '../components/footer/Footer';
 import Header from '../components/header/Header';
 
 const App = ({ Component, pageProps }: AppProps) => (

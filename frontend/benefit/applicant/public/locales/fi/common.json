@@ -1,5 +1,9 @@
 {
   "appName": "Benefit FI",
+  "footer": {
+    "copyrightText": "Copyright text",
+    "allRightsReservedText": "All rights reserved text"
+  },
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
