@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({
       menuOpen={menuOpen}
       onMenuToggle={toggleMenu}
       menuToggleAriaLabel={menuToggleAriaLabel || ''}
-      skipTo={MAIN_CONTENT_ID}
+      skipTo={`#${MAIN_CONTENT_ID}`}
       skipToContentLabel={MAIN_CONTENT_ID}
       onTitleClick={() => onTitleClick(closeMenu)}
       logoLanguage={logoLang as LogoLanguage}
