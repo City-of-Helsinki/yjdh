@@ -6,10 +6,16 @@ type ExtendedComponentProps = {
   logoLang: string;
   toggleMenu: () => void;
   closeMenu: () => void;
+  isTabActive: (pathname: string) => boolean;
   handleNavigationItemClick: (pathname: string) => (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent> | undefined) => void;
 }
 
 const useComponent = (locale: string, onNavigationItemClick?: (pathname: string) => void): ExtendedComponentProps => {
+
+  const isTabActive = (pathname: string): boolean => (
+    typeof window !== 'undefined' &&
+    window.location.pathname.startsWith(pathname)
+  );
   
   const [menuOpen, setMenuOpen] = useState(false);
   
@@ -30,7 +36,7 @@ const useComponent = (locale: string, onNavigationItemClick?: (pathname: string)
 
   const logoLang = locale === 'sv' ? 'sv' : 'fi';
 
-  return { menuOpen, logoLang, toggleMenu, closeMenu, handleNavigationItemClick }
+  return { menuOpen, logoLang, toggleMenu, closeMenu, isTabActive, handleNavigationItemClick }
 }
 
 export { useComponent }
