@@ -1,12 +1,21 @@
 
 import { useState } from 'react'
 
-const useComponent = (locale: string, onNavigationItemClick?: (pathname: string) => void) => {
+type ExtendedComponentProps = {
+  menuOpen: boolean;
+  logoLang: string;
+  toggleMenu: () => void;
+  closeMenu: () => void;
+  isTabActive: (pathname: string) => boolean;
+  handleNavigationItemClick: (pathname: string) => (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent> | undefined) => void;
+}
+
+const useComponent = (locale: string, onNavigationItemClick?: (pathname: string) => void): ExtendedComponentProps => {
   
   const [menuOpen, setMenuOpen] = useState(false);
   
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
+  const toggleMenu = (): void => setMenuOpen(!menuOpen);
+  const closeMenu = (): void => setMenuOpen(false);
 
   const isTabActive = (pathname: string): boolean => (
       typeof window !== 'undefined' &&
