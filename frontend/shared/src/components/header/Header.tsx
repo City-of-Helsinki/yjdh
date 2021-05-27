@@ -1,6 +1,7 @@
 import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
 import React from 'react';
 import { NavigationItem, OptionType } from 'shared/types/common';
+import { isTabActive } from 'shared/utils/menu.utils';
 
 import { MAIN_CONTENT_ID } from '../../../constants';
 import { useComponent } from './extended';
@@ -31,7 +32,6 @@ const Header: React.FC<HeaderProps> = ({
     menuOpen,
     toggleMenu,
     closeMenu,
-    isTabActive,
     handleNavigationItemClick,
   } = useComponent(locale, onNavigationItemClick);
 
