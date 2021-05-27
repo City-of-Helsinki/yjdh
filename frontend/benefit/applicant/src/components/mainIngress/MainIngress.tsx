@@ -1,15 +1,16 @@
-import * as React from 'react';
 import { IconPlus } from 'hds-react';
+import * as React from 'react';
+
+import { useComponent } from './extended';
 import {
-  StyledContainer,
-  StyledTextContainer,
-  StyledHeading,
-  StyledDescription,
-  StyledLink,
   StyledActionContainer,
   StyledButton,
+  StyledContainer,
+  StyledDescription,
+  StyledHeading,
+  StyledLink,
+  StyledTextContainer,
 } from './styled';
-import { useComponent } from './extended';
 
 const MainIngress: React.FC = () => {
   const { handleMoreInfoClick, t } = useComponent();

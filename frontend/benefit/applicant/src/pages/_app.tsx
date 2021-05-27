@@ -1,21 +1,17 @@
 import { AppProps } from 'next/app';
 import React from 'react';
-
-import { appWithTranslation } from '../../i18n';
-
-import { ThemeProvider } from 'styled-components';
-
+import Content from 'shared/components/content/Content';
+import Layout from 'shared/components/layout/Layout';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
+import { ThemeProvider } from 'styled-components';
 
-import Layout from 'shared/components/layout/Layout';
-import Content from 'shared/components/content/Content';
-
+import { appWithTranslation } from '../../i18n';
 import Footer from '../components/footer/Footer';
 import Header from '../components/header/Header';
 
-const App = ({ Component, pageProps }: AppProps) => (
-  <React.Fragment>
+const App = ({ Component, pageProps }: AppProps): JSX.Element => (
+  <>
     <ThemeProvider theme={theme}>
       <GlobalStyling />
       <Layout>
@@ -26,7 +22,7 @@ const App = ({ Component, pageProps }: AppProps) => (
         <Footer />
       </Layout>
     </ThemeProvider>
-  </React.Fragment>
+  </>
 );
 
 export default appWithTranslation(App);

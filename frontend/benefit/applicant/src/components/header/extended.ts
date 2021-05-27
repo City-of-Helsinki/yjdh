@@ -1,10 +1,22 @@
 import { useRouter } from 'next/router';
-import { OptionType } from 'shared/types/common';
-import { i18n, useTranslation } from '../../../i18n';
+import { TFunction } from 'next-i18next';
+import { NavigationItem, OptionType } from 'shared/types/common';
+
 import { SUPPORTED_LANGUAGES } from '../../../constants';
+import { i18n, useTranslation } from '../../../i18n';
 import useLocale  from '../../hooks/useLocale';
 
-const useComponent = () => {
+type ExtendedComponentProps = {
+  t: TFunction;
+  languageOptions: OptionType[];
+  locale: string;
+  navigationItems: NavigationItem[];
+  handleLanguageChange: (newLanguage: OptionType) => void;
+  handleNavigationItemClick: (pathname: string) => void;
+  handleTitleClick: () => void;
+}
+
+const useComponent = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
@@ -16,10 +28,10 @@ const useComponent = () => {
   ];
 
   const getLanguageOptions = (): OptionType[] => {
-    const createOptions = (languages: string[]) =>
+    const createOptions = (languages: string[]): OptionType[] =>
       languages.map((language) => ({
         label: t(`common:languages.${language}`),
-        value: language as string,
+        value: language ,
       }));
 
     return createOptions(Object.values(SUPPORTED_LANGUAGES));
@@ -27,17 +39,19 @@ const useComponent = () => {
 
   const languageOptions: OptionType[] = getLanguageOptions();
 
-  const handleLanguageChange = (newLanguage: OptionType) => {
-    i18n?.changeLanguage(newLanguage.value);
-    //todo: fix router with localization
-    //router.push(`/${newLanguage.value}`, `/${newLanguage.value}`, {locale: locale});
+  const handleLanguageChange = (newLanguage: OptionType): void => {
+    if(i18n) {
+      i18n.changeLanguage(newLanguage.value);
+    }
+    // todo: fix router with localization
+    // router.push(`/${newLanguage.value}`, `/${newLanguage.value}`, {locale: locale});
   }
 
-  const handleNavigationItemClick = (pathname: string) =>  {
+  const handleNavigationItemClick = (pathname: string): void =>  {
     router.push(pathname);
   }
 
-  const handleTitleClick = () => handleNavigationItemClick('/')
+  const handleTitleClick = (): void => handleNavigationItemClick('/')
 
   return { t, languageOptions, locale, navigationItems, handleLanguageChange, handleNavigationItemClick, handleTitleClick }
 }

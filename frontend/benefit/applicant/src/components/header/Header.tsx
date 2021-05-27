@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { useComponent } from './extended';
 import BaseHeader from 'shared/components/header/Header';
+
+import { useComponent } from './extended';
 
 const Header: React.FC = () => {
   const {
