@@ -1,4 +1,5 @@
+import isServerSide from 'shared/server/is-server-side';
+
 export const isTabActive = (pathname: string): boolean => (
-  typeof window !== 'undefined' &&
-  window.location.pathname.startsWith(pathname)
+  !isServerSide() && window.location.pathname.startsWith(pathname)
 );

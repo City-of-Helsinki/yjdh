@@ -65,7 +65,7 @@ WORKDIR /app
 COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/.next benefit/applicant/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/next.config.js benefit/applicant/
+COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/next.config.js /app/benefit/applicant/next-i18next.config.js benefit/applicant/
 
 # Copy package.json and yarn.lock files
 # TODO: add public folder when we have static assets
@@ -78,6 +78,13 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-ser
 
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
+
+# Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
+# https://docs.openshift.com/enterprise/3.2/creating_images/guidelines.html
+USER root
+RUN chgrp -R 0 . \
+  && chmod -R g+rwX .
+USER appuser
 
 
 # Expose port

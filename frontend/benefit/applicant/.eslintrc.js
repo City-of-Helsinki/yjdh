@@ -3,7 +3,7 @@ const { join } = require('path');
 module.exports = {
   extends: ['auto'],
   rules: {
-    '@typescript-eslint/no-floating-promises': 'off',
+    'no-void': 'off',
     'jsx-a11y/anchor-is-valid': [
       'error',
       {

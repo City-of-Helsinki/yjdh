@@ -14,7 +14,7 @@ const useComponent = (): ExtendedComponentProps => {
   const router = useRouter();
 
   const handleMoreInfoClick = (): void => {
-    router.push('/')
+    void router.push('/')
   };
 
   return { handleMoreInfoClick, t }

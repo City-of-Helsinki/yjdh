@@ -41,14 +41,14 @@ const useComponent = (): ExtendedComponentProps => {
 
   const handleLanguageChange = (newLanguage: OptionType): void => {
     if(i18n) {
-      i18n.changeLanguage(newLanguage.value);
+      void i18n.changeLanguage(newLanguage.value);
     }
     // todo: fix router with localization
     // router.push(`/${newLanguage.value}`, `/${newLanguage.value}`, {locale: locale});
   }
 
   const handleNavigationItemClick = (pathname: string): void =>  {
-    router.push(pathname);
+    void router.push(pathname);
   }
 
   const handleTitleClick = (): void => handleNavigationItemClick('/')
