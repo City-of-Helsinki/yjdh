@@ -53,7 +53,7 @@ COPY --chown=appuser:appuser . .
 RUN yarn build
 
 # ==========================================
-FROM helsinkitest/node:12-slim AS production
+FROM helsinkitest/node:14-slim AS production
 # ==========================================
 
 # Use non-root user
