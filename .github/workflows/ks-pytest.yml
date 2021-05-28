@@ -1,9 +1,12 @@
-name: Python tests
+name: (KS) Python tests
 
 on:
   push:
     branches: [main]
   pull_request:
+    paths:
+      - 'backend/kesaseteli/**'
+      - '.github/workflows/ks-pytest.yml'
 
 
 env:

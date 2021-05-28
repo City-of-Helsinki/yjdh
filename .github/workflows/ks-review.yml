@@ -1,6 +1,10 @@
-name: Build & Review & Acceptance tests
+name: (KS) Build & Review & Acceptance tests
 on:
   pull_request:
+    paths:
+      - 'backend/kesaseteli/**'
+      - 'frontend/kesaseteli/**'
+      - '.github/workflows/ks-review.yml'
   workflow_dispatch:
     inputs:
       build_required:

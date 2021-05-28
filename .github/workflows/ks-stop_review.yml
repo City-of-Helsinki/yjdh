@@ -1,4 +1,4 @@
-name: Stop Review
+name: (KS) Stop Review
 on:
   pull_request:
     types: [closed]

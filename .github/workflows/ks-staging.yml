@@ -1,8 +1,12 @@
-name: Build & Staging
+name: (KS) Build & Staging
 on:
   push:
     branches:
       - main
+    paths:
+      - 'backend/kesaseteli/**'
+      - 'frontend/kesaseteli/**'
+      - '.github/workflows/ks-staging.yml'
   workflow_dispatch:
     inputs:
       build_required:
