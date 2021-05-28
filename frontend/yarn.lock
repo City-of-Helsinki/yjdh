@@ -5016,9 +5016,9 @@ date-fns@2.16.1:
   integrity sha512-sAJVKx/FqrLYHAQeN7VpJrPhagZc9R4ImZIWYRFZaaohR3KzmuK88touwsSwSVT8Qcbd4zoDsnGfX4GFB4imyQ==
 
 date-fns@^2.21.1:
-  version "2.21.1"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.21.1.tgz#679a4ccaa584c0706ea70b3fa92262ac3009d2b0"
-  integrity sha512-m1WR0xGiC6j6jNFAyW4Nvh4WxAi4JF4w9jRJwSI8nBmNcyZXPcP9VUQG+6gHQXAmqaGEKDKhOqAtENDC941UkA==
+  version "2.22.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.22.0.tgz#e25d79dda0639ae9e840d02ab34446613037c392"
+  integrity sha512-1TMrlJRPYjeR6KS9TgnJz4DX1rHW5NkfgIHpe9NWL6TGTzd6qo8mLo6ibt3p1wvXAu/DOal1Yce5YloFGeexBA==
 
 dateformat@^3.0.0:
   version "3.0.3"
@@ -13720,11 +13720,6 @@ yargs@^16.2.0:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
-
-yarn-audit-ci@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/yarn-audit-ci/-/yarn-audit-ci-1.2.0.tgz#bed9baf7d9d661d30e2ffafef685bf7638a9147e"
-  integrity sha512-6FIqZP0rFNIW29VyQmKZ7RleFLbMyH4VlY6MyfKDJUiCgdchj/paf7W5Ue1sTcWy16ex/dTVNadEnfSQAK7uFA==
 
 yn@^2.0.0:
   version "2.0.0"
