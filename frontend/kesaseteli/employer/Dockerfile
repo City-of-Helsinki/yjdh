@@ -2,7 +2,8 @@
 FROM helsinkitest/node:14-slim as appbase
 # =======================================
 
-# Use non-root user
+# Use non-root user and add it to the root group (0)
+RUN usermod -a -G 0 appuser
 USER appuser
 
 # Yarn
@@ -82,6 +83,10 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-ser
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
 
+
+# install lerna
+RUN yarn global add lerna
+
 # Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
 # https://docs.openshift.com/enterprise/3.2/creating_images/guidelines.html
 USER root
@@ -91,9 +96,6 @@ USER appuser
 
 # Expose port
 EXPOSE 3000
-
-# install lerna
-RUN yarn global add lerna
 
 # Start nextjs server
 # https://github.com/lerna/lerna/issues/2428
