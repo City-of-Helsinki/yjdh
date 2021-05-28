@@ -101,6 +101,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "mozilla_django_oidc",
+    "django_extensions",
     # local apps
     "applications",
     "companies",

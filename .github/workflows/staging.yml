@@ -115,6 +115,20 @@ jobs:
           SLACK_MESSAGE: Deploying to ${{ matrix.url }} has *FAILED!*
           SLACK_CHANNEL: yjdh-alerts
         if: failure()
+
+      - name: Deploy Hourly Cronjobs
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+          image_tag:  ${{ github.sha }}
+          secret_name: project-staging-yjdh-kesaseteli-secret
+          kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW_STAGING}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
+          name: "kesaseteli-hourly-cronjob"
+          schedule: '0 * * * *'
+          command: "{/bin/sh}"
+          args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs hourly 2>&1}"
+
   acceptance-tests:
     strategy:
       fail-fast: false

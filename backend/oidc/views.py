@@ -11,7 +11,7 @@ from requests.exceptions import HTTPError
 
 from oidc.auth import HelsinkiOIDCAuthenticationBackend
 from oidc.models import OIDCProfile
-from oidc.services import clear_oidc_profile
+from oidc.services import clear_oidc_profiles
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class HelsinkiOIDCLogoutView(OIDCLogoutView):
                 logger.error(str(e))
 
             auth.logout(request)
-            clear_oidc_profile(oidc_profile)
+            clear_oidc_profiles(oidc_profile)
 
         return HttpResponseRedirect(self.redirect_url)
 
