@@ -4,7 +4,7 @@ import requests
 from django.conf import settings
 from django.contrib import auth
 from django.core.exceptions import SuspiciousOperation
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 from mozilla_django_oidc.views import OIDCLogoutView
 from requests.exceptions import HTTPError
@@ -19,13 +19,13 @@ logger = logging.getLogger(__name__)
 class HelsinkiOIDCLogoutView(OIDCLogoutView):
     """Override OIDCLogoutView to match the keycloak backchannel logout"""
 
-    def get(self, request):
+    def post(self, request):
         if request.user.is_authenticated:
             try:
                 oidc_profile = request.user.oidc_profile
             except OIDCProfile.DoesNotExist:
                 auth.logout(request)
-                return HttpResponseRedirect(self.redirect_url)
+                return HttpResponse("OK", status=200)
 
             payload = {
                 "id_token_hint": oidc_profile.id_token,
@@ -50,7 +50,7 @@ class HelsinkiOIDCLogoutView(OIDCLogoutView):
             auth.logout(request)
             clear_oidc_profiles(oidc_profile)
 
-        return HttpResponseRedirect(self.redirect_url)
+        return HttpResponse("OK", status=200)
 
 
 class HelsinkiOIDCUserInfoView(View):

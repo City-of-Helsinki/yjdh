@@ -14,7 +14,7 @@ class MockLogoutView(View):
     def handle_logout(self, request):
         if request.user.is_authenticated:
             auth.logout(request)
-        return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL or "/")
+        return HttpResponse("OK", status=200)
 
     def get(self, request):
         return self.handle_logout(request)

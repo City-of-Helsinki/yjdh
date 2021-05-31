@@ -50,7 +50,6 @@ env = environ.Env(
     OIDC_OP_LOGOUT_ENDPOINT=(str, ""),
     LOGIN_REDIRECT_URL=(str, ""),
     LOGIN_REDIRECT_URL_FAILURE=(str, ""),
-    LOGOUT_REDIRECT_URL=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -181,7 +180,6 @@ OIDC_OP_JWKS_ENDPOINT = env.str("OIDC_OP_JWKS_ENDPOINT")
 OIDC_OP_LOGOUT_ENDPOINT = env.str("OIDC_OP_LOGOUT_ENDPOINT")
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
-LOGOUT_REDIRECT_URL = env.str("LOGOUT_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
 
 # local_settings.py can be used to override environment-specific settings
