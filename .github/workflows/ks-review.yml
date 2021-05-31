@@ -124,7 +124,7 @@ jobs:
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ./${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
-          PROJECT_NAME: ${{ github.event.repository.name }}-${{ matrix.service }}
+          PROJECT_NAME: ${{ matrix.service }}
           K8S_SECRET_VERSION: ${{ github.sha }}
           VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_REVIEW }}
           VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
