@@ -17,10 +17,8 @@ const EmployerIndex: NextPage = () => {
     isLoading: isLoadingLogout,
     error: logoutError,
   } = useLogoutQuery();
-  const isLoading = isLoadingUser ?? isLoadingLogout;
-  const errorMessage = !user
-    ? 'Käyttäjää ei löytynyt.'
-    : (loadingUserError ?? logoutError)?.message;
+  const isLoading = isLoadingUser || isLoadingLogout || !user;
+  const errorMessage = (loadingUserError ?? logoutError)?.message;
 
   const onLogout = (event: React.SyntheticEvent): void => {
     event.preventDefault();
@@ -29,12 +27,11 @@ const EmployerIndex: NextPage = () => {
 
   return (
     <Layout headingText="Työnantajan liittymä">
-      {isLoadingUser && <p>Ladataan...</p>}
       {user && <p>Tervetuloa {user.name}!</p>}
       <Button onClick={onLogout} disabled={isLoading}>
-        {isLoadingLogout ? 'Kirjaudutaan ulos...' : 'Kirjaudu ulos'}
+        {isLoading ? 'Kirjaudutaan ulos...' : 'Kirjaudu ulos'}
       </Button>
-      {errorMessage && <p>Tapahtui virhe: {errorMessage}</p>}
+      {!isLoading && errorMessage && <p>Tapahtui virhe: {errorMessage}</p>}
     </Layout>
   );
 };

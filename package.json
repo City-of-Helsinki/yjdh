@@ -7,7 +7,7 @@
     "kesaseteli-frontend:up": "docker-compose -f docker-compose.kesaseteli.yml up employer",
     "kesaseteli-frontend:upbuild": "docker-compose -f docker-compose.kesaseteli.yml up --build employer",
     "kesaseteli-backend:up": "docker-compose -f docker-compose.kesaseteli.yml up postgres django",
-    "kesaseteli-backend:upbuild": "docker-compose up -f docker-compose.kesaseteli.yml up --build postgres django",
+    "kesaseteli-backend:upbuild": "docker-compose -f docker-compose.kesaseteli.yml up --build postgres django",
     "kesaseteli:up": "docker-compose up -f docker-compose.kesaseteli.yml",
     "kesaseteli:upbuild": "yarn kesaseteli:up --build",
     "stop": "docker kill $(docker ps -q)",
