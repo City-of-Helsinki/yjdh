@@ -18,6 +18,7 @@
     "paths": {
       "testcafe/*": ["shared/testcafe/*"],
       "kesaseteli/employer/*": ["kesaseteli/employer/src/*"],
+      "benefit/applicant/*": ["benefit/applicant/src/*"],
       "shared/*": ["shared/src/*"],
       "test-utils": ["shared/test/test-utils"]
     }

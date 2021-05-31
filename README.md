@@ -1,6 +1,7 @@
 # YJDH services
 
 ## kesaseteli
+
 YJDH-Kesäseteli
 
 ### kesaseteli Development with Docker
@@ -8,6 +9,19 @@ YJDH-Kesäseteli
 1. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
 
 2. Run `docker-compose -f docker-compose.kesaseteli.yml up`
+
+The Frontend is now running at [localhost:3000](http://localhost:3000)
+The backend is now running at [localhost:8000](http://localhost:8000)
+
+## Benefit
+
+YJDH-Benefit
+
+### Benefit Development with Docker
+
+1. Copy the contents of `.env.benefit.example` to `.env.benefit` and modify it if needed.
+
+2. Run `docker-compose -f docker-compose.benefit.yml up`
 
 The Frontend is now running at [localhost:3000](http://localhost:3000)
 The backend is now running at [localhost:8000](http://localhost:8000)

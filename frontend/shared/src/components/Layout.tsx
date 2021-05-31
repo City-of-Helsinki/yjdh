@@ -14,7 +14,7 @@ const Main = styled.main`
 type Props = { children: React.ReactNode; headingText: string };
 
 const Layout = ({ children, headingText }: Props): JSX.Element => (
-  <Main>
+  <Main id="main_content">
     <Heading>{headingText}</Heading>
     {children}
   </Main>

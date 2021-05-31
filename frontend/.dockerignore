@@ -16,4 +16,11 @@
 !shared/tsconfig.json
 !yarn.lock
 !kesaseteli/employer/start.js
+!benefit/applicant/next.config.js
+!benefit/applicant/next-i18next.config.js
+!benefit/benefit/package.json
+!benefit/applicant/public
+!benefit/applicant/src
+!benefit/applicant/tsconfig.json
+!benefit/applicant/start.js
 

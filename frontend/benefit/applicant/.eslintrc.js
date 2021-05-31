@@ -3,14 +3,19 @@ const { join } = require('path');
 module.exports = {
   extends: ['auto'],
   rules: {
-    'no-secrets/no-secrets': [
+    'no-void': 'off',
+    'jsx-a11y/anchor-is-valid': [
       'error',
-      { ignoreContent: 'https://makasiini.hel.ninja/delivery' },
+      {
+        components: ['Link'],
+        specialLink: ['hrefLeft', 'hrefRight'],
+        aspects: ['invalidHref', 'preferButton'],
+      },
     ],
     'import/no-extraneous-dependencies': [
       'error',
       // Use package.json from both this package folder and root.
-      { packageDir: [__dirname, join(__dirname, '../')] },
+      { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
   },
   overrides: [
@@ -18,6 +23,12 @@ module.exports = {
       files: ['*.ts'],
       rules: {
         'import/prefer-default-export': 'off',
+      },
+    },
+    {
+      files: ['*.test.tsx'],
+      rules: {
+        'jest/expect-expect': 'off',
       },
     },
   ],
