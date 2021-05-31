@@ -1,0 +1,60 @@
+name: (BF) Python tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+    - 'backend/helsinki-benefit/**'
+    - '.github/workflows/bf-pytest.yml'
+
+env:
+  DEBUG: 1
+
+jobs:
+  pytest:
+    name: Python tests
+    runs-on: ubuntu-latest
+    container: python:3.8-buster
+
+    services:
+      postgres:
+        image: postgres:12
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_USER: helsinkibenefit
+          POSTGRES_PASSWORD: helsinkibenefit
+          POSTGRES_DB: helsinkibenefit
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pip-modules
+        with:
+          path: ~/.pip-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: pip install -r backend/helsinki-benefit/requirements.txt -r backend/helsinki-benefit/requirements-dev.txt codecov
+
+      - name: Run tests
+        run: pytest backend/helsinki-benefit -ra -vv --doctest-modules --cov=.
+        env:
+          DATABASE_URL: postgres://helsinkibenefit:helsinkibenefit@postgres/helsinkibenefit
+
+      - name: Coverage
+        run: codecov
