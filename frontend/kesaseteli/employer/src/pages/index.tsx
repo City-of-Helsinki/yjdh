@@ -29,10 +29,10 @@ const EmployerIndex: NextPage = () => {
 
   return (
     <Layout headingText="Työnantajan liittymä">
-      {isLoading && <p>Ladataan...</p>}
+      {isLoadingUser && <p>Ladataan...</p>}
       {user && <p>Tervetuloa {user.name}!</p>}
       <Button onClick={onLogout} disabled={isLoading}>
-        Kirjaudu ulos
+        {isLoadingLogout ? 'Kirjaudutaan ulos...' : 'Kirjaudu ulos'}
       </Button>
       {errorMessage && <p>Tapahtui virhe: {errorMessage}</p>}
     </Layout>

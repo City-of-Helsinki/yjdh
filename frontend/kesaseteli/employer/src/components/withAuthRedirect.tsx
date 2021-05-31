@@ -11,7 +11,7 @@ type Props<P> = {
   WrappedComponent: React.FC<P>;
   LoadingComponent?: React.FC<unknown>;
   expectedAuth: boolean;
-  location: string;
+  redirectLocation: string;
 };
 /**
  * Support client-side conditional redirecting based on the user's
@@ -23,13 +23,13 @@ type Props<P> = {
  * the auth state is loading.
  * @param expectedAuth Whether the user should be authenticated for
  * the component to be rendered.
- * @param location The location to redirect to.
+ * @param redirectLocation The location to redirect to.
  */
 const withAuthRedirect = <P,>({
   WrappedComponent,
   LoadingComponent = DefaultLoadingFallback,
   expectedAuth,
-  location,
+  redirectLocation,
 }: Props<P>): typeof WrappedComponent => (props: P) => {
   const router = useRouter();
   const { isLoading, isAuthenticated } = useAuth();
@@ -38,7 +38,7 @@ const withAuthRedirect = <P,>({
   }
   if (!isServerSide() && expectedAuth !== isAuthenticated) {
     // eslint-disable-next-line no-void
-    void router.push(location);
+    void router.push(redirectLocation);
     return null;
   }
   return <WrappedComponent {...props} />;

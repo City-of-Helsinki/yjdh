@@ -3,6 +3,14 @@
     "husky": "^6.0.0"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "kesaseteli-frontend:up": "docker-compose -f docker-compose.kesaseteli.yml up employer",
+    "kesaseteli-frontend:upbuild": "docker-compose -f docker-compose.kesaseteli.yml up --build employer",
+    "kesaseteli-backend:up": "docker-compose -f docker-compose.kesaseteli.yml up postgres django",
+    "kesaseteli-backend:upbuild": "docker-compose up -f docker-compose.kesaseteli.yml up --build postgres django",
+    "kesaseteli:up": "docker-compose up -f docker-compose.kesaseteli.yml",
+    "kesaseteli:upbuild": "yarn kesaseteli:up --build",
+    "stop": "docker kill $(docker ps -q)",
+    "remove": "docker rm $(docker ps -a -q)"
   }
 }

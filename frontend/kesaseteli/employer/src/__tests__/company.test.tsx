@@ -1,14 +1,23 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { axe } from 'jest-axe';
+import {
+  expectAuthorized,
+  expectUnauthorized,
+} from 'kesaseteli/employer/__tests__/utils/auth-utils';
 import endpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
 import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
+import withAuth from 'kesaseteli/employer/components/withAuth';
 import CompanyPage from 'kesaseteli/employer/pages/company';
 import Company from 'kesaseteli/employer/types/company';
 import nock from 'nock';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { createQueryClient, renderComponent } from './utils/react-query-utils';
+import {
+  createQueryClient,
+  renderComponent,
+  renderPage,
+} from './utils/react-query-utils';
 
 const expectedCompany: Company = {
   id: 'id',
@@ -61,15 +70,24 @@ describe('frontend/kesaseteli/employer/src/pages/companyPage.tsx', () => {
       queryClient.clear();
     });
 
+    it('Should redirect when unauthorized', async () => {
+      expectUnauthorized();
+      const spyPush = jest.fn();
+      renderPage(withAuth(CompanyPage), queryClient, { push: spyPush });
+      await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
+    });
+
     it('Should show company data', async () => {
+      expectAuthorized();
       expectToReplyOk();
-      renderComponent(<CompanyPage />, queryClient);
+      renderPage(withAuth(CompanyPage), queryClient);
       await waitForShowingCompanyData();
     });
 
     it('Should show error', async () => {
+      expectAuthorized();
       expectToReplyError();
-      renderComponent(<CompanyPage />, queryClient);
+      renderPage(withAuth(CompanyPage), queryClient);
       await screen.findByText(/virhe/i);
     });
 
@@ -80,9 +98,10 @@ describe('frontend/kesaseteli/employer/src/pages/companyPage.tsx', () => {
           retryDelay: 1,
         },
       });
+      expectAuthorized();
       expectToReplyError(2);
       expectToReplyOk();
-      renderComponent(<CompanyPage />, queryClient);
+      renderPage(withAuth(CompanyPage), queryClient);
       await waitForShowingCompanyData();
     });
   });
