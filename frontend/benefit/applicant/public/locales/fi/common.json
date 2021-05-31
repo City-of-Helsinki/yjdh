@@ -1,4 +1,30 @@
 {
+  "applications": {
+    "list": {
+      "drafts": {
+        "heading": "Luonnokset",
+        "employee": "Työllistetty",
+        "saved": "Tallennettu",
+        "edit": "Muokka"
+      },
+      "submitted": {
+        "heading": "Lähetetyt",
+        "employee": "Työllistetty",
+        "sent": "Lähetetty",
+        "applicationNumber": "Hakemusnumero",
+        "status": "Tila",
+        "edit": "Muokka",
+        "review": "Tarkastele"
+      }
+    },
+    "statuses": {
+      "draft": "Luonnos",
+      "infoRequired": "Lisätietoja tarvitaan",
+      "received": "Vastaanotettu",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty"
+    }
+  },
   "appName": "Benefit FI",
   "footer": {
     "copyrightText": "Copyright text",

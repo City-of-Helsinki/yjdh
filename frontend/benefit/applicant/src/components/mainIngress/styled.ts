@@ -6,7 +6,6 @@ import styled from 'styled-components';
 const StyledContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-bottom: ${props => (props.theme as Theme).spacing.m};
 `;
 
 const StyledTextContainer = styled.div`
