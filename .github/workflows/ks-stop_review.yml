@@ -2,7 +2,7 @@ name: (KS) Stop Review
 on:
   pull_request:
     types: [closed]
-      paths:
+    paths:
       - 'backend/kesaseteli/**'
       - 'frontend/kesaseteli/**'
       - 'frontend/shared/**'
