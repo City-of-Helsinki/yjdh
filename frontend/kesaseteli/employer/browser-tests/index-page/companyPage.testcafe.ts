@@ -31,12 +31,6 @@ fixture('Companypage')
     indexPageComponents = getIndexPageComponents(t);
   });
 
-test('company page is redirected to login when not logged in', async () => {
-  await urlUtils.actions.navigateToCompanyPage();
-  await urlUtils.expectations.urlChangedToCompanyPage();
-  await urlUtils.expectations.urlChangedToLoginPage();
-});
-
 test('company data is present only when logged in out', async (t: TestController) => {
   await urlUtils.actions.navigateToLoginPage();
   await doEmployerLogin(t);
