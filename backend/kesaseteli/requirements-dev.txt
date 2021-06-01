@@ -22,10 +22,6 @@ coverage[toml]==5.5
     # via pytest-cov
 decorator==5.0.9
     # via ipython
-factory-boy==3.2.0
-    # via -r requirements-dev.in
-faker==8.2.1
-    # via factory-boy
 flake8==3.9.2
     # via -r requirements-dev.in
 idna==2.10
@@ -81,8 +77,6 @@ pytest==6.2.4
     #   -r requirements-dev.in
     #   pytest-cov
     #   pytest-django
-python-dateutil==2.8.1
-    # via faker
 regex==2021.4.4
     # via black
 requests-mock==1.9.2
@@ -90,11 +84,7 @@ requests-mock==1.9.2
 requests==2.25.1
     # via requests-mock
 six==1.16.0
-    # via
-    #   python-dateutil
-    #   requests-mock
-text-unidecode==1.3
-    # via faker
+    # via requests-mock
 toml==0.10.2
     # via
     #   black
