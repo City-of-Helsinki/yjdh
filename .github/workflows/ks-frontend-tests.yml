@@ -67,4 +67,4 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
-        run: yarn build
+        run: yarn kesaseteli-employer:build
