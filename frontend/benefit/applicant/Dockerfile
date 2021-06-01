@@ -65,12 +65,11 @@ WORKDIR /app
 COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/.next benefit/applicant/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/next.config.js /app/benefit/applicant/next-i18next.config.js benefit/applicant/
+COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/next-i18next.config.js app/benefit/applicant/next.config.js /app/benefit/applicant/next-i18next.config.js benefit/applicant/
 
-# Copy package.json and yarn.lock files
-# TODO: add public folder when we have static assets
-COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/package.json app/benefit/applicant/start.js benefit/applicant/
+# Copy public folder with assets package.json and yarn.lock files
+COPY --from=staticbuilder --chown=appuser:appuser public app/package.json app/yarn.lock app/lerna.json ./
+COPY --from=staticbuilder --chown=appuser:appuser src/i18n.ts app/benefit/applicant/package.json app/benefit/applicant/start.js benefit/applicant/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
