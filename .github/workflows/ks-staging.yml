@@ -7,6 +7,7 @@ on:
       - 'backend/kesaseteli/**'
       - 'frontend/kesaseteli/**'
       - 'frontend/shared/**'
+      - 'frontend/*'
       - '.github/workflows/ks-staging.yml'
   workflow_dispatch:
     inputs:

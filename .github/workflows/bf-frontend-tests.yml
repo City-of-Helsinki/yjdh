@@ -5,6 +5,7 @@ on:
     paths:
     - 'frontend/benefit/**'
     - 'frontend/shared/**'
+    - 'frontend/*'
     - '.github/workflows/bf-frontend-tests.yml'
   push:
     branches: [main]

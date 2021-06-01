@@ -6,6 +6,7 @@ on:
       - 'backend/helsinki-benefit/**'
       - 'frontend/helsinki-benefit/**'
       - 'frontend/shared/**'
+      - 'frontend/*'
       - '.github/workflows/bf-stop_review.yml'
   workflow_dispatch:
     inputs:
