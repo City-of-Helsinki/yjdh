@@ -141,11 +141,11 @@ jobs:
         with:
           image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
           image_tag:  ${{ github.sha }}
-          kubeconfig_raw: ${{ env.KUBECONFIG_RAW}}
-          target_namespace: ${{ env.K8S_NAMESPACE }}
-          name: "kesaseteli-hourly-cronjob"
+          kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE }}
+          name: kesaseteli-hourly-cronjob
           single_run: true
-          secret_name: "-secret"
+          secret_name: kesaseteli-hourly-cronjob-secret
           command: "{/bin/sh}"
           args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs hourly 2>&1}"
 
