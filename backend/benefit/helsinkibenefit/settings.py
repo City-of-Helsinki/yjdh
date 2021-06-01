@@ -27,7 +27,7 @@ env = environ.Env(
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
         str,
-        "postgres://benefit:benefit@localhost:5434/benefit",
+        "postgres://benefit:benefit@benefit-db:5434/benefit",
     ),
     CACHE_URL=(str, "locmemcache://"),
     MAIL_MAILGUN_KEY=(str, ""),
