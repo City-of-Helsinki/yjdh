@@ -1,5 +1,4 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
 import { axe } from 'jest-axe';
 import {
   authenticatedUser,
@@ -15,8 +14,6 @@ import withAuth from 'kesaseteli/employer/components/withAuth';
 import EmployerIndex from 'kesaseteli/employer/pages/index';
 import React from 'react';
 import { render } from 'test-utils';
-
-axios.defaults.withCredentials = true;
 
 describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   const queryClient = createQueryClient();
