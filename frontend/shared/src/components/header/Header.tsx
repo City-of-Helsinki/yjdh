@@ -1,9 +1,9 @@
 import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
 import React from 'react';
+import { MAIN_CONTENT_ID } from 'shared/constants';
 import { NavigationItem, OptionType } from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
-import { MAIN_CONTENT_ID } from '../../../constants';
 import { useComponent } from './extended';
 
 export type HeaderProps = {
