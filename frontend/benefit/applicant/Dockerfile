@@ -79,9 +79,11 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-ser
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
 
+USER root
+# Use non-root user and add it to the root group (0)
+RUN usermod -a -G 0 appuser
 # Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
 # https://docs.openshift.com/enterprise/3.2/creating_images/guidelines.html
-USER root
 RUN chgrp -R 0 . \
   && chmod -R g+rwX .
 USER appuser
