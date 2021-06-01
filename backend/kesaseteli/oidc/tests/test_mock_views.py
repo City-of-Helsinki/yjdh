@@ -45,14 +45,14 @@ def test_login_view(client):
 @pytest.mark.django_db
 @override_settings(
     MOCK_FLAG=True,
-    LOGOUT_REDIRECT_URL="http://example.com/logout/",
     ROOT_URLCONF=__name__,
 )
 def test_logout_view(user_client, user):
     logout_url = reverse("oidc_logout")
     response = user_client.post(logout_url)
 
-    assert response.url == settings.LOGOUT_REDIRECT_URL
+    assert response.status_code == 200
+    assert response.content == b"OK"
     assert "_auth_user_id" not in user_client.session  # User not authenticated
 
 
