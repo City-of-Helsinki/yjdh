@@ -11,10 +11,7 @@ export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
 export const COMMON_I18N_NAMESPACES = ['common'];
 
 export const PRIVACY_POLICY_LINKS = {
-  fi:
-    'https://www.hel.fi',
-  en:
-    'https://www.hel.fi',
-  sv:
-    'https://www.hel.fi',
+  fi: 'https://www.hel.fi/1',
+  en: 'https://www.hel.fi/2',
+  sv: 'https://www.hel.fi/3',
 };

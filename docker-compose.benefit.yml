@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:12
+    restart: on-failure
+    environment:
+      POSTGRES_USER: benefit
+      POSTGRES_PASSWORD: benefit
+      POSTGRES_DB: benefit
+    ports:
+      - 5434:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: benefit-db
+
+  django:
+    build:
+      context: ./backend
+      target: development
+    env_file:
+      - .env.benefit
+    environment:
+      DATABASE_URL: postgres://benefit:benefit@benefit-db/benefit
+      DATABASE_HOST: benefit-db.helsinki
+    volumes:
+      - ./backend:/app
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - postgres
+    container_name: benefit-backend
+
+  applicant:
+    build:
+      context: ./frontend
+      dockerfile: benefit/applicant/Dockerfile
+      target: development
+    volumes:
+      - ./frontend/benefit/applicant:/app/applicant
+      - ./frontend/shared:/app/shared
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit
+    ports:
+      - "3000:3000"
+    container_name: benefit-applicant
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  default:
+    name: helsinki

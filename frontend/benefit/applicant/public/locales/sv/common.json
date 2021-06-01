@@ -1,5 +1,31 @@
 {
-  "appName": "Benefit SV",
+  "applications": {
+    "list": {
+      "drafts": {
+        "heading": "Luonnokset",
+        "employee": "Työllistetty",
+        "saved": "Tallennettu",
+        "edit": "Muokka"
+      },
+      "submitted": {
+        "heading": "Lähetetyt",
+        "employee": "Työllistetty",
+        "sent": "Lähetetty",
+        "applicationNumber": "Hakemusnumero",
+        "status": "Tila",
+        "edit": "Muokka",
+        "check": "Tarkastele"
+      }
+    },
+    "statuses": {
+      "draft": "Luonnos",
+      "infoRequired": "Lisätietoja tarvitaan",
+      "received": "Vastaanotettu",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty"
+    }
+  },
+  "appName": "Helsinki-benefit SV",
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
@@ -16,5 +42,5 @@
     "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
     "newApplicationBtnText": "Tee uusi hakemus"
   },
-  "menuToggleAriaLabel": "Menyn"
+  "menuToggleAriaLabel": "Menu"
 }
