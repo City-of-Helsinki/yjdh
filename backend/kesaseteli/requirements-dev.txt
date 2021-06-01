@@ -11,7 +11,7 @@ attrs==21.2.0
 backcall==0.2.0
     # via ipython
 black==21.5b1
-    # via -r requirements-dev.in
+    # via -r kesaseteli/requirements-dev.in
 certifi==2020.12.5
     # via requests
 chardet==4.0.0
@@ -23,17 +23,17 @@ coverage[toml]==5.5
 decorator==5.0.9
     # via ipython
 flake8==3.9.2
-    # via -r requirements-dev.in
+    # via -r kesaseteli/requirements-dev.in
 idna==2.10
     # via requests
 iniconfig==1.1.1
     # via pytest
 ipython-genutils==0.2.0
     # via traitlets
-ipython==7.23.1
-    # via -r requirements-dev.in
+ipython==7.24.0
+    # via -r kesaseteli/requirements-dev.in
 isort==5.8.0
-    # via -r requirements-dev.in
+    # via -r kesaseteli/requirements-dev.in
 jedi==0.18.0
     # via ipython
 matplotlib-inline==0.1.2
@@ -69,18 +69,18 @@ pygments==2.9.0
 pyparsing==2.4.7
     # via packaging
 pytest-cov==2.12.0
-    # via -r requirements-dev.in
+    # via -r kesaseteli/requirements-dev.in
 pytest-django==4.3.0
-    # via -r requirements-dev.in
+    # via -r kesaseteli/requirements-dev.in
 pytest==6.2.4
     # via
-    #   -r requirements-dev.in
+    #   -r kesaseteli/requirements-dev.in
     #   pytest-cov
     #   pytest-django
 regex==2021.4.4
     # via black
 requests-mock==1.9.2
-    # via -r requirements-dev.in
+    # via -r kesaseteli/requirements-dev.in
 requests==2.25.1
     # via requests-mock
 six==1.16.0
