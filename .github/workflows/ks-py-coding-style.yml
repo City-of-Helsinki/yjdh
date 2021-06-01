@@ -1,9 +1,12 @@
-name: Python coding style
+name: (KS) Python coding style
 
 on:
   push:
     branches: [main]
   pull_request:
+    paths:
+      - 'backend/kesaseteli/**'
+      - '.github/workflows/ks-pytest.yml'
 
 
 env:
@@ -36,13 +39,13 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt -r backend/requirements-dev.txt
+        run: pip install -r backend/kesaseteli/requirements.txt -r backend/kesaseteli/requirements-dev.txt
 
       - name: Formatting
-        run: cd backend && black --check .
+        run: cd backend/kesaseteli && black --check .
 
       - name: Linting
-        run: cd backend && flake8
+        run: cd backend/kesaseteli && flake8
 
       - name: Import sorting
-        run: cd backend && isort -c .
+        run: cd backend/kesaseteli && isort -c .

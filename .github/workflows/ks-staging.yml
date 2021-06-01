@@ -1,8 +1,12 @@
-name: Build & Staging
+name: (KS) Build & Staging
 on:
   push:
     branches:
       - main
+    paths:
+      - 'backend/kesaseteli/**'
+      - 'frontend/kesaseteli/**'
+      - '.github/workflows/ks-staging.yml'
   workflow_dispatch:
     inputs:
       build_required:
@@ -39,8 +43,8 @@ jobs:
         service: [ 'backend', 'employer' ]
         include:
           - service: backend
-            context: ./backend
-            dockerfile: ./backend/Dockerfile
+            context: ./backend/kesaseteli
+            dockerfile: ./backend/kesaseteli/Dockerfile
             port: 8000
           - service: employer
             context: ./frontend
@@ -72,7 +76,7 @@ jobs:
         include:
           - service: kesaseteli-backend
             context: backend
-            dockerfile: ./backend/Dockerfile
+            dockerfile: ./backend/kesaseteli/Dockerfile
             database: true
           - service: kesaseteli-employer
             context: frontend/kesaseteli

@@ -1,9 +1,12 @@
-name: Python tests
+name: (KS) Python tests
 
 on:
   push:
     branches: [main]
   pull_request:
+    paths:
+      - 'backend/kesaseteli/**'
+      - '.github/workflows/ks-pytest.yml'
 
 
 env:
@@ -47,10 +50,10 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt -r backend/requirements-dev.txt codecov
+        run: pip install -r backend/kesaseteli/requirements.txt -r backend/kesaseteli/requirements-dev.txt codecov
 
       - name: Run tests
-        run: pytest backend/ -ra -vv --doctest-modules --cov=.
+        run: pytest backend/kesaseteli/ -ra -vv --doctest-modules --cov=.
         env:
           DATABASE_URL: postgres://kesaseteli:kesaseteli@postgres/kesaseteli
 

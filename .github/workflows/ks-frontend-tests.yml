@@ -1,7 +1,10 @@
-name: Audit, Lint, Unit and Component tests
+name: (KS) Audit, Lint, Unit and Component tests
 
 on:
   pull_request:
+    paths:
+      - 'frontend/kesaseteli/**'
+      - '.github/workflows/ks-frontend-tests.yml'
   push:
     branches: [main]
   workflow_dispatch:
