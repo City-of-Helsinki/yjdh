@@ -50,7 +50,7 @@ WORKDIR /app
 COPY --chown=appuser:appuser . .
 
 # Build application
-RUN yarn build
+RUN yarn build:applicant
 
 # ==========================================
 FROM helsinkitest/node:14-slim AS production
