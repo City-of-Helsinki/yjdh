@@ -26,9 +26,16 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.tsx'],
+      files: ['*.test.tsx', '*.testcafe.ts'],
       rules: {
         'jest/expect-expect': 'off',
+        'jest/no-done-callback': 'off',
+      },
+    },
+    {
+      files: ['*.components.ts'],
+      rules: {
+        'security/detect-non-literal-fs-filename': 'off',
       },
     },
   ],

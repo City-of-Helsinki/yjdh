@@ -20,5 +20,11 @@ module.exports = {
         'import/prefer-default-export': 'off',
       },
     },
+    {
+      files: ['*.components.ts'],
+      rules: {
+        'security/detect-non-literal-fs-filename': 'off',
+      },
+    },
   ],
 };

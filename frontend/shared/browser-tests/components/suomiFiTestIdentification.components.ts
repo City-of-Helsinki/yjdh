@@ -39,7 +39,6 @@ export const getSuomiFiTestIdentificationComponents = (t: TestController) => {
     const expectations = {
       async isPresent() {
         await t
-          // eslint-disable-next-line security/detect-non-literal-fs-filename
           .expect(selectors.identificationForm().exists)
           .ok(await getErrorMessage(t));
       },
