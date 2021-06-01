@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { MAIN_CONTENT_ID } from 'shared/constants';
 
-import { MAIN_CONTENT_ID } from '../../../constants';
 import { StyledMain } from './styled';
 
 type Props = { children: React.ReactNode };

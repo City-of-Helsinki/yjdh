@@ -1,9 +1,9 @@
+import { useTranslation } from 'benefit/applicant/i18n';
 import { IconPen } from 'hds-react';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
 
-import { useTranslation } from '../../../../i18n';
 import { APPLICATION_STATUSES } from '../constants';
 import {
   StyledAvatar,
