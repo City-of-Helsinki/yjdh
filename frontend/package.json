@@ -11,10 +11,8 @@
   ],
   "scripts": {
     "audit": "lerna-audit --level=high --groups=dependencies",
-    "build": "yarn build:employer",
     "kesaseteli-employer:build": "lerna run --scope @frontend/employer --stream build",
     "benefit-applicant:build": "lerna run --scope @frontend/applicant --stream build",
-    "dev": "yarn dev:employer",
     "kesaseteli-employer:dev": "lerna run --scope @frontend/employer --stream dev",
     "benefit-applicant:dev": "lerna run --scope @frontend/applicant --stream dev",
     "start": "yarn start:employer",

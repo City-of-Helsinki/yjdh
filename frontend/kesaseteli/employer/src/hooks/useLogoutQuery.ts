@@ -10,19 +10,8 @@ const useLogoutQuery = (): UseMutationResult<unknown, Error, void> => {
   const queryClient = useQueryClient();
   return useMutation<unknown, Error, void>(
     'logout',
-    () =>
-      handleResponse(
-        axios.post<unknown>(backendEndpoint.LOGOUT, undefined, {
-          withCredentials: true,
-        })
-      ),
+    () => handleResponse(axios.post<unknown>(backendEndpoint.LOGOUT)),
     {
-      onError: (error) => {
-        // eslint-disable-next-line no-console
-        console.log('Error on logout', error);
-        void queryClient.removeQueries();
-        void router.push('/login?error=true');
-      },
       onSuccess: () => {
         void queryClient.removeQueries();
         void router.push('/login?logout=true');

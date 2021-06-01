@@ -32,7 +32,7 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 # Bake package.json start command into the image
-CMD ["yarn", "dev"]
+CMD ["yarn", "kesaseteli-employer:dev"]
 
 # ===================================
 FROM appbase as staticbuilder

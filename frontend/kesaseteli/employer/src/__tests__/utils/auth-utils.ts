@@ -11,10 +11,16 @@ export const authenticatedUser: User = {
   name: faker.name.findName(),
 };
 
-export const expectAuthorized = (): nock.Scope =>
+export const expectAuthorized = (persistValue = false): nock.Scope =>
   nock(getBackendUrl())
+    .persist(persistValue)
     .get(endpoint.USER)
     .reply(200, authenticatedUser, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectUnauthorized = (): nock.Scope =>
   nock(getBackendUrl()).get(endpoint.USER).replyWithError('401 Unauthorized');
+
+export const expectToLogout = (): nock.Scope =>
+  nock(getBackendUrl())
+    .post(endpoint.LOGOUT)
+    .reply(200, authenticatedUser, { 'Access-Control-Allow-Origin': '*' });
