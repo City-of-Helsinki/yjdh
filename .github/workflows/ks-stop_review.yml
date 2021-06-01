@@ -2,6 +2,11 @@ name: (KS) Stop Review
 on:
   pull_request:
     types: [closed]
+      paths:
+      - 'backend/kesaseteli/**'
+      - 'frontend/kesaseteli/**'
+      - 'frontend/shared/**'
+      - '.github/workflows/ks-stop_review.yml'
   workflow_dispatch:
     inputs:
       head_ref:

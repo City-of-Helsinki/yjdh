@@ -6,6 +6,7 @@ on:
     paths:
       - 'backend/helsinki-benefit/**'
       - 'frontend/helsinki-benefit/**'
+      - 'frontend/shared/**'
       - '.github/workflows/bf-staging.yml'
   workflow_dispatch:
     inputs:
