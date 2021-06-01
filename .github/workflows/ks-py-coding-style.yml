@@ -1,0 +1,51 @@
+name: (KS) Python coding style
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - 'backend/kesaseteli/**'
+      - '.github/workflows/ks-pytest.yml'
+
+
+env:
+  DEBUG: 1
+
+jobs:
+  py-coding-style:
+    name: Python coding style
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pip-modules
+        with:
+          path: ~/.pip-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: pip install -r backend/kesaseteli/requirements.txt -r backend/kesaseteli/requirements-dev.txt
+
+      - name: Formatting
+        run: cd backend/kesaseteli && black --check .
+
+      - name: Linting
+        run: cd backend/kesaseteli && flake8
+
+      - name: Import sorting
+        run: cd backend/kesaseteli && isort -c .

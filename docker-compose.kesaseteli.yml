@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+    postgres:
+        image: postgres:12
+        restart: on-failure
+        environment:
+            POSTGRES_USER: kesaseteli
+            POSTGRES_PASSWORD: kesaseteli
+            POSTGRES_DB: kesaseteli
+        ports:
+            - 5434:5432
+        volumes:
+          - pgdata:/var/lib/postgresql/data
+        container_name: kesaseteli-db
+
+    django:
+        build:
+            context: ./backend/kesaseteli
+            target: development
+        env_file:
+            - .env.kesaseteli
+        environment:
+            DATABASE_URL: postgres://kesaseteli:kesaseteli@kesaseteli-db/kesaseteli
+            DATABASE_HOST: kesaseteli-db.helsinki
+        volumes:
+            - ./backend/kesaseteli:/app
+        ports:
+            - "127.0.0.1:8000:8000"
+        depends_on:
+            - postgres
+        container_name: kesaseteli-backend
+
+    employer:
+        build:
+            context: ./frontend
+            dockerfile: kesaseteli/employer/Dockerfile
+            target: development
+        volumes:
+            - ./frontend/kesaseteli/employer:/app/employer
+            - ./frontend/shared:/app/shared
+            - /app/node_modules
+            - /app/.next
+        env_file:
+            - .env.kesaseteli
+        ports:
+            - '3000:3000'
+        container_name: kesaseteli-employer
+
+volumes:
+    pgdata:
+        driver: local
+
+networks:
+    default:
+        name: helsinki

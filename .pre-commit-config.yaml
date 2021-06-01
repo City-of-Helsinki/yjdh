@@ -2,7 +2,7 @@ default_language_version:
     python: python3
 repos:
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.5b1
     hooks:
       - id: black
         files: ^backend/
@@ -12,10 +12,10 @@ repos:
       - id: flake8
         exclude: migrations|snapshots
         files: ^backend/
-        args: [--config, backend/setup.cfg]
+        args: [--config, backend/shared/precommit-setup.cfg]
   - repo: https://github.com/pycqa/isort
     rev: 5.8.0
     hooks:
       - id: isort
         files: ^backend/
-        args: [--settings-path, backend/setup.cfg]
+        args: [--settings-path, backend/shared/precommit-setup.cfg]

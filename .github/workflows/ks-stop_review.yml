@@ -1,0 +1,28 @@
+name: (KS) Stop Review
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      head_ref:
+        description: "Branch where review environment was created from (as in GitHub). Has to be given as the branch is probably removed and no longer available in the branch list. Can be empty if environment deployed manually"
+      pr_number:
+        description: "Own or pull request number of the environment creator"
+
+env:
+  KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW }}
+
+jobs:
+  stop_review:
+    runs-on: ubuntu-latest
+    name: Stop Review
+    steps:
+      - uses: andersinno/kolga-setup-action@v2
+        with:
+          head_ref: ${{ github.event.inputs.head_ref }}
+          pr_number: ${{ github.event.inputs.pr_number }}
+
+      - name: Stop Review
+        uses: andersinno/kolga-review-cleanup-action@v2
+        with:
+          namespace: ${{ env.K8S_NAMESPACE }}

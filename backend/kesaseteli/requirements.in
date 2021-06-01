@@ -1,0 +1,11 @@
+Django~=3.2
+django-cors-headers
+django-cryptography
+django-environ
+django-extensions
+djangorestframework
+django-simple-history
+mozilla-django-oidc
+psycopg2
+sentry-sdk
+requests
