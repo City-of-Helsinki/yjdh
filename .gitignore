@@ -144,3 +144,10 @@ node_modules
 
 # MacOS files
 .DS_Store
+
+# ipython history
+.pdb-pyhist
+
+# nohup output
+nohup.out
+

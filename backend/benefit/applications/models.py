@@ -55,7 +55,8 @@ class Application(UUIDModel, TimeStampedModel):
     Company street address from official sources (YTJ/other) at the time the application was created
     """
     official_company_street_address = models.CharField(
-        max_length=256, verbose_name=_("company street address")
+        max_length=256,
+        verbose_name=_("company street address"),
     )
     """
     Company city from official sources (YTJ/other) at the time the application was created
@@ -77,22 +78,25 @@ class Application(UUIDModel, TimeStampedModel):
     use_alternative_address = models.BooleanField()
 
     alternative_company_street_address = models.CharField(
-        max_length=256, verbose_name=_("company street address")
+        max_length=256, verbose_name=_("company street address"), blank=True
     )
     alternative_company_city = models.CharField(
-        max_length=256, verbose_name=_("company city")
+        max_length=256, verbose_name=_("company city"), blank=True
     )
     alternative_company_postcode = models.CharField(
-        max_length=256, verbose_name=_("company post code")
+        max_length=256, verbose_name=_("company post code"), blank=True
     )
 
     company_bank_account_number = IBANField(
-        include_countries=("FI",), verbose_name=_("company bank account number")
+        include_countries=("FI",),
+        verbose_name=_("company bank account number"),
+        blank=True,
     )
 
     company_contact_person_phone_number = models.CharField(
         max_length=64,
         verbose_name=_("company contact person's phone number"),
+        blank=True,
     )
     company_contact_person_email = models.EmailField(
         blank=True, verbose_name=_("company contact person's email")
@@ -125,6 +129,7 @@ class Application(UUIDModel, TimeStampedModel):
         verbose_name=_(
             "additional information about the ongoing co-operation negotiations"
         ),
+        blank=True,
     )
 
     apprenticeship_program = models.BooleanField(null=True)
@@ -137,7 +142,9 @@ class Application(UUIDModel, TimeStampedModel):
     """
     The type of benefit the applicant is applying for
     """
-    benefit_type = models.CharField(choices=BenefitType.choices, max_length=64)
+    benefit_type = models.CharField(
+        choices=BenefitType.choices, max_length=64, blank=True
+    )
 
     start_date = models.DateField(
         verbose_name=_("benefit start from date"), null=True, blank=True
@@ -206,7 +213,7 @@ class DeMinimisAid(UUIDModel, TimeStampedModel):
     granted_at = models.DateField(
         verbose_name=_("benefit granted at"), blank=True, null=True
     )
-
+    ordering = models.IntegerField(default=0)
     history = HistoricalRecords(table_name="applications_deminimisaid_history")
 
     def __str__(self):
@@ -216,6 +223,8 @@ class DeMinimisAid(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_deminimisaid"
         verbose_name = _("de minimis aid")
         verbose_name_plural = _("de minimis aids")
+        unique_together = [("application", "ordering")]
+        ordering = ["application__created_at", "ordering"]
 
 
 class ApplicationLogEntry(UUIDModel, TimeStampedModel):
@@ -250,6 +259,7 @@ class ApplicationBasis(UUIDModel, TimeStampedModel):
     """
 
     identifier = models.CharField(max_length=64, unique=True)
+    is_active = models.BooleanField(default=True)
 
     history = HistoricalRecords(table_name="bf_applications_applicationbasis_history")
 

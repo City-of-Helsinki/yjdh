@@ -17,3 +17,23 @@ class BenefitType(models.TextChoices):
     EMPLOYMENT_BENEFIT = "employment_benefit", _("Employment Benefit")
     SALARY_BENEFIT = "salary_benefit", _("Salary Benefit")
     COMMISSION_BENEFIT = "commission_benefit", _("Commission Benefit")
+
+
+class OrganizationType(models.TextChoices):
+    """
+    Coarse classification of the applicant organization type
+    e.g.
+    "oy", "oyj" -> COMPANY
+    "rekisteröity yhdistys", "säätiö" -> ASSOCIATION
+    """
+
+    COMPANY = "company", _("Company")
+    ASSOCIATION = "association", _("Association")
+
+    @classmethod
+    def resolve_organization_type(cls, company_form):
+        # TODO: actual implementation when integration to YTJ/palveluväylä/PRH is implemented
+        if company_form.lower() in ["oy", "oyj", "tmi"]:
+            return OrganizationType.COMPANY
+        else:
+            return OrganizationType.ASSOCIATION
