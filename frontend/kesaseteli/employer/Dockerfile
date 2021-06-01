@@ -33,7 +33,7 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 # Bake package.json start command into the image
-CMD ["yarn", "dev"]
+CMD ["yarn", "dev:employer"]
 
 # ===================================
 FROM appbase as staticbuilder
@@ -49,7 +49,7 @@ WORKDIR /app
 COPY --chown=appuser:appuser . .
 
 # Build application
-RUN yarn build
+RUN yarn build:employer
 
 # ==========================================
 FROM helsinkitest/node:14-slim AS production

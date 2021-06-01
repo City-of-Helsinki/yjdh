@@ -34,7 +34,7 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 # Bake package.json start command into the image
-CMD ["yarn", "dev"]
+CMD ["yarn", "dev:applicant"]
 
 # ===================================
 FROM appbase as staticbuilder
