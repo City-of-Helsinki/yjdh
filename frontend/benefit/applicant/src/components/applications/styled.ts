@@ -3,7 +3,7 @@ import { Button } from 'hds-react';
 import { Theme } from 'shared/styles/theme';
 import styled, { ThemeProps } from 'styled-components';
 
-type Props = ThemeProps<Theme> & { status: APPLICATION_STATUSES };
+type Props = ThemeProps<Theme> & { status?: APPLICATION_STATUSES };
 
 interface AvatarProps {
   status: APPLICATION_STATUSES;
@@ -11,7 +11,7 @@ interface AvatarProps {
 
 const avatarBackgroundColors = (
   theme: Theme,
-  status: APPLICATION_STATUSES
+  status?: APPLICATION_STATUSES
 ): string => {
   const colors = {
     [APPLICATION_STATUSES.DRAFT]: theme.colors.black40,
@@ -20,7 +20,7 @@ const avatarBackgroundColors = (
     [APPLICATION_STATUSES.APPROVED]: theme.colors.success,
     [APPLICATION_STATUSES.REJECTED]: theme.colors.error,
   };
-  return colors[status];
+  return colors[status || APPLICATION_STATUSES.DRAFT];
 };
 
 const StyledWrapper = styled.div`
@@ -51,10 +51,10 @@ const StyledItemContent = styled.div`
 `;
 
 const StyledAvatar = styled.div<AvatarProps>`
-  ${({ theme, status }: Props) => `
-    background-color: ${avatarBackgroundColors(theme, status)};
-    color: ${theme.colors.white};
-    font-size: ${theme.fontSize.heading.xs};
+  ${(props: Props) => `
+    background-color: ${avatarBackgroundColors(props.theme, props.status)};
+    color: ${props.theme.colors.white};
+    font-size: ${props.theme.fontSize.heading.xs};
   `}
   font-weight: 600;
   display: flex;
