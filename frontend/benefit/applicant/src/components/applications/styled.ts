@@ -1,7 +1,9 @@
 import { APPLICATION_STATUSES } from 'benefit/applicant/components/applications/constants';
 import { Button } from 'hds-react';
 import { Theme } from 'shared/styles/theme';
-import styled from 'styled-components';
+import styled, { ThemeProps } from 'styled-components';
+
+type Props = ThemeProps<Theme> & { status: string };
 
 interface AvatarProps {
   status: string;
@@ -13,7 +15,7 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledHeading = styled.h1`
-  font-size: ${(props) => (props.theme as Theme).fontSize.heading.m};
+  font-size: ${(props: Props) => props.theme.fontSize.heading.m};
   font-weight: 500;
 `;
 
@@ -24,10 +26,10 @@ const StyledListWrapper = styled.div`
 
 const StyledListItem = styled.div`
   display: flex;
-  background-color: ${(props) => (props.theme as Theme).colors.white};
-  padding: ${(props) => (props.theme as Theme).spacing.xs};
+  background-color: ${(props: Props) => props.theme.colors.white};
+  padding: ${(props: Props) => props.theme.spacing.xs};
   justify-content: space-between;
-  margin-bottom: ${(props) => (props.theme as Theme).spacing.xs2};
+  margin-bottom: ${(props: Props) => props.theme.spacing.xs2};
 `;
 
 const StyledItemContent = styled.div`
@@ -35,38 +37,38 @@ const StyledItemContent = styled.div`
 `;
 
 const StyledAvatar = styled.div<AvatarProps>`
-  ${(props) =>
+  ${(props: Props) =>
     props.status === APPLICATION_STATUSES.DRAFT &&
     `
-      background-color: ${(props.theme as Theme).colors.black40};
+      background-color: ${props.theme.colors.black40};
   `}
 
-  ${(props) =>
+  ${(props: Props) =>
     props.status === APPLICATION_STATUSES.INFO_REQUIRED &&
     `
-        background-color: ${(props.theme as Theme).colors.alertDark};
+        background-color: ${props.theme.colors.alertDark};
     `}
   
-  ${(props) =>
+  ${(props: Props) =>
     props.status === APPLICATION_STATUSES.RECEIVED &&
     `
-        background-color: ${(props.theme as Theme).colors.info};
+        background-color: ${props.theme.colors.info};
     `}
 
-  ${(props) =>
+  ${(props: Props) =>
     props.status === APPLICATION_STATUSES.APPROVED &&
     `
-        background-color: ${(props.theme as Theme).colors.success};
+        background-color: ${props.theme.colors.success};
     `}
 
-  ${(props) =>
+  ${(props: Props) =>
     props.status === APPLICATION_STATUSES.REJECTED &&
     `
-        background-color: ${(props.theme as Theme).colors.error};
+        background-color: ${props.theme.colors.error};
     `}
 
-  color: ${(props) => (props.theme as Theme).colors.white};
-  font-size: ${(props) => (props.theme as Theme).fontSize.heading.xs};
+  color: ${(props: Props) => props.theme.colors.white};
+  font-size: ${(props: Props) => props.theme.fontSize.heading.xs};
   font-weight: 600;
   display: flex;
   justify-content: center;
@@ -79,21 +81,21 @@ const StyledAvatar = styled.div<AvatarProps>`
 `;
 
 const StyledDataColumn = styled.div`
-  color: ${(props) => (props.theme as Theme).colors.black90};
+  color: ${(props: Props) => props.theme.colors.black90};
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 ${(props) => (props.theme as Theme).spacing.m};
+  padding: 0 ${(props: Props) => props.theme.spacing.m};
 `;
 
 const StyledDataHeader = styled.div`
   display: flex;
-  line-height: ${(props) => (props.theme as Theme).lineHeight.xl};
+  line-height: ${(props: Props) => props.theme.lineHeight.xl};
 `;
 
 const StyledDataValue = styled.div`
   display: flex;
-  line-height: ${(props) => (props.theme as Theme).lineHeight.xl};
+  line-height: ${(props: Props) => props.theme.lineHeight.xl};
   font-weight: 600;
 `;
 
@@ -102,17 +104,16 @@ const StyledItemActions = styled.div`
 `;
 
 const StyledSecondaryButton = styled(Button)`
-  color: ${(props) => (props.theme as Theme).colors.black90} !important;
-  border-color: ${(props) => (props.theme as Theme).colors.black90} !important;
+  color: ${(props: Props) => props.theme.colors.black90} !important;
+  border-color: ${(props: Props) => props.theme.colors.black90} !important;
   border-width: 3px !important;
   width: 170px;
 `;
 
 const StyledPrimaryButton = styled(Button)`
-  background-color: ${(props) =>
-    (props.theme as Theme).colors.coatOfArms} !important;
-  border-color: ${(props) =>
-    (props.theme as Theme).colors.coatOfArms} !important;
+  background-color: ${(props: Props) =>
+    props.theme.colors.coatOfArms} !important;
+  border-color: ${(props: Props) => props.theme.colors.coatOfArms} !important;
   border-width: 3px !important;
   width: 170px;
 `;
