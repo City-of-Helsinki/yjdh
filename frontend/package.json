@@ -25,6 +25,7 @@
     "lint": "lerna run --stream lint",
     "test": "yarn jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
+    "test:coverage": "yarn test --verbose --coverage",
     "browser-test:kesaseteli-employer": "lerna run --scope @frontend/employer --stream browser-test",
     "browser-test:kesaseteli-employer:ci": "lerna run --stream browser-test:ci",
     "browser-test:benefit-applicant": "lerna run --scope @frontend/applicant --stream browser-test",
