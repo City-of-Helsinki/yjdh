@@ -45,7 +45,7 @@ jobs:
             dockerfile: ./backend/helsinki-benefit/Dockerfile
             port: 8000
           - service: bf-applicant
-            context: ./frontend/benefit/applicant/
+            context: ./frontend
             dockerfile: ./frontend/benefit/applicant/Dockerfile
             port: 3000
     runs-on: ubuntu-latest
@@ -76,7 +76,7 @@ jobs:
             port: 8000
           - service: bf-applicant
             project: bf-appl
-            context: ./frontend/helsinki-benefit/applicant
+            context: frontend
             dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
             database: false
             port: 3000
