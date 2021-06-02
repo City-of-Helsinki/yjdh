@@ -5,6 +5,7 @@ django-environ
 django-extensions
 djangorestframework
 django-simple-history
+factory-boy
 mozilla-django-oidc
 psycopg2
 sentry-sdk
