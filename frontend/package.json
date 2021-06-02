@@ -102,6 +102,7 @@
   "resolutions": {
     "trim": "^0.0.3",
     "node-fetch": "^2.6.1",
-    "browserslist": "^4.16.5"
+    "browserslist": "^4.16.5",
+    "jsdom": "^16.6.0"
   }
 }
