@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from oidc.models import AbstractCompany
+from utils.models import UUIDModel
 
 
-class Company(AbstractCompany):
+class Company(UUIDModel):
     name = models.CharField(max_length=256, verbose_name=_("name"))
     business_id = models.CharField(max_length=64, verbose_name=_("business id"))
     company_form = models.CharField(max_length=64, verbose_name=_("company form"))
