@@ -3,11 +3,25 @@ import { Button } from 'hds-react';
 import { Theme } from 'shared/styles/theme';
 import styled, { ThemeProps } from 'styled-components';
 
-type Props = ThemeProps<Theme> & { status: string };
+type Props = ThemeProps<Theme> & { status: APPLICATION_STATUSES };
 
 interface AvatarProps {
-  status: string;
+  status: APPLICATION_STATUSES;
 }
+
+const avatarBackgroundColors = (
+  theme: Theme,
+  status: APPLICATION_STATUSES
+): string => {
+  const colors = {
+    [APPLICATION_STATUSES.DRAFT]: theme.colors.black40,
+    [APPLICATION_STATUSES.INFO_REQUIRED]: theme.colors.alertDark,
+    [APPLICATION_STATUSES.RECEIVED]: theme.colors.info,
+    [APPLICATION_STATUSES.APPROVED]: theme.colors.success,
+    [APPLICATION_STATUSES.REJECTED]: theme.colors.error,
+  };
+  return colors[status];
+};
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -37,38 +51,11 @@ const StyledItemContent = styled.div`
 `;
 
 const StyledAvatar = styled.div<AvatarProps>`
-  ${(props: Props) =>
-    props.status === APPLICATION_STATUSES.DRAFT &&
-    `
-      background-color: ${props.theme.colors.black40};
+  ${({ theme, status }: Props) => `
+    background-color: ${avatarBackgroundColors(theme, status)};
+    color: ${theme.colors.white};
+    font-size: ${theme.fontSize.heading.xs};
   `}
-
-  ${(props: Props) =>
-    props.status === APPLICATION_STATUSES.INFO_REQUIRED &&
-    `
-        background-color: ${props.theme.colors.alertDark};
-    `}
-  
-  ${(props: Props) =>
-    props.status === APPLICATION_STATUSES.RECEIVED &&
-    `
-        background-color: ${props.theme.colors.info};
-    `}
-
-  ${(props: Props) =>
-    props.status === APPLICATION_STATUSES.APPROVED &&
-    `
-        background-color: ${props.theme.colors.success};
-    `}
-
-  ${(props: Props) =>
-    props.status === APPLICATION_STATUSES.REJECTED &&
-    `
-        background-color: ${props.theme.colors.error};
-    `}
-
-  color: ${(props: Props) => props.theme.colors.white};
-  font-size: ${(props: Props) => props.theme.fontSize.heading.xs};
   font-weight: 600;
   display: flex;
   justify-content: center;
@@ -86,6 +73,9 @@ const StyledDataColumn = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 0 ${(props: Props) => props.theme.spacing.m};
+  &:nth-child(2) {
+    width: 140px;
+  }
 `;
 
 const StyledDataHeader = styled.div`
@@ -101,6 +91,8 @@ const StyledDataValue = styled.div`
 
 const StyledItemActions = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledSecondaryButton = styled(Button)`
@@ -108,6 +100,7 @@ const StyledSecondaryButton = styled(Button)`
   border-color: ${(props: Props) => props.theme.colors.black90} !important;
   border-width: 3px !important;
   width: 170px;
+  max-height: 60px;
 `;
 
 const StyledPrimaryButton = styled(Button)`

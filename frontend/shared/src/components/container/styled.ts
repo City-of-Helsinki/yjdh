@@ -1,4 +1,4 @@
-import { respondAbove, respondBetween } from 'shared/styles/mediaQueries';
+import { respondAbove } from 'shared/styles/mediaQueries';
 import { Theme } from 'shared/styles/theme';
 import styled, { ThemeProps } from 'styled-components';
 
@@ -14,10 +14,6 @@ const StyledContainer = styled.div<ContainerProps>`
   grid-template-columns: ${(props: Props) => props.theme.spacing.xs2} 1fr ${(
       props: Props
     ) => props.theme.spacing.xs2};
-
-  ${respondBetween('sm', 'xlg')`
-    grid-template-columns: 1fr 10fr 1fr;
-  `};
 
   ${respondAbove('md')`
     grid-template-columns: 1fr minmax(auto, 1240px) 1fr;
