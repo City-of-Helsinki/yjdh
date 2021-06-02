@@ -1,6 +1,6 @@
+import { useTranslation } from 'benefit/applicant/i18n';
 import React from 'react';
 
-import { useTranslation } from '../../../i18n';
 import { StyledFooter } from './styled';
 
 const FooterSection = (): React.ReactElement => {
@@ -11,7 +11,7 @@ const FooterSection = (): React.ReactElement => {
       <StyledFooter.Base
         copyrightHolder={t('footer:copyrightText')}
         copyrightText={t('footer:allRightsReservedText')}
-       />
+      />
     </StyledFooter>
   );
 };

@@ -1,21 +1,21 @@
-import { respondAbove, respondBetween} from 'shared/styles/mediaQueries';
+import { respondAbove } from 'shared/styles/mediaQueries';
 import { Theme } from 'shared/styles/theme';
-import styled from 'styled-components';
+import styled, { ThemeProps } from 'styled-components';
+
+type Props = ThemeProps<Theme> & { backgroundColor?: string };
 
 interface ContainerProps {
-  backgroundColor: string
+  backgroundColor?: string;
 }
 
 const StyledContainer = styled.div<ContainerProps>`
   display: grid;
-  background-color: ${props => props.backgroundColor};
-  grid-template-columns: ${props => (props.theme as Theme).spacing.xs2} 1fr ${props => (props.theme as Theme).spacing.xs2};
+  background-color: ${(props: Props) => props.backgroundColor || ''};
+  grid-template-columns: ${(props: Props) => props.theme.spacing.xs2} 1fr ${(
+      props: Props
+    ) => props.theme.spacing.xs2};
 
-  ${respondBetween("sm", "xlg")`
-    grid-template-columns: 1fr 10fr 1fr;
-  `};
-
-  ${respondAbove("md")`
+  ${respondAbove('md')`
     grid-template-columns: 1fr minmax(auto, 1240px) 1fr;
   `};
 
@@ -25,10 +25,7 @@ const StyledContainer = styled.div<ContainerProps>`
 `;
 
 const StyledInner = styled.div`
-  padding: ${props => (props.theme as Theme).spacing.xs};
+  padding: ${(props: Props) => props.theme.spacing.xs};
 `;
 
-export {
-  StyledContainer,
-  StyledInner
-}
+export { StyledContainer, StyledInner };

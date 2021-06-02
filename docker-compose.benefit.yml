@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  applicant:
+    build:
+      context: ./frontend
+      dockerfile: benefit/applicant/Dockerfile
+      target: development
+    volumes:
+      - ./frontend/benefit/applicant:/app/applicant
+      - ./frontend/shared:/app/shared
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit
+    ports:
+      - "3000:3000"
+    container_name: benefit-applicant
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  default:
+    name: helsinki

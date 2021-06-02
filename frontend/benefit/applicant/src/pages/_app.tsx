@@ -1,3 +1,6 @@
+import Footer from 'benefit/applicant/components/footer/Footer';
+import Header from 'benefit/applicant/components/header/Header';
+import { appWithTranslation } from 'benefit/applicant/i18n';
 import { AppProps } from 'next/app';
 import React from 'react';
 import Content from 'shared/components/content/Content';
@@ -5,10 +8,6 @@ import Layout from 'shared/components/layout/Layout';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-
-import { appWithTranslation } from '../../i18n';
-import Footer from '../components/footer/Footer';
-import Header from '../components/header/Header';
 
 const App = ({ Component, pageProps }: AppProps): JSX.Element => (
   <>

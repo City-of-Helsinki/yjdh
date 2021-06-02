@@ -4,11 +4,11 @@ on:
     branches:
       - main
     paths:
-      - 'backend/helsinki-benefit/**'
-      - 'frontend/helsinki-benefit/**'
-      - 'frontend/shared/**'
-      - 'frontend/*'
-      - '.github/workflows/bf-staging.yml'
+      - "backend/helsinki-benefit/**"
+      - "frontend/helsinki-benefit/**"
+      - "frontend/shared/**"
+      - "frontend/*"
+      - ".github/workflows/bf-staging.yml"
   workflow_dispatch:
     inputs:
       build_required:
@@ -40,15 +40,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'bf-backend', 'bf-applicant' ]
+        service: ["bf-backend", "bf-applicant"]
         include:
           - service: bf-backend
             context: ./backend/helsinki-benefit
             dockerfile: ./backend/helsinki-benefit/Dockerfile
             port: 8000
           - service: bf-applicant
-            context: ./frontend/helsinki-benefit/applicant/
-            dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
+            context: ./frontend
+            dockerfile: ./frontend/benefit/applicant/Dockerfile
             port: 3000
     runs-on: ubuntu-latest
     name: Build
@@ -71,7 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'backend', 'applicant' ]
+        service: ["backend", "applicant"]
         include:
           - service: backend
             project: backend
@@ -81,8 +81,8 @@ jobs:
             port: 8000
           - service: applicant
             project: applicant
-            context: ./frontend/helsinki-benefit/applicant
-            dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
+            context: ./frontend/benefit
+            dockerfile: ./frontend/benefit/applicant/Dockerfile
             database: false
             port: 3000
     runs-on: ubuntu-latest
@@ -139,7 +139,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"

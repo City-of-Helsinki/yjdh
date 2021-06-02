@@ -2,11 +2,11 @@ name: (BF) Build & Review & Acceptance tests
 on:
   pull_request:
     paths:
-    - 'backend/helsinki-benefit/**'
-    - 'frontend/helsinki-benefit/**'
-    - 'frontend/shared/**'
-    - 'frontend/*'
-    - '.github/workflows/bf-review.yml'
+      - "backend/helsinki-benefit/**"
+      - "frontend/helsinki-benefit/**"
+      - "frontend/shared/**"
+      - "frontend/*"
+      - ".github/workflows/bf-review.yml"
   workflow_dispatch:
     inputs:
       build_required:
@@ -24,8 +24,8 @@ env:
   CONTAINER_REGISTRY_REPO: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
   REPO_NAME: ${{ github.event.repository.name }}
   KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW }}
-  BUILD_ARTIFACT_FOLDER: 'build_artifacts'
-  SERVICE_ARTIFACT_FOLDER: 'service_artifacts'
+  BUILD_ARTIFACT_FOLDER: "build_artifacts"
+  SERVICE_ARTIFACT_FOLDER: "service_artifacts"
   BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STAGING }}
   DATABASE_USER: user
   DATABASE_PASSWORD: testing-password
@@ -38,15 +38,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'bf-backend', 'bf-applicant' ]
+        service: ["bf-backend", "bf-applicant"]
         include:
           - service: bf-backend
             context: ./backend/helsinki-benefit
             dockerfile: ./backend/helsinki-benefit/Dockerfile
             port: 8000
           - service: bf-applicant
-            context: ./frontend/helsinki-benefit/applicant/
-            dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
+            context: ./frontend
+            dockerfile: ./frontend/benefit/applicant/Dockerfile
             port: 3000
     runs-on: ubuntu-latest
     name: Build
@@ -66,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'bf-backend', 'bf-applicant' ]
+        service: ["bf-backend", "bf-applicant"]
         include:
           - service: bf-backend
             project: bf-bknd
@@ -76,7 +76,7 @@ jobs:
             port: 8000
           - service: bf-applicant
             project: bf-appl
-            context: ./frontend/helsinki-benefit/applicant
+            context: frontend
             dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
             database: false
             port: 3000
@@ -144,7 +144,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"

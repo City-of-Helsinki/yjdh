@@ -1,12 +1,14 @@
 import { Button } from 'hds-react';
 import React from 'react';
 import { Theme } from 'shared/styles/theme';
-import styled from 'styled-components';
+import styled, { ThemeProps } from 'styled-components';
+
+type Props = ThemeProps<Theme>;
 
 const StyledContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-bottom: ${props => (props.theme as Theme).spacing.m};
+  padding-bottom: ${(props: Props) => props.theme.spacing.m};
 `;
 
 const StyledTextContainer = styled.div`
@@ -15,14 +17,14 @@ const StyledTextContainer = styled.div`
 `;
 
 const StyledHeading = styled.h1`
-  font-size: ${props => (props.theme as Theme).fontSize.heading.xl};
+  font-size: ${(props: Props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
 `;
 
 const StyledDescription = styled.p`
-  font-size: ${props => (props.theme as Theme).fontSize.heading.s};
+  font-size: ${(props: Props) => props.theme.fontSize.heading.s};
   font-weight: normal;
-  line-height: ${props => (props.theme as Theme).lineHeight.l};
+  line-height: ${(props: Props) => props.theme.lineHeight.l};
 `;
 
 const StyledLink = styled.span`
@@ -31,7 +33,7 @@ const StyledLink = styled.span`
 `;
 
 const StyledActionContainer = styled.div`
-  display:flex;
+  display: flex;
   justify-content: flex-end;
   align-items: center;
   flex: 1 0 50%;
@@ -39,12 +41,13 @@ const StyledActionContainer = styled.div`
 `;
 
 interface ButtonProps {
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
 }
 
 const StyledButton = styled(Button)<ButtonProps>`
-  background-color: ${props => (props.theme as Theme).colors.coatOfArms} !important;
-  border-color: ${props => (props.theme as Theme).colors.coatOfArms} !important;
+  background-color: ${(props: Props) =>
+    props.theme.colors.coatOfArms} !important;
+  border-color: ${(props: Props) => props.theme.colors.coatOfArms} !important;
 `;
 
 export {
@@ -54,4 +57,5 @@ export {
   StyledDescription,
   StyledHeading,
   StyledLink,
-  StyledTextContainer}
+  StyledTextContainer,
+};
