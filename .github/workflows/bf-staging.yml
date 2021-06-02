@@ -137,7 +137,7 @@ jobs:
           echo "APPLICANT_URL=https://applicant.helsinkibenefit.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
           echo "HANDLER_URL=https://handler.helsinkibenefit.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.2
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: "14"
       - name: Get yarn cache directory path
