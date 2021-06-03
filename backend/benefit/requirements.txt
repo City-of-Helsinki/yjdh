@@ -21,29 +21,29 @@ cryptography==3.4.7
 django-appconf==1.0.4
     # via django-cryptography
 django-cors-headers==3.7.0
-    # via -r requirements.in
+    # via -r benefit/requirements.in
 django-cryptography==1.0
-    # via -r requirements.in
+    # via -r benefit/requirements.in
 django-environ==0.4.5
     # via -r requirements.in
 django-localflavor==3.1
     # via -r requirements.in
 django-simple-history==3.0.0
-    # via -r requirements.in
-django==3.2
+    # via -r benefit/requirements.in
+django==3.2.4
     # via
-    #   -r requirements.in
+    #   -r benefit/requirements.in
     #   django-appconf
     #   django-cors-headers
     #   django-localflavor
     #   djangorestframework
     #   yjdh-backend-shared
 djangorestframework==3.12.4
-    # via -r requirements.in
+    # via -r benefit/requirements.in
 idna==2.10
     # via requests
 psycopg2==2.8.6
-    # via -r requirements.in
+    # via -r benefit/requirements.in
 pycparser==2.20
     # via cffi
 python-stdnum==1.16
@@ -51,9 +51,9 @@ python-stdnum==1.16
 pytz==2021.1
     # via django
 requests==2.25.1
-    # via -r requirements.in
+    # via -r benefit/requirements.in
 sentry-sdk==1.0.0
-    # via -r requirements.in
+    # via -r benefit/requirements.in
 sqlparse==0.4.1
     # via django
 urllib3==1.26.4
