@@ -99,4 +99,4 @@ EXPOSE 3000
 
 # Start nextjs server
 # https://github.com/lerna/lerna/issues/2428
-CMD ["yarn", "start:employer"]
+CMD ["yarn", "kesaseteli-employer:start"]
