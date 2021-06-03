@@ -47,8 +47,9 @@ WORKDIR /app
 # copy all files
 COPY --chown=appuser:appuser . .
 
-# Build application (sleep to avoid "could not find `pages/` directory error"
-RUN sleep 10; yarn build
+WORKDIR /app/kesaseteli/employer/
+
+RUN yarn build
 
 # ==========================================
 FROM helsinkitest/node:14-slim AS production

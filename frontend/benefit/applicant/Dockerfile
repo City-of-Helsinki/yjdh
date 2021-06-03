@@ -50,6 +50,7 @@ WORKDIR /app
 COPY --chown=appuser:appuser . .
 
 # Build application
+WORKDIR /app/benefit/applicant/
 RUN yarn build:applicant
 
 # ==========================================
