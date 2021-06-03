@@ -13,7 +13,7 @@ backcall==0.2.0
 black==21.5b2
     # via -r requirements-dev.in
 certifi==2021.5.30
-    # via requests
+    # via -r requirements-dev.in
 chardet==4.0.0
     # via requests
 click==8.0.1
@@ -35,7 +35,7 @@ ipython-genutils==0.2.0
 ipython==7.24.1
     # via -r requirements-dev.in
 isort==5.8.0
-    # via -r requirements-dev.in
+    # via -r kesaseteli/requirements-dev.in
 jedi==0.18.0
     # via ipython
 matplotlib-inline==0.1.2
