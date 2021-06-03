@@ -43,8 +43,8 @@ jobs:
         service: ["bf-backend", "bf-applicant"]
         include:
           - service: bf-backend
-            context: ./backend/benefit
-            dockerfile: ./backend/benefit/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/benefit.Dockerfile
             port: 8000
           - service: bf-applicant
             context: ./frontend
@@ -75,8 +75,8 @@ jobs:
         include:
           - service: backend
             project: backend
-            context: ./backend/benefit
-            dockerfile: ./backend/benefit/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/benefit.Dockerfile
             database: true
             port: 8000
           - service: applicant

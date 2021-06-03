@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/benefit/requirements.txt -r backend/benefit/requirements-dev.txt
+        run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Formatting
         run: cd backend/benefit && black --check .
