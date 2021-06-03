@@ -16,7 +16,6 @@ COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser kesaseteli/employer/package.json kesaseteli/employer/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
-
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
 
 # Copy all files
@@ -48,8 +47,8 @@ WORKDIR /app
 # copy all files
 COPY --chown=appuser:appuser . .
 
-# Build application
-RUN yarn build
+# Build application (sleep to avoid "could not find `pages/` directory error"
+RUN sleep 10; yarn build
 
 # ==========================================
 FROM helsinkitest/node:14-slim AS production
@@ -62,7 +61,6 @@ WORKDIR /app
 
 # Copy build folder from stage 1
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/.next kesaseteli/employer/.next
-
 
 # Copy next.js config
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.config.js kesaseteli/employer/
