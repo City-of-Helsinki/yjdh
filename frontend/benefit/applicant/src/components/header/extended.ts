@@ -9,8 +9,11 @@ type ExtendedComponentProps = {
   t: TFunction;
   languageOptions: OptionType[];
   locale: string;
-  navigationItems: NavigationItem[];
-  handleLanguageChange: (newLanguage: OptionType) => void;
+  navigationItems?: NavigationItem[];
+  handleLanguageChange: (
+    e: React.SyntheticEvent<unknown>,
+    newLanguage: OptionType
+  ) => void;
   handleNavigationItemClick: (pathname: string) => void;
   handleTitleClick: () => void;
 };
@@ -19,12 +22,6 @@ const useComponent = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
-
-  const navigationItems = [
-    { label: 'Link1', url: '/link1' },
-    { label: 'Link2', url: '/link2' },
-    { label: 'Link3', url: '/link3' },
-  ];
 
   const getLanguageOptions = (): OptionType[] => {
     const createOptions = (languages: string[]): OptionType[] =>
@@ -40,12 +37,14 @@ const useComponent = (): ExtendedComponentProps => {
 
   const languageOptions: OptionType[] = getLanguageOptions();
 
-  const handleLanguageChange = (newLanguage: OptionType): void => {
+  const handleLanguageChange = (
+    e: React.SyntheticEvent<unknown>,
+    newLanguage: OptionType
+  ): void => {
+    e.preventDefault();
     if (i18n) {
       void i18n.changeLanguage(newLanguage.value);
     }
-    // todo: fix router with localization
-    // router.push(`/${newLanguage.value}`, `/${newLanguage.value}`, {locale: locale});
   };
 
   const handleNavigationItemClick = (pathname: string): void => {
@@ -58,7 +57,6 @@ const useComponent = (): ExtendedComponentProps => {
     t,
     languageOptions,
     locale,
-    navigationItems,
     handleLanguageChange,
     handleNavigationItemClick,
     handleTitleClick,
