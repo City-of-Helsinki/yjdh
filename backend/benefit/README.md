@@ -25,7 +25,7 @@ Allow user to create test database
 
 ### Daily running
 
-* Inside the backend project root folder (backend/helsinki-benefit), create `.env` file: `touch .env`
+* Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
 * Set the `DEBUG` environment variable to `1`.
 * Run `python manage.py migrate`
 * Run `python manage.py runserver 0:8000`

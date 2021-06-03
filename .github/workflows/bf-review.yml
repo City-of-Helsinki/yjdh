@@ -2,8 +2,8 @@ name: (BF) Build & Review & Acceptance tests
 on:
   pull_request:
     paths:
-      - "backend/helsinki-benefit/**"
-      - "frontend/helsinki-benefit/**"
+      - "backend/benefit/**"
+      - "frontend/benefit/**"
       - "frontend/shared/**"
       - "frontend/*"
       - ".github/workflows/bf-review.yml"
@@ -41,8 +41,8 @@ jobs:
         service: ["bf-backend", "bf-applicant"]
         include:
           - service: bf-backend
-            context: ./backend/helsinki-benefit
-            dockerfile: ./backend/helsinki-benefit/Dockerfile
+            context: ./backend/benefit
+            dockerfile: ./backend/benefit/Dockerfile
             port: 8000
           - service: bf-applicant
             context: ./frontend
@@ -70,14 +70,14 @@ jobs:
         include:
           - service: bf-backend
             project: bf-bknd
-            context: ./backend/helsinki-benefit
-            dockerfile: ./backend/helsinki-benefit/Dockerfile
+            context: ./backend/benefit
+            dockerfile: ./backend/benefit/Dockerfile
             database: true
             port: 8000
           - service: bf-applicant
             project: bf-appl
             context: frontend
-            dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
+            dockerfile: ./frontend/benefit/applicant/Dockerfile
             database: false
             port: 3000
     runs-on: ubuntu-latest
@@ -129,7 +129,7 @@ jobs:
     name: Acceptance tests
     defaults:
       run:
-        working-directory: ./frontend/helsinki-benefit/
+        working-directory: ./frontend/benefit/
     steps:
       - uses: actions/checkout@v2
       - name: Service with ingress
