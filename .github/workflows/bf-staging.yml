@@ -4,8 +4,8 @@ on:
     branches:
       - main
     paths:
-      - "backend/helsinki-benefit/**"
-      - "frontend/helsinki-benefit/**"
+      - "backend/benefit/**"
+      - "frontend/benefit/**"
       - "frontend/shared/**"
       - "frontend/*"
       - ".github/workflows/bf-staging.yml"
@@ -43,8 +43,8 @@ jobs:
         service: ["bf-backend", "bf-applicant"]
         include:
           - service: bf-backend
-            context: ./backend/helsinki-benefit
-            dockerfile: ./backend/helsinki-benefit/Dockerfile
+            context: ./backend/benefit
+            dockerfile: ./backend/benefit/Dockerfile
             port: 8000
           - service: bf-applicant
             context: ./frontend
@@ -75,8 +75,8 @@ jobs:
         include:
           - service: backend
             project: backend
-            context: ./backend/helsinki-benefit
-            dockerfile: ./backend/helsinki-benefit/Dockerfile
+            context: ./backend/benefit
+            dockerfile: ./backend/benefit/Dockerfile
             database: true
             port: 8000
           - service: applicant

@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Environments
 .env.*
+!.env.*.example
 .venv
 
 env/
@@ -110,7 +111,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-backend/helsinki-benefit/.env*
+backend/benefit/.env*
 
 # Spyder project settings
 .spyderproject
@@ -131,7 +132,7 @@ dmypy.json
 .pyre/
 
 #intelliJ
-.idea/
+**/.idea/**
 *.iml
 
 node_modules

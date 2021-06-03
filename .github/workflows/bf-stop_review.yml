@@ -3,8 +3,8 @@ on:
   pull_request:
     types: [closed]
     paths:
-      - 'backend/helsinki-benefit/**'
-      - 'frontend/helsinki-benefit/**'
+      - 'backend/benefit/**'
+      - 'frontend/benefit/**'
       - 'frontend/shared/**'
       - 'frontend/*'
       - '.github/workflows/bf-stop_review.yml'
