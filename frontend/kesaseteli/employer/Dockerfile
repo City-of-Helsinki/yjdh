@@ -48,7 +48,8 @@ WORKDIR /app
 COPY --chown=appuser:appuser . .
 
 WORKDIR /app/kesaseteli/employer/
-
+RUN echo $(ls -la)
+RUN echo $(ls -la src)
 RUN yarn build
 
 # ==========================================
@@ -71,15 +72,12 @@ COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.c
 COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/package.json app/kesaseteli/employer/start.js kesaseteli/employer/
 
-
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
-
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
-
 
 # install lerna
 RUN yarn global add lerna
