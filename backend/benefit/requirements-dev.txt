@@ -11,7 +11,7 @@ attrs==20.3.0
 backcall==0.2.0
     # via ipython
 black==20.8b1
-    # via -r requirements-dev.in
+    # via -r benefit/requirements-dev.in
 certifi==2020.12.5
     # via requests
 chardet==4.0.0
@@ -23,11 +23,11 @@ coverage==5.5
 decorator==5.0.7
     # via ipython
 factory-boy==3.2.0
-    # via -r requirements-dev.in
+    # via -r benefit/requirements-dev.in
 faker==8.1.1
     # via factory-boy
 flake8==3.9.1
-    # via -r requirements-dev.in
+    # via -r benefit/requirements-dev.in
 idna==2.10
     # via requests
 iniconfig==1.1.1
@@ -35,9 +35,9 @@ iniconfig==1.1.1
 ipython-genutils==0.2.0
     # via traitlets
 ipython==7.22.0
-    # via -r requirements-dev.in
+    # via -r benefit/requirements-dev.in
 isort==5.8.0
-    # via -r requirements-dev.in
+    # via -r benefit/requirements-dev.in
 jedi==0.18.0
     # via ipython
 mccabe==0.6.1
@@ -71,20 +71,20 @@ pygments==2.8.1
 pyparsing==2.4.7
     # via packaging
 pytest-cov==2.11.1
-    # via -r requirements-dev.in
+    # via -r benefit/requirements-dev.in
 pytest-django==4.2.0
-    # via -r requirements-dev.in
+    # via -r benefit/requirements-dev.in
 pytest==6.2.3
     # via
-    #   -r requirements-dev.in
+    #   -r benefit/requirements-dev.in
     #   pytest-cov
     #   pytest-django
 python-dateutil==2.8.1
     # via faker
 regex==2021.4.4
     # via black
-requests-mock==1.9.2
-    # via -r requirements-dev.in
+requests-mock==1.9.3
+    # via -r benefit/requirements-dev.in
 requests==2.25.1
     # via requests-mock
 six==1.15.0
