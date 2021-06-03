@@ -15,7 +15,7 @@ services:
 
     django:
         build:
-            context: ./backend
+            context: ./backend/helsinki-benefit
             target: development
         env_file:
             - .env.helsinki-benefit
