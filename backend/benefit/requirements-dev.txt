@@ -70,7 +70,7 @@ pygments==2.8.1
     # via ipython
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.11.1
+pytest-cov==2.12.1
     # via -r benefit/requirements-dev.in
 pytest-django==4.2.0
     # via -r benefit/requirements-dev.in
@@ -97,6 +97,7 @@ toml==0.10.2
     # via
     #   black
     #   pytest
+    #   pytest-cov
 traitlets==5.0.5
     # via ipython
 urllib3==1.26.4
