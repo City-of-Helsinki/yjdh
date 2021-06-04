@@ -16,7 +16,6 @@ COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser kesaseteli/employer/package.json kesaseteli/employer/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
-
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
 
 # Copy all files
@@ -48,8 +47,13 @@ WORKDIR /app
 # copy all files
 COPY --chown=appuser:appuser . .
 
-# Build application
+# build application
+WORKDIR /app/kesaseteli/employer/
 RUN yarn build
+
+# Clean all dependencies (this should avoid caching + missing /pages directory problem)
+RUN rm -rf node_modules
+RUN yarn cache clean
 
 # ==========================================
 FROM helsinkitest/node:14-slim AS production
@@ -63,7 +67,6 @@ WORKDIR /app
 # Copy build folder from stage 1
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/.next kesaseteli/employer/.next
 
-
 # Copy next.js config
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.config.js kesaseteli/employer/
 
@@ -72,15 +75,12 @@ COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.c
 COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/package.json app/kesaseteli/employer/start.js kesaseteli/employer/
 
-
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
-
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
-
 
 # install lerna
 RUN yarn global add lerna
