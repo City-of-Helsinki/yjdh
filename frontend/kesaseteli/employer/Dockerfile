@@ -47,10 +47,13 @@ WORKDIR /app
 # copy all files
 COPY --chown=appuser:appuser . .
 
+# build application
 WORKDIR /app/kesaseteli/employer/
-RUN echo $(ls -la)
-RUN echo $(ls -la src)
 RUN yarn build
+
+# Clean all dependencies (this should avoid caching + missing /pages directory problem)
+RUN rm -rf node_modules
+RUN yarn cache clean
 
 # ==========================================
 FROM helsinkitest/node:14-slim AS production

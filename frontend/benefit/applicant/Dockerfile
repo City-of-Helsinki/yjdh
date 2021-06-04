@@ -51,7 +51,11 @@ COPY --chown=appuser:appuser . .
 
 # Build application
 WORKDIR /app/benefit/applicant/
-RUN yarn build:applicant
+RUN yarn build
+
+# Clean all dependencies (this should avoid caching + missing /pages directory problem)
+RUN rm -rf node_modules
+RUN yarn cache clean
 
 # ==========================================
 FROM helsinkitest/node:12-slim AS production
