@@ -8,7 +8,6 @@ const Header: React.FC = () => {
     t,
     locale,
     languageOptions,
-    navigationItems,
     handleLanguageChange,
     handleNavigationItemClick,
     handleTitleClick,
@@ -19,7 +18,6 @@ const Header: React.FC = () => {
       title={t('common:appName')}
       menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
       languages={languageOptions}
-      navigationItems={navigationItems}
       locale={locale}
       onLanguageChange={handleLanguageChange}
       onNavigationItemClick={handleNavigationItemClick}
