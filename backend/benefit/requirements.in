@@ -7,4 +7,4 @@ django-simple-history
 psycopg2
 sentry-sdk
 requests
-
+-e ../shared

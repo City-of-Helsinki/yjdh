@@ -15,7 +15,8 @@ services:
 
     django:
         build:
-            context: ./backend/helsinki-benefit
+            context: ./backend
+            dockerfile: ./docker/benefit.Dockerfile
             target: development
         env_file:
             - .env.benefit
@@ -24,6 +25,7 @@ services:
             DATABASE_HOST: benefit-db.helsinki
         volumes:
             - ./backend/benefit:/app
+            - ./backend/shared:/shared
         ports:
             - "127.0.0.1:8000:8000"
         depends_on:
