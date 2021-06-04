@@ -38,13 +38,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["bf-backend", "bf-applicant"]
+        service: ["bf-bknd", "bf-appl"]
         include:
-          - service: bf-backend
+          - service: bf-bknd
             context: ./backend
             dockerfile: ./backend/docker/benefit.Dockerfile
             port: 8000
-          - service: bf-applicant
+          - service: bf-appl
             context: ./frontend
             dockerfile: ./frontend/benefit/applicant/Dockerfile
             port: 3000
@@ -66,16 +66,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ["bf-backend", "bf-applicant"]
+        service: ["bf-bknd", "bf-appl"]
         include:
-          - service: bf-backend
-            project: bf-bknd
+          - service: bf-bknd
             context: ./backend
             dockerfile: ./backend/docker/benefit.Dockerfile
             database: true
             port: 8000
-          - service: bf-applicant
-            project: bf-appl
+          - service: bf-appl
             context: frontend
             dockerfile: ./frontend/benefit/applicant/Dockerfile
             database: false
@@ -88,6 +86,24 @@ jobs:
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
+
+      - name: Database variables
+        if: matrix.database
+        run: |
+          echo "K8S_SECRET_DATABASE_DB=appdb" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_HOST=${{ env.ENVIRONMENT_SLUG }}-review-postgresql" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PASSWORD=${{ env.DATABASE_PASSWORD }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PORT=5432" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_USERNAME=${{ env.DATABASE_USER }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_URL=postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@${{ env.ENVIRONMENT_SLUG }}-review-postgresql:5432/appdb" >> $GITHUB_ENV
+
+      - name: Backend variables
+        if: matrix.database
+        env:
+          SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_REVIEW }}
+        run: |
+          echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
+          echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
       - name: Review-Services
         if: matrix.database
         uses: andersinno/kolga-deploy-service-action@v2
