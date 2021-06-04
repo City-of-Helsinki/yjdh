@@ -141,6 +141,9 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
+          CSRF_TRUSTED_ORIGINS: ${{ env.EMPLOYER_URL }}
+          LOGIN_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
+          LOGIN_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
 
       - name: Deploy Cronjobs
         if: matrix.database
