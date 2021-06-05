@@ -17,12 +17,57 @@
         "check": "Tarkastele"
       }
     },
+    "pageHeaders": {
+      "new": "Uusi hakemus"
+    },
     "statuses": {
       "draft": "Luonnos",
       "infoRequired": "Lisätietoja tarvitaan",
       "received": "Vastaanotettu",
       "approved": "Hyväksytty",
       "rejected": "Hylätty"
+    },
+    "steps": {
+      "company": "Yritys",
+      "hired": "Palkattava",
+      "attachments": "Liittet",
+      "summary": "Yhteenveto",
+      "credentials": "Valtakirja",
+      "send": "Lähetä"
+    },
+    "actions": {
+      "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
+      "deleteApplication": "Poista hakemus",
+      "continue": "Jatka",
+      "send": "Lähetä",
+      "back": "Back"
+    },
+    "sections": {
+      "company": {
+        "heading1": "Yrityksen tiedot",
+        "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
+        "heading3": "Hakijan de minimis-tuet",
+        "heading4": "YT-tilanne"
+      },
+      "hired": {
+        "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
+        "heading2": "Peruste, jolla Helsinki-lisää haetaan työllistetystä",
+        "heading3": "Haettava tukimuoto",
+        "heading4": "Haetaan ajalle",
+        "heading5": "Työsuhde"
+      },
+      "attachments": {
+        "heading1": "Liittet"
+      },
+      "summary": {
+        "heading1": "Ole hyvä ja tarkista hakemus"
+      },
+      "credentials": {
+        "heading1": "Valtakirja"
+      },
+      "send": {
+        "heading1": "Otsikko tähän"
+      }
     }
   },
   "appName": "Helsinki-benefit EN",

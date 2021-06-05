@@ -11,7 +11,6 @@ const getActiveColor = (isActive: boolean, theme: Theme): string =>
   isActive ? theme.colors.black90 : theme.colors.black20;
 
 const StyledStepsContainer = styled.div`
-  margin: ${(props: Props) => props.theme.spacing.m};
   display: flex;
   align-items: center;
 `;
