@@ -14,7 +14,7 @@ import {
   StyledTextContainer,
 } from './styled';
 
-const MainIngress: React.FC = () => {
+const ApplicationFormStep1: React.FC = () => {
   const { handleNewApplicationClick, handleMoreInfoClick, t } = useComponent();
 
   return (
@@ -43,4 +43,4 @@ const MainIngress: React.FC = () => {
   );
 };
 
-export default MainIngress;
+export default ApplicationFormStep1;
