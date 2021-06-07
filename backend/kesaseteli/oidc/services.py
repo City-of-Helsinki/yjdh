@@ -27,8 +27,7 @@ def clear_eauthorization_profiles(
     eauthorization_profiles.delete()
 
 
-def store_token_info_in_oidc_profile(user, token_info):
-    """Store token info in the OIDCProfile model and return the model instance."""
+def get_defaults(token_info: dict):
     defaults = {}
 
     if id_token := token_info.get("id_token"):
@@ -49,6 +48,12 @@ def store_token_info_in_oidc_profile(user, token_info):
         defaults["refresh_token_expires"] = timezone.now() + timedelta(
             seconds=refresh_token_expires
         )
+    return defaults
+
+
+def store_token_info_in_oidc_profile(user, token_info):
+    """Store token info in the OIDCProfile model and return the model instance."""
+    defaults = get_defaults(token_info)
 
     oidc_profile = update_or_create_oidc_profile(user, defaults)
     return oidc_profile

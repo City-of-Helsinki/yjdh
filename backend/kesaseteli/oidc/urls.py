@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.urls import include, path
 
-from oidc.mock_views import (
+from oidc.views.hki_views import HelsinkiOIDCLogoutView, HelsinkiOIDCUserInfoView
+from oidc.views.mock_views import (
     MockAuthenticationRequestView,
     MockLogoutView,
     MockUserInfoView,
 )
-from oidc.views import HelsinkiOIDCLogoutView, HelsinkiOIDCUserInfoView
 
 urlpatterns = []
 
