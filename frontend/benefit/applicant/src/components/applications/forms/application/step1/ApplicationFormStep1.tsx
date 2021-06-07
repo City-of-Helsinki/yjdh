@@ -11,6 +11,7 @@ import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
+import { APPLICATION_FIELDS } from '../../../constants';
 import {
   StyledCompanyInfoColumn,
   StyledCompanyInfoContainer,
@@ -69,10 +70,14 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             label={fields.hasCompanyOtherAddress.label}
             required
             checked={formik.values.hasCompanyOtherAddress === true}
-            errorText={getErrorMessage('hasCompanyOtherAddress')}
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS
+            )}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            aria-invalid={!!getErrorMessage('hasCompanyOtherAddress')}
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS)
+            }
           />
         </StyledFormGroup>
         {formik.values.hasCompanyOtherAddress && (
@@ -85,9 +90,19 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.companyOtherAddressStreet}
-              invalid={!!getErrorMessage('companyOtherAddressStreet')}
-              aria-invalid={!!getErrorMessage('companyOtherAddressStreet')}
-              errorText={getErrorMessage('companyOtherAddressStreet')}
+              invalid={
+                !!getErrorMessage(
+                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
+                )
+              }
+              aria-invalid={
+                !!getErrorMessage(
+                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
+                )
+              }
+              errorText={getErrorMessage(
+                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
+              )}
               required
             />
             <TextInput
@@ -98,9 +113,15 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.companyOtherAddressZipCode}
-              invalid={!!getErrorMessage('companyOtherAddressZipCode')}
-              aria-invalid={!!getErrorMessage('companyOtherAddressZipCode')}
-              errorText={getErrorMessage('companyOtherAddressZipCode')}
+              invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
+              }
+              aria-invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
+              }
+              errorText={getErrorMessage(
+                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP
+              )}
               required
             />
             <TextInput
@@ -111,11 +132,19 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.companyOtherAddressPostalDistrict}
-              invalid={!!getErrorMessage('companyOtherAddressPostalDistrict')}
-              aria-invalid={
-                !!getErrorMessage('companyOtherAddressPostalDistrict')
+              invalid={
+                !!getErrorMessage(
+                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
+                )
               }
-              errorText={getErrorMessage('companyOtherAddressPostalDistrict')}
+              aria-invalid={
+                !!getErrorMessage(
+                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
+                )
+              }
+              errorText={getErrorMessage(
+                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
+              )}
               required
             />
           </StyledFormGroup>
@@ -129,9 +158,9 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.companyIban}
-            invalid={!!getErrorMessage('companyIban')}
-            aria-invalid={!!getErrorMessage('companyIban')}
-            errorText={getErrorMessage('companyIban')}
+            invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
+            aria-invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
+            errorText={getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
             required
           />
         </StyledFormGroup>
@@ -146,9 +175,15 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.contactPersonFirstName}
-            invalid={!!getErrorMessage('contactPersonFirstName')}
-            aria-invalid={!!getErrorMessage('contactPersonFirstName')}
-            errorText={getErrorMessage('contactPersonFirstName')}
+            invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME)
+            }
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME)
+            }
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME
+            )}
             required
           />
           <TextInput
@@ -159,9 +194,15 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.contactPersonLastName}
-            invalid={!!getErrorMessage('contactPersonLastName')}
-            aria-invalid={!!getErrorMessage('contactPersonLastName')}
-            errorText={getErrorMessage('contactPersonLastName')}
+            invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME)
+            }
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME)
+            }
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME
+            )}
             required
           />
           <TextInput
@@ -172,9 +213,11 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.contactPersonPhone}
-            invalid={!!getErrorMessage('contactPersonPhone')}
-            aria-invalid={!!getErrorMessage('contactPersonPhone')}
-            errorText={getErrorMessage('contactPersonPhone')}
+            invalid={!!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_PHONE)}
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_PHONE)
+            }
+            errorText={getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_PHONE)}
             required
           />
           <TextInput
@@ -185,9 +228,11 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.contactPersonEmail}
-            invalid={!!getErrorMessage('contactPersonEmail')}
-            aria-invalid={!!getErrorMessage('contactPersonEmail')}
-            errorText={getErrorMessage('contactPersonEmail')}
+            invalid={!!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_EMAIL)}
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_EMAIL)
+            }
+            errorText={getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_EMAIL)}
             required
           />
         </StyledFormGroup>
@@ -198,13 +243,17 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             label={fields.deMinimisAidGranted.label}
             direction="vertical"
             required
-            errorText={getErrorMessage('deMinimisAidGranted')}
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED
+            )}
           >
             <RadioButton
               id={`${fields.deMinimisAidGranted.name}False`}
               name={fields.deMinimisAidGranted.name}
               value="false"
-              label={t(`${translationsBase}.fields.deMinimisAidGranted.no`)}
+              label={t(
+                `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED}.no`
+              )}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               checked={formik.values.deMinimisAidGranted === 'false'}
@@ -213,7 +262,9 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               id={`${fields.deMinimisAidGranted.name}True`}
               name={fields.deMinimisAidGranted.name}
               value="true"
-              label={t(`${translationsBase}.fields.deMinimisAidGranted.yes`)}
+              label={t(
+                `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED}.yes`
+              )}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               checked={formik.values.deMinimisAidGranted === 'true'}
@@ -227,14 +278,16 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             label={fields.collectiveBargainingOngoing.label}
             direction="vertical"
             required
-            errorText={getErrorMessage('cooperationStatus')}
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING
+            )}
           >
             <RadioButton
               id={`${fields.collectiveBargainingOngoing.name}False`}
               name={fields.collectiveBargainingOngoing.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.collectiveBargainingOngoing.no`
+                `${translationsBase}.fields.${APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING}.no`
               )}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -245,7 +298,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               name={fields.collectiveBargainingOngoing.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.collectiveBargainingOngoing.yes`
+                `${translationsBase}.fields.${APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING}.yes`
               )}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -264,9 +317,19 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.collectiveBargainingInfo}
-                invalid={!!getErrorMessage('collectiveBargainingInfo')}
-                aria-invalid={!!getErrorMessage('collectiveBargainingInfo')}
-                errorText={getErrorMessage('collectiveBargainingInfo')}
+                invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO
+                  )
+                }
+                aria-invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO
+                  )
+                }
+                errorText={getErrorMessage(
+                  APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO
+                )}
               />
             </StyledSubSection>
           </StyledFormGroup>

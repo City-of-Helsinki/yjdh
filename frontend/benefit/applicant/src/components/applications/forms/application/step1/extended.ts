@@ -3,6 +3,8 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { FormEvent, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
+
+import { APPLICATION_FIELDS } from '../../../constants';
 // import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -20,18 +22,18 @@ type FieldsDef = {
 };
 
 type FormFields = {
-  hasCompanyOtherAddress: boolean;
-  companyOtherAddressStreet: string;
-  companyOtherAddressZipCode: string;
-  companyOtherAddressPostalDistrict: string;
-  companyIban: string;
-  contactPersonFirstName: string;
-  contactPersonLastName: string;
-  contactPersonPhone: string;
-  contactPersonEmail: string;
-  deMinimisAidGranted: string;
-  collectiveBargainingOngoing: string;
-  collectiveBargainingInfo: string;
+  [APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS]: boolean;
+  [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET]: string;
+  [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP]: string;
+  [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT]: string;
+  [APPLICATION_FIELDS.COMPANY_IBAN]: string;
+  [APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME]: string;
+  [APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME]: string;
+  [APPLICATION_FIELDS.CONTACT_PERSON_PHONE]: string;
+  [APPLICATION_FIELDS.CONTACT_PERSON_EMAIL]: string;
+  [APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED]: string;
+  [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING]: string;
+  [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO]: string;
 };
 
 const useComponent = (): ExtendedComponentProps => {
@@ -41,18 +43,18 @@ const useComponent = (): ExtendedComponentProps => {
 
   const formik = useFormik({
     initialValues: {
-      hasCompanyOtherAddress: false,
-      companyOtherAddressStreet: '',
-      companyOtherAddressZipCode: '',
-      companyOtherAddressPostalDistrict: '',
-      companyIban: '',
-      contactPersonFirstName: '',
-      contactPersonLastName: '',
-      contactPersonPhone: '',
-      contactPersonEmail: '',
-      deMinimisAidGranted: '',
-      collectiveBargainingOngoing: '',
-      collectiveBargainingInfo: '',
+      [APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS]: false,
+      [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET]: '',
+      [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP]: '',
+      [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT]: '',
+      [APPLICATION_FIELDS.COMPANY_IBAN]: '',
+      [APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME]: '',
+      [APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME]: '',
+      [APPLICATION_FIELDS.CONTACT_PERSON_PHONE]: '',
+      [APPLICATION_FIELDS.CONTACT_PERSON_EMAIL]: '',
+      [APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED]: '',
+      [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING]: '',
+      [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO]: '',
     },
     // Define Yup validation schema
     // validationSchema: Yup.object().shape({
@@ -67,18 +69,18 @@ const useComponent = (): ExtendedComponentProps => {
 
   const fieldNames = React.useMemo(
     (): string[] => [
-      'hasCompanyOtherAddress',
-      'companyOtherAddressStreet',
-      'companyOtherAddressZipCode',
-      'companyOtherAddressPostalDistrict',
-      'companyIban',
-      'contactPersonFirstName',
-      'contactPersonLastName',
-      'contactPersonPhone',
-      'contactPersonEmail',
-      'deMinimisAidGranted',
-      'collectiveBargainingOngoing',
-      'collectiveBargainingInfo',
+      APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS,
+      APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET,
+      APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP,
+      APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT,
+      APPLICATION_FIELDS.COMPANY_IBAN,
+      APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME,
+      APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME,
+      APPLICATION_FIELDS.CONTACT_PERSON_PHONE,
+      APPLICATION_FIELDS.CONTACT_PERSON_EMAIL,
+      APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED,
+      APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING,
+      APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO,
     ],
     []
   );
