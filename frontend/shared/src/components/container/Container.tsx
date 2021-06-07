@@ -7,7 +7,7 @@ type ContainerProps = { children: React.ReactNode; backgroundColor?: string };
 const Container = ({
   children,
   backgroundColor = '',
-}: ContainerProps): JSX.Element => (
+}: ContainerProps): React.ReactElement => (
   <StyledContainer backgroundColor={backgroundColor}>
     <StyledInner>{children}</StyledInner>
   </StyledContainer>

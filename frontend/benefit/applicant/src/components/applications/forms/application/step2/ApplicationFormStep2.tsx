@@ -1,8 +1,11 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 
-const ApplicationFormStep2: React.FC = () => {
+const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
+  actions,
+}) => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.hired';
   return (
@@ -22,6 +25,7 @@ const ApplicationFormStep2: React.FC = () => {
       <FormSection header={t(`${translationsBase}.heading5`)}>
         Content
       </FormSection>
+      {actions}
     </>
   );
 };

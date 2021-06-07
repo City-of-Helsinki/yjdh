@@ -5,7 +5,7 @@ import { StyledDivider, StyledStepsContainer } from './styled';
 
 type StepperProps = { activeStep?: number; steps: StepProps[] };
 
-const Stepper = ({ activeStep = 1, steps }: StepperProps): JSX.Element => (
+const Stepper: React.FC<StepperProps> = ({ activeStep = 1, steps }) => (
   <StyledStepsContainer>
     {steps.map((step, index) => (
       <React.Fragment key={step.title}>

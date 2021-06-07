@@ -1,3 +1,4 @@
+import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
   Checkbox,
   Notification,
@@ -20,12 +21,9 @@ import {
 } from '../styled';
 import { useComponent } from './extended';
 
-export type ApplicationFormStep1Values = {
-  companyId: string;
-  companyOtherAdressStreet: string;
-};
-
-const ApplicationFormStep1 = (): React.ReactElement => {
+const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
+  actions,
+}) => {
   const {
     t,
     handleSubmit,
@@ -51,11 +49,15 @@ const ApplicationFormStep1 = (): React.ReactElement => {
           </StyledCompanyInfoSection>
           <StyledCompanyInfoSection>
             <Notification
-              label={t(`${translationsBase}.notifications.companyInfo.label`)}
+              label={t(
+                `${translationsBase}.notifications.companyInformation.label`
+              )}
               type="info"
             >
               <StyledNotificationContent>
-                {t(`${translationsBase}.notifications.companyInfo.content`)}
+                {t(
+                  `${translationsBase}.notifications.companyInformation.content`
+                )}
               </StyledNotificationContent>
             </Notification>
           </StyledCompanyInfoSection>
@@ -270,6 +272,7 @@ const ApplicationFormStep1 = (): React.ReactElement => {
           </StyledFormGroup>
         )}
       </FormSection>
+      {actions}
     </form>
   );
 };

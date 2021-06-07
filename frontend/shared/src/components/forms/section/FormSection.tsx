@@ -4,7 +4,7 @@ import { StyledContent, StyledHeader, StyledSection } from './styled';
 
 type FormSectionProps = { children: React.ReactNode; header?: string };
 
-const FormSection = ({ children, header }: FormSectionProps): JSX.Element => (
+const FormSection: React.FC<FormSectionProps> = ({ children, header }) => (
   <StyledSection>
     <StyledHeader>{header}</StyledHeader>
     <StyledContent>{children}</StyledContent>

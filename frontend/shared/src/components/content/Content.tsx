@@ -4,7 +4,7 @@ import { StyledContent } from './styled';
 
 type ContentProps = { children: React.ReactNode };
 
-const Content = ({ children }: ContentProps): JSX.Element => (
+const Content: React.FC<ContentProps> = ({ children }) => (
   <StyledContent>{children}</StyledContent>
 );
 
