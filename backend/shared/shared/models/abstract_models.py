@@ -31,10 +31,14 @@ class HistoricalModel(models.Model):
         abstract = True
 
 
-class AbstractCompany(models.Model):
-    """
-    TODO: Shared company fields go here
-    """
+class AbstractCompany(UUIDModel):
+    name = models.CharField(max_length=256, verbose_name=_("name"))
+    business_id = models.CharField(max_length=64, verbose_name=_("business id"))
+    company_form = models.CharField(max_length=64, verbose_name=_("company form"))
+
+    street_address = models.CharField(max_length=256, verbose_name=_("street address"))
+    postcode = models.CharField(max_length=256, verbose_name=_("postcode"))
+    city = models.CharField(max_length=256, verbose_name=_("city"))
 
     class Meta:
         abstract = True

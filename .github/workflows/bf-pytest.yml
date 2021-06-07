@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt
+        run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt codecov
 
       - name: Run tests
         run: pytest backend/benefit -ra -vv --doctest-modules --cov=.
