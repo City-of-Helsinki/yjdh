@@ -30,7 +30,7 @@ Allow user to create test database
 * Run `python manage.py migrate`
 * Run `python manage.py runserver 0:8000`
 
-The project is now running at [localhost:8000](http://localhost:8000)
+The project is now running at [localhost:8000](https://localhost:8000)
 
 ## Keeping Python requirements up to date
 
