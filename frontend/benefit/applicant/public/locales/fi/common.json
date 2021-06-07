@@ -47,7 +47,64 @@
         "heading1": "Yrityksen tiedot",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading3": "Hakijan de minimis-tuet",
-        "heading4": "YT-tilanne"
+        "heading4": "YT-tilanne",
+        "notifications": {
+          "companyInformation": {
+            "label": "Tiedot haettu YTJ:stä",
+            "content": "Yrityksen perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+          }
+        },
+        "fields": {
+          "hasCompanyOtherAddress": {
+            "label": "Yrityksellä on toinen postiosoite"
+          },
+          "companyOtherAddressStreet": {
+            "label": "Osoite",
+            "placeholder": "Katuosoite"
+          },
+          "companyOtherAddressZipCode": {
+            "label": "Postinumero",
+            "placeholder": "Postinumero"
+          },
+          "companyOtherAddressPostalDistrict": {
+            "label": "Postitoimipaikka",
+            "placeholder": "Postitoimipaikka"
+          },
+          "companyIban": {
+            "label": "Tilinumero",
+            "placeholder": "IBAN muodossa"
+          },
+          "contactPersonFirstName": {
+            "label": "Etunimi",
+            "placeholder": "Etunimi"
+          },
+          "contactPersonLastName": {
+            "label": "Sukunimi",
+            "placeholder": "Sukunimi"
+          },
+          "contactPersonPhone": {
+            "label": "Puhelin",
+            "placeholder": "040 1234567"
+          },
+          "contactPersonEmail": {
+            "label": "Sähköposti",
+            "placeholder": "Sähköpostiosoite"
+          },
+          "deMinimisAidGranted": {
+            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
+          "collectiveBargainingOngoing": {
+            "label": "Onko hakijalla menossa YT-neuvottelut?",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
+          "collectiveBargainingInfo": {
+            "label": "Anna tarkempi selvitys YT-tilanteesta:",
+            "placeholder": "Kuvaile tilanne"
+          }
+        }
       },
       "hired": {
         "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",

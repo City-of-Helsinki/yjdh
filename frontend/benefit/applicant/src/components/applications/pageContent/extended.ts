@@ -39,7 +39,7 @@ const useComponent = (): ExtendedComponentProps => {
   const handleSubmit = (): void => {
     const nextStep = currentStep + 1;
     if (nextStep <= steps.length) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(nextStep);
     }
   };
 

@@ -50,12 +50,50 @@ const StyledButton = styled(Button)<ButtonProps>`
   border-color: ${(props: Props) => props.theme.colors.coatOfArms} !important;
 `;
 
+const StyledCompanyInfoContainer = styled.div`
+  display: flex;
+  width:100%;
+`;
+
+const StyledCompanyInfoSection = styled.div`
+  display: flex;
+  flex: 1 0 50%;
+`;
+
+const StyledCompanyInfoColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 50%;
+`;
+
+const StyledCompanyInfoRow = styled.div`
+  display: flex;
+`;
+
+const StyledNotificationContent = styled.div`
+  font-size: ${(props: Props) => props.theme.fontSize.heading.xs};
+`;
+
+const StyledSubSection = styled.div`
+  width:100%;
+  margin-left:200px;
+  
+  textarea {
+    width: 640px !important;
+  }
+`;
+
 export {
   StyledActionContainer,
   StyledButton,
+  StyledCompanyInfoColumn,
+  StyledCompanyInfoContainer,
+  StyledCompanyInfoRow,
+  StyledCompanyInfoSection,
   StyledContainer,
   StyledDescription,
   StyledHeading,
   StyledLink,
-  StyledTextContainer,
-};
+  StyledNotificationContent,
+  StyledSubSection,
+  StyledTextContainer};

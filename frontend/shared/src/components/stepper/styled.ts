@@ -50,7 +50,7 @@ const StyledStepTitle = styled.p<Props>`
 
 const StyledDivider = styled.div<Props>`
   width: 100%;
-  height: 2px;
+  height: 4px;
   margin: 4px;
   background: ${({ isActive, theme }: Props) =>
     getActiveColor(isActive || false, theme)};
