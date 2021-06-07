@@ -1,3 +1,4 @@
+import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -20,7 +21,9 @@ fixture('Frontpage')
 test('user can authenticate and logout', async (t: TestController) => {
   const loggedUser = await doEmployerLogin(t);
   const indexPageHeader = await indexPageComponents.header();
-  await indexPageHeader.expectations.userNameIsPresent(loggedUser);
+  if (isRealIntegrationsEnabled() && loggedUser) {
+    await indexPageHeader.expectations.userNameIsPresent(loggedUser);
+  }
   await indexPageHeader.actions.clickLogoutButton();
   const loginHeader = await pageLayoutComponents.header();
   await loginHeader.expectations.loginButtonIsPresent();
