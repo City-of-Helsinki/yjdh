@@ -3,6 +3,7 @@ const { join } = require('path');
 module.exports = {
   extends: ['auto'],
   rules: {
+    'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
     'no-void': 'off',
     'jsx-a11y/anchor-is-valid': [
       'error',

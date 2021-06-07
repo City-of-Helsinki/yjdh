@@ -1,7 +1,7 @@
 import { useTranslation } from 'benefit/applicant/i18n';
-import { FormikProps,getIn, useFormik } from 'formik';
+import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
-import React,  { FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 // import * as Yup from 'yup';
 
@@ -12,12 +12,27 @@ type ExtendedComponentProps = {
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  formik: FormikProps<any>;
+  formik: FormikProps<FormFields>;
 };
 
 type FieldsDef = {
   [key: string]: Field;
-}
+};
+
+type FormFields = {
+  hasCompanyOtherAddress: boolean;
+  companyOtherAddressStreet: string;
+  companyOtherAddressZipCode: string;
+  companyOtherAddressPostalDistrict: string;
+  companyIban: string;
+  contactPersonFirstName: string;
+  contactPersonLastName: string;
+  contactPersonPhone: string;
+  contactPersonEmail: string;
+  deMinimisAidGranted: string;
+  collectiveBargainingOngoing: string;
+  collectiveBargainingInfo: string;
+};
 
 const useComponent = (): ExtendedComponentProps => {
   const { t } = useTranslation();
@@ -50,37 +65,41 @@ const useComponent = (): ExtendedComponentProps => {
     },
   });
 
-  const fieldNames = React.useMemo((): string[] => [
+  const fieldNames = React.useMemo(
+    (): string[] => [
       'hasCompanyOtherAddress',
       'companyOtherAddressStreet',
       'companyOtherAddressZipCode',
       'companyOtherAddressPostalDistrict',
       'companyIban',
-      "contactPersonFirstName",
-      "contactPersonLastName",
-      "contactPersonPhone",
-      "contactPersonEmail",
-      "deMinimisAidGranted",
-      "collectiveBargainingOngoing",
-      "collectiveBargainingInfo"
-    ], []);
+      'contactPersonFirstName',
+      'contactPersonLastName',
+      'contactPersonPhone',
+      'contactPersonEmail',
+      'deMinimisAidGranted',
+      'collectiveBargainingOngoing',
+      'collectiveBargainingInfo',
+    ],
+    []
+  );
 
   const fields = React.useMemo((): FieldsDef => {
     const fieldsdef: FieldsDef = {};
-    fieldNames.forEach(name => {
+    fieldNames.forEach((name) => {
       fieldsdef[name] = {
         name,
         label: t(`${translationsBase}.fields.${name}.label`),
         placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
-      }
+      };
     });
     return fieldsdef;
   }, [t, fieldNames]);
 
-  const getErrorMessage = (fieldName: string): string | undefined => (
-      (getIn(formik.touched, fieldName) || isSubmitted) &&
-      getIn(formik.errors, fieldName)
-    );
+  const getErrorMessage = (fieldName: string): string | undefined =>
+    // todo: implement error messages
+    // (getIn(formik.touched, fieldName) || isSubmitted) &&
+    // getIn(formik.errors, fieldName)
+    isSubmitted ? fieldName : '';
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -91,7 +110,7 @@ const useComponent = (): ExtendedComponentProps => {
       if (invalidFields.length === 0) {
         void formik.submitForm();
       }
-      return "";
+      return null;
     });
   };
 
@@ -102,7 +121,7 @@ const useComponent = (): ExtendedComponentProps => {
     translationsBase,
     formik,
     getErrorMessage,
-    handleSubmit
+    handleSubmit,
   };
 };
 
