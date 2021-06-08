@@ -44,7 +44,7 @@ jobs:
         run: cd backend/benefit && black --check .
 
       - name: Linting
-        run: cd backend/benefit && flake8
+        run: cd backend/benefit && flake8 --config ../shared/precommit-setup.cfg
 
       - name: Import sorting
-        run: cd backend/benefit && isort -c .
+        run: cd backend/benefit && isort -c --settings-path ../shared/precommit-setup.cfg .
