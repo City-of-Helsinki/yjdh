@@ -15,6 +15,8 @@ const BackendAPIProvider = ({
           'Content-Type': 'application/json',
         },
         withCredentials: true,
+        xsrfCookieName: 'csrftoken',
+        xsrfHeaderName: 'X-CSRFToken',
       }),
     []
   );

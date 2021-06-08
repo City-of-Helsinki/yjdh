@@ -32,13 +32,14 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 # Bake package.json start command into the image
-CMD ["yarn", "dev"]
+CMD ["yarn", "ks-empl:dev"]
 
 # ===================================
 FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
+ARG MOCK_FLAG
 
 # Use non-root user
 USER appuser
@@ -99,4 +100,4 @@ EXPOSE 3000
 
 # Start nextjs server
 # https://github.com/lerna/lerna/issues/2428
-CMD ["yarn", "start:employer"]
+CMD ["yarn", "ks-empl:start"]

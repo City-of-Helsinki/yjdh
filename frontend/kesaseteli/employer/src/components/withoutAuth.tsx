@@ -6,11 +6,11 @@ import withAuthRedirect from './withAuthRedirect';
  */
 const withoutAuth = <P,>(
   WrappedComponent: React.FC<P>,
-  location = '/'
+  redirectLocation = '/'
 ): typeof WrappedComponent =>
   withAuthRedirect({
     WrappedComponent,
-    location,
+    redirectLocation,
     expectedAuth: false,
   });
 

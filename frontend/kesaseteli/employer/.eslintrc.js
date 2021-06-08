@@ -16,6 +16,7 @@ module.exports = {
       // Use package.json from both this package folder and root.
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
+    'no-void': 'off',
   },
   overrides: [
     {
@@ -25,9 +26,16 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.tsx'],
+      files: ['*.test.tsx', '*.testcafe.ts'],
       rules: {
         'jest/expect-expect': 'off',
+        'jest/no-done-callback': 'off',
+      },
+    },
+    {
+      files: ['*.components.ts'],
+      rules: {
+        'security/detect-non-literal-fs-filename': 'off',
       },
     },
   ],
