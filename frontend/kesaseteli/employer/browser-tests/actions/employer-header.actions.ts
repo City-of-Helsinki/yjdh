@@ -6,7 +6,9 @@ import { getPageLayoutComponents } from '../common-components/pageLayout.compone
 
 let pageLayoutComponents: ReturnType<typeof getPageLayoutComponents>;
 
-export const doEmployerLogin = async (t: TestController): Promise<User> => {
+export const doEmployerLogin = async (
+  t: TestController
+): Promise<User | undefined> => {
   pageLayoutComponents = getPageLayoutComponents(t);
   const loginHeader = await pageLayoutComponents.header();
   await loginHeader.actions.clickLoginbutton();

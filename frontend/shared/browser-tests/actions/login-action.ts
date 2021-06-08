@@ -4,6 +4,7 @@ import User from '../../src/types/user';
 import { getSuomiFiAuthenticationComponents } from '../components/suomiFiAuthentication.components';
 import { getSuomiFiProfileComponents } from '../components/suomiFiProfile.components';
 import { getSuomiFiTestIdentificationComponents } from '../components/suomiFiTestIdentification.components';
+import isRealIntegrationsEnabled from '../utils/is-real-integrations-enabled';
 import { getUrlUtils } from '../utils/url.utils';
 
 let suomiFiAuthenticationComponents: ReturnType<
@@ -35,7 +36,9 @@ const doSuomiFiLogin = async (t: TestController): Promise<User> => {
   return expecteduser;
 };
 // eslint-disable-next-line arrow-body-style
-export const doLogin = (t: TestController): Promise<User> => {
-  // TODO: mock login
-  return doSuomiFiLogin(t);
+export const doLogin = (t: TestController): Promise<User> | undefined => {
+  if (isRealIntegrationsEnabled()) {
+    return doSuomiFiLogin(t);
+  }
+  return undefined;
 };
