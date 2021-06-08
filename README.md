@@ -6,11 +6,25 @@ YJDH-Kesäseteli
 
 ### kesaseteli Development with Docker
 
-1. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
+### generate certificate
+1. create folder `/frontend/shared/certificates`
+2. Run command
 
-2. Run `yarn kesaseteli:up`
+```
+openssl req -x509 -out localhost.crt -keyout localhost.key \
+  -days 3650 \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+```
 
-The Frontend is now running at [localhost:3000](http://localhost:3000)
+3. Add your Cert to Keychain. Follow instructions here: https://medium.com/responsetap-engineering/nextjs-https-for-a-local-dev-server-98bb441eabd7
+
+4. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
+
+5. Run `yarn kesaseteli:up`
+
+The Frontend is now running at [localhost:3000](https://localhost:3000)
 The backend is now running at [localhost:8000](http://localhost:8000)
 
 ## Benefit

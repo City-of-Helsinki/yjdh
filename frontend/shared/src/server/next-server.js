@@ -2,9 +2,9 @@ import express from 'express';
 import next from 'next';
 
 const port = process.env.PORT || 3000;
-const app = next({ dev: process.env.NODE_ENV !== 'production' });
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev });
 const handle = app.getRequestHandler();
-
 const RESPONSES = {
   OK: 'OK',
   SERVER_IS_NOT_READY: 'SERVER_IS_NOT_READY',
@@ -16,12 +16,28 @@ const signalReady = () => {
   serverIsReady = true;
 };
 
-const checkIsServerReady = (response) => {
+const checkIsServerReady = (res) => {
   if (serverIsReady) {
-    response.send(RESPONSES.OK);
+    res.send(RESPONSES.OK);
   } else {
-    response.status(503).send(RESPONSES.SERVER_IS_NOT_READY);
+    res.status(503).send(RESPONSES.SERVER_IS_NOT_READY);
   }
+};
+
+const startHttpsServer = async (server) => {
+  const { readFile } = await import('fs/promises');
+  const https = await import('https');
+  // https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-module.md
+  const httpsOptions = {
+    key: await readFile(
+      new URL('../../certificates/localhost.key', import.meta.url)
+    ),
+    cert: await readFile(
+      new URL('../../certificates/localhost.crt', import.meta.url)
+    ),
+  };
+  await https.createServer(httpsOptions, server).listen(port);
+  console.log(`> Ready on https://localhost:${port}`); // eslint-disable-line no-console
 };
 
 (async () => {
@@ -38,7 +54,12 @@ const checkIsServerReady = (response) => {
 
   server.get('*', (req, res) => handle(req, res));
 
-  await server.listen(port);
+  if (dev) {
+    await startHttpsServer(server);
+  } else {
+    await server.listen(port);
+    console.log(`> Ready on http://localhost:${port}`); // eslint-disable-line no-console
+  }
+
   signalReady();
-  console.log(`> Ready on http://localhost:${port}`); // eslint-disable-line no-console
 })();
