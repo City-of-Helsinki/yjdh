@@ -46,12 +46,17 @@ env = environ.Env(
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
-    LOGIN_REDIRECT_URL=(str, ""),
-    LOGIN_REDIRECT_URL_FAILURE=(str, ""),
+    LOGIN_REDIRECT_URL=(str, "/"),
+    LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, ""),
     EAUTHORIZATIONS_CLIENT_ID=(str, ""),
     EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
     EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
+    ADFS_CLIENT_ID=(str, "client_id"),
+    ADFS_CLIENT_SECRET=(str, "client_secret"),
+    ADFS_TENANT_ID=(str, "tenant_id"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -103,6 +108,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "mozilla_django_oidc",
     "django_extensions",
+    "django_auth_adfs",
     # local apps
     "applications",
     "companies",
@@ -195,6 +201,27 @@ EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
 EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
 EAUTHORIZATIONS_CLIENT_SECRET = env.str("EAUTHORIZATIONS_CLIENT_SECRET")
 EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
+
+# Azure ADFS
+LOGIN_URL = "django_auth_adfs:login"
+
+ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
+ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
+ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+
+# https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html#step-2-configuring-settings-py
+AUTH_ADFS = {
+    "AUDIENCE": ADFS_CLIENT_ID,
+    "CLIENT_ID": ADFS_CLIENT_ID,
+    "CLIENT_SECRET": ADFS_CLIENT_SECRET,
+    "CLAIM_MAPPING": {"email": "email"},
+    "USERNAME_CLAIM": "unique_name",
+    "TENANT_ID": ADFS_TENANT_ID,
+    "RELYING_PARTY_ID": ADFS_CLIENT_ID,
+}
+
+ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
+ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
