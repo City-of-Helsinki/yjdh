@@ -63,9 +63,7 @@ def test_get_organization_roles(requests_mock, eauthorization_profile):
     matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
     requests_mock.get(matcher, json=organization_roles_json)
 
-    organization_roles = get_organization_roles(
-        eauthorization_profile.id_token, eauthorization_profile.access_token
-    )
+    organization_roles = get_organization_roles(eauthorization_profile)
 
     assert organization_roles["name"] == organization_roles_json[0]["name"]
     assert organization_roles["identifier"] == organization_roles_json[0]["identifier"]

@@ -8,7 +8,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from oidc.auth import HelsinkiOIDCAuthenticationBackend
-from oidc.models import OIDCProfile
+from oidc.models import EAuthorizationProfile, OIDCProfile
 
 
 def get_userinfo(access_token: str) -> dict:
@@ -39,14 +39,14 @@ def get_checksum_header(path: str) -> str:
     return f"{settings.EAUTHORIZATIONS_CLIENT_ID} {timestamp} {checksum}"
 
 
-def get_organization_roles(session_id: str, access_token: str) -> dict:
+def get_organization_roles(eauth_profile: EAuthorizationProfile) -> dict:
     """
     Docs (only in Finnish):
     Search for "Taulukossa 14"
     https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
     """
     request_id = uuid4()
-    path = f"/service/ypa/api/organizationRoles/{session_id}?requestId={request_id}"
+    path = f"/service/ypa/api/organizationRoles/{eauth_profile.id_token}?requestId={request_id}"
     organization_roles_endpoint = f"{settings.EAUTHORIZATIONS_BASE_URL}{path}"
 
     checksum_header = get_checksum_header(path)
@@ -54,7 +54,7 @@ def get_organization_roles(session_id: str, access_token: str) -> dict:
     response = requests.get(
         organization_roles_endpoint,
         headers={
-            "Authorization": f"Bearer {access_token}",
+            "Authorization": f"Bearer {eauth_profile.access_token}",
             "X-AsiointivaltuudetAuthorization": checksum_header,
         },
     )
