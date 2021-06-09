@@ -4,11 +4,11 @@ on:
     branches:
       - main
     paths:
-      - 'backend/helsinki-benefit/**'
-      - 'frontend/helsinki-benefit/**'
-      - 'frontend/shared/**'
-      - 'frontend/*'
-      - '.github/workflows/bf-staging.yml'
+      - "backend/benefit/**"
+      - "frontend/benefit/**"
+      - "frontend/shared/**"
+      - "frontend/*"
+      - ".github/workflows/bf-staging.yml"
   workflow_dispatch:
     inputs:
       build_required:
@@ -40,15 +40,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'bf-backend', 'bf-applicant' ]
+        service: ["bf-bknd", "bf-appl"]
         include:
-          - service: bf-backend
-            context: ./backend/helsinki-benefit
-            dockerfile: ./backend/helsinki-benefit/Dockerfile
+          - service: bf-bknd
+            context: ./backend
+            dockerfile: ./backend/docker/benefit.Dockerfile
             port: 8000
-          - service: bf-applicant
-            context: ./frontend/helsinki-benefit/applicant/
-            dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
+          - service: bf-appl
+            context: ./frontend
+            dockerfile: ./frontend/benefit/applicant/Dockerfile
             port: 3000
     runs-on: ubuntu-latest
     name: Build
@@ -71,18 +71,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'backend', 'applicant' ]
+        service: ["bf-bknd", "bf-appl"]
         include:
-          - service: backend
-            project: backend
-            context: ./backend/helsinki-benefit
-            dockerfile: ./backend/helsinki-benefit/Dockerfile
+          - service: bf-bknd
+            context: ./backend
+            dockerfile: ./backend/docker/benefit.Dockerfile
             database: true
             port: 8000
-          - service: applicant
-            project: applicant
-            context: ./frontend/helsinki-benefit/applicant
-            dockerfile: ./frontend/helsinki-benefit/applicant/Dockerfile
+          - service: bf-appl
+            context: ./frontend/benefit
+            dockerfile: ./frontend/benefit/applicant/Dockerfile
             database: false
             port: 3000
     runs-on: ubuntu-latest
@@ -137,9 +135,9 @@ jobs:
           echo "APPLICANT_URL=https://applicant.helsinkibenefit.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
           echo "HANDLER_URL=https://handler.helsinkibenefit.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.2
+        uses: actions/setup-node@v2.1.5
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"

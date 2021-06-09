@@ -1,61 +1,66 @@
+import { SUPPORTED_LANGUAGES } from 'benefit/applicant/constants';
+import useLocale from 'benefit/applicant/hooks/useLocale';
+import { i18n, useTranslation } from 'benefit/applicant/i18n';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { NavigationItem, OptionType } from 'shared/types/common';
-
-import { SUPPORTED_LANGUAGES } from '../../../constants';
-import { i18n, useTranslation } from '../../../i18n';
-import useLocale  from '../../hooks/useLocale';
 
 type ExtendedComponentProps = {
   t: TFunction;
   languageOptions: OptionType[];
   locale: string;
-  navigationItems: NavigationItem[];
-  handleLanguageChange: (newLanguage: OptionType) => void;
+  navigationItems?: NavigationItem[];
+  handleLanguageChange: (
+    e: React.SyntheticEvent<unknown>,
+    newLanguage: OptionType
+  ) => void;
   handleNavigationItemClick: (pathname: string) => void;
   handleTitleClick: () => void;
-}
+};
 
 const useComponent = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
 
-  const navigationItems = [
-    { label: 'Link1', url: '/link1' },
-    { label: 'Link2', url: '/link2' },
-    { label: 'Link3', url: '/link3' },
-  ];
-
   const getLanguageOptions = (): OptionType[] => {
     const createOptions = (languages: string[]): OptionType[] =>
       languages.map((language) => ({
         label: t(`common:languages.${language}`),
-        value: language ,
+        value: language,
       }));
 
-      // cimode goes here, not implemented
+    // cimode goes here, not implemented
 
     return createOptions(Object.values(SUPPORTED_LANGUAGES));
   };
 
   const languageOptions: OptionType[] = getLanguageOptions();
 
-  const handleLanguageChange = (newLanguage: OptionType): void => {
-    if(i18n) {
+  const handleLanguageChange = (
+    e: React.SyntheticEvent<unknown>,
+    newLanguage: OptionType
+  ): void => {
+    e.preventDefault();
+    if (i18n) {
       void i18n.changeLanguage(newLanguage.value);
     }
-    // todo: fix router with localization
-    // router.push(`/${newLanguage.value}`, `/${newLanguage.value}`, {locale: locale});
-  }
+  };
 
-  const handleNavigationItemClick = (pathname: string): void =>  {
+  const handleNavigationItemClick = (pathname: string): void => {
     void router.push(pathname);
-  }
+  };
 
-  const handleTitleClick = (): void => handleNavigationItemClick('/')
+  const handleTitleClick = (): void => handleNavigationItemClick('/');
 
-  return { t, languageOptions, locale, navigationItems, handleLanguageChange, handleNavigationItemClick, handleTitleClick }
-}
+  return {
+    t,
+    languageOptions,
+    locale,
+    handleLanguageChange,
+    handleNavigationItemClick,
+    handleTitleClick,
+  };
+};
 
-export { useComponent }
+export { useComponent };

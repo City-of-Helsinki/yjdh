@@ -11,10 +11,9 @@ export type AuthContextType = {
 const AuthContext = React.createContext<AuthContextType>({
   isAuthenticated: false,
   isLoading: true,
-  setAuthenticated: () => {},
   isError: false,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setError: (value: boolean) => {},
+  setAuthenticated: () => {},
+  setError: () => {},
 });
 
 export default AuthContext;

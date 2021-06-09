@@ -1,10 +1,9 @@
+import { useTranslation } from 'benefit/applicant/i18n';
 import { Language } from 'shared/types/common';
-
-import { useTranslation } from '../../i18n';
 
 const useLocale = (): Language => {
   const { i18n } = useTranslation();
-  const {language} = i18n;
+  const { language } = i18n;
 
   switch (language) {
     case 'en':

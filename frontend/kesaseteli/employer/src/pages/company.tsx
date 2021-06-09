@@ -1,3 +1,4 @@
+import withAuth from 'kesaseteli/employer/components/withAuth';
 import useCompanyQuery from 'kesaseteli/employer/hooks/useCompanyQuery';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -31,4 +32,4 @@ const CompanyPage: NextPage = () => {
   );
 };
 
-export default CompanyPage;
+export default withAuth(CompanyPage);

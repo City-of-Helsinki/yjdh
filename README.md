@@ -8,7 +8,7 @@ YJDH-Kesäseteli
 
 1. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
 
-2. Run `docker-compose -f docker-compose.kesaseteli.yml up`
+2. Run `yarn kesaseteli:up`
 
 The Frontend is now running at [localhost:3000](http://localhost:3000)
 The backend is now running at [localhost:8000](http://localhost:8000)

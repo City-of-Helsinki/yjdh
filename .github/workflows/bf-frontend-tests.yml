@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.2
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -40,7 +40,7 @@ jobs:
       - name: Run linter
         run: yarn lint
       - name: Run tests
-        run: yarn test
+        run: yarn test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
   build:
@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.2
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -65,4 +65,4 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
-        run: yarn build
+        run: yarn bf-applicant:build

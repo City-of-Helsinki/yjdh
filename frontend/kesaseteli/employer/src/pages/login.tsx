@@ -9,15 +9,18 @@ import Layout from 'shared/components/Layout';
 const Login: NextPage = () => {
   const router = useRouterClearQueryParams();
   const {
-    query: { logout, error },
+    query: { logout, error, sessionExpired },
   } = router;
   const login = useLogin();
 
   return (
     <Layout headingText="Työnantajan liittymä">
       <Button onClick={login}>Kirjaudu sisään</Button>
-      {error && <p>Tapahtui virhe: error</p>}
       {logout && <p>Olet kirjautunut ulos</p>}
+      {error && <p>Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään.</p>}
+      {sessionExpired && (
+        <p>Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään.</p>
+      )}
     </Layout>
   );
 };

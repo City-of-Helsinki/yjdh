@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
     paths:
-    - 'backend/helsinki-benefit/**'
+    - 'backend/benefit/**'
     - '.github/workflows/bf-pytest.yml'
 
 env:
@@ -28,9 +28,9 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         env:
-          POSTGRES_USER: helsinkibenefit
-          POSTGRES_PASSWORD: helsinkibenefit
-          POSTGRES_DB: helsinkibenefit
+          POSTGRES_USER: benefit
+          POSTGRES_PASSWORD: benefit
+          POSTGRES_DB: benefit
 
     steps:
       - name: Check out repository
@@ -49,12 +49,12 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/helsinki-benefit/requirements.txt -r backend/helsinki-benefit/requirements-dev.txt codecov
+        run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt codecov
 
       - name: Run tests
-        run: pytest backend/helsinki-benefit -ra -vv --doctest-modules --cov=.
+        run: pytest backend/benefit -ra -vv --doctest-modules --cov=.
         env:
-          DATABASE_URL: postgres://helsinkibenefit:helsinkibenefit@postgres/helsinkibenefit
+          DATABASE_URL: postgres://benefit:benefit@postgres/benefit
 
       - name: Coverage
         run: codecov

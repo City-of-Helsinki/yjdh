@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
     paths:
-    - 'backend/helsinki-benefit/**'
+    - 'backend/benefit/**'
     - '.github/workflows/bf-py-coding-style.yml'
 
 env:
@@ -38,13 +38,13 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/helsinki-benefit/requirements.txt -r backend/helsinki-benefit/requirements-dev.txt
+        run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Formatting
-        run: cd backend/helsinki-benefit && black --check .
+        run: cd backend/benefit && black --check .
 
       - name: Linting
-        run: cd backend/helsinki-benefit && flake8
+        run: cd backend/benefit && flake8 --config ../shared/precommit-setup.cfg
 
       - name: Import sorting
-        run: cd backend/helsinki-benefit && isort -c .
+        run: cd backend/benefit && isort -c --settings-path ../shared/precommit-setup.cfg .

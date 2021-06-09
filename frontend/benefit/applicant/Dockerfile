@@ -34,13 +34,14 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 # Bake package.json start command into the image
-CMD ["yarn", "dev"]
+CMD ["yarn", "bf-applicant:dev"]
 
 # ===================================
 FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
+ARG MOCK_FLAG
 
 # Use non-root user
 USER appuser
@@ -50,7 +51,12 @@ WORKDIR /app
 COPY --chown=appuser:appuser . .
 
 # Build application
+WORKDIR /app/benefit/applicant/
 RUN yarn build
+
+# Clean all dependencies (this should avoid caching + missing /pages directory problem)
+RUN rm -rf node_modules
+RUN yarn cache clean
 
 # ==========================================
 FROM helsinkitest/node:12-slim AS production
@@ -65,12 +71,11 @@ WORKDIR /app
 COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/.next benefit/applicant/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/next.config.js /app/benefit/applicant/next-i18next.config.js benefit/applicant/
+COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/next-i18next.config.js app/benefit/applicant/next.config.js /app/benefit/applicant/next-i18next.config.js benefit/applicant/
 
-# Copy package.json and yarn.lock files
-# TODO: add public folder when we have static assets
-COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/package.json app/benefit/applicant/start.js benefit/applicant/
+# Copy public folder with assets package.json and yarn.lock files
+COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/public app/package.json app/yarn.lock app/lerna.json ./
+COPY --from=staticbuilder --chown=appuser:appuser app/benefit/applicant/src/i18n.ts app/benefit/applicant/package.json app/benefit/applicant/start.js benefit/applicant/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
@@ -97,4 +102,4 @@ RUN yarn global add lerna
 
 # Start nextjs server
 # https://github.com/lerna/lerna/issues/2428
-CMD ["yarn", "start:applicant"]
+CMD ["yarn", "bf-applicant:start"]

@@ -1,26 +1,9 @@
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from utils.models import TimeStampedModel, UUIDModel
-
-
-class AbstractCompany(UUIDModel):
-    eauthorization_profiles = GenericRelation(
-        "oidc.EAuthorizationProfile",
-        object_id_field="_company_object_id",
-        content_type_field="_company_content_type",
-    )
-
-    @property
-    def eauthorization_profile(self):
-        return self.eauthorization_profiles.first()
-
-    class Meta:
-        abstract = True
 
 
 class AbstractOIDCProfile(UUIDModel, TimeStampedModel):
@@ -75,18 +58,3 @@ class EAuthorizationProfile(AbstractOIDCProfile):
         verbose_name=_("oidc_profile"),
         related_name="eauthorization_profile",
     )
-    _company_content_type = models.OneToOneField(
-        ContentType,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        verbose_name=_("company content type"),
-        related_name="eauthorization_profile",
-    )
-    _company_object_id = models.UUIDField(
-        verbose_name=_("company object id"), blank=True, null=True
-    )
-    company = GenericForeignKey("_company_content_type", "_company_object_id")
-
-    class Meta:
-        unique_together = ("_company_content_type", "_company_object_id")
