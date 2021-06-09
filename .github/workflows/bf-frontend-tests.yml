@@ -8,7 +8,7 @@ on:
     - 'frontend/*'
     - '.github/workflows/bf-frontend-tests.yml'
   push:
-    branches: [main]
+    branches: [develop, main]
   workflow_dispatch:
 env:
   TZ: Europe/Helsinki
