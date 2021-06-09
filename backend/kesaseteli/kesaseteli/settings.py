@@ -48,6 +48,10 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, ""),
     LOGIN_REDIRECT_URL_FAILURE=(str, ""),
+    EAUTHORIZATIONS_BASE_URL=(str, ""),
+    EAUTHORIZATIONS_CLIENT_ID=(str, ""),
+    EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
+    EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -161,6 +165,7 @@ MOCK_FLAG = env.bool("MOCK_FLAG")
 
 # Authentication
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
+SESSION_COOKIE_SECURE = True
 
 AUTHENTICATION_BACKENDS = (
     "oidc.auth.HelsinkiOIDCAuthenticationBackend",
@@ -182,6 +187,11 @@ OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
+
+EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
+EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
+EAUTHORIZATIONS_CLIENT_SECRET = env.str("EAUTHORIZATIONS_CLIENT_SECRET")
+EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

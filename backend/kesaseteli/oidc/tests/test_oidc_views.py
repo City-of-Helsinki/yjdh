@@ -10,7 +10,10 @@ from oidc.tests.factories import OIDCProfileFactory
 
 
 @pytest.mark.django_db
-@override_settings(OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/")
+@override_settings(
+    OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/",
+    MOCK_FLAG=False,
+)
 def test_logout_view(requests_mock, user_client, user):
     OIDCProfileFactory(user=user)
 
@@ -26,7 +29,10 @@ def test_logout_view(requests_mock, user_client, user):
 
 
 @pytest.mark.django_db
-@override_settings(OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/")
+@override_settings(
+    OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/",
+    MOCK_FLAG=False,
+)
 def test_logout_view_without_oidc_profile(requests_mock, user_client, user):
     matcher = re.compile(settings.OIDC_OP_LOGOUT_ENDPOINT)
     requests_mock.post(matcher)
@@ -39,7 +45,10 @@ def test_logout_view_without_oidc_profile(requests_mock, user_client, user):
 
 
 @pytest.mark.django_db
-@override_settings(OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/")
+@override_settings(
+    OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
+    MOCK_FLAG=False,
+)
 def test_userinfo_view(requests_mock, user_client, user):
     OIDCProfileFactory(
         user=user,
@@ -65,7 +74,10 @@ def test_userinfo_view(requests_mock, user_client, user):
 
 
 @pytest.mark.django_db
-@override_settings(OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/")
+@override_settings(
+    OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
+    MOCK_FLAG=False,
+)
 def test_userinfo_view_without_oidc_profile(user_client):
     userinfo_url = reverse("oidc_userinfo")
     response = user_client.get(userinfo_url)
@@ -74,7 +86,10 @@ def test_userinfo_view_without_oidc_profile(user_client):
 
 
 @pytest.mark.django_db
-@override_settings(OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/")
+@override_settings(
+    OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
+    MOCK_FLAG=False,
+)
 def test_userinfo_view_with_userinfo_returning_401(requests_mock, user_client, user):
     OIDCProfileFactory(
         user=user,
