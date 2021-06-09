@@ -22,6 +22,7 @@
     "babel-plugin-styled-components": "^1.10.0",
     "dotenv": "^9.0.0",
     "esm": "^3.2.25",
+    "formik": "^2.2.9",
     "graphql": "^15.5.0",
     "hds-react": "^1.0.0",
     "i18next-intervalplural-postprocessor": "^3.0.0",
