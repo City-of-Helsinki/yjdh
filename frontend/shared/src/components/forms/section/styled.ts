@@ -1,7 +1,7 @@
 import { Theme } from 'shared/styles/theme';
 import styled, { ThemeProps } from 'styled-components';
 
-type Props = ThemeProps<Theme>;
+type Props = ThemeProps<Theme> & { backgroundColor?: string };
 
 const StyledSection = styled.div`
   display: flex;
@@ -17,23 +17,48 @@ const StyledHeader = styled.h1`
   //margin-bottom: ${(props: Props) => props.theme.spacing.m};
 `;
 
+const StyledSubHeader = styled.h1`
+  font-size: ${(props: Props) => props.theme.fontSize.heading.xxs};
+  font-weight: 600;
+  //margin-bottom: ${(props: Props) => props.theme.spacing.m};
+`;
+
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
   font-size: ${(props: Props) => props.theme.fontSize.heading.s};
   font-weight: normal;
-  line-height: ${(props: Props) => props.theme.lineHeight.l};
+  //line-height: ${(props: Props) => props.theme.lineHeight.l};
 `;
 
-const StyledFormGroup = styled.div`
+const StyledFormGroup = styled.div<Props>`
   display: flex;
-  width:100%;
+  align-items: center;
   margin-bottom: ${(props: Props) => props.theme.spacing.xs};
   & > div {
     margin-right: ${(props: Props) => props.theme.spacing.xs};
   }
+  background-color: ${(props: Props) => props.backgroundColor};
 `;
 
+const StyledFieldsContainerWithPadding = styled.div`
+  display: flex;
+  align-items: center;
+  padding: ${(props: Props) => props.theme.spacing.xs};
+  padding-top: ${(props: Props) => props.theme.spacingLayout.xs2};
+  & > div {
+    width: 250px;
+  }
+  & > div:not(:last-child) {
+    margin-right: ${(props: Props) => props.theme.spacing.xs};
+  }
+`;
 
-
-export { StyledContent, StyledFormGroup,StyledHeader, StyledSection };
+export {
+  StyledContent,
+  StyledFieldsContainerWithPadding,
+  StyledFormGroup,
+  StyledHeader,
+  StyledSection,
+  StyledSubHeader,
+};

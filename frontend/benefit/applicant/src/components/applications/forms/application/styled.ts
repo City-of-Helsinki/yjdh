@@ -40,6 +40,17 @@ const StyledActionContainer = styled.div`
   box-sizing: border-box;
 `;
 
+const StyledSubActionContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  justify-self: stretch;
+  box-sizing: border-box;
+  background-color: white;
+  flex: 1 0 auto;
+`;
+
 interface ButtonProps {
   icon?: React.ReactNode;
 }
@@ -52,7 +63,7 @@ const StyledButton = styled(Button)<ButtonProps>`
 
 const StyledCompanyInfoContainer = styled.div`
   display: flex;
-  width:100%;
+  width: 100%;
 `;
 
 const StyledCompanyInfoSection = styled.div`
@@ -75,9 +86,8 @@ const StyledNotificationContent = styled.div`
 `;
 
 const StyledSubSection = styled.div`
-  width:100%;
-  margin-left:200px;
-  
+  margin-left: 200px;
+
   textarea {
     width: 640px !important;
   }
@@ -95,5 +105,7 @@ export {
   StyledHeading,
   StyledLink,
   StyledNotificationContent,
+  StyledSubActionContainer,
   StyledSubSection,
-  StyledTextContainer};
+  StyledTextContainer,
+};

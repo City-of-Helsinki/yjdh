@@ -48,6 +48,9 @@
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading3": "Hakijan de minimis-tuet",
         "heading4": "YT-tilanne",
+        "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
+        "deMinimisAidsAdd": "Lisää",
+        "deMinimisAidsRemove": "Poista",
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haettu YTJ:stä",
@@ -94,6 +97,18 @@
             "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
             "yes": "Kyllä",
             "no": "Ei"
+          },
+          "deMinimisAidGranter": {
+            "label": "Tuen myöntäjä",
+            "placeholder": "Myöntävä taho"
+          },
+          "deMinimisAidAmount": {
+            "label": "Tuen määrä",
+            "placeholder": "euro"
+          },
+          "deMinimisAidIssueDate": {
+            "label": "Myöntämispäivämääärä",
+            "placeholder": "Valitse"
           },
           "collectiveBargainingOngoing": {
             "label": "Onko hakijalla menossa YT-neuvottelut?",

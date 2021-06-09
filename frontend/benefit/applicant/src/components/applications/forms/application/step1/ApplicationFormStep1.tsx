@@ -12,6 +12,7 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
 import { APPLICATION_FIELDS } from '../../../constants';
+import DeMinimisAidForm from '../deMinimisAid/DeMinimisAid';
 import {
   StyledCompanyInfoColumn,
   StyledCompanyInfoContainer,
@@ -271,6 +272,9 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             />
           </SelectionGroup>
         </StyledFormGroup>
+        <StyledSubSection style={{ marginLeft: '130px' }}>
+          <DeMinimisAidForm onSubmit={() => null} />
+        </StyledSubSection>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
         <StyledFormGroup>
@@ -307,8 +311,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </SelectionGroup>
         </StyledFormGroup>
         {formik.values.collectiveBargainingOngoing === 'true' && (
-          <StyledFormGroup>
-            <StyledSubSection>
+          <StyledSubSection>
+            <StyledFormGroup>
               <TextArea
                 id={fields.collectiveBargainingInfo.name}
                 name={fields.collectiveBargainingInfo.name}
@@ -331,8 +335,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO
                 )}
               />
-            </StyledSubSection>
-          </StyledFormGroup>
+            </StyledFormGroup>
+          </StyledSubSection>
         )}
       </FormSection>
       {actions}

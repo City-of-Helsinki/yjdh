@@ -1,39 +1,39 @@
 type Colors = {
   [key: string]: string;
-}
+};
 
 type Fonts = {
   [key: string]: string;
-}
+};
 
 type Body = {
   [key: string]: string;
-}
+};
 
 type Heading = {
   [key: string]: string;
-}
+};
 
 type FontSize = {
   body: Body;
   heading: Heading;
-}
+};
 
 type ContainerWidth = {
   [key: string]: string;
-}
+};
 
 type Spacing = {
   [key: string]: string;
-}
+};
 
 type SpacingLayout = {
   [key: string]: string;
-}
+};
 
 type LineHeight = {
   [key: string]: number;
-}
+};
 
 export interface Theme {
   colors: Colors;
@@ -123,7 +123,7 @@ const theme: Theme = {
   fonts: {
     helGrotesk: `'HelsinkiGrotesk', Arial, -apple-system, BlinkMacSystemFont,
     'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;`
+    'Droid Sans', 'Helvetica Neue', sans-serif;`,
   },
   fontSize: {
     heading: {
@@ -139,7 +139,7 @@ const theme: Theme = {
       m: '1rem',
       l: '1.125rem',
       xl: '1.25rem',
-    }
+    },
   },
   containerWidth: {
     xs: '288px',
@@ -176,7 +176,7 @@ const theme: Theme = {
     m: 1.2,
     l: 1.5,
     xl: 1.75,
-  }, 
-}
+  },
+};
 
-export default theme
+export default theme;

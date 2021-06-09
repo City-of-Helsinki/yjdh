@@ -20,3 +20,9 @@ export enum APPLICATION_FIELDS {
   COLLECTIVE_BARGAINING_ONGOING = 'collectiveBargainingOngoing',
   COLLECTIVE_BARGAINING_INFO = 'collectiveBargainingInfo',
 }
+
+export enum DE_MINIMIS_AID_FIELDS {
+  GRANTER = 'deMinimisAidGranter',
+  AMOUNT = 'deMinimisAidAmount',
+  ISSUE_DATE = 'deMinimisAidIssueDate',
+}
