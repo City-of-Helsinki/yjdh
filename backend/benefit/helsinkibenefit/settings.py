@@ -27,7 +27,7 @@ env = environ.Env(
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
         str,
-        "postgres:///helsinkibenefit",
+        "postgres://helsinkibenefit:helsinkibenefit@localhost/helsinkibenefit",
     ),
     CACHE_URL=(str, "locmemcache://"),
     MAIL_MAILGUN_KEY=(str, ""),
@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # local apps
     "users.apps.AppConfig",
+    "companies",
     "utils",
 ]
 
