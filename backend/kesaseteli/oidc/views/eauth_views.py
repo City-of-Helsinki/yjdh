@@ -76,7 +76,7 @@ class EauthAuthenticationRequestView(View):
             "response_type": "code",
             "redirect_uri": request.build_absolute_uri(
                 reverse("eauth_authentication_callback")
-            ),
+            ).replace("http://", "https://"),
             "user": user_id,
         }
         query = urlencode(params)
@@ -111,7 +111,7 @@ class EauthAuthenticationCallbackView(View):
             "grant_type": "authorization_code",
             "redirect_uri": self.request.build_absolute_uri(
                 reverse("eauth_authentication_callback")
-            ),
+            ).replace("http://", "https://"),
         }
         query = urlencode(params)
 
