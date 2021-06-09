@@ -2,7 +2,7 @@ name: (KS) Python coding style
 
 on:
   push:
-    branches: [main]
+    branches: [develop, main]
   pull_request:
     paths:
       - 'backend/kesaseteli/**'
