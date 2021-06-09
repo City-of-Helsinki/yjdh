@@ -53,7 +53,7 @@ jobs:
         run: pip install -r backend/kesaseteli/requirements.txt -r backend/kesaseteli/requirements-dev.txt codecov
 
       - name: Run tests
-        run: pytest backend/kesaseteli/ -ra -vv --doctest-modules --cov=.
+        run: pytest backend/kesaseteli/ -ra -vv --doctest-modules --cov=. -n auto
         env:
           DATABASE_URL: postgres://kesaseteli:kesaseteli@postgres/kesaseteli
 
