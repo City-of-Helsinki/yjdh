@@ -136,3 +136,11 @@ dmypy.json
 *.iml
 
 node_modules
+
+# Local generated certs
+*.csr
+*.key
+*.crt
+
+# MacOS files
+.DS_Store

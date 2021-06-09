@@ -10,7 +10,7 @@ YJDH-Kesäseteli
 
 2. Run `yarn kesaseteli:up`
 
-The Frontend is now running at [localhost:3000](http://localhost:3000)
+The Frontend is now running at [localhost:3000](https://localhost:3000)
 The backend is now running at [localhost:8000](https://localhost:8000)
 
 ## Benefit
