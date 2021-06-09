@@ -1,13 +1,10 @@
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import {
-  Checkbox,
-  Notification,
-  RadioButton,
-  SelectionGroup,
-  TextArea,
-  TextInput,
-} from 'hds-react';
+import { Notification, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
+import {
+  StyledCheckbox,
+  StyledRadioButton,
+} from 'shared/components/forms/fields/styled';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
@@ -65,7 +62,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </StyledCompanyInfoSection>
         </StyledCompanyInfoContainer>
         <StyledFormGroup>
-          <Checkbox
+          <StyledCheckbox
             id={fields.hasCompanyOtherAddress.name}
             name={fields.hasCompanyOtherAddress.name}
             label={fields.hasCompanyOtherAddress.label}
@@ -248,7 +245,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED
             )}
           >
-            <RadioButton
+            <StyledRadioButton
               id={`${fields.deMinimisAidGranted.name}False`}
               name={fields.deMinimisAidGranted.name}
               value="false"
@@ -259,7 +256,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               onBlur={formik.handleBlur}
               checked={formik.values.deMinimisAidGranted === 'false'}
             />
-            <RadioButton
+            <StyledRadioButton
               id={`${fields.deMinimisAidGranted.name}True`}
               name={fields.deMinimisAidGranted.name}
               value="true"
@@ -272,9 +269,11 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             />
           </SelectionGroup>
         </StyledFormGroup>
-        <StyledSubSection style={{ marginLeft: '130px' }}>
-          <DeMinimisAidForm onSubmit={() => null} />
-        </StyledSubSection>
+        {formik.values.deMinimisAidGranted === 'true' && (
+          <StyledSubSection>
+            <DeMinimisAidForm onSubmit={() => null} />
+          </StyledSubSection>
+        )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
         <StyledFormGroup>
@@ -286,7 +285,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING
             )}
           >
-            <RadioButton
+            <StyledRadioButton
               id={`${fields.collectiveBargainingOngoing.name}False`}
               name={fields.collectiveBargainingOngoing.name}
               value="false"
@@ -297,7 +296,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               onBlur={formik.handleBlur}
               checked={formik.values.collectiveBargainingOngoing === 'false'}
             />
-            <RadioButton
+            <StyledRadioButton
               id={`${fields.collectiveBargainingOngoing.name}True`}
               name={fields.collectiveBargainingOngoing.name}
               value="true"

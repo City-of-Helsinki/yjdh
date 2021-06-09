@@ -49,6 +49,7 @@ const StyledSubActionContainer = styled.div`
   box-sizing: border-box;
   background-color: white;
   flex: 1 0 auto;
+  margin-right: 0 !important;
 `;
 
 interface ButtonProps {

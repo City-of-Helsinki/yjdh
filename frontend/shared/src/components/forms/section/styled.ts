@@ -46,10 +46,12 @@ const StyledFieldsContainerWithPadding = styled.div`
   align-items: center;
   padding: ${(props: Props) => props.theme.spacing.xs};
   padding-top: ${(props: Props) => props.theme.spacingLayout.xs2};
+  margin-right: 0 !important;
+  padding-right: 0;
   & > div {
     width: 250px;
   }
-  & > div:not(:last-child) {
+  & > div > div {
     margin-right: ${(props: Props) => props.theme.spacing.xs};
   }
 `;
