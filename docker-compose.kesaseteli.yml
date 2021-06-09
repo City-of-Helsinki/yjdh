@@ -41,11 +41,20 @@ services:
     env_file:
       - .env.kesaseteli
     container_name: kesaseteli-employer
+
+  kesaseteli-local-cert-generator:
+    build:
+      context: ./localdevelopment/kesaseteli/nginx
+    container_name: kesaseteli-local-cert-generator
+    volumes:
+      - ./localdevelopment/kesaseteli/nginx/:/etc/nginx/
+
   kesaseteli-local-proxy:
     depends_on:
       - postgres
       - django
       - employer
+      - kesaseteli-local-cert-generator
     image: nginx:latest
     container_name: kesaseteli-local-proxy
     volumes:
