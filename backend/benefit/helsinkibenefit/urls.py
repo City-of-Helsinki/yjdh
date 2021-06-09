@@ -1,3 +1,4 @@
+from companies.api.v1.views import GetCompanyView
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
@@ -8,6 +9,7 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
+    path("v1/company/", GetCompanyView.as_view()),
 ]
 
 

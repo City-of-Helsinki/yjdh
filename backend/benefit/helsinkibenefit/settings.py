@@ -92,7 +92,6 @@ INSTALLED_APPS = [
     # local apps
     "users.apps.AppConfig",
     "companies",
-    "utils",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -136,6 +135,10 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": (
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ),
     "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": [],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
