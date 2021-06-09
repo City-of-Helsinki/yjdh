@@ -28,12 +28,13 @@ const StyledContent = styled.div`
   flex-direction: column;
   font-size: ${(props: Props) => props.theme.fontSize.heading.s};
   font-weight: normal;
-  //line-height: ${(props: Props) => props.theme.lineHeight.l};
+  line-height: ${(props: Props) => props.theme.lineHeight.l};
 `;
 
 const StyledFormGroup = styled.div<Props>`
   display: flex;
   align-items: center;
+  font-size: ${(props: Props) => props.theme.fontSize.body.m};
   margin-bottom: ${(props: Props) => props.theme.spacing.xs};
   & > div {
     margin-right: ${(props: Props) => props.theme.spacing.xs};
@@ -56,6 +57,23 @@ const StyledFieldsContainerWithPadding = styled.div`
   }
 `;
 
+const StyledViewFieldsContainer = styled.div`
+  font-size: ${(props: Props) => props.theme.fontSize.body.m};
+  display: flex;
+  align-items: center;
+  padding: ${(props: Props) => props.theme.spacing.xs};
+  margin-right: 0 !important;
+  padding-right: 0;
+  & > div {
+    width: 250px;
+  }
+  & > div > div {
+    margin-right: ${(props: Props) => props.theme.spacing.xs};
+  }
+`;
+
+const StyledViewField = styled.div``;
+
 export {
   StyledContent,
   StyledFieldsContainerWithPadding,
@@ -63,4 +81,6 @@ export {
   StyledHeader,
   StyledSection,
   StyledSubHeader,
+  StyledViewField,
+  StyledViewFieldsContainer,
 };

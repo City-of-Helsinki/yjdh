@@ -20,7 +20,7 @@ import {
   StyledWrapper,
 } from '../styled';
 
-const SubmittedApplicationsList = (): React.ReactElement => {
+const SubmittedApplicationsList: React.FC = () => {
   const { t } = useTranslation();
   const translationListBase = 'common:applications.list.submitted';
   const translationStatusBase = 'common:applications.statuses';

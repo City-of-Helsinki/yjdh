@@ -12,7 +12,7 @@ import theme from 'shared/styles/theme';
 import { DE_MINIMIS_AID_FIELDS } from '../../../constants';
 import { DeMinimisAidProps, useComponent } from './extended';
 
-const DeMinimisAid: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
+const DeMinimisAidForm: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
   const {
     t,
     handleSubmit,
@@ -76,7 +76,7 @@ const DeMinimisAid: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
               variant="secondary"
               iconLeft={<IconPlusCircle />}
             >
-              Lisää
+              {t(`${translationsBase}.deMinimisAidsAdd`)}
             </StyledSecondaryButton>
           </StyledSubActionContainer>
         </StyledFormGroup>
@@ -85,4 +85,4 @@ const DeMinimisAid: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
   );
 };
 
-export default DeMinimisAid;
+export default DeMinimisAidForm;

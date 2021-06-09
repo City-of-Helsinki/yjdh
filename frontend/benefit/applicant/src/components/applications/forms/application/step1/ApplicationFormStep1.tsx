@@ -9,7 +9,8 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
 import { APPLICATION_FIELDS } from '../../../constants';
-import DeMinimisAidForm from '../deMinimisAid/DeMinimisAid';
+import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
+import DeMinimisAidsList from '../deMinimisAid/DeMinimisAidsList';
 import {
   StyledCompanyInfoColumn,
   StyledCompanyInfoContainer,
@@ -272,6 +273,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         {formik.values.deMinimisAidGranted === 'true' && (
           <StyledSubSection>
             <DeMinimisAidForm onSubmit={() => null} />
+            <DeMinimisAidsList />
           </StyledSubSection>
         )}
       </FormSection>

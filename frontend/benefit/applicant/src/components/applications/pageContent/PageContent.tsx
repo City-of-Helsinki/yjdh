@@ -16,7 +16,7 @@ import Stepper from 'shared/components/stepper/Stepper';
 
 import { useComponent } from './extended';
 
-const PageContent = (): React.ReactElement => {
+const PageContent: React.FC = () => {
   const {
     handleSubmit,
     handleBack,

@@ -19,7 +19,7 @@ import {
   StyledWrapper,
 } from '../styled';
 
-const DraftApplicationsList = (): React.ReactElement => {
+const DraftApplicationsList: React.FC = () => {
   const { t } = useTranslation();
   const translationBase = 'common:applications.list.drafts';
 
