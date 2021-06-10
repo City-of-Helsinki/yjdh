@@ -1,3 +1,4 @@
+import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
@@ -10,8 +11,11 @@ import { getIndexPageComponents } from './indexPage.components';
 let indexPageComponents: ReturnType<typeof getIndexPageComponents>;
 let pageLayoutComponents: ReturnType<typeof getPageLayoutComponents>;
 
+const url = getEmployerUiUrl('/');
+
 fixture('Frontpage')
-  .page(getEmployerUiUrl('/'))
+  .page(url)
+  .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     indexPageComponents = getIndexPageComponents(t);
