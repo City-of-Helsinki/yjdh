@@ -40,5 +40,5 @@ const checkIsServerReady = (response) => {
 
   await server.listen(port);
   signalReady();
-  console.log(`> Ready on http://localhost:${port}`); // eslint-disable-line no-console
+  console.log(`> Ready on https://localhost:${port}`); // eslint-disable-line no-console
 })();
