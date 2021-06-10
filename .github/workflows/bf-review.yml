@@ -65,6 +65,7 @@ jobs:
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
           SERVICE_PORT: ${{ matrix.port }}
+          BUILDKIT_CACHE_DISABLE: true
   review:
     strategy:
       fail-fast: false
