@@ -29,15 +29,16 @@ services:
     container_name: kesaseteli-backend
 
   kesaseteli-employer:
+    restart: always
+    depends_on:
+      - postgres
+      - kesaseteli-backend
     build:
       context: ./frontend
       dockerfile: kesaseteli/employer/Dockerfile
       target: development
     volumes:
-      - ./frontend/kesaseteli/employer:/app/employer
-      - ./frontend/shared:/app/shared
-      - /app/node_modules
-      - /app/.next
+      - ./frontend:/app
     env_file:
       - .env.kesaseteli
     container_name: kesaseteli-employer
