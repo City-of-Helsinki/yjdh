@@ -15,7 +15,7 @@ import {
 } from './styled';
 
 const MainIngress: React.FC = () => {
-  const { handleMoreInfoClick, t } = useComponent();
+  const { handleNewApplicationClick, handleMoreInfoClick, t } = useComponent();
 
   return (
     <Container backgroundColor={theme.colors.silverLight}>
@@ -31,7 +31,10 @@ const MainIngress: React.FC = () => {
           </StyledDescription>
         </StyledTextContainer>
         <StyledActionContainer>
-          <StyledButton iconLeft={<IconPlus />}>
+          <StyledButton
+            iconLeft={<IconPlus />}
+            onClick={handleNewApplicationClick}
+          >
             {t('common:mainIngress.newApplicationBtnText')}
           </StyledButton>
         </StyledActionContainer>

@@ -27,7 +27,7 @@ env = environ.Env(
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
         str,
-        "postgres:///helsinkibenefit",
+        "postgres://helsinkibenefit:helsinkibenefit@localhost/helsinkibenefit",
     ),
     CACHE_URL=(str, "locmemcache://"),
     MAIL_MAILGUN_KEY=(str, ""),
@@ -89,11 +89,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    # "shared",
     # local apps
-    # "company",
+    "users.apps.AppConfig",
+    "companies",
     "utils",
 ]
+
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -1,5 +1,11 @@
 export const IS_CLIENT = typeof window !== 'undefined';
 
+export enum ROUTES {
+  HOME = '/',
+  APPLICATION_NEW = '/application/new',
+  APPLICATION_EDIT = '/application/edit',
+}
+
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
   SV = 'sv',

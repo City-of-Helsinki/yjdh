@@ -3,7 +3,7 @@ import React from 'react';
 
 import { StyledFooter } from './styled';
 
-const FooterSection = (): React.ReactElement => {
+const FooterSection: React.FC = () => {
   const { t } = useTranslation();
 
   return (

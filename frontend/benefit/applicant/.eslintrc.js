@@ -3,6 +3,7 @@ const { join } = require('path');
 module.exports = {
   extends: ['auto'],
   rules: {
+    'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
     'no-void': 'off',
     'jsx-a11y/anchor-is-valid': [
       'error',
@@ -26,9 +27,16 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.tsx'],
+      files: ['*.test.tsx', '*.testcafe.ts'],
       rules: {
         'jest/expect-expect': 'off',
+        'jest/no-done-callback': 'off',
+      },
+    },
+    {
+      files: ['*.components.ts'],
+      rules: {
+        'security/detect-non-literal-fs-filename': 'off',
       },
     },
   ],

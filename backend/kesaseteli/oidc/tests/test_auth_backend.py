@@ -26,11 +26,11 @@ def check_token_info(user, oidc_profile, token_info):
     assert oidc_profile.access_token == token_info["access_token"]
     assert abs(
         oidc_profile.access_token_expires - access_token_expires
-    ) < datetime.timedelta(seconds=5)
+    ) < datetime.timedelta(seconds=10)
     assert oidc_profile.refresh_token == token_info["refresh_token"]
     assert abs(
         oidc_profile.refresh_token_expires - refresh_token_expires
-    ) < datetime.timedelta(seconds=5)
+    ) < datetime.timedelta(seconds=10)
 
 
 def check_user_info(user, claims):
@@ -44,6 +44,7 @@ def check_user_info(user, claims):
 @override_settings(
     AUTHENTICATION_BACKENDS=("django.contrib.auth.backends.ModelBackend",),
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
+    MOCK_FLAG=False,
 )
 def test_authenticate(requests_mock):
     auth_backend = HelsinkiOIDCAuthenticationBackend()
@@ -140,6 +141,7 @@ def test_store_token_info_in_oidc_profile(user):
 @pytest.mark.django_db
 @override_settings(
     OIDC_OP_TOKEN_ENDPOINT="http://example.com/token/",
+    MOCK_FLAG=False,
 )
 def test_refresh_token(oidc_profile, requests_mock):
     auth_backend = HelsinkiOIDCAuthenticationBackend()

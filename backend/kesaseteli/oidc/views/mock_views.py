@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib import auth
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
 
 from applications.tests.factories import UserFactory
@@ -49,7 +51,8 @@ class MockAuthenticationRequestView(View):
 
     http_method_names = ["get"]
 
-    def get(self, request):
+    @method_decorator(ensure_csrf_cookie)
+    def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             user = UserFactory()
             auth.login(

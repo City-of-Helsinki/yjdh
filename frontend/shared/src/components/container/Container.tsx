@@ -4,10 +4,10 @@ import { StyledContainer, StyledInner } from './styled';
 
 type ContainerProps = { children: React.ReactNode; backgroundColor?: string };
 
-const Container = ({
+const Container: React.FC<ContainerProps> = ({
   children,
   backgroundColor = '',
-}: ContainerProps): JSX.Element => (
+}: ContainerProps) => (
   <StyledContainer backgroundColor={backgroundColor}>
     <StyledInner>{children}</StyledInner>
   </StyledContainer>

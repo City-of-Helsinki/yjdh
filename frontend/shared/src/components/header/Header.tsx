@@ -12,7 +12,10 @@ export type HeaderProps = {
   locale: string;
   languages: OptionType[];
   navigationItems?: NavigationItem[];
-  onLanguageChange: (language: OptionType) => void;
+  onLanguageChange: (
+    e: React.SyntheticEvent<unknown>,
+    language: OptionType
+  ) => void;
   onTitleClick: (callback: () => void) => void;
   onNavigationItemClick: (pathname: string) => void;
 };
@@ -74,7 +77,9 @@ const Header: React.FC<HeaderProps> = ({
                 href="#"
                 lang={option.value}
                 label={option.label}
-                onClick={() => onLanguageChange(option)}
+                onClick={(e: React.SyntheticEvent<unknown>) =>
+                  onLanguageChange(e, option)
+                }
               />
             ))}
           </Navigation.LanguageSelector>

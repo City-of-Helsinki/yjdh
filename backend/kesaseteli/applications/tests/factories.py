@@ -1,4 +1,5 @@
 import random
+import uuid
 
 import factory
 from django.contrib.auth import get_user_model
@@ -12,19 +13,10 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
 
-    username = factory.Sequence(lambda n: "user_%d" % (n + 1))
+    username = factory.Sequence(lambda n: "user_%s" % uuid.uuid4())
     email = factory.Faker("email")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-
-    @classmethod
-    def _setup_next_sequence(cls):
-        User = get_user_model()
-        try:
-            latest_id = User.objects.latest("id").id
-            return latest_id + 1
-        except User.DoesNotExist:
-            return 1
 
 
 class SummerVoucherFactory(factory.django.DjangoModelFactory):

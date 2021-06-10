@@ -2,7 +2,6 @@ import factory
 from django.utils import timezone
 
 from applications.tests.factories import UserFactory
-from companies.tests.factories import CompanyFactory
 from oidc.models import EAuthorizationProfile, OIDCProfile
 
 
@@ -31,7 +30,6 @@ class OIDCProfileFactory(AbstractProfileFactory):
 
 
 class EAuthorizationProfileFactory(AbstractProfileFactory):
-    company = factory.SubFactory(CompanyFactory)
     oidc_profile = factory.SubFactory(OIDCProfileFactory)
 
     class Meta:

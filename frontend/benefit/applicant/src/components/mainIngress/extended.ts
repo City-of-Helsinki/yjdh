@@ -1,8 +1,10 @@
+import { ROUTES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 
 type ExtendedComponentProps = {
+  handleNewApplicationClick: () => void;
   handleMoreInfoClick: () => void;
   t: TFunction;
 };
@@ -12,10 +14,15 @@ const useComponent = (): ExtendedComponentProps => {
   const router = useRouter();
 
   const handleMoreInfoClick = (): void => {
-    void router.push('/');
+    // todo: redirect to more info url
+    void router.push(ROUTES.HOME);
   };
 
-  return { handleMoreInfoClick, t };
+  const handleNewApplicationClick = (): void => {
+    void router.push(ROUTES.APPLICATION_NEW);
+  };
+
+  return { handleNewApplicationClick, handleMoreInfoClick, t };
 };
 
 export { useComponent };

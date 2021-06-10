@@ -26,8 +26,12 @@ export const getPageLayoutComponents = (t: TestController) => {
     };
     const expectations = {
       async isPresent() {
-        // eslint-disable-next-line security/detect-non-literal-fs-filename
         await t.expect(selectors.header().exists).ok(await getErrorMessage(t));
+      },
+      async loginButtonIsPresent() {
+        await t
+          .expect(selectors.loginButton().exists)
+          .ok(await getErrorMessage(t));
       },
     };
     const actions = {

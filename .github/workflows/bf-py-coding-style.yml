@@ -38,13 +38,13 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/benefit/requirements.txt -r backend/benefit/requirements-dev.txt
+        run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Formatting
         run: cd backend/benefit && black --check .
 
       - name: Linting
-        run: cd backend/benefit && flake8
+        run: cd backend/benefit && flake8 --config ../shared/precommit-setup.cfg
 
       - name: Import sorting
-        run: cd backend/benefit && isort -c .
+        run: cd backend/benefit && isort -c --settings-path ../shared/precommit-setup.cfg .

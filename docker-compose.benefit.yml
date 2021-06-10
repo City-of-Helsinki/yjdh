@@ -1,55 +1,57 @@
-version: '3.8'
+version: "3.8"
 services:
-    postgres:
-        image: postgres:12
-        restart: on-failure
-        environment:
-            POSTGRES_USER: benefit
-            POSTGRES_PASSWORD: benefit
-            POSTGRES_DB: benefit
-        ports:
-            - 5434:5432
-        volumes:
-          - pgdata:/var/lib/postgresql/data
-        container_name: benefit-db
+  postgres:
+    image: postgres:12
+    restart: on-failure
+    environment:
+      POSTGRES_USER: benefit
+      POSTGRES_PASSWORD: benefit
+      POSTGRES_DB: benefit
+    ports:
+      - 5434:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: benefit-db
 
-    django:
-        build:
-            context: ./backend/helsinki-benefit
-            target: development
-        env_file:
-            - .env.benefit
-        environment:
-            DATABASE_URL: postgres://benefit:benefit@benefit-db/benefit
-            DATABASE_HOST: benefit-db.helsinki
-        volumes:
-            - ./backend/benefit:/app
-        ports:
-            - "127.0.0.1:8000:8000"
-        depends_on:
-            - postgres
-        container_name: benefit-backend
+  django:
+    build:
+      context: ./backend
+      dockerfile: ./docker/benefit.Dockerfile
+      target: development
+    env_file:
+      - .env.benefit
+    environment:
+      DATABASE_URL: postgres://benefit:benefit@benefit-db/benefit
+      DATABASE_HOST: benefit-db.helsinki
+    volumes:
+      - ./backend/benefit:/app
+      - ./backend/shared:/shared
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - postgres
+    container_name: benefit-backend
 
-    applicant:
-        build:
-          context: ./frontend
-          dockerfile: benefit/applicant/Dockerfile
-          target: development
-        volumes:
-          - ./frontend/benefit/applicant:/app/applicant
-          - ./frontend/shared:/app/shared
-          - /app/node_modules
-          - /app/.next
-        env_file:
-          - .env.benefit
-        ports:
-          - "3000:3000"
-        container_name: benefit-applicant
+  applicant:
+    build:
+      context: ./frontend
+      dockerfile: benefit/applicant/Dockerfile
+      target: development
+    volumes:
+      - ./frontend/benefit/applicant:/app/applicant
+      - ./frontend/shared:/app/shared
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit
+    ports:
+      - "3000:3000"
+    container_name: benefit-applicant
 
 volumes:
-    pgdata:
-        driver: local
+  pgdata:
+    driver: local
 
 networks:
-    default:
-        name: helsinki
+  default:
+    name: helsinki

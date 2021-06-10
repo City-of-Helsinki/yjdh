@@ -4,16 +4,25 @@ import requests
 from django.conf import settings
 from django.contrib import auth
 from django.core.exceptions import SuspiciousOperation
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 from django.views.generic import View
-from mozilla_django_oidc.views import OIDCLogoutView
+from mozilla_django_oidc.views import OIDCAuthenticationCallbackView, OIDCLogoutView
 from requests.exceptions import HTTPError
 
-from oidc.auth import HelsinkiOIDCAuthenticationBackend
 from oidc.models import OIDCProfile
 from oidc.services import clear_oidc_profiles
+from oidc.utils import get_userinfo, refresh_hki_tokens
 
 logger = logging.getLogger(__name__)
+
+
+class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
+    """Override OIDC client authentication callback login success method"""
+
+    def login_success(self):
+        super().login_success()
+        return HttpResponseRedirect(reverse("eauth_authentication_init"))
 
 
 class HelsinkiOIDCLogoutView(OIDCLogoutView):
@@ -58,8 +67,8 @@ class HelsinkiOIDCUserInfoView(View):
 
     http_method_names = ["get"]
 
-    def get_userinfo(self, access_token, auth_backend):
-        response = auth_backend.get_userinfo(access_token, None, None)
+    def get_userinfo(self, access_token):
+        response = get_userinfo(access_token)
         return JsonResponse(response)
 
     def get(self, request):
@@ -67,13 +76,11 @@ class HelsinkiOIDCUserInfoView(View):
 
         if request.user.is_authenticated:
             try:
-                auth_backend = HelsinkiOIDCAuthenticationBackend()
-
                 oidc_profile = request.user.oidc_profile
                 if not oidc_profile.is_active_access_token:
-                    oidc_profile = auth_backend.refresh_tokens(oidc_profile)
+                    oidc_profile = refresh_hki_tokens(oidc_profile)
 
-                response = self.get_userinfo(oidc_profile.access_token, auth_backend)
+                response = self.get_userinfo(oidc_profile.access_token)
             except (HTTPError, SuspiciousOperation, OIDCProfile.DoesNotExist):
                 auth.logout(request)
         return response

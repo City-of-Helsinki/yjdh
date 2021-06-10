@@ -1,12 +1,20 @@
 from django.conf import settings
 from django.urls import include, path
 
-from oidc.mock_views import (
+from oidc.views.eauth_views import (
+    EauthAuthenticationCallbackView,
+    EauthAuthenticationRequestView,
+)
+from oidc.views.hki_views import (
+    HelsinkiOIDCAuthenticationCallbackView,
+    HelsinkiOIDCLogoutView,
+    HelsinkiOIDCUserInfoView,
+)
+from oidc.views.mock_views import (
     MockAuthenticationRequestView,
     MockLogoutView,
     MockUserInfoView,
 )
-from oidc.views import HelsinkiOIDCLogoutView, HelsinkiOIDCUserInfoView
 
 urlpatterns = []
 
@@ -31,6 +39,11 @@ if settings.MOCK_FLAG:
 else:
     urlpatterns += [
         path(
+            "callback/",
+            HelsinkiOIDCAuthenticationCallbackView.as_view(),
+            name="oidc_authentication_callback",
+        ),
+        path(
             "logout/",
             HelsinkiOIDCLogoutView.as_view(),
             name="oidc_logout",
@@ -41,4 +54,14 @@ else:
             name="oidc_userinfo",
         ),
         path("", include("mozilla_django_oidc.urls")),
+        path(
+            "eauthorizations/authenticate/",
+            EauthAuthenticationRequestView.as_view(),
+            name="eauth_authentication_init",
+        ),
+        path(
+            "eauthorizations/callback/",
+            EauthAuthenticationCallbackView.as_view(),
+            name="eauth_authentication_callback",
+        ),
     ]
