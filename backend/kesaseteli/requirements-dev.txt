@@ -6,6 +6,8 @@
 #
 appdirs==1.4.4
     # via black
+appnope==0.1.2
+    # via ipython
 attrs==21.2.0
     # via pytest
 backcall==0.2.0
@@ -13,7 +15,7 @@ backcall==0.2.0
 black==21.5b2
     # via -r requirements-dev.in
 certifi==2021.5.30
-    # via -r requirements-dev.in
+    # via requests
 chardet==4.0.0
     # via requests
 click==8.0.1
@@ -35,7 +37,7 @@ ipython-genutils==0.2.0
 ipython==7.24.1
     # via -r requirements-dev.in
 isort==5.8.0
-    # via -r kesaseteli/requirements-dev.in
+    # via -r requirements-dev.in
 jedi==0.18.0
     # via ipython
 matplotlib-inline==0.1.2
@@ -78,7 +80,7 @@ pytest-freezegun==0.4.2
     # via -r requirements-dev.in
 pytest==6.2.4
     # via
-    #   -r kesaseteli/requirements-dev.in
+    #   -r requirements-dev.in
     #   pytest-cov
     #   pytest-django
     #   pytest-freezegun
