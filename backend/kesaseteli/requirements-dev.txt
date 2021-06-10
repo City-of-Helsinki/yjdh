@@ -10,15 +10,15 @@ attrs==21.2.0
     # via pytest
 backcall==0.2.0
     # via ipython
-black==21.5b1
+black==21.5b2
     # via -r requirements-dev.in
-certifi==2020.12.5
+certifi==2021.5.30
     # via requests
 chardet==4.0.0
     # via requests
 click==8.0.1
     # via black
-coverage[toml]==5.5
+coverage==5.5
     # via pytest-cov
 decorator==5.0.9
     # via ipython
@@ -32,7 +32,7 @@ iniconfig==1.1.1
     # via pytest
 ipython-genutils==0.2.0
     # via traitlets
-ipython==7.23.1
+ipython==7.24.1
     # via -r requirements-dev.in
 isort==5.8.0
     # via -r requirements-dev.in
@@ -70,9 +70,9 @@ pygments==2.9.0
     # via ipython
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.12.0
+pytest-cov==2.12.1
     # via -r requirements-dev.in
-pytest-django==4.3.0
+pytest-django==4.4.0
     # via -r requirements-dev.in
 pytest-freezegun==0.4.2
     # via -r requirements-dev.in
@@ -86,7 +86,7 @@ python-dateutil==2.8.1
     # via freezegun
 regex==2021.4.4
     # via black
-requests-mock==1.9.2
+requests-mock==1.9.3
     # via -r requirements-dev.in
 requests==2.25.1
     # via requests-mock
@@ -97,13 +97,13 @@ six==1.16.0
 toml==0.10.2
     # via
     #   black
-    #   coverage
     #   pytest
+    #   pytest-cov
 traitlets==5.0.5
     # via
     #   ipython
     #   matplotlib-inline
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 wcwidth==0.2.5
     # via prompt-toolkit
