@@ -3,7 +3,7 @@ DUMMY_COMPANY_DATA = {
     "name": "I. Haanpää Oy",
     "business_id": "0877830-0",
     "company_form": "OY",
-    "industry": "Taloustavaroiden vähittäiskauppa",
+    "bank_account_number": "FI2112345600000785",
     "street_address": "Vasaratie 4 A 3",
     "postcode": "65350",
     "city": "Vaasa",

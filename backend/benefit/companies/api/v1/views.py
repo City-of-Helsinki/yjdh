@@ -20,8 +20,11 @@ class GetCompanyView(APIView):
     def ytj_api_error(self):
         return Response(
             "YTJ API is under heavy load or no company found with the given business id",
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status.HTTP_404_NOT_FOUND,
         )
+
+    def api_usage_http_error(self, message):
+        return Response(message, status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     def get_mock(self, request: Request, format: str = None) -> Response:
@@ -39,14 +42,16 @@ class GetCompanyView(APIView):
     def get(self, request: Request, format: str = None) -> Response:
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
-        business_id = request.META.get("HTTP_BUSINESS_ID") or "0877830-0"
+        business_id = request.META.get("HTTP_BUSINESS_ID")
+        if not business_id:
+            return self.api_usage_http_error("Missing business id")
         try:
             # TODO: Switch to another API to be able to collect association data
             company = get_or_create_company_with_business_id(business_id)
         except HTTPError:
             # Since YTJ public API is not 100% reliable, we can use the Company data
-            # saved in our DB as a fallback mechanism, this Company data should be the
-            # latest available data we got in the previous time
+            # saved in our DB as a fallback data, this Company data should be the
+            # data that we got from the latest request to YTJ
             try:
                 company = Company.objects.get(business_id=business_id)
             except Company.DoesNotExist:
