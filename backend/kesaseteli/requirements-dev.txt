@@ -78,7 +78,7 @@ pytest-freezegun==0.4.2
     # via -r requirements-dev.in
 pytest==6.2.4
     # via
-    #   -r requirements-dev.in
+    #   -r kesaseteli/requirements-dev.in
     #   pytest-cov
     #   pytest-django
     #   pytest-freezegun
