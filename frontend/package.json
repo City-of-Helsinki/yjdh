@@ -24,9 +24,7 @@
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test --verbose --coverage",
     "browser-test:ks-empl": "lerna run --scope @frontend/employer --stream browser-test",
-    "browser-test:ks-empl:ci": "lerna run --scope @frontend/employer --stream browser-test:ci",
-    "browser-test:bf-applicant": "lerna run --scope @frontend/applicant --stream browser-test",
-    "browser-test:bf-applicant:ci": "lerna run --scope @frontend/applicant --stream browser-test:ci"
+    "browser-test:ks-empl:ci": "lerna run --scope @frontend/employer --stream browser-test:ci"
   },
   "devDependencies": {
     "@axe-core/react": "^4.1.1",
