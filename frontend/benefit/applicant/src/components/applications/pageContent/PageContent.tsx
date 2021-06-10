@@ -50,10 +50,10 @@ const PageContent: React.FC = () => {
       </StyledPageHeader>
       {currentStep === 1 && <ApplicationFormStep1 actions={actions} />}
       {currentStep === 2 && <ApplicationFormStep2 actions={actions} />}
-      {currentStep === 3 && <ApplicationFormStep3 />}
-      {currentStep === 4 && <ApplicationFormStep4 />}
-      {currentStep === 5 && <ApplicationFormStep5 />}
-      {currentStep === 6 && <ApplicationFormStep6 />}
+      {currentStep === 3 && <ApplicationFormStep3 actions={actions} />}
+      {currentStep === 4 && <ApplicationFormStep4 actions={actions} />}
+      {currentStep === 5 && <ApplicationFormStep5 actions={actions} />}
+      {currentStep === 6 && <ApplicationFormStep6 actions={actions} />}
     </Container>
   );
 };
