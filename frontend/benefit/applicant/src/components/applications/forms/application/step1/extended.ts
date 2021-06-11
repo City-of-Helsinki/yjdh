@@ -1,10 +1,9 @@
+import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { FormEvent, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-
-import { APPLICATION_FIELDS } from '../../../constants';
 // import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
