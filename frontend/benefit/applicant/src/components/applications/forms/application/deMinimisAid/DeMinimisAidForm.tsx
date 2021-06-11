@@ -61,7 +61,9 @@ const DeMinimisAidForm: React.FC = () => {
               name={fields.deMinimisAidIssueDate.name}
               label={fields.deMinimisAidIssueDate.label}
               placeholder={fields.deMinimisAidIssueDate.placeholder}
-              onChange={formik.handleChange}
+              onChange={(value) =>
+                formik.setFieldValue(fields.deMinimisAidIssueDate.name, value)
+              }
               onBlur={formik.handleBlur}
               value={formik.values.deMinimisAidIssueDate}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}

@@ -20,7 +20,9 @@ const DeMinimisAidsList: React.FC = () => {
       {grants?.map((grant, i) => (
         <StyledFormGroup
           backgroundColor={theme.colors.silverLight}
-          key={grant[DE_MINIMIS_AID_FIELDS.GRANTER]}
+          key={`${grant[DE_MINIMIS_AID_FIELDS.GRANTER]}${
+            grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
+          }${grant[DE_MINIMIS_AID_FIELDS.ISSUE_DATE]}`}
         >
           <StyledViewFieldsContainer>
             <StyledViewField>

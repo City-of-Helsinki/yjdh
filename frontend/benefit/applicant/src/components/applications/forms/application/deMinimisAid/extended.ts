@@ -43,7 +43,7 @@ const useComponent = (): ExtendedComponentProps => {
     // validationSchema: Yup.object().shape({
     //  companyOtherAddressStreet: Yup.boolean().required('Please enter..'),
     // }),
-    validateOnChange: true,
+    validateOnChange: false,
     validateOnBlur: true,
     onSubmit: () => {
       setApplication({
