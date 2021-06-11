@@ -60,4 +60,17 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     );
     expect(queryClient.getQueryData('user')).toBeUndefined();
   });
+
+  it('Should redirect to company page when clicked create new application button', async () => {
+    expectAuthorized(true);
+    const spyPush = jest.fn();
+    renderPage(withAuth(EmployerIndex), queryClient, { push: spyPush });
+    await screen.findByText(new RegExp(authenticatedUser.name, 'i'));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /luo uusi hakemus/i,
+      })
+    );
+    await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/company'));
+  });
 });

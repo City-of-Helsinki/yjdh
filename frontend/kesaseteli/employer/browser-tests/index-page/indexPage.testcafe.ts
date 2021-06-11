@@ -23,10 +23,12 @@ fixture('Frontpage')
   });
 
 test('user can authenticate and logout', async (t: TestController) => {
-  const loggedUser = await doEmployerLogin(t);
+  const expectations = await doEmployerLogin(t);
   const indexPageHeader = await indexPageComponents.header();
-  if (isRealIntegrationsEnabled() && loggedUser) {
-    await indexPageHeader.expectations.userNameIsPresent(loggedUser);
+  if (isRealIntegrationsEnabled() && expectations) {
+    await indexPageHeader.expectations.userNameIsPresent(
+      expectations.expectedUser
+    );
   }
   await indexPageHeader.actions.clickLogoutButton();
   const loginHeader = await pageLayoutComponents.header();

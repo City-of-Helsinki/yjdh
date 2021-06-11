@@ -11,7 +11,7 @@
     "test": "jest",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",
-    "browser-test:ci": "testcafe \"chrome:headless --ignore-certificate-errors --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,html:report/index.html testcafe.config.js browser-tests/"
+    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,html:report/index.html testcafe.config.js browser-tests/"
   },
   "dependencies": {
     "@frontend/shared": "*",
