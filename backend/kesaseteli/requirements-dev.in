@@ -6,7 +6,6 @@ pytest
 pytest-cov
 pytest-django
 pytest-freezegun
-pytest-randomly
 pytest-xdist[psutil]
 requests-mock
 Werkzeug

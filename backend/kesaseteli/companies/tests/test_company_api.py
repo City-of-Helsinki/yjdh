@@ -1,3 +1,4 @@
+import copy
 import re
 from unittest import mock
 
@@ -152,10 +153,12 @@ def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):
     oidc_profile = OIDCProfileFactory(user=user)
     EAuthorizationProfileFactory(oidc_profile=oidc_profile)
 
-    response = DUMMY_YTJ_RESPONSE
-    response["results"][0]["addresses"] = []
+    ytj_reponse = copy.deepcopy(DUMMY_YTJ_RESPONSE)
+    ytj_reponse["results"][0]["addresses"] = []
 
-    set_up_mock_requests(response, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock)
+    set_up_mock_requests(
+        ytj_reponse, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
+    )
 
     org_roles_json = {
         "name": "Activenakusteri Oy",
