@@ -1,10 +1,12 @@
 import logging
 
 import requests
+from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
+from rest_framework.authentication import SessionAuthentication
 
 from oidc.services import store_token_info_in_oidc_profile
 
@@ -104,3 +106,26 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         response.raise_for_status()
 
         return store_token_info_in_oidc_profile(oidc_profile.user, response.json())
+
+
+class EAuthRestAuthentication(SessionAuthentication):
+    def authenticate(self, request):
+        user_auth_tuple = super().authenticate(request)
+
+        if not user_auth_tuple:
+            return None
+
+        if getattr(settings, "MOCK_FLAG", None):
+            return user_auth_tuple
+
+        user, auth = user_auth_tuple
+
+        if not (
+            hasattr(user, "oidc_profile")
+            and hasattr(user.oidc_profile, "eauthorization_profile")
+            and user.oidc_profile.eauthorization_profile.id_token
+            and user.oidc_profile.eauthorization_profile.access_token
+        ):
+            return None
+
+        return user, auth

@@ -14,7 +14,7 @@ def get_detail_url(application):
 
 
 @pytest.mark.django_db
-def test_applications_list(api_client, application):
+def test_applications_list(api_client):
     response = api_client.get(reverse("v1:application-list"))
 
     assert response.status_code == 200
