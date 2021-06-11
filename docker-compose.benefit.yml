@@ -39,6 +39,8 @@ services:
       target: development
     volumes:
       - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
     env_file:
       - .env.benefit
     ports:
