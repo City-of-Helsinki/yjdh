@@ -85,6 +85,13 @@ const useComponent = (): ExtendedComponentProps => {
     []
   );
 
+  const fieldMasks: Record<Field['name'], Field['mask']> = {
+    [APPLICATION_FIELDS.COMPANY_IBAN]: {
+      format: 'FI99 9999 9999 9999 99',
+      stripVal: (val: string) => val.replace(/\s/g, ''),
+    },
+  };
+
   const fields = React.useMemo((): FieldsDef => {
     const fieldsdef: FieldsDef = {};
     fieldNames.forEach((name) => {
@@ -92,6 +99,7 @@ const useComponent = (): ExtendedComponentProps => {
         name,
         label: t(`${translationsBase}.fields.${name}.label`),
         placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
+        mask: fieldMasks[name],
       };
     });
     return fieldsdef;
