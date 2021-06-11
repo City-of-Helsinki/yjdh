@@ -2,7 +2,6 @@ import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Notification, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
-
 import {
   StyledCheckbox,
   StyledRadioButton,

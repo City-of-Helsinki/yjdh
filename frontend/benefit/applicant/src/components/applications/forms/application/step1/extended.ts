@@ -85,14 +85,14 @@ const useComponent = (): ExtendedComponentProps => {
     []
   );
 
-  const fieldMasks: Record<Field['name'], Field['mask']> = {
-    [APPLICATION_FIELDS.COMPANY_IBAN]: {
-      format: 'FI99 9999 9999 9999 99',
-      stripVal: (val: string) => val.replace(/\s/g, ''),
-    },
-  };
-
   const fields = React.useMemo((): FieldsDef => {
+    const fieldMasks: Record<Field['name'], Field['mask']> = {
+      [APPLICATION_FIELDS.COMPANY_IBAN]: {
+        format: 'FI99 9999 9999 9999 99',
+        stripVal: (val: string) => val.replace(/\s/g, ''),
+      },
+    };
+
     const fieldsdef: FieldsDef = {};
     fieldNames.forEach((name) => {
       fieldsdef[name] = {
