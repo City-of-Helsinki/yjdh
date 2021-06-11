@@ -4,7 +4,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "clean": "docker kill -f $(docker ps -q); docker rm -f $(docker ps -a -q)",
+    "clean": "docker-compose -f docker-compose.kesaseteli.yml down; docker-compose -f docker-compose.benefit.yml down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q)",
     "kesaseteli": "docker-compose -f docker-compose.kesaseteli.yml up"
   }
 }
