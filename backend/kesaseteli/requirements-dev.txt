@@ -4,6 +4,8 @@
 #
 #    pip-compile requirements-dev.in
 #
+apipkg==1.5
+    # via execnet
 appdirs==1.4.4
     # via black
 appnope==0.1.2
@@ -24,12 +26,16 @@ coverage==5.5
     # via pytest-cov
 decorator==5.0.9
     # via ipython
+execnet==1.8.1
+    # via pytest-xdist
 flake8==3.9.2
     # via -r requirements-dev.in
 freezegun==1.1.0
     # via pytest-freezegun
 idna==2.10
     # via requests
+importlib-metadata==4.5.0
+    # via pytest-randomly
 iniconfig==1.1.1
     # via pytest
 ipython-genutils==0.2.0
@@ -60,10 +66,14 @@ pluggy==0.13.1
     # via pytest
 prompt-toolkit==3.0.18
     # via ipython
+psutil==5.8.0
+    # via pytest-xdist
 ptyprocess==0.7.0
     # via pexpect
 py==1.10.0
-    # via pytest
+    # via
+    #   pytest
+    #   pytest-forked
 pycodestyle==2.7.0
     # via flake8
 pyflakes==2.3.1
@@ -76,14 +86,23 @@ pytest-cov==2.12.1
     # via -r requirements-dev.in
 pytest-django==4.4.0
     # via -r requirements-dev.in
+pytest-forked==1.3.0
+    # via pytest-xdist
 pytest-freezegun==0.4.2
+    # via -r requirements-dev.in
+pytest-randomly==3.8.0
+    # via -r requirements-dev.in
+pytest-xdist[psutil]==2.2.1
     # via -r requirements-dev.in
 pytest==6.2.4
     # via
     #   -r requirements-dev.in
     #   pytest-cov
     #   pytest-django
+    #   pytest-forked
     #   pytest-freezegun
+    #   pytest-randomly
+    #   pytest-xdist
 python-dateutil==2.8.1
     # via freezegun
 regex==2021.4.4
@@ -111,6 +130,8 @@ wcwidth==0.2.5
     # via prompt-toolkit
 werkzeug==2.0.1
     # via -r requirements-dev.in
+zipp==3.4.1
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
