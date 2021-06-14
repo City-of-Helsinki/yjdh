@@ -1,15 +1,11 @@
+import { DE_MINIMIS_AID_FIELDS } from 'benefit/applicant/constants';
+import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-
-import { DE_MINIMIS_AID_FIELDS } from '../../../constants';
 // import * as Yup from 'yup';
-
-export type DeMinimisAidProps = {
-  onSubmit: () => void;
-};
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -17,7 +13,7 @@ type ExtendedComponentProps = {
   fields: FieldsDef;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleSubmit: (e: React.MouseEvent) => void;
   formik: FormikProps<FormFields>;
 };
 
@@ -31,10 +27,11 @@ type FormFields = {
   [DE_MINIMIS_AID_FIELDS.ISSUE_DATE]: string;
 };
 
-const useComponent = (submitForm: () => void): ExtendedComponentProps => {
+const useComponent = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const { application, setApplication } = React.useContext(ApplicationContext);
+  const [isSubmitted] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -46,11 +43,22 @@ const useComponent = (submitForm: () => void): ExtendedComponentProps => {
     // validationSchema: Yup.object().shape({
     //  companyOtherAddressStreet: Yup.boolean().required('Please enter..'),
     // }),
-    validateOnChange: true,
+    validateOnChange: false,
     validateOnBlur: true,
     onSubmit: () => {
-      // console.log('Form submitted:', values);
-      submitForm();
+      setApplication({
+        ...application,
+        deMinimisAidGrants: [
+          ...(application?.deMinimisAidGrants || []),
+          {
+            deMinimisAidGranter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
+            deMinimisAidAmount: formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT],
+            deMinimisAidIssueDate:
+              formik.values[DE_MINIMIS_AID_FIELDS.ISSUE_DATE],
+          },
+        ],
+      });
+      formik.resetForm();
     },
   });
 
@@ -75,15 +83,18 @@ const useComponent = (submitForm: () => void): ExtendedComponentProps => {
     return fieldsdef;
   }, [t, fieldNames]);
 
-  const getErrorMessage = (fieldName: string): string | undefined =>
+  const getErrorMessage = (fieldName: string): string | undefined => {
     // todo: implement error messages
     // (getIn(formik.touched, fieldName) || isSubmitted) &&
     // getIn(formik.errors, fieldName)
-    isSubmitted ? fieldName : '';
+    if (isSubmitted && fieldName) {
+      return fieldName;
+    }
+    return '';
+  };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = (e: React.MouseEvent): void => {
     e.preventDefault();
-    setIsSubmitted(true);
     void formik.validateForm().then((errors) => {
       // todo: Focus the first invalid field
       const invalidFields = Object.keys(errors);
