@@ -38,8 +38,7 @@ services:
       dockerfile: benefit/applicant/Dockerfile
       target: development
     volumes:
-      - ./frontend/benefit/applicant:/app/applicant
-      - ./frontend/shared:/app/shared
+      - ./frontend:/app
       - /app/node_modules
       - /app/.next
     env_file:

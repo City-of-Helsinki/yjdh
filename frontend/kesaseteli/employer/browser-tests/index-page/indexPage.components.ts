@@ -25,6 +25,11 @@ export const getIndexPageComponents = (t: TestController) => {
         // eslint-disable-next-line security/detect-non-literal-regexp
         return withinFrontPage().findByText(new RegExp(name, 'i'));
       },
+      createNewApplicationButton() {
+        return withinFrontPage().findByRole('button', {
+          name: /luo uusi hakemus/i,
+        });
+      },
       logoutButton() {
         return withinFrontPage().findByRole('button', {
           name: /kirjaudu ulos/i,
@@ -43,6 +48,9 @@ export const getIndexPageComponents = (t: TestController) => {
       },
     };
     const actions = {
+      async clickCreateNewApplicationButton() {
+        await t.click(selectors.createNewApplicationButton());
+      },
       async clickLogoutButton() {
         await t.click(selectors.logoutButton());
       },

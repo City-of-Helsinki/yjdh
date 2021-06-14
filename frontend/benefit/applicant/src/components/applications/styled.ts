@@ -1,4 +1,4 @@
-import { APPLICATION_STATUSES } from 'benefit/applicant/components/applications/constants';
+import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import { Button } from 'hds-react';
 import { Theme } from 'shared/styles/theme';
 import styled, { ThemeProps } from 'styled-components';

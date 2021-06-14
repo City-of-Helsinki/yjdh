@@ -1,3 +1,4 @@
+import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -22,8 +23,11 @@ const expectedCompany: Company = {
   city: 'Vaasa',
 };
 
+const url = getEmployerUiUrl('/');
+
 fixture('Companypage')
-  .page(getEmployerUiUrl('/'))
+  .page(url)
+  .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
@@ -31,19 +35,12 @@ fixture('Companypage')
     indexPageComponents = getIndexPageComponents(t);
   });
 
-test('company data is present only when logged in out', async (t: TestController) => {
+test('company data is present when logged in', async (t: TestController) => {
   await urlUtils.actions.navigateToLoginPage();
   await doEmployerLogin(t);
   // shows company data after login
-  await urlUtils.actions.navigateToCompanyPage();
-  await urlUtils.expectations.urlChangedToCompanyPage();
+  const indexPageHeader = await indexPageComponents.header();
+  await indexPageHeader.actions.clickCreateNewApplicationButton();
   const companyData = await components.companyData(expectedCompany);
   await companyData.expectations.isCompanyDataPresent();
-  await urlUtils.actions.navigateToIndexPage();
-  const indexPageHeader = await indexPageComponents.header();
-  await indexPageHeader.actions.clickLogoutButton();
-  // does not show company data after logout. Instead redirects to login page
-  await urlUtils.actions.navigateToCompanyPage();
-  await urlUtils.expectations.urlChangedToCompanyPage();
-  await urlUtils.expectations.urlChangedToLoginPage();
 });

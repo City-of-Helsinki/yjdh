@@ -1,4 +1,6 @@
+import copy
 import re
+from unittest import mock
 
 import pytest
 from django.conf import settings
@@ -11,6 +13,7 @@ from companies.tests.data.company_data import (
     DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE,
     DUMMY_YTJ_RESPONSE,
 )
+from oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 
 def get_company_api_url():
@@ -45,7 +48,7 @@ def test_get_mock_company_results_in_error(api_client):
     api_client.credentials(HTTP_SESSION_ID="-1")
     response = api_client.get(get_company_api_url())
 
-    assert response.status_code == 500
+    assert response.status_code == 404
     assert (
         response.data
         == "YTJ API is under heavy load or no company found with the given business id"
@@ -53,13 +56,51 @@ def test_get_mock_company_results_in_error(api_client):
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj(api_client, requests_mock):
+@override_settings(
+    MOCK_FLAG=False,
+    EAUTHORIZATIONS_BASE_URL="http://example.com",
+    EAUTHORIZATIONS_CLIENT_ID="test",
+    EAUTHORIZATIONS_CLIENT_SECRET="test",
+)
+def test_get_company_organization_roles_error(api_client, requests_mock, user):
+    oidc_profile = OIDCProfileFactory(user=user)
+    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
+    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
+    requests_mock.get(matcher, text="Error", status_code=401)
+
+    response = api_client.get(get_company_api_url())
+
+    assert response.status_code == 401
+    assert (
+        response.data == "Unable to fetch organization roles from eauthorizations API"
+    )
+
+
+@pytest.mark.django_db
+@override_settings(
+    MOCK_FLAG=False,
+    YTJ_BASE_URL="http://example.com",
+)
+def test_get_company_from_ytj(api_client, requests_mock, user):
+    oidc_profile = OIDCProfileFactory(user=user)
+    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
     set_up_mock_requests(
         DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
     )
 
-    response = api_client.get(get_company_api_url())
+    org_roles_json = {
+        "name": "Activenakusteri Oy",
+        "identifier": "0877830-0",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
+
+    with mock.patch(
+        "companies.api.v1.views.get_organization_roles", return_value=org_roles_json
+    ):
+        response = api_client.get(get_company_api_url())
 
     assert response.status_code == 200
 
@@ -73,14 +114,30 @@ def test_get_company_from_ytj(api_client, requests_mock):
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj_results_in_error(api_client, requests_mock):
+@override_settings(
+    MOCK_FLAG=False,
+    YTJ_BASE_URL="http://example.com",
+)
+def test_get_company_from_ytj_results_in_error(api_client, requests_mock, user):
+    oidc_profile = OIDCProfileFactory(user=user)
+    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
     matcher = re.compile(settings.YTJ_BASE_URL)
-    requests_mock.get(matcher, text="Error", status_code=500)
+    requests_mock.get(matcher, text="Error", status_code=404)
 
-    response = api_client.get(get_company_api_url())
+    org_roles_json = {
+        "name": "Activenakusteri Oy",
+        "identifier": "0877830-0",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
 
-    assert response.status_code == 500
+    with mock.patch(
+        "companies.api.v1.views.get_organization_roles", return_value=org_roles_json
+    ):
+        response = api_client.get(get_company_api_url())
+
+    assert response.status_code == 404
     assert (
         response.data
         == "YTJ API is under heavy load or no company found with the given business id"
@@ -88,14 +145,32 @@ def test_get_company_from_ytj_results_in_error(api_client, requests_mock):
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj_invalid_response(api_client, requests_mock):
-    response = DUMMY_YTJ_RESPONSE
-    response["results"][0]["addresses"] = []
+@override_settings(
+    MOCK_FLAG=False,
+    YTJ_BASE_URL="http://example.com",
+)
+def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):
+    oidc_profile = OIDCProfileFactory(user=user)
+    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
 
-    set_up_mock_requests(response, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock)
+    ytj_reponse = copy.deepcopy(DUMMY_YTJ_RESPONSE)
+    ytj_reponse["results"][0]["addresses"] = []
 
-    response = api_client.get(get_company_api_url())
+    set_up_mock_requests(
+        ytj_reponse, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
+    )
 
-    assert response.status_code == 500
+    org_roles_json = {
+        "name": "Activenakusteri Oy",
+        "identifier": "0877830-0",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
+
+    with mock.patch(
+        "companies.api.v1.views.get_organization_roles", return_value=org_roles_json
+    ):
+        response = api_client.get(get_company_api_url())
+
+    assert response.status_code == 404
     assert response.data == "Could not handle the response from YTJ API"

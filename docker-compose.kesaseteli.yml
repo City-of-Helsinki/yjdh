@@ -34,8 +34,7 @@ services:
       dockerfile: kesaseteli/employer/Dockerfile
       target: development
     volumes:
-      - ./frontend/kesaseteli/employer:/app/employer
-      - ./frontend/shared:/app/shared
+      - ./frontend:/app
       - /app/node_modules
       - /app/.next
     env_file:

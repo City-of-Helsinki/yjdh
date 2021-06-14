@@ -3,7 +3,6 @@
 import {
   getErrorMessage,
   screenContext,
-  withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -11,14 +10,11 @@ import Company from '../../src/types/company';
 
 export const getCompanyPageComponents = (t: TestController) => {
   const screen = screenContext(t);
-  const within = withinContext(t);
-
-  const withinCompanyPage = () => within(screen.getByRole('main'));
 
   const companyData = async (company: Company) => {
     const selectors = {
       companyData() {
-        return withinCompanyPage().findByRole('heading', {
+        return screen.findByRole('heading', {
           name: company.name,
         });
       },
@@ -31,25 +27,22 @@ export const getCompanyPageComponents = (t: TestController) => {
       },
       async isCompanyDataPresent() {
         await t
-          .expect(
-            withinCompanyPage().findByRole('heading', { name: company.name })
-              .exists
-          )
+          .expect(screen.findByRole('heading', { name: company.name }).exists)
           .ok(await getErrorMessage(t));
         await t
-          .expect(withinCompanyPage().findByText(company.business_id).exists)
+          .expect(screen.findByText(company.business_id).exists)
           .ok(await getErrorMessage(t));
         await t
-          .expect(withinCompanyPage().findByText(company.industry).exists)
+          .expect(screen.findByText(company.industry).exists)
           .ok(await getErrorMessage(t));
         await t
-          .expect(withinCompanyPage().findByText(company.street_address).exists)
+          .expect(screen.findByText(company.street_address).exists)
           .ok(await getErrorMessage(t));
         await t
-          .expect(withinCompanyPage().findByText(company.postcode).exists)
+          .expect(screen.findByText(company.postcode).exists)
           .ok(await getErrorMessage(t));
         await t
-          .expect(withinCompanyPage().findByText(company.city).exists)
+          .expect(screen.findByText(company.city).exists)
           .ok(await getErrorMessage(t));
       },
     };

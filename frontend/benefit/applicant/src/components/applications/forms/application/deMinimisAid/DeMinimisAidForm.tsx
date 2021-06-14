@@ -1,5 +1,6 @@
 import { StyledSubActionContainer } from 'benefit/applicant/components/applications/forms/application/styled';
 import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
+import { DE_MINIMIS_AID_FIELDS } from 'benefit/applicant/constants';
 import { DateInput, IconPlusCircle, NumberInput, TextInput } from 'hds-react';
 import React from 'react';
 import {
@@ -9,10 +10,9 @@ import {
 } from 'shared/components/forms/section/styled';
 import theme from 'shared/styles/theme';
 
-import { DE_MINIMIS_AID_FIELDS } from '../../../constants';
-import { DeMinimisAidProps, useComponent } from './extended';
+import { useComponent } from './extended';
 
-const DeMinimisAidForm: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
+const DeMinimisAidForm: React.FC = () => {
   const {
     t,
     handleSubmit,
@@ -20,14 +20,14 @@ const DeMinimisAidForm: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
     fields,
     translationsBase,
     formik,
-  } = useComponent(onSubmit);
+  } = useComponent();
 
   return (
     <>
       <StyledSubHeader>
         {t(`${translationsBase}.deMinimisAidsHeading`)}
       </StyledSubHeader>
-      <form onSubmit={handleSubmit} noValidate>
+      <>
         <StyledFormGroup backgroundColor={theme.colors.silverLight}>
           <StyledFieldsContainerWithPadding>
             <TextInput
@@ -61,7 +61,9 @@ const DeMinimisAidForm: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
               name={fields.deMinimisAidIssueDate.name}
               label={fields.deMinimisAidIssueDate.label}
               placeholder={fields.deMinimisAidIssueDate.placeholder}
-              onChange={formik.handleChange}
+              onChange={(value) =>
+                formik.setFieldValue(fields.deMinimisAidIssueDate.name, value)
+              }
               onBlur={formik.handleBlur}
               value={formik.values.deMinimisAidIssueDate}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
@@ -72,7 +74,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
           </StyledFieldsContainerWithPadding>
           <StyledSubActionContainer>
             <StyledSecondaryButton
-              type="submit"
+              onClick={(e) => handleSubmit(e)}
               variant="secondary"
               iconLeft={<IconPlusCircle />}
             >
@@ -80,7 +82,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
             </StyledSecondaryButton>
           </StyledSubActionContainer>
         </StyledFormGroup>
-      </form>
+      </>
     </>
   );
 };
