@@ -6,4 +6,5 @@ isort
 pytest
 pytest-cov
 pytest-django
+pytest-freezegun
 requests-mock
