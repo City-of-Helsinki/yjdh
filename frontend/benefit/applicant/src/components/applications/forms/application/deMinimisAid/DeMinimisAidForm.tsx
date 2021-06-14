@@ -61,6 +61,7 @@ const DeMinimisAidForm: React.FC = () => {
               name={fields.deMinimisAidIssueDate.name}
               label={fields.deMinimisAidIssueDate.label}
               placeholder={fields.deMinimisAidIssueDate.placeholder}
+              language="fi"
               onChange={(value) =>
                 formik.setFieldValue(fields.deMinimisAidIssueDate.name, value)
               }
