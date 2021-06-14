@@ -1,6 +1,7 @@
+import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { TFunction } from 'next-i18next';
-import React, { useState } from 'react';
+import React from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
 
 type ExtendedComponentProps = {
@@ -15,8 +16,7 @@ type ExtendedComponentProps = {
 
 const useComponent = (): ExtendedComponentProps => {
   const { t } = useTranslation();
-
-  const [currentStep, setCurrentStep] = useState(1);
+  const { currentStep, setCurrentStep } = React.useContext(ApplicationContext);
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [

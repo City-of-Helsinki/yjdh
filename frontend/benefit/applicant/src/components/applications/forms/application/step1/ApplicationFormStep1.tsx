@@ -1,3 +1,4 @@
+import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Notification, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
@@ -8,9 +9,8 @@ import {
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
-import { APPLICATION_FIELDS } from '../../../constants';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
-import DeMinimisAidsList from '../deMinimisAid/DeMinimisAidsList';
+import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
 import {
   StyledCompanyInfoColumn,
   StyledCompanyInfoContainer,
@@ -272,7 +272,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         </StyledFormGroup>
         {formik.values.deMinimisAidGranted === 'true' && (
           <StyledSubSection>
-            <DeMinimisAidForm onSubmit={() => null} />
+            <DeMinimisAidForm />
             <DeMinimisAidsList />
           </StyledSubSection>
         )}
