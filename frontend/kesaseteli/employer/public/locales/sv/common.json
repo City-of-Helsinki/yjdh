@@ -1,0 +1,168 @@
+{
+  "header": {
+    "loginLabel": "Logga in",
+    "logoutLabel": "Logga ut",
+    "userAriaLabelPrefix": "Användare:"
+  },
+  "applications": {
+    "list": {
+      "drafts": {
+        "heading": "Luonnokset",
+        "employee": "Työllistetty",
+        "saved": "Tallennettu",
+        "edit": "Muokka"
+      },
+      "submitted": {
+        "heading": "Lähetetyt",
+        "employee": "Työllistetty",
+        "sent": "Lähetetty",
+        "applicationNumber": "Hakemusnumero",
+        "status": "Tila",
+        "edit": "Muokka",
+        "check": "Tarkastele"
+      }
+    },
+    "pageHeaders": {
+      "new": "Uusi hakemus"
+    },
+    "statuses": {
+      "draft": "Luonnos",
+      "infoRequired": "Lisätietoja tarvitaan",
+      "received": "Vastaanotettu",
+      "approved": "Hyväksytty",
+      "rejected": "Hylätty"
+    },
+    "steps": {
+      "company": "Yritys",
+      "hired": "Palkattava",
+      "attachments": "Liittet",
+      "summary": "Yhteenveto",
+      "credentials": "Valtakirja",
+      "send": "Lähetä"
+    },
+    "actions": {
+      "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
+      "deleteApplication": "Poista hakemus",
+      "continue": "Jatka",
+      "send": "Lähetä",
+      "back": "Back"
+    },
+    "sections": {
+      "company": {
+        "heading1": "Yrityksen tiedot",
+        "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
+        "heading3": "Hakijan de minimis-tuet",
+        "heading4": "YT-tilanne",
+        "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
+        "deMinimisAidsAdd": "Lisää",
+        "deMinimisAidsRemove": "Poista",
+        "notifications": {
+          "companyInformation": {
+            "label": "Tiedot haettu YTJ:stä",
+            "content": "Yrityksen perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+          }
+        },
+        "fields": {
+          "hasCompanyOtherAddress": {
+            "label": "Yrityksellä on toinen postiosoite"
+          },
+          "companyOtherAddressStreet": {
+            "label": "Osoite",
+            "placeholder": "Katuosoite"
+          },
+          "companyOtherAddressZipCode": {
+            "label": "Postinumero",
+            "placeholder": "Postinumero"
+          },
+          "companyOtherAddressPostalDistrict": {
+            "label": "Postitoimipaikka",
+            "placeholder": "Postitoimipaikka"
+          },
+          "companyIban": {
+            "label": "Tilinumero",
+            "placeholder": "IBAN muodossa"
+          },
+          "contactPersonFirstName": {
+            "label": "Etunimi",
+            "placeholder": "Etunimi"
+          },
+          "contactPersonLastName": {
+            "label": "Sukunimi",
+            "placeholder": "Sukunimi"
+          },
+          "contactPersonPhone": {
+            "label": "Puhelin",
+            "placeholder": "040 1234567"
+          },
+          "contactPersonEmail": {
+            "label": "Sähköposti",
+            "placeholder": "Sähköpostiosoite"
+          },
+          "deMinimisAidGranted": {
+            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
+          "deMinimisAidGranter": {
+            "label": "Tuen myöntäjä",
+            "placeholder": "Myöntävä taho"
+          },
+          "deMinimisAidAmount": {
+            "label": "Tuen määrä",
+            "placeholder": "euro"
+          },
+          "deMinimisAidIssueDate": {
+            "label": "Myöntämispäivämääärä",
+            "placeholder": "Valitse"
+          },
+          "collectiveBargainingOngoing": {
+            "label": "Onko hakijalla menossa YT-neuvottelut?",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
+          "collectiveBargainingInfo": {
+            "label": "Anna tarkempi selvitys YT-tilanteesta:",
+            "placeholder": "Kuvaile tilanne"
+          }
+        }
+      },
+      "hired": {
+        "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
+        "heading2": "Peruste, jolla Helsinki-lisää haetaan työllistetystä",
+        "heading3": "Haettava tukimuoto",
+        "heading4": "Haetaan ajalle",
+        "heading5": "Työsuhde"
+      },
+      "attachments": {
+        "heading1": "Liittet"
+      },
+      "summary": {
+        "heading1": "Ole hyvä ja tarkista hakemus"
+      },
+      "credentials": {
+        "heading1": "Valtakirja"
+      },
+      "send": {
+        "heading1": "Otsikko tähän"
+      }
+    }
+  },
+  "appName": "Helsinki-employer SV",
+  "footer": {
+    "copyrightText": "Copyright text",
+    "allRightsReservedText": "All rights reserved text"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In english"
+  },
+  "mainIngress": {
+    "heading": "Hakemukset",
+    "description1": "Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä ",
+    "description2": ". Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
+    "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
+    "newApplicationBtnText": "Tee uusi hakemus"
+  },
+  "menuToggleAriaLabel": "Menu"
+}

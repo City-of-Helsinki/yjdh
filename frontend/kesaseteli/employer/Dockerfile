@@ -2,6 +2,7 @@
 FROM helsinkitest/node:14-slim as appbase
 # =======================================
 
+# Use non-root user
 USER appuser
 
 # Yarn
@@ -48,7 +49,7 @@ WORKDIR /app
 # copy all files
 COPY --chown=appuser:appuser . .
 
-# build application
+# Build application
 WORKDIR /app/kesaseteli/employer/
 RUN yarn build
 
@@ -69,11 +70,10 @@ WORKDIR /app
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/.next kesaseteli/employer/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next.config.js kesaseteli/employer/
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/next-i18next.config.js app/kesaseteli/employer/next.config.js kesaseteli/employer/
 
 # Copy package.json and yarn.lock files
-# TODO: add public folder when we have static assets
-COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/public app/package.json app/yarn.lock app/lerna.json ./
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/package.json app/kesaseteli/employer/start.js kesaseteli/employer/
 
 # shared data

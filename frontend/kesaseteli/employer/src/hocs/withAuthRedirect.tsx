@@ -37,7 +37,6 @@ const withAuthRedirect = <P,>({
     return <LoadingComponent />;
   }
   if (!isServerSide() && expectedAuth !== isAuthenticated) {
-    // eslint-disable-next-line no-void
     void router.push(redirectLocation);
     return null;
   }

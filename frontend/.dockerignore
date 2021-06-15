@@ -5,6 +5,7 @@
 !lerna.json
 !babel.config.js
 !kesaseteli/employer/next.config.js
+!kesaseteli/employer/next-i18next.config.js
 !kesaseteli/employer/public
 !kesaseteli/employer/src
 !shared/src
