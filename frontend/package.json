@@ -80,7 +80,6 @@
     "faker": "^5.5.3",
     "husky": "^6.0.0",
     "i18next": "^20.3.1",
-    "i18next-intervalplural-postprocessor": "^3.0.0",
     "jest": "^26.6.3",
     "jest-axe": "^4.1.0",
     "lerna": "^4.0.0",
