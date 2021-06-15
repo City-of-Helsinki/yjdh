@@ -1,6 +1,9 @@
 import { StyledSubActionContainer } from 'benefit/applicant/components/applications/forms/application/styled';
 import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
-import { DE_MINIMIS_AID_FIELDS } from 'benefit/applicant/constants';
+import {
+  DE_MINIMIS_AID_FIELDS,
+  SUPPORTED_LANGUAGES,
+} from 'benefit/applicant/constants';
 import { DateInput, IconPlusCircle, NumberInput, TextInput } from 'hds-react';
 import React from 'react';
 import {
@@ -61,7 +64,7 @@ const DeMinimisAidForm: React.FC = () => {
               name={fields.deMinimisAidIssueDate.name}
               label={fields.deMinimisAidIssueDate.label}
               placeholder={fields.deMinimisAidIssueDate.placeholder}
-              language="fi"
+              language={SUPPORTED_LANGUAGES.FI}
               onChange={(value) =>
                 formik.setFieldValue(fields.deMinimisAidIssueDate.name, value)
               }

@@ -46,19 +46,19 @@ const useComponent = (): ExtendedComponentProps => {
     },
     validationSchema: Yup.object().shape({
       [DE_MINIMIS_AID_FIELDS.GRANTER]: Yup.string()
-        .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+        .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
         .max(64, (param) => ({
           max: param.max,
           key: VALIDATION_MESSAGE_KEYS.STRING_MAX,
         })),
       [DE_MINIMIS_AID_FIELDS.AMOUNT]: Yup.number()
-        .required(VALIDATION_MESSAGE_KEYS.NUMBER_REQUIRED)
+        .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
         .min(0, (param) => ({
           min: param.min,
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
         })),
       [DE_MINIMIS_AID_FIELDS.ISSUE_DATE]: Yup.string()
-        .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+        .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
         .matches(dateRegex, VALIDATION_MESSAGE_KEYS.DATE_FORMAT),
     }),
     validateOnChange: true,
@@ -102,7 +102,7 @@ const useComponent = (): ExtendedComponentProps => {
     return fieldsdef;
   }, [t, fieldNames]);
 
-  const getErrorMessage = (fieldName: string): string | undefined =>
+  const getErrorMessage = (fieldName: string): string =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
 
   const handleSubmit = (e: React.MouseEvent): void => {

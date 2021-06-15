@@ -68,16 +68,14 @@ export const DEFAULT_APPLICATION = {
 };
 
 export enum VALIDATION_MESSAGE_KEYS {
+  REQUIRED = 'common:form.validation.required',
   EMAIL = 'common:form.validation.string.email',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
-  NUMBER_REQUIRED = 'common:form.validation.number.required',
   STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',
   STRING_MIN = 'common:form.validation.string.min',
   STRING_MAX = 'common:form.validation.string.max',
-  STRING_REQUIRED = 'common:form.validation.string.required',
   URL = 'common:form.validation.string.url',
-  DATE_REQUIRED = 'common:form.validation.date.required',
   DATE = 'common:form.validation.string.date',
   DATE_IN_THE_FUTURE = 'common:form.validation.date.mustNotInThePast',
   DATE_MIN = 'common:form.validation.date.min',
@@ -86,7 +84,6 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME = 'common:form.validation.string.time',
   TIME_MIN = 'common:form.validation.time.min',
   TIME_MAX = 'common:form.validation.time.max',
-  TIME_REQUIRED = 'common:form.validation.time.required',
 }
 
 export const dateRegex = /(?:(?:0?[1-9]|1\d|2\d)\.(?:0?[1-9]|1[0-2])|(?:30\.(?!02)(?:0[1-9]|1[0-2]))|(?:31\.(?:0[13578]|1[02])))\.(?:19|20)\d{2}/;

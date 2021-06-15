@@ -162,30 +162,27 @@
   "menuToggleAriaLabel": "Menu",
   "form": {
     "validation": {
+      "required": "Tämä kenttä on pakollinen",
       "number": {
         "max": "Arvon tulee olla enintään {{max}}",
-        "min": "Arvon tulee olla vähintään {{min}}",
-        "required": "Tämä kenttä on pakollinen"
+        "min": "Arvon tulee olla vähintään {{min}}"
       },
       "string": {
         "email": "Tämän kentän on oltava kelvollinen sähköpostiosoite",
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
         "min": "Tämä kenttä tulee olla vähintään {{min}} merkkiä pitkä",
-        "required": "Tämä kenttä on pakollinen",
         "url": "Tämän kentän on oltava kelvollinen URL-osoite",
         "date": "Tämän kentän on oltava kelvollinen päivämäärä",
         "time": "Ajan tulee olla muotoa hh:mm",
         "positiveNumber": "Tämän kentän on oltava kelvollinen numero"
       },
       "date": {
-        "required": "Päivämäärä on pakollinen",
         "mustNotInThePast": "Päivämäärä ei voi olla menneisyydessä",
         "min": "Päivämäärän on oltava aikaisintaan {{min}}",
         "max": "Päivämäärän on oltava viimeistään {{max}}",
         "format": "This date is incorrect"
       },
       "time": {
-        "required": "Tämä kenttä on pakollinen",
         "min": "Arvon tulee olla aikaisintaan {{min}}",
         "max": "Arvon tulee olla viimeistään {{max}}"
       }
