@@ -1,6 +1,5 @@
 Django~=3.2
 django-cors-headers
-django-cryptography
 django-environ
 djangorestframework
 django-simple-history
@@ -8,4 +7,5 @@ psycopg2
 sentry-sdk
 requests
 django-localflavor~=3.1
+django-searchable-encrypted-fields
 -e ../shared

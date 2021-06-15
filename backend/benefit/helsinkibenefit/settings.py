@@ -40,6 +40,12 @@ env = environ.Env(
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     MOCK_FLAG=(bool, False),
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in staging/production
+    # Always override this value from env variables
+    ENCRYPTION_KEY=(
+        str,
+        "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
+    ),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -50,6 +56,7 @@ DEBUG = env.bool("DEBUG")
 SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
+ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -151,6 +158,8 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
+
+FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
