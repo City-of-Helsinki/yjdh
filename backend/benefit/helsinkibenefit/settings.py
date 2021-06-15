@@ -27,7 +27,7 @@ env = environ.Env(
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
         str,
-        "postgres://helsinkibenefit:helsinkibenefit@localhost/helsinkibenefit",
+        "postgres://benefit:benefit@localhost:5434/benefit",
     ),
     CACHE_URL=(str, "locmemcache://"),
     MAIL_MAILGUN_KEY=(str, ""),
@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     # local apps
     "users.apps.AppConfig",
     "companies",
+    "applications.apps.AppConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -106,6 +107,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 TEMPLATES = [
