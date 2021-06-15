@@ -1,8 +1,9 @@
-import withAuth from 'kesaseteli/employer/components/withAuth';
+import withAuth from 'kesaseteli/employer/hocs/withAuth';
 import useCompanyQuery from 'kesaseteli/employer/hooks/useCompanyQuery';
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import * as React from 'react';
 import Layout from 'shared/components/Layout';
+import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const CompanyPage: NextPage = () => {
   const { isLoading, data: company, error, isLoadingError } = useCompanyQuery();
@@ -31,5 +32,9 @@ const CompanyPage: NextPage = () => {
     </Layout>
   );
 };
+
+export const getStaticProps: GetStaticProps = getServerSideTranslations(
+  'common'
+);
 
 export default withAuth(CompanyPage);

@@ -9,7 +9,10 @@ module.exports = {
     [`benefit/applicant\/(.*)$`]: "<rootDir>/benefit/applicant/src/$1",
     [`benefit/handler\/(.*)$`]: "<rootDir>/benefit/handler/src/$1",
   },
-  setupFilesAfterEnv: ['<rootDir>/shared/test/setupTests.ts'],
+  setupFilesAfterEnv: [
+    '<rootDir>/shared/test/setupTests.ts',
+    '<rootDir>kesaseteli/employer/src/__tests__/utils/i18n/i18n-test.ts'
+  ],
   coveragePathIgnorePatterns: [
     '<rootDir>/kesaseteli/employer/src/pages/',
     '<rootDir>/benefit/applicant/src/pages/',
