@@ -1,9 +1,5 @@
-import { getIn } from 'formik';
+import { FormikErrors, FormikTouched, FormikValues, getIn } from 'formik';
 import { TFunction } from 'next-i18next';
-
-type GenericObject = {
-  [field: string]: string;
-};
 
 /** Get error text
  * @param {Object} errors
@@ -14,16 +10,16 @@ type GenericObject = {
  * @return {string}
  */
 export const getErrorText = (
-  errors: GenericObject,
-  touched: GenericObject,
+  errors: FormikErrors<FormikValues>,
+  touched: FormikTouched<FormikValues>,
   name: string,
   t: TFunction,
   isSubmitted: boolean
 ): string => {
-  const error: GenericObject = getIn(errors, name) as GenericObject;
+  const error: FormikValues = getIn(errors, name) as FormikValues;
   return !!error && (getIn(touched, name) || isSubmitted)
     ? typeof error === 'string'
       ? t(error)
-      : t(error.key, error)
+      : t(error.key || '', error)
     : '';
 };
