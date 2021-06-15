@@ -17,7 +17,7 @@ type ExtendedComponentProps = {
   fieldNames: string[];
   fields: FieldsDef;
   translationsBase: string;
-  getErrorMessage: (fieldName: string) => string | undefined;
+  getErrorMessage: (fieldName: string) => string;
   handleSubmit: (e: React.MouseEvent) => void;
   formik: FormikProps<FormFields>;
 };
