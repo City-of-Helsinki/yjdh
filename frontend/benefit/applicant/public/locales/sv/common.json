@@ -159,5 +159,33 @@
     "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
     "newApplicationBtnText": "Tee uusi hakemus"
   },
-  "menuToggleAriaLabel": "Menu"
+  "menuToggleAriaLabel": "Menu",
+  "form": {
+    "validation": {
+      "required": "Detta fält krävs",
+      "number": {
+        "max": "Maxvärdet är {{max}}",
+        "min": "Värdet måste vara minst {{min}}"
+      },
+      "string": {
+        "email": "Detta fält måste vara en giltig e-postmeddelande",
+        "max": "Detta fält kan vara upp till {{max}} tecken långt",
+        "min": "Detta fält måste vara minst {{min}} tecken långt",
+        "url": "Detta fält måste vara en giltig URL",
+        "date": "Detta fält måste vara en giltig datum",
+        "time": "Tid måste ges i följande format hh:mm",
+        "positiveNumber": "Detta fält måste vara ett giltigt nummer"
+      },
+      "date": {
+        "mustNotInThePast": "Detta datum kan inte vara i förr",
+        "min": "Detta datum måste vara tidigast {{min}}",
+        "max": "Detta datum måste vara senast {{max}}",
+        "format": "This date is incorrect"
+      },
+      "time": {
+        "min": "Den här tiden måste vara tidigast {{min}}",
+        "max": "Den här tiden måste vara senast {{max}}"
+      }
+    }
+  }
 }

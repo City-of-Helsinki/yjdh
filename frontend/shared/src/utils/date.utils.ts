@@ -22,4 +22,3 @@ export const formatDate = (
     locale: locales[locale] as Locale,
   }).trim();
 };
-
