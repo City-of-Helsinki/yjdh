@@ -23,7 +23,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = ({ Component, pageProps }: AppProps): React.ReactNode => (
+const App: React.FC<AppProps> = ({ Component, pageProps }) => (
   <BackendAPIProvider>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
