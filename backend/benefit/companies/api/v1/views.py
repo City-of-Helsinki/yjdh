@@ -39,10 +39,9 @@ class GetCompanyView(APIView):
         return Response(company_data)
 
     @transaction.atomic
-    def get(self, request: Request, format: str = None) -> Response:
+    def get(self, request: Request, business_id: str, format: str = None) -> Response:
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
-        business_id = request.META.get("HTTP_BUSINESS_ID")
         if not business_id:
             return self.api_usage_http_error("Missing business id")
         try:
