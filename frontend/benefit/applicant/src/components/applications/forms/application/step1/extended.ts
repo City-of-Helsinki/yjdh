@@ -61,7 +61,7 @@ const useComponent = (): ExtendedComponentProps => {
     },
     validationSchema: Yup.object().shape({
       [APPLICATION_FIELDS.COMPANY_IBAN]: Yup.string().matches(
-        /^FI[0-9]{16}$/,
+        /^FI\d{16}$/,
         t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
       ),
     }),
