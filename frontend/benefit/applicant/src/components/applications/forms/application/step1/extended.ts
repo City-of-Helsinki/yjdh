@@ -111,10 +111,6 @@ const useComponent = (): ExtendedComponentProps => {
   }, [t, fieldNames]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
-    // // todo: implement error messages
-    // // (getIn(formik.touched, fieldName) || isSubmitted) &&
-    // // getIn(formik.errors, fieldName)
-    // isSubmitted ? fieldName : '';
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {

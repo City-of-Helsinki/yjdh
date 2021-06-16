@@ -17,6 +17,7 @@ import {
   StyledCompanyInfoContainer,
   StyledCompanyInfoRow,
   StyledCompanyInfoSection,
+  StyledIBANField,
   StyledNotificationContent,
   StyledSubSection,
 } from '../styled';
@@ -163,7 +164,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             }}
           >
             {() => (
-              <TextInput
+              <StyledIBANField
                 id={fields.companyIban.name}
                 name={fields.companyIban.name}
                 label={fields.companyIban.label}
