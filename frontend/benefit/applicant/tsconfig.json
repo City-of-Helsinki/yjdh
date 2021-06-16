@@ -1,3 +1,18 @@
 {
   "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../../",
+    "rootDir": ".",
+    "lib": [
+      "dom",
+      "es7"
+    ],
+    "skipLibCheck": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
