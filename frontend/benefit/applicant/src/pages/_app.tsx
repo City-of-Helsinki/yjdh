@@ -9,7 +9,7 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => (
+const App = ({ Component, pageProps }: AppProps): React.ReactNode => (
   <>
     <ThemeProvider theme={theme}>
       <GlobalStyling />
