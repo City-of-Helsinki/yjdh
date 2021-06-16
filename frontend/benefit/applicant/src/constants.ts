@@ -70,6 +70,7 @@ export const DEFAULT_APPLICATION = {
 export enum VALIDATION_MESSAGE_KEYS {
   REQUIRED = 'common:form.validation.required',
   EMAIL = 'common:form.validation.string.email',
+  IBAN_INVALID = 'common:form.validation.iban.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
   STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',

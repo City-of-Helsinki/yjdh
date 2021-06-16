@@ -1,10 +1,14 @@
-import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
+import {
+  APPLICATION_FIELDS,
+  VALIDATION_MESSAGE_KEYS,
+} from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { FormEvent, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-// import * as Yup from 'yup';
+import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -55,10 +59,12 @@ const useComponent = (): ExtendedComponentProps => {
       [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING]: '',
       [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO]: '',
     },
-    // Define Yup validation schema
-    // validationSchema: Yup.object().shape({
-    //  companyOtherAddressStreet: Yup.boolean().required('Please enter..'),
-    // }),
+    validationSchema: Yup.object().shape({
+      [APPLICATION_FIELDS.COMPANY_IBAN]: Yup.string().matches(
+        /^FI[0-9]{16}$/,
+        t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
+      ),
+    }),
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: () => {
@@ -105,10 +111,11 @@ const useComponent = (): ExtendedComponentProps => {
   }, [t, fieldNames]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
-    // todo: implement error messages
-    // (getIn(formik.touched, fieldName) || isSubmitted) &&
-    // getIn(formik.errors, fieldName)
-    isSubmitted ? fieldName : '';
+    // // todo: implement error messages
+    // // (getIn(formik.touched, fieldName) || isSubmitted) &&
+    // // getIn(formik.errors, fieldName)
+    // isSubmitted ? fieldName : '';
+    getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
