@@ -8,7 +8,10 @@ from rest_framework.views import APIView
 
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
-from companies.services import get_or_create_company_with_business_id
+from companies.services import (
+    get_or_create_company_from_ytj_api,
+    get_or_create_company_with_name_and_business_id,
+)
 from companies.tests.data.company_data import DUMMY_COMPANY_DATA
 from oidc.utils import get_organization_roles
 
@@ -26,13 +29,6 @@ class GetCompanyView(APIView):
         )
 
     @property
-    def ytj_api_error(self):
-        return Response(
-            "YTJ API is under heavy load or no company found with the given business id",
-            status.HTTP_404_NOT_FOUND,
-        )
-
-    @property
     def ytj_response_error(self):
         return Response(
             "Could not handle the response from YTJ API",
@@ -44,10 +40,14 @@ class GetCompanyView(APIView):
         # This mocked get method will be used for testing purposes for the frontend.
         session_id = request.META.get("HTTP_SESSION_ID")
         if session_id == "-1":
-            return self.ytj_api_error
-
-        company = Company(**DUMMY_COMPANY_DATA)
-        company_data = CompanySerializer(company).data
+            company = Company(
+                name=DUMMY_COMPANY_DATA["name"],
+                business_id=DUMMY_COMPANY_DATA["business_id"],
+            )
+            company_data = CompanySerializer(company).data
+        else:
+            company = Company(**DUMMY_COMPANY_DATA)
+            company_data = CompanySerializer(company).data
 
         return Response(company_data)
 
@@ -66,11 +66,12 @@ class GetCompanyView(APIView):
         business_id = organization_roles.get("identifier")
 
         try:
-            company = get_or_create_company_with_business_id(business_id)
-        except HTTPError:
-            return self.ytj_api_error
+            company = get_or_create_company_from_ytj_api(business_id)
         except ValueError:
             return self.ytj_response_error
+        except HTTPError:
+            name = organization_roles.get("name")
+            company = get_or_create_company_with_name_and_business_id(name, business_id)
 
         company_data = CompanySerializer(company).data
 

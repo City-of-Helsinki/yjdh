@@ -44,15 +44,20 @@ def test_get_mock_company(api_client):
 
 @pytest.mark.django_db
 @override_settings(MOCK_FLAG=True)
-def test_get_mock_company_results_in_error(api_client):
+def test_get_mock_company_not_found_from_ytj(api_client):
     api_client.credentials(HTTP_SESSION_ID="-1")
     response = api_client.get(get_company_api_url())
 
-    assert response.status_code == 404
-    assert (
-        response.data
-        == "YTJ API is under heavy load or no company found with the given business id"
-    )
+    assert response.status_code == 200
+    assert response.data["name"] == DUMMY_COMPANY_DATA["name"]
+    assert response.data["business_id"] == DUMMY_COMPANY_DATA["business_id"]
+
+    for field in [
+        f
+        for f in Company._meta.fields
+        if f.name not in ["id", "name", "business_id", "ytj_json"]
+    ]:
+        assert response.data[field.name] == ""
 
 
 @pytest.mark.django_db
@@ -118,7 +123,7 @@ def test_get_company_from_ytj(api_client, requests_mock, user):
     MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
-def test_get_company_from_ytj_results_in_error(api_client, requests_mock, user):
+def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     oidc_profile = OIDCProfileFactory(user=user)
     EAuthorizationProfileFactory(oidc_profile=oidc_profile)
 
@@ -137,11 +142,16 @@ def test_get_company_from_ytj_results_in_error(api_client, requests_mock, user):
     ):
         response = api_client.get(get_company_api_url())
 
-    assert response.status_code == 404
-    assert (
-        response.data
-        == "YTJ API is under heavy load or no company found with the given business id"
-    )
+    assert response.status_code == 200
+    assert response.data["name"] == org_roles_json["name"]
+    assert response.data["business_id"] == org_roles_json["identifier"]
+
+    for field in [
+        f
+        for f in Company._meta.fields
+        if f.name not in ["id", "name", "business_id", "ytj_json"]
+    ]:
+        assert response.data[field.name] == ""
 
 
 @pytest.mark.django_db

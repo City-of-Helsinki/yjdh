@@ -15,4 +15,9 @@ class CompanySerializer(serializers.ModelSerializer):
             "street_address",
             "postcode",
             "city",
+            "manual_company_form",
+            "manual_industry",
+            "manual_street_address",
+            "manual_postcode",
+            "manual_city",
         ]
