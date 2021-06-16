@@ -44,7 +44,6 @@ const StyledFormGroup = styled.div<Props>`
 
 const StyledFieldsContainerWithPadding = styled.div`
   display: flex;
-  align-items: center;
   padding: ${(props: Props) => props.theme.spacing.xs};
   padding-top: ${(props: Props) => props.theme.spacingLayout.xs2};
   margin-right: 0 !important;

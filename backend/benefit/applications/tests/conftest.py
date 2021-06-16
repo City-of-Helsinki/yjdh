@@ -1,16 +1,7 @@
-import factory.random
 import pytest
+from applications.tests.factories import ApplicationFactory, UserFactory
 from django.contrib.auth.models import Permission
-from freezegun import freeze_time
 from rest_framework.test import APIClient
-from users.tests.factories import UserFactory
-
-
-@pytest.fixture(autouse=True)
-def setup_test_environment(settings):
-    factory.random.reseed_random("777")
-    with freeze_time("2021-01-04"):
-        yield
 
 
 @pytest.fixture
@@ -25,3 +16,8 @@ def api_client(user):
     client = APIClient()
     client.force_authenticate(user)
     return client
+
+
+@pytest.fixture
+def application():
+    return ApplicationFactory()
