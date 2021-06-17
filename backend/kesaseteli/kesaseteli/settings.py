@@ -178,6 +178,7 @@ SESSION_COOKIE_SECURE = True
 
 AUTHENTICATION_BACKENDS = (
     "oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
