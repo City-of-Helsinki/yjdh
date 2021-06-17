@@ -15,7 +15,6 @@
     "noEmit": true,
     "jsx": "react",
     "baseUrl": "./",
-    "skipLibCheck": true,
     "paths": {
       "kesaseteli/employer/*": ["kesaseteli/employer/src/*", "kesaseteli/employer/browser-tests/*"],
       "benefit/applicant/*": ["benefit/applicant/src/*"],

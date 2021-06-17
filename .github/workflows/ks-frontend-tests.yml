@@ -14,7 +14,7 @@ env:
   TZ: Europe/Helsinki
 defaults:
   run:
-    working-directory: ./frontend
+    working-directory: ./frontend/kesaseteli/employer
 jobs:
   test:
     name: Test
