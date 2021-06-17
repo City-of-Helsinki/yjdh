@@ -1,4 +1,3 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
 import {
   expectAuthorizedReply,
   expectToLogin,
@@ -13,6 +12,7 @@ import React from 'react';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { Language, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import User from 'shared/types/user';
+import { fireEvent, screen, waitFor } from 'test-utils';
 
 const clickToLogin = (): void => {
   expectToLogin();

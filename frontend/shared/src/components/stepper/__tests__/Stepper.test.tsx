@@ -1,11 +1,10 @@
-import { screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import React from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
 import Stepper from 'shared/components/stepper/Stepper';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-import { render } from 'test-utils';
+import { render, screen } from 'test-utils';
 
 test('test for accessibility violations', async () => {
   const steps: StepProps[] = [{ title: 'Yritys' }];
