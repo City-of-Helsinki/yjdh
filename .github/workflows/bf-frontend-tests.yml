@@ -14,7 +14,7 @@ env:
   TZ: Europe/Helsinki
 defaults:
   run:
-    working-directory: ./frontend/benefit
+    working-directory: ./frontend/benefit/applicant
 jobs:
   test:
     name: Test
