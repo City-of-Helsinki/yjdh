@@ -1,4 +1,3 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import {
   expectAuthorizedReply,
@@ -8,7 +7,7 @@ import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-pa
 import EmployerIndex from 'kesaseteli/employer/pages';
 import React from 'react';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
-import { render } from 'test-utils';
+import { fireEvent, render,screen, waitFor } from 'test-utils';
 
 describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   const queryClient = createReactQueryTestClient();

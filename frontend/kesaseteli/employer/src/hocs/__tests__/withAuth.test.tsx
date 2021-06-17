@@ -1,4 +1,3 @@
-import { screen, waitFor } from '@testing-library/react';
 import {
   expectAuthorizedReply,
   expectUnauthorizedReply,
@@ -7,6 +6,7 @@ import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-pa
 import withAuth from 'kesaseteli/employer/hocs/withAuth';
 import React from 'react';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { screen, waitFor } from 'test-utils';
 
 const Component = (): JSX.Element => <h1>Hello world!</h1>;
 

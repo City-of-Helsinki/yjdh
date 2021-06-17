@@ -1,4 +1,3 @@
-import { screen, waitFor } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import {
   expectAuthorizedReply,
@@ -13,10 +12,15 @@ import Company from 'kesaseteli/employer/types/company';
 import React from 'react';
 import { QueryClient } from 'react-query';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { screen, waitFor } from 'test-utils';
 
-const waitForPageIsLoaded = (): Promise<HTMLElement> =>
-  screen.findByRole('heading', { name: /hakemus/i });
-
+const waitForPageIsLoaded = async (): Promise<void> => {
+  await waitFor(() => {
+    expect(
+      screen.queryByRole('heading', { name: /hakemus/i })
+    ).toBeInTheDocument();
+  });
+};
 const waitForShowingCompanyData = async (company: Company): Promise<void> => {
   await waitForPageIsLoaded();
   expect(screen.queryByText(company.name)).toBeInTheDocument();

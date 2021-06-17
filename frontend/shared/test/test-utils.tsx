@@ -1,4 +1,10 @@
-import { fireEvent, render, RenderResult } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  RenderResult,
+  waitFor as _waitFor,
+  waitForOptions,
+} from '@testing-library/react';
 import * as router from 'next/router';
 import { NextRouter } from 'next/router';
 import React from 'react';
@@ -31,6 +37,18 @@ type CustomRender = {
 type CustomRenderResult = RenderResult;
 
 export { customRender as render };
+
+export const waitFor = <T,>(
+  callback: () => T | Promise<T>,
+  options?: waitForOptions
+): Promise<T> => {
+  // Overwrite default options
+  const mergedOptions = {
+    timeout: 15000,
+    ...options,
+  };
+  return _waitFor(callback, mergedOptions);
+};
 
 // re-export everything
 export * from '@testing-library/react';
