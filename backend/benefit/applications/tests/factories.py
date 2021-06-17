@@ -8,6 +8,7 @@ from applications.models import (
     APPLICATION_LANGUAGE_CHOICES,
     ApplicationBasis,
     DeMinimisAid,
+    Employee,
 )
 from companies.tests.factories import CompanyFactory
 from django.contrib.auth import get_user_model
@@ -80,3 +81,27 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Application
+
+
+class EmployeeFactory(factory.django.DjangoModelFactory):
+    application = factory.SubFactory(ApplicationFactory)
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    social_security_number = factory.Faker("ssn")
+
+    phone_number = factory.Faker("phone_number")
+    email = factory.Faker("email")
+
+    employee_language = factory.Faker(
+        "random_element", elements=[v[0] for v in APPLICATION_LANGUAGE_CHOICES]
+    )
+    job_title = factory.Faker("job")
+    monthly_pay = factory.Faker("random_int", max=5000)
+    vacation_money = factory.Faker("random_int", max=5000)
+    other_expenses = factory.Faker("random_int", max=5000)
+    working_hours = factory.Faker("random_int", max=40)
+
+    collective_bargaining_agreement = factory.Faker("words")
+
+    class Meta:
+        model = Employee

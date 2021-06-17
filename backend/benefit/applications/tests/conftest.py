@@ -1,5 +1,9 @@
 import pytest
-from applications.tests.factories import ApplicationFactory, UserFactory
+from applications.tests.factories import (
+    ApplicationFactory,
+    EmployeeFactory,
+    UserFactory,
+)
 from django.contrib.auth.models import Permission
 from rest_framework.test import APIClient
 
@@ -21,3 +25,8 @@ def api_client(user):
 @pytest.fixture
 def application():
     return ApplicationFactory()
+
+
+@pytest.fixture
+def employee():
+    return EmployeeFactory()
