@@ -6,7 +6,9 @@ import { StyledMain } from './styled';
 type Props = { children: React.ReactNode };
 
 const Layout: React.FC<Props> = ({ children }) => (
-  <StyledMain id={MAIN_CONTENT_ID}>{children}</StyledMain>
+  <StyledMain id={MAIN_CONTENT_ID} data-testid={MAIN_CONTENT_ID}>
+    {children}
+  </StyledMain>
 );
 
 export default Layout;

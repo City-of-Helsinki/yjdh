@@ -27,11 +27,11 @@ const Header: React.FC = () => {
 
   const handleLanguageChange = (
     e: React.SyntheticEvent<unknown>,
-    newLanguage: OptionType
+    { value: lang }: OptionType
   ): void => {
     e.preventDefault();
     void router.push(asPath, asPath, {
-      locale: newLanguage.value,
+      locale: lang,
       shallow: true,
     });
   };

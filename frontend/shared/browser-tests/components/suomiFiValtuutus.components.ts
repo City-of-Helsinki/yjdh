@@ -1,5 +1,3 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable testing-library/await-async-query, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type */
 import TestController, { Selector } from 'testcafe';
 
 import { getErrorMessage, withinContext } from '../utils/testcafe.utils';
