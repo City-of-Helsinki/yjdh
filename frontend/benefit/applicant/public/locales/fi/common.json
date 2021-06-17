@@ -187,7 +187,7 @@
         "max": "Arvon tulee olla viimeistään {{max}}"
       },
       "iban": {
-        "invalid": "Virheellinen IBAN-Tilinumero"
+        "invalid": "Virheellinen IBAN-tilinumero"
       }
     }
   }
