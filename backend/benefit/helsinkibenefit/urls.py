@@ -1,3 +1,4 @@
+from applications.api.v1 import views as application_views
 from companies.api.v1.views import GetCompanyView
 from django.contrib import admin
 from django.http import HttpResponse
@@ -5,6 +6,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 router = routers.DefaultRouter()
+router.register(r"applications", application_views.ApplicationViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

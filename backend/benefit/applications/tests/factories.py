@@ -1,3 +1,4 @@
+import itertools
 import random
 
 import factory
@@ -18,16 +19,17 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 
 class DeMinimisAidFactory(factory.django.DjangoModelFactory):
-    granter = factory.Faker("words")
+    granter = factory.Faker("sentence", nb_words=2)
     granted_at = factory.Faker("date")
-    amount = factory.Faker("int", min_value=1, max_value=100000)
+    amount = factory.Faker("pyint", min_value=1, max_value=100000)
+    ordering = factory.Iterator(itertools.count(0))
 
     class Meta:
         model = DeMinimisAid
 
 
 class ApplicationBasisFactory(factory.django.DjangoModelFactory):
-    identifier = factory.Faker("words")
+    identifier = factory.Faker("sentence", nb_words=2)
 
     class Meta:
         model = ApplicationBasis
@@ -36,7 +38,7 @@ class ApplicationBasisFactory(factory.django.DjangoModelFactory):
 class ApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
 
-    company_name = factory.Faker("words")
+    company_name = factory.Faker("sentence", nb_words=2)
     official_company_street_address = factory.Faker("street_address")
     official_company_city = factory.Faker("city")
     official_company_postcode = factory.Faker("postcode")
@@ -58,16 +60,23 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     benefit_type = factory.Faker("random_element", elements=BenefitType.values)
     start_date = factory.Faker("date")
     end_date = factory.Faker("date")
-    de_minimis_aid = factory.Faker("boolean")
-
+    de_minimis_aid = True
     status = factory.Faker("random_element", elements=ApplicationStatus.values)
 
     @factory.post_generation
     def bases(self, created, extracted, **kwargs):
-        count = kwargs.pop("count", random.randint(1, 5))
-        if count:
-            for bt in ApplicationBasisFactory.create_batch(count, **kwargs):
+        if basis_count := kwargs.pop("basis_count", random.randint(1, 5)):
+            for bt in ApplicationBasisFactory.create_batch(basis_count, **kwargs):
                 self.bases.add(bt)
+
+    de_minimis_1 = factory.RelatedFactory(
+        DeMinimisAidFactory,
+        factory_related_name="application",
+    )
+    de_minimis_2 = factory.RelatedFactory(
+        DeMinimisAidFactory,
+        factory_related_name="application",
+    )
 
     class Meta:
         model = Application

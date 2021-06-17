@@ -5,6 +5,7 @@
     "fields": {
       "created_at": "2021-06-14T07:00:00.000Z",
       "modified_at": "2021-06-14T07:00:00.000Z",
+      "is_active": true,
       "identifier": "at_least_200_days_on_kela_benefits"
     }
   },
@@ -14,6 +15,7 @@
     "fields": {
       "created_at": "2021-06-14T07:00:00.000Z",
       "modified_at": "2021-06-14T07:00:00.000Z",
+      "is_active": true,
       "identifier": "wage_subsidy_due_to_handicap_or_disease"
     }
   },
@@ -23,6 +25,7 @@
     "fields": {
       "created_at": "2021-06-14T07:00:00.000Z",
       "modified_at": "2021-06-14T07:00:00.000Z",
+      "is_active": true,
       "identifier": "wage_subsidy_due_to_apprenticeship"
     }
   },
@@ -32,6 +35,7 @@
     "fields": {
       "created_at": "2021-06-14T07:00:00.000Z",
       "modified_at": "2021-06-14T07:00:00.000Z",
+      "is_active": true,
       "identifier": "helsinki_benefit_voucher"
     }
   },
@@ -41,6 +45,7 @@
     "fields": {
       "created_at": "2021-06-14T07:00:00.000Z",
       "modified_at": "2021-06-14T07:00:00.000Z",
+      "is_active": true,
       "identifier": "dont_know"
     }
   }
