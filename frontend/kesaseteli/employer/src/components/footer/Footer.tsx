@@ -8,8 +8,8 @@ const FooterSection: React.FC = () => {
   return (
     <Footer title={t('common:appName')}>
       <Footer.Base
-        copyrightHolder={t('footer:copyrightText')}
-        copyrightText={t('footer:allRightsReservedText')}
+        copyrightHolder={t('common:copyrightText')}
+        copyrightText={t('common:allRightsReservedText')}
       />
     </Footer>
   );

@@ -17,10 +17,9 @@
     "baseUrl": "./",
     "skipLibCheck": true,
     "paths": {
-      "testcafe/*": ["shared/testcafe/*"],
-      "kesaseteli/employer/*": ["kesaseteli/employer/src/*"],
+      "kesaseteli/employer/*": ["kesaseteli/employer/src/*", "kesaseteli/employer/browser-tests/*"],
       "benefit/applicant/*": ["benefit/applicant/src/*"],
-      "shared/*": ["shared/src/*"],
+      "shared/*": ["shared/src/*", "shared/test/*", "shared/browser-tests/*"],
       "test-utils": ["shared/test/test-utils"]
     }
   },

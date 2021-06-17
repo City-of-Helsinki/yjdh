@@ -5,12 +5,10 @@ import TestController from 'testcafe';
 import Company from '../../src/types/company';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getEmployerUiUrl } from '../utils/settings';
-import { getUrlUtils } from '../utils/url.utils';
 import { getCompanyPageComponents } from './companyPage.components';
 import { getIndexPageComponents } from './indexPage.components';
 
 let components: ReturnType<typeof getCompanyPageComponents>;
-let urlUtils: ReturnType<typeof getUrlUtils>;
 let indexPageComponents: ReturnType<typeof getIndexPageComponents>;
 
 const expectedCompany: Company = {
@@ -30,16 +28,14 @@ fixture('Companypage')
   .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
-    urlUtils = getUrlUtils(t);
     components = getCompanyPageComponents(t);
     indexPageComponents = getIndexPageComponents(t);
   });
 
 test('company data is present when logged in', async (t: TestController) => {
-  await urlUtils.actions.navigateToLoginPage();
   await doEmployerLogin(t);
   // shows company data after login
-  const indexPageHeader = await indexPageComponents.header();
+  const indexPageHeader = await indexPageComponents.mainContent();
   await indexPageHeader.actions.clickCreateNewApplicationButton();
   const companyData = await components.companyData(expectedCompany);
   await companyData.expectations.isCompanyDataPresent();
