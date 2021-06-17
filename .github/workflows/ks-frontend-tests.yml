@@ -1,4 +1,4 @@
-name: (KS) Audit, Lint, Unit and Component tests
+name: (KS) Lint, Unit and Component tests
 
 on:
   pull_request:
@@ -37,8 +37,6 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
-      - name: Run audit
-        run: yarn audit
       - name: Run linter
         run: yarn lint
       - name: Run tests
@@ -67,4 +65,4 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
-        run: yarn ks-empl:build
+        run: yarn build
