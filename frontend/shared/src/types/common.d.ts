@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export type OptionType = {
   label: string;
@@ -8,7 +8,5 @@ export type OptionType = {
 export type NavigationItem = {
   label: string;
   url: string;
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
 };
-
-export type Language = 'en' | 'fi' | 'sv';

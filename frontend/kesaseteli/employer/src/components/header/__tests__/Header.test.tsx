@@ -11,6 +11,7 @@ import Header from 'kesaseteli/employer/components/header/Header';
 import nock from 'nock';
 import React from 'react';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { Language, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import User from 'shared/types/user';
 
 const clickToLogin = (): void => {
@@ -32,6 +33,19 @@ const clickToLogout = (user: User): void => {
   fireEvent.click(
     screen.getAllByRole('link', {
       name: 'common:header.logoutLabel',
+    })[0]
+  );
+};
+
+const changeLanguage = (fromLang: Language, toLang: Language): void => {
+  fireEvent.click(
+    screen.getAllByRole('button', {
+      name: new RegExp(fromLang, 'i'),
+    })[0]
+  );
+  fireEvent.click(
+    screen.getAllByRole('link', {
+      name: `common:languages.${String(toLang)}`,
     })[0]
   );
 };
@@ -84,5 +98,19 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
       expect(queryClient.getQueryData('user')).toBeUndefined()
     );
     expect(spyRouterPush).toHaveBeenCalledWith('/login?logout=true');
+  });
+
+  it('can change supported language', async () => {
+    expectUnauthorizedReply(true);
+    const spyRouterPush = jest.fn();
+    renderComponent(<Header />, queryClient, { push: spyRouterPush });
+    await expectUserIsLoggedOut();
+    SUPPORTED_LANGUAGES.forEach((lang) => {
+      changeLanguage('fi', lang);
+      expect(spyRouterPush).toHaveBeenCalledWith(undefined, undefined, {
+        locale: String(lang),
+        shallow: true,
+      });
+    });
   });
 });
