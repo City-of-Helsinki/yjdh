@@ -29,8 +29,9 @@ export const expectAuthorizedReply = (persistValue = false): User => {
     .reply(200, authenticatedUser, { 'Access-Control-Allow-Origin': '*' });
   return authenticatedUser;
 };
-export const expectUnauthorizedReply = (): nock.Scope =>
+export const expectUnauthorizedReply = (persistValue = false): nock.Scope =>
   nock(getBackendDomain())
+    .persist(persistValue)
     .get(BackendEndpoint.USER)
     .replyWithError('401 Unauthorized');
 

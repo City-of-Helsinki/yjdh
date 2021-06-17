@@ -1,7 +1,6 @@
 import TestController, { Selector } from 'testcafe';
 
-import { DEFAULT_LANGUAGE } from '../../src/i18n/i18n';
-import { Language } from '../../src/types/common';
+import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import User from '../../src/types/user';
 import {
   getErrorMessage,
@@ -22,7 +21,7 @@ export const getHeaderComponents = (t: TestController) => {
   const withinNavigationActions = (): ReturnType<typeof within> =>
     within(navigationActions);
 
-  const languageDropdown = async (lang = DEFAULT_LANGUAGE) => {
+  const languageDropdown = async (lang: Language = DEFAULT_LANGUAGE) => {
     let currentLang = lang;
     const selectors = {
       languageSelector(): SelectorPromise {
