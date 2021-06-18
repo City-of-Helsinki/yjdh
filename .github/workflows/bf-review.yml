@@ -105,6 +105,7 @@ jobs:
         if: matrix.database
         env:
           SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_REVIEW }}
+          K8S_SECRET_ENCRYPTION_KEY: ${{ secrets.K8S_SECRET_ENCRYPTION_KEY_REVIEW }}
         run: |
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV

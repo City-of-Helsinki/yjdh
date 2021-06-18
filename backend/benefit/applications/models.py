@@ -2,6 +2,7 @@ from applications.enums import ApplicationStatus, BenefitType
 from companies.models import Company
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from encrypted_fields.fields import EncryptedCharField
 from localflavor.generic.models import IBANField
 from simple_history.models import HistoricalRecords
 
@@ -21,7 +22,8 @@ class Application(UUIDModel, TimeStampedModel):
 
     The business id (y-tunnus) and company name are stored in the Company model
 
-    There can be only one employee per application. Employees can not be shared with multiple applications.
+    There can be only one employee per application. Employees can not be shared with
+    multiple applications.
     """
 
     company = models.ForeignKey(
@@ -42,8 +44,8 @@ class Application(UUIDModel, TimeStampedModel):
     )
 
     """
-    The application should retain the Company name, as it was at the time the application was created,
-    to maintain historical accuracy.
+    The application should retain the Company name, as it was at the time the application was created, to maintain
+    historical accuracy.
     """
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
     """
@@ -115,7 +117,8 @@ class Application(UUIDModel, TimeStampedModel):
     Notes:
     Default language is "fi".
     if language is swedish, then the decision text in Ahjo must be also in swedish
-    if language is english, then an english translation of the decision is included in Ahjo as attachment
+    if language is english, then an english translation of the decision is included
+    in Ahjo as attachment
     """
     applicant_language = models.CharField(
         choices=APPLICATION_LANGUAGE_CHOICES,
@@ -243,7 +246,10 @@ class ApplicationLogEntry(UUIDModel, TimeStampedModel):
     )
 
     def __str__(self):
-        return f"Application {self.application.id} | {self.from_status or 'N/A'} --> {self.to_status}"
+        return (
+            f"Application {self.application.id} | {self.from_status or 'N/A'} --> "
+            f"{self.to_status}"
+        )
 
     class Meta:
         db_table = "bf_applications_applicationlogentry"
@@ -270,3 +276,73 @@ class ApplicationBasis(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_applicationbasis"
         verbose_name = _("application basis")
         verbose_name_plural = _("application bases")
+
+
+class Employee(UUIDModel, TimeStampedModel):
+    application = models.OneToOneField(
+        Application,
+        verbose_name=_("application"),
+        related_name="employee",
+        on_delete=models.CASCADE,
+    )
+
+    first_name = models.CharField(max_length=128, verbose_name=_("first name"))
+    last_name = models.CharField(max_length=128, verbose_name=_("last name"))
+    social_security_number = EncryptedCharField(
+        max_length=11, verbose_name=_("social security number")
+    )
+    phone_number = models.CharField(max_length=64, verbose_name=_("phone number"))
+    email = models.EmailField(blank=True, verbose_name=_("email"))
+
+    employee_language = models.CharField(
+        choices=APPLICATION_LANGUAGE_CHOICES,
+        default=APPLICATION_LANGUAGE_CHOICES[0][0],
+        max_length=2,
+    )
+
+    job_title = models.CharField(
+        blank=True, verbose_name=_("job title"), max_length=128
+    )
+    monthly_pay = models.DecimalField(
+        verbose_name=_("monthly pay"),
+        decimal_places=2,
+        max_digits=7,
+        blank=True,
+        null=True,
+    )
+    vacation_money = models.DecimalField(
+        verbose_name=_("vacation money"),
+        decimal_places=2,
+        max_digits=7,
+        blank=True,
+        null=True,
+    )
+
+    other_expenses = models.DecimalField(
+        verbose_name=_("other expenses"),
+        decimal_places=2,
+        max_digits=7,
+        blank=True,
+        null=True,
+    )
+    working_hours = models.DecimalField(
+        verbose_name=_("working hour"),
+        decimal_places=1,
+        max_digits=4,
+        blank=True,
+        null=True,
+    )
+    collective_bargaining_agreement = models.CharField(
+        max_length=64, blank=True, verbose_name=_("collective bargaining agreement")
+    )
+
+    # TODO: Adding missing file fields or a separate Attachment relationship
+    # power_of_attorney = models.FileField()
+
+    def __str__(self):
+        return "{} {} ({})".format(self.first_name, self.last_name, self.email)
+
+    class Meta:
+        db_table = "bf_applications_employee"
+        verbose_name = _("employee")
+        verbose_name_plural = _("employees")
