@@ -46,6 +46,16 @@ env = environ.Env(
         str,
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
+    SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
+    OIDC_RP_CLIENT_ID=(str, ""),
+    OIDC_RP_CLIENT_SECRET=(str, ""),
+    OIDC_OP_BASE_URL=(str, ""),
+    LOGIN_REDIRECT_URL=(str, ""),
+    LOGIN_REDIRECT_URL_FAILURE=(str, ""),
+    EAUTHORIZATIONS_BASE_URL=(str, ""),
+    EAUTHORIZATIONS_CLIENT_ID=(str, ""),
+    EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
+    EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -97,10 +107,13 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "phonenumber_field",
+    "django_extensions",
+    "mozilla_django_oidc",
     # local apps
     "users.apps.AppConfig",
     "companies",
     "applications.apps.AppConfig",
+    "oidc",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -161,6 +174,38 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
+
+# Authentication settings begin
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
+SESSION_COOKIE_SECURE = True
+
+AUTHENTICATION_BACKENDS = (
+    "oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_RP_SCOPES = "openid profile"
+
+OIDC_RP_CLIENT_ID = env.str("OIDC_RP_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = env.str("OIDC_RP_CLIENT_SECRET")
+
+OIDC_OP_BASE_URL = env.str("OIDC_OP_BASE_URL")
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_OP_BASE_URL}/auth"
+OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
+OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
+OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
+OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
+
+LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
+LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
+
+EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
+EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
+EAUTHORIZATIONS_CLIENT_SECRET = env.str("EAUTHORIZATIONS_CLIENT_SECRET")
+EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
+# Authentication settings end
+
 
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 

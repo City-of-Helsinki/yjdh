@@ -1,6 +1,7 @@
 Django~=3.2
 django-cors-headers
 django-environ
+django-extensions
 djangorestframework
 django-simple-history
 psycopg2
@@ -9,4 +10,5 @@ requests
 django-phonenumber-field[phonenumbers]
 django-localflavor~=3.1
 django-searchable-encrypted-fields
+mozilla_django_oidc
 -e ../shared

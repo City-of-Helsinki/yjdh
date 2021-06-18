@@ -12,11 +12,20 @@ certifi==2020.12.5
     # via
     #   requests
     #   sentry-sdk
+cffi==1.14.5
+    # via cryptography
 chardet==4.0.0
     # via requests
+cryptography==3.4.7
+    # via
+    #   josepy
+    #   mozilla-django-oidc
+    #   pyopenssl
 django-cors-headers==3.7.0
     # via -r requirements.in
 django-environ==0.4.5
+    # via -r requirements.in
+django-extensions==3.1.3
     # via -r requirements.in
 django-localflavor==3.1
     # via -r requirements.in
@@ -30,9 +39,11 @@ django==3.2.4
     # via
     #   -r requirements.in
     #   django-cors-headers
+    #   django-extensions
     #   django-localflavor
     #   django-searchable-encrypted-fields
     #   djangorestframework
+    #   mozilla-django-oidc
     #   yjdh-backend-shared
 djangorestframework==3.12.4
     # via -r requirements.in
@@ -40,21 +51,38 @@ idna==2.10
     # via requests
 phonenumbers==8.12.25
     # via django-phonenumber-field
+josepy==1.8.0
+    # via mozilla-django-oidc
+mozilla-django-oidc==1.2.4
+    # via -r requirements.in
 psycopg2==2.8.6
     # via -r requirements.in
+pycparser==2.20
+    # via cffi
 pycryptodome==3.10.1
     # via django-searchable-encrypted-fields
+pyopenssl==20.0.1
+    # via josepy
 python-stdnum==1.16
     # via django-localflavor
 pytz==2021.1
     # via django
 requests==2.25.1
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   mozilla-django-oidc
 sentry-sdk==1.0.0
     # via -r requirements.in
+six==1.16.0
+    # via
+    #   mozilla-django-oidc
+    #   pyopenssl
 sqlparse==0.4.1
     # via django
 urllib3==1.26.4
     # via
     #   requests
     #   sentry-sdk
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
