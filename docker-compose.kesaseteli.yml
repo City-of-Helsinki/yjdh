@@ -15,7 +15,8 @@ services:
 
   kesaseteli-backend:
     build:
-      context: ./backend/kesaseteli
+      context: ./backend
+      dockerfile: ./docker/kesaseteli.Dockerfile
       target: development
     env_file:
       - .env.kesaseteli
@@ -24,6 +25,7 @@ services:
       DATABASE_HOST: kesaseteli-db.helsinki
     volumes:
       - ./backend/kesaseteli:/app
+      - ./backend/shared:/shared
     depends_on:
       - postgres
     container_name: kesaseteli-backend
