@@ -4,6 +4,7 @@ from rest_framework import serializers
 from applications.models import Application, SummerVoucher
 from applications.services import update_summer_vouchers_using_api_data
 from companies.api.v1.serializers import CompanySerializer
+from companies.services import get_or_create_company_from_eauth_profile
 
 
 class SummerVoucherSerializer(serializers.ModelSerializer):
@@ -29,6 +30,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     summer_vouchers = SummerVoucherSerializer(
         many=True, required=False, allow_null=True
     )
+    status = serializers.CharField(required=False)
 
     class Meta:
         model = Application
@@ -50,3 +52,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
             update_summer_vouchers_using_api_data(summer_vouchers_data, instance)
 
         return super().update(instance, validated_data)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        user = self.context["request"].user
+        company = get_or_create_company_from_eauth_profile(
+            user.oidc_profile.eauthorization_profile
+        )
+        validated_data["company"] = company
+
+        return super().create(validated_data)
