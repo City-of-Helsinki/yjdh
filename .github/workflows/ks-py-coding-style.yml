@@ -39,7 +39,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/kesaseteli/requirements.txt -r backend/kesaseteli/requirements-dev.txt
+        run: cd backend/kesaseteli && pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Formatting
         run: cd backend/kesaseteli && black --check .

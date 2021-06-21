@@ -45,8 +45,8 @@ jobs:
         service: [ 'backend', 'employer' ]
         include:
           - service: backend
-            context: ./backend/kesaseteli
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             port: 8000
           - service: employer
             context: ./frontend
@@ -78,7 +78,7 @@ jobs:
         include:
           - service: kesaseteli-backend
             context: backend
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             database: true
           - service: kesaseteli-employer
             context: frontend/kesaseteli
