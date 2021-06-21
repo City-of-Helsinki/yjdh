@@ -96,7 +96,7 @@ const StyledSubSection = styled.div`
 
 const StyledIBANField = styled(TextInput)<TextInputProps>`
   input {
-    width: initial !important;
+    width: 13.5em !important;
   }
 `;
 

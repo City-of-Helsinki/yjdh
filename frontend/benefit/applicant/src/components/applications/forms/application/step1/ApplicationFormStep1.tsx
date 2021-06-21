@@ -170,7 +170,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 label={fields.companyIban.label}
                 placeholder={fields.companyIban.placeholder}
                 invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-                size={22}
                 aria-invalid={
                   !!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)
                 }
