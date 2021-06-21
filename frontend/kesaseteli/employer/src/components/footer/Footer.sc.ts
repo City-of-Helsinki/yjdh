@@ -15,4 +15,4 @@ const Footer = styled(HdsFooter)`
     props.theme.colors.white} !important;
 `;
 
-export { Footer };
+export default { Footer };
