@@ -98,16 +98,18 @@ const useComponent = (): ExtendedComponentProps => {
       },
     };
 
-    const fieldsdef: FieldsDef = {};
-    fieldNames.forEach((name) => {
-      fieldsdef[name] = {
-        name,
-        label: t(`${translationsBase}.fields.${name}.label`),
-        placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
-        mask: fieldMasks[name],
-      };
-    });
-    return fieldsdef;
+    return fieldNames.reduce<FieldsDef>(
+      (acc, name) => ({
+        ...acc,
+        [name]: {
+          name,
+          label: t(`${translationsBase}.fields.${name}.label`),
+          placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
+          mask: fieldMasks[name],
+        },
+      }),
+      {}
+    );
   }, [t, fieldNames]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
