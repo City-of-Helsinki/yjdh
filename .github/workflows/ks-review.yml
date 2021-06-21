@@ -45,8 +45,8 @@ jobs:
         service: [ 'ks-bknd', 'ks-empl' ]
         include:
           - service: ks-bknd
-            context: ./backend/kesaseteli
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             port: 8000
           - service: ks-empl
             context: ./frontend
@@ -74,8 +74,8 @@ jobs:
         service: [ 'ks-bknd', 'ks-empl' ]
         include:
           - service: ks-bknd
-            context: ./backend/kesaseteli
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             database: true
             port: 8000
           - service: ks-empl

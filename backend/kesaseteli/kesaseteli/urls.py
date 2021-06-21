@@ -14,6 +14,7 @@ urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/company/", GetCompanyView.as_view()),
     path("oidc/", include("oidc.urls")),
+    path("oauth2/", include("shared.azure_adfs.urls")),
 ]
 
 
