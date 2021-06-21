@@ -20,7 +20,6 @@ const injectCallback = (
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     .filter((key: Key) => typeof obj[key] === 'function')
-    // eslint-disable-next-line unicorn/no-array-reduce
     .reduce(
       (acc, key) => ({
         ...acc,
