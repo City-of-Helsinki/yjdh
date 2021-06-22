@@ -1,9 +1,10 @@
-import BackendPath from 'kesaseteli/employer/backend-api/backend-path';
 
-const BackendEndpoint: Record<string, BackendPath> = {
-  COMPANY: '/v1/company/',
-  USER: '/oidc/userinfo/',
-  LOGIN: '/oidc/authenticate/',
-  LOGOUT: '/oidc/logout/',
+const BackendEndpoint= {
+  application: (id:string) => `/v1/applications/${id}`,
+  applications: '/v1/applications/',
+  company: '/v1/company/',
+  login: '/oidc/authenticate/',
+  logout: '/oidc/logout/',
+  user: '/oidc/userinfo/',
 } as const;
 export default BackendEndpoint;

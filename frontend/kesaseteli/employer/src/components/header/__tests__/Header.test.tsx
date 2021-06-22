@@ -77,7 +77,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     );
   };
 
-  it('Should not show userdata when logged out and redirects to backend when clicked login button', async () => {
+  it('Redirects to backend when clicked login button', async () => {
     expectUnauthorizedReply();
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, queryClient, { push: spyRouterPush });
@@ -88,7 +88,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     );
   });
 
-  it('Should show userdata when logged in and redirect to logout and clear userdata when clicked logout button', async () => {
+  it('Redirects to logout and clear userdata when clicked logout button', async () => {
     const expectedUser = expectAuthorizedReply(true);
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, queryClient, { push: spyRouterPush });

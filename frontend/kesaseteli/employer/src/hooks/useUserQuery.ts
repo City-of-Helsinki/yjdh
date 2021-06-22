@@ -7,7 +7,7 @@ import User from 'shared/types/user';
 const useUserQuery = (): UseQueryResult<User, Error> => {
   const { axios } = useBackendAPI();
   return useQuery<User, Error>('user', () =>
-    handleResponse(axios.get<User>(backendEndpoint.USER))
+    handleResponse<User>(axios.get(backendEndpoint.user))
   );
 };
 export default useUserQuery;

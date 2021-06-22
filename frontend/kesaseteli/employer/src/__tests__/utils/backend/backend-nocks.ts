@@ -4,6 +4,7 @@ import getBackendDomain from 'kesaseteli/employer/backend-api/get-backend-domain
 import Company from 'kesaseteli/employer/types/company';
 import nock from 'nock';
 import User from 'shared/types/user';
+import Application from 'kesaseteli/employer/types/application';
 
 const authenticatedUser: User = {
   national_id_num: '111111-111C',
@@ -22,38 +23,48 @@ const expectedCompany: Company = {
   city: 'Vaasa',
 };
 
+const expectedApplication = (id:string) : Application => ({
+  id,
+  company: expectedCompany,
+  invoicer_email: faker.internet.email(),
+  invoicer_name: faker.name.findName(),
+  invoicer_phone_number: faker.phone.phoneNumber(),
+  status: '',
+  summer_vouchers: [],
+});
+
 export const expectAuthorizedReply = (persistValue = false): User => {
   nock(getBackendDomain())
     .persist(persistValue)
-    .get(BackendEndpoint.USER)
+    .get(BackendEndpoint.user)
     .reply(200, authenticatedUser, { 'Access-Control-Allow-Origin': '*' });
   return authenticatedUser;
 };
 export const expectUnauthorizedReply = (persistValue = false): nock.Scope =>
   nock(getBackendDomain())
     .persist(persistValue)
-    .get(BackendEndpoint.USER)
+    .get(BackendEndpoint.user)
     .replyWithError('401 Unauthorized');
 
 export const expectToLogin = (): nock.Scope =>
   nock(getBackendDomain())
-    .get(BackendEndpoint.LOGIN)
+    .get(BackendEndpoint.login)
     .reply(200, 'OK', { 'Access-Control-Allow-Origin': '*' });
 
 export const expectToLogout = (): nock.Scope =>
   nock(getBackendDomain())
-    .post(BackendEndpoint.LOGOUT)
+    .post(BackendEndpoint.logout)
     .reply(200, authenticatedUser, { 'Access-Control-Allow-Origin': '*' });
 
-export const expectToGetCompanyReply = (): Company => {
+export const expectToGetApplicationReply = (id: string): Application => {
+  const application = expectedApplication(id);
   nock(getBackendDomain())
-    .get(BackendEndpoint.COMPANY)
-    .reply(200, expectedCompany, { 'Access-Control-Allow-Origin': '*' });
-  return expectedCompany;
+    .get(BackendEndpoint.application(id))
+    .reply(200, application, { 'Access-Control-Allow-Origin': '*' });
+  return application;
 };
 
-export const expectToGetCompanyErrorReply = (times = 1): nock.Scope =>
+export const expectToGetApplicationErrorReply = (id: string): nock.Scope =>
   nock(getBackendDomain())
-    .get(BackendEndpoint.COMPANY)
-    .times(times)
+    .get(BackendEndpoint.application(id))
     .replyWithError('This is a test error. Please ignore this error message.');

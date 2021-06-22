@@ -1,13 +1,13 @@
 import { axe } from 'jest-axe';
 import {
   expectAuthorizedReply,
-  expectToGetCompanyErrorReply,
-  expectToGetCompanyReply,
+  expectToGetApplicationErrorReply,
+  expectToGetApplicationReply,
   expectUnauthorizedReply,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
-import CompanyPage from 'kesaseteli/employer/pages/company';
+import ApplicationPage from 'kesaseteli/employer/pages/application';
 import Company from 'kesaseteli/employer/types/company';
 import React from 'react';
 import { QueryClient } from 'react-query';
@@ -31,16 +31,17 @@ const waitForShowingCompanyData = async (company: Company): Promise<void> => {
   expect(screen.queryByText(company.city)).toBeInTheDocument();
 };
 
-describe('frontend/kesaseteli/employer/src/pages/companyPage.tsx', () => {
+describe('frontend/kesaseteli/employer/src/pages/application/[id].tsx', () => {
   let queryClient: QueryClient;
 
   it('should not violate accessibility', async () => {
-    const { container } = renderComponent(<CompanyPage />);
+    const { container } = renderComponent(<ApplicationPage />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
   describe('loading data', () => {
+    const id = '1234';
     queryClient = createReactQueryTestClient();
     beforeEach(() => {
       queryClient.clear();
@@ -49,36 +50,23 @@ describe('frontend/kesaseteli/employer/src/pages/companyPage.tsx', () => {
     it('Should redirect when unauthorized', async () => {
       expectUnauthorizedReply();
       const spyPush = jest.fn();
-      renderPage(CompanyPage, queryClient, { push: spyPush });
+      renderPage(ApplicationPage, queryClient, { push: spyPush });
       await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
     });
 
-    it('Should show company data', async () => {
+    it('Should show application data', async () => {
       expectAuthorizedReply();
-      const expectedCompany = expectToGetCompanyReply();
-      renderPage(CompanyPage, queryClient);
-      await waitForShowingCompanyData(expectedCompany);
+      const expectedApplication = expectToGetApplicationReply(id);
+      renderPage(ApplicationPage, queryClient, {query: {id}});
+      await waitForShowingCompanyData(expectedApplication.company);
     });
 
     it('Should show error', async () => {
       expectAuthorizedReply();
-      expectToGetCompanyErrorReply();
-      renderPage(CompanyPage, queryClient);
+      expectToGetApplicationErrorReply(id);
+      renderPage(ApplicationPage, queryClient, {query: {id}});
       await screen.findByText(/virhe/i);
     });
 
-    it('Should retry when error', async () => {
-      queryClient = createReactQueryTestClient({
-        queries: {
-          retry: 2,
-          retryDelay: 1,
-        },
-      });
-      expectAuthorizedReply();
-      expectToGetCompanyErrorReply(2);
-      const expectedCompany = expectToGetCompanyReply();
-      renderPage(CompanyPage, queryClient);
-      await waitForShowingCompanyData(expectedCompany);
-    });
   });
 });

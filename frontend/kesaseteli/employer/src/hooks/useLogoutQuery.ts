@@ -10,7 +10,7 @@ const useLogoutQuery = (): UseMutationResult<unknown, Error, void> => {
   const queryClient = useQueryClient();
   return useMutation<unknown, Error, void>(
     'logout',
-    () => handleResponse(axios.post<unknown>(backendEndpoint.LOGOUT)),
+    () => handleResponse<unknown>(axios.post(backendEndpoint.logout)),
     {
       onSuccess: () => {
         void queryClient.removeQueries();
