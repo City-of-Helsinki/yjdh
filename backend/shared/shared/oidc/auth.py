@@ -120,6 +120,22 @@ class EAuthRestAuthentication(SessionAuthentication):
             return None
 
         if getattr(settings, "MOCK_FLAG", None):
+            from shared.oidc.models import EAuthorizationProfile, OIDCProfile
+            from shared.oidc.tests.factories import (
+                EAuthorizationProfileFactory,
+                OIDCProfileFactory,
+            )
+
+            try:
+                oidc_profile = OIDCProfile.objects.get(user=user_auth_tuple[0])
+            except OIDCProfile.DoesNotExist:
+                oidc_profile = OIDCProfileFactory(user=user_auth_tuple[0])
+
+            try:
+                EAuthorizationProfile.objects.get(oidc_profile=oidc_profile)
+            except EAuthorizationProfile.DoesNotExist:
+                EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
             return user_auth_tuple
 
         user, auth = user_auth_tuple

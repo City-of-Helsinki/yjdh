@@ -1,7 +1,7 @@
 from unittest import mock
 
 import pytest
-from django.test import RequestFactory
+from django.test import override_settings, RequestFactory
 
 from shared.oidc.auth import EAuthRestAuthentication
 
@@ -20,6 +20,22 @@ def test_eauth_rest_auth_success(eauthorization_profile):
         user, auth = eauth_rest_auth.authenticate(request)
 
     assert user == eauthorization_profile.oidc_profile.user
+
+
+@pytest.mark.django_db
+@override_settings(MOCK_FLAG=True)
+def test_eauth_rest_auth_success_mock(user):
+    factory = RequestFactory()
+    request = factory.get("/")
+    request.user = user
+
+    with mock.patch(
+        "shared.oidc.auth.SessionAuthentication.authenticate", return_value=(user, None)
+    ):
+        eauth_rest_auth = EAuthRestAuthentication()
+        user, auth = eauth_rest_auth.authenticate(request)
+
+    assert user.oidc_profile.eauthorization_profile
 
 
 @pytest.mark.django_db
