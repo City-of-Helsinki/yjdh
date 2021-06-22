@@ -1,3 +1,4 @@
+import factory
 import pytest
 from applications.enums import BenefitType
 from applications.tests.factories import ApplicationFactory, EmployeeFactory
@@ -5,7 +6,8 @@ from applications.tests.factories import ApplicationFactory, EmployeeFactory
 
 @pytest.fixture
 def application():
-    return ApplicationFactory()
+    with factory.Faker.override_default_locale("fi_FI"):
+        return ApplicationFactory()
 
 
 @pytest.fixture
@@ -24,4 +26,5 @@ def association_application():
 
 @pytest.fixture
 def employee():
-    return EmployeeFactory()
+    with factory.Faker.override_default_locale("fi_FI"):
+        return EmployeeFactory()

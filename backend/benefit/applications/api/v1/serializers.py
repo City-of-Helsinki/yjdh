@@ -12,6 +12,7 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 
@@ -66,6 +67,11 @@ class ApplicationBasisSerializer(serializers.ModelSerializer):
         fields = [
             "identifier",
         ]
+        extra_kwargs = {
+            "identifier": {
+                "help_text": "Unique slug that identifies the basis",
+            }
+        }
 
 
 class DeMinimisAidSerializer(serializers.ModelSerializer):
@@ -82,6 +88,7 @@ class DeMinimisAidSerializer(serializers.ModelSerializer):
         decimal_places=DeMinimisAid.amount.field.decimal_places,
         min_value=1,
         max_value=MAX_AID_AMOUNT,
+        help_text="see MAX_AMOUNT",
     )
 
     def validate_granted_at(self, value):
@@ -104,6 +111,17 @@ class DeMinimisAidSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "ordering",
         ]
+        extra_kwargs = {
+            "granter": {
+                "help_text": "Granter of the benefit",
+            },
+            "granted_at": {
+                "help_text": "Date max. four years into past",
+            },
+            "ordering": {
+                "help_text": "Note: read-only field, ignored on input",
+            },
+        }
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -114,7 +132,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     """
 
     status = serializers.ChoiceField(
-        choices=ApplicationStatus.choices, validators=[ApplicationStatusValidator()]
+        choices=ApplicationStatus.choices,
+        validators=[ApplicationStatusValidator()],
+        help_text="Status of the application, visible to the applicant",
     )
     company = CompanySerializer(read_only=True)
 
@@ -122,16 +142,23 @@ class ApplicationSerializer(serializers.ModelSerializer):
         many=True,
         slug_field="identifier",
         queryset=ApplicationBasis.objects.filter(is_active=True),
+        help_text="List of application basis identifiers",
     )
 
-    de_minimis_aid_set = DeMinimisAidSerializer(many=True)
+    de_minimis_aid_set = DeMinimisAidSerializer(
+        many=True,
+        help_text="List of de minimis aid associated with this application."
+        "Total amount must be less than MAX_AID_AMOUNT",
+    )
 
-    """
-    To be used when a logged-in application handler creates a new application based on a paper application
-    received via mail. Ordinary applicants can only create applications for their own company.
-    """
     create_application_for_company = serializers.PrimaryKeyRelatedField(
-        write_only=True, required=False, queryset=Company.objects.all()
+        write_only=True,
+        required=False,
+        queryset=Company.objects.all(),
+        help_text=(
+            "To be used when a logged-in application handler creates a new application based on a paper application"
+            "received via mail. Ordinary applicants can only create applications for their own company."
+        ),
     )
 
     class Meta:
@@ -141,6 +168,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "status",
             "company",
             "company_name",
+            "company_form",
             "organization_type",
             "bases",
             "available_bases",
@@ -171,23 +199,106 @@ class ApplicationSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "available_bases",
             "company_name",
+            "company_form",
             "official_company_street_address",
             "official_company_city",
             "official_company_postcode",
             "available_benefit_types",
         ]
+        extra_kwargs = {
+            "company_name": {
+                "help_text": "The application should retain the Company name, as it was at the time the"
+                " application was created, to maintain historical accuracy.",
+            },
+            "company_form": {
+                "help_text": "Company city from official sources (YTJ) at the time the application was created",
+            },
+            "official_company_street_address": {
+                "help_text": "Company street address from official sources (YTJ/other) at"
+                "the time the application was created",
+            },
+            "official_company_city": {
+                "help_text": "Company city from official sources (YTJ/other) at"
+                "the time the application was created",
+            },
+            "official_company_postcode": {
+                "help_text": "Company post code from official sources (YTJ/other) at"
+                "the time the application was created",
+            },
+            "use_alternative_address": {
+                "help_text": "The user has an option of using an alternative address."
+                "This will then be used instead of the address fetched from YTJ/PRH.",
+            },
+            "alternative_company_street_address": {
+                "help_text": "User-supplied address, to be used in Helsinki Benefit related issues",
+            },
+            "alternative_company_city": {
+                "help_text": "User-supplied city, to be used in Helsinki Benefit related issues",
+            },
+            "alternative_company_postcode": {
+                "help_text": "User-supplied postcode, to be used in Helsinki Benefit related issues",
+            },
+            "company_bank_account_number": {
+                "help_text": "IBAN formatted bank account number",
+            },
+            "company_contact_person_phone_number": {
+                "help_text": "Phone number of the contact person",
+            },
+            "company_contact_person_email": {
+                "help_text": "Email address of the contact person",
+            },
+            "association_has_business_activities": {
+                "help_text": "field is visible and yes/no answer is required/allowed"
+                "only if applicant is an association",
+            },
+            "applicant_language": {
+                "help_text": "Language to be used when contacting the contact person",
+            },
+            "co_operation_negotiations": {
+                "help_text": "If set to True, then the negotiations description must be filled",
+            },
+            "co_operation_negotiations_description": {
+                "help_text": "Free text entered by the applicant",
+            },
+            "apprenticeship_program": {
+                "help_text": "Is the employee in apprenticeship program?",
+            },
+            "archived": {
+                "help_text": "Flag indicating the application is archived and should not usually be shown to the user",
+            },
+            "benefit_type": {
+                "help_text": "Benefit type of this application",
+            },
+            "start_date": {
+                "help_text": "Must be within the current year.",
+            },
+            "end_date": {
+                "help_text": "Must be after the start date.",
+            },
+            "de_minimis_aid": {
+                "help_text": "Null indicates user has no yet made the selection",
+            },
+        }
 
-    organization_type = serializers.SerializerMethodField("get_organization_type")
-
-    available_bases = serializers.SerializerMethodField("get_available_bases")
-
-    available_benefit_types = serializers.SerializerMethodField(
-        "get_available_benefit_types"
+    organization_type = serializers.SerializerMethodField(
+        "get_organization_type",
+        help_text="The general type of the applicant organization",
     )
 
+    available_bases = serializers.SerializerMethodField(
+        "get_available_bases", help_text="List of available application basis slugs"
+    )
+
+    available_benefit_types = serializers.SerializerMethodField(
+        "get_available_benefit_types",
+        help_text="Available benefit types depend on organization type of the applicant",
+    )
+
+    @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
     def get_organization_type(self, obj):
         return OrganizationType.resolve_organization_type(obj.company.company_form)
 
+    @extend_schema_field(ApplicationBasisSerializer(many=True))
     def get_available_bases(self, obj):
         return [
             basis.identifier
@@ -327,6 +438,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 }
             )
 
+    @extend_schema_field(serializers.ChoiceField(choices=BenefitType.choices))
     def get_available_benefit_types(self, obj):
         return [
             str(item)
