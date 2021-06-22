@@ -1,4 +1,4 @@
-import { Button } from 'hds-react';
+import { Button, TextInput, TextInputProps } from 'hds-react';
 import React from 'react';
 import { Theme } from 'shared/styles/theme';
 import styled, { ThemeProps } from 'styled-components';
@@ -94,6 +94,12 @@ const StyledSubSection = styled.div`
   }
 `;
 
+const StyledIBANField = styled(TextInput)<TextInputProps>`
+  input {
+    width: 13.5em !important;
+  }
+`;
+
 export {
   StyledActionContainer,
   StyledButton,
@@ -104,6 +110,7 @@ export {
   StyledContainer,
   StyledDescription,
   StyledHeading,
+  StyledIBANField,
   StyledLink,
   StyledNotificationContent,
   StyledSubActionContainer,

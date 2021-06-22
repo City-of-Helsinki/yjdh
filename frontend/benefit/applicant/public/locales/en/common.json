@@ -185,6 +185,9 @@
       "time": {
         "min": "This time must be earliest {{min}}",
         "max": "This time must be latest {{max}}"
+      },
+      "iban": {
+        "invalid": "Invalid IBAN value"
       }
     }
   }

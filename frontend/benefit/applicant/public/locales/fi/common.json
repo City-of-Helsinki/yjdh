@@ -185,6 +185,9 @@
       "time": {
         "min": "Arvon tulee olla aikaisintaan {{min}}",
         "max": "Arvon tulee olla viimeistään {{max}}"
+      },
+      "iban": {
+        "invalid": "Virheellinen IBAN-tilinumero"
       }
     }
   }

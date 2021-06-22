@@ -185,6 +185,9 @@
       "time": {
         "min": "Den här tiden måste vara tidigast {{min}}",
         "max": "Den här tiden måste vara senast {{max}}"
+      },
+      "iban": {
+        "invalid": "Invalid IBAN value"
       }
     }
   }

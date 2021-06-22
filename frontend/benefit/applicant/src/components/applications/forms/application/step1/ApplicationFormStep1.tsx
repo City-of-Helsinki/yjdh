@@ -2,6 +2,7 @@ import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Notification, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
+import InputMask from 'react-input-mask';
 import {
   StyledCheckbox,
   StyledRadioButton,
@@ -16,6 +17,7 @@ import {
   StyledCompanyInfoContainer,
   StyledCompanyInfoRow,
   StyledCompanyInfoSection,
+  StyledIBANField,
   StyledNotificationContent,
   StyledSubSection,
 } from '../styled';
@@ -149,19 +151,33 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </StyledFormGroup>
         )}
         <StyledFormGroup>
-          <TextInput
-            id={fields.companyIban.name}
-            name={fields.companyIban.name}
-            label={fields.companyIban.label}
-            placeholder={fields.companyIban.placeholder}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+          <InputMask
+            mask={fields.companyIban.mask?.format ?? ''}
+            maskChar={null}
             value={formik.values.companyIban}
-            invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-            aria-invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-            errorText={getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-            required
-          />
+            onBlur={formik.handleBlur}
+            onChange={(e) => {
+              const initValue = e.target.value;
+              const value =
+                fields.companyIban.mask?.stripVal(initValue) ?? initValue;
+              return formik.setFieldValue(fields.companyIban.name, value);
+            }}
+          >
+            {() => (
+              <StyledIBANField
+                id={fields.companyIban.name}
+                name={fields.companyIban.name}
+                label={fields.companyIban.label}
+                placeholder={fields.companyIban.placeholder}
+                invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
+                aria-invalid={
+                  !!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)
+                }
+                errorText={getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
+                required
+              />
+            )}
+          </InputMask>
         </StyledFormGroup>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading2`)}>
