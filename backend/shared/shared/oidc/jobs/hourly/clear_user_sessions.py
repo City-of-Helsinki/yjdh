@@ -1,8 +1,8 @@
 from django.utils import timezone
 from django_extensions.management.jobs import HourlyJob
 
-from oidc.models import EAuthorizationProfile, OIDCProfile
-from oidc.services import clear_eauthorization_profiles, clear_oidc_profiles
+from shared.oidc.models import EAuthorizationProfile, OIDCProfile
+from shared.oidc.services import clear_eauthorization_profiles, clear_oidc_profiles
 
 
 class Job(HourlyJob):

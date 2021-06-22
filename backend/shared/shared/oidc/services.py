@@ -4,7 +4,7 @@ from typing import Union
 from django.db.models import QuerySet
 from django.utils import timezone
 
-from oidc.models import EAuthorizationProfile, OIDCProfile
+from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 
 def update_or_create_oidc_profile(user, defaults) -> OIDCProfile:

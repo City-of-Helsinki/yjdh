@@ -1,24 +1,25 @@
 from django.conf import settings
 from django.urls import include, path
 
-from oidc.views.eauth_views import (
+from shared.oidc.views.eauth_views import (
     EauthAuthenticationCallbackView,
     EauthAuthenticationRequestView,
 )
-from oidc.views.hki_views import (
+from shared.oidc.views.hki_views import (
     HelsinkiOIDCAuthenticationCallbackView,
     HelsinkiOIDCLogoutView,
     HelsinkiOIDCUserInfoView,
-)
-from oidc.views.mock_views import (
-    MockAuthenticationRequestView,
-    MockLogoutView,
-    MockUserInfoView,
 )
 
 urlpatterns = []
 
 if settings.MOCK_FLAG:
+    from shared.oidc.views.mock_views import (
+        MockAuthenticationRequestView,
+        MockLogoutView,
+        MockUserInfoView,
+    )
+
     urlpatterns += [
         path(
             "authenticate/",

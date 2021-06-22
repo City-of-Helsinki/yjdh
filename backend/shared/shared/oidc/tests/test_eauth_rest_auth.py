@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 from django.test import RequestFactory
 
-from oidc.auth import EAuthRestAuthentication
+from shared.oidc.auth import EAuthRestAuthentication
 
 
 @pytest.mark.django_db
@@ -14,7 +14,7 @@ def test_eauth_rest_auth_success(eauthorization_profile):
     request.user = user
 
     with mock.patch(
-        "oidc.auth.SessionAuthentication.authenticate", return_value=(user, None)
+        "shared.oidc.auth.SessionAuthentication.authenticate", return_value=(user, None)
     ):
         eauth_rest_auth = EAuthRestAuthentication()
         user, auth = eauth_rest_auth.authenticate(request)
@@ -33,7 +33,7 @@ def test_eauth_rest_auth_failure_missing_access_token(eauthorization_profile):
     eauthorization_profile.save()
 
     with mock.patch(
-        "oidc.auth.SessionAuthentication.authenticate", return_value=(user, None)
+        "shared.oidc.auth.SessionAuthentication.authenticate", return_value=(user, None)
     ):
         eauth_rest_auth = EAuthRestAuthentication()
         user_auth_tuple = eauth_rest_auth.authenticate(request)
@@ -45,7 +45,9 @@ def test_eauth_rest_auth_failure():
     factory = RequestFactory()
     request = factory.get("/")
 
-    with mock.patch("oidc.auth.SessionAuthentication.authenticate", return_value=None):
+    with mock.patch(
+        "shared.oidc.auth.SessionAuthentication.authenticate", return_value=None
+    ):
         eauth_rest_auth = EAuthRestAuthentication()
         user_auth_tuple = eauth_rest_auth.authenticate(request)
 

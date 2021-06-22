@@ -8,9 +8,9 @@ from django.contrib.auth import get_user_model
 from django.test import override_settings, RequestFactory
 from django.utils import timezone
 
-from oidc.auth import HelsinkiOIDCAuthenticationBackend
-from oidc.models import OIDCProfile
-from oidc.services import store_token_info_in_oidc_profile
+from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
+from shared.oidc.models import OIDCProfile
+from shared.oidc.services import store_token_info_in_oidc_profile
 
 
 def check_token_info(user, oidc_profile, token_info):
@@ -73,10 +73,11 @@ def test_authenticate(requests_mock):
     }
 
     with mock.patch(
-        "oidc.auth.HelsinkiOIDCAuthenticationBackend.get_token", return_value=token_info
+        "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend.get_token",
+        return_value=token_info,
     ):
         with mock.patch(
-            "oidc.auth.HelsinkiOIDCAuthenticationBackend.verify_token",
+            "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend.verify_token",
             return_value={"test": "ok"},
         ):
             user = auth_backend.authenticate(request)

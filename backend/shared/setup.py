@@ -21,7 +21,12 @@ setup(
     url="https://github.com/City-of-Helsinki/yjdh",
     author="City of Helsinki",
     author_email="dev@hel.fi",
-    install_requires=["Django", "mozilla_django_oidc"],
+    install_requires=[
+        "Django",
+        "mozilla_django_oidc",
+        "django_auth_adfs",
+        "django-extensions",
+    ],
     setup_requires=["pytest-runner"],
     tests_require=["pytest", "pytest-django"],
     classifiers=[

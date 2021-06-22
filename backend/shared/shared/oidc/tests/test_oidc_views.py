@@ -6,7 +6,7 @@ from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
 
-from oidc.tests.factories import OIDCProfileFactory
+from shared.oidc.tests.factories import OIDCProfileFactory
 
 
 @pytest.mark.django_db

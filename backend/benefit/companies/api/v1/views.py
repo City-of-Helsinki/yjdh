@@ -10,7 +10,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from oidc.utils import get_organization_roles
+from shared.oidc.utils import get_organization_roles
 
 
 class GetCompanyView(APIView):
@@ -55,7 +55,7 @@ class GetCompanyView(APIView):
             return self.get_mock(request, format)
 
         # TODO: Remove business id params later after authentication is completed in FE
-        if not business_id:
+        if not business_id and request.user.is_authenticated:
             eauth_profile = request.user.oidc_profile.eauthorization_profile
 
             try:

@@ -8,7 +8,7 @@ from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
 from rest_framework.authentication import SessionAuthentication
 
-from oidc.services import store_token_info_in_oidc_profile
+from shared.oidc.services import store_token_info_in_oidc_profile
 
 LOGGER = logging.getLogger(__name__)
 

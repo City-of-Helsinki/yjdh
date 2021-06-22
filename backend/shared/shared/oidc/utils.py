@@ -7,8 +7,8 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
-from oidc.auth import HelsinkiOIDCAuthenticationBackend
-from oidc.models import EAuthorizationProfile, OIDCProfile
+from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
+from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 
 def get_userinfo(access_token: str) -> dict:

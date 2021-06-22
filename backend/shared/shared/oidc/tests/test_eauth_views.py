@@ -8,8 +8,8 @@ from django.urls import reverse
 from django.utils import timezone
 from freezegun import freeze_time
 
-from oidc.tests.factories import OIDCProfileFactory
-from oidc.utils import get_checksum_header, get_organization_roles
+from shared.oidc.tests.factories import OIDCProfileFactory
+from shared.oidc.utils import get_checksum_header, get_organization_roles
 
 
 @freeze_time("2017-02-09T10:29:42.09")
@@ -93,7 +93,9 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
         "national_id_num": "210281-9988",
     }
 
-    with mock.patch("oidc.views.eauth_views.get_userinfo", return_value=userinfo):
+    with mock.patch(
+        "shared.oidc.views.eauth_views.get_userinfo", return_value=userinfo
+    ):
         response = user_client.get(authentication_url)
 
     assert response.status_code == 302

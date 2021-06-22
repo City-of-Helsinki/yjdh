@@ -2,7 +2,7 @@ import factory
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from oidc.models import EAuthorizationProfile, OIDCProfile
+from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 
 class UserFactory(factory.django.DjangoModelFactory):

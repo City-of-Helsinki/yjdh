@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from oidc.models import EAuthorizationProfile, OIDCProfile
+from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 
 class OIDCProfileAdmin(admin.ModelAdmin):

@@ -3,8 +3,8 @@ import datetime
 import pytest
 from django.utils import timezone
 
-from oidc.jobs.hourly.clear_user_sessions import Job as ClearUserSessionsJob
-from oidc.models import EAuthorizationProfile
+from shared.oidc.jobs.hourly.clear_user_sessions import Job as ClearUserSessionsJob
+from shared.oidc.models import EAuthorizationProfile
 
 
 @pytest.mark.django_db

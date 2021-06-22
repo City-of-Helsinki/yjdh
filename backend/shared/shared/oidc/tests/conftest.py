@@ -1,7 +1,7 @@
 import pytest
 from django.test import Client
 
-from oidc.tests.factories import (
+from shared.oidc.tests.factories import (
     EAuthorizationProfileFactory,
     OIDCProfileFactory,
     UserFactory,

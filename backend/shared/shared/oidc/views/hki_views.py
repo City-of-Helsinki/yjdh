@@ -10,9 +10,9 @@ from django.views.generic import View
 from mozilla_django_oidc.views import OIDCAuthenticationCallbackView, OIDCLogoutView
 from requests.exceptions import HTTPError
 
-from oidc.models import OIDCProfile
-from oidc.services import clear_oidc_profiles
-from oidc.utils import get_userinfo, refresh_hki_tokens
+from shared.oidc.models import OIDCProfile
+from shared.oidc.services import clear_oidc_profiles
+from shared.oidc.utils import get_userinfo, refresh_hki_tokens
 
 logger = logging.getLogger(__name__)
 
