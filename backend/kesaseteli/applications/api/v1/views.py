@@ -5,6 +5,7 @@ from applications.models import Application
 
 
 class ApplicationViewSet(
+    mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
