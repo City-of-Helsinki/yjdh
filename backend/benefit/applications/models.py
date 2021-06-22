@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField
 from localflavor.generic.models import IBANField
+from phonenumber_field.modelfields import PhoneNumberField
 from simple_history.models import HistoricalRecords
 
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
@@ -95,8 +96,7 @@ class Application(UUIDModel, TimeStampedModel):
         blank=True,
     )
 
-    company_contact_person_phone_number = models.CharField(
-        max_length=64,
+    company_contact_person_phone_number = PhoneNumberField(
         verbose_name=_("company contact person's phone number"),
         blank=True,
     )
@@ -213,9 +213,7 @@ class DeMinimisAid(UUIDModel, TimeStampedModel):
     amount = models.DecimalField(
         max_digits=8, decimal_places=2, verbose_name=_("amount of the de minimis aid")
     )
-    granted_at = models.DateField(
-        verbose_name=_("benefit granted at"), blank=True, null=True
-    )
+    granted_at = models.DateField(verbose_name=_("benefit granted at"))
     ordering = models.IntegerField(default=0)
     history = HistoricalRecords(table_name="applications_deminimisaid_history")
 

@@ -1,8 +1,12 @@
+import copy
+from datetime import date
+
 import pytest
 from applications.api.v1.serializers import ApplicationSerializer
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, BenefitType
 from applications.models import Application
-from applications.tests.factories import ApplicationFactory
+from applications.tests.conftest import *  # noqa
+from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 from rest_framework.reverse import reverse
@@ -49,7 +53,7 @@ def test_application_template(api_client):
     )  # as of 2021-06-16, just a dummy implementation exists
 
 
-def test_application_post(api_client, application):
+def test_application_post_success(api_client, application):
     """
     Create a new application
     """
@@ -57,7 +61,7 @@ def test_application_post(api_client, application):
     application.delete()
     assert len(Application.objects.all()) == 0
 
-    del data["id"]
+    del data["id"]  # id is read-only field and would be ignored
     response = api_client.post(
         reverse("v1:application-list"),
         data,
@@ -89,6 +93,67 @@ def test_application_post(api_client, application):
     assert new_application.official_company_city == new_application.company.city
 
 
+def test_application_post_unfinished(api_client, application):
+    """
+    Create a new application with partial information
+    like when hitting "save as draft" without entering any fields
+    """
+
+    data = ApplicationSerializer(application).data
+    application.delete()
+    assert len(Application.objects.all()) == 0
+
+    for key, item in data.items():
+        if key in [
+            "status",
+            "applicant_language",
+            "archived",
+            "use_alternative_address",
+        ]:
+            # field can't be empty/null
+            pass
+        elif key in ["start_date", "end_date"]:
+            data[key] = None
+        elif isinstance(item, list):
+            data[key] = []
+        elif isinstance(item, str):
+            data[key] = ""
+        elif isinstance(item, bool):
+            data[key] = None
+
+    response = api_client.post(
+        reverse("v1:application-list"),
+        data,
+    )
+    assert response.status_code == 201
+    application = Application.objects.get(pk__isnull=False)
+    assert len(application.de_minimis_aid_set.all()) == 0
+    assert application.benefit_type == ""
+    assert application.start_date is None
+
+
+def test_application_post_invalid_data(api_client, application):
+    data = ApplicationSerializer(application).data
+    application.delete()
+    assert len(Application.objects.all()) == 0
+
+    del data["id"]
+    data["de_minimis_aid_set"][0]["amount"] = "300000.00"  # value too high
+    data["status"] = "foo"  # invalid value
+    data["bases"] = ["something_completely_different"]  # invalid value
+    data["applicant_language"] = None  # non-null required
+    response = api_client.post(reverse("v1:application-list"), data, format="json")
+    assert response.status_code == 400
+    assert response.data.keys() == {
+        "status",
+        "bases",
+        "applicant_language",
+        "de_minimis_aid_set",
+    }
+    assert response.data["de_minimis_aid_set"][0].keys() == {"amount"}
+    assert len(response.data["de_minimis_aid_set"]) == 2
+
+
 def test_application_put_edit_fields(api_client, application):
     """
     modify existing application
@@ -100,9 +165,11 @@ def test_application_put_edit_fields(api_client, application):
         data,
     )
     assert response.status_code == 200
-    assert response.data["company_contact_person_phone_number"] == "0505658789"
+    assert (
+        response.data["company_contact_person_phone_number"] == "+358505658789"
+    )  # normalized format
     application.refresh_from_db()
-    assert application.company_contact_person_phone_number == "0505658789"
+    assert application.company_contact_person_phone_number == "+358505658789"
 
 
 def test_application_put_read_only_fields(api_client, application):
@@ -136,12 +203,39 @@ def test_application_put_read_only_fields(api_client, application):
     )
 
 
+def test_application_put_invalid_data(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["de_minimis_aid_set"][0]["amount"] = "300000.00"  # value too high
+    data[
+        "status"
+    ] = ApplicationStatus.ACCEPTED  # invalid value when transitioning from draft
+    data["bases"] = ["something_completely_different"]  # invalid value
+    data["applicant_language"] = None  # non-null required
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 400
+    assert response.data.keys() == {
+        "status",
+        "bases",
+        "applicant_language",
+        "de_minimis_aid_set",
+    }
+    assert response.data["de_minimis_aid_set"][0].keys() == {"amount"}
+    assert len(response.data["de_minimis_aid_set"]) == 2
+
+
 def test_application_replace_de_minimis_aid(api_client, application):
     data = ApplicationSerializer(application).data
 
     data["de_minimis_aid"] = True
     data["de_minimis_aid_set"] = [
-        {"granter": "aaa", "granted_at": "2021-06-15", "amount": "12345.00"}
+        {
+            "granter": "aaa",
+            "granted_at": date.today().isoformat(),
+            "amount": "12345.00",
+        }
     ]
     response = api_client.put(
         get_detail_url(application),
@@ -190,19 +284,86 @@ def test_application_delete_de_minimis_aid(api_client, application):
     assert response.data["de_minimis_aid_set"] == []
 
 
-def test_application_patch(api_client):
-    application = ApplicationFactory(status=ApplicationStatus.DRAFT)
-    data = {"status": ApplicationStatus.REJECTED.value}
-    response = api_client.patch(
+def test_application_edit_de_minimis_aid_too_high(api_client, application):
+    data = ApplicationSerializer(application).data
+
+    previous_aid = copy.deepcopy(data["de_minimis_aid_set"])
+    data["de_minimis_aid"] = True
+    data["de_minimis_aid_set"][0]["amount"] = "150000"
+    data["de_minimis_aid_set"][1]["amount"] = "50001"
+
+    response = api_client.put(
         get_detail_url(application),
         data,
     )
-
-    assert response.status_code == 200
-    assert response.data["status"] == ApplicationStatus.REJECTED
+    assert response.status_code == 400
 
     application.refresh_from_db()
-    assert application.status == ApplicationStatus.REJECTED
+    data_after = ApplicationSerializer(application).data
+    assert previous_aid == data_after["de_minimis_aid_set"]
+
+
+def test_application_edit_benefit_type_business(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 200
+    assert response.data["available_benefit_types"] == [
+        BenefitType.SALARY_BENEFIT,
+        BenefitType.COMMISSION_BENEFIT,
+        BenefitType.EMPLOYMENT_BENEFIT,
+    ]
+
+
+def test_application_edit_benefit_type_business_association(
+    api_client, association_application
+):
+    data = ApplicationSerializer(association_application).data
+    data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
+    data["association_has_business_activities"] = True
+
+    response = api_client.put(
+        get_detail_url(association_application),
+        data,
+    )
+    assert response.status_code == 200
+    assert response.data["available_benefit_types"] == [
+        BenefitType.SALARY_BENEFIT,
+        BenefitType.COMMISSION_BENEFIT,
+        BenefitType.EMPLOYMENT_BENEFIT,
+    ]
+
+
+def test_application_edit_benefit_type_non_business(
+    api_client, association_application
+):
+    data = ApplicationSerializer(association_application).data
+
+    response = api_client.put(
+        get_detail_url(association_application),
+        data,
+    )
+    assert response.status_code == 200
+    assert response.data["available_benefit_types"] == [
+        BenefitType.SALARY_BENEFIT,
+    ]
+
+
+def test_application_edit_benefit_type_non_business_invalid(
+    api_client, association_application
+):
+    data = ApplicationSerializer(association_application).data
+    data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
+
+    response = api_client.put(
+        get_detail_url(association_application),
+        data,
+    )
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db

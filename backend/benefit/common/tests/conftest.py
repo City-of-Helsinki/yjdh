@@ -9,7 +9,7 @@ from users.tests.factories import UserFactory
 @pytest.fixture(autouse=True)
 def setup_test_environment(settings):
     factory.random.reseed_random("777")
-    with freeze_time("2021-01-04"):
+    with freeze_time("2021-06-04"):
         yield
 
 

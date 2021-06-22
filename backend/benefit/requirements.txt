@@ -22,6 +22,8 @@ django-localflavor==3.1
     # via -r requirements.in
 django-searchable-encrypted-fields==0.1.9
     # via -r requirements.in
+django-phonenumber-field[phonenumbers]==5.2.0
+    # via -r requirements.in
 django-simple-history==3.0.0
     # via -r requirements.in
 django==3.2.4
@@ -36,6 +38,8 @@ djangorestframework==3.12.4
     # via -r requirements.in
 idna==2.10
     # via requests
+phonenumbers==8.12.25
+    # via django-phonenumber-field
 psycopg2==2.8.6
     # via -r requirements.in
 pycryptodome==3.10.1

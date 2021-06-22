@@ -1,5 +1,6 @@
 import itertools
 import random
+from datetime import date, timedelta
 
 import factory
 from applications.enums import ApplicationStatus, BenefitType
@@ -10,6 +11,7 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
+from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.contrib.auth import get_user_model
 
@@ -21,7 +23,11 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class DeMinimisAidFactory(factory.django.DjangoModelFactory):
     granter = factory.Faker("sentence", nb_words=2)
-    granted_at = factory.Faker("date")
+    granted_at = factory.Faker(
+        "date_between_dates",
+        date_start=date.today() - timedelta(days=365 * 2),
+        date_end=date.today(),
+    )
     amount = factory.Faker("pyint", min_value=1, max_value=100000)
     ordering = factory.Iterator(itertools.count(0))
 
@@ -46,23 +52,31 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     use_alternative_address = factory.Faker("boolean")
     alternative_company_street_address = factory.Faker("street_address")
     alternative_company_city = factory.Faker("city")
-    alternative_company_postcode = factory.Faker("postcode")
+    alternative_company_postcode = factory.Faker("postcode", locale="fi_FI")
     company_bank_account_number = factory.Faker("iban", locale="fi_FI")
-    company_contact_person_phone_number = factory.Faker("phone_number")
+    company_contact_person_phone_number = factory.Sequence(lambda n: f"050-100000{n}")
     company_contact_person_email = factory.Faker("email")
-    association_has_business_activities = factory.Faker("boolean")
+    association_has_business_activities = None
     applicant_language = factory.Faker(
         "random_element", elements=[v[0] for v in APPLICATION_LANGUAGE_CHOICES]
     )
     co_operation_negotiations = factory.Faker("boolean")
-    co_operation_negotiations_description = factory.Faker("sentence")
+    co_operation_negotiations_description = factory.LazyAttribute(
+        lambda o: factory.Faker("sentence") if o.co_operation_negotiations else ""
+    )
     apprenticeship_program = factory.Faker("boolean")
     archived = factory.Faker("boolean")
     benefit_type = factory.Faker("random_element", elements=BenefitType.values)
-    start_date = factory.Faker("date")
-    end_date = factory.Faker("date")
+    start_date = factory.Faker(
+        "date_between_dates",
+        date_start=date(date.today().year, 1, 1),
+        date_end=date.today() + timedelta(days=100),
+    )
+    end_date = factory.LazyAttribute(
+        lambda o: o.start_date + timedelta(days=random.randint(1, 365))
+    )
     de_minimis_aid = True
-    status = factory.Faker("random_element", elements=ApplicationStatus.values)
+    status = ApplicationStatus.DRAFT
 
     @factory.post_generation
     def bases(self, created, extracted, **kwargs):
