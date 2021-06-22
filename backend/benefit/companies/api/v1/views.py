@@ -10,6 +10,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from oidc.utils import get_organization_roles
+
 
 class GetCompanyView(APIView):
     """
@@ -21,6 +23,13 @@ class GetCompanyView(APIView):
         return Response(
             "YTJ API is under heavy load or no company found with the given business id",
             status.HTTP_404_NOT_FOUND,
+        )
+
+    @property
+    def organization_roles_error(self):
+        return Response(
+            "Unable to fetch organization roles from eauthorizations API",
+            status.HTTP_401_UNAUTHORIZED,
         )
 
     def api_usage_http_error(self, message):
@@ -39,11 +48,22 @@ class GetCompanyView(APIView):
         return Response(company_data)
 
     @transaction.atomic
-    def get(self, request: Request, business_id: str, format: str = None) -> Response:
+    def get(
+        self, request: Request, business_id: str = None, format: str = None
+    ) -> Response:
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
+
+        # TODO: Remove business id params later after authentication is completed in FE
         if not business_id:
-            return self.api_usage_http_error("Missing business id")
+            eauth_profile = request.user.oidc_profile.eauthorization_profile
+
+            try:
+                organization_roles = get_organization_roles(eauth_profile)
+            except HTTPError:
+                return self.organization_roles_error
+
+            business_id = organization_roles.get("identifier")
         try:
             # TODO: Switch to another API to be able to collect association data
             company = get_or_create_company_with_business_id(business_id)

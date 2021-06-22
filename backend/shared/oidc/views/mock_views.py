@@ -1,10 +1,11 @@
-from applications.tests.factories import UserFactory
 from django.conf import settings
 from django.contrib import auth
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
+
+from oidc.tests.factories import UserFactory
 
 
 class MockLogoutView(View):

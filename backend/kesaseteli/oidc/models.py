@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
 from utils.models import TimeStampedModel, UUIDModel
 
 
@@ -50,6 +49,10 @@ class OIDCProfile(AbstractOIDCProfile):
         related_name="oidc_profile",
     )
 
+    class Meta:
+        verbose_name = _("OIDC profile")
+        verbose_name_plural = _("OIDC Profiles")
+
 
 class EAuthorizationProfile(AbstractOIDCProfile):
     oidc_profile = models.OneToOneField(
@@ -58,3 +61,7 @@ class EAuthorizationProfile(AbstractOIDCProfile):
         verbose_name=_("oidc_profile"),
         related_name="eauthorization_profile",
     )
+
+    class Meta:
+        verbose_name = _("EAuthorization profile")
+        verbose_name_plural = _("EAuthorization profiles")

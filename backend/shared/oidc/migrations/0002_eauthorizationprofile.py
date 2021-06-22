@@ -67,23 +67,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "_company_object_id",
-                    models.UUIDField(
-                        blank=True, null=True, verbose_name="company object id"
-                    ),
-                ),
-                (
-                    "_company_content_type",
-                    models.OneToOneField(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="eauthorization_profile",
-                        to="contenttypes.contenttype",
-                        verbose_name="company content type",
-                    ),
-                ),
-                (
                     "oidc_profile",
                     models.OneToOneField(
                         on_delete=django.db.models.deletion.CASCADE,
@@ -93,8 +76,5 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={
-                "unique_together": {("_company_content_type", "_company_object_id")},
-            },
         ),
     ]

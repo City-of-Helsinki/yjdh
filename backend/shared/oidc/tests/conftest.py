@@ -1,8 +1,16 @@
 import pytest
-from applications.tests.conftest import *  # noqa
 from django.test import Client
 
-from oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
+from oidc.tests.factories import (
+    EAuthorizationProfileFactory,
+    OIDCProfileFactory,
+    UserFactory,
+)
+
+
+@pytest.fixture()
+def user():
+    return UserFactory()
 
 
 @pytest.fixture

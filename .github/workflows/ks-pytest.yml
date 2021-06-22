@@ -57,5 +57,10 @@ jobs:
         env:
           DATABASE_URL: postgres://kesaseteli:kesaseteli@postgres/kesaseteli
 
+      - name: Run shared tests
+        run: pytest backend/shared -ra -vv --doctest-modules --cov=. -n auto
+        env:
+          DATABASE_URL: postgres://benefit:benefit@postgres/benefit
+
       - name: Coverage
         run: codecov
