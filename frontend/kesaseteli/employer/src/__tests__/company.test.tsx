@@ -1,51 +1,27 @@
-import { screen, waitFor } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import {
-  expectAuthorized,
-  expectUnauthorized,
-} from 'kesaseteli/employer/__tests__/utils/auth-utils';
-import endpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
-import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
-import withAuth from 'kesaseteli/employer/components/withAuth';
+  expectAuthorizedReply,
+  expectToGetCompanyErrorReply,
+  expectToGetCompanyReply,
+  expectUnauthorizedReply,
+} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
+import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import CompanyPage from 'kesaseteli/employer/pages/company';
 import Company from 'kesaseteli/employer/types/company';
-import nock from 'nock';
 import React from 'react';
 import { QueryClient } from 'react-query';
+import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { screen, waitFor } from 'test-utils';
 
-import {
-  createQueryClient,
-  renderComponent,
-  renderPage,
-} from './utils/react-query-utils';
-
-const expectedCompany: Company = {
-  id: 'id',
-  name: 'Acme Oy',
-  business_id: '0877830-0',
-  industry: 'Taloustavaroiden vähittäiskauppa',
-  street_address: 'Vasaratie 4 A 3',
-  postcode: '65350',
-  city: 'Vaasa',
+const waitForPageIsLoaded = async (): Promise<void> => {
+  await waitFor(() => {
+    expect(
+      screen.queryByRole('heading', { name: /hakemus/i })
+    ).toBeInTheDocument();
+  });
 };
-
-const expectToReplyOk = (): nock.Scope =>
-  nock(getBackendUrl())
-    .get(endpoint.COMPANY)
-    .reply(200, expectedCompany, { 'Access-Control-Allow-Origin': '*' });
-
-const expectToReplyError = (times = 1): nock.Scope =>
-  nock(getBackendUrl())
-    .get(endpoint.COMPANY)
-    .times(times)
-    .replyWithError('This is a test error. Please ignore this error message.');
-
-const waitForPageIsLoaded = (): Promise<HTMLElement> =>
-  screen.findByRole('heading', { name: /hakemus/i });
-
-const waitForShowingCompanyData = async (
-  company: Company = expectedCompany
-): Promise<void> => {
+const waitForShowingCompanyData = async (company: Company): Promise<void> => {
   await waitForPageIsLoaded();
   expect(screen.queryByText(company.name)).toBeInTheDocument();
   expect(screen.queryByText(company.business_id)).toBeInTheDocument();
@@ -65,44 +41,44 @@ describe('frontend/kesaseteli/employer/src/pages/companyPage.tsx', () => {
   });
 
   describe('loading data', () => {
-    queryClient = createQueryClient();
+    queryClient = createReactQueryTestClient();
     beforeEach(() => {
       queryClient.clear();
     });
 
     it('Should redirect when unauthorized', async () => {
-      expectUnauthorized();
+      expectUnauthorizedReply();
       const spyPush = jest.fn();
-      renderPage(withAuth(CompanyPage), queryClient, { push: spyPush });
+      renderPage(CompanyPage, queryClient, { push: spyPush });
       await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
     });
 
     it('Should show company data', async () => {
-      expectAuthorized();
-      expectToReplyOk();
-      renderPage(withAuth(CompanyPage), queryClient);
-      await waitForShowingCompanyData();
+      expectAuthorizedReply();
+      const expectedCompany = expectToGetCompanyReply();
+      renderPage(CompanyPage, queryClient);
+      await waitForShowingCompanyData(expectedCompany);
     });
 
     it('Should show error', async () => {
-      expectAuthorized();
-      expectToReplyError();
-      renderPage(withAuth(CompanyPage), queryClient);
+      expectAuthorizedReply();
+      expectToGetCompanyErrorReply();
+      renderPage(CompanyPage, queryClient);
       await screen.findByText(/virhe/i);
     });
 
     it('Should retry when error', async () => {
-      queryClient = createQueryClient({
+      queryClient = createReactQueryTestClient({
         queries: {
           retry: 2,
           retryDelay: 1,
         },
       });
-      expectAuthorized();
-      expectToReplyError(2);
-      expectToReplyOk();
-      renderPage(withAuth(CompanyPage), queryClient);
-      await waitForShowingCompanyData();
+      expectAuthorizedReply();
+      expectToGetCompanyErrorReply(2);
+      const expectedCompany = expectToGetCompanyReply();
+      renderPage(CompanyPage, queryClient);
+      await waitForShowingCompanyData(expectedCompany);
     });
   });
 });

@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import getBackendUrl from 'kesaseteli/employer/backend-api/backend-url';
+import { getBackendDomain } from 'kesaseteli/employer/backend-api/backend-api';
 import React from 'react';
 
 import BackendAPIContext from './BackendAPIContext';
@@ -10,7 +10,7 @@ const BackendAPIProvider = ({
   const axiosContext = React.useMemo(
     () =>
       Axios.create({
-        baseURL: getBackendUrl(),
+        baseURL: getBackendDomain(),
         headers: {
           'Content-Type': 'application/json',
         },

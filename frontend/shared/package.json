@@ -8,7 +8,8 @@
     "lint": "eslint --ext js,ts,tsx src test browser-tests",
     "pre-commit": "lint-staged -c ../.lintstagedrc.js",
     "test": "jest",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests"
+    "test:staged": "yarn test --watchAll=false --findRelatedTests",
+    "test:coverage": "yarn test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {
@@ -24,11 +25,14 @@
     "hds-react": "^1.0.0",
     "jsdom": "^16.6.0",
     "next": "^10.2.0",
+    "next-i18next": "^8.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "styled-components": "^5.3.0",
     "typescript": "^3.9.9"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1"
+    "eslint-config-adjunct": "^4.11.1",
+    "react-query": "^3.17.0"
   }
 }

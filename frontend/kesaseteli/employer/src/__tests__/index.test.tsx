@@ -1,25 +1,16 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
 import { axe } from 'jest-axe';
 import {
-  authenticatedUser,
-  expectAuthorized,
-  expectToLogout,
-  expectUnauthorized,
-} from 'kesaseteli/employer/__tests__/utils/auth-utils';
-import {
-  createQueryClient,
-  renderPage,
-} from 'kesaseteli/employer/__tests__/utils/react-query-utils';
-import withAuth from 'kesaseteli/employer/components/withAuth';
-import EmployerIndex from 'kesaseteli/employer/pages/index';
+  expectAuthorizedReply,
+  expectUnauthorizedReply,
+} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
+import EmployerIndex from 'kesaseteli/employer/pages';
 import React from 'react';
-import { render } from 'test-utils';
-
-axios.defaults.withCredentials = true;
+import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { render, screen, userEvent, waitFor } from 'test-utils';
 
 describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
-  const queryClient = createQueryClient();
+  const queryClient = createReactQueryTestClient();
   beforeEach(() => {
     queryClient.clear();
   });
@@ -31,46 +22,29 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   });
 
   it('Should redirect when unauthorized', async () => {
-    expectUnauthorized();
+    expectUnauthorizedReply();
     const spyPush = jest.fn();
-    renderPage(withAuth(EmployerIndex), queryClient, { push: spyPush });
+    renderPage(EmployerIndex, queryClient, { push: spyPush });
     await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
   });
 
   it('Should show component when authorized', async () => {
-    expectAuthorized(true);
-    renderPage(withAuth(EmployerIndex), queryClient);
-    await screen.findByText(new RegExp(authenticatedUser.name, 'i'));
-    expect(queryClient.getQueryData('user')).toEqual(authenticatedUser);
-  });
-
-  it('Should redirect to logout and clear userdata when clicked logout button', async () => {
-    expectAuthorized(true);
-    expectToLogout();
-    const spyPush = jest.fn();
-    renderPage(withAuth(EmployerIndex), queryClient, { push: spyPush });
-    await screen.findByText(new RegExp(authenticatedUser.name, 'i'));
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: /kirjaudu ulos/i,
-      })
-    );
-    await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith('/login?logout=true')
-    );
-    expect(queryClient.getQueryData('user')).toBeUndefined();
+    const expectedUser = expectAuthorizedReply(true);
+    renderPage(EmployerIndex, queryClient);
+    await screen.findByText(new RegExp(`tervetuloa ${expectedUser.name}`, 'i'));
+    expect(queryClient.getQueryData('user')).toEqual(expectedUser);
   });
 
   it('Should redirect to company page when clicked create new application button', async () => {
-    expectAuthorized(true);
+    const expectedUser = expectAuthorizedReply(true);
     const spyPush = jest.fn();
-    renderPage(withAuth(EmployerIndex), queryClient, { push: spyPush });
-    await screen.findByText(new RegExp(authenticatedUser.name, 'i'));
-    fireEvent.click(
+    renderPage(EmployerIndex, queryClient, { push: spyPush });
+    await screen.findByText(new RegExp(`tervetuloa ${expectedUser.name}`, 'i'));
+    userEvent.click(
       screen.getByRole('button', {
         name: /luo uusi hakemus/i,
       })
     );
-    await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/company'));
+    await waitFor(() => expect(spyPush).toHaveBeenCalledWith('fi/company'));
   });
 });

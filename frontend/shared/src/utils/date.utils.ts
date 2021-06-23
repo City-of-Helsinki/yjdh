@@ -1,7 +1,8 @@
-import { format as formatDateStr } from 'date-fns';
+import { format as formatDateStr, Locale } from 'date-fns';
 import { enGB as en, fi, sv } from 'date-fns/locale';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
-const locales = { en, fi, sv };
+const locales: Record<Language, Locale> = { fi, sv, en };
 /**
  * Format date string
  * @param date
@@ -12,13 +13,13 @@ const locales = { en, fi, sv };
 export const formatDate = (
   date: Date | number | null,
   format = 'dd.MM.yyyy',
-  locale = 'fi'
+  locale: Language = DEFAULT_LANGUAGE
 ): string => {
   if (!date) {
     return '';
   }
 
   return formatDateStr(date, format, {
-    locale: locales[locale] as Locale,
+    locale: locales[locale],
   }).trim();
 };

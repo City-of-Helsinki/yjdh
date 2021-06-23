@@ -1,4 +1,4 @@
-import backendEndpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
+import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import handleResponse from 'kesaseteli/employer/backend-api/handle-response';
 import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
 import { useRouter } from 'next/router';
@@ -10,7 +10,7 @@ const useLogoutQuery = (): UseMutationResult<unknown, Error, void> => {
   const queryClient = useQueryClient();
   return useMutation<unknown, Error, void>(
     'logout',
-    () => handleResponse(axios.post<unknown>(backendEndpoint.LOGOUT)),
+    () => handleResponse(axios.post<unknown>(BackendEndpoint.LOGOUT)),
     {
       onSuccess: () => {
         void queryClient.removeQueries();

@@ -3,12 +3,14 @@ const path = require('path');
 const withPlugins = require('next-compose-plugins');
 const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
+const { i18n } = require('./next-i18next.config');
 
 const { parsed: env } = require('dotenv').config({
   path: '../../../.env.kesaseteli',
 });
 
 const nextConfig = {
+  i18n,
   webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       // Fixes npm packages that depend on `fs` module
