@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "phonenumber_field",
     # local apps
     "users.apps.AppConfig",
     "companies",
@@ -152,6 +153,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }  # TODO: Replace with actual authentication & permissions.
+
+PHONENUMBER_DEFAULT_REGION = "FI"
 
 YTJ_BASE_URL = env.str("YTJ_BASE_URL")
 YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
