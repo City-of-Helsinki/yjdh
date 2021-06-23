@@ -19,6 +19,7 @@ export type HeaderProps = {
   onTitleClick: (callback: () => void) => void;
   onNavigationItemClick: (pathname: string) => void;
   login?: {
+    isAuthenticated: boolean;
     loginLabel: string;
     logoutLabel: string;
     userAriaLabelPrefix: string;
@@ -78,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({
       <Navigation.Actions>
         {login && (
           <Navigation.User
-            authenticated={!!login.userName}
+            authenticated={login.isAuthenticated}
             buttonAriaLabel={
               login.userName
                 ? `${login.userAriaLabelPrefix} ${login.userName}`

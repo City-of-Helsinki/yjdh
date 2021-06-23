@@ -21,17 +21,17 @@ const renderPage = (
   render(
     <BackendAPIContext.Provider value={AxiosTestContext}>
       <QueryClientProvider client={client}>
+        <AuthProvider>
         <ThemeProvider theme={theme}>
           <Layout>
             <Header />
             <Content>
-              <AuthProvider>
                 <Page />
-              </AuthProvider>
             </Content>
             <Footer />
           </Layout>
         </ThemeProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </BackendAPIContext.Provider>,
     router

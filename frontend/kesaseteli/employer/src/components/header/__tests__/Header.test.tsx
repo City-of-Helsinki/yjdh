@@ -5,18 +5,18 @@ import {
   expectUnauthorizedReply,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
-import getBackendUrl from 'kesaseteli/employer/backend-api/get-backend-url';
+import { getBackendUrl } from 'kesaseteli/employer/backend-api/backend-api';
 import Header from 'kesaseteli/employer/components/header/Header';
 import nock from 'nock';
 import React from 'react';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { Language, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import User from 'shared/types/user';
-import { fireEvent, screen, waitFor } from 'test-utils';
+import { screen, userEvent, waitFor } from 'test-utils';
 
 const clickToLogin = (): void => {
   expectToLogin();
-  fireEvent.click(
+  userEvent.click(
     screen.getAllByRole('button', {
       name: 'common:header.loginLabel',
     })[0]
@@ -25,25 +25,28 @@ const clickToLogin = (): void => {
 
 const clickToLogout = (user: User): void => {
   expectToLogout();
-  fireEvent.click(
+  userEvent.click(
     screen.getByRole('button', {
       name: new RegExp(`common:header.userAriaLabelPrefix ${user.name}`, 'i'),
     })
   );
-  fireEvent.click(
+  userEvent.click(
     screen.getAllByRole('link', {
       name: 'common:header.logoutLabel',
     })[0]
   );
 };
 
-const changeLanguage = (fromLang: Language, toLang: Language): void => {
-  fireEvent.click(
+const changeLanguage = (
+  fromLang: Language,
+  toLang: Language
+): void => {
+  userEvent.click(
     screen.getAllByRole('button', {
       name: new RegExp(fromLang, 'i'),
     })[0]
   );
-  fireEvent.click(
+  userEvent.click(
     screen.getAllByRole('link', {
       name: `common:languages.${String(toLang)}`,
     })[0]
@@ -77,7 +80,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     );
   };
 
-  it('Should not show userdata when logged out and redirects to backend when clicked login button', async () => {
+  it('Redirects to backend when clicked login button', async () => {
     expectUnauthorizedReply();
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, queryClient, { push: spyRouterPush });
@@ -88,7 +91,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     );
   });
 
-  it('Should show userdata when logged in and redirect to logout and clear userdata when clicked logout button', async () => {
+  it('Redirects to logout and clear userdata when clicked logout button', async () => {
     const expectedUser = expectAuthorizedReply(true);
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, queryClient, { push: spyRouterPush });

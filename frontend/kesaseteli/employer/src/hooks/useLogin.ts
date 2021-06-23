@@ -1,4 +1,4 @@
-import getBackendUrl from 'kesaseteli/employer/backend-api/get-backend-url';
+import { getBackendUrl } from 'kesaseteli/employer/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import React from 'react';
 

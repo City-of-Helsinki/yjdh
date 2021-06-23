@@ -7,7 +7,7 @@ import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-pa
 import EmployerIndex from 'kesaseteli/employer/pages';
 import React from 'react';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
-import { fireEvent, render,screen, waitFor } from 'test-utils';
+import { render, screen, userEvent, waitFor } from 'test-utils';
 
 describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   const queryClient = createReactQueryTestClient();
@@ -40,7 +40,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     const spyPush = jest.fn();
     renderPage(EmployerIndex, queryClient, { push: spyPush });
     await screen.findByText(new RegExp(`tervetuloa ${expectedUser.name}`, 'i'));
-    fireEvent.click(
+    userEvent.click(
       screen.getByRole('button', {
         name: /luo uusi hakemus/i,
       })

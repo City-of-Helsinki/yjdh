@@ -68,6 +68,7 @@ const Header: React.FC = () => {
       login={
         !isLoading
           ? {
+              isAuthenticated: Boolean(user),
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
               onLogin: login,

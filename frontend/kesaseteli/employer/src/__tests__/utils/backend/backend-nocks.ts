@@ -1,6 +1,5 @@
 import faker from 'faker';
-import BackendEndpoint from 'kesaseteli/employer/backend-api/backend-endpoints';
-import getBackendDomain from 'kesaseteli/employer/backend-api/get-backend-domain';
+import { BackendEndpoint, getBackendDomain }  from 'kesaseteli/employer/backend-api/backend-api';
 import Company from 'kesaseteli/employer/types/company';
 import nock from 'nock';
 import User from 'shared/types/user';
