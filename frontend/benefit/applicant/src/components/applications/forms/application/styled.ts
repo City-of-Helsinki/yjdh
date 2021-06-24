@@ -1,4 +1,4 @@
-import { Button, TextInput, TextInputProps } from 'hds-react';
+import { Button } from 'hds-react';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -58,30 +58,6 @@ const StyledButton = styled(Button)<ButtonProps>`
   border-color: ${(props) => props.theme.colors.coatOfArms} !important;
 `;
 
-const StyledCompanyInfoContainer = styled.div`
-  display: flex;
-  width: 100%;
-`;
-
-const StyledCompanyInfoSection = styled.div`
-  display: flex;
-  flex: 1 0 50%;
-`;
-
-const StyledCompanyInfoColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 50%;
-`;
-
-const StyledCompanyInfoRow = styled.div`
-  display: flex;
-`;
-
-const StyledNotificationContent = styled.div`
-  font-size: ${(props) => props.theme.fontSize.heading.xs};
-`;
-
 const StyledSubSection = styled.div`
   margin-left: 200px;
 
@@ -90,25 +66,13 @@ const StyledSubSection = styled.div`
   }
 `;
 
-const StyledIBANField = styled(TextInput)<TextInputProps>`
-  input {
-    width: 13.5em !important;
-  }
-`;
-
 export {
   StyledActionContainer,
   StyledButton,
-  StyledCompanyInfoColumn,
-  StyledCompanyInfoContainer,
-  StyledCompanyInfoRow,
-  StyledCompanyInfoSection,
   StyledContainer,
   StyledDescription,
   StyledHeading,
-  StyledIBANField,
   StyledLink,
-  StyledNotificationContent,
   StyledSubActionContainer,
   StyledSubSection,
   StyledTextContainer,
