@@ -12,7 +12,7 @@ const handleResponse = async <R,>(
 
 const useBackendAPI = (): {
   axios: AxiosInstance;
-  handleResponse<R>(axiosPromise: Promise<AxiosResponse<R>>): Promise<R>;
+  handleResponse: <R>(axiosPromise: Promise<AxiosResponse<R>>) => Promise<R>;
 } => {
   const axios = React.useContext(BackendAPIContext);
   if (!axios) {
