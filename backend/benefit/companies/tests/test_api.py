@@ -1,4 +1,5 @@
 import re
+from unittest import mock
 
 import pytest
 from companies.api.v1.serializers import CompanySerializer
@@ -11,8 +12,10 @@ from companies.tests.data.company_data import (
 from django.conf import settings
 from django.test import override_settings
 
+from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
-def get_company_api_url(business_id=None):
+
+def get_company_api_url(business_id=""):
     return "/v1/company/{}".format(business_id)
 
 
@@ -53,12 +56,44 @@ def test_get_mock_company_results_in_error(api_client):
 
 @pytest.mark.django_db
 @override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj(api_client, requests_mock):
+def test_get_company_from_ytj_with_business_id(api_client, requests_mock):
     set_up_mock_requests(
         DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
     )
     business_id = DUMMY_YTJ_RESPONSE["results"][0]["businessId"]
     response = api_client.get(get_company_api_url(business_id))
+
+    assert response.status_code == 200
+
+    company = Company.objects.first()
+    company_data = CompanySerializer(company).data
+
+    assert response.data == company_data
+    assert (
+        response.data["business_id"] == DUMMY_YTJ_RESPONSE["results"][0]["businessId"]
+    )
+
+
+@pytest.mark.django_db
+@override_settings(MOCK_FLAG=False)
+def test_get_company_from_ytj(api_client, requests_mock, user):
+    oidc_profile = OIDCProfileFactory(user=user)
+    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
+    set_up_mock_requests(
+        DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
+    )
+    org_roles_json = {
+        "name": "Activenakusteri Oy",
+        "identifier": "0877830-0",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
+
+    with mock.patch(
+        "companies.api.v1.views.get_organization_roles", return_value=org_roles_json
+    ):
+        response = api_client.get(get_company_api_url())
 
     assert response.status_code == 200
 

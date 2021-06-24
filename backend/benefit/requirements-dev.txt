@@ -98,7 +98,7 @@ requests-mock==1.9.3
     # via -r requirements-dev.in
 requests==2.25.1
     # via requests-mock
-six==1.15.0
+six==1.16.0
     # via
     #   python-dateutil
     #   requests-mock
@@ -117,6 +117,8 @@ urllib3==1.26.4
     # via requests
 wcwidth==0.2.5
     # via prompt-toolkit
+werkzeug==2.0.1
+    # via -r requirements-dev.in
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

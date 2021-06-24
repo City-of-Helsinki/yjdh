@@ -46,6 +46,21 @@ env = environ.Env(
         str,
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
+    SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
+    OIDC_RP_CLIENT_ID=(str, ""),
+    OIDC_RP_CLIENT_SECRET=(str, ""),
+    OIDC_OP_BASE_URL=(str, ""),
+    LOGIN_REDIRECT_URL=(str, ""),
+    LOGIN_REDIRECT_URL_FAILURE=(str, ""),
+    EAUTHORIZATIONS_BASE_URL=(str, ""),
+    EAUTHORIZATIONS_CLIENT_ID=(str, ""),
+    EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
+    EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
+    ADFS_CLIENT_ID=(str, "client_id"),
+    ADFS_CLIENT_SECRET=(str, "client_secret"),
+    ADFS_TENANT_ID=(str, "tenant_id"),
+    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -97,6 +112,11 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "phonenumber_field",
+    "django_extensions",
+    "mozilla_django_oidc",
+    "django_auth_adfs",
+    # shared apps
+    "shared.oidc",
     # local apps
     "users.apps.AppConfig",
     "companies",
@@ -134,6 +154,7 @@ TEMPLATES = [
     }
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
 
@@ -149,8 +170,11 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
-    "DEFAULT_PERMISSION_CLASSES": [],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        # TODO: Enable default permission when after FE implemented Authentication
+        # "rest_framework.permissions.IsAuthenticated",
+    ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }  # TODO: Replace with actual authentication & permissions.
 
@@ -161,6 +185,62 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
+
+# Authentication settings begin
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
+SESSION_COOKIE_SECURE = True
+
+AUTHENTICATION_BACKENDS = (
+    "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    # Temporary disable ADFS
+    # "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_RP_SCOPES = "openid profile"
+
+OIDC_RP_CLIENT_ID = env.str("OIDC_RP_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = env.str("OIDC_RP_CLIENT_SECRET")
+
+OIDC_OP_BASE_URL = env.str("OIDC_OP_BASE_URL")
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_OP_BASE_URL}/auth"
+OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
+OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
+OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
+OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
+
+LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
+LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
+
+EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
+EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
+EAUTHORIZATIONS_CLIENT_SECRET = env.str("EAUTHORIZATIONS_CLIENT_SECRET")
+EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
+
+# Azure ADFS
+LOGIN_URL = "django_auth_adfs:login"
+
+ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
+ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
+ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+
+# https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html#step-2-configuring-settings-py
+AUTH_ADFS = {
+    "AUDIENCE": ADFS_CLIENT_ID,
+    "CLIENT_ID": ADFS_CLIENT_ID,
+    "CLIENT_SECRET": ADFS_CLIENT_SECRET,
+    "CLAIM_MAPPING": {"email": "email"},
+    "USERNAME_CLAIM": "unique_name",
+    "TENANT_ID": ADFS_TENANT_ID,
+    "RELYING_PARTY_ID": ADFS_CLIENT_ID,
+}
+
+ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
+ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
+
+# Authentication settings end
+
 
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 
