@@ -1,6 +1,6 @@
 {
   "name": "@frontend/applicant",
-  "version": "1.0.0",
+  "version": "1.22.10",
   "license": "MIT",
   "scripts": {
     "dev": "node start.js",
