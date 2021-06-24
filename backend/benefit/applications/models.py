@@ -333,6 +333,9 @@ class Employee(UUIDModel, TimeStampedModel):
     collective_bargaining_agreement = models.CharField(
         max_length=64, blank=True, verbose_name=_("collective bargaining agreement")
     )
+    is_living_in_helsinki = models.BooleanField(
+        default=False, verbose_name=_("is living in helsinki")
+    )
 
     # TODO: Adding missing file fields or a separate Attachment relationship
     # power_of_attorney = models.FileField()

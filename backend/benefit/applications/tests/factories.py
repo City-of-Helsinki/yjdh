@@ -114,6 +114,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     vacation_money = factory.Faker("random_int", max=5000)
     other_expenses = factory.Faker("random_int", max=5000)
     working_hours = factory.Faker("random_int", max=40)
+    is_living_in_helsinki = factory.Faker("boolean")
 
     collective_bargaining_agreement = factory.Faker("words")
 
