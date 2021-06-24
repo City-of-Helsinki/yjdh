@@ -16,14 +16,12 @@ export interface CompanyInfoProps {
     city: string;
     businessId: string;
   };
+  error?: string;
   loading?: boolean;
   translationsBase: string;
 }
 
-const CompanyInfo: React.FC<CompanyInfoProps> = ({
-  data: { name, streetAddress, postcode, city, businessId },
-  loading,
-}) => {
+const CompanyInfo: React.FC<CompanyInfoProps> = ({ data, error, loading }) => {
   const {
     t,
     getErrorMessage,
@@ -32,27 +30,47 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
     formik,
   } = useComponent();
 
+  let formattedData = { ...data, businessId: `Y-tunnus: ${data.businessId}` };
+  if (error)
+    formattedData = {
+      name: '-',
+      streetAddress: '-',
+      postcode: '-',
+      city: '',
+      businessId: '-',
+    };
+  if (loading)
+    formattedData = {
+      name: '',
+      streetAddress: '',
+      postcode: '',
+      city: '',
+      businessId: '',
+    };
+
   return (
     <FormSection header={t(`${translationsBase}.heading1`)} loading={loading}>
       <SC.CompanyInfoContainer>
         <SC.CompanyInfoSection>
           <SC.CompanyInfoColumn>
-            <SC.CompanyInfoRow $loading={loading}>{name}</SC.CompanyInfoRow>
             <SC.CompanyInfoRow $loading={loading}>
-              {loading ? '' : `Y-tunnus: ${businessId}`}
+              {formattedData.name}
+            </SC.CompanyInfoRow>
+            <SC.CompanyInfoRow $loading={loading}>
+              {formattedData.businessId}
             </SC.CompanyInfoRow>
           </SC.CompanyInfoColumn>
           <SC.CompanyInfoColumn>
             <SC.CompanyInfoRow $loading={loading}>
-              {streetAddress}
+              {formattedData.streetAddress}
             </SC.CompanyInfoRow>
             <SC.CompanyInfoRow $loading={loading}>
-              {postcode} {city}
+              {formattedData.postcode} {formattedData.city}
             </SC.CompanyInfoRow>
           </SC.CompanyInfoColumn>
           <StyledCheckbox
             id={fields.hasCompanyOtherAddress.name}
-            disabled={loading}
+            disabled={loading || !!error}
             name={fields.hasCompanyOtherAddress.name}
             label={fields.hasCompanyOtherAddress.label}
             required
@@ -72,9 +90,10 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           label={t(
             `${translationsBase}.notifications.companyInformation.label`
           )}
-          type="info"
+          type={error ? 'error' : 'info'}
         >
-          {t(`${translationsBase}.notifications.companyInformation.content`)}
+          {error ||
+            t(`${translationsBase}.notifications.companyInformation.content`)}
         </SC.Notification>
 
         {formik.values.hasCompanyOtherAddress && (
