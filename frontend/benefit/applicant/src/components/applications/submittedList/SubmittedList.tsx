@@ -3,8 +3,8 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { IconPen } from 'hds-react';
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import theme from 'shared/styles/theme';
 
+// import theme from 'shared/styles/theme';
 import {
   StyledAvatar,
   StyledDataColumn,
@@ -26,7 +26,7 @@ const SubmittedApplicationsList: React.FC = () => {
   const translationStatusBase = 'common:applications.statuses';
 
   return (
-    <Container backgroundColor={theme.colors.silverLight}>
+    <Container>
       <StyledWrapper>
         <StyledHeading>{t(`${translationListBase}.heading`)}</StyledHeading>
         <StyledListWrapper>
