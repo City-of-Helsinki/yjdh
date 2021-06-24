@@ -11,9 +11,12 @@ const StyledSection = styled.div`
 `;
 
 const StyledHeader = styled.h1`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.s};
   font-size: ${(props) => props.theme.fontSize.heading.m};
   font-weight: 500;
-  //margin-bottom: ${(props) => props.theme.spacing.m};
+  margin-bottom: ${(props) => props.theme.spacing.l};
 `;
 
 const StyledSubHeader = styled.h1`
