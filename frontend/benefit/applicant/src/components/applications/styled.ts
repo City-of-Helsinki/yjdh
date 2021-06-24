@@ -1,16 +1,13 @@
 import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import { Button } from 'hds-react';
-import { Theme } from 'shared/styles/theme';
-import styled, { ThemeProps } from 'styled-components';
-
-type Props = ThemeProps<Theme> & { status?: APPLICATION_STATUSES };
+import styled, { DefaultTheme } from 'styled-components';
 
 interface AvatarProps {
   status: APPLICATION_STATUSES;
 }
 
 const avatarBackgroundColors = (
-  theme: Theme,
+  theme: DefaultTheme,
   status?: APPLICATION_STATUSES
 ): string => {
   const colors = {
@@ -29,7 +26,7 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledHeading = styled.h1`
-  font-size: ${(props: Props) => props.theme.fontSize.heading.m};
+  font-size: ${(props) => props.theme.fontSize.heading.m};
   font-weight: 500;
 `;
 
@@ -40,10 +37,10 @@ const StyledListWrapper = styled.div`
 
 const StyledListItem = styled.div`
   display: flex;
-  background-color: ${(props: Props) => props.theme.colors.white};
-  padding: ${(props: Props) => props.theme.spacing.xs};
+  background-color: ${(props) => props.theme.colors.white};
+  padding: ${(props) => props.theme.spacing.xs};
   justify-content: space-between;
-  margin-bottom: ${(props: Props) => props.theme.spacing.xs2};
+  margin-bottom: ${(props) => props.theme.spacing.xs2};
 `;
 
 const StyledItemContent = styled.div`
@@ -51,7 +48,7 @@ const StyledItemContent = styled.div`
 `;
 
 const StyledAvatar = styled.div<AvatarProps>`
-  ${(props: Props) => `
+  ${(props) => `
     background-color: ${avatarBackgroundColors(props.theme, props.status)};
     color: ${props.theme.colors.white};
     font-size: ${props.theme.fontSize.heading.xs};
@@ -68,11 +65,11 @@ const StyledAvatar = styled.div<AvatarProps>`
 `;
 
 const StyledDataColumn = styled.div`
-  color: ${(props: Props) => props.theme.colors.black90};
+  color: ${(props) => props.theme.colors.black90};
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 ${(props: Props) => props.theme.spacing.m};
+  padding: 0 ${(props) => props.theme.spacing.m};
   &:nth-child(2) {
     width: 140px;
   }
@@ -80,12 +77,12 @@ const StyledDataColumn = styled.div`
 
 const StyledDataHeader = styled.div`
   display: flex;
-  line-height: ${(props: Props) => props.theme.lineHeight.xl};
+  line-height: ${(props) => props.theme.lineHeight.xl};
 `;
 
 const StyledDataValue = styled.div`
   display: flex;
-  line-height: ${(props: Props) => props.theme.lineHeight.xl};
+  line-height: ${(props) => props.theme.lineHeight.xl};
   font-weight: 600;
 `;
 
@@ -96,34 +93,33 @@ const StyledItemActions = styled.div`
 `;
 
 const StyledSecondaryButton = styled(Button)`
-  color: ${(props: Props) => props.theme.colors.black90} !important;
-  border-color: ${(props: Props) => props.theme.colors.black90} !important;
+  color: ${(props) => props.theme.colors.black90} !important;
+  border-color: ${(props) => props.theme.colors.black90} !important;
   border-width: 3px !important;
   min-width: 170px;
   max-height: 60px;
 `;
 
 const StyledPrimaryButton = styled(Button)`
-  background-color: ${(props: Props) =>
-    props.theme.colors.coatOfArms} !important;
-  border-color: ${(props: Props) => props.theme.colors.coatOfArms} !important;
+  background-color: ${(props) => props.theme.colors.coatOfArms} !important;
+  border-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-width: 3px !important;
   width: 170px;
 `;
 
 const StyledSupplementaryButton = styled(Button)`
-  color: ${(props: Props) => props.theme.colors.black90} !important;
+  color: ${(props) => props.theme.colors.black90} !important;
   min-width: 170px;
   max-height: 60px;
-  margin-top: ${(props: Props) => props.theme.spacing.xs2};
+  margin-top: ${(props) => props.theme.spacing.xs2};
 `;
 
 const StyledPageHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${(props: Props) => props.theme.spacing.m};
-  margin-top: ${(props: Props) => props.theme.spacing.xs};
+  margin-bottom: ${(props) => props.theme.spacing.m};
+  margin-top: ${(props) => props.theme.spacing.xs};
   & > div {
     flex: 1 0 50%;
   }
@@ -132,7 +128,7 @@ const StyledPageHeader = styled.div`
 const StyledHeaderItem = styled.div``;
 
 const StyledPageHeading = styled.h1`
-  font-size: ${(props: Props) => props.theme.fontSize.heading.xl};
+  font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
   margin: 0;
 `;
@@ -140,7 +136,7 @@ const StyledPageHeading = styled.h1`
 const StyledApplicationActions = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: ${(props: Props) => props.theme.spacing.l};
+  margin-top: ${(props) => props.theme.spacing.l};
 `;
 
 const StyledApplicationAction = styled.div`
