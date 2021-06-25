@@ -1,8 +1,8 @@
 import { IconPlus } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
+import theme from 'shared/styles/theme';
 
-// import theme from 'shared/styles/theme';
 import { useComponent } from './extended';
 import {
   StyledActionContainer,
@@ -18,7 +18,7 @@ const MainIngress: React.FC = () => {
   const { handleNewApplicationClick, handleMoreInfoClick, t } = useComponent();
 
   return (
-    <Container>
+    <Container backgroundColor={theme.colors.silverLight}>
       <StyledContainer>
         <StyledTextContainer>
           <StyledHeading>{t('common:mainIngress.heading')}</StyledHeading>
