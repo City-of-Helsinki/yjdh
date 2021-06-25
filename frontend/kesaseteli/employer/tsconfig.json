@@ -14,6 +14,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../../@types/*.d.ts"
+    "../../shared/src/types/*.d.ts"
   ]
 }

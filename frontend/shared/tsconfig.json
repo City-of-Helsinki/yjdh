@@ -3,9 +3,5 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "jsx": "preserve"
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "../@types/*.d.ts"
-  ]}
+  }
+}
