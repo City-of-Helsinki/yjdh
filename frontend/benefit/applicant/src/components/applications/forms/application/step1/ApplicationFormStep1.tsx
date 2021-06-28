@@ -15,18 +15,12 @@ import { useComponent } from './extended';
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   actions,
 }) => {
-  const {
-    t,
-    handleSubmit,
-    getErrorMessage,
-    fields,
-    translationsBase,
-    formik,
-  } = useComponent();
+  const { t, handleSubmit, getErrorMessage, fields, translationsBase, formik } =
+    useComponent();
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <CompanyInfoContainer translationsBase={translationsBase} />
+      <CompanyInfoContainer />
       <FormSection header={t(`${translationsBase}.heading2`)}>
         <StyledFormGroup>
           <TextInput
