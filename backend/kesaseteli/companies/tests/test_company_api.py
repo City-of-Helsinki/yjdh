@@ -5,6 +5,7 @@ from unittest import mock
 import pytest
 from django.conf import settings
 from django.test import override_settings
+from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -13,7 +14,6 @@ from companies.tests.data.company_data import (
     DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE,
     DUMMY_YTJ_RESPONSE,
 )
-from oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 
 def get_company_api_url():

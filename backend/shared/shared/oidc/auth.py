@@ -6,6 +6,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
+from requests.exceptions import HTTPError
 from rest_framework.authentication import SessionAuthentication
 
 from shared.oidc.services import store_token_info_in_oidc_profile
@@ -65,7 +66,10 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         }
 
         # Get the token
-        token_info = self.get_token(token_payload)
+        try:
+            token_info = self.get_token(token_payload)
+        except HTTPError:
+            return None
         id_token = token_info.get("id_token")
         access_token = token_info.get("access_token")
 

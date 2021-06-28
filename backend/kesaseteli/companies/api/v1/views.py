@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from shared.oidc.utils import get_organization_roles
 
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -13,7 +14,6 @@ from companies.services import (
     get_or_create_company_with_name_and_business_id,
 )
 from companies.tests.data.company_data import DUMMY_COMPANY_DATA
-from oidc.utils import get_organization_roles
 
 
 class GetCompanyView(APIView):

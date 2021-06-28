@@ -109,10 +109,11 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_extensions",
     "django_auth_adfs",
+    # shared apps
+    "shared.oidc",
     # local apps
     "applications",
     "companies",
-    "oidc",
     "utils",
 ]
 
@@ -159,7 +160,7 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["oidc.auth.EAuthRestAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
@@ -177,7 +178,7 @@ SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
 SESSION_COOKIE_SECURE = True
 
 AUTHENTICATION_BACKENDS = (
-    "oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
