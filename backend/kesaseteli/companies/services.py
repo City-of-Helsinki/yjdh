@@ -5,10 +5,10 @@ from requests.exceptions import HTTPError
 from rest_framework.exceptions import NotFound
 from shared.oidc.models import EAuthorizationProfile
 from shared.oidc.utils import get_organization_roles
+from shared.ytj.ytj_client import YTJClient
 
 from companies.models import Company
 from companies.tests.factories import CompanyFactory
-from companies.ytj.ytj_client import YTJClient
 
 LOGGER = logging.getLogger(__name__)
 
