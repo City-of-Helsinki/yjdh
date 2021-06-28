@@ -23,7 +23,8 @@
     "test": "lerna run test --stream",
     "test:staged": "lerna run test:staged",
     "test:coverage": "lerna run test:coverage --stream --concurrency 1",
-    "ks-empl:test": " yarn --cwd kesaseteli/employer test",
+    "bf-applicant:test": "yarn --cwd benefit/applicant test",
+    "ks-empl:test": "yarn --cwd kesaseteli/employer test",
     "ks-empl:browser-test": "lerna run --scope @frontend/employer --stream browser-test",
     "ks-empl:browser-test:ci": "lerna run --scope @frontend/employer --stream browser-test:ci"
   },
