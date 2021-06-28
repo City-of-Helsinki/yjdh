@@ -1,5 +1,5 @@
 import { RenderResult } from '@testing-library/react';
-import renderComponent from 'benefit/applicant/utils/test-utils/render-component';
+import renderComponent from 'benefit/applicant/__tests__/utils/render-component';
 import faker from 'faker';
 import { axe } from 'jest-axe';
 import React from 'react';

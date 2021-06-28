@@ -7,7 +7,7 @@ import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 import { render, RenderResult } from 'test-utils';
 
-import AxiosTestContext from './axios-test-context';
+import AxiosTestContext from '../../utils/test-utils/axios-test-context';
 
 const renderComponent = (
   Component: JSX.Element,
