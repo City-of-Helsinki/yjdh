@@ -12,4 +12,8 @@ django-localflavor~=3.1
 django-searchable-encrypted-fields
 mozilla_django_oidc
 django_auth_adfs
+pyyaml
+uritemplate
+drf-spectacular
+django-filter
 -e ../shared
