@@ -66,3 +66,16 @@ Basic `black` commands:
 
 * To let `black` do its magic: `black .`
 * To see which files `black` would change: `black --check .`
+
+## Storages
+
+This project uses
+[`django-storages`](https://github.com/jschneier/django-storages)
+for blob storage handling. Production / staging will use Azure blob storage
+which requires the `DEFAULT_FILE_STORAGE` env variable / setting to be set to
+`"storages.backends.azure_storage.AzureStorage"`. The following
+env variables / settings are provided by Azure blob storage:
+
+- `AZURE_ACCOUNT_NAME`
+- `AZURE_ACCOUNT_KEY`
+- `AZURE_CONTAINER`
