@@ -1,3 +1,4 @@
+import re
 from datetime import date
 
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
@@ -6,10 +7,13 @@ from applications.models import (
     ApplicationBasis,
     ApplicationLogEntry,
     DeMinimisAid,
+    Employee,
 )
 from common.exceptions import BenefitAPIException
+from common.utils import xgroup
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
+from dateutil.relativedelta import relativedelta
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
@@ -124,6 +128,86 @@ class DeMinimisAidSerializer(serializers.ModelSerializer):
         }
 
 
+class EmployeeSerializer(serializers.ModelSerializer):
+    """
+    Employee objects are meant to be edited together with their Application object.
+    """
+
+    SSN_REGEX = r"^(\d{6})[aA+-](\d{3})([0-9A-FHJ-NPR-Ya-fhj-npr-y])$"
+
+    SSN_CHEKSUM = {
+        int(k): v
+        for k, v in xgroup(
+            (
+                "0    0    16    H "
+                "1    1    17    J "
+                "2    2    18    K "
+                "3    3    19    L "
+                "4    4    20    M "
+                "5    5    21    N "
+                "6    6    22    P "
+                "7    7    23    R "
+                "8    8    24    S "
+                "9    9    25    T "
+                "10    A    26    U "
+                "11    B    27    V "
+                "12    C    28    W "
+                "13    D    29    X "
+                "14    E    30    Y "
+                "15    F"
+            ).split()
+        )
+    }
+
+    def validate_social_security_number(self, value):
+        """
+        For more info about the checksum validation, see "Miten henkilötunnukset tarkistusmerkki lasketaan?" in
+        https://dvv.fi/henkilotunnus
+        """
+        if value == "":
+            return value
+
+        m = re.match(self.SSN_REGEX, value)
+        if not m:
+            raise serializers.ValidationError(_("Social security number invalid"))
+
+        expect_checksum = EmployeeSerializer.SSN_CHEKSUM[
+            int((m.group(1) + m.group(2)).lstrip("0")) % 31
+        ].lower()
+        if expect_checksum != m.group(3).lower():
+            raise serializers.ValidationError(
+                _("Social security number checksum invalid")
+            )
+
+        return value
+
+    class Meta:
+        model = Employee
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "social_security_number",
+            "phone_number",
+            "email",
+            "employee_language",
+            "job_title",
+            "monthly_pay",
+            "vacation_money",
+            "other_expenses",
+            "working_hours",
+            "collective_bargaining_agreement",
+            "is_living_in_helsinki",
+            "commission_amount",
+            "commission_description",
+            "modified_at",
+            "created_at",
+        ]
+        read_only_fields = [
+            "ordering",
+        ]
+
+
 class ApplicationSerializer(serializers.ModelSerializer):
 
     """
@@ -136,6 +220,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
         validators=[ApplicationStatusValidator()],
         help_text="Status of the application, visible to the applicant",
     )
+
+    employee = EmployeeSerializer()
+
     company = CompanySerializer(read_only=True)
 
     bases = serializers.SlugRelatedField(
@@ -166,10 +253,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "status",
+            "application_number",
+            "employee",
             "company",
             "company_name",
             "company_form",
             "organization_type",
+            "submitted_at",
             "bases",
             "available_bases",
             "available_benefit_types",
@@ -197,6 +287,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "create_application_for_company",
         ]
         read_only_fields = [
+            "submitted_at",
             "available_bases",
             "company_name",
             "company_form",
@@ -280,6 +371,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
             },
         }
 
+    submitted_at = serializers.SerializerMethodField("get_submitted_at")
+
     organization_type = serializers.SerializerMethodField(
         "get_organization_type",
         help_text="The general type of the applicant organization",
@@ -293,6 +386,16 @@ class ApplicationSerializer(serializers.ModelSerializer):
         "get_available_benefit_types",
         help_text="Available benefit types depend on organization type of the applicant",
     )
+
+    def get_submitted_at(self, obj):
+        if (
+            log_entry := obj.log_entries.filter(to_status=ApplicationStatus.RECEIVED)
+            .order_by("-created_at")
+            .first()
+        ):
+            return log_entry.created_at
+        else:
+            return None
 
     @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
     def get_organization_type(self, obj):
@@ -350,25 +453,42 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 {"de_minimis_aid_set": "Total amount of de minimis aid too large"}
             )
 
-    def _validate_date_range(self, start_date, end_date):
+    def _validate_date_range(self, start_date, end_date, benefit_type):
         # keeping all start/end date validation together
         if start_date and start_date < date(date.today().year, 1, 1):
             raise serializers.ValidationError(
                 {"start_date": _("start_date must be within the current year")}
             )
         if end_date:
-            if start_date and end_date < start_date:
-                raise serializers.ValidationError(
-                    {
-                        "end_date": _(
-                            "application end_date can not be less than start_date"
-                        )
-                    }
-                )
             if end_date < date(date.today().year, 1, 1):
                 raise serializers.ValidationError(
                     {"end_date": _("end_date must be within the current year")}
                 )
+            if start_date:
+                if end_date < start_date:
+                    raise serializers.ValidationError(
+                        {
+                            "end_date": _(
+                                "application end_date can not be less than start_date"
+                            )
+                        }
+                    )
+                if (
+                    benefit_type != BenefitType.COMMISSION_BENEFIT
+                    and start_date + relativedelta(months=1) - relativedelta(days=1)
+                    > end_date
+                ):
+                    # A commission can have very short duration and doesn't have the 1 month minimum period as the
+                    # employment and salary based benefits.
+                    # These two option have identical duration periods which need to be between 1-12 months.
+                    # (note: we'll allow full month ranges, like 2021-02-01 - 2021-02-28
+                    raise serializers.ValidationError(
+                        {"end_date": _("minimum duration of the benefit is one month")}
+                    )
+                if start_date + relativedelta(months=12) <= end_date:
+                    raise serializers.ValidationError(
+                        {"end_date": _("maximum duration of the benefit is 12 months")}
+                    )
 
     def _validate_co_operation_negotiations(
         self, co_operation_negotiations, co_operation_negotiations_description
@@ -481,7 +601,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         """ """
         company = self.get_company(data)
-        self._validate_date_range(data["start_date"], data["end_date"])
+        self._validate_date_range(
+            data["start_date"], data["end_date"], data["benefit_type"]
+        )
         self._validate_co_operation_negotiations(
             data["co_operation_negotiations"],
             data["co_operation_negotiations_description"],
@@ -507,21 +629,31 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 from_status=instance.status,
                 to_status=validated_data["status"],
             )
+        employee_data = validated_data.pop("employee", None)
         application = super().update(instance, validated_data)
         if de_minimis_data is not None:
             # if it is a patch request that didn't have de_minimis_data_set, do nothing
             self._update_de_minimis_aid(application, de_minimis_data)
-
+        if employee_data is not None:
+            self._update_or_create_employee(application, employee_data)
         return application
 
     @transaction.atomic
     def create(self, validated_data):
         de_minimis_data = validated_data.pop("de_minimis_aid_set")
+        employee_data = validated_data.pop("employee", None)
         validated_data["company"] = self.get_company_for_new_application(validated_data)
         application = super().create(validated_data)
         self.assign_default_fields_from_company(application, validated_data["company"])
         self._update_de_minimis_aid(application, de_minimis_data)
+        self._update_or_create_employee(application, employee_data)
         return application
+
+    def _update_or_create_employee(self, application, employee_data):
+        employee, created = Employee.objects.update_or_create(
+            application=application, defaults=employee_data
+        )
+        return employee
 
     def get_company_for_new_application(self, validated_data):
         """

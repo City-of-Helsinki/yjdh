@@ -5,6 +5,7 @@ django-extensions
 djangorestframework
 django-simple-history
 psycopg2
+python-dateutil
 sentry-sdk
 requests
 django-phonenumber-field[phonenumbers]
