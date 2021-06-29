@@ -37,3 +37,11 @@ class Company(UUIDModel):
     manual_city = models.CharField(
         max_length=256, blank=True, verbose_name=_("manual city")
     )
+
+    eauth_profile = models.OneToOneField(
+        "oidc.EAuthorizationProfile",
+        on_delete=models.SET_NULL,
+        related_name="company",
+        verbose_name=_("eauthorization profile"),
+        null=True,
+    )

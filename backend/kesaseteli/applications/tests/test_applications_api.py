@@ -1,11 +1,16 @@
+from unittest import mock
+
 import pytest
+from django.test import override_settings
 from rest_framework.reverse import reverse
+from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 from applications.api.v1.serializers import (
     ApplicationSerializer,
     SummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus
+from applications.models import Application
 from applications.tests.factories import ApplicationFactory, SummerVoucherFactory
 
 
@@ -130,13 +135,47 @@ def test_remove_all_summer_vouchers(api_client, application):
 
 
 @pytest.mark.django_db
-def test_application_create_not_allowed(api_client):
+def test_application_create(api_client, user):
+    oidc_profile = OIDCProfileFactory(user=user)
+    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
+    organization_roles = {
+        "name": "Activenakusteri Oy",
+        "identifier": "7769480-5",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
+
+    with mock.patch(
+        "companies.services.get_organization_roles", return_value=organization_roles
+    ):
+        response = api_client.post(
+            reverse("v1:application-list"),
+            {},
+        )
+
+    assert response.status_code == 201
+    assert response.data["company"]["name"] == organization_roles["name"]
+    assert response.data["company"]["business_id"] == organization_roles["identifier"]
+
+    for field in Application._meta.fields:
+        assert field.name in response.data
+
+
+@pytest.mark.django_db
+@override_settings(MOCK_FLAG=True)
+def test_application_create_mock(api_client, user):
+    oidc_profile = OIDCProfileFactory(user=user)
+    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
     response = api_client.post(
         reverse("v1:application-list"),
         {},
     )
 
-    assert response.status_code == 405
+    assert response.status_code == 201
+    for field in Application._meta.fields:
+        assert field.name in response.data
 
 
 @pytest.mark.django_db

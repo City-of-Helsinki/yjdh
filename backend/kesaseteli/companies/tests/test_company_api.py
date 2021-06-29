@@ -5,6 +5,7 @@ from unittest import mock
 import pytest
 from django.conf import settings
 from django.test import override_settings
+from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -13,7 +14,6 @@ from companies.tests.data.company_data import (
     DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE,
     DUMMY_YTJ_RESPONSE,
 )
-from oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 
 def get_company_api_url():
@@ -55,7 +55,7 @@ def test_get_mock_company_not_found_from_ytj(api_client):
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json"]
+        if f.name not in ["id", "name", "business_id", "ytj_json", "eauth_profile"]
     ]:
         assert response.data[field.name] == ""
 
@@ -76,9 +76,10 @@ def test_get_company_organization_roles_error(api_client, requests_mock, user):
 
     response = api_client.get(get_company_api_url())
 
-    assert response.status_code == 401
+    assert response.status_code == 404
     assert (
-        response.data == "Unable to fetch organization roles from eauthorizations API"
+        response.data["detail"]
+        == "Unable to fetch organization roles from eauthorizations API"
     )
 
 
@@ -103,7 +104,7 @@ def test_get_company_from_ytj(api_client, requests_mock, user):
     }
 
     with mock.patch(
-        "companies.api.v1.views.get_organization_roles", return_value=org_roles_json
+        "companies.services.get_organization_roles", return_value=org_roles_json
     ):
         response = api_client.get(get_company_api_url())
 
@@ -138,7 +139,7 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     }
 
     with mock.patch(
-        "companies.api.v1.views.get_organization_roles", return_value=org_roles_json
+        "companies.services.get_organization_roles", return_value=org_roles_json
     ):
         response = api_client.get(get_company_api_url())
 
@@ -149,7 +150,7 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json"]
+        if f.name not in ["id", "name", "business_id", "ytj_json", "eauth_profile"]
     ]:
         assert response.data[field.name] == ""
 
@@ -178,9 +179,9 @@ def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):
     }
 
     with mock.patch(
-        "companies.api.v1.views.get_organization_roles", return_value=org_roles_json
+        "companies.services.get_organization_roles", return_value=org_roles_json
     ):
         response = api_client.get(get_company_api_url())
 
     assert response.status_code == 404
-    assert response.data == "Could not handle the response from YTJ API"
+    assert response.data["detail"] == "Could not handle the response from YTJ API"
