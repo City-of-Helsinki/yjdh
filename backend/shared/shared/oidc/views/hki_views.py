@@ -10,8 +10,9 @@ from django.views.generic import View
 from mozilla_django_oidc.views import OIDCAuthenticationCallbackView, OIDCLogoutView
 from requests.exceptions import HTTPError
 
+from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 from shared.oidc.models import OIDCProfile
-from shared.oidc.services import clear_oidc_profiles
+from shared.oidc.services import clear_eauthorization_profiles, clear_oidc_profiles
 from shared.oidc.utils import get_userinfo, refresh_hki_tokens
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,13 @@ class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
 
 class HelsinkiOIDCLogoutView(OIDCLogoutView):
     """Override OIDCLogoutView to match the keycloak backchannel logout"""
+
+    def clear_user_sessions(self, oidc_profile):
+        eauthorization_profile = getattr(oidc_profile, "eauthorization_profile", None)
+
+        clear_oidc_profiles(oidc_profile)
+        if eauthorization_profile:
+            clear_eauthorization_profiles(eauthorization_profile)
 
     def post(self, request):
         if request.user.is_authenticated:
@@ -57,7 +65,7 @@ class HelsinkiOIDCLogoutView(OIDCLogoutView):
                 logger.error(str(e))
 
             auth.logout(request)
-            clear_oidc_profiles(oidc_profile)
+            self.clear_user_sessions(oidc_profile)
 
         return HttpResponse("OK", status=200)
 
@@ -84,3 +92,86 @@ class HelsinkiOIDCUserInfoView(View):
             except (HTTPError, SuspiciousOperation, OIDCProfile.DoesNotExist):
                 auth.logout(request)
         return response
+
+
+class HelsinkiOIDCBackchannelLogoutView(View):
+    """
+    Backchannel logout endpoint that can be called by helsinki profiili
+
+    # noqa
+    Docs: https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/1209040912/SSO+session+handling#About-backchannel-logout-requests
+    """
+
+    http_method_names = ["post"]
+
+    def validate_logout_claims(self, logout_token):
+        if not logout_token.get("sub"):
+            logger.debug("Incorrect backchannel logout_token: sub")
+            raise SuspiciousOperation("Incorrect logout_token: sub")
+
+        events = logout_token.get("events")
+        try:
+            if (
+                not events
+                or "http://schemas.openid.net/event/backchannel-logout"
+                not in events.keys()
+            ):
+                logger.debug("Incorrect backchannel logout_token: events")
+                raise SuspiciousOperation("Incorrect logout_token: events")
+        except AttributeError:
+            logger.debug("Incorrect backchannel logout_token: events")
+            raise SuspiciousOperation("Incorrect logout_token: events")
+
+        if logout_token.get("nonce"):
+            logger.debug("Incorrect backchannel logout_token: nonce")
+            raise SuspiciousOperation("Incorrect logout_token: nonce")
+
+    def clear_user_sessions(self, user):
+        oidc_profile = getattr(user, "oidc_profile", None)
+        if oidc_profile:
+            eauthorization_profile = getattr(
+                oidc_profile, "eauthorization_profile", None
+            )
+
+            clear_oidc_profiles(oidc_profile)
+            if eauthorization_profile:
+                clear_eauthorization_profiles(eauthorization_profile)
+
+    def post(self, request):
+        logout_token = request.POST.get("logout_token", None)
+
+        if logout_token:
+            auth_backend = HelsinkiOIDCAuthenticationBackend()
+            try:
+                claims = auth_backend.verify_token(logout_token)
+                self.validate_logout_claims(claims)
+            except SuspiciousOperation as e:
+                return HttpResponse(e, status=400)
+
+            users = auth_backend.filter_users_by_claims(claims)
+
+            if len(users) == 1:
+                user = users.first()
+                self.clear_user_sessions(user)
+
+            elif len(users) > 1:
+                # In the rare case that two user accounts have the same email address,
+                # bail. Randomly selecting one seems really wrong.
+                logger.warning(
+                    f"Login failed: Multiple users found with the given 'sub' claim: {claims.get('sub', None)}"
+                )
+                return HttpResponse(
+                    "Multiple users found with the given 'sub' claim",
+                    status=400,
+                )
+            else:
+                logger.warning(
+                    f"Login failed: No user with sub {claims.get('sub', None)} found"
+                )
+                return HttpResponse(
+                    "No users found with the given 'sub' claim", status=400
+                )
+
+            return HttpResponse("OK", status=200)
+
+        return HttpResponse("No logout token found in the request payload", status=400)

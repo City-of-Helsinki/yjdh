@@ -22,7 +22,9 @@ def clear_oidc_profiles(
 
 
 def clear_eauthorization_profiles(
-    eauthorization_profiles: "QuerySet[EAuthorizationProfile]",
+    eauthorization_profiles: Union[
+        EAuthorizationProfile, "QuerySet[EAuthorizationProfile]"
+    ],
 ) -> None:
     eauthorization_profiles.delete()
 
