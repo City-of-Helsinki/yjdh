@@ -97,7 +97,7 @@
     "testcafe-reporter-custom": "^1.1.1",
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^26.5.5",
-    "typescript": "^3.9.9"
+    "typescript": "^4.3.4"
   },
   "resolutions": {
     "trim": "^0.0.3",
