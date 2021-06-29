@@ -45,7 +45,8 @@ export const screenContext = (t: TestController): typeof screen =>
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         matcher,
         key,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         ...(options && { options }),
       }
     );
