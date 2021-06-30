@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-from utils.models import UUIDModel
+from shared.models.abstract_models import UUIDModel
 
 
 class Company(UUIDModel):

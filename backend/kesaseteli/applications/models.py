@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_cryptography.fields import encrypt
+from shared.models.abstract_models import HistoricalModel, UUIDModel
 
 from applications.enums import ApplicationStatus
 from companies.models import Company
-from utils.models import HistoricalModel, UUIDModel
 
 
 class Application(HistoricalModel, UUIDModel):
