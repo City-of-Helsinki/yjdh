@@ -11,10 +11,12 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
+import { getBackendDomain } from '../backend-api/backend-api';
+
 const queryClient = new QueryClient();
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => (
-  <BackendAPIProvider>
+  <BackendAPIProvider baseURL={getBackendDomain()}>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <GlobalStyling />

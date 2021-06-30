@@ -88,7 +88,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     );
   });
 
-  it.skip('Redirects to logout and clear userdata when clicked logout button', async () => {
+  it('Redirects to logout and clear userdata when clicked logout button', async () => {
     const expectedUser = expectAuthorizedReply(true);
     const spyRouterPush = jest.fn();
     renderComponent(<Header />, queryClient, { push: spyRouterPush });
