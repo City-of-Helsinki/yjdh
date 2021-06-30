@@ -1,5 +1,4 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import handleResponse from 'kesaseteli/employer/backend-api/handle-response';
 import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
 import Application from 'kesaseteli/employer/types/application';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
@@ -7,7 +6,7 @@ import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 const useUpdateApplicationQuery = (
   draftApplication?: Application
 ): UseMutationResult<Application, Error, Application> => {
-  const { axios } = useBackendAPI();
+  const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const id = draftApplication?.id;
   return useMutation<Application, Error, Application>(

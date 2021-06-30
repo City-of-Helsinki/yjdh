@@ -32,7 +32,7 @@ const expectedApplication = (id: string): Application => ({
   invoicer_email: faker.internet.email(),
   invoicer_name: faker.name.findName(),
   invoicer_phone_number: faker.phone.phoneNumber(),
-  status: '',
+  status: 'draft',
   summer_vouchers: [],
 });
 

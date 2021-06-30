@@ -1,22 +1,12 @@
+import CompanyInfoHeader, {
+  CompanyProp,
+} from 'kesaseteli/employer/components/companyInfo/CompanyInfoHeader';
 import useCompanyQuery from 'kesaseteli/employer/hooks/useCompanyQuery';
-import { useTranslation } from 'next-i18next';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import isServerSide from 'shared/server/is-server-side';
-import Company from 'shared/types/company';
 
 import SC from './CompanyInfo.sc';
-
-type CompanyProp = { field: keyof Company };
-
-const CompanyInfoHeader: React.FC<CompanyProp> = ({ field }: CompanyProp) => {
-  const { t } = useTranslation();
-  return (
-    <SC.CompanyInfoHeader>
-      {t(`common:application.step1.companyInfo.header.${field}`)}
-    </SC.CompanyInfoHeader>
-  );
-};
 
 type Props = {
   applicationId: string;

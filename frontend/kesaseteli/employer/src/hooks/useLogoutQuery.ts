@@ -1,11 +1,10 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import handleResponse from 'kesaseteli/employer/backend-api/handle-response';
 import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
 import { useRouter } from 'next/router';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 
 const useLogoutQuery = (): UseMutationResult<unknown, Error, void> => {
-  const { axios } = useBackendAPI();
+  const { axios, handleResponse } = useBackendAPI();
   const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation<unknown, Error, void>(

@@ -3,9 +3,9 @@ import { getApplicationFormContext } from 'kesaseteli/employer/components/form/A
 import Application from 'kesaseteli/employer/types/application';
 import React from 'react';
 
-type Props<T> = {
+type Props = {
   id: string;
-  onSubmit: (data: T) => void;
+  onSubmit: (application: Application) => void;
   loadingText: string;
   children: React.ReactNode;
 };
@@ -15,7 +15,7 @@ const SubmitButton = ({
   loadingText,
   onSubmit,
   children,
-}: Props<Application>): ReturnType<typeof Button> => {
+}: Props): ReturnType<typeof Button> => {
   const { handleSubmit, isLoading } = React.useContext(
     getApplicationFormContext()
   );
