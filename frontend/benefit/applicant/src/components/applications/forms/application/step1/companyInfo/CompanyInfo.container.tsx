@@ -1,21 +1,11 @@
 import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
+import { CompanyData } from 'benefit/applicant/types/company';
 import React from 'react';
 import { useQuery } from 'react-query';
 
 import CompanyInfo, { CompanyInfoProps } from './CompanyInfo.component';
 
 export type CompanyInfoContainerProps = Omit<CompanyInfoProps, 'data'>;
-
-interface CompanyData {
-  bank_account_number: string;
-  business_id: string;
-  city: string;
-  company_form: string;
-  id: string;
-  name: string;
-  postcode: string;
-  street_address: string;
-}
 
 const CompanyInfoContainer: React.FC<CompanyInfoContainerProps> = (props) => {
   const { axios, handleResponse } = useBackendAPI();

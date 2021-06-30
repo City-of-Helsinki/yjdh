@@ -21,8 +21,13 @@ export interface CompanyInfoProps {
 }
 
 const CompanyInfo: React.FC<CompanyInfoProps> = ({ data, error, loading }) => {
-  const { t, getErrorMessage, fields, translationsBase, formik } =
-    useComponent();
+  const {
+    t,
+    getErrorMessage,
+    fields,
+    translationsBase,
+    formik,
+  } = useComponent();
   let formattedData = { ...data, businessId: `Y-tunnus: ${data.businessId}` };
   if (error)
     formattedData = {
