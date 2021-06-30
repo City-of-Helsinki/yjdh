@@ -1,16 +1,15 @@
-type BackendPath =
-  | '/v1/company/'
+export type BackendPath =
+  | '/v1/applications/'
   | '/oidc/userinfo/'
   | '/oidc/authenticate/'
   | '/oidc/logout/';
 
 export const BackendEndpoint: Record<string, BackendPath> = {
-  COMPANY: '/v1/company/',
-  USER: '/oidc/userinfo/',
+  APPLICATIONS: '/v1/applications/',
   LOGIN: '/oidc/authenticate/',
   LOGOUT: '/oidc/logout/',
+  USER: '/oidc/userinfo/',
 } as const;
-
 
 export const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';

@@ -24,8 +24,8 @@
     "test:staged": "lerna run test:staged",
     "test:coverage": "lerna run test:coverage --stream --concurrency 1",
     "ks-empl:test": " yarn --cwd kesaseteli/employer test",
-    "ks-empl:browser-test": "lerna run --scope @frontend/employer --stream browser-test",
-    "ks-empl:browser-test:ci": "lerna run --scope @frontend/employer --stream browser-test:ci"
+    "ks-empl:browser-test": "yarn --cwd kesaseteli/employer browser-test",
+    "ks-empl:browser-test:ci": "yarn --cwd kesaseteli/employer browser-test:ci"
   },
   "devDependencies": {
     "@axe-core/react": "^4.1.1",
@@ -81,7 +81,6 @@
     "faker": "^5.5.3",
     "husky": "^6.0.0",
     "i18next": "^20.3.1",
-    "i18next-intervalplural-postprocessor": "^3.0.0",
     "jest": "^26.6.3",
     "jest-axe": "^4.1.0",
     "lerna": "^4.0.0",

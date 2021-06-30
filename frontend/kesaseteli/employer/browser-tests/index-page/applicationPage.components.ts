@@ -2,16 +2,15 @@ import {
   getErrorMessage,
   screenContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import Company from '@frontend/shared/src/types/company';
 import TestController from 'testcafe';
 
-import Company from '../../src/types/company';
-
-export const getCompanyPageComponents = (t: TestController) => {
+export const getApplicationPageComponents = (t: TestController) => {
   const screen = screenContext(t);
 
-  const companyData = async (company: Company) => {
+  const companyTable = async (company: Company) => {
     const selectors = {
-      companyData() {
+      companyTable() {
         return screen.findByRole('heading', {
           name: company.name,
         });
@@ -20,7 +19,7 @@ export const getCompanyPageComponents = (t: TestController) => {
     const expectations = {
       async isPresent() {
         await t
-          .expect(selectors.companyData().exists)
+          .expect(selectors.companyTable().exists)
           .ok(await getErrorMessage(t));
       },
       async isCompanyDataPresent() {
@@ -53,6 +52,6 @@ export const getCompanyPageComponents = (t: TestController) => {
     };
   };
   return {
-    companyData,
+    companyTable,
   };
 };

@@ -3,6 +3,7 @@ type Company = {
   name: string;
   business_id: string;
   industry: string;
+  company_form: string;
   street_address: string;
   postcode: string;
   city: string;

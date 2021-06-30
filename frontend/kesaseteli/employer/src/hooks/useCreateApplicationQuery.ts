@@ -1,23 +1,26 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import handleResponse from 'kesaseteli/employer/backend-api/handle-response';
 import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
-import { useRouter } from 'next/router';
+import Application from 'kesaseteli/employer/types/application';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 
-const useLogoutQuery = (): UseMutationResult<unknown, Error, void> => {
+const useCreateApplicationQuery = (): UseMutationResult<
+  unknown,
+  Error,
+  void
+> => {
   const { axios } = useBackendAPI();
-  const router = useRouter();
   const queryClient = useQueryClient();
-  return useMutation<unknown, Error, void>(
-    'logout',
-    () => handleResponse<unknown>(axios.post(BackendEndpoint.LOGOUT)),
+  return useMutation<Application, Error, void>(
+    'createApplication',
+    () =>
+      handleResponse<Application>(axios.post(BackendEndpoint.APPLICATIONS, {})),
     {
       onSuccess: () => {
-        void queryClient.removeQueries();
-        void router.push('/login?logout=true');
+        queryClient.removeQueries('applications', { exact: true });
       },
     }
   );
 };
 
-export default useLogoutQuery;
+export default useCreateApplicationQuery;

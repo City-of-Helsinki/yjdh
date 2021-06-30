@@ -93,7 +93,7 @@ export const getHeaderComponents = (t: TestController) => {
       async userIsLoggedOut() {
         await t
           .expect(selectors.loginButton().exists)
-          .ok(await getErrorMessage(t));
+          .ok(await getErrorMessage(t), { timeout: 10000 });
       },
       async loginButtonIsTranslatedAs(loginButtonTranslation: string) {
         await t

@@ -13,6 +13,8 @@ const getDefaultReactQueryTestClient = (): QueryClient =>
     defaultOptions: {
       queries: {
         retry: false,
+        staleTime: 99999,
+        refetchOnWindowFocus: false,
       },
     },
   });

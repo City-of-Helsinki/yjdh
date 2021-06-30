@@ -6,7 +6,7 @@ type FormSectionProps = { children: React.ReactNode; header?: string };
 
 const FormSection: React.FC<FormSectionProps> = ({ children, header }) => (
   <StyledSection>
-    <StyledHeader>{header}</StyledHeader>
+    {header && <StyledHeader>{header}</StyledHeader>}
     <StyledContent>{children}</StyledContent>
   </StyledSection>
 );
