@@ -18,7 +18,11 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) =>
-        failureCount < 3 && !/40[134]/.test((error as Error).message),
+        process.env.NODE_ENV === 'production' &&
+        failureCount < 3 &&
+        !/40[134]/.test((error as Error).message),
+      staleTime: 30000,
+      refetchOnWindowFocus: false,
     },
   },
 });

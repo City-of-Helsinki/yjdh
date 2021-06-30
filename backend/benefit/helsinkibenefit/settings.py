@@ -111,6 +111,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "django_filters",
+    "drf_spectacular",  # OpenAPI documentation
     "phonenumber_field",
     "django_extensions",
     "mozilla_django_oidc",
@@ -176,7 +178,25 @@ REST_FRAMEWORK = {
         # "rest_framework.permissions.IsAuthenticated",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }  # TODO: Replace with actual authentication & permissions.
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Helsinki Benefit API",
+    "ENUM_NAME_OVERRIDES": {
+        "AvailableBenefitTypesEnum": "applications.enums.BenefitType",
+    },
+    "DESCRIPTION": """REST API for Helsinki Benefit application management
+
+# Authentication methods
+<SecurityDefinitions />
+""",
+    "VERSION": "0.0.1",
+    "EXTERNAL_DOCS": {
+        "description": "Helsinki benefit / YJDH repository in GitHub",
+        "url": "https://github.com/City-of-Helsinki/yjdh",
+    },
+}
 
 PHONENUMBER_DEFAULT_REGION = "FI"
 

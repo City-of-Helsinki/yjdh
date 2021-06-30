@@ -6,6 +6,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
+from requests.exceptions import HTTPError
 from rest_framework.authentication import SessionAuthentication
 
 from shared.oidc.services import store_token_info_in_oidc_profile
@@ -65,7 +66,10 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         }
 
         # Get the token
-        token_info = self.get_token(token_payload)
+        try:
+            token_info = self.get_token(token_payload)
+        except HTTPError:
+            return None
         id_token = token_info.get("id_token")
         access_token = token_info.get("access_token")
 
@@ -116,6 +120,22 @@ class EAuthRestAuthentication(SessionAuthentication):
             return None
 
         if getattr(settings, "MOCK_FLAG", None):
+            from shared.oidc.models import EAuthorizationProfile, OIDCProfile
+            from shared.oidc.tests.factories import (
+                EAuthorizationProfileFactory,
+                OIDCProfileFactory,
+            )
+
+            try:
+                oidc_profile = OIDCProfile.objects.get(user=user_auth_tuple[0])
+            except OIDCProfile.DoesNotExist:
+                oidc_profile = OIDCProfileFactory(user=user_auth_tuple[0])
+
+            try:
+                EAuthorizationProfile.objects.get(oidc_profile=oidc_profile)
+            except EAuthorizationProfile.DoesNotExist:
+                EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+
             return user_auth_tuple
 
         user, auth = user_auth_tuple

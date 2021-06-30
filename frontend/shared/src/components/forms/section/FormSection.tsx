@@ -15,10 +15,12 @@ const FormSection: React.FC<FormSectionProps> = ({
   loading,
 }) => (
   <StyledSection>
-    <StyledHeader>
-      {header}
-      {loading && <LoadingSpinner small />}
-    </StyledHeader>
+    {header && (
+      <StyledHeader>
+        {header}
+        {loading && <LoadingSpinner small />}
+      </StyledHeader>
+    )}
     <StyledContent>{children}</StyledContent>
   </StyledSection>
 );

@@ -23,10 +23,14 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class DeMinimisAidFactory(factory.django.DjangoModelFactory):
     granter = factory.Faker("sentence", nb_words=2)
+
+    # delay evaluation of date_start and date_end so that any freeze_time takes effect
     granted_at = factory.Faker(
         "date_between_dates",
-        date_start=date.today() - timedelta(days=365 * 2),
-        date_end=date.today(),
+        date_start=factory.LazyAttribute(
+            lambda _: date.today() - timedelta(days=365 * 2)
+        ),
+        date_end=factory.LazyAttribute(lambda _: date.today()),
     )
     amount = factory.Faker("pyint", min_value=1, max_value=100000)
     ordering = factory.Iterator(itertools.count(0))
@@ -46,6 +50,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
 
     company_name = factory.Faker("sentence", nb_words=2)
+    company_form = factory.Faker("sentence", nb_words=1)
     official_company_street_address = factory.Faker("street_address")
     official_company_city = factory.Faker("city")
     official_company_postcode = factory.Faker("postcode")

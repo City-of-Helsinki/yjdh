@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_cryptography.fields import encrypt
+from shared.models.abstract_models import HistoricalModel, UUIDModel
 
 from applications.enums import ApplicationStatus
 from companies.models import Company
-from utils.models import HistoricalModel, UUIDModel
 
 
 class Application(HistoricalModel, UUIDModel):
@@ -88,7 +88,7 @@ class SummerVoucher(HistoricalModel, UUIDModel):
         verbose_name=_("unnumbered summer voucher reason"),
     )
 
-    # TODO: Add these when we know in which format we will save them in our system
-    # contract_of_employment_image
-    # letter_of_reference_image
-    # summer_voucher_image
+    employment_contract = models.FileField(
+        blank=True, verbose_name=_("employment contract")
+    )
+    payslip = models.FileField(blank=True, verbose_name=_("payslip"))

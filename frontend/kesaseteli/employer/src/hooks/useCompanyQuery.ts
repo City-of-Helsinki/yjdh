@@ -1,13 +1,17 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import handleResponse from 'kesaseteli/employer/backend-api/handle-response';
-import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
-import Company from 'kesaseteli/employer/types/company';
-import { useQuery, UseQueryResult } from 'react-query';
+import useApplicationQuery from 'kesaseteli/employer/hooks/useApplicationQuery';
+import Application from 'kesaseteli/employer/types/application';
+import { UseQueryResult } from 'react-query';
+import Company from 'shared/types/company';
 
-const useCompanyQuery = (): UseQueryResult<Company, Error> => {
-  const { axios } = useBackendAPI();
-  return useQuery<Company, Error>('company', () =>
-    handleResponse(axios.get<Company>(BackendEndpoint.COMPANY))
-  );
+export type UseCompanyResult = Omit<
+  UseQueryResult<Application, Error>,
+  'data'
+> & { data: Company | undefined };
+
+const useCompanyQuery = (applicationId: string): UseCompanyResult => {
+  const { data: application, ...rest } = useApplicationQuery(applicationId);
+  const company = application?.company;
+  return { data: company, ...rest };
 };
+
 export default useCompanyQuery;

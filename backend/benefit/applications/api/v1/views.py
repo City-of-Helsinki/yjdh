@@ -1,18 +1,55 @@
 from applications.api.v1.serializers import ApplicationSerializer
 from applications.enums import ApplicationStatus
 from applications.models import Application
-from common.exceptions import BenefitAPIException
-from rest_framework import viewsets
+from django_filters import rest_framework as filters
+from django_filters.widgets import CSVWidget
+from drf_spectacular.utils import extend_schema
+from rest_framework import filters as drf_filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
+class ApplicationFilter(filters.FilterSet):
+
+    status = filters.MultipleChoiceFilter(
+        field_name="status",
+        widget=CSVWidget,
+        choices=ApplicationStatus.choices,
+        help_text=(
+            "Filter by application status."
+            " Multiple statuses may be specified as a comma-separated list, such as 'status=draft,received'",
+        ),
+    )
+
+    class Meta:
+        model = Application
+        fields = {
+            "archived": ["exact"],
+            "company__business_id": ["exact"],
+            "benefit_type": ["exact"],
+            "company_name": ["iexact", "icontains"],
+        }
+
+
+@extend_schema(
+    description="API for create/read/update/delete operations on Helsinki benefit applications"
+)
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     permission_classes = [AllowAny]  # TODO access control
+    filter_backends = [
+        drf_filters.OrderingFilter,
+        filters.DjangoFilterBackend,
+        drf_filters.SearchFilter,
+    ]
+    filterset_class = ApplicationFilter
+    search_fields = ["company_name", "company_contact_person_email"]
 
+    @extend_schema(
+        description="Get a partial application object (not saved in database), with various fields pre-filled"
+    )
     @action(detail=False, methods=["get"])
     def get_application_template(self, request, pk=None):
         """
@@ -32,23 +69,3 @@ class ApplicationViewSet(viewsets.ModelViewSet):
                 "de_minimis_aid_set": de_minimis_aid_set,
             }
         )
-
-    def get_queryset(self):
-        """
-        Optionally, filter by "status" parameter in the query.
-        Multiple statuses may be specified as a comma-separated list, such as "status=draft,received"
-
-        TODO: Applicants get to view only the applications to their own company
-        user = self.request.user
-        return Purchase.objects.filter(purchaser=user)
-
-        """
-
-        queryset = Application.objects.all()
-        if statuses := self.request.query_params.get("status"):
-            status_list = statuses.split(",")
-            for status in status_list:
-                if status not in ApplicationStatus.values:
-                    raise BenefitAPIException(f"Invalid status: {status}")
-            queryset = queryset.filter(status__in=status_list)
-        return queryset

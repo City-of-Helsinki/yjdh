@@ -25,6 +25,8 @@ class Application(UUIDModel, TimeStampedModel):
 
     There can be only one employee per application. Employees can not be shared with
     multiple applications.
+
+    For additional descriptions of the fields, see the API documentation (serializers.py)
     """
 
     company = models.ForeignKey(
@@ -44,40 +46,21 @@ class Application(UUIDModel, TimeStampedModel):
         default=ApplicationStatus.DRAFT,
     )
 
-    """
-    The application should retain the Company name, as it was at the time the application was created, to maintain
-    historical accuracy.
-    """
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
-    """
-    Company city from official sources (YTJ) at the time the application was created
-    """
+
     company_form = models.CharField(max_length=64, verbose_name=_("company form"))
 
-    """
-    Company street address from official sources (YTJ/other) at the time the application was created
-    """
     official_company_street_address = models.CharField(
         max_length=256,
         verbose_name=_("company street address"),
     )
-    """
-    Company city from official sources (YTJ/other) at the time the application was created
-    """
     official_company_city = models.CharField(
         max_length=256, verbose_name=_("company city")
     )
-    """
-    Company post code from official sources (YTJ/other) at the time the application was created
-    """
     official_company_postcode = models.CharField(
         max_length=256, verbose_name=_("company post code")
     )
 
-    """
-    The user has an option of using an alternative address. This will then be used instead of the address
-    fetched from YTJ/PRH.
-    """
     use_alternative_address = models.BooleanField()
 
     alternative_company_street_address = models.CharField(

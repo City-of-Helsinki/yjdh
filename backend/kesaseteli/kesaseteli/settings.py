@@ -57,6 +57,10 @@ env = environ.Env(
     ADFS_CLIENT_ID=(str, "client_id"),
     ADFS_CLIENT_SECRET=(str, "client_secret"),
     ADFS_TENANT_ID=(str, "tenant_id"),
+    DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
+    AZURE_ACCOUNT_NAME=(str, ""),
+    AZURE_ACCOUNT_KEY=(str, ""),
+    AZURE_CONTAINER=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -109,11 +113,11 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_extensions",
     "django_auth_adfs",
+    # shared apps
+    "shared.oidc",
     # local apps
     "applications",
     "companies",
-    "oidc",
-    "utils",
 ]
 
 MIDDLEWARE = [
@@ -159,7 +163,7 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["oidc.auth.EAuthRestAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
@@ -177,7 +181,7 @@ SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
 SESSION_COOKIE_SECURE = True
 
 AUTHENTICATION_BACKENDS = (
-    "oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
     "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
@@ -223,6 +227,14 @@ AUTH_ADFS = {
 
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
+# End of Authentication
+
+# Django storages
+DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
+
+AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = env("AZURE_CONTAINER")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
