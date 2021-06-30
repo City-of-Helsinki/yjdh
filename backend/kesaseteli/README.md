@@ -36,22 +36,22 @@ The project is now running at [localhost:8000](https://localhost:8000)
 
 1. Install `pip-tools`:
 
-   * `pip install pip-tools`
+    * `pip install pip-tools`
 
 2. Add new packages to `requirements.in` or `requirements-dev.in`
 
 3. Update `.txt` file for the changed requirements file:
 
-   * `pip-compile requirements.in`
-   * `pip-compile requirements-dev.in`
+    * `pip-compile requirements.in`
+    * `pip-compile requirements-dev.in`
 
 4. If you want to update dependencies to their newest versions, run:
 
-   * `pip-compile --upgrade requirements.in`
+    * `pip-compile --upgrade requirements.in`
 
 5. To install Python requirements run:
 
-   * `pip-sync requirements.txt`
+    * `pip-sync requirements.txt`
 
 ## Code format
 
@@ -76,6 +76,6 @@ which requires the `DEFAULT_FILE_STORAGE` env variable / setting to be set to
 `"storages.backends.azure_storage.AzureStorage"`. The following
 env variables / settings are provided by Azure blob storage:
 
-* `AZURE_ACCOUNT_NAME`
-* `AZURE_ACCOUNT_KEY`
-* `AZURE_CONTAINER`
+- `AZURE_ACCOUNT_NAME`
+- `AZURE_ACCOUNT_KEY`
+- `AZURE_CONTAINER`
