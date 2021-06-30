@@ -2,13 +2,13 @@
 
 Prerequisites:
 
-* PostgreSQL 12
-* Python 3.8
+- PostgreSQL 12
+- Python 3.8
 
 ### Installing Python requirements
 
-* Run `pip install -r requirements.txt`
-* Run `pip install -r requirements-dev.txt` (development requirements)
+- Run `pip install -r requirements.txt`
+- Run `pip install -r requirements-dev.txt` (development requirements)
 
 ### Database
 
@@ -25,33 +25,33 @@ Allow user to create test database
 
 ### Daily running
 
-* Create `.env.kesaseteli` file: `touch .env.kesaseteli`
-* Set the `DEBUG` environment variable to `1`.
-* Run `python manage.py migrate`
-* Run `python manage.py runserver 0:8000`
+- Create `.env.kesaseteli` file: `touch .env.kesaseteli`
+- Set the `DEBUG` environment variable to `1`.
+- Run `python manage.py migrate`
+- Run `python manage.py runserver 0:8000`
 
-The project is now running at [localhost:8000](https://localhost:8000)
+The project is now running at [localhost:8000](http://localhost:8000)
 
 ## Keeping Python requirements up to date
 
 1. Install `pip-tools`:
 
-    * `pip install pip-tools`
+   - `pip install pip-tools`
 
 2. Add new packages to `requirements.in` or `requirements-dev.in`
 
 3. Update `.txt` file for the changed requirements file:
 
-    * `pip-compile requirements.in`
-    * `pip-compile requirements-dev.in`
+   - `pip-compile requirements.in`
+   - `pip-compile requirements-dev.in`
 
 4. If you want to update dependencies to their newest versions, run:
 
-    * `pip-compile --upgrade requirements.in`
+   - `pip-compile --upgrade requirements.in`
 
 5. To install Python requirements run:
 
-    * `pip-sync requirements.txt`
+   - `pip-sync requirements.txt`
 
 ## Code format
 
@@ -64,5 +64,5 @@ black config, without any modifications.
 
 Basic `black` commands:
 
-* To let `black` do its magic: `black .`
-* To see which files `black` would change: `black --check .`
+- To let `black` do its magic: `black .`
+- To see which files `black` would change: `black --check .`

@@ -10,8 +10,8 @@ YJDH-Kesäseteli
 
 2. Run `yarn kesaseteli up` or, if you want to rebuild, then `yarn kesaseteli up --build`
 
-The Frontend is now running at [localhost:3000](https://localhost:3000)
-The backend is now running at [localhost:8000](https://localhost:8000)
+The Frontend is now running at [localhost:3000](http://localhost:3000)
+The backend is now running at [localhost:8000](http://localhost:8000)
 
 3. If services fail to get up, `yarn clean` might help.
 
