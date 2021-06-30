@@ -1,7 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 import React from 'react';
-
-import BackendAPIContext from '../backend-api/BackendAPIContext';
+import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 
 const handleResponse = async <R,>(
   axiosPromise: Promise<AxiosResponse<R>>

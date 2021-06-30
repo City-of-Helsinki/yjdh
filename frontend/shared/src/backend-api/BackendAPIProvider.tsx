@@ -1,10 +1,11 @@
 import Axios from 'axios';
+import { getBackendDomain } from 'kesaseteli/employer/backend-api/backend-api';
 import React from 'react';
+import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 
-import { getBackendDomain } from './backend-api';
-import BackendAPIContext from './BackendAPIContext';
-
-const BackendAPIProvider: React.FC = ({ children }) => {
+const BackendAPIProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>): JSX.Element => {
   const axiosContext = React.useMemo(
     () =>
       Axios.create({
@@ -12,6 +13,7 @@ const BackendAPIProvider: React.FC = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
+        withCredentials: true,
         xsrfCookieName: 'csrftoken',
         xsrfHeaderName: 'X-CSRFToken',
       }),

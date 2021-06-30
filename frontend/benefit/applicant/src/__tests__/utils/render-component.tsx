@@ -1,8 +1,8 @@
-import BackendAPIContext from 'benefit/applicant/backend-api/BackendAPIContext';
 import { NextRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import getDefaultReactQueryTestClient from 'shared/__tests__/utils/react-query/get-default-react-query-test-client';
+import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 import { render, RenderResult } from 'test-utils';

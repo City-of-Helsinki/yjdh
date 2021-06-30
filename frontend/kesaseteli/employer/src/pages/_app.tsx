@@ -1,5 +1,4 @@
 import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
-import BackendAPIProvider from 'kesaseteli/employer/backend-api/BackendAPIProvider';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
 import Header from 'kesaseteli/employer/components/header/Header';
 import { AppProps } from 'next/app';
@@ -7,6 +6,7 @@ import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
 import Layout from 'shared/components/layout/Layout';
 import initLocale from 'shared/hocs/initLocale';
