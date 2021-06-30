@@ -1,5 +1,6 @@
 import TestController from 'testcafe';
 
+import Company from '../../src/types/company';
 import User from '../../src/types/user';
 import { getSuomiFiAuthenticationComponents } from '../components/suomiFiAuthentication.components';
 import { getSuomiFiProfileComponents } from '../components/suomiFiProfile.components';
@@ -23,7 +24,7 @@ let urlUtils: ReturnType<typeof getUrlUtils>;
 
 export type Expectations = {
   expectedUser: User;
-  expectedCompany: RegExp;
+  expectedCompany: Company;
 };
 
 const doSuomiFiLogin = async (t: TestController): Promise<Expectations> => {
@@ -45,10 +46,12 @@ const doSuomiFiLogin = async (t: TestController): Promise<Expectations> => {
   const expectedUser = await profileForm.expectations.userDataIsPresent();
   await profileForm.actions.clickContinueButton();
   const companiesTable = await suomiFiValtuutusComponents.companiesTable();
-  await companiesTable.actions.selectCompanyRadioButton(/activenakusteri oy/i);
+  const expectedCompany = await companiesTable.actions.selectCompanyRadioButton(
+    0
+  );
   const authorizeForm = await suomiFiValtuutusComponents.authorizeForm();
   await authorizeForm.actions.clickSubmitButton();
-  return { expectedUser, expectedCompany: /activenakusteri oy/i };
+  return { expectedUser, expectedCompany };
 };
 // eslint-disable-next-line arrow-body-style
 export const doLogin = (

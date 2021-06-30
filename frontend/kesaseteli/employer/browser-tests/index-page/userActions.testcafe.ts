@@ -1,3 +1,4 @@
+import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
@@ -5,7 +6,6 @@ import TestController from 'testcafe';
 
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getEmployerUiUrl } from '../utils/settings';
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 
 const url = getEmployerUiUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;

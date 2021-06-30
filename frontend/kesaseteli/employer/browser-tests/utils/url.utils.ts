@@ -1,5 +1,6 @@
 import { getSharedComponents } from '@frontend/shared/browser-tests/shared.components';
 import { getErrorMessage } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController, { ClientFunction } from 'testcafe';
 
 import { getEmployerUiUrl } from './settings';
@@ -27,15 +28,15 @@ export const getUrlUtils = (t: TestController) => {
     },
   };
   const expectations = {
-    async urlChangedToLoginPage() {
+    async urlChangedToLoginPage(locale: Language = 'fi') {
       await t
         .expect(getCurrentPathname())
-        .eql(`/login`, await getErrorMessage(t));
+        .eql(`/${locale}/login`, await getErrorMessage(t));
     },
-    async urlChangedToCompanyPage() {
+    async urlChangedToApplicationPage(locale: Language = 'fi') {
       await t
         .expect(getCurrentPathname())
-        .eql(`/company`, await getErrorMessage(t));
+        .eql(`/${locale}/application`, await getErrorMessage(t));
     },
   };
   return {
