@@ -2,7 +2,6 @@ import datetime
 
 import pytest
 from django.utils import timezone
-
 from shared.oidc.jobs.hourly.clear_user_sessions import Job as ClearUserSessionsJob
 from shared.oidc.models import EAuthorizationProfile
 

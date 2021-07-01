@@ -2,7 +2,6 @@ import pytest
 from django.conf import settings
 from django.test import override_settings
 from django.urls import path, reverse
-
 from shared.oidc.views.mock_views import (
     MockAuthenticationRequestView,
     MockLogoutView,

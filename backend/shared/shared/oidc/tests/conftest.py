@@ -1,16 +1,6 @@
 import pytest
-from django.test import Client
-
-from shared.oidc.tests.factories import (
-    EAuthorizationProfileFactory,
-    OIDCProfileFactory,
-    UserFactory,
-)
-
-
-@pytest.fixture()
-def user():
-    return UserFactory()
+from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
+from shared.common.tests.conftest import *  # noqa
 
 
 @pytest.fixture
@@ -21,16 +11,3 @@ def oidc_profile():
 @pytest.fixture
 def eauthorization_profile():
     return EAuthorizationProfileFactory()
-
-
-@pytest.fixture
-def client():
-    client = Client()
-    return client
-
-
-@pytest.fixture
-def user_client(user):
-    client = Client()
-    client.force_login(user)
-    return client

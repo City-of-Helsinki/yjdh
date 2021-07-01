@@ -3,7 +3,6 @@ from typing import Union
 
 from django.db.models import QuerySet
 from django.utils import timezone
-
 from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 

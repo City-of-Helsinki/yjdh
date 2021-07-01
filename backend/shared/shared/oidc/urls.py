@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.urls import include, path
-
 from shared.oidc.views.eauth_views import (
     EauthAuthenticationCallbackView,
     EauthAuthenticationRequestView,

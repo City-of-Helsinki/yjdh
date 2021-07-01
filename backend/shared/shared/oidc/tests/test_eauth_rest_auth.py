@@ -2,7 +2,6 @@ from unittest import mock
 
 import pytest
 from django.test import override_settings, RequestFactory
-
 from shared.oidc.auth import EAuthRestAuthentication
 
 
