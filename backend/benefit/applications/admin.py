@@ -3,6 +3,7 @@ from applications.models import (
     ApplicationBasis,
     ApplicationLogEntry,
     DeMinimisAid,
+    Employee,
 )
 from django.contrib import admin
 
@@ -18,8 +19,15 @@ class DeMinimisAidInline(admin.StackedInline):
     readonly_fields = ("created_at",)
 
 
+class EmployeeInline(admin.StackedInline):
+    model = Employee
+    fk_name = "application"
+    extra = 0
+    readonly_fields = ("created_at",)
+
+
 class ApplicationAdmin(admin.ModelAdmin):
-    inlines = (DeMinimisAidInline, ApplicationBasisInline)
+    inlines = (EmployeeInline, DeMinimisAidInline, ApplicationBasisInline)
     list_filter = ("status",)  # FIXME: "company"
     list_display = (
         "id",
@@ -49,5 +57,6 @@ class ApplicationBasisAdmin(admin.ModelAdmin):
 
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(DeMinimisAid)
+admin.site.register(Employee)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
 admin.site.register(ApplicationLogEntry)
