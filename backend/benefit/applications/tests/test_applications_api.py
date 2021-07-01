@@ -4,7 +4,7 @@ from datetime import date
 import pytest
 from applications.api.v1.serializers import ApplicationSerializer
 from applications.enums import ApplicationStatus, BenefitType
-from applications.models import Application
+from applications.models import Application, ApplicationLogEntry, Employee
 from applications.tests.conftest import *  # noqa
 from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
@@ -102,24 +102,27 @@ def test_application_post_unfinished(api_client, application):
     data = ApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
+    assert len(Employee.objects.all()) == 0
 
-    for key, item in data.items():
-        if key in [
-            "status",
-            "applicant_language",
-            "archived",
-            "use_alternative_address",
-        ]:
-            # field can't be empty/null
-            pass
-        elif key in ["start_date", "end_date"]:
-            data[key] = None
-        elif isinstance(item, list):
-            data[key] = []
-        elif isinstance(item, str):
-            data[key] = ""
-        elif isinstance(item, bool):
-            data[key] = None
+    for dict_object in [data, data["employee"]]:
+        for key, item in dict_object.items():
+            if key in [
+                "status",
+                "applicant_language",
+                "archived",
+                "use_alternative_address",
+                "is_living_in_helsinki",
+            ]:
+                # field can't be empty/null
+                pass
+            elif key in ["start_date", "end_date"]:
+                dict_object[key] = None
+            elif isinstance(item, list):
+                dict_object[key] = []
+            elif isinstance(item, str):
+                dict_object[key] = ""
+            elif isinstance(item, bool):
+                dict_object[key] = None
 
     response = api_client.post(
         reverse("v1:application-list"),
@@ -130,6 +133,13 @@ def test_application_post_unfinished(api_client, application):
     assert len(application.de_minimis_aid_set.all()) == 0
     assert application.benefit_type == ""
     assert application.start_date is None
+    assert (
+        application.employee.employee_language == data["employee"]["employee_language"]
+    )
+    assert (
+        application.employee.is_living_in_helsinki
+        == data["employee"]["is_living_in_helsinki"]
+    )
 
 
 def test_application_post_invalid_data(api_client, application):
@@ -154,6 +164,25 @@ def test_application_post_invalid_data(api_client, application):
     assert len(response.data["de_minimis_aid_set"]) == 2
 
 
+def test_application_post_invalid_employee_data(api_client, application):
+    data = ApplicationSerializer(application).data
+    application.delete()
+    assert len(Application.objects.all()) == 0
+
+    del data["id"]
+    data["employee"]["monthly_pay"] = "30000000.00"  # value too high
+    data["employee"]["social_security_number"] = "080597-953X"  # invalid checksum
+    data["employee"]["employee_language"] = None  # non-null required
+    response = api_client.post(reverse("v1:application-list"), data, format="json")
+    assert response.status_code == 400
+    assert response.data.keys() == {"employee"}
+    assert response.data["employee"].keys() == {
+        "monthly_pay",
+        "social_security_number",
+        "employee_language",
+    }
+
+
 def test_application_put_edit_fields(api_client, application):
     """
     modify existing application
@@ -170,6 +199,28 @@ def test_application_put_edit_fields(api_client, application):
     )  # normalized format
     application.refresh_from_db()
     assert application.company_contact_person_phone_number == "+358505658789"
+
+
+def test_application_put_edit_employee(api_client, application):
+    """
+    modify existing application
+    """
+    data = ApplicationSerializer(application).data
+    data["employee"]["phone_number"] = "0505658789"
+    data["employee"]["social_security_number"] = "080597-953Y"
+    old_employee_pk = application.employee.pk
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 200
+    assert (
+        response.data["employee"]["phone_number"] == "+358505658789"
+    )  # normalized format
+    application.refresh_from_db()
+    assert application.employee.phone_number == "+358505658789"
+    assert application.employee.social_security_number == "080597-953Y"
+    assert old_employee_pk == application.employee.pk
 
 
 def test_application_put_read_only_fields(api_client, application):
@@ -370,4 +421,39 @@ def test_application_edit_benefit_type_non_business_invalid(
 def test_application_delete(api_client, application):
     response = api_client.delete(get_detail_url(application))
     assert len(Application.objects.all()) == 0
+    assert len(Employee.objects.all()) == 0
+    assert len(ApplicationLogEntry.objects.all()) == 0
     assert response.status_code == 204
+
+
+@pytest.mark.parametrize(
+    "benefit_type", [BenefitType.SALARY_BENEFIT, BenefitType.EMPLOYMENT_BENEFIT]
+)
+@pytest.mark.parametrize(
+    "start_date,end_date,status_code",
+    [
+        ("2021-02-01", "2021-02-27", 400),  # too short
+        ("2021-02-01", "2021-02-28", 200),  # exactly one month
+        ("2021-02-01", "2022-01-31", 200),  # exactly 12 months
+        ("2021-02-01", "2022-02-01", 400),  # too long
+    ],
+)
+def test_application_date_range(
+    api_client, application, benefit_type, start_date, end_date, status_code
+):
+    """
+    modify existing application
+    """
+    data = ApplicationSerializer(application).data
+
+    data["benefit_type"] = benefit_type
+    data["start_date"] = start_date
+    data["end_date"] = end_date
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == status_code
+    if status_code == 200:
+        assert response.data["start_date"] == start_date
+        assert response.data["end_date"] == end_date

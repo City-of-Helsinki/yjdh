@@ -4,8 +4,10 @@ from helsinkibenefit.tests.conftest import *  # noqa
 
 def test_application_model(application):
     assert Application.objects.count() == 1
+    assert application.employee
 
 
 def test_employee_model(employee):
     assert Employee.objects.count() == 1
     assert Application.objects.count() == 1
+    assert employee.application

@@ -26,7 +26,7 @@ def rest_framework_debug_exception_handler(exc, context):
     """
     Enable in settings.py like this:
     REST_FRAMEWORK = {
-        'EXCEPTION_HANDLER': 'utils.debug_util.rest_framework_debug_exception_handler',
+        'EXCEPTION_HANDLER': 'common.debug_util.rest_framework_debug_exception_handler',
         ...
     }
     """

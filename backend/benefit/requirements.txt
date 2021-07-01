@@ -92,6 +92,8 @@ pyopenssl==20.0.1
     # via josepy
 pyrsistent==0.17.3
     # via jsonschema
+python-dateutil==2.8.1
+    # via -r requirements.in
 python-stdnum==1.16
     # via django-localflavor
 pytz==2021.1
@@ -112,6 +114,7 @@ six==1.16.0
     #   jsonschema
     #   mozilla-django-oidc
     #   pyopenssl
+    #   python-dateutil
 sqlparse==0.4.1
     # via django
 uritemplate==3.0.1

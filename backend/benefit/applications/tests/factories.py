@@ -48,7 +48,10 @@ class ApplicationBasisFactory(factory.django.DjangoModelFactory):
 
 class ApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
-
+    employee = factory.RelatedFactory(
+        "applications.tests.factories.EmployeeFactory",
+        factory_related_name="application",
+    )
     company_name = factory.Faker("sentence", nb_words=2)
     company_form = factory.Faker("sentence", nb_words=1)
     official_company_street_address = factory.Faker("street_address")
@@ -78,7 +81,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         date_end=date.today() + timedelta(days=100),
     )
     end_date = factory.LazyAttribute(
-        lambda o: o.start_date + timedelta(days=random.randint(1, 365))
+        lambda o: o.start_date + timedelta(days=random.randint(31, 365))
     )
     de_minimis_aid = True
     status = ApplicationStatus.DRAFT
@@ -103,12 +106,13 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
 
 class EmployeeFactory(factory.django.DjangoModelFactory):
-    application = factory.SubFactory(ApplicationFactory)
+    # pass employee=None to prevent ApplicationFactory from creating another employee
+    application = factory.SubFactory(ApplicationFactory, employee=None)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    social_security_number = factory.Faker("ssn")
+    social_security_number = factory.Faker("ssn", locale="fi_FI")
 
-    phone_number = factory.Faker("phone_number")
+    phone_number = factory.Faker("phone_number", locale="fi_FI")
     email = factory.Faker("email")
 
     employee_language = factory.Faker(

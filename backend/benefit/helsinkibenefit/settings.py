@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     "drf_spectacular",  # OpenAPI documentation
     "phonenumber_field",
     "django_extensions",
+    "encrypted_fields",
     "mozilla_django_oidc",
     "django_auth_adfs",
     # shared apps

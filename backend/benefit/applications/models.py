@@ -46,6 +46,8 @@ class Application(UUIDModel, TimeStampedModel):
         default=ApplicationStatus.DRAFT,
     )
 
+    application_number = models.IntegerField(null=True)
+
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
 
     company_form = models.CharField(max_length=64, verbose_name=_("company form"))
@@ -267,31 +269,39 @@ class Employee(UUIDModel, TimeStampedModel):
         on_delete=models.CASCADE,
     )
 
-    first_name = models.CharField(max_length=128, verbose_name=_("first name"))
-    last_name = models.CharField(max_length=128, verbose_name=_("last name"))
-    social_security_number = EncryptedCharField(
-        max_length=11, verbose_name=_("social security number")
+    first_name = models.CharField(
+        max_length=128, verbose_name=_("first name"), blank=True
     )
-    phone_number = models.CharField(max_length=64, verbose_name=_("phone number"))
+    last_name = models.CharField(
+        max_length=128, verbose_name=_("last name"), blank=True
+    )
+    social_security_number = EncryptedCharField(
+        max_length=11, verbose_name=_("social security number"), blank=True
+    )
+    phone_number = PhoneNumberField(
+        verbose_name=_("phone number"),
+        blank=True,
+    )
     email = models.EmailField(blank=True, verbose_name=_("email"))
 
     employee_language = models.CharField(
         choices=APPLICATION_LANGUAGE_CHOICES,
         default=APPLICATION_LANGUAGE_CHOICES[0][0],
         max_length=2,
+        blank=True,  # as of 2021-06, only required for power of attorney, so it's optional
     )
 
     job_title = models.CharField(
         blank=True, verbose_name=_("job title"), max_length=128
     )
-    monthly_pay = models.DecimalField(
+    monthly_pay = models.DecimalField(  # non-zero
         verbose_name=_("monthly pay"),
         decimal_places=2,
         max_digits=7,
         blank=True,
         null=True,
     )
-    vacation_money = models.DecimalField(
+    vacation_money = models.DecimalField(  # can be zero
         verbose_name=_("vacation money"),
         decimal_places=2,
         max_digits=7,
@@ -299,7 +309,7 @@ class Employee(UUIDModel, TimeStampedModel):
         null=True,
     )
 
-    other_expenses = models.DecimalField(
+    other_expenses = models.DecimalField(  # can be zero
         verbose_name=_("other expenses"),
         decimal_places=2,
         max_digits=7,
@@ -318,6 +328,20 @@ class Employee(UUIDModel, TimeStampedModel):
     )
     is_living_in_helsinki = models.BooleanField(
         default=False, verbose_name=_("is living in helsinki")
+    )
+
+    commission_amount = models.DecimalField(
+        verbose_name=_("amount of the commission (eur)"),
+        decimal_places=2,
+        max_digits=7,
+        blank=True,
+        null=True,
+    )
+
+    commission_description = models.CharField(
+        max_length=256,
+        verbose_name=_("Description of the commission"),
+        blank=True,
     )
 
     # TODO: Adding missing file fields or a separate Attachment relationship
