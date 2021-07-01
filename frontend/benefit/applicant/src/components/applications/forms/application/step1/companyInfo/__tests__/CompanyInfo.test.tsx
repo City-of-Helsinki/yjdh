@@ -4,7 +4,7 @@ import faker from 'faker';
 import { axe } from 'jest-axe';
 import React from 'react';
 
-import CompanyInfo, { CompanyInfoProps } from '../CompanyInfo.component';
+import CompanyInfo, { CompanyInfoProps } from '../CompanyInfo';
 
 describe('CompanyInfo', () => {
   const data = {

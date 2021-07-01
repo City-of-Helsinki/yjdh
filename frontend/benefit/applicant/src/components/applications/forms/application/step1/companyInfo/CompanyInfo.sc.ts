@@ -24,12 +24,10 @@ const CompanyInfoColumn = styled.div`
   flex: 1 0 50%;
 `;
 
-const CompanyInfoRow = styled.div<{ $loading?: boolean }>`
+const CompanyInfoRow = styled.div`
   display: flex;
   line-height: ${(props) => props.theme.lineHeight.l};
   height: ${(props) => `calc(${props.theme.lineHeight.l} * 1em)`};
-  background-color: ${({ $loading, theme }) =>
-    $loading ? theme.colors.black10 : 'inherit'};
   margin-right: ${(props) => props.theme.spacing.l};
   margin-bottom: ${(props) => props.theme.spacing.xs2};
 `;

@@ -9,18 +9,24 @@ import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
 import { StyledSubSection } from '../styled';
-import CompanyInfoContainer from './companyInfo/CompanyInfo.container';
+import CompanyInfo from './companyInfo/CompanyInfo';
 import { useComponent } from './extended';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   actions,
 }) => {
-  const { t, handleSubmit, getErrorMessage, fields, translationsBase, formik } =
-    useComponent();
+  const {
+    t,
+    handleSubmit,
+    getErrorMessage,
+    fields,
+    translationsBase,
+    formik,
+  } = useComponent();
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <CompanyInfoContainer />
+      <CompanyInfo />
       <FormSection header={t(`${translationsBase}.heading2`)}>
         <StyledFormGroup>
           <TextInput

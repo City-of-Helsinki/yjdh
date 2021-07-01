@@ -2,73 +2,51 @@ import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
 import { TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
+import Skeleton from 'react-loading-skeleton';
 import { StyledCheckbox } from 'shared/components/forms/fields/styled';
 import FormSection from 'shared/components/forms/section/FormSection';
 
 import { useComponent } from '../extended';
 import SC from './CompanyInfo.sc';
+import useCompanyInfo from './useCompanyInfo';
 
-export interface CompanyInfoProps {
-  data: {
-    name: string;
-    streetAddress: string;
-    postcode: string;
-    city: string;
-    businessId: string;
-  };
-  error?: string;
-  loading?: boolean;
-}
-
-const CompanyInfo: React.FC<CompanyInfoProps> = ({ data, error, loading }) => {
-  const {
-    t,
-    getErrorMessage,
-    fields,
-    translationsBase,
-    formik,
-  } = useComponent();
-  let formattedData = { ...data, businessId: `Y-tunnus: ${data.businessId}` };
-  if (error)
-    formattedData = {
-      name: '-',
-      streetAddress: '-',
-      postcode: '-',
-      city: '',
-      businessId: '-',
-    };
-  if (loading)
-    formattedData = {
-      name: '',
-      streetAddress: '',
-      postcode: '',
-      city: '',
-      businessId: '',
-    };
+const CompanyInfo: React.FC = () => {
+  const { getErrorMessage, fields, translationsBase, formik } = useComponent();
+  const { t, data, isLoading, shouldShowSkeleton, error } = useCompanyInfo();
 
   return (
-    <FormSection header={t(`${translationsBase}.heading1`)} loading={loading}>
+    <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
       <SC.CompanyInfoContainer>
         <SC.CompanyInfoSection>
           <SC.CompanyInfoColumn>
-            <SC.CompanyInfoRow $loading={loading}>
-              {formattedData.name}
-            </SC.CompanyInfoRow>
-            <SC.CompanyInfoRow $loading={loading}>
-              {formattedData.businessId}
-            </SC.CompanyInfoRow>
+            {shouldShowSkeleton ? (
+              <Skeleton width="90%" />
+            ) : (
+              <SC.CompanyInfoRow>{data.name}</SC.CompanyInfoRow>
+            )}
+            {shouldShowSkeleton ? (
+              <Skeleton width="90%" />
+            ) : (
+              <SC.CompanyInfoRow>{data.businessId}</SC.CompanyInfoRow>
+            )}
           </SC.CompanyInfoColumn>
           <SC.CompanyInfoColumn>
-            <SC.CompanyInfoRow $loading={loading}>
-              {formattedData.streetAddress}
-            </SC.CompanyInfoRow>
-            <SC.CompanyInfoRow $loading={loading}>
-              {formattedData.postcode} {formattedData.city}
-            </SC.CompanyInfoRow>
+            {shouldShowSkeleton ? (
+              <Skeleton width="90%" />
+            ) : (
+              <SC.CompanyInfoRow>{data.streetAddress}</SC.CompanyInfoRow>
+            )}
+            {shouldShowSkeleton ? (
+              <Skeleton width="90%" />
+            ) : (
+              <SC.CompanyInfoRow>
+                {data.postcode} {data.city}
+              </SC.CompanyInfoRow>
+            )}
           </SC.CompanyInfoColumn>
           <StyledCheckbox
             id={fields.hasCompanyOtherAddress.name}
-            disabled={loading || !!error}
+            disabled={isLoading || !!error}
             name={fields.hasCompanyOtherAddress.name}
             label={fields.hasCompanyOtherAddress.label}
             required
@@ -90,7 +68,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({ data, error, loading }) => {
           )}
           type={error ? 'error' : 'info'}
         >
-          {error ||
+          {error?.message ||
             t(`${translationsBase}.notifications.companyInformation.content`)}
         </SC.Notification>
 
