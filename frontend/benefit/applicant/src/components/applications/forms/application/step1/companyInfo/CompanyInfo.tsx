@@ -2,7 +2,7 @@ import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
 import { TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
-import Skeleton from 'react-loading-skeleton';
+import LoadingSkeleton from 'react-loading-skeleton';
 import { StyledCheckbox } from 'shared/components/forms/fields/styled';
 import FormSection from 'shared/components/forms/section/FormSection';
 
@@ -20,28 +20,24 @@ const CompanyInfo: React.FC = () => {
         <SC.CompanyInfoSection>
           <SC.CompanyInfoColumn>
             {shouldShowSkeleton ? (
-              <Skeleton width="90%" />
+              <LoadingSkeleton width="90%" count={2} />
             ) : (
-              <SC.CompanyInfoRow>{data.name}</SC.CompanyInfoRow>
-            )}
-            {shouldShowSkeleton ? (
-              <Skeleton width="90%" />
-            ) : (
-              <SC.CompanyInfoRow>{data.businessId}</SC.CompanyInfoRow>
+              <>
+                <SC.CompanyInfoRow>{data.name}</SC.CompanyInfoRow>
+                <SC.CompanyInfoRow>{data.businessId}</SC.CompanyInfoRow>
+              </>
             )}
           </SC.CompanyInfoColumn>
           <SC.CompanyInfoColumn>
             {shouldShowSkeleton ? (
-              <Skeleton width="90%" />
+              <LoadingSkeleton width="90%" count={2} />
             ) : (
-              <SC.CompanyInfoRow>{data.streetAddress}</SC.CompanyInfoRow>
-            )}
-            {shouldShowSkeleton ? (
-              <Skeleton width="90%" />
-            ) : (
-              <SC.CompanyInfoRow>
-                {data.postcode} {data.city}
-              </SC.CompanyInfoRow>
+              <>
+                <SC.CompanyInfoRow>{data.streetAddress}</SC.CompanyInfoRow>
+                <SC.CompanyInfoRow>
+                  {data.postcode} {data.city}
+                </SC.CompanyInfoRow>
+              </>
             )}
           </SC.CompanyInfoColumn>
           <StyledCheckbox

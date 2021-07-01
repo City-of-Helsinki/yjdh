@@ -32,7 +32,9 @@ const useCompanyInfo = (): CompanyInfoProps => {
 
   let formattedData = {
     ...companyData,
-    businessId: `Y-tunnus: ${companyData.businessId}`,
+    businessId: t('common:applications.sections.company.businessId', {
+      businessId: companyData.businessId,
+    }),
   };
 
   if (error)
