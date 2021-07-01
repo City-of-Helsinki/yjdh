@@ -61,6 +61,8 @@ env = environ.Env(
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_ACCOUNT_KEY=(str, ""),
     AZURE_CONTAINER=(str, ""),
+    AUDIT_LOG_FILENAME=(str, ""),
+    AUDIT_LOG_ORIGIN=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -155,11 +157,59 @@ CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
+# Audit logging
+AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
+AUDIT_LOG_FILENAME = env.str("AUDIT_LOG_FILENAME")
+
+if AUDIT_LOG_FILENAME:
+    if "X" in AUDIT_LOG_FILENAME:
+        import random
+        import re
+        import string
+
+        system_random = random.SystemRandom()
+        char_pool = string.ascii_lowercase + string.digits
+        AUDIT_LOG_FILENAME = re.sub(
+            "X", lambda x: system_random.choice(char_pool), AUDIT_LOG_FILENAME
+        )
+    _audit_log_handler = {
+        "class": "logging.handlers.RotatingFileHandler",
+        "filename": AUDIT_LOG_FILENAME,
+        "maxBytes": 100_000_000,
+        "backupCount": 1,
+        "delay": True,
+    }
+else:
+    _audit_log_handler = {
+        "class": "logging.StreamHandler",
+        "formatter": "verbose",
+    }
+
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
-    "loggers": {"django": {"handlers": ["console"], "level": "ERROR"}},
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s p%(process)d %(name)s %(levelname)s: %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "audit": _audit_log_handler,
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": "ERROR"},
+        "audit": {
+            "level": "INFO",  # Audit log only writes at INFO level
+            "handlers": [
+                "audit",
+            ],
+        },
+    },
 }
 
 REST_FRAMEWORK = {
