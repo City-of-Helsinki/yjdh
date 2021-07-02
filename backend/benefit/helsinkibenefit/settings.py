@@ -61,6 +61,10 @@ env = environ.Env(
     ADFS_TENANT_ID=(str, "tenant_id"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
+    AZURE_ACCOUNT_NAME=(str, ""),
+    AZURE_ACCOUNT_KEY=(str, ""),
+    AZURE_CONTAINER=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -262,8 +266,15 @@ ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 
 # Authentication settings end
 
-
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
+
+# Django storages
+DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
+
+AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = env("AZURE_CONTAINER")
+
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

@@ -17,4 +17,5 @@ pyyaml
 uritemplate
 drf-spectacular
 django-filter
+django-storages[azure]
 -e ../shared

@@ -1,4 +1,4 @@
-from applications.enums import ApplicationStatus, BenefitType
+from applications.enums import ApplicationStatus, AttachmentType, BenefitType
 from companies.models import Company
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -21,6 +21,12 @@ PAY_SUBSIDY_PERCENT_CHOICES = (
     (40, "40%"),
     (50, "50%"),
     (100, "100%"),
+)
+
+ATTACHMENT_CONTENT_TYPE_CHOICES = (
+    ("application/pdf", "pdf"),
+    ("image/png", "png"),
+    ("image/jpeg", "jpeg"),
 )
 
 
@@ -375,3 +381,35 @@ class Employee(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_employee"
         verbose_name = _("employee")
         verbose_name_plural = _("employees")
+
+
+class Attachment(UUIDModel, TimeStampedModel):
+    """
+    created_at field from TimeStampedModel provides the upload timestamp
+    """
+
+    application = models.ForeignKey(
+        Application,
+        verbose_name=_("application"),
+        related_name="attachments",
+        on_delete=models.CASCADE,
+    )
+    attachment_type = models.CharField(
+        max_length=64,
+        verbose_name=_("attachment type in business rules"),
+        choices=AttachmentType.choices,
+    )
+    content_type = models.CharField(
+        max_length=100,
+        choices=ATTACHMENT_CONTENT_TYPE_CHOICES,
+        verbose_name=_("technical content type of the attachment"),
+    )
+    ordering = models.IntegerField(default=0)
+    attachment_file = models.FileField(verbose_name=_("application attachment content"))
+
+    class Meta:
+        db_table = "bf_applications_attachment"
+        verbose_name = _("attachment")
+        verbose_name_plural = _("attachments")
+        unique_together = [("application", "ordering")]
+        ordering = ["application__created_at", "ordering"]

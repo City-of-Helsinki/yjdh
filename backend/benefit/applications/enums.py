@@ -37,3 +37,13 @@ class OrganizationType(models.TextChoices):
             return OrganizationType.COMPANY
         else:
             return OrganizationType.ASSOCIATION
+
+
+class AttachmentType(models.TextChoices):
+    EMPLOYMENT_CONTRACT = "employment_contract", _("employment contract")
+    PAY_SUBSIDY_DECISION = "pay_subsidy_decision", _("pay subsidy decision")
+    COMMISSION_CONTRACT = "commission_contract", _("commission contract")
+    EDUCATION_CONTRACT = "education_contract", _(
+        "education contract of the apprenticeship office"
+    )
+    HELSINKI_BENEFIT_VOUCHER = "helsinki_benefit_voucher", _("helsinki benefit voucher")
