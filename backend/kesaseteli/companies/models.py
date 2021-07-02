@@ -19,24 +19,6 @@ class Company(UUIDModel):
 
     ytj_json = models.JSONField(blank=True, null=True, verbose_name=_("ytj json"))
 
-    # Manually filled by the customer
-    manual_company_form = models.CharField(
-        max_length=64, blank=True, verbose_name=_("manual company form")
-    )
-    manual_industry = models.CharField(
-        max_length=256, blank=True, verbose_name=_("manual industry")
-    )
-
-    manual_street_address = models.CharField(
-        max_length=256, blank=True, verbose_name=_("manual street address")
-    )
-    manual_postcode = models.CharField(
-        max_length=256, blank=True, verbose_name=_("manual postcode")
-    )
-    manual_city = models.CharField(
-        max_length=256, blank=True, verbose_name=_("manual city")
-    )
-
     eauth_profile = models.OneToOneField(
         "oidc.EAuthorizationProfile",
         on_delete=models.SET_NULL,
