@@ -1,51 +1,6 @@
-type Colors = {
-  [key: string]: string;
-};
+import { DefaultTheme } from 'styled-components';
 
-type Fonts = {
-  [key: string]: string;
-};
-
-type Body = {
-  [key: string]: string;
-};
-
-type Heading = {
-  [key: string]: string;
-};
-
-type FontSize = {
-  body: Body;
-  heading: Heading;
-};
-
-type ContainerWidth = {
-  [key: string]: string;
-};
-
-type Spacing = {
-  [key: string]: string;
-};
-
-type SpacingLayout = {
-  [key: string]: string;
-};
-
-type LineHeight = {
-  [key: string]: string;
-};
-
-export interface Theme {
-  colors: Colors;
-  fonts: Fonts;
-  fontSize: FontSize;
-  containerWidth: ContainerWidth;
-  spacing: Spacing;
-  spacingLayout: SpacingLayout;
-  lineHeight: LineHeight;
-}
-
-const theme: Theme = {
+const theme: DefaultTheme = {
   colors: {
     brick: 'var(--color-brick)',
     brickLight: 'var(--color-brick-light)',
@@ -121,7 +76,7 @@ const theme: Theme = {
     infoDark: 'var(--color-info-dark)',
   },
   fonts: {
-    helGrotesk: `var(--font-default)`,
+    helGrotesk: 'var(--font-default)',
   },
   fontSize: {
     heading: {

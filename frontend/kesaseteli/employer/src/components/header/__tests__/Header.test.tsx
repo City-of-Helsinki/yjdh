@@ -37,10 +37,7 @@ const clickToLogout = (user: User): void => {
   );
 };
 
-const changeLanguage = (
-  fromLang: Language,
-  toLang: Language
-): void => {
+const changeLanguage = (fromLang: Language, toLang: Language): void => {
   userEvent.click(
     screen.getAllByRole('button', {
       name: new RegExp(fromLang, 'i'),

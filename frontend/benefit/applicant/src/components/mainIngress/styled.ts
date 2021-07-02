@@ -1,14 +1,11 @@
 import { Button } from 'hds-react';
 import React from 'react';
-import { Theme } from 'shared/styles/theme';
-import styled, { ThemeProps } from 'styled-components';
-
-type Props = ThemeProps<Theme>;
+import styled from 'styled-components';
 
 const StyledContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding-bottom: ${(props: Props) => props.theme.spacing.m};
+  padding-bottom: ${(props) => props.theme.spacing.m};
 `;
 
 const StyledTextContainer = styled.div`
@@ -17,14 +14,14 @@ const StyledTextContainer = styled.div`
 `;
 
 const StyledHeading = styled.h1`
-  font-size: ${(props: Props) => props.theme.fontSize.heading.xl};
+  font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
 `;
 
 const StyledDescription = styled.p`
-  font-size: ${(props: Props) => props.theme.fontSize.heading.s};
+  font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: normal;
-  line-height: ${(props: Props) => props.theme.lineHeight.l};
+  line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
 const StyledLink = styled.span`
@@ -45,9 +42,8 @@ interface ButtonProps {
 }
 
 const StyledButton = styled(Button)<ButtonProps>`
-  background-color: ${(props: Props) =>
-    props.theme.colors.coatOfArms} !important;
-  border-color: ${(props: Props) => props.theme.colors.coatOfArms} !important;
+  background-color: ${(props) => props.theme.colors.coatOfArms} !important;
+  border-color: ${(props) => props.theme.colors.coatOfArms} !important;
 `;
 
 export {

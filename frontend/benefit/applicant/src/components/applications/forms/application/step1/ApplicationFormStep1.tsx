@@ -1,26 +1,15 @@
 import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { Notification, SelectionGroup, TextArea, TextInput } from 'hds-react';
+import { SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
-import InputMask from 'react-input-mask';
-import {
-  StyledCheckbox,
-  StyledRadioButton,
-} from 'shared/components/forms/fields/styled';
+import { StyledRadioButton } from 'shared/components/forms/fields/styled';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
-import {
-  StyledCompanyInfoColumn,
-  StyledCompanyInfoContainer,
-  StyledCompanyInfoRow,
-  StyledCompanyInfoSection,
-  StyledIBANField,
-  StyledNotificationContent,
-  StyledSubSection,
-} from '../styled';
+import { StyledSubSection } from '../styled';
+import CompanyInfo from './companyInfo/CompanyInfo';
 import { useComponent } from './extended';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
@@ -37,149 +26,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <FormSection header={t(`${translationsBase}.heading1`)}>
-        <StyledCompanyInfoContainer>
-          <StyledCompanyInfoSection>
-            <StyledCompanyInfoColumn>
-              <StyledCompanyInfoRow>Herkkulautanen Oy</StyledCompanyInfoRow>
-              <StyledCompanyInfoRow>Y-tunnus: 2114560-2</StyledCompanyInfoRow>
-            </StyledCompanyInfoColumn>
-            <StyledCompanyInfoColumn>
-              <StyledCompanyInfoRow>Keskuskatu 13 A 11</StyledCompanyInfoRow>
-              <StyledCompanyInfoRow>00100 Helsinki</StyledCompanyInfoRow>
-            </StyledCompanyInfoColumn>
-          </StyledCompanyInfoSection>
-          <StyledCompanyInfoSection>
-            <Notification
-              label={t(
-                `${translationsBase}.notifications.companyInformation.label`
-              )}
-              type="info"
-            >
-              <StyledNotificationContent>
-                {t(
-                  `${translationsBase}.notifications.companyInformation.content`
-                )}
-              </StyledNotificationContent>
-            </Notification>
-          </StyledCompanyInfoSection>
-        </StyledCompanyInfoContainer>
-        <StyledFormGroup>
-          <StyledCheckbox
-            id={fields.hasCompanyOtherAddress.name}
-            name={fields.hasCompanyOtherAddress.name}
-            label={fields.hasCompanyOtherAddress.label}
-            required
-            checked={formik.values.hasCompanyOtherAddress === true}
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS
-            )}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS)
-            }
-          />
-        </StyledFormGroup>
-        {formik.values.hasCompanyOtherAddress && (
-          <StyledFormGroup>
-            <TextInput
-              id={fields.companyOtherAddressStreet.name}
-              name={fields.companyOtherAddressStreet.name}
-              label={fields.companyOtherAddressStreet.label}
-              placeholder={fields.companyOtherAddressStreet.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressStreet}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
-                )
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
-              )}
-              required
-            />
-            <TextInput
-              id={fields.companyOtherAddressZipCode.name}
-              name={fields.companyOtherAddressZipCode.name}
-              label={fields.companyOtherAddressZipCode.label}
-              placeholder={fields.companyOtherAddressZipCode.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressZipCode}
-              invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
-              }
-              aria-invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP
-              )}
-              required
-            />
-            <TextInput
-              id={fields.companyOtherAddressPostalDistrict.name}
-              name={fields.companyOtherAddressPostalDistrict.name}
-              label={fields.companyOtherAddressPostalDistrict.label}
-              placeholder={fields.companyOtherAddressPostalDistrict.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressPostalDistrict}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-                )
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-              )}
-              required
-            />
-          </StyledFormGroup>
-        )}
-        <StyledFormGroup>
-          <InputMask
-            mask={fields.companyIban.mask?.format ?? ''}
-            maskChar={null}
-            value={formik.values.companyIban}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              const initValue = e.target.value;
-              const value =
-                fields.companyIban.mask?.stripVal(initValue) ?? initValue;
-              return formik.setFieldValue(fields.companyIban.name, value);
-            }}
-          >
-            {() => (
-              <StyledIBANField
-                id={fields.companyIban.name}
-                name={fields.companyIban.name}
-                label={fields.companyIban.label}
-                placeholder={fields.companyIban.placeholder}
-                invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-                aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)
-                }
-                errorText={getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-                required
-              />
-            )}
-          </InputMask>
-        </StyledFormGroup>
-      </FormSection>
+      <CompanyInfo />
       <FormSection header={t(`${translationsBase}.heading2`)}>
         <StyledFormGroup>
           <TextInput

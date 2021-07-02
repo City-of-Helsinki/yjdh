@@ -1,8 +1,5 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
-import { Theme } from 'shared/styles/theme';
-import styled, { ThemeProps } from 'styled-components';
-
-type Props = ThemeProps<Theme> & { backgroundColor?: string };
+import styled from 'styled-components';
 
 interface ContainerProps {
   backgroundColor?: string;
@@ -10,10 +7,9 @@ interface ContainerProps {
 
 const StyledContainer = styled.div<ContainerProps>`
   display: grid;
-  background-color: ${(props: Props) => props.backgroundColor || ''};
-  grid-template-columns: ${(props: Props) => props.theme.spacing.xs2} 1fr ${(
-      props: Props
-    ) => props.theme.spacing.xs2};
+  background-color: ${(props) => props.backgroundColor || ''};
+  grid-template-columns: ${(props) => props.theme.spacing.xs2} 1fr ${(props) =>
+      props.theme.spacing.xs2};
 
   ${respondAbove('md')`
     grid-template-columns: 1fr minmax(auto, 1240px) 1fr;
@@ -25,7 +21,7 @@ const StyledContainer = styled.div<ContainerProps>`
 `;
 
 const StyledInner = styled.div`
-  padding: ${(props: Props) => props.theme.spacing.xs};
+  padding: ${(props) => props.theme.spacing.xs};
 `;
 
 export { StyledContainer, StyledInner };

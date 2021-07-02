@@ -48,6 +48,7 @@
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading3": "Hakijan de minimis-tuet",
         "heading4": "YT-tilanne",
+        "businessId": "Y-tunnus: {{ businessId }}",
         "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
         "deMinimisAidsAdd": "Lisää",
         "deMinimisAidsRemove": "Poista",

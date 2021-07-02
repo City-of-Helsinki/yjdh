@@ -11,7 +11,10 @@ module.exports = {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
     [`benefit/applicant\/(.*)$`]: '<rootDir>/src/$1',
   },
-  setupFilesAfterEnv: ['<rootDir>/../../shared/test/setupTests.ts'],
+  setupFilesAfterEnv: [
+    '<rootDir>/../../shared/test/setupTests.ts',
+    '<rootDir>/test/i18n/i18n-test.ts',
+  ],
   coveragePathIgnorePatterns: [
     '<rootDir>/src/pages/',
     '<rootDir>/../../shared/src/server/next-server.js',

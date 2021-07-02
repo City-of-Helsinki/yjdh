@@ -1,12 +1,12 @@
 import AxiosTestContext from 'kesaseteli/employer/__tests__/utils/backend/axios-test-context';
 import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
-import BackendAPIContext from 'kesaseteli/employer/backend-api/BackendAPIContext';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
 import Header from 'kesaseteli/employer/components/header/Header';
 import { NextPage } from 'next';
 import { NextRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 import Content from 'shared/components/content/Content';
 import Layout from 'shared/components/layout/Layout';
 import theme from 'shared/styles/theme';
@@ -22,15 +22,15 @@ const renderPage = (
     <BackendAPIContext.Provider value={AxiosTestContext}>
       <QueryClientProvider client={client}>
         <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <Layout>
-            <Header />
-            <Content>
+          <ThemeProvider theme={theme}>
+            <Layout>
+              <Header />
+              <Content>
                 <Page />
-            </Content>
-            <Footer />
-          </Layout>
-        </ThemeProvider>
+              </Content>
+              <Footer />
+            </Layout>
+          </ThemeProvider>
         </AuthProvider>
       </QueryClientProvider>
     </BackendAPIContext.Provider>,
