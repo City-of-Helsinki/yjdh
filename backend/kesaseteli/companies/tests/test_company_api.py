@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 from django.conf import settings
 from django.test import override_settings
-from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -67,10 +66,9 @@ def test_get_mock_company_not_found_from_ytj(api_client):
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
 )
-def test_get_company_organization_roles_error(api_client, requests_mock, user):
-    oidc_profile = OIDCProfileFactory(user=user)
-    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
-
+def test_get_company_organization_roles_error(
+    api_client, requests_mock, user_with_profile
+):
     matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=401)
 
@@ -88,10 +86,7 @@ def test_get_company_organization_roles_error(api_client, requests_mock, user):
     MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
-def test_get_company_from_ytj(api_client, requests_mock, user):
-    oidc_profile = OIDCProfileFactory(user=user)
-    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
-
+def test_get_company_from_ytj(api_client, requests_mock, user_with_profile):
     set_up_mock_requests(
         DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
     )
@@ -117,6 +112,8 @@ def test_get_company_from_ytj(api_client, requests_mock, user):
     assert (
         response.data["business_id"] == DUMMY_YTJ_RESPONSE["results"][0]["businessId"]
     )
+    for field in ["company_form", "industry", "street_address", "postcode", "city"]:
+        assert response.data[field]
 
 
 @pytest.mark.django_db
@@ -124,10 +121,7 @@ def test_get_company_from_ytj(api_client, requests_mock, user):
     MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
-def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
-    oidc_profile = OIDCProfileFactory(user=user)
-    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
-
+def test_get_company_not_found_from_ytj(api_client, requests_mock, user_with_profile):
     matcher = re.compile(settings.YTJ_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=404)
 
@@ -160,10 +154,9 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
-def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):
-    oidc_profile = OIDCProfileFactory(user=user)
-    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
-
+def test_get_company_from_ytj_invalid_response(
+    api_client, requests_mock, user_with_profile
+):
     ytj_reponse = copy.deepcopy(DUMMY_YTJ_RESPONSE)
     ytj_reponse["results"][0]["addresses"] = []
 

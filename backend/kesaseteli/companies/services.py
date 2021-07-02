@@ -7,8 +7,8 @@ from shared.oidc.models import EAuthorizationProfile
 from shared.oidc.utils import get_organization_roles
 from shared.ytj.ytj_client import YTJClient
 
+from common.tests.factories import CompanyFactory
 from companies.models import Company
-from companies.tests.factories import CompanyFactory
 
 LOGGER = logging.getLogger(__name__)
 
