@@ -2,6 +2,7 @@ from applications.models import (
     Application,
     ApplicationBasis,
     ApplicationLogEntry,
+    Attachment,
     DeMinimisAid,
     Employee,
 )
@@ -26,8 +27,20 @@ class EmployeeInline(admin.StackedInline):
     readonly_fields = ("created_at",)
 
 
+class AttachmentInline(admin.StackedInline):
+    model = Attachment
+    fk_name = "application"
+    extra = 0
+    readonly_fields = ("created_at",)
+
+
 class ApplicationAdmin(admin.ModelAdmin):
-    inlines = (EmployeeInline, DeMinimisAidInline, ApplicationBasisInline)
+    inlines = (
+        EmployeeInline,
+        DeMinimisAidInline,
+        ApplicationBasisInline,
+        AttachmentInline,
+    )
     list_filter = ("status",)  # FIXME: "company"
     list_display = (
         "id",
@@ -58,5 +71,6 @@ class ApplicationBasisAdmin(admin.ModelAdmin):
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(DeMinimisAid)
 admin.site.register(Employee)
+admin.site.register(Attachment)
 admin.site.register(ApplicationBasis, ApplicationBasisAdmin)
 admin.site.register(ApplicationLogEntry)

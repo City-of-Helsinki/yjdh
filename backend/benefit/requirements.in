@@ -18,4 +18,5 @@ uritemplate
 drf-spectacular
 django-filter
 django-storages[azure]
+Pillow
 -e ../shared

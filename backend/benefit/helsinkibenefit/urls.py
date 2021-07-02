@@ -1,5 +1,7 @@
 from applications.api.v1 import views as application_views
 from companies.api.v1.views import GetCompanyView
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
@@ -35,10 +37,12 @@ urlpatterns = [
     ),
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-#
 # Kubernetes liveness & readiness probes
-#
+
+
 def healthz(*args, **kwargs):
     return HttpResponse(status=200)
 

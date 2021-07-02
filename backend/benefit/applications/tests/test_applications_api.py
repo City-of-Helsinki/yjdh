@@ -1,15 +1,24 @@
 import copy
+import json
+import os
+import tempfile
 from datetime import date, datetime
 
 import pytest
 import pytz
 from applications.api.v1.serializers import ApplicationSerializer
-from applications.enums import ApplicationStatus, BenefitType, OrganizationType
+from applications.enums import (
+    ApplicationStatus,
+    AttachmentType,
+    BenefitType,
+    OrganizationType,
+)
 from applications.models import Application, ApplicationLogEntry, Employee
 from applications.tests.conftest import *  # noqa
 from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
+from PIL import Image
 from rest_framework.reverse import reverse
 
 
@@ -585,3 +594,52 @@ def test_application_pay_subsidy(
         data,
     )
     assert response.status_code == expected_code
+
+
+def test_attachment_upload_and_delete(api_client, application):
+    image = Image.new("RGB", (100, 100))
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(tmp_file)
+    tmp_file.seek(0)
+
+    response = api_client.post(
+        reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+        {
+            "attachment_file": tmp_file,
+            "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
+        },
+        format="multipart",
+    )
+
+    assert response.status_code == 201
+    assert len(application.attachments.all()) == 1
+    attachment = application.attachments.all().first()
+    assert attachment.attachment_type == AttachmentType.EMPLOYMENT_CONTRACT
+    assert os.path.basename(tmp_file.name) == attachment.attachment_file
+
+    response = api_client.delete(
+        reverse(
+            "v1:application-delete-attachment",
+            kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+
+    assert response.status_code == 204
+    assert len(application.attachments.all()) == 0
+
+
+def test_attachment_requirements(
+    api_client,
+    application,
+):
+    application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
+    application.pay_subsidy_granted = True
+    application.pay_subsidy_percent = 50
+    application.save()
+    response = api_client.get(get_detail_url(application))
+    assert json.loads(json.dumps(response.data["attachment_requirements"])) == [
+        ["employment_contract", "required"],
+        ["helsinki_benefit_voucher", "optional"],
+        ["pay_subsidy_decision", "required"],
+    ]
