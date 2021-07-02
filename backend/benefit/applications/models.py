@@ -59,7 +59,7 @@ class Application(UUIDModel, TimeStampedModel):
         default=ApplicationStatus.DRAFT,
     )
 
-    application_number = models.IntegerField(null=True)
+    application_number = models.IntegerField(null=True, blank=True)
 
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
 
@@ -139,12 +139,14 @@ class Application(UUIDModel, TimeStampedModel):
         verbose_name=_("Pay subsidy percent"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,
         null=True,
+        blank=True,
     )
 
     additional_pay_subsidy_percent = models.IntegerField(
         verbose_name=_("Pay subsidy percent for second pay subsidy grant"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,
         null=True,
+        blank=True,
     )
 
     apprenticeship_program = models.BooleanField(null=True)
@@ -404,12 +406,10 @@ class Attachment(UUIDModel, TimeStampedModel):
         choices=ATTACHMENT_CONTENT_TYPE_CHOICES,
         verbose_name=_("technical content type of the attachment"),
     )
-    ordering = models.IntegerField(default=0)
     attachment_file = models.FileField(verbose_name=_("application attachment content"))
 
     class Meta:
         db_table = "bf_applications_attachment"
         verbose_name = _("attachment")
         verbose_name_plural = _("attachments")
-        unique_together = [("application", "ordering")]
-        ordering = ["application__created_at", "ordering"]
+        ordering = ["application__created_at", "attachment_type", "created_at"]

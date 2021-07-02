@@ -47,3 +47,8 @@ class AttachmentType(models.TextChoices):
         "education contract of the apprenticeship office"
     )
     HELSINKI_BENEFIT_VOUCHER = "helsinki_benefit_voucher", _("helsinki benefit voucher")
+
+
+class AttachmentRequirement(models.TextChoices):
+    REQUIRED = "required", _("attachment is required")
+    OPTIONAL = "optional", _("attachment is optional")

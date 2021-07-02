@@ -1,11 +1,18 @@
 import re
 from datetime import date
 
-from applications.enums import ApplicationStatus, BenefitType, OrganizationType
+from applications.enums import (
+    ApplicationStatus,
+    AttachmentRequirement,
+    AttachmentType,
+    BenefitType,
+    OrganizationType,
+)
 from applications.models import (
     Application,
     ApplicationBasis,
     ApplicationLogEntry,
+    Attachment,
     DeMinimisAid,
     Employee,
 )
@@ -76,6 +83,20 @@ class ApplicationBasisSerializer(serializers.ModelSerializer):
                 "help_text": "Unique slug that identifies the basis",
             }
         }
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attachment
+        fields = [
+            "id",
+            "application",
+            "attachment_type",
+            "attachment_file",
+            "content_type",
+            "created_at",
+        ]
+        read_only_fields = ["created_at"]
 
 
 class DeMinimisAidSerializer(serializers.ModelSerializer):
@@ -224,6 +245,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     company = CompanySerializer(read_only=True)
 
+    attachments = AttachmentSerializer(
+        read_only=True,
+        many=True,
+        help_text="Attachments of the application (read-only)",
+    )
+
     bases = serializers.SlugRelatedField(
         many=True,
         slug_field="identifier",
@@ -261,6 +288,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "submitted_at",
             "bases",
             "available_bases",
+            "attachment_requirements",
             "available_benefit_types",
             "official_company_street_address",
             "official_company_city",
@@ -288,10 +316,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "de_minimis_aid_set",
             "create_application_for_company",
             "last_modified_at",
+            "attachments",
         ]
         read_only_fields = [
             "submitted_at",
             "available_bases",
+            "attachment_requirements",
             "company_name",
             "company_form",
             "official_company_street_address",
@@ -400,6 +430,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
         "get_available_bases", help_text="List of available application basis slugs"
     )
 
+    attachment_requirements = serializers.SerializerMethodField(
+        "get_attachment_requirements", help_text="get the attachment requirements"
+    )
+
     available_benefit_types = serializers.SerializerMethodField(
         "get_available_benefit_types",
         help_text="Available benefit types depend on organization type of the applicant",
@@ -430,6 +464,53 @@ class ApplicationSerializer(serializers.ModelSerializer):
             basis.identifier
             for basis in ApplicationBasis.objects.filter(is_active=True)
         ]
+
+    def _get_pay_subsidy_attachment_requirements(self, application):
+        req = []
+        if application.pay_subsidy_percent:
+            req.append(
+                (AttachmentType.PAY_SUBSIDY_DECISION, AttachmentRequirement.REQUIRED)
+            )
+        if application.additional_pay_subsidy_percent:
+            req.append(
+                (AttachmentType.PAY_SUBSIDY_DECISION, AttachmentRequirement.REQUIRED)
+            )
+        return req
+
+    def get_attachment_requirements(self, obj):
+        if obj.apprenticeship_program:
+            return [
+                (AttachmentType.EMPLOYMENT_CONTRACT, AttachmentRequirement.REQUIRED),
+                (AttachmentType.EDUCATION_CONTRACT, AttachmentRequirement.REQUIRED),
+                (
+                    AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                    AttachmentRequirement.OPTIONAL,
+                ),
+            ] + self._get_pay_subsidy_attachment_requirements(obj)
+        elif obj.benefit_type in [
+            BenefitType.EMPLOYMENT_BENEFIT,
+            BenefitType.SALARY_BENEFIT,
+        ]:
+            return [
+                (AttachmentType.EMPLOYMENT_CONTRACT, AttachmentRequirement.REQUIRED),
+                (
+                    AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                    AttachmentRequirement.OPTIONAL,
+                ),
+            ] + self._get_pay_subsidy_attachment_requirements(obj)
+        elif obj.benefit_type == BenefitType.COMMISSION_BENEFIT:
+            return [
+                (AttachmentType.COMMISSION_CONTRACT, AttachmentRequirement.REQUIRED),
+                (
+                    AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+                    AttachmentRequirement.OPTIONAL,
+                ),
+            ]
+        elif not obj.benefit_type:
+            # applicant has not selected the value yet
+            return []
+        else:
+            raise BenefitAPIException("This should be unreachable")
 
     def _validate_de_minimis_aid_set(
         self,
