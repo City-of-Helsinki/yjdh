@@ -8,7 +8,7 @@ import SC from './ApplicationList.sc';
 import ListItem from './listItem/ListItem';
 import useApplicationList from './useApplicationList';
 
-interface ApplicationListProps {
+export interface ApplicationListProps {
   heading: string;
   data: ApplicationData[];
   isLoading: boolean;
