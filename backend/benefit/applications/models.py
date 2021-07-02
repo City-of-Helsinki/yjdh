@@ -16,6 +16,13 @@ APPLICATION_LANGUAGE_CHOICES = (
     ("en", "english"),
 )
 
+PAY_SUBSIDY_PERCENT_CHOICES = (
+    (30, "30%"),
+    (40, "40%"),
+    (50, "50%"),
+    (100, "100%"),
+)
+
 
 class Application(UUIDModel, TimeStampedModel):
     """
@@ -118,6 +125,20 @@ class Application(UUIDModel, TimeStampedModel):
             "additional information about the ongoing co-operation negotiations"
         ),
         blank=True,
+    )
+
+    pay_subsidy_granted = models.BooleanField(null=True)
+
+    pay_subsidy_percent = models.IntegerField(
+        verbose_name=_("Pay subsidy percent"),
+        choices=PAY_SUBSIDY_PERCENT_CHOICES,
+        null=True,
+    )
+
+    additional_pay_subsidy_percent = models.IntegerField(
+        verbose_name=_("Pay subsidy percent for second pay subsidy grant"),
+        choices=PAY_SUBSIDY_PERCENT_CHOICES,
+        null=True,
     )
 
     apprenticeship_program = models.BooleanField(null=True)

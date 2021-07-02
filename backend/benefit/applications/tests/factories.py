@@ -72,6 +72,10 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     co_operation_negotiations_description = factory.LazyAttribute(
         lambda o: factory.Faker("sentence") if o.co_operation_negotiations else ""
     )
+    pay_subsidy_granted = False
+    pay_subsidy_percent = None
+    additional_pay_subsidy_percent = None
+
     apprenticeship_program = factory.Faker("boolean")
     archived = factory.Faker("boolean")
     benefit_type = factory.Faker("random_element", elements=BenefitType.values)

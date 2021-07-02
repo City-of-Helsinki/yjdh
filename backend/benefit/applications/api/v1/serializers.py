@@ -200,7 +200,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "is_living_in_helsinki",
             "commission_amount",
             "commission_description",
-            "modified_at",
             "created_at",
         ]
         read_only_fields = [
@@ -277,6 +276,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "applicant_language",
             "co_operation_negotiations",
             "co_operation_negotiations_description",
+            "pay_subsidy_granted",
+            "pay_subsidy_percent",
+            "additional_pay_subsidy_percent",
             "apprenticeship_program",
             "archived",
             "benefit_type",
@@ -285,6 +287,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "de_minimis_aid",
             "de_minimis_aid_set",
             "create_application_for_company",
+            "last_modified_at",
         ]
         read_only_fields = [
             "submitted_at",
@@ -295,6 +298,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "official_company_city",
             "official_company_postcode",
             "available_benefit_types",
+            "last_modified_at",
         ]
         extra_kwargs = {
             "company_name": {
@@ -351,6 +355,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "co_operation_negotiations_description": {
                 "help_text": "Free text entered by the applicant",
             },
+            "pay_subsidy_granted": {
+                "help_text": "Is pay subsidy granted for the employment?",
+            },
+            "pay_subsidy_percent": {
+                "help_text": "Percentage of the pay subsidy granted",
+            },
+            "additional_pay_subsidy_percent": {
+                "help_text": "Percentage of the pay subsidy granted (If there is another pay subsidy grant)",
+            },
             "apprenticeship_program": {
                 "help_text": "Is the employee in apprenticeship program?",
             },
@@ -372,6 +385,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
         }
 
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
+
+    last_modified_at = serializers.SerializerMethodField(
+        "get_last_modified_at",
+        help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
+    )
 
     organization_type = serializers.SerializerMethodField(
         "get_organization_type",
@@ -397,6 +415,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
         else:
             return None
 
+    def get_last_modified_at(self, obj):
+        if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
+            return None
+        return obj.modified_at
+
     @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
     def get_organization_type(self, obj):
         return OrganizationType.resolve_organization_type(obj.company.company_form)
@@ -408,7 +431,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
             for basis in ApplicationBasis.objects.filter(is_active=True)
         ]
 
-    def _validate_de_minimis_aid_set(self, company, de_minimis_aid, de_minimis_aid_set):
+    def _validate_de_minimis_aid_set(
+        self,
+        company,
+        de_minimis_aid,
+        de_minimis_aid_set,
+        association_has_business_activities,
+    ):
         """
         Validate the de minimis aid parameters:
         * company: the organization applying for the benefit
@@ -420,6 +449,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             OrganizationType.resolve_organization_type(company.company_form)
             == OrganizationType.ASSOCIATION
             and de_minimis_aid is not None
+            and not association_has_business_activities
         ):
             raise serializers.ValidationError(
                 {
@@ -502,14 +532,36 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 }
             )
 
+    def _validate_pay_subsidy(
+        self, pay_subsidy_granted, pay_subsidy_percent, additional_pay_subsidy_percent
+    ):
+        if pay_subsidy_granted and pay_subsidy_percent is None:
+            raise serializers.ValidationError(
+                {"pay_subsidy_percent": _("Pay subsidy percent required")}
+            )
+        if not pay_subsidy_granted:
+            for key in ["pay_subsidy_percent", "additional_pay_subsidy_percent"]:
+                if locals()[key] is not None:
+                    raise serializers.ValidationError(
+                        {key: _(f"This application can not have {key}")}
+                    )
+        if pay_subsidy_percent is None and additional_pay_subsidy_percent is not None:
+            raise serializers.ValidationError(
+                {
+                    "additional_pay_subsidy_percent": _(
+                        "This application can not have additional_pay_subsidy_percent"
+                    )
+                }
+            )
+
     # Fields that may be null/blank while the application is draft, but
     # must be filled before submitting the application for processing
     REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS = [
         "company_bank_account_number",
         "company_contact_person_phone_number",
         "company_contact_person_email",
-        "association_has_business_activities",
         "co_operation_negotiations",
+        "pay_subsidy_granted",
         "apprenticeship_program",
         "de_minimis_aid",
         "benefit_type",
@@ -563,24 +615,32 @@ class ApplicationSerializer(serializers.ModelSerializer):
         return [
             str(item)
             for item in ApplicationSerializer._get_available_benefit_types(
-                obj.company, obj.association_has_business_activities
+                obj.company,
+                obj.association_has_business_activities,
+                obj.apprenticeship_program,
             )
         ]
 
     def _validate_benefit_type(
-        self, company, benefit_type, association_has_business_activities
+        self,
+        company,
+        benefit_type,
+        association_has_business_activities,
+        apprenticeship_program,
     ):
         if benefit_type == "":
             return
         if benefit_type not in ApplicationSerializer._get_available_benefit_types(
-            company, association_has_business_activities
+            company, association_has_business_activities, apprenticeship_program
         ):
             raise serializers.ValidationError(
                 {"benefit_type": _("This benefit type can not be selected")}
             )
 
     @staticmethod
-    def _get_available_benefit_types(company, association_has_business_activities):
+    def _get_available_benefit_types(
+        company, association_has_business_activities, apprenticeship_program
+    ):
         """
         Make the logic of determining available benefit types available both for generating the list of
         benefit types and validating the incoming data
@@ -592,11 +652,17 @@ class ApplicationSerializer(serializers.ModelSerializer):
         ):
             return [BenefitType.SALARY_BENEFIT]
         else:
-            return [
-                BenefitType.SALARY_BENEFIT,
-                BenefitType.COMMISSION_BENEFIT,
-                BenefitType.EMPLOYMENT_BENEFIT,
-            ]
+            if apprenticeship_program:
+                return [
+                    BenefitType.SALARY_BENEFIT,
+                    BenefitType.EMPLOYMENT_BENEFIT,
+                ]
+            else:
+                return [
+                    BenefitType.SALARY_BENEFIT,
+                    BenefitType.COMMISSION_BENEFIT,
+                    BenefitType.EMPLOYMENT_BENEFIT,
+                ]
 
     def validate(self, data):
         """ """
@@ -608,14 +674,25 @@ class ApplicationSerializer(serializers.ModelSerializer):
             data["co_operation_negotiations"],
             data["co_operation_negotiations_description"],
         )
+        self._validate_pay_subsidy(
+            data["pay_subsidy_granted"],
+            data["pay_subsidy_percent"],
+            data["additional_pay_subsidy_percent"],
+        )
         self._validate_de_minimis_aid_set(
-            company, data["de_minimis_aid"], data["de_minimis_aid_set"]
+            company,
+            data["de_minimis_aid"],
+            data["de_minimis_aid_set"],
+            data["association_has_business_activities"],
         )
         self._validate_association_has_business_activities(
             company, data["association_has_business_activities"]
         )
         self._validate_benefit_type(
-            company, data["benefit_type"], data["association_has_business_activities"]
+            company,
+            data["benefit_type"],
+            data["association_has_business_activities"],
+            data["apprenticeship_program"],
         )
         self._validate_non_draft_required_fields(data)
         return data
