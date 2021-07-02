@@ -20,6 +20,7 @@ def association_application():
     application.company.save()
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.de_minimis_aid = None
+    application.association_has_business_activities = False
     application.de_minimis_aid_set.all().delete()
     return application
 

@@ -1,9 +1,10 @@
 import copy
-from datetime import date
+from datetime import date, datetime
 
 import pytest
+import pytz
 from applications.api.v1.serializers import ApplicationSerializer
-from applications.enums import ApplicationStatus, BenefitType
+from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from applications.models import Application, ApplicationLogEntry, Employee
 from applications.tests.conftest import *  # noqa
 from common.tests.conftest import *  # noqa
@@ -357,6 +358,7 @@ def test_application_edit_de_minimis_aid_too_high(api_client, application):
 def test_application_edit_benefit_type_business(api_client, application):
     data = ApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
+    data["apprenticeship_program"] = False
 
     response = api_client.put(
         get_detail_url(application),
@@ -376,6 +378,7 @@ def test_application_edit_benefit_type_business_association(
     data = ApplicationSerializer(association_application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
+    data["apprenticeship_program"] = False
 
     response = api_client.put(
         get_detail_url(association_application),
@@ -385,6 +388,25 @@ def test_application_edit_benefit_type_business_association(
     assert response.data["available_benefit_types"] == [
         BenefitType.SALARY_BENEFIT,
         BenefitType.COMMISSION_BENEFIT,
+        BenefitType.EMPLOYMENT_BENEFIT,
+    ]
+
+
+def test_application_edit_benefit_type_business_association_with_apprenticeship(
+    api_client, association_application
+):
+    data = ApplicationSerializer(association_application).data
+    data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
+    data["association_has_business_activities"] = True
+    data["apprenticeship_program"] = True
+
+    response = api_client.put(
+        get_detail_url(association_application),
+        data,
+    )
+    assert response.status_code == 200
+    assert response.data["available_benefit_types"] == [
+        BenefitType.SALARY_BENEFIT,
         BenefitType.EMPLOYMENT_BENEFIT,
     ]
 
@@ -457,3 +479,109 @@ def test_application_date_range(
     if status_code == 200:
         assert response.data["start_date"] == start_date
         assert response.data["end_date"] == end_date
+
+
+@pytest.mark.parametrize(
+    "from_status,to_status,expected_code",
+    [
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
+        (
+            ApplicationStatus.RECEIVED,
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            200,
+        ),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
+    ],
+)
+def test_application_status_change(
+    api_client, application, from_status, to_status, expected_code
+):
+    """
+    modify existing application
+    """
+    application.status = from_status
+    application.save()
+    data = ApplicationSerializer(application).data
+
+    data["status"] = to_status
+    if data["organization_type"] == OrganizationType.ASSOCIATION:
+        data["association_has_business_activities"] = False
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == expected_code
+    if expected_code == 200:
+        assert application.log_entries.all().count() == 1
+        assert application.log_entries.all().first().from_status == from_status
+        assert application.log_entries.all().first().to_status == to_status
+    else:
+        assert application.log_entries.all().count() == 0
+
+
+def test_application_last_modified_at_draft(api_client, application):
+    """
+    DRAFT application's last_modified_at is visible to applicant
+    """
+    application.status = ApplicationStatus.DRAFT
+    application.save()
+    data = ApplicationSerializer(application).data
+    assert data["last_modified_at"] == datetime(2021, 6, 4, tzinfo=pytz.UTC)
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        ApplicationStatus.RECEIVED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ApplicationStatus.REJECTED,
+    ],
+)
+def test_application_last_modified_at_non_draft(api_client, application, status):
+    """
+    non-DRAFT application's last_modified_at is not visible to applicant
+    """
+    application.status = status
+    application.save()
+    data = ApplicationSerializer(application).data
+    assert data["last_modified_at"] is None
+
+
+@pytest.mark.parametrize(
+    "pay_subsidy_granted,pay_subsidy_percent,additional_pay_subsidy_percent,expected_code",
+    [
+        (None, None, None, 200),  # empty application
+        (True, 50, None, 200),  # one pay subsidy
+        (True, 100, 30, 200),  # two pay subsidies
+        (None, 100, None, 400),  # invalid
+        (True, None, 50, 400),  # invalid percent
+        (True, 99, None, 400),  # invalid choice
+        (True, 50, 1, 400),  # invalid percent
+    ],
+)
+def test_application_pay_subsidy(
+    api_client,
+    application,
+    pay_subsidy_granted,
+    pay_subsidy_percent,
+    additional_pay_subsidy_percent,
+    expected_code,
+):
+    data = ApplicationSerializer(application).data
+    data["pay_subsidy_granted"] = pay_subsidy_granted
+    data["pay_subsidy_percent"] = pay_subsidy_percent
+    data["additional_pay_subsidy_percent"] = additional_pay_subsidy_percent
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == expected_code
