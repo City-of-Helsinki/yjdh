@@ -5,7 +5,7 @@
         "heading": "Luonnokset",
         "employee": "Työllistetty",
         "saved": "Tallennettu",
-        "edit": "Muokka"
+        "edit": "Muokkaa"
       },
       "submitted": {
         "heading": "Lähetetyt",
@@ -13,7 +13,7 @@
         "sent": "Lähetetty",
         "applicationNumber": "Hakemusnumero",
         "status": "Tila",
-        "edit": "Muokka",
+        "edit": "Muokkaa",
         "check": "Tarkastele"
       }
     },
