@@ -8,7 +8,6 @@ from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
 from requests.exceptions import HTTPError
 from rest_framework.authentication import SessionAuthentication
-
 from shared.oidc.services import store_token_info_in_oidc_profile
 
 LOGGER = logging.getLogger(__name__)

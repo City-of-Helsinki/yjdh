@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.views import View
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
-
 from shared.oidc.services import store_token_info_in_eauth_profile
 from shared.oidc.utils import get_checksum_header, get_userinfo
 

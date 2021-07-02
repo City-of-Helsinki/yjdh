@@ -1,6 +1,7 @@
 import pytest
 from django.test import override_settings
 from rest_framework.reverse import reverse
+from shared.audit_log.tests.utils import get_audit_log_event
 
 from applications.api.v1.serializers import (
     ApplicationSerializer,
@@ -164,3 +165,93 @@ def test_application_delete_not_allowed(api_client, application):
     response = api_client.delete(get_detail_url(application))
 
     assert response.status_code == 405
+
+
+@pytest.mark.django_db
+@override_settings(
+    AUDIT_LOG_ORIGIN="TEST_SERVICE",
+)
+def test_application_create_writes_audit_log(
+    api_client, user_with_profile, company, caplog
+):
+    response = api_client.post(
+        reverse("v1:application-list"),
+        {},
+    )
+
+    assert response.status_code == 201
+
+    audit_event = get_audit_log_event(caplog)
+    assert audit_event is not None, "no audit log entry was written"
+    assert audit_event["actor"] == {
+        "ip_address": "127.0.0.1",
+        "role": "USER",
+        "user_id": str(user_with_profile.pk),
+    }
+    assert audit_event["operation"] == "CREATE"
+    assert audit_event["target"] == {
+        "id": response.data["id"],
+        "type": "Application",
+    }
+    assert audit_event["status"] == "SUCCESS"
+
+
+@pytest.mark.django_db
+@override_settings(
+    AUDIT_LOG_ORIGIN="TEST_SERVICE",
+)
+def test_application_update_writes_audit_log(api_client, user_with_profile, caplog):
+    application = ApplicationFactory(status=ApplicationStatus.DRAFT)
+    data = ApplicationSerializer(application).data
+    data["status"] = "submitted"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 200
+    assert response.data["status"] == "submitted"
+
+    audit_event = get_audit_log_event(caplog)
+    assert audit_event is not None, "no audit log entry was written"
+    assert audit_event["actor"] == {
+        "ip_address": "127.0.0.1",
+        "role": "USER",
+        "user_id": str(user_with_profile.pk),
+    }
+    assert audit_event["operation"] == "UPDATE"
+    assert audit_event["target"] == {
+        "id": response.data["id"],
+        "type": "Application",
+        "status_after": "submitted",
+        "status_before": "draft",
+    }
+    assert audit_event["status"] == "SUCCESS"
+
+
+@override_settings(
+    AUDIT_LOG_ORIGIN="TEST_SERVICE",
+)
+def test_application_create_writes_audit_log_if_not_authenticated(
+    unauthenticated_api_client, caplog
+):
+    response = unauthenticated_api_client.post(
+        reverse("v1:application-list"),
+        {},
+    )
+
+    assert response.status_code == 403
+
+    audit_event = get_audit_log_event(caplog)
+    assert audit_event is not None, "no audit log entry was written"
+    assert audit_event["actor"] == {
+        "ip_address": "127.0.0.1",
+        "role": "ANONYMOUS",
+        "user_id": None,
+    }
+    assert audit_event["operation"] == "CREATE"
+    assert audit_event["target"] == {
+        "id": None,
+        "type": "Application",
+    }
+    assert audit_event["status"] == "FORBIDDEN"
