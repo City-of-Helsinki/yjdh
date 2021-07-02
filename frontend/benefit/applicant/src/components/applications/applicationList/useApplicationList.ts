@@ -4,6 +4,7 @@ import { ApplicationData } from 'benefit/applicant/types/application';
 import { IconPen } from 'hds-react';
 import React from 'react';
 import isServerSide from 'shared/server/is-server-side';
+import { formatDate } from 'shared/utils/date.utils';
 import { DefaultTheme } from 'styled-components';
 
 import { ListItemData } from './listItem/ListItem';
@@ -118,7 +119,7 @@ const useApplicationList = ({
       id,
       status,
       employee,
-      last_modified_at: modifiedAt,
+      last_modified_at,
       submitted_at,
       application_number: applicationNum,
     } = application;
@@ -130,7 +131,9 @@ const useApplicationList = ({
       initials: getInitials(name),
     };
     const allowedAction = getAllowedActions(status);
-    const submittedAt = submitted_at ?? '-';
+    const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
+    const modifiedAt =
+      last_modified_at && formatDate(new Date(last_modified_at));
     const commonProps = { id, name, avatar, modifiedAt, allowedAction };
     const draftProps = { modifiedAt };
     const submittedProps = {
