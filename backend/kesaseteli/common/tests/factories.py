@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 from applications.enums import ApplicationStatus
 from applications.models import Application, SummerVoucher
-from companies.tests.factories import CompanyFactory
+from companies.models import Company
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -17,6 +17,21 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Faker("email")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
+
+
+class CompanyFactory(factory.django.DjangoModelFactory):
+    name = factory.Faker("company")
+    business_id = factory.Faker("numerify", text="#######-#")
+    company_form = "oy"
+    industry = factory.Faker("job")
+
+    street_address = factory.Faker("street_address")
+    postcode = factory.Faker("postcode")
+    city = factory.Faker("city")
+    ytj_json = factory.Faker("json")
+
+    class Meta:
+        model = Company
 
 
 class SummerVoucherFactory(factory.django.DjangoModelFactory):
