@@ -1,15 +1,12 @@
-import { Button } from 'hds-react';
-import React from 'react';
+import { Notification } from 'hds-react';
 import styled from 'styled-components';
 
 const StyledContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
   padding-bottom: ${(props) => props.theme.spacing.m};
 `;
 
 const StyledTextContainer = styled.div`
-  flex: 1 0 50%;
+  display: flex;
   box-sizing: border-box;
 `;
 
@@ -33,25 +30,20 @@ const StyledActionContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  flex: 1 0 50%;
+  flex: 1 0 30%;
   box-sizing: border-box;
 `;
 
-interface ButtonProps {
-  icon?: React.ReactNode;
-}
-
-const StyledButton = styled(Button)<ButtonProps>`
-  background-color: ${(props) => props.theme.colors.coatOfArms} !important;
-  border-color: ${(props) => props.theme.colors.coatOfArms} !important;
+const StyledNotification = styled(Notification)`
+  margin-bottom: ${(props) => props.theme.spacing.xs};
 `;
 
 export {
   StyledActionContainer,
-  StyledButton,
   StyledContainer,
   StyledDescription,
   StyledHeading,
   StyledLink,
+  StyledNotification,
   StyledTextContainer,
 };

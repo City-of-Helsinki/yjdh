@@ -24,7 +24,7 @@ export const PRIVACY_POLICY_LINKS = {
 
 export enum APPLICATION_STATUSES {
   DRAFT = 'draft',
-  INFO_REQUIRED = 'info_required',
+  INFO_REQUIRED = 'additional_information_needed',
   RECEIVED = 'received',
   APPROVED = 'approved',
   REJECTED = 'rejected',
