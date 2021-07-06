@@ -8,6 +8,7 @@ import {
 } from 'benefit/applicant/types/application';
 import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
+import find from 'lodash/find';
 import noop from 'lodash/noop';
 import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
@@ -56,13 +57,13 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
 const useApplicationList = (status: string[]): ApplicationListProps => {
   const { t } = useTranslation();
   const { data, error, isLoading } = useApplicationQuery(status);
-  const { setError } = React.useContext(FrontPageContext);
+  const { errors, setError } = React.useContext(FrontPageContext);
 
   useEffect(() => {
-    if (error) {
+    if (error && !find(errors, error)) {
       setError(error);
     }
-  }, [error, setError]);
+  }, [errors, error, setError]);
 
   const getStatusTranslation = (
     applicationStatus: APPLICATION_STATUSES
