@@ -1,7 +1,8 @@
 import factory
 from django.utils import timezone
-from shared.oidc.models import EAuthorizationProfile, OIDCProfile
+
 from shared.common.tests.factories import UserFactory
+from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 
 class AbstractProfileFactory(factory.django.DjangoModelFactory):

@@ -1,4 +1,5 @@
 from django.urls import include, path, re_path
+
 from shared.azure_adfs.views import HelsinkiOAuth2CallbackView
 
 urlpatterns = [

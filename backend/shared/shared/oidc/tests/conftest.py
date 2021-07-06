@@ -1,6 +1,7 @@
 import pytest
-from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
+
 from shared.common.tests.conftest import *  # noqa
+from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 
 @pytest.fixture

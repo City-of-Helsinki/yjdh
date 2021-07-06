@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 

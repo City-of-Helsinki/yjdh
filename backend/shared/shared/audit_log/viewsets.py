@@ -6,6 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.db.models import Model
 from django.db.models.base import ModelBase
 from rest_framework.viewsets import ModelViewSet
+
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation, Status
 

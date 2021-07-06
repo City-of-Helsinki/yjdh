@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import override_settings, RequestFactory
 from django.utils import timezone
+
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 from shared.oidc.models import OIDCProfile
 from shared.oidc.services import store_token_info_in_oidc_profile
