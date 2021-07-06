@@ -19,7 +19,7 @@ type ExtendedComponentProps = {
   ) => void;
 };
 
-const useComponent = (
+const useHeader = (
   locale: HeaderProps['locale'],
   onNavigationItemClick: HeaderProps['onNavigationItemClick'],
   login: HeaderProps['login']
@@ -71,4 +71,4 @@ const useComponent = (
   };
 };
 
-export { useComponent };
+export { useHeader };

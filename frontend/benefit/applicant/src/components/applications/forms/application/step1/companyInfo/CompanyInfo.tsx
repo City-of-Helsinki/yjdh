@@ -1,64 +1,89 @@
 import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
+import { FormikProps } from 'formik';
 import { TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { StyledCheckbox } from 'shared/components/forms/fields/styled';
+import {
+  FieldsDef,
+  FormFieldsStep1,
+} from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
 
-import { useComponent } from '../extended';
-import SC from './CompanyInfo.sc';
+import {
+  StyledAddressContainer,
+  StyledCompanyInfoColumn,
+  StyledCompanyInfoContainer,
+  StyledCompanyInfoRow,
+  StyledCompanyInfoSection,
+  StyledIBANContainer,
+  StyledNotification,
+} from './styled';
 import useCompanyInfo from './useCompanyInfo';
 
-const CompanyInfo: React.FC = () => {
-  const { getErrorMessage, fields, translationsBase, formik } = useComponent();
+interface CompanyInfoProps {
+  getErrorMessage: (fieldName: string) => string | undefined;
+  fields: FieldsDef;
+  translationsBase: string;
+  formik?: FormikProps<FormFieldsStep1>;
+}
+
+const CompanyInfo: React.FC<CompanyInfoProps> = ({
+  getErrorMessage,
+  fields,
+  translationsBase,
+  formik,
+}) => {
   const { t, data, isLoading, shouldShowSkeleton, error } = useCompanyInfo();
 
   return (
     <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
-      <SC.CompanyInfoContainer>
-        <SC.CompanyInfoSection>
-          <SC.CompanyInfoColumn>
+      <StyledCompanyInfoContainer>
+        <StyledCompanyInfoSection>
+          <StyledCompanyInfoColumn>
             {shouldShowSkeleton ? (
               <LoadingSkeleton width="90%" count={2} />
             ) : (
               <>
-                <SC.CompanyInfoRow>{data.name}</SC.CompanyInfoRow>
-                <SC.CompanyInfoRow>{data.businessId}</SC.CompanyInfoRow>
+                <StyledCompanyInfoRow>{data.name}</StyledCompanyInfoRow>
+                <StyledCompanyInfoRow>{data.businessId}</StyledCompanyInfoRow>
               </>
             )}
-          </SC.CompanyInfoColumn>
-          <SC.CompanyInfoColumn>
+          </StyledCompanyInfoColumn>
+          <StyledCompanyInfoColumn>
             {shouldShowSkeleton ? (
               <LoadingSkeleton width="90%" count={2} />
             ) : (
               <>
-                <SC.CompanyInfoRow>{data.streetAddress}</SC.CompanyInfoRow>
-                <SC.CompanyInfoRow>
+                <StyledCompanyInfoRow>
+                  {data.streetAddress}
+                </StyledCompanyInfoRow>
+                <StyledCompanyInfoRow>
                   {data.postcode} {data.city}
-                </SC.CompanyInfoRow>
+                </StyledCompanyInfoRow>
               </>
             )}
-          </SC.CompanyInfoColumn>
+          </StyledCompanyInfoColumn>
           <StyledCheckbox
             id={fields.hasCompanyOtherAddress.name}
             disabled={isLoading || !!error}
             name={fields.hasCompanyOtherAddress.name}
             label={fields.hasCompanyOtherAddress.label}
             required
-            checked={formik.values.hasCompanyOtherAddress === true}
+            checked={formik?.values.hasCompanyOtherAddress === true}
             errorText={getErrorMessage(
               APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS
             )}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            onChange={formik?.handleChange}
+            onBlur={formik?.handleBlur}
             aria-invalid={
               !!getErrorMessage(APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS)
             }
           />
-        </SC.CompanyInfoSection>
+        </StyledCompanyInfoSection>
 
-        <SC.Notification
+        <StyledNotification
           label={t(
             `${translationsBase}.notifications.companyInformation.label`
           )}
@@ -66,10 +91,10 @@ const CompanyInfo: React.FC = () => {
         >
           {error?.message ||
             t(`${translationsBase}.notifications.companyInformation.content`)}
-        </SC.Notification>
+        </StyledNotification>
 
-        {formik.values.hasCompanyOtherAddress && (
-          <SC.AddressContainer>
+        {formik?.values.hasCompanyOtherAddress && (
+          <StyledAddressContainer>
             <TextInput
               id={fields.companyOtherAddressStreet.name}
               name={fields.companyOtherAddressStreet.name}
@@ -135,20 +160,20 @@ const CompanyInfo: React.FC = () => {
               )}
               required
             />
-          </SC.AddressContainer>
+          </StyledAddressContainer>
         )}
 
-        <SC.IBANContainer>
+        <StyledIBANContainer>
           <InputMask
             mask={fields.companyIban.mask?.format ?? ''}
             maskChar={null}
-            value={formik.values.companyIban}
-            onBlur={formik.handleBlur}
+            value={formik?.values.companyIban}
+            onBlur={formik?.handleBlur}
             onChange={(e) => {
               const initValue = e.target.value;
               const value =
                 fields.companyIban.mask?.stripVal(initValue) ?? initValue;
-              return formik.setFieldValue(fields.companyIban.name, value);
+              return formik?.setFieldValue(fields.companyIban.name, value);
             }}
           >
             {() => (
@@ -166,8 +191,8 @@ const CompanyInfo: React.FC = () => {
               />
             )}
           </InputMask>
-        </SC.IBANContainer>
-      </SC.CompanyInfoContainer>
+        </StyledIBANContainer>
+      </StyledCompanyInfoContainer>
     </FormSection>
   );
 };

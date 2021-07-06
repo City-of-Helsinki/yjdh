@@ -14,7 +14,7 @@ import React from 'react';
 import Container from 'shared/components/container/Container';
 import Stepper from 'shared/components/stepper/Stepper';
 
-import { useComponent } from './extended';
+import { usePageContent } from './usePageContent';
 
 const PageContent: React.FC = () => {
   const {
@@ -25,7 +25,7 @@ const PageContent: React.FC = () => {
     currentStep,
     hasBack,
     hasNext,
-  } = useComponent();
+  } = usePageContent();
 
   const actions = (
     <StepperActions

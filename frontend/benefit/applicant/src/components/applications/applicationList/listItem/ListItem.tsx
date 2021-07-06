@@ -1,34 +1,21 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import { ApplicationListItemData } from 'benefit/applicant/types/application';
+import { Loading } from 'benefit/applicant/types/common';
 import { Button } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
-import { DefaultTheme } from 'styled-components';
 
-import SC from './ListItem.sc';
+import {
+  StyledAvatar,
+  StyledDataColumn,
+  StyledDataHeader,
+  StyledDataValue,
+  StyledItemActions,
+  StyledItemContent,
+  StyledListItem,
+} from './styled';
 
-export interface ListItemData {
-  id: string;
-  name: string;
-  avatar: {
-    initials: string;
-    color: keyof DefaultTheme['colors'];
-  };
-  statusText?: string;
-  modifiedAt?: string;
-  submittedAt?: string;
-  applicationNum?: number;
-  allowedAction: {
-    label: string;
-    handler: () => void;
-    Icon?: React.FC;
-  };
-}
-
-interface Loading {
-  isLoading: true;
-}
-
-export type ListItemProps = ListItemData | Loading;
+export type ListItemProps = ApplicationListItemData | Loading;
 
 const ListItem: React.FC<ListItemProps> = (props) => {
   const { t } = useTranslation();
@@ -37,18 +24,18 @@ const ListItem: React.FC<ListItemProps> = (props) => {
 
   if ('isLoading' in props) {
     return (
-      <SC.ListItem>
-        <SC.ItemContent>
+      <StyledListItem>
+        <StyledItemContent>
           <LoadingSkeleton width={60} height={60} circle />
-          <SC.DataColumn>
+          <StyledDataColumn>
             <LoadingSkeleton width="100%" />
             <LoadingSkeleton width="100%" />
-          </SC.DataColumn>
-        </SC.ItemContent>
-        <SC.ItemActions>
+          </StyledDataColumn>
+        </StyledItemContent>
+        <StyledItemActions>
           <LoadingSkeleton height="50px" />
-        </SC.ItemActions>
-      </SC.ListItem>
+        </StyledItemActions>
+      </StyledListItem>
     );
   }
 
@@ -65,52 +52,60 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   const ActionIcon = allowedAction.Icon;
 
   return (
-    <SC.ListItem>
-      <SC.ItemContent>
-        <SC.Avatar $backgroundColor={avatar.color}>{avatar.initials}</SC.Avatar>
-        <SC.DataColumn>
-          <SC.DataHeader>{t(`${translationBase}.employee`)}</SC.DataHeader>
-          <SC.DataValue>{name}</SC.DataValue>
-        </SC.DataColumn>
+    <StyledListItem>
+      <StyledItemContent>
+        <StyledAvatar $backgroundColor={avatar.color}>
+          {avatar.initials}
+        </StyledAvatar>
+        <StyledDataColumn>
+          <StyledDataHeader>
+            {t(`${translationBase}.employee`)}
+          </StyledDataHeader>
+          <StyledDataValue>{name}</StyledDataValue>
+        </StyledDataColumn>
         {modifiedAt && (
-          <SC.DataColumn>
-            <SC.DataHeader>{t(`${translationBase}.saved`)}</SC.DataHeader>
-            <SC.DataValue>{modifiedAt}</SC.DataValue>
-          </SC.DataColumn>
+          <StyledDataColumn>
+            <StyledDataHeader>{t(`${translationBase}.saved`)}</StyledDataHeader>
+            <StyledDataValue>{modifiedAt}</StyledDataValue>
+          </StyledDataColumn>
         )}
         {submittedAt && (
-          <SC.DataColumn>
-            <SC.DataHeader>{t(`${translationListBase}.sent`)}</SC.DataHeader>
-            <SC.DataValue>{submittedAt}</SC.DataValue>
-          </SC.DataColumn>
+          <StyledDataColumn>
+            <StyledDataHeader>
+              {t(`${translationListBase}.sent`)}
+            </StyledDataHeader>
+            <StyledDataValue>{submittedAt}</StyledDataValue>
+          </StyledDataColumn>
         )}
         {applicationNum && (
-          <SC.DataColumn>
-            <SC.DataHeader>
+          <StyledDataColumn>
+            <StyledDataHeader>
               {t(`${translationListBase}.applicationNumber`)}
-            </SC.DataHeader>
-            <SC.DataValue>{applicationNum}</SC.DataValue>
-          </SC.DataColumn>
+            </StyledDataHeader>
+            <StyledDataValue>{applicationNum}</StyledDataValue>
+          </StyledDataColumn>
         )}
         {statusText && (
-          <SC.DataColumn>
-            <SC.DataHeader>{t(`${translationListBase}.status`)}</SC.DataHeader>
-            <SC.DataValue>{statusText}</SC.DataValue>
-          </SC.DataColumn>
+          <StyledDataColumn>
+            <StyledDataHeader>
+              {t(`${translationListBase}.status`)}
+            </StyledDataHeader>
+            <StyledDataValue>{statusText}</StyledDataValue>
+          </StyledDataColumn>
         )}
-      </SC.ItemContent>
-      <SC.ItemActions>
+      </StyledItemContent>
+      <StyledItemActions>
         <Button
           variant="secondary"
           iconLeft={ActionIcon && <ActionIcon />}
           theme="black"
-          onClick={allowedAction.handler}
+          onClick={allowedAction.handleAction}
           fullWidth
         >
           {allowedAction.label}
         </Button>
-      </SC.ItemActions>
-    </SC.ListItem>
+      </StyledItemActions>
+    </StyledListItem>
   );
 };
 

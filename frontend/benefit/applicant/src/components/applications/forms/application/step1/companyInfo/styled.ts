@@ -2,7 +2,7 @@ import { Notification as HDSNotification } from 'hds-react';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import styled from 'styled-components';
 
-const CompanyInfoContainer = styled.div`
+const StyledCompanyInfoContainer = styled.div`
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-areas:
@@ -12,19 +12,19 @@ const CompanyInfoContainer = styled.div`
   width: 100%;
 `;
 
-const CompanyInfoSection = styled.div`
+const StyledCompanyInfoSection = styled.div`
   grid-area: info;
   display: flex;
   flex-wrap: wrap;
 `;
 
-const CompanyInfoColumn = styled.div`
+const StyledCompanyInfoColumn = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 0 50%;
 `;
 
-const CompanyInfoRow = styled.div`
+const StyledCompanyInfoRow = styled.div`
   display: flex;
   line-height: ${(props) => props.theme.lineHeight.l};
   height: ${(props) => `calc(${props.theme.lineHeight.l} * 1em)`};
@@ -32,19 +32,19 @@ const CompanyInfoRow = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.xs2};
 `;
 
-const Notification = styled(HDSNotification)`
+const StyledNotification = styled(HDSNotification)`
   grid-area: notification;
   font-size: ${(props) => props.theme.fontSize.heading.xs};
 `;
 
-const Address = styled(StyledFormGroup)`
+const StyledAddressContainer = styled(StyledFormGroup)`
   grid-area: address;
   margin-top: ${(props) => props.theme.spacing.l};
   display: grid;
   grid-template-columns: 2fr 1fr 2fr 1fr;
 `;
 
-const IBANContainer = styled(StyledFormGroup)`
+const StyledIBANContainer = styled(StyledFormGroup)`
   grid-area: iban;
   margin-top: ${(props) => props.theme.spacing.xl};
 
@@ -53,12 +53,12 @@ const IBANContainer = styled(StyledFormGroup)`
   }
 `;
 
-export default {
-  CompanyInfoColumn,
-  CompanyInfoContainer,
-  CompanyInfoRow,
-  CompanyInfoSection,
-  Notification,
-  AddressContainer: Address,
-  IBANContainer,
+export {
+  StyledAddressContainer,
+  StyledCompanyInfoColumn,
+  StyledCompanyInfoContainer,
+  StyledCompanyInfoRow,
+  StyledCompanyInfoSection,
+  StyledIBANContainer,
+  StyledNotification,
 };

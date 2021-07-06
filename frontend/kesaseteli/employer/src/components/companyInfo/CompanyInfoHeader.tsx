@@ -1,16 +1,17 @@
-import SC from 'kesaseteli/employer/components/companyInfo/CompanyInfo.sc';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import type Company from 'shared/types/company';
+
+import { StyledCompanyInfoHeader } from './styled';
 
 export type CompanyProp = { field: keyof Company };
 
 const CompanyInfoHeader: React.FC<CompanyProp> = ({ field }: CompanyProp) => {
   const { t } = useTranslation();
   return (
-    <SC.CompanyInfoHeader>
+    <StyledCompanyInfoHeader>
       {t(`common:application.step1.companyInfo.header.${field}`)}
-    </SC.CompanyInfoHeader>
+    </StyledCompanyInfoHeader>
   );
 };
 

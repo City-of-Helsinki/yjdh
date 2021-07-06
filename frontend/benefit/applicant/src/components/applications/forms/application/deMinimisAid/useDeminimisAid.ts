@@ -32,7 +32,7 @@ type FormFields = {
   [DE_MINIMIS_AID_FIELDS.ISSUE_DATE]: string;
 };
 
-const useComponent = (): ExtendedComponentProps => {
+const useDeminimisAid = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const { application, setApplication } = React.useContext(ApplicationContext);
@@ -129,4 +129,4 @@ const useComponent = (): ExtendedComponentProps => {
   };
 };
 
-export { useComponent };
+export { useDeminimisAid };

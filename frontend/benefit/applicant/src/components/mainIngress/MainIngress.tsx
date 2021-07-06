@@ -1,9 +1,9 @@
+import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
 import { Button, IconPlus } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
 
-import { useComponent } from './extended';
 import {
   StyledActionContainer,
   StyledContainer,
@@ -13,17 +13,18 @@ import {
   StyledNotification,
   StyledTextContainer,
 } from './styled';
+import { useMainIngress } from './useMainIngress';
 
-export interface MainIngressProps {
-  errors?: Error[];
-}
+const MainIngress: React.FC = () => {
+  const {
+    handleNewApplicationClick,
+    handleMoreInfoClick,
+    t,
+  } = useMainIngress();
+  const { errors } = React.useContext(FrontPageContext);
 
-const MainIngress: React.FC<MainIngressProps> = ({ errors }) => {
-  const { handleNewApplicationClick, handleMoreInfoClick, t } = useComponent();
-
-  const notificationItems = errors?.map(({ message, name }, i) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <StyledNotification key={i} label={name} type="error">
+  const notificationItems = errors?.map(({ message, name }) => (
+    <StyledNotification key={`${name}-notification`} label={name} type="error">
       {message}
     </StyledNotification>
   ));

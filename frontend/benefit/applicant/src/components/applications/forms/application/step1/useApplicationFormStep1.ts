@@ -5,9 +5,14 @@ import {
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
+import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import React, { FormEvent, useState } from 'react';
-import { Field } from 'shared/components/forms/fields/types';
+import {
+  Field,
+  FieldsDef,
+  FormFieldsStep1,
+} from 'shared/components/forms/fields/types';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -17,29 +22,10 @@ type ExtendedComponentProps = {
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  formik: FormikProps<FormFields>;
+  formik: FormikProps<FormFieldsStep1>;
 };
 
-type FieldsDef = {
-  [key: string]: Field;
-};
-
-type FormFields = {
-  [APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS]: boolean;
-  [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET]: string;
-  [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP]: string;
-  [APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT]: string;
-  [APPLICATION_FIELDS.COMPANY_IBAN]: string;
-  [APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME]: string;
-  [APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME]: string;
-  [APPLICATION_FIELDS.CONTACT_PERSON_PHONE]: string;
-  [APPLICATION_FIELDS.CONTACT_PERSON_EMAIL]: string;
-  [APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED]: string;
-  [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING]: string;
-  [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO]: string;
-};
-
-const useComponent = (): ExtendedComponentProps => {
+const useApplicationFormStep1 = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -67,9 +53,8 @@ const useComponent = (): ExtendedComponentProps => {
     }),
     validateOnChange: true,
     validateOnBlur: true,
-    onSubmit: () => {
-      // console.log('Form submitted:', values);
-    },
+    // todo: impoement
+    onSubmit: noop,
   });
 
   const fieldNames = React.useMemo(
@@ -139,4 +124,4 @@ const useComponent = (): ExtendedComponentProps => {
   };
 };
 
-export { useComponent };
+export { useApplicationFormStep1 };

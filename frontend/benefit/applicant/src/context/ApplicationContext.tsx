@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import React from 'react';
 
 import { DEFAULT_APPLICATION } from '../constants';
@@ -15,8 +16,8 @@ const ApplicationContext = React.createContext<ApplicationContextType>({
   currentStep: 1,
   application: DEFAULT_APPLICATION,
   isLoading: true,
-  setCurrentStep: () => {},
-  setApplication: () => {},
+  setCurrentStep: () => noop,
+  setApplication: () => noop,
 });
 
 export default ApplicationContext;

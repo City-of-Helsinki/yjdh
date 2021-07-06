@@ -1,30 +1,25 @@
 import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
+import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
+import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { ApplicationData } from 'benefit/applicant/types/application';
+import {
+  ApplicationAllowedAction,
+  ApplicationListItemData,
+} from 'benefit/applicant/types/application';
 import { IconPen } from 'hds-react';
-import React from 'react';
+import camelCase from 'lodash/camelCase';
+import noop from 'lodash/noop';
+import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
 import { formatDate } from 'shared/utils/date.utils';
+import { getInitials } from 'shared/utils/string.utils';
 import { DefaultTheme } from 'styled-components';
-
-import { ListItemData } from './listItem/ListItem';
 
 const translationListBase = 'common:applications.list.submitted';
 const translationStatusBase = 'common:applications.statuses';
 
-interface UseApplicationListArgs {
-  data: ApplicationData[];
-  isLoading: boolean;
-}
-
-interface AllowedAction {
-  label: string;
-  handler: () => void;
-  Icon?: React.FC;
-}
-
 interface ApplicationListProps {
-  list: ListItemData[];
+  list: ApplicationListItemData[];
   shouldShowSkeleton: boolean;
   shouldHideList: boolean;
 }
@@ -53,84 +48,66 @@ const getAvatarBGColor = (
   }
 };
 
-const getInitials = (name: string): string =>
-  name
-    .match(/(^\S\S?|\b\S)?/g)
-    ?.join('')
-    .match(/(^\S|\S$)?/g)
-    ?.join('') ?? '';
+const getEmployeeFullName = (firstName: string, lastName: string): string => {
+  const name = `${firstName || ''} ${lastName || ''}`;
+  return name === ' ' ? '-' : name;
+};
 
-const useApplicationList = ({
-  data,
-  isLoading,
-}: UseApplicationListArgs): ApplicationListProps => {
+const useApplicationList = (status: string[]): ApplicationListProps => {
   const { t } = useTranslation();
+  const { data, error, isLoading } = useApplicationQuery(status);
+  const { setError } = React.useContext(FrontPageContext);
+
+  useEffect(() => {
+    if (error) {
+      setError(error);
+    }
+  }, [error, setError]);
 
   const getStatusTranslation = (
     applicationStatus: APPLICATION_STATUSES
-  ): string => {
-    switch (applicationStatus) {
-      case APPLICATION_STATUSES.APPROVED:
-        return t(`${translationStatusBase}.approved`);
-
-      case APPLICATION_STATUSES.DRAFT:
-        return t(`${translationStatusBase}.draft`);
-
-      case APPLICATION_STATUSES.INFO_REQUIRED:
-        return t(`${translationStatusBase}.infoRequired`);
-
-      case APPLICATION_STATUSES.RECEIVED:
-        return t(`${translationStatusBase}.received`);
-
-      case APPLICATION_STATUSES.REJECTED:
-        return t(`${translationStatusBase}.rejected`);
-
-      default:
-        return applicationStatus;
-    }
-  };
+  ): string => t(`${translationStatusBase}.${camelCase(applicationStatus)}`);
 
   const getAllowedActions = (
     applicationStatus: APPLICATION_STATUSES
-  ): AllowedAction => {
+  ): ApplicationAllowedAction => {
     switch (applicationStatus) {
       case APPLICATION_STATUSES.DRAFT:
       case APPLICATION_STATUSES.INFO_REQUIRED:
         return {
           label: t(`${translationListBase}.edit`),
-          handler: () => {
-            // TODO: implement action handler
-          },
+          // implement the action
+          handleAction: () => noop,
           Icon: IconPen,
         };
 
       default:
         return {
           label: t(`${translationListBase}.check`),
-          handler: () => {
-            // TODO: implement action handler
-          },
+          // implement the action
+          handleAction: () => noop,
         };
     }
   };
 
-  const list = data.reduce<ListItemData[]>((acc, application) => {
+  const list = data?.reduce<ApplicationListItemData[]>((acc, application) => {
     const {
       id,
-      status,
+      status: applStatus,
       employee,
       last_modified_at,
       submitted_at,
       application_number: applicationNum,
     } = application;
 
-    const statusText = getStatusTranslation(status);
-    const name = `${employee.first_name} ${employee.last_name}`;
+    const statusText = getStatusTranslation(applStatus);
+    const name = getEmployeeFullName(employee?.first_name, employee?.last_name);
+
     const avatar = {
-      color: getAvatarBGColor(status),
+      color: getAvatarBGColor(applStatus),
       initials: getInitials(name),
     };
-    const allowedAction = getAllowedActions(status);
+    const allowedAction = getAllowedActions(applStatus);
     const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));
@@ -142,7 +119,7 @@ const useApplicationList = ({
       statusText,
     };
 
-    if (status === APPLICATION_STATUSES.DRAFT) {
+    if (applStatus === APPLICATION_STATUSES.DRAFT) {
       const newDraftProps = { ...commonProps, ...draftProps };
       return [...acc, newDraftProps];
     }
@@ -156,7 +133,7 @@ const useApplicationList = ({
     !shouldShowSkeleton && Array.isArray(data) && data.length === 0;
 
   return {
-    list,
+    list: list || [],
     shouldShowSkeleton,
     shouldHideList,
   };

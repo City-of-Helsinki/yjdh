@@ -12,7 +12,7 @@ type ExtendedComponentProps = {
   handleRemove: (index: number) => void;
 };
 
-const useComponent = (): ExtendedComponentProps => {
+const useDeminimisAidsList = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const { application, setApplication } = React.useContext(ApplicationContext);
@@ -32,4 +32,4 @@ const useComponent = (): ExtendedComponentProps => {
   };
 };
 
-export { useComponent };
+export { useDeminimisAidsList };

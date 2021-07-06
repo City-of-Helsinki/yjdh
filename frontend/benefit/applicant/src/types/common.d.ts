@@ -27,3 +27,7 @@ export type Application = {
   [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING]?: string;
   [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO]?: string;
 };
+
+interface Loading {
+  isLoading: true;
+}

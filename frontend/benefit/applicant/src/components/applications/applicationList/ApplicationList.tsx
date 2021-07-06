@@ -1,28 +1,24 @@
-import { ApplicationData } from 'benefit/applicant/types/application';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
 
-import SC from './ApplicationList.sc';
 import ListItem from './listItem/ListItem';
+import { StyledHeading, StyledListWrapper } from './styled';
 import useApplicationList from './useApplicationList';
 
 export interface ApplicationListProps {
   heading: string;
-  data: ApplicationData[];
-  isLoading: boolean;
+  status: string[];
 }
 
 const ApplicationsList: React.FC<ApplicationListProps> = ({
   heading,
-  data,
-  isLoading,
+  status,
 }) => {
-  const { list, shouldShowSkeleton, shouldHideList } = useApplicationList({
-    data,
-    isLoading,
-  });
+  const { list, shouldShowSkeleton, shouldHideList } = useApplicationList(
+    status
+  );
 
   const items = shouldShowSkeleton ? (
     <ListItem isLoading />
@@ -34,10 +30,10 @@ const ApplicationsList: React.FC<ApplicationListProps> = ({
 
   return (
     <Container backgroundColor={theme.colors.silverLight}>
-      <SC.Heading>
+      <StyledHeading>
         {shouldShowSkeleton ? <LoadingSkeleton width="20%" /> : heading}
-      </SC.Heading>
-      <SC.ListWrapper>{items}</SC.ListWrapper>
+      </StyledHeading>
+      <StyledListWrapper>{items}</StyledListWrapper>
     </Container>
   );
 };
