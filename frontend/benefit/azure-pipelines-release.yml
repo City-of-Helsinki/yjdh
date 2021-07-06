@@ -3,8 +3,9 @@
 trigger:
   branches:
     include:
-    - release/*
-    - refs/tags/*
+    - main
+#    - release/*
+#    - refs/tags/*
   paths:
     exclude:
     - README.md
@@ -33,15 +34,15 @@ pool: Default
 resources:
   repositories:
   # Azure DevOps repository
-  - repository: PROJECTNAME-pipelines
+  - repository: yjdh-helsinkilisa-pipelines
     type: git
     # Azure DevOps project/repository
-    name: PROJECTNAME/PROJECTNAME-pipelines
+    name: yjdh-helsinkilisa/yjdh-helsinkilisa-pipelines
 
 extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
   # Django example: azure-pipelines-PROJECTNAME-api-release.yml
   # Drupal example: azure-pipelines-drupal-release.yml
-  template: azure-pipelines-PROJECTNAME-release.yml@PROJECTNAME-pipelines
+  template: azure-pipelines-yjdh-helsinkilisa-release.yml@yjdh-helsinkilisa-pipelines
   #parameters:
     #imagetag: ${{ parameters.imagetag }}
