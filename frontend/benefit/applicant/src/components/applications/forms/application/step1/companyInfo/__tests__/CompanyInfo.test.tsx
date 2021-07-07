@@ -6,8 +6,20 @@ import React from 'react';
 import CompanyInfo from '../CompanyInfo';
 
 describe('CompanyInfo', () => {
-  const getComponent = (props = {}): RenderResult =>
-    renderComponent(<CompanyInfo {...props} />);
+  const getComponent = (): RenderResult =>
+    renderComponent(
+      <CompanyInfo
+        getErrorMessage={() => ''}
+        fields={{
+          hasCompanyOtherAddress: {
+            name: 'hasCompanyOtherAddress',
+            label: 'hasCompanyOtherAddress',
+          },
+          companyIban: { name: 'companyIban', label: 'companyIban' },
+        }}
+        translationsBase=""
+      />
+    );
 
   it('should render with no accessibility violations', async () => {
     const { container } = getComponent();

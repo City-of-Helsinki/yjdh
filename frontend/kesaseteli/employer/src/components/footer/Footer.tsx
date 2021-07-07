@@ -1,17 +1,17 @@
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
-import SC from './Footer.sc';
+import { StyledFooter } from './styled';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   return (
-    <SC.Footer title={t('common:appName')}>
-      <SC.Footer.Base
+    <StyledFooter title={t('common:appName')}>
+      <StyledFooter.Base
         copyrightHolder={t('common:copyrightText')}
         copyrightText={t('common:allRightsReservedText')}
       />
-    </SC.Footer>
+    </StyledFooter>
   );
 };
 

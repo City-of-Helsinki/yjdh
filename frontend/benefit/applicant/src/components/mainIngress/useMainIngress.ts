@@ -9,7 +9,7 @@ type ExtendedComponentProps = {
   t: TFunction;
 };
 
-const useComponent = (): ExtendedComponentProps => {
+const useMainIngress = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -25,4 +25,4 @@ const useComponent = (): ExtendedComponentProps => {
   return { handleNewApplicationClick, handleMoreInfoClick, t };
 };
 
-export { useComponent };
+export { useMainIngress };

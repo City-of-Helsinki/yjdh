@@ -14,7 +14,7 @@ type ExtendedComponentProps = {
   hasBack: boolean;
 };
 
-const useComponent = (): ExtendedComponentProps => {
+const usePageContent = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const { currentStep, setCurrentStep } = React.useContext(ApplicationContext);
 
@@ -56,4 +56,4 @@ const useComponent = (): ExtendedComponentProps => {
   };
 };
 
-export { useComponent };
+export { usePageContent };

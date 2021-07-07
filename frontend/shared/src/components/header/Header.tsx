@@ -4,7 +4,7 @@ import { MAIN_CONTENT_ID } from 'shared/constants';
 import { NavigationItem, OptionType } from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
-import { useComponent } from './extended';
+import { useHeader } from './useHeader';
 
 export type HeaderProps = {
   title?: string;
@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({
     handleNavigationItemClick,
     handleLogin,
     handleLogout,
-  } = useComponent(locale, onNavigationItemClick, login);
+  } = useHeader(locale, onNavigationItemClick, login);
 
   return (
     <Navigation

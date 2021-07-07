@@ -1,7 +1,7 @@
 import * as React from 'react';
 import BaseHeader from 'shared/components/header/Header';
 
-import { useComponent } from './extended';
+import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
   const {
@@ -11,7 +11,7 @@ const Header: React.FC = () => {
     handleLanguageChange,
     handleNavigationItemClick,
     handleTitleClick,
-  } = useComponent();
+  } = useHeader();
 
   return (
     <BaseHeader

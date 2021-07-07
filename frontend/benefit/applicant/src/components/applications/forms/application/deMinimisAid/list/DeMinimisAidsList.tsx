@@ -10,10 +10,10 @@ import {
 } from 'shared/components/forms/section/styled';
 import theme from 'shared/styles/theme';
 
-import { useComponent } from './extended';
+import { useDeminimisAidsList } from './useDeminimisAidsList';
 
 const DeMinimisAidsList: React.FC = () => {
-  const { grants, t, translationsBase, handleRemove } = useComponent();
+  const { grants, t, translationsBase, handleRemove } = useDeminimisAidsList();
 
   return (
     <>

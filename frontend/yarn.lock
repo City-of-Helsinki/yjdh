@@ -4913,6 +4913,13 @@ create-ecdh@^4.0.0:
     bn.js "^4.1.0"
     elliptic "^6.5.3"
 
+create-eslint-index@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/create-eslint-index/-/create-eslint-index-1.0.0.tgz#d954372d86d5792fcd67e9f2b791b1ab162411bb"
+  integrity sha1-2VQ3LYbVeS/NZ+nyt5GxqxYkEbs=
+  dependencies:
+    lodash.get "^4.3.0"
+
 create-hash@^1.1.0, create-hash@^1.1.2, create-hash@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/create-hash/-/create-hash-1.2.0.tgz#889078af11a63756bcfb59bd221996be3a9ef196"
@@ -5574,6 +5581,13 @@ endpoint-utils@^1.0.2:
     ip "^1.1.3"
     pinkie-promise "^1.0.0"
 
+enhance-visitors@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/enhance-visitors/-/enhance-visitors-1.0.0.tgz#aa945d05da465672a1ebd38fee2ed3da8518e95a"
+  integrity sha1-qpRdBdpGVnKh69OP7i7T2oUY6Vo=
+  dependencies:
+    lodash "^4.13.1"
+
 enquirer@^2.3.5, enquirer@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/enquirer/-/enquirer-2.3.6.tgz#2a7fe5dd634a1e4125a975ec994ff5456dc3734d"
@@ -5682,6 +5696,14 @@ escodegen@^2.0.0:
     optionator "^0.8.1"
   optionalDependencies:
     source-map "~0.6.1"
+
+eslint-ast-utils@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-ast-utils/-/eslint-ast-utils-1.1.0.tgz#3d58ba557801cfb1c941d68131ee9f8c34bd1586"
+  integrity sha512-otzzTim2/1+lVrlH19EfQQJEhVJSu0zOb9ygb3iapN6UlyaDtyRq4b5U1FuW0v1lRa9Fp/GJyHkSwm6NqABgCA==
+  dependencies:
+    lodash.get "^4.4.2"
+    lodash.zip "^4.2.0"
 
 eslint-config-adjunct@>=4.11.1, eslint-config-adjunct@^4.11.1:
   version "4.11.1"
@@ -5856,6 +5878,24 @@ eslint-plugin-jsx-a11y@^6.4.1:
     has "^1.0.3"
     jsx-ast-utils "^3.1.0"
     language-tags "^1.0.5"
+
+eslint-plugin-lodash-fp@^2.2.0-a1:
+  version "2.2.0-a1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-lodash-fp/-/eslint-plugin-lodash-fp-2.2.0-a1.tgz#12e9a144ad87a5de55c6923edb3277a0ecdf3c1e"
+  integrity sha512-RMWDslyCWr3p7zgvhoQueb99ABVlh+KeQixQ8C64GUmLgh7sdyGQFVHDOWZFGf6P0cy6a0pg6GdpZq6G1URdGw==
+  dependencies:
+    create-eslint-index "^1.0.0"
+    enhance-visitors "^1.0.0"
+    eslint-ast-utils "^1.0.0"
+    lodash "^4.11.1"
+    req-all "^1.0.0"
+
+eslint-plugin-lodash@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-lodash/-/eslint-plugin-lodash-7.2.0.tgz#160b0996bda6dd0592e83eab86d099e1982d6fa8"
+  integrity sha512-7Wf7SOCK90OFgPd8LleVQa8uCWBZDLjPKxaFdwM/aINDyXhley0nRKSKL6TESGFCCMduYPox5VLttvqV2Vfbig==
+  dependencies:
+    lodash ">=4"
 
 eslint-plugin-markdown@^2.1.0:
   version "2.1.0"
@@ -8748,6 +8788,11 @@ lodash.flatten@^4.4.0:
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
   integrity sha1-8xwiIlqWMtK7+OSt2+8kCqdlph8=
 
+lodash.get@^4.3.0, lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+
 lodash.isequal@4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
@@ -8808,12 +8853,17 @@ lodash.uniqueid@4.0.1:
   resolved "https://registry.yarnpkg.com/lodash.uniqueid/-/lodash.uniqueid-4.0.1.tgz#3268f26a7c88e4f4b1758d679271814e31fa5b26"
   integrity sha1-MmjyanyI5PSxdY1nknGBTjH6WyY=
 
+lodash.zip@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.zip/-/lodash.zip-4.2.0.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
+  integrity sha1-7GZi5IlkCO1KtsVCo5kLcswIACA=
+
 lodash.zipobject@^4.0.0:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/lodash.zipobject/-/lodash.zipobject-4.1.3.tgz#b399f5aba8ff62a746f6979bf20b214f964dbef8"
   integrity sha1-s5n1q6j/YqdG9peb8gshT5ZNvvg=
 
-"lodash@4.6.1 || ^4.16.1", lodash@4.x, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
+"lodash@4.6.1 || ^4.16.1", lodash@4.x, lodash@>=4, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -11183,6 +11233,11 @@ replicator@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/replicator/-/replicator-1.0.3.tgz#c0b3ea31e749015bae5d52273f2ae35d541b87ef"
   integrity sha512-WsKsraaM0x0QHy5CtzdgFXUxyowoBhyNkmPqmZShW6h+rOWnyT6Od3zRdTX9r616rAA6kDC9MKQGnSM/CJKfVQ==
+
+req-all@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/req-all/-/req-all-1.0.0.tgz#d128569451c340b432409c656cf166260cd2628d"
+  integrity sha1-0ShWlFHDQLQyQJxlbPFmJgzSYo0=
 
 request@^2.74.0, request@^2.88.0, request@^2.88.2:
   version "2.88.2"

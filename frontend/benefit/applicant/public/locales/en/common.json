@@ -22,7 +22,7 @@
     },
     "statuses": {
       "draft": "Luonnos",
-      "infoRequired": "Lisätietoja tarvitaan",
+      "additionalInformationNeeded": "Lisätietoja tarvitaan",
       "received": "Vastaanotettu",
       "approved": "Hyväksytty",
       "rejected": "Hylätty"

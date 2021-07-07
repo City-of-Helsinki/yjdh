@@ -13,7 +13,7 @@ import {
 } from 'shared/components/forms/section/styled';
 import theme from 'shared/styles/theme';
 
-import { useComponent } from './extended';
+import { useDeminimisAid } from './useDeminimisAid';
 
 const DeMinimisAidForm: React.FC = () => {
   const {
@@ -23,7 +23,7 @@ const DeMinimisAidForm: React.FC = () => {
     fields,
     translationsBase,
     formik,
-  } = useComponent();
+  } = useDeminimisAid();
 
   return (
     <>

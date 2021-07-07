@@ -4,21 +4,21 @@ interface AvatarProps {
   $backgroundColor: keyof DefaultTheme['colors'];
 }
 
-const ListItem = styled.li`
+const StyledListItem = styled.li`
   display: flex;
   background-color: ${(props) => props.theme.colors.white};
   padding: ${(props) => props.theme.spacing.xs};
   justify-content: space-between;
 `;
 
-const ItemContent = styled.div`
+const StyledItemContent = styled.div`
   display: grid;
   grid-template-columns: 60px 3fr repeat(4, minmax(100px, 2fr));
   grid-gap: ${(props) => props.theme.spacing.m};
   width: 100%;
 `;
 
-const Avatar = styled.div<AvatarProps>`
+const StyledAvatar = styled.div<AvatarProps>`
   ${(props) => `
     background-color: ${props.theme.colors[props.$backgroundColor]};
     color: ${props.theme.colors.white};
@@ -35,7 +35,7 @@ const Avatar = styled.div<AvatarProps>`
   min-width: 60px;
 `;
 
-const DataColumn = styled.div`
+const StyledDataColumn = styled.div`
   color: ${(props) => props.theme.colors.black90};
   display: flex;
   flex-direction: column;
@@ -43,16 +43,16 @@ const DataColumn = styled.div`
   gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const DataHeader = styled.div`
+const StyledDataHeader = styled.div`
   display: flex;
 `;
 
-const DataValue = styled.div`
+const StyledDataValue = styled.div`
   display: flex;
   font-weight: 600;
 `;
 
-const ItemActions = styled.div`
+const StyledItemActions = styled.div`
   display: grid;
   justify-content: stretch;
   align-items: center;
@@ -60,12 +60,12 @@ const ItemActions = styled.div`
   min-width: 160px;
 `;
 
-export default {
-  ListItem,
-  ItemContent,
-  Avatar,
-  DataColumn,
-  DataHeader,
-  DataValue,
-  ItemActions,
+export {
+  StyledAvatar,
+  StyledDataColumn,
+  StyledDataHeader,
+  StyledDataValue,
+  StyledItemActions,
+  StyledItemContent,
+  StyledListItem,
 };

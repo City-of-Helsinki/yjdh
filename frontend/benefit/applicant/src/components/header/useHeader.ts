@@ -18,7 +18,7 @@ type ExtendedComponentProps = {
   handleTitleClick: () => void;
 };
 
-const useComponent = (): ExtendedComponentProps => {
+const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
@@ -63,4 +63,4 @@ const useComponent = (): ExtendedComponentProps => {
   };
 };
 
-export { useComponent };
+export { useHeader };

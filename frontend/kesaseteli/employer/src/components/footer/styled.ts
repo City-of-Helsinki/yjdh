@@ -1,7 +1,7 @@
 import { Footer as HdsFooter } from 'hds-react';
 import styled from 'styled-components';
 
-const Footer = styled(HdsFooter)`
+const StyledFooter = styled(HdsFooter)`
   margin-top: ${(props) => props.theme.spacing.xl} !important;
   --footer-background: ${(props) => props.theme.colors.black80} !important;
   --footer-color: ${(props) => props.theme.colors.white} !important;
@@ -10,4 +10,4 @@ const Footer = styled(HdsFooter)`
     props.theme.colors.white} !important;
 `;
 
-export default { Footer };
+export { StyledFooter };

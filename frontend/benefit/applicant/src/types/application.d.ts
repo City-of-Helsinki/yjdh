@@ -1,3 +1,5 @@
+import { DefaultTheme } from 'styled-components';
+
 import { APPLICATION_STATUSES } from '../constants';
 
 export interface Employee {
@@ -12,4 +14,24 @@ export interface ApplicationData {
   submitted_at: string;
   application_number: number;
   employee: Employee;
+}
+
+interface ApplicationAllowedAction {
+  label: string;
+  handleAction: () => void;
+  Icon?: React.FC;
+}
+
+export interface ApplicationListItemData {
+  id: string;
+  name: string;
+  avatar: {
+    initials: string;
+    color: keyof DefaultTheme['colors'];
+  };
+  statusText?: string;
+  modifiedAt?: string;
+  submittedAt?: string;
+  applicationNum?: number;
+  allowedAction: ApplicationAllowedAction;
 }

@@ -10,7 +10,7 @@ import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
 import { StyledSubSection } from '../styled';
 import CompanyInfo from './companyInfo/CompanyInfo';
-import { useComponent } from './extended';
+import { useApplicationFormStep1 } from './useApplicationFormStep1';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   actions,
@@ -22,11 +22,16 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     fields,
     translationsBase,
     formik,
-  } = useComponent();
+  } = useApplicationFormStep1();
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <CompanyInfo />
+      <CompanyInfo
+        getErrorMessage={getErrorMessage}
+        formik={formik}
+        translationsBase={translationsBase}
+        fields={fields}
+      />
       <FormSection header={t(`${translationsBase}.heading2`)}>
         <StyledFormGroup>
           <TextInput
