@@ -37,6 +37,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "status",
+            "street_address",
+            "contact_person_name",
+            "contact_person_email",
+            "contact_person_phone_number",
+            "is_separate_invoicer",
             "invoicer_name",
             "invoicer_email",
             "invoicer_phone_number",

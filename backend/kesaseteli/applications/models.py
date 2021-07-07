@@ -17,7 +17,33 @@ class Application(HistoricalModel, UUIDModel):
     status = models.CharField(
         max_length=64, verbose_name=_("status"), choices=ApplicationStatus.choices
     )
+    street_address = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("invoicer work address"),
+    )
 
+    # contact information
+    contact_person_name = models.CharField(
+        blank=True,
+        max_length=256,
+        verbose_name=_("contact person name"),
+    )
+    contact_person_email = models.EmailField(
+        blank=True, verbose_name=_("contact person email")
+    )
+    contact_person_phone_number = models.CharField(
+        max_length=64,
+        blank=True,
+        verbose_name=_("contact person phone number"),
+    )
+
+    # invoicer information
+    is_separate_invoicer = models.BooleanField(
+        default=False,
+        verbose_name=_("is separate invoicer"),
+        help_text=_("invoicing is not handled by the contact person"),
+    )
     invoicer_name = models.CharField(
         blank=True,
         max_length=256,
