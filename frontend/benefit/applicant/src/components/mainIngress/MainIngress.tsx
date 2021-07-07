@@ -23,8 +23,9 @@ const MainIngress: React.FC = () => {
   } = useMainIngress();
   const { errors } = React.useContext(FrontPageContext);
 
-  const notificationItems = errors?.map(({ message, name }) => (
-    <StyledNotification key={`${name}-notification`} label={name} type="error">
+  const notificationItems = errors?.map(({ message, name }, i) => (
+    // eslint-disable-next-line react/no-array-index-key
+    <StyledNotification key={`${i}`} label={name} type="error">
       {message}
     </StyledNotification>
   ));
