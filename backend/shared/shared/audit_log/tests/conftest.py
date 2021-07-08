@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from typing import Callable
 
 from pytest import fixture
+
 from shared.common.tests.conftest import *  # noqa
 
 

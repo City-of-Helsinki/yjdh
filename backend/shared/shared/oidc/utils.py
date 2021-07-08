@@ -6,6 +6,7 @@ from uuid import uuid4
 import requests
 from django.conf import settings
 from django.utils import timezone
+
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 

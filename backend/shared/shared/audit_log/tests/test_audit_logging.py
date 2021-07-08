@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.test import override_settings
+
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation, Status
 

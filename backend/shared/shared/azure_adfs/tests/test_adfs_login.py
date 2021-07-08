@@ -5,6 +5,7 @@ import pytest
 from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
+
 from shared.azure_adfs.auth import HelsinkiAdfsAuthCodeBackend, provider_config
 
 

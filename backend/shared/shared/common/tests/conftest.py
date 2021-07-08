@@ -1,5 +1,6 @@
 import pytest
 from django.test import Client
+
 from shared.common.tests.factories import UserFactory
 
 

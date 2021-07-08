@@ -7,6 +7,7 @@ on:
     paths:
       - 'backend/kesaseteli/**'
       - '.github/workflows/ks-pytest.yml'
+      - 'backend/shared/**'
 
 
 env:

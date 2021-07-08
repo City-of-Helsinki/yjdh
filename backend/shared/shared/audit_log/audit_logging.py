@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import Model
 from django.db.models.base import ModelBase
+
 from shared.audit_log.enums import Operation, Role, Status
 
 User = get_user_model()
