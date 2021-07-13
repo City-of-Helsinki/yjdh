@@ -1,14 +1,12 @@
 import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
+import { FormFieldsStep1 } from 'benefit/applicant/types/application';
 import { FormikProps } from 'formik';
 import { TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { StyledCheckbox } from 'shared/components/forms/fields/styled';
-import {
-  FieldsDef,
-  FormFieldsStep1,
-} from 'shared/components/forms/fields/types';
+import { FieldsDef } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
 
 import {

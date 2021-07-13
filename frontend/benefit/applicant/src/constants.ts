@@ -31,6 +31,7 @@ export enum APPLICATION_STATUSES {
 }
 
 export enum APPLICATION_FIELDS {
+  // step1 - Company
   HAS_COMPANY_OTHER_ADDRESS = 'hasCompanyOtherAddress',
   COMPANY_OTHER_ADDRESS_STREET = 'companyOtherAddressStreet',
   COMPANY_OTHER_ADDRESS_ZIP = 'companyOtherAddressZipCode',
@@ -43,6 +44,15 @@ export enum APPLICATION_FIELDS {
   DE_MINIMIS_AIDS_GRANTED = 'deMinimisAidGranted',
   COLLECTIVE_BARGAINING_ONGOING = 'collectiveBargainingOngoing',
   COLLECTIVE_BARGAINING_INFO = 'collectiveBargainingInfo',
+  // step2 - Employee
+  EMPLOYEE_FIRST_NAME = 'employeeFirstName',
+  EMPLOYEE_LAST_NAME = 'employeeLastName',
+  EMPLOYEE_SSN = 'employeeSsn',
+  EMPLOYEE_PHONE = 'employeePhone',
+  IS_HELSINKI_MUNICIPALITY = 'isHelsinkiMunicipality',
+  PAY_SUBSIDY_GRANTED = 'paySubsidyGranted',
+  PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
+  PAY_SUBSIDY_ADDITIONAL_PERCENT = 'paySubsidyAdditionalPercent',
 }
 
 export enum DE_MINIMIS_AID_FIELDS {
@@ -66,6 +76,8 @@ export const DEFAULT_APPLICATION = {
   [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING]: '',
   [APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO]: '',
 };
+
+export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];
 
 export enum VALIDATION_MESSAGE_KEYS {
   REQUIRED = 'common:form.validation.required',

@@ -122,12 +122,45 @@
           }
         }
       },
-      "hired": {
+      "employee": {
         "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
-        "heading2": "Peruste, jolla Helsinki-lisää haetaan työllistetystä",
+        "heading2": "Palkkatukipäätös",
         "heading3": "Haettava tukimuoto",
         "heading4": "Haetaan ajalle",
-        "heading5": "Työsuhde"
+        "heading5": "Työsuhde",
+        "fields": {
+          "employeeFirstName": {
+            "label": "Etunimi",
+            "placeholder": "Etunimi"
+          },
+          "employeeLastName": {
+            "label": "Sukunimi",
+            "placeholder": "Sukunimi"
+          },
+          "employeeSsn": {
+            "label": "Henkilötunnus",
+            "placeholder": "Henkilötunnus"
+          },
+          "employeePhone": {
+            "label": "Puhelin",
+            "placeholder": "Puhelin"
+          },
+          "isHelsinkiMunicipality": {
+            "label": "Helsinki kotikuntana",
+            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa"
+          },
+          "paySubsidyGranted": {
+            "label": "Onko työsuhteeseen myönnetty palkkatuki?",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
+          "paySubsidyPercent": {
+            "label": "Päätöksessä oleva palkkatukiprosentti"
+          },
+          "paySubsidyAdditionalPercent": {
+            "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
+          }
+        }
       },
       "attachments": {
         "heading1": "Liittet"
@@ -191,5 +224,6 @@
         "invalid": "Virheellinen IBAN-tilinumero"
       }
     }
-  }
+  },
+  "select": "Valitse"
 }

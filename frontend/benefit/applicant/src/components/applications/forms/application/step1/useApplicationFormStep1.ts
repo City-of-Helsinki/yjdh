@@ -3,16 +3,13 @@ import {
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { FormFieldsStep1 } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
 import React, { FormEvent, useState } from 'react';
-import {
-  Field,
-  FieldsDef,
-  FormFieldsStep1,
-} from 'shared/components/forms/fields/types';
+import { Field, FieldsDef } from 'shared/components/forms/fields/types';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
