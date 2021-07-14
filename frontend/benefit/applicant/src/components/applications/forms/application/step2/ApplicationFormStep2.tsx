@@ -124,7 +124,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               label={t(
                 `${translationsBase}.fields.${APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED}.no`
               )}
-              onChange={formik.handleChange}
+              onChange={(val) => {
+                formik.handleChange(val);
+                formik.setFieldValue(
+                  APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM,
+                  ''
+                );
+              }}
               onBlur={formik.handleBlur}
               checked={formik.values.paySubsidyGranted === 'false'}
             />
@@ -166,6 +172,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
             </StyledFormGroup>
+            <Spacing size="m" />
             <StyledFormGroup>
               <Select
                 helper={getErrorMessage(
@@ -193,6 +200,40 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   )
                 }
               />
+            </StyledFormGroup>
+            <Spacing size="m" />
+            <StyledFormGroup>
+              <SelectionGroup
+                label={fields.apprenticeshipProgram.label}
+                direction="vertical"
+                required
+                errorText={getErrorMessage(
+                  APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM
+                )}
+              >
+                <StyledRadioButton
+                  id={`${fields.apprenticeshipProgram.name}False`}
+                  name={fields.apprenticeshipProgram.name}
+                  value="false"
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM}.no`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.apprenticeshipProgram === 'false'}
+                />
+                <StyledRadioButton
+                  id={`${fields.apprenticeshipProgram.name}True`}
+                  name={fields.apprenticeshipProgram.name}
+                  value="true"
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM}.yes`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.apprenticeshipProgram === 'true'}
+                />
+              </SelectionGroup>
             </StyledFormGroup>
           </StyledSubSection>
         )}

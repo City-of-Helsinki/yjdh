@@ -159,6 +159,11 @@
           },
           "paySubsidyAdditionalPercent": {
             "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
+          },
+          "apprenticeshipProgram": {
+            "label": "Onko kyseessä oppisopmus",
+            "yes": "Kyllä",
+            "no": "Ei"
           }
         }
       },

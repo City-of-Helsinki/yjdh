@@ -39,6 +39,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
       [APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED]: '',
       [APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT]: '',
       [APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT]: '',
+      [APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM]: '',
     },
     validationSchema: Yup.object().shape({
       [APPLICATION_FIELDS.COMPANY_IBAN]: Yup.string().matches(
@@ -62,6 +63,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
       APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED,
       APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT,
       APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT,
+      APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM,
     ],
     []
   );

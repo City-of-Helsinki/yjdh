@@ -53,6 +53,7 @@ export enum APPLICATION_FIELDS {
   PAY_SUBSIDY_GRANTED = 'paySubsidyGranted',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   PAY_SUBSIDY_ADDITIONAL_PERCENT = 'paySubsidyAdditionalPercent',
+  APPRENTICESHIP_PROGRAM = 'apprenticeshipProgram',
 }
 
 export enum DE_MINIMIS_AID_FIELDS {
