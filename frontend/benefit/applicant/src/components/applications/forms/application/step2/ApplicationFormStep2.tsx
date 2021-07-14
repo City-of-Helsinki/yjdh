@@ -1,6 +1,7 @@
-import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
+import { APPLICATION_FIELDS, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { Select, SelectionGroup, TextInput } from 'hds-react';
+import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
+import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
@@ -12,7 +13,11 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import Spacing from 'shared/components/forms/spacing/Spacing';
 
-import { StyledSubSection } from '../styled';
+import {
+  StyledFieildsWithInfoColumn,
+  StyledFieildsWithInfoContainer,
+  StyledSubSection,
+} from '../styled';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
@@ -239,13 +244,112 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading3`)}>
-        Content
+        <StyledFieildsWithInfoContainer>
+          <StyledFieildsWithInfoColumn>
+            <StyledFormGroup>
+              <SelectionGroup
+                label={fields.benefitType.label}
+                direction="vertical"
+                required
+                errorText={getErrorMessage(APPLICATION_FIELDS.BENEFIT_TYPE)}
+              >
+                <StyledRadioButton
+                  id={`${fields.benefitType.name}Employment`}
+                  name={fields.benefitType.name}
+                  value={BENEFIT_TYPES.EMPLOYMENT}
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.employment`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={
+                    formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT
+                  }
+                />
+                <StyledRadioButton
+                  id={`${fields.benefitType.name}Salary`}
+                  name={fields.benefitType.name}
+                  value={BENEFIT_TYPES.SALARY}
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.salary`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
+                />
+                <StyledRadioButton
+                  id={`${fields.benefitType.name}Commission`}
+                  name={fields.benefitType.name}
+                  value={BENEFIT_TYPES.COMMISSION}
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.commission`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={
+                    formik.values.benefitType === BENEFIT_TYPES.COMMISSION
+                  }
+                />
+              </SelectionGroup>
+            </StyledFormGroup>
+          </StyledFieildsWithInfoColumn>
+          <StyledFieildsWithInfoColumn>
+            {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
+              <Notification
+                label={t(
+                  `${translationsBase}.notifications.salaryBenefit.label`
+                )}
+              >
+                {t(`${translationsBase}.notifications.salaryBenefit.content`)}
+              </Notification>
+            )}
+          </StyledFieildsWithInfoColumn>
+        </StyledFieildsWithInfoContainer>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
-        Content
+        {!formik.values.benefitType && (
+          <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
+        )}
+        <StyledFieildsWithInfoContainer>
+          <StyledFieildsWithInfoColumn>
+            <StyledFormGroup>
+              {formik.values.benefitType && (
+                <>
+                  {t(
+                    `${translationsBase}.messages.${camelCase(
+                      formik.values.benefitType
+                    )}Selected`
+                  )}
+                </>
+              )}
+            </StyledFormGroup>
+            <StyledFormGroup>
+              todo: datepicker range to implement
+            </StyledFormGroup>
+          </StyledFieildsWithInfoColumn>
+          <StyledFieildsWithInfoColumn>
+            {formik.values.benefitType && (
+              <Notification
+                label={t(
+                  `${translationsBase}.notifications.${camelCase(
+                    formik.values.benefitType
+                  )}Selected.label`
+                )}
+              >
+                {t(
+                  `${translationsBase}.notifications.${camelCase(
+                    formik.values.benefitType
+                  )}Selected.content`
+                )}
+              </Notification>
+            )}
+          </StyledFieildsWithInfoColumn>
+        </StyledFieildsWithInfoContainer>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading5`)}>
-        Content
+        {!formik.values.benefitType && (
+          <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
+        )}
       </FormSection>
       {actions}
     </form>

@@ -128,6 +128,30 @@
         "heading3": "Haettava tukimuoto",
         "heading4": "Haetaan ajalle",
         "heading5": "Työsuhde",
+        "notifications": {
+          "salaryBenefit": {
+            "label": "Palkkatuettu oppisopimus",
+            "content": "Palkkatuettuun oppisopimukseen voi hakea joko työllistämisen tai palkan Helsinki-lisää"
+          },
+          "employmentBenefitSelected": {
+            "label": "Ajanjakso",
+            "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+          },
+          "salaryBenefitSelected": {
+            "label": "Ajanjakso",
+            "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+          },
+          "commissionBenefitSelected": {
+            "label": "Ajanjakso",
+            "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          }
+        },
+        "messages": {
+          "selectBenefitType": "Valitse ensi tukimuoto yllä",
+          "employmentBenefitSelected": "Helsinki-lisä haetaan työsuhteen keston mukaan 1–12 kk",
+          "salaryBenefitSelected": "Oppisopimuksessa 12 kk ylittävältä jaksolta on tehtävä uusi hakemus",
+          "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
+        },
         "fields": {
           "employeeFirstName": {
             "label": "Etunimi",
@@ -164,6 +188,12 @@
             "label": "Onko kyseessä oppisopmus",
             "yes": "Kyllä",
             "no": "Ei"
+          },
+          "benefitType": {
+            "label": "Tukimuoto",
+            "employment": "Työllistämisen Helsinki-lisä",
+            "salary": "Palkan Helsinki-lisä",
+            "commission": "Toimeksiannon Helsinki-lisä"
           }
         }
       },

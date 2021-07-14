@@ -30,6 +30,12 @@ export enum APPLICATION_STATUSES {
   REJECTED = 'rejected',
 }
 
+export enum BENEFIT_TYPES {
+  EMPLOYMENT = 'employment_benefit',
+  SALARY = 'salary_benefit',
+  COMMISSION = 'commission_benefit',
+}
+
 export enum APPLICATION_FIELDS {
   // step1 - Company
   HAS_COMPANY_OTHER_ADDRESS = 'hasCompanyOtherAddress',
@@ -54,6 +60,7 @@ export enum APPLICATION_FIELDS {
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   PAY_SUBSIDY_ADDITIONAL_PERCENT = 'paySubsidyAdditionalPercent',
   APPRENTICESHIP_PROGRAM = 'apprenticeshipProgram',
+  BENEFIT_TYPE = 'benefitType',
 }
 
 export enum DE_MINIMIS_AID_FIELDS {

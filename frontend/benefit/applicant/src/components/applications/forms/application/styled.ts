@@ -66,11 +66,22 @@ const StyledSubSection = styled.div`
   }
 `;
 
+const StyledFieildsWithInfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const StyledFieildsWithInfoColumn = styled.div`
+  flex: 0 0 50%;
+`;
+
 export {
   StyledActionContainer,
   StyledButton,
   StyledContainer,
   StyledDescription,
+  StyledFieildsWithInfoColumn,
+  StyledFieildsWithInfoContainer,
   StyledHeading,
   StyledLink,
   StyledSubActionContainer,
