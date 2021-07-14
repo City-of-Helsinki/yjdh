@@ -1,5 +1,7 @@
 import {
   APPLICATION_FIELDS,
+  APPLICATION_FIELDS_STEP2,
+  DEFAULT_APPLICATION_FIELDS_STEP2,
   PAY_SUBSIDY_OPTIONS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
@@ -30,18 +32,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const formik = useFormik({
-    initialValues: {
-      [APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME]: '',
-      [APPLICATION_FIELDS.EMPLOYEE_LAST_NAME]: '',
-      [APPLICATION_FIELDS.EMPLOYEE_SSN]: '',
-      [APPLICATION_FIELDS.EMPLOYEE_PHONE]: '',
-      [APPLICATION_FIELDS.IS_HELSINKI_MUNICIPALITY]: false,
-      [APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED]: '',
-      [APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT]: '',
-      [APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT]: '',
-      [APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM]: '',
-      [APPLICATION_FIELDS.BENEFIT_TYPE]: '',
-    },
+    initialValues: DEFAULT_APPLICATION_FIELDS_STEP2,
     validationSchema: Yup.object().shape({
       [APPLICATION_FIELDS.COMPANY_IBAN]: Yup.string().matches(
         /^FI\d{16}$/,
@@ -55,18 +46,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
   });
 
   const fieldNames = React.useMemo(
-    (): string[] => [
-      APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME,
-      APPLICATION_FIELDS.EMPLOYEE_LAST_NAME,
-      APPLICATION_FIELDS.EMPLOYEE_SSN,
-      APPLICATION_FIELDS.EMPLOYEE_PHONE,
-      APPLICATION_FIELDS.IS_HELSINKI_MUNICIPALITY,
-      APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED,
-      APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT,
-      APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT,
-      APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM,
-      APPLICATION_FIELDS.BENEFIT_TYPE,
-    ],
+    (): string[] => Object.values(APPLICATION_FIELDS_STEP2),
     []
   );
 

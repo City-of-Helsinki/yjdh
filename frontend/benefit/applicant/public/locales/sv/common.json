@@ -128,6 +128,10 @@
         "heading3": "Haettava tukimuoto",
         "heading4": "Haetaan ajalle",
         "heading5": "Työsuhde",
+        "tooltips": {
+          "heading5": "Työsuhde tooltip text",
+          "section5Tooltip1": "Työsuhde sub header tooltip message"
+        },
         "notifications": {
           "salaryBenefit": {
             "label": "Palkkatuettu oppisopimus",
@@ -194,6 +198,30 @@
             "employment": "Työllistämisen Helsinki-lisä",
             "salary": "Palkan Helsinki-lisä",
             "commission": "Toimeksiannon Helsinki-lisä"
+          },
+          "jobTitle": {
+            "label": "Tehtävänimike",
+            "placeholder": "Tehtävänimike"
+          },
+          "workingHours": {
+            "label": "Työaika t/viikko",
+            "placeholder": "Tunteja"
+          },
+          "collectiveBargainingAgreement": {
+            "label": "Sovellettava työehtosopimus",
+            "placeholder": "Työehtosopimus"
+          },
+          "monthlyPay": {
+            "label": "Bruttopalkka €/kk",
+            "placeholder": "Palkka"
+          },
+          "otherExpenses": {
+            "label": "Sivukulut €/kk",
+            "placeholder": "Sivukulut"
+          },
+          "vacationMoney": {
+            "label": "Lomaraha",
+            "placeholder": "Lomaraha"
           }
         }
       },
