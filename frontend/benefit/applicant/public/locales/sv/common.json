@@ -127,10 +127,13 @@
         "heading2": "Palkkatukipäätös",
         "heading3": "Haettava tukimuoto",
         "heading4": "Haetaan ajalle",
-        "heading5": "Työsuhde",
+        "heading5Employment": "Työsuhde",
+        "heading5Assignment": "Toimeksianto",
+        "heading5EmploymentSub1": "Palkkauskustannukset",
         "tooltips": {
-          "heading5": "Työsuhde tooltip text",
-          "section5Tooltip1": "Työsuhde sub header tooltip message"
+          "heading5Employment": "Työsuhde tooltip text",
+          "heading5EmploymentSub1": "Työsuhde sub header tooltip message 1",
+          "heading5Assignment": "Palkkauskustannukset tooltip text"
         },
         "notifications": {
           "salaryBenefit": {
@@ -222,6 +225,14 @@
           "vacationMoney": {
             "label": "Lomaraha",
             "placeholder": "Lomaraha"
+          },
+          "commissionDescription": {
+            "label": "Toimeksiannon kuvaus",
+            "placeholder": "Kuvaus"
+          },
+          "commissionAmount": {
+            "label": "Palkkio €",
+            "placeholder": "Palkkio"
           }
         }
       },

@@ -9,6 +9,7 @@ import {
   StyledRadioButton,
 } from 'shared/components/forms/fields/styled';
 import { Option } from 'shared/components/forms/fields/types';
+import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import Spacing from 'shared/components/forms/spacing/Spacing';
@@ -347,14 +348,26 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         </StyledFieildsWithInfoContainer>
       </FormSection>
       <FormSection
-        header={t(`${translationsBase}.heading5`)}
-        tooltip={t(`${translationsBase}.tooltips.heading5`)}
+        header={t(
+          `${translationsBase}.heading5${
+            formik.values.benefitType === BENEFIT_TYPES.COMMISSION
+              ? 'Assignment'
+              : 'Employment'
+          }`
+        )}
+        tooltip={t(
+          `${translationsBase}.tooltips.heading5${
+            formik.values.benefitType === BENEFIT_TYPES.COMMISSION
+              ? 'Assignment'
+              : 'Employment'
+          }`
+        )}
       >
         {!formik.values.benefitType && (
           <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
         )}
-        {formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
-        formik.values.benefitType === BENEFIT_TYPES.SALARY ? (
+        {(formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
+          formik.values.benefitType === BENEFIT_TYPES.SALARY) && (
           <>
             <StyledFormGroup>
               <TextInput
@@ -409,6 +422,12 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
             </StyledFormGroup>
+            <Spacing size="s" />
+            <Heading
+              size="xs"
+              header={t(`${translationsBase}.heading5EmploymentSub1`)}
+              tooltip={t(`${translationsBase}.tooltips.heading5EmploymentSub1`)}
+            />
             <StyledFormGroup>
               <TextInput
                 id={fields.monthlyPay.name}
@@ -455,8 +474,44 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </StyledFormGroup>
           </>
-        ) : (
-          <>commission</>
+        )}
+        {formik.values.benefitType === BENEFIT_TYPES.COMMISSION && (
+          <StyledFormGroup>
+            <TextInput
+              id={fields.commissionDescription.name}
+              name={fields.commissionDescription.name}
+              label={fields.commissionDescription.label}
+              placeholder={fields.commissionDescription.placeholder}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.commissionDescription}
+              invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMMISSION_DESCRIPTION)
+              }
+              aria-invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMMISSION_DESCRIPTION)
+              }
+              errorText={getErrorMessage(
+                APPLICATION_FIELDS.COMMISSION_DESCRIPTION
+              )}
+              required
+            />
+            <TextInput
+              id={fields.commissionAmount.name}
+              name={fields.commissionAmount.name}
+              label={fields.commissionAmount.label}
+              placeholder={fields.commissionAmount.placeholder}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.commissionAmount}
+              invalid={!!getErrorMessage(APPLICATION_FIELDS.COMMISSION_AMOUNT)}
+              aria-invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMMISSION_AMOUNT)
+              }
+              errorText={getErrorMessage(APPLICATION_FIELDS.COMMISSION_AMOUNT)}
+              required
+            />
+          </StyledFormGroup>
         )}
       </FormSection>
       {actions}
