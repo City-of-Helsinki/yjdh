@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import { QueryClient, setLogger } from 'react-query';
 
 setLogger({
@@ -5,7 +6,7 @@ setLogger({
   log: console.log,
   // eslint-disable-next-line no-console
   warn: console.warn,
-  error: () => {},
+  error: () => noop,
 });
 
 const getDefaultReactQueryTestClient = (): QueryClient =>

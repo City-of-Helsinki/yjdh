@@ -8,7 +8,7 @@ import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
-import { StyledSubSection } from '../styled';
+import { StyledContactPersonContainer, StyledSubSection } from '../styled';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
 
@@ -33,7 +33,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         fields={fields}
       />
       <FormSection header={t(`${translationsBase}.heading2`)}>
-        <StyledFormGroup>
+        <StyledContactPersonContainer>
           <TextInput
             id={fields.contactPersonFirstName.name}
             name={fields.contactPersonFirstName.name}
@@ -102,7 +102,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             errorText={getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_EMAIL)}
             required
           />
-        </StyledFormGroup>
+        </StyledContactPersonContainer>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading3`)}>
         <StyledFormGroup>

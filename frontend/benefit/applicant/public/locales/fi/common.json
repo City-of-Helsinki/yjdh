@@ -122,12 +122,119 @@
           }
         }
       },
-      "hired": {
+      "employee": {
         "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
-        "heading2": "Peruste, jolla Helsinki-lisää haetaan työllistetystä",
+        "heading2": "Palkkatukipäätös",
         "heading3": "Haettava tukimuoto",
         "heading4": "Haetaan ajalle",
-        "heading5": "Työsuhde"
+        "heading5Employment": "Työsuhde",
+        "heading5Assignment": "Toimeksianto",
+        "heading5EmploymentSub1": "Palkkauskustannukset",
+        "tooltips": {
+          "heading5Employment": "Työsuhde tooltip text",
+          "heading5EmploymentSub1": "Työsuhde sub header tooltip message 1",
+          "heading5Assignment": "Palkkauskustannukset tooltip text"
+        },
+        "notifications": {
+          "salaryBenefit": {
+            "label": "Palkkatuettu oppisopimus",
+            "content": "Palkkatuettuun oppisopimukseen voi hakea joko työllistämisen tai palkan Helsinki-lisää"
+          },
+          "employmentBenefitSelected": {
+            "label": "Ajanjakso",
+            "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+          },
+          "salaryBenefitSelected": {
+            "label": "Ajanjakso",
+            "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+          },
+          "commissionBenefitSelected": {
+            "label": "Ajanjakso",
+            "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          }
+        },
+        "messages": {
+          "selectBenefitType": "Valitse ensi tukimuoto yllä",
+          "employmentBenefitSelected": "Helsinki-lisä haetaan työsuhteen keston mukaan 1–12 kk",
+          "salaryBenefitSelected": "Oppisopimuksessa 12 kk ylittävältä jaksolta on tehtävä uusi hakemus",
+          "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
+        },
+        "fields": {
+          "employeeFirstName": {
+            "label": "Etunimi",
+            "placeholder": "Etunimi"
+          },
+          "employeeLastName": {
+            "label": "Sukunimi",
+            "placeholder": "Sukunimi"
+          },
+          "employeeSsn": {
+            "label": "Henkilötunnus",
+            "placeholder": "Henkilötunnus"
+          },
+          "employeePhone": {
+            "label": "Puhelin",
+            "placeholder": "Puhelin"
+          },
+          "isHelsinkiMunicipality": {
+            "label": "Helsinki kotikuntana",
+            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa"
+          },
+          "paySubsidyGranted": {
+            "label": "Onko työsuhteeseen myönnetty palkkatuki?",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
+          "paySubsidyPercent": {
+            "label": "Päätöksessä oleva palkkatukiprosentti"
+          },
+          "paySubsidyAdditionalPercent": {
+            "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
+          },
+          "apprenticeshipProgram": {
+            "label": "Onko kyseessä oppisopmus",
+            "yes": "Kyllä",
+            "no": "Ei"
+          },
+          "benefitType": {
+            "label": "Tukimuoto",
+            "employment": "Työllistämisen Helsinki-lisä",
+            "salary": "Palkan Helsinki-lisä",
+            "commission": "Toimeksiannon Helsinki-lisä"
+          },
+          "jobTitle": {
+            "label": "Tehtävänimike",
+            "placeholder": "Tehtävänimike"
+          },
+          "workingHours": {
+            "label": "Työaika t/viikko",
+            "placeholder": "Tunteja"
+          },
+          "collectiveBargainingAgreement": {
+            "label": "Sovellettava työehtosopimus",
+            "placeholder": "Työehtosopimus"
+          },
+          "monthlyPay": {
+            "label": "Bruttopalkka €/kk",
+            "placeholder": "Palkka"
+          },
+          "otherExpenses": {
+            "label": "Sivukulut €/kk",
+            "placeholder": "Sivukulut"
+          },
+          "vacationMoney": {
+            "label": "Lomaraha",
+            "placeholder": "Lomaraha"
+          },
+          "commissionDescription": {
+            "label": "Toimeksiannon kuvaus",
+            "placeholder": "Kuvaus"
+          },
+          "commissionAmount": {
+            "label": "Palkkio €",
+            "placeholder": "Palkkio"
+          }
+        }
       },
       "attachments": {
         "heading1": "Liittet"
@@ -191,5 +298,6 @@
         "invalid": "Virheellinen IBAN-tilinumero"
       }
     }
-  }
+  },
+  "select": "Valitse"
 }

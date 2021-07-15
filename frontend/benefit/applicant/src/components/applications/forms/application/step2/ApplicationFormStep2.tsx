@@ -1,32 +1,527 @@
-import { useTranslation } from 'benefit/applicant/i18n';
+import { APPLICATION_FIELDS, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
+import camelCase from 'lodash/camelCase';
 import * as React from 'react';
+import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
+import {
+  StyledCheckbox,
+  StyledRadioButton,
+} from 'shared/components/forms/fields/styled';
+import { Option } from 'shared/components/forms/fields/types';
+import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
+import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import Spacing from 'shared/components/forms/spacing/Spacing';
+
+import {
+  StyledCommissionContainer,
+  StyledEmployerBasicInfoContainer,
+  StyledEmploymentMoneyContainer,
+  StyledEmploymentRelationshipContainer,
+  StyledFieildsWithInfoColumn,
+  StyledFieildsWithInfoContainer,
+  StyledSubSection,
+} from '../styled';
+import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   actions,
 }) => {
-  const { t } = useTranslation();
-  const translationsBase = 'common:applications.sections.hired';
+  const {
+    t,
+    handleSubmit,
+    getErrorMessage,
+    fields,
+    translationsBase,
+    formik,
+    subsidyOptions,
+  } = useApplicationFormStep2();
+
   return (
-    <>
+    <form onSubmit={handleSubmit} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
-        Content
+        <StyledEmployerBasicInfoContainer>
+          <TextInput
+            id={fields.employeeFirstName.name}
+            name={fields.employeeFirstName.name}
+            label={fields.employeeFirstName.label}
+            placeholder={fields.employeeFirstName.placeholder}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.employeeFirstName}
+            invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)}
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)
+            }
+            errorText={getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)}
+            required
+          />
+          <TextInput
+            id={fields.employeeLastName.name}
+            name={fields.employeeLastName.name}
+            label={fields.employeeLastName.label}
+            placeholder={fields.employeeLastName.placeholder}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.employeeLastName}
+            invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)}
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)
+            }
+            errorText={getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)}
+            required
+          />
+          <TextInput
+            id={fields.employeeSsn.name}
+            name={fields.employeeSsn.name}
+            label={fields.employeeSsn.label}
+            placeholder={fields.employeeSsn.placeholder}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.employeeSsn}
+            invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_SSN)}
+            aria-invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_SSN)}
+            errorText={getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_SSN)}
+            required
+          />
+          <TextInput
+            id={fields.employeePhone.name}
+            name={fields.employeePhone.name}
+            label={fields.employeePhone.label}
+            placeholder={fields.employeePhone.placeholder}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.employeePhone}
+            invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_PHONE)}
+            aria-invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_PHONE)}
+            errorText={getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_PHONE)}
+            required
+          />
+        </StyledEmployerBasicInfoContainer>
+        <Spacing size="m" />
+        <FieldLabel value={fields.isHelsinkiMunicipality.label} required />
+        <StyledFormGroup>
+          <StyledCheckbox
+            id={fields.isHelsinkiMunicipality.name}
+            name={fields.isHelsinkiMunicipality.name}
+            label={fields.isHelsinkiMunicipality.placeholder}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS.IS_HELSINKI_MUNICIPALITY)
+            }
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS.IS_HELSINKI_MUNICIPALITY
+            )}
+            required
+            checked={formik.values.isHelsinkiMunicipality === true}
+          />
+        </StyledFormGroup>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading2`)}>
-        Content
+        <StyledFormGroup>
+          <SelectionGroup
+            label={fields.paySubsidyGranted.label}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED)}
+          >
+            <StyledRadioButton
+              id={`${fields.paySubsidyGranted.name}False`}
+              name={fields.paySubsidyGranted.name}
+              value="false"
+              label={t(
+                `${translationsBase}.fields.${APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED}.no`
+              )}
+              onChange={(val) => {
+                formik.handleChange(val);
+                formik.setFieldValue(
+                  APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM,
+                  ''
+                );
+              }}
+              onBlur={formik.handleBlur}
+              checked={formik.values.paySubsidyGranted === 'false'}
+            />
+            <StyledRadioButton
+              id={`${fields.paySubsidyGranted.name}True`}
+              name={fields.paySubsidyGranted.name}
+              value="true"
+              label={t(
+                `${translationsBase}.fields.${APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED}.yes`
+              )}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              checked={formik.values.paySubsidyGranted === 'true'}
+            />
+          </SelectionGroup>
+        </StyledFormGroup>
+        {formik.values.paySubsidyGranted === 'true' && (
+          <StyledSubSection>
+            <StyledFormGroup>
+              <Select
+                style={{ width: 350 }}
+                helper={getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)}
+                optionLabelField="label"
+                label={fields.paySubsidyPercent.label}
+                onChange={(paySubsidyPercent: Option) =>
+                  formik.setFieldValue(
+                    APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT,
+                    paySubsidyPercent.value
+                  )
+                }
+                options={subsidyOptions}
+                id={fields.paySubsidyPercent.name}
+                placeholder={t('common:select')}
+                invalid={
+                  !!getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)
+                }
+                aria-invalid={
+                  !!getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)
+                }
+                required
+              />
+            </StyledFormGroup>
+            <Spacing size="m" />
+            <StyledFormGroup>
+              <Select
+                style={{ width: 350 }}
+                helper={getErrorMessage(
+                  APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT
+                )}
+                optionLabelField="label"
+                label={fields.paySubsidyAdditionalPercent.label}
+                onChange={(paySubsidyAdditionalPercent: Option) =>
+                  formik.setFieldValue(
+                    APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT,
+                    paySubsidyAdditionalPercent.value
+                  )
+                }
+                options={subsidyOptions}
+                id={fields.paySubsidyAdditionalPercent.name}
+                placeholder={t('common:select')}
+                invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT
+                  )
+                }
+                aria-invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT
+                  )
+                }
+              />
+            </StyledFormGroup>
+            <Spacing size="m" />
+            <StyledFormGroup>
+              <SelectionGroup
+                label={fields.apprenticeshipProgram.label}
+                direction="vertical"
+                required
+                errorText={getErrorMessage(
+                  APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM
+                )}
+              >
+                <StyledRadioButton
+                  id={`${fields.apprenticeshipProgram.name}False`}
+                  name={fields.apprenticeshipProgram.name}
+                  value="false"
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM}.no`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.apprenticeshipProgram === 'false'}
+                />
+                <StyledRadioButton
+                  id={`${fields.apprenticeshipProgram.name}True`}
+                  name={fields.apprenticeshipProgram.name}
+                  value="true"
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM}.yes`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.apprenticeshipProgram === 'true'}
+                />
+              </SelectionGroup>
+            </StyledFormGroup>
+          </StyledSubSection>
+        )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading3`)}>
-        Content
+        <StyledFieildsWithInfoContainer>
+          <StyledFieildsWithInfoColumn>
+            <StyledFormGroup>
+              <SelectionGroup
+                label={fields.benefitType.label}
+                direction="vertical"
+                required
+                errorText={getErrorMessage(APPLICATION_FIELDS.BENEFIT_TYPE)}
+              >
+                <StyledRadioButton
+                  id={`${fields.benefitType.name}Employment`}
+                  name={fields.benefitType.name}
+                  value={BENEFIT_TYPES.EMPLOYMENT}
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.employment`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={
+                    formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT
+                  }
+                />
+                <StyledRadioButton
+                  id={`${fields.benefitType.name}Salary`}
+                  name={fields.benefitType.name}
+                  value={BENEFIT_TYPES.SALARY}
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.salary`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
+                />
+                <StyledRadioButton
+                  id={`${fields.benefitType.name}Commission`}
+                  name={fields.benefitType.name}
+                  value={BENEFIT_TYPES.COMMISSION}
+                  label={t(
+                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.commission`
+                  )}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={
+                    formik.values.benefitType === BENEFIT_TYPES.COMMISSION
+                  }
+                />
+              </SelectionGroup>
+            </StyledFormGroup>
+          </StyledFieildsWithInfoColumn>
+          <StyledFieildsWithInfoColumn>
+            {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
+              <Notification
+                label={t(
+                  `${translationsBase}.notifications.salaryBenefit.label`
+                )}
+              >
+                {t(`${translationsBase}.notifications.salaryBenefit.content`)}
+              </Notification>
+            )}
+          </StyledFieildsWithInfoColumn>
+        </StyledFieildsWithInfoContainer>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
-        Content
+        {!formik.values.benefitType && (
+          <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
+        )}
+        <StyledFieildsWithInfoContainer>
+          <StyledFieildsWithInfoColumn>
+            <StyledFormGroup>
+              {formik.values.benefitType && (
+                <>
+                  {t(
+                    `${translationsBase}.messages.${camelCase(
+                      formik.values.benefitType
+                    )}Selected`
+                  )}
+                </>
+              )}
+            </StyledFormGroup>
+            <StyledFormGroup>
+              todo: datepicker range to implement
+            </StyledFormGroup>
+          </StyledFieildsWithInfoColumn>
+          <StyledFieildsWithInfoColumn>
+            {formik.values.benefitType && (
+              <Notification
+                label={t(
+                  `${translationsBase}.notifications.${camelCase(
+                    formik.values.benefitType
+                  )}Selected.label`
+                )}
+              >
+                {t(
+                  `${translationsBase}.notifications.${camelCase(
+                    formik.values.benefitType
+                  )}Selected.content`
+                )}
+              </Notification>
+            )}
+          </StyledFieildsWithInfoColumn>
+        </StyledFieildsWithInfoContainer>
       </FormSection>
-      <FormSection header={t(`${translationsBase}.heading5`)}>
-        Content
+      <FormSection
+        header={t(
+          `${translationsBase}.heading5${
+            formik.values.benefitType === BENEFIT_TYPES.COMMISSION
+              ? 'Assignment'
+              : 'Employment'
+          }`
+        )}
+        tooltip={t(
+          `${translationsBase}.tooltips.heading5${
+            formik.values.benefitType === BENEFIT_TYPES.COMMISSION
+              ? 'Assignment'
+              : 'Employment'
+          }`
+        )}
+      >
+        {!formik.values.benefitType && (
+          <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
+        )}
+        {(formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
+          formik.values.benefitType === BENEFIT_TYPES.SALARY) && (
+          <>
+            <StyledEmploymentRelationshipContainer>
+              <TextInput
+                id={fields.jobTitle.name}
+                name={fields.jobTitle.name}
+                label={fields.jobTitle.label}
+                placeholder={fields.jobTitle.placeholder}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.jobTitle}
+                invalid={!!getErrorMessage(APPLICATION_FIELDS.JOB_TITLE)}
+                aria-invalid={!!getErrorMessage(APPLICATION_FIELDS.JOB_TITLE)}
+                errorText={getErrorMessage(APPLICATION_FIELDS.JOB_TITLE)}
+                required
+              />
+              <TextInput
+                id={fields.workingHours.name}
+                name={fields.workingHours.name}
+                label={fields.workingHours.label}
+                placeholder={fields.workingHours.placeholder}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.workingHours}
+                invalid={!!getErrorMessage(APPLICATION_FIELDS.WORKING_HOURS)}
+                aria-invalid={
+                  !!getErrorMessage(APPLICATION_FIELDS.WORKING_HOURS)
+                }
+                errorText={getErrorMessage(APPLICATION_FIELDS.WORKING_HOURS)}
+                required
+              />
+              <TextInput
+                id={fields.collectiveBargainingAgreement.name}
+                name={fields.collectiveBargainingAgreement.name}
+                label={fields.collectiveBargainingAgreement.label}
+                placeholder={fields.collectiveBargainingAgreement.placeholder}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.collectiveBargainingAgreement}
+                invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.COLLECTIVE_BARGAINING_AGREEMENT
+                  )
+                }
+                aria-invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.COLLECTIVE_BARGAINING_AGREEMENT
+                  )
+                }
+                errorText={getErrorMessage(
+                  APPLICATION_FIELDS.COLLECTIVE_BARGAINING_AGREEMENT
+                )}
+                required
+              />
+            </StyledEmploymentRelationshipContainer>
+            <Spacing size="s" />
+            <Heading
+              size="xs"
+              header={t(`${translationsBase}.heading5EmploymentSub1`)}
+              tooltip={t(`${translationsBase}.tooltips.heading5EmploymentSub1`)}
+            />
+            <StyledEmploymentMoneyContainer>
+              <TextInput
+                id={fields.monthlyPay.name}
+                name={fields.monthlyPay.name}
+                label={fields.monthlyPay.label}
+                placeholder={fields.monthlyPay.placeholder}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.monthlyPay}
+                invalid={!!getErrorMessage(APPLICATION_FIELDS.MONTHLY_PAY)}
+                aria-invalid={!!getErrorMessage(APPLICATION_FIELDS.MONTHLY_PAY)}
+                errorText={getErrorMessage(APPLICATION_FIELDS.MONTHLY_PAY)}
+                required
+              />
+              <TextInput
+                id={fields.otherExpenses.name}
+                name={fields.otherExpenses.name}
+                label={fields.otherExpenses.label}
+                placeholder={fields.otherExpenses.placeholder}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.otherExpenses}
+                invalid={!!getErrorMessage(APPLICATION_FIELDS.OTHER_EXPENSES)}
+                aria-invalid={
+                  !!getErrorMessage(APPLICATION_FIELDS.OTHER_EXPENSES)
+                }
+                errorText={getErrorMessage(APPLICATION_FIELDS.OTHER_EXPENSES)}
+                required
+              />
+              <TextInput
+                id={fields.vacationMoney.name}
+                name={fields.vacationMoney.name}
+                label={fields.vacationMoney.label}
+                placeholder={fields.vacationMoney.placeholder}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.vacationMoney}
+                invalid={!!getErrorMessage(APPLICATION_FIELDS.VACATION_MONEY)}
+                aria-invalid={
+                  !!getErrorMessage(APPLICATION_FIELDS.VACATION_MONEY)
+                }
+                errorText={getErrorMessage(APPLICATION_FIELDS.VACATION_MONEY)}
+                required
+              />
+            </StyledEmploymentMoneyContainer>
+          </>
+        )}
+        {formik.values.benefitType === BENEFIT_TYPES.COMMISSION && (
+          <StyledCommissionContainer>
+            <TextInput
+              id={fields.commissionDescription.name}
+              name={fields.commissionDescription.name}
+              label={fields.commissionDescription.label}
+              placeholder={fields.commissionDescription.placeholder}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.commissionDescription}
+              invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMMISSION_DESCRIPTION)
+              }
+              aria-invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMMISSION_DESCRIPTION)
+              }
+              errorText={getErrorMessage(
+                APPLICATION_FIELDS.COMMISSION_DESCRIPTION
+              )}
+              required
+            />
+            <TextInput
+              id={fields.commissionAmount.name}
+              name={fields.commissionAmount.name}
+              label={fields.commissionAmount.label}
+              placeholder={fields.commissionAmount.placeholder}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.commissionAmount}
+              invalid={!!getErrorMessage(APPLICATION_FIELDS.COMMISSION_AMOUNT)}
+              aria-invalid={
+                !!getErrorMessage(APPLICATION_FIELDS.COMMISSION_AMOUNT)
+              }
+              errorText={getErrorMessage(APPLICATION_FIELDS.COMMISSION_AMOUNT)}
+              required
+            />
+          </StyledCommissionContainer>
+        )}
       </FormSection>
       {actions}
-    </>
+    </form>
   );
 };
 
