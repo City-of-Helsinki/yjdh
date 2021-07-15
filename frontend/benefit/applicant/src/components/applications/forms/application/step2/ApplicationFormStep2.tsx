@@ -15,6 +15,10 @@ import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import Spacing from 'shared/components/forms/spacing/Spacing';
 
 import {
+  StyledCommissionContainer,
+  StyledEmployerBasicInfoContainer,
+  StyledEmploymentMoneyContainer,
+  StyledEmploymentRelationshipContainer,
   StyledFieildsWithInfoColumn,
   StyledFieildsWithInfoContainer,
   StyledSubSection,
@@ -37,7 +41,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   return (
     <form onSubmit={handleSubmit} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
-        <StyledFormGroup>
+        <StyledEmployerBasicInfoContainer>
           <TextInput
             id={fields.employeeFirstName.name}
             name={fields.employeeFirstName.name}
@@ -94,7 +98,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             errorText={getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_PHONE)}
             required
           />
-        </StyledFormGroup>
+        </StyledEmployerBasicInfoContainer>
         <Spacing size="m" />
         <FieldLabel value={fields.isHelsinkiMunicipality.label} required />
         <StyledFormGroup>
@@ -157,6 +161,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           <StyledSubSection>
             <StyledFormGroup>
               <Select
+                style={{ width: 350 }}
                 helper={getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)}
                 optionLabelField="label"
                 label={fields.paySubsidyPercent.label}
@@ -181,6 +186,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             <Spacing size="m" />
             <StyledFormGroup>
               <Select
+                style={{ width: 350 }}
                 helper={getErrorMessage(
                   APPLICATION_FIELDS.PAY_SUBSIDY_ADDITIONAL_PERCENT
                 )}
@@ -369,7 +375,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         {(formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
           formik.values.benefitType === BENEFIT_TYPES.SALARY) && (
           <>
-            <StyledFormGroup>
+            <StyledEmploymentRelationshipContainer>
               <TextInput
                 id={fields.jobTitle.name}
                 name={fields.jobTitle.name}
@@ -421,14 +427,14 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 )}
                 required
               />
-            </StyledFormGroup>
+            </StyledEmploymentRelationshipContainer>
             <Spacing size="s" />
             <Heading
               size="xs"
               header={t(`${translationsBase}.heading5EmploymentSub1`)}
               tooltip={t(`${translationsBase}.tooltips.heading5EmploymentSub1`)}
             />
-            <StyledFormGroup>
+            <StyledEmploymentMoneyContainer>
               <TextInput
                 id={fields.monthlyPay.name}
                 name={fields.monthlyPay.name}
@@ -472,11 +478,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 errorText={getErrorMessage(APPLICATION_FIELDS.VACATION_MONEY)}
                 required
               />
-            </StyledFormGroup>
+            </StyledEmploymentMoneyContainer>
           </>
         )}
         {formik.values.benefitType === BENEFIT_TYPES.COMMISSION && (
-          <StyledFormGroup>
+          <StyledCommissionContainer>
             <TextInput
               id={fields.commissionDescription.name}
               name={fields.commissionDescription.name}
@@ -511,7 +517,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               errorText={getErrorMessage(APPLICATION_FIELDS.COMMISSION_AMOUNT)}
               required
             />
-          </StyledFormGroup>
+          </StyledCommissionContainer>
         )}
       </FormSection>
       {actions}

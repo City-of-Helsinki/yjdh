@@ -1,7 +1,7 @@
-import { LoadingSpinner, Tooltip } from 'hds-react';
 import * as React from 'react';
 
-import { StyledContent, StyledHeader, StyledSection } from './styled';
+import Heading from '../heading/Heading';
+import { StyledContent, StyledSection } from './styled';
 
 type FormSectionProps = {
   children: React.ReactNode;
@@ -17,13 +17,7 @@ const FormSection: React.FC<FormSectionProps> = ({
   tooltip,
 }) => (
   <StyledSection>
-    {header && (
-      <StyledHeader>
-        {header}
-        {tooltip && <Tooltip>{tooltip}</Tooltip>}
-        {loading && <LoadingSpinner small />}
-      </StyledHeader>
-    )}
+    {header && <Heading loading={loading} header={header} tooltip={tooltip} />}
     <StyledContent>{children}</StyledContent>
   </StyledSection>
 );

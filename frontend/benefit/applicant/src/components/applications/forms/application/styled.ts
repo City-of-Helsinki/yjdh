@@ -1,5 +1,6 @@
 import { Button } from 'hds-react';
 import React from 'react';
+import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import styled from 'styled-components';
 
 const StyledContainer = styled.div`
@@ -75,11 +76,46 @@ const StyledFieildsWithInfoColumn = styled.div`
   flex: 0 0 50%;
 `;
 
+const StyledContactPersonContainer = styled(StyledFormGroup)`
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 2fr;
+  grid-gap: ${(props) => props.theme.spacing.xs};
+`;
+
+const StyledEmployerBasicInfoContainer = styled(StyledFormGroup)`
+  display: grid;
+  grid-template-columns: 300px 300px 200px 200px;
+  grid-gap: ${(props) => props.theme.spacing.xs};
+`;
+
+const StyledEmploymentRelationshipContainer = styled(StyledFormGroup)`
+  display: grid;
+  grid-template-columns: 410px 200px 400px;
+  grid-gap: ${(props) => props.theme.spacing.xs};
+`;
+
+const StyledEmploymentMoneyContainer = styled(StyledFormGroup)`
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  grid-gap: ${(props) => props.theme.spacing.xs};
+`;
+
+const StyledCommissionContainer = styled(StyledFormGroup)`
+  display: grid;
+  grid-template-columns: 200px 200px auto;
+  grid-gap: ${(props) => props.theme.spacing.xs};
+`;
+
 export {
   StyledActionContainer,
   StyledButton,
+  StyledCommissionContainer,
+  StyledContactPersonContainer,
   StyledContainer,
   StyledDescription,
+  StyledEmployerBasicInfoContainer,
+  StyledEmploymentMoneyContainer,
+  StyledEmploymentRelationshipContainer,
   StyledFieildsWithInfoColumn,
   StyledFieildsWithInfoContainer,
   StyledHeading,
