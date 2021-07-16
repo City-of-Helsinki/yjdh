@@ -1,6 +1,6 @@
 import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
-import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
+import useApplicationsQuery from 'benefit/applicant/hooks/useApplicationsQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   ApplicationAllowedAction,
@@ -56,7 +56,7 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
 
 const useApplicationList = (status: string[]): ApplicationListProps => {
   const { t } = useTranslation();
-  const { data, error, isLoading } = useApplicationQuery(status);
+  const { data, error, isLoading } = useApplicationsQuery(status);
   const { errors, setError } = React.useContext(FrontPageContext);
 
   useEffect(() => {

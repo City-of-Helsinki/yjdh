@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from 'react-query';
 
+import { BackendEndpoint } from '../backend-api/backend-api';
 import { CompanyData } from '../types/company';
 import useBackendAPI from './useBackendAPI';
 
@@ -9,7 +10,9 @@ const useCompanyQuery = (
   const { axios, handleResponse } = useBackendAPI();
 
   return useQuery<CompanyData, Error>('companyData', async () => {
-    const res = axios.get<CompanyData>(`/v1/company/${businessId}`);
+    const res = axios.get<CompanyData>(
+      `${BackendEndpoint.COMPANY}${businessId}`
+    );
     return handleResponse(res);
   });
 };

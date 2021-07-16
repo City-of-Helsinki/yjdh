@@ -30,6 +30,11 @@ export enum APPLICATION_STATUSES {
   REJECTED = 'rejected',
 }
 
+export enum ORGANIZATION_TYPES {
+  COMPANY = 'company',
+  ASSOCIATION = 'association',
+}
+
 export enum BENEFIT_TYPES {
   EMPLOYMENT = 'employment_benefit',
   SALARY = 'salary_benefit',
