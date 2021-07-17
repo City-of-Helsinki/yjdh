@@ -93,7 +93,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
 
   const list = data?.reduce<ApplicationListItemData[]>((acc, application) => {
     const {
-      id,
+      id = '',
       status: applStatus,
       employee,
       last_modified_at,

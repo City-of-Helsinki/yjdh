@@ -41,6 +41,20 @@ export enum BENEFIT_TYPES {
   COMMISSION = 'commission_benefit',
 }
 
+export enum ATTACHMENT_TYPES {
+  EMPLOYMENT_CONTRACT = 'employment_contract',
+  PAY_SUBSIDY_CONTRACT = 'pay_subsidy_decision',
+  COMMISSION_CONTRACT = 'commission_contract',
+  EDUCATION_CONTRACT = 'education_contract',
+  HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
+}
+
+export enum ATTACHMENT_CONTENT_TYPES {
+  APPLICATION_PDF = 'application/pdf',
+  IMAGE_PNG = 'image/png',
+  IMAGE_JPEG = 'image/jpeg',
+}
+
 export enum APPLICATION_FIELDS_STEP1 {
   HAS_COMPANY_OTHER_ADDRESS = 'hasCompanyOtherAddress',
   COMPANY_OTHER_ADDRESS_STREET = 'companyOtherAddressStreet',

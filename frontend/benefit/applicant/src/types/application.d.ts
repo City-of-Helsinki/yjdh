@@ -3,13 +3,15 @@ import { DefaultTheme } from 'styled-components';
 import {
   APPLICATION_FIELDS,
   APPLICATION_STATUSES,
+  ATTACHMENT_CONTENT_TYPES,
+  ATTACHMENT_TYPES,
   BENEFIT_TYPES,
   ORGANIZATION_TYPES,
   SUPPORTED_LANGUAGES,
 } from '../constants';
 
 export interface Employee {
-  id: string;
+  id?: string;
   first_name: string;
   last_name: string;
   social_security_number: string;
@@ -25,11 +27,11 @@ export interface Employee {
   is_living_in_helsinki: boolean;
   commission_amount: string;
   commission_description: string;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface Company {
-  id: string;
+  id?: string;
   name: string;
   business_id: string;
   company_form: string;
@@ -44,62 +46,63 @@ export interface Base {
 }
 
 export interface DeMinimisAid {
-  id: string;
+  id?: string;
   granter: string;
   granted_at: string;
   amount: string;
-  ordering: number;
+  ordering?: number;
 }
 
 export interface Attachment {
-  id: string;
+  id?: string;
   application: string;
-  attachment_type: some123;
+  attachment_type: ATTACHMENT_TYPES;
   attachment_file: string;
-  content_type: some123;
-  created_at: string;
+  content_type: ATTACHMENT_CONTENT_TYPES;
+  created_at?: string;
 }
 
 export interface ApplicationData {
-  id: string;
-  status: APPLICATION_STATUSES;
-  application_number: number;
-  employee: Employee;
-  company: Company;
-  company_name: string;
-  company_form: string;
-  organization_type: ORGANIZATION_TYPES;
-  submitted_at: string;
-  bases: string[];
-  available_bases: Base[];
-  attachment_requirements: string;
-  available_benefit_types: BENEFIT_TYPES;
-  official_company_street_address: string;
-  official_company_city: string;
-  official_company_postcode: string;
-  use_alternative_address: boolean;
-  alternative_company_street_address: string;
-  alternative_company_city: string;
-  alternative_company_postcode: string;
-  company_bank_account_number: string;
-  company_contact_person_phone_number: string;
-  company_contact_person_email: string;
-  association_has_business_activities: boolean;
-  applicant_language: SUPPORTED_LANGUAGES;
-  co_operation_negotiations: boolean;
-  co_operation_negotiations_description: string;
-  pay_subsidy_granted: boolean;
-  pay_subsidy_percent: number;
-  additional_pay_subsidy_percent: number;
-  apprenticeship_program: boolean;
-  archived: boolean;
-  benefit_type: BENEFIT_TYPES;
-  start_date: string;
-  end_date: string;
-  de_minimis_aid: boolean;
-  de_minimis_aid_set: DeMinimisAid[];
-  last_modified_at: string;
-  attachments: Attachment[];
+  id?: string;
+  status: APPLICATION_STATUSES; // required
+  application_number?: number;
+  employee: Employee; // required
+  company?: Company;
+  company_name?: string;
+  company_form?: string;
+  organization_type?: ORGANIZATION_TYPES;
+  submitted_at?: string;
+  bases: string[]; // required
+  available_bases?: Base[];
+  attachment_requirements?: string;
+  available_benefit_types?: BENEFIT_TYPES;
+  official_company_street_address?: string;
+  official_company_city?: string;
+  official_company_postcode?: string;
+  use_alternative_address: boolean; // required
+  alternative_company_street_address?: string;
+  alternative_company_city?: string;
+  alternative_company_postcode?: string;
+  company_bank_account_number?: string;
+  company_contact_person_phone_number?: string;
+  company_contact_person_email?: string;
+  association_has_business_activities?: boolean;
+  applicant_language?: SUPPORTED_LANGUAGES;
+  co_operation_negotiations?: boolean;
+  co_operation_negotiations_description?: string;
+  pay_subsidy_granted?: boolean;
+  pay_subsidy_percent?: number;
+  additional_pay_subsidy_percent?: number;
+  apprenticeship_program?: boolean;
+  archived: boolean; // required
+  benefit_type?: BENEFIT_TYPES;
+  start_date?: string;
+  end_date?: string;
+  de_minimis_aid?: boolean;
+  de_minimis_aid_set: DeMinimisAid[]; // required
+  last_modified_at?: string;
+  attachments?: Attachment[];
+  create_application_for_company?: string;
 }
 
 interface ApplicationAllowedAction {
