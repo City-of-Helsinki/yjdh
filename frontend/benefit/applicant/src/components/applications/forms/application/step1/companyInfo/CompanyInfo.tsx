@@ -64,19 +64,19 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             )}
           </StyledCompanyInfoColumn>
           <StyledCheckbox
-            id={fields.hasCompanyOtherAddress.name}
+            id={fields.useAlternativeAddress.name}
             disabled={isLoading || !!error}
-            name={fields.hasCompanyOtherAddress.name}
-            label={fields.hasCompanyOtherAddress.label}
+            name={fields.useAlternativeAddress.name}
+            label={fields.useAlternativeAddress.label}
             required
-            checked={formik?.values.hasCompanyOtherAddress === true}
+            checked={formik?.values.useAlternativeAddress === true}
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS
+              APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS
             )}
             onChange={formik?.handleChange}
             onBlur={formik?.handleBlur}
             aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS)
+              !!getErrorMessage(APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS)
             }
           />
         </StyledCompanyInfoSection>
@@ -91,70 +91,70 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             t(`${translationsBase}.notifications.companyInformation.content`)}
         </StyledNotification>
 
-        {formik?.values.hasCompanyOtherAddress && (
+        {formik?.values.useAlternativeAddress && (
           <StyledAddressContainer>
             <TextInput
-              id={fields.companyOtherAddressStreet.name}
-              name={fields.companyOtherAddressStreet.name}
-              label={fields.companyOtherAddressStreet.label}
-              placeholder={fields.companyOtherAddressStreet.placeholder}
+              id={fields.alternativeCompanyStreetAddress.name}
+              name={fields.alternativeCompanyStreetAddress.name}
+              label={fields.alternativeCompanyStreetAddress.label}
+              placeholder={fields.alternativeCompanyStreetAddress.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressStreet}
+              value={formik.values.alternativeCompanyStreetAddress}
               invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
+                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS
                 )
               }
               aria-invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
+                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS
                 )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
+                APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS
               )}
               required
             />
             <TextInput
-              id={fields.companyOtherAddressZipCode.name}
-              name={fields.companyOtherAddressZipCode.name}
-              label={fields.companyOtherAddressZipCode.label}
-              placeholder={fields.companyOtherAddressZipCode.placeholder}
+              id={fields.alternativeCompanyPostcode.name}
+              name={fields.alternativeCompanyPostcode.name}
+              label={fields.alternativeCompanyPostcode.label}
+              placeholder={fields.alternativeCompanyPostcode.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressZipCode}
+              value={formik.values.alternativeCompanyPostcode}
               invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
+                !!getErrorMessage(
+                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE
+                )
               }
               aria-invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
+                !!getErrorMessage(
+                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE
+                )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP
+                APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE
               )}
               required
             />
             <TextInput
-              id={fields.companyOtherAddressPostalDistrict.name}
-              name={fields.companyOtherAddressPostalDistrict.name}
-              label={fields.companyOtherAddressPostalDistrict.label}
-              placeholder={fields.companyOtherAddressPostalDistrict.placeholder}
+              id={fields.alternativeCompanyCity.name}
+              name={fields.alternativeCompanyCity.name}
+              label={fields.alternativeCompanyCity.label}
+              placeholder={fields.alternativeCompanyCity.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressPostalDistrict}
+              value={formik.values.alternativeCompanyCity}
               invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-                )
+                !!getErrorMessage(APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY)
               }
               aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-                )
+                !!getErrorMessage(APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY)
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
+                APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY
               )}
               required
             />
@@ -163,28 +163,40 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
 
         <StyledIBANContainer>
           <InputMask
-            mask={fields.companyIban.mask?.format ?? ''}
+            mask={fields.companyBankAccountNumber.mask?.format ?? ''}
             maskChar={null}
-            value={formik?.values.companyIban}
+            value={formik?.values.companyBankAccountNumber}
             onBlur={formik?.handleBlur}
             onChange={(e) => {
               const initValue = e.target.value;
               const value =
-                fields.companyIban.mask?.stripVal(initValue) ?? initValue;
-              return formik?.setFieldValue(fields.companyIban.name, value);
+                fields.companyBankAccountNumber.mask?.stripVal(initValue) ??
+                initValue;
+              return formik?.setFieldValue(
+                fields.companyBankAccountNumber.name,
+                value
+              );
             }}
           >
             {() => (
               <TextInput
-                id={fields.companyIban.name}
-                name={fields.companyIban.name}
-                label={fields.companyIban.label}
-                placeholder={fields.companyIban.placeholder}
-                invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-                aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)
+                id={fields.companyBankAccountNumber.name}
+                name={fields.companyBankAccountNumber.name}
+                label={fields.companyBankAccountNumber.label}
+                placeholder={fields.companyBankAccountNumber.placeholder}
+                invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER
+                  )
                 }
-                errorText={getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
+                aria-invalid={
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER
+                  )
+                }
+                errorText={getErrorMessage(
+                  APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER
+                )}
                 required
               />
             )}

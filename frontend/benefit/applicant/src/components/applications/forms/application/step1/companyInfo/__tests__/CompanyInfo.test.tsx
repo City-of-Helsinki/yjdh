@@ -11,11 +11,14 @@ describe('CompanyInfo', () => {
       <CompanyInfo
         getErrorMessage={() => ''}
         fields={{
-          hasCompanyOtherAddress: {
-            name: 'hasCompanyOtherAddress',
-            label: 'hasCompanyOtherAddress',
+          useAlternativeAddress: {
+            name: 'useAlternativeAddress',
+            label: 'useAlternativeAddress',
           },
-          companyIban: { name: 'companyIban', label: 'companyIban' },
+          companyBankAccountNumber: {
+            name: 'companyBankAccountNumber',
+            label: 'companyBankAccountNumber',
+          },
         }}
         translationsBase=""
       />

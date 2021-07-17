@@ -34,7 +34,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
   const formik = useFormik({
     initialValues: DEFAULT_APPLICATION_FIELDS_STEP2,
     validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS.COMPANY_IBAN]: Yup.string().matches(
+      [APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string().matches(
         /^FI\d{16}$/,
         t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
       ),

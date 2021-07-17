@@ -59,42 +59,42 @@
           }
         },
         "fields": {
-          "hasCompanyOtherAddress": {
+          "useAlternativeAddress": {
             "label": "Yrityksellä on toinen postiosoite"
           },
-          "companyOtherAddressStreet": {
+          "alternativeCompanyStreetAddress": {
             "label": "Osoite",
             "placeholder": "Katuosoite"
           },
-          "companyOtherAddressZipCode": {
+          "alternativeCompanyPostcode": {
             "label": "Postinumero",
             "placeholder": "Postinumero"
           },
-          "companyOtherAddressPostalDistrict": {
+          "alternativeCompanyCity": {
             "label": "Postitoimipaikka",
             "placeholder": "Postitoimipaikka"
           },
-          "companyIban": {
+          "companyBankAccountNumber": {
             "label": "Tilinumero",
             "placeholder": "IBAN muodossa"
           },
-          "contactPersonFirstName": {
+          "companyContactPersonFirstName": {
             "label": "Etunimi",
             "placeholder": "Etunimi"
           },
-          "contactPersonLastName": {
+          "companyContactPersonLastName": {
             "label": "Sukunimi",
             "placeholder": "Sukunimi"
           },
-          "contactPersonPhone": {
+          "companyContactPersonPhoneNumber": {
             "label": "Puhelin",
             "placeholder": "040 1234567"
           },
-          "contactPersonEmail": {
+          "companyContactPersonEmail": {
             "label": "Sähköposti",
             "placeholder": "Sähköpostiosoite"
           },
-          "deMinimisAidGranted": {
+          "deMinimisAid": {
             "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
             "yes": "Kyllä",
             "no": "Ei"
@@ -111,12 +111,12 @@
             "label": "Myöntämispäivämääärä",
             "placeholder": "Valitse"
           },
-          "collectiveBargainingOngoing": {
+          "coOperationNegotiations": {
             "label": "Onko hakijalla menossa YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
-          "collectiveBargainingInfo": {
+          "coOperationNegotiationsDescription": {
             "label": "Anna tarkempi selvitys YT-tilanteesta:",
             "placeholder": "Kuvaile tilanne"
           }
