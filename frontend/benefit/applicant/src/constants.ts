@@ -65,6 +65,7 @@ export enum APPLICATION_FIELDS_STEP1 {
   COMPANY_CONTACT_PERSON_LAST_NAME = 'companyContactPersonLastName',
   COMPANY_CONTACT_PERSON_PHONE_NUMBER = 'companyContactPersonPhoneNumber',
   COMPANY_CONTACT_PERSON_EMAIL = 'companyContactPersonEmail',
+  APPLICANT_LANGUAGE = 'applicantLanguage',
   DE_MINIMIS_AID = 'deMinimisAid',
   CO_OPERATION_NEGOTIATIONS = 'coOperationNegotiations',
   CO_OPERATION_NEGOTIATIONS_DESCRIPTION = 'coOperationNegotiationsDescription',
@@ -81,6 +82,8 @@ export enum APPLICATION_FIELDS_STEP2 {
   ADDITIONAL_PAY_SUBSIDY_PERCENT = 'paySubsidyAdditionalPercent',
   APPRENTICESHIP_PROGRAM = 'apprenticeshipProgram',
   BENEFIT_TYPE = 'benefitType',
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
   EMPLOYEE_JOB_TITLE = 'employeeJobTitle',
   EMPLOYEE_WORKING_HOURS = 'employeeWorkingHours',
   EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT = 'employeeCollectiveBargainingAgreement',
@@ -120,13 +123,13 @@ export const DEFAULT_APPLICATION_FIELDS_STEP2 = {
 };
 
 export enum DE_MINIMIS_AID_FIELDS {
-  GRANTER = 'deMinimisAidGranter',
-  AMOUNT = 'deMinimisAidAmount',
-  ISSUE_DATE = 'deMinimisAidIssueDate',
+  GRANTER = 'granter',
+  AMOUNT = 'amount',
+  GRANTED_AT = 'grantedAt',
 }
 
 export const DEFAULT_APPLICATION = {
-  [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: false,
+  /* [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: false,
   [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS]: '',
   [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE]: '',
   [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY]: '',
@@ -138,7 +141,13 @@ export const DEFAULT_APPLICATION = {
   [APPLICATION_FIELDS.DE_MINIMIS_AID]: false,
   deMinimisAidGrants: [],
   [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]: '',
-  [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]: '',
+  [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]: '', */
+  status: APPLICATION_STATUSES.DRAFT,
+  employee: {},
+  bases: [],
+  [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: false,
+  archived: false,
+  deMinimisAidSet: [],
 };
 
 export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];

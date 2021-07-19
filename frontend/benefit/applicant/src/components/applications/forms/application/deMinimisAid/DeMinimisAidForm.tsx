@@ -40,7 +40,7 @@ const DeMinimisAidForm: React.FC = () => {
               placeholder={fields.deMinimisAidGranter.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidGranter}
+              value={formik.values.granter}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
@@ -53,7 +53,7 @@ const DeMinimisAidForm: React.FC = () => {
               unit={fields.deMinimisAidAmount.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidAmount}
+              value={formik.values.amount}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
@@ -69,10 +69,10 @@ const DeMinimisAidForm: React.FC = () => {
                 formik.setFieldValue(fields.deMinimisAidIssueDate.name, value)
               }
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidIssueDate}
-              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
-              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
-              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
+              value={formik.values.grantedAt}
+              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               required
             />
           </StyledFieldsContainerWithPadding>

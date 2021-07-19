@@ -29,7 +29,7 @@ type FieldsDef = {
 type FormFields = {
   [DE_MINIMIS_AID_FIELDS.GRANTER]: string;
   [DE_MINIMIS_AID_FIELDS.AMOUNT]: number;
-  [DE_MINIMIS_AID_FIELDS.ISSUE_DATE]: string;
+  [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: string;
 };
 
 const useDeminimisAid = (): ExtendedComponentProps => {
@@ -42,7 +42,7 @@ const useDeminimisAid = (): ExtendedComponentProps => {
     initialValues: {
       [DE_MINIMIS_AID_FIELDS.GRANTER]: '',
       [DE_MINIMIS_AID_FIELDS.AMOUNT]: 0,
-      [DE_MINIMIS_AID_FIELDS.ISSUE_DATE]: '',
+      [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: '',
     },
     validationSchema: Yup.object().shape({
       [DE_MINIMIS_AID_FIELDS.GRANTER]: Yup.string()
@@ -57,7 +57,7 @@ const useDeminimisAid = (): ExtendedComponentProps => {
           min: param.min,
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
         })),
-      [DE_MINIMIS_AID_FIELDS.ISSUE_DATE]: Yup.string()
+      [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: Yup.string()
         .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
         .matches(dateRegex, VALIDATION_MESSAGE_KEYS.DATE_FORMAT),
     }),
@@ -66,13 +66,12 @@ const useDeminimisAid = (): ExtendedComponentProps => {
     onSubmit: () => {
       setApplication({
         ...application,
-        deMinimisAidGrants: [
-          ...(application?.deMinimisAidGrants || []),
+        deMinimisAidSet: [
+          ...(application?.deMinimisAidSet || []),
           {
-            deMinimisAidGranter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
-            deMinimisAidAmount: formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT],
-            deMinimisAidIssueDate:
-              formik.values[DE_MINIMIS_AID_FIELDS.ISSUE_DATE],
+            granter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
+            amount: formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT],
+            grantedAt: formik.values[DE_MINIMIS_AID_FIELDS.GRANTED_AT],
           },
         ],
       });
@@ -85,7 +84,7 @@ const useDeminimisAid = (): ExtendedComponentProps => {
     (): string[] => [
       DE_MINIMIS_AID_FIELDS.GRANTER,
       DE_MINIMIS_AID_FIELDS.AMOUNT,
-      DE_MINIMIS_AID_FIELDS.ISSUE_DATE,
+      DE_MINIMIS_AID_FIELDS.GRANTED_AT,
     ],
     []
   );

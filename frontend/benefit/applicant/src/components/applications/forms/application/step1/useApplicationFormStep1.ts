@@ -2,6 +2,7 @@ import {
   APPLICATION_FIELDS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
+import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { FormFieldsStep1 } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
@@ -23,36 +24,10 @@ type ExtendedComponentProps = {
 };
 
 const useApplicationFormStep1 = (): ExtendedComponentProps => {
+  const { application } = React.useContext(ApplicationContext);
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-
-  const formik = useFormik({
-    initialValues: {
-      [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: false,
-      [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS]: '',
-      [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE]: '',
-      [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY]: '',
-      [APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER]: '',
-      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_FIRST_NAME]: '',
-      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME]: '',
-      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: '',
-      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL]: '',
-      [APPLICATION_FIELDS.DE_MINIMIS_AID]: '',
-      [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]: '',
-      [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]: '',
-    },
-    validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string().matches(
-        /^FI\d{16}$/,
-        t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
-      ),
-    }),
-    validateOnChange: true,
-    validateOnBlur: true,
-    // todo: impoement
-    onSubmit: noop,
-  });
 
   const fieldNames = React.useMemo(
     (): string[] => [
@@ -71,6 +46,46 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
     ],
     []
   );
+
+  const formik = useFormik({
+    initialValues: {
+      [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: Boolean(
+        application?.useAlternativeAddress
+      ),
+      [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS]:
+        application?.alternativeCompanyStreetAddress || '',
+      [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE]:
+        application?.alternativeCompanyPostcode || '',
+      [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY]:
+        application?.alternativeCompanyCity || '',
+      [APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER]:
+        application?.companyBankAccountNumber || '',
+      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_FIRST_NAME]:
+        application?.companyContactPersonFirstName || '',
+      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME]:
+        application?.companyContactPersonLastName || '',
+      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]:
+        application?.companyContactPersonPhoneNumber || '',
+      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL]:
+        application?.companyContactPersonEmail || '',
+      [APPLICATION_FIELDS.DE_MINIMIS_AID]: application?.deMinimisAid || '',
+      [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]:
+        application?.coOperationNegotiations || '',
+      [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
+        application?.coOperationNegotiationsDescription || '',
+    },
+    validationSchema: Yup.object().shape({
+      [APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string().matches(
+        /^FI\d{16}$/,
+        t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
+      ),
+    }),
+    validateOnChange: true,
+    validateOnBlur: true,
+    enableReinitialize: true,
+    // todo: impoement
+    onSubmit: noop,
+  });
 
   const fields = React.useMemo((): FieldsDef => {
     const fieldMasks: Record<Field['name'], Field['mask']> = {

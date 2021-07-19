@@ -1,6 +1,6 @@
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { DeMinimisAidGrant } from 'benefit/applicant/types/common';
+import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 // import * as Yup from 'yup';
@@ -8,7 +8,7 @@ import React from 'react';
 type ExtendedComponentProps = {
   t: TFunction;
   translationsBase: string;
-  grants: DeMinimisAidGrant[];
+  grants: DeMinimisAid[];
   handleRemove: (index: number) => void;
 };
 
@@ -19,16 +19,16 @@ const useDeminimisAidsList = (): ExtendedComponentProps => {
 
   const handleRemove = (index: number): void => {
     // remove value
-    const currentGrants = [...(application?.deMinimisAidGrants || [])];
+    const currentGrants = [...(application?.deMinimisAidSet || [])];
     currentGrants.splice(index, 1);
-    setApplication({ ...application, deMinimisAidGrants: currentGrants });
+    setApplication({ ...application, deMinimisAidSet: currentGrants });
   };
 
   return {
     t,
     translationsBase,
     handleRemove,
-    grants: application?.deMinimisAidGrants || [],
+    grants: application?.deMinimisAidSet || [],
   };
 };
 

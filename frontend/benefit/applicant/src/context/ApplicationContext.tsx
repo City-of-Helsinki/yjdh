@@ -2,7 +2,7 @@ import noop from 'lodash/noop';
 import React from 'react';
 
 import { DEFAULT_APPLICATION } from '../constants';
-import { Application } from '../types/common';
+import { Application } from '../types/application';
 
 export type ApplicationContextType = {
   currentStep: number;

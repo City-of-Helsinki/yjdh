@@ -22,7 +22,7 @@ const DeMinimisAidsList: React.FC = () => {
           backgroundColor={theme.colors.silverLight}
           key={`${grant[DE_MINIMIS_AID_FIELDS.GRANTER]}${
             grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
-          }${grant[DE_MINIMIS_AID_FIELDS.ISSUE_DATE]}`}
+          }${grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT]}`}
         >
           <StyledViewFieldsContainer>
             <StyledViewField>
@@ -32,7 +32,7 @@ const DeMinimisAidsList: React.FC = () => {
               grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
             } €`}</StyledViewField>
             <StyledViewField>
-              {grant[DE_MINIMIS_AID_FIELDS.ISSUE_DATE]}
+              {grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT]}
             </StyledViewField>
           </StyledViewFieldsContainer>
           <StyledSubActionContainer>

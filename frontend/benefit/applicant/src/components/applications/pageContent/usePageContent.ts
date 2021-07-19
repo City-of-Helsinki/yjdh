@@ -1,11 +1,14 @@
 // import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
-// import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
+import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 // import useCreateApplicationQuery from 'benefit/applicant/hooks/useCreateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { Application } from 'benefit/applicant/types/application';
+import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
+import { IndexType, toCamelKeys } from 'shared/utils/object.utils';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -18,22 +21,30 @@ type ExtendedComponentProps = {
 };
 
 const usePageContent = (): ExtendedComponentProps => {
+  const {
+    query: { id },
+  } = useRouter();
   const { t } = useTranslation();
-  const { currentStep, setCurrentStep } = React.useContext(ApplicationContext);
+  const { currentStep, setCurrentStep, setApplication } = React.useContext(
+    ApplicationContext
+  );
 
   /* const {
     mutate: createApplication,
     error: createApplicationError,
-  } = useCreateApplicationQuery();
+  } = useCreateApplicationQuery(); */
 
-  const { data, isLoading, isSuccess, isError } = useApplicationQuery(
-    '495d89a4-560d-449a-beb7-858cc90360aa'
-  );
+  const { data } = useApplicationQuery(id?.toString() || '');
 
-  console.log('data', data);
-  console.log('isLoading', isLoading);
-  console.log('isSuccess', isSuccess);
-  console.log('isError', isError); */
+  // '495d89a4-560d-449a-beb7-858cc90360aa'
+
+  useEffect(() => {
+    if (data) {
+      setApplication(
+        toCamelKeys((data as unknown) as IndexType) as Application
+      );
+    }
+  }, [data, setApplication]);
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [

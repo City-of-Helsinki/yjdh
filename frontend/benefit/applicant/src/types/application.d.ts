@@ -6,17 +6,18 @@ import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_TYPES,
   BENEFIT_TYPES,
+  DE_MINIMIS_AID_FIELDS,
   ORGANIZATION_TYPES,
   SUPPORTED_LANGUAGES,
 } from '../constants';
 
-export interface Employee {
+export interface EmployeeData {
   id?: string;
   first_name: string;
   last_name: string;
   social_security_number: string;
   phone_number: string;
-  email: string;
+  // email: string; does not exist in UI
   employee_language: SUPPORTED_LANGUAGES;
   job_title: string;
   monthly_pay: string;
@@ -30,7 +31,7 @@ export interface Employee {
   created_at?: string;
 }
 
-export interface Company {
+export interface CompanyData {
   id?: string;
   name: string;
   business_id: string;
@@ -41,11 +42,11 @@ export interface Company {
   bank_account_number: string;
 }
 
-export interface Base {
+export interface BaseData {
   identifier: string;
 }
 
-export interface DeMinimisAid {
+export interface DeMinimisAidData {
   id?: string;
   granter: string;
   granted_at: string;
@@ -53,7 +54,7 @@ export interface DeMinimisAid {
   ordering?: number;
 }
 
-export interface Attachment {
+export interface AttachmentData {
   id?: string;
   application: string;
   attachment_type: ATTACHMENT_TYPES;
@@ -66,14 +67,14 @@ export interface ApplicationData {
   id?: string;
   status: APPLICATION_STATUSES; // required
   application_number?: number;
-  employee: Employee; // required
-  company?: Company;
+  employee: EmployeeData; // required
+  company?: CompanyData;
   company_name?: string;
   company_form?: string;
   organization_type?: ORGANIZATION_TYPES;
   submitted_at?: string;
   bases: string[]; // required
-  available_bases?: Base[];
+  available_bases?: BaseData[];
   attachment_requirements?: string;
   available_benefit_types?: BENEFIT_TYPES;
   official_company_street_address?: string;
@@ -99,9 +100,9 @@ export interface ApplicationData {
   start_date?: string;
   end_date?: string;
   de_minimis_aid?: boolean;
-  de_minimis_aid_set: DeMinimisAid[]; // required
+  de_minimis_aid_set: DeMinimisAidData[]; // required
   last_modified_at?: string;
-  attachments?: Attachment[];
+  attachments?: AttachmentData[];
   create_application_for_company?: string;
 }
 
@@ -135,8 +136,9 @@ export type FormFieldsStep1 = {
   [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME]: string;
   [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: string;
   [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL]: string;
+  [APPLICATION_FIELDS.APPLCANT_LANGUAGE]: SUPPORTED_LANGUAGES;
   [APPLICATION_FIELDS.DE_MINIMIS_AID]: string; // boolean (radio in the application form)
-  [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]: string; // co_operation_negotiations
+  [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]: string; // boolean co_operation_negotiations
   [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]: string; // co_operation_negotiations_description
 };
 
@@ -161,6 +163,59 @@ export type FormFieldsStep2 = {
   [APPLICATION_FIELDS.EMPLOYEE_COMMISSION_AMOUNT]: string;
 };
 
-export interface NewApplicationData {
-  status?: APPLICATION_STATUSES;
-}
+export type DeMinimisAid = {
+  [DE_MINIMIS_AID_FIELDS.GRANTER]: string;
+  [DE_MINIMIS_AID_FIELDS.AMOUNT]: number;
+  [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: string;
+};
+
+export type Employee = {
+  id?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_LAST_NAME]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_SOCIAL_SECURITY_NUMBER]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_PHONE_NUMBER]?: string;
+  // [APPLICATION_FIELDS.EMPLOYEE_EMAIL]?: string; does not exist in UI but in model
+  // employee language: does not exist in UI but in model
+  [APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_MONTHLY_PAY]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_VACATION_MONEY]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_OTHER_EXPENSES]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_WORKING_HOURS]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_IS_LIVING_IN_HELSINKI]?: boolean;
+  [APPLICATION_FIELDS.EMPLOYEE_COMMISSION_AMOUNT]?: string;
+  [APPLICATION_FIELDS.EMPLOYEE_COMMISSION_DESCRIPTION]?: string;
+};
+
+export type Application = {
+  id?: string;
+  status: APPLICATION_STATUSES;
+  applicationNumber?: number;
+  employee: Employee;
+  bases: string[];
+  [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: boolean;
+  [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;
+  [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY]?: string;
+  [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE]?: string;
+  [APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER]?: string;
+  [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_FIRST_NAME]?: string;
+  [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME]?: string;
+  [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]?: string;
+  [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL]?: string;
+  // association_has_business_activities: boolean ? not present in the UI?
+  [APPLICATION_FIELDS.APPLICANT_LANGUAGE]?: SUPPORTED_LANGUAGES;
+  [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]?: string; // boolean co_operation_negotiations
+  [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]?: string;
+  [APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED]?: string;
+  [APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT]?: string; // number: 30, 40, 50, 100
+  [APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT]?: string; // number: 30, 40, 50, 100
+  [APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM]?: string; // boolean
+  archived: boolean;
+  [APPLICATION_FIELDS.BENEFIT_TYPE]?: BENEFIT_TYPES;
+  [APPLICATION_FIELDS.START_DATE]?: string;
+  [APPLICATION_FIELDS.END_DATE]?: string;
+  [APPLICATION_FIELDS.DE_MINIMIS_AID]?: string; // boolean
+  deMinimisAidSet: DeMinimisAid[];
+  // create_application_for_company ? not present in the UI?
+};
