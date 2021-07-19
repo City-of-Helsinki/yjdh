@@ -43,13 +43,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       <FormSection header={t(`${translationsBase}.heading1`)}>
         <StyledEmployerBasicInfoContainer>
           <TextInput
-            id={fields.employeeFirstName.name}
-            name={fields.employeeFirstName.name}
-            label={fields.employeeFirstName.label}
-            placeholder={fields.employeeFirstName.placeholder}
+            id={fields.firstName.name}
+            name={fields.firstName.name}
+            label={fields.firstName.label}
+            placeholder={fields.firstName.placeholder}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.employeeFirstName}
+            value={formik.values.firstName}
             invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)}
             aria-invalid={
               !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)
@@ -58,13 +58,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             required
           />
           <TextInput
-            id={fields.employeeLastName.name}
-            name={fields.employeeLastName.name}
-            label={fields.employeeLastName.label}
-            placeholder={fields.employeeLastName.placeholder}
+            id={fields.lastName.name}
+            name={fields.lastName.name}
+            label={fields.lastName.label}
+            placeholder={fields.lastName.placeholder}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.employeeLastName}
+            value={formik.values.lastName}
             invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)}
             aria-invalid={
               !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)
@@ -73,13 +73,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             required
           />
           <TextInput
-            id={fields.employeeSocialSecurityNumber.name}
-            name={fields.employeeSocialSecurityNumber.name}
-            label={fields.employeeSocialSecurityNumber.label}
-            placeholder={fields.employeeSocialSecurityNumber.placeholder}
+            id={fields.socialSecurityNumber.name}
+            name={fields.socialSecurityNumber.name}
+            label={fields.socialSecurityNumber.label}
+            placeholder={fields.socialSecurityNumber.placeholder}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.employeeSocialSecurityNumber}
+            value={formik.values.socialSecurityNumber}
             invalid={
               !!getErrorMessage(
                 APPLICATION_FIELDS.EMPLOYEE_SOCIAL_SECURITY_NUMBER
@@ -96,13 +96,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             required
           />
           <TextInput
-            id={fields.employeePhoneNumber.name}
-            name={fields.employeePhoneNumber.name}
-            label={fields.employeePhoneNumber.label}
-            placeholder={fields.employeePhoneNumber.placeholder}
+            id={fields.phoneNumber.name}
+            name={fields.phoneNumber.name}
+            label={fields.phoneNumber.label}
+            placeholder={fields.phoneNumber.placeholder}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.employeePhoneNumber}
+            value={formik.values.phoneNumber}
             invalid={
               !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_PHONE_NUMBER)
             }
@@ -116,12 +116,12 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </StyledEmployerBasicInfoContainer>
         <Spacing size="m" />
-        <FieldLabel value={fields.employeeIsLivingInHelsinki.label} required />
+        <FieldLabel value={fields.isLivingInHelsinki.label} required />
         <StyledFormGroup>
           <StyledCheckbox
-            id={fields.employeeIsLivingInHelsinki.name}
-            name={fields.employeeIsLivingInHelsinki.name}
-            label={fields.employeeIsLivingInHelsinki.placeholder}
+            id={fields.isLivingInHelsinki.name}
+            name={fields.isLivingInHelsinki.name}
+            label={fields.isLivingInHelsinki.placeholder}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             aria-invalid={
@@ -133,7 +133,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               APPLICATION_FIELDS.EMPLOYEE_IS_LIVING_IN_HELSINKI
             )}
             required
-            checked={formik.values.employeeIsLivingInHelsinki === true}
+            checked={formik.values.isLivingInHelsinki === true}
           />
         </StyledFormGroup>
       </FormSection>
@@ -395,13 +395,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           <>
             <StyledEmploymentRelationshipContainer>
               <TextInput
-                id={fields.employeeJobTitle.name}
-                name={fields.employeeJobTitle.name}
-                label={fields.employeeJobTitle.label}
-                placeholder={fields.employeeJobTitle.placeholder}
+                id={fields.jobTitle.name}
+                name={fields.jobTitle.name}
+                label={fields.jobTitle.label}
+                placeholder={fields.jobTitle.placeholder}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.employeeJobTitle}
+                value={formik.values.jobTitle}
                 invalid={
                   !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE)
                 }
@@ -414,13 +414,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
               <TextInput
-                id={fields.employeeWorkingHours.name}
-                name={fields.employeeWorkingHours.name}
-                label={fields.employeeWorkingHours.label}
-                placeholder={fields.employeeWorkingHours.placeholder}
+                id={fields.workingHours.name}
+                name={fields.workingHours.name}
+                label={fields.workingHours.label}
+                placeholder={fields.workingHours.placeholder}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.employeeWorkingHours}
+                value={formik.values.workingHours}
                 invalid={
                   !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_WORKING_HOURS)
                 }
@@ -433,15 +433,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
               <TextInput
-                id={fields.employeeCollectiveBargainingAgreement.name}
-                name={fields.employeeCollectiveBargainingAgreement.name}
-                label={fields.employeeCollectiveBargainingAgreement.label}
-                placeholder={
-                  fields.employeeCollectiveBargainingAgreement.placeholder
-                }
+                id={fields.collectiveBargainingAgreement.name}
+                name={fields.collectiveBargainingAgreement.name}
+                label={fields.collectiveBargainingAgreement.label}
+                placeholder={fields.collectiveBargainingAgreement.placeholder}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.employeeCollectiveBargainingAgreement}
+                value={formik.values.collectiveBargainingAgreement}
                 invalid={
                   !!getErrorMessage(
                     APPLICATION_FIELDS.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
@@ -466,13 +464,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             />
             <StyledEmploymentMoneyContainer>
               <TextInput
-                id={fields.employeeMonthlyPay.name}
-                name={fields.employeeMonthlyPay.name}
-                label={fields.employeeMonthlyPay.label}
-                placeholder={fields.employeeMonthlyPay.placeholder}
+                id={fields.monthlyPay.name}
+                name={fields.monthlyPay.name}
+                label={fields.monthlyPay.label}
+                placeholder={fields.monthlyPay.placeholder}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.employeeMonthlyPay}
+                value={formik.values.monthlyPay}
                 invalid={
                   !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_MONTHLY_PAY)
                 }
@@ -485,13 +483,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
               <TextInput
-                id={fields.employeeOtherExpenses.name}
-                name={fields.employeeOtherExpenses.name}
-                label={fields.employeeOtherExpenses.label}
-                placeholder={fields.employeeOtherExpenses.placeholder}
+                id={fields.otherExpenses.name}
+                name={fields.otherExpenses.name}
+                label={fields.otherExpenses.label}
+                placeholder={fields.otherExpenses.placeholder}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.employeeOtherExpenses}
+                value={formik.values.otherExpenses}
                 invalid={
                   !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_OTHER_EXPENSES)
                 }
@@ -504,13 +502,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
               <TextInput
-                id={fields.employeeVacationMoney.name}
-                name={fields.employeeVacationMoney.name}
-                label={fields.employeeVacationMoney.label}
-                placeholder={fields.employeeVacationMoney.placeholder}
+                id={fields.vacationMoney.name}
+                name={fields.vacationMoney.name}
+                label={fields.vacationMoney.label}
+                placeholder={fields.vacationMoney.placeholder}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.employeeVacationMoney}
+                value={formik.values.vacationMoney}
                 invalid={
                   !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_VACATION_MONEY)
                 }
@@ -528,13 +526,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         {formik.values.benefitType === BENEFIT_TYPES.COMMISSION && (
           <StyledCommissionContainer>
             <TextInput
-              id={fields.employeeCommissionDescription.name}
-              name={fields.employeeCommissionDescription.name}
-              label={fields.employeeCommissionDescription.label}
-              placeholder={fields.employeeCommissionDescription.placeholder}
+              id={fields.commissionDescription.name}
+              name={fields.commissionDescription.name}
+              label={fields.commissionDescription.label}
+              placeholder={fields.commissionDescription.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.employeeCommissionDescription}
+              value={formik.values.commissionDescription}
               invalid={
                 !!getErrorMessage(
                   APPLICATION_FIELDS.EMPLOYEE_COMMISSION_DESCRIPTION
@@ -551,13 +549,13 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               required
             />
             <TextInput
-              id={fields.employeeCommissionAmount.name}
-              name={fields.employeeCommissionAmount.name}
-              label={fields.employeeCommissionAmount.label}
-              placeholder={fields.employeeCommissionAmount.placeholder}
+              id={fields.commissionAmount.name}
+              name={fields.commissionAmount.name}
+              label={fields.commissionAmount.label}
+              placeholder={fields.commissionAmount.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.employeeCommissionAmount}
+              value={formik.values.commissionAmount}
               invalid={
                 !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_COMMISSION_AMOUNT)
               }

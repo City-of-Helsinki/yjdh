@@ -2,8 +2,7 @@ export const IS_CLIENT = typeof window !== 'undefined';
 
 export enum ROUTES {
   HOME = '/',
-  APPLICATION_NEW = '/application/new',
-  APPLICATION_EDIT = '/application/edit',
+  APPLICATION_FORM = '/application',
 }
 
 export enum SUPPORTED_LANGUAGES {
@@ -72,11 +71,11 @@ export enum APPLICATION_FIELDS_STEP1 {
 }
 
 export enum APPLICATION_FIELDS_STEP2 {
-  EMPLOYEE_FIRST_NAME = 'employeeFirstName',
-  EMPLOYEE_LAST_NAME = 'employeeLastName',
-  EMPLOYEE_SOCIAL_SECURITY_NUMBER = 'employeeSocialSecurityNumber',
-  EMPLOYEE_PHONE_NUMBER = 'employeePhoneNumber',
-  EMPLOYEE_IS_LIVING_IN_HELSINKI = 'employeeIsLivingInHelsinki',
+  EMPLOYEE_FIRST_NAME = 'firstName',
+  EMPLOYEE_LAST_NAME = 'lastName',
+  EMPLOYEE_SOCIAL_SECURITY_NUMBER = 'socialSecurityNumber',
+  EMPLOYEE_PHONE_NUMBER = 'phoneNumber',
+  EMPLOYEE_IS_LIVING_IN_HELSINKI = 'isLivingInHelsinki',
   PAY_SUBSIDY_GRANTED = 'paySubsidyGranted',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   ADDITIONAL_PAY_SUBSIDY_PERCENT = 'paySubsidyAdditionalPercent',
@@ -84,14 +83,14 @@ export enum APPLICATION_FIELDS_STEP2 {
   BENEFIT_TYPE = 'benefitType',
   START_DATE = 'startDate',
   END_DATE = 'endDate',
-  EMPLOYEE_JOB_TITLE = 'employeeJobTitle',
-  EMPLOYEE_WORKING_HOURS = 'employeeWorkingHours',
-  EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT = 'employeeCollectiveBargainingAgreement',
-  EMPLOYEE_MONTHLY_PAY = 'employeeMonthlyPay',
-  EMPLOYEE_OTHER_EXPENSES = 'employeeOtherExpenses',
-  EMPLOYEE_VACATION_MONEY = 'employeeVacationMoney',
-  EMPLOYEE_COMMISSION_DESCRIPTION = 'employeeCommissionDescription',
-  EMPLOYEE_COMMISSION_AMOUNT = 'employeeCommissionAmount',
+  EMPLOYEE_JOB_TITLE = 'jobTitle',
+  EMPLOYEE_WORKING_HOURS = 'workingHours',
+  EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT = 'collectiveBargainingAgreement',
+  EMPLOYEE_MONTHLY_PAY = 'monthlyPay',
+  EMPLOYEE_OTHER_EXPENSES = 'otherExpenses',
+  EMPLOYEE_VACATION_MONEY = 'vacationMoney',
+  EMPLOYEE_COMMISSION_DESCRIPTION = 'commissionDescription',
+  EMPLOYEE_COMMISSION_AMOUNT = 'commissionAmount',
 }
 
 export const APPLICATION_FIELDS = {

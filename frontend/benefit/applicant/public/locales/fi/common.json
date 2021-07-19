@@ -107,7 +107,7 @@
             "label": "Tuen määrä",
             "placeholder": "euro"
           },
-          "deMinimisAidIssueDate": {
+          "deMinimisAidGrantedAt": {
             "label": "Myöntämispäivämääärä",
             "placeholder": "Valitse"
           },
@@ -160,23 +160,23 @@
           "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
         },
         "fields": {
-          "employeeFirstName": {
+          "firstName": {
             "label": "Etunimi",
             "placeholder": "Etunimi"
           },
-          "employeeLastName": {
+          "lastName": {
             "label": "Sukunimi",
             "placeholder": "Sukunimi"
           },
-          "employeeSocialSecurityNumber": {
+          "socialSecurityNumber": {
             "label": "Henkilötunnus",
             "placeholder": "Henkilötunnus"
           },
-          "employeePhoneNumber": {
+          "phoneNumber": {
             "label": "Puhelin",
             "placeholder": "Puhelin"
           },
-          "employeeIsLivingInHelsinki": {
+          "isLivingInHelsinki": {
             "label": "Helsinki kotikuntana",
             "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa"
           },
@@ -202,35 +202,35 @@
             "salary": "Palkan Helsinki-lisä",
             "commission": "Toimeksiannon Helsinki-lisä"
           },
-          "employeeJobTitle": {
+          "jobTitle": {
             "label": "Tehtävänimike",
             "placeholder": "Tehtävänimike"
           },
-          "employeeWorkingHours": {
+          "workingHours": {
             "label": "Työaika t/viikko",
             "placeholder": "Tunteja"
           },
-          "employeeCollectiveBargainingAgreement": {
+          "collectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
             "placeholder": "Työehtosopimus"
           },
-          "employeeMonthlyPay": {
+          "monthlyPay": {
             "label": "Bruttopalkka €/kk",
             "placeholder": "Palkka"
           },
-          "employeeOtherExpenses": {
+          "otherExpenses": {
             "label": "Sivukulut €/kk",
             "placeholder": "Sivukulut"
           },
-          "employeeVacationMoney": {
+          "vacationMoney": {
             "label": "Lomaraha",
             "placeholder": "Lomaraha"
           },
-          "employeeCommissionDescription": {
+          "commissionDescription": {
             "label": "Toimeksiannon kuvaus",
             "placeholder": "Kuvaus"
           },
-          "employeeCommissionAmount": {
+          "commissionAmount": {
             "label": "Palkkio €",
             "placeholder": "Palkkio"
           }

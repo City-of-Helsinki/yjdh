@@ -4,7 +4,7 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 
-const NewApplicationIndex: NextPage = () => (
+const ApplicationIndex: NextPage = () => (
   <ApplicationProvider>
     <PageContent />
   </ApplicationProvider>
@@ -16,4 +16,4 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   },
 });
 
-export default NewApplicationIndex;
+export default ApplicationIndex;

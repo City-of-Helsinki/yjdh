@@ -34,10 +34,10 @@ const DeMinimisAidForm: React.FC = () => {
         <StyledFormGroup backgroundColor={theme.colors.silverLight}>
           <StyledFieldsContainerWithPadding>
             <TextInput
-              id={fields.deMinimisAidGranter.name}
-              name={fields.deMinimisAidGranter.name}
-              label={fields.deMinimisAidGranter.label}
-              placeholder={fields.deMinimisAidGranter.placeholder}
+              id={fields.granter.name}
+              name={fields.granter.name}
+              label={fields.granter.label}
+              placeholder={fields.granter.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.granter}
@@ -47,10 +47,10 @@ const DeMinimisAidForm: React.FC = () => {
               required
             />
             <NumberInput
-              id={fields.deMinimisAidAmount.name}
-              name={fields.deMinimisAidAmount.name}
-              label={fields.deMinimisAidAmount.label || ''}
-              unit={fields.deMinimisAidAmount.placeholder}
+              id={fields.amount.name}
+              name={fields.amount.name}
+              label={fields.amount.label || ''}
+              unit={fields.amount.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.amount}
@@ -60,13 +60,13 @@ const DeMinimisAidForm: React.FC = () => {
               required
             />
             <DateInput
-              id={fields.deMinimisAidIssueDate.name}
-              name={fields.deMinimisAidIssueDate.name}
-              label={fields.deMinimisAidIssueDate.label}
-              placeholder={fields.deMinimisAidIssueDate.placeholder}
+              id={fields.grantedAt.name}
+              name={fields.grantedAt.name}
+              label={fields.grantedAt.label}
+              placeholder={fields.grantedAt.placeholder}
               language={SUPPORTED_LANGUAGES.FI}
               onChange={(value) =>
-                formik.setFieldValue(fields.deMinimisAidIssueDate.name, value)
+                formik.setFieldValue(fields.grantedAt.name, value)
               }
               onBlur={formik.handleBlur}
               value={formik.values.grantedAt}

@@ -10,6 +10,7 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
+import { capitalize } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -94,8 +95,14 @@ const useDeminimisAid = (): ExtendedComponentProps => {
     fieldNames.forEach((name) => {
       fieldsdef[name] = {
         name,
-        label: t(`${translationsBase}.fields.${name}.label`),
-        placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
+        label: t(
+          `${translationsBase}.fields.deMinimisAid${capitalize(name)}.label`
+        ),
+        placeholder: t(
+          `${translationsBase}.fields.deMinimisAid${capitalize(
+            name
+          )}.placeholder`
+        ),
       };
     });
     return fieldsdef;

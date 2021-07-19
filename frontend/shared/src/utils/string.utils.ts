@@ -7,3 +7,6 @@ export const getInitials = (name: string): string =>
     ?.join('')
     .match(/(^\S|\S$)?/g)
     ?.join('') ?? '';
+
+export const capitalize = (s: string): string =>
+  (s && s[0].toUpperCase() + s.slice(1)) || '';
