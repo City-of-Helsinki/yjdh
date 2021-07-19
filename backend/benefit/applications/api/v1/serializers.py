@@ -298,6 +298,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "alternative_company_city",
             "alternative_company_postcode",
             "company_bank_account_number",
+            "company_contact_person_first_name",
+            "company_contact_person_last_name",
             "company_contact_person_phone_number",
             "company_contact_person_email",
             "association_has_business_activities",
@@ -365,6 +367,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
             },
             "company_bank_account_number": {
                 "help_text": "IBAN formatted bank account number",
+            },
+            "company_contact_person_first_name": {
+                "help_text": "First name of the contact person",
+            },
+            "company_contact_person_last_name": {
+                "help_text": "Last name of the contact person",
             },
             "company_contact_person_phone_number": {
                 "help_text": "Phone number of the contact person",
@@ -641,6 +649,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
         "company_bank_account_number",
         "company_contact_person_phone_number",
         "company_contact_person_email",
+        "company_contact_person_first_name",
+        "company_contact_person_last_name",
         "co_operation_negotiations",
         "pay_subsidy_granted",
         "apprenticeship_program",

@@ -64,6 +64,8 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     company_bank_account_number = factory.Faker("iban", locale="fi_FI")
     company_contact_person_phone_number = factory.Sequence(lambda n: f"050-100000{n}")
     company_contact_person_email = factory.Faker("email")
+    company_contact_person_first_name = factory.Faker("first_name")
+    company_contact_person_last_name = factory.Faker("last_name")
     association_has_business_activities = None
     applicant_language = factory.Faker(
         "random_element", elements=[v[0] for v in APPLICATION_LANGUAGE_CHOICES]
