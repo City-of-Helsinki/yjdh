@@ -168,15 +168,15 @@
             "label": "Sukunimi",
             "placeholder": "Sukunimi"
           },
-          "employeeSsn": {
+          "employeeSocialSecurityNumber": {
             "label": "Henkilötunnus",
             "placeholder": "Henkilötunnus"
           },
-          "employeePhone": {
+          "employeePhoneNumber": {
             "label": "Puhelin",
             "placeholder": "Puhelin"
           },
-          "isHelsinkiMunicipality": {
+          "employeeIsLivingInHelsinki": {
             "label": "Helsinki kotikuntana",
             "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa"
           },
@@ -202,35 +202,35 @@
             "salary": "Palkan Helsinki-lisä",
             "commission": "Toimeksiannon Helsinki-lisä"
           },
-          "jobTitle": {
+          "employeeJobTitle": {
             "label": "Tehtävänimike",
             "placeholder": "Tehtävänimike"
           },
-          "workingHours": {
+          "employeeWorkingHours": {
             "label": "Työaika t/viikko",
             "placeholder": "Tunteja"
           },
-          "collectiveBargainingAgreement": {
+          "employeeCollectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
             "placeholder": "Työehtosopimus"
           },
-          "monthlyPay": {
+          "employeeMonthlyPay": {
             "label": "Bruttopalkka €/kk",
             "placeholder": "Palkka"
           },
-          "otherExpenses": {
+          "employeeOtherExpenses": {
             "label": "Sivukulut €/kk",
             "placeholder": "Sivukulut"
           },
-          "vacationMoney": {
+          "employeeVacationMoney": {
             "label": "Lomaraha",
             "placeholder": "Lomaraha"
           },
-          "commissionDescription": {
+          "employeeCommissionDescription": {
             "label": "Toimeksiannon kuvaus",
             "placeholder": "Kuvaus"
           },
-          "commissionAmount": {
+          "employeeCommissionAmount": {
             "label": "Palkkio €",
             "placeholder": "Palkkio"
           }
