@@ -5,6 +5,7 @@ import {
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
@@ -21,6 +22,7 @@ type ExtendedComponentProps = {
   getErrorMessage: (fieldName: string) => string;
   handleSubmit: (e: React.MouseEvent) => void;
   formik: FormikProps<FormFields>;
+  grants: DeMinimisAid[];
 };
 
 type FieldsDef = {
@@ -132,6 +134,7 @@ const useDeminimisAid = (): ExtendedComponentProps => {
     formik,
     getErrorMessage,
     handleSubmit,
+    grants: application?.deMinimisAidSet || [],
   };
 };
 

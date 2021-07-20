@@ -2,9 +2,11 @@ import { StyledSubActionContainer } from 'benefit/applicant/components/applicati
 import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
 import {
   DE_MINIMIS_AID_FIELDS,
+  MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
 import { DateInput, IconPlusCircle, NumberInput, TextInput } from 'hds-react';
+import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
   StyledFieldsContainerWithPadding,
@@ -23,6 +25,7 @@ const DeMinimisAidForm: React.FC = () => {
     fields,
     translationsBase,
     formik,
+    grants,
   } = useDeminimisAid();
 
   return (
@@ -78,6 +81,9 @@ const DeMinimisAidForm: React.FC = () => {
           </StyledFieldsContainerWithPadding>
           <StyledSubActionContainer>
             <StyledSecondaryButton
+              disabled={
+                sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
+              }
               onClick={(e) => handleSubmit(e)}
               variant="secondary"
               iconLeft={<IconPlusCircle />}

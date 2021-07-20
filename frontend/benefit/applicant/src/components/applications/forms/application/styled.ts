@@ -40,7 +40,7 @@ const StyledActionContainer = styled.div`
 
 const StyledSubActionContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   align-self: stretch;
   justify-self: stretch;
@@ -60,7 +60,7 @@ const StyledButton = styled(Button)<ButtonProps>`
 `;
 
 const StyledSubSection = styled.div`
-  margin-left: 200px;
+  margin-left: 260px;
 
   textarea {
     width: 640px !important;

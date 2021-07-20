@@ -1,7 +1,11 @@
 import { StyledSubActionContainer } from 'benefit/applicant/components/applications/forms/application/styled';
 import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
-import { DE_MINIMIS_AID_FIELDS } from 'benefit/applicant/constants';
-import { IconMinusCircle } from 'hds-react';
+import {
+  DE_MINIMIS_AID_FIELDS,
+  MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
+} from 'benefit/applicant/constants';
+import { IconMinusCircle, Notification } from 'hds-react';
+import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
   StyledFormGroup,
@@ -46,6 +50,20 @@ const DeMinimisAidsList: React.FC = () => {
           </StyledSubActionContainer>
         </StyledFormGroup>
       ))}
+      {sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
+        <StyledFormGroup>
+          <Notification
+            label={t(
+              `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
+            )}
+            type="alert"
+          >
+            {t(
+              `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
+            )}
+          </Notification>
+        </StyledFormGroup>
+      )}
     </>
   );
 };

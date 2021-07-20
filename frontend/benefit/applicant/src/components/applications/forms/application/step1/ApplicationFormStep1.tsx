@@ -124,7 +124,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </StyledContactPersonContainer>
       </FormSection>
-      <FormSection header={t(`${translationsBase}.heading3`)}>
+      <FormSection
+        header={t(`${translationsBase}.heading3`)}
+        tooltip={t(`${translationsBase}.tooltips.heading3`)}
+      >
         <StyledFormGroup>
           <SelectionGroup
             label={fields.deMinimisAid.label}

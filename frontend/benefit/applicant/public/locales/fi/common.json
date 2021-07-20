@@ -56,7 +56,14 @@
           "companyInformation": {
             "label": "Tiedot haettu YTJ:stä",
             "content": "Yrityksen perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+          },
+          "deMinimisAidMaxAmount": {
+            "label": "Enimmäismäärä ylitetty",
+            "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
           }
+        },
+        "tooltips": {
+          "heading3": "Hakijan de minimis-tuet tooltip text"
         },
         "fields": {
           "useAlternativeAddress": {
