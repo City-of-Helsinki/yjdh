@@ -1,4 +1,4 @@
-import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
+import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
 import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
 import useApplicationsQuery from 'benefit/applicant/hooks/useApplicationsQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -10,6 +10,7 @@ import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import find from 'lodash/find';
 import noop from 'lodash/noop';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
 import { formatDate } from 'shared/utils/date.utils';
@@ -56,6 +57,7 @@ const getEmployeeFullName = (firstName: string, lastName: string): string => {
 
 const useApplicationList = (status: string[]): ApplicationListProps => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { data, error, isLoading } = useApplicationsQuery(status);
   const { errors, setError } = React.useContext(FrontPageContext);
 
@@ -70,6 +72,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
   ): string => t(`${translationStatusBase}.${camelCase(applicationStatus)}`);
 
   const getAllowedActions = (
+    id: string,
     applicationStatus: APPLICATION_STATUSES
   ): ApplicationAllowedAction => {
     switch (applicationStatus) {
@@ -77,8 +80,9 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       case APPLICATION_STATUSES.INFO_REQUIRED:
         return {
           label: t(`${translationListBase}.edit`),
-          // implement the action
-          handleAction: () => noop,
+          handleAction: (): void => {
+            void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
+          },
           Icon: IconPen,
         };
 
@@ -108,7 +112,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       color: getAvatarBGColor(applStatus),
       initials: getInitials(name),
     };
-    const allowedAction = getAllowedActions(applStatus);
+    const allowedAction = getAllowedActions(id, applStatus);
     const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));

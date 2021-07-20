@@ -33,7 +33,16 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
   translationsBase,
   formik,
 }) => {
-  const { t, data, isLoading, shouldShowSkeleton, error } = useCompanyInfo();
+  const {
+    t,
+    data,
+    isLoading,
+    shouldShowSkeleton,
+    error,
+    erazeAlternativeAddressFields,
+  } = useCompanyInfo({
+    formik,
+  });
 
   return (
     <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
@@ -73,7 +82,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             errorText={getErrorMessage(
               APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS
             )}
-            onChange={formik?.handleChange}
+            onChange={(val) => erazeAlternativeAddressFields(val)}
             onBlur={formik?.handleBlur}
             aria-invalid={
               !!getErrorMessage(APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS)

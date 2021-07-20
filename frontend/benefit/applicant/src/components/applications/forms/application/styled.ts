@@ -60,7 +60,7 @@ const StyledButton = styled(Button)<ButtonProps>`
 `;
 
 const StyledSubSection = styled.div`
-  margin-left: 260px;
+  margin-left: 240px;
 
   textarea {
     width: 640px !important;
@@ -102,7 +102,7 @@ const StyledEmploymentMoneyContainer = styled(StyledFormGroup)`
 
 const StyledCommissionContainer = styled(StyledFormGroup)`
   display: grid;
-  grid-template-columns: 200px 200px auto;
+  grid-template-columns: 500px 200px auto;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 

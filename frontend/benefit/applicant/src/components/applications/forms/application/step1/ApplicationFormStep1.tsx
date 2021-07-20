@@ -19,6 +19,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     t,
     handleSubmit,
     getErrorMessage,
+    erazeDeminimisAids,
     fields,
     translationsBase,
     formik,
@@ -142,7 +143,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               label={t(
                 `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AID}.no`
               )}
-              onChange={formik.handleChange}
+              onChange={(val) => {
+                formik.handleChange(val);
+                erazeDeminimisAids();
+              }}
               onBlur={formik.handleBlur}
               checked={formik.values.deMinimisAid === 'false'}
             />
@@ -183,7 +187,13 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               label={t(
                 `${translationsBase}.fields.${APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS}.no`
               )}
-              onChange={formik.handleChange}
+              onChange={(val) => {
+                formik.handleChange(val);
+                formik.setFieldValue(
+                  APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
+                  ''
+                );
+              }}
               onBlur={formik.handleBlur}
               checked={formik.values.coOperationNegotiations === 'false'}
             />

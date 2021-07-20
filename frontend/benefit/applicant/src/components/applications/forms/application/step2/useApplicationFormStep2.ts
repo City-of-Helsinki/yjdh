@@ -11,7 +11,7 @@ import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
-import React, { FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { FieldsDef, Option } from 'shared/components/forms/fields/types';
 import * as Yup from 'yup';
 
@@ -22,6 +22,7 @@ type ExtendedComponentProps = {
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  erazeCommissionFields: (e: ChangeEvent<HTMLInputElement>) => void;
   formik: FormikProps<FormFieldsStep2>;
   subsidyOptions: Option[];
 };
@@ -91,6 +92,18 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
     });
   };
 
+  const erazeCommissionFields = (e: ChangeEvent<HTMLInputElement>): void => {
+    formik.handleChange(e.target.value);
+    void formik.setFieldValue(
+      APPLICATION_FIELDS.EMPLOYEE_COMMISSION_DESCRIPTION,
+      ''
+    );
+    void formik.setFieldValue(
+      APPLICATION_FIELDS.EMPLOYEE_COMMISSION_AMOUNT,
+      ''
+    );
+  };
+
   return {
     t,
     fieldNames,
@@ -100,6 +113,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
     getErrorMessage,
     handleSubmit,
     subsidyOptions,
+    erazeCommissionFields,
   };
 };
 

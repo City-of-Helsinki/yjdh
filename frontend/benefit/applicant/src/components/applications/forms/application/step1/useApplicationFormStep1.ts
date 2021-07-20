@@ -20,11 +20,12 @@ type ExtendedComponentProps = {
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  erazeDeminimisAids: () => void;
   formik: FormikProps<FormFieldsStep1>;
 };
 
 const useApplicationFormStep1 = (): ExtendedComponentProps => {
-  const { application } = React.useContext(ApplicationContext);
+  const { application, setApplication } = React.useContext(ApplicationContext);
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -125,6 +126,9 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
     });
   };
 
+  const erazeDeminimisAids = (): void =>
+    setApplication({ ...application, deMinimisAidSet: [] });
+
   return {
     t,
     fieldNames,
@@ -133,6 +137,7 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
     formik,
     getErrorMessage,
     handleSubmit,
+    erazeDeminimisAids,
   };
 };
 

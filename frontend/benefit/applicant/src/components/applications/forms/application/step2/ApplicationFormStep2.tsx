@@ -32,6 +32,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     t,
     handleSubmit,
     getErrorMessage,
+    erazeCommissionFields,
     fields,
     translationsBase,
     formik,
@@ -285,7 +286,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   label={t(
                     `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.employment`
                   )}
-                  onChange={formik.handleChange}
+                  onChange={(val) => erazeCommissionFields(val)}
                   onBlur={formik.handleBlur}
                   checked={
                     formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT
@@ -298,7 +299,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   label={t(
                     `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.salary`
                   )}
-                  onChange={formik.handleChange}
+                  onChange={(val) => erazeCommissionFields(val)}
                   onBlur={formik.handleBlur}
                   checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
                 />
@@ -309,7 +310,33 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   label={t(
                     `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.commission`
                   )}
-                  onChange={formik.handleChange}
+                  onChange={(val) => {
+                    formik.handleChange(val);
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE,
+                      ''
+                    );
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS.EMPLOYEE_WORKING_HOURS,
+                      ''
+                    );
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT,
+                      ''
+                    );
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS.EMPLOYEE_MONTHLY_PAY,
+                      ''
+                    );
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS.EMPLOYEE_OTHER_EXPENSES,
+                      ''
+                    );
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS.EMPLOYEE_VACATION_MONEY,
+                      ''
+                    );
+                  }}
                   onBlur={formik.handleBlur}
                   checked={
                     formik.values.benefitType === BENEFIT_TYPES.COMMISSION
