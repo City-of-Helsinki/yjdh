@@ -94,6 +94,13 @@ class Application(UUIDModel, TimeStampedModel):
         blank=True,
     )
 
+    company_contact_person_first_name = models.CharField(
+        max_length=128, verbose_name=_("first name"), blank=True
+    )
+    company_contact_person_last_name = models.CharField(
+        max_length=128, verbose_name=_("last name"), blank=True
+    )
+
     company_contact_person_phone_number = PhoneNumberField(
         verbose_name=_("company contact person's phone number"),
         blank=True,
