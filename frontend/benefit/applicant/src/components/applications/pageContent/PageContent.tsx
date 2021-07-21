@@ -48,7 +48,7 @@ const PageContent: React.FC = () => {
           <Stepper steps={steps} activeStep={currentStep} />
         </StyledHeaderItem>
       </StyledPageHeader>
-      {currentStep === 1 && <ApplicationFormStep1 actions={actions} />}
+      {currentStep === 1 && <ApplicationFormStep1 />}
       {currentStep === 2 && <ApplicationFormStep2 actions={actions} />}
       {currentStep === 3 && <ApplicationFormStep3 actions={actions} />}
       {currentStep === 4 && <ApplicationFormStep4 actions={actions} />}

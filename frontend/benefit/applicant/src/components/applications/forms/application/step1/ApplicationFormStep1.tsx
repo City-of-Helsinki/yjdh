@@ -1,5 +1,4 @@
 import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
-import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import { StyledRadioButton } from 'shared/components/forms/fields/styled';
@@ -13,9 +12,7 @@ import { StyledContactPersonContainer, StyledSubSection } from '../styled';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
 
-const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
-  actions,
-}) => {
+const ApplicationFormStep1: React.FC = () => {
   const {
     t,
     handleSubmitNext,
@@ -243,7 +240,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </StyledSubSection>
         )}
       </FormSection>
-      {actions}
       <StepperActions
         hasBack
         hasNext
