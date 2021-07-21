@@ -8,6 +8,7 @@ import { StyledFormGroup } from 'shared/components/forms/section/styled';
 
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
+import StepperActions from '../stepperActions/StepperActions';
 import { StyledContactPersonContainer, StyledSubSection } from '../styled';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
@@ -17,7 +18,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
 }) => {
   const {
     t,
-    handleSubmit,
+    handleSubmitNext,
+    handleSubmitBack,
     getErrorMessage,
     erazeDeminimisAids,
     fields,
@@ -26,7 +28,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   } = useApplicationFormStep1();
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmitNext} noValidate>
       <CompanyInfo
         getErrorMessage={getErrorMessage}
         formik={formik}
@@ -242,6 +244,12 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       {actions}
+      <StepperActions
+        hasBack
+        hasNext
+        handleSubmit={handleSubmitNext}
+        handleBack={handleSubmitBack}
+      />
     </form>
   );
 };

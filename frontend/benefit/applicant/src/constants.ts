@@ -13,6 +13,12 @@ export enum SUPPORTED_LANGUAGES {
   EN = 'en',
 }
 
+export enum APPLICATION_SAVE_ACTIONS {
+  SAVE_AND_NEXT = 'save_next',
+  SAVE_AND_PREVIOUS = 'save_prev',
+  SAVE_AND_CONTINUE_LATER = 'save_later',
+}
+
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
 
 export const COMMON_I18N_NAMESPACES = ['common'];

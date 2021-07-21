@@ -1,20 +1,19 @@
 import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
 import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
+import { ApplicationData } from 'benefit/applicant/types/application';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 
-import { Application } from '../types/application';
-
 const useCreateApplicationQuery = (): UseMutationResult<
-  Application,
+  ApplicationData,
   Error,
-  Application
+  ApplicationData
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
-  return useMutation<Application, Error, Application>(
+  return useMutation<ApplicationData, Error, ApplicationData>(
     'createApplication',
-    (application: Application) =>
-      handleResponse<Application>(
+    (application: ApplicationData) =>
+      handleResponse<ApplicationData>(
         axios.post(BackendEndpoint.APPLICATIONS, application)
       ),
     {

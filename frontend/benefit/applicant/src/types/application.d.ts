@@ -63,7 +63,7 @@ export interface AttachmentData {
   created_at?: string;
 }
 
-export interface ApplicationData {
+export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
   application_number?: number;
@@ -104,7 +104,7 @@ export interface ApplicationData {
   last_modified_at?: string;
   attachments?: AttachmentData[];
   create_application_for_company?: string;
-}
+};
 
 interface ApplicationAllowedAction {
   label: string;
