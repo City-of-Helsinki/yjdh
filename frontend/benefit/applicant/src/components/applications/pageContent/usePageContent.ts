@@ -19,12 +19,7 @@ const usePageContent = (): ExtendedComponentProps => {
     query: { id },
   } = useRouter();
   const { t } = useTranslation();
-  const {
-    currentStep,
-    setCurrentStep,
-    setApplication,
-    application,
-  } = React.useContext(ApplicationContext);
+  const { setApplication, application } = React.useContext(ApplicationContext);
 
   const { data } = useApplicationQuery(id?.toString() || '');
 
@@ -35,13 +30,6 @@ const usePageContent = (): ExtendedComponentProps => {
       );
     }
   }, [data, setApplication]);
-
-  useEffect(() => {
-    // when application is updated, the current step of the application is set.
-    if (application?.currentStep && application?.currentStep !== currentStep) {
-      setCurrentStep(application?.currentStep);
-    }
-  }, [application, currentStep, setCurrentStep]);
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [
@@ -60,7 +48,7 @@ const usePageContent = (): ExtendedComponentProps => {
   return {
     t,
     steps,
-    currentStep,
+    currentStep: application?.currentStep || 1,
   };
 };
 

@@ -7,7 +7,6 @@ import ApplicationContext from './ApplicationContext';
 const ApplicationProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
-  const [currentStep, setCurrentStep] = React.useState(1);
   const [application, setApplication] = React.useState<Application>(
     DEFAULT_APPLICATION
   );
@@ -15,10 +14,8 @@ const ApplicationProvider = <P,>({
   return (
     <ApplicationContext.Provider
       value={{
-        currentStep,
         application,
         isLoading: true,
-        setCurrentStep,
         setApplication,
       }}
     >

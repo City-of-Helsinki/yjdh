@@ -43,6 +43,7 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [step, setStep] = useState<number>(1);
 
   useEffect(() => {
     if (isApplicationCreated) {
@@ -50,10 +51,10 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
         ...(toCamelKeys(
           (newApplication as unknown) as IndexType
         ) as Application),
-        currentStep: 2,
+        currentStep: step,
       });
     }
-  }, [isApplicationCreated, newApplication, setApplication]);
+  }, [isApplicationCreated, newApplication, setApplication, step]);
 
   const fieldNames = React.useMemo(
     (): string[] => [
@@ -94,9 +95,10 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
         application?.companyContactPersonPhoneNumber || '',
       [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL]:
         application?.companyContactPersonEmail || '',
-      [APPLICATION_FIELDS.DE_MINIMIS_AID]: application?.deMinimisAid || '',
+      [APPLICATION_FIELDS.DE_MINIMIS_AID]:
+        application?.deMinimisAid?.toString() || '',
       [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]:
-        application?.coOperationNegotiations || '',
+        application?.coOperationNegotiations?.toString() || '',
       [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]:
         application?.coOperationNegotiationsDescription || '',
     },
@@ -110,6 +112,7 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
     validateOnBlur: true,
     enableReinitialize: true,
     onSubmit: () => {
+      setStep(2);
       const currentApplicationData = toSnakeKeys(({
         ...application,
         ...{
