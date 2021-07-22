@@ -781,7 +781,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         )
         self._validate_benefit_type(
             company,
-            data.get("benefit_type"),
+            data.get("benefit_type", ""),
             data.get("association_has_business_activities"),
             data.get("apprenticeship_program"),
         )
