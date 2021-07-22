@@ -153,8 +153,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               label={t(
                 `${translationsBase}.fields.${APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED}.no`
               )}
-              onChange={(val) => {
-                formik.handleChange(val);
+              onChange={(e) => {
+                formik.handleChange(e);
                 formik.setFieldValue(
                   APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM,
                   ''
@@ -310,8 +310,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   label={t(
                     `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.commission`
                   )}
-                  onChange={(val) => {
-                    formik.handleChange(val);
+                  onChange={(e) => {
+                    formik.handleChange(e);
                     formik.setFieldValue(
                       APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE,
                       ''

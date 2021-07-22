@@ -15,8 +15,7 @@ import { useApplicationFormStep1 } from './useApplicationFormStep1';
 const ApplicationFormStep1: React.FC = () => {
   const {
     t,
-    handleSubmitNext,
-    handleSubmitBack,
+    handleSubmit,
     getErrorMessage,
     erazeDeminimisAids,
     fields,
@@ -25,7 +24,7 @@ const ApplicationFormStep1: React.FC = () => {
   } = useApplicationFormStep1();
 
   return (
-    <form onSubmit={handleSubmitNext} noValidate>
+    <form onSubmit={handleSubmit} noValidate>
       <CompanyInfo
         getErrorMessage={getErrorMessage}
         formik={formik}
@@ -142,8 +141,8 @@ const ApplicationFormStep1: React.FC = () => {
               label={t(
                 `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AID}.no`
               )}
-              onChange={(val) => {
-                formik.handleChange(val);
+              onChange={(e) => {
+                formik.handleChange(e);
                 erazeDeminimisAids();
               }}
               onBlur={formik.handleBlur}
@@ -186,8 +185,8 @@ const ApplicationFormStep1: React.FC = () => {
               label={t(
                 `${translationsBase}.fields.${APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS}.no`
               )}
-              onChange={(val) => {
-                formik.handleChange(val);
+              onChange={(e) => {
+                formik.handleChange(e);
                 formik.setFieldValue(
                   APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
                   ''
@@ -240,12 +239,7 @@ const ApplicationFormStep1: React.FC = () => {
           </StyledSubSection>
         )}
       </FormSection>
-      <StepperActions
-        hasBack
-        hasNext
-        handleSubmit={handleSubmitNext}
-        handleBack={handleSubmitBack}
-      />
+      <StepperActions hasNext handleSubmit={handleSubmit} />
     </form>
   );
 };

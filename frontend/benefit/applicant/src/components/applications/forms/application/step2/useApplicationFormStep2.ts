@@ -93,7 +93,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
   };
 
   const erazeCommissionFields = (e: ChangeEvent<HTMLInputElement>): void => {
-    formik.handleChange(e.target.value);
+    formik.handleChange(e);
     void formik.setFieldValue(
       APPLICATION_FIELDS.EMPLOYEE_COMMISSION_DESCRIPTION,
       ''

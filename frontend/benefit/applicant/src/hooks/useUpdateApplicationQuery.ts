@@ -20,7 +20,7 @@ const useUpdateApplicationQuery = (
     {
       onSuccess: () => {
         void queryClient.invalidateQueries('applications');
-        void queryClient.invalidateQueries('application');
+        // void queryClient.invalidateQueries('application');
       },
     }
   );

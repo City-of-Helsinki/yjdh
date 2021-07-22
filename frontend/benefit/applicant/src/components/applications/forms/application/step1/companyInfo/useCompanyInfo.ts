@@ -58,7 +58,7 @@ const useCompanyInfo = ({ formik }: CompanyInfoArgs): CompanyInfoProps => {
   const erazeAlternativeAddressFields = (
     e: ChangeEvent<HTMLInputElement>
   ): void => {
-    void formik?.handleChange(e.target.value);
+    void formik?.handleChange(e);
     void formik?.setFieldValue(
       APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS,
       ''

@@ -7,13 +7,14 @@ import {
 } from 'benefit/applicant/components/applications/styled';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { IconArrowLeft, IconArrowRight, IconCross } from 'hds-react';
+import noop from 'lodash/noop';
 import * as React from 'react';
 
 type StepperActionsProps = {
-  hasBack: boolean;
-  hasNext: boolean;
-  handleBack: () => void;
-  handleSubmit: () => void;
+  hasBack?: boolean;
+  hasNext?: boolean;
+  handleBack?: () => void;
+  handleSubmit?: () => void;
 };
 
 const StepperActions: React.FC<StepperActionsProps> = ({
@@ -61,5 +62,14 @@ const StepperActions: React.FC<StepperActionsProps> = ({
     </StyledApplicationActions>
   );
 };
+
+const defaultProps = {
+  hasBack: false,
+  hasNext: false,
+  handleBack: () => noop,
+  handleSubmit: () => noop,
+};
+
+StepperActions.defaultProps = defaultProps;
 
 export default StepperActions;

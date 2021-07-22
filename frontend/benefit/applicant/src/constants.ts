@@ -142,6 +142,7 @@ export const DEFAULT_APPLICATION = {
   [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: false,
   archived: false,
   deMinimisAidSet: [],
+  currentStep: 1,
 };
 
 export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];

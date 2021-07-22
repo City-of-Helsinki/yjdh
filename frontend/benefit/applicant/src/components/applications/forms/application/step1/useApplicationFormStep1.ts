@@ -6,6 +6,7 @@ import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useCreateApplicationQuery from 'benefit/applicant/hooks/useCreateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
+  Application,
   ApplicationData,
   FormFieldsStep1,
 } from 'benefit/applicant/types/application';
@@ -14,7 +15,7 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
-import { IndexType, toSnakeKeys } from 'shared/utils/object.utils';
+import { IndexType, toCamelKeys, toSnakeKeys } from 'shared/utils/object.utils';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -23,21 +24,16 @@ type ExtendedComponentProps = {
   fields: FieldsDef;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
-  handleSubmitNext: () => void;
-  handleSubmitBack: () => void;
+  handleSubmit: () => void;
   erazeDeminimisAids: () => void;
   formik: FormikProps<FormFieldsStep1>;
 };
 
 const useApplicationFormStep1 = (): ExtendedComponentProps => {
-  const {
-    application,
-    setApplication,
-    currentStep,
-    setCurrentStep,
-  } = React.useContext(ApplicationContext);
+  const { application, setApplication } = React.useContext(ApplicationContext);
   const {
     mutate: createApplication,
+    data: newApplication,
     // todo:
     // error: createApplicationError,
     isSuccess: isApplicationCreated,
@@ -47,14 +43,17 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  // used for changing the step on create/update callback
-  const [nextStep, setNextStep] = useState<number>(1);
 
   useEffect(() => {
     if (isApplicationCreated) {
-      setCurrentStep(nextStep);
+      setApplication({
+        ...(toCamelKeys(
+          (newApplication as unknown) as IndexType
+        ) as Application),
+        currentStep: 2,
+      });
     }
-  }, [isApplicationCreated, setCurrentStep, nextStep]);
+  }, [isApplicationCreated, newApplication, setApplication]);
 
   const fieldNames = React.useMemo(
     (): string[] => [
@@ -124,10 +123,9 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
         },
       } as unknown) as IndexType) as ApplicationData;
       if (!application.id) {
-        // console.log('application', currentApplicationData);
         createApplication(currentApplicationData);
       } else {
-        // todo: update application
+        // todo: update application (and clean system read-only fields)
       }
     },
   });
@@ -157,9 +155,8 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
 
-  const handleSubmit = (step: number): void => {
+  const handleSubmit = (): void => {
     setIsSubmitted(true);
-    setNextStep(step);
     void formik.validateForm().then((errors) => {
       // todo: Focus the first invalid field
       const invalidFields = Object.keys(errors);
@@ -169,10 +166,6 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
       return null;
     });
   };
-
-  const handleSubmitNext = (): void => handleSubmit(currentStep + 1);
-
-  const handleSubmitBack = (): void => handleSubmit(currentStep - 1);
 
   const erazeDeminimisAids = (): void =>
     setApplication({ ...application, deMinimisAidSet: [] });
@@ -184,8 +177,7 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
     translationsBase,
     formik,
     getErrorMessage,
-    handleSubmitNext,
-    handleSubmitBack,
+    handleSubmit,
     erazeDeminimisAids,
   };
 };

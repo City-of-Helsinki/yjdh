@@ -218,4 +218,6 @@ export type Application = {
   [APPLICATION_FIELDS.DE_MINIMIS_AID]?: string; // boolean
   deMinimisAidSet: DeMinimisAid[];
   // create_application_for_company ? not present in the UI?
+  // for step change
+  currentStep: number;
 };
