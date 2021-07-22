@@ -759,31 +759,31 @@ class ApplicationSerializer(serializers.ModelSerializer):
         """ """
         company = self.get_company(data)
         self._validate_date_range(
-            data["start_date"], data["end_date"], data["benefit_type"]
+            data.get("start_date"), data.get("end_date"), data.get("benefit_type")
         )
         self._validate_co_operation_negotiations(
-            data["co_operation_negotiations"],
-            data["co_operation_negotiations_description"],
+            data.get("co_operation_negotiations"),
+            data.get("co_operation_negotiations_description"),
         )
         self._validate_pay_subsidy(
-            data["pay_subsidy_granted"],
-            data["pay_subsidy_percent"],
-            data["additional_pay_subsidy_percent"],
+            data.get("pay_subsidy_granted"),
+            data.get("pay_subsidy_percent"),
+            data.get("additional_pay_subsidy_percent"),
         )
         self._validate_de_minimis_aid_set(
             company,
-            data["de_minimis_aid"],
-            data["de_minimis_aid_set"],
-            data["association_has_business_activities"],
+            data.get("de_minimis_aid"),
+            data.get("de_minimis_aid_set"),
+            data.get("association_has_business_activities"),
         )
         self._validate_association_has_business_activities(
-            company, data["association_has_business_activities"]
+            company, data.get("association_has_business_activities")
         )
         self._validate_benefit_type(
             company,
-            data["benefit_type"],
-            data["association_has_business_activities"],
-            data["apprenticeship_program"],
+            data.get("benefit_type"),
+            data.get("association_has_business_activities"),
+            data.get("apprenticeship_program"),
         )
         self._validate_non_draft_required_fields(data)
         return data
