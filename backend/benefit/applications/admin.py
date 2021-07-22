@@ -47,6 +47,8 @@ class ApplicationAdmin(admin.ModelAdmin):
         "status",
         "company_name",
         "company_contact_person_email",
+        "company_contact_person_first_name",
+        "company_contact_person_last_name",
         "created_at",
         "modified_at",
         "__str__",
@@ -58,6 +60,8 @@ class ApplicationAdmin(admin.ModelAdmin):
         "alternative_company_street_address",
         "company_name",
         "company_contact_person_email",
+        "company_contact_person_first_name",
+        "company_contact_person_last_name",
     )
     date_hierarchy = "created_at"
     ordering = ("-created_at",)

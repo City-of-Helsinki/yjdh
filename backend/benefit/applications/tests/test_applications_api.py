@@ -636,6 +636,7 @@ def test_attachment_requirements(
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     application.pay_subsidy_granted = True
     application.pay_subsidy_percent = 50
+    application.apprenticeship_program = False
     application.save()
     response = api_client.get(get_detail_url(application))
     assert json.loads(json.dumps(response.data["attachment_requirements"])) == [
