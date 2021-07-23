@@ -48,6 +48,7 @@ const StyledSubActionContainer = styled.div`
   background-color: white;
   flex: 1 0 auto;
   margin-right: 0 !important;
+  padding-left: ${(props) => props.theme.spacing.s};
 `;
 
 interface ButtonProps {
@@ -60,7 +61,7 @@ const StyledButton = styled(Button)<ButtonProps>`
 `;
 
 const StyledSubSection = styled.div`
-  margin-left: 240px;
+  margin-left: 245px;
 
   textarea {
     width: 640px !important;

@@ -13,6 +13,7 @@ import {
   StyledViewFieldsContainer,
 } from 'shared/components/forms/section/styled';
 import theme from 'shared/styles/theme';
+import { formatDate, parseDate } from 'shared/utils/date.utils';
 
 import { useDeminimisAidsList } from './useDeminimisAidsList';
 
@@ -36,7 +37,9 @@ const DeMinimisAidsList: React.FC = () => {
               grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
             } €`}</StyledViewField>
             <StyledViewField>
-              {grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT]}
+              {formatDate(
+                parseDate(grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT], 'yyyy-MM-dd')
+              )}
             </StyledViewField>
           </StyledViewFieldsContainer>
           <StyledSubActionContainer>

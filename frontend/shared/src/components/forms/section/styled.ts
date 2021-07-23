@@ -67,11 +67,13 @@ const StyledViewFieldsContainer = styled.div`
   margin-right: 0 !important;
   padding-right: 0;
   & > div {
-    width: 250px;
+    width: 240px;
+    margin-left: ${(props) => props.theme.spacing.xs};
   }
   & > div > div {
     margin-right: ${(props) => props.theme.spacing.xs};
   }
+  width: 100%;
 `;
 
 const StyledViewField = styled.div``;

@@ -11,6 +11,7 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
+import { formatDate, parseDate } from 'shared/utils/date.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
@@ -74,7 +75,10 @@ const useDeminimisAid = (): ExtendedComponentProps => {
           {
             granter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
             amount: formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT],
-            grantedAt: formik.values[DE_MINIMIS_AID_FIELDS.GRANTED_AT],
+            grantedAt: formatDate(
+              parseDate(formik.values[DE_MINIMIS_AID_FIELDS.GRANTED_AT]),
+              'yyyy-MM-dd'
+            ),
           },
         ],
       });

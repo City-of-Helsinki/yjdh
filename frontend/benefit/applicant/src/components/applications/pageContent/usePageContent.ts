@@ -20,7 +20,7 @@ const usePageContent = (): ExtendedComponentProps => {
   } = useRouter();
   const { t } = useTranslation();
   const { setApplication, application } = React.useContext(ApplicationContext);
-
+  // console.log('application', application);
   const { data } = useApplicationQuery(id?.toString() || '');
 
   useEffect(() => {
