@@ -1,3 +1,8 @@
+from phonenumber_field.serializerfields import (
+    PhoneNumberField as DefaultPhoneNumberField,
+)
+
+
 def update_object(obj, data):
     if not data:
         return
@@ -24,3 +29,10 @@ def xgroup(iter, n=2, check_length=False):
         if len(last) == n:
             yield tuple(last)
             last = []
+
+
+class PhoneNumberField(DefaultPhoneNumberField):
+    def to_representation(self, value):
+        if not value:
+            return ""
+        return "0{}".format(value.national_number)
