@@ -190,11 +190,11 @@ export type Employee = {
 
 export type Application = {
   id?: string;
-  status: APPLICATION_STATUSES;
+  status?: APPLICATION_STATUSES;
   applicationNumber?: number;
-  employee: Employee;
-  bases: string[];
-  [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]: boolean;
+  employee?: Employee;
+  bases?: string[];
+  [APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS]?: boolean;
   [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;
   [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY]?: string;
   [APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE]?: string;
@@ -211,13 +211,13 @@ export type Application = {
   [APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT]?: string; // number: 30, 40, 50, 100
   [APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT]?: string; // number: 30, 40, 50, 100
   [APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM]?: string; // boolean
-  archived: boolean;
+  archived?: boolean;
   [APPLICATION_FIELDS.BENEFIT_TYPE]?: BENEFIT_TYPES;
   [APPLICATION_FIELDS.START_DATE]?: string;
   [APPLICATION_FIELDS.END_DATE]?: string;
   [APPLICATION_FIELDS.DE_MINIMIS_AID]?: string; // boolean
-  deMinimisAidSet: DeMinimisAid[];
+  deMinimisAidSet?: DeMinimisAid[];
   // create_application_for_company ? not present in the UI?
   // for step change
-  currentStep: number;
+  currentStep?: number;
 };

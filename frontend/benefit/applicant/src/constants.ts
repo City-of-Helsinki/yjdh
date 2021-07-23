@@ -86,7 +86,7 @@ export enum APPLICATION_FIELDS_STEP2 {
   EMPLOYEE_IS_LIVING_IN_HELSINKI = 'isLivingInHelsinki',
   PAY_SUBSIDY_GRANTED = 'paySubsidyGranted',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
-  ADDITIONAL_PAY_SUBSIDY_PERCENT = 'paySubsidyAdditionalPercent',
+  ADDITIONAL_PAY_SUBSIDY_PERCENT = 'additionalPaySubsidyPercent',
   APPRENTICESHIP_PROGRAM = 'apprenticeshipProgram',
   BENEFIT_TYPE = 'benefitType',
   START_DATE = 'startDate',

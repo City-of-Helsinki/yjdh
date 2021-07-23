@@ -4,6 +4,7 @@ import {
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useCreateApplicationQuery from 'benefit/applicant/hooks/useCreateApplicationQuery';
+import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
@@ -16,6 +17,7 @@ import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
 import { IndexType, toCamelKeys, toSnakeKeys } from 'shared/utils/object.utils';
+import { getBooleanValue, phoneToLocal } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -39,6 +41,14 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
     isSuccess: isApplicationCreated,
   } = useCreateApplicationQuery();
 
+  const {
+    mutate: updateApplication,
+    data: updatedApplication,
+    // todo:
+    // error: updateApplicationError,
+    isSuccess: isApplicationUpdated,
+  } = useUpdateApplicationQuery();
+
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
@@ -46,15 +56,24 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
   const [step, setStep] = useState<number>(1);
 
   useEffect(() => {
-    if (isApplicationCreated) {
+    if (isApplicationCreated || isApplicationUpdated) {
       setApplication({
         ...(toCamelKeys(
-          (newApplication as unknown) as IndexType
+          (isApplicationCreated
+            ? (newApplication as unknown)
+            : (updatedApplication as unknown)) as IndexType
         ) as Application),
         currentStep: step,
       });
     }
-  }, [isApplicationCreated, newApplication, setApplication, step]);
+  }, [
+    isApplicationCreated,
+    newApplication,
+    isApplicationUpdated,
+    updatedApplication,
+    setApplication,
+    step,
+  ]);
 
   const fieldNames = React.useMemo(
     (): string[] => [
@@ -91,8 +110,9 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
         application?.companyContactPersonFirstName || '',
       [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME]:
         application?.companyContactPersonLastName || '',
-      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]:
-        application?.companyContactPersonPhoneNumber || '',
+      [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: phoneToLocal(
+        application?.companyContactPersonPhoneNumber
+      ),
       [APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL]:
         application?.companyContactPersonEmail || '',
       [APPLICATION_FIELDS.DE_MINIMIS_AID]:
@@ -118,17 +138,18 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
         ...{
           ...formik.values,
           // normalize boolean values values:
-          [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]:
-            formik.values[APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS] ===
-            'true',
-          [APPLICATION_FIELDS.DE_MINIMIS_AID]:
-            formik.values[APPLICATION_FIELDS.DE_MINIMIS_AID] === 'true',
+          [APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]: getBooleanValue(
+            formik.values[APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS]
+          ),
+          [APPLICATION_FIELDS.DE_MINIMIS_AID]: getBooleanValue(
+            formik.values[APPLICATION_FIELDS.DE_MINIMIS_AID]
+          ),
         },
       } as unknown) as IndexType) as ApplicationData;
       if (!application.id) {
         createApplication(currentApplicationData);
       } else {
-        // todo: update application (and clean system read-only fields)
+        updateApplication(currentApplicationData);
       }
     },
   });

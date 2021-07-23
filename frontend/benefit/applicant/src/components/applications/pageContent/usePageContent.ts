@@ -20,16 +20,16 @@ const usePageContent = (): ExtendedComponentProps => {
   } = useRouter();
   const { t } = useTranslation();
   const { setApplication, application } = React.useContext(ApplicationContext);
-  // console.log('application', application);
   const { data } = useApplicationQuery(id?.toString() || '');
 
   useEffect(() => {
     if (data) {
-      setApplication(
-        toCamelKeys((data as unknown) as IndexType) as Application
-      );
+      setApplication({
+        ...application,
+        ...(toCamelKeys((data as unknown) as IndexType) as Application),
+      });
     }
-  }, [data, setApplication]);
+  }, [data, setApplication, application]);
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [

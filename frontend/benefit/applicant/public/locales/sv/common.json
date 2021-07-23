@@ -181,7 +181,7 @@
           },
           "phoneNumber": {
             "label": "Puhelin",
-            "placeholder": "Puhelin"
+            "placeholder": "040 1234567"
           },
           "isLivingInHelsinki": {
             "label": "Helsinki kotikuntana",
@@ -195,7 +195,7 @@
           "paySubsidyPercent": {
             "label": "Päätöksessä oleva palkkatukiprosentti"
           },
-          "paySubsidyAdditionalPercent": {
+          "additionalPaySubsidyPercent": {
             "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
           },
           "apprenticeshipProgram": {

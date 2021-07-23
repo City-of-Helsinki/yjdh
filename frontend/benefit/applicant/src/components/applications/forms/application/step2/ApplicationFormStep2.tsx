@@ -1,5 +1,4 @@
 import { APPLICATION_FIELDS, BENEFIT_TYPES } from 'benefit/applicant/constants';
-import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
@@ -14,6 +13,7 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import Spacing from 'shared/components/forms/spacing/Spacing';
 
+import StepperActions from '../stepperActions/StepperActions';
 import {
   StyledCommissionContainer,
   StyledEmployerBasicInfoContainer,
@@ -25,14 +25,14 @@ import {
 } from '../styled';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
-const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
-  actions,
-}) => {
+const ApplicationFormStep2: React.FC = () => {
   const {
     t,
-    handleSubmit,
+    handleSubmitNext,
+    handleSubmitBack,
     getErrorMessage,
     erazeCommissionFields,
+    getDefaultSelectValue,
     fields,
     translationsBase,
     formik,
@@ -40,7 +40,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   } = useApplicationFormStep2();
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmitNext} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
         <StyledEmployerBasicInfoContainer>
           <TextInput
@@ -180,6 +180,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           <StyledSubSection>
             <StyledFormGroup>
               <Select
+                defaultValue={getDefaultSelectValue(
+                  APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT
+                )}
                 style={{ width: 350 }}
                 helper={getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)}
                 optionLabelField="label"
@@ -205,20 +208,23 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             <Spacing size="m" />
             <StyledFormGroup>
               <Select
+                defaultValue={getDefaultSelectValue(
+                  APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT
+                )}
                 style={{ width: 350 }}
                 helper={getErrorMessage(
                   APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT
                 )}
                 optionLabelField="label"
-                label={fields.paySubsidyAdditionalPercent.label}
-                onChange={(paySubsidyAdditionalPercent: Option) =>
+                label={fields.additionalPaySubsidyPercent.label}
+                onChange={(additionalPaySubsidyPercent: Option) =>
                   formik.setFieldValue(
                     APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT,
-                    paySubsidyAdditionalPercent.value
+                    additionalPaySubsidyPercent.value
                   )
                 }
                 options={subsidyOptions}
-                id={fields.paySubsidyAdditionalPercent.name}
+                id={fields.additionalPaySubsidyPercent.name}
                 placeholder={t('common:select')}
                 invalid={
                   !!getErrorMessage(
@@ -597,7 +603,12 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </StyledCommissionContainer>
         )}
       </FormSection>
-      {actions}
+      <StepperActions
+        hasBack
+        hasNext
+        handleSubmit={handleSubmitNext}
+        handleBack={handleSubmitBack}
+      />
     </form>
   );
 };
