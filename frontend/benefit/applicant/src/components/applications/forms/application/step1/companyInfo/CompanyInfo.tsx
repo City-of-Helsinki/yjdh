@@ -1,5 +1,5 @@
-import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
-import { FormFieldsStep1 } from 'benefit/applicant/types/application';
+import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
+import { Application } from 'benefit/applicant/types/application';
 import { FormikProps } from 'formik';
 import { TextInput } from 'hds-react';
 import React from 'react';
@@ -24,7 +24,7 @@ interface CompanyInfoProps {
   getErrorMessage: (fieldName: string) => string | undefined;
   fields: FieldsDef;
   translationsBase: string;
-  formik?: FormikProps<FormFieldsStep1>;
+  formik?: FormikProps<Application>;
 }
 
 const CompanyInfo: React.FC<CompanyInfoProps> = ({
@@ -80,12 +80,14 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             required
             checked={formik?.values.useAlternativeAddress === true}
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS
+              APPLICATION_FIELDS_STEP1.USE_ALTERNATIVE_ADDRESS
             )}
-            onChange={(val) => erazeAlternativeAddressFields(val)}
+            onChange={() => erazeAlternativeAddressFields()}
             onBlur={formik?.handleBlur}
             aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.USE_ALTERNATIVE_ADDRESS)
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.USE_ALTERNATIVE_ADDRESS
+              )
             }
           />
         </StyledCompanyInfoSection>
@@ -112,16 +114,16 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               value={formik.values.alternativeCompanyStreetAddress}
               invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS
+                  APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS
                 )
               }
               aria-invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS
+                  APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS
                 )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS
+                APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS
               )}
               required
             />
@@ -135,16 +137,16 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               value={formik.values.alternativeCompanyPostcode}
               invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE
+                  APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE
                 )
               }
               aria-invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE
+                  APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE
                 )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE
+                APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE
               )}
               required
             />
@@ -157,13 +159,17 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               onBlur={formik.handleBlur}
               value={formik.values.alternativeCompanyCity}
               invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY)
+                !!getErrorMessage(
+                  APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY
+                )
               }
               aria-invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY)
+                !!getErrorMessage(
+                  APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY
+                )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY
+                APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY
               )}
               required
             />
@@ -195,16 +201,16 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 placeholder={fields.companyBankAccountNumber.placeholder}
                 invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER
+                    APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER
                   )
                 }
                 aria-invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER
+                    APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER
                   )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_BANK_ACCOUNT_NUMBER
+                  APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER
                 )}
                 required
               />

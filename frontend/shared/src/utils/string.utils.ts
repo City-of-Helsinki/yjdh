@@ -14,4 +14,12 @@ export const capitalize = (s: string): string =>
 export const phoneToLocal = (phoneNumber?: string): string =>
   phoneNumber?.replace('+358', '0') || '';
 
-export const getBooleanValue = (value?: string): boolean => value === 'true';
+export const getBooleanValueFromString = (value?: string): boolean | null => {
+  if (value === '') {
+    return null;
+  }
+  if (value === 'false') {
+    return false;
+  }
+  return true;
+};

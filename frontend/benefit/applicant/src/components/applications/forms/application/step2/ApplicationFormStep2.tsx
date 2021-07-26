@@ -1,4 +1,7 @@
-import { APPLICATION_FIELDS, BENEFIT_TYPES } from 'benefit/applicant/constants';
+import {
+  APPLICATION_FIELDS_STEP2,
+  BENEFIT_TYPES,
+} from 'benefit/applicant/constants';
 import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
@@ -12,6 +15,7 @@ import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
 import Spacing from 'shared/components/forms/spacing/Spacing';
+import { phoneToLocal } from 'shared/utils/string.utils';
 
 import StepperActions from '../stepperActions/StepperActions';
 import {
@@ -48,14 +52,22 @@ const ApplicationFormStep2: React.FC = () => {
             name={fields.firstName.name}
             label={fields.firstName.label}
             placeholder={fields.firstName.placeholder}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.firstName}
-            invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)}
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)
+            onChange={(e) =>
+              formik.setFieldValue(
+                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME}`,
+                e.target.value
+              )
             }
-            errorText={getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_FIRST_NAME)}
+            value={formik.values.employee?.firstName}
+            invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME)
+            }
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME)
+            }
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME
+            )}
             required
           />
           <TextInput
@@ -63,14 +75,22 @@ const ApplicationFormStep2: React.FC = () => {
             name={fields.lastName.name}
             label={fields.lastName.label}
             placeholder={fields.lastName.placeholder}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.lastName}
-            invalid={!!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)}
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)
+            onChange={(e) =>
+              formik.setFieldValue(
+                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME}`,
+                e.target.value
+              )
             }
-            errorText={getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_LAST_NAME)}
+            value={formik.values.employee?.lastName}
+            invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME)
+            }
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME)
+            }
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME
+            )}
             required
           />
           <TextInput
@@ -78,21 +98,25 @@ const ApplicationFormStep2: React.FC = () => {
             name={fields.socialSecurityNumber.name}
             label={fields.socialSecurityNumber.label}
             placeholder={fields.socialSecurityNumber.placeholder}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.socialSecurityNumber}
+            onChange={(e) =>
+              formik.setFieldValue(
+                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER}`,
+                e.target.value
+              )
+            }
+            value={formik.values.employee?.socialSecurityNumber}
             invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.EMPLOYEE_SOCIAL_SECURITY_NUMBER
+                APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER
               )
             }
             aria-invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.EMPLOYEE_SOCIAL_SECURITY_NUMBER
+                APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER
               )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.EMPLOYEE_SOCIAL_SECURITY_NUMBER
+              APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER
             )}
             required
           />
@@ -101,17 +125,21 @@ const ApplicationFormStep2: React.FC = () => {
             name={fields.phoneNumber.name}
             label={fields.phoneNumber.label}
             placeholder={fields.phoneNumber.placeholder}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.phoneNumber}
+            onChange={(e) =>
+              formik.setFieldValue(
+                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER}`,
+                e.target.value
+              )
+            }
+            value={phoneToLocal(formik.values.employee?.phoneNumber)}
             invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_PHONE_NUMBER)
+              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER)
             }
             aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_PHONE_NUMBER)
+              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER)
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.EMPLOYEE_PHONE_NUMBER
+              APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER
             )}
             required
           />
@@ -123,18 +151,22 @@ const ApplicationFormStep2: React.FC = () => {
             id={fields.isLivingInHelsinki.name}
             name={fields.isLivingInHelsinki.name}
             label={fields.isLivingInHelsinki.placeholder}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+            onChange={() => {
+              formik.setFieldValue(
+                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_IS_LIVING_IN_HELSINKI}`,
+                !formik.values.employee?.isLivingInHelsinki
+              );
+            }}
             aria-invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.EMPLOYEE_IS_LIVING_IN_HELSINKI
+                APPLICATION_FIELDS_STEP2.EMPLOYEE_IS_LIVING_IN_HELSINKI
               )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.EMPLOYEE_IS_LIVING_IN_HELSINKI
+              APPLICATION_FIELDS_STEP2.EMPLOYEE_IS_LIVING_IN_HELSINKI
             )}
             required
-            checked={formik.values.isLivingInHelsinki === true}
+            checked={formik.values.employee?.isLivingInHelsinki === true}
           />
         </StyledFormGroup>
       </FormSection>
@@ -144,52 +176,64 @@ const ApplicationFormStep2: React.FC = () => {
             label={fields.paySubsidyGranted.label}
             direction="vertical"
             required
-            errorText={getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED)}
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED
+            )}
           >
             <StyledRadioButton
               id={`${fields.paySubsidyGranted.name}False`}
               name={fields.paySubsidyGranted.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED}.no`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED}.no`
               )}
-              onChange={(e) => {
-                formik.handleChange(e);
+              onChange={() => {
                 formik.setFieldValue(
-                  APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM,
-                  ''
+                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED,
+                  false
+                );
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM,
+                  null
                 );
               }}
               onBlur={formik.handleBlur}
-              checked={formik.values.paySubsidyGranted === 'false'}
+              checked={formik.values.paySubsidyGranted === false}
             />
             <StyledRadioButton
               id={`${fields.paySubsidyGranted.name}True`}
               name={fields.paySubsidyGranted.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.PAY_SUBSIDY_GRANTED}.yes`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED}.yes`
               )}
-              onChange={formik.handleChange}
+              onChange={() => {
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED,
+                  true
+                );
+              }}
               onBlur={formik.handleBlur}
-              checked={formik.values.paySubsidyGranted === 'true'}
+              checked={formik.values.paySubsidyGranted === true}
             />
           </SelectionGroup>
         </StyledFormGroup>
-        {formik.values.paySubsidyGranted === 'true' && (
+        {formik.values.paySubsidyGranted && (
           <StyledSubSection>
             <StyledFormGroup>
               <Select
                 defaultValue={getDefaultSelectValue(
-                  APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT
+                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
                 )}
                 style={{ width: 350 }}
-                helper={getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)}
+                helper={getErrorMessage(
+                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
+                )}
                 optionLabelField="label"
                 label={fields.paySubsidyPercent.label}
                 onChange={(paySubsidyPercent: Option) =>
                   formik.setFieldValue(
-                    APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT,
+                    APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT,
                     paySubsidyPercent.value
                   )
                 }
@@ -197,10 +241,14 @@ const ApplicationFormStep2: React.FC = () => {
                 id={fields.paySubsidyPercent.name}
                 placeholder={t('common:select')}
                 invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
+                  )
                 }
                 aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.PAY_SUBSIDY_PERCENT)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
+                  )
                 }
                 required
               />
@@ -209,17 +257,17 @@ const ApplicationFormStep2: React.FC = () => {
             <StyledFormGroup>
               <Select
                 defaultValue={getDefaultSelectValue(
-                  APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT
+                  APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
                 )}
                 style={{ width: 350 }}
                 helper={getErrorMessage(
-                  APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT
+                  APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
                 )}
                 optionLabelField="label"
                 label={fields.additionalPaySubsidyPercent.label}
                 onChange={(additionalPaySubsidyPercent: Option) =>
                   formik.setFieldValue(
-                    APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT,
+                    APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT,
                     additionalPaySubsidyPercent.value
                   )
                 }
@@ -228,12 +276,12 @@ const ApplicationFormStep2: React.FC = () => {
                 placeholder={t('common:select')}
                 invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT
+                    APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
                   )
                 }
                 aria-invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.ADDITIONAL_PAY_SUBSIDY_PERCENT
+                    APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
                   )
                 }
               />
@@ -245,7 +293,7 @@ const ApplicationFormStep2: React.FC = () => {
                 direction="vertical"
                 required
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM
+                  APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM
                 )}
               >
                 <StyledRadioButton
@@ -253,22 +301,32 @@ const ApplicationFormStep2: React.FC = () => {
                   name={fields.apprenticeshipProgram.name}
                   value="false"
                   label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM}.no`
+                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM}.no`
                   )}
-                  onChange={formik.handleChange}
+                  onChange={() => {
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM,
+                      false
+                    );
+                  }}
                   onBlur={formik.handleBlur}
-                  checked={formik.values.apprenticeshipProgram === 'false'}
+                  checked={formik.values.apprenticeshipProgram === false}
                 />
                 <StyledRadioButton
                   id={`${fields.apprenticeshipProgram.name}True`}
                   name={fields.apprenticeshipProgram.name}
                   value="true"
                   label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS.APPRENTICESHIP_PROGRAM}.yes`
+                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM}.yes`
                   )}
-                  onChange={formik.handleChange}
+                  onChange={() => {
+                    formik.setFieldValue(
+                      APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM,
+                      true
+                    );
+                  }}
                   onBlur={formik.handleBlur}
-                  checked={formik.values.apprenticeshipProgram === 'true'}
+                  checked={formik.values.apprenticeshipProgram === true}
                 />
               </SelectionGroup>
             </StyledFormGroup>
@@ -283,14 +341,16 @@ const ApplicationFormStep2: React.FC = () => {
                 label={fields.benefitType.label}
                 direction="vertical"
                 required
-                errorText={getErrorMessage(APPLICATION_FIELDS.BENEFIT_TYPE)}
+                errorText={getErrorMessage(
+                  APPLICATION_FIELDS_STEP2.BENEFIT_TYPE
+                )}
               >
                 <StyledRadioButton
                   id={`${fields.benefitType.name}Employment`}
                   name={fields.benefitType.name}
                   value={BENEFIT_TYPES.EMPLOYMENT}
                   label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.employment`
+                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.employment`
                   )}
                   onChange={(val) => erazeCommissionFields(val)}
                   onBlur={formik.handleBlur}
@@ -303,7 +363,7 @@ const ApplicationFormStep2: React.FC = () => {
                   name={fields.benefitType.name}
                   value={BENEFIT_TYPES.SALARY}
                   label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.salary`
+                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.salary`
                   )}
                   onChange={(val) => erazeCommissionFields(val)}
                   onBlur={formik.handleBlur}
@@ -314,36 +374,35 @@ const ApplicationFormStep2: React.FC = () => {
                   name={fields.benefitType.name}
                   value={BENEFIT_TYPES.COMMISSION}
                   label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS.BENEFIT_TYPE}.commission`
+                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.commission`
                   )}
                   onChange={(e) => {
                     formik.handleChange(e);
                     formik.setFieldValue(
-                      APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE,
+                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE}`,
                       ''
                     );
                     formik.setFieldValue(
-                      APPLICATION_FIELDS.EMPLOYEE_WORKING_HOURS,
+                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS}`,
                       ''
                     );
                     formik.setFieldValue(
-                      APPLICATION_FIELDS.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT,
+                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT}`,
                       ''
                     );
                     formik.setFieldValue(
-                      APPLICATION_FIELDS.EMPLOYEE_MONTHLY_PAY,
+                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY}`,
                       ''
                     );
                     formik.setFieldValue(
-                      APPLICATION_FIELDS.EMPLOYEE_OTHER_EXPENSES,
+                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES}`,
                       ''
                     );
                     formik.setFieldValue(
-                      APPLICATION_FIELDS.EMPLOYEE_VACATION_MONEY,
+                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY}`,
                       ''
                     );
                   }}
-                  onBlur={formik.handleBlur}
                   checked={
                     formik.values.benefitType === BENEFIT_TYPES.COMMISSION
                   }
@@ -432,17 +491,21 @@ const ApplicationFormStep2: React.FC = () => {
                 name={fields.jobTitle.name}
                 label={fields.jobTitle.label}
                 placeholder={fields.jobTitle.placeholder}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.jobTitle}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE}`,
+                    e.target.value
+                  )
+                }
+                value={formik.values.employee?.jobTitle}
                 invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE)
+                  !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE)
                 }
                 aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE)
+                  !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE)
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_JOB_TITLE
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE
                 )}
                 required
               />
@@ -451,17 +514,25 @@ const ApplicationFormStep2: React.FC = () => {
                 name={fields.workingHours.name}
                 label={fields.workingHours.label}
                 placeholder={fields.workingHours.placeholder}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.workingHours}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS}`,
+                    e.target.value
+                  )
+                }
+                value={formik.values.employee?.workingHours || ''}
                 invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_WORKING_HOURS)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS
+                  )
                 }
                 aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_WORKING_HOURS)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS
+                  )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_WORKING_HOURS
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS
                 )}
                 required
               />
@@ -470,21 +541,25 @@ const ApplicationFormStep2: React.FC = () => {
                 name={fields.collectiveBargainingAgreement.name}
                 label={fields.collectiveBargainingAgreement.label}
                 placeholder={fields.collectiveBargainingAgreement.placeholder}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.collectiveBargainingAgreement}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT}`,
+                    e.target.value
+                  )
+                }
+                value={formik.values.employee?.collectiveBargainingAgreement}
                 invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
                   )
                 }
                 aria-invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
                   )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
                 )}
                 required
               />
@@ -501,17 +576,25 @@ const ApplicationFormStep2: React.FC = () => {
                 name={fields.monthlyPay.name}
                 label={fields.monthlyPay.label}
                 placeholder={fields.monthlyPay.placeholder}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.monthlyPay}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY}`,
+                    e.target.value
+                  )
+                }
+                value={formik.values.employee?.monthlyPay || ''}
                 invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_MONTHLY_PAY)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY
+                  )
                 }
                 aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_MONTHLY_PAY)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY
+                  )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_MONTHLY_PAY
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY
                 )}
                 required
               />
@@ -520,17 +603,25 @@ const ApplicationFormStep2: React.FC = () => {
                 name={fields.otherExpenses.name}
                 label={fields.otherExpenses.label}
                 placeholder={fields.otherExpenses.placeholder}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.otherExpenses}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES}`,
+                    e.target.value
+                  )
+                }
+                value={formik.values.employee?.otherExpenses || ''}
                 invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_OTHER_EXPENSES)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES
+                  )
                 }
                 aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_OTHER_EXPENSES)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES
+                  )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_OTHER_EXPENSES
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES
                 )}
                 required
               />
@@ -539,17 +630,25 @@ const ApplicationFormStep2: React.FC = () => {
                 name={fields.vacationMoney.name}
                 label={fields.vacationMoney.label}
                 placeholder={fields.vacationMoney.placeholder}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.vacationMoney}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY}`,
+                    e.target.value
+                  )
+                }
+                value={formik.values.employee?.vacationMoney || ''}
                 invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_VACATION_MONEY)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY
+                  )
                 }
                 aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_VACATION_MONEY)
+                  !!getErrorMessage(
+                    APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY
+                  )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_VACATION_MONEY
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY
                 )}
                 required
               />
@@ -563,21 +662,25 @@ const ApplicationFormStep2: React.FC = () => {
               name={fields.commissionDescription.name}
               label={fields.commissionDescription.label}
               placeholder={fields.commissionDescription.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.commissionDescription}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION}`,
+                  e.target.value
+                )
+              }
+              value={formik.values.employee?.commissionDescription}
               invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_COMMISSION_DESCRIPTION
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION
                 )
               }
               aria-invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS.EMPLOYEE_COMMISSION_DESCRIPTION
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION
                 )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.EMPLOYEE_COMMISSION_DESCRIPTION
+                APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION
               )}
               required
             />
@@ -586,17 +689,25 @@ const ApplicationFormStep2: React.FC = () => {
               name={fields.commissionAmount.name}
               label={fields.commissionAmount.label}
               placeholder={fields.commissionAmount.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.commissionAmount}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT}`,
+                  e.target.value
+                )
+              }
+              value={formik.values.employee?.commissionAmount}
               invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_COMMISSION_AMOUNT)
+                !!getErrorMessage(
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT
+                )
               }
               aria-invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.EMPLOYEE_COMMISSION_AMOUNT)
+                !!getErrorMessage(
+                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT
+                )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS.EMPLOYEE_COMMISSION_AMOUNT
+                APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT
               )}
               required
             />

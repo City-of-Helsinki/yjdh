@@ -15,20 +15,22 @@ type ExtendedComponentProps = {
 const useDeminimisAidsList = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const { application, setApplication } = React.useContext(ApplicationContext);
+  const { deMinimisAids, setDeMinimisAids } = React.useContext(
+    ApplicationContext
+  );
 
   const handleRemove = (index: number): void => {
     // remove value
-    const currentGrants = [...(application?.deMinimisAidSet || [])];
+    const currentGrants = [...(deMinimisAids || [])];
     currentGrants.splice(index, 1);
-    setApplication({ ...application, deMinimisAidSet: currentGrants });
+    setDeMinimisAids(currentGrants);
   };
 
   return {
     t,
     translationsBase,
     handleRemove,
-    grants: application?.deMinimisAidSet || [],
+    grants: deMinimisAids || [],
   };
 };
 

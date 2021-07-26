@@ -1,9 +1,10 @@
-import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
+import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
 import { SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import { StyledRadioButton } from 'shared/components/forms/fields/styled';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import { phoneToLocal } from 'shared/utils/string.utils';
 
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
@@ -43,16 +44,16 @@ const ApplicationFormStep1: React.FC = () => {
             value={formik.values.companyContactPersonFirstName}
             invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_FIRST_NAME
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME
               )
             }
             aria-invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_FIRST_NAME
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME
               )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_FIRST_NAME
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME
             )}
             required
           />
@@ -66,16 +67,16 @@ const ApplicationFormStep1: React.FC = () => {
             value={formik.values.companyContactPersonLastName}
             invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME
               )
             }
             aria-invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME
               )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_LAST_NAME
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME
             )}
             required
           />
@@ -86,19 +87,19 @@ const ApplicationFormStep1: React.FC = () => {
             placeholder={fields.companyContactPersonPhoneNumber.placeholder}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.companyContactPersonPhoneNumber}
+            value={phoneToLocal(formik.values.companyContactPersonPhoneNumber)}
             invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER
               )
             }
             aria-invalid={
               !!getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER
               )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_PHONE_NUMBER
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER
             )}
             required
           />
@@ -111,13 +112,17 @@ const ApplicationFormStep1: React.FC = () => {
             onBlur={formik.handleBlur}
             value={formik.values.companyContactPersonEmail}
             invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL)
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL
+              )
             }
             aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL)
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL
+              )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.COMPANY_CONTACT_PERSON_EMAIL
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL
             )}
             required
           />
@@ -132,36 +137,45 @@ const ApplicationFormStep1: React.FC = () => {
             label={fields.deMinimisAid.label}
             direction="vertical"
             required
-            errorText={getErrorMessage(APPLICATION_FIELDS.DE_MINIMIS_AID)}
+            errorText={getErrorMessage(APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID)}
           >
             <StyledRadioButton
               id={`${fields.deMinimisAid.name}False`}
               name={fields.deMinimisAid.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AID}.no`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID}.no`
               )}
-              onChange={(e) => {
-                formik.handleChange(e);
+              onChange={() => {
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID,
+                  false
+                );
                 erazeDeminimisAids();
               }}
               onBlur={formik.handleBlur}
-              checked={formik.values.deMinimisAid === 'false'}
+              // 3 states: null (none is selected), true, false
+              checked={formik.values.deMinimisAid === false}
             />
             <StyledRadioButton
               id={`${fields.deMinimisAid.name}True`}
               name={fields.deMinimisAid.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AID}.yes`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID}.yes`
               )}
-              onChange={formik.handleChange}
+              onChange={() =>
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID,
+                  true
+                )
+              }
               onBlur={formik.handleBlur}
-              checked={formik.values.deMinimisAid === 'true'}
+              checked={formik.values.deMinimisAid === true}
             />
           </SelectionGroup>
         </StyledFormGroup>
-        {formik.values.deMinimisAid === 'true' && (
+        {formik.values.deMinimisAid && (
           <StyledSubSection>
             <DeMinimisAidForm />
             <DeMinimisAidsList />
@@ -175,7 +189,7 @@ const ApplicationFormStep1: React.FC = () => {
             direction="vertical"
             required
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS
+              APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS
             )}
           >
             <StyledRadioButton
@@ -183,32 +197,40 @@ const ApplicationFormStep1: React.FC = () => {
               name={fields.coOperationNegotiations.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS}.no`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS}.no`
               )}
-              onChange={(e) => {
-                formik.handleChange(e);
+              onChange={() => {
                 formik.setFieldValue(
-                  APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS,
+                  false
+                );
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
                   ''
                 );
               }}
               onBlur={formik.handleBlur}
-              checked={formik.values.coOperationNegotiations === 'false'}
+              checked={formik.values.coOperationNegotiations === false}
             />
             <StyledRadioButton
               id={`${fields.coOperationNegotiations.name}True`}
               name={fields.coOperationNegotiations.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS}.yes`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
-              onChange={formik.handleChange}
+              onChange={() =>
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS,
+                  true
+                )
+              }
               onBlur={formik.handleBlur}
-              checked={formik.values.coOperationNegotiations === 'true'}
+              checked={formik.values.coOperationNegotiations === true}
             />
           </SelectionGroup>
         </StyledFormGroup>
-        {formik.values.coOperationNegotiations === 'true' && (
+        {formik.values.coOperationNegotiations && (
           <StyledSubSection>
             <StyledFormGroup>
               <TextArea
@@ -223,16 +245,16 @@ const ApplicationFormStep1: React.FC = () => {
                 value={formik.values.coOperationNegotiationsDescription}
                 invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
+                    APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
                   )
                 }
                 aria-invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
+                    APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
                   )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
                 )}
               />
             </StyledFormGroup>

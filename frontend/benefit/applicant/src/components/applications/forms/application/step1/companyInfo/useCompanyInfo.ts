@@ -1,14 +1,13 @@
-import { APPLICATION_FIELDS } from 'benefit/applicant/constants';
+import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
 import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { FormFieldsStep1 } from 'benefit/applicant/types/application';
+import { Application } from 'benefit/applicant/types/application';
 import { FormikProps } from 'formik';
 import { TFunction } from 'next-i18next';
-import { ChangeEvent } from 'react';
 import isServerSide from 'shared/server/is-server-side';
 
 interface CompanyInfoArgs {
-  formik?: FormikProps<FormFieldsStep1>;
+  formik?: FormikProps<Application>;
 }
 
 interface CompanyInfoProps {
@@ -23,7 +22,7 @@ interface CompanyInfoProps {
   error: Error | null;
   isLoading: boolean;
   shouldShowSkeleton: boolean;
-  erazeAlternativeAddressFields: (e: ChangeEvent<HTMLInputElement>) => void;
+  erazeAlternativeAddressFields: () => void;
 }
 
 const useCompanyInfo = ({ formik }: CompanyInfoArgs): CompanyInfoProps => {
@@ -55,19 +54,23 @@ const useCompanyInfo = ({ formik }: CompanyInfoArgs): CompanyInfoProps => {
       businessId: '-',
     };
 
-  const erazeAlternativeAddressFields = (
-    e: ChangeEvent<HTMLInputElement>
-  ): void => {
-    void formik?.handleChange(e);
+  const erazeAlternativeAddressFields = (): void => {
     void formik?.setFieldValue(
-      APPLICATION_FIELDS.ALTERNATIVE_COMPANY_STREET_ADDRESS,
+      APPLICATION_FIELDS_STEP1.USE_ALTERNATIVE_ADDRESS,
+      !formik.values.useAlternativeAddress
+    );
+    void formik?.setFieldValue(
+      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS,
       ''
     );
     void formik?.setFieldValue(
-      APPLICATION_FIELDS.ALTERNATIVE_COMPANY_POSTCODE,
+      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE,
       ''
     );
-    void formik?.setFieldValue(APPLICATION_FIELDS.ALTERNATIVE_COMPANY_CITY, '');
+    void formik?.setFieldValue(
+      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY,
+      ''
+    );
   };
 
   return {

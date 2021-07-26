@@ -19,17 +19,24 @@ const usePageContent = (): ExtendedComponentProps => {
     query: { id },
   } = useRouter();
   const { t } = useTranslation();
-  const { setApplication, application } = React.useContext(ApplicationContext);
+  const { application, setDeMinimisAids } = React.useContext(
+    ApplicationContext
+  );
   const { data } = useApplicationQuery(id?.toString() || '');
 
   useEffect(() => {
     if (data) {
-      setApplication({
-        ...application,
-        ...(toCamelKeys((data as unknown) as IndexType) as Application),
-      });
+      const savedApplication = toCamelKeys(
+        (data as unknown) as IndexType
+      ) as Application;
+      // console.log(111);
+      setDeMinimisAids(
+        savedApplication?.deMinimisAidSet
+          ? [...savedApplication?.deMinimisAidSet]
+          : []
+      );
     }
-  }, [data, setApplication, application]);
+  }, [data, setDeMinimisAids]);
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [

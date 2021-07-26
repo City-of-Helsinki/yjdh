@@ -39,7 +39,9 @@ type FormFields = {
 const useDeminimisAid = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const { application, setApplication } = React.useContext(ApplicationContext);
+  const { deMinimisAids, setDeMinimisAids } = React.useContext(
+    ApplicationContext
+  );
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const formik = useFormik({
@@ -68,20 +70,17 @@ const useDeminimisAid = (): ExtendedComponentProps => {
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: () => {
-      setApplication({
-        ...application,
-        deMinimisAidSet: [
-          ...(application?.deMinimisAidSet || []),
-          {
-            granter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
-            amount: formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT],
-            grantedAt: formatDate(
-              parseDate(formik.values[DE_MINIMIS_AID_FIELDS.GRANTED_AT]),
-              'yyyy-MM-dd'
-            ),
-          },
-        ],
-      });
+      setDeMinimisAids([
+        ...(deMinimisAids || []),
+        {
+          granter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
+          amount: formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT],
+          grantedAt: formatDate(
+            parseDate(formik.values[DE_MINIMIS_AID_FIELDS.GRANTED_AT]),
+            'yyyy-MM-dd'
+          ),
+        },
+      ]);
       formik.resetForm();
       setIsSubmitted(false);
     },
@@ -138,7 +137,7 @@ const useDeminimisAid = (): ExtendedComponentProps => {
     formik,
     getErrorMessage,
     handleSubmit,
-    grants: application?.deMinimisAidSet || [],
+    grants: deMinimisAids || [],
   };
 };
 
