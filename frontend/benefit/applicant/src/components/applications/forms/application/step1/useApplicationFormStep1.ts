@@ -9,13 +9,14 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
+  DeMinimisAid,
 } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
-import { IndexType, toCamelKeys, toSnakeKeys } from 'shared/utils/object.utils';
+import { IndexType, toSnakeKeys } from 'shared/utils/object.utils';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -27,14 +28,18 @@ type ExtendedComponentProps = {
   handleSubmit: () => void;
   erazeDeminimisAids: () => void;
   formik: FormikProps<Application>;
+  deMinimisAids: DeMinimisAid[];
 };
 
-const useApplicationFormStep1 = (): ExtendedComponentProps => {
+const useApplicationFormStep1 = (
+  application: Application
+): ExtendedComponentProps => {
   const {
-    application,
-    setApplication,
     deMinimisAids,
     setDeMinimisAids,
+    setApplicationId,
+    setCurrentStep,
+    applicationId,
   } = React.useContext(ApplicationContext);
   const {
     mutate: createApplication,
@@ -46,7 +51,6 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
 
   const {
     mutate: updateApplication,
-    data: updatedApplication,
     // todo:
     // error: updateApplicationError,
     isSuccess: isApplicationUpdated,
@@ -59,27 +63,21 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
   const [step, setStep] = useState<number>(1);
 
   useEffect(() => {
-    if (isApplicationCreated || isApplicationUpdated) {
-      setApplication({
-        ...(toCamelKeys(
-          (isApplicationCreated
-            ? (newApplication as unknown)
-            : (updatedApplication as unknown)) as IndexType
-        ) as Application),
-        currentStep: step,
-      });
+    if (isApplicationCreated) {
+      setApplicationId(newApplication?.id || '');
     }
+    setCurrentStep(step);
   }, [
     isApplicationCreated,
-    newApplication,
     isApplicationUpdated,
-    updatedApplication,
-    setApplication,
+    newApplication,
+    setApplicationId,
+    setCurrentStep,
     step,
   ]);
 
   const formik = useFormik({
-    initialValues: application,
+    initialValues: application || {},
     validationSchema: Yup.object().shape({
       [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string().matches(
         /^FI\d{16}$/,
@@ -98,7 +96,7 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
         deMinimisAidSet: deMinimisAids,
         deMinimisAid: deMinimisAids?.length !== 0,
       } as unknown) as IndexType) as ApplicationData;
-      if (!application.id) {
+      if (!applicationId && !application.id) {
         createApplication(currentApplicationData);
       } else {
         updateApplication(currentApplicationData);
@@ -107,20 +105,7 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
   });
 
   const fieldNames = React.useMemo(
-    (): string[] => [
-      APPLICATION_FIELDS_STEP1.USE_ALTERNATIVE_ADDRESS,
-      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS,
-      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE,
-      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY,
-      APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER,
-      APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME,
-      APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME,
-      APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER,
-      APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL,
-      APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID,
-      APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS,
-      APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
-    ],
+    (): string[] => Object.values(APPLICATION_FIELDS_STEP1),
     []
   );
 
@@ -172,6 +157,7 @@ const useApplicationFormStep1 = (): ExtendedComponentProps => {
     getErrorMessage,
     handleSubmit,
     erazeDeminimisAids,
+    deMinimisAids: application.deMinimisAidSet || [],
   };
 };
 

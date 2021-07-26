@@ -16,7 +16,7 @@ import Stepper from 'shared/components/stepper/Stepper';
 import { usePageContent } from './usePageContent';
 
 const PageContent: React.FC = () => {
-  const { t, steps, currentStep } = usePageContent();
+  const { t, steps, currentStep, application } = usePageContent();
 
   return (
     <Container>
@@ -30,8 +30,8 @@ const PageContent: React.FC = () => {
           <Stepper steps={steps} activeStep={currentStep} />
         </StyledHeaderItem>
       </StyledPageHeader>
-      {currentStep === 1 && <ApplicationFormStep1 />}
-      {currentStep === 2 && <ApplicationFormStep2 />}
+      {currentStep === 1 && <ApplicationFormStep1 data={application} />}
+      {currentStep === 2 && <ApplicationFormStep2 data={application} />}
       {currentStep === 3 && <ApplicationFormStep3 />}
       {currentStep === 4 && <ApplicationFormStep4 />}
       {currentStep === 5 && <ApplicationFormStep5 />}

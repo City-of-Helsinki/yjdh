@@ -1,24 +1,24 @@
-import { DEFAULT_APPLICATION } from 'benefit/applicant/constants';
+import { DeMinimisAid } from 'benefit/applicant//types/application';
 import React from 'react';
 
-import { Application, DeMinimisAid } from '../types/application';
 import ApplicationContext from './ApplicationContext';
 
 const ApplicationProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
-  const [application, setApplication] = React.useState<Application>(
-    DEFAULT_APPLICATION as Application
-  );
+  const [applicationId, setApplicationId] = React.useState<string>('');
+  const [currentStep, setCurrentStep] = React.useState<number>(1);
   const [deMinimisAids, setDeMinimisAids] = React.useState<DeMinimisAid[]>([]);
 
   return (
     <ApplicationContext.Provider
       value={{
-        application,
+        applicationId,
+        currentStep,
         deMinimisAids,
         isLoading: true,
-        setApplication,
+        setApplicationId,
+        setCurrentStep,
         setDeMinimisAids,
       }}
     >

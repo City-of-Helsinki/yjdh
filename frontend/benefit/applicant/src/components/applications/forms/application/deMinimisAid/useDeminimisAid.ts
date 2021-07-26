@@ -9,7 +9,7 @@ import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 import { formatDate, parseDate } from 'shared/utils/date.utils';
 import { capitalize } from 'shared/utils/string.utils';
@@ -36,13 +36,22 @@ type FormFields = {
   [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: string;
 };
 
-const useDeminimisAid = (): ExtendedComponentProps => {
+const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const { deMinimisAids, setDeMinimisAids } = React.useContext(
     ApplicationContext
   );
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [defaultValue, setDefaultValue] = useState(false);
+
+  // initial data
+  useEffect(() => {
+    if (!defaultValue) {
+      setDeMinimisAids(data);
+      setDefaultValue(true);
+    }
+  }, [data, defaultValue, setDefaultValue, setDeMinimisAids]);
 
   const formik = useFormik({
     initialValues: {

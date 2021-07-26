@@ -1,10 +1,12 @@
+import { DEFAULT_APPLICATION } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
+import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
 import { IndexType, toCamelKeys } from 'shared/utils/object.utils';
 
@@ -12,6 +14,7 @@ type ExtendedComponentProps = {
   t: TFunction;
   steps: StepProps[];
   currentStep: number;
+  application: Application;
 };
 
 const usePageContent = (): ExtendedComponentProps => {
@@ -19,24 +22,15 @@ const usePageContent = (): ExtendedComponentProps => {
     query: { id },
   } = useRouter();
   const { t } = useTranslation();
-  const { application, setDeMinimisAids } = React.useContext(
-    ApplicationContext
-  );
-  const { data } = useApplicationQuery(id?.toString() || '');
+  const { applicationId, currentStep } = React.useContext(ApplicationContext);
+  // query param used in edit mode. id from context used for updating newly created application
+  const { data } = useApplicationQuery(id?.toString() || applicationId);
+  let application: Application = {};
 
-  useEffect(() => {
-    if (data) {
-      const savedApplication = toCamelKeys(
-        (data as unknown) as IndexType
-      ) as Application;
-      // console.log(111);
-      setDeMinimisAids(
-        savedApplication?.deMinimisAidSet
-          ? [...savedApplication?.deMinimisAidSet]
-          : []
-      );
-    }
-  }, [data, setDeMinimisAids]);
+  if (data) {
+    // transform application data to camel case
+    application = toCamelKeys((data as unknown) as IndexType) as Application;
+  }
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [
@@ -55,7 +49,10 @@ const usePageContent = (): ExtendedComponentProps => {
   return {
     t,
     steps,
-    currentStep: application?.currentStep || 1,
+    currentStep,
+    application: !isEmpty(application)
+      ? application
+      : (DEFAULT_APPLICATION as Application),
   };
 };
 

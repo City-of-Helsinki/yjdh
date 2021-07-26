@@ -5,6 +5,7 @@ import {
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
+import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { DateInput, IconPlusCircle, NumberInput, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
@@ -17,7 +18,11 @@ import theme from 'shared/styles/theme';
 
 import { useDeminimisAid } from './useDeminimisAid';
 
-const DeMinimisAidForm: React.FC = () => {
+interface DeMinimisAidFormProps {
+  data: DeMinimisAid[];
+}
+
+const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
   const {
     t,
     handleSubmit,
@@ -26,7 +31,7 @@ const DeMinimisAidForm: React.FC = () => {
     translationsBase,
     formik,
     grants,
-  } = useDeminimisAid();
+  } = useDeminimisAid(data);
 
   return (
     <>

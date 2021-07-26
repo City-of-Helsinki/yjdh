@@ -2,6 +2,7 @@ import {
   APPLICATION_FIELDS_STEP2,
   BENEFIT_TYPES,
 } from 'benefit/applicant/constants';
+import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
@@ -29,7 +30,9 @@ import {
 } from '../styled';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
-const ApplicationFormStep2: React.FC = () => {
+const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
+  data,
+}) => {
   const {
     t,
     handleSubmitNext,
@@ -41,7 +44,7 @@ const ApplicationFormStep2: React.FC = () => {
     translationsBase,
     formik,
     subsidyOptions,
-  } = useApplicationFormStep2();
+  } = useApplicationFormStep2(data);
 
   return (
     <form onSubmit={handleSubmitNext} noValidate>

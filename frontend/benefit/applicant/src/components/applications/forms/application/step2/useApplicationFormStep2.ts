@@ -15,7 +15,7 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { FieldsDef, Option } from 'shared/components/forms/fields/types';
-import { IndexType, toCamelKeys, toSnakeKeys } from 'shared/utils/object.utils';
+import { IndexType, toSnakeKeys } from 'shared/utils/object.utils';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -32,8 +32,10 @@ type ExtendedComponentProps = {
   getDefaultSelectValue: (fieldName: keyof Application) => Option;
 };
 
-const useApplicationFormStep2 = (): ExtendedComponentProps => {
-  const { application, setApplication } = React.useContext(ApplicationContext);
+const useApplicationFormStep2 = (
+  application: Application
+): ExtendedComponentProps => {
+  const { setCurrentStep } = React.useContext(ApplicationContext);
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -41,7 +43,6 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
 
   const {
     mutate: updateApplication,
-    data: updatedApplication,
     // todo:
     // error: updateApplicationError,
     isSuccess: isApplicationUpdated,
@@ -49,14 +50,9 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
 
   useEffect(() => {
     if (isApplicationUpdated) {
-      setApplication({
-        ...(toCamelKeys(
-          (updatedApplication as unknown) as IndexType
-        ) as Application),
-        currentStep: step,
-      });
+      setCurrentStep(step);
     }
-  }, [isApplicationUpdated, updatedApplication, setApplication, step]);
+  }, [isApplicationUpdated, setCurrentStep, step]);
 
   const formik = useFormik({
     initialValues: application,
@@ -120,8 +116,7 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
 
   const handleSubmitNext = (): void => handleSubmit(3);
 
-  const handleSubmitBack = (): void =>
-    setApplication({ ...application, currentStep: 1 });
+  const handleSubmitBack = (): void => setCurrentStep(1);
 
   const erazeCommissionFields = (e: ChangeEvent<HTMLInputElement>): void => {
     formik.handleChange(e);

@@ -1,7 +1,7 @@
-import React from 'react';
+import { Application } from 'benefit/applicant/types';
 
 export type DynamicFormStepComponentProps = {
-  actions?: React.ReactElement;
+  data: Application;
 };
 
 interface Loading {

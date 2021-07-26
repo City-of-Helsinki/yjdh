@@ -1,4 +1,5 @@
 import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
+import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import { StyledRadioButton } from 'shared/components/forms/fields/styled';
@@ -13,7 +14,9 @@ import { StyledContactPersonContainer, StyledSubSection } from '../styled';
 import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
 
-const ApplicationFormStep1: React.FC = () => {
+const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
+  data,
+}) => {
   const {
     t,
     handleSubmit,
@@ -22,7 +25,8 @@ const ApplicationFormStep1: React.FC = () => {
     fields,
     translationsBase,
     formik,
-  } = useApplicationFormStep1();
+    deMinimisAids,
+  } = useApplicationFormStep1(data);
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -177,7 +181,7 @@ const ApplicationFormStep1: React.FC = () => {
         </StyledFormGroup>
         {formik.values.deMinimisAid && (
           <StyledSubSection>
-            <DeMinimisAidForm />
+            <DeMinimisAidForm data={deMinimisAids} />
             <DeMinimisAidsList />
           </StyledSubSection>
         )}
