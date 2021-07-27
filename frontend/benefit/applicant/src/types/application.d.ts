@@ -51,7 +51,7 @@ export interface DeMinimisAidData {
   id?: string;
   granter: string;
   granted_at: string;
-  amount: string;
+  amount: number;
   ordering?: number;
 }
 

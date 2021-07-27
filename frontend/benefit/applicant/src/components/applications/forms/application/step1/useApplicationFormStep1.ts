@@ -8,6 +8,7 @@ import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicat
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ApplicationData,
   DeMinimisAid,
 } from 'benefit/applicant/types/application';
@@ -16,7 +17,7 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
-import { IndexType, toSnakeKeys } from 'shared/utils/object.utils';
+import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -89,13 +90,16 @@ const useApplicationFormStep1 = (
     enableReinitialize: true,
     onSubmit: () => {
       setStep(2);
-      const currentApplicationData = toSnakeKeys(({
-        ...application,
-        ...formik.values,
-        // update from context
-        deMinimisAidSet: deMinimisAids,
-        deMinimisAid: deMinimisAids?.length !== 0,
-      } as unknown) as IndexType) as ApplicationData;
+      const currentApplicationData = snakecaseKeys(
+        {
+          ...application,
+          ...formik.values,
+          // update from context
+          deMinimisAidSet: deMinimisAids,
+          deMinimisAid: deMinimisAids?.length !== 0,
+        },
+        { deep: true }
+      ) ;
       if (!applicationId && !application.id) {
         createApplication(currentApplicationData);
       } else {

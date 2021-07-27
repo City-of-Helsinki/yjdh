@@ -8,6 +8,7 @@ import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicat
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
@@ -15,7 +16,7 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { FieldsDef, Option } from 'shared/components/forms/fields/types';
-import { IndexType, toSnakeKeys } from 'shared/utils/object.utils';
+import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -60,10 +61,13 @@ const useApplicationFormStep2 = (
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: () => {
-      const currentApplicationData = toSnakeKeys(({
-        ...application,
-        ...formik.values,
-      } as unknown) as IndexType) as ApplicationData;
+      const currentApplicationData = snakecaseKeys(
+        {
+          ...application,
+          ...formik.values,
+        },
+        { deep: true }
+      ) ;
       updateApplication(currentApplicationData);
     },
   });

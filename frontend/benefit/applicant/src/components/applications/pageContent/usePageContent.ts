@@ -3,12 +3,12 @@ import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
+import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
-import { IndexType, toCamelKeys } from 'shared/utils/object.utils';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -29,7 +29,7 @@ const usePageContent = (): ExtendedComponentProps => {
 
   if (data) {
     // transform application data to camel case
-    application = toCamelKeys((data as unknown) as IndexType) as Application;
+    application = camelcaseKeys(data, { deep: true }) as Application;
   }
 
   const steps = React.useMemo((): StepProps[] => {
