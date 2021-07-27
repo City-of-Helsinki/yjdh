@@ -8,7 +8,6 @@ import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicat
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
@@ -61,13 +60,13 @@ const useApplicationFormStep2 = (
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: () => {
-      const currentApplicationData = snakecaseKeys(
+      const currentApplicationData: ApplicationData = snakecaseKeys(
         {
           ...application,
           ...formik.values,
         },
         { deep: true }
-      ) as ApplicationData;
+      );
       updateApplication(currentApplicationData);
     },
   });

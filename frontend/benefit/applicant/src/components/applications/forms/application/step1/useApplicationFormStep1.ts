@@ -8,7 +8,6 @@ import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicat
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ApplicationData,
   DeMinimisAid,
 } from 'benefit/applicant/types/application';
@@ -90,7 +89,7 @@ const useApplicationFormStep1 = (
     enableReinitialize: true,
     onSubmit: () => {
       setStep(2);
-      const currentApplicationData = snakecaseKeys(
+      const currentApplicationData: ApplicationData = snakecaseKeys(
         {
           ...application,
           ...formik.values,
@@ -99,7 +98,7 @@ const useApplicationFormStep1 = (
           deMinimisAid: deMinimisAids?.length !== 0,
         },
         { deep: true }
-      ) as ApplicationData;
+      );
       if (!applicationId && !application.id) {
         createApplication(currentApplicationData);
       } else {
