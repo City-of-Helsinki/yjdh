@@ -3,7 +3,6 @@ const { join } = require('path');
 module.exports = {
   extends: ['auto'],
   rules: {
-    'sonarjs/cognitive-complexity': ['error', 17],
     'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
     'no-void': 'off',
     'unicorn/prefer-module': 'off',
