@@ -99,7 +99,7 @@ const useApplicationFormStep1 = (
           deMinimisAid: deMinimisAids?.length !== 0,
         },
         { deep: true }
-      ) ;
+      ) as ApplicationData;
       if (!applicationId && !application.id) {
         createApplication(currentApplicationData);
       } else {

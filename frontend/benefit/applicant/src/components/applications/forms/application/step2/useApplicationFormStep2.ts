@@ -67,7 +67,7 @@ const useApplicationFormStep2 = (
           ...formik.values,
         },
         { deep: true }
-      ) ;
+      ) as ApplicationData;
       updateApplication(currentApplicationData);
     },
   });
