@@ -2,9 +2,12 @@ import { StyledSubActionContainer } from 'benefit/applicant/components/applicati
 import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
 import {
   DE_MINIMIS_AID_FIELDS,
+  MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
+import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { DateInput, IconPlusCircle, NumberInput, TextInput } from 'hds-react';
+import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
   StyledFieldsContainerWithPadding,
@@ -15,7 +18,11 @@ import theme from 'shared/styles/theme';
 
 import { useDeminimisAid } from './useDeminimisAid';
 
-const DeMinimisAidForm: React.FC = () => {
+interface DeMinimisAidFormProps {
+  data: DeMinimisAid[];
+}
+
+const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
   const {
     t,
     handleSubmit,
@@ -23,7 +30,8 @@ const DeMinimisAidForm: React.FC = () => {
     fields,
     translationsBase,
     formik,
-  } = useDeminimisAid();
+    grants,
+  } = useDeminimisAid(data);
 
   return (
     <>
@@ -34,50 +42,53 @@ const DeMinimisAidForm: React.FC = () => {
         <StyledFormGroup backgroundColor={theme.colors.silverLight}>
           <StyledFieldsContainerWithPadding>
             <TextInput
-              id={fields.deMinimisAidGranter.name}
-              name={fields.deMinimisAidGranter.name}
-              label={fields.deMinimisAidGranter.label}
-              placeholder={fields.deMinimisAidGranter.placeholder}
+              id={fields.granter.name}
+              name={fields.granter.name}
+              label={fields.granter.label}
+              placeholder={fields.granter.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidGranter}
+              value={formik.values.granter}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               required
             />
             <NumberInput
-              id={fields.deMinimisAidAmount.name}
-              name={fields.deMinimisAidAmount.name}
-              label={fields.deMinimisAidAmount.label || ''}
-              unit={fields.deMinimisAidAmount.placeholder}
+              id={fields.amount.name}
+              name={fields.amount.name}
+              label={fields.amount.label || ''}
+              unit={fields.amount.placeholder}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidAmount}
+              value={formik.values.amount}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               required
             />
             <DateInput
-              id={fields.deMinimisAidIssueDate.name}
-              name={fields.deMinimisAidIssueDate.name}
-              label={fields.deMinimisAidIssueDate.label}
-              placeholder={fields.deMinimisAidIssueDate.placeholder}
+              id={fields.grantedAt.name}
+              name={fields.grantedAt.name}
+              label={fields.grantedAt.label}
+              placeholder={fields.grantedAt.placeholder}
               language={SUPPORTED_LANGUAGES.FI}
               onChange={(value) =>
-                formik.setFieldValue(fields.deMinimisAidIssueDate.name, value)
+                formik.setFieldValue(fields.grantedAt.name, value)
               }
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidIssueDate}
-              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
-              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
-              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
+              value={formik.values.grantedAt}
+              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               required
             />
           </StyledFieldsContainerWithPadding>
           <StyledSubActionContainer>
             <StyledSecondaryButton
+              disabled={
+                sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
+              }
               onClick={(e) => handleSubmit(e)}
               variant="secondary"
               iconLeft={<IconPlusCircle />}

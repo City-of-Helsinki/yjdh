@@ -46,10 +46,11 @@ const StyledFormGroup = styled.div<Props>`
 
 const StyledFieldsContainerWithPadding = styled.div`
   display: flex;
-  padding: ${(props) => props.theme.spacing.xs};
+  height: 130px;
+  padding-left: var(--spacing-m);
+  padding-right: var(--spacing-xs);
   padding-top: ${(props) => props.theme.spacingLayout.xs2};
   margin-right: 0 !important;
-  padding-right: 0;
   & > div {
     width: 250px;
   }
@@ -66,11 +67,13 @@ const StyledViewFieldsContainer = styled.div`
   margin-right: 0 !important;
   padding-right: 0;
   & > div {
-    width: 250px;
+    width: 240px;
+    margin-left: ${(props) => props.theme.spacing.xs};
   }
   & > div > div {
     margin-right: ${(props) => props.theme.spacing.xs};
   }
+  width: 100%;
 `;
 
 const StyledViewField = styled.div``;

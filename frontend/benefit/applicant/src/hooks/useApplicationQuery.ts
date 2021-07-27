@@ -1,21 +1,22 @@
+import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
+import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
+import { ApplicationData } from 'benefit/applicant/types/application';
 import { useQuery, UseQueryResult } from 'react-query';
 
-import { ApplicationData } from '../types/application';
-import useBackendAPI from './useBackendAPI';
-
 const useApplicationQuery = (
-  status: string[]
-): UseQueryResult<ApplicationData[], Error> => {
+  id: string
+): UseQueryResult<ApplicationData, Error> => {
   const { axios, handleResponse } = useBackendAPI();
 
-  return useQuery<ApplicationData[], Error>(
-    ['applicationsList', ...status],
-    async () => {
-      const res = axios.get<ApplicationData[]>(
-        `/v1/applications/?status=${status.join()}`
-      );
-      return handleResponse(res);
-    }
+  return useQuery<ApplicationData, Error>(
+    ['applications', id],
+    () =>
+      !id
+        ? Promise.reject(new Error('Missing application id'))
+        : handleResponse<ApplicationData>(
+            axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)
+          ),
+    { enabled: Boolean(id) }
   );
 };
 

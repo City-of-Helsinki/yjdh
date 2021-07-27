@@ -40,7 +40,7 @@ const StyledActionContainer = styled.div`
 
 const StyledSubActionContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   align-self: stretch;
   justify-self: stretch;
@@ -48,6 +48,7 @@ const StyledSubActionContainer = styled.div`
   background-color: white;
   flex: 1 0 auto;
   margin-right: 0 !important;
+  padding-left: ${(props) => props.theme.spacing.s};
 `;
 
 interface ButtonProps {
@@ -60,7 +61,7 @@ const StyledButton = styled(Button)<ButtonProps>`
 `;
 
 const StyledSubSection = styled.div`
-  margin-left: 200px;
+  margin-left: 245px;
 
   textarea {
     width: 640px !important;
@@ -102,7 +103,7 @@ const StyledEmploymentMoneyContainer = styled(StyledFormGroup)`
 
 const StyledCommissionContainer = styled(StyledFormGroup)`
   display: grid;
-  grid-template-columns: 200px 200px auto;
+  grid-template-columns: 500px 200px auto;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 

@@ -56,45 +56,52 @@
           "companyInformation": {
             "label": "Tiedot haettu YTJ:stä",
             "content": "Yrityksen perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+          },
+          "deMinimisAidMaxAmount": {
+            "label": "Enimmäismäärä ylitetty",
+            "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
           }
         },
+        "tooltips": {
+          "heading3": "Hakijan de minimis-tuet tooltip text"
+        },
         "fields": {
-          "hasCompanyOtherAddress": {
+          "useAlternativeAddress": {
             "label": "Yrityksellä on toinen postiosoite"
           },
-          "companyOtherAddressStreet": {
+          "alternativeCompanyStreetAddress": {
             "label": "Osoite",
             "placeholder": "Katuosoite"
           },
-          "companyOtherAddressZipCode": {
+          "alternativeCompanyPostcode": {
             "label": "Postinumero",
             "placeholder": "Postinumero"
           },
-          "companyOtherAddressPostalDistrict": {
+          "alternativeCompanyCity": {
             "label": "Postitoimipaikka",
             "placeholder": "Postitoimipaikka"
           },
-          "companyIban": {
+          "companyBankAccountNumber": {
             "label": "Tilinumero",
             "placeholder": "IBAN muodossa"
           },
-          "contactPersonFirstName": {
+          "companyContactPersonFirstName": {
             "label": "Etunimi",
             "placeholder": "Etunimi"
           },
-          "contactPersonLastName": {
+          "companyContactPersonLastName": {
             "label": "Sukunimi",
             "placeholder": "Sukunimi"
           },
-          "contactPersonPhone": {
+          "companyContactPersonPhoneNumber": {
             "label": "Puhelin",
             "placeholder": "040 1234567"
           },
-          "contactPersonEmail": {
+          "companyContactPersonEmail": {
             "label": "Sähköposti",
             "placeholder": "Sähköpostiosoite"
           },
-          "deMinimisAidGranted": {
+          "deMinimisAid": {
             "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
             "yes": "Kyllä",
             "no": "Ei"
@@ -107,16 +114,16 @@
             "label": "Tuen määrä",
             "placeholder": "euro"
           },
-          "deMinimisAidIssueDate": {
+          "deMinimisAidGrantedAt": {
             "label": "Myöntämispäivämääärä",
             "placeholder": "Valitse"
           },
-          "collectiveBargainingOngoing": {
+          "coOperationNegotiations": {
             "label": "Onko hakijalla menossa YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
-          "collectiveBargainingInfo": {
+          "coOperationNegotiationsDescription": {
             "label": "Anna tarkempi selvitys YT-tilanteesta:",
             "placeholder": "Kuvaile tilanne"
           }
@@ -160,23 +167,23 @@
           "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
         },
         "fields": {
-          "employeeFirstName": {
+          "firstName": {
             "label": "Etunimi",
             "placeholder": "Etunimi"
           },
-          "employeeLastName": {
+          "lastName": {
             "label": "Sukunimi",
             "placeholder": "Sukunimi"
           },
-          "employeeSsn": {
+          "socialSecurityNumber": {
             "label": "Henkilötunnus",
             "placeholder": "Henkilötunnus"
           },
-          "employeePhone": {
+          "phoneNumber": {
             "label": "Puhelin",
-            "placeholder": "Puhelin"
+            "placeholder": "040 1234567"
           },
-          "isHelsinkiMunicipality": {
+          "isLivingInHelsinki": {
             "label": "Helsinki kotikuntana",
             "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa"
           },
@@ -188,7 +195,7 @@
           "paySubsidyPercent": {
             "label": "Päätöksessä oleva palkkatukiprosentti"
           },
-          "paySubsidyAdditionalPercent": {
+          "additionalPaySubsidyPercent": {
             "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
           },
           "apprenticeshipProgram": {

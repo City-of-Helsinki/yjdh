@@ -1,18 +1,21 @@
 import {
-  APPLICATION_FIELDS,
   APPLICATION_FIELDS_STEP2,
-  DEFAULT_APPLICATION_FIELDS_STEP2,
   PAY_SUBSIDY_OPTIONS,
-  VALIDATION_MESSAGE_KEYS,
+  // VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
+import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
+import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { FormFieldsStep2 } from 'benefit/applicant/types/application';
+import {
+  Application,
+  ApplicationData,
+} from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
-import noop from 'lodash/noop';
 import { TFunction } from 'next-i18next';
-import React, { FormEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { FieldsDef, Option } from 'shared/components/forms/fields/types';
+import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
@@ -21,28 +24,51 @@ type ExtendedComponentProps = {
   fields: FieldsDef;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  formik: FormikProps<FormFieldsStep2>;
+  handleSubmitBack: () => void;
+  handleSubmitNext: () => void;
+  erazeCommissionFields: (e: ChangeEvent<HTMLInputElement>) => void;
+  formik: FormikProps<Application>;
   subsidyOptions: Option[];
+  getDefaultSelectValue: (fieldName: keyof Application) => Option;
 };
 
-const useApplicationFormStep2 = (): ExtendedComponentProps => {
+const useApplicationFormStep2 = (
+  application: Application
+): ExtendedComponentProps => {
+  const { setCurrentStep } = React.useContext(ApplicationContext);
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [step, setStep] = useState<number>(2);
+
+  const {
+    mutate: updateApplication,
+    // todo:
+    // error: updateApplicationError,
+    isSuccess: isApplicationUpdated,
+  } = useUpdateApplicationQuery();
+
+  useEffect(() => {
+    if (isApplicationUpdated) {
+      setCurrentStep(step);
+    }
+  }, [isApplicationUpdated, setCurrentStep, step]);
 
   const formik = useFormik({
-    initialValues: DEFAULT_APPLICATION_FIELDS_STEP2,
-    validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS.COMPANY_IBAN]: Yup.string().matches(
-        /^FI\d{16}$/,
-        t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
-      ),
-    }),
+    initialValues: application,
+    validationSchema: Yup.object().shape({}),
     validateOnChange: true,
     validateOnBlur: true,
-    // todo: impoement
-    onSubmit: noop,
+    onSubmit: () => {
+      const currentApplicationData: ApplicationData = snakecaseKeys(
+        {
+          ...application,
+          ...formik.values,
+        },
+        { deep: true }
+      );
+      updateApplication(currentApplicationData);
+    },
   });
 
   const fieldNames = React.useMemo(
@@ -78,9 +104,9 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
+  const handleSubmit = (nextStep: number): void => {
     setIsSubmitted(true);
+    setStep(nextStep);
     void formik.validateForm().then((errors) => {
       // todo: Focus the first invalid field
       const invalidFields = Object.keys(errors);
@@ -91,15 +117,42 @@ const useApplicationFormStep2 = (): ExtendedComponentProps => {
     });
   };
 
+  const handleSubmitNext = (): void => handleSubmit(3);
+
+  const handleSubmitBack = (): void => setCurrentStep(1);
+
+  const erazeCommissionFields = (e: ChangeEvent<HTMLInputElement>): void => {
+    formik.handleChange(e);
+    void formik.setFieldValue(
+      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION}`,
+      ''
+    );
+    void formik.setFieldValue(
+      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT}`,
+      ''
+    );
+  };
+
+  const getDefaultSelectValue = (fieldName: keyof Application): Option =>
+    subsidyOptions.find(
+      (o) => o.value === application?.[fieldName]?.toString()
+    ) || {
+      label: '',
+      value: '',
+    };
+
   return {
     t,
     fieldNames,
     fields,
     translationsBase,
     formik,
-    getErrorMessage,
-    handleSubmit,
     subsidyOptions,
+    getDefaultSelectValue,
+    getErrorMessage,
+    handleSubmitNext,
+    handleSubmitBack,
+    erazeCommissionFields,
   };
 };
 

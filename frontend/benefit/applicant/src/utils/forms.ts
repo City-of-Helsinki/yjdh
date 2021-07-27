@@ -23,3 +23,7 @@ export const getErrorText = (
       : t(error.key || '', error)
     : '';
 };
+
+export interface IndexType {
+  [key: string]: string;
+}

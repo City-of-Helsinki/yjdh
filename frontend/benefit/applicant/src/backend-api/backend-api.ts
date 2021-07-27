@@ -1,7 +1,8 @@
-type BackendPath = '/v1/company/';
+type BackendPath = '/v1/company/' | '/v1/applications/';
 
 export const BackendEndpoint: Record<string, BackendPath> = {
   COMPANY: '/v1/company/',
+  APPLICATIONS: '/v1/applications/',
 } as const;
 
 export const getBackendDomain = (): string =>

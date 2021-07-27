@@ -4,7 +4,6 @@ import ApplicationFormStep3 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep4 from 'benefit/applicant/components/applications/forms/application/step4/ApplicationFormStep4';
 import ApplicationFormStep5 from 'benefit/applicant/components/applications/forms/application/step5/ApplicationFormStep5';
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
-import StepperActions from 'benefit/applicant/components/applications/forms/application/stepperActions/StepperActions';
 import {
   StyledHeaderItem,
   StyledPageHeader,
@@ -17,24 +16,7 @@ import Stepper from 'shared/components/stepper/Stepper';
 import { usePageContent } from './usePageContent';
 
 const PageContent: React.FC = () => {
-  const {
-    handleSubmit,
-    handleBack,
-    t,
-    steps,
-    currentStep,
-    hasBack,
-    hasNext,
-  } = usePageContent();
-
-  const actions = (
-    <StepperActions
-      hasBack={hasBack}
-      hasNext={hasNext}
-      handleSubmit={handleSubmit}
-      handleBack={handleBack}
-    />
-  );
+  const { t, steps, currentStep, application } = usePageContent();
 
   return (
     <Container>
@@ -48,12 +30,12 @@ const PageContent: React.FC = () => {
           <Stepper steps={steps} activeStep={currentStep} />
         </StyledHeaderItem>
       </StyledPageHeader>
-      {currentStep === 1 && <ApplicationFormStep1 actions={actions} />}
-      {currentStep === 2 && <ApplicationFormStep2 actions={actions} />}
-      {currentStep === 3 && <ApplicationFormStep3 actions={actions} />}
-      {currentStep === 4 && <ApplicationFormStep4 actions={actions} />}
-      {currentStep === 5 && <ApplicationFormStep5 actions={actions} />}
-      {currentStep === 6 && <ApplicationFormStep6 actions={actions} />}
+      {currentStep === 1 && <ApplicationFormStep1 data={application} />}
+      {currentStep === 2 && <ApplicationFormStep2 data={application} />}
+      {currentStep === 3 && <ApplicationFormStep3 />}
+      {currentStep === 4 && <ApplicationFormStep4 />}
+      {currentStep === 5 && <ApplicationFormStep5 />}
+      {currentStep === 6 && <ApplicationFormStep6 />}
     </Container>
   );
 };

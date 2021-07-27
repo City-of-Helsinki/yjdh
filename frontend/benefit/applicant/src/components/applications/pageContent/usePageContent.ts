@@ -1,22 +1,36 @@
+import { DEFAULT_APPLICATION } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
+import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { Application } from 'benefit/applicant/types/application';
+import camelcaseKeys from 'camelcase-keys';
+import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  handleSubmit: () => void;
-  handleBack: () => void;
   steps: StepProps[];
   currentStep: number;
-  hasNext: boolean;
-  hasBack: boolean;
+  application: Application;
 };
 
 const usePageContent = (): ExtendedComponentProps => {
+  const {
+    query: { id },
+  } = useRouter();
   const { t } = useTranslation();
-  const { currentStep, setCurrentStep } = React.useContext(ApplicationContext);
+  const { applicationId, currentStep } = React.useContext(ApplicationContext);
+  // query param used in edit mode. id from context used for updating newly created application
+  const { data } = useApplicationQuery(id?.toString() || applicationId);
+  let application: Application = {};
+
+  if (data) {
+    // transform application data to camel case
+    application = camelcaseKeys(data, { deep: true }) as Application;
+  }
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [
@@ -32,27 +46,13 @@ const usePageContent = (): ExtendedComponentProps => {
     }));
   }, [t]);
 
-  const hasNext = currentStep < steps.length;
-
-  const hasBack = currentStep > 1;
-
-  const handleSubmit = (): void => {
-    const nextStep = currentStep + 1;
-    if (nextStep <= steps.length) {
-      setCurrentStep(nextStep);
-    }
-  };
-
-  const handleBack = (): void => setCurrentStep(currentStep - 1);
-
   return {
     t,
     steps,
     currentStep,
-    hasNext,
-    hasBack,
-    handleSubmit,
-    handleBack,
+    application: !isEmpty(application)
+      ? application
+      : (DEFAULT_APPLICATION as Application),
   };
 };
 

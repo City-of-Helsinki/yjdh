@@ -19,7 +19,7 @@ const useMainIngress = (): ExtendedComponentProps => {
   };
 
   const handleNewApplicationClick = (): void => {
-    void router.push(ROUTES.APPLICATION_NEW);
+    void router.push(ROUTES.APPLICATION_FORM);
   };
 
   return { handleNewApplicationClick, handleMoreInfoClick, t };
