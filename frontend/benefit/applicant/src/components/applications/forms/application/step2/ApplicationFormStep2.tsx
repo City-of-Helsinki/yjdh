@@ -200,7 +200,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   null
                 );
               }}
-              onBlur={formik.handleBlur}
               checked={formik.values.paySubsidyGranted === false}
             />
             <StyledRadioButton
@@ -216,7 +215,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   true
                 );
               }}
-              onBlur={formik.handleBlur}
               checked={formik.values.paySubsidyGranted === true}
             />
           </SelectionGroup>
@@ -312,7 +310,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                       false
                     );
                   }}
-                  onBlur={formik.handleBlur}
                   checked={formik.values.apprenticeshipProgram === false}
                 />
                 <StyledRadioButton
@@ -328,7 +325,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                       true
                     );
                   }}
-                  onBlur={formik.handleBlur}
                   checked={formik.values.apprenticeshipProgram === true}
                 />
               </SelectionGroup>
@@ -356,7 +352,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.employment`
                   )}
                   onChange={(val) => erazeCommissionFields(val)}
-                  onBlur={formik.handleBlur}
                   checked={
                     formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT
                   }
@@ -369,7 +364,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.salary`
                   )}
                   onChange={(val) => erazeCommissionFields(val)}
-                  onBlur={formik.handleBlur}
                   checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
                 />
                 <StyledRadioButton

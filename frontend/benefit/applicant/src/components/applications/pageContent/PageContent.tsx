@@ -17,7 +17,6 @@ import { usePageContent } from './usePageContent';
 
 const PageContent: React.FC = () => {
   const { t, steps, currentStep, application } = usePageContent();
-
   return (
     <Container>
       <StyledPageHeader>

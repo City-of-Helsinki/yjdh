@@ -63,7 +63,8 @@
           }
         },
         "tooltips": {
-          "heading3": "Hakijan de minimis-tuet tooltip text"
+          "heading3": "Hakijan de minimis-tuet tooltip text",
+          "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
         },
         "fields": {
           "useAlternativeAddress": {
@@ -100,6 +101,14 @@
           "companyContactPersonEmail": {
             "label": "Sähköposti",
             "placeholder": "Sähköpostiosoite"
+          },
+          "applicantLanguage": {
+            "label": "Asiointikieli"
+          },
+          "associationHasBusinessActivities": {
+            "label": "Harjoittaako työnantaja elinkeinotoimintaa?",
+            "yes": "Kyllä",
+            "no": "Ei"
           },
           "deMinimisAid": {
             "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
@@ -263,6 +272,11 @@
     "allRightsReservedText": "All rights reserved text"
   },
   "languages": {
+    "fi": "Suomi",
+    "sv": "Ruotsi",
+    "en": "English"
+  },
+  "supportedLanguages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
     "en": "In english"
