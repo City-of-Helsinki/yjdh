@@ -1,4 +1,4 @@
-import { DeMinimisAid } from 'benefit/applicant//types/application';
+import { ApplicationTempData } from 'benefit/applicant//types/application';
 import React from 'react';
 
 import ApplicationContext from './ApplicationContext';
@@ -6,20 +6,21 @@ import ApplicationContext from './ApplicationContext';
 const ApplicationProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
-  const [applicationId, setApplicationId] = React.useState<string>('');
-  const [currentStep, setCurrentStep] = React.useState<number>(1);
-  const [deMinimisAids, setDeMinimisAids] = React.useState<DeMinimisAid[]>([]);
+  const [
+    applicationTempData,
+    setApplicationTempData,
+  ] = React.useState<ApplicationTempData>({
+    id: '',
+    deMinimisAids: [],
+    currentStep: 1,
+  });
 
   return (
     <ApplicationContext.Provider
       value={{
-        applicationId,
-        currentStep,
-        deMinimisAids,
+        applicationTempData,
         isLoading: true,
-        setApplicationId,
-        setCurrentStep,
-        setDeMinimisAids,
+        setApplicationTempData,
       }}
     >
       {children}

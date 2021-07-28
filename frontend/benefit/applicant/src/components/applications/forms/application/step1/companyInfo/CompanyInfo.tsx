@@ -1,13 +1,21 @@
-import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
+import {
+  APPLICATION_FIELDS_STEP1,
+  ORGANIZATION_TYPES,
+} from 'benefit/applicant/constants';
 import { Application } from 'benefit/applicant/types/application';
 import { FormikProps } from 'formik';
-import { TextInput } from 'hds-react';
+import { SelectionGroup, TextInput } from 'hds-react';
 import React from 'react';
 import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
-import { StyledCheckbox } from 'shared/components/forms/fields/styled';
+import {
+  StyledCheckbox,
+  StyledRadioButton,
+} from 'shared/components/forms/fields/styled';
 import { FieldsDef } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
+import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import Spacing from 'shared/components/forms/spacing/Spacing';
 
 import {
   StyledAddressContainer,
@@ -110,7 +118,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               label={fields.alternativeCompanyStreetAddress.label}
               placeholder={fields.alternativeCompanyStreetAddress.placeholder}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               value={formik.values.alternativeCompanyStreetAddress}
               invalid={
                 !!getErrorMessage(
@@ -133,7 +140,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               label={fields.alternativeCompanyPostcode.label}
               placeholder={fields.alternativeCompanyPostcode.placeholder}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               value={formik.values.alternativeCompanyPostcode}
               invalid={
                 !!getErrorMessage(
@@ -156,7 +162,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               label={fields.alternativeCompanyCity.label}
               placeholder={fields.alternativeCompanyCity.placeholder}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               value={formik.values.alternativeCompanyCity}
               invalid={
                 !!getErrorMessage(
@@ -218,6 +223,61 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           </InputMask>
         </StyledIBANContainer>
       </StyledCompanyInfoContainer>
+      {formik?.values[APPLICATION_FIELDS_STEP1.ORGANIZATION_TYPE] ===
+        ORGANIZATION_TYPES.ASSOCIATION && (
+        <>
+          <Spacing size="l" />
+          <StyledFormGroup>
+            <SelectionGroup
+              label={fields.associationHasBusinessActivities.label}
+              tooltipText={t(
+                `${translationsBase}.tooltips.${APPLICATION_FIELDS_STEP1.ASSOCIATION_HAS_BUSINESS_ACTIVITIES}`
+              )}
+              direction="vertical"
+              required
+              errorText={getErrorMessage(
+                APPLICATION_FIELDS_STEP1.ASSOCIATION_HAS_BUSINESS_ACTIVITIES
+              )}
+            >
+              <StyledRadioButton
+                id={`${fields.associationHasBusinessActivities.name}False`}
+                name={fields.associationHasBusinessActivities.name}
+                value="false"
+                label={t(
+                  `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.ASSOCIATION_HAS_BUSINESS_ACTIVITIES}.no`
+                )}
+                onChange={() => {
+                  void formik?.setFieldValue(
+                    APPLICATION_FIELDS_STEP1.ASSOCIATION_HAS_BUSINESS_ACTIVITIES,
+                    false
+                  );
+                }}
+                // 3 states: null (none is selected), true, false
+                checked={
+                  formik?.values.associationHasBusinessActivities === false
+                }
+              />
+              <StyledRadioButton
+                id={`${fields.associationHasBusinessActivities.name}True`}
+                name={fields.associationHasBusinessActivities.name}
+                value="true"
+                label={t(
+                  `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.ASSOCIATION_HAS_BUSINESS_ACTIVITIES}.yes`
+                )}
+                onChange={() =>
+                  formik?.setFieldValue(
+                    APPLICATION_FIELDS_STEP1.ASSOCIATION_HAS_BUSINESS_ACTIVITIES,
+                    true
+                  )
+                }
+                checked={
+                  formik?.values.associationHasBusinessActivities === true
+                }
+              />
+            </SelectionGroup>
+          </StyledFormGroup>
+        </>
+      )}
     </FormSection>
   );
 };

@@ -1,10 +1,12 @@
 import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { SelectionGroup, TextArea, TextInput } from 'hds-react';
+import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
 import { StyledRadioButton } from 'shared/components/forms/fields/styled';
+import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import Spacing from 'shared/components/forms/spacing/Spacing';
 import { phoneToLocal } from 'shared/utils/string.utils';
 
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
@@ -22,6 +24,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     handleSubmit,
     getErrorMessage,
     erazeDeminimisAids,
+    getDefaultSelectValue,
+    languageOptions,
     fields,
     translationsBase,
     formik,
@@ -44,7 +48,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             label={fields.companyContactPersonFirstName.label}
             placeholder={fields.companyContactPersonFirstName.placeholder}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
             value={formik.values.companyContactPersonFirstName}
             invalid={
               !!getErrorMessage(
@@ -67,7 +70,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             label={fields.companyContactPersonLastName.label}
             placeholder={fields.companyContactPersonLastName.placeholder}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
             value={formik.values.companyContactPersonLastName}
             invalid={
               !!getErrorMessage(
@@ -90,7 +92,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             label={fields.companyContactPersonPhoneNumber.label}
             placeholder={fields.companyContactPersonPhoneNumber.placeholder}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
             value={phoneToLocal(formik.values.companyContactPersonPhoneNumber)}
             invalid={
               !!getErrorMessage(
@@ -113,7 +114,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             label={fields.companyContactPersonEmail.label}
             placeholder={fields.companyContactPersonEmail.placeholder}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
             value={formik.values.companyContactPersonEmail}
             invalid={
               !!getErrorMessage(
@@ -131,6 +131,36 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             required
           />
         </StyledContactPersonContainer>
+        <Spacing size="m" />
+        <StyledFormGroup>
+          <Select
+            defaultValue={getDefaultSelectValue(
+              APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
+            )}
+            style={{ width: 350 }}
+            helper={getErrorMessage(
+              APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
+            )}
+            optionLabelField="label"
+            label={fields.applicantLanguage.label}
+            onChange={(language: Option) =>
+              formik.setFieldValue(
+                APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE,
+                language.value
+              )
+            }
+            options={languageOptions}
+            id={fields.applicantLanguage.name}
+            placeholder={t('common:select')}
+            invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE)
+            }
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE)
+            }
+            required
+          />
+        </StyledFormGroup>
       </FormSection>
       <FormSection
         header={t(`${translationsBase}.heading3`)}
@@ -157,7 +187,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 );
                 erazeDeminimisAids();
               }}
-              onBlur={formik.handleBlur}
               // 3 states: null (none is selected), true, false
               checked={formik.values.deMinimisAid === false}
             />
@@ -174,7 +203,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   true
                 )
               }
-              onBlur={formik.handleBlur}
               checked={formik.values.deMinimisAid === true}
             />
           </SelectionGroup>
@@ -213,7 +241,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   ''
                 );
               }}
-              onBlur={formik.handleBlur}
               checked={formik.values.coOperationNegotiations === false}
             />
             <StyledRadioButton
@@ -229,7 +256,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   true
                 )
               }
-              onBlur={formik.handleBlur}
               checked={formik.values.coOperationNegotiations === true}
             />
           </SelectionGroup>
@@ -245,7 +271,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   fields.coOperationNegotiationsDescription.placeholder
                 }
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 value={formik.values.coOperationNegotiationsDescription}
                 invalid={
                   !!getErrorMessage(

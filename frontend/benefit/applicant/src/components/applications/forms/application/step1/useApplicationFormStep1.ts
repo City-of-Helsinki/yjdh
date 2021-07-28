@@ -11,11 +11,13 @@ import {
   ApplicationData,
   DeMinimisAid,
 } from 'benefit/applicant/types/application';
+import { getLanguageOptions } from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
+import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
 
@@ -29,18 +31,16 @@ type ExtendedComponentProps = {
   erazeDeminimisAids: () => void;
   formik: FormikProps<Application>;
   deMinimisAids: DeMinimisAid[];
+  languageOptions: OptionType[];
+  getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
 };
 
 const useApplicationFormStep1 = (
   application: Application
 ): ExtendedComponentProps => {
-  const {
-    deMinimisAids,
-    setDeMinimisAids,
-    setApplicationId,
-    setCurrentStep,
-    applicationId,
-  } = React.useContext(ApplicationContext);
+  const { applicationTempData, setApplicationTempData } = React.useContext(
+    ApplicationContext
+  );
   const {
     mutate: createApplication,
     data: newApplication,
@@ -63,17 +63,20 @@ const useApplicationFormStep1 = (
   const [step, setStep] = useState<number>(1);
 
   useEffect(() => {
-    if (isApplicationCreated) {
-      setApplicationId(newApplication?.id || '');
+    if (isApplicationCreated || isApplicationUpdated) {
+      setApplicationTempData({
+        ...applicationTempData,
+        id: applicationTempData.id || newApplication?.id || '',
+        currentStep: step,
+      });
     }
-    setCurrentStep(step);
   }, [
     isApplicationCreated,
     isApplicationUpdated,
     newApplication,
-    setApplicationId,
-    setCurrentStep,
     step,
+    applicationTempData,
+    setApplicationTempData,
   ]);
 
   const formik = useFormik({
@@ -94,12 +97,12 @@ const useApplicationFormStep1 = (
           ...application,
           ...formik.values,
           // update from context
-          deMinimisAidSet: deMinimisAids,
-          deMinimisAid: deMinimisAids?.length !== 0,
+          deMinimisAidSet: applicationTempData.deMinimisAids,
+          deMinimisAid: applicationTempData.deMinimisAids?.length !== 0,
         },
         { deep: true }
       );
-      if (!applicationId && !application.id) {
+      if (!applicationTempData.id && !application.id) {
         createApplication(currentApplicationData);
       } else {
         updateApplication(currentApplicationData);
@@ -149,7 +152,21 @@ const useApplicationFormStep1 = (
     });
   };
 
-  const erazeDeminimisAids = (): void => setDeMinimisAids([]);
+  const erazeDeminimisAids = (): void =>
+    setApplicationTempData({ ...applicationTempData, deMinimisAids: [] });
+
+  const languageOptions = React.useMemo(
+    (): OptionType[] => getLanguageOptions(t, 'languages'),
+    [t]
+  );
+
+  const getDefaultSelectValue = (fieldName: keyof Application): OptionType =>
+    languageOptions.find(
+      (o: OptionType) => o.value === application?.[fieldName]?.toString()
+    ) || {
+      label: '',
+      value: '',
+    };
 
   return {
     t,
@@ -161,6 +178,8 @@ const useApplicationFormStep1 = (
     handleSubmit,
     erazeDeminimisAids,
     deMinimisAids: application.deMinimisAidSet || [],
+    languageOptions,
+    getDefaultSelectValue,
   };
 };
 

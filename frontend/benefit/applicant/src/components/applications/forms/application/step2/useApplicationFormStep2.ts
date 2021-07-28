@@ -14,7 +14,8 @@ import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { FieldsDef, Option } from 'shared/components/forms/fields/types';
+import { FieldsDef } from 'shared/components/forms/fields/types';
+import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
 
@@ -28,14 +29,16 @@ type ExtendedComponentProps = {
   handleSubmitNext: () => void;
   erazeCommissionFields: (e: ChangeEvent<HTMLInputElement>) => void;
   formik: FormikProps<Application>;
-  subsidyOptions: Option[];
-  getDefaultSelectValue: (fieldName: keyof Application) => Option;
+  subsidyOptions: OptionType[];
+  getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
 };
 
 const useApplicationFormStep2 = (
   application: Application
 ): ExtendedComponentProps => {
-  const { setCurrentStep } = React.useContext(ApplicationContext);
+  const { applicationTempData, setApplicationTempData } = React.useContext(
+    ApplicationContext
+  );
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -50,15 +53,15 @@ const useApplicationFormStep2 = (
 
   useEffect(() => {
     if (isApplicationUpdated) {
-      setCurrentStep(step);
+      setApplicationTempData({ ...applicationTempData, currentStep: step });
     }
-  }, [isApplicationUpdated, setCurrentStep, step]);
+  }, [isApplicationUpdated, applicationTempData, step, setApplicationTempData]);
 
   const formik = useFormik({
     initialValues: application,
     validationSchema: Yup.object().shape({}),
     validateOnChange: true,
-    validateOnBlur: true,
+    validateOnBlur: false,
     onSubmit: () => {
       const currentApplicationData: ApplicationData = snakecaseKeys(
         {
@@ -77,7 +80,7 @@ const useApplicationFormStep2 = (
   );
 
   const subsidyOptions = React.useMemo(
-    (): Option[] =>
+    (): OptionType[] =>
       PAY_SUBSIDY_OPTIONS.map((option) => ({
         label: `${option}%`,
         value: option,
@@ -119,7 +122,8 @@ const useApplicationFormStep2 = (
 
   const handleSubmitNext = (): void => handleSubmit(3);
 
-  const handleSubmitBack = (): void => setCurrentStep(1);
+  const handleSubmitBack = (): void =>
+    setApplicationTempData({ ...applicationTempData, currentStep: 1 });
 
   const erazeCommissionFields = (e: ChangeEvent<HTMLInputElement>): void => {
     formik.handleChange(e);
@@ -133,7 +137,7 @@ const useApplicationFormStep2 = (
     );
   };
 
-  const getDefaultSelectValue = (fieldName: keyof Application): Option =>
+  const getDefaultSelectValue = (fieldName: keyof Application): OptionType =>
     subsidyOptions.find(
       (o) => o.value === application?.[fieldName]?.toString()
     ) || {
