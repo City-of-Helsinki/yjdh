@@ -17,6 +17,7 @@ from applications.models import Application, ApplicationLogEntry, Employee
 from applications.tests.conftest import *  # noqa
 from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
+from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
 from PIL import Image
 from rest_framework.reverse import reverse
@@ -594,6 +595,28 @@ def test_application_pay_subsidy(
         data,
     )
     assert response.status_code == expected_code
+
+
+def test_attachment_upload_too_big(api_client, application):
+    image = Image.new("RGB", (100, 100))
+    tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    tmp_file.seek(MAX_UPLOAD_SIZE + 1)
+    image.save(tmp_file)
+    tmp_file.seek(0)
+    response = api_client.post(
+        reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+        {
+            "attachment_file": tmp_file,
+            "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
+        },
+        format="multipart",
+    )
+
+    assert response.status_code == 400
+    assert str(MAX_UPLOAD_SIZE) in json.dumps(
+        response.json()
+    )  # To avoid false positive
+    assert len(application.attachments.all()) == 0
 
 
 def test_attachment_upload_and_delete(api_client, application):
