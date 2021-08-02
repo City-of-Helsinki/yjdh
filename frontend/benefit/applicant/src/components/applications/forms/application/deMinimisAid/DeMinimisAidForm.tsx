@@ -78,6 +78,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              maxDate={new Date()}
               required
             />
           </StyledFieldsContainerWithPadding>
