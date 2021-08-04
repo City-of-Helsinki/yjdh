@@ -4,7 +4,7 @@ export interface HeadingProps {
   size: keyof DefaultTheme['fontSize']['heading'];
 }
 
-const $Header = $.h1<HeadingProps>`
+export const $Header = $.h1<HeadingProps>`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.s};
@@ -12,5 +12,3 @@ const $Header = $.h1<HeadingProps>`
   font-weight: 500;
   margin-bottom: ${(props) => props.theme.spacing.l};
 `;
-
-export { $Header };

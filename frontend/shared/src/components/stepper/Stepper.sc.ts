@@ -9,12 +9,12 @@ interface $StepContainerProps {
 const getActiveColor = (isActive: boolean, theme: DefaultTheme): string =>
   isActive ? theme.colors.black90 : theme.colors.black20;
 
-const $StepsContainer = $.div`
+export const $StepsContainer = $.div`
   display: flex;
   align-items: center;
 `;
 
-const $StepContainer = $.div<$StepContainerProps>`
+export const $StepContainer = $.div<$StepContainerProps>`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -22,7 +22,7 @@ const $StepContainer = $.div<$StepContainerProps>`
   z-index: 1;
 `;
 
-const $StepCircle = $.div<Props>`
+export const $StepCircle = $.div<Props>`
   height: 36px;
   width: 36px;
   border-radius: 50%;
@@ -36,7 +36,7 @@ const $StepCircle = $.div<Props>`
   font-size: ${(props) => props.theme.fontSize.body.m};
 `;
 
-const $StepTitle = $.p<Props>`
+export const $StepTitle = $.p<Props>`
   text-align: center;
   position: absolute;
   bottom: -40px;
@@ -45,7 +45,7 @@ const $StepTitle = $.p<Props>`
   font-weight: ${(props) => (props.isActive ? 600 : 500)};
 `;
 
-const $Divider = $.div<Props>`
+export const $Divider = $.div<Props>`
   width: 100%;
   height: 4px;
   margin: 4px;
@@ -53,5 +53,3 @@ const $Divider = $.div<Props>`
     getActiveColor(isActive || false, theme)};
   flex: 1;
 `;
-
-export { $Divider, $StepCircle, $StepContainer, $StepsContainer, $StepTitle };

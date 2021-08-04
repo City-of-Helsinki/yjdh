@@ -1,7 +1,5 @@
 import $ from 'styled-components';
 
-const $Content = $.div`
+export const $Content = $.div`
   flex: auto;
 `;
-
-export { $Content };

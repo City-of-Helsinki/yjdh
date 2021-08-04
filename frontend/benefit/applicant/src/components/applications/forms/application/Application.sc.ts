@@ -3,34 +3,34 @@ import React from 'react';
 import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
 import $ from 'styled-components';
 
-const $Container = $.div`
+export const $Container = $.div`
   display: flex;
   justify-content: space-between;
   padding-bottom: ${(props) => props.theme.spacing.m};
 `;
 
-const $TextContainer = $.div`
+export const $TextContainer = $.div`
   flex: 1 0 50%;
   box-sizing: border-box;
 `;
 
-const $Heading = $.h1`
+export const $Heading = $.h1`
   font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
 `;
 
-const $Description = $.p`
+export const $Description = $.p`
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: normal;
   line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
-const $Link = $.span`
+export const $Link = $.span`
   text-decoration: underline;
   cursor: pointer;
 `;
 
-const $ActionContainer = $.div`
+export const $ActionContainer = $.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -38,7 +38,7 @@ const $ActionContainer = $.div`
   box-sizing: border-box;
 `;
 
-const $SubActionContainer = $.div`
+export const $SubActionContainer = $.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -55,12 +55,12 @@ interface ButtonProps {
   icon?: React.ReactNode;
 }
 
-const $Button = $(Button)<ButtonProps>`
+export const $Button = $(Button)<ButtonProps>`
   background-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-color: ${(props) => props.theme.colors.coatOfArms} !important;
 `;
 
-const $SubSection = $.div`
+export const $SubSection = $.div`
   margin-left: 245px;
 
   textarea {
@@ -68,60 +68,41 @@ const $SubSection = $.div`
   }
 `;
 
-const $FieildsWithInfoContainer = $.div`
+export const $FieildsWithInfoContainer = $.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const $FieildsWithInfoColumn = $.div`
+export const $FieildsWithInfoColumn = $.div`
   flex: 0 0 50%;
 `;
 
-const $ContactPersonContainer = $($FormGroup)`
+export const $ContactPersonContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 2fr 2fr 1fr 2fr;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const $EmployerBasicInfoContainer = $($FormGroup)`
+export const $EmployerBasicInfoContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 300px 300px 200px 200px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const $EmploymentRelationshipContainer = $($FormGroup)`
+export const $EmploymentRelationshipContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 410px 200px 400px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const $EmploymentMoneyContainer = $($FormGroup)`
+export const $EmploymentMoneyContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 200px 200px 200px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const $CommissionContainer = $($FormGroup)`
+export const $CommissionContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 500px 200px auto;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
-
-export {
-  $ActionContainer,
-  $Button,
-  $CommissionContainer,
-  $ContactPersonContainer,
-  $Container,
-  $Description,
-  $EmployerBasicInfoContainer,
-  $EmploymentMoneyContainer,
-  $EmploymentRelationshipContainer,
-  $FieildsWithInfoColumn,
-  $FieildsWithInfoContainer,
-  $Heading,
-  $Link,
-  $SubActionContainer,
-  $SubSection,
-  $TextContainer,
-};

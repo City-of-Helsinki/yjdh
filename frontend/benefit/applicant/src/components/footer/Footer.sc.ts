@@ -1,7 +1,7 @@
 import { Footer } from 'hds-react';
 import $ from 'styled-components';
 
-const $Footer = $(Footer)`
+export const $Footer = $(Footer)`
   margin-top: ${(props) => props.theme.spacing.xl} !important;
   --footer-background: ${(props) => props.theme.colors.black80} !important;
   --footer-color: ${(props) => props.theme.colors.white} !important;
@@ -9,5 +9,3 @@ const $Footer = $(Footer)`
   --footer-focus-outline-color: ${(props) =>
     props.theme.colors.white} !important;
 `;
-
-export { $Footer };

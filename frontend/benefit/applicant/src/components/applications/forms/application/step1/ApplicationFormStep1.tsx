@@ -13,7 +13,7 @@ import { $ContactPersonContainer, $SubSection } from '../Application.sc';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
 import StepperActions from '../stepperActions/StepperActions';
-import CompanyInfo from './companyInfo/CompanyInfo.sc';
+import CompanyInfo from './companyInfo/CompanyInfo';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
