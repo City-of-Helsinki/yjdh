@@ -6,7 +6,7 @@ import {
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
-import { DateInput, IconPlusCircle, NumberInput, TextInput } from 'hds-react';
+import { DateInput, IconPlusCircle, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
@@ -53,13 +53,13 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               required
             />
-            <NumberInput
+            <TextInput
               id={fields.amount.name}
               name={fields.amount.name}
               label={fields.amount.label || ''}
-              unit={fields.amount.placeholder}
+              placeholder={fields.amount.placeholder}
               onChange={formik.handleChange}
-              value={formik.values.amount}
+              value={formik.values.amount?.toString()}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}

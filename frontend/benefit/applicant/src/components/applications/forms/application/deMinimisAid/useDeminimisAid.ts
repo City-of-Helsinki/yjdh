@@ -32,7 +32,7 @@ type FieldsDef = {
 
 type FormFields = {
   [DE_MINIMIS_AID_FIELDS.GRANTER]: string;
-  [DE_MINIMIS_AID_FIELDS.AMOUNT]: number;
+  [DE_MINIMIS_AID_FIELDS.AMOUNT]: string;
   [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: string;
 };
 
@@ -62,7 +62,7 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
   const formik = useFormik({
     initialValues: {
       [DE_MINIMIS_AID_FIELDS.GRANTER]: '',
-      [DE_MINIMIS_AID_FIELDS.AMOUNT]: 0,
+      [DE_MINIMIS_AID_FIELDS.AMOUNT]: '',
       [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: '',
     },
     validationSchema: Yup.object().shape({
@@ -91,7 +91,7 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
           ...(applicationTempData.deMinimisAids || []),
           {
             granter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
-            amount: formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT],
+            amount: parseFloat(formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT]),
             grantedAt: formatDate(
               parseDate(formik.values[DE_MINIMIS_AID_FIELDS.GRANTED_AT]),
               'yyyy-MM-dd'
