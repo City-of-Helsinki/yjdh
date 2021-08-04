@@ -162,12 +162,16 @@ def test_application_post_invalid_data(api_client, application):
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
+    data[
+        "company_contact_person_phone_number"
+    ] = "+359505658789"  # Invalid country code
     response = api_client.post(reverse("v1:application-list"), data, format="json")
     assert response.status_code == 400
     assert response.data.keys() == {
         "status",
         "bases",
         "applicant_language",
+        "company_contact_person_phone_number",
         "de_minimis_aid_set",
     }
     assert response.data["de_minimis_aid_set"][0].keys() == {"amount"}
@@ -183,11 +187,13 @@ def test_application_post_invalid_employee_data(api_client, application):
     data["employee"]["monthly_pay"] = "30000000.00"  # value too high
     data["employee"]["social_security_number"] = "080597-953X"  # invalid checksum
     data["employee"]["employee_language"] = None  # non-null required
+    data["employee"]["phone_number"] = "+359505658789"  # Invalid country code
     response = api_client.post(reverse("v1:application-list"), data, format="json")
     assert response.status_code == 400
     assert response.data.keys() == {"employee"}
     assert response.data["employee"].keys() == {
         "monthly_pay",
+        "phone_number",
         "social_security_number",
         "employee_language",
     }
@@ -198,17 +204,17 @@ def test_application_put_edit_fields(api_client, application):
     modify existing application
     """
     data = ApplicationSerializer(application).data
-    data["company_contact_person_phone_number"] = "0505658789"
+    data["company_contact_person_phone_number"] = "+358505658789"
     response = api_client.put(
         get_detail_url(application),
         data,
     )
     assert response.status_code == 200
     assert (
-        response.data["company_contact_person_phone_number"] == "+358505658789"
+        response.data["company_contact_person_phone_number"] == "0505658789"
     )  # normalized format
     application.refresh_from_db()
-    assert application.company_contact_person_phone_number == "+358505658789"
+    assert application.company_contact_person_phone_number == "0505658789"
 
 
 def test_application_put_edit_employee(api_client, application):
@@ -225,7 +231,7 @@ def test_application_put_edit_employee(api_client, application):
     )
     assert response.status_code == 200
     assert (
-        response.data["employee"]["phone_number"] == "+358505658789"
+        response.data["employee"]["phone_number"] == "0505658789"
     )  # normalized format
     application.refresh_from_db()
     assert application.employee.phone_number == "+358505658789"

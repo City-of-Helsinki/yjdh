@@ -17,7 +17,7 @@ from applications.models import (
     Employee,
 )
 from common.exceptions import BenefitAPIException
-from common.utils import xgroup
+from common.utils import PhoneNumberField, xgroup
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
@@ -179,6 +179,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
             ).split()
         )
     }
+
+    phone_number = PhoneNumberField(
+        allow_blank=True,
+        help_text="Employee phone number normalized (start with zero, without country code)",
+    )
 
     def validate_social_security_number(self, value):
         """
@@ -375,7 +380,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 "help_text": "Last name of the contact person",
             },
             "company_contact_person_phone_number": {
-                "help_text": "Phone number of the contact person",
+                "help_text": "Phone number of the contact person, must a Finnish phone number",
             },
             "company_contact_person_email": {
                 "help_text": "Email address of the contact person",
@@ -445,6 +450,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
     available_benefit_types = serializers.SerializerMethodField(
         "get_available_benefit_types",
         help_text="Available benefit types depend on organization type of the applicant",
+    )
+
+    company_contact_person_phone_number = PhoneNumberField(
+        allow_blank=True,
+        help_text="Company contact person phone number normalized (start with zero, without country code)",
     )
 
     def get_submitted_at(self, obj):
