@@ -1,42 +1,5 @@
-import { Button } from 'hds-react';
-import React from 'react';
 import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
 import $ from 'styled-components';
-
-export const $Container = $.div`
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: ${(props) => props.theme.spacing.m};
-`;
-
-export const $TextContainer = $.div`
-  flex: 1 0 50%;
-  box-sizing: border-box;
-`;
-
-export const $Heading = $.h1`
-  font-size: ${(props) => props.theme.fontSize.heading.xl};
-  font-weight: normal;
-`;
-
-export const $Description = $.p`
-  font-size: ${(props) => props.theme.fontSize.heading.s};
-  font-weight: normal;
-  line-height: ${(props) => props.theme.lineHeight.l};
-`;
-
-export const $Link = $.span`
-  text-decoration: underline;
-  cursor: pointer;
-`;
-
-export const $ActionContainer = $.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex: 1 0 50%;
-  box-sizing: border-box;
-`;
 
 export const $SubActionContainer = $.div`
   display: flex;
@@ -49,15 +12,6 @@ export const $SubActionContainer = $.div`
   flex: 1 0 auto;
   margin-right: 0 !important;
   padding-left: ${(props) => props.theme.spacing.s};
-`;
-
-interface ButtonProps {
-  icon?: React.ReactNode;
-}
-
-export const $Button = $(Button)<ButtonProps>`
-  background-color: ${(props) => props.theme.colors.coatOfArms} !important;
-  border-color: ${(props) => props.theme.colors.coatOfArms} !important;
 `;
 
 export const $SubSection = $.div`
