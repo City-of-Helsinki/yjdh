@@ -10,3 +10,7 @@ export type NavigationItem = {
   url: string;
   icon?: React.ReactNode;
 };
+
+export type Headers = {
+  [name: string]: string;
+};
