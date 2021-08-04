@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { FieldLabelProps, StyledContent, StyledRequired } from './styled';
+import { $Content, $Required, FieldLabelProps } from './FieldLabel.sc';
 
 const FieldLabel: React.FC<FieldLabelProps> = ({ value, required }) => (
-  <StyledContent required={required}>
+  <$Content required={required}>
     {value}
-    {required && <StyledRequired>*</StyledRequired>}
-  </StyledContent>
+    {required && <$Required>*</$Required>}
+  </$Content>
 );
 
 export default FieldLabel;

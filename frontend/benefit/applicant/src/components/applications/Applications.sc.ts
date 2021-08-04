@@ -1,7 +1,7 @@
 import { Button } from 'hds-react';
-import styled from 'styled-components';
+import $ from 'styled-components';
 
-const StyledSecondaryButton = styled(Button)`
+const $SecondaryButton = $(Button)`
   color: ${(props) => props.theme.colors.black90} !important;
   border-color: ${(props) => props.theme.colors.black90} !important;
   border-width: 3px !important;
@@ -9,21 +9,21 @@ const StyledSecondaryButton = styled(Button)`
   max-height: 60px;
 `;
 
-const StyledPrimaryButton = styled(Button)`
+const $PrimaryButton = $(Button)`
   background-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-width: 3px !important;
   width: 170px;
 `;
 
-const StyledSupplementaryButton = styled(Button)`
+const $SupplementaryButton = $(Button)`
   color: ${(props) => props.theme.colors.black90} !important;
   min-width: 170px;
   max-height: 60px;
   margin-top: ${(props) => props.theme.spacing.xs2};
 `;
 
-const StyledPageHeader = styled.div`
+const $PageHeader = $.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,35 +34,35 @@ const StyledPageHeader = styled.div`
   }
 `;
 
-const StyledHeaderItem = styled.div``;
+const $HeaderItem = $.div``;
 
-const StyledPageHeading = styled.h1`
+const $PageHeading = $.h1`
   font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
   margin: 0;
 `;
 
-const StyledApplicationActions = styled.div`
+const $ApplicationActions = $.div`
   display: flex;
   justify-content: space-between;
   margin-top: ${(props) => props.theme.spacing.l};
 `;
 
-const StyledApplicationAction = styled.div`
+const $ApplicationAction = $.div`
   display: flex;
   flex-direction: column;
 `;
 
-const StyledEmpty = styled.div``;
+const $Empty = $.div``;
 
 export {
-  StyledApplicationAction,
-  StyledApplicationActions,
-  StyledEmpty,
-  StyledHeaderItem,
-  StyledPageHeader,
-  StyledPageHeading,
-  StyledPrimaryButton,
-  StyledSecondaryButton,
-  StyledSupplementaryButton,
+  $ApplicationAction,
+  $ApplicationActions,
+  $Empty,
+  $HeaderItem,
+  $PageHeader,
+  $PageHeading,
+  $PrimaryButton,
+  $SecondaryButton,
+  $SupplementaryButton,
 };

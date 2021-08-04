@@ -2,7 +2,7 @@ import { LoadingSpinner, Tooltip } from 'hds-react';
 import * as React from 'react';
 import { DefaultTheme } from 'styled-components';
 
-import { StyledHeader } from './styled';
+import { $Header } from './Heading.sc';
 
 type HeadingProps = {
   size?: keyof DefaultTheme['fontSize']['heading'];
@@ -17,11 +17,11 @@ const Heading: React.FC<HeadingProps> = ({
   loading,
   tooltip,
 }) => (
-  <StyledHeader size={size || 'm'}>
+  <$Header size={size || 'm'}>
     {header}
     {tooltip && <Tooltip>{tooltip}</Tooltip>}
     {loading && <LoadingSpinner small />}
-  </StyledHeader>
+  </$Header>
 );
 
 export default Heading;

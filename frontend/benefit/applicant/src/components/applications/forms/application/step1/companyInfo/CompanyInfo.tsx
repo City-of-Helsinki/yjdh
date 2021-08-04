@@ -9,23 +9,23 @@ import React from 'react';
 import InputMask from 'react-input-mask';
 import LoadingSkeleton from 'react-loading-skeleton';
 import {
-  StyledCheckbox,
-  StyledRadioButton,
-} from 'shared/components/forms/fields/styled';
+  $Checkbox,
+  $RadioButton,
+} from 'shared/components/forms/fields/Fields.sc';
 import { FieldsDef } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
 import Spacing from 'shared/components/forms/spacing/Spacing';
 
 import {
-  StyledAddressContainer,
-  StyledCompanyInfoColumn,
-  StyledCompanyInfoContainer,
-  StyledCompanyInfoRow,
-  StyledCompanyInfoSection,
-  StyledIBANContainer,
-  StyledNotification,
-} from './styled';
+  $AddressContainer,
+  $CompanyInfoColumn,
+  $CompanyInfoContainer,
+  $CompanyInfoRow,
+  $CompanyInfoSection,
+  $IBANContainer,
+  $Notification,
+} from './CompanyInfo.sc';
 import useCompanyInfo from './useCompanyInfo';
 
 interface CompanyInfoProps {
@@ -54,33 +54,31 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
 
   return (
     <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
-      <StyledCompanyInfoContainer>
-        <StyledCompanyInfoSection>
-          <StyledCompanyInfoColumn>
+      <$CompanyInfoContainer>
+        <$CompanyInfoSection>
+          <$CompanyInfoColumn>
             {shouldShowSkeleton ? (
               <LoadingSkeleton width="90%" count={2} />
             ) : (
               <>
-                <StyledCompanyInfoRow>{data.name}</StyledCompanyInfoRow>
-                <StyledCompanyInfoRow>{data.businessId}</StyledCompanyInfoRow>
+                <$CompanyInfoRow>{data.name}</$CompanyInfoRow>
+                <$CompanyInfoRow>{data.businessId}</$CompanyInfoRow>
               </>
             )}
-          </StyledCompanyInfoColumn>
-          <StyledCompanyInfoColumn>
+          </$CompanyInfoColumn>
+          <$CompanyInfoColumn>
             {shouldShowSkeleton ? (
               <LoadingSkeleton width="90%" count={2} />
             ) : (
               <>
-                <StyledCompanyInfoRow>
-                  {data.streetAddress}
-                </StyledCompanyInfoRow>
-                <StyledCompanyInfoRow>
+                <$CompanyInfoRow>{data.streetAddress}</$CompanyInfoRow>
+                <$CompanyInfoRow>
                   {data.postcode} {data.city}
-                </StyledCompanyInfoRow>
+                </$CompanyInfoRow>
               </>
             )}
-          </StyledCompanyInfoColumn>
-          <StyledCheckbox
+          </$CompanyInfoColumn>
+          <$Checkbox
             id={fields.useAlternativeAddress.name}
             disabled={isLoading || !!error}
             name={fields.useAlternativeAddress.name}
@@ -98,9 +96,9 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               )
             }
           />
-        </StyledCompanyInfoSection>
+        </$CompanyInfoSection>
 
-        <StyledNotification
+        <$Notification
           label={t(
             `${translationsBase}.notifications.companyInformation.label`
           )}
@@ -108,10 +106,10 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         >
           {error?.message ||
             t(`${translationsBase}.notifications.companyInformation.content`)}
-        </StyledNotification>
+        </$Notification>
 
         {formik?.values.useAlternativeAddress && (
-          <StyledAddressContainer>
+          <$AddressContainer>
             <TextInput
               id={fields.alternativeCompanyStreetAddress.name}
               name={fields.alternativeCompanyStreetAddress.name}
@@ -178,10 +176,10 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               )}
               required
             />
-          </StyledAddressContainer>
+          </$AddressContainer>
         )}
 
-        <StyledIBANContainer>
+        <$IBANContainer>
           <InputMask
             mask={fields.companyBankAccountNumber.mask?.format ?? ''}
             maskChar={null}
@@ -221,13 +219,13 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               />
             )}
           </InputMask>
-        </StyledIBANContainer>
-      </StyledCompanyInfoContainer>
+        </$IBANContainer>
+      </$CompanyInfoContainer>
       {formik?.values[APPLICATION_FIELDS_STEP1.ORGANIZATION_TYPE] ===
         ORGANIZATION_TYPES.ASSOCIATION && (
         <>
           <Spacing size="l" />
-          <StyledFormGroup>
+          <$FormGroup>
             <SelectionGroup
               label={fields.associationHasBusinessActivities.label}
               tooltipText={t(
@@ -239,7 +237,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 APPLICATION_FIELDS_STEP1.ASSOCIATION_HAS_BUSINESS_ACTIVITIES
               )}
             >
-              <StyledRadioButton
+              <$RadioButton
                 id={`${fields.associationHasBusinessActivities.name}False`}
                 name={fields.associationHasBusinessActivities.name}
                 value="false"
@@ -257,7 +255,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                   formik?.values.associationHasBusinessActivities === false
                 }
               />
-              <StyledRadioButton
+              <$RadioButton
                 id={`${fields.associationHasBusinessActivities.name}True`}
                 name={fields.associationHasBusinessActivities.name}
                 value="true"
@@ -275,7 +273,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 }
               />
             </SelectionGroup>
-          </StyledFormGroup>
+          </$FormGroup>
         </>
       )}
     </FormSection>

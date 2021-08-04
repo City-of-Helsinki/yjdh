@@ -5,14 +5,14 @@ import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
 
 import {
-  StyledActionContainer,
-  StyledContainer,
-  StyledDescription,
-  StyledHeading,
-  StyledLink,
-  StyledNotification,
-  StyledTextContainer,
-} from './styled';
+  $ActionContainer,
+  $Container,
+  $Description,
+  $Heading,
+  $Link,
+  $Notification,
+  $TextContainer,
+} from './MainIngress.sc';
 import { useMainIngress } from './useMainIngress';
 
 const MainIngress: React.FC = () => {
@@ -25,25 +25,25 @@ const MainIngress: React.FC = () => {
 
   const notificationItems = errors?.map(({ message, name }, i) => (
     // eslint-disable-next-line react/no-array-index-key
-    <StyledNotification key={`${i}`} label={name} type="error">
+    <$Notification key={`${i}`} label={name} type="error">
       {message}
-    </StyledNotification>
+    </$Notification>
   ));
 
   return (
     <Container backgroundColor={theme.colors.silverLight}>
-      <StyledContainer>
-        <StyledHeading>{t('common:mainIngress.heading')}</StyledHeading>
+      <$Container>
+        <$Heading>{t('common:mainIngress.heading')}</$Heading>
         {notificationItems}
-        <StyledTextContainer>
-          <StyledDescription>
+        <$TextContainer>
+          <$Description>
             {t('common:mainIngress.description1')}
-            <StyledLink onClick={handleMoreInfoClick}>
+            <$Link onClick={handleMoreInfoClick}>
               {t('common:mainIngress.linkText')}
-            </StyledLink>
+            </$Link>
             {t('common:mainIngress.description2')}
-          </StyledDescription>
-          <StyledActionContainer>
+          </$Description>
+          <$ActionContainer>
             <Button
               iconLeft={<IconPlus />}
               onClick={handleNewApplicationClick}
@@ -51,9 +51,9 @@ const MainIngress: React.FC = () => {
             >
               {t('common:mainIngress.newApplicationBtnText')}
             </Button>
-          </StyledActionContainer>
-        </StyledTextContainer>
-      </StyledContainer>
+          </$ActionContainer>
+        </$TextContainer>
+      </$Container>
     </Container>
   );
 };

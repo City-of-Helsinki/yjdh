@@ -1,10 +1,10 @@
-import styled, { DefaultTheme } from 'styled-components';
+import $, { DefaultTheme } from 'styled-components';
 
 export interface HeadingProps {
   size: keyof DefaultTheme['fontSize']['heading'];
 }
 
-const StyledHeader = styled.h1<HeadingProps>`
+const $Header = $.h1<HeadingProps>`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.s};
@@ -13,4 +13,4 @@ const StyledHeader = styled.h1<HeadingProps>`
   margin-bottom: ${(props) => props.theme.spacing.l};
 `;
 
-export { StyledHeader };
+export { $Header };

@@ -5,7 +5,7 @@ import Application from 'kesaseteli/employer/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
-import { StyledSubmitButton, StyledTextInput } from './styled';
+import { $SubmitButton, $TextInput } from './EmployerForm.sc';
 
 type Props = {
   applicationId: string;
@@ -38,11 +38,11 @@ const EmployerForm: React.FC<Props> = ({ applicationId }) => {
     );
   return (
     <ApplicationForm application={application} isLoading={isSyncing}>
-      <StyledTextInput
+      <$TextInput
         id="invoicer_name"
         validation={{ required: true, maxLength: 256 }}
       />
-      <StyledTextInput
+      <$TextInput
         id="invoicer_email"
         validation={{
           required: true,
@@ -51,17 +51,17 @@ const EmployerForm: React.FC<Props> = ({ applicationId }) => {
           pattern: /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/,
         }}
       />
-      <StyledTextInput
+      <$TextInput
         id="invoicer_phone_number"
         validation={{ required: true, maxLength: 64 }}
       />
-      <StyledSubmitButton
+      <$SubmitButton
         id="next"
         onSubmit={onSubmit}
         loadingText={t(`common:application.step1.form.loading`)}
       >
         {t(`common:application.step1.form.submit_button`)}
-      </StyledSubmitButton>
+      </$SubmitButton>
     </ApplicationForm>
   );
 };

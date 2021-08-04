@@ -2,18 +2,18 @@ import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
-import { StyledRadioButton } from 'shared/components/forms/fields/styled';
+import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
 import Spacing from 'shared/components/forms/spacing/Spacing';
 import { phoneToLocal } from 'shared/utils/string.utils';
 
+import { $ContactPersonContainer, $SubSection } from '../Application.sc';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
 import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
 import StepperActions from '../stepperActions/StepperActions';
-import { StyledContactPersonContainer, StyledSubSection } from '../styled';
-import CompanyInfo from './companyInfo/CompanyInfo';
+import CompanyInfo from './companyInfo/CompanyInfo.sc';
 import { useApplicationFormStep1 } from './useApplicationFormStep1';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
@@ -41,7 +41,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
         fields={fields}
       />
       <FormSection header={t(`${translationsBase}.heading2`)}>
-        <StyledContactPersonContainer>
+        <$ContactPersonContainer>
           <TextInput
             id={fields.companyContactPersonFirstName.name}
             name={fields.companyContactPersonFirstName.name}
@@ -130,9 +130,9 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             )}
             required
           />
-        </StyledContactPersonContainer>
+        </$ContactPersonContainer>
         <Spacing size="m" />
-        <StyledFormGroup>
+        <$FormGroup>
           <Select
             defaultValue={getDefaultSelectValue(
               APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
@@ -160,20 +160,20 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             }
             required
           />
-        </StyledFormGroup>
+        </$FormGroup>
       </FormSection>
       <FormSection
         header={t(`${translationsBase}.heading3`)}
         tooltip={t(`${translationsBase}.tooltips.heading3`)}
       >
-        <StyledFormGroup>
+        <$FormGroup>
           <SelectionGroup
             label={fields.deMinimisAid.label}
             direction="vertical"
             required
             errorText={getErrorMessage(APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID)}
           >
-            <StyledRadioButton
+            <$RadioButton
               id={`${fields.deMinimisAid.name}False`}
               name={fields.deMinimisAid.name}
               value="false"
@@ -190,7 +190,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               // 3 states: null (none is selected), true, false
               checked={formik.values.deMinimisAid === false}
             />
-            <StyledRadioButton
+            <$RadioButton
               id={`${fields.deMinimisAid.name}True`}
               name={fields.deMinimisAid.name}
               value="true"
@@ -206,16 +206,16 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               checked={formik.values.deMinimisAid === true}
             />
           </SelectionGroup>
-        </StyledFormGroup>
+        </$FormGroup>
         {formik.values.deMinimisAid && (
-          <StyledSubSection>
+          <$SubSection>
             <DeMinimisAidForm data={deMinimisAids} />
             <DeMinimisAidsList />
-          </StyledSubSection>
+          </$SubSection>
         )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
-        <StyledFormGroup>
+        <$FormGroup>
           <SelectionGroup
             label={fields.coOperationNegotiations.label}
             direction="vertical"
@@ -224,7 +224,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS
             )}
           >
-            <StyledRadioButton
+            <$RadioButton
               id={`${fields.coOperationNegotiations.name}False`}
               name={fields.coOperationNegotiations.name}
               value="false"
@@ -243,7 +243,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               }}
               checked={formik.values.coOperationNegotiations === false}
             />
-            <StyledRadioButton
+            <$RadioButton
               id={`${fields.coOperationNegotiations.name}True`}
               name={fields.coOperationNegotiations.name}
               value="true"
@@ -259,10 +259,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               checked={formik.values.coOperationNegotiations === true}
             />
           </SelectionGroup>
-        </StyledFormGroup>
+        </$FormGroup>
         {formik.values.coOperationNegotiations && (
-          <StyledSubSection>
-            <StyledFormGroup>
+          <$SubSection>
+            <$FormGroup>
               <TextArea
                 id={fields.coOperationNegotiationsDescription.name}
                 name={fields.coOperationNegotiationsDescription.name}
@@ -286,8 +286,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
                 )}
               />
-            </StyledFormGroup>
-          </StyledSubSection>
+            </$FormGroup>
+          </$SubSection>
         )}
       </FormSection>
       <StepperActions hasNext handleSubmit={handleSubmit} />

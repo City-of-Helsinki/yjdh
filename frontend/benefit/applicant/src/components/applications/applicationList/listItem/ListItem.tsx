@@ -6,14 +6,14 @@ import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 
 import {
-  StyledAvatar,
-  StyledDataColumn,
-  StyledDataHeader,
-  StyledDataValue,
-  StyledItemActions,
-  StyledItemContent,
-  StyledListItem,
-} from './styled';
+  $Avatar,
+  $DataColumn,
+  $DataHeader,
+  $DataValue,
+  $ItemActions,
+  $ItemContent,
+  $ListItem,
+} from './ListItem.sc';
 
 export type ListItemProps = ApplicationListItemData | Loading;
 
@@ -24,18 +24,18 @@ const ListItem: React.FC<ListItemProps> = (props) => {
 
   if ('isLoading' in props) {
     return (
-      <StyledListItem>
-        <StyledItemContent>
+      <$ListItem>
+        <$ItemContent>
           <LoadingSkeleton width={60} height={60} circle />
-          <StyledDataColumn>
+          <$DataColumn>
             <LoadingSkeleton width="100%" />
             <LoadingSkeleton width="100%" />
-          </StyledDataColumn>
-        </StyledItemContent>
-        <StyledItemActions>
+          </$DataColumn>
+        </$ItemContent>
+        <$ItemActions>
           <LoadingSkeleton height="50px" />
-        </StyledItemActions>
-      </StyledListItem>
+        </$ItemActions>
+      </$ListItem>
     );
   }
 
@@ -52,49 +52,41 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   const ActionIcon = allowedAction.Icon;
 
   return (
-    <StyledListItem>
-      <StyledItemContent>
-        <StyledAvatar $backgroundColor={avatar.color}>
-          {avatar.initials}
-        </StyledAvatar>
-        <StyledDataColumn>
-          <StyledDataHeader>
-            {t(`${translationBase}.employee`)}
-          </StyledDataHeader>
-          <StyledDataValue>{name}</StyledDataValue>
-        </StyledDataColumn>
+    <$ListItem>
+      <$ItemContent>
+        <$Avatar $backgroundColor={avatar.color}>{avatar.initials}</$Avatar>
+        <$DataColumn>
+          <$DataHeader>{t(`${translationBase}.employee`)}</$DataHeader>
+          <$DataValue>{name}</$DataValue>
+        </$DataColumn>
         {modifiedAt && (
-          <StyledDataColumn>
-            <StyledDataHeader>{t(`${translationBase}.saved`)}</StyledDataHeader>
-            <StyledDataValue>{modifiedAt}</StyledDataValue>
-          </StyledDataColumn>
+          <$DataColumn>
+            <$DataHeader>{t(`${translationBase}.saved`)}</$DataHeader>
+            <$DataValue>{modifiedAt}</$DataValue>
+          </$DataColumn>
         )}
         {submittedAt && (
-          <StyledDataColumn>
-            <StyledDataHeader>
-              {t(`${translationListBase}.sent`)}
-            </StyledDataHeader>
-            <StyledDataValue>{submittedAt}</StyledDataValue>
-          </StyledDataColumn>
+          <$DataColumn>
+            <$DataHeader>{t(`${translationListBase}.sent`)}</$DataHeader>
+            <$DataValue>{submittedAt}</$DataValue>
+          </$DataColumn>
         )}
         {applicationNum && (
-          <StyledDataColumn>
-            <StyledDataHeader>
+          <$DataColumn>
+            <$DataHeader>
               {t(`${translationListBase}.applicationNumber`)}
-            </StyledDataHeader>
-            <StyledDataValue>{applicationNum}</StyledDataValue>
-          </StyledDataColumn>
+            </$DataHeader>
+            <$DataValue>{applicationNum}</$DataValue>
+          </$DataColumn>
         )}
         {statusText && (
-          <StyledDataColumn>
-            <StyledDataHeader>
-              {t(`${translationListBase}.status`)}
-            </StyledDataHeader>
-            <StyledDataValue>{statusText}</StyledDataValue>
-          </StyledDataColumn>
+          <$DataColumn>
+            <$DataHeader>{t(`${translationListBase}.status`)}</$DataHeader>
+            <$DataValue>{statusText}</$DataValue>
+          </$DataColumn>
         )}
-      </StyledItemContent>
-      <StyledItemActions>
+      </$ItemContent>
+      <$ItemActions>
         <Button
           variant="secondary"
           iconLeft={ActionIcon && <ActionIcon />}
@@ -104,8 +96,8 @@ const ListItem: React.FC<ListItemProps> = (props) => {
         >
           {allowedAction.label}
         </Button>
-      </StyledItemActions>
-    </StyledListItem>
+      </$ItemActions>
+    </$ListItem>
   );
 };
 

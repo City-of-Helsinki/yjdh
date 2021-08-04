@@ -1,36 +1,36 @@
 import { Button } from 'hds-react';
 import React from 'react';
-import { StyledFormGroup } from 'shared/components/forms/section/styled';
-import styled from 'styled-components';
+import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
+import $ from 'styled-components';
 
-const StyledContainer = styled.div`
+const $Container = $.div`
   display: flex;
   justify-content: space-between;
   padding-bottom: ${(props) => props.theme.spacing.m};
 `;
 
-const StyledTextContainer = styled.div`
+const $TextContainer = $.div`
   flex: 1 0 50%;
   box-sizing: border-box;
 `;
 
-const StyledHeading = styled.h1`
+const $Heading = $.h1`
   font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
 `;
 
-const StyledDescription = styled.p`
+const $Description = $.p`
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: normal;
   line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
-const StyledLink = styled.span`
+const $Link = $.span`
   text-decoration: underline;
   cursor: pointer;
 `;
 
-const StyledActionContainer = styled.div`
+const $ActionContainer = $.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -38,7 +38,7 @@ const StyledActionContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const StyledSubActionContainer = styled.div`
+const $SubActionContainer = $.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -55,12 +55,12 @@ interface ButtonProps {
   icon?: React.ReactNode;
 }
 
-const StyledButton = styled(Button)<ButtonProps>`
+const $Button = $(Button)<ButtonProps>`
   background-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-color: ${(props) => props.theme.colors.coatOfArms} !important;
 `;
 
-const StyledSubSection = styled.div`
+const $SubSection = $.div`
   margin-left: 245px;
 
   textarea {
@@ -68,60 +68,60 @@ const StyledSubSection = styled.div`
   }
 `;
 
-const StyledFieildsWithInfoContainer = styled.div`
+const $FieildsWithInfoContainer = $.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const StyledFieildsWithInfoColumn = styled.div`
+const $FieildsWithInfoColumn = $.div`
   flex: 0 0 50%;
 `;
 
-const StyledContactPersonContainer = styled(StyledFormGroup)`
+const $ContactPersonContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 2fr 2fr 1fr 2fr;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const StyledEmployerBasicInfoContainer = styled(StyledFormGroup)`
+const $EmployerBasicInfoContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 300px 300px 200px 200px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const StyledEmploymentRelationshipContainer = styled(StyledFormGroup)`
+const $EmploymentRelationshipContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 410px 200px 400px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const StyledEmploymentMoneyContainer = styled(StyledFormGroup)`
+const $EmploymentMoneyContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 200px 200px 200px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-const StyledCommissionContainer = styled(StyledFormGroup)`
+const $CommissionContainer = $($FormGroup)`
   display: grid;
   grid-template-columns: 500px 200px auto;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
 export {
-  StyledActionContainer,
-  StyledButton,
-  StyledCommissionContainer,
-  StyledContactPersonContainer,
-  StyledContainer,
-  StyledDescription,
-  StyledEmployerBasicInfoContainer,
-  StyledEmploymentMoneyContainer,
-  StyledEmploymentRelationshipContainer,
-  StyledFieildsWithInfoColumn,
-  StyledFieildsWithInfoContainer,
-  StyledHeading,
-  StyledLink,
-  StyledSubActionContainer,
-  StyledSubSection,
-  StyledTextContainer,
+  $ActionContainer,
+  $Button,
+  $CommissionContainer,
+  $ContactPersonContainer,
+  $Container,
+  $Description,
+  $EmployerBasicInfoContainer,
+  $EmploymentMoneyContainer,
+  $EmploymentRelationshipContainer,
+  $FieildsWithInfoColumn,
+  $FieildsWithInfoContainer,
+  $Heading,
+  $Link,
+  $SubActionContainer,
+  $SubSection,
+  $TextContainer,
 };
