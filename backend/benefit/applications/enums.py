@@ -19,6 +19,15 @@ class BenefitType(models.TextChoices):
     COMMISSION_BENEFIT = "commission_benefit", _("Commission Benefit")
 
 
+class ApplicationStep(models.TextChoices):
+    STEP_1 = "step_1", _("Step 1 - company details")
+    STEP_2 = "step_2", _("Step 2 - employee details")
+    STEP_3 = "step_3", _("Step 3 - attachments")
+    STEP_4 = "step_4", _("Step 4 - summary")
+    STEP_5 = "step_5", _("Step 5 - power of attorney")
+    STEP_6 = "step_6", _("Step 6 - terms and send")
+
+
 class OrganizationType(models.TextChoices):
     """
     Coarse classification of the applicant organization type

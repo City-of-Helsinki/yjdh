@@ -86,6 +86,7 @@ def test_application_post_success(api_client, application):
         new_application.company_contact_person_phone_number
         == data["company_contact_person_phone_number"]
     )
+    assert new_application.application_step == data["application_step"]
     assert {v.identifier for v in new_application.bases.all()} == {
         b for b in data["bases"]
     }
@@ -122,6 +123,7 @@ def test_application_post_unfinished(api_client, application):
                 "archived",
                 "use_alternative_address",
                 "is_living_in_helsinki",
+                "application_step",
             ]:
                 # field can't be empty/null
                 pass

@@ -3,7 +3,7 @@ import random
 from datetime import date, timedelta
 
 import factory
-from applications.enums import ApplicationStatus, BenefitType
+from applications.enums import ApplicationStatus, ApplicationStep, BenefitType
 from applications.models import (
     Application,
     APPLICATION_LANGUAGE_CHOICES,
@@ -80,6 +80,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
     apprenticeship_program = factory.Faker("boolean")
     archived = factory.Faker("boolean")
+    application_step = factory.Faker("random_element", elements=ApplicationStep.values)
     benefit_type = factory.Faker("random_element", elements=BenefitType.values)
     start_date = factory.Faker(
         "date_between_dates",

@@ -1,4 +1,9 @@
-from applications.enums import ApplicationStatus, AttachmentType, BenefitType
+from applications.enums import (
+    ApplicationStatus,
+    ApplicationStep,
+    AttachmentType,
+    BenefitType,
+)
 from companies.models import Company
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -162,6 +167,11 @@ class Application(UUIDModel, TimeStampedModel):
     After applications are moved to archive, they are hidden from the default view.
     """
     archived = models.BooleanField()
+
+    """
+    current/latest application step shown in the UI
+    """
+    application_step = models.CharField(choices=ApplicationStep.choices, max_length=64)
 
     """
     The type of benefit the applicant is applying for
