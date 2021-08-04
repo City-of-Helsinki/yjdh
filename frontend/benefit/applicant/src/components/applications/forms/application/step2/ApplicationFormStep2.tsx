@@ -8,26 +8,26 @@ import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
-  StyledCheckbox,
-  StyledRadioButton,
-} from 'shared/components/forms/fields/styled';
+  $Checkbox,
+  $RadioButton,
+} from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
 import Spacing from 'shared/components/forms/spacing/Spacing';
 import { phoneToLocal } from 'shared/utils/string.utils';
 
-import StepperActions from '../stepperActions/StepperActions';
 import {
-  StyledCommissionContainer,
-  StyledEmployerBasicInfoContainer,
-  StyledEmploymentMoneyContainer,
-  StyledEmploymentRelationshipContainer,
-  StyledFieildsWithInfoColumn,
-  StyledFieildsWithInfoContainer,
-  StyledSubSection,
-} from '../styled';
+  $CommissionContainer,
+  $EmployerBasicInfoContainer,
+  $EmploymentMoneyContainer,
+  $EmploymentRelationshipContainer,
+  $FieildsWithInfoColumn,
+  $FieildsWithInfoContainer,
+  $SubSection,
+} from '../Application.sc';
+import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
@@ -49,7 +49,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   return (
     <form onSubmit={handleSubmitNext} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
-        <StyledEmployerBasicInfoContainer>
+        <$EmployerBasicInfoContainer>
           <TextInput
             id={fields.firstName.name}
             name={fields.firstName.name}
@@ -146,11 +146,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             )}
             required
           />
-        </StyledEmployerBasicInfoContainer>
+        </$EmployerBasicInfoContainer>
         <Spacing size="m" />
         <FieldLabel value={fields.isLivingInHelsinki.label} required />
-        <StyledFormGroup>
-          <StyledCheckbox
+        <$FormGroup>
+          <$Checkbox
             id={fields.isLivingInHelsinki.name}
             name={fields.isLivingInHelsinki.name}
             label={fields.isLivingInHelsinki.placeholder}
@@ -171,10 +171,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             required
             checked={formik.values.employee?.isLivingInHelsinki === true}
           />
-        </StyledFormGroup>
+        </$FormGroup>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading2`)}>
-        <StyledFormGroup>
+        <$FormGroup>
           <SelectionGroup
             label={fields.paySubsidyGranted.label}
             direction="vertical"
@@ -183,7 +183,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED
             )}
           >
-            <StyledRadioButton
+            <$RadioButton
               id={`${fields.paySubsidyGranted.name}False`}
               name={fields.paySubsidyGranted.name}
               value="false"
@@ -202,7 +202,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               }}
               checked={formik.values.paySubsidyGranted === false}
             />
-            <StyledRadioButton
+            <$RadioButton
               id={`${fields.paySubsidyGranted.name}True`}
               name={fields.paySubsidyGranted.name}
               value="true"
@@ -218,10 +218,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               checked={formik.values.paySubsidyGranted === true}
             />
           </SelectionGroup>
-        </StyledFormGroup>
+        </$FormGroup>
         {formik.values.paySubsidyGranted && (
-          <StyledSubSection>
-            <StyledFormGroup>
+          <$SubSection>
+            <$FormGroup>
               <Select
                 defaultValue={getDefaultSelectValue(
                   APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
@@ -253,9 +253,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 }
                 required
               />
-            </StyledFormGroup>
+            </$FormGroup>
             <Spacing size="m" />
-            <StyledFormGroup>
+            <$FormGroup>
               <Select
                 defaultValue={getDefaultSelectValue(
                   APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
@@ -286,9 +286,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   )
                 }
               />
-            </StyledFormGroup>
+            </$FormGroup>
             <Spacing size="m" />
-            <StyledFormGroup>
+            <$FormGroup>
               <SelectionGroup
                 label={fields.apprenticeshipProgram.label}
                 direction="vertical"
@@ -297,7 +297,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM
                 )}
               >
-                <StyledRadioButton
+                <$RadioButton
                   id={`${fields.apprenticeshipProgram.name}False`}
                   name={fields.apprenticeshipProgram.name}
                   value="false"
@@ -312,7 +312,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   }}
                   checked={formik.values.apprenticeshipProgram === false}
                 />
-                <StyledRadioButton
+                <$RadioButton
                   id={`${fields.apprenticeshipProgram.name}True`}
                   name={fields.apprenticeshipProgram.name}
                   value="true"
@@ -328,14 +328,14 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   checked={formik.values.apprenticeshipProgram === true}
                 />
               </SelectionGroup>
-            </StyledFormGroup>
-          </StyledSubSection>
+            </$FormGroup>
+          </$SubSection>
         )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading3`)}>
-        <StyledFieildsWithInfoContainer>
-          <StyledFieildsWithInfoColumn>
-            <StyledFormGroup>
+        <$FieildsWithInfoContainer>
+          <$FieildsWithInfoColumn>
+            <$FormGroup>
               <SelectionGroup
                 label={fields.benefitType.label}
                 direction="vertical"
@@ -344,7 +344,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   APPLICATION_FIELDS_STEP2.BENEFIT_TYPE
                 )}
               >
-                <StyledRadioButton
+                <$RadioButton
                   id={`${fields.benefitType.name}Employment`}
                   name={fields.benefitType.name}
                   value={BENEFIT_TYPES.EMPLOYMENT}
@@ -356,7 +356,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT
                   }
                 />
-                <StyledRadioButton
+                <$RadioButton
                   id={`${fields.benefitType.name}Salary`}
                   name={fields.benefitType.name}
                   value={BENEFIT_TYPES.SALARY}
@@ -366,7 +366,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   onChange={(val) => erazeCommissionFields(val)}
                   checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
                 />
-                <StyledRadioButton
+                <$RadioButton
                   id={`${fields.benefitType.name}Commission`}
                   name={fields.benefitType.name}
                   value={BENEFIT_TYPES.COMMISSION}
@@ -405,9 +405,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   }
                 />
               </SelectionGroup>
-            </StyledFormGroup>
-          </StyledFieildsWithInfoColumn>
-          <StyledFieildsWithInfoColumn>
+            </$FormGroup>
+          </$FieildsWithInfoColumn>
+          <$FieildsWithInfoColumn>
             {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
               <Notification
                 label={t(
@@ -417,16 +417,16 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 {t(`${translationsBase}.notifications.salaryBenefit.content`)}
               </Notification>
             )}
-          </StyledFieildsWithInfoColumn>
-        </StyledFieildsWithInfoContainer>
+          </$FieildsWithInfoColumn>
+        </$FieildsWithInfoContainer>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
         {!formik.values.benefitType && (
           <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
         )}
-        <StyledFieildsWithInfoContainer>
-          <StyledFieildsWithInfoColumn>
-            <StyledFormGroup>
+        <$FieildsWithInfoContainer>
+          <$FieildsWithInfoColumn>
+            <$FormGroup>
               {formik.values.benefitType && (
                 <>
                   {t(
@@ -436,12 +436,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   )}
                 </>
               )}
-            </StyledFormGroup>
-            <StyledFormGroup>
-              todo: datepicker range to implement
-            </StyledFormGroup>
-          </StyledFieildsWithInfoColumn>
-          <StyledFieildsWithInfoColumn>
+            </$FormGroup>
+            <$FormGroup>todo: datepicker range to implement</$FormGroup>
+          </$FieildsWithInfoColumn>
+          <$FieildsWithInfoColumn>
             {formik.values.benefitType && (
               <Notification
                 label={t(
@@ -457,8 +455,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 )}
               </Notification>
             )}
-          </StyledFieildsWithInfoColumn>
-        </StyledFieildsWithInfoContainer>
+          </$FieildsWithInfoColumn>
+        </$FieildsWithInfoContainer>
       </FormSection>
       <FormSection
         header={t(
@@ -482,7 +480,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         {(formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
           formik.values.benefitType === BENEFIT_TYPES.SALARY) && (
           <>
-            <StyledEmploymentRelationshipContainer>
+            <$EmploymentRelationshipContainer>
               <TextInput
                 id={fields.jobTitle.name}
                 name={fields.jobTitle.name}
@@ -560,14 +558,14 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 )}
                 required
               />
-            </StyledEmploymentRelationshipContainer>
+            </$EmploymentRelationshipContainer>
             <Spacing size="s" />
             <Heading
               size="xs"
               header={t(`${translationsBase}.heading5EmploymentSub1`)}
               tooltip={t(`${translationsBase}.tooltips.heading5EmploymentSub1`)}
             />
-            <StyledEmploymentMoneyContainer>
+            <$EmploymentMoneyContainer>
               <TextInput
                 id={fields.monthlyPay.name}
                 name={fields.monthlyPay.name}
@@ -649,11 +647,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 )}
                 required
               />
-            </StyledEmploymentMoneyContainer>
+            </$EmploymentMoneyContainer>
           </>
         )}
         {formik.values.benefitType === BENEFIT_TYPES.COMMISSION && (
-          <StyledCommissionContainer>
+          <$CommissionContainer>
             <TextInput
               id={fields.commissionDescription.name}
               name={fields.commissionDescription.name}
@@ -708,7 +706,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               )}
               required
             />
-          </StyledCommissionContainer>
+          </$CommissionContainer>
         )}
       </FormSection>
       <StepperActions

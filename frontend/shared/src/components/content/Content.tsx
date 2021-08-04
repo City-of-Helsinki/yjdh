@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { StyledContent } from './styled';
+import { $Content } from './Content.sc';
 
 type ContentProps = { children: React.ReactNode };
 
 const Content: React.FC<ContentProps> = ({ children }) => (
-  <StyledContent>{children}</StyledContent>
+  <$Content>{children}</$Content>
 );
 
 export default Content;

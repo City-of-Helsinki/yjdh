@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import $ from 'styled-components';
 
 type Props = { backgroundColor?: string };
 
-const StyledSection = styled.div`
+export const $Section = $.div`
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid ${(props) => props.theme.colors.black20};
@@ -10,7 +10,7 @@ const StyledSection = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.s};
 `;
 
-const StyledHeader = styled.h1`
+export const $Header = $.h1`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.s};
@@ -19,13 +19,13 @@ const StyledHeader = styled.h1`
   margin-bottom: ${(props) => props.theme.spacing.l};
 `;
 
-const StyledSubHeader = styled.h1`
+export const $SubHeader = $.h1`
   font-size: ${(props) => props.theme.fontSize.heading.xxs};
   font-weight: 600;
   //margin-bottom: ${(props) => props.theme.spacing.m};
 `;
 
-const StyledContent = styled.div`
+export const $Content = $.div`
   display: flex;
   flex-direction: column;
   font-size: ${(props) => props.theme.fontSize.heading.s};
@@ -33,7 +33,7 @@ const StyledContent = styled.div`
   line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
-const StyledFormGroup = styled.div<Props>`
+export const $FormGroup = $.div<Props>`
   display: flex;
   align-items: center;
   font-size: ${(props) => props.theme.fontSize.body.m};
@@ -44,7 +44,7 @@ const StyledFormGroup = styled.div<Props>`
   background-color: ${(props) => props.backgroundColor};
 `;
 
-const StyledFieldsContainerWithPadding = styled.div`
+export const $FieldsContainerWithPadding = $.div`
   display: flex;
   height: 130px;
   padding-left: var(--spacing-m);
@@ -59,7 +59,7 @@ const StyledFieldsContainerWithPadding = styled.div`
   }
 `;
 
-const StyledViewFieldsContainer = styled.div`
+export const $ViewFieldsContainer = $.div`
   font-size: ${(props) => props.theme.fontSize.body.m};
   display: flex;
   align-items: center;
@@ -76,15 +76,4 @@ const StyledViewFieldsContainer = styled.div`
   width: 100%;
 `;
 
-const StyledViewField = styled.div``;
-
-export {
-  StyledContent,
-  StyledFieldsContainerWithPadding,
-  StyledFormGroup,
-  StyledHeader,
-  StyledSection,
-  StyledSubHeader,
-  StyledViewField,
-  StyledViewFieldsContainer,
-};
+export const $ViewField = $.div``;

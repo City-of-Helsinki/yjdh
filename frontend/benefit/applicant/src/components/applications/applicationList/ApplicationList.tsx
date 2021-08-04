@@ -3,8 +3,8 @@ import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
 
+import { $Heading, $ListWrapper } from './ApplicationList.sc';
 import ListItem from './listItem/ListItem';
-import { StyledHeading, StyledListWrapper } from './styled';
 import useApplicationList from './useApplicationList';
 
 export interface ApplicationListProps {
@@ -30,10 +30,10 @@ const ApplicationsList: React.FC<ApplicationListProps> = ({
 
   return (
     <Container backgroundColor={theme.colors.silverLight}>
-      <StyledHeading>
+      <$Heading>
         {shouldShowSkeleton ? <LoadingSkeleton width="20%" /> : heading}
-      </StyledHeading>
-      <StyledListWrapper>{items}</StyledListWrapper>
+      </$Heading>
+      <$ListWrapper>{items}</$ListWrapper>
     </Container>
   );
 };

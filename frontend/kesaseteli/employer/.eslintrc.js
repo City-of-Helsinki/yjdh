@@ -17,6 +17,7 @@ module.exports = {
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
     'no-void': 'off',
+    'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
   },
   overrides: [
     {

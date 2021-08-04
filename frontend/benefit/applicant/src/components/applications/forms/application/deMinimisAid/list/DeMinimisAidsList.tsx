@@ -1,5 +1,5 @@
-import { StyledSubActionContainer } from 'benefit/applicant/components/applications/forms/application/styled';
-import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
+import { $SecondaryButton } from 'benefit/applicant/components/applications/Applications.sc';
+import { $SubActionContainer } from 'benefit/applicant/components/applications/forms/application/Application.sc';
 import {
   DE_MINIMIS_AID_FIELDS,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
@@ -8,10 +8,10 @@ import { IconMinusCircle, Notification } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
-  StyledFormGroup,
-  StyledViewField,
-  StyledViewFieldsContainer,
-} from 'shared/components/forms/section/styled';
+  $FormGroup,
+  $ViewField,
+  $ViewFieldsContainer,
+} from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 import { formatDate, parseDate } from 'shared/utils/date.utils';
 
@@ -23,38 +23,36 @@ const DeMinimisAidsList: React.FC = () => {
   return (
     <>
       {grants?.map((grant, i) => (
-        <StyledFormGroup
+        <$FormGroup
           backgroundColor={theme.colors.silverLight}
           key={`${grant[DE_MINIMIS_AID_FIELDS.GRANTER]}${
             grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
           }${grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT]}`}
         >
-          <StyledViewFieldsContainer>
-            <StyledViewField>
-              {grant[DE_MINIMIS_AID_FIELDS.GRANTER]}
-            </StyledViewField>
-            <StyledViewField>{`${
+          <$ViewFieldsContainer>
+            <$ViewField>{grant[DE_MINIMIS_AID_FIELDS.GRANTER]}</$ViewField>
+            <$ViewField>{`${
               grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
-            } €`}</StyledViewField>
-            <StyledViewField>
+            } €`}</$ViewField>
+            <$ViewField>
               {formatDate(
                 parseDate(grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT], 'yyyy-MM-dd')
               )}
-            </StyledViewField>
-          </StyledViewFieldsContainer>
-          <StyledSubActionContainer>
-            <StyledSecondaryButton
+            </$ViewField>
+          </$ViewFieldsContainer>
+          <$SubActionContainer>
+            <$SecondaryButton
               onClick={() => handleRemove(i)}
               variant="secondary"
               iconLeft={<IconMinusCircle />}
             >
               {t(`${translationsBase}.deMinimisAidsRemove`)}
-            </StyledSecondaryButton>
-          </StyledSubActionContainer>
-        </StyledFormGroup>
+            </$SecondaryButton>
+          </$SubActionContainer>
+        </$FormGroup>
       ))}
       {sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
-        <StyledFormGroup>
+        <$FormGroup>
           <Notification
             label={t(
               `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
@@ -65,7 +63,7 @@ const DeMinimisAidsList: React.FC = () => {
               `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
             )}
           </Notification>
-        </StyledFormGroup>
+        </$FormGroup>
       )}
     </>
   );

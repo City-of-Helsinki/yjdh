@@ -1,18 +1,18 @@
 import { useTranslation } from 'benefit/applicant/i18n';
 import React from 'react';
 
-import { StyledFooter } from './styled';
+import { $Footer } from './Footer.sc';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <StyledFooter title={t('common:appName')}>
-      <StyledFooter.Base
+    <$Footer title={t('common:appName')}>
+      <$Footer.Base
         copyrightHolder={t('footer:copyrightText')}
         copyrightText={t('footer:allRightsReservedText')}
       />
-    </StyledFooter>
+    </$Footer>
   );
 };
 

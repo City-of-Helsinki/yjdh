@@ -20,6 +20,7 @@ module.exports = {
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
     'unicorn/no-array-reduce': 'off',
+    'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
   },
   overrides: [
     {

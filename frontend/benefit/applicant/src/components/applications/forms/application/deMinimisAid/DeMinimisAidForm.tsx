@@ -1,5 +1,5 @@
-import { StyledSubActionContainer } from 'benefit/applicant/components/applications/forms/application/styled';
-import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
+import { $SecondaryButton } from 'benefit/applicant/components/applications/Applications.sc';
+import { $SubActionContainer } from 'benefit/applicant/components/applications/forms/application/Application.sc';
 import {
   DE_MINIMIS_AID_FIELDS,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
@@ -10,10 +10,10 @@ import { DateInput, IconPlusCircle, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
-  StyledFieldsContainerWithPadding,
-  StyledFormGroup,
-  StyledSubHeader,
-} from 'shared/components/forms/section/styled';
+  $FieldsContainerWithPadding,
+  $FormGroup,
+  $SubHeader,
+} from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 
 import { useDeminimisAid } from './useDeminimisAid';
@@ -35,12 +35,10 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
 
   return (
     <>
-      <StyledSubHeader>
-        {t(`${translationsBase}.deMinimisAidsHeading`)}
-      </StyledSubHeader>
+      <$SubHeader>{t(`${translationsBase}.deMinimisAidsHeading`)}</$SubHeader>
       <>
-        <StyledFormGroup backgroundColor={theme.colors.silverLight}>
-          <StyledFieldsContainerWithPadding>
+        <$FormGroup backgroundColor={theme.colors.silverLight}>
+          <$FieldsContainerWithPadding>
             <TextInput
               id={fields.granter.name}
               name={fields.granter.name}
@@ -81,9 +79,9 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               maxDate={new Date()}
               required
             />
-          </StyledFieldsContainerWithPadding>
-          <StyledSubActionContainer>
-            <StyledSecondaryButton
+          </$FieldsContainerWithPadding>
+          <$SubActionContainer>
+            <$SecondaryButton
               disabled={
                 sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
               }
@@ -92,9 +90,9 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               iconLeft={<IconPlusCircle />}
             >
               {t(`${translationsBase}.deMinimisAidsAdd`)}
-            </StyledSecondaryButton>
-          </StyledSubActionContainer>
-        </StyledFormGroup>
+            </$SecondaryButton>
+          </$SubActionContainer>
+        </$FormGroup>
       </>
     </>
   );

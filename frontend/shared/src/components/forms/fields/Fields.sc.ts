@@ -1,7 +1,7 @@
 import { Checkbox, RadioButton, Select } from 'hds-react';
-import styled from 'styled-components';
+import $ from 'styled-components';
 
-const StyledCheckbox = styled(Checkbox)`
+export const $Checkbox = $(Checkbox)`
   --background-selected: ${(props) => props.theme.colors.coatOfArms};
   --background-hover: ${(props) => props.theme.colors.coatOfArms};
   --border-color-selected: ${(props) => props.theme.colors.coatOfArms};
@@ -10,7 +10,7 @@ const StyledCheckbox = styled(Checkbox)`
   --focus-outline-color: ${(props) => props.theme.colors.coatOfArms};
 `;
 
-const StyledRadioButton = styled(RadioButton)`
+export const $RadioButton = $(RadioButton)`
   --border-color-selected: ${(props) => props.theme.colors.coatOfArms};
   --border-color-selected-hover: ${(props) => props.theme.colors.coatOfArms};
   --border-color-selected-focus: ${(props) => props.theme.colors.coatOfArms};
@@ -18,10 +18,8 @@ const StyledRadioButton = styled(RadioButton)`
   --icon-color-hover: ${(props) => props.theme.colors.coatOfArms};
 `;
 
-const StyledDropdown = styled(Select)`
+export const $Dropdown = $(Select)`
   --border-color-selected: ${(props) => props.theme.colors.coatOfArms};
   --border-color-selected-hover: ${(props) => props.theme.colors.coatOfArms};
   --border-color-selected-focus: ${(props) => props.theme.colors.coatOfArms};
 `;
-
-export { StyledCheckbox, StyledDropdown,StyledRadioButton };

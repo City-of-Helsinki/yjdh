@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { StyledContainer, StyledInner } from './styled';
+import { $Container, $Inner } from './Container.sc';
 
 type ContainerProps = { children: React.ReactNode; backgroundColor?: string };
 
@@ -8,9 +8,9 @@ const Container: React.FC<ContainerProps> = ({
   children,
   backgroundColor = '',
 }: ContainerProps) => (
-  <StyledContainer backgroundColor={backgroundColor}>
-    <StyledInner>{children}</StyledInner>
-  </StyledContainer>
+  <$Container backgroundColor={backgroundColor}>
+    <$Inner>{children}</$Inner>
+  </$Container>
 );
 
 const defaultProps = {

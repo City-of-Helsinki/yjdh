@@ -1,9 +1,7 @@
 import * as React from 'react';
 
-import { SpacingProps, StyledContent } from './styled';
+import { $Content, SpacingProps } from './Spacing.sc';
 
-const Spacing: React.FC<SpacingProps> = ({ size }) => (
-  <StyledContent size={size} />
-);
+const Spacing: React.FC<SpacingProps> = ({ size }) => <$Content size={size} />;
 
 export default Spacing;
