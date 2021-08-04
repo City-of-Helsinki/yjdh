@@ -1,5 +1,5 @@
 import useLocale from 'benefit/applicant/hooks/useLocale';
-import { i18n, useTranslation } from 'benefit/applicant/i18n';
+import { useTranslation } from 'benefit/applicant/i18n';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
@@ -34,9 +34,7 @@ const useHeader = (): ExtendedComponentProps => {
     newLanguage: OptionType
   ): void => {
     e.preventDefault();
-    if (i18n) {
-      void i18n.changeLanguage(newLanguage.value);
-    }
+    void router.push('/', '/', { locale: newLanguage.value });
   };
 
   const handleNavigationItemClick = (pathname: string): void => {

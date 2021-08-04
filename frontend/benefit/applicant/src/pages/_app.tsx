@@ -11,25 +11,32 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
-import { getBackendDomain } from '../backend-api/backend-api';
+import { getBackendDomain, getHeaders } from '../backend-api/backend-api';
+import useLocale from '../hooks/useLocale';
 
 const queryClient = new QueryClient();
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => (
-  <BackendAPIProvider baseURL={getBackendDomain()}>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyling />
-        <Layout>
-          <Header />
-          <Content>
-            <Component {...pageProps} />
-          </Content>
-          <Footer />
-        </Layout>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </BackendAPIProvider>
-);
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  const locale = useLocale();
+  return (
+    <BackendAPIProvider
+      baseURL={getBackendDomain()}
+      headers={getHeaders(locale)}
+    >
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyling />
+          <Layout>
+            <Header />
+            <Content>
+              <Component {...pageProps} />
+            </Content>
+            <Footer />
+          </Layout>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </BackendAPIProvider>
+  );
+};
 
 export default appWithTranslation(App);
