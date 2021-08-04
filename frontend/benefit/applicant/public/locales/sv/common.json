@@ -120,8 +120,8 @@
             "placeholder": "Myöntävä taho"
           },
           "deMinimisAidAmount": {
-            "label": "Tuen määrä",
-            "placeholder": "euro"
+            "label": "Tuen määrä (euro)",
+            "placeholder": "€"
           },
           "deMinimisAidGrantedAt": {
             "label": "Myöntämispäivämääärä",
