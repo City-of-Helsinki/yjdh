@@ -316,6 +316,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "additional_pay_subsidy_percent",
             "apprenticeship_program",
             "archived",
+            "application_step",
             "benefit_type",
             "start_date",
             "end_date",
@@ -415,6 +416,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
             },
             "benefit_type": {
                 "help_text": "Benefit type of this application",
+            },
+            "application_step": {
+                "help_text": "current/latest application step shown in the UI",
             },
             "start_date": {
                 "help_text": "Must be within the current year.",
