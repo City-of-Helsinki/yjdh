@@ -43,7 +43,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     name,
     avatar,
     statusText,
-    modifiedAt,
+    createdAt,
     submittedAt,
     applicationNum,
     allowedAction,
@@ -59,10 +59,10 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           <$DataHeader>{t(`${translationBase}.employee`)}</$DataHeader>
           <$DataValue>{name}</$DataValue>
         </$DataColumn>
-        {modifiedAt && (
+        {createdAt && (
           <$DataColumn>
-            <$DataHeader>{t(`${translationBase}.saved`)}</$DataHeader>
-            <$DataValue>{modifiedAt}</$DataValue>
+            <$DataHeader>{t(`${translationBase}.created`)}</$DataHeader>
+            <$DataValue>{createdAt}</$DataValue>
           </$DataColumn>
         )}
         {submittedAt && (

@@ -105,6 +105,7 @@ export type ApplicationData = {
   last_modified_at?: string;
   attachments?: AttachmentData[];
   create_application_for_company?: string;
+  created_at?: string;
 };
 
 interface ApplicationAllowedAction {
@@ -121,6 +122,7 @@ export interface ApplicationListItemData {
     color: keyof DefaultTheme['colors'];
   };
   statusText?: string;
+  createdAt?: string;
   modifiedAt?: string;
   submittedAt?: string;
   applicationNum?: number;
@@ -220,6 +222,7 @@ export type Application = {
   [APPLICATION_FIELDS_STEP2.END_DATE]?: string | null;
   [APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID]?: boolean | null;
   deMinimisAidSet?: DeMinimisAid[];
+  createdAt?: string | null;
   // create_application_for_company ? not present in the UI?
 };
 

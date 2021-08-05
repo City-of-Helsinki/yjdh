@@ -101,6 +101,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       status: applStatus,
       employee,
       last_modified_at,
+      created_at,
       submitted_at,
       application_number: applicationNum,
     } = application;
@@ -114,10 +115,12 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     };
     const allowedAction = getAllowedActions(id, applStatus);
     const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
+    const createdAt =
+      created_at && formatDate(new Date(created_at), 'dd.MM.yyyy. mm:ss');
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));
     const commonProps = { id, name, avatar, modifiedAt, allowedAction };
-    const draftProps = { modifiedAt };
+    const draftProps = { createdAt };
     const submittedProps = {
       submittedAt,
       applicationNum,

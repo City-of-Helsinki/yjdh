@@ -2,6 +2,8 @@ import {
   $HeaderItem,
   $PageHeader,
   $PageHeading,
+  $PageHeadingHelperText,
+  $PageSubHeading,
 } from 'benefit/applicant/components/applications/Applications.sc';
 import ApplicationFormStep1 from 'benefit/applicant/components/applications/forms/application/step1/ApplicationFormStep1';
 import ApplicationFormStep2 from 'benefit/applicant/components/applications/forms/application/step2/ApplicationFormStep2';
@@ -12,23 +14,37 @@ import ApplicationFormStep6 from 'benefit/applicant/components/applications/form
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import Stepper from 'shared/components/stepper/Stepper';
+import { formatDate } from 'shared/utils/date.utils';
 
 import { usePageContent } from './usePageContent';
 
 const PageContent: React.FC = () => {
-  const { t, steps, currentStep, application } = usePageContent();
+  const { t, id, steps, currentStep, application } = usePageContent();
   return (
     <Container>
       <$PageHeader>
         <$HeaderItem>
           <$PageHeading>
-            {t('common:applications.pageHeaders.new')}
+            {t(`common:applications.pageHeaders.${id ? 'edit' : 'new'}`)}
           </$PageHeading>
         </$HeaderItem>
         <$HeaderItem>
           <Stepper steps={steps} activeStep={currentStep} />
         </$HeaderItem>
       </$PageHeader>
+      {id && application?.createdAt && (
+        <>
+          <$PageSubHeading>
+            {`${t('common:applications.pageHeaders.created')} ${formatDate(
+              new Date(application?.createdAt),
+              'dd.MM.yyyy. mm:ss'
+            )}`}
+          </$PageSubHeading>
+          <$PageHeadingHelperText>
+            {t('common:applications.pageHeaders.helperText')}
+          </$PageHeadingHelperText>
+        </>
+      )}
       {currentStep === 1 && <ApplicationFormStep1 data={application} />}
       {currentStep === 2 && <ApplicationFormStep2 data={application} />}
       {currentStep === 3 && <ApplicationFormStep3 />}
