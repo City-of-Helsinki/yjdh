@@ -24,6 +24,7 @@ from dateutil.relativedelta import relativedelta
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
+from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from rest_framework import serializers
 
 
@@ -97,6 +98,13 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["created_at"]
+
+    def validate(self, data):
+        if data["attachment_file"].size > MAX_UPLOAD_SIZE:
+            raise serializers.ValidationError(
+                f"Upload file size cannot be greater than {MAX_UPLOAD_SIZE} bytes"
+            )
+        return data
 
 
 class DeMinimisAidSerializer(serializers.ModelSerializer):

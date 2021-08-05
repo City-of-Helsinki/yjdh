@@ -65,6 +65,7 @@ env = environ.Env(
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_ACCOUNT_KEY=(str, ""),
     AZURE_CONTAINER=(str, ""),
+    AZURE_URL_EXPIRATION_SECS=(int, 900),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -275,6 +276,9 @@ DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
 AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
 AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
 AZURE_CONTAINER = env("AZURE_CONTAINER")
+AZURE_URL_EXPIRATION_SECS = env("AZURE_URL_EXPIRATION_SECS")  # default 900s
+
+MAX_UPLOAD_SIZE = 10485760  # 10MB
 
 
 # local_settings.py can be used to override environment-specific settings
