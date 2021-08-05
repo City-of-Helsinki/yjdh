@@ -86,6 +86,9 @@ def test_application_post_success(api_client, application):
         new_application.company_contact_person_phone_number
         == data["company_contact_person_phone_number"]
     )
+    assert datetime.fromisoformat(data["created_at"]) == datetime(
+        2021, 6, 4, tzinfo=pytz.UTC
+    )
     assert new_application.application_step == data["application_step"]
     assert {v.identifier for v in new_application.bases.all()} == {
         b for b in data["bases"]

@@ -324,6 +324,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "de_minimis_aid_set",
             "create_application_for_company",
             "last_modified_at",
+            "created_at",
             "attachments",
         ]
         read_only_fields = [
@@ -337,6 +338,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "official_company_postcode",
             "available_benefit_types",
             "last_modified_at",
+            "created_at",
         ]
         extra_kwargs = {
             "company_name": {
