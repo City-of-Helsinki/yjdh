@@ -22,6 +22,7 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
@@ -56,8 +57,12 @@ class ApplicationStatusValidator:
                 and value not in self.APPLICATION_STATUS_TRANSITIONS[application.status]
             ):
                 raise serializers.ValidationError(
-                    _(
-                        f"Application state transition not allowed: {application.status} to {value}"
+                    format_lazy(
+                        _(
+                            "Application state transition not allowed: {status} to {value}"
+                        ),
+                        status=application.status,
+                        value=value,
                     )
                 )
         else:
@@ -102,7 +107,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data["attachment_file"].size > MAX_UPLOAD_SIZE:
             raise serializers.ValidationError(
-                f"Upload file size cannot be greater than {MAX_UPLOAD_SIZE} bytes"
+                format_lazy(
+                    _("Upload file size cannot be greater than {size} bytes"),
+                    size=MAX_UPLOAD_SIZE,
+                )
             )
         return data
 
@@ -127,9 +135,9 @@ class DeMinimisAidSerializer(serializers.ModelSerializer):
     def validate_granted_at(self, value):
         min_date = date(date.today().year - 4, 1, 1)
         if value < min_date:
-            raise serializers.ValidationError("Grant date too much in past")
+            raise serializers.ValidationError(_("Grant date too much in past"))
         elif value > date.today():
-            raise serializers.ValidationError("Grant date can not be in the future")
+            raise serializers.ValidationError(_("Grant date can not be in the future"))
         return value
 
     class Meta:
@@ -542,7 +550,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             # applicant has not selected the value yet
             return []
         else:
-            raise BenefitAPIException("This should be unreachable")
+            raise BenefitAPIException(_("This should be unreachable"))
 
     def _validate_de_minimis_aid_set(
         self,
@@ -593,7 +601,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         total_aid = sum([item["amount"] for item in de_minimis_aid_set])
         if total_aid > DeMinimisAidSerializer.MAX_AID_AMOUNT:
             raise serializers.ValidationError(
-                {"de_minimis_aid_set": "Total amount of de minimis aid too large"}
+                {"de_minimis_aid_set": _("Total amount of de minimis aid too large")}
             )
 
     def _validate_date_range(self, start_date, end_date, benefit_type):
@@ -656,7 +664,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
             for key in ["pay_subsidy_percent", "additional_pay_subsidy_percent"]:
                 if locals()[key] is not None:
                     raise serializers.ValidationError(
-                        {key: _(f"This application can not have {key}")}
+                        {
+                            key: format_lazy(
+                                _("This application can not have {key}"), key=key
+                            )
+                        }
                     )
         if pay_subsidy_percent is None and additional_pay_subsidy_percent is not None:
             raise serializers.ValidationError(
@@ -875,7 +887,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
         serializer = DeMinimisAidSerializer(data=de_minimis_data, many=True)
         if not serializer.is_valid():
             raise BenefitAPIException(
-                f"Reading de minimis data failed: {serializer.errors}"
+                format_lazy(
+                    _("Reading de minimis data failed: {errors}"),
+                    errors=serializer.errors,
+                )
             )
         # Clear the previous DeMinimisAid objects from the database.
         # The request must always contain all the DeMinimisAid objects for this application.
