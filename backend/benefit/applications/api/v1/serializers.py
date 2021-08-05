@@ -23,8 +23,8 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
-from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
+from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
