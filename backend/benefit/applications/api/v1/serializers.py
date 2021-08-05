@@ -1,6 +1,7 @@
 import re
 from datetime import date
 
+import filetype
 from applications.enums import (
     ApplicationStatus,
     AttachmentRequirement,
@@ -22,6 +23,7 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
+from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
@@ -92,6 +94,9 @@ class ApplicationBasisSerializer(serializers.ModelSerializer):
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
+    # this limit is a security feature, not a business rule
+    MAX_ATTACHMENTS_PER_APPLICATION = 20
+
     class Meta:
         model = Attachment
         fields = [
@@ -105,6 +110,11 @@ class AttachmentSerializer(serializers.ModelSerializer):
         read_only_fields = ["created_at"]
 
     def validate(self, data):
+        """
+        Perform rudimentary validation of file content to guard against accidentally uploading
+        invalid files.
+        """
+
         if data["attachment_file"].size > MAX_UPLOAD_SIZE:
             raise serializers.ValidationError(
                 format_lazy(
@@ -112,7 +122,38 @@ class AttachmentSerializer(serializers.ModelSerializer):
                     size=MAX_UPLOAD_SIZE,
                 )
             )
+
+        if (
+            len(data["application"].attachments.all())
+            >= self.MAX_ATTACHMENTS_PER_APPLICATION
+        ):
+            raise serializers.ValidationError(_("Too many attachments"))
+        if data["content_type"] == "application/pdf":
+            if not self._is_valid_pdf(data["attachment_file"]):
+                raise serializers.ValidationError(_("Not a valid pdf file"))
+        elif not self._is_valid_image(data["attachment_file"]):
+            # only pdf and image files are listed in ATTACHMENT_CONTENT_TYPE_CHOICES, so if we get here,
+            # the content type is an image file
+            raise serializers.ValidationError(_("Not a valid image file"))
         return data
+
+    def _is_valid_image(self, uploaded_file):
+        try:
+            im = ImageField()
+            # check if the file is a valid image
+            im.to_python(uploaded_file)
+        except DjangoFormsValidationError:
+            return False
+        else:
+            return True
+
+    def _is_valid_pdf(self, uploaded_file):
+        file_pos = uploaded_file.tell()
+        mime_type = None
+        if file_type_guess := filetype.guess(uploaded_file):
+            mime_type = file_type_guess.mime
+        uploaded_file.seek(file_pos)  # restore position
+        return mime_type == "application/pdf"
 
 
 class DeMinimisAidSerializer(serializers.ModelSerializer):

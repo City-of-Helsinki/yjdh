@@ -78,6 +78,8 @@ djangorestframework==3.12.4
     #   drf-spectacular
 drf-spectacular==0.17.2
     # via -r requirements.in
+filetype==1.0.7
+    # via -r requirements.in
 idna==2.10
     # via requests
 inflection==0.5.1
