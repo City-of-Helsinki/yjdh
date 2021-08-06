@@ -16,6 +16,7 @@ type ExtendedComponentProps = {
   steps: StepProps[];
   currentStep: number;
   application: Application;
+  id: string | string[] | undefined;
 };
 
 const usePageContent = (): ExtendedComponentProps => {
@@ -59,6 +60,7 @@ const usePageContent = (): ExtendedComponentProps => {
 
   return {
     t,
+    id,
     steps,
     currentStep: applicationTempData.currentStep,
     application: !isEmpty(application)

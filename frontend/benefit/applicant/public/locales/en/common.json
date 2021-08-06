@@ -2,6 +2,7 @@
   "applications": {
     "list": {
       "drafts": {
+        "created": "Luotu",
         "heading": "Luonnokset",
         "employee": "Työllistetty",
         "saved": "Tallennettu",
@@ -18,7 +19,10 @@
       }
     },
     "pageHeaders": {
-      "new": "Uusi hakemus"
+      "created": "Luotu",
+      "new": "Uusi hakemus",
+      "edit": "Hakemus",
+      "helperText": "Ole hyvä ja tarkista hakemus. Tarvittaessa voit vielä muokata tietoja ennen kuin siirryt eteenpäin."
     },
     "statuses": {
       "draft": "Luonnos",

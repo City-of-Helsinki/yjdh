@@ -42,6 +42,21 @@ export const $PageHeading = $.h1`
   margin: 0;
 `;
 
+export const $PageSubHeading = $.h3`
+  color: ${(props) => props.theme.colors.coatOfArms};
+  font-size: ${(props) => props.theme.fontSize.heading.s};
+  font-weight: 500;
+  margin-top: ${(props) => props.theme.spacing.l};
+  margin-bottom: ${(props) => props.theme.spacing.m};
+`;
+
+export const $PageHeadingHelperText = $.div`
+  font-size: ${(props) => props.theme.fontSize.heading.s};
+  font-weight: normal;
+  margin-top: ${(props) => props.theme.spacing.l};
+  margin-bottom: ${(props) => props.theme.spacing.m};
+`;
+
 export const $ApplicationActions = $.div`
   display: flex;
   justify-content: space-between;

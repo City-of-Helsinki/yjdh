@@ -13,7 +13,7 @@ import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
-import { formatDate } from 'shared/utils/date.utils';
+import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
 import { getInitials } from 'shared/utils/string.utils';
 import { DefaultTheme } from 'styled-components';
 
@@ -101,6 +101,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       status: applStatus,
       employee,
       last_modified_at,
+      created_at,
       submitted_at,
       application_number: applicationNum,
     } = application;
@@ -114,10 +115,13 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     };
     const allowedAction = getAllowedActions(id, applStatus);
     const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
+    const createdAt =
+      created_at &&
+      formatDate(new Date(created_at), DATE_FORMATS.DATE_AND_TIME);
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));
     const commonProps = { id, name, avatar, modifiedAt, allowedAction };
-    const draftProps = { modifiedAt };
+    const draftProps = { createdAt };
     const submittedProps = {
       submittedAt,
       applicationNum,
