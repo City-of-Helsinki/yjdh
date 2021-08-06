@@ -514,3 +514,6 @@ class Attachment(UUIDModel, TimeStampedModel):
         verbose_name = _("attachment")
         verbose_name_plural = _("attachments")
         ordering = ["application__created_at", "attachment_type", "created_at"]
+
+    def __str__(self):
+        return "{} {}".format(self.attachment_type, self.attachment_file.name)

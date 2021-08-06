@@ -23,8 +23,8 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
-from django.utils.text import format_lazy
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
@@ -109,11 +109,25 @@ class AttachmentSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["created_at"]
 
+    ATTACHMENT_MODIFICATION_ALLOWED_STATUSES = (
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ApplicationStatus.DRAFT,
+    )
+
     def validate(self, data):
         """
-        Perform rudimentary validation of file content to guard against accidentally uploading
+        Validation includes:
+        * validate that adding attachments is allowed in this application status
+        * rudimentary validation of file content to guard against accidentally uploading
         invalid files.
         """
+        if (
+            data["application"].status
+            not in self.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
+        ):
+            raise serializers.ValidationError(
+                _("Can not add attachment to an application in this state")
+            )
 
         if data["attachment_file"].size > MAX_UPLOAD_SIZE:
             raise serializers.ValidationError(
@@ -891,26 +905,75 @@ class ApplicationSerializer(serializers.ModelSerializer):
         self._validate_non_draft_required_fields(data)
         return data
 
+    def handle_status_transition(self, instance, previous_status):
+        if instance.status == ApplicationStatus.RECEIVED:
+            # moving out of DRAFT or ADDITIONAL_INFORMATION_NEEDED, so the applicant
+            # may have modified the application
+            self._validate_attachments(instance)
+        ApplicationLogEntry.objects.create(
+            application=instance,
+            from_status=previous_status,
+            to_status=instance.status,
+        )
+
+    def _validate_attachments(self, instance):
+        """
+        The requirements for attachments are the minimum requirements.
+        * Sometimes, a multi-page document might be uploaded as a set of jpg files, and the backend
+          would not know that it's meant to be a single document.
+        * If the applicant uploads more than the maximum number of attachments of a certain type, that is allowed.
+        * If wrong types of attachments have been uploaded, they are purged from the system. This might happen
+          if the applicant first uploads attachments, but then goes back to previous steps and changes certain
+          application fields before submitting the application
+        """
+
+        attachment_requirements = self.get_attachment_requirements(instance)
+        required_attachment_types = [
+            req[0]
+            for req in attachment_requirements
+            if req[1] == AttachmentRequirement.REQUIRED
+        ]
+        valid_attachment_types = {req[0] for req in attachment_requirements}
+        attachments_with_invalid_type = []
+
+        for attachment in instance.attachments.all().order_by("created_at"):
+            if attachment.attachment_type not in valid_attachment_types:
+                attachments_with_invalid_type.append(attachment)
+            else:
+                if attachment.attachment_type in required_attachment_types:
+                    required_attachment_types.remove(attachment.attachment_type)
+
+        if required_attachment_types:
+            # if anything still remains in the list, it means some attachment(s) were missing
+            raise serializers.ValidationError(
+                _("Application does not have required attachments")
+            )
+        for attach in attachments_with_invalid_type:
+            attach.delete()
+
     @transaction.atomic
     def update(self, instance, validated_data):
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
-        if validated_data["status"] != instance.status:
-            ApplicationLogEntry.objects.create(
-                application=instance,
-                from_status=instance.status,
-                to_status=validated_data["status"],
-            )
         employee_data = validated_data.pop("employee", None)
+        pre_update_status = instance.status
         application = super().update(instance, validated_data)
         if de_minimis_data is not None:
             # if it is a patch request that didn't have de_minimis_data_set, do nothing
             self._update_de_minimis_aid(application, de_minimis_data)
         if employee_data is not None:
             self._update_or_create_employee(application, employee_data)
+
+        if instance.status != pre_update_status:
+            self.handle_status_transition(instance, pre_update_status)
+
         return application
 
     @transaction.atomic
     def create(self, validated_data):
+        if validated_data["status"] != ApplicationStatus.DRAFT:
+            raise serializers.ValidationError(
+                _("Application initial state must be draft")
+            )
         de_minimis_data = validated_data.pop("de_minimis_aid_set")
         employee_data = validated_data.pop("employee", None)
         validated_data["company"] = self.get_company_for_new_application(validated_data)
