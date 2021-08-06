@@ -2,6 +2,11 @@ import { format as formatDateStr, Locale, parse } from 'date-fns';
 import { enGB as en, fi, sv } from 'date-fns/locale';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
+export const DATE_FORMATS = {
+  DATE: 'dd.MM.yyyy',
+  DATE_AND_TIME: 'dd.MM.yyyy. mm:ss',
+};
+
 const locales: Record<Language, Locale> = { fi, sv, en };
 /**
  * Format date string
@@ -12,7 +17,7 @@ const locales: Record<Language, Locale> = { fi, sv, en };
  */
 export const formatDate = (
   date: Date | number | null,
-  format = 'dd.MM.yyyy',
+  format = DATE_FORMATS.DATE,
   locale: Language = DEFAULT_LANGUAGE
 ): string => {
   if (!date) {

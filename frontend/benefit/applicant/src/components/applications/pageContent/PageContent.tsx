@@ -14,7 +14,7 @@ import ApplicationFormStep6 from 'benefit/applicant/components/applications/form
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import Stepper from 'shared/components/stepper/Stepper';
-import { formatDate } from 'shared/utils/date.utils';
+import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
 
 import { usePageContent } from './usePageContent';
 
@@ -37,7 +37,7 @@ const PageContent: React.FC = () => {
           <$PageSubHeading>
             {`${t('common:applications.pageHeaders.created')} ${formatDate(
               new Date(application?.createdAt),
-              'dd.MM.yyyy. mm:ss'
+              DATE_FORMATS.DATE_AND_TIME
             )}`}
           </$PageSubHeading>
           <$PageHeadingHelperText>
