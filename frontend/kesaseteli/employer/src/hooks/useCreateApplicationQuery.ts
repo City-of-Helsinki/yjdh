@@ -15,8 +15,14 @@ const useCreateApplicationQuery = (): UseMutationResult<
     () =>
       handleResponse<Application>(axios.post(BackendEndpoint.APPLICATIONS, {})),
     {
-      onSuccess: () => {
-        queryClient.removeQueries('applications', { exact: true });
+      onSuccess: (newApplication) => {
+        if (newApplication?.id) {
+          queryClient.setQueryData(['applications', newApplication.id], newApplication)
+          void queryClient.invalidateQueries('applications', { exact: true });
+        }
+        else {
+          throw new Error('Missing id');
+        }
       },
     }
   );

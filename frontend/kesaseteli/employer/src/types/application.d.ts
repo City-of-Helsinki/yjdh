@@ -9,6 +9,6 @@ type Application = {
   invoicer_name: string;
   invoicer_phone_number: string;
   status: Status;
-  summer_vouchers: [];
+  summer_vouchers?: [];
 };
 export default Application;
