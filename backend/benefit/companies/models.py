@@ -9,6 +9,9 @@ class Company(AbstractCompany):
         include_countries=("FI",), verbose_name=_("bank account number")
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = "bf_companies_company"
         verbose_name = _("company")

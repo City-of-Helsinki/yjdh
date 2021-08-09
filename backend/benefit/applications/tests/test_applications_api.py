@@ -1,12 +1,13 @@
 import copy
 import json
 import os
+import re
 import tempfile
 from datetime import date, datetime
 
 import pytest
 import pytz
-from applications.api.v1.serializers import ApplicationSerializer
+from applications.api.v1.serializers import ApplicationSerializer, AttachmentSerializer
 from applications.enums import (
     ApplicationStatus,
     AttachmentType,
@@ -661,6 +662,63 @@ def test_attachment_upload_and_delete(api_client, application):
 
     assert response.status_code == 204
     assert len(application.attachments.all()) == 0
+
+
+def _upload_pdf(request, api_client, application):
+    with open(
+        os.path.join(request.fspath.dirname, "valid_pdf_file.pdf"), "rb"
+    ) as valid_pdf_file:
+        return api_client.post(
+            reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+            {
+                "attachment_file": valid_pdf_file,
+                "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
+            },
+            format="multipart",
+        )
+
+
+def test_pdf_attachment_upload(request, api_client, application):
+    response = _upload_pdf(request, api_client, application)
+    assert response.status_code == 201
+    assert len(application.attachments.all()) == 1
+    attachment = application.attachments.all().first()
+    assert attachment.attachment_type == AttachmentType.EMPLOYMENT_CONTRACT
+    assert attachment.attachment_file.name.endswith(".pdf")
+
+
+@pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
+def test_invalid_attachment_upload(api_client, application, extension):
+
+    tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
+    tmp_file.write(b"invalid data " * 100)
+    tmp_file.seek(0)
+
+    response = api_client.post(
+        reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+        {
+            "attachment_file": tmp_file,
+            "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
+        },
+        format="multipart",
+    )
+    re.match("Not a valid.*file", str(response.data["non_field_errors"][0]))
+    assert response.status_code == 400
+    assert len(application.attachments.all()) == 0
+
+
+def test_too_many_attachments(request, api_client, application):
+
+    for _ in range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION):
+        response = _upload_pdf(request, api_client, application)
+        assert response.status_code == 201
+
+    response = _upload_pdf(request, api_client, application)
+    assert response.status_code == 400
+    assert (
+        application.attachments.count()
+        == AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION
+    )
 
 
 def test_attachment_requirements(
