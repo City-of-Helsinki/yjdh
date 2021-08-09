@@ -135,10 +135,6 @@ const getApplicationPageApi = (queryClient: QueryClient, applicationId: Applicat
 describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
   let queryClient: QueryClient;
 
-  afterEach(() => {
-    nock.cleanAll();
-  })
-
   it('should not violate accessibility', async () => {
     const { container } = renderComponent(<ApplicationPage />);
     const results = await axe(container);
