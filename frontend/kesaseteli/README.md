@@ -53,8 +53,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode. 
-To run single test add the file name in the end, ie: `yarn test application` would run `application.test.tsx`
+Launches the test runner in the interactive watch mode.
 
 ## Learn More
 
