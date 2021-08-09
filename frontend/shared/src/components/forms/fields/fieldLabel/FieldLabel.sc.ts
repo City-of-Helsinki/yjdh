@@ -1,17 +1,17 @@
-import $ from 'styled-components';
+import styled from 'styled-components';
 
 export interface FieldLabelProps {
   required?: boolean;
   value?: string;
 }
 
-export const $Content = $.div<FieldLabelProps>`
+export const $Content = styled.div<FieldLabelProps>`
   font-size: ${(props) => props.theme.fontSize.body.m};
   font-weight: 500;
   margin-bottom: ${(props) => props.theme.spacing.m};
 `;
 
-export const $Required = $.span<FieldLabelProps>`
+export const $Required = styled.span<FieldLabelProps>`
   display: inline-block;
   font-size: ${(props) => props.theme.fontSize.body.xl};
   margin-left: ${(props) => props.theme.spacing.xs2};
