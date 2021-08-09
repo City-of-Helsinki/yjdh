@@ -68,4 +68,11 @@ export const $ApplicationAction = $.div`
   flex-direction: column;
 `;
 
+export const $SpinnerContainer = $.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 export const $Empty = $.div``;

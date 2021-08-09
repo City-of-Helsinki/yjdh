@@ -8,7 +8,7 @@ import camelcaseKeys from 'camelcase-keys';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
 
 type ExtendedComponentProps = {
@@ -17,22 +17,43 @@ type ExtendedComponentProps = {
   currentStep: number;
   application: Application;
   id: string | string[] | undefined;
+  isError: boolean;
+  isLoading: boolean;
 };
 
 const usePageContent = (): ExtendedComponentProps => {
-  const {
-    query: { id },
-  } = useRouter();
+  const router = useRouter();
+  const id = router?.query?.id;
   const { t } = useTranslation();
   const { applicationTempData } = React.useContext(ApplicationContext);
+  const [isLoading, setIsLoading] = useState(true);
   // query param used in edit mode. id from context used for updating newly created application
   const existingApplicationId = id?.toString() || applicationTempData?.id;
-  const { data: existingApplication } = useApplicationQuery(
-    existingApplicationId
-  );
+  const {
+    status: existingApplicationStatus,
+    data: existingApplication,
+    error: existingApplicationError,
+  } = useApplicationQuery(existingApplicationId);
   const { data: applicationTemplate } = useApplicationTemplateQuery(
     existingApplicationId
   );
+
+  useEffect(() => {
+    if (
+      id &&
+      existingApplicationStatus !== 'idle' &&
+      existingApplicationStatus !== 'loading'
+    ) {
+      setIsLoading(false);
+    }
+  }, [existingApplicationStatus, id]);
+
+  useEffect(() => {
+    if (router.isReady && !router.query.id) {
+      setIsLoading(false);
+    }
+  }, [router]);
+
   let application: Application = {};
   const defaultApplication = DEFAULT_APPLICATION as Application;
 
@@ -66,6 +87,8 @@ const usePageContent = (): ExtendedComponentProps => {
     application: !isEmpty(application)
       ? { ...defaultApplication, ...application }
       : defaultApplication,
+    isLoading,
+    isError: Boolean(id && existingApplicationError),
   };
 };
 

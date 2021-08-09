@@ -4,6 +4,7 @@ import {
   $PageHeading,
   $PageHeadingHelperText,
   $PageSubHeading,
+  $SpinnerContainer,
 } from 'benefit/applicant/components/applications/Applications.sc';
 import ApplicationFormStep1 from 'benefit/applicant/components/applications/forms/application/step1/ApplicationFormStep1';
 import ApplicationFormStep2 from 'benefit/applicant/components/applications/forms/application/step2/ApplicationFormStep2';
@@ -11,15 +12,45 @@ import ApplicationFormStep3 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep4 from 'benefit/applicant/components/applications/forms/application/step4/ApplicationFormStep4';
 import ApplicationFormStep5 from 'benefit/applicant/components/applications/forms/application/step5/ApplicationFormStep5';
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
+import { LoadingSpinner } from 'hds-react';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import Stepper from 'shared/components/stepper/Stepper';
 import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
 
+import ErrorPage from '../../errorPage/ErrorPage';
 import { usePageContent } from './usePageContent';
 
 const PageContent: React.FC = () => {
-  const { t, id, steps, currentStep, application } = usePageContent();
+  const {
+    t,
+    id,
+    steps,
+    currentStep,
+    application,
+    isError,
+    isLoading,
+  } = usePageContent();
+
+  if (isLoading) {
+    return (
+      isLoading && (
+        <$SpinnerContainer>
+          <LoadingSpinner />
+        </$SpinnerContainer>
+      )
+    );
+  }
+  if (isError) {
+    return (
+      <ErrorPage
+        title={t('common:errorPage.title')}
+        message={t('common:errorPage.message')}
+        showActions
+      />
+    );
+  }
+
   return (
     <Container>
       <$PageHeader>

@@ -16,7 +16,7 @@ const useApplicationTemplateQuery = (
       );
       return handleResponse(res);
     },
-    { enabled: !id }
+    { enabled: !id, retry: false }
   );
 };
 
