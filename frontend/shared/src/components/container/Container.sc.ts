@@ -1,15 +1,15 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
-import $ from 'styled-components';
+import styled from 'styled-components';
 
 interface ContainerProps {
   backgroundColor?: string;
 }
 
-export const $Container = $.div<ContainerProps>`
+export const $Container = styled.div<ContainerProps>`
   display: grid;
   background-color: ${(props) => props.backgroundColor || ''};
   grid-template-columns: ${(props) => props.theme.spacing.xs2} 1fr ${(props) =>
-  props.theme.spacing.xs2};
+      props.theme.spacing.xs2};
 
   ${respondAbove('md')`
     grid-template-columns: 1fr minmax(auto, 1240px) 1fr;
@@ -20,6 +20,6 @@ export const $Container = $.div<ContainerProps>`
   }
 `;
 
-export const $Inner = $.div`
+export const $Inner = styled.div`
   padding: ${(props) => props.theme.spacing.xs};
 `;

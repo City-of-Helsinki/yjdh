@@ -1,7 +1,7 @@
 import { breakpoints } from 'shared/styles/mediaQueries';
-import $ from 'styled-components';
+import styled from 'styled-components';
 
-export const $Main = $.main`
+export const $Main = styled.main`
   display: flex;
   flex-direction: column;
   height: 100vh;

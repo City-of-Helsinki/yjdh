@@ -1,8 +1,8 @@
 import { Notification as HDSNotification } from 'hds-react';
 import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
-import $ from 'styled-components';
+import styled from 'styled-components';
 
-export const $CompanyInfoContainer = $.div`
+export const $CompanyInfoContainer = styled.div`
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-areas:
@@ -12,19 +12,19 @@ export const $CompanyInfoContainer = $.div`
   width: 100%;
 `;
 
-export const $CompanyInfoSection = $.div`
+export const $CompanyInfoSection = styled.div`
   grid-area: info;
   display: flex;
   flex-wrap: wrap;
 `;
 
-export const $CompanyInfoColumn = $.div`
+export const $CompanyInfoColumn = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 0 50%;
 `;
 
-export const $CompanyInfoRow = $.div`
+export const $CompanyInfoRow = styled.div`
   display: flex;
   line-height: ${(props) => props.theme.lineHeight.l};
   height: ${(props) => `calc(${props.theme.lineHeight.l} * 1em)`};
@@ -32,19 +32,19 @@ export const $CompanyInfoRow = $.div`
   margin-bottom: ${(props) => props.theme.spacing.xs2};
 `;
 
-export const $Notification = $(HDSNotification)`
+export const $Notification = styled(HDSNotification)`
   grid-area: notification;
   font-size: ${(props) => props.theme.fontSize.heading.xs};
 `;
 
-export const $AddressContainer = $($FormGroup)`
+export const $AddressContainer = styled($FormGroup)`
   grid-area: address;
   margin-top: ${(props) => props.theme.spacing.l};
   display: grid;
   grid-template-columns: 2fr 1fr 2fr 1fr;
 `;
 
-export const $IBANContainer = $($FormGroup)`
+export const $IBANContainer = styled($FormGroup)`
   grid-area: iban;
   margin-top: ${(props) => props.theme.spacing.xl};
 

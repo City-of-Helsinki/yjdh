@@ -1,7 +1,7 @@
 import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
-import $ from 'styled-components';
+import styled from 'styled-components';
 
-export const $SubActionContainer = $.div`
+export const $SubActionContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -14,7 +14,7 @@ export const $SubActionContainer = $.div`
   padding-left: ${(props) => props.theme.spacing.s};
 `;
 
-export const $SubSection = $.div`
+export const $SubSection = styled.div`
   margin-left: 245px;
 
   textarea {
@@ -22,40 +22,40 @@ export const $SubSection = $.div`
   }
 `;
 
-export const $FieildsWithInfoContainer = $.div`
+export const $FieildsWithInfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-export const $FieildsWithInfoColumn = $.div`
+export const $FieildsWithInfoColumn = styled.div`
   flex: 0 0 50%;
 `;
 
-export const $ContactPersonContainer = $($FormGroup)`
+export const $ContactPersonContainer = styled($FormGroup)`
   display: grid;
   grid-template-columns: 2fr 2fr 1fr 2fr;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-export const $EmployerBasicInfoContainer = $($FormGroup)`
+export const $EmployerBasicInfoContainer = styled($FormGroup)`
   display: grid;
   grid-template-columns: 300px 300px 200px 200px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-export const $EmploymentRelationshipContainer = $($FormGroup)`
+export const $EmploymentRelationshipContainer = styled($FormGroup)`
   display: grid;
   grid-template-columns: 410px 200px 400px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-export const $EmploymentMoneyContainer = $($FormGroup)`
+export const $EmploymentMoneyContainer = styled($FormGroup)`
   display: grid;
   grid-template-columns: 200px 200px 200px;
   grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
-export const $CommissionContainer = $($FormGroup)`
+export const $CommissionContainer = styled($FormGroup)`
   display: grid;
   grid-template-columns: 500px 200px auto;
   grid-gap: ${(props) => props.theme.spacing.xs};

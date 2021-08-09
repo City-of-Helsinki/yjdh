@@ -1,24 +1,24 @@
-import $, { DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 interface AvatarProps {
   $backgroundColor: keyof DefaultTheme['colors'];
 }
 
-export const $ListItem = $.li`
+export const $ListItem = styled.li`
   display: flex;
   background-color: ${(props) => props.theme.colors.white};
   padding: ${(props) => props.theme.spacing.xs};
   justify-content: space-between;
 `;
 
-export const $ItemContent = $.div`
+export const $ItemContent = styled.div`
   display: grid;
   grid-template-columns: 60px 3fr repeat(4, minmax(100px, 2fr));
   grid-gap: ${(props) => props.theme.spacing.m};
   width: 100%;
 `;
 
-export const $Avatar = $.div<AvatarProps>`
+export const $Avatar = styled.div<AvatarProps>`
   ${(props) => `
     background-color: ${props.theme.colors[props.$backgroundColor]};
     color: ${props.theme.colors.white};
@@ -35,7 +35,7 @@ export const $Avatar = $.div<AvatarProps>`
   min-width: 60px;
 `;
 
-export const $DataColumn = $.div`
+export const $DataColumn = styled.div`
   color: ${(props) => props.theme.colors.black90};
   display: flex;
   flex-direction: column;
@@ -43,16 +43,16 @@ export const $DataColumn = $.div`
   gap: ${(props) => props.theme.spacing.xs};
 `;
 
-export const $DataHeader = $.div`
+export const $DataHeader = styled.div`
   display: flex;
 `;
 
-export const $DataValue = $.div`
+export const $DataValue = styled.div`
   display: flex;
   font-weight: 600;
 `;
 
-export const $ItemActions = $.div`
+export const $ItemActions = styled.div`
   display: grid;
   justify-content: stretch;
   align-items: center;
