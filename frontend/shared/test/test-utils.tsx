@@ -44,7 +44,7 @@ export const waitFor = <T,>(
 ): Promise<T> => {
   // Overwrite default options
   const mergedOptions = {
-    timeout: 15000,
+    timeout: 20000,
     ...options,
   };
   return _waitFor(callback, mergedOptions);

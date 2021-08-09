@@ -35,5 +35,5 @@ export const fakeApplication = (id: string): Application => ({
   status: 'draft',
 });
 
-export const fakeApplications = (count: number): Application[] => generateNodeArray(() => fakeApplication(faker.random.uuid()), count)
+export const fakeApplications = (count: number): Application[] => generateNodeArray(() => fakeApplication(faker.datatype.uuid()), count)
 

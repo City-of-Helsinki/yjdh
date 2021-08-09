@@ -148,10 +148,8 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
 
     beforeEach(() => {
       queryClient.clear();
-      nock.cleanAll();
       applicationApi = getApplicationPageApi(queryClient, id)
     });
-
 
     afterEach(() => {
       nock.cleanAll();

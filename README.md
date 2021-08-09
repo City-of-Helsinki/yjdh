@@ -8,7 +8,7 @@ YJDH-Kesäseteli
 
 1. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
 
-2. Run `yarn kesaseteli up` or, if you want to rebuild, then `yarn kesaseteli up --build`
+2. Run `yarn kesaseteli` or, if you want to rebuild, then `yarn kesaseteli --build`
 
 The Frontend is now running at [localhost:3000](https://localhost:3000)
 The backend is now running at [localhost:8000](https://localhost:8000)

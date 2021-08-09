@@ -54,8 +54,11 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
   const queryClient = createReactQueryTestClient();
   beforeEach(() => {
     queryClient.clear();
-    nock.cleanAll();
   });
+
+  afterEach(() => {
+    nock.cleanAll();
+  })
 
   const expectUserIsLoggedIn = async (user: User): Promise<void> => {
     await screen.findByRole('button', {
