@@ -14,6 +14,7 @@ import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { FieldsDef } from 'shared/components/forms/fields/types';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
@@ -46,10 +47,25 @@ const useApplicationFormStep2 = (
 
   const {
     mutate: updateApplication,
-    // todo:
-    // error: updateApplicationError,
+    error: updateApplicationError,
     isSuccess: isApplicationUpdated,
   } = useUpdateApplicationQuery();
+
+  useEffect(() => {
+    // todo:custom error messages
+    if (updateApplicationError) {
+      toast(t('common:error.generic.text'), {
+        position: 'top-right',
+        type: 'error',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      });
+    }
+  }, [t, updateApplicationError]);
 
   useEffect(() => {
     if (isApplicationUpdated) {

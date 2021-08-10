@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP1,
   VALIDATION_MESSAGE_KEYS,
@@ -17,6 +16,7 @@ import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
@@ -39,35 +39,39 @@ type ExtendedComponentProps = {
 const useApplicationFormStep1 = (
   application: Application
 ): ExtendedComponentProps => {
+  const { t } = useTranslation();
   const { applicationTempData, setApplicationTempData } = React.useContext(
     ApplicationContext
   );
   const {
     mutate: createApplication,
     data: newApplication,
-    // todo:
-    // error: createApplicationError,
+    error: createApplicationError,
     isSuccess: isApplicationCreated,
   } = useCreateApplicationQuery();
 
   const {
     mutate: updateApplication,
-    // todo:
     error: updateApplicationError,
     isSuccess: isApplicationUpdated,
   } = useUpdateApplicationQuery();
 
   useEffect(() => {
-    hdsToast({
-      autoDismiss: true,
-      type: 'error',
-      labelText: 'label',
-      text: 'text',
-      translated: true,
-    });
-  }, [updateApplicationError]);
+    // todo:custom error messages
+    if (updateApplicationError || createApplicationError) {
+      toast(t('common:error.generic.text'), {
+        position: 'top-right',
+        type: 'error',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      });
+    }
+  }, [t, updateApplicationError, createApplicationError]);
 
-  const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);

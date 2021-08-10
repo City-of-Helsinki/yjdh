@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { StepProps } from 'shared/components/stepper/Step';
 
 type ExtendedComponentProps = {
@@ -34,9 +35,26 @@ const usePageContent = (): ExtendedComponentProps => {
     data: existingApplication,
     error: existingApplicationError,
   } = useApplicationQuery(existingApplicationId);
-  const { data: applicationTemplate } = useApplicationTemplateQuery(
-    existingApplicationId
-  );
+  const {
+    data: applicationTemplate,
+    error: applicationTemplateError,
+  } = useApplicationTemplateQuery(existingApplicationId);
+
+  useEffect(() => {
+    // todo:custom error messages
+    if (applicationTemplateError) {
+      toast(t('common:error.generic.text'), {
+        position: 'top-right',
+        type: 'error',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      });
+    }
+  }, [t, applicationTemplateError]);
 
   useEffect(() => {
     if (

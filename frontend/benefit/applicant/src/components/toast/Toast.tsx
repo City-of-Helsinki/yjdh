@@ -1,10 +1,10 @@
-import React, { ReactText, useEffect } from 'react';
+import { useTranslation } from 'benefit/applicant/i18n';
 import { Notification, NotificationProps } from 'hds-react';
+import React, { ReactText, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 
 import { HDSToastContainerId } from './ToastContainer';
-import { useTranslation } from 'benefit/applicant/i18n';
 
 interface HDSToastArgs {
   autoDismiss?: boolean;
@@ -21,6 +21,9 @@ interface NotificationWrapperProps extends HDSToastArgs {
   translated: boolean;
 }
 
+// todo: fix useEffect return type
+// type EffectCallback = () => void;
+
 const AUTO_DISMISS_TIME = 3000;
 
 const NotificationWrapper = ({
@@ -34,14 +37,13 @@ const NotificationWrapper = ({
 }: NotificationWrapperProps): JSX.Element => {
   const { t } = useTranslation();
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (autoDismiss) {
       const timer = setTimeout(() => {
         toast.dismiss(toastId);
       }, autoDismissTime);
-      return () => {
-        clearTimeout(timer);
-      };
+      return (): void => clearTimeout(timer);
     }
   }, [autoDismiss, autoDismissTime, toastId]);
 
