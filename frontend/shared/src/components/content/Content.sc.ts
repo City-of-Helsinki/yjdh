@@ -1,5 +1,5 @@
-import $ from 'styled-components';
+import styled from 'styled-components';
 
-export const $Content = $.div`
+export const $Content = styled.div`
   flex: auto;
 `;

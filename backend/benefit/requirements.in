@@ -19,4 +19,5 @@ drf-spectacular
 django-filter
 django-storages[azure]
 Pillow
+filetype
 -e ../shared

@@ -1,32 +1,32 @@
 import { Notification } from 'hds-react';
-import $ from 'styled-components';
+import styled from 'styled-components';
 
-export const $Container = $.div`
+export const $Container = styled.div`
   padding-bottom: ${(props) => props.theme.spacing.m};
 `;
 
-export const $TextContainer = $.div`
+export const $TextContainer = styled.div`
   display: flex;
   box-sizing: border-box;
 `;
 
-export const $Heading = $.h1`
+export const $Heading = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
 `;
 
-export const $Description = $.p`
+export const $Description = styled.p`
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: normal;
   line-height: ${(props) => props.theme.lineHeight.l};
 `;
 
-export const $Link = $.span`
+export const $Link = styled.span`
   text-decoration: underline;
   cursor: pointer;
 `;
 
-export const $ActionContainer = $.div`
+export const $ActionContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -34,6 +34,6 @@ export const $ActionContainer = $.div`
   box-sizing: border-box;
 `;
 
-export const $Notification = $(Notification)`
+export const $Notification = styled(Notification)`
   margin-bottom: ${(props) => props.theme.spacing.xs};
 `;

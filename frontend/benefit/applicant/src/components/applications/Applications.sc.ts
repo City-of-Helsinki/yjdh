@@ -1,7 +1,7 @@
 import { Button } from 'hds-react';
-import $ from 'styled-components';
+import styled from 'styled-components';
 
-export const $SecondaryButton = $(Button)`
+export const $SecondaryButton = styled(Button)`
   color: ${(props) => props.theme.colors.black90} !important;
   border-color: ${(props) => props.theme.colors.black90} !important;
   border-width: 3px !important;
@@ -9,21 +9,21 @@ export const $SecondaryButton = $(Button)`
   max-height: 60px;
 `;
 
-export const $PrimaryButton = $(Button)`
+export const $PrimaryButton = styled(Button)`
   background-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-width: 3px !important;
   width: 170px;
 `;
 
-export const $SupplementaryButton = $(Button)`
+export const $SupplementaryButton = styled(Button)`
   color: ${(props) => props.theme.colors.black90} !important;
   min-width: 170px;
   max-height: 60px;
   margin-top: ${(props) => props.theme.spacing.xs2};
 `;
 
-export const $PageHeader = $.div`
+export const $PageHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,15 +34,15 @@ export const $PageHeader = $.div`
   }
 `;
 
-export const $HeaderItem = $.div``;
+export const $HeaderItem = styled.div``;
 
-export const $PageHeading = $.h1`
+export const $PageHeading = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.xl};
   font-weight: normal;
   margin: 0;
 `;
 
-export const $PageSubHeading = $.h3`
+export const $PageSubHeading = styled.h3`
   color: ${(props) => props.theme.colors.coatOfArms};
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: 500;
@@ -50,29 +50,29 @@ export const $PageSubHeading = $.h3`
   margin-bottom: ${(props) => props.theme.spacing.m};
 `;
 
-export const $PageHeadingHelperText = $.div`
+export const $PageHeadingHelperText = styled.div`
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: normal;
   margin-top: ${(props) => props.theme.spacing.l};
   margin-bottom: ${(props) => props.theme.spacing.m};
 `;
 
-export const $ApplicationActions = $.div`
+export const $ApplicationActions = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: ${(props) => props.theme.spacing.l};
 `;
 
-export const $ApplicationAction = $.div`
+export const $ApplicationAction = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-export const $SpinnerContainer = $.div`
+export const $SpinnerContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
 `;
 
-export const $Empty = $.div``;
+export const $Empty = styled.div``;

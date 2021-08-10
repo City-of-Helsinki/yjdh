@@ -1,4 +1,4 @@
-import $, { DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 type Props = { isActive?: boolean };
 
@@ -9,12 +9,12 @@ interface $StepContainerProps {
 const getActiveColor = (isActive: boolean, theme: DefaultTheme): string =>
   isActive ? theme.colors.black90 : theme.colors.black20;
 
-export const $StepsContainer = $.div`
+export const $StepsContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-export const $StepContainer = $.div<$StepContainerProps>`
+export const $StepContainer = styled.div<$StepContainerProps>`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -22,7 +22,7 @@ export const $StepContainer = $.div<$StepContainerProps>`
   z-index: 1;
 `;
 
-export const $StepCircle = $.div<Props>`
+export const $StepCircle = styled.div<Props>`
   height: 36px;
   width: 36px;
   border-radius: 50%;
@@ -36,7 +36,7 @@ export const $StepCircle = $.div<Props>`
   font-size: ${(props) => props.theme.fontSize.body.m};
 `;
 
-export const $StepTitle = $.p<Props>`
+export const $StepTitle = styled.p<Props>`
   text-align: center;
   position: absolute;
   bottom: -40px;
@@ -45,7 +45,7 @@ export const $StepTitle = $.p<Props>`
   font-weight: ${(props) => (props.isActive ? 600 : 500)};
 `;
 
-export const $Divider = $.div<Props>`
+export const $Divider = styled.div<Props>`
   width: 100%;
   height: 4px;
   margin: 4px;
