@@ -1,3 +1,4 @@
+import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP1,
   VALIDATION_MESSAGE_KEYS,
@@ -52,9 +53,19 @@ const useApplicationFormStep1 = (
   const {
     mutate: updateApplication,
     // todo:
-    // error: updateApplicationError,
+    error: updateApplicationError,
     isSuccess: isApplicationUpdated,
   } = useUpdateApplicationQuery();
+
+  useEffect(() => {
+    hdsToast({
+      autoDismiss: true,
+      type: 'error',
+      labelText: 'label',
+      text: 'text',
+      translated: true,
+    });
+  }, [updateApplicationError]);
 
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';

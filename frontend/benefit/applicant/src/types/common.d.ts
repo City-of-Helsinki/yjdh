@@ -7,3 +7,7 @@ export type DynamicFormStepComponentProps = {
 interface Loading {
   isLoading: true;
 }
+
+interface ErrorResponse {
+  response: unknown;
+}
