@@ -30,17 +30,23 @@ export const expectToLogout = (): nock.Scope =>
     .post(BackendEndpoint.LOGOUT)
     .reply(200, fakeUser, { 'Access-Control-Allow-Origin': '*' });
 
-export const expectToGetApplicationFromBackend = (application: Application): nock.Scope =>
+export const expectToGetApplicationFromBackend = (
+  application: Application
+): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.APPLICATIONS}${application.id}/`)
     .reply(200, application, { 'Access-Control-Allow-Origin': '*' });
 
-export const expectToGetApplicationErrorFromBackend = (id: string): nock.Scope =>
+export const expectToGetApplicationErrorFromBackend = (
+  id: string
+): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.APPLICATIONS}${id}/`)
     .replyWithError('This is a test error. Please ignore this error message.');
 
-export const expectToGetApplicationsFromBackend = (applications: Application[]): nock.Scope =>
+export const expectToGetApplicationsFromBackend = (
+  applications: Application[]
+): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.APPLICATIONS}`)
     .reply(200, applications, { 'Access-Control-Allow-Origin': '*' });
@@ -50,8 +56,9 @@ export const expectToGetApplicationsErrorFromBackend = (): nock.Scope =>
     .get(`${BackendEndpoint.APPLICATIONS}`)
     .replyWithError('This is a test error. Please ignore this error message.');
 
-
-export const expectToCreateApplicationToBackend = (applicationToCreate: Application): nock.Scope =>
+export const expectToCreateApplicationToBackend = (
+  applicationToCreate: Application
+): nock.Scope =>
   nock(getBackendDomain())
     .post(`${BackendEndpoint.APPLICATIONS}`, {})
     .reply(200, applicationToCreate, { 'Access-Control-Allow-Origin': '*' });
@@ -61,8 +68,17 @@ export const expectToCreateApplicationErrorFromBackend = (): nock.Scope =>
     .post(`${BackendEndpoint.APPLICATIONS}`, {})
     .replyWithError('This is a test error. Please ignore this error message.');
 
-
-export const expectToSaveApplication = (applicationToSave: Application): nock.Scope =>
+export const expectToSaveApplication = (
+  applicationToSave: Application
+): nock.Scope =>
   nock(getBackendDomain())
-    .put(`${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`, {...applicationToSave, status: "draft"} as Application)
+    .intercept(
+      `${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`,
+      'OPTIONS'
+    )
+    .reply(200, undefined, { 'Access-Control-Allow-Origin': '*' })
+    .put(`${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`, {
+      ...applicationToSave,
+      status: 'draft',
+    } as Application)
     .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' });

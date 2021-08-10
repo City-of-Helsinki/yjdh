@@ -9,7 +9,7 @@
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --runInBand --no-cache",
-    "test:debug": "cross-env DEBUG=nock.* DEBUG_PRINT_LIMIT=100000 & yarn test",
+    "test:debug": "cross-env DEBUG=nock.* DEBUG_PRINT_LIMIT=100000 yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test --verbose --coverage",
     "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",

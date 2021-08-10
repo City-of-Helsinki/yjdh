@@ -58,7 +58,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
 
   afterEach(() => {
     nock.cleanAll();
-  })
+  });
 
   const expectUserIsLoggedIn = async (user: User): Promise<void> => {
     await screen.findByRole('button', {
