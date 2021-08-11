@@ -1,20 +1,19 @@
 import React from 'react';
-import { ToastContainer } from 'react-toastify';
+
+import { $ToastContainer } from './ToastContainer.sc';
 
 export const HDSToastContainerId = 'HDSToastContainer';
 
-const HDSToastContainer: React.FC = () => {
-  return (
-    <ToastContainer
+const HDSToastContainer: React.FC = () => (
+    <$ToastContainer
       closeButton={false}
       autoClose={false}
-      hideProgressBar={true}
+      hideProgressBar
       closeOnClick={false}
       draggable={false}
       containerId={HDSToastContainerId}
-      enableMultiContainer={true}
+      enableMultiContainer
     />
   );
-};
 
 export default HDSToastContainer;

@@ -9,8 +9,9 @@ import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { StepProps } from 'shared/components/stepper/Step';
+
+import hdsToast from '../../toast/Toast';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -43,15 +44,13 @@ const usePageContent = (): ExtendedComponentProps => {
   useEffect(() => {
     // todo:custom error messages
     if (applicationTemplateError) {
-      toast(t('common:error.generic.text'), {
-        position: 'top-right',
+      hdsToast({
+        autoDismiss: true,
+        autoDismissTime: 5000,
         type: 'error',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
+        translated: true,
+        labelText: t('common:error.generic.label'),
+        text: t('common:error.generic.text'),
       });
     }
   }, [t, applicationTemplateError]);

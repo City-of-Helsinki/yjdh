@@ -1,3 +1,4 @@
+import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP2,
   PAY_SUBSIDY_OPTIONS,
@@ -14,7 +15,6 @@ import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { FieldsDef } from 'shared/components/forms/fields/types';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
@@ -54,15 +54,13 @@ const useApplicationFormStep2 = (
   useEffect(() => {
     // todo:custom error messages
     if (updateApplicationError) {
-      toast(t('common:error.generic.text'), {
-        position: 'top-right',
+      hdsToast({
+        autoDismiss: true,
+        autoDismissTime: 5000,
         type: 'error',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
+        translated: true,
+        labelText: t('common:error.generic.label'),
+        text: t('common:error.generic.text'),
       });
     }
   }, [t, updateApplicationError]);

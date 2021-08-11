@@ -61,7 +61,7 @@ const NotificationWrapper = ({
 };
 
 const hdsToast = ({
-  autoDismiss = true,
+  autoDismiss = false,
   autoDismissTime = AUTO_DISMISS_TIME,
   type,
   labelText,
@@ -83,6 +83,7 @@ const hdsToast = ({
     {
       toastId: id,
       containerId: HDSToastContainerId,
+      autoClose: false,
     }
   );
 };
