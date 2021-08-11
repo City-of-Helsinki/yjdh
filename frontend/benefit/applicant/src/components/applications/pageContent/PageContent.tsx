@@ -34,11 +34,9 @@ const PageContent: React.FC = () => {
 
   if (isLoading) {
     return (
-      isLoading && (
-        <$SpinnerContainer>
-          <LoadingSpinner />
-        </$SpinnerContainer>
-      )
+      <$SpinnerContainer>
+        <LoadingSpinner />
+      </$SpinnerContainer>
     );
   }
   if (isError) {

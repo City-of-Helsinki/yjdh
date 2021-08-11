@@ -61,7 +61,7 @@ const NotificationWrapper = ({
 };
 
 const hdsToast = ({
-  autoDismiss = false,
+  autoDismiss = true,
   autoDismissTime = AUTO_DISMISS_TIME,
   type,
   labelText,

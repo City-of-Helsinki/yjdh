@@ -328,7 +328,7 @@
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
-    "back": "Palaa etusivulle",
+    "home": "Palaa etusivulle",
     "logout": "Kirjaudu ulos"
   },
   "error": {

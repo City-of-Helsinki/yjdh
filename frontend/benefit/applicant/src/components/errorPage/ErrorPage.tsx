@@ -32,7 +32,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         {showActions && (
           <$ActionsContainer>
             <$PrimaryButton onClick={handleBackClick}>
-              {t('common:errorPage.back')}
+              {t('common:errorPage.home')}
             </$PrimaryButton>
             <$PrimaryButton>{t('common:errorPage.logout')}</$PrimaryButton>
           </$ActionsContainer>

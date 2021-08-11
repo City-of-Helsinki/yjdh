@@ -13,7 +13,7 @@ export const $IconAlertCircle = styled(IconAlertCircle)`
 
 export const $ErrorPageMessage = styled.p`
   font-size: ${(props) => props.theme.fontSize.body.l};
-  margin: 0 !important;
+  margin: 0;
 `;
 
 export const $ActionsContainer = styled.div`
