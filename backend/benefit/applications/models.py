@@ -5,7 +5,7 @@ from applications.enums import (
     BenefitType,
 )
 from companies.models import Company
-from django.db import models
+from django.db import connection, models
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField
 from localflavor.generic.models import IBANField
@@ -33,6 +33,14 @@ ATTACHMENT_CONTENT_TYPE_CHOICES = (
     ("image/png", "png"),
     ("image/jpeg", "jpeg"),
 )
+
+
+def _get_next_application_number():
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT nextval(%s)", [Application.APPLICATION_NUMBER_SEQUENCE_ID]
+        )
+        return cursor.fetchone()[0]
 
 
 class Application(UUIDModel, TimeStampedModel):
@@ -64,7 +72,9 @@ class Application(UUIDModel, TimeStampedModel):
         default=ApplicationStatus.DRAFT,
     )
 
-    application_number = models.IntegerField(null=True, blank=True)
+    application_number = models.IntegerField(
+        verbose_name=_("application number"), default=_get_next_application_number
+    )
 
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
 
@@ -186,6 +196,8 @@ class Application(UUIDModel, TimeStampedModel):
     end_date = models.DateField(
         verbose_name=_("benefit end date"), null=True, blank=True
     )
+
+    APPLICATION_NUMBER_SEQUENCE_ID = "seq_application_number"
 
     def get_available_benefit_types(self):
         if (

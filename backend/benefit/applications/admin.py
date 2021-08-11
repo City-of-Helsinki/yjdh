@@ -45,6 +45,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "status",
+        "application_number",
         "company_name",
         "company_contact_person_email",
         "company_contact_person_first_name",
@@ -56,6 +57,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     search_fields = (
         "id",
         "company__id",
+        "application_number",
         "official_company_street_address",
         "alternative_company_street_address",
         "company_name",

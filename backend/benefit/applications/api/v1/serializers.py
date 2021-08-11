@@ -341,7 +341,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "status",
-            "application_number",
             "employee",
             "company",
             "company_name",
@@ -386,6 +385,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "submitted_at",
+            "application_number",
             "available_bases",
             "attachment_requirements",
             "company_name",
