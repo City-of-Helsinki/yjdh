@@ -68,7 +68,7 @@ def get_or_create_company_from_eauth_profile(
     the provided business id or the request limit of YTJ API has been met), the company is created only with the name
     and business id.
     """
-    company = Company.objects.filter(eauth_profile=eauth_profile).first()
+    company = getattr(eauth_profile, "company", None)
 
     if not company:
         if settings.MOCK_FLAG:
