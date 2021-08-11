@@ -390,9 +390,6 @@ class Employee(UUIDModel, TimeStampedModel):
         blank=True,
     )
 
-    # TODO: Adding missing file fields or a separate Attachment relationship
-    # power_of_attorney = models.FileField()
-
     def __str__(self):
         return "{} {} ({})".format(self.first_name, self.last_name, self.email)
 

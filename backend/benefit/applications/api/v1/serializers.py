@@ -27,7 +27,7 @@ from django.forms import ImageField, ValidationError as DjangoFormsValidationErr
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
-from helsinkibenefit.settings import MAX_UPLOAD_SIZE
+from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from rest_framework import serializers
 
 
@@ -242,28 +242,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         help_text="Employee phone number normalized (start with zero, without country code)",
     )
 
-    def validate_social_security_number(self, value):
-        """
-        For more info about the checksum validation, see "Miten henkilötunnukset tarkistusmerkki lasketaan?" in
-        https://dvv.fi/henkilotunnus
-        """
-        if value == "":
-            return value
-
-        m = re.match(self.SSN_REGEX, value)
-        if not m:
-            raise serializers.ValidationError(_("Social security number invalid"))
-
-        expect_checksum = EmployeeSerializer.SSN_CHEKSUM[
-            int((m.group(1) + m.group(2)).lstrip("0")) % 31
-        ].lower()
-        if expect_checksum != m.group(3).lower():
-            raise serializers.ValidationError(
-                _("Social security number checksum invalid")
-            )
-
-        return value
-
     class Meta:
         model = Employee
         fields = [
@@ -288,6 +266,54 @@ class EmployeeSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "ordering",
         ]
+
+    def validate_social_security_number(self, value):
+        """
+        For more info about the checksum validation, see "Miten henkilötunnukset tarkistusmerkki lasketaan?" in
+        https://dvv.fi/henkilotunnus
+        """
+        if value == "":
+            return value
+
+        m = re.match(self.SSN_REGEX, value)
+        if not m:
+            raise serializers.ValidationError(_("Social security number invalid"))
+
+        expect_checksum = EmployeeSerializer.SSN_CHEKSUM[
+            int((m.group(1) + m.group(2)).lstrip("0")) % 31
+        ].lower()
+        if expect_checksum != m.group(3).lower():
+            raise serializers.ValidationError(
+                _("Social security number checksum invalid")
+            )
+
+        return value
+
+    def validate_working_hours(self, value):
+        if value and value < MINIMUM_WORKING_HOURS_PER_WEEK:
+            raise serializers.ValidationError(
+                format_lazy(
+                    _("Working hour must be greater than {min_hour} per week"),
+                    min_hour=MINIMUM_WORKING_HOURS_PER_WEEK,
+                )
+            )
+        return value
+
+    def validate_monthly_pay(self, value):
+        if value is not None and value <= 0:
+            raise serializers.ValidationError(_("Monthly pay must be greater than 0"))
+
+    def validate_vacation_money(self, value):
+        if value is not None and value < 0:
+            raise serializers.ValidationError(
+                _("Vacation money must be a positive number")
+            )
+
+    def validate_other_expenses(self, value):
+        if value is not None and value < 0:
+            raise serializers.ValidationError(
+                _("Other expenses must be a positive number")
+            )
 
 
 class ApplicationSerializer(serializers.ModelSerializer):

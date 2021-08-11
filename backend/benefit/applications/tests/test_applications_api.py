@@ -195,6 +195,9 @@ def test_application_post_invalid_employee_data(api_client, application):
     data["employee"]["social_security_number"] = "080597-953X"  # invalid checksum
     data["employee"]["employee_language"] = None  # non-null required
     data["employee"]["phone_number"] = "+359505658789"  # Invalid country code
+    data["employee"]["working_hours"] = 16  # Must be > 18 hour per weeek
+    data["employee"]["vacation_money"] = -1  # Must be >= 0
+    data["employee"]["other_expenses"] = -1  # Must be >= 0
     response = api_client.post(reverse("v1:application-list"), data, format="json")
     assert response.status_code == 400
     assert response.data.keys() == {"employee"}
@@ -203,7 +206,18 @@ def test_application_post_invalid_employee_data(api_client, application):
         "phone_number",
         "social_security_number",
         "employee_language",
+        "working_hours",
+        "vacation_money",
+        "other_expenses",
     }
+
+    data["employee"]["monthly_pay"] = 0  # Zero salary
+    response = api_client.post(reverse("v1:application-list"), data, format="json")
+    assert response.status_code == 400
+    assert response.data.keys() == {"employee"}
+    assert (
+        "monthly_pay" in response.data["employee"].keys()
+    )  # Check if the error still there
 
 
 def test_application_put_edit_fields(api_client, application):
