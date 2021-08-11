@@ -6,7 +6,6 @@ import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
-import Spacing from 'shared/components/forms/spacing/Spacing';
 import { phoneToLocal } from 'shared/utils/string.utils';
 
 import { $ContactPersonContainer, $SubSection } from '../Application.sc';
@@ -130,14 +129,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             )}
             required
           />
-        </$ContactPersonContainer>
-        <Spacing size="m" />
-        <$FormGroup>
           <Select
             defaultValue={getDefaultSelectValue(
               APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
             )}
-            style={{ width: 350 }}
             helper={getErrorMessage(
               APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
             )}
@@ -160,7 +155,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             }
             required
           />
-        </$FormGroup>
+        </$ContactPersonContainer>
       </FormSection>
       <FormSection
         header={t(`${translationsBase}.heading3`)}

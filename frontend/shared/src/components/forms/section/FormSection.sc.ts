@@ -10,19 +10,9 @@ export const $Section = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.s};
 `;
 
-export const $Header = styled.h1`
-  display: flex;
-  align-items: center;
-  gap: ${(props) => props.theme.spacing.s};
-  font-size: ${(props) => props.theme.fontSize.heading.m};
-  font-weight: 500;
-  margin-bottom: ${(props) => props.theme.spacing.l};
-`;
-
-export const $SubHeader = styled.h1`
+export const $SubHeader = styled.h3`
   font-size: ${(props) => props.theme.fontSize.heading.xxs};
   font-weight: 600;
-  //margin-bottom: ${(props) => props.theme.spacing.m};
 `;
 
 export const $Content = styled.div`
@@ -38,9 +28,7 @@ export const $FormGroup = styled.div<Props>`
   align-items: center;
   font-size: ${(props) => props.theme.fontSize.body.m};
   margin-bottom: ${(props) => props.theme.spacing.xs};
-  & > div {
-    margin-right: ${(props) => props.theme.spacing.xs};
-  }
+  gap: ${(props) => props.theme.spacing.s};
   background-color: ${(props) => props.backgroundColor};
 `;
 

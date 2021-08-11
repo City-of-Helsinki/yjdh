@@ -47,8 +47,6 @@ export const $AddressContainer = styled($FormGroup)`
 export const $IBANContainer = styled($FormGroup)`
   grid-area: iban;
   margin-top: ${(props) => props.theme.spacing.xl};
-
-  input {
-    width: 13.5em !important;
-  }
+  display: grid;
+  grid-template-columns: 3fr 9fr;
 `;
