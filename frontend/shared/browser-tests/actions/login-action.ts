@@ -22,12 +22,12 @@ let suomiFiValtuutusComponents: ReturnType<
 >;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
-export type Expectations = {
-  expectedUser: User;
-  expectedCompany: Company;
+export type SuomiFiData = {
+  user: User;
+  company: Company;
 };
 
-const doSuomiFiLogin = async (t: TestController): Promise<Expectations> => {
+const doSuomiFiLogin = async (t: TestController): Promise<SuomiFiData> => {
   suomiFiAuthenticationComponents = getSuomiFiAuthenticationComponents(t);
   suomiFiTestIdentificationComponents = getSuomiFiTestIdentificationComponents(
     t
@@ -43,20 +43,18 @@ const doSuomiFiLogin = async (t: TestController): Promise<Expectations> => {
   await identificationForm.actions.selectTestitunnistajaAuthentication();
   await identificationForm.actions.clickSubmitButton();
   const profileForm = await suomiFiProfileComponents.profileForm();
-  const expectedUser = await profileForm.expectations.userDataIsPresent();
+  const user = await profileForm.expectations.userDataIsPresent();
   await profileForm.actions.clickContinueButton();
   const companiesTable = await suomiFiValtuutusComponents.companiesTable();
-  const expectedCompany = await companiesTable.actions.selectCompanyRadioButton(
-    0
-  );
+  const company = await companiesTable.actions.selectCompanyRadioButton(0);
   const authorizeForm = await suomiFiValtuutusComponents.authorizeForm();
   await authorizeForm.actions.clickSubmitButton();
-  return { expectedUser, expectedCompany };
+  return { user, company };
 };
 // eslint-disable-next-line arrow-body-style
 export const doLogin = (
   t: TestController
-): Promise<Expectations> | undefined => {
+): Promise<SuomiFiData> | undefined => {
   if (isRealIntegrationsEnabled()) {
     return doSuomiFiLogin(t);
   }

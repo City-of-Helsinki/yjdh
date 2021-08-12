@@ -1,16 +1,16 @@
 import { Notification } from 'hds-react';
 import ApplicationForm from 'kesaseteli/employer/components/form/ApplicationForm';
 import useApplicationApi from 'kesaseteli/employer/hooks/useApplicationApi';
-import Application from 'kesaseteli/employer/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Application from 'shared/types/employer-application';
 
-import { $SubmitButton, $TextInput } from './EmployerForm.sc';
+import { $SubmitButton, $TextInput } from './InvoicerForm.sc';
 
 type Props = {
   applicationId: string;
 };
-const EmployerForm: React.FC<Props> = ({ applicationId }) => {
+const InvoicerForm: React.FC<Props> = ({ applicationId }) => {
   const { t } = useTranslation();
 
   const {
@@ -37,7 +37,9 @@ const EmployerForm: React.FC<Props> = ({ applicationId }) => {
       />
     );
   return (
-    <ApplicationForm application={application} isLoading={isSyncing}>
+    <ApplicationForm title={t(
+          `common:application.step1.form.title`
+    )} application={application} isLoading={isSyncing}>
       <$TextInput
         id="invoicer_name"
         validation={{ required: true, maxLength: 256 }}
@@ -65,4 +67,4 @@ const EmployerForm: React.FC<Props> = ({ applicationId }) => {
     </ApplicationForm>
   );
 };
-export default EmployerForm;
+export default InvoicerForm;

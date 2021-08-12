@@ -19,10 +19,10 @@ fixture('Frontpage')
   });
 
 test('user can authenticate and logout', async (t: TestController) => {
-  const expectations = await doEmployerLogin(t);
+  const suomiFiData = await doEmployerLogin(t);
   const headerUser = await headerComponents.headerUser();
-  if (isRealIntegrationsEnabled() && expectations) {
-    await headerUser.expectations.userIsLoggedIn(expectations.expectedUser);
+  if (isRealIntegrationsEnabled() && suomiFiData) {
+    await headerUser.expectations.userIsLoggedIn(suomiFiData.user);
   }
   await headerUser.actions.clicklogoutButton();
   await headerUser.expectations.userIsLoggedOut();

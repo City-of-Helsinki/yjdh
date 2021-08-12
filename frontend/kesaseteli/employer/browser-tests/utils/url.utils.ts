@@ -6,6 +6,10 @@ import TestController, { ClientFunction } from 'testcafe';
 import { getEmployerUiUrl } from './settings';
 
 const getCurrentPathname = ClientFunction(() => document.location.pathname);
+const getUrlParam = ClientFunction((param: string) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+});
 
 /* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type */
 export const getUrlUtils = (t: TestController) => {
@@ -33,10 +37,17 @@ export const getUrlUtils = (t: TestController) => {
         .expect(getCurrentPathname())
         .eql(`/${locale}/login`, await getErrorMessage(t));
     },
-    async urlChangedToApplicationPage(locale: Language = 'fi') {
+    async urlChangedToApplicationPage(locale: Language = 'fi', expectedApplicationId?: string) {
       await t
         .expect(getCurrentPathname())
         .eql(`/${locale}/application`, await getErrorMessage(t));
+      const applicationId = await getUrlParam('id') ?? undefined;
+      if (expectedApplicationId) {
+        await t
+          .expect(applicationId).eql(expectedApplicationId, await getErrorMessage(t));
+      }
+      await t.expect(applicationId).ok(await getErrorMessage(t));
+      return applicationId;
     },
   };
   return {

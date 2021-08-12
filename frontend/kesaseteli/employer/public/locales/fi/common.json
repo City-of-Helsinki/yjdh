@@ -19,6 +19,7 @@
         }
       },
       "form": {
+        "title": "Työnantajan tiedot",
         "invoicer_name": "Yhteyshenkilön nimi",
         "invoicer_email": "Yhteyshenkilön Sähköposti",
         "invoicer_phone_number": "Yhteyshenkilön Puhelinnumero",

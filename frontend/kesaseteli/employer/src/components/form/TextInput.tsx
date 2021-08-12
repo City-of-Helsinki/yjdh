@@ -1,8 +1,8 @@
 import { TextInput as HdsTextInput, TextInputProps } from 'hds-react';
 import { getApplicationFormContext } from 'kesaseteli/employer/components/form/ApplicationForm';
-import Application from 'kesaseteli/employer/types/application';
 import React from 'react';
 import { FieldError, RegisterOptions } from 'react-hook-form';
+import Application from 'shared/types/employer-application';
 
 type InputProps = {
   validation: RegisterOptions<Application>;
