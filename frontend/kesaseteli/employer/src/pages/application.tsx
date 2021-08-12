@@ -1,4 +1,4 @@
-import CompanyInfo from 'kesaseteli/employer/components/companyInfo/CompanyInfo';
+import CompanyInfoGrid from 'kesaseteli/employer/components/companyInfo/CompanyInfoGrid';
 import InvoicerForm from 'kesaseteli/employer/components/invoicerForm/InvoicerForm';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -27,7 +27,7 @@ const ApplicationPage: NextPage = () => {
   return (
     <Layout headingText={t('common:application.step1.header')}>
       <FormSection>
-        <CompanyInfo applicationId={applicationId} />
+        <CompanyInfoGrid applicationId={applicationId} />
         <InvoicerForm applicationId={applicationId} />
       </FormSection>
     </Layout>

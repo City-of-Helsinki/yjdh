@@ -8,7 +8,8 @@
   "application": {
     "step1": {
       "header": "1. Employer information",
-      "companyInfo": {
+      "companyInfoGrid": {
+        "title": "Company information",
         "header": {
           "name": "Company",
           "business_id": "Business Id",

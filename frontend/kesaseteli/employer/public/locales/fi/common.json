@@ -8,7 +8,8 @@
   "application": {
     "step1": {
       "header": "1. Työnantajan tiedot",
-      "companyInfo": {
+      "companyInfoGrid": {
+        "title": "Yrityksen tiedot",
         "header": {
           "name": "Yritys",
           "business_id": "Y-tunnus",

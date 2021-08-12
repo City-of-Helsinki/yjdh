@@ -28,25 +28,33 @@ fixture('Companypage')
 
 test('retrieves created application when logged in and out', async (t: TestController) => {
   const suomiFiData = await doEmployerLogin(t);
-  const applicationId = await urlUtils.expectations.urlChangedToApplicationPage('fi');
-  if (isRealIntegrationsEnabled() && suomiFiData) {
+  const applicationId = await urlUtils.expectations.urlChangedToApplicationPage(
+    'fi'
+  );
+  if (isRealIntegrationsEnabled() && suomiFiData?.company) {
     const companyTable = await applicationPageComponents.companyTable(
       suomiFiData.company
     );
     await companyTable.expectations.isCompanyDataPresent();
   }
   const invoicerForm = await applicationPageComponents.invoicerForm();
-  await invoicerForm.expectations.isFulFilledWith({invoicer_name: '', invoicer_email: '', invoicer_phone_number: ''});
-  const {invoicer_name, invoicer_email, invoicer_phone_number} = fakeInvoicer();
+  const {
+    invoicer_name,
+    invoicer_email,
+    invoicer_phone_number,
+  } = fakeInvoicer();
   await invoicerForm.actions.fillName(invoicer_name);
   await invoicerForm.actions.fillEmail(invoicer_email);
   await invoicerForm.actions.fillPhone(invoicer_phone_number);
   await invoicerForm.actions.clickSaveAndContinueButton();
   const headerUser = await headerComponents.headerUser();
   await headerUser.actions.clicklogoutButton();
-  await doEmployerLogin(t);
-  await urlUtils.expectations.urlChangedToApplicationPage('fi',applicationId);
+  await doEmployerLogin(t, suomiFiData?.user);
+  await urlUtils.expectations.urlChangedToApplicationPage('fi', applicationId);
   await invoicerForm.expectations.isPresent();
-  await invoicerForm.expectations.isFulFilledWith({invoicer_name, invoicer_email, invoicer_phone_number});
-
+  await invoicerForm.expectations.isFulFilledWith({
+    invoicer_name,
+    invoicer_email,
+    invoicer_phone_number,
+  });
 });

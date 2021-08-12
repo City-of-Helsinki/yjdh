@@ -57,12 +57,25 @@ const getApplicationPageApi = (
         displayCompanyData: async (): Promise<void> => {
           await waitForPageIsLoaded();
           const { company } = applicationFromBackend;
-          expect(screen.queryByText(company.name)).toBeInTheDocument();
-          expect(screen.queryByText(company.business_id)).toBeInTheDocument();
-          expect(screen.queryByText(company.industry)).toBeInTheDocument();
-          expect(screen.queryByText(company.company_form)).toBeInTheDocument();
-          expect(screen.queryByText(company.postcode)).toBeInTheDocument();
-          expect(screen.queryByText(company.city)).toBeInTheDocument();
+          await waitForPageIsLoaded();
+          expect(screen.queryByLabelText(/header.name/i)).toHaveTextContent(
+            company.name
+          );
+          expect(screen.queryByLabelText(/header.business_id/i)).toHaveTextContent(
+            company.business_id
+          );
+          expect(screen.queryByLabelText(/header.industry/i)).toHaveTextContent(
+            company.industry
+          );
+          expect(screen.queryByLabelText(/header.company_form/i)).toHaveTextContent(
+            company.company_form
+          );
+          expect(screen.queryByLabelText(/header.postcode/i)).toHaveTextContent(
+            company.postcode
+          );
+          expect(screen.queryByLabelText(/header.city/i)).toHaveTextContent(
+            company.city
+          );
         },
 
         inputValueIsSet: (

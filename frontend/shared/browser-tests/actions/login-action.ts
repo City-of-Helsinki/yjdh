@@ -23,27 +23,36 @@ let suomiFiValtuutusComponents: ReturnType<
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
 export type SuomiFiData = {
-  user: User;
-  company: Company;
+  user?: User;
+  company?: Company;
 };
 
-const doSuomiFiLogin = async (t: TestController): Promise<SuomiFiData> => {
-  suomiFiAuthenticationComponents = getSuomiFiAuthenticationComponents(t);
-  suomiFiTestIdentificationComponents = getSuomiFiTestIdentificationComponents(
-    t
-  );
-  suomiFiProfileComponents = getSuomiFiProfileComponents(t);
-  suomiFiValtuutusComponents = getSuomiFiValtuutusComponents(t);
-  urlUtils = getUrlUtils(t);
+const doSuomiFiLogin = async (
+  t: TestController,
+  cachedUser?: User
+): Promise<SuomiFiData> => {
+  // when logging in second time, suomifi remembers the user from previous session so following steps are skipped
+  if (!cachedUser) {
+    suomiFiAuthenticationComponents = getSuomiFiAuthenticationComponents(t);
+    suomiFiTestIdentificationComponents = getSuomiFiTestIdentificationComponents(
+      t
+    );
+    suomiFiProfileComponents = getSuomiFiProfileComponents(t);
+    suomiFiValtuutusComponents = getSuomiFiValtuutusComponents(t);
+    urlUtils = getUrlUtils(t);
 
-  await urlUtils.expectations.urlChangedToAuthorizationEndpoint();
-  const authenticatorSelector = await suomiFiAuthenticationComponents.authenticationSelector();
-  await authenticatorSelector.actions.selectTestitunnistajaAuthentication();
-  const identificationForm = await suomiFiTestIdentificationComponents.identificationForm();
-  await identificationForm.actions.selectTestitunnistajaAuthentication();
-  await identificationForm.actions.clickSubmitButton();
+    await urlUtils.expectations.urlChangedToAuthorizationEndpoint();
+    const authenticatorSelector = await suomiFiAuthenticationComponents.authenticationSelector();
+    await authenticatorSelector.actions.selectTestitunnistajaAuthentication();
+    const identificationForm = await suomiFiTestIdentificationComponents.identificationForm();
+    await identificationForm.actions.selectTestitunnistajaAuthentication();
+    await identificationForm.actions.clickSubmitButton();
+  }
   const profileForm = await suomiFiProfileComponents.profileForm();
   const user = await profileForm.expectations.userDataIsPresent();
+  if (cachedUser) {
+    await t.expect(user).eql(cachedUser);
+  }
   await profileForm.actions.clickContinueButton();
   const companiesTable = await suomiFiValtuutusComponents.companiesTable();
   const company = await companiesTable.actions.selectCompanyRadioButton(0);
@@ -53,10 +62,11 @@ const doSuomiFiLogin = async (t: TestController): Promise<SuomiFiData> => {
 };
 // eslint-disable-next-line arrow-body-style
 export const doLogin = (
-  t: TestController
+  t: TestController,
+  cachedUser?: User
 ): Promise<SuomiFiData> | undefined => {
   if (isRealIntegrationsEnabled()) {
-    return doSuomiFiLogin(t);
+    return doSuomiFiLogin(t, cachedUser);
   }
   return undefined;
 };
