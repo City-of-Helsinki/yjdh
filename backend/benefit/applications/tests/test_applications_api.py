@@ -16,6 +16,7 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Employee
 from applications.tests.conftest import *  # noqa
+from applications.tests.factories import ApplicationFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
@@ -750,3 +751,23 @@ def test_attachment_requirements(
         ["helsinki_benefit_voucher", "optional"],
         ["pay_subsidy_decision", "required"],
     ]
+
+
+def test_application_number(api_client, application):
+    assert Application.objects.count() == 1
+
+    # Random initial value for application number, decided in
+    # applications/migrations/0012_create_application_number_seq.py
+    assert application.application_number > 125000
+
+    new_application = ApplicationFactory()
+    assert Application.objects.count() == 2
+    assert new_application.application_number == application.application_number + 1
+
+    new_application.delete()
+    assert Application.objects.count() == 1
+
+    # Next application should not have old application_number if the previous one was deleted
+    next_application = ApplicationFactory()
+    assert Application.objects.count() == 2
+    assert next_application.application_number == application.application_number + 2
