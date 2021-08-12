@@ -18,13 +18,19 @@ const nextConfig = {
         fs: 'empty',
       };
     }
-    const babelRule = config.module.rules.find((rule) =>
-      rule.use && Array.isArray(rule.use)
-        ? rule.use.find((u) => u.loader === 'next-babel-loader')
-        : rule.use.loader === 'next-babel-loader'
+    const tsLoader = config.module.rules.find(
+      (rule) => rule.test && rule.test.test(/\.(ts|tsx)$/)
     );
-    if (babelRule) {
-      babelRule.include.push(path.resolve('../../'));
+    if (tsLoader) {
+      tsLoader.use = {
+        ...tsLoader.use,
+        loader: 'next-babel-loader',
+        options: {
+          loader: 'ts',
+          target: 'es2017',
+        },
+      };
+      tsLoader.include.push(path.resolve('../../'));
     }
     config.plugins.push(new webpack.IgnorePlugin(/\/(__tests__|test)\//));
     config.module.rules.push({
