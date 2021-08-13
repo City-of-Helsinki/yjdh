@@ -16,6 +16,7 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Employee
 from applications.tests.conftest import *  # noqa
+from applications.tests.factories import ApplicationFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
@@ -195,6 +196,9 @@ def test_application_post_invalid_employee_data(api_client, application):
     data["employee"]["social_security_number"] = "080597-953X"  # invalid checksum
     data["employee"]["employee_language"] = None  # non-null required
     data["employee"]["phone_number"] = "+359505658789"  # Invalid country code
+    data["employee"]["working_hours"] = 16  # Must be > 18 hour per weeek
+    data["employee"]["vacation_money"] = -1  # Must be >= 0
+    data["employee"]["other_expenses"] = -1  # Must be >= 0
     response = api_client.post(reverse("v1:application-list"), data, format="json")
     assert response.status_code == 400
     assert response.data.keys() == {"employee"}
@@ -203,7 +207,18 @@ def test_application_post_invalid_employee_data(api_client, application):
         "phone_number",
         "social_security_number",
         "employee_language",
+        "working_hours",
+        "vacation_money",
+        "other_expenses",
     }
+
+    data["employee"]["monthly_pay"] = 0  # Zero salary
+    response = api_client.post(reverse("v1:application-list"), data, format="json")
+    assert response.status_code == 400
+    assert response.data.keys() == {"employee"}
+    assert (
+        "monthly_pay" in response.data["employee"].keys()
+    )  # Check if the error still there
 
 
 def test_application_put_edit_fields(api_client, application):
@@ -736,3 +751,23 @@ def test_attachment_requirements(
         ["helsinki_benefit_voucher", "optional"],
         ["pay_subsidy_decision", "required"],
     ]
+
+
+def test_application_number(api_client, application):
+    assert Application.objects.count() == 1
+
+    # Random initial value for application number, decided in
+    # applications/migrations/0012_create_application_number_seq.py
+    assert application.application_number > 125000
+
+    new_application = ApplicationFactory()
+    assert Application.objects.count() == 2
+    assert new_application.application_number == application.application_number + 1
+
+    new_application.delete()
+    assert Application.objects.count() == 1
+
+    # Next application should not have old application_number if the previous one was deleted
+    next_application = ApplicationFactory()
+    assert Application.objects.count() == 2
+    assert next_application.application_number == application.application_number + 2
