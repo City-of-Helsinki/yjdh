@@ -1,5 +1,12 @@
+import 'react-toastify/dist/ReactToastify.css';
+
+import {
+  getBackendDomain,
+  getHeaders,
+} from 'benefit/applicant/backend-api/backend-api';
 import Footer from 'benefit/applicant/components/footer/Footer';
 import Header from 'benefit/applicant/components/header/Header';
+import useLocale from 'benefit/applicant/hooks/useLocale';
 import { appWithTranslation } from 'benefit/applicant/i18n';
 import { AppProps } from 'next/app';
 import React from 'react';
@@ -11,8 +18,7 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
-import { getBackendDomain, getHeaders } from '../backend-api/backend-api';
-import useLocale from '../hooks/useLocale';
+import HDSToastContainer from '../components/toast/ToastContainer';
 
 const queryClient = new QueryClient();
 
@@ -28,6 +34,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
           <GlobalStyling />
           <Layout>
             <Header />
+            <HDSToastContainer />
             <Content>
               <Component {...pageProps} />
             </Content>

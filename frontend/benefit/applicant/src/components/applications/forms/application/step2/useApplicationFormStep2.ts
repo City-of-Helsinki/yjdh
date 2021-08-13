@@ -1,3 +1,4 @@
+import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP2,
   PAY_SUBSIDY_OPTIONS,
@@ -46,10 +47,23 @@ const useApplicationFormStep2 = (
 
   const {
     mutate: updateApplication,
-    // todo:
-    // error: updateApplicationError,
+    error: updateApplicationError,
     isSuccess: isApplicationUpdated,
   } = useUpdateApplicationQuery();
+
+  useEffect(() => {
+    // todo:custom error messages
+    if (updateApplicationError) {
+      hdsToast({
+        autoDismiss: true,
+        autoDismissTime: 5000,
+        type: 'error',
+        translated: true,
+        labelText: t('common:error.generic.label'),
+        text: t('common:error.generic.text'),
+      });
+    }
+  }, [t, updateApplicationError]);
 
   useEffect(() => {
     if (isApplicationUpdated) {
