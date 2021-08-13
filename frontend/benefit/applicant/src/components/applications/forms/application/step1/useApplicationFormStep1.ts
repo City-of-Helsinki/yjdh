@@ -1,3 +1,4 @@
+import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP1,
   VALIDATION_MESSAGE_KEYS,
@@ -38,25 +39,37 @@ type ExtendedComponentProps = {
 const useApplicationFormStep1 = (
   application: Application
 ): ExtendedComponentProps => {
+  const { t } = useTranslation();
   const { applicationTempData, setApplicationTempData } = React.useContext(
     ApplicationContext
   );
   const {
     mutate: createApplication,
     data: newApplication,
-    // todo:
-    // error: createApplicationError,
+    error: createApplicationError,
     isSuccess: isApplicationCreated,
   } = useCreateApplicationQuery();
 
   const {
     mutate: updateApplication,
-    // todo:
-    // error: updateApplicationError,
+    error: updateApplicationError,
     isSuccess: isApplicationUpdated,
   } = useUpdateApplicationQuery();
 
-  const { t } = useTranslation();
+  useEffect(() => {
+    // todo:custom error messages
+    if (updateApplicationError || createApplicationError) {
+      hdsToast({
+        autoDismiss: true,
+        autoDismissTime: 5000,
+        type: 'error',
+        translated: true,
+        labelText: t('common:error.generic.label'),
+        text: t('common:error.generic.text'),
+      });
+    }
+  }, [t, updateApplicationError, createApplicationError]);
+
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);

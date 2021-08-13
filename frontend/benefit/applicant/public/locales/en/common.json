@@ -324,5 +324,17 @@
       }
     }
   },
-  "select": "Valitse"
+  "select": "Valitse",
+  "errorPage": {
+    "title": "Palvelussa on valitettavsti tapahtunut virhe",
+    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "home": "Palaa etusivulle",
+    "logout": "Kirjaudu ulos"
+  },
+  "error": {
+    "generic": {
+      "label": "Error occurred",
+      "text": "Please try again later."
+    }
+  }
 }

@@ -16,7 +16,7 @@ const useApplicationQuery = (
         : handleResponse<ApplicationData>(
             axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)
           ),
-    { enabled: Boolean(id) }
+    { enabled: Boolean(id), retry: false }
   );
 };
 
