@@ -11,6 +11,10 @@ const getUrlParam = ClientFunction((param: string) => {
   return urlParams.get(param);
 });
 
+const refreshPage = ClientFunction(() => {
+  document.location.reload();
+});
+
 /* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type */
 export const getUrlUtils = (t: TestController) => {
   const pageIsLoaded = async (): Promise<void> => {
@@ -29,6 +33,9 @@ export const getUrlUtils = (t: TestController) => {
     async navigateToCompanyPage() {
       await t.navigateTo(getEmployerUiUrl(`/company`));
       await pageIsLoaded();
+    },
+    async refreshPage() {
+      await refreshPage();
     },
   };
   const expectations = {

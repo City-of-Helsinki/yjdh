@@ -9,7 +9,7 @@ import TestController from 'testcafe';
 export const doEmployerLogin = async (
   t: TestController,
   cachedUser?: User
-): Promise<SuomiFiData | undefined> => {
+): Promise<SuomiFiData> => {
   const headerUser = await getHeaderComponents(t).headerUser();
   await headerUser.expectations.userIsLoggedOut();
   await headerUser.actions.clickloginButton();

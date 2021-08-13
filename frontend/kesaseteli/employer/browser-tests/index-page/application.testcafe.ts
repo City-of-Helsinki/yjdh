@@ -2,9 +2,9 @@ import { getHeaderComponents } from '@frontend/shared/browser-tests/components/h
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { fakeInvoicer } from '@frontend/shared/test/fake-objects';
 import TestController from 'testcafe';
 
+import { loginAndfillInvoicerForm } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getEmployerUiUrl } from '../utils/settings';
 import { getUrlUtils } from '../utils/url.utils';
@@ -16,7 +16,7 @@ let urlUtils: ReturnType<typeof getUrlUtils>;
 const url = getEmployerUiUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
 
-fixture('Companypage')
+fixture('Application')
   .page(url)
   .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
@@ -26,35 +26,28 @@ fixture('Companypage')
     headerComponents = getHeaderComponents(t);
   });
 
-test('retrieves created application when logged in and out', async (t: TestController) => {
-  const suomiFiData = await doEmployerLogin(t);
-  const applicationId = await urlUtils.expectations.urlChangedToApplicationPage(
-    'fi'
-  );
-  if (isRealIntegrationsEnabled() && suomiFiData?.company) {
-    const companyTable = await applicationPageComponents.companyTable(
-      suomiFiData.company
+if (isRealIntegrationsEnabled()) {
+  test("Fills up invoicer form and retrieves it's data when logged in and out", async (t: TestController) => {
+    const {
+      user,
+      id: applicationId,
+      ...invoicerFormData
+    } = await loginAndfillInvoicerForm(t);
+    const headerUser = await headerComponents.headerUser();
+    await headerUser.actions.clicklogoutButton();
+    await doEmployerLogin(t, user);
+    await urlUtils.expectations.urlChangedToApplicationPage(
+      'fi',
+      applicationId
     );
-    await companyTable.expectations.isCompanyDataPresent();
-  }
-  const invoicerForm = await applicationPageComponents.invoicerForm();
-  const {
-    invoicer_name,
-    invoicer_email,
-    invoicer_phone_number,
-  } = fakeInvoicer();
-  await invoicerForm.actions.fillName(invoicer_name);
-  await invoicerForm.actions.fillEmail(invoicer_email);
-  await invoicerForm.actions.fillPhone(invoicer_phone_number);
-  await invoicerForm.actions.clickSaveAndContinueButton();
-  const headerUser = await headerComponents.headerUser();
-  await headerUser.actions.clicklogoutButton();
-  await doEmployerLogin(t, suomiFiData?.user);
-  await urlUtils.expectations.urlChangedToApplicationPage('fi', applicationId);
-  await invoicerForm.expectations.isPresent();
-  await invoicerForm.expectations.isFulFilledWith({
-    invoicer_name,
-    invoicer_email,
-    invoicer_phone_number,
+    const invoicerForm = await applicationPageComponents.invoicerForm();
+    await invoicerForm.expectations.isPresent();
+    await invoicerForm.expectations.isFulFilledWith(invoicerFormData);
   });
-});
+} else {
+  test("Fills up invoicer form and retrieves it's data when reloading page", async (t: TestController) => {
+    const invoicerFormData = await loginAndfillInvoicerForm(t);
+    const invoicerForm = await applicationPageComponents.invoicerForm();
+    await invoicerForm.expectations.isFulFilledWith(invoicerFormData);
+  });
+}

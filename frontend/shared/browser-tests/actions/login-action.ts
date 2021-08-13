@@ -64,9 +64,9 @@ const doSuomiFiLogin = async (
 export const doLogin = (
   t: TestController,
   cachedUser?: User
-): Promise<SuomiFiData> | undefined => {
+): Promise<SuomiFiData> => {
   if (isRealIntegrationsEnabled()) {
     return doSuomiFiLogin(t, cachedUser);
   }
-  return undefined;
+  return Promise.resolve({});
 };
