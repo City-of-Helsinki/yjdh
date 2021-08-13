@@ -64,7 +64,9 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     alternative_company_city = factory.Faker("city")
     alternative_company_postcode = factory.Faker("postcode", locale="fi_FI")
     company_bank_account_number = factory.Faker("iban", locale="fi_FI")
-    company_contact_person_phone_number = factory.Sequence(lambda n: f"050-100000{n}")
+    company_contact_person_phone_number = factory.Sequence(
+        lambda n: f"050-10000{n}"
+    )  # max.length in validation seems to be 10 digits
     company_contact_person_email = factory.Faker("email")
     company_contact_person_first_name = factory.Faker("first_name")
     company_contact_person_last_name = factory.Faker("last_name")
@@ -90,7 +92,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         date_end=date.today() + timedelta(days=100),
     )
     end_date = factory.LazyAttribute(
-        lambda o: o.start_date + timedelta(days=random.randint(31, 365))
+        lambda o: o.start_date + timedelta(days=random.randint(31, 364))
     )
     de_minimis_aid = True
     status = ApplicationStatus.DRAFT
@@ -141,7 +143,6 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
 
 
 class ApplicationBatchFactory(factory.django.DjangoModelFactory):
-    company = factory.SubFactory(CompanyFactory)
     proposal_for_decision = factory.Faker(
         "random_element", elements=AhjoDecision.values
     )
@@ -149,14 +150,12 @@ class ApplicationBatchFactory(factory.django.DjangoModelFactory):
         ApplicationFactory,
         factory_related_name="batch",
         status=factory.SelfAttribute("batch.proposal_for_decision"),
-        company=factory.SelfAttribute("batch.company"),
     )
 
-    application_1 = factory.RelatedFactory(
+    application_2 = factory.RelatedFactory(
         ApplicationFactory,
         factory_related_name="batch",
         status=factory.SelfAttribute("batch.proposal_for_decision"),
-        company=factory.SelfAttribute("batch.company"),
     )
 
     class Meta:

@@ -28,6 +28,7 @@ class ApplicationFilter(filters.FilterSet):
     class Meta:
         model = Application
         fields = {
+            "batch": ["exact"],
             "archived": ["exact"],
             "company__business_id": ["exact"],
             "benefit_type": ["exact"],

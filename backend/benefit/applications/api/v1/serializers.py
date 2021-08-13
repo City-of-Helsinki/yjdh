@@ -2,7 +2,12 @@ import re
 from datetime import date
 
 import filetype
+from applications.api.v1.status_transition_validator import (
+    ApplicationBatchStatusValidator,
+    ApplicationStatusValidator,
+)
 from applications.enums import (
+    ApplicationBatchStatus,
     ApplicationStatus,
     AttachmentRequirement,
     AttachmentType,
@@ -12,6 +17,7 @@ from applications.enums import (
 from applications.models import (
     Application,
     ApplicationBasis,
+    ApplicationBatch,
     ApplicationLogEntry,
     Attachment,
     DeMinimisAid,
@@ -29,51 +35,6 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from rest_framework import serializers
-
-
-class ApplicationStatusValidator:
-    requires_context = True
-
-    APPLICATION_STATUS_TRANSITIONS = {
-        ApplicationStatus.DRAFT: (ApplicationStatus.RECEIVED,),
-        ApplicationStatus.RECEIVED: (
-            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
-            ApplicationStatus.CANCELLED,
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
-        ),
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED: (
-            ApplicationStatus.RECEIVED,
-            ApplicationStatus.CANCELLED,
-        ),
-        ApplicationStatus.CANCELLED: (),
-        ApplicationStatus.ACCEPTED: (),
-        ApplicationStatus.REJECTED: (),
-    }
-
-    def __call__(self, value, serializer_field):
-        if application := serializer_field.parent.instance:
-            # In case it's an update operation, validate with the current status in database
-            if (
-                value != application.status
-                and value not in self.APPLICATION_STATUS_TRANSITIONS[application.status]
-            ):
-                raise serializers.ValidationError(
-                    format_lazy(
-                        _(
-                            "Application state transition not allowed: {status} to {value}"
-                        ),
-                        status=application.status,
-                        value=value,
-                    )
-                )
-        else:
-            if value != ApplicationStatus.DRAFT:
-                raise serializers.ValidationError(
-                    _("Initial status of application must be draft")
-                )
-
-        return value
 
 
 class ApplicationBasisSerializer(serializers.ModelSerializer):
@@ -316,6 +277,113 @@ class EmployeeSerializer(serializers.ModelSerializer):
             )
 
 
+class ApplicationBatchSerializer(serializers.ModelSerializer):
+    """
+    Grouping of applications for batch processing.
+    One Application can belong to at most one ApplicationBatch at a time.
+    """
+
+    status = serializers.ChoiceField(
+        choices=ApplicationBatchStatus.choices,
+        validators=[ApplicationBatchStatusValidator()],
+        help_text="Status of the application, visible to the applicant",
+    )
+
+    applications = serializers.PrimaryKeyRelatedField(
+        many=True,
+        read_only=False,
+        queryset=Application.objects.all(),
+        help_text="Applications in this batch (read-only)",
+    )
+
+    proposal_for_decision = serializers.ChoiceField(
+        choices=[ApplicationStatus.ACCEPTED, ApplicationStatus.REJECTED],
+        help_text="Proposed decision for Ahjo",
+    )
+
+    class Meta:
+        model = ApplicationBatch
+        fields = [
+            "id",
+            "status",
+            "applications",
+            "proposal_for_decision",
+            "decision_maker_title",
+            "decision_maker_name",
+            "section_of_the_law",
+            "decision_date",
+            "expert_inspector_name",
+            "expert_inspector_email",
+            "created_at",
+        ]
+        read_only_fields = [
+            "created_at",
+        ]
+        extra_kwargs = {
+            "decision_maker_title": {
+                "help_text": "Title of the decision maker in Ahjo",
+            },
+            "decision_maker_name": {
+                "help_text": "Nameof the decision maker in Ahjo",
+            },
+            "section_of_the_law": {
+                "help_text": "Section of the law that the Ahjo decision is based on",
+            },
+            "decision_date": {
+                "help_text": "Date of decision in Ahjo",
+            },
+            "expert_inspector_name": {
+                "help_text": "The name of application handler at the city of Helsinki (for Talpa)",
+            },
+            "expert_inspector_email": {
+                "help_text": "The email of application handler at the city of Helsinki (for Talpa)",
+            },
+        }
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        applications = validated_data.pop("applications", None)
+        application_batch = super().update(instance, validated_data)
+        if applications is not None:
+            self._update_applications(application_batch, applications)
+        return application_batch
+
+    @transaction.atomic
+    def create(self, validated_data):
+        applications = validated_data.pop("applications", None)
+        application_batch = super().create(validated_data)
+        if applications is not None:
+            self._update_applications(application_batch, applications)
+        return application_batch
+
+    def _update_applications(self, application_batch, applications):
+        if {application.pk for application in application_batch.applications.all()} != {
+            application.pk for application in applications
+        }:
+            if not application_batch.applications_can_be_modified:
+                raise serializers.ValidationError(
+                    {
+                        "applications": _(
+                            "Applications in a batch can not be changed when batch is in this status"
+                        )
+                    }
+                )
+
+            for application in applications:
+                if str(application.status) != str(
+                    application_batch.proposal_for_decision
+                ):
+                    raise serializers.ValidationError(
+                        {
+                            "applications": _(
+                                "This application has invalid status and can not be added to this batch"
+                            )
+                        }
+                    )
+
+        application_batch.applications.set(applications)
+
+
 class ApplicationSerializer(serializers.ModelSerializer):
 
     """
@@ -352,6 +420,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
         "Total amount must be less than MAX_AID_AMOUNT",
     )
 
+    batch = ApplicationBatchSerializer(
+        read_only=True, help_text="Application batch of this application, if any"
+    )
+
     create_application_for_company = serializers.PrimaryKeyRelatedField(
         write_only=True,
         required=False,
@@ -368,6 +440,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "id",
             "status",
             "employee",
+            "batch",
             "company",
             "company_name",
             "company_form",
@@ -408,6 +481,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "last_modified_at",
             "created_at",
             "attachments",
+            "ahjo_decision",
         ]
         read_only_fields = [
             "submitted_at",
@@ -514,7 +588,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "de_minimis_aid": {
                 "help_text": "Null indicates user has no yet made the selection",
             },
+            "ahjo_decision": {
+                "help_text": "Decision made in Ahjo, if any",
+            },
         }
+
+    ahjo_decision = serializers.ReadOnlyField()
 
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
