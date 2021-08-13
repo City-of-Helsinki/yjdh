@@ -1,3 +1,3 @@
 import styled from 'styled-components';
 
-export const CompanyInfoHeader = styled.div``;
+export const $CompanyInfoHeader = styled.div``;

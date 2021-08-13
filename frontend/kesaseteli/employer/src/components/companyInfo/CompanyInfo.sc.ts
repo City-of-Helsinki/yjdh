@@ -7,6 +7,4 @@ export const $CompanyInfoContainer = styled.div`
   width: 100%;
 `;
 
-export const $CompanyInfoHeader = styled.div``;
-
 export const $CompanyInfoRow = styled.div``;
