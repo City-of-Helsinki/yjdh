@@ -1,20 +1,21 @@
-name: Audit check if packages edited
+name: Scheduled Yarn audit
 on:
-  pull_request:
-    paths:
-      - '**/package.json'
-  workflow_dispatch:
+  schedule:
+    # Once a day at 5 o-clock
+    - cron: "0 5 * * *"
+  push:
+    branches: [develop, main]
 defaults:
   run:
     working-directory: ./frontend
 jobs:
-  test:
+  audit:
     name: Audit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.1.2
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -31,3 +32,13 @@ jobs:
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Run audit
         run: yarn audit
+      - name: Yarn audit scan failure slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_USERNAME: GitHub-Alerts
+          SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
+          SLACK_MESSAGE: "*Yarn audit has found some vulnerabilities!*"
+          SLACK_CHANNEL: yjdh-alerts
+        if: failure()
