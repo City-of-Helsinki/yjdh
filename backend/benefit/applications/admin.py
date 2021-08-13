@@ -1,6 +1,7 @@
 from applications.models import (
     Application,
     ApplicationBasis,
+    ApplicationBatch,
     ApplicationLogEntry,
     Attachment,
     DeMinimisAid,
@@ -41,7 +42,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         ApplicationBasisInline,
         AttachmentInline,
     )
-    list_filter = ("status",)  # FIXME: "company"
+    list_filter = ("status", "company")
     list_display = (
         "id",
         "status",
@@ -70,11 +71,33 @@ class ApplicationAdmin(admin.ModelAdmin):
     exclude = ("bases",)
 
 
+class ApplicationInline(admin.StackedInline):
+    model = Application
+    show_change_link = True
+    fk_name = "batch"
+    extra = 0
+    fields = ("application_number", "status", "company_name")
+    readonly_fields = ("application_number", "company_name")
+
+
+class ApplicationBatchAdmin(admin.ModelAdmin):
+    inlines = (ApplicationInline,)
+    show_change_link = True
+    list_filter = ("status", "proposal_for_decision")
+    list_display = (
+        "id",
+        "status",
+        "proposal_for_decision",
+        "decision_date",
+    )
+
+
 class ApplicationBasisAdmin(admin.ModelAdmin):
     inlines = (ApplicationBasisInline,)
 
 
 admin.site.register(Application, ApplicationAdmin)
+admin.site.register(ApplicationBatch, ApplicationBatchAdmin)
 admin.site.register(DeMinimisAid)
 admin.site.register(Employee)
 admin.site.register(Attachment)
