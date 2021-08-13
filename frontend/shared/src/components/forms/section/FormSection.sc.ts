@@ -39,11 +39,10 @@ export const $FieldsContainerWithPadding = styled.div`
   padding-right: var(--spacing-xs);
   padding-top: ${(props) => props.theme.spacingLayout.xs2};
   margin-right: 0 !important;
+  gap: ${(props) => props.theme.spacing.xs};
+
   & > div {
-    width: 250px;
-  }
-  & > div > div {
-    margin-right: ${(props) => props.theme.spacing.xs};
+    width: 236px;
   }
 `;
 
