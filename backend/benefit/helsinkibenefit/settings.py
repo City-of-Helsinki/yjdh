@@ -66,6 +66,7 @@ env = environ.Env(
     AZURE_ACCOUNT_KEY=(str, ""),
     AZURE_CONTAINER=(str, ""),
     AZURE_URL_EXPIRATION_SECS=(int, 900),
+    MINIMUM_WORKING_HOURS_PER_WEEK=(int, 18),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -282,6 +283,7 @@ AZURE_CONTAINER = env("AZURE_CONTAINER")
 AZURE_URL_EXPIRATION_SECS = env("AZURE_URL_EXPIRATION_SECS")  # default 900s
 
 MAX_UPLOAD_SIZE = 10485760  # 10MB
+MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
 
 
 # local_settings.py can be used to override environment-specific settings

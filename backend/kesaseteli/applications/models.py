@@ -15,7 +15,10 @@ class Application(HistoricalModel, UUIDModel):
         verbose_name=_("company"),
     )
     status = models.CharField(
-        max_length=64, verbose_name=_("status"), choices=ApplicationStatus.choices
+        max_length=64,
+        verbose_name=_("status"),
+        choices=ApplicationStatus.choices,
+        default=ApplicationStatus.DRAFT,
     )
     street_address = models.CharField(
         max_length=256,

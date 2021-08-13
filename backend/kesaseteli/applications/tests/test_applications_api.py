@@ -200,8 +200,10 @@ def test_application_create_writes_audit_log(
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
-def test_application_update_writes_audit_log(api_client, user_with_profile, caplog):
-    application = ApplicationFactory(status=ApplicationStatus.DRAFT)
+def test_application_update_writes_audit_log(
+    api_client, user_with_profile, company, caplog
+):
+    application = ApplicationFactory(company=company, status=ApplicationStatus.DRAFT)
     data = ApplicationSerializer(application).data
     data["status"] = "submitted"
     response = api_client.put(
@@ -255,3 +257,34 @@ def test_application_create_writes_audit_log_if_not_authenticated(
         "type": "Application",
     }
     assert audit_event["status"] == "FORBIDDEN"
+
+
+@pytest.mark.django_db
+def test_application_create_double(api_client, company):
+    response = api_client.post(
+        reverse("v1:application-list"),
+        {},
+    )
+
+    assert response.status_code == 201
+
+    response = api_client.post(
+        reverse("v1:application-list"),
+        {},
+    )
+
+    assert response.status_code == 400
+    assert str(response.data[0]) == "Company can have only one draft application"
+
+
+@pytest.mark.django_db
+def test_applications_list_only_finds_own_application(api_client, application):
+    ApplicationFactory()
+
+    assert Application.objects.count() == 2
+
+    response = api_client.get(reverse("v1:application-list"))
+
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert str(response.data[0]["id"]) == str(application.id)
