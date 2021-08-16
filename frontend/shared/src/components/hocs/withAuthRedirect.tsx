@@ -1,6 +1,6 @@
-import useAuth from 'kesaseteli/employer/hooks/useAuth';
 import { useRouter } from 'next/router';
 import React from 'react';
+import useAuth from 'shared/hooks/useAuth';
 import isServerSide from 'shared/server/is-server-side';
 
 const DefaultLoadingFallback = (): React.ReactElement<unknown> => (

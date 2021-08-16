@@ -1,9 +1,9 @@
-import withAuth from 'kesaseteli/employer/hocs/withAuth';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/useCreateApplicationQuery';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
+import withAuth from 'shared/components/hocs/withAuth';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 

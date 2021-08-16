@@ -1,7 +1,5 @@
-import AuthContext, {
-  AuthContextType,
-} from 'kesaseteli/employer/auth/AuthContext';
 import React from 'react';
+import AuthContext, { AuthContextType } from 'shared/auth/AuthContext';
 
 const useAuth = (): AuthContextType => {
   const context = React.useContext(AuthContext);

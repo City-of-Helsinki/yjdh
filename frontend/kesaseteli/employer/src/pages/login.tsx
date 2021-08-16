@@ -1,7 +1,7 @@
-import withoutAuth from 'kesaseteli/employer/hocs/withoutAuth';
 import useRouterClearQueryParams from 'kesaseteli/employer/hooks/useRouterClearQueryParams';
 import { GetStaticProps, NextPage } from 'next';
 import * as React from 'react';
+import withoutAuth from 'shared/components/hocs/withoutAuth';
 import Layout from 'shared/components/Layout';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
