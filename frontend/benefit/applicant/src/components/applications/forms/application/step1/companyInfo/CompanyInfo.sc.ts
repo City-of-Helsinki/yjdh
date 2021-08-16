@@ -4,12 +4,13 @@ import styled from 'styled-components';
 
 export const $CompanyInfoContainer = styled.div`
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
-    'info notification'
-    'address address'
-    'iban iban';
+    'info info notification notification'
+    'address address address address'
+    'iban iban iban iban';
   width: 100%;
+  grid-gap: 0 ${(props) => props.theme.spacing.xs};
 `;
 
 export const $CompanyInfoSection = styled.div`
@@ -41,7 +42,9 @@ export const $AddressContainer = styled($FormGroup)`
   grid-area: address;
   margin-top: ${(props) => props.theme.spacing.l};
   display: grid;
-  grid-template-columns: 2fr 1fr 2fr 1fr;
+  align-items: baseline;
+  grid-template-columns: 4fr 2fr 4fr 2fr;
+  grid-gap: ${(props) => props.theme.spacing.xs};
 `;
 
 export const $IBANContainer = styled($FormGroup)`

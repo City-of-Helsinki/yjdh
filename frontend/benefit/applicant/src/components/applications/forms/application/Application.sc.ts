@@ -35,6 +35,7 @@ export const $ContactPersonContainer = styled($FormGroup)`
   display: grid;
   grid-template-columns: 3fr 3fr 2fr 4fr;
   grid-gap: ${({ theme }) => `${theme.spacing.m} ${theme.spacing.xs}`};
+  align-items: baseline;
 `;
 
 export const $EmployerBasicInfoContainer = styled($FormGroup)`
