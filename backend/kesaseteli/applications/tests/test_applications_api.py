@@ -1,7 +1,7 @@
 import pytest
 from django.test import override_settings
 from rest_framework.reverse import reverse
-from shared.audit_log.tests.utils import get_audit_log_event
+from shared.audit_log.models import AuditLogEntry
 
 from applications.api.v1.serializers import (
     ApplicationSerializer,
@@ -171,9 +171,7 @@ def test_application_delete_not_allowed(api_client, application):
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
-def test_application_create_writes_audit_log(
-    api_client, user_with_profile, company, caplog
-):
+def test_application_create_writes_audit_log(api_client, user_with_profile, company):
     response = api_client.post(
         reverse("v1:application-list"),
         {},
@@ -181,12 +179,12 @@ def test_application_create_writes_audit_log(
 
     assert response.status_code == 201
 
-    audit_event = get_audit_log_event(caplog)
-    assert audit_event is not None, "no audit log entry was written"
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
     assert audit_event["actor"] == {
         "ip_address": "127.0.0.1",
         "role": "USER",
         "user_id": str(user_with_profile.pk),
+        "provider": "",
     }
     assert audit_event["operation"] == "CREATE"
     assert audit_event["target"] == {
@@ -201,9 +199,8 @@ def test_application_create_writes_audit_log(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
 def test_application_update_writes_audit_log(
-    api_client, user_with_profile, company, caplog
+    api_client, user_with_profile, application
 ):
-    application = ApplicationFactory(company=company, status=ApplicationStatus.DRAFT)
     data = ApplicationSerializer(application).data
     data["status"] = "submitted"
     response = api_client.put(
@@ -214,28 +211,28 @@ def test_application_update_writes_audit_log(
     assert response.status_code == 200
     assert response.data["status"] == "submitted"
 
-    audit_event = get_audit_log_event(caplog)
-    assert audit_event is not None, "no audit log entry was written"
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
     assert audit_event["actor"] == {
         "ip_address": "127.0.0.1",
         "role": "USER",
         "user_id": str(user_with_profile.pk),
+        "provider": "",
     }
     assert audit_event["operation"] == "UPDATE"
     assert audit_event["target"] == {
         "id": response.data["id"],
         "type": "Application",
-        "status_after": "submitted",
-        "status_before": "draft",
+        "changes": ["status changed from draft to submitted"],
     }
     assert audit_event["status"] == "SUCCESS"
 
 
+@pytest.mark.django_db
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
 def test_application_create_writes_audit_log_if_not_authenticated(
-    unauthenticated_api_client, caplog
+    unauthenticated_api_client,
 ):
     response = unauthenticated_api_client.post(
         reverse("v1:application-list"),
@@ -244,18 +241,15 @@ def test_application_create_writes_audit_log_if_not_authenticated(
 
     assert response.status_code == 403
 
-    audit_event = get_audit_log_event(caplog)
-    assert audit_event is not None, "no audit log entry was written"
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
     assert audit_event["actor"] == {
         "ip_address": "127.0.0.1",
         "role": "ANONYMOUS",
-        "user_id": None,
+        "user_id": "",
+        "provider": "",
     }
     assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"] == {
-        "id": None,
-        "type": "Application",
-    }
+    assert audit_event["target"]["type"] == "Application"
     assert audit_event["status"] == "FORBIDDEN"
 
 

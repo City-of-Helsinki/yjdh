@@ -1,20 +1,21 @@
-from enum import Enum
+from django.db.models import TextChoices
+from django.utils.translation import gettext_lazy as _
 
 
-class Operation(Enum):
-    CREATE = "CREATE"
-    READ = "READ"
-    UPDATE = "UPDATE"
-    DELETE = "DELETE"
+class Operation(TextChoices):
+    CREATE = "CREATE", _("Create")
+    READ = "READ", _("Read")
+    UPDATE = "UPDATE", _("Update")
+    DELETE = "DELETE", _("Delete")
 
 
-class Role(Enum):
-    OWNER = "OWNER"
-    USER = "USER"
-    SYSTEM = "SYSTEM"
-    ANONYMOUS = "ANONYMOUS"
+class Role(TextChoices):
+    OWNER = "OWNER", _("Owner")
+    USER = "USER", _("User")
+    SYSTEM = "SYSTEM", _("System")
+    ANONYMOUS = "ANONYMOUS", _("Anonymous")
 
 
-class Status(Enum):
-    SUCCESS = "SUCCESS"
-    FORBIDDEN = "FORBIDDEN"
+class Status(TextChoices):
+    SUCCESS = "SUCCESS", _("Success")
+    FORBIDDEN = "FORBIDDEN", _("Forbidden")
