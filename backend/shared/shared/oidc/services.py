@@ -62,10 +62,13 @@ def store_token_info_in_oidc_profile(user, token_info):
 def update_or_create_eauth_profile(
     oidc_profile: OIDCProfile, defaults: dict
 ) -> EAuthorizationProfile:
-    eauth_profile, _ = EAuthorizationProfile.objects.update_or_create(
+    eauth_profile, created = EAuthorizationProfile.objects.update_or_create(
         oidc_profile=oidc_profile,
         defaults=defaults,
     )
+    if not created and getattr(eauth_profile, "company", None):
+        eauth_profile.company = None
+        eauth_profile.save()
     return eauth_profile
 
 
