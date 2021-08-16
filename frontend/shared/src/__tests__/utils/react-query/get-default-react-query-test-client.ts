@@ -6,7 +6,7 @@ setLogger({
   log: console.log,
   // eslint-disable-next-line no-console
   warn: console.warn,
-  error: () => noop,
+  error: noop,
 });
 
 const getDefaultReactQueryTestClient = (): QueryClient =>

@@ -90,7 +90,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
         return {
           label: t(`${translationListBase}.check`),
           // implement the action
-          handleAction: () => noop,
+          handleAction: noop,
         };
     }
   };

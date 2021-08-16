@@ -16,8 +16,8 @@ const ApplicationContext = React.createContext<ApplicationContextType>({
     currentStep: 1,
   },
   isLoading: true,
-  setApplicationTempData: () => noop,
-  setCurrentStep: () => noop,
+  setApplicationTempData: noop,
+  setCurrentStep: noop,
 });
 
 export default ApplicationContext;
