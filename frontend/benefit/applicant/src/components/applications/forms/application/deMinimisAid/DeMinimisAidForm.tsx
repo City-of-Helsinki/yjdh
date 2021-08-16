@@ -44,6 +44,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               name={fields.granter.name}
               label={fields.granter.label}
               placeholder={fields.granter.placeholder}
+              onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.granter}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
@@ -56,6 +57,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               name={fields.amount.name}
               label={fields.amount.label || ''}
               placeholder={fields.amount.placeholder}
+              onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.amount?.toString()}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
@@ -69,6 +71,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               label={fields.grantedAt.label}
               placeholder={fields.grantedAt.placeholder}
               language={SUPPORTED_LANGUAGES.FI}
+              onBlur={formik.handleBlur}
               onChange={(value) =>
                 formik.setFieldValue(fields.grantedAt.name, value)
               }
