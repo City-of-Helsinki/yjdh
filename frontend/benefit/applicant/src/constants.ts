@@ -163,10 +163,15 @@ export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];
 
 export enum VALIDATION_MESSAGE_KEYS {
   REQUIRED = 'common:form.validation.required',
-  EMAIL = 'common:form.validation.string.email',
+  ADDRESS_INVALID = 'common:form.validation.address.invalid',
+  CITY_INVALID = 'common:form.validation.city.invalid',
+  EMAIL_INVALID = 'common:form.validation.string.email',
   IBAN_INVALID = 'common:form.validation.iban.invalid',
+  NAME_INVALID = 'common:form.validation.name.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
+  PHONE_INVALID = 'common:form.validation.phone.invalid',
+  POSTAL_CODE_INVALID = 'common:form.validation.postalCode.invalid',
   STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',
   STRING_MIN = 'common:form.validation.string.min',
   STRING_MAX = 'common:form.validation.string.max',
@@ -182,3 +187,9 @@ export enum VALIDATION_MESSAGE_KEYS {
 }
 
 export const dateRegex = /(?:(?:0?[1-9]|1\d|2\d)\.(?:0?[1-9]|1[0-2])|(?:30\.(?!02)(?:0[1-9]|1[0-2]))|(?:31\.(?:0[13578]|1[02])))\.(?:19|20)\d{2}/;
+export const addressRegex = /^([\d (),./A-Za-zÄÅÖäåö-]+)$/;
+export const companyAccRegex = /^FI\d{16}$/;
+export const phoneRegex = /^((\\+[1-9]{1,4}[ \\-]*)|(\\(\d{2,3}\\)[ \\-]*)|(\d{2,4})[ \\-]*)*?\d{3,4}?[ \\-]*\d{3,4}?$/;
+export const postalCodeRegex = /^\d{5}$/;
+export const namesRegex = /^[\w',.-][^\d!#$%&()*+/:;<=>?@[\\\]_{|}~¡¿÷ˆ]{2,}$/;
+export const cityRegex = /^[A-Za-zÄÅÖ-\säåö]+$/;
