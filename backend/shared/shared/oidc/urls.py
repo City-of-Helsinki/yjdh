@@ -7,6 +7,7 @@ from shared.oidc.views.eauth_views import (
 )
 from shared.oidc.views.hki_views import (
     HelsinkiOIDCAuthenticationCallbackView,
+    HelsinkiOIDCBackchannelLogoutView,
     HelsinkiOIDCLogoutView,
     HelsinkiOIDCUserInfoView,
 )
@@ -53,6 +54,11 @@ else:
             "userinfo/",
             HelsinkiOIDCUserInfoView.as_view(),
             name="oidc_userinfo",
+        ),
+        path(
+            "backchannel/logout/",
+            HelsinkiOIDCBackchannelLogoutView.as_view(),
+            name="oidc_backchannel_logout",
         ),
         path("", include("mozilla_django_oidc.urls")),
         path(
