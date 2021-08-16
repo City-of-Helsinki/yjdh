@@ -107,6 +107,7 @@ export type ApplicationData = {
   attachments?: AttachmentData[];
   create_application_for_company?: string;
   created_at?: string;
+  application_step?: string;
 };
 
 interface ApplicationAllowedAction {
@@ -224,6 +225,7 @@ export type Application = {
   [APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID]?: boolean | null;
   deMinimisAidSet?: DeMinimisAid[];
   createdAt?: string | null;
+  applicationStep?: string | null;
   // create_application_for_company ? not present in the UI?
 };
 

@@ -11,6 +11,7 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
+import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
@@ -81,6 +82,7 @@ const useApplicationFormStep2 = (
         {
           ...application,
           ...formik.values,
+          applicationStep: getApplicationStepString(step),
         },
         { deep: true }
       );
@@ -121,9 +123,9 @@ const useApplicationFormStep2 = (
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
 
-  const handleSubmit = (nextStep: number): void => {
+  const handleSubmitNext = (): void => {
     setIsSubmitted(true);
-    setStep(nextStep);
+    setStep(3);
     void formik.validateForm().then((errors) => {
       // todo: Focus the first invalid field
       const invalidFields = Object.keys(errors);
@@ -134,10 +136,17 @@ const useApplicationFormStep2 = (
     });
   };
 
-  const handleSubmitNext = (): void => handleSubmit(3);
-
-  const handleSubmitBack = (): void =>
-    setApplicationTempData({ ...applicationTempData, currentStep: 1 });
+  const handleSubmitBack = (): void => {
+    setStep(1);
+    const currentApplicationData: ApplicationData = snakecaseKeys(
+      {
+        ...application,
+        applicationStep: getApplicationStepString(1),
+      },
+      { deep: true }
+    );
+    updateApplication(currentApplicationData);
+  };
 
   const erazeCommissionFields = (e: ChangeEvent<HTMLInputElement>): void => {
     formik.handleChange(e);

@@ -8,7 +8,7 @@ export type FrontPageContextType = {
 
 const FrontPageContext = React.createContext<FrontPageContextType>({
   errors: [],
-  setError: () => noop,
+  setError: noop,
 });
 
 export default FrontPageContext;

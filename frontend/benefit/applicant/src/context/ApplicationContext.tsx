@@ -6,6 +6,7 @@ export type ApplicationContextType = {
   applicationTempData: ApplicationTempData;
   isLoading: boolean;
   setApplicationTempData: (data: ApplicationTempData) => void;
+  setCurrentStep: (currentStep: number) => void;
 };
 
 const ApplicationContext = React.createContext<ApplicationContextType>({
@@ -15,7 +16,8 @@ const ApplicationContext = React.createContext<ApplicationContextType>({
     currentStep: 1,
   },
   isLoading: true,
-  setApplicationTempData: () => noop,
+  setApplicationTempData: noop,
+  setCurrentStep: noop,
 });
 
 export default ApplicationContext;

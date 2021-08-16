@@ -18,7 +18,10 @@ import {
   ApplicationData,
   DeMinimisAid,
 } from 'benefit/applicant/types/application';
-import { getLanguageOptions } from 'benefit/applicant/utils/common';
+import {
+  getApplicationStepString,
+  getLanguageOptions,
+} from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
@@ -146,6 +149,7 @@ const useApplicationFormStep1 = (
           // update from context
           deMinimisAidSet: applicationTempData.deMinimisAids,
           deMinimisAid: applicationTempData.deMinimisAids?.length !== 0,
+          applicationStep: getApplicationStepString(2),
         },
         { deep: true }
       );
