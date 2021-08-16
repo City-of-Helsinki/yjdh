@@ -12,4 +12,4 @@ mozilla-django-oidc
 psycopg2
 sentry-sdk
 requests
--e ../shared
+-e file:../shared
