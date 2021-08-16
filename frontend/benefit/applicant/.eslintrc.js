@@ -4,6 +4,7 @@ module.exports = {
   extends: ['auto'],
   rules: {
     'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
+    'sonarjs/cognitive-complexity': ['error', 20],
     'no-void': 'off',
     'unicorn/prefer-module': 'off',
     'jsx-a11y/anchor-is-valid': [

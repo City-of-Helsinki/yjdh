@@ -15,12 +15,15 @@ const ApplicationProvider = <P,>({
     currentStep: 1,
   });
 
+  const setCurrentStep = (step: number): void =>
+    setApplicationTempData({ ...applicationTempData, currentStep: step });
   return (
     <ApplicationContext.Provider
       value={{
         applicationTempData,
         isLoading: true,
         setApplicationTempData,
+        setCurrentStep,
       }}
     >
       {children}

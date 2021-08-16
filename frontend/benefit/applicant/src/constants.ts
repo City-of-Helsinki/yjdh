@@ -13,6 +13,8 @@ export enum SUPPORTED_LANGUAGES {
   EN = 'en',
 }
 
+export const DEFAULT_APPLICATION_STEP = 'step_1';
+
 export enum APPLICATION_SAVE_ACTIONS {
   SAVE_AND_NEXT = 'save_next',
   SAVE_AND_PREVIOUS = 'save_prev',
@@ -157,6 +159,7 @@ export const DEFAULT_APPLICATION = {
   [APPLICATION_FIELDS_STEP2.END_DATE]: null,
   [APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID]: null,
   deMinimisAidSet: [],
+  applicationStep: DEFAULT_APPLICATION_STEP,
 };
 
 export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];

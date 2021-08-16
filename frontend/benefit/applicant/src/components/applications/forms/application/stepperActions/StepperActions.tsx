@@ -60,8 +60,8 @@ const StepperActions: React.FC<StepperActionsProps> = ({
 const defaultProps = {
   hasBack: false,
   hasNext: false,
-  handleBack: () => noop,
-  handleSubmit: () => noop,
+  handleBack: noop,
+  handleSubmit: noop,
 };
 
 StepperActions.defaultProps = defaultProps;
