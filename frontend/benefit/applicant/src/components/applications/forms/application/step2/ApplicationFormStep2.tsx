@@ -5,7 +5,7 @@ import {
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
   $Checkbox,
@@ -45,6 +45,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     formik,
     subsidyOptions,
   } = useApplicationFormStep2(data);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <form onSubmit={handleSubmitNext} noValidate>
