@@ -145,7 +145,6 @@ const useApplicationFormStep1 = (
         {
           ...application,
           ...formik.values,
-          applicationStep: 'step_1',
           // update from context
           deMinimisAidSet: applicationTempData.deMinimisAids,
           deMinimisAid: applicationTempData.deMinimisAids?.length !== 0,
