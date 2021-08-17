@@ -296,12 +296,12 @@
   "form": {
     "validation": {
       "required": "This field is required",
+      "invalid": "Invalid value",
       "number": {
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
       },
       "string": {
-        "email": "This field must be a valid email",
         "max": "This field can be up to {{max}} characters long",
         "min": "This field must be at least {{min}} characters long",
         "url": "This field must be a valid URL",
@@ -318,6 +318,12 @@
       "time": {
         "min": "This time must be earliest {{min}}",
         "max": "This time must be latest {{max}}"
+      },
+      "phone": {
+        "invalid": "The value must be a telephone number"
+      },
+      "email": {
+        "invalid": "This field must be a valid email"
       },
       "iban": {
         "invalid": "Invalid IBAN value"

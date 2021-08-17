@@ -166,15 +166,12 @@ export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];
 
 export enum VALIDATION_MESSAGE_KEYS {
   REQUIRED = 'common:form.validation.required',
-  ADDRESS_INVALID = 'common:form.validation.address.invalid',
-  CITY_INVALID = 'common:form.validation.city.invalid',
-  EMAIL_INVALID = 'common:form.validation.string.email',
+  INVALID = 'common:form.validation.invalid',
+  EMAIL_INVALID = 'common:form.validation.email.invalid',
   IBAN_INVALID = 'common:form.validation.iban.invalid',
-  NAME_INVALID = 'common:form.validation.name.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
   PHONE_INVALID = 'common:form.validation.phone.invalid',
-  POSTAL_CODE_INVALID = 'common:form.validation.postalCode.invalid',
   STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',
   STRING_MIN = 'common:form.validation.string.min',
   STRING_MAX = 'common:form.validation.string.max',

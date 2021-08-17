@@ -106,15 +106,15 @@ const useApplicationFormStep1 = (
     validationSchema: Yup.object().shape({
       [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS]: Yup.string().matches(
         addressRegex,
-        t(VALIDATION_MESSAGE_KEYS.ADDRESS_INVALID)
+        t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string().matches(
         postalCodeRegex,
-        t(VALIDATION_MESSAGE_KEYS.POSTAL_CODE_INVALID)
+        t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY]: Yup.string().matches(
         cityRegex,
-        t(VALIDATION_MESSAGE_KEYS.CITY_INVALID)
+        t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string().matches(
         companyAccRegex,
@@ -129,11 +129,11 @@ const useApplicationFormStep1 = (
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string().matches(
         namesRegex,
-        t(VALIDATION_MESSAGE_KEYS.NAME_INVALID)
+        t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME]: Yup.string().matches(
         namesRegex,
-        t(VALIDATION_MESSAGE_KEYS.NAME_INVALID)
+        t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
     }),
     validateOnChange: true,
