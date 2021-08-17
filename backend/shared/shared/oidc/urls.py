@@ -7,6 +7,7 @@ from shared.oidc.views.eauth_views import (
 )
 from shared.oidc.views.hki_views import (
     HelsinkiOIDCAuthenticationCallbackView,
+    HelsinkiOIDCAuthenticationRequestView,
     HelsinkiOIDCBackchannelLogoutView,
     HelsinkiOIDCLogoutView,
     HelsinkiOIDCUserInfoView,
@@ -40,6 +41,11 @@ if settings.MOCK_FLAG:
     ]
 else:
     urlpatterns += [
+        path(
+            "authenticate/",
+            HelsinkiOIDCAuthenticationRequestView.as_view(),
+            name="oidc_authentication_init",
+        ),
         path(
             "callback/",
             HelsinkiOIDCAuthenticationCallbackView.as_view(),
