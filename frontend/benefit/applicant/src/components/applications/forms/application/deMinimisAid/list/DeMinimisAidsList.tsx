@@ -57,7 +57,7 @@ const DeMinimisAidsList: React.FC = () => {
             label={t(
               `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
             )}
-            type="alert"
+            type="error"
           >
             {t(
               `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
