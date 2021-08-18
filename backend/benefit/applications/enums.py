@@ -13,6 +13,11 @@ class ApplicationStatus(models.TextChoices):
     REJECTED = "rejected", _("Rejected")
 
 
+class AhjoDecision(models.TextChoices):
+    ACCEPTED = ApplicationStatus.ACCEPTED
+    REJECTED = ApplicationStatus.REJECTED
+
+
 class BenefitType(models.TextChoices):
     EMPLOYMENT_BENEFIT = "employment_benefit", _("Employment Benefit")
     SALARY_BENEFIT = "salary_benefit", _("Salary Benefit")
@@ -61,3 +66,16 @@ class AttachmentType(models.TextChoices):
 class AttachmentRequirement(models.TextChoices):
     REQUIRED = "required", _("attachment is required")
     OPTIONAL = "optional", _("attachment is optional")
+
+
+class ApplicationBatchStatus(models.TextChoices):
+    DRAFT = "draft", _("Draft")
+    AWAITING_AHJO_DECISION = "awaiting_ahjo_decision", _(
+        "Sent to Ahjo, decision pending"
+    )
+    DECIDED = "decided", _("Decided")
+    RETURNED = "returned", _(
+        "Returned"
+    )  # Theoretically possible: means that a decision was not made
+    SENT_TO_TALPA = "sent_to_talpa", _("Sent to Talpa")
+    COMPLETED = "completed", _("Processing is completed")

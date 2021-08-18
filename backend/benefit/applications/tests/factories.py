@@ -5,9 +5,11 @@ from datetime import date, timedelta
 import factory
 from applications.enums import ApplicationStatus, ApplicationStep, BenefitType
 from applications.models import (
+    AhjoDecision,
     Application,
     APPLICATION_LANGUAGE_CHOICES,
     ApplicationBasis,
+    ApplicationBatch,
     DeMinimisAid,
     Employee,
 )
@@ -136,3 +138,24 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Employee
+
+
+class ApplicationBatchFactory(factory.django.DjangoModelFactory):
+
+    proposal_for_decision = factory.Faker(
+        "random_element", elements=AhjoDecision.values
+    )
+    application_1 = factory.RelatedFactory(
+        ApplicationFactory,
+        factory_related_name="batch",
+        status=factory.SelfAttribute("batch.proposal_for_decision"),
+    )
+
+    application_1 = factory.RelatedFactory(
+        ApplicationFactory,
+        factory_related_name="batch",
+        status=factory.SelfAttribute("batch.proposal_for_decision"),
+    )
+
+    class Meta:
+        model = ApplicationBatch
