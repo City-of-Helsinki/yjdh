@@ -1,5 +1,3 @@
-import json
-import logging
 from datetime import datetime, timezone
 from typing import Callable, Optional, Union
 
@@ -10,10 +8,10 @@ from django.db.models import Model
 from django.db.models.base import ModelBase
 
 from shared.audit_log.enums import Operation, Role, Status
+from shared.audit_log.mappings import DJANGO_BACKEND_MAPPING
+from shared.audit_log.models import AuditLogEntry
 
 User = get_user_model()
-
-LOGGER = logging.getLogger("audit")
 
 
 def _now() -> datetime:
@@ -23,18 +21,18 @@ def _now() -> datetime:
 
 def _iso8601_date(time: datetime) -> str:
     """Formats the timestamp in ISO-8601 format, e.g. '2020-06-01T00:00:00.000Z'."""
-    return f"{time.replace(tzinfo=None).isoformat(sep='T', timespec='milliseconds')}Z"
+    return f"{time.replace(tzinfo=None).isoformat(timespec='milliseconds')}Z"
 
 
 def log(
     actor: Optional[Union[User, AnonymousUser]],
+    actor_backend: str,
     operation: Operation,
     target: Union[Model, ModelBase],
     status: Status = Status.SUCCESS,
     get_time: Callable[[], datetime] = _now,
-    ip_address: Optional[str] = "",
-    target_status_before: Optional[str] = None,
-    target_status_after: Optional[str] = None,
+    ip_address: str = "",
+    additional_information: str = "",
 ):
     """
     Write an event to the audit log.
@@ -43,20 +41,23 @@ def log(
     an operation(e.g. READ or UPDATE), the target of the operation
     (a Django model instance), status (e.g. SUCCESS), and a timestamp.
 
-    Audit log events are written to the "audit" logger at "INFO" level.
+    If additional information is provided, the function assumes that
+    there were no changes to the object iteself but it was (re-)sent
+    to another system for example. Thus it will not log the "changes"
+    of the object.
     """
     current_time = get_time()
-    user_id = None
+    user_id = str(actor.pk) if getattr(actor, "pk", None) else ""
+
     if actor is None:
         role = Role.SYSTEM
     elif isinstance(actor, AnonymousUser):
         role = Role.ANONYMOUS
     elif actor.id == target.pk:
         role = Role.OWNER
-        user_id = str(actor.pk)
     else:
         role = Role.USER
-        user_id = str(actor.pk)
+
     message = {
         "audit_event": {
             "origin": settings.AUDIT_LOG_ORIGIN,
@@ -66,28 +67,47 @@ def log(
             "actor": {
                 "role": str(role.value),
                 "user_id": user_id,
+                "provider": DJANGO_BACKEND_MAPPING[actor_backend]
+                if actor_backend
+                else "",
                 "ip_address": ip_address,
             },
             "operation": str(operation.value),
+            "additional_information": additional_information,
             "target": {
                 "id": _get_target_id(target),
                 "type": _get_target_type(target),
             },
         },
     }
-    if target_status_before != target_status_after:
-        message["audit_event"]["target"].update(
-            {
-                "status_before": target_status_before,
-                "status_after": target_status_after,
-            }
-        )
-    LOGGER.info(json.dumps(message))
+
+    if (
+        operation == Operation.UPDATE
+        and not additional_information
+        and hasattr(target, "history")
+    ):
+        # Model is using django-simple-history
+        latest_record = target.history.latest()
+        previous_record = latest_record.prev_record
+        delta = latest_record.diff_against(previous_record)
+
+        changes_list = []
+        for change in delta.changes:
+            changes_list.append(
+                f"{change.field} changed from {change.old} to {change.new}"
+            )
+
+        if changes_list:
+            message["audit_event"]["target"].update({"changes": changes_list})
+
+    AuditLogEntry.objects.create(
+        message=message,
+    )
 
 
 def _get_target_id(target: Union[Model, ModelBase]) -> Optional[str]:
     if isinstance(target, ModelBase):
-        return None
+        return ""
     field_name = getattr(target, "audit_log_id_field", "pk")
     audit_log_id = getattr(target, field_name, None)
     return str(audit_log_id)
