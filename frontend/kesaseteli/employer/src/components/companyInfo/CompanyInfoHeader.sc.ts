@@ -1,7 +1,3 @@
 import styled from 'styled-components';
 
-const CompanyInfoHeader = styled.div``;
-
-export default {
-  CompanyInfoHeader,
-};
+export const CompanyInfoHeader = styled.div``;

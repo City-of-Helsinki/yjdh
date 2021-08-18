@@ -54,6 +54,9 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
   const queryClient = createReactQueryTestClient();
   beforeEach(() => {
     queryClient.clear();
+  });
+
+  afterEach(() => {
     nock.cleanAll();
   });
 

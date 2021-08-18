@@ -8,5 +8,9 @@ const AxiosTestContext = Axios.create({
   },
   withCredentials: false,
 });
+// To use Nock with Axios, you may need to configure Axios to use the Node adapter
+// More info https://github.com/nock/nock#axios
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+AxiosTestContext.defaults.adapter = require('axios/lib/adapters/http');
 
 export default AxiosTestContext;

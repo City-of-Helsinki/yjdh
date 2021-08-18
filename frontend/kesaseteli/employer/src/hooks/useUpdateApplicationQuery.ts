@@ -9,18 +9,17 @@ const useUpdateApplicationQuery = (
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const id = draftApplication?.id;
+
   return useMutation<Application, Error, Application>(
-    ['application', id],
-    (application: Application) =>
-      !id
+    ['applications', id],
+    (application: Application) => !id
         ? Promise.reject(new Error('Missing id'))
         : handleResponse<Application>(
-            axios.put(`${BackendEndpoint.APPLICATIONS}${id}/`, application)
-          ),
+        axios.put(`${BackendEndpoint.APPLICATIONS}${id}/`, application)
+        ),
     {
-      onSuccess: () => {
-        void queryClient.invalidateQueries('applications');
-        void queryClient.invalidateQueries('application');
+      onSuccess: (data) => {
+        queryClient.setQueryData(['applications', id], data)
       },
     }
   );

@@ -16,7 +16,7 @@ const SubmitButton = ({
   onSubmit,
   children,
 }: Props): ReturnType<typeof Button> => {
-  const { handleSubmit, isLoading } = React.useContext(
+  const { handleSubmit, isLoading, formState: { isSubmitting, isValid } } = React.useContext(
     getApplicationFormContext()
   );
 
@@ -27,6 +27,7 @@ const SubmitButton = ({
       onClick={handleSubmit(onSubmit)}
       loadingText={loadingText}
       isLoading={isLoading}
+      disabled={!isValid || isSubmitting}
     >
       {children}
     </Button>
