@@ -1,12 +1,18 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from unittest import mock
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.test import override_settings
+from django.utils import timezone
 
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation, Status
 from shared.audit_log.models import AuditLogEntry
+from shared.audit_log.tasks import (
+    clear_audit_log_entries,
+    send_audit_log_to_elastic_search,
+)
 
 _common_fields = {
     "audit_event": {
@@ -292,3 +298,100 @@ def test_log_user_with_backend(user, fixed_datetime):
             },
         },
     }
+
+
+@pytest.mark.django_db
+@override_settings(ENABLE_SEND_AUDIT_LOG=True)
+def test_send_audit_log_missing_configuration(user, fixed_datetime):
+    audit_logging.log(
+        user,
+        "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+        Operation.READ,
+        user,
+        get_time=fixed_datetime,
+        ip_address="192.168.1.1",
+    )
+    assert AuditLogEntry.objects.count() == 1
+    entry = AuditLogEntry.objects.first()
+    assert entry.is_sent is False
+    send_audit_log_to_elastic_search()
+    assert entry.is_sent is False
+
+
+@pytest.mark.parametrize(
+    "result_value, expected_status",
+    [("created", True), ("failed", False)],  # Log sent successfully
+)
+@pytest.mark.django_db
+@override_settings(
+    ELASTICSEARCH_CLOUD_ID="example:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRjZWM2ZjI2MWE3NGJmMjRjZTMz"
+    "YmI4ODExYjg0Mjk0ZiRjNmMyY2E2ZDA0MjI0OWFmMGNjN2Q3YTllOTYyNTc0Mw==",
+    ELASTICSEARCH_API_ID="ELASTICSEARCH_API_ID",
+    ELASTICSEARCH_API_KEY="ELASTICSEARCH_API_KEY",
+    ENABLE_SEND_AUDIT_LOG=True,
+)
+def test_send_audit_log_success(user, fixed_datetime, result_value, expected_status):
+    audit_logging.log(
+        user,
+        "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+        Operation.READ,
+        user,
+        get_time=fixed_datetime,
+        ip_address="192.168.1.1",
+    )
+    assert AuditLogEntry.objects.count() == 1
+    assert AuditLogEntry.objects.first().is_sent is False
+
+    with mock.patch("elasticsearch.Elasticsearch.index") as elasticsearch_index_mock:
+        elasticsearch_index_mock.return_value = {"result": result_value}
+        send_audit_log_to_elastic_search()
+        assert AuditLogEntry.objects.first().is_sent == expected_status
+
+
+@pytest.mark.django_db
+@override_settings(CLEAR_AUDIT_LOG_ENTRIES=True)
+def test_clear_audit_log(user, fixed_datetime):
+    audit_logging.log(
+        user,
+        "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+        Operation.READ,
+        user,
+        get_time=fixed_datetime,
+        ip_address="192.168.1.1",
+    )
+    audit_logging.log(
+        user,
+        "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+        Operation.READ,
+        user,
+        get_time=fixed_datetime,
+        ip_address="192.168.1.1",
+    )
+    audit_logging.log(
+        user,
+        "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+        Operation.READ,
+        user,
+        get_time=fixed_datetime,
+        ip_address="192.168.1.1",
+    )
+    assert AuditLogEntry.objects.count() == 3
+
+    new_sent_log = AuditLogEntry.objects.all()[0]
+    new_sent_log.is_sent = True
+    new_sent_log.save()
+
+    expired_unsent_log = AuditLogEntry.objects.all()[1]
+    expired_unsent_log.created_at = timezone.now() - timedelta(days=35)
+    expired_unsent_log.save()
+
+    expired_sent_log = AuditLogEntry.objects.all()[2]
+    expired_sent_log.is_sent = True
+    expired_sent_log.created_at = timezone.now() - timedelta(days=35)
+    expired_sent_log.save()
+
+    clear_audit_log_entries()
+    # assert AuditLogEntry.objects.filter(id=new_sent_log.id).exists()
+    # assert AuditLogEntry.objects.filter(id=expired_sent_log.id).exists()
+    print(AuditLogEntry.objects.get())
+    assert AuditLogEntry.objects.count() == 2
