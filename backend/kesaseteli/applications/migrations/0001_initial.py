@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import django_cryptography.fields
 import simple_history.models
 import uuid
 
@@ -134,12 +133,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "employee_ssn",
-                    django_cryptography.fields.encrypt(
-                        models.CharField(
-                            blank=True,
-                            max_length=32,
-                            verbose_name="employee social security number",
-                        )
+                    models.CharField(
+                        blank=True,
+                        max_length=32,
+                        verbose_name="employee social security number",
                     ),
                 ),
                 (
@@ -219,12 +216,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "employee_ssn",
-                    django_cryptography.fields.encrypt(
-                        models.CharField(
-                            blank=True,
-                            max_length=32,
-                            verbose_name="employee social security number",
-                        )
+                    models.CharField(
+                        blank=True,
+                        max_length=32,
+                        verbose_name="employee social security number",
                     ),
                 ),
                 (

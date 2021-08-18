@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_cryptography.fields import encrypt
+from encrypted_fields.fields import EncryptedCharField
 from shared.models.abstract_models import HistoricalModel, UUIDModel
 
 from applications.enums import ApplicationStatus
@@ -95,12 +95,10 @@ class SummerVoucher(HistoricalModel, UUIDModel):
         blank=True,
         verbose_name=_("employee school"),
     )
-    employee_ssn = encrypt(
-        models.CharField(
-            max_length=32,
-            blank=True,
-            verbose_name=_("employee social security number"),
-        )
+    employee_ssn = EncryptedCharField(
+        max_length=32,
+        blank=True,
+        verbose_name=_("employee social security number"),
     )
     employee_phone_number = models.CharField(
         max_length=64,
