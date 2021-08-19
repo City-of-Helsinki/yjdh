@@ -25,16 +25,16 @@ export const getSuomiFiValtuutusComponents = (t: TestController) => {
         return screen.findByRole('table');
       },
       companyName(rowNumber: number) {
-        return withinCompanyRow(rowNumber)
+        return withinCompanyRow(rowNumber + 1)
           .findAllByRole('cell')
           .nth(0)
           .find('label > span:last-child').textContent;
       },
       companyId(rowNumber: number) {
-        return withinCompanyRow(rowNumber)
+        return withinCompanyRow(rowNumber + 1)
           .findAllByRole('cell')
           .nth(1)
-          .find('label > span:nth-child(1)').textContent;
+          .find('span:nth-child(2)').textContent;
       },
       selectCompanyRadioButton(companyName: string) {
         return withinCompaniesTable().findByRole('radio', {
@@ -46,7 +46,7 @@ export const getSuomiFiValtuutusComponents = (t: TestController) => {
       async isPresent() {
         await t
           .expect(selectors.companiesTable().exists)
-          .ok(await getErrorMessage(t));
+          .ok(await getErrorMessage(t), { timeout: 10000 });
       },
     };
     const actions = {

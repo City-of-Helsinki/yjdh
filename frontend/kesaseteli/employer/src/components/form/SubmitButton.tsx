@@ -1,7 +1,7 @@
 import { Button, IconArrowRight } from 'hds-react';
 import { getApplicationFormContext } from 'kesaseteli/employer/components/form/ApplicationForm';
-import Application from 'kesaseteli/employer/types/application';
 import React from 'react';
+import Application from 'shared/types/employer-application';
 
 type Props = {
   id: string;

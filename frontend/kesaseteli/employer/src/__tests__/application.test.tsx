@@ -8,15 +8,15 @@ import {
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
-import { fakeApplication } from 'kesaseteli/employer/__tests__/utils/fake-objects';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
-import Application from 'kesaseteli/employer/types/application';
 import nock from 'nock';
 import React from 'react';
 import { QueryClient } from 'react-query';
+import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
-import { screen, userEvent, waitFor } from 'test-utils';
+import type Application from 'shared/types/employer-application';
 
 const waitForPageIsLoaded = async (): Promise<void> => {
   await waitFor(() => {
@@ -57,12 +57,24 @@ const getApplicationPageApi = (
         displayCompanyData: async (): Promise<void> => {
           await waitForPageIsLoaded();
           const { company } = applicationFromBackend;
-          expect(screen.queryByText(company.name)).toBeInTheDocument();
-          expect(screen.queryByText(company.business_id)).toBeInTheDocument();
-          expect(screen.queryByText(company.industry)).toBeInTheDocument();
-          expect(screen.queryByText(company.company_form)).toBeInTheDocument();
-          expect(screen.queryByText(company.postcode)).toBeInTheDocument();
-          expect(screen.queryByText(company.city)).toBeInTheDocument();
+          expect(screen.queryByLabelText(/header.name/i)).toHaveTextContent(
+            company.name
+          );
+          expect(screen.queryByLabelText(/header.business_id/i)).toHaveTextContent(
+            company.business_id
+          );
+          expect(screen.queryByLabelText(/header.industry/i)).toHaveTextContent(
+            company.industry
+          );
+          expect(screen.queryByLabelText(/header.company_form/i)).toHaveTextContent(
+            company.company_form
+          );
+          expect(screen.queryByLabelText(/header.postcode/i)).toHaveTextContent(
+            company.postcode
+          );
+          expect(screen.queryByLabelText(/header.city/i)).toHaveTextContent(
+            company.city
+          );
         },
 
         inputValueIsSet: (

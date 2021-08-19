@@ -1,10 +1,10 @@
-import { fakeUser } from 'kesaseteli/employer/__tests__/utils/fake-objects';
 import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli/employer/backend-api/backend-api';
-import Application from 'kesaseteli/employer/types/application';
 import nock from 'nock';
+import { fakeUser } from 'shared/__tests__/utils/fake-objects';
+import Application from 'shared/types/employer-application';
 import User from 'shared/types/user';
 
 export const expectAuthorizedReply = (persistValue = false): User => {

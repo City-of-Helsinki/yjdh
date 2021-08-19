@@ -8,7 +8,8 @@
   "application": {
     "step1": {
       "header": "1. Employer information",
-      "companyInfo": {
+      "companyInfoGrid": {
+        "title": "Company information",
         "header": {
           "name": "Company",
           "business_id": "Business Id",
@@ -19,6 +20,7 @@
         }
       },
       "form": {
+        "title": "Employer information",
         "invoicer_name": "Invoicer's name",
         "invoicer_email": "Invoicer's email",
         "invoicer_phone_number": "Invoicer's phone number",

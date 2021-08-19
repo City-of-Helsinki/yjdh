@@ -2,27 +2,32 @@ import CompanyInfoHeader, {
   CompanyProp,
 } from 'kesaseteli/employer/components/companyInfo/CompanyInfoHeader';
 import useCompanyQuery from 'kesaseteli/employer/hooks/useCompanyQuery';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import isServerSide from 'shared/server/is-server-side';
 
-import { $CompanyInfoContainer, $CompanyInfoRow } from './CompanyInfo.sc';
+import { $CompanyInfoCell, $CompanyInfoGrid } from './CompanyInfoGrid.sc';
 
 type Props = {
   applicationId: string;
 };
 
-const CompanyInfo: React.FC<Props> = ({ applicationId }: Props) => {
+const CompanyInfoGrid: React.FC<Props> = ({ applicationId }: Props) => {
+  const { t } = useTranslation();
   const { data: company, error, isLoading } = useCompanyQuery(applicationId);
   const CompanyFieldCell: React.FC<CompanyProp> = ({ field }: CompanyProp) => (
-    <$CompanyInfoRow>
+    <$CompanyInfoCell aria-labelledby={field} role="gridcell">
       {isLoading && !isServerSide() && <LoadingSkeleton width="90%" />}
       {(!isLoading && !error && company?.[field]) || ''}
-    </$CompanyInfoRow>
+    </$CompanyInfoCell>
   );
 
   return (
-    <$CompanyInfoContainer>
+    <$CompanyInfoGrid
+      role="grid"
+      aria-label={t(`common:application.step1.companyInfoGrid.title`)}
+    >
       <CompanyInfoHeader field="name" />
       <CompanyInfoHeader field="business_id" />
       <CompanyInfoHeader field="industry" />
@@ -35,8 +40,8 @@ const CompanyInfo: React.FC<Props> = ({ applicationId }: Props) => {
       <CompanyFieldCell field="company_form" />
       <CompanyFieldCell field="postcode" />
       <CompanyFieldCell field="city" />
-    </$CompanyInfoContainer>
+    </$CompanyInfoGrid>
   );
 };
 
-export default CompanyInfo;
+export default CompanyInfoGrid;
