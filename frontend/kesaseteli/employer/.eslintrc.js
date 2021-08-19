@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto'],
+  extends: ['auto', 'next/core-web-vitals'],
   rules: {
     'jsx-a11y/anchor-is-valid': [
       'error',

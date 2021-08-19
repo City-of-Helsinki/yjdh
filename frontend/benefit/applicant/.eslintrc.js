@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto'],
+  extends: ['auto', 'next/core-web-vitals'],
   rules: {
     'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
     'sonarjs/cognitive-complexity': ['error', 20],

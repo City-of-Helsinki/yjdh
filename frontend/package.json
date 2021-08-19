@@ -36,6 +36,7 @@
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "@next/eslint-plugin-next": "^11.1.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/testcafe": "^4.4.0",
@@ -53,6 +54,7 @@
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-auto": "^0.7.1",
+    "eslint-config-next": "11.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-array-func": "^3.1.7",
     "eslint-plugin-chai-expect": "^2.2.0",
@@ -67,7 +69,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-lodash": "^7.2.0",
     "eslint-plugin-lodash-fp": "^2.2.0-a1",
-    "eslint-plugin-markdown": "^2.1.0",
+    "eslint-plugin-markdown": "^2.2.0",
     "eslint-plugin-no-constructor-bind": "^2.0.4",
     "eslint-plugin-no-secrets": "^0.8.9",
     "eslint-plugin-no-unsanitized": "^3.1.5",
@@ -103,14 +105,7 @@
     "typescript": "^4.3.4"
   },
   "resolutions": {
-    "trim": "^0.0.3",
-    "node-fetch": "^2.6.1",
-    "browserslist": "^4.16.5",
-    "jsdom": "^16.6.0",
-    "meow": "^10.0.1",
-    "globby": "^11.0.3",
-    "parse-url": "^5.0.3",
-    "tar": "^6.1.2",
-    "path-parse": "^1.0.7"
+    "conventional-changelog-core": "^4.2.3",
+    "globby": "^11.0.3"
   }
 }
