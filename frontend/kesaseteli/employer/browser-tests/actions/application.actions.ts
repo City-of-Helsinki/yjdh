@@ -1,8 +1,8 @@
 import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
+import { fakeInvoicer } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import type Application from '@frontend/shared/src/types/employer-application';
 import type Invoicer from '@frontend/shared/src/types/invoicer';
-import { fakeInvoicer } from '@frontend/shared/test/fake-objects';
 import TestController from 'testcafe';
 
 import { getApplicationPageComponents } from '../index-page/applicationPage.components';

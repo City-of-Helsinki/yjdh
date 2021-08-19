@@ -2,10 +2,10 @@ import { NextRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import getDefaultReactQueryTestClient from 'shared/__tests__/utils/react-query/get-default-react-query-test-client';
+import { render, RenderResult } from 'shared/__tests__/utils/test-utils';
 import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-import { render, RenderResult } from 'test-utils';
 
 import AxiosTestContext from '../../utils/test-utils/axios-test-context';
 

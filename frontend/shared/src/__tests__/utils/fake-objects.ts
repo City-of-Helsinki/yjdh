@@ -1,9 +1,13 @@
 import faker from 'faker';
 
-import type Company from '../src/types/company';
-import type Application from '../src/types/employer-application';
-import type Invoicer from '../src/types/invoicer';
-import type User from '../src/types/user';
+/* these are relatively resolved paths because fake-objects is used from
+ *  browser-tests which do not support tsconfig
+ *  https://github.com/DevExpress/testcafe/issues/4144
+ */
+import type Company from '../../types/company';
+import type Application from '../../types/employer-application';
+import type Invoicer from '../../types/invoicer';
+import type User from '../../types/user';
 
 const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
   fakeFunc: F,

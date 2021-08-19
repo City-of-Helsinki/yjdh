@@ -8,15 +8,15 @@ import {
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
-import { fakeApplication } from 'kesaseteli/employer/__tests__/utils/fake-objects';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
-import Application from 'kesaseteli/employer/types/application';
 import nock from 'nock';
 import React from 'react';
 import { QueryClient } from 'react-query';
+import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
-import { screen, userEvent, waitFor } from 'test-utils';
+import type Application from 'shared/types/employer-application';
 
 const waitForPageIsLoaded = async (): Promise<void> => {
   await waitFor(() => {

@@ -11,9 +11,6 @@ const getUrlParam = ClientFunction((param: string) => {
   return urlParams.get(param);
 });
 
-const refreshPage = ClientFunction(() => {
-  document.location.reload();
-});
 
 /* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type */
 export const getUrlUtils = (t: TestController) => {
@@ -35,7 +32,9 @@ export const getUrlUtils = (t: TestController) => {
       await pageIsLoaded();
     },
     async refreshPage() {
-      await refreshPage();
+      await ClientFunction(() => {
+        document.location.reload();
+      })();
     },
   };
   const expectations = {

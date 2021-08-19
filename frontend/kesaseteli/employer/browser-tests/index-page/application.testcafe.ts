@@ -27,7 +27,7 @@ fixture('Application')
   });
 
 if (isRealIntegrationsEnabled()) {
-  test("Fills up invoicer form and retrieves it's data when logged in and out", async (t: TestController) => {
+  test("Fills up invoicer form and retrieves its data when logged out and in", async (t: TestController) => {
     const {
       user,
       id: applicationId,
@@ -45,7 +45,7 @@ if (isRealIntegrationsEnabled()) {
     await invoicerForm.expectations.isFulFilledWith(invoicerFormData);
   });
 } else {
-  test("Fills up invoicer form and retrieves it's data when reloading page", async (t: TestController) => {
+  test("Fills up invoicer form and retrieves its data when reloading page", async (t: TestController) => {
     const invoicerFormData = await loginAndfillInvoicerForm(t);
     const invoicerForm = await applicationPageComponents.invoicerForm();
     await invoicerForm.expectations.isFulFilledWith(invoicerFormData);

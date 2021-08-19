@@ -1,7 +1,7 @@
 import { axe } from 'jest-axe';
 import React from 'react';
 import Layout from 'shared/components/Layout';
-import { render } from 'test-utils';
+import { render } from 'shared/__tests__/utils/test-utils';
 
 test('test for accessibility violations', async () => {
   const { container } = render(

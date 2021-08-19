@@ -8,17 +8,17 @@ import {
   expectUnauthorizedReply,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
+import EmployerIndex from 'kesaseteli/employer/pages';
+import nock from 'nock';
+import React from 'react';
 import {
   fakeApplication,
   fakeApplications,
-} from 'kesaseteli/employer/__tests__/utils/fake-objects';
-import EmployerIndex from 'kesaseteli/employer/pages';
-import Application from 'kesaseteli/employer/types/application';
-import nock from 'nock';
-import React from 'react';
+} from 'shared/__tests__/utils/fake-objects'
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { render, screen, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
-import { render, screen, waitFor } from 'test-utils';
+import type Application from 'shared/types/employer-application';
 
 const expectCommonErrorNotification = async (): Promise<void> =>
   waitFor(() =>
