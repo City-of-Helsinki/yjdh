@@ -57,7 +57,6 @@ const getApplicationPageApi = (
         displayCompanyData: async (): Promise<void> => {
           await waitForPageIsLoaded();
           const { company } = applicationFromBackend;
-          await waitForPageIsLoaded();
           expect(screen.queryByLabelText(/header.name/i)).toHaveTextContent(
             company.name
           );
