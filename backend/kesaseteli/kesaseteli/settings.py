@@ -62,6 +62,12 @@ env = environ.Env(
     AZURE_ACCOUNT_KEY=(str, ""),
     AZURE_CONTAINER=(str, ""),
     AUDIT_LOG_ORIGIN=(str, ""),
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in staging/production
+    # Always override this value from env variables
+    ENCRYPTION_KEY=(
+        str,
+        "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
+    ),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -72,6 +78,7 @@ DEBUG = env.bool("DEBUG")
 SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
+ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -246,6 +253,8 @@ AUTH_ADFS = {
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 # End of Authentication
+
+FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 
 # Django storages
 DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
