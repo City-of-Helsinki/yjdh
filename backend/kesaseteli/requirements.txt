@@ -66,6 +66,8 @@ factory-boy==3.2.0
     # via -r requirements.in
 faker==8.7.0
     # via factory-boy
+filetype==1.0.7
+    # via -r requirements.in
 idna==2.10
     # via requests
 josepy==1.8.0
@@ -74,6 +76,8 @@ mozilla-django-oidc==1.2.4
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
+pillow==8.3.1
+    # via -r requirements.in
 psycopg2==2.8.6
     # via -r requirements.in
 pycparser==2.20

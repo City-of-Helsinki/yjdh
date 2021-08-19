@@ -8,6 +8,7 @@ from companies.api.v1.views import GetCompanyView
 
 router = routers.DefaultRouter()
 router.register(r"applications", application_views.ApplicationViewSet)
+router.register(r"summervouchers", application_views.SummerVoucherViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

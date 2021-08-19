@@ -1,9 +1,13 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField
-from shared.models.abstract_models import HistoricalModel, UUIDModel
+from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 
-from applications.enums import ApplicationStatus
+from applications.enums import (
+    ApplicationStatus,
+    ATTACHMENT_CONTENT_TYPE_CHOICES,
+    AttachmentType,
+)
 from companies.models import Company
 
 
@@ -115,7 +119,31 @@ class SummerVoucher(HistoricalModel, UUIDModel):
         verbose_name=_("unnumbered summer voucher reason"),
     )
 
-    employment_contract = models.FileField(
-        blank=True, verbose_name=_("employment contract")
+
+class Attachment(UUIDModel, TimeStampedModel):
+    """
+    created_at field from TimeStampedModel provides the upload timestamp
+    """
+
+    summer_voucher = models.ForeignKey(
+        SummerVoucher,
+        verbose_name=_("summer voucher"),
+        related_name="attachments",
+        on_delete=models.CASCADE,
     )
-    payslip = models.FileField(blank=True, verbose_name=_("payslip"))
+    attachment_type = models.CharField(
+        max_length=64,
+        verbose_name=_("attachment type in business rules"),
+        choices=AttachmentType.choices,
+    )
+    content_type = models.CharField(
+        max_length=100,
+        choices=ATTACHMENT_CONTENT_TYPE_CHOICES,
+        verbose_name=_("technical content type of the attachment"),
+    )
+    attachment_file = models.FileField(verbose_name=_("application attachment content"))
+
+    class Meta:
+        verbose_name = _("attachment")
+        verbose_name_plural = _("attachments")
+        ordering = ["attachment_type", "created_at"]
