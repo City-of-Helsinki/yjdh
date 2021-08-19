@@ -14,8 +14,10 @@ const nextConfig = {
   env,
   webpack: (config) => {
     config.resolve.fallback = { fs: false };
-    const babelRule = config.module.rules.find(
-      (rule) => rule.use && rule.use.loader.match(/next\/.*\/babel\/loader/)
+    const babelRule = config.module.rules.find((rule) =>
+      Array.isArray(rule.use)
+        ? rule.use.find((u) => u.loader?.match(/next.*babel.*loader/i))
+        : rule.use?.loader?.match(/next.*babel.*loader/i)
     );
     if (babelRule) {
       babelRule.include.push(path.resolve('../../'));
