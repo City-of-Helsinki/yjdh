@@ -42,7 +42,6 @@ export const fakeApplication = (id: string): Application => ({
   id,
   company: fakeCompany,
   status: 'draft',
-  summer_vouchers: [],
   ...fakeInvoicer(),
 });
 

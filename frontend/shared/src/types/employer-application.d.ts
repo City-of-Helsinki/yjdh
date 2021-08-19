@@ -6,6 +6,5 @@ type EmployerApplication = Invoicer & {
   id: string;
   company: Company;
   status: Status;
-  summer_vouchers: [];
 };
 export default EmployerApplication;
