@@ -313,6 +313,13 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     * Transferring payment data to Talpa
     """
 
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="application_batches",
+        verbose_name=_("company"),
+    )
+
     status = models.CharField(
         max_length=64,
         verbose_name=_("status of batch"),

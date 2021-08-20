@@ -141,7 +141,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
 
 
 class ApplicationBatchFactory(factory.django.DjangoModelFactory):
-
+    company = factory.SubFactory(CompanyFactory)
     proposal_for_decision = factory.Faker(
         "random_element", elements=AhjoDecision.values
     )
@@ -149,12 +149,14 @@ class ApplicationBatchFactory(factory.django.DjangoModelFactory):
         ApplicationFactory,
         factory_related_name="batch",
         status=factory.SelfAttribute("batch.proposal_for_decision"),
+        company=factory.SelfAttribute("batch.company"),
     )
 
     application_1 = factory.RelatedFactory(
         ApplicationFactory,
         factory_related_name="batch",
         status=factory.SelfAttribute("batch.proposal_for_decision"),
+        company=factory.SelfAttribute("batch.company"),
     )
 
     class Meta:
