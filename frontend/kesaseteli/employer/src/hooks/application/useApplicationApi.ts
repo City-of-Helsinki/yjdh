@@ -1,11 +1,12 @@
-import useApplicationQuery from 'kesaseteli/employer/hooks/useApplicationQuery';
-import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/useUpdateApplicationQuery';
+import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
+import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
+import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import Application from 'shared/types/employer-application';
 
 type QueryResult = ReturnType<typeof useApplicationQuery>;
 type mutateResult = ReturnType<typeof useUpdateApplicationQuery>;
 
-type ApplicationApi = {
+export type ApplicationApi = {
   application: QueryResult['data'];
   updateApplication: (
     application: Application
@@ -19,7 +20,8 @@ type ApplicationApi = {
   updatingError: mutateResult['error'];
 };
 
-const useApplicationApi = (id: string): ApplicationApi => {
+const useApplicationApi = (): ApplicationApi => {
+  const id = useApplicationIdQueryParam();
   const {
     data: application,
     isLoading,
@@ -31,10 +33,13 @@ const useApplicationApi = (id: string): ApplicationApi => {
     error: updatingError,
   } = useUpdateApplicationQuery(application);
 
-  const updateApplication = (draftApplication: Application): void =>
+  const updateApplication = (draftApplication: Application): void => {
     mutate({ ...draftApplication, status: 'draft' });
-  const sendApplication = (draftApplication: Application): void =>
+  }
+  const sendApplication = (draftApplication: Application): void => {
     mutate({ ...draftApplication, status: 'submitted' });
+  }
+
 
   return {
     application,

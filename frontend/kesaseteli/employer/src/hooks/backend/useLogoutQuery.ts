@@ -1,5 +1,5 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
+import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
 import { useRouter } from 'next/router';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 

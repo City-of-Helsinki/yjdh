@@ -1,6 +1,6 @@
 import { Notification } from 'hds-react';
-import useApplicationsQuery from 'kesaseteli/employer/hooks/useApplicationsQuery';
-import useCreateApplicationQuery from 'kesaseteli/employer/hooks/useCreateApplicationQuery';
+import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
+import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';

@@ -1,5 +1,5 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
+import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
 import { useQuery, UseQueryResult } from 'react-query';
 import User from 'shared/types/user';
 
