@@ -10,8 +10,8 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import ApplicationWizard from 'shared/components/application-wizard/ApplicationWizard';
-import { StepProps } from 'shared/components/stepper/Step';
 import withAuth from 'shared/components/hocs/withAuth';
+import { StepProps } from 'shared/components/stepper/Step';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 

@@ -63,7 +63,7 @@ const ApplicationStepForm = ({
   const FormContextProvider = getApplicationFormContext().Provider;
 
   return (
-    <FormSection header={title} isLoading={isLoading}>
+    <FormSection header={title} loading={isLoading}>
       <FormContextProvider value={context}>
         <form aria-label={title}>{children}</form>
       </FormContextProvider>

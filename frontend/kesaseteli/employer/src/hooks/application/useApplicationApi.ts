@@ -18,6 +18,7 @@ export type ApplicationApi = {
   isUpdating: QueryResult['isLoading'];
   loadingError: QueryResult['error'];
   updatingError: mutateResult['error'];
+  isError: boolean,
 };
 
 const useApplicationApi = (): ApplicationApi => {
@@ -49,6 +50,7 @@ const useApplicationApi = (): ApplicationApi => {
     isUpdating,
     loadingError,
     updatingError,
+    isError: Boolean(loadingError || updatingError),
   };
 };
 

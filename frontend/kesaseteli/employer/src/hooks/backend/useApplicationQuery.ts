@@ -4,7 +4,7 @@ import { useQuery, UseQueryResult } from 'react-query';
 import Application from 'shared/types/employer-application';
 
 const useApplicationQuery = (
-  id: string
+  id?: string
 ): UseQueryResult<Application, Error> => {
   const { axios, handleResponse } = useBackendAPI();
   return useQuery<Application, Error>(
