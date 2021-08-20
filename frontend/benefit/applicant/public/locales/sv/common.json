@@ -292,6 +292,10 @@
     "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
     "newApplicationBtnText": "Tee uusi hakemus"
   },
+  "attachmentsIngress": {
+    "text": "Lisää hakemukselle seuraavat liitteet. Liitteet ovat pakollisia, ellei toisin sanota. Tiedostomuoto voi olla JPG, PNG tai PDF. Suurin sallittu koko 10 MB.",
+    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+  },
   "menuToggleAriaLabel": "Menu",
   "form": {
     "validation": {

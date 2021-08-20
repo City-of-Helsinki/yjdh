@@ -4,7 +4,7 @@ import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 export const DATE_FORMATS = {
   DATE: 'dd.MM.yyyy',
-  DATE_AND_TIME: 'dd.MM.yyyy. mm:ss',
+  DATE_AND_TIME: 'dd.MM.yyyy. HH:mm',
 };
 
 const locales: Record<Language, Locale> = { fi, sv, en };
