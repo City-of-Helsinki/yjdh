@@ -1,7 +1,7 @@
 import React from 'react';
+import Container from 'shared/components/container/Container';
 import { StepProps } from 'shared/components/stepper/Step';
 import Stepper from 'shared/components/stepper/Stepper';
-import Container from 'shared/components/container/Container';
 import Wizard from 'shared/components/wizard/Wizard';
 
 import { $Header, $HeaderItem, $Heading } from './ApplicationWizard.sc';
@@ -11,7 +11,7 @@ type WizardProps = {
   currentStep: number;
   header: React.ReactNode;
   children: React.ReactNode;
-  footer: React.ReactNode | undefined;
+  footer?: React.ReactNode;
 };
 
 const ApplicationWizard: React.FC<WizardProps> = ({
@@ -39,6 +39,10 @@ const ApplicationWizard: React.FC<WizardProps> = ({
       </Wizard>
     </Container>
   );
+};
+
+ApplicationWizard.defaultProps = {
+  footer: undefined,
 };
 
 export default ApplicationWizard;

@@ -2,9 +2,9 @@ import ActionButtons from 'kesaseteli/employer/components/application/ActionButt
 import ApplicationStepForm from 'kesaseteli/employer/components/application/ApplicationStepForm';
 import CompanyInfoGrid from 'kesaseteli/employer/components/companyInfo/CompanyInfoGrid';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import type Application from 'kesaseteli/employer/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import EmployerApplication from 'shared/types/employer-application';
 
 import { $TextInput } from './Step1Employer.sc';
 
@@ -14,7 +14,7 @@ const Step1Employer: React.FC = () => {
   const {
     updateApplication,
   } = useApplicationApi();
-  const onSubmit = (draftApplication: Application): void =>
+  const onSubmit = (draftApplication: EmployerApplication): void =>
     updateApplication(draftApplication);
 
   return (

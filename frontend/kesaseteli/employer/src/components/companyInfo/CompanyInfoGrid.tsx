@@ -1,25 +1,22 @@
 import CompanyInfoHeader, {
   CompanyProp,
 } from 'kesaseteli/employer/components/companyInfo/CompanyInfoHeader';
+import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import isServerSide from 'shared/server/is-server-side';
 
 import { $CompanyInfoCell, $CompanyInfoGrid } from './CompanyInfoGrid.sc';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 
-type Props = {
-  applicationId: string;
-};
 
-const CompanyInfoGrid: React.FC<Props> = () => {
+const CompanyInfoGrid: React.FC = () => {
   const { t } = useTranslation();
-  const { application, error, isLoading } = useApplicationApi();
+  const { application, isError, isLoading } = useApplicationApi();
   const CompanyFieldCell: React.FC<CompanyProp> = ({ field }: CompanyProp) => (
     <$CompanyInfoCell aria-labelledby={field} role="gridcell">
       {isLoading && !isServerSide() && <LoadingSkeleton width="90%" />}
-      {(!isLoading && !error && application?.company?.[field]) || ''}
+      {(!isLoading && !isError && application?.company?.[field]) || ''}
     </$CompanyInfoCell>
   );
 

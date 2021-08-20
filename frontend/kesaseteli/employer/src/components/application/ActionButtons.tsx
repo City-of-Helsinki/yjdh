@@ -1,10 +1,10 @@
 import { Button, IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
-import Application from 'kesaseteli/employer/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import useWizard from 'shared/hooks/useWizard';
+import Application from 'shared/types/employer-application';
 
 type Props = {
   onSubmit: (application: Application) => void;

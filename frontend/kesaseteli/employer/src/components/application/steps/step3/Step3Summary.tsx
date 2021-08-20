@@ -1,9 +1,9 @@
 import ActionButtons from 'kesaseteli/employer/components/application/ActionButtons';
 import ApplicationStepForm from 'kesaseteli/employer/components/application/ApplicationStepForm';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import Application from 'kesaseteli/employer/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Application from 'shared/types/employer-application';
 
 const Step3Summary: React.FC = () => {
 
