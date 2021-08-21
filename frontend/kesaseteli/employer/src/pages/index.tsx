@@ -15,10 +15,8 @@ const EmployerIndex: NextPage = () => {
     isLoading,
     error: loadApplicationsError,
   } = useApplicationsQuery();
-  const {
-    mutate: createApplication,
-    error: createApplicationError,
-  } = useCreateApplicationQuery();
+  const { mutate: createApplication, error: createApplicationError } =
+    useCreateApplicationQuery();
 
   const errorMessage = (loadApplicationsError ?? createApplicationError)
     ?.message;
@@ -41,9 +39,7 @@ const EmployerIndex: NextPage = () => {
   if (errorMessage) {
     return (
       <Notification
-        label={`${t(
-          `common:application.step1.form.common_error`
-        )} ${errorMessage}`}
+        label={`${t(`common:application.common_error`)} ${errorMessage}`}
         type="error"
       />
     );
@@ -52,8 +48,7 @@ const EmployerIndex: NextPage = () => {
   return <></>;
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-  'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withAuth(EmployerIndex);

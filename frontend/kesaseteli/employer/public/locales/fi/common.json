@@ -4,9 +4,14 @@
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:"
   },
-  "appName": "Helsinki-employer FI",
+  "appName": "Kesäseteli",
   "application": {
+    "new": "Uusi hakemus",
+    "common_error": "Tapahtui tuntematon virhe: ",
+    "loading": "Ladataan hakemusta...",
+    "loadingFinished": "Hakemuksen lataus on valmis",
     "step1": {
+      "name": "Työnantaja",
       "header": "1. Työnantajan tiedot",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot",
@@ -25,14 +30,23 @@
         "invoicer_email": "Yhteyshenkilön Sähköposti",
         "invoicer_phone_number": "Yhteyshenkilön Puhelinnumero",
         "submit_button": "Tallenna ja jatka",
-        "loading": "Ladataan...",
-        "common_error": "Tapahtui tuntematon virhe: ",
         "errors": {
           "invoicer_name": "Nimi puuttuu",
           "invoicer_email": "Sähköposti on virheellinen",
           "invoicer_phone_number": "Puhelinnumero on virheellinen"
         }
       }
+    },
+    "step2": {
+      "name": "Työsuhteet",
+      "header": "2. Selvitys työsuhteesta"
+    },
+    "step3": {
+      "name": "Lähetys"
+    },
+    "buttons": {
+      "previous": "Palaa edelliseen",
+      "save_and_continue": "Tallenna ja jatka"
     }
   },
   "footer": {

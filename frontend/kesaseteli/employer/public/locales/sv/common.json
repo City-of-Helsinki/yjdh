@@ -6,7 +6,12 @@
   },
   "appName": "Helsinki-employer SV",
   "application": {
+    "new": "Uusi hakemus SWE",
+    "common_error": "Tapahtui tuntematon virhe: SWE",
+    "loading": "Ladataan hakemusta...",
+    "loadingFinished": "Hakemuksen lataus on valmis",
     "step1": {
+      "name": "Työnantaja SWE",
       "header": "1. Työnantajan tiedot SWE",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot SWE",
@@ -25,14 +30,22 @@
         "invoicer_email": "Yhteyshenkilön Sähköposti SWE",
         "invoicer_phone_number": "Yhteyshenkilön Puhelinnumero SWE",
         "submit_button": "Tallenna ja jatka SWE",
-        "loading": "Ladataan... SWE",
-        "common_error": "Tapahtui tuntematon virhe: SWE",
         "errors": {
           "invoicer_name": "Nimi puuttuu SWE",
           "invoicer_email": "Sähköposti on virheellinen SWE",
           "invoicer_phone_number": "Puhelinnumero on virheellinen SWE"
         }
       }
+    },
+    "step2": {
+      "name": "Työsuhteet SWE"
+    },
+    "step3": {
+      "name": "Lähetys SWE"
+    },
+    "buttons": {
+      "previous": "Palaa edelliseen SWE",
+      "save_and_continue": "Tallenna ja jatka SWE"
     }
   },
   "footer": {

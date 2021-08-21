@@ -8,6 +8,8 @@ type HeadingProps = {
   size?: keyof DefaultTheme['fontSize']['heading'];
   header?: string;
   loading?: boolean;
+  loadingText?: string;
+  loadingFinishedText?: string;
   tooltip?: string;
 };
 
