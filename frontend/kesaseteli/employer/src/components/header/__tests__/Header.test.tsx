@@ -14,11 +14,17 @@ import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { Language, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import User from 'shared/types/user';
 
+const translations = {
+  fi: 'Suomeksi',
+  sv: 'På svenska',
+  en: 'In english',
+};
+
 const clickToLogin = (): void => {
   expectToLogin();
   userEvent.click(
     screen.getAllByRole('button', {
-      name: 'common:header.loginLabel',
+      name: 'Kirjaudu sisään',
     })[0]
   );
 };
@@ -27,12 +33,12 @@ const clickToLogout = (user: User): void => {
   expectToLogout();
   userEvent.click(
     screen.getByRole('button', {
-      name: new RegExp(`common:header.userAriaLabelPrefix ${user.name}`, 'i'),
+      name: `Käyttäjä: ${user.name}`,
     })
   );
   userEvent.click(
     screen.getAllByRole('link', {
-      name: 'common:header.logoutLabel',
+      name: 'Kirjaudu ulos',
     })[0]
   );
 };
@@ -45,7 +51,7 @@ const changeLanguage = (fromLang: Language, toLang: Language): void => {
   );
   userEvent.click(
     screen.getAllByRole('link', {
-      name: `common:languages.${String(toLang)}`,
+      name: translations[toLang],
     })[0]
   );
 };
@@ -62,7 +68,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
 
   const expectUserIsLoggedIn = async (user: User): Promise<void> => {
     await screen.findByRole('button', {
-      name: new RegExp(`common:header.userAriaLabelPrefix ${user.name}`, 'i'),
+      name: `Käyttäjä: ${user.name}`,
     });
     await waitFor(() => expect(queryClient.getQueryData('user')).toEqual(user));
   };
@@ -71,7 +77,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     await waitFor(() =>
       expect(
         screen.queryAllByRole('button', {
-          name: 'common:header.loginLabel',
+          name: 'Kirjaudu sisään',
         })
       ).toHaveLength(2)
     );

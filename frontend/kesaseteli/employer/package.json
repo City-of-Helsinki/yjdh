@@ -8,7 +8,7 @@
     "start": "NODE_ENV=production node start.js",
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
-    "test": "jest --runInBand --no-cache",
+    "test": "jest --runInBand",
     "test:debug": "cross-env DEBUG=nock.* DEBUG_PRINT_LIMIT=100000 yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test --verbose --coverage",

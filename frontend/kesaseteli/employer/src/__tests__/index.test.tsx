@@ -24,7 +24,7 @@ const expectCommonErrorNotification = async (): Promise<void> =>
   waitFor(() =>
     expect(
       screen.getByRole('heading', {
-        name: /common_error/i,
+        name: /Tapahtui tuntematon virhe/,
       })
     ).toBeInTheDocument()
   );

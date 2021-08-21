@@ -6,7 +6,12 @@
     },
   "appName": "Helsinki-Employer EN",
   "application": {
+    "new": "New application",
+    "common_error": "Unknown error occurred: ",
+    "loading": "Loading application...",
+    "loadingFinished": "Loading application has finished",
     "step1": {
+      "name": "Employer",
       "header": "1. Employer information",
       "companyInfoGrid": {
         "title": "Company information",
@@ -26,13 +31,22 @@
         "invoicer_phone_number": "Invoicer's phone number",
         "submit_button": "Save and continue",
         "loading": "Loading...",
-        "common_error": "Unknown error occured: ",
         "errors": {
           "invoicer_name": "Invoicer's name is required",
           "invoicer_email": "Invoicer's email is invalid",
           "invoicer_phone_number": "Invoicer's phone number is invalid"
         }
       }
+    },
+    "step2": {
+      "name": "Employees"
+    },
+    "step3": {
+      "name": "Send"
+    },
+    "buttons": {
+      "previous": "Back to previous step",
+      "save_and_continue": "Save and continue"
     }
   },
   "footer": {
