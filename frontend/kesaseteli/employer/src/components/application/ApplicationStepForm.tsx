@@ -23,10 +23,9 @@ const ApplicationStepForm = ({
   title,
   children,
 }: ApplicationFormProps): JSX.Element => {
-
-  const {activeStep} = useWizard();
-  const currentStep = getStepNumber(activeStep+1);
-  useSetQueryParam("step",String(currentStep));
+  const { activeStep } = useWizard();
+  const currentStep = getStepNumber(activeStep + 1);
+  useSetQueryParam('step', String(currentStep));
 
   const { t } = useTranslation();
   const translateLabel = (key: keyof Application): string =>
@@ -34,8 +33,7 @@ const ApplicationStepForm = ({
   const translateError = (key: keyof Application): string =>
     key ? t(`common:application.step1.form.errors.${key}`) : key;
 
-  const { isLoading, loadingError,
-    updatingError} = useApplicationApi();
+  const { isLoading, loadingError, updatingError } = useApplicationApi();
   const errorMessage = (loadingError || updatingError)?.message;
   const methods = useForm<Application>({
     mode: 'onBlur',
@@ -46,9 +44,7 @@ const ApplicationStepForm = ({
   if (errorMessage)
     return (
       <Notification
-        label={`${t(
-          `common:application.step1.form.common_error`
-        )} ${errorMessage}`}
+        label={`${t(`common:application.common_error`)} ${errorMessage}`}
         type="error"
       />
     );
