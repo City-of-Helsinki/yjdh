@@ -1,4 +1,3 @@
-import { Notification } from 'hds-react';
 import styled from 'styled-components';
 
 export const $TextContainer = styled.div`
@@ -6,6 +5,7 @@ export const $TextContainer = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   max-width: 740px;
+  margin-bottom: ${(props) => props.theme.spacing.l};
 `;
 
 export const $Heading = styled.h1`

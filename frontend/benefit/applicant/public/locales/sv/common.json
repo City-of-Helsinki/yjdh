@@ -257,7 +257,31 @@
         }
       },
       "attachments": {
-        "heading1": "Liittet"
+        "heading1": "Liittet",
+        "types": {
+          "employmentContract": {
+            "title": "Työsopimus",
+            "message": ""
+          },
+          "paySubsidyDecision": {
+            "title": "Palkkatukipäätös",
+            "message": "Liitä molemmat myönnetyt palkkatukipäätökset"
+          },
+          "commissionContract": {
+            "title": "Toimeksiantosopimus",
+            "message": ""
+          },
+          "educationContract": {
+            "title": "Sopimus oppisopimuskoulutuksen järjestämisestä",
+            "message": ""
+          },
+          "helsinkiBenefitVoucher": {
+            "title": "Helsinki-lisä seteli",
+            "message": "Lisää tämä mikäli sellainen on myönnetty"
+          }
+        },
+        "add": "Liitä tiedosto",
+        "remove": "Poista liite"
       },
       "summary": {
         "heading1": "Ole hyvä ja tarkista hakemus"
