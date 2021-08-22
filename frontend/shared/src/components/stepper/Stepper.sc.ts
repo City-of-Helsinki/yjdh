@@ -2,9 +2,9 @@ import styled, { DefaultTheme } from 'styled-components';
 
 type Props = { isActive?: boolean };
 
-interface $StepContainerProps {
+type $StepContainerProps = Props & {
   activeStep?: number;
-}
+};
 
 const getActiveColor = (isActive: boolean, theme: DefaultTheme): string =>
   isActive ? theme.colors.black90 : theme.colors.black20;
@@ -20,6 +20,7 @@ export const $StepContainer = styled.div<$StepContainerProps>`
   flex-direction: column;
   position: relative;
   z-index: 1;
+  cursor: ${({ isActive }) => (isActive ? 'pointer' : 'auto')};
 `;
 
 export const $StepCircle = styled.div<Props>`

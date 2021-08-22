@@ -1,40 +1,37 @@
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import { StepProps } from 'shared/components/stepper/Step';
-import Stepper from 'shared/components/stepper/Stepper';
+import WizardStepper from 'shared/components/stepper/WizardStepper';
 import Wizard from 'shared/components/wizard/Wizard';
 
 import { $Header, $HeaderItem, $Heading } from './ApplicationWizard.sc';
 
 type WizardProps = {
-  steps: Array<StepProps>;
-  currentStep: number;
-  header: React.ReactNode;
+  initialStep: number;
   children: React.ReactNode;
   footer?: React.ReactNode;
 };
 
 const ApplicationWizard: React.FC<WizardProps> = ({
-  steps,
-  currentStep,
-  header,
+  initialStep,
   children,
   footer,
 }: WizardProps) => {
+  const { t } = useTranslation();
   const Header = (
     <$Header>
       <$HeaderItem>
-        <$Heading>{header}</$Heading>
+        <$Heading>{t('common:application.new')}</$Heading>
       </$HeaderItem>
       <$HeaderItem>
-        <Stepper steps={steps} activeStep={currentStep} />
+        <WizardStepper />
       </$HeaderItem>
     </$Header>
   );
 
   return (
     <Container>
-      <Wizard header={Header} footer={footer} initialStep={currentStep}>
+      <Wizard header={Header} footer={footer} initialStep={initialStep}>
         {children}
       </Wizard>
     </Container>

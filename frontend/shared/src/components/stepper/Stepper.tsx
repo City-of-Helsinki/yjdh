@@ -18,10 +18,8 @@ const Stepper: React.FC<StepperProps> = ({ activeStep = 1, steps }) => (
   </$StepsContainer>
 );
 
-const defaultProps = {
+Stepper.defaultProps = {
   activeStep: 1,
 };
-
-Stepper.defaultProps = defaultProps;
 
 export default Stepper;
