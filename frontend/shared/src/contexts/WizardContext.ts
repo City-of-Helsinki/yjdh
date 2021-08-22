@@ -16,6 +16,7 @@ export type WizardValues = {
   activeStep: number;
   isFirstStep: boolean;
   isLastStep: boolean;
+  steps: number;
 };
 
 const WizardContext = React.createContext<WizardValues | null>(null);
