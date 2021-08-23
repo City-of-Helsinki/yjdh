@@ -13,11 +13,6 @@ class ApplicationStatus(models.TextChoices):
     REJECTED = "rejected", _("Rejected")
 
 
-class AhjoDecision(models.TextChoices):
-    ACCEPTED = ApplicationStatus.ACCEPTED
-    REJECTED = ApplicationStatus.REJECTED
-
-
 class BenefitType(models.TextChoices):
     EMPLOYMENT_BENEFIT = "employment_benefit", _("Employment Benefit")
     SALARY_BENEFIT = "salary_benefit", _("Salary Benefit")
@@ -73,9 +68,16 @@ class ApplicationBatchStatus(models.TextChoices):
     AWAITING_AHJO_DECISION = "awaiting_ahjo_decision", _(
         "Sent to Ahjo, decision pending"
     )
-    DECIDED = "decided", _("Decided")
+    DECIDED_ACCEPTED = "accepted", _("Accepted in Ahjo")
+    DECIDED_REJECTED = "rejected", _("Rejected in Ahjo")
     RETURNED = "returned", _(
-        "Returned"
+        "Returned from Ahjo without decision"
     )  # Theoretically possible: means that a decision was not made
     SENT_TO_TALPA = "sent_to_talpa", _("Sent to Talpa")
     COMPLETED = "completed", _("Processing is completed")
+
+
+class AhjoDecision(models.TextChoices):
+    # The possible decisions for Ahjo processing
+    DECIDED_ACCEPTED = ApplicationBatchStatus.DECIDED_ACCEPTED
+    DECIDED_REJECTED = ApplicationBatchStatus.DECIDED_REJECTED

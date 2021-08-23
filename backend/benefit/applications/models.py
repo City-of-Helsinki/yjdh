@@ -235,12 +235,10 @@ class Application(UUIDModel, TimeStampedModel):
     history = HistoricalRecords(table_name="bf_applications_application_history")
 
     @property
-    def is_decided(self):
-        return self.batch is not None and self.batch.status not in [
-            ApplicationBatchStatus.DRAFT,
-            ApplicationBatchStatus.RETURNED,
-            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
-        ]
+    def ahjo_decision(self):
+        if self.batch:
+            return self.batch.ahjo_decision
+        return None
 
     def __str__(self):
         return "{}: {} {}".format(self.pk, self.company_name, self.status)
@@ -249,6 +247,7 @@ class Application(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_application"
         verbose_name = _("application")
         verbose_name_plural = _("applications")
+        ordering = ("created_at",)
 
 
 class DeMinimisAid(UUIDModel, TimeStampedModel):
@@ -313,13 +312,6 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
     * Transferring payment data to Talpa
     """
 
-    company = models.ForeignKey(
-        Company,
-        on_delete=models.CASCADE,
-        related_name="application_batches",
-        verbose_name=_("company"),
-    )
-
     status = models.CharField(
         max_length=64,
         verbose_name=_("status of batch"),
@@ -363,6 +355,26 @@ class ApplicationBatch(UUIDModel, TimeStampedModel):
             ApplicationBatchStatus.DRAFT,
             ApplicationBatchStatus.RETURNED,
         ]
+
+    @property
+    def is_decided(self):
+        return self.ahjo_decision is not None
+
+    AHJO_DECISION_LOGIC = {
+        ApplicationBatchStatus.DRAFT: None,
+        ApplicationBatchStatus.RETURNED: None,  # decision was not made, the applications are returned for processing
+        ApplicationBatchStatus.AWAITING_AHJO_DECISION: None,
+        ApplicationBatchStatus.DECIDED_ACCEPTED: AhjoDecision.DECIDED_ACCEPTED,
+        ApplicationBatchStatus.DECIDED_REJECTED: AhjoDecision.DECIDED_REJECTED,
+        # If the batch is rejected, it can not move to SENT_TO_TALPA status
+        ApplicationBatchStatus.SENT_TO_TALPA: AhjoDecision.DECIDED_ACCEPTED,
+        # If the batch is rejected, it can not move to COMPLETED status
+        ApplicationBatchStatus.COMPLETED: AhjoDecision.DECIDED_ACCEPTED,
+    }
+
+    @property
+    def ahjo_decision(self):
+        return self.AHJO_DECISION_LOGIC[self.status]
 
     def __str__(self):
         return f"Application batch {self.applications.count()} {self.proposal_for_decision} {self.status}"

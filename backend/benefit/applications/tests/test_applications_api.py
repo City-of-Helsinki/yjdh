@@ -55,8 +55,17 @@ def test_applications_list_with_filter(api_client, application):
     assert response.status_code == 200
 
 
+def test_applications_filter_by_batch(api_client, application_batch, application):
+    url = reverse("v1:application-list") + f"?batch={application_batch.pk}"
+    response = api_client.get(url)
+    assert len(response.data) == 2
+    assert response.status_code == 200
+
+
 def test_application_single_read(api_client, application):
     response = api_client.get(get_detail_url(application))
+    assert response.data["batch"] is None
+    assert response.data["ahjo_decision"] is None
     assert response.status_code == 200
 
 
