@@ -83,6 +83,14 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     )
     def delete_attachment(self, request, attachment_pk, *args, **kwargs):
         obj = self.get_object()
+        if (
+            obj.status
+            not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
+        ):
+            return Response(
+                {"detail": _("Operation not allowed for this application status.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         try:
             instance = obj.attachments.get(id=attachment_pk)
         except exceptions.ObjectDoesNotExist:

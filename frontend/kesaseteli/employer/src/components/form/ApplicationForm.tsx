@@ -1,9 +1,10 @@
-import Application from 'kesaseteli/employer/types/application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProviderProps, useForm } from 'react-hook-form';
+import Application from 'shared/types/employer-application';
 
 type Props = {
+  title: string;
   application: Application | undefined;
   isLoading: boolean;
   children: React.ReactNode;
@@ -29,6 +30,7 @@ const setApplicationFormContext = (context: FormContextProps): void => {
 };
 
 const ApplicationForm = ({
+  title,
   application,
   isLoading,
   children,
@@ -58,6 +60,7 @@ const ApplicationForm = ({
   const context = {
     translate,
     translateError,
+    title,
     application,
     isLoading,
     children,
@@ -67,7 +70,7 @@ const ApplicationForm = ({
 
   return (
     <ApplicationFormContext.Provider value={context}>
-      <form>{children}</form>
+      <form aria-label={title}>{children}</form>
     </ApplicationFormContext.Provider>
   );
 };

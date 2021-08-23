@@ -1,10 +1,13 @@
+from contextlib import contextmanager
 from copy import copy
 from typing import Optional, Union
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.db import transaction
 from django.db.models import Model
 from django.db.models.base import ModelBase
+from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from rest_framework.viewsets import ModelViewSet
 
 from shared.audit_log import audit_logging
@@ -21,10 +24,12 @@ class AuditLoggingModelViewSet(ModelViewSet):
         "PATCH": Operation.UPDATE,
         "DELETE": Operation.DELETE,
     }
+    created_instance: Optional[Model] = None
 
     def permission_denied(self, request, message=None, code=None):
         audit_logging.log(
             self._get_actor(),
+            self._get_actor_backend(),
             self._get_operation(),
             self._get_target(),
             Status.FORBIDDEN,
@@ -33,56 +38,63 @@ class AuditLoggingModelViewSet(ModelViewSet):
         super().permission_denied(request, message, code)
 
     def retrieve(self, request, *args, **kwargs):
-        response = super().retrieve(request, *args, **kwargs)
-        audit_logging.log(
-            self._get_actor(),
-            Operation.READ,
-            self._get_target(),
-            ip_address=self._get_ip_address(),
-        )
-        return response
+        with self.record_action():
+            return super().retrieve(request, *args, **kwargs)
 
+    @transaction.atomic
     def perform_create(self, serializer):
-        super().perform_create(serializer)
-        audit_logging.log(
-            self._get_actor(),
-            Operation.CREATE,
-            serializer.instance,
-            ip_address=self._get_ip_address(),
-        )
+        with self.record_action():
+            super().perform_create(serializer)
+            self.created_instance = serializer.instance
 
+    @transaction.atomic
     def perform_update(self, serializer):
-        target_status_before = None
-        target_status_after = None
+        with self.record_action():
+            super().perform_update(serializer)
 
-        if hasattr(serializer.instance, "status"):
-            target_status_before = serializer.instance.status
-        super().perform_update(serializer)
-        if hasattr(serializer.instance, "status"):
-            target_status_after = serializer.instance.status
-
-        audit_logging.log(
-            self._get_actor(),
-            Operation.UPDATE,
-            serializer.instance,
-            ip_address=self._get_ip_address(),
-            target_status_before=target_status_before,
-            target_status_after=target_status_after,
-        )
-
+    @transaction.atomic
     def perform_destroy(self, instance):
-        actor = copy(self._get_actor())
-        target = copy(instance)
-        super().perform_destroy(instance)
-        audit_logging.log(
-            actor,
-            Operation.DELETE,
-            target,
-            ip_address=self._get_ip_address(),
-        )
+        target = copy(instance)  # Will be destroyed, so we must save it
+        with self.record_action(target=target):
+            super().perform_destroy(instance)
+
+    @contextmanager
+    def record_action(self, target: Optional[Model] = None):
+        """
+        This context manager will run the managed code in a transaction and writes
+        a new audit log entry in the same transaction. If an exception is raised,
+        the transaction will be rolled back. If the user has no permission to perform
+        the given action, a "FORBIDDEN" audit log event will be recorded.
+        """
+        actor = copy(self._get_actor())  # May be destroyed if actor is also the target
+        actor_backend = self._get_actor_backend()
+        operation = self._get_operation()
+        try:
+            with transaction.atomic():
+                yield
+                audit_logging.log(
+                    actor,
+                    actor_backend,
+                    operation,
+                    target or self._get_target(),
+                    ip_address=self._get_ip_address(),
+                )
+        except (NotAuthenticated, PermissionDenied):
+            audit_logging.log(
+                actor,
+                actor_backend,
+                operation,
+                target or self._get_target(),
+                Status.FORBIDDEN,
+                ip_address=self._get_ip_address(),
+            )
+            raise
 
     def _get_actor(self) -> Union[User, AnonymousUser]:
         return getattr(self.request.user, "profile", self.request.user)
+
+    def _get_actor_backend(self) -> str:
+        return self.request.session.get("_auth_user_backend", "")
 
     def _get_operation(self) -> Operation:
         return self.method_to_operation[self.request.method]
@@ -94,7 +106,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
             target = self.queryset.model.objects.filter(
                 **{self.lookup_field: lookup_value}
             ).first()
-        return target or self.queryset.model
+        return target or self.created_instance or self.queryset.model()
 
     def _get_ip_address(self) -> str:
         x_forwarded_for = self.request.META.get("HTTP_X_FORWARDED_FOR")

@@ -1,7 +1,7 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
-import Application from 'kesaseteli/employer/types/application';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import Application from 'shared/types/employer-application';
 
 const useUpdateApplicationQuery = (
   draftApplication?: Application
@@ -9,8 +9,9 @@ const useUpdateApplicationQuery = (
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const id = draftApplication?.id;
+
   return useMutation<Application, Error, Application>(
-    ['application', id],
+    ['applications', id],
     (application: Application) =>
       !id
         ? Promise.reject(new Error('Missing id'))
@@ -18,9 +19,8 @@ const useUpdateApplicationQuery = (
             axios.put(`${BackendEndpoint.APPLICATIONS}${id}/`, application)
           ),
     {
-      onSuccess: () => {
-        void queryClient.invalidateQueries('applications');
-        void queryClient.invalidateQueries('application');
+      onSuccess: (data) => {
+        queryClient.setQueryData(['applications', id], data);
       },
     }
   );

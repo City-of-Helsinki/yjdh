@@ -8,7 +8,8 @@
   "application": {
     "step1": {
       "header": "1. Työnantajan tiedot",
-      "companyInfo": {
+      "companyInfoGrid": {
+        "title": "Yrityksen tiedot",
         "header": {
           "name": "Yritys",
           "business_id": "Y-tunnus",
@@ -19,6 +20,7 @@
         }
       },
       "form": {
+        "title": "Työnantajan tiedot",
         "invoicer_name": "Yhteyshenkilön nimi",
         "invoicer_email": "Yhteyshenkilön Sähköposti",
         "invoicer_phone_number": "Yhteyshenkilön Puhelinnumero",

@@ -1,7 +1,7 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
-import Application from 'kesaseteli/employer/types/application';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import Application from 'shared/types/employer-application';
 
 const useCreateApplicationQuery = (): UseMutationResult<
   unknown,
@@ -15,8 +15,16 @@ const useCreateApplicationQuery = (): UseMutationResult<
     () =>
       handleResponse<Application>(axios.post(BackendEndpoint.APPLICATIONS, {})),
     {
-      onSuccess: () => {
-        queryClient.removeQueries('applications', { exact: true });
+      onSuccess: (newApplication) => {
+        if (newApplication?.id) {
+          queryClient.setQueryData(
+            ['applications', newApplication.id],
+            newApplication
+          );
+          void queryClient.invalidateQueries('applications', { exact: true });
+        } else {
+          throw new Error('Missing id');
+        }
       },
     }
   );

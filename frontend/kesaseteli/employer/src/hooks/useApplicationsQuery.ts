@@ -1,7 +1,7 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useBackendAPI from 'kesaseteli/employer/hooks/useBackendAPI';
-import Application from 'kesaseteli/employer/types/application';
 import { useQuery, UseQueryResult } from 'react-query';
+import Application from 'shared/types/employer-application';
 
 const useApplicationsQuery = (): UseQueryResult<Application[], Error> => {
   const { axios, handleResponse } = useBackendAPI();

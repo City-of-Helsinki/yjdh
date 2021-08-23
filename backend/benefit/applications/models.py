@@ -1,4 +1,6 @@
 from applications.enums import (
+    AhjoDecision,
+    ApplicationBatchStatus,
     ApplicationStatus,
     ApplicationStep,
     AttachmentType,
@@ -220,19 +222,25 @@ class Application(UUIDModel, TimeStampedModel):
     """
     de_minimis_aid = models.BooleanField(null=True)
 
-    """
-    In future - add Ahjo batch
-    ahjo_batch = models.ForeignKey("AhjoBatch",
-                              verbose_name=_("ahjo batch"),
-                              related_name="applications",
-                              null=True,
-                              on_delete=models.SET_NULL,
+    batch = models.ForeignKey(
+        "ApplicationBatch",
+        verbose_name=_("ahjo batch"),
+        related_name="applications",
+        null=True,
+        on_delete=models.SET_NULL,
     )
-    """
 
     bases = models.ManyToManyField("ApplicationBasis", related_name="applications")
 
     history = HistoricalRecords(table_name="bf_applications_application_history")
+
+    @property
+    def is_decided(self):
+        return self.batch is not None and self.batch.status not in [
+            ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.RETURNED,
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+        ]
 
     def __str__(self):
         return "{}: {} {}".format(self.pk, self.company_name, self.status)
@@ -296,6 +304,73 @@ class ApplicationLogEntry(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_applicationlogentry"
         verbose_name = _("application log entry")
         verbose_name_plural = _("application log entries")
+
+
+class ApplicationBatch(UUIDModel, TimeStampedModel):
+    """
+    Represents grouping of applications for:
+    * Decision making in Ahjo
+    * Transferring payment data to Talpa
+    """
+
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="application_batches",
+        verbose_name=_("company"),
+    )
+
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("status of batch"),
+        choices=ApplicationBatchStatus.choices,
+        default=ApplicationBatchStatus.DRAFT,
+    )
+
+    proposal_for_decision = models.CharField(
+        max_length=64,
+        verbose_name=_("proposal for decision"),
+        choices=AhjoDecision.choices,
+    )
+
+    decision_maker_title = models.CharField(
+        max_length=64, blank=True, verbose_name=_("decision maker's title in Ahjo")
+    )
+    decision_maker_name = models.CharField(
+        max_length=128, blank=True, verbose_name=_("decision maker's name in Ahjo")
+    )
+    section_of_the_law = models.CharField(
+        max_length=16, blank=True, verbose_name=_("section of the law in Ahjo decision")
+    )
+    decision_date = models.DateField(
+        verbose_name=_("date of the decision in Ahjo"), null=True, blank=True
+    )
+    expert_inspector_name = models.CharField(
+        max_length=128, blank=True, verbose_name=_("Expert inspector's name")
+    )
+    expert_inspector_email = models.EmailField(
+        blank=True, verbose_name=_("Expert inspector's email address")
+    )
+
+    @property
+    def applications_can_be_modified(self):
+        """
+        After the applications have been sent to Ahjo, the handlers should not be able to modify
+        the applications. If the batch is returned without decision (as might theoretically happen),
+        then the handlers may need to make changes again.
+        """
+        return self.status in [
+            ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.RETURNED,
+        ]
+
+    def __str__(self):
+        return f"Application batch {self.applications.count()} {self.proposal_for_decision} {self.status}"
+
+    class Meta:
+        db_table = "bf_applicationbatch"
+        verbose_name = _("application batch")
+        verbose_name_plural = _("application batches")
 
 
 class ApplicationBasis(UUIDModel, TimeStampedModel):
@@ -439,3 +514,6 @@ class Attachment(UUIDModel, TimeStampedModel):
         verbose_name = _("attachment")
         verbose_name_plural = _("attachments")
         ordering = ["application__created_at", "attachment_type", "created_at"]
+
+    def __str__(self):
+        return "{} {}".format(self.attachment_type, self.attachment_file.name)

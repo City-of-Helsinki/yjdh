@@ -2,15 +2,15 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import type Company from 'shared/types/company';
 
-import { $CompanyInfoHeader } from './CompanyInfo.sc';
+import { $CompanyInfoHeader } from './CompanyInfoGrid.sc';
 
 export type CompanyProp = { field: keyof Company };
 
 const CompanyInfoHeader: React.FC<CompanyProp> = ({ field }: CompanyProp) => {
   const { t } = useTranslation();
   return (
-    <$CompanyInfoHeader>
-      {t(`common:application.step1.companyInfo.header.${field}`)}
+    <$CompanyInfoHeader role="gridcell" id={field}>
+      {t(`common:application.step1.companyInfoGrid.header.${field}`)}
     </$CompanyInfoHeader>
   );
 };

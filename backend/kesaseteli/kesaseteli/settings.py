@@ -61,8 +61,13 @@ env = environ.Env(
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_ACCOUNT_KEY=(str, ""),
     AZURE_CONTAINER=(str, ""),
-    AUDIT_LOG_FILENAME=(str, ""),
     AUDIT_LOG_ORIGIN=(str, ""),
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in staging/production
+    # Always override this value from env variables
+    ENCRYPTION_KEY=(
+        str,
+        "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
+    ),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -73,6 +78,7 @@ DEBUG = env.bool("DEBUG")
 SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
+ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -102,6 +108,7 @@ TIME_ZONE = "Europe/Helsinki"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -116,6 +123,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_auth_adfs",
     # shared apps
+    "shared.audit_log",
     "shared.oidc",
     # local apps
     "applications",
@@ -159,32 +167,6 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
-AUDIT_LOG_FILENAME = env.str("AUDIT_LOG_FILENAME")
-
-if AUDIT_LOG_FILENAME:
-    if "X" in AUDIT_LOG_FILENAME:
-        import random
-        import re
-        import string
-
-        system_random = random.SystemRandom()
-        char_pool = string.ascii_lowercase + string.digits
-        AUDIT_LOG_FILENAME = re.sub(
-            "X", lambda x: system_random.choice(char_pool), AUDIT_LOG_FILENAME
-        )
-    _audit_log_handler = {
-        "class": "logging.handlers.RotatingFileHandler",
-        "filename": AUDIT_LOG_FILENAME,
-        "maxBytes": 100_000_000,
-        "backupCount": 1,
-        "delay": True,
-    }
-else:
-    _audit_log_handler = {
-        "class": "logging.StreamHandler",
-        "formatter": "verbose",
-    }
-
 
 LOGGING = {
     "version": 1,
@@ -199,16 +181,9 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "audit": _audit_log_handler,
     },
     "loggers": {
         "django": {"handlers": ["console"], "level": "ERROR"},
-        "audit": {
-            "level": "INFO",  # Audit log only writes at INFO level
-            "handlers": [
-                "audit",
-            ],
-        },
     },
 }
 
@@ -278,6 +253,8 @@ AUTH_ADFS = {
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
 # End of Authentication
+
+FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
 
 # Django storages
 DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")

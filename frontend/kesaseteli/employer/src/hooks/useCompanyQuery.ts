@@ -1,7 +1,7 @@
 import useApplicationQuery from 'kesaseteli/employer/hooks/useApplicationQuery';
-import Application from 'kesaseteli/employer/types/application';
 import { UseQueryResult } from 'react-query';
 import Company from 'shared/types/company';
+import Application from 'shared/types/employer-application';
 
 export type UseCompanyResult = Omit<
   UseQueryResult<Application, Error>,

@@ -1,13 +1,23 @@
 import factory
 import pytest
 from applications.enums import BenefitType
-from applications.tests.factories import ApplicationFactory, EmployeeFactory
+from applications.tests.factories import (
+    ApplicationBatchFactory,
+    ApplicationFactory,
+    EmployeeFactory,
+)
 
 
 @pytest.fixture
 def application():
     with factory.Faker.override_default_locale("fi_FI"):
         return ApplicationFactory()
+
+
+@pytest.fixture
+def application_batch():
+    with factory.Faker.override_default_locale("fi_FI"):
+        return ApplicationBatchFactory()
 
 
 @pytest.fixture

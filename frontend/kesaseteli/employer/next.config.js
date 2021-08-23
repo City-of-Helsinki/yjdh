@@ -11,17 +11,13 @@ const { parsed: env } = require('dotenv').config({
 
 const nextConfig = {
   i18n,
-  webpack: (config, { dev, isServer }) => {
-    if (!isServer) {
-      // Fixes npm packages that depend on `fs` module
-      config.node = {
-        fs: 'empty',
-      };
-    }
+  env,
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
     const babelRule = config.module.rules.find((rule) =>
-      rule.use && Array.isArray(rule.use)
-        ? rule.use.find((u) => u.loader === 'next-babel-loader')
-        : rule.use.loader === 'next-babel-loader'
+      Array.isArray(rule.use)
+        ? rule.use.find((u) => u.loader?.match(/next.*babel.*loader/i))
+        : rule.use?.loader?.match(/next.*babel.*loader/i)
     );
     if (babelRule) {
       babelRule.include.push(path.resolve('../../'));
@@ -31,7 +27,6 @@ const nextConfig = {
       test: /\.test.tsx$/,
       loader: 'ignore-loader',
     });
-    config.plugins.push(new webpack.EnvironmentPlugin(env));
     return config;
   },
 };

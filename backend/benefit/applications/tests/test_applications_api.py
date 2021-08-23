@@ -14,11 +14,12 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
-from applications.models import Application, ApplicationLogEntry, Employee
+from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
+from django.core.files.uploadedfile import SimpleUploadedFile
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
 from PIL import Image
@@ -537,7 +538,7 @@ def test_application_date_range(
     ],
 )
 def test_application_status_change(
-    api_client, application, from_status, to_status, expected_code
+    request, api_client, application, from_status, to_status, expected_code
 ):
     """
     modify existing application
@@ -545,8 +546,18 @@ def test_application_status_change(
     application.status = from_status
     application.save()
     data = ApplicationSerializer(application).data
-
     data["status"] = to_status
+
+    if to_status == ApplicationStatus.RECEIVED:
+        # Add enough attachments so that the state transition is valid. See separete test
+        # for attachment validation.
+        _add_pdf_attachment(request, application, AttachmentType.PAY_SUBSIDY_DECISION)
+        _add_pdf_attachment(request, application, AttachmentType.EMPLOYMENT_CONTRACT)
+        _add_pdf_attachment(request, application, AttachmentType.EDUCATION_CONTRACT)
+        _add_pdf_attachment(request, application, AttachmentType.COMMISSION_CONTRACT)
+        _add_pdf_attachment(
+            request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER
+        )
     if data["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
 
@@ -625,6 +636,8 @@ def test_application_pay_subsidy(
 
 
 def test_attachment_upload_too_big(api_client, application):
+    application.status = ApplicationStatus.DRAFT
+    application.save()
     image = Image.new("RGB", (100, 100))
     tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
     tmp_file.seek(MAX_UPLOAD_SIZE + 1)
@@ -679,27 +692,106 @@ def test_attachment_upload_and_delete(api_client, application):
     assert len(application.attachments.all()) == 0
 
 
-def _upload_pdf(request, api_client, application):
+VALID_PDF_FILE = "valid_pdf_file.pdf"
+
+
+def _upload_pdf(
+    request, api_client, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
+):
     with open(
-        os.path.join(request.fspath.dirname, "valid_pdf_file.pdf"), "rb"
+        os.path.join(request.fspath.dirname, VALID_PDF_FILE), "rb"
     ) as valid_pdf_file:
         return api_client.post(
             reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
             {
                 "attachment_file": valid_pdf_file,
-                "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
+                "attachment_type": attachment_type,
             },
             format="multipart",
         )
 
 
-def test_pdf_attachment_upload(request, api_client, application):
+def _add_pdf_attachment(
+    request, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
+):
+    # add attachment, bypassing validation, so attachment can be added even if application
+    # state does not allow it
+    with open(
+        os.path.join(request.fspath.dirname, VALID_PDF_FILE), "rb"
+    ) as valid_pdf_file:
+        file_upload = SimpleUploadedFile(VALID_PDF_FILE, valid_pdf_file.read())
+        attachment = Attachment.objects.create(
+            application=application,
+            attachment_file=file_upload,
+            content_type="application/pdf",
+            attachment_type=attachment_type,
+        )
+        return attachment
+
+
+@pytest.mark.parametrize(
+    "status,expected_code",
+    [
+        (ApplicationStatus.DRAFT, 204),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 204),
+        (ApplicationStatus.RECEIVED, 403),
+        (ApplicationStatus.ACCEPTED, 403),
+        (ApplicationStatus.CANCELLED, 403),
+        (ApplicationStatus.REJECTED, 403),
+    ],
+)
+def test_attachment_delete(request, api_client, application, status, expected_code):
+    application.status = status
+    application.save()
+    attachment = _add_pdf_attachment(request, application)
+    response = api_client.delete(
+        reverse(
+            "v1:application-delete-attachment",
+            kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+
+    assert response.status_code == expected_code
+    if expected_code == 204:
+        assert application.attachments.count() == 0
+    else:
+        assert application.attachments.count() == 1
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        ApplicationStatus.DRAFT,
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+    ],
+)
+def test_pdf_attachment_upload(request, api_client, application, status):
+    application.status = status
+    application.save()
     response = _upload_pdf(request, api_client, application)
     assert response.status_code == 201
     assert len(application.attachments.all()) == 1
     attachment = application.attachments.all().first()
     assert attachment.attachment_type == AttachmentType.EMPLOYMENT_CONTRACT
     assert attachment.attachment_file.name.endswith(".pdf")
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        ApplicationStatus.RECEIVED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+        ApplicationStatus.REJECTED,
+    ],
+)
+def test_attachment_upload_invalid_status(request, api_client, application, status):
+    application.status = status
+    application.save()
+    response = _upload_pdf(request, api_client, application)
+    assert response.status_code == 400
+    assert len(application.attachments.all()) == 0
 
 
 @pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
@@ -751,6 +843,83 @@ def test_attachment_requirements(
         ["helsinki_benefit_voucher", "optional"],
         ["pay_subsidy_decision", "required"],
     ]
+
+
+def _submit_application(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["status"] = ApplicationStatus.RECEIVED
+    return api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+
+def test_attachment_validation(request, api_client, application):
+    application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
+    application.pay_subsidy_granted = True
+    application.pay_subsidy_percent = 50
+    application.apprenticeship_program = False
+    application.save()
+
+    # try to submit the application without attachments
+    response = _submit_application(api_client, application)
+    assert response.status_code == 400
+
+    # add one of two required attachments
+    response = _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    assert response.status_code == 201
+    response = _submit_application(api_client, application)
+    assert str(response.data[0]) == "Application does not have required attachments"
+
+    application.refresh_from_db()
+    assert application.status == ApplicationStatus.DRAFT
+
+    # add last required attachment
+    response = _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.PAY_SUBSIDY_DECISION,
+    )
+    assert response.status_code == 201
+    response = _submit_application(api_client, application)
+    assert response.status_code == 200
+    application.refresh_from_db()
+    assert application.status == ApplicationStatus.RECEIVED
+
+
+def test_purge_extra_attachments(request, api_client, application):
+    application.benefit_type = BenefitType.SALARY_BENEFIT
+    application.pay_subsidy_granted = True
+    application.pay_subsidy_percent = 50
+    application.apprenticeship_program = False
+    application.save()
+
+    lots_of_attachments = [
+        AttachmentType.EMPLOYMENT_CONTRACT,
+        AttachmentType.PAY_SUBSIDY_DECISION,
+        AttachmentType.COMMISSION_CONTRACT,  # extra
+        AttachmentType.EMPLOYMENT_CONTRACT,
+        AttachmentType.PAY_SUBSIDY_DECISION,
+        AttachmentType.COMMISSION_CONTRACT,  # extra
+        AttachmentType.HELSINKI_BENEFIT_VOUCHER,
+        AttachmentType.EDUCATION_CONTRACT,  # extra
+        AttachmentType.EDUCATION_CONTRACT,  # extra
+    ]
+    for attachment_type in lots_of_attachments:
+        response = _upload_pdf(request, api_client, application, attachment_type)
+        assert response.status_code == 201
+
+    assert application.attachments.count() == len(lots_of_attachments)
+
+    response = _submit_application(api_client, application)
+    assert response.status_code == 200
+    assert application.attachments.count() == 5
 
 
 def test_application_number(api_client, application):

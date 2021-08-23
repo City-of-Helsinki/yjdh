@@ -15,6 +15,7 @@ module.exports = {
     'no-void': 'off',
     'unicorn/no-array-reduce': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'lodash/prefer-noop': 'off',
   },
   overrides: [
     {

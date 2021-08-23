@@ -1,6 +1,6 @@
 import useApplicationQuery from 'kesaseteli/employer/hooks/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/useUpdateApplicationQuery';
-import Application from 'kesaseteli/employer/types/application';
+import Application from 'shared/types/employer-application';
 
 type QueryResult = ReturnType<typeof useApplicationQuery>;
 type mutateResult = ReturnType<typeof useUpdateApplicationQuery>;

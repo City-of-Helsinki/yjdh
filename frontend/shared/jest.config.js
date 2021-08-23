@@ -7,10 +7,10 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    ['^test-utils']: '<rootDir>/test/test-utils',
+    ['^shared/test/(.*)$']: '<rootDir>/test/$1',
     [`^shared\/(.*)$`]: '<rootDir>/src/$1',
   },
-  setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/__tests__/utils/setupTests.ts'],
   coveragePathIgnorePatterns: [
     '<rootDir>/src/server/next-server.js',
     '<rootDir>/test/',

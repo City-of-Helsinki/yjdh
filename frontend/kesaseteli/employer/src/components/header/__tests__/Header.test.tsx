@@ -10,9 +10,9 @@ import Header from 'kesaseteli/employer/components/header/Header';
 import nock from 'nock';
 import React from 'react';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { Language, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import User from 'shared/types/user';
-import { screen, userEvent, waitFor } from 'test-utils';
 
 const clickToLogin = (): void => {
   expectToLogin();
@@ -54,6 +54,9 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
   const queryClient = createReactQueryTestClient();
   beforeEach(() => {
     queryClient.clear();
+  });
+
+  afterEach(() => {
     nock.cleanAll();
   });
 

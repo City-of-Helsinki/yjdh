@@ -1,6 +1,6 @@
-import useAuth from 'kesaseteli/employer/hooks/useAuth';
 import { useRouter } from 'next/router';
 import React from 'react';
+import useAuth from 'shared/hooks/useAuth';
 import isServerSide from 'shared/server/is-server-side';
 
 const DefaultLoadingFallback = (): React.ReactElement<unknown> => (
@@ -30,17 +30,18 @@ const withAuthRedirect = <P,>({
   LoadingComponent = DefaultLoadingFallback,
   expectedAuth,
   redirectLocation,
-}: Props<P>): typeof WrappedComponent => (props: P) => {
-  const router = useRouter();
-  const { isLoading, isAuthenticated } = useAuth();
-  if (isLoading) {
-    return <LoadingComponent />;
-  }
-  if (!isServerSide() && expectedAuth !== isAuthenticated) {
-    void router.push(redirectLocation);
-    return null;
-  }
-  return <WrappedComponent {...props} />;
-};
+}: Props<P>): typeof WrappedComponent =>
+  function Wrapped(props: P) {
+    const router = useRouter();
+    const { isLoading, isAuthenticated } = useAuth();
+    if (isLoading) {
+      return <LoadingComponent />;
+    }
+    if (!isServerSide() && expectedAuth !== isAuthenticated) {
+      void router.push(redirectLocation);
+      return null;
+    }
+    return <WrappedComponent {...props} />;
+  };
 
 export default withAuthRedirect;

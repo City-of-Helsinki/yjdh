@@ -1,7 +1,7 @@
 import { Button, IconArrowRight } from 'hds-react';
 import { getApplicationFormContext } from 'kesaseteli/employer/components/form/ApplicationForm';
-import Application from 'kesaseteli/employer/types/application';
 import React from 'react';
+import Application from 'shared/types/employer-application';
 
 type Props = {
   id: string;
@@ -16,9 +16,11 @@ const SubmitButton = ({
   onSubmit,
   children,
 }: Props): ReturnType<typeof Button> => {
-  const { handleSubmit, isLoading } = React.useContext(
-    getApplicationFormContext()
-  );
+  const {
+    handleSubmit,
+    isLoading,
+    formState: { isSubmitting, isValid },
+  } = React.useContext(getApplicationFormContext());
 
   return (
     <Button
@@ -27,6 +29,7 @@ const SubmitButton = ({
       onClick={handleSubmit(onSubmit)}
       loadingText={loadingText}
       isLoading={isLoading}
+      disabled={!isValid || isSubmitting}
     >
       {children}
     </Button>
