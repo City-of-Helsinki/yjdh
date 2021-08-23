@@ -29,14 +29,14 @@ const useApplicationFormStep3 = (
   const [step, setStep] = useState<number>(3);
 
   const {
-    mutate: updateApplication,
-    error: updateApplicationError,
-    isSuccess: isApplicationUpdated,
+    mutate: updateApplicationStep3,
+    error: updateApplicationErrorStep3,
+    isSuccess: isApplicationUpdatedStep3,
   } = useUpdateApplicationQuery();
 
   useEffect(() => {
     // todo:custom error messages
-    if (updateApplicationError) {
+    if (updateApplicationErrorStep3) {
       hdsToast({
         autoDismiss: true,
         autoDismissTime: 5000,
@@ -46,13 +46,18 @@ const useApplicationFormStep3 = (
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, updateApplicationError]);
+  }, [t, updateApplicationErrorStep3]);
 
   useEffect(() => {
-    if (isApplicationUpdated) {
+    if (isApplicationUpdatedStep3) {
       setApplicationTempData({ ...applicationTempData, currentStep: step });
     }
-  }, [isApplicationUpdated, applicationTempData, step, setApplicationTempData]);
+  }, [
+    isApplicationUpdatedStep3,
+    applicationTempData,
+    step,
+    setApplicationTempData,
+  ]);
 
   const handleStepChange = (nextStep: number): void => {
     setStep(nextStep);
@@ -63,7 +68,7 @@ const useApplicationFormStep3 = (
       },
       { deep: true }
     );
-    updateApplication(currentApplicationData);
+    updateApplicationStep3(currentApplicationData);
   };
 
   const handleNext = (): void => handleStepChange(4);
