@@ -25,11 +25,13 @@ def send_audit_log_to_elastic_search():
         cloud_id=settings.ELASTICSEARCH_CLOUD_ID,
         api_key=(settings.ELASTICSEARCH_API_ID, settings.ELASTICSEARCH_API_KEY),
     )
-    entries = AuditLogEntry.objects.filter(is_sent=False)
+    entries = AuditLogEntry.objects.filter(is_sent=False).order_by("created_at")
 
     for entry in entries:
         rs = es.index(
-            index=settings.ELASTICSEARCH_APP_AUDIT_LOG_INDEX, body=entry.message
+            index=settings.ELASTICSEARCH_APP_AUDIT_LOG_INDEX,
+            id=entry.id,
+            body=entry.message,
         )
         if rs.get("result") == ES_STATUS_CREATED:
             entry.is_sent = True
@@ -41,5 +43,4 @@ def clear_audit_log_entries(days_to_keep=30):
     sent_entries = AuditLogEntry.objects.filter(
         is_sent=True, created_at__lte=(timezone.now() - timedelta(days=days_to_keep))
     )
-    for entry in sent_entries:
-        entry.delete()
+    sent_entries.delete()

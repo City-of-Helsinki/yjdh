@@ -378,20 +378,20 @@ def test_clear_audit_log(user, fixed_datetime):
     assert AuditLogEntry.objects.count() == 3
 
     new_sent_log = AuditLogEntry.objects.all()[0]
+    expired_unsent_log = AuditLogEntry.objects.all()[1]
+    expired_sent_log = AuditLogEntry.objects.all()[2]
+
     new_sent_log.is_sent = True
     new_sent_log.save()
 
-    expired_unsent_log = AuditLogEntry.objects.all()[1]
     expired_unsent_log.created_at = timezone.now() - timedelta(days=35)
     expired_unsent_log.save()
 
-    expired_sent_log = AuditLogEntry.objects.all()[2]
     expired_sent_log.is_sent = True
     expired_sent_log.created_at = timezone.now() - timedelta(days=35)
     expired_sent_log.save()
 
     clear_audit_log_entries()
-    # assert AuditLogEntry.objects.filter(id=new_sent_log.id).exists()
-    # assert AuditLogEntry.objects.filter(id=expired_sent_log.id).exists()
-    print(AuditLogEntry.objects.get())
     assert AuditLogEntry.objects.count() == 2
+    assert AuditLogEntry.objects.filter(id=new_sent_log.id).exists()
+    assert AuditLogEntry.objects.filter(id=expired_unsent_log.id).exists()
