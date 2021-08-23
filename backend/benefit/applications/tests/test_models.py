@@ -63,3 +63,31 @@ def test_application_batch_modified(application_batch, status, expected_result):
     application_batch.status = status
     application_batch.save()
     assert application_batch.applications_can_be_modified == expected_result
+
+
+def test_application_address(application):
+    application.official_company_city = "official city"
+    application.alternative_company_city = "alternative city"
+    application.official_company_street_address = "official address"
+    application.alternative_company_street_address = "alternative address"
+    application.official_company_postcode = "00100"
+    application.alternative_company_postcode = "00200"
+    application.use_alternative_address = False
+    assert application.effective_company_city == application.official_company_city
+    assert (
+        application.effective_company_street_address
+        == application.official_company_street_address
+    )
+    assert (
+        application.effective_company_postcode == application.official_company_postcode
+    )
+    application.use_alternative_address = True
+    assert application.effective_company_city == application.alternative_company_city
+    assert (
+        application.effective_company_street_address
+        == application.alternative_company_street_address
+    )
+    assert (
+        application.effective_company_postcode
+        == application.alternative_company_postcode
+    )

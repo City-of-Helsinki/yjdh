@@ -45,6 +45,18 @@ def _get_next_application_number():
         return cursor.fetchone()[0]
 
 
+def address_property(field_suffix):
+    def _address_property_getter(self):
+        if self.use_alternative_address:
+            field_prefix = "alternative"
+        else:
+            field_prefix = "official"
+        field_name = f"{field_prefix}_{field_suffix}"
+        return getattr(self, field_name)
+
+    return _address_property_getter
+
+
 class Application(UUIDModel, TimeStampedModel):
     """
     Data model for Helsinki benefit applications
@@ -104,6 +116,13 @@ class Application(UUIDModel, TimeStampedModel):
     alternative_company_postcode = models.CharField(
         max_length=256, verbose_name=_("company post code"), blank=True
     )
+
+    # the following property values are evaluated based on use_alternative_address setting
+    effective_company_street_address = property(
+        address_property("company_street_address")
+    )
+    effective_company_city = property(address_property("company_city"))
+    effective_company_postcode = property(address_property("company_postcode"))
 
     company_bank_account_number = IBANField(
         include_countries=("FI",),
