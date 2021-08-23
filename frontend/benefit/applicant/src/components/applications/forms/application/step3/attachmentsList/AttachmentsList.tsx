@@ -11,10 +11,12 @@ import { useAttachmentsList } from './useAttachmentsList';
 
 interface AttachmentsContainerProps {
   attachmentType: ATTACHMENT_TYPES;
+  showMessage?: boolean;
 }
 
 const AttachmentsList: React.FC<AttachmentsContainerProps> = ({
   attachmentType,
+  showMessage,
 }) => {
   const { t, translationsBase, attachments } = useAttachmentsList();
   return (
@@ -33,9 +35,15 @@ const AttachmentsList: React.FC<AttachmentsContainerProps> = ({
           />
         </>
       ) : (
-        <$Message>
-          {t(`${translationsBase}.types.${camelCase(attachmentType)}.message`)}
-        </$Message>
+        <>
+          {showMessage && (
+            <$Message>
+              {t(
+                `${translationsBase}.types.${camelCase(attachmentType)}.message`
+              )}
+            </$Message>
+          )}
+        </>
       )}
       <$PrimaryButton style={{ width: 'auto' }} iconLeft={<IconPlus />}>
         {t(`${translationsBase}.add`)}
@@ -43,5 +51,11 @@ const AttachmentsList: React.FC<AttachmentsContainerProps> = ({
     </$Container>
   );
 };
+
+const defaultProps = {
+  showMessage: true,
+};
+
+AttachmentsList.defaultProps = defaultProps;
 
 export default AttachmentsList;
