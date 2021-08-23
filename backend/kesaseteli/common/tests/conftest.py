@@ -1,10 +1,11 @@
 import pytest
 from django.contrib.auth.models import Permission
 from rest_framework.test import APIClient
+from shared.common.tests.factories import UserFactory
 from shared.oidc.tests.conftest import *  # noqa
 
 from applications.enums import ApplicationStatus
-from common.tests.factories import ApplicationFactory, CompanyFactory, UserFactory
+from common.tests.factories import ApplicationFactory, CompanyFactory
 
 
 @pytest.fixture

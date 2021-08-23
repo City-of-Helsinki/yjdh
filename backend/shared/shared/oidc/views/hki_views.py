@@ -7,7 +7,11 @@ from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.views.generic import View
-from mozilla_django_oidc.views import OIDCAuthenticationCallbackView, OIDCLogoutView
+from mozilla_django_oidc.views import (
+    OIDCAuthenticationCallbackView,
+    OIDCAuthenticationRequestView,
+    OIDCLogoutView,
+)
 from requests.exceptions import HTTPError
 
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
@@ -18,12 +22,36 @@ from shared.oidc.utils import get_userinfo, refresh_hki_tokens
 logger = logging.getLogger(__name__)
 
 
+class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
+    """Override OIDC client authentication request get method"""
+
+    def get(self, request):
+        lang = request.GET.get("lang")
+        if not lang:
+            lang = "fi"
+
+        response_redirect = super().get(request)
+        response = HttpResponseRedirect(f"{response_redirect.url}&ui_locales={lang}")
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang, httponly=True)
+
+        return response
+
+
 class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
     """Override OIDC client authentication callback login success method"""
 
     def login_success(self):
         super().login_success()
         return HttpResponseRedirect(reverse("eauth_authentication_init"))
+
+    def login_failure(self):
+        url, error_path = self.failure_url.rsplit("/", 1)
+
+        lang = self.request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+        if lang:
+            url = f"{url}/{lang}/{error_path}"
+
+        return HttpResponseRedirect(url)
 
 
 class HelsinkiOIDCLogoutView(OIDCLogoutView):
