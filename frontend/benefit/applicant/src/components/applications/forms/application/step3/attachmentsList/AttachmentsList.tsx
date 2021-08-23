@@ -9,12 +9,12 @@ import AttachmentItem from './attachmentItem/AttachmentItem';
 import { $Container, $Heading, $Message } from './AttachmentsList.sc';
 import { useAttachmentsList } from './useAttachmentsList';
 
-interface AttachmentsContainerProps {
+export interface AttachmentsListProps {
   attachmentType: ATTACHMENT_TYPES;
   showMessage?: boolean;
 }
 
-const AttachmentsList: React.FC<AttachmentsContainerProps> = ({
+const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachmentType,
   showMessage,
 }) => {
