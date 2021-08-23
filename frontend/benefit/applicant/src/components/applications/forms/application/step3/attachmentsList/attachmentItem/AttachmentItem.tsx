@@ -1,9 +1,9 @@
 import { IconCross, IconPaperclip } from 'hds-react';
 import * as React from 'react';
 
-import { $ActionContainer,$Container, $Title } from './AttachmentsItem.sc';
+import { $ActionContainer, $Container, $Title } from './AttachmentsItem.sc';
 
-interface AttachmentItemProps {
+export interface AttachmentItemProps {
   id: string;
   name: string;
   removeText: string;
@@ -24,11 +24,11 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
   return (
     <$Container onClick={handleClick}>
       <$Title>
-        <IconPaperclip />
+        <IconPaperclip aria-label={name} />
         {name}
       </$Title>
       <$ActionContainer onClick={handleRemove}>
-        <IconCross />
+        <IconCross aria-label={removeText} />
         {removeText}
       </$ActionContainer>
     </$Container>
