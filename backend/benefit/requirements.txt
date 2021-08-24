@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
--e ../shared
+-e file:../shared
     # via -r requirements.in
 asgiref==3.3.4
     # via django
@@ -20,6 +20,7 @@ azure-storage-common==2.1.0
     # via azure-storage-blob
 certifi==2020.12.5
     # via
+    #   elasticsearch
     #   requests
     #   sentry-sdk
 cffi==1.14.5
@@ -77,6 +78,8 @@ djangorestframework==3.12.4
     #   -r requirements.in
     #   drf-spectacular
 drf-spectacular==0.17.2
+    # via -r requirements.in
+elasticsearch==7.14.0
     # via -r requirements.in
 filetype==1.0.7
     # via -r requirements.in
@@ -142,6 +145,7 @@ uritemplate==3.0.1
     #   drf-spectacular
 urllib3==1.26.4
     # via
+    #   elasticsearch
     #   requests
     #   sentry-sdk
 

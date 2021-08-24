@@ -52,7 +52,7 @@ jobs:
         run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt codecov
 
       - name: Run tests
-        run: pytest backend/benefit -ra -vv --doctest-modules --cov=. --pyargs shared.oidc
+        run: pytest backend/benefit -ra -vv --doctest-modules --cov=. --pyargs shared.oidc shared.audit_log
         env:
           DATABASE_URL: postgres://benefit:benefit@postgres/benefit
 

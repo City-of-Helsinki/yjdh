@@ -67,6 +67,13 @@ env = environ.Env(
     AZURE_CONTAINER=(str, ""),
     AZURE_URL_EXPIRATION_SECS=(int, 900),
     MINIMUM_WORKING_HOURS_PER_WEEK=(int, 18),
+    AUDIT_LOG_ORIGIN=(str, "helsinki-benefit-api"),
+    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "helsinki_benefit_audit_log"),
+    ELASTICSEARCH_CLOUD_ID=(str, ""),
+    ELASTICSEARCH_API_ID=(str, ""),
+    ELASTICSEARCH_API_KEY=(str, ""),
+    CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
+    ENABLE_SEND_AUDIT_LOG=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -128,6 +135,7 @@ INSTALLED_APPS = [
     "django_auth_adfs",
     # shared apps
     "shared.oidc",
+    "shared.audit_log",
     # local apps
     "users.apps.AppConfig",
     "companies",
@@ -285,6 +293,13 @@ AZURE_URL_EXPIRATION_SECS = env("AZURE_URL_EXPIRATION_SECS")  # default 900s
 MAX_UPLOAD_SIZE = 10485760  # 10MB
 MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
 
+
+AUDIT_LOG_ORIGIN = env("AUDIT_LOG_ORIGIN")
+ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
+ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
+ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
+ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
+ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

@@ -20,4 +20,5 @@ django-filter
 django-storages[azure]
 Pillow
 filetype
--e ../shared
+elasticsearch
+-e file:../shared

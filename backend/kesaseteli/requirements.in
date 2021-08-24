@@ -12,4 +12,5 @@ mozilla-django-oidc
 psycopg2
 sentry-sdk
 requests
+elasticsearch
 -e file:../shared

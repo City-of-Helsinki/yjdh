@@ -68,6 +68,12 @@ env = environ.Env(
         str,
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
+    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
+    ELASTICSEARCH_CLOUD_ID=(str, ""),
+    ELASTICSEARCH_API_ID=(str, ""),
+    ELASTICSEARCH_API_KEY=(str, ""),
+    CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
+    ENABLE_SEND_AUDIT_LOG=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -167,6 +173,11 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
+ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
+ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
+ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
+ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
+ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 
 LOGGING = {
     "version": 1,
