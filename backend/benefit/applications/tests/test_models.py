@@ -91,3 +91,11 @@ def test_application_address(application):
         application.effective_company_postcode
         == application.alternative_company_postcode
     )
+
+
+def test_benefit_amount(application):
+    assert application.benefit_amount is None
+    application.calculated_benefit_amount = 100
+    assert application.benefit_amount == 100
+    application.manual_benefit_amount = 200
+    assert application.benefit_amount == 200
