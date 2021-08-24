@@ -4,7 +4,6 @@ export const $Container = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  box-sizing: border-box;
   margin-bottom: ${(props) => props.theme.spacing.m};
   background-color: ${(props) => props.theme.colors.silverLight};
   padding: ${(props) => props.theme.spacing.l};

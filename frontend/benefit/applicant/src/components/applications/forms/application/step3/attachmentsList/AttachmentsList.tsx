@@ -25,15 +25,13 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
         {t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
       </$Heading>
       {attachments.length > 0 ? (
-        <>
-          <AttachmentItem
-            id="testId"
-            name="palkkatukipaatos-teemurantamaki.PDF"
-            removeText={t(`${translationsBase}.remove`)}
-            onClick={noop}
-            onRemove={noop}
-          />
-        </>
+        <AttachmentItem
+          id="testId"
+          name="palkkatukipaatos-teemurantamaki.PDF"
+          removeText={t(`${translationsBase}.remove`)}
+          onClick={noop}
+          onRemove={noop}
+        />
       ) : (
         <>
           {showMessage && (

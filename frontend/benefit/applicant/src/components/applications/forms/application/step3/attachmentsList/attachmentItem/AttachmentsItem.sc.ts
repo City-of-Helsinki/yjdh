@@ -4,7 +4,6 @@ export const $Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  box-sizing: border-box;
   margin-bottom: ${(props) => props.theme.spacing.m};
   font-size: ${(props) => props.theme.fontSize.body.m};
 `;
