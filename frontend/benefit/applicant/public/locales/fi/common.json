@@ -257,7 +257,31 @@
         }
       },
       "attachments": {
-        "heading1": "Liittet"
+        "heading1": "Liittet",
+        "types": {
+          "employmentContract": {
+            "title": "Työsopimus",
+            "message": ""
+          },
+          "paySubsidyDecision": {
+            "title": "Palkkatukipäätös",
+            "message": "Liitä molemmat myönnetyt palkkatukipäätökset"
+          },
+          "commissionContract": {
+            "title": "Toimeksiantosopimus",
+            "message": ""
+          },
+          "educationContract": {
+            "title": "Sopimus oppisopimuskoulutuksen järjestämisestä",
+            "message": ""
+          },
+          "helsinkiBenefitVoucher": {
+            "title": "Helsinki-lisä seteli",
+            "message": "Lisää tämä mikäli sellainen on myönnetty"
+          }
+        },
+        "add": "Liitä tiedosto",
+        "remove": "Poista liite"
       },
       "summary": {
         "heading1": "Ole hyvä ja tarkista hakemus"
@@ -291,6 +315,10 @@
     "description2": ". Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
     "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
     "newApplicationBtnText": "Tee uusi hakemus"
+  },
+  "attachmentsIngress": {
+    "text": "Lisää hakemukselle seuraavat liitteet. Liitteet ovat pakollisia, ellei toisin sanota. Tiedostomuoto voi olla JPG, PNG tai PDF. Suurin sallittu koko 10 MB.",
+    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
   },
   "menuToggleAriaLabel": "Menu",
   "form": {
