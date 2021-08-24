@@ -1,4 +1,3 @@
-import { Notification } from 'hds-react';
 import {
   getApplicationFormContext,
   setApplicationFormContext,
@@ -9,20 +8,20 @@ import { getStepNumber } from 'kesaseteli/employer/utils/application-wizard.util
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import FormSection from 'shared/components/forms/section/FormSection';
+import Toast from 'shared/components/toast/Toast';
 import useSetQueryParam from 'shared/hooks/useSetQueryParam';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
-export type ApplicationFormProps = {
-  title: string;
+type Props = {
+  stepTitle: string;
   children: React.ReactNode;
 };
 
 const ApplicationStepForm = ({
-  title,
+  stepTitle,
   children,
-}: ApplicationFormProps): JSX.Element => {
+}: Props): JSX.Element => {
   const { activeStep } = useWizard();
   const currentStep = getStepNumber(activeStep + 1);
   useSetQueryParam('step', String(currentStep));
@@ -33,7 +32,7 @@ const ApplicationStepForm = ({
   const translateError = (key: keyof Application): string =>
     key ? t(`common:application.step1.form.errors.${key}`) : key;
 
-  const { isLoading, loadingError, updatingError } = useApplicationApi();
+  const { loadingError, updatingError } = useApplicationApi();
   const errorMessage = (loadingError || updatingError)?.message;
   const methods = useForm<Application>({
     mode: 'onBlur',
@@ -41,13 +40,18 @@ const ApplicationStepForm = ({
   });
   useSetFormDefaultValues(methods);
 
-  if (errorMessage)
-    return (
-      <Notification
-        label={`${t(`common:application.common_error`)} ${errorMessage}`}
-        type="error"
-      />
-    );
+  React.useEffect(() => {
+    if (errorMessage) {
+      Toast({
+        autoDismiss: true,
+        autoDismissTime: 5000,
+        type: 'error',
+        translated: true,
+        labelText: t('common:application.common_error'),
+        text: errorMessage,
+      });
+    }
+  }, [t, errorMessage]);
 
   const context = {
     translateLabel,
@@ -59,11 +63,9 @@ const ApplicationStepForm = ({
   const FormContextProvider = getApplicationFormContext().Provider;
 
   return (
-    <FormSection header={title} loading={isLoading}>
-      <FormContextProvider value={context}>
-        <form aria-label={title}>{children}</form>
-      </FormContextProvider>
-    </FormSection>
+    <FormContextProvider value={context}>
+      <form aria-label={stepTitle}>{children}</form>
+    </FormContextProvider>
   );
 };
 

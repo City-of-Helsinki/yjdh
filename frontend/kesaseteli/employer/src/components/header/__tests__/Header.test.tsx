@@ -24,7 +24,7 @@ const clickToLogin = (): void => {
   expectToLogin();
   userEvent.click(
     screen.getAllByRole('button', {
-      name: 'Kirjaudu sisään',
+      name:  /(kirjaudu sisään)|(header.loginlabel)/i,
     })[0]
   );
 };
@@ -33,12 +33,12 @@ const clickToLogout = (user: User): void => {
   expectToLogout();
   userEvent.click(
     screen.getByRole('button', {
-      name: `Käyttäjä: ${user.name}`,
+      name:  new RegExp(`(käyttäjä)|(header.userAriaLabelPrefix) ${user.name}`, 'i'),
     })
   );
   userEvent.click(
     screen.getAllByRole('link', {
-      name: 'Kirjaudu ulos',
+      name: /(kirjaudu ulos)|(header.logoutlabel)/i,
     })[0]
   );
 };
@@ -51,7 +51,7 @@ const changeLanguage = (fromLang: Language, toLang: Language): void => {
   );
   userEvent.click(
     screen.getAllByRole('link', {
-      name: translations[toLang],
+      name: new RegExp(`(${translations[toLang]})|(languages.${toLang})`,'i')
     })[0]
   );
 };
@@ -68,7 +68,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
 
   const expectUserIsLoggedIn = async (user: User): Promise<void> => {
     await screen.findByRole('button', {
-      name: `Käyttäjä: ${user.name}`,
+      name: new RegExp(`(käyttäjä)|(header.userAriaLabelPrefix) ${user.name}`, 'i'),
     });
     await waitFor(() => expect(queryClient.getQueryData('user')).toEqual(user));
   };
@@ -77,7 +77,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     await waitFor(() =>
       expect(
         screen.queryAllByRole('button', {
-          name: 'Kirjaudu sisään',
+          name: /(kirjaudu sisään)|(header.loginlabel)/i,
         })
       ).toHaveLength(2)
     );

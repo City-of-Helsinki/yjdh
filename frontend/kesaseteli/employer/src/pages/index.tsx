@@ -1,26 +1,32 @@
-import { Notification } from 'hds-react';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
+import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import withAuth from 'shared/components/hocs/withAuth';
+import ErrorPage from 'shared/components/pages/ErrorPage';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const EmployerIndex: NextPage = () => {
   const {
     data: applications,
-    isLoading,
+    isLoading: isLoadingApplications,
     error: loadApplicationsError,
   } = useApplicationsQuery();
-  const { mutate: createApplication, error: createApplicationError } =
+  const { mutate: createApplication, error: createApplicationError, isLoading: isCreatingApplication } =
     useCreateApplicationQuery();
 
-  const errorMessage = (loadApplicationsError ?? createApplicationError)
-    ?.message;
-  const isError = !!errorMessage;
+  const {
+    mutate: logout,
+    isLoading: isLoadingLogout,
+  } = useLogoutQuery();
+
+  const isLoading = isLoadingApplications || isCreatingApplication || isLoadingLogout;
+  const isError = loadApplicationsError || createApplicationError;
   const router = useRouter();
   const locale = router.locale ?? DEFAULT_LANGUAGE;
 
@@ -36,11 +42,17 @@ const EmployerIndex: NextPage = () => {
   }, [isLoading, applications, createApplication, router, locale, isError]);
 
   const { t } = useTranslation();
-  if (errorMessage) {
+  if (isLoading) {
     return (
-      <Notification
-        label={`${t(`common:application.common_error`)} ${errorMessage}`}
-        type="error"
+      <PageLoadingSpinner/>
+    );
+  }
+  if (isError && !isLoading) {
+    return (
+      <ErrorPage
+        title={t('common:errorPage.title')}
+        message={t('common:errorPage.message')}
+        onLogout={logout as () => void}
       />
     );
   }

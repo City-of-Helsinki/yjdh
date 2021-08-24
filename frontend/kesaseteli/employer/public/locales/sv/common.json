@@ -1,10 +1,16 @@
 {
+  "appName": "Helsinki-employer SV",
   "header": {
     "loginLabel": "Logga in",
     "logoutLabel": "Logga ut",
     "userAriaLabelPrefix": "Användare:"
   },
-  "appName": "Helsinki-employer SV",
+  "errorPage": {
+    "title": "SV Palvelussa on valitettavasti tapahtunut virhe",
+    "message": "SV Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "home": "SV Palaa etusivulle",
+    "logout": "SV Kirjaudu ulos"
+  },
   "application": {
     "new": "Uusi hakemus SWE",
     "common_error": "Tapahtui tuntematon virhe: SWE",
@@ -13,6 +19,7 @@
     "step1": {
       "name": "Työnantaja SWE",
       "header": "1. Työnantajan tiedot SWE",
+      "tooltip": "SV Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot SWE",
         "header": {
@@ -38,14 +45,17 @@
       }
     },
     "step2": {
-      "name": "Työsuhteet SWE"
+      "name": "Työsuhteet SWE",
+      "header": "2. Selvitys työsuhteesta SWE"
     },
     "step3": {
-      "name": "Lähetys SWE"
+      "name": "Lähetys SWE",
+      "header": "3. Tarkistus ja lähettäminen SWE"
     },
     "buttons": {
       "previous": "Palaa edelliseen SWE",
-      "save_and_continue": "Tallenna ja jatka SWE"
+      "save_and_continue": "Tallenna ja jatka SWE",
+      "send": "Send application SWE"
     }
   },
   "footer": {
