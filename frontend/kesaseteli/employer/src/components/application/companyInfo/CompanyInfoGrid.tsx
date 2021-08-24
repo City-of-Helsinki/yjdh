@@ -1,6 +1,3 @@
-import CompanyInfoHeader, {
-  CompanyProp,
-} from 'kesaseteli/employer/components/companyInfo/CompanyInfoHeader';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -8,6 +5,9 @@ import LoadingSkeleton from 'react-loading-skeleton';
 import isServerSide from 'shared/server/is-server-side';
 
 import { $CompanyInfoCell, $CompanyInfoGrid } from './CompanyInfoGrid.sc';
+import CompanyInfoHeader, {
+  CompanyProp,
+} from './CompanyInfoHeader';
 
 
 const CompanyInfoGrid: React.FC = () => {

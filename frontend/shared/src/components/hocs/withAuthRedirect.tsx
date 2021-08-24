@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
 import React from 'react';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useAuth from 'shared/hooks/useAuth';
 import isServerSide from 'shared/server/is-server-side';
 
 const DefaultLoadingFallback = (): React.ReactElement<unknown> => (
-  <p>Uudelleenohjataan...</p>
+  <PageLoadingSpinner />
 );
 
 type Props<P> = {

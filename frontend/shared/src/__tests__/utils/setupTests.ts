@@ -1,7 +1,9 @@
 import '@testing-library/jest-dom';
 
 import { toHaveNoViolations } from 'jest-axe';
+import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 
-jest.setTimeout(20000);
+
+jest.setTimeout(JEST_TIMEOUT);
 
 expect.extend(toHaveNoViolations);

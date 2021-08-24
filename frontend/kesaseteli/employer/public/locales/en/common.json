@@ -1,10 +1,16 @@
 {
+  "appName": "Helsinki-Employer EN",
   "header": {
     "loginLabel": "Login",
     "logoutLabel": "Logout",
     "userAriaLabelPrefix": "User:"
     },
-  "appName": "Helsinki-Employer EN",
+  "errorPage": {
+    "title": "Unknown error occurred",
+    "message": "ENG: Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "home": "Go back to home page",
+    "logout": "Logout"
+  },
   "application": {
     "new": "New application",
     "common_error": "Unknown error occurred: ",
@@ -13,6 +19,7 @@
     "step1": {
       "name": "Employer",
       "header": "1. Employer information",
+      "tooltip": "EN Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       "companyInfoGrid": {
         "title": "Company information",
         "header": {
@@ -39,14 +46,17 @@
       }
     },
     "step2": {
-      "name": "Employees"
+      "name": "Employees",
+      "header": "2. Employments"
     },
     "step3": {
-      "name": "Send"
+      "name": "Send",
+      "header": "Check summary and send"
     },
     "buttons": {
       "previous": "Back to previous step",
-      "save_and_continue": "Save and continue"
+      "save_and_continue": "Save and continue",
+      "send": "Send application"
     }
   },
   "footer": {

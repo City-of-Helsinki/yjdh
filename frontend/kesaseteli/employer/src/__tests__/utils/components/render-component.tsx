@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import getDefaultReactQueryTestClient from 'shared/__tests__/utils/react-query/get-default-react-query-test-client';
 import { render, RenderResult } from 'shared/__tests__/utils/test-utils';
 import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
+import theme from 'shared/styles/theme';
+import { ThemeProvider } from 'styled-components';
 
 const renderComponent = (
   Component: JSX.Element,
@@ -13,7 +15,8 @@ const renderComponent = (
 ): RenderResult =>
   render(
     <BackendAPIContext.Provider value={AxiosTestContext}>
-      <QueryClientProvider client={client}>{Component}</QueryClientProvider>
+      <QueryClientProvider client={client}>
+        <ThemeProvider theme={theme}>{Component}</ThemeProvider></QueryClientProvider>
     </BackendAPIContext.Provider>,
     router
   );

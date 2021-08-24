@@ -7,6 +7,7 @@ type QueryResult = ReturnType<typeof useApplicationQuery>;
 type mutateResult = ReturnType<typeof useUpdateApplicationQuery>;
 
 export type ApplicationApi = {
+  applicationId?: string,
   application: QueryResult['data'];
   updateApplication: (
     application: Application
@@ -22,12 +23,12 @@ export type ApplicationApi = {
 };
 
 const useApplicationApi = (): ApplicationApi => {
-  const id = useApplicationIdQueryParam();
+  const applicationId = useApplicationIdQueryParam();
   const {
     data: application,
     isLoading,
     error: loadingError,
-  } = useApplicationQuery(id);
+  } = useApplicationQuery(applicationId);
   const {
     mutate,
     isLoading: isUpdating,
@@ -43,6 +44,7 @@ const useApplicationApi = (): ApplicationApi => {
 
 
   return {
+    applicationId,
     application,
     updateApplication,
     sendApplication,

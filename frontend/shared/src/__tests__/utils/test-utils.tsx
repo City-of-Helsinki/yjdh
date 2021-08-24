@@ -8,6 +8,7 @@ import {
 import * as router from 'next/router';
 import { NextRouter } from 'next/router';
 import React from 'react';
+import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 
 export const arrowUpKeyPressHelper = (): boolean =>
   fireEvent.keyDown(document, { code: 38, key: 'ArrowUp' });
@@ -44,7 +45,7 @@ export const waitFor = <T,>(
 ): Promise<T> => {
   // Overwrite default options
   const mergedOptions = {
-    timeout: 20000,
+    timeout: JEST_TIMEOUT,
     ...options,
   };
   return _waitFor(callback, mergedOptions);

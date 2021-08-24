@@ -7,27 +7,20 @@ import {
   expectToGetApplicationsFromBackend,
   expectUnauthorizedReply,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import EmployerIndex from 'kesaseteli/employer/pages';
 import nock from 'nock';
 import React from 'react';
+import getErrorPageApi from 'shared/__tests__/component-apis/get-error-page-api';
 import {
   fakeApplication,
   fakeApplications,
 } from 'shared/__tests__/utils/fake-objects';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
-import { render, screen, waitFor } from 'shared/__tests__/utils/test-utils';
+import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 import type Application from 'shared/types/employer-application';
-
-const expectCommonErrorNotification = async (): Promise<void> =>
-  waitFor(() =>
-    expect(
-      screen.getByRole('heading', {
-        name: /Tapahtui tuntematon virhe/,
-      })
-    ).toBeInTheDocument()
-  );
 
 describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   const queryClient = createReactQueryTestClient();
@@ -49,7 +42,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     );
 
   it('test for accessibility violations', async () => {
-    const { container } = render(<EmployerIndex />);
+    const { container } = renderComponent(<EmployerIndex />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
@@ -67,18 +60,20 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     });
 
     describe('when backend returns error', () => {
-      it('Should show applicaton loading error', async () => {
-        expectToGetApplicationsErrorFromBackend();
+      it('Should show errorPage when applications loading error', async () => {
+        const errorPage = getErrorPageApi(expectToGetApplicationsErrorFromBackend());
         renderPage(EmployerIndex, queryClient);
-        await expectCommonErrorNotification();
+        await errorPage.expectations.displayErrorPage();
       });
-      it('Should show applicaton creation error', async () => {
-        expectToGetApplicationsFromBackend([]);
-        expectToCreateApplicationErrorFromBackend();
+      it('Should show errorPage when applications creation error', async () => {
+        const errorPage = getErrorPageApi(
+          expectToGetApplicationsFromBackend([]),
+          expectToCreateApplicationErrorFromBackend()
+        );
         renderPage(EmployerIndex, queryClient);
-        await expectCommonErrorNotification();
+        await errorPage.expectations.displayErrorPage();
       });
-    });
+    })
 
     describe('when user does not have previous applications', () => {
       it('Should create a new application', async () => {

@@ -1,4 +1,4 @@
-import { Button, IconArrowLeft, IconArrowRight } from 'hds-react';
+import { IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
 import { useTranslation } from 'next-i18next';
@@ -6,11 +6,13 @@ import React from 'react';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
+import {$ApplicationAction, $ApplicationActions, $PrimaryButton, $SecondaryButton } from './Application.sc'
+
 type Props = {
   onSubmit: (application: Application) => void;
 };
 
-const ActionButtons = ({ onSubmit }: Props): ReturnType<typeof Button> => {
+const ApplicationActions: React.FC<Props> = ({ onSubmit }: Props) => {
   const { t } = useTranslation();
   const {
     handleSubmit,
@@ -28,18 +30,23 @@ const ActionButtons = ({ onSubmit }: Props): ReturnType<typeof Button> => {
 
   handleStep(handleSubmit(onSubmit));
   return (
-    <>
+    <$ApplicationActions>
+
       {!isFirstStep && (
-        <Button
+        <$ApplicationAction>
+        <$SecondaryButton
+          variant="secondary"
           data-testid="previous-button"
-          iconRight={<IconArrowLeft />}
+          iconLeft={<IconArrowLeft />}
           onClick={() => previousStep()}
           disabled={!isValid || isSubmitting}
         >
           {t(`common:application.buttons.previous`)}
-        </Button>
+        </$SecondaryButton>
+        </$ApplicationAction>
       )}
-      <Button
+      <$ApplicationAction>
+      <$PrimaryButton
         data-testid="next-button"
         iconRight={<IconArrowRight />}
         onClick={() => nextStep()}
@@ -50,9 +57,10 @@ const ActionButtons = ({ onSubmit }: Props): ReturnType<typeof Button> => {
         {isLastStep
           ? t(`common:application.buttons.send`)
           : t(`common:application.buttons.save_and_continue`)}
-      </Button>
-    </>
+      </$PrimaryButton>
+      </$ApplicationAction>
+    </$ApplicationActions>
   );
 };
 
-export default ActionButtons;
+export default ApplicationActions;

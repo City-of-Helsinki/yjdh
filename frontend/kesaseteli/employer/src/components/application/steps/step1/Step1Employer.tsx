@@ -1,43 +1,50 @@
-import ActionButtons from 'kesaseteli/employer/components/application/ActionButtons';
+import ApplicationActions from 'kesaseteli/employer/components/application/ApplicationActions';
 import ApplicationStepForm from 'kesaseteli/employer/components/application/ApplicationStepForm';
-import CompanyInfoGrid from 'kesaseteli/employer/components/companyInfo/CompanyInfoGrid';
+import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyInfo/CompanyInfoGrid';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import FormSection from 'shared/components/forms/section/FormSection';
 import EmployerApplication from 'shared/types/employer-application';
 
-import { $TextInput } from './Step1Employer.sc';
+import { $EmployerBasicInfoGrid, $TextInput } from './Step1Employer.sc';
 
 const Step1Employer: React.FC = () => {
 
   const { t } = useTranslation();
   const {
+    isLoading,
     updateApplication,
   } = useApplicationApi();
   const onSubmit = (draftApplication: EmployerApplication): void =>
     updateApplication(draftApplication);
-
+  const stepTitle = t('common:application.step1.header');
   return (
-    <ApplicationStepForm title={t('common:application.step1.header')}>
+    <ApplicationStepForm stepTitle={stepTitle}>
+      <FormSection header={stepTitle} loading={isLoading} tooltip={t('common:application.step1.tooltip')}>
       <CompanyInfoGrid />
-      <$TextInput
-        id="invoicer_name"
-        validation={{ required: true, maxLength: 256 }}
-      />
-      <$TextInput
-        id="invoicer_email"
-        validation={{
-          required: true,
-          maxLength: 254,
-          // eslint-disable-next-line security/detect-unsafe-regex
-          pattern: /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/,
-        }}
-      />
-      <$TextInput
-        id="invoicer_phone_number"
-        validation={{ required: true, maxLength: 64 }}
-      />
-      <ActionButtons
+      </FormSection>
+      <FormSection loading={isLoading}>
+        <$EmployerBasicInfoGrid>
+          <$TextInput
+            id="invoicer_name"
+            validation={{ required: true, maxLength: 256 }}
+          />
+          <$TextInput
+            id="invoicer_email"
+            validation={{
+              required: true,
+              maxLength: 254, // eslint-disable-next-line security/detect-unsafe-regex
+              pattern: /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/,
+            }}
+          />
+          <$TextInput
+            id="invoicer_phone_number"
+            validation={{ required: true, maxLength: 64 }}
+          />
+        </$EmployerBasicInfoGrid>
+      </FormSection>
+      <ApplicationActions
         onSubmit={onSubmit}
       />
     </ApplicationStepForm>
