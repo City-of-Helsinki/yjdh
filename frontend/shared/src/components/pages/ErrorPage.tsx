@@ -14,15 +14,15 @@ import {
 export type ErrorPageProps = {
   title: string;
   message: string;
-  retry?: () => void;
-  logout?: () => void;
+  onGoBack?: () => void;
+  onLogout?: () => void;
 };
 
 const ErrorPage: React.FC<ErrorPageProps> = ({
   title,
   message,
-  retry,
-  logout,
+  onGoBack,
+  onLogout,
 }) => {
   const { t } = useTranslation();
   return (
@@ -31,15 +31,15 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         <$IconAlertCircle size="xl" />
         <$ErrorPageTitle>{title}</$ErrorPageTitle>
         <$ErrorPageMessage>{message}</$ErrorPageMessage>
-        {(retry || logout) && (
+        {(onGoBack || onLogout) && (
           <$ActionsContainer>
-            {retry && (
-              <$PrimaryButton onClick={retry}>
-                {t('common:errorPage.retry')}
+            {onGoBack && (
+              <$PrimaryButton onClick={onGoBack}>
+                {t('common:errorPage.home')}
               </$PrimaryButton>
             )}
-            {logout && (
-              <$PrimaryButton onClick={logout}>
+            {onLogout && (
+              <$PrimaryButton onClick={onLogout}>
                 {t('common:errorPage.logout')}
               </$PrimaryButton>
             )}

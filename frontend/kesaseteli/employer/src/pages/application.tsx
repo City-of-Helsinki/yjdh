@@ -21,36 +21,37 @@ const ApplicationPage: NextPage = () => {
   const initialStep = useGetCurrentStep();
 
   const locale = router.locale ?? DEFAULT_LANGUAGE;
-  const {
-    applicationId,
-    isLoading: isLoadingApplication,
-    loadingError: loadingApplicationError,
-  } = useApplicationApi();
+  const {applicationId, isLoading: isLoadingApplication, loadingError: loadingApplicationError} = useApplicationApi();
 
-  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
+  const {
+    mutate: logout,
+    isLoading: isLoadingLogout,
+  } = useLogoutQuery();
 
   const isLoading = isLoadingApplication || isLoadingLogout;
   const isError = loadingApplicationError;
 
-  const refreshPage = (): void => {
-    router.reload();
-  };
-
-  if (!applicationId) {
+  const goBack = (): null => {
     void router.replace(`${locale}/`);
     return null;
   }
 
+  if (!applicationId) {
+    goBack();
+  }
+
   if (isLoading) {
-    return <PageLoadingSpinner />;
+    return (
+        <PageLoadingSpinner/>
+    );
   }
   if (isError) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}
         message={t('common:errorPage.message')}
-        logout={logout as () => void}
-        retry={refreshPage}
+        onLogout={logout as () => void}
+        onGoBack={goBack}
       />
     );
   }
@@ -64,8 +65,7 @@ const ApplicationPage: NextPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-  'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withAuth(ApplicationPage);

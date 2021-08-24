@@ -1,19 +1,18 @@
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 
-export const expectBackendRequestsToComplete = (): void => {
-  expect(
-    screen.queryByTestId('hidden-loading-indicator')
-  ).not.toBeInTheDocument();
-};
-
 /**
- * This should wait until all backend requests to complete
+ * This should wait hds LoadingSpinner component to appear and the vanish
  */
-export const waitForBackendRequestsToComplete = async (): Promise<void> => {
-  const isLoading =
-    screen.queryAllByTestId('hidden-loading-indicator').length > 0;
-  if (isLoading) {
-    await waitFor(expectBackendRequestsToComplete);
-  }
-  return Promise.resolve();
-};
+export const waitForLoadingSpinnerToComplete = async (): Promise<void> => {
+  await waitFor(() => {
+    expect(
+      screen.queryByRole('alert')
+    ).toHaveTextContent('Page is loading');
+  });
+  await waitFor(() => {
+    expect(
+      screen.queryByRole('alert')
+    ).toHaveTextContent('Page has finished loading');
+  });
+}
+

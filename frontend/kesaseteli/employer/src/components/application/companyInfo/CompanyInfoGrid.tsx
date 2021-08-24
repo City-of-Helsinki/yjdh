@@ -4,10 +4,13 @@ import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import isServerSide from 'shared/server/is-server-side';
 
-import { $CompanyInfoCell, $CompanyInfoGrid } from './CompanyInfo.sc';
-import CompanyInfoHeader, { CompanyProp } from './CompanyInfoHeader';
+import { $CompanyInfoCell, $CompanyInfoGrid } from './CompanyInfoGrid.sc';
+import CompanyInfoHeader, {
+  CompanyProp,
+} from './CompanyInfoHeader';
 
-const CompanyInfo: React.FC = () => {
+
+const CompanyInfoGrid: React.FC = () => {
   const { t } = useTranslation();
   const { application, isError, isLoading } = useApplicationApi();
   const CompanyFieldCell: React.FC<CompanyProp> = ({ field }: CompanyProp) => (
@@ -38,4 +41,4 @@ const CompanyInfo: React.FC = () => {
   );
 };
 
-export default CompanyInfo;
+export default CompanyInfoGrid;

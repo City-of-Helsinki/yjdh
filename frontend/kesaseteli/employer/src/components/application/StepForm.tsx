@@ -8,9 +8,8 @@ import { getStepNumber } from 'kesaseteli/employer/utils/application-wizard.util
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
+import Toast from 'shared/components/toast/Toast';
 import useSetQueryParam from 'shared/hooks/useSetQueryParam';
-import useShowToastIfError from 'shared/hooks/useShowToastIfError';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
@@ -19,9 +18,13 @@ type Props = {
   children: React.ReactNode;
 };
 
-const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
-  const { activeStep, isLoading: isLoadingWizard } = useWizard();
+const ApplicationStepForm = ({
+  stepTitle,
+  children,
+}: Props): JSX.Element => {
+  const { activeStep } = useWizard();
   const currentStep = getStepNumber(activeStep + 1);
+  useSetQueryParam('step', String(currentStep));
 
   const { t } = useTranslation();
   const translateLabel = (key: keyof Application): string =>
@@ -29,23 +32,26 @@ const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
   const translateError = (key: keyof Application): string =>
     key ? t(`common:application.step1.form.errors.${key}`) : key;
 
-  const {
-    isLoading: isLoadingApplication,
-    isUpdating,
-    loadingError,
-    updatingError,
-  } = useApplicationApi();
-  const isLoading = isLoadingApplication || isLoadingWizard || isUpdating;
-
+  const { loadingError, updatingError } = useApplicationApi();
   const errorMessage = (loadingError || updatingError)?.message;
   const methods = useForm<Application>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
   });
-
-  useSetQueryParam('step', String(currentStep));
-  useShowToastIfError(errorMessage);
   useSetFormDefaultValues(methods);
+
+  React.useEffect(() => {
+    if (errorMessage) {
+      Toast({
+        autoDismiss: true,
+        autoDismissTime: 5000,
+        type: 'error',
+        translated: true,
+        labelText: t('common:application.common_error'),
+        text: errorMessage,
+      });
+    }
+  }, [t, errorMessage]);
 
   const context = {
     translateLabel,
@@ -59,9 +65,8 @@ const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
   return (
     <FormContextProvider value={context}>
       <form aria-label={stepTitle}>{children}</form>
-      {isLoading && <HiddenLoadingIndicator />}
     </FormContextProvider>
   );
 };
 
-export default StepForm;
+export default ApplicationStepForm;

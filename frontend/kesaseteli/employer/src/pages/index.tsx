@@ -1,4 +1,3 @@
-import useLoadDraftOrCreateNewApplication from 'kesaseteli/employer/hooks/application/useLoadDraftOrCreateNewApplication';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
@@ -9,49 +8,51 @@ import React from 'react';
 import withAuth from 'shared/components/hocs/withAuth';
 import ErrorPage from 'shared/components/pages/ErrorPage';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const EmployerIndex: NextPage = () => {
-  const { isSyncing, isMutating } = useIsSyncingToBackend();
-  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
-  const isLoading = isSyncing || isLoadingLogout;
-
   const {
     data: applications,
-    isError: loadApplicationsError,
-  } = useApplicationsQuery(!isMutating);
+    isLoading: isLoadingApplications,
+    error: loadApplicationsError,
+  } = useApplicationsQuery();
+  const { mutate: createApplication, error: createApplicationError, isLoading: isCreatingApplication } =
+    useCreateApplicationQuery();
+
   const {
-    data: newApplication,
-    mutate: createApplication,
-    isError: createApplicationError,
-  } = useCreateApplicationQuery();
+    mutate: logout,
+    isLoading: isLoadingLogout,
+  } = useLogoutQuery();
 
+  const isLoading = isLoadingApplications || isCreatingApplication || isLoadingLogout;
   const isError = loadApplicationsError || createApplicationError;
-
-  useLoadDraftOrCreateNewApplication(
-    isError,
-    applications,
-    newApplication,
-    createApplication
-  );
-
   const router = useRouter();
-  const refreshPage = (): void => {
-    router.reload();
-  };
+  const locale = router.locale ?? DEFAULT_LANGUAGE;
+
+  React.useEffect(() => {
+    if (!isLoading && !isError) {
+      if (applications && applications.length > 0) {
+        const draftApplication = applications[0];
+        void router.push(`${locale}/application?id=${draftApplication.id}`);
+      } else {
+        createApplication();
+      }
+    }
+  }, [isLoading, applications, createApplication, router, locale, isError]);
 
   const { t } = useTranslation();
-  if (isSyncing) {
-    return <PageLoadingSpinner />;
+  if (isLoading) {
+    return (
+      <PageLoadingSpinner/>
+    );
   }
   if (isError && !isLoading) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}
         message={t('common:errorPage.message')}
-        logout={logout as () => void}
-        retry={refreshPage}
+        onLogout={logout as () => void}
       />
     );
   }
@@ -59,8 +60,7 @@ const EmployerIndex: NextPage = () => {
   return <></>;
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-  'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withAuth(EmployerIndex);

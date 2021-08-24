@@ -8,7 +8,7 @@
   "errorPage": {
     "title": "SV Palvelussa on valitettavasti tapahtunut virhe",
     "message": "SV Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
-    "retry": "SV Lataa sivu uudelleen",
+    "home": "SV Palaa etusivulle",
     "logout": "SV Kirjaudu ulos"
   },
   "application": {

@@ -1,215 +1,154 @@
-import { expectToSaveApplication } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import {
+  expectToGetApplicationErrorFromBackend,
+  expectToGetApplicationFromBackend,
+  expectToSaveApplication,
+} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import { QueryClient } from 'react-query';
-import { expectBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import getErrorPageApi, { GetErrorPageApi } from 'shared/__tests__/component-apis/get-error-page-api';
+import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/employer-application';
-import Invoicer from 'shared/types/invoicer';
 
-type StepExpections = {
-  stepIsLoaded: () => Promise<void>;
-  nextButtonIsDisabled: () => void;
-  nextButtonIsEnabled: () => void;
+const expectHeaderTobeVisible = (header: RegExp): void => {
+  expect(screen.queryByRole('heading', { name: header })).toBeInTheDocument();
 };
 
-type StepActions = {
-  clickPreviousButton: () => void;
-  clickNextButton: () => Promise<void>;
+const typeInput = (inputLabel: RegExp, value: string): void => {
+  const input = screen.getByRole('textbox', {
+    name: inputLabel,
+  });
+  userEvent.clear(input);
+  if (value?.length > 0) {
+    userEvent.type(input, value);
+  }
+  expect(input).toHaveValue(value);
+  userEvent.click(document.body);
 };
 
-type Step1Api = {
-  expectations: StepExpections & {
-    displayCompanyData: () => void;
-    inputValueIsSet: (key: keyof Application, value?: string) => void;
-    inputHasError: (errorText: RegExp) => Promise<void>;
-  };
-  actions: StepActions & {
-    typeInvoicerName: (name: string) => void;
-    typeInvoicerEmail: (email: string) => void;
-    typeInvoicerPhone: (phoneNumber: string) => void;
-  };
-};
 
-type Step2Api = {
-  expectations: StepExpections;
-  actions: StepActions;
-};
-
-type Step3Api = {
-  expectations: StepExpections;
-  actions: StepActions;
-};
 
 export type ApplicationPageApi = {
-  step1: Step1Api;
-  step2: Step2Api;
-  step3: Step3Api;
-};
+  replyOk: () => { step1: Step1Api, step2: Step2Api},
+  replyError: (id: string) => GetErrorPageApi
+}
 
-const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
-  await waitFor(() => {
-    expectBackendRequestsToComplete();
-    expect(screen.getByRole('heading', { name: header })).toBeInTheDocument();
-  });
-};
+export type Step1Api = {
+  expectations: {
+    stepIsLoaded: () => void,
+    displayCompanyData: () => void,
+    inputValueIsSet:  (key: keyof Application, value?: string) => void,
+    inputHasError: (errorText: RegExp) => Promise<void>,
+    allApiRequestsDone: () => Promise<void>,
+    continueButtonIsDisabled: () => Promise<void>,
+  },
+  actions: {
+    typeInvoicerName: (name: string) => void,
+    typeInvoicerEmail: (email: string) => void,
+    typeInvoicerPhone: (phoneNumber: string) => void,
+    clickContinueButton: (updatedData?: Partial<Application>) => void,
+  }
+}
 
-const expectNextButtonIsEnabled = (): void => {
-  expect(
-    screen.getByRole('button', {
-      name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
-    })
-  ).toBeEnabled();
-};
+export type Step2Api = {
+  expectations: {
+    stepIsLoaded: () => void,
+  },
+}
 
-const expectNextButtonIsDisabled = (): void => {
-  expect(
-    screen.getByRole('button', {
-      name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
-    })
-  ).toBeDisabled();
-};
 
-const clickPreviousButton = (): void => {
-  userEvent.click(
-    screen.getByRole('button', {
-      name: /(palaa edelliseen)|(application.buttons.previous)/i,
-    })
-  );
-};
+
 
 const getApplicationPageApi = (
   queryClient: QueryClient,
-  initialApplication: Application
-): ApplicationPageApi => {
-  const application = { ...initialApplication };
+  applicationId: Application['id']
+): ApplicationPageApi => ({
+  replyOk: () => {
+    const applicationFromBackend = fakeApplication(applicationId);
+    const requests = [expectToGetApplicationFromBackend(applicationFromBackend)];
 
-  const typeInput = (
-    key: keyof Invoicer,
-    inputLabel: RegExp,
-    value: string
-  ): void => {
-    const input = screen.getByRole('textbox', {
-      name: inputLabel,
-    });
-    userEvent.clear(input);
-    if (value?.length > 0) {
-      userEvent.type(input, value);
-    }
-    expect(input).toHaveValue(value);
-    application[key] = value ?? '';
-    userEvent.click(document.body);
-  };
+    return {
+      step1: {
+        expectations: {
+          stepIsLoaded: () => expectHeaderTobeVisible(/(1. työnantajan tiedot)|(application.step1.header)/i),
+          displayCompanyData: (): void => {
+            const { company } = applicationFromBackend;
+            expect(screen.queryByLabelText(/(yritys$)|(companyinfogrid.header.name)/i)).toHaveTextContent(
+              company.name
+            );
+            expect(screen.queryByLabelText(/(y-tunnus)|(companyinfogrid.header.business_id)/i)).toHaveTextContent(
+              company.business_id
+            );
+            expect(screen.queryByLabelText(/(toimiala)|(companyinfogrid.header.industry)/i)).toHaveTextContent(
+              company.industry
+            );
+            expect(screen.queryByLabelText(/(yritysmuoto)|(companyinfogrid.header.company_form)/i)).toHaveTextContent(
+              company.company_form
+            );
+            expect(screen.queryByLabelText(/(postiosoite)|(companyinfogrid.header.postcode)/i)).toHaveTextContent(
+              company.postcode
+            );
+            expect(screen.queryByLabelText(/(kunta)|(companyinfogrid.header.city)/i)).toHaveTextContent(
+              company.city
+            );
+          },
 
-  const clickNextButton = async (): Promise<void> => {
-    const [options, put] = expectToSaveApplication(application);
-    expectNextButtonIsEnabled();
-    userEvent.click(
-      screen.getByRole('button', {
-        name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
-      })
-    );
-    await waitFor(() => options.done());
-    await waitFor(() => put.done());
-  };
-
-  return {
-    step1: {
-      expectations: {
-        stepIsLoaded: () =>
-          waitForHeaderTobeVisible(
-            /(1. työnantajan tiedot)|(application.step1.header)/i
-          ),
-        displayCompanyData: (): void => {
-          const { company } = application;
-          expect(
-            screen.queryByLabelText(/(yritys$)|(companyinfogrid.header.name)/i)
-          ).toHaveTextContent(company.name);
-          expect(
-            screen.queryByLabelText(
-              /(y-tunnus)|(companyinfogrid.header.business_id)/i
-            )
-          ).toHaveTextContent(company.business_id);
-          expect(
-            screen.queryByLabelText(
-              /(toimiala)|(companyinfogrid.header.industry)/i
-            )
-          ).toHaveTextContent(company.industry);
-          expect(
-            screen.queryByLabelText(
-              /(yritysmuoto)|(companyinfogrid.header.company_form)/i
-            )
-          ).toHaveTextContent(company.company_form);
-          expect(
-            screen.queryByLabelText(
-              /(postiosoite)|(companyinfogrid.header.postcode)/i
-            )
-          ).toHaveTextContent(company.postcode);
-          expect(
-            screen.queryByLabelText(/(kunta)|(companyinfogrid.header.city)/i)
-          ).toHaveTextContent(company.city);
+          inputValueIsSet: (key: keyof Application, value?: string): void => {
+            const inputValue = value ?? applicationFromBackend[key]?.toString();
+            expect(screen.getByTestId(key)).toHaveValue(inputValue);
+          },
+          inputHasError: async (errorText: RegExp): Promise<void> => {
+            screen.debug(screen.getByRole('form'));
+            await screen.findByText(errorText);
+          },
+          allApiRequestsDone: async (): Promise<void> => {
+            await waitFor(() => {
+              requests.forEach((req) => expect(req.isDone()).toBeTruthy());
+            });
+            // clear requests
+            requests.length = 0;
+          },
+          continueButtonIsDisabled: async (): Promise<void> => {
+            const button = await screen.findByRole('button', {
+              name: /(tallenna ja jatka)|(form.submit_button)/i,
+            });
+            expect(button).toBeDisabled();
+          },
         },
-
-        inputValueIsSet: (key: keyof Application, value?: string): void => {
-          const inputValue = value ?? application[key]?.toString();
-          expect(screen.getByTestId(key)).toHaveValue(inputValue);
+        actions: {
+          typeInvoicerName: (name: string) =>
+            typeInput(/(yhteyshenkilön nimi)|(form.invoicer_name)/i, name),
+          typeInvoicerEmail: (email: string) =>
+            typeInput(/(yhteyshenkilön sähköposti)|(form.invoicer_name)/i, email),
+          typeInvoicerPhone: (phoneNumber: string) =>
+            typeInput(/(yhteyshenkilön puhelinnumero)|(form.invoicer_phone_number)/i, phoneNumber),
+          clickContinueButton: (updatedData?: Partial<Application>): void => {
+            if (updatedData) {
+              const updatedApplication: Application = {
+                ...applicationFromBackend,
+                ...updatedData,
+              };
+              requests.push(expectToSaveApplication(updatedApplication));
+            }
+            userEvent.click(
+              screen.getByRole('button', {
+                name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
+              })
+            );
+          },
         },
-        inputHasError: async (errorText: RegExp): Promise<void> => {
-          await screen.findByText(errorText);
+      },
+      step2: {
+        expectations: {
+          stepIsLoaded: () =>
+            expectHeaderTobeVisible(/(2. selvitys työsuhteesta)|(application.step2.header)/i),
         },
-        nextButtonIsDisabled: expectNextButtonIsDisabled,
-        nextButtonIsEnabled: expectNextButtonIsEnabled,
       },
-      actions: {
-        typeInvoicerName: (name: string) =>
-          typeInput(
-            'invoicer_name',
-            /(yhteyshenkilön nimi)|(form.invoicer_name)/i,
-            name
-          ),
-        typeInvoicerEmail: (email: string) =>
-          typeInput(
-            'invoicer_email',
-            /(yhteyshenkilön sähköposti)|(form.invoicer_email)/i,
-            email
-          ),
-        typeInvoicerPhone: (phoneNumber: string) =>
-          typeInput(
-            'invoicer_phone_number',
-            /(yhteyshenkilön puhelinnumero)|(form.invoicer_phone_number)/i,
-            phoneNumber
-          ),
-        clickPreviousButton,
-        clickNextButton,
-      },
-    },
-    step2: {
-      expectations: {
-        stepIsLoaded: () =>
-          waitForHeaderTobeVisible(
-            /(2. selvitys työsuhteesta)|(application.step2.header)/i
-          ),
-        nextButtonIsDisabled: expectNextButtonIsDisabled,
-        nextButtonIsEnabled: expectNextButtonIsEnabled,
-      },
-      actions: {
-        clickPreviousButton,
-        clickNextButton,
-      },
-    },
-    step3: {
-      expectations: {
-        stepIsLoaded: () =>
-          waitForHeaderTobeVisible(
-            /(3. tarkistus ja lähettäminen)|(application.step3.header)/i
-          ),
-        nextButtonIsDisabled: expectNextButtonIsDisabled,
-        nextButtonIsEnabled: expectNextButtonIsEnabled,
-      },
-      actions: {
-        clickPreviousButton,
-        clickNextButton,
-      },
-    },
-  };
-};
+    };
+  },
+  replyError: (id: string) => {
+    expectToGetApplicationErrorFromBackend(id)
+    return getErrorPageApi()
+  },
+});
 
 export default getApplicationPageApi;
