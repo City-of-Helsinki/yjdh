@@ -14,7 +14,6 @@ import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/H
 import Layout from 'shared/components/layout/Layout';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-import getDefaultReactQueryTestClient from 'shared/__tests__/utils/react-query/get-default-react-query-test-client';
 
 const renderPage = (
   Page: NextPage,
