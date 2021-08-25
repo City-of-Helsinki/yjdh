@@ -1,17 +1,21 @@
 import { axe } from 'jest-axe';
 import {
   expectAuthorizedReply,
-  expectToGetApplicationErrorFromBackend, expectToLogout,
+  expectToGetApplicationErrorFromBackend,
   expectUnauthorizedReply,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import getApplicationPageApi, { ApplicationPageApi } from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
+import getApplicationPageApi, {
+  ApplicationPageApi,
+} from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
 import nock from 'nock';
 import React from 'react';
 import { QueryClient } from 'react-query';
-import getErrorPageApi, { GetErrorPageApi } from 'shared/__tests__/component-apis/get-error-page-api';
+import getErrorPageApi, {
+  GetErrorPageApi,
+} from 'shared/__tests__/component-apis/get-error-page-api';
 import { waitForLoadingSpinnerToComplete } from 'shared/__tests__/utils/component.utils';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
@@ -79,48 +83,15 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       describe('When loading application from backend returns error page', () => {
         let errorPage: GetErrorPageApi;
         beforeEach(() => {
-          expectToGetApplicationErrorFromBackend(id);
-          errorPage = getErrorPageApi()
+          errorPage = getErrorPageApi(
+            expectToGetApplicationErrorFromBackend(id)
+          );
         });
         it('Should show errorPage', async () => {
           renderPage(ApplicationPage, queryClient, { query: { id } });
           await errorPage.expectations.displayErrorPage();
         });
-        describe('when clicking home button', () => {
-          it('Should have return button to home page', async () => {
-            const locale: Language = 'en';
-            const spyReplace = jest.fn();
-            renderPage(ApplicationPage, queryClient, {
-              replace: spyReplace,
-              query: { id },
-              locale,
-            });
-            await errorPage.expectations.displayErrorPage();
-            errorPage.actions.clickGoToHomePageButton();
-            await waitFor(() =>
-              expect(spyReplace).toHaveBeenCalledWith(`${locale}/`)
-            );
-          });
-        })
-        describe('when clicking Logout button', () => {
-          it('Should logout', async () => {
-            const locale: Language = 'en';
-            const spyPush = jest.fn();
-            renderPage(ApplicationPage, queryClient, {
-              push: spyPush,
-              query: { id },
-              locale,
-            });
-            await errorPage.expectations.displayErrorPage();
-            errorPage.actions.clickLogoutButton(expectToLogout());
-            await errorPage.expectations.allApiRequestsDone();
-            await waitFor(() =>
-              expect(queryClient.getQueryData('user')).toBeUndefined()
-            );
-            expect(spyPush).toHaveBeenCalledWith('/login?logout=true')
-          });
-        })
-      })
+      });
 
       describe('when loading application returns data', () => {
         let applicationPage: ReturnType<typeof applicationApi.replyOk>;
@@ -132,19 +103,17 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           await waitForLoadingSpinnerToComplete();
           applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.typeInvoicerName('');
-          applicationPage.step1.actions.typeInvoicerEmail('´');
-          applicationPage.step1.actions.typeInvoicerPhone('');
-          applicationPage.step1.actions.clickContinueButton();
           await applicationPage.step1.expectations.inputHasError(
             /(nimi puuttuu)|(errors.invoicer_name)/i
           );
+          applicationPage.step1.actions.typeInvoicerEmail('');
           await applicationPage.step1.expectations.inputHasError(
             /(sähköposti on virheellinen)|(errors.invoicer_email)/i
           );
+          applicationPage.step1.actions.typeInvoicerPhone('');
           await applicationPage.step1.expectations.inputHasError(
             /(puhelinnumero on virheellinen)|(errors.invoicer_phone_number)/i
           );
-          await applicationPage.step1.expectations.continueButtonIsDisabled();
         });
 
         it('shows validation errors when invalid values', async () => {

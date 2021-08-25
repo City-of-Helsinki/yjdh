@@ -1,6 +1,7 @@
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import Container from 'shared/components/container/Container';
 import withoutAuth from 'shared/components/hocs/withoutAuth';
 import Layout from 'shared/components/Layout';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
@@ -12,13 +13,15 @@ const Login: NextPage = () => {
     query: { logout, error, sessionExpired },
   } = useRouter();
   return (
-    <Layout headingText="Työnantajan liittymä">
-      {logout && <p>Olet kirjautunut ulos</p>}
-      {error && <p>Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään.</p>}
-      {sessionExpired && (
-        <p>Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään.</p>
-      )}
-    </Layout>
+    <Container>
+      <Layout headingText="Työnantajan liittymä">
+        {logout && <p>Olet kirjautunut ulos</p>}
+        {error && <p>Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään.</p>}
+        {sessionExpired && (
+          <p>Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään.</p>
+        )}
+      </Layout>
+    </Container>
   );
 };
 

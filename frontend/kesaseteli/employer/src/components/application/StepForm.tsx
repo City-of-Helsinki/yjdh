@@ -18,10 +18,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const ApplicationStepForm = ({
-  stepTitle,
-  children,
-}: Props): JSX.Element => {
+const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
   const { activeStep } = useWizard();
   const currentStep = getStepNumber(activeStep + 1);
   useSetQueryParam('step', String(currentStep));
@@ -69,4 +66,4 @@ const ApplicationStepForm = ({
   );
 };
 
-export default ApplicationStepForm;
+export default StepForm;

@@ -8,7 +8,7 @@
   "errorPage": {
     "title": "Unknown error occurred",
     "message": "ENG: Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
-    "home": "Go back to home page",
+    "retry": "Reload the page",
     "logout": "Logout"
   },
   "application": {

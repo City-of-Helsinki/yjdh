@@ -17,15 +17,16 @@ const EmployerIndex: NextPage = () => {
     isLoading: isLoadingApplications,
     error: loadApplicationsError,
   } = useApplicationsQuery();
-  const { mutate: createApplication, error: createApplicationError, isLoading: isCreatingApplication } =
-    useCreateApplicationQuery();
-
   const {
-    mutate: logout,
-    isLoading: isLoadingLogout,
-  } = useLogoutQuery();
+    mutate: createApplication,
+    error: createApplicationError,
+    isLoading: isCreatingApplication,
+  } = useCreateApplicationQuery();
 
-  const isLoading = isLoadingApplications || isCreatingApplication || isLoadingLogout;
+  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
+
+  const isLoading =
+    isLoadingApplications || isCreatingApplication || isLoadingLogout;
   const isError = loadApplicationsError || createApplicationError;
   const router = useRouter();
   const locale = router.locale ?? DEFAULT_LANGUAGE;
@@ -41,18 +42,21 @@ const EmployerIndex: NextPage = () => {
     }
   }, [isLoading, applications, createApplication, router, locale, isError]);
 
+  const refreshPage = (): void => {
+    router.reload();
+  };
+
   const { t } = useTranslation();
   if (isLoading) {
-    return (
-      <PageLoadingSpinner/>
-    );
+    return <PageLoadingSpinner />;
   }
   if (isError && !isLoading) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}
         message={t('common:errorPage.message')}
-        onLogout={logout as () => void}
+        logout={logout as () => void}
+        retry={refreshPage}
       />
     );
   }
@@ -60,7 +64,8 @@ const EmployerIndex: NextPage = () => {
   return <></>;
 };
 
-export const getStaticProps: GetStaticProps =
-  getServerSideTranslations('common');
+export const getStaticProps: GetStaticProps = getServerSideTranslations(
+  'common'
+);
 
 export default withAuth(EmployerIndex);

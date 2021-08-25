@@ -6,13 +6,18 @@ import React from 'react';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
-import {$ApplicationAction, $ApplicationActions, $PrimaryButton, $SecondaryButton } from './Application.sc'
+import {
+  $ApplicationAction,
+  $ApplicationActions,
+  $PrimaryButton,
+  $SecondaryButton,
+} from './ActionButtons.sc';
 
 type Props = {
   onSubmit: (application: Application) => void;
 };
 
-const ApplicationActions: React.FC<Props> = ({ onSubmit }: Props) => {
+const ActionButtons: React.FC<Props> = ({ onSubmit }: Props) => {
   const { t } = useTranslation();
   const {
     handleSubmit,
@@ -31,36 +36,35 @@ const ApplicationActions: React.FC<Props> = ({ onSubmit }: Props) => {
   handleStep(handleSubmit(onSubmit));
   return (
     <$ApplicationActions>
-
       {!isFirstStep && (
         <$ApplicationAction>
-        <$SecondaryButton
-          variant="secondary"
-          data-testid="previous-button"
-          iconLeft={<IconArrowLeft />}
-          onClick={() => previousStep()}
-          disabled={!isValid || isSubmitting}
-        >
-          {t(`common:application.buttons.previous`)}
-        </$SecondaryButton>
+          <$SecondaryButton
+            variant="secondary"
+            data-testid="previous-button"
+            iconLeft={<IconArrowLeft />}
+            onClick={() => previousStep()}
+            disabled={!isValid || isSubmitting}
+          >
+            {t(`common:application.buttons.previous`)}
+          </$SecondaryButton>
         </$ApplicationAction>
       )}
       <$ApplicationAction>
-      <$PrimaryButton
-        data-testid="next-button"
-        iconRight={<IconArrowRight />}
-        onClick={() => nextStep()}
-        loadingText={t(`common:application.loading`)}
-        isLoading={isApplicationLoading || isWizardLoading}
-        disabled={!isValid || isSubmitting}
-      >
-        {isLastStep
-          ? t(`common:application.buttons.send`)
-          : t(`common:application.buttons.save_and_continue`)}
-      </$PrimaryButton>
+        <$PrimaryButton
+          data-testid="next-button"
+          iconRight={<IconArrowRight />}
+          onClick={() => nextStep()}
+          loadingText={t(`common:application.loading`)}
+          isLoading={isApplicationLoading || isWizardLoading}
+          disabled={!isValid || isSubmitting}
+        >
+          {isLastStep
+            ? t(`common:application.buttons.send`)
+            : t(`common:application.buttons.save_and_continue`)}
+        </$PrimaryButton>
       </$ApplicationAction>
     </$ApplicationActions>
   );
 };
 
-export default ApplicationActions;
+export default ActionButtons;

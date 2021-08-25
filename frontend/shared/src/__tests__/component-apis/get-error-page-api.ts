@@ -4,18 +4,22 @@ import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 
 export type GetErrorPageApi = {
   expectations: {
-    displayErrorPage: () => Promise<void>,
-    allApiRequestsDone: () => Promise<void>,
-  },
+    displayErrorPage: () => Promise<void>;
+    allApiRequestsDone: () => Promise<void>;
+  };
   actions: {
-    clickGoToHomePageButton: () => void,
-    clickLogoutButton: (request: nock.Scope) => void,
-  }
-}
+    clickToRefreshPage: () => void;
+    clickLogoutButton: (request: nock.Scope) => void;
+  };
+};
 
-const getErrorPageApi = (...failingRequests: Array<nock.Scope>): GetErrorPageApi => {
+const getErrorPageApi = (
+  ...failingRequests: Array<nock.Scope>
+): GetErrorPageApi => {
   if (failingRequests.length === 0) {
-    throw new Error('At least one failing requested is needed to show error page');
+    throw new Error(
+      'At least one failing requested is needed to show error page'
+    );
   }
   const requests = [...failingRequests];
   const expectAllApiRequestsDone = async (): Promise<void> => {
@@ -31,16 +35,18 @@ const getErrorPageApi = (...failingRequests: Array<nock.Scope>): GetErrorPageApi
       displayErrorPage: async (): Promise<void> => {
         await waitForLoadingSpinnerToComplete();
         await expectAllApiRequestsDone();
-        expect(screen.queryByRole('heading', {
-          name: /(palvelussa on valitettavasti tapahtunut virhe)|(errorpage.title)/i
-        })).toBeInTheDocument();
+        expect(
+          screen.queryByRole('heading', {
+            name: /(palvelussa on valitettavasti tapahtunut virhe)|(errorpage.title)/i,
+          })
+        ).toBeInTheDocument();
       },
     },
     actions: {
-      clickGoToHomePageButton: (): void => {
+      clickToRefreshPage: (): void => {
         userEvent.click(
           screen.getByRole('button', {
-            name: /(palaa etusivulle)|(errorpage.home)/i,
+            name: /(lataa sivu uudelleen)|(errorpage.retry)/i,
           })
         );
       },
@@ -52,8 +58,8 @@ const getErrorPageApi = (...failingRequests: Array<nock.Scope>): GetErrorPageApi
           })
         );
       },
-    }
-  }
+    },
+  };
 };
 
 export default getErrorPageApi;

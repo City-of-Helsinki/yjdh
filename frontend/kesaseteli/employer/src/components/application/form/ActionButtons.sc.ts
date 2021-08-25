@@ -14,7 +14,6 @@ export const $PrimaryButton = styled(Button)`
   width: 255px;
 `;
 
-
 export const $ApplicationActions = styled.div`
   display: flex;
   justify-content: space-between;
