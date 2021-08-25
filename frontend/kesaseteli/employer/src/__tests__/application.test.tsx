@@ -152,13 +152,24 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           applicationPage.step1.actions.typeInvoicerPhone(
             invoicer_phone_number
           );
-          applicationPage.step1.actions.clickContinueButton({
+          applicationPage.step1.actions.clickNextButton({
             invoicer_name,
             invoicer_email,
             invoicer_phone_number,
           });
           await applicationPage.step1.expectations.allApiRequestsDone();
           applicationPage.step2.expectations.stepIsLoaded();
+        });
+
+        it('can traverse between wizard steps', async () => {
+          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await waitForLoadingSpinnerToComplete();
+          applicationPage.step1.expectations.stepIsLoaded();
+          applicationPage.step1.actions.clickNextButton();
+          await applicationPage.step1.expectations.allApiRequestsDone();
+          applicationPage.step2.expectations.stepIsLoaded();
+          applicationPage.step2.actions.clickPreviousButton();
+          applicationPage.step1.expectations.stepIsLoaded();
         });
       });
     });
