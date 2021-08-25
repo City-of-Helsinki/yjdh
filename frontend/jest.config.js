@@ -17,8 +17,9 @@ module.exports = {
     '<rootDir>/kesaseteli/employer/src/pages/',
     '<rootDir>/benefit/applicant/src/pages/',
     '<rootDir>/shared/src/server/next-server.js',
-    '<rootDir>/shared/src/test/',
+    '<rootDir>/shared/src/__tests__/component-apis/',
+    '<rootDir>/shared/src/__tests__/utils/',
   ],
   collectCoverageFrom: ['./**/*.{ts,tsx,js,jsx}'],
-  testPathIgnorePatterns: ['utils'],
+  testPathIgnorePatterns: ['utils','component-apis'],
 };

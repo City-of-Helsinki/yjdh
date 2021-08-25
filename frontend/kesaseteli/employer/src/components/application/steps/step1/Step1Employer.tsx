@@ -1,36 +1,37 @@
-import ApplicationActions from 'kesaseteli/employer/components/application/ApplicationActions';
-import ApplicationStepForm from 'kesaseteli/employer/components/application/ApplicationStepForm';
-import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyInfo/CompanyInfoGrid';
+import CompanyInfo from 'kesaseteli/employer/components/application/companyInfo/CompanyInfo';
+import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
+import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
+import StepForm from 'kesaseteli/employer/components/application/StepForm';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import EmployerApplication from 'shared/types/employer-application';
 
-import { $EmployerBasicInfoGrid, $TextInput } from './Step1Employer.sc';
+import { $EmployerBasicInfo } from './Step1Employer.sc';
 
 const Step1Employer: React.FC = () => {
-
   const { t } = useTranslation();
-  const {
-    isLoading,
-    updateApplication,
-  } = useApplicationApi();
+  const { isLoading, updateApplication } = useApplicationApi();
   const onSubmit = (draftApplication: EmployerApplication): void =>
     updateApplication(draftApplication);
   const stepTitle = t('common:application.step1.header');
   return (
-    <ApplicationStepForm stepTitle={stepTitle}>
-      <FormSection header={stepTitle} loading={isLoading} tooltip={t('common:application.step1.tooltip')}>
-      <CompanyInfoGrid />
+    <StepForm stepTitle={stepTitle}>
+      <FormSection
+        header={stepTitle}
+        loading={isLoading}
+        tooltip={t('common:application.step1.tooltip')}
+      >
+        <CompanyInfo />
       </FormSection>
       <FormSection loading={isLoading}>
-        <$EmployerBasicInfoGrid>
-          <$TextInput
+        <$EmployerBasicInfo>
+          <TextInput
             id="invoicer_name"
             validation={{ required: true, maxLength: 256 }}
           />
-          <$TextInput
+          <TextInput
             id="invoicer_email"
             validation={{
               required: true,
@@ -38,16 +39,14 @@ const Step1Employer: React.FC = () => {
               pattern: /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/,
             }}
           />
-          <$TextInput
+          <TextInput
             id="invoicer_phone_number"
             validation={{ required: true, maxLength: 64 }}
           />
-        </$EmployerBasicInfoGrid>
+        </$EmployerBasicInfo>
       </FormSection>
-      <ApplicationActions
-        onSubmit={onSubmit}
-      />
-    </ApplicationStepForm>
+      <ActionButtons onSubmit={onSubmit} />
+    </StepForm>
   );
 };
 

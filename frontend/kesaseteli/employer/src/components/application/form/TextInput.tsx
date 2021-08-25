@@ -5,6 +5,8 @@ import React from 'react';
 import { FieldError, RegisterOptions } from 'react-hook-form';
 import Application from 'shared/types/employer-application';
 
+import { $TextInput } from './TextInput.sc';
+
 type InputProps = {
   validation: RegisterOptions<Application>;
   id: keyof Application;
@@ -19,18 +21,15 @@ const TextInput = ({
     translateLabel,
     translateError,
     register,
-    formState: {errors},
+    formState: { errors },
   } = useApplicationForm();
-  const {
-    application,
-    isLoading
-  } = useApplicationApi();
+  const { application, isLoading } = useApplicationApi();
 
   const defaultValue = application?.[id] ? String(application[id]) : '';
   const hasError = Boolean((errors?.[id] as FieldError)?.type);
 
   return (
-    <HdsTextInput
+    <$TextInput
       {...rest}
       {...register(id, validation)}
       id={id}

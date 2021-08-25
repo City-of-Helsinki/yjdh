@@ -8,7 +8,7 @@
   "errorPage": {
     "title": "Palvelussa on valitettavasti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
-    "home": "Palaa etusivulle",
+    "retry": "Lataa sivu uudelleen",
     "logout": "Kirjaudu ulos"
   },
   "application": {
