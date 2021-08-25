@@ -17,7 +17,6 @@ export const $Heading = styled.h1`
 
 export const $Description = styled.p`
   font-size: ${(props) => props.theme.fontSize.heading.s};
-  font-weight: normal;
   line-height: ${(props) => props.theme.lineHeight.l};
 `;
 

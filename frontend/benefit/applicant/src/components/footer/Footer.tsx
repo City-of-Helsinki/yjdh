@@ -1,18 +1,21 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import { Footer } from 'hds-react';
 import React from 'react';
 
-import { $Footer } from './Footer.sc';
+import { $FooterWrapper } from './Footer.sc';
 
 const FooterSection: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <$Footer title={t('common:appName')}>
-      <$Footer.Base
-        copyrightHolder={t('footer:copyrightText')}
-        copyrightText={t('footer:allRightsReservedText')}
-      />
-    </$Footer>
+    <$FooterWrapper>
+      <Footer title={t('common:appName')} theme="dark">
+        <Footer.Base
+          copyrightHolder={t('footer:copyrightText')}
+          copyrightText={t('footer:allRightsReservedText')}
+        />
+      </Footer>
+    </$FooterWrapper>
   );
 };
 

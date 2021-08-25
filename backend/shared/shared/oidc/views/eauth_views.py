@@ -79,6 +79,11 @@ class EauthAuthenticationRequestView(View):
             ).replace("http://", "https://"),
             "user": user_id,
         }
+
+        lang = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+        if lang:
+            params["lang"] = lang
+
         query = urlencode(params)
 
         redirect_url = "{url}?{query}".format(url=auth_url, query=query)
@@ -92,10 +97,22 @@ class EauthAuthenticationCallbackView(View):
     http_method_names = ["get"]
 
     def login_success(self):
-        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+        url = settings.LOGIN_REDIRECT_URL
+
+        lang = self.request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+        if lang:
+            url = f"{url}/{lang}/"
+
+        return HttpResponseRedirect(url)
 
     def login_failure(self):
-        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL_FAILURE)
+        url, error_path = settings.LOGIN_REDIRECT_URL_FAILURE.rsplit("/", 1)
+
+        lang = self.request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
+        if lang:
+            url = f"{url}/{lang}/{error_path}"
+
+        return HttpResponseRedirect(url)
 
     def get_token_info(self, code):
         """Return token object as a dictionary."""
