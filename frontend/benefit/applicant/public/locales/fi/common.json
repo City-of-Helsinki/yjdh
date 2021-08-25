@@ -363,6 +363,10 @@
     "generic": {
       "label": "Error occurred",
       "text": "Please try again later."
+    },
+    "attachments": {
+      "title": "Error occurred",
+      "tooBig": "The attachemnt size is too big."
     }
   }
 }

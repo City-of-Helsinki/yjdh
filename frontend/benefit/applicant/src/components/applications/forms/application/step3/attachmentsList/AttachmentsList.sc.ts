@@ -20,3 +20,5 @@ export const $Message = styled.span`
   font-size: ${(props) => props.theme.fontSize.body.m};
   margin-bottom: ${(props) => props.theme.spacing.l};
 `;
+
+export const $UploadContainer = styled.div``;

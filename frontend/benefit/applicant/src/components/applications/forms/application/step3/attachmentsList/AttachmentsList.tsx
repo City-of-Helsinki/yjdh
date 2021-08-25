@@ -6,7 +6,12 @@ import noop from 'lodash/noop';
 import * as React from 'react';
 
 import AttachmentItem from './attachmentItem/AttachmentItem';
-import { $Container, $Heading, $Message } from './AttachmentsList.sc';
+import {
+  $Container,
+  $Heading,
+  $Message,
+  $UploadContainer,
+} from './AttachmentsList.sc';
 import { useAttachmentsList } from './useAttachmentsList';
 
 export interface AttachmentsListProps {
@@ -18,7 +23,15 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachmentType,
   showMessage,
 }) => {
-  const { t, translationsBase, attachments } = useAttachmentsList();
+  const {
+    t,
+    translationsBase,
+    attachments,
+    uploadRef,
+    handleUploadClick,
+    handleUpload,
+  } = useAttachmentsList(attachmentType);
+
   return (
     <$Container>
       <$Heading>
@@ -43,9 +56,18 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
           )}
         </>
       )}
-      <$PrimaryButton style={{ width: 'auto' }} iconLeft={<IconPlus />}>
-        {t(`${translationsBase}.add`)}
-      </$PrimaryButton>
+      <$UploadContainer onClick={handleUploadClick}>
+        <$PrimaryButton style={{ width: 'auto' }} iconLeft={<IconPlus />}>
+          {t(`${translationsBase}.add`)}
+        </$PrimaryButton>
+        <input
+          style={{ display: 'none' }}
+          ref={uploadRef}
+          onChange={handleUpload}
+          id={`upload_attachment_${attachmentType}`}
+          type="file"
+        />
+      </$UploadContainer>
     </$Container>
   );
 };

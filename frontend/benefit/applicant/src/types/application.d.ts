@@ -234,3 +234,8 @@ export type ApplicationTempData = {
   deMinimisAids: DeMinimisAid[];
   currentStep: number;
 };
+
+export interface UploadAttachmentData {
+  applicationId: string;
+  data: FormData;
+}

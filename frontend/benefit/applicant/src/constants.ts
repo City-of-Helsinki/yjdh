@@ -185,3 +185,6 @@ export enum VALIDATION_MESSAGE_KEYS {
 }
 
 export const dateRegex = /(?:(?:0?[1-9]|1\d|2\d)\.(?:0?[1-9]|1[0-2])|(?:30\.(?!02)(?:0[1-9]|1[0-2]))|(?:31\.(?:0[13578]|1[02])))\.(?:19|20)\d{2}/;
+
+// 10mb
+export const ATTACHMENT_MAX_SIZE = 10485760;
