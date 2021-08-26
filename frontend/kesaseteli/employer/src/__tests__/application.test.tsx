@@ -101,7 +101,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         it('shows validation errors and disables continue button when missing values', async () => {
           renderPage(ApplicationPage, queryClient, { query: { id } });
           await waitForLoadingSpinnerToComplete();
-          applicationPage.step1.expectations.stepIsLoaded();
+          await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.typeInvoicerName('');
           await applicationPage.step1.expectations.inputHasError(
             /(nimi puuttuu)|(errors.invoicer_name)/i
@@ -119,7 +119,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         it('shows validation errors when invalid values', async () => {
           renderPage(ApplicationPage, queryClient, { query: { id } });
           await waitForLoadingSpinnerToComplete();
-          applicationPage.step1.expectations.stepIsLoaded();
+          await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.typeInvoicerName('a'.repeat(257)); // max limit is 256
           await applicationPage.step1.expectations.inputHasError(
             /(nimi puuttuu)|(errors.invoicer_name)/i
@@ -137,7 +137,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         it('saves application and goes to step 2 when next button is clicked', async () => {
           renderPage(ApplicationPage, queryClient, { query: { id } });
           await waitForLoadingSpinnerToComplete();
-          applicationPage.step1.expectations.stepIsLoaded();
+          await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.expectations.displayCompanyData();
           applicationPage.step1.expectations.inputValueIsSet('invoicer_name');
           applicationPage.step1.expectations.inputValueIsSet('invoicer_email');
@@ -158,17 +158,17 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
             invoicer_phone_number,
           });
           await applicationPage.step1.expectations.allApiRequestsDone();
-          applicationPage.step2.expectations.stepIsLoaded();
+          await applicationPage.step2.expectations.stepIsLoaded();
         });
 
         it('can traverse between wizard steps', async () => {
           renderPage(ApplicationPage, queryClient, { query: { id } });
           await waitForLoadingSpinnerToComplete();
-          applicationPage.step1.expectations.stepIsLoaded();
+          await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.clickNextButton();
-          applicationPage.step2.expectations.stepIsLoaded();
+          await applicationPage.step2.expectations.stepIsLoaded();
           applicationPage.step2.actions.clickPreviousButton();
-          applicationPage.step1.expectations.stepIsLoaded();
+          await applicationPage.step1.expectations.stepIsLoaded();
         });
       });
     });
