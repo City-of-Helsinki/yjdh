@@ -47,6 +47,18 @@ describe('constants', () => {
         expect(lastName).toMatch(NAMES_REGEX);
         expect(fullName).toMatch(NAMES_REGEX);
       });
+
+      it('should fail to match invalid characters', () => {
+        const invalidCharacters = '!@#$%^&*()_+-=[]{}|;\':",./<>?';
+
+        expect(invalidCharacters).not.toMatch(NAMES_REGEX);
+      });
+
+      it('should fail to match digits', () => {
+        const digits = '1234567890';
+
+        expect(digits).not.toMatch(NAMES_REGEX);
+      });
     });
 
     describe('POSTAL_CODE_REGEX', () => {
@@ -62,6 +74,12 @@ describe('constants', () => {
 
         expect(postalCode1).not.toMatch(POSTAL_CODE_REGEX);
         expect(postalCode2).not.toMatch(POSTAL_CODE_REGEX);
+      });
+
+      it('should fail to match invalid characters', () => {
+        const invalidCharacters = '!@#$%^&*()_+-=[]{}|;\':",./<>?';
+
+        expect(invalidCharacters).not.toMatch(POSTAL_CODE_REGEX);
       });
     });
 
@@ -150,6 +168,14 @@ describe('constants', () => {
           expect(phoneNumber).toMatch(PHONE_NUMBER_REGEX);
         });
       });
+
+      it('should not match non-Finish phone numbers', () => {
+        const phoneNumbers = ['+1-800-555-1212', '+44-20-7011-5555'];
+
+        phoneNumbers.forEach((phoneNumber) => {
+          expect(phoneNumber).not.toMatch(PHONE_NUMBER_REGEX);
+        });
+      });
     });
 
     describe('COMPANY_BANK_ACCOUNT_NUMBER', () => {
@@ -157,6 +183,12 @@ describe('constants', () => {
         const accountNumber = faker.finance.account(16);
 
         expect(`FI${accountNumber}`).toMatch(COMPANY_BANK_ACCOUNT_NUMBER);
+      });
+
+      it('should not match non-Finnish bank account numbers', () => {
+        const accountNumber = faker.finance.account(8);
+
+        expect(accountNumber).not.toMatch(COMPANY_BANK_ACCOUNT_NUMBER);
       });
     });
   });
