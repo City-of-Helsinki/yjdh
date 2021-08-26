@@ -1,12 +1,6 @@
 import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
-  addressRegex,
   APPLICATION_FIELDS_STEP1,
-  cityRegex,
-  companyAccRegex,
-  namesRegex,
-  phoneRegex,
-  postalCodeRegex,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
@@ -27,6 +21,14 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
+import {
+  ADDRESS_REGEX,
+  CITY_REGEX,
+  COMPANY_BANK_ACCOUNT_NUMBER,
+  NAMES_REGEX,
+  PHONE_NUMBER_REGEX,
+  POSTAL_CODE_REGEX,
+} from 'shared/constants';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
@@ -105,34 +107,34 @@ const useApplicationFormStep1 = (
     initialValues: application || {},
     validationSchema: Yup.object().shape({
       [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS]: Yup.string().matches(
-        addressRegex,
+        ADDRESS_REGEX,
         t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string().matches(
-        postalCodeRegex,
+        POSTAL_CODE_REGEX,
         t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY]: Yup.string().matches(
-        cityRegex,
+        CITY_REGEX,
         t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string().matches(
-        companyAccRegex,
+        COMPANY_BANK_ACCOUNT_NUMBER,
         t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: Yup.string().matches(
-        phoneRegex,
+        PHONE_NUMBER_REGEX,
         t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string().email(
         t(VALIDATION_MESSAGE_KEYS.EMAIL_INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string().matches(
-        namesRegex,
+        NAMES_REGEX,
         t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
       [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME]: Yup.string().matches(
-        namesRegex,
+        NAMES_REGEX,
         t(VALIDATION_MESSAGE_KEYS.INVALID)
       ),
     }),
