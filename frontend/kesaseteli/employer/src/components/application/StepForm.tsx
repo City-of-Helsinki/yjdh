@@ -8,8 +8,8 @@ import { getStepNumber } from 'kesaseteli/employer/utils/application-wizard.util
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import Toast from 'shared/components/toast/Toast';
 import useSetQueryParam from 'shared/hooks/useSetQueryParam';
+import useShowToastIfError from 'shared/hooks/useShowToastIfError';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
@@ -21,7 +21,6 @@ type Props = {
 const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
   const { activeStep } = useWizard();
   const currentStep = getStepNumber(activeStep + 1);
-  useSetQueryParam('step', String(currentStep));
 
   const { t } = useTranslation();
   const translateLabel = (key: keyof Application): string =>
@@ -35,20 +34,10 @@ const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
     mode: 'onBlur',
     reValidateMode: 'onChange',
   });
-  useSetFormDefaultValues(methods);
 
-  React.useEffect(() => {
-    if (errorMessage) {
-      Toast({
-        autoDismiss: true,
-        autoDismissTime: 5000,
-        type: 'error',
-        translated: true,
-        labelText: t('common:application.common_error'),
-        text: errorMessage,
-      });
-    }
-  }, [t, errorMessage]);
+  useSetQueryParam('step', String(currentStep));
+  useShowToastIfError(errorMessage);
+  useSetFormDefaultValues(methods);
 
   const context = {
     translateLabel,

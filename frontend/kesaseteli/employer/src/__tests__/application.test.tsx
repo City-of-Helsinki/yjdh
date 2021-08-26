@@ -161,7 +161,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           applicationPage.step2.expectations.stepIsLoaded();
         });
 
-        it.only('can traverse between wizard steps', async () => {
+        it('can traverse between wizard steps', async () => {
           renderPage(ApplicationPage, queryClient, { query: { id } });
           await waitForLoadingSpinnerToComplete();
           applicationPage.step1.expectations.stepIsLoaded();
