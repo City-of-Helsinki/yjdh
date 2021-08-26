@@ -1,0 +1,166 @@
+import faker from 'faker';
+
+import {
+  ADDRESS_REGEX,
+  CITY_REGEX,
+  COMPANY_BANK_ACCOUNT_NUMBER,
+  NAMES_REGEX,
+  PHONE_NUMBER_REGEX,
+  POSTAL_CODE_REGEX,
+} from '../constants';
+
+describe('constants', () => {
+  describe('regex', () => {
+    describe('NAMES_REGEX', () => {
+      it('should match Finnish first names, last names and full names', () => {
+        faker.locale = 'fi';
+
+        const firstName = faker.name.firstName();
+        const lastName = faker.name.lastName();
+        const fullName = faker.name.findName();
+
+        expect(firstName).toMatch(NAMES_REGEX);
+        expect(lastName).toMatch(NAMES_REGEX);
+        expect(fullName).toMatch(NAMES_REGEX);
+      });
+
+      it('should match Swedish first names, last names and full names', () => {
+        faker.locale = 'sv';
+
+        const firstName = faker.name.firstName();
+        const lastName = faker.name.lastName();
+        const fullName = faker.name.findName();
+
+        expect(firstName).toMatch(NAMES_REGEX);
+        expect(lastName).toMatch(NAMES_REGEX);
+        expect(fullName).toMatch(NAMES_REGEX);
+      });
+
+      it('should match English first names, last names and full names', () => {
+        faker.locale = 'en';
+
+        const firstName = faker.name.firstName();
+        const lastName = faker.name.lastName();
+        const fullName = faker.name.findName();
+
+        expect(firstName).toMatch(NAMES_REGEX);
+        expect(lastName).toMatch(NAMES_REGEX);
+        expect(fullName).toMatch(NAMES_REGEX);
+      });
+    });
+
+    describe('POSTAL_CODE_REGEX', () => {
+      it('should match Finnish postal codes', () => {
+        const postalCode = faker.address.zipCode('#####');
+
+        expect(postalCode).toMatch(POSTAL_CODE_REGEX);
+      });
+
+      it('should fail to match non-Finnish postal codes', () => {
+        const postalCode1 = faker.address.zipCode('####');
+        const postalCode2 = faker.address.zipCode('######');
+
+        expect(postalCode1).not.toMatch(POSTAL_CODE_REGEX);
+        expect(postalCode2).not.toMatch(POSTAL_CODE_REGEX);
+      });
+    });
+
+    describe('CITY_REGEX', () => {
+      it('should match cities names in Finnish and Swedish', () => {
+        const citiesFI = [
+          'Brändö',
+          'Eckerö',
+          'Eurajoki',
+          'Evijärvi',
+          'Finström',
+          'Föglö',
+          'Mänttä-Vilppula',
+          'Pedersören kunta',
+          'Siuntio',
+          'Sodankylä',
+          'Sonkajärvi',
+          'Sotkamo',
+          'Sottunga',
+          'Sulkava',
+          'Sysmä',
+          'Säkylä',
+          'Tornio',
+          'Turku',
+          'Ähtäri',
+        ];
+
+        const citiesSV = [
+          'Brändö',
+          'Eckerö',
+          'Euraåminne',
+          'Evijärvi',
+          'Finström',
+          'Föglö',
+          'Mänttä-Vilppula',
+          'Pedersöre',
+          'Sjundeå',
+          'Sodankylä',
+          'Sonkajärvi',
+          'Sotkamo',
+          'Sottunga',
+          'Sulkava',
+          'Sysmä',
+          'Säkylä',
+          'Torneå',
+          'Åbo',
+          'Etseri',
+        ];
+
+        citiesFI.forEach((city) => {
+          expect(city).toMatch(CITY_REGEX);
+        });
+
+        citiesSV.forEach((city) => {
+          expect(city).toMatch(CITY_REGEX);
+        });
+      });
+    });
+
+    describe('ADDRESS_REGEX', () => {
+      it('should match addresses', () => {
+        const address = faker.address.streetAddress();
+
+        expect(address).toMatch(ADDRESS_REGEX);
+      });
+
+      it('should not match non-address strings', () => {
+        const nonAddress = '#@';
+
+        expect(nonAddress).not.toMatch(ADDRESS_REGEX);
+      });
+    });
+
+    describe('PHONE_NUMBER_REGEX', () => {
+      it('should match Finnish phone numbers', () => {
+        const phoneNumber1 = '040 084 1684';
+        const phoneNumber2 = '050 135 6339';
+        const phoneNumber3 = '0505-551-9417';
+        const phoneNumber5 = '04575553503';
+        const phoneNumber6 = '+358-505-551-4995';
+        const phoneNumber7 = '+3585005551193';
+        const phoneNumber8 = `+358\505\551\4995`;
+
+        expect(phoneNumber1).toMatch(PHONE_NUMBER_REGEX);
+        expect(phoneNumber2).toMatch(PHONE_NUMBER_REGEX);
+        expect(phoneNumber3).toMatch(PHONE_NUMBER_REGEX);
+        expect(phoneNumber5).toMatch(PHONE_NUMBER_REGEX);
+        expect(phoneNumber6).toMatch(PHONE_NUMBER_REGEX);
+        expect(phoneNumber7).toMatch(PHONE_NUMBER_REGEX);
+        expect(phoneNumber8).toMatch(PHONE_NUMBER_REGEX);
+      });
+    });
+
+    describe('COMPANY_BANK_ACCOUNT_NUMBER', () => {
+      it('should match Finnish bank account numbers', () => {
+        const accountNumber = faker.finance.account(16);
+
+        expect(`FI${accountNumber}`).toMatch(COMPANY_BANK_ACCOUNT_NUMBER);
+      });
+    });
+  });
+});
