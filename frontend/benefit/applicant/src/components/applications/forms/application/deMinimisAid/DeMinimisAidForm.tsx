@@ -2,6 +2,7 @@ import { $SecondaryButton } from 'benefit/applicant/components/applications/Appl
 import { $SubActionContainer } from 'benefit/applicant/components/applications/forms/application/Application.sc';
 import {
   DE_MINIMIS_AID_FIELDS,
+  DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/applicant/constants';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
@@ -79,7 +80,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
-              maxDate={new Date()}
+              maxDate={DE_MINIMIS_AID_GRANTED_AT_MAX_DATE}
               required
             />
           </$FieldsContainerWithPadding>

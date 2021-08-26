@@ -118,6 +118,8 @@ export enum DE_MINIMIS_AID_FIELDS {
   GRANTED_AT = 'grantedAt',
 }
 
+export const DE_MINIMIS_AID_GRANTED_AT_MAX_DATE = new Date();
+
 export const DEFAULT_APPLICATION = {
   status: APPLICATION_STATUSES.DRAFT,
   employee: {

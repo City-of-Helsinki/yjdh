@@ -1,5 +1,6 @@
 import {
   DE_MINIMIS_AID_FIELDS,
+  DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   SUPPORTED_LANGUAGES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
@@ -90,7 +91,10 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
         .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)
         .test({
           message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
-            max: formatDate(new Date(), DATE_FORMATS.DATE),
+            max: formatDate(
+              DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
+              DATE_FORMATS.DATE
+            ),
           }),
           test: (value) => {
             if (!value || isFuture(value)) {
