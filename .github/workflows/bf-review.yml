@@ -143,26 +143,26 @@ jobs:
           message: |
             **Helsinkibenefit-${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
       - name: Deploy Quarter Hourly Cronjobs
-          uses: City-of-Helsinki/setup-cronjob-action@main
-          with:
-            image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
-            image_tag:  ${{ github.sha }}
-            secret_name: project-yjdh-benefit-secret
-            kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW_STAGING}}
-            target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
-            name: "benefit-quarter-hourly-cronjob"
-            schedule: '*/15 * * * *'
-            command: "{/bin/sh}"
-            args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs quarter_hourly 2>&1}"
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+          image_tag:  ${{ github.sha }}
+          secret_name: project-yjdh-benefit-secret
+          kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW_STAGING}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
+          name: "benefit-quarter-hourly-cronjob"
+          schedule: '*/15 * * * *'
+          command: "{/bin/sh}"
+          args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs quarter_hourly 2>&1}"
       - name: Deploy Monthly Cronjobs
-          uses: City-of-Helsinki/setup-cronjob-action@main
-          with:
-            image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
-            image_tag:  ${{ github.sha }}
-            secret_name: project-yjdh-benefit-secret
-            kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW_STAGING}}
-            target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
-            name: "benefit-monthly-cronjob"
-            schedule: '0 0 1 * *'
-            command: "{/bin/sh}"
-            args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs monthly 2>&1}"
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+          image_tag:  ${{ github.sha }}
+          secret_name: project-yjdh-benefit-secret
+          kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW_STAGING}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE_STAGING }}
+          name: "benefit-monthly-cronjob"
+          schedule: '0 0 1 * *'
+          command: "{/bin/sh}"
+          args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs monthly 2>&1}"
