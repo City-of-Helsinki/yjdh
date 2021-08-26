@@ -74,6 +74,7 @@ env = environ.Env(
     ELASTICSEARCH_API_KEY=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
+    WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -300,6 +301,8 @@ ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
 ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
 ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
 ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
+
+WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
