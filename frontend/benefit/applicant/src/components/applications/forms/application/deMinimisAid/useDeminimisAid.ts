@@ -1,6 +1,6 @@
 import {
-  dateRegex,
   DE_MINIMIS_AID_FIELDS,
+  SUPPORTED_LANGUAGES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
@@ -11,12 +11,18 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import { formatDate, parseDate } from 'shared/utils/date.utils';
+import {
+  DATE_FORMATS,
+  formatDate,
+  isFuture,
+  parseDate,
+} from 'shared/utils/date.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
   t: TFunction;
+  language: SUPPORTED_LANGUAGES;
   fieldNames: string[];
   fields: FieldsDef;
   translationsBase: string;
@@ -37,7 +43,7 @@ type FormFields = {
 };
 
 const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const { applicationTempData, setApplicationTempData } = React.useContext(
     ApplicationContext
@@ -74,13 +80,25 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
         })),
       [DE_MINIMIS_AID_FIELDS.AMOUNT]: Yup.number()
         .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
+        .typeError(VALIDATION_MESSAGE_KEYS.INVALID)
         .min(0, (param) => ({
           min: param.min,
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
         })),
-      [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: Yup.string()
-        .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
-        .matches(dateRegex, VALIDATION_MESSAGE_KEYS.DATE_FORMAT),
+      [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: Yup.date()
+        .transform((_, original) => parseDate(original, DATE_FORMATS.DATE))
+        .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)
+        .test({
+          message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
+            max: formatDate(new Date(), DATE_FORMATS.DATE),
+          }),
+          test: (value) => {
+            if (!value || isFuture(value)) {
+              return false;
+            }
+            return true;
+          },
+        }),
     }),
     validateOnChange: true,
     validateOnBlur: false,
@@ -147,8 +165,24 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
     });
   };
 
+  let language = SUPPORTED_LANGUAGES.FI;
+  switch (i18n.language) {
+    case SUPPORTED_LANGUAGES.EN:
+      language = SUPPORTED_LANGUAGES.EN;
+      break;
+
+    case SUPPORTED_LANGUAGES.SV:
+      language = SUPPORTED_LANGUAGES.SV;
+      break;
+
+    default:
+      language = SUPPORTED_LANGUAGES.FI;
+      break;
+  }
+
   return {
     t,
+    language,
     fieldNames,
     fields,
     translationsBase,

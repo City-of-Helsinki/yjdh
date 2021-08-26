@@ -1,5 +1,7 @@
-import { format as formatDateStr, Locale, parse } from 'date-fns';
+import formatDateStr from 'date-fns/format';
+import isFutureFn from 'date-fns/isFuture';
 import { enGB as en, fi, sv } from 'date-fns/locale';
+import parse from 'date-fns/parse';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 export const DATE_FORMATS = {
@@ -31,3 +33,5 @@ export const formatDate = (
 
 export const parseDate = (date: string, format = 'dd.MM.yyyy'): Date =>
   parse(date, format, new Date());
+
+export const isFuture = (date: Date): boolean => isFutureFn(date);

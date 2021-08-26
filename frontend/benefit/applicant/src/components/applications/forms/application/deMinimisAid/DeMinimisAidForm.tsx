@@ -3,7 +3,6 @@ import { $SubActionContainer } from 'benefit/applicant/components/applications/f
 import {
   DE_MINIMIS_AID_FIELDS,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
-  SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { DateInput, IconPlusCircle, TextInput } from 'hds-react';
@@ -25,6 +24,7 @@ interface DeMinimisAidFormProps {
 const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
   const {
     t,
+    language,
     handleSubmit,
     getErrorMessage,
     fields,
@@ -70,7 +70,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               name={fields.grantedAt.name}
               label={fields.grantedAt.label}
               placeholder={fields.grantedAt.placeholder}
-              language={SUPPORTED_LANGUAGES.FI}
+              language={language}
               onBlur={formik.handleBlur}
               onChange={(value) =>
                 formik.setFieldValue(fields.grantedAt.name, value)

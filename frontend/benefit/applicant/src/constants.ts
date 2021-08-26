@@ -185,5 +185,3 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MIN = 'common:form.validation.time.min',
   TIME_MAX = 'common:form.validation.time.max',
 }
-
-export const dateRegex = /(?:(?:0?[1-9]|1\d|2\d)\.(?:0?[1-9]|1[0-2])|(?:30\.(?!02)(?:0[1-9]|1[0-2]))|(?:31\.(?:0[13578]|1[02])))\.(?:19|20)\d{2}/;
