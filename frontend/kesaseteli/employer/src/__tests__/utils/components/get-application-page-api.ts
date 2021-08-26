@@ -13,7 +13,7 @@ import Application from 'shared/types/employer-application';
 
 type StepExpections = {
   allApiRequestsDone: () => Promise<void>;
-  stepIsLoaded: () => void;
+  stepIsLoaded: () => Promise<void>;
   nextButtonIsDisabled: () => Promise<void>;
   nextButtonIsEnabled: () => Promise<void>;
 };
@@ -51,8 +51,8 @@ export type ApplicationPageApi = {
   replyError: (id: string) => GetErrorPageApi;
 };
 
-const expectHeaderTobeVisible = (header: RegExp): void => {
-  expect(screen.queryByRole('heading', { name: header })).toBeInTheDocument();
+const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
+  await screen.findByRole('heading', { name: header });
 };
 
 const typeInput = (inputLabel: RegExp, value: string): void => {
@@ -131,7 +131,7 @@ const getApplicationPageApi = (
       step1: {
         expectations: {
           stepIsLoaded: () =>
-            expectHeaderTobeVisible(
+            waitForHeaderTobeVisible(
               /(1. työnantajan tiedot)|(application.step1.header)/i
             ),
           displayCompanyData: (): void => {
@@ -197,7 +197,7 @@ const getApplicationPageApi = (
       step2: {
         expectations: {
           stepIsLoaded: () =>
-            expectHeaderTobeVisible(
+            waitForHeaderTobeVisible(
               /(2. selvitys työsuhteesta)|(application.step2.header)/i
             ),
           nextButtonIsDisabled: expectNextButtonIsDisabled,
@@ -212,7 +212,7 @@ const getApplicationPageApi = (
       step3: {
         expectations: {
           stepIsLoaded: () =>
-            expectHeaderTobeVisible(
+            waitForHeaderTobeVisible(
               /(3. tarkistus ja lähettäminen)|(application.step3.header)/i
             ),
           nextButtonIsDisabled: expectNextButtonIsDisabled,
