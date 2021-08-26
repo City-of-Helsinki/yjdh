@@ -4,7 +4,7 @@ import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import Application from 'shared/types/employer-application';
 
 const useCreateApplicationQuery = (): UseMutationResult<
-  unknown,
+  Application,
   Error,
   void
 > => {

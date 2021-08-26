@@ -115,12 +115,19 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     });
 
     describe('when user does not have previous applications', () => {
-      it('Should create a new application', async () => {
+      it('Should create a new application and redirect to its page', async () => {
         const newApplication = fakeApplication('123-foo-bar');
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationToBackend(newApplication);
-        renderPage(IndexPage, queryClient);
+        const locale: Language = 'en';
+        const spyPush = jest.fn();
+        renderPage(IndexPage, queryClient, { push: spyPush, locale });
         await expectToCreateQueryDataForApplication(newApplication);
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(
+            `${locale}/application?id=${newApplication.id}`
+          )
+        );
       });
     });
 
