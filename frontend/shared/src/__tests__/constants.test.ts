@@ -137,21 +137,18 @@ describe('constants', () => {
 
     describe('PHONE_NUMBER_REGEX', () => {
       it('should match Finnish phone numbers', () => {
-        const phoneNumber1 = '040 084 1684';
-        const phoneNumber2 = '050 135 6339';
-        const phoneNumber3 = '0505-551-9417';
-        const phoneNumber5 = '04575553503';
-        const phoneNumber6 = '+358-505-551-4995';
-        const phoneNumber7 = '+3585005551193';
-        const phoneNumber8 = `+358\505\551\4995`;
+        const phoneNumbers = [
+          '040 084 1684',
+          '050 135 6339',
+          '0505-551-9417',
+          '04575553503',
+          '+358-505-551-4995',
+          '+3585005551193',
+        ];
 
-        expect(phoneNumber1).toMatch(PHONE_NUMBER_REGEX);
-        expect(phoneNumber2).toMatch(PHONE_NUMBER_REGEX);
-        expect(phoneNumber3).toMatch(PHONE_NUMBER_REGEX);
-        expect(phoneNumber5).toMatch(PHONE_NUMBER_REGEX);
-        expect(phoneNumber6).toMatch(PHONE_NUMBER_REGEX);
-        expect(phoneNumber7).toMatch(PHONE_NUMBER_REGEX);
-        expect(phoneNumber8).toMatch(PHONE_NUMBER_REGEX);
+        phoneNumbers.forEach((phoneNumber) => {
+          expect(phoneNumber).toMatch(PHONE_NUMBER_REGEX);
+        });
       });
     });
 
