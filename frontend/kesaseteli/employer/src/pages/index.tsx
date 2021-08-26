@@ -1,3 +1,4 @@
+import useLoadDraftOrCreateNewApplication from 'kesaseteli/employer/hooks/application/useLoadDraftOrCreateNewApplication';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
@@ -9,17 +10,17 @@ import withAuth from 'shared/components/hocs/withAuth';
 import ErrorPage from 'shared/components/pages/ErrorPage';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const EmployerIndex: NextPage = () => {
   const {
     data: applications,
     isLoading: isLoadingApplications,
-    error: loadApplicationsError,
+    isError: loadApplicationsError,
   } = useApplicationsQuery();
   const {
+    data: newApplication,
     mutate: createApplication,
-    error: createApplicationError,
+    isError: createApplicationError,
     isLoading: isCreatingApplication,
   } = useCreateApplicationQuery();
 
@@ -28,20 +29,16 @@ const EmployerIndex: NextPage = () => {
   const isLoading =
     isLoadingApplications || isCreatingApplication || isLoadingLogout;
   const isError = loadApplicationsError || createApplicationError;
+
+  useLoadDraftOrCreateNewApplication(
+    isLoading,
+    isError,
+    applications,
+    newApplication,
+    createApplication
+  );
+
   const router = useRouter();
-  const locale = router.locale ?? DEFAULT_LANGUAGE;
-
-  React.useEffect(() => {
-    if (!isLoading && !isError) {
-      if (applications && applications.length > 0) {
-        const draftApplication = applications[0];
-        void router.push(`${locale}/application?id=${draftApplication.id}`);
-      } else {
-        createApplication();
-      }
-    }
-  }, [isLoading, applications, createApplication, router, locale, isError]);
-
   const refreshPage = (): void => {
     router.reload();
   };

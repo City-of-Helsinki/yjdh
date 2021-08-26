@@ -35,11 +35,9 @@ const getErrorPageApi = (
       displayErrorPage: async (): Promise<void> => {
         await waitForLoadingSpinnerToComplete();
         await expectAllApiRequestsDone();
-        expect(
-          screen.queryByRole('heading', {
-            name: /(palvelussa on valitettavasti tapahtunut virhe)|(errorpage.title)/i,
-          })
-        ).toBeInTheDocument();
+        await screen.findByRole('heading', {
+          name: /(palvelussa on valitettavasti tapahtunut virhe)|(errorpage.title)/i,
+        });
       },
     },
     actions: {

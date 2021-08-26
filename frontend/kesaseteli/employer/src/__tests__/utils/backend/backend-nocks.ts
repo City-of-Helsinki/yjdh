@@ -42,7 +42,7 @@ export const expectToGetApplicationErrorFromBackend = (
 ): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.APPLICATIONS}${id}/`)
-    .replyWithError('This is a test error. Please ignore this error message.');
+    .replyWithError('This is a load application test error. Please ignore this error message.');
 
 export const expectToGetApplicationsFromBackend = (
   applications: Application[]
@@ -54,7 +54,7 @@ export const expectToGetApplicationsFromBackend = (
 export const expectToGetApplicationsErrorFromBackend = (): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.APPLICATIONS}`)
-    .replyWithError('This is a test error. Please ignore this error message.');
+    .replyWithError('This is a load applications test error. Please ignore this error message.');
 
 export const expectToCreateApplicationToBackend = (
   applicationToCreate: Application
@@ -66,7 +66,7 @@ export const expectToCreateApplicationToBackend = (
 export const expectToCreateApplicationErrorFromBackend = (): nock.Scope =>
   nock(getBackendDomain())
     .post(`${BackendEndpoint.APPLICATIONS}`, {})
-    .replyWithError('This is a test error. Please ignore this error message.');
+    .replyWithError('This is a create application test error. Please ignore this error message.');
 
 export const expectToSaveApplication = (
   applicationToSave: Application
