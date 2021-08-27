@@ -14,3 +14,15 @@ class ApplicationStatus(models.TextChoices):
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
     DELETED_BY_CUSTOMER = "deleted_by_customer", _("Deleted by customer")
+
+
+class AttachmentType(models.TextChoices):
+    EMPLOYMENT_CONTRACT = "employment_contract", _("employment contract")
+    PAYSLIP = "payslip", _("payslip")
+
+
+ATTACHMENT_CONTENT_TYPE_CHOICES = (
+    ("application/pdf", "pdf"),
+    ("image/png", "png"),
+    ("image/jpeg", "jpeg"),
+)

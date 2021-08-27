@@ -97,7 +97,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
         return self.request.session.get("_auth_user_backend", "")
 
     def _get_operation(self) -> Operation:
-        return self.method_to_operation[self.request.method]
+        return self.method_to_operation.get(self.request.method, Operation.READ)
 
     def _get_target(self) -> Optional[Union[Model, ModelBase]]:
         target = None

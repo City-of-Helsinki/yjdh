@@ -1,16 +1,29 @@
+import os
+
+from django.core import exceptions
+from django.http import FileResponse
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
-from applications.api.v1.serializers import ApplicationSerializer
+from applications.api.v1.serializers import (
+    ApplicationSerializer,
+    AttachmentSerializer,
+    SummerVoucherSerializer,
+)
 from applications.enums import ApplicationStatus
-from applications.models import Application
+from applications.models import Application, SummerVoucher
 
 
 class ApplicationViewSet(AuditLoggingModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
+    # TODO: Access control
 
     def get_queryset(self):
         """
@@ -38,3 +51,98 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class SummerVoucherViewSet(AuditLoggingModelViewSet):
+    queryset = SummerVoucher.objects.all()
+    serializer_class = SummerVoucherSerializer
+    # TODO: Access control
+
+    def create(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(
+        methods=("POST",),
+        detail=True,
+        url_path="attachments",
+        parser_classes=(MultiPartParser,),
+    )
+    def post_attachment(self, request, *args, **kwargs):
+        """
+        Upload a single file as attachment
+        """
+        obj = self.get_object()
+
+        # Validate request data
+        serializer = AttachmentSerializer(
+            data={
+                "summer_voucher": obj.id,
+                "attachment_file": request.data["attachment_file"],
+                "content_type": request.data["attachment_file"].content_type,
+                "attachment_type": request.data["attachment_type"],
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(
+        methods=(
+            "GET",
+            "DELETE",
+        ),
+        detail=True,
+        url_path="attachments/(?P<attachment_pk>[^/.]+)",
+    )
+    def handle_attachment(self, request, attachment_pk, *args, **kwargs):
+        obj = self.get_object()
+
+        if request.method == "GET":
+            """
+            Read a single attachment as file
+            """
+            attachment = obj.attachments.filter(pk=attachment_pk).first()
+            if not attachment or not os.path.isfile(attachment.attachment_file.path):
+                return Response(
+                    {
+                        "detail": format_lazy(
+                            _("File not found."),
+                        )
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            return FileResponse(attachment.attachment_file)
+
+        elif request.method == "DELETE":
+            """
+            Delete a single attachment as file
+            """
+            if (
+                obj.application.status
+                not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
+            ):
+                return Response(
+                    {"detail": _("Operation not allowed for this application status.")},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+            try:
+                instance = obj.attachments.get(id=attachment_pk)
+            except exceptions.ObjectDoesNotExist:
+                return Response(
+                    {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
+                )
+            instance.attachment_file.delete(save=False)
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
