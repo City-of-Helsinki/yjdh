@@ -12,6 +12,11 @@ export const $SecondaryButton = styled(Button)`
 export const $PrimaryButton = styled(Button)`
   background-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-color: ${(props) => props.theme.colors.coatOfArms} !important;
+  color: ${(props) => props.theme.colors.white};
+  & > div {
+    --spinner-color: ${(props) => props.theme.colors.white} !important;
+  }
+
   border-width: 3px !important;
   width: 170px;
 `;

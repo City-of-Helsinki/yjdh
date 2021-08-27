@@ -9,7 +9,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { Attachment } from 'benefit/applicant/types/application';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -19,6 +19,7 @@ type ExtendedComponentProps = {
   handleUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   uploadRef: React.RefObject<HTMLInputElement>;
   files?: Attachment[];
+  isUploading: boolean;
 };
 
 const useAttachmentsList = (
@@ -31,7 +32,24 @@ const useAttachmentsList = (
   const translationsBase = 'common:applications.sections.attachments';
   const { applicationTempData } = React.useContext(ApplicationContext);
 
-  const { mutate: uploadAttachment } = useUploadAttachmentQuery();
+  const {
+    mutate: uploadAttachment,
+    isLoading: isUploading,
+    isError: isUploadingError,
+  } = useUploadAttachmentQuery();
+
+  useEffect(() => {
+    if (isUploadingError) {
+      hdsToast({
+        autoDismiss: true,
+        autoDismissTime: 5000,
+        type: 'error',
+        translated: true,
+        labelText: t('common:upload.errorTitle'),
+        text: t('common:upload.errorMessage'),
+      });
+    }
+  }, [isUploadingError, t]);
 
   const uploadRef = React.createRef<HTMLInputElement>();
 
@@ -87,6 +105,7 @@ const useAttachmentsList = (
     translationsBase,
     uploadRef,
     files,
+    isUploading,
     handleUploadClick,
     handleUpload,
   };

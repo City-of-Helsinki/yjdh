@@ -32,6 +32,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     translationsBase,
     uploadRef,
     files,
+    isUploading,
   } = useAttachmentsList(attachmentType, attachments);
 
   // todo: fix filenames when added to the model
@@ -72,7 +73,12 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
         </>
       )}
       <$UploadContainer onClick={handleUploadClick}>
-        <$PrimaryButton style={{ width: 'auto' }} iconLeft={<IconPlus />}>
+        <$PrimaryButton
+          isLoading={!isUploading}
+          loadingText={t(`common:upload.isUploading`)}
+          style={{ width: 'auto' }}
+          iconLeft={<IconPlus />}
+        >
           {t(`${translationsBase}.add`)}
         </$PrimaryButton>
         <input
