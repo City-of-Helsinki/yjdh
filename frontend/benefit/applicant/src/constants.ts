@@ -162,7 +162,7 @@ export const DEFAULT_APPLICATION = {
   [APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID]: null,
   deMinimisAidSet: [],
   applicationStep: DEFAULT_APPLICATION_STEP,
-} as const;
+};
 
 export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'] as const;
 
