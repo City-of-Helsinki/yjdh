@@ -193,6 +193,15 @@ export type Employee = {
   [APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION]?: string;
 };
 
+export interface Attachment {
+  id: string;
+  application: string;
+  attachmentType: ATTACHMENT_TYPES;
+  attachmentFile: string;
+  contentType: ATTACHMENT_CONTENT_TYPES;
+  createdAt?: string;
+}
+
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -225,6 +234,7 @@ export type Application = {
   deMinimisAidSet?: DeMinimisAid[];
   createdAt?: string | null;
   applicationStep?: string | null;
+  attachments?: Attachment[];
   // create_application_for_company ? not present in the UI?
 };
 

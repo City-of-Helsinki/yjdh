@@ -1,8 +1,8 @@
 import { $PrimaryButton } from 'benefit/applicant/components/applications/Applications.sc';
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
+import { Attachment } from 'benefit/applicant/types/application';
 import { IconPlus } from 'hds-react';
 import camelCase from 'lodash/camelCase';
-import noop from 'lodash/noop';
 import * as React from 'react';
 
 import AttachmentItem from './attachmentItem/AttachmentItem';
@@ -17,34 +17,47 @@ import { useAttachmentsList } from './useAttachmentsList';
 export interface AttachmentsListProps {
   attachmentType: ATTACHMENT_TYPES;
   showMessage?: boolean;
+  attachments?: Attachment[];
 }
 
 const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachmentType,
   showMessage,
+  attachments,
 }) => {
   const {
     t,
-    translationsBase,
-    attachments,
-    uploadRef,
     handleUploadClick,
     handleUpload,
-  } = useAttachmentsList(attachmentType);
+    translationsBase,
+    uploadRef,
+    files,
+  } = useAttachmentsList(attachmentType, attachments);
+
+  // todo: fix filenames when added to the model
 
   return (
     <$Container>
       <$Heading>
         {t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
       </$Heading>
-      {attachments.length > 0 ? (
-        <AttachmentItem
-          id="testId"
-          name="palkkatukipaatos-teemurantamaki.PDF"
-          removeText={t(`${translationsBase}.remove`)}
-          onClick={noop}
-          onRemove={noop}
-        />
+      {files && files.length > 0 ? (
+        <>
+          {files.map((file) => (
+            <AttachmentItem
+              key={file.id}
+              id={file.id}
+              name={file.id}
+              removeText={t(`${translationsBase}.remove`)}
+              onClick={() =>
+                window.open('file.attachmentFile', '_blank')?.focus()
+              }
+              onRemove={() =>
+                window.open('file.attachmentFile', '_blank')?.focus()
+              }
+            />
+          ))}
+        </>
       ) : (
         <>
           {showMessage && (

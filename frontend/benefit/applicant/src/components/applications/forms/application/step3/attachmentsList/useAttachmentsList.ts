@@ -6,6 +6,7 @@ import {
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
+import { Attachment } from 'benefit/applicant/types/application';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React from 'react';
@@ -14,27 +15,31 @@ type ExtendedComponentProps = {
   t: TFunction;
   translationsBase: string;
   attachments: [];
-  handleRemove: (index: number) => void;
-  handleAdd: () => void;
   handleUploadClick: () => void;
   handleUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   uploadRef: React.RefObject<HTMLInputElement>;
+  files?: Attachment[];
 };
 
 const useAttachmentsList = (
-  attachementType: ATTACHMENT_TYPES
+  attachmentType: ATTACHMENT_TYPES,
+  attachments?: Attachment[]
 ): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+  const { applicationTempData } = React.useContext(ApplicationContext);
 
   const { mutate: uploadAttachment } = useUploadAttachmentQuery();
 
   const uploadRef = React.createRef<HTMLInputElement>();
+
+  const files = React.useMemo(
+    (): Attachment[] =>
+      attachments?.filter((att) => att.attachmentType === attachmentType) || [],
+    [attachmentType, attachments]
+  );
 
   const handleUploadClick = (): void => {
     void uploadRef?.current?.click();
@@ -67,7 +72,7 @@ const useAttachmentsList = (
 
     if (file) {
       const formData = new FormData();
-      formData.append('attachment_type', attachementType);
+      formData.append('attachment_type', attachmentType);
       formData.append('attachment_file', file);
       uploadAttachment({
         applicationId: applicationTempData.id || id?.toString() || '',
@@ -76,33 +81,12 @@ const useAttachmentsList = (
     }
   };
 
-  const handleRemove = (index: number): void => {
-    // remove value
-    const currentGrants = [...(applicationTempData.deMinimisAids || [])];
-    currentGrants.splice(index, 1);
-    setApplicationTempData({
-      ...applicationTempData,
-      deMinimisAids: currentGrants,
-    });
-  };
-
-  const handleAdd = (): void => {
-    // add value
-    const currentGrants = [...(applicationTempData.deMinimisAids || [])];
-    currentGrants.splice(1, 1);
-    setApplicationTempData({
-      ...applicationTempData,
-      deMinimisAids: currentGrants,
-    });
-  };
-
   return {
     t,
     attachments: [],
     translationsBase,
     uploadRef,
-    handleRemove,
-    handleAdd,
+    files,
     handleUploadClick,
     handleUpload,
   };
