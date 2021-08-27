@@ -366,7 +366,8 @@
     },
     "attachments": {
       "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big."
+      "tooBig": "The attachemnt size is too big.",
+      "fileType": "The attachment file type is not allowed."
     }
   },
   "upload": {
