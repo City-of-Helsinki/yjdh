@@ -13,7 +13,7 @@ export enum SUPPORTED_LANGUAGES {
   EN = 'en',
 }
 
-export const DEFAULT_APPLICATION_STEP = 'step_1';
+export const DEFAULT_APPLICATION_STEP = 'step_1' as const;
 
 export enum APPLICATION_SAVE_ACTIONS {
   SAVE_AND_NEXT = 'save_next',
@@ -23,13 +23,13 @@ export enum APPLICATION_SAVE_ACTIONS {
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
 
-export const COMMON_I18N_NAMESPACES = ['common'];
+export const COMMON_I18N_NAMESPACES = ['common'] as const;
 
 export const PRIVACY_POLICY_LINKS = {
   fi: 'https://www.hel.fi/1',
   en: 'https://www.hel.fi/2',
   sv: 'https://www.hel.fi/3',
-};
+} as const;
 
 export enum APPLICATION_STATUSES {
   DRAFT = 'draft',
@@ -110,7 +110,7 @@ export const APPLICATION_FIELDS = {
   ...APPLICATION_FIELDS_STEP1,
   // step2 - Employee
   ...APPLICATION_FIELDS_STEP2,
-};
+} as const;
 
 export enum DE_MINIMIS_AID_FIELDS {
   GRANTER = 'granter',
@@ -162,9 +162,9 @@ export const DEFAULT_APPLICATION = {
   [APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID]: null,
   deMinimisAidSet: [],
   applicationStep: DEFAULT_APPLICATION_STEP,
-};
+} as const;
 
-export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];
+export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'] as const;
 
 export enum VALIDATION_MESSAGE_KEYS {
   REQUIRED = 'common:form.validation.required',
