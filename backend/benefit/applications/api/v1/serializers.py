@@ -65,10 +65,19 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "application",
             "attachment_type",
             "attachment_file",
+            "attachment_file_name",
             "content_type",
             "created_at",
         ]
         read_only_fields = ["created_at"]
+
+    attachment_file_name = serializers.SerializerMethodField(
+        "get_attachment_file_name",
+        help_text="The name of the uploaded file",
+    )
+
+    def get_attachment_file_name(self, obj):
+        return obj.attachment_file.name
 
     ATTACHMENT_MODIFICATION_ALLOWED_STATUSES = (
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
