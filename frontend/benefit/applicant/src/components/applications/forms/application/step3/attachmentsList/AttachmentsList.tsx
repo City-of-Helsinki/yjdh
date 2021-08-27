@@ -50,10 +50,12 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
               name={file.id}
               removeText={t(`${translationsBase}.remove`)}
               onClick={() =>
-                window.open('file.attachmentFile', '_blank')?.focus()
+                // eslint-disable-next-line security/detect-non-literal-fs-filename
+                window.open(file.attachmentFile, '_blank')?.focus()
               }
               onRemove={() =>
-                window.open('file.attachmentFile', '_blank')?.focus()
+                // eslint-disable-next-line security/detect-non-literal-fs-filename
+                window.open(file.attachmentFile, '_blank')?.focus()
               }
             />
           ))}
