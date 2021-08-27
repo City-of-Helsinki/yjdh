@@ -6,11 +6,63 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, AttachmentType
 from applications.models import Application, Attachment, SummerVoucher
-from applications.services import update_summer_vouchers_using_api_data
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_from_eauth_profile
+
+
+class ApplicationStatusValidator:
+    requires_context = True
+
+    APPLICATION_STATUS_TRANSITIONS = {
+        ApplicationStatus.DRAFT: (
+            ApplicationStatus.DELETED_BY_CUSTOMER,
+            ApplicationStatus.SUBMITTED,
+        ),
+        ApplicationStatus.SUBMITTED: (
+            ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.ACCEPTED,
+        ),
+        ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
+            ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            ApplicationStatus.ACCEPTED,
+            ApplicationStatus.REJECTED,
+        ),
+        ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
+            ApplicationStatus.ACCEPTED,
+            ApplicationStatus.REJECTED,
+        ),
+        ApplicationStatus.ACCEPTED: (),
+        ApplicationStatus.REJECTED: (),
+        ApplicationStatus.DELETED_BY_CUSTOMER: (),
+    }
+
+    def __call__(self, value, serializer_field):
+        if application := serializer_field.parent.instance:
+            # In case it's an update operation, validate with the current status in database
+            if (
+                value != application.status
+                and value not in self.APPLICATION_STATUS_TRANSITIONS[application.status]
+            ):
+                raise serializers.ValidationError(
+                    format_lazy(
+                        _(
+                            "Application state transition not allowed: {status} to {value}"
+                        ),
+                        status=application.status,
+                        value=value,
+                    )
+                )
+        else:
+            if value != ApplicationStatus.DRAFT:
+                raise serializers.ValidationError(
+                    _("Initial status of application must be draft")
+                )
+
+        return value
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -111,7 +163,50 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
             "is_unnumbered_summer_voucher",
             "unnumbered_summer_voucher_reason",
             "attachments",
+            "ordering",
         ]
+        read_only_fields = [
+            "ordering",
+        ]
+
+    def validate(self, data):
+        data = super().validate(data)
+        self._validate_non_draft_required_fields(data)
+        return data
+
+    REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS = [
+        "summer_voucher_id",
+        "contact_name",
+        "contact_email",
+        "work_postcode",
+        "employee_name",
+        "employee_school",
+        "employee_ssn",
+        "employee_phone_number",
+        "is_unnumbered_summer_voucher",
+        "unnumbered_summer_voucher_reason",
+    ]
+
+    def _validate_non_draft_required_fields(self, data):
+        status = (
+            self.parent.parent.initial_data.get("status") if self.parent.parent else ""
+        )
+
+        if not status or status == ApplicationStatus.DRAFT:
+            # newly created applications are always DRAFT
+            return
+
+        required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS[:]
+
+        for field_name in required_fields:
+            if data.get(field_name) in [None, "", []]:
+                raise serializers.ValidationError(
+                    {
+                        field_name: _(
+                            "This field is required before submitting the application"
+                        )
+                    }
+                )
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -119,7 +214,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
     summer_vouchers = SummerVoucherSerializer(
         many=True, required=False, allow_null=True
     )
-    status = serializers.CharField(required=False)
+    status = serializers.ChoiceField(
+        choices=ApplicationStatus.choices,
+        validators=[ApplicationStatusValidator()],
+        help_text=_("Status of the application, visible to the applicant"),
+        required=False,
+    )
 
     class Meta:
         model = Application
@@ -143,7 +243,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         summer_vouchers_data = validated_data.pop("summer_vouchers", []) or []
         if request and request.method == "PUT":
-            update_summer_vouchers_using_api_data(summer_vouchers_data, instance)
+            self._update_summer_vouchers(summer_vouchers_data, instance)
 
         return super().update(instance, validated_data)
 
@@ -156,3 +256,95 @@ class ApplicationSerializer(serializers.ModelSerializer):
         validated_data["company"] = company
 
         return super().create(validated_data)
+
+    def _update_summer_vouchers(
+        self, summer_vouchers_data: list, application: Application
+    ) -> None:
+        serializer = SummerVoucherSerializer(data=summer_vouchers_data, many=True)
+
+        if not serializer.is_valid():
+            raise serializers.ValidationError(
+                format_lazy(
+                    _("Reading summer voucher data failed: {errors}"),
+                    errors=serializer.errors,
+                )
+            )
+
+        # Clear the previous SummerVoucher objects from the database.
+        # The request must always contain all the SummerVoucher objects for this application.
+        application.summer_vouchers.all().delete()
+        for idx, summer_voucher_item in enumerate(serializer.validated_data):
+            summer_voucher_item["application_id"] = application.pk
+            summer_voucher_item[
+                "ordering"
+            ] = idx  # use the ordering defined in the JSON sent by the client
+        serializer.save()
+
+    def validate(self, data):
+        data = super().validate(data)
+
+        request = self.context.get("request")
+        if request.method != "PATCH":
+            self._validate_non_draft_required_fields(data)
+
+        return data
+
+    # Fields that may be null/blank while the application is draft, but
+    # must be filled before submitting the application for processing
+    REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS = [
+        "street_address",
+        "contact_person_name",
+        "contact_person_email",
+        "contact_person_phone_number",
+        "is_separate_invoicer",
+        "summer_vouchers",
+    ]
+
+    def _validate_non_draft_required_fields(self, data):
+        if not data.get("status") or data["status"] == ApplicationStatus.DRAFT:
+            # newly created applications are always DRAFT
+            return
+
+        required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
+        if data.get("is_separate_invoicer"):
+            required_fields.extend(
+                ["invoicer_name", "invoicer_email", "invoicer_phone_number"]
+            )
+
+        for field_name in required_fields:
+            if data.get(field_name) in [None, "", []]:
+                raise serializers.ValidationError(
+                    {
+                        field_name: _(
+                            "This field is required before submitting the application"
+                        )
+                    }
+                )
+
+        self._validate_attachments()
+
+    def _validate_attachments(self):
+        """
+        The requirements for attachments are the minimum requirements.
+        * Sometimes, a multi-page document might be uploaded as a set of jpg files, and the backend
+          would not know that it's meant to be a single document.
+        * This validator makes sure that there is at least one of each attachment type.
+        """
+        for summer_voucher in self.instance.summer_vouchers.all():
+            if not summer_voucher.attachments.exists():
+                raise serializers.ValidationError(
+                    _("Attachments missing from summer voucher")
+                )
+
+            required_attachment_types = AttachmentType.values
+            for attachment in summer_voucher.attachments.all():
+                if attachment.attachment_type in required_attachment_types:
+                    required_attachment_types.remove(attachment.attachment_type)
+
+            if required_attachment_types:
+                raise serializers.ValidationError(
+                    format_lazy(
+                        _("Attachments missing with types: {attachment_types}"),
+                        attachment_types=", ".join(required_attachment_types),
+                    )
+                )

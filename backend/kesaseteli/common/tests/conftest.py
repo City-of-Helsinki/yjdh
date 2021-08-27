@@ -4,9 +4,10 @@ from rest_framework.test import APIClient
 from shared.common.tests.factories import UserFactory
 from shared.oidc.tests.conftest import *  # noqa
 
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, AttachmentType
 from common.tests.factories import (
     ApplicationFactory,
+    AttachmentFactory,
     CompanyFactory,
     SummerVoucherFactory,
 )
@@ -29,6 +30,25 @@ def summer_voucher(application):
     yield summer_voucher
     for attachment in summer_voucher.attachments.all():
         attachment.attachment_file.delete(save=False)
+
+
+@pytest.fixture
+def employment_contract_attachment(summer_voucher):
+    attachment = AttachmentFactory(
+        summer_voucher=summer_voucher,
+        attachment_type=AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    yield attachment
+    attachment.attachment_file.delete(save=False)
+
+
+@pytest.fixture
+def payslip_attachment(summer_voucher):
+    attachment = AttachmentFactory(
+        summer_voucher=summer_voucher, attachment_type=AttachmentType.PAYSLIP
+    )
+    yield attachment
+    attachment.attachment_file.delete(save=False)
 
 
 @pytest.fixture
