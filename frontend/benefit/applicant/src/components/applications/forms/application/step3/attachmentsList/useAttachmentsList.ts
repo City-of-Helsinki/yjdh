@@ -4,6 +4,7 @@ import {
   ATTACHMENT_TYPES,
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
+import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Attachment } from 'benefit/applicant/types/application';
@@ -17,9 +18,11 @@ type ExtendedComponentProps = {
   attachments: [];
   handleUploadClick: () => void;
   handleUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemove: (attachmentId: string) => void;
   uploadRef: React.RefObject<HTMLInputElement>;
   files?: Attachment[];
   isUploading: boolean;
+  isRemoving: boolean;
 };
 
 const useAttachmentsList = (
@@ -38,18 +41,25 @@ const useAttachmentsList = (
     isError: isUploadingError,
   } = useUploadAttachmentQuery();
 
+  const {
+    mutate: removeAttachment,
+    isLoading: isRemoving,
+    isError: isRemovingError,
+  } = useRemoveAttachmentQuery();
+
   useEffect(() => {
-    if (isUploadingError) {
+    if (isUploadingError || isRemovingError) {
+      const prefix = isUploadingError ? 'upload' : 'remove';
       hdsToast({
         autoDismiss: true,
         autoDismissTime: 5000,
         type: 'error',
         translated: true,
-        labelText: t('common:upload.errorTitle'),
-        text: t('common:upload.errorMessage'),
+        labelText: t(`common:${prefix}.errorTitle`),
+        text: t(`common:${prefix}.errorMessage`),
       });
     }
-  }, [isUploadingError, t]);
+  }, [isUploadingError, isRemovingError, t]);
 
   const uploadRef = React.createRef<HTMLInputElement>();
 
@@ -70,7 +80,6 @@ const useAttachmentsList = (
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    // console.log(e.target.files);
     const file = e.target.files?.[0];
     const fileSize = file?.size;
     // validate file size and extention
@@ -99,6 +108,13 @@ const useAttachmentsList = (
     }
   };
 
+  const handleRemove = (attachmentId: string): void => {
+    removeAttachment({
+      applicationId: applicationTempData.id || id?.toString() || '',
+      attachmentId,
+    });
+  };
+
   return {
     t,
     attachments: [],
@@ -106,8 +122,10 @@ const useAttachmentsList = (
     uploadRef,
     files,
     isUploading,
+    isRemoving,
     handleUploadClick,
     handleUpload,
+    handleRemove,
   };
 };
 

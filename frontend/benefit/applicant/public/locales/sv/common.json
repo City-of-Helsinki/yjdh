@@ -373,5 +373,9 @@
     "isUploading": "Uploading...",
     "errorTitle": "Uploading failed",
     "errorMessage": "Something went wrong. Please try again later."
+  },
+  "delete": {
+    "errorTitle": "Deleting failed",
+    "errorMessage": "Something went wrong. Please try again later."
   }
 }

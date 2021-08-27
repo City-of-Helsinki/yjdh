@@ -29,13 +29,13 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     t,
     handleUploadClick,
     handleUpload,
+    handleRemove,
     translationsBase,
     uploadRef,
     files,
     isUploading,
+    isRemoving,
   } = useAttachmentsList(attachmentType, attachments);
-
-  // todo: fix filenames when added to the model
 
   return (
     <$Container>
@@ -48,6 +48,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
             <AttachmentItem
               key={file.id}
               id={file.id}
+              // todo: fix filenames when added to the model, currently does not exist
               name={file.id}
               removeText={t(`${translationsBase}.remove`)}
               onClick={() =>
@@ -56,7 +57,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
               }
               onRemove={() =>
                 // eslint-disable-next-line security/detect-non-literal-fs-filename
-                window.open(file.attachmentFile, '_blank')?.focus()
+                !isRemoving && handleRemove(file.id)
               }
             />
           ))}
@@ -74,7 +75,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
       )}
       <$UploadContainer onClick={handleUploadClick}>
         <$PrimaryButton
-          isLoading={!isUploading}
+          isLoading={isUploading}
           loadingText={t(`common:upload.isUploading`)}
           style={{ width: 'auto' }}
           iconLeft={<IconPlus />}

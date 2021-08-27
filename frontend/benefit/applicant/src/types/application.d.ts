@@ -249,3 +249,8 @@ export interface UploadAttachmentData {
   applicationId: string;
   data: FormData;
 }
+
+export interface RemoveAttachmentData {
+  applicationId: string;
+  attachmentId: string;
+}
