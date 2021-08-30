@@ -13,23 +13,21 @@ describe('constants', () => {
   describe('regex', () => {
     describe('NAMES_REGEX', () => {
       it('should match Finnish first names, last names and full names', () => {
-        faker.locale = 'fi';
-
-        const firstName = faker.name.firstName();
-        const lastName = faker.name.lastName();
-        const fullName = faker.name.findName();
+        const firstName = 'Helinä';
+        const lastName = 'Aalto';
+        const fullName = 'Kalle Väyrynen';
+        const fullName2 = 'Janne Ö';
 
         expect(firstName).toMatch(NAMES_REGEX);
         expect(lastName).toMatch(NAMES_REGEX);
         expect(fullName).toMatch(NAMES_REGEX);
+        expect(fullName2).toMatch(NAMES_REGEX);
       });
 
       it('should match Swedish first names, last names and full names', () => {
-        faker.locale = 'sv';
-
-        const firstName = faker.name.firstName();
-        const lastName = faker.name.lastName();
-        const fullName = faker.name.findName();
+        const firstName = 'Gun-Britt';
+        const lastName = 'Lindén';
+        const fullName = 'Ögge Ekström';
 
         expect(firstName).toMatch(NAMES_REGEX);
         expect(lastName).toMatch(NAMES_REGEX);
@@ -37,11 +35,9 @@ describe('constants', () => {
       });
 
       it('should match English first names, last names and full names', () => {
-        faker.locale = 'en';
-
-        const firstName = faker.name.firstName();
-        const lastName = faker.name.lastName();
-        const fullName = faker.name.findName();
+        const firstName = 'Eric';
+        const lastName = 'Bradtke';
+        const fullName = "Daniela O'Brian";
 
         expect(firstName).toMatch(NAMES_REGEX);
         expect(lastName).toMatch(NAMES_REGEX);
