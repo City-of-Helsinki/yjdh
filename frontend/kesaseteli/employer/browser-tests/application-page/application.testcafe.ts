@@ -35,7 +35,7 @@ if (isRealIntegrationsEnabled()) {
     } = await loginAndfillInvoicerForm(t);
     const headerUser = await headerComponents.headerUser();
     await headerUser.actions.clicklogoutButton();
-    await doEmployerLogin(t, user);
+    await doEmployerLogin(t, 'fi', user);
     await urlUtils.expectations.urlChangedToApplicationPage(
       'fi',
       applicationId
