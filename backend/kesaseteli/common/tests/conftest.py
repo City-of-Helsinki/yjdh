@@ -20,8 +20,20 @@ def company(eauthorization_profile):
 
 
 @pytest.fixture
-def application(company):
-    return ApplicationFactory(status=ApplicationStatus.DRAFT, company=company)
+def user_with_profile(oidc_profile, eauthorization_profile):
+    user = UserFactory(oidc_profile=oidc_profile)
+
+    eauthorization_profile.oidc_profile = oidc_profile
+    eauthorization_profile.save()
+
+    return user
+
+
+@pytest.fixture
+def application(company, user_with_profile):
+    return ApplicationFactory(
+        status=ApplicationStatus.DRAFT, company=company, user=user_with_profile
+    )
 
 
 @pytest.fixture
@@ -49,16 +61,6 @@ def payslip_attachment(summer_voucher):
     )
     yield attachment
     attachment.attachment_file.delete(save=False)
-
-
-@pytest.fixture
-def user_with_profile(oidc_profile, eauthorization_profile):
-    user = UserFactory(oidc_profile=oidc_profile)
-
-    eauthorization_profile.oidc_profile = oidc_profile
-    eauthorization_profile.save()
-
-    return user
 
 
 @pytest.fixture
