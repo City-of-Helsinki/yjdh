@@ -29,6 +29,8 @@ afterEach(async () => {
   nock.cleanAll();
 });
 
+nock.disableNetConnect();
+
 export const expectAuthorizedReply = (expectedUser = fakeUser()): nock.Scope =>
   nock(getBackendDomain())
     .get(BackendEndpoint.USER)
