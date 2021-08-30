@@ -17,6 +17,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     benefitType,
     apprenticeshipProgram,
     showSubsidyMessage,
+    attachments,
   } = useApplicationFormStep3(data);
 
   return (
@@ -27,14 +28,17 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
           (benefitType === BENEFIT_TYPES.EMPLOYMENT && (
             <>
               <AttachmentsList
+                attachments={attachments}
                 attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
               />
               {apprenticeshipProgram && (
                 <AttachmentsList
+                  attachments={attachments}
                   attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
                 />
               )}
               <AttachmentsList
+                attachments={attachments}
                 attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
                 showMessage={showSubsidyMessage}
               />
@@ -42,10 +46,12 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
           ))}
         {benefitType === BENEFIT_TYPES.COMMISSION && (
           <AttachmentsList
+            attachments={attachments}
             attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
           />
         )}
         <AttachmentsList
+          attachments={attachments}
           attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
         />
       </FormSection>

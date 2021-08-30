@@ -117,22 +117,22 @@ export const getApplicationPageComponents = (t: TestController) => {
     const actions = {
       async fillName(name: string) {
         setDataToPrintOnFailure(t, 'invoicer_name', name);
-
-        await t.typeText(selectors.invoicerNameInput(), name, {
-          replace: true,
-        });
+        const input = selectors.invoicerNameInput();
+        await t
+          .click(input)
+          // eslint-disable-next-line sonarjs/no-duplicate-string
+          .pressKey('ctrl+a delete')
+          .typeText(input, name);
       },
       async fillEmail(email: string) {
         setDataToPrintOnFailure(t, 'invoicer_email', email);
-        await t.typeText(selectors.invoicerEmailInput(), email, {
-          replace: true,
-        });
+        const input = selectors.invoicerEmailInput();
+        await t.click(input).pressKey('ctrl+a delete').typeText(input, email);
       },
       async fillPhone(phone: string) {
         setDataToPrintOnFailure(t, 'invoicer_phone_number', phone);
-        await t.typeText(selectors.invoicerPhoneInput(), phone, {
-          replace: true,
-        });
+        const input = selectors.invoicerPhoneInput();
+        await t.click(input).pressKey('ctrl+a delete').typeText(input, phone);
       },
       async clickSaveAndContinueButton() {
         await t.click(selectors.saveAndContinueButton());

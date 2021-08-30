@@ -5,7 +5,11 @@ from shared.common.tests.factories import UserFactory
 from shared.oidc.tests.conftest import *  # noqa
 
 from applications.enums import ApplicationStatus
-from common.tests.factories import ApplicationFactory, CompanyFactory
+from common.tests.factories import (
+    ApplicationFactory,
+    CompanyFactory,
+    SummerVoucherFactory,
+)
 
 
 @pytest.fixture
@@ -17,6 +21,14 @@ def company(eauthorization_profile):
 @pytest.fixture
 def application(company):
     return ApplicationFactory(status=ApplicationStatus.DRAFT, company=company)
+
+
+@pytest.fixture
+def summer_voucher(application):
+    summer_voucher = SummerVoucherFactory(application=application)
+    yield summer_voucher
+    for attachment in summer_voucher.attachments.all():
+        attachment.attachment_file.delete(save=False)
 
 
 @pytest.fixture

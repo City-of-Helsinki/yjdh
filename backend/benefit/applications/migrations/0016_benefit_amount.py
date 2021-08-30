@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 decimal_places=2,
                 max_digits=8,
                 null=True,
-                verbose_name="amount of the benefit granted, ",
+                verbose_name="amount of the benefit granted, calculated by the system",
             ),
         ),
         migrations.AddField(
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 decimal_places=2,
                 max_digits=8,
                 null=True,
-                verbose_name="amount of the benefit granted, ",
+                verbose_name="amount of the benefit granted, calculated by the system",
             ),
         ),
         migrations.AddField(

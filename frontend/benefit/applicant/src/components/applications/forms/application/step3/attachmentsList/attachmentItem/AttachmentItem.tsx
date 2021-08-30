@@ -22,8 +22,8 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
   const handleRemove = (): void => onRemove(id);
 
   return (
-    <$Container onClick={handleClick}>
-      <$Title>
+    <$Container>
+      <$Title onClick={handleClick}>
         <IconPaperclip aria-label={name} />
         {name}
       </$Title>

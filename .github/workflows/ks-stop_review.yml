@@ -20,6 +20,7 @@ env:
 
 jobs:
   stop_review:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     name: Stop Review
     steps:

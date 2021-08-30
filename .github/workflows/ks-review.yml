@@ -39,6 +39,7 @@ env:
   MOCK_FLAG: 1
 jobs:
   build:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     strategy:
       fail-fast: false
       matrix:

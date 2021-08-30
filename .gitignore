@@ -151,3 +151,5 @@ node_modules
 # nohup output
 nohup.out
 
+# media files
+**/media/**
