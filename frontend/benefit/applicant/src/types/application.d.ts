@@ -60,6 +60,7 @@ export interface AttachmentData {
   application: string;
   attachment_type: ATTACHMENT_TYPES;
   attachment_file: string;
+  attachment_file_name: string;
   content_type: ATTACHMENT_CONTENT_TYPES;
   created_at?: string;
 }
@@ -198,6 +199,7 @@ export interface Attachment {
   application: string;
   attachmentType: ATTACHMENT_TYPES;
   attachmentFile: string;
+  attachmentFileName: string;
   contentType: ATTACHMENT_CONTENT_TYPES;
   createdAt?: string;
 }

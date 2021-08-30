@@ -44,21 +44,17 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
       </$Heading>
       {files && files.length > 0 ? (
         <>
-          {files.map((file) => (
+          {files?.map((file) => (
             <AttachmentItem
               key={file.id}
               id={file.id}
-              // todo: fix filenames when added to the model, currently does not exist
-              name={file.id}
+              name={file.attachmentFileName}
               removeText={t(`${translationsBase}.remove`)}
               onClick={() =>
                 // eslint-disable-next-line security/detect-non-literal-fs-filename
                 window.open(file.attachmentFile, '_blank')?.focus()
               }
-              onRemove={() =>
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                !isRemoving && handleRemove(file.id)
-              }
+              onRemove={() => !isRemoving && handleRemove(file.id)}
             />
           ))}
         </>
