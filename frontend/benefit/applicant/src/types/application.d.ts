@@ -60,6 +60,7 @@ export interface AttachmentData {
   application: string;
   attachment_type: ATTACHMENT_TYPES;
   attachment_file: string;
+  attachment_file_name: string;
   content_type: ATTACHMENT_CONTENT_TYPES;
   created_at?: string;
 }
@@ -193,6 +194,16 @@ export type Employee = {
   [APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION]?: string;
 };
 
+export interface Attachment {
+  id: string;
+  application: string;
+  attachmentType: ATTACHMENT_TYPES;
+  attachmentFile: string;
+  attachmentFileName: string;
+  contentType: ATTACHMENT_CONTENT_TYPES;
+  createdAt?: string;
+}
+
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -225,6 +236,7 @@ export type Application = {
   deMinimisAidSet?: DeMinimisAid[];
   createdAt?: string | null;
   applicationStep?: string | null;
+  attachments?: Attachment[];
   // create_application_for_company ? not present in the UI?
 };
 
@@ -234,3 +246,13 @@ export type ApplicationTempData = {
   deMinimisAids: DeMinimisAid[];
   currentStep: number;
 };
+
+export interface UploadAttachmentData {
+  applicationId: string;
+  data: FormData;
+}
+
+export interface RemoveAttachmentData {
+  applicationId: string;
+  attachmentId: string;
+}

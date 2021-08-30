@@ -6,6 +6,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
+  Attachment,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import React, { useEffect, useState } from 'react';
@@ -17,6 +18,7 @@ type ExtendedComponentProps = {
   showSubsidyMessage: boolean;
   handleNext: () => void;
   handleBack: () => void;
+  attachments: Attachment[];
 };
 
 const useApplicationFormStep3 = (
@@ -83,6 +85,7 @@ const useApplicationFormStep3 = (
     showSubsidyMessage: Boolean(
       application?.paySubsidyPercent && application?.additionalPaySubsidyPercent
     ),
+    attachments: application.attachments || [],
   };
 };
 

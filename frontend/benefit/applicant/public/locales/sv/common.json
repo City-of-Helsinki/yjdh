@@ -363,6 +363,20 @@
     "generic": {
       "label": "Error occurred",
       "text": "Please try again later."
+    },
+    "attachments": {
+      "title": "Error occurred",
+      "tooBig": "The attachemnt size is too big.",
+      "fileType": "The attachment file type is not allowed."
     }
+  },
+  "upload": {
+    "isUploading": "Uploading...",
+    "errorTitle": "Uploading failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "delete": {
+    "errorTitle": "Deleting failed",
+    "errorMessage": "Something went wrong. Please try again later."
   }
 }
