@@ -23,6 +23,8 @@ RUN apt-install.sh \
 COPY --chown=appuser:appuser kesaseteli/docker-entrypoint.sh /entrypoint/docker-entrypoint.sh
 ENTRYPOINT ["/entrypoint/docker-entrypoint.sh"]
 
+COPY --chown=appuser:appuser kesaseteli/media/ /var/media/
+
 # ==============================
 FROM appbase as development
 # ==============================

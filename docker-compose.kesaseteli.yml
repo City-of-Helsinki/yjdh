@@ -26,6 +26,7 @@ services:
     volumes:
       - ./backend/kesaseteli:/app
       - ./backend/shared:/shared
+      - ./backend/kesaseteli/media:/var/media
     depends_on:
       - postgres
     container_name: kesaseteli-backend

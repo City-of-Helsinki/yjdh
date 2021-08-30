@@ -42,7 +42,9 @@ class DeMinimisAidFactory(factory.django.DjangoModelFactory):
 
 
 class ApplicationBasisFactory(factory.django.DjangoModelFactory):
-    identifier = factory.Faker("sentence", nb_words=2)
+    identifier = factory.Sequence(
+        lambda id: f"basis_identifier_{id}"
+    )  # ensure it is unique
 
     class Meta:
         model = ApplicationBasis
@@ -116,6 +118,13 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         model = Application
 
 
+class DecidedApplicationFactory(ApplicationFactory):
+    status = ApplicationStatus.ACCEPTED
+    calculated_benefit_amount = factory.Faker(
+        "pydecimal", left_digits=4, right_digits=2, min_value=1
+    )
+
+
 class EmployeeFactory(factory.django.DjangoModelFactory):
     # pass employee=None to prevent ApplicationFactory from creating another employee
     application = factory.SubFactory(ApplicationFactory, employee=None)
@@ -147,16 +156,27 @@ class ApplicationBatchFactory(factory.django.DjangoModelFactory):
         "random_element", elements=AhjoDecision.values
     )
     application_1 = factory.RelatedFactory(
-        ApplicationFactory,
+        DecidedApplicationFactory,
         factory_related_name="batch",
         status=factory.SelfAttribute("batch.proposal_for_decision"),
     )
 
     application_2 = factory.RelatedFactory(
-        ApplicationFactory,
+        DecidedApplicationFactory,
         factory_related_name="batch",
         status=factory.SelfAttribute("batch.proposal_for_decision"),
     )
+    decision_maker_title = factory.Faker("sentence", nb_words=2)
+    decision_maker_name = factory.Faker("name")
+    section_of_the_law = factory.Faker("word")
+    decision_date = factory.Faker(
+        "date_between_dates",
+        date_start=factory.LazyAttribute(lambda _: date.today() - timedelta(days=30)),
+        date_end=factory.LazyAttribute(lambda _: date.today()),
+    )
+
+    expert_inspector_name = factory.Faker("name")
+    expert_inspector_email = factory.Faker("email")
 
     class Meta:
         model = ApplicationBatch

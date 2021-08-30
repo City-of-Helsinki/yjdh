@@ -682,9 +682,9 @@ def test_attachment_upload_and_delete(api_client, application):
         },
         format="multipart",
     )
-
     assert response.status_code == 201
     assert len(application.attachments.all()) == 1
+    assert response.data["attachment_file_name"] == os.path.basename(tmp_file.name)
     attachment = application.attachments.all().first()
     assert attachment.attachment_type == AttachmentType.EMPLOYMENT_CONTRACT
     assert os.path.basename(tmp_file.name) == attachment.attachment_file
