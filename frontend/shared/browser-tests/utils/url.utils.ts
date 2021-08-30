@@ -1,6 +1,6 @@
 import TestController, { ClientFunction } from 'testcafe';
 
-import { SuomiFiAuthorizationUrl } from './settings';
+import { SuomiFiAuthorizationUrls } from './settings';
 
 const getCurrentUrl = ClientFunction(() => document.location.href);
 
@@ -9,7 +9,12 @@ export const getUrlUtils = (t: TestController) => {
   const actions = {};
   const expectations = {
     async urlChangedToAuthorizationEndpoint() {
-      await t.expect(getCurrentUrl()).contains(SuomiFiAuthorizationUrl);
+      const currentUrl = await getCurrentUrl();
+      await t
+        .expect(
+          SuomiFiAuthorizationUrls.some((url) => currentUrl.includes(url))
+        )
+        .eql(true);
     },
   };
   return {

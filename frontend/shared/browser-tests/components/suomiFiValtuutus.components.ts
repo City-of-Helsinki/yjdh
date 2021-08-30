@@ -1,5 +1,6 @@
 import TestController from 'testcafe';
 
+import { DEFAULT_LANGUAGE } from '../../src/i18n/i18n';
 import Company from '../../src/types/company';
 import {
   getErrorMessage,
@@ -7,6 +8,18 @@ import {
   setDataToPrintOnFailure,
   withinContext,
 } from '../utils/testcafe.utils';
+
+const translations = {
+  fi: {
+    submitButton: /valitse ja siirry asiointipalveluun/i,
+  },
+  sv: {
+    submitButton: /välj och gå till e-tjänsten/i,
+  },
+  en: {
+    submitButton: /select and go to the e-service/i,
+  },
+};
 
 export const getSuomiFiValtuutusComponents = (t: TestController) => {
   const within = withinContext(t);
@@ -80,9 +93,11 @@ export const getSuomiFiValtuutusComponents = (t: TestController) => {
       authorizeForm() {
         return screen.findByRole('form');
       },
-      submitButton() {
+      submitButton(
+        buttonTranslationText = /valitse ja siirry asiointipalveluun/i
+      ) {
         return withinAuthorizeForm().findByRole('button', {
-          name: /valitse ja siirry asiointipalveluun/i,
+          name: buttonTranslationText,
         });
       },
     };
@@ -95,8 +110,8 @@ export const getSuomiFiValtuutusComponents = (t: TestController) => {
       },
     };
     const actions = {
-      async clickSubmitButton() {
-        await t.click(selectors.submitButton());
+      async clickSubmitButton(lang = DEFAULT_LANGUAGE) {
+        await t.click(selectors.submitButton(translations[lang].submitButton));
       },
     };
     await expectations.isPresent();
