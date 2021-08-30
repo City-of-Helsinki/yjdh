@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
+import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
 import initLocale from 'shared/components/hocs/initLocale';
 import Layout from 'shared/components/layout/Layout';
 import GlobalStyling from 'shared/styles/globalStyling';
@@ -44,6 +45,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => (
           </Layout>
         </ThemeProvider>
       </AuthProvider>
+      <HiddenLoadingIndicator />
       {process.env.NODE_ENV === 'development' &&
         process.env.TEST_CAFE !== 'true' && <ReactQueryDevtools />}
     </QueryClientProvider>

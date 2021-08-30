@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import getDefaultReactQueryTestClient from 'shared/__tests__/utils/react-query/get-default-react-query-test-client';
 import { render, RenderResult } from 'shared/__tests__/utils/test-utils';
 import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
+import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
@@ -16,7 +17,9 @@ const renderComponent = (
   render(
     <BackendAPIContext.Provider value={AxiosTestContext}>
       <QueryClientProvider client={client}>
-        <ThemeProvider theme={theme}>{Component}</ThemeProvider></QueryClientProvider>
+        <ThemeProvider theme={theme}>{Component}</ThemeProvider>
+        <HiddenLoadingIndicator />
+      </QueryClientProvider>
     </BackendAPIContext.Provider>,
     router
   );

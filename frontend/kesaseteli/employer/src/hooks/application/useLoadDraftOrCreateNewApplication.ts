@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { UseMutateFunction } from 'react-query';
+import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import EmployerApplication from 'shared/types/employer-application';
 
 const useLoadDraftOrCreateNewApplication = (
-  isLoading: boolean,
   isError: boolean,
   applications: EmployerApplication[] | undefined,
   newApplication: EmployerApplication | undefined,
@@ -19,20 +19,22 @@ const useLoadDraftOrCreateNewApplication = (
   const router = useRouter();
   const locale = router.locale ?? DEFAULT_LANGUAGE;
 
+  const { isSyncing } = useIsSyncingToBackend();
+
   React.useEffect(() => {
-    if (!isLoading && !isError) {
+    if (!isSyncing && !isError) {
       const draftApplication =
         applications && applications?.length > 0
           ? applications[0]
           : newApplication;
       if (draftApplication) {
         void router.push(`${locale}/application?id=${draftApplication.id}`);
-      } else {
+      } else if (applications?.length === 0) {
         createApplication();
       }
     }
   }, [
-    isLoading,
+    isSyncing,
     applications,
     newApplication,
     createApplication,

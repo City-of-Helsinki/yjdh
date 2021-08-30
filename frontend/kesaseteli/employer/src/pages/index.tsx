@@ -9,29 +9,27 @@ import React from 'react';
 import withAuth from 'shared/components/hocs/withAuth';
 import ErrorPage from 'shared/components/pages/ErrorPage';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const EmployerIndex: NextPage = () => {
+  const { isSyncing, isMutating } = useIsSyncingToBackend();
+  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
+  const isLoading = isSyncing || isLoadingLogout;
+
   const {
     data: applications,
-    isLoading: isLoadingApplications,
     isError: loadApplicationsError,
-  } = useApplicationsQuery();
+  } = useApplicationsQuery(!isMutating);
   const {
     data: newApplication,
     mutate: createApplication,
     isError: createApplicationError,
-    isLoading: isCreatingApplication,
   } = useCreateApplicationQuery();
 
-  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
-
-  const isLoading =
-    isLoadingApplications || isCreatingApplication || isLoadingLogout;
   const isError = loadApplicationsError || createApplicationError;
 
   useLoadDraftOrCreateNewApplication(
-    isLoading,
     isError,
     applications,
     newApplication,
@@ -44,7 +42,7 @@ const EmployerIndex: NextPage = () => {
   };
 
   const { t } = useTranslation();
-  if (isLoading) {
+  if (isSyncing) {
     return <PageLoadingSpinner />;
   }
   if (isError && !isLoading) {

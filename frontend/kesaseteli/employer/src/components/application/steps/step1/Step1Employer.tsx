@@ -12,20 +12,21 @@ import { $EmployerBasicInfo } from './Step1Employer.sc';
 
 const Step1Employer: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, updateApplication } = useApplicationApi();
-  const onSubmit = (draftApplication: EmployerApplication): void =>
+  const { updateApplication } = useApplicationApi();
+
+  const onSubmit = (draftApplication: EmployerApplication): void => {
     updateApplication(draftApplication);
+  };
   const stepTitle = t('common:application.step1.header');
   return (
     <StepForm stepTitle={stepTitle}>
       <FormSection
         header={stepTitle}
-        loading={isLoading}
         tooltip={t('common:application.step1.tooltip')}
       >
         <CompanyInfo />
       </FormSection>
-      <FormSection loading={isLoading}>
+      <FormSection>
         <$EmployerBasicInfo>
           <TextInput
             id="invoicer_name"

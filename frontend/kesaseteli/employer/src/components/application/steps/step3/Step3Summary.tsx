@@ -8,7 +8,7 @@ import Application from 'shared/types/employer-application';
 
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, application, sendApplication } = useApplicationApi();
+  const { application, sendApplication } = useApplicationApi();
 
   const onSubmit = (draftApplication: Application): void =>
     sendApplication(draftApplication);
@@ -18,7 +18,6 @@ const Step3Summary: React.FC = () => {
     <StepForm stepTitle={stepTitle}>
       <FormSection
         header={stepTitle}
-        loading={isLoading}
         tooltip={t('common:application.step3.tooltip')}
       >
         Yhteenveto: <p />

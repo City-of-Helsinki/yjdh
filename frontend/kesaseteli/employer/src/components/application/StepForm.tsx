@@ -8,6 +8,7 @@ import { getStepNumber } from 'kesaseteli/employer/utils/application-wizard.util
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
 import useSetQueryParam from 'shared/hooks/useSetQueryParam';
 import useShowToastIfError from 'shared/hooks/useShowToastIfError';
 import useWizard from 'shared/hooks/useWizard';
@@ -19,7 +20,7 @@ type Props = {
 };
 
 const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
-  const { activeStep } = useWizard();
+  const { activeStep, isLoading: isLoadingWizard } = useWizard();
   const currentStep = getStepNumber(activeStep + 1);
 
   const { t } = useTranslation();
@@ -28,7 +29,14 @@ const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
   const translateError = (key: keyof Application): string =>
     key ? t(`common:application.step1.form.errors.${key}`) : key;
 
-  const { loadingError, updatingError } = useApplicationApi();
+  const {
+    isLoading: isLoadingApplication,
+    isUpdating,
+    loadingError,
+    updatingError,
+  } = useApplicationApi();
+  const isLoading = isLoadingApplication || isLoadingWizard || isUpdating;
+
   const errorMessage = (loadingError || updatingError)?.message;
   const methods = useForm<Application>({
     mode: 'onBlur',
@@ -51,6 +59,7 @@ const StepForm = ({ stepTitle, children }: Props): JSX.Element => {
   return (
     <FormContextProvider value={context}>
       <form aria-label={stepTitle}>{children}</form>
+      {isLoading && <HiddenLoadingIndicator />}
     </FormContextProvider>
   );
 };

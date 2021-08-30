@@ -35,6 +35,8 @@ module.exports = {
       rules: {
         'jest/expect-expect': 'off',
         'jest/no-done-callback': 'off',
+        'no-await-in-loop': 'off',
+        'no-restricted-syntax': 0,
       },
     },
     {
