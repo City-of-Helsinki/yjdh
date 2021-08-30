@@ -166,6 +166,9 @@ export const DEFAULT_APPLICATION = {
 
 export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'] as const;
 
+export const MAX_SHORT_STRING_LENGTH = 64 as const;
+export const MAX_LONG_STRING_LENGTH = 256 as const;
+
 export enum VALIDATION_MESSAGE_KEYS {
   REQUIRED = 'common:form.validation.required',
   INVALID = 'common:form.validation.invalid',
