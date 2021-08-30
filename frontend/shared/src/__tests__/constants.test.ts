@@ -133,13 +133,23 @@ describe('constants', () => {
           expect(city).toMatch(CITY_REGEX);
         });
       });
+
+      it('should fail to match invalid characters', () => {
+        const invalidCharacters = '!@#$%^&*()_+-=[]{}|;\':",./<>?';
+        const invalidCityName = 'Helsinki1';
+
+        expect(invalidCharacters).not.toMatch(CITY_REGEX);
+        expect(invalidCityName).not.toMatch(CITY_REGEX);
+      });
     });
 
     describe('ADDRESS_REGEX', () => {
       it('should match addresses', () => {
-        const address = faker.address.streetAddress();
+        const address1 = 'Rantatie 2, Helsinki';
+        const address2 = 'Jäätie 23, Åbo';
 
-        expect(address).toMatch(ADDRESS_REGEX);
+        expect(address1).toMatch(ADDRESS_REGEX);
+        expect(address2).toMatch(ADDRESS_REGEX);
       });
 
       it('should not match non-address strings', () => {
