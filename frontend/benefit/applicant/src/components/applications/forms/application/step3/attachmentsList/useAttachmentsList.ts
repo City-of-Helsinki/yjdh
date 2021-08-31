@@ -80,7 +80,7 @@ const useAttachmentsList = (
     const file = e.target.files?.[0];
     const fileSize = file?.size;
     // validate file extention
-    if (!ATTACHMENT_ALLOWED_TYPES.includes(file?.type || '')) {
+    if (file && !ATTACHMENT_ALLOWED_TYPES.includes(file?.type || '')) {
       showErrorToast(
         t('common:error.attachments.title'),
         t('common:error.attachments.fileType')
