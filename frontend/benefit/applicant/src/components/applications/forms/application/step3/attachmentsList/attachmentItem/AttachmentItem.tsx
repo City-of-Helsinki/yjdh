@@ -18,16 +18,22 @@ const AttachmentItem: React.FC<AttachmentItemProps> = ({
   onClick,
   onRemove,
 }) => {
-  const handleClick = (): void => onClick(id);
-  const handleRemove = (): void => onRemove(id);
+  const handleClick = (e: React.MouseEvent<HTMLElement>): void => {
+    e.preventDefault();
+    onClick(id);
+  };
+  const handleRemove = (e: React.MouseEvent<HTMLElement>): void => {
+    e.preventDefault();
+    onRemove(id);
+  };
 
   return (
     <$Container>
-      <$Title onClick={handleClick}>
+      <$Title onClick={handleClick} aria-label={name} href="#">
         <IconPaperclip aria-label={name} />
         {name}
       </$Title>
-      <$ActionContainer onClick={handleRemove}>
+      <$ActionContainer onClick={handleRemove} aria-label={removeText} href="#">
         <IconCross aria-label={removeText} />
         {removeText}
       </$ActionContainer>
