@@ -1,6 +1,8 @@
 import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP1,
+  MAX_LONG_STRING_LENGTH,
+  MAX_SHORT_STRING_LENGTH,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
@@ -21,6 +23,14 @@ import { FormikProps, useFormik } from 'formik';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field, FieldsDef } from 'shared/components/forms/fields/types';
+import {
+  ADDRESS_REGEX,
+  CITY_REGEX,
+  COMPANY_BANK_ACCOUNT_NUMBER,
+  NAMES_REGEX,
+  PHONE_NUMBER_REGEX,
+  POSTAL_CODE_REGEX,
+} from 'shared/constants';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
@@ -98,10 +108,33 @@ const useApplicationFormStep1 = (
   const formik = useFormik({
     initialValues: application || {},
     validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string().matches(
-        /^FI\d{16}$/,
-        t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
-      ),
+      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS]: Yup.string()
+        .matches(ADDRESS_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+        .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string()
+        .matches(POSTAL_CODE_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY]: Yup.string()
+        .matches(CITY_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+        .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string()
+        .matches(
+          COMPANY_BANK_ACCOUNT_NUMBER,
+          t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
+        )
+        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: Yup.string()
+        .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
+        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string()
+        .email(t(VALIDATION_MESSAGE_KEYS.EMAIL_INVALID))
+        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string()
+        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME]: Yup.string()
+        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
     }),
     validateOnChange: true,
     validateOnBlur: true,

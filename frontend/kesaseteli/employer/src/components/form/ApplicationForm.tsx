@@ -4,7 +4,7 @@ import { FormProviderProps, useForm } from 'react-hook-form';
 import Application from 'shared/types/employer-application';
 
 type Props = {
-  title: string,
+  title: string;
   application: Application | undefined;
   isLoading: boolean;
   children: React.ReactNode;

@@ -17,7 +17,9 @@ const FormSection: React.FC<FormSectionProps> = ({
   tooltip,
 }) => (
   <$Section>
-    {header && <Heading loading={loading} header={header} tooltip={tooltip} />}
+    {header && (
+      <Heading loading={loading} header={header} tooltip={tooltip} as="h2" />
+    )}
     <$Content>{children}</$Content>
   </$Section>
 );

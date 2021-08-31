@@ -5,7 +5,7 @@ import {
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
   $Checkbox,
@@ -23,8 +23,8 @@ import {
   $EmployerBasicInfoContainer,
   $EmploymentMoneyContainer,
   $EmploymentRelationshipContainer,
-  $FieildsWithInfoColumn,
-  $FieildsWithInfoContainer,
+  $FieldsWithInfoColumn,
+  $FieldsWithInfoContainer,
   $SubSection,
 } from '../Application.sc';
 import StepperActions from '../stepperActions/StepperActions';
@@ -45,6 +45,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     formik,
     subsidyOptions,
   } = useApplicationFormStep2(data);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <form onSubmit={handleSubmitNext} noValidate>
@@ -333,8 +337,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading3`)}>
-        <$FieildsWithInfoContainer>
-          <$FieildsWithInfoColumn>
+        <$FieldsWithInfoContainer>
+          <$FieldsWithInfoColumn>
             <$FormGroup>
               <SelectionGroup
                 label={fields.benefitType.label}
@@ -406,8 +410,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 />
               </SelectionGroup>
             </$FormGroup>
-          </$FieildsWithInfoColumn>
-          <$FieildsWithInfoColumn>
+          </$FieldsWithInfoColumn>
+          <$FieldsWithInfoColumn>
             {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
               <Notification
                 label={t(
@@ -417,15 +421,15 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 {t(`${translationsBase}.notifications.salaryBenefit.content`)}
               </Notification>
             )}
-          </$FieildsWithInfoColumn>
-        </$FieildsWithInfoContainer>
+          </$FieldsWithInfoColumn>
+        </$FieldsWithInfoContainer>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
         {!formik.values.benefitType && (
           <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
         )}
-        <$FieildsWithInfoContainer>
-          <$FieildsWithInfoColumn>
+        <$FieldsWithInfoContainer>
+          <$FieldsWithInfoColumn>
             <$FormGroup>
               {formik.values.benefitType && (
                 <>
@@ -438,8 +442,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               )}
             </$FormGroup>
             <$FormGroup>todo: datepicker range to implement</$FormGroup>
-          </$FieildsWithInfoColumn>
-          <$FieildsWithInfoColumn>
+          </$FieldsWithInfoColumn>
+          <$FieldsWithInfoColumn>
             {formik.values.benefitType && (
               <Notification
                 label={t(
@@ -455,8 +459,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 )}
               </Notification>
             )}
-          </$FieildsWithInfoColumn>
-        </$FieildsWithInfoContainer>
+          </$FieldsWithInfoColumn>
+        </$FieldsWithInfoContainer>
       </FormSection>
       <FormSection
         header={t(

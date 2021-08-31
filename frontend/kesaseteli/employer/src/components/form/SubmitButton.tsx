@@ -16,9 +16,11 @@ const SubmitButton = ({
   onSubmit,
   children,
 }: Props): ReturnType<typeof Button> => {
-  const { handleSubmit, isLoading, formState: { isSubmitting, isValid } } = React.useContext(
-    getApplicationFormContext()
-  );
+  const {
+    handleSubmit,
+    isLoading,
+    formState: { isSubmitting, isValid },
+  } = React.useContext(getApplicationFormContext());
 
   return (
     <Button

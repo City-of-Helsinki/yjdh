@@ -12,14 +12,15 @@ const useUpdateApplicationQuery = (
 
   return useMutation<Application, Error, Application>(
     ['applications', id],
-    (application: Application) => !id
+    (application: Application) =>
+      !id
         ? Promise.reject(new Error('Missing id'))
         : handleResponse<Application>(
-        axios.put(`${BackendEndpoint.APPLICATIONS}${id}/`, application)
-        ),
+            axios.put(`${BackendEndpoint.APPLICATIONS}${id}/`, application)
+          ),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData(['applications', id], data)
+        queryClient.setQueryData(['applications', id], data);
       },
     }
   );

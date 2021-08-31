@@ -69,6 +69,7 @@ export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
   application_number?: number;
+  application_step: string; // required
   employee: EmployeeData; // required
   company?: CompanyData;
   company_name?: string;

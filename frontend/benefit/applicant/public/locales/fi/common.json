@@ -324,12 +324,12 @@
   "form": {
     "validation": {
       "required": "Tämä kenttä on pakollinen",
+      "invalid": "Virheellinen arvo",
       "number": {
         "max": "Arvon tulee olla enintään {{max}}",
         "min": "Arvon tulee olla vähintään {{min}}"
       },
       "string": {
-        "email": "Tämän kentän on oltava kelvollinen sähköpostiosoite",
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
         "min": "Tämä kenttä tulee olla vähintään {{min}} merkkiä pitkä",
         "url": "Tämän kentän on oltava kelvollinen URL-osoite",
@@ -346,6 +346,12 @@
       "time": {
         "min": "Arvon tulee olla aikaisintaan {{min}}",
         "max": "Arvon tulee olla viimeistään {{max}}"
+      },
+      "phone": {
+        "invalid": "Arvon pitää olla puhelinnumero"
+      },
+      "email": {
+        "invalid": "Tämän kentän on oltava kelvollinen sähköpostiosoite"
       },
       "iban": {
         "invalid": "Virheellinen IBAN-tilinumero"

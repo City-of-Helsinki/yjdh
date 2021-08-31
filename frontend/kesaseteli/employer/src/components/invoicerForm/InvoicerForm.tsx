@@ -37,9 +37,11 @@ const InvoicerForm: React.FC<Props> = ({ applicationId }) => {
       />
     );
   return (
-    <ApplicationForm title={t(
-          `common:application.step1.form.title`
-    )} application={application} isLoading={isSyncing}>
+    <ApplicationForm
+      title={t(`common:application.step1.form.title`)}
+      application={application}
+      isLoading={isSyncing}
+    >
       <$TextInput
         id="invoicer_name"
         validation={{ required: true, maxLength: 256 }}

@@ -2,8 +2,8 @@ import { $SecondaryButton } from 'benefit/applicant/components/applications/Appl
 import { $SubActionContainer } from 'benefit/applicant/components/applications/forms/application/Application.sc';
 import {
   DE_MINIMIS_AID_FIELDS,
+  DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
-  SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { DateInput, IconPlusCircle, TextInput } from 'hds-react';
@@ -25,6 +25,7 @@ interface DeMinimisAidFormProps {
 const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
   const {
     t,
+    language,
     handleSubmit,
     getErrorMessage,
     fields,
@@ -44,6 +45,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               name={fields.granter.name}
               label={fields.granter.label}
               placeholder={fields.granter.placeholder}
+              onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.granter}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
@@ -56,6 +58,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               name={fields.amount.name}
               label={fields.amount.label || ''}
               placeholder={fields.amount.placeholder}
+              onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.amount?.toString()}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
@@ -68,7 +71,8 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               name={fields.grantedAt.name}
               label={fields.grantedAt.label}
               placeholder={fields.grantedAt.placeholder}
-              language={SUPPORTED_LANGUAGES.FI}
+              language={language}
+              onBlur={formik.handleBlur}
               onChange={(value) =>
                 formik.setFieldValue(fields.grantedAt.name, value)
               }
@@ -76,7 +80,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
-              maxDate={new Date()}
+              maxDate={DE_MINIMIS_AID_GRANTED_AT_MAX_DATE}
               required
             />
           </$FieldsContainerWithPadding>

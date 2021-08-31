@@ -22,19 +22,20 @@ export const $SubSection = styled.div`
   }
 `;
 
-export const $FieildsWithInfoContainer = styled.div`
+export const $FieldsWithInfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-export const $FieildsWithInfoColumn = styled.div`
+export const $FieldsWithInfoColumn = styled.div`
   flex: 0 0 50%;
 `;
 
 export const $ContactPersonContainer = styled($FormGroup)`
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 2fr;
-  grid-gap: ${(props) => props.theme.spacing.xs};
+  grid-template-columns: 3fr 3fr 2fr 4fr;
+  grid-gap: ${({ theme }) => `${theme.spacing.m} ${theme.spacing.xs}`};
+  align-items: baseline;
 `;
 
 export const $EmployerBasicInfoContainer = styled($FormGroup)`

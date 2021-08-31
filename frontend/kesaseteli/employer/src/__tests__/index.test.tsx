@@ -14,7 +14,7 @@ import React from 'react';
 import {
   fakeApplication,
   fakeApplications,
-} from 'shared/__tests__/utils/fake-objects'
+} from 'shared/__tests__/utils/fake-objects';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { render, screen, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';

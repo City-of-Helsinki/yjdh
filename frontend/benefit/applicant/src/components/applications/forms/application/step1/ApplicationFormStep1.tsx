@@ -6,7 +6,6 @@ import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
-import Spacing from 'shared/components/forms/spacing/Spacing';
 import { phoneToLocal } from 'shared/utils/string.utils';
 
 import { $ContactPersonContainer, $SubSection } from '../Application.sc';
@@ -47,6 +46,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             name={fields.companyContactPersonFirstName.name}
             label={fields.companyContactPersonFirstName.label}
             placeholder={fields.companyContactPersonFirstName.placeholder}
+            onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.companyContactPersonFirstName}
             invalid={
@@ -69,6 +69,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             name={fields.companyContactPersonLastName.name}
             label={fields.companyContactPersonLastName.label}
             placeholder={fields.companyContactPersonLastName.placeholder}
+            onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.companyContactPersonLastName}
             invalid={
@@ -91,6 +92,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             name={fields.companyContactPersonPhoneNumber.name}
             label={fields.companyContactPersonPhoneNumber.label}
             placeholder={fields.companyContactPersonPhoneNumber.placeholder}
+            onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={phoneToLocal(formik.values.companyContactPersonPhoneNumber)}
             invalid={
@@ -113,6 +115,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             name={fields.companyContactPersonEmail.name}
             label={fields.companyContactPersonEmail.label}
             placeholder={fields.companyContactPersonEmail.placeholder}
+            onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.companyContactPersonEmail}
             invalid={
@@ -130,14 +133,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             )}
             required
           />
-        </$ContactPersonContainer>
-        <Spacing size="m" />
-        <$FormGroup>
           <Select
             defaultValue={getDefaultSelectValue(
               APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
             )}
-            style={{ width: 350 }}
             helper={getErrorMessage(
               APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
             )}
@@ -160,7 +159,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             }
             required
           />
-        </$FormGroup>
+        </$ContactPersonContainer>
       </FormSection>
       <FormSection
         header={t(`${translationsBase}.heading3`)}
@@ -270,6 +269,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 placeholder={
                   fields.coOperationNegotiationsDescription.placeholder
                 }
+                onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 value={formik.values.coOperationNegotiationsDescription}
                 invalid={

@@ -60,15 +60,15 @@ const getApplicationPageApi = (
           expect(screen.queryByLabelText(/header.name/i)).toHaveTextContent(
             company.name
           );
-          expect(screen.queryByLabelText(/header.business_id/i)).toHaveTextContent(
-            company.business_id
-          );
+          expect(
+            screen.queryByLabelText(/header.business_id/i)
+          ).toHaveTextContent(company.business_id);
           expect(screen.queryByLabelText(/header.industry/i)).toHaveTextContent(
             company.industry
           );
-          expect(screen.queryByLabelText(/header.company_form/i)).toHaveTextContent(
-            company.company_form
-          );
+          expect(
+            screen.queryByLabelText(/header.company_form/i)
+          ).toHaveTextContent(company.company_form);
           expect(screen.queryByLabelText(/header.postcode/i)).toHaveTextContent(
             company.postcode
           );

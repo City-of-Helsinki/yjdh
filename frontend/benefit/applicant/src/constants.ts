@@ -13,7 +13,7 @@ export enum SUPPORTED_LANGUAGES {
   EN = 'en',
 }
 
-export const DEFAULT_APPLICATION_STEP = 'step_1';
+export const DEFAULT_APPLICATION_STEP = 'step_1' as const;
 
 export enum APPLICATION_SAVE_ACTIONS {
   SAVE_AND_NEXT = 'save_next',
@@ -23,13 +23,13 @@ export enum APPLICATION_SAVE_ACTIONS {
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
 
-export const COMMON_I18N_NAMESPACES = ['common'];
+export const COMMON_I18N_NAMESPACES = ['common'] as const;
 
 export const PRIVACY_POLICY_LINKS = {
   fi: 'https://www.hel.fi/1',
   en: 'https://www.hel.fi/2',
   sv: 'https://www.hel.fi/3',
-};
+} as const;
 
 export enum APPLICATION_STATUSES {
   DRAFT = 'draft',
@@ -110,13 +110,15 @@ export const APPLICATION_FIELDS = {
   ...APPLICATION_FIELDS_STEP1,
   // step2 - Employee
   ...APPLICATION_FIELDS_STEP2,
-};
+} as const;
 
 export enum DE_MINIMIS_AID_FIELDS {
   GRANTER = 'granter',
   AMOUNT = 'amount',
   GRANTED_AT = 'grantedAt',
 }
+
+export const DE_MINIMIS_AID_GRANTED_AT_MAX_DATE = new Date();
 
 export const DEFAULT_APPLICATION = {
   status: APPLICATION_STATUSES.DRAFT,
@@ -162,14 +164,19 @@ export const DEFAULT_APPLICATION = {
   applicationStep: DEFAULT_APPLICATION_STEP,
 };
 
-export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'];
+export const PAY_SUBSIDY_OPTIONS = ['30', '40', '50', '100'] as const;
+
+export const MAX_SHORT_STRING_LENGTH = 64 as const;
+export const MAX_LONG_STRING_LENGTH = 256 as const;
 
 export enum VALIDATION_MESSAGE_KEYS {
   REQUIRED = 'common:form.validation.required',
-  EMAIL = 'common:form.validation.string.email',
+  INVALID = 'common:form.validation.invalid',
+  EMAIL_INVALID = 'common:form.validation.email.invalid',
   IBAN_INVALID = 'common:form.validation.iban.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
+  PHONE_INVALID = 'common:form.validation.phone.invalid',
   STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',
   STRING_MIN = 'common:form.validation.string.min',
   STRING_MAX = 'common:form.validation.string.max',
@@ -183,8 +190,6 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MIN = 'common:form.validation.time.min',
   TIME_MAX = 'common:form.validation.time.max',
 }
-
-export const dateRegex = /(?:(?:0?[1-9]|1\d|2\d)\.(?:0?[1-9]|1[0-2])|(?:30\.(?!02)(?:0[1-9]|1[0-2]))|(?:31\.(?:0[13578]|1[02])))\.(?:19|20)\d{2}/;
 
 // 10mb
 export const ATTACHMENT_MAX_SIZE = 10485760;
