@@ -1,6 +1,6 @@
 import { PhoneInput } from 'hds-react';
 import ApplicationActions from 'kesaseteli/employer/components/application/ApplicationActions';
-import TextInput from 'kesaseteli/employer/components/application/TextInput';
+import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
 import styled from 'styled-components';
 
