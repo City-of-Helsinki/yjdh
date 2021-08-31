@@ -11,7 +11,7 @@ from applications.enums import (
 from companies.models import Company
 
 
-class Application(HistoricalModel, UUIDModel):
+class Application(HistoricalModel, TimeStampedModel, UUIDModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
@@ -63,8 +63,13 @@ class Application(HistoricalModel, UUIDModel):
         verbose_name=_("invoicer phone number"),
     )
 
+    class Meta:
+        verbose_name = _("application")
+        verbose_name_plural = _("applications")
+        ordering = ["-created_at"]
 
-class SummerVoucher(HistoricalModel, UUIDModel):
+
+class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     application = models.ForeignKey(
         Application,
         on_delete=models.CASCADE,
@@ -118,6 +123,12 @@ class SummerVoucher(HistoricalModel, UUIDModel):
         default="",
         verbose_name=_("unnumbered summer voucher reason"),
     )
+    ordering = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = _("summer voucher")
+        verbose_name_plural = _("summer vouchers")
+        ordering = ["-application__created_at", "ordering"]
 
 
 class Attachment(UUIDModel, TimeStampedModel):
@@ -146,4 +157,4 @@ class Attachment(UUIDModel, TimeStampedModel):
     class Meta:
         verbose_name = _("attachment")
         verbose_name_plural = _("attachments")
-        ordering = ["attachment_type", "created_at"]
+        ordering = ["-summer_voucher__created_at", "attachment_type", "-created_at"]

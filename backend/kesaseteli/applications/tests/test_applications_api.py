@@ -46,22 +46,21 @@ def test_application_put(api_client, application):
 @pytest.mark.django_db
 def test_application_patch(api_client, company):
     application = ApplicationFactory(company=company, status=ApplicationStatus.DRAFT)
-    data = {"status": ApplicationStatus.REJECTED.value}
+    data = {"status": ApplicationStatus.SUBMITTED.value}
     response = api_client.patch(
         get_detail_url(application),
         data,
     )
 
     assert response.status_code == 200
-    assert response.data["status"] == ApplicationStatus.REJECTED
+    assert response.data["status"] == ApplicationStatus.SUBMITTED
 
     application.refresh_from_db()
-    assert application.status == ApplicationStatus.REJECTED
+    assert application.status == ApplicationStatus.SUBMITTED
 
 
 @pytest.mark.django_db
-def test_add_summer_voucher(api_client, application):
-    summer_voucher = SummerVoucherFactory(application=application)
+def test_add_summer_voucher(api_client, application, summer_voucher):
     original_summer_voucher_count = application.summer_vouchers.count()
 
     data = ApplicationSerializer(application).data
@@ -76,6 +75,10 @@ def test_add_summer_voucher(api_client, application):
     )
 
     assert response.status_code == 200
+    assert (
+        response.data["summer_vouchers"][-1]["ordering"]
+        == original_summer_voucher_count
+    )  # Index starts from 0
 
     application.refresh_from_db()
     summer_voucher_count_after_update = application.summer_vouchers.count()
@@ -83,7 +86,7 @@ def test_add_summer_voucher(api_client, application):
 
 
 @pytest.mark.django_db
-def test_update_summer_voucher(api_client, application):
+def test_update_summer_voucher(api_client, application, summer_voucher):
     data = ApplicationSerializer(application).data
     data["summer_vouchers"][0]["summer_voucher_id"] = "test"
 
@@ -97,8 +100,7 @@ def test_update_summer_voucher(api_client, application):
 
 
 @pytest.mark.django_db
-def test_remove_single_summer_voucher(api_client, application):
-    SummerVoucherFactory(application=application)
+def test_remove_single_summer_voucher(api_client, application, summer_voucher):
     original_summer_voucher_count = application.summer_vouchers.count()
 
     data = ApplicationSerializer(application).data
@@ -118,6 +120,7 @@ def test_remove_single_summer_voucher(api_client, application):
 
 @pytest.mark.django_db
 def test_remove_all_summer_vouchers(api_client, application):
+    SummerVoucherFactory.create_batch(size=3, application=application)
     data = ApplicationSerializer(application).data
     data.pop("summer_vouchers")
     response = api_client.put(
@@ -140,10 +143,15 @@ def test_application_create(api_client, company):
     )
 
     assert response.status_code == 201
+    assert Application.objects.count() == 1
     assert response.data["company"]["name"] == company.name
     assert response.data["company"]["business_id"] == company.business_id
 
-    for field in Application._meta.fields:
+    for field in [
+        field
+        for field in Application._meta.fields
+        if field.name not in ["created_at", "modified_at"]
+    ]:
         assert field.name in response.data
 
 
@@ -156,7 +164,11 @@ def test_application_create_mock(api_client, company):
     )
 
     assert response.status_code == 201
-    for field in Application._meta.fields:
+    for field in [
+        field
+        for field in Application._meta.fields
+        if field.name not in ["created_at", "modified_at"]
+    ]:
         assert field.name in response.data
 
 
@@ -201,15 +213,18 @@ def test_application_create_writes_audit_log(api_client, user_with_profile, comp
 def test_application_update_writes_audit_log(
     api_client, user_with_profile, application
 ):
+    application.invoicer_name = "test1"
+    application.save()
+
     data = ApplicationSerializer(application).data
-    data["status"] = "submitted"
+    data["invoicer_name"] = "test2"
     response = api_client.put(
         get_detail_url(application),
         data,
     )
 
     assert response.status_code == 200
-    assert response.data["status"] == "submitted"
+    assert response.data["invoicer_name"] == "test2"
 
     audit_event = AuditLogEntry.objects.first().message["audit_event"]
     assert audit_event["actor"] == {
@@ -222,7 +237,7 @@ def test_application_update_writes_audit_log(
     assert audit_event["target"] == {
         "id": response.data["id"],
         "type": "Application",
-        "changes": ["status changed from draft to submitted"],
+        "changes": ["invoicer_name changed from test1 to test2"],
     }
     assert audit_event["status"] == "SUCCESS"
 

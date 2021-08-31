@@ -10,7 +10,7 @@ from PIL import Image
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import AttachmentSerializer
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, AttachmentType
 from applications.models import Attachment
 
 
@@ -21,7 +21,9 @@ def handle_attachment_url(summer_voucher, attachment):
     )
 
 
-def _upload_file(request, api_client, summer_voucher, extension, attachment_type):
+def _upload_file(
+    request, api_client, summer_voucher, extension, attachment_type: AttachmentType
+):
     with open(
         os.path.join(
             request.fspath.dirname, "data", f"valid_{extension}_file.{extension}"
@@ -34,7 +36,7 @@ def _upload_file(request, api_client, summer_voucher, extension, attachment_type
             ),
             {
                 "attachment_file": valid_file,
-                "attachment_type": attachment_type,
+                "attachment_type": str(attachment_type),
             },
             format="multipart",
         )
@@ -44,7 +46,11 @@ def _upload_file(request, api_client, summer_voucher, extension, attachment_type
 @pytest.mark.parametrize("extension", ["pdf", "jpg"])
 def test_attachment_upload(request, api_client, summer_voucher, extension):
     response = _upload_file(
-        request, api_client, summer_voucher, extension, "employment_contract"
+        request,
+        api_client,
+        summer_voucher,
+        extension,
+        AttachmentType.EMPLOYMENT_CONTRACT,
     )
     assert response.status_code == 201
     assert len(summer_voucher.attachments.all()) == 1
@@ -113,7 +119,7 @@ def test_attachment_upload_invalid_status(
     application.status = status
     application.save()
     response = _upload_file(
-        request, api_client, summer_voucher, "pdf", "employment_contract"
+        request, api_client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
     )
     assert response.status_code == 400
     assert len(summer_voucher.attachments.all()) == 0
@@ -122,15 +128,20 @@ def test_attachment_upload_invalid_status(
 @pytest.mark.django_db
 def test_too_many_attachments(request, api_client, summer_voucher):
 
-    for _ in range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION):
+    for idx, _ in enumerate(
+        range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION)
+    ):
         response = _upload_file(
-            request, api_client, summer_voucher, "pdf", "employment_contract"
+            request,
+            api_client,
+            summer_voucher,
+            "pdf",
+            AttachmentType.EMPLOYMENT_CONTRACT,
         )
-        print(response.data)
         assert response.status_code == 201
 
     response = _upload_file(
-        request, api_client, summer_voucher, "pdf", "employment_contract"
+        request, api_client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
     )
     assert response.status_code == 400
     assert (
@@ -140,7 +151,9 @@ def test_too_many_attachments(request, api_client, summer_voucher):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("attachment_type", ["employment_contract", "payslip"])
+@pytest.mark.parametrize(
+    "attachment_type", [attachment_type for attachment_type in AttachmentType.values]
+)
 def test_get_attachment(request, api_client, summer_voucher, attachment_type):
     _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
     attachment = Attachment.objects.first()
@@ -163,7 +176,9 @@ def test_get_attachment_when_not_saved(api_client, summer_voucher):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("attachment_type", ["employment_contract", "payslip"])
+@pytest.mark.parametrize(
+    "attachment_type", [attachment_type for attachment_type in AttachmentType.values]
+)
 def test_delete_attachment(request, api_client, summer_voucher, attachment_type):
     _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
     attachment = Attachment.objects.first()
