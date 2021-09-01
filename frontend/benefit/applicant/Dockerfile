@@ -84,7 +84,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-ser
 RUN yarn install --production --frozen-lockfile --check-files
 
 # install lerna
-RUN yarn global add lerna
+RUN yarn add -W lerna
 
 USER root
 # Use non-root user and add it to the root group (0)
