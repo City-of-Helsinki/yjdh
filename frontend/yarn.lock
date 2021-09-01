@@ -6010,11 +6010,11 @@ eslint-plugin-lodash-fp@^2.2.0-a1:
     req-all "^1.0.0"
 
 eslint-plugin-lodash@^7.2.0:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-lodash/-/eslint-plugin-lodash-7.2.0.tgz"
-  integrity sha512-7Wf7SOCK90OFgPd8LleVQa8uCWBZDLjPKxaFdwM/aINDyXhley0nRKSKL6TESGFCCMduYPox5VLttvqV2Vfbig==
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-lodash/-/eslint-plugin-lodash-7.3.0.tgz#02bbb2c39a8b28f73daf01f99b2d83bcc7f11a79"
+  integrity sha512-FQM8HklruJzulPawX3uZqWbeyN3bQT4hjVCpFYMrWo0Hdz1qDCwp1v3JS4zjhdssAXdwCxdnyrNMCZJK70GeUQ==
   dependencies:
-    lodash ">=4"
+    lodash "^4.17.21"
 
 eslint-plugin-markdown@^2.2.0:
   version "2.2.0"
@@ -8995,7 +8995,7 @@ lodash.zipobject@^4.0.0:
   resolved "https://registry.yarnpkg.com/lodash.zipobject/-/lodash.zipobject-4.1.3.tgz"
   integrity sha1-s5n1q6j/YqdG9peb8gshT5ZNvvg=
 
-"lodash@4.6.1 || ^4.16.1", lodash@4.x, lodash@>=4, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
+"lodash@4.6.1 || ^4.16.1", lodash@4.x, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
