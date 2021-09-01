@@ -82,7 +82,7 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
                 store_token_info_in_oidc_profile(user, token_info)
                 return user
             except SuspiciousOperation as exc:
-                LOGGER.warning("failed to get or create user: %s", exc)
+                LOGGER.error("failed to get or create user: %s", exc)
                 return None
 
         return None

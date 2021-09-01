@@ -1,9 +1,7 @@
 import os
 
 import environ
-import sentry_sdk
 from django.utils.translation import gettext_lazy as _
-from sentry_sdk.integrations.django import DjangoIntegration
 
 checkout_dir = environ.Path(__file__) - 2
 assert os.path.exists(checkout_dir("manage.py"))
@@ -33,8 +31,6 @@ env = environ.Env(
     MAIL_MAILGUN_KEY=(str, ""),
     MAIL_MAILGUN_DOMAIN=(str, ""),
     MAIL_MAILGUN_API=(str, ""),
-    SENTRY_DSN=(str, ""),
-    SENTRY_ENVIRONMENT=(str, ""),
     CORS_ORIGIN_WHITELIST=(list, []),
     CORS_ORIGIN_ALLOW_ALL=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
@@ -74,6 +70,7 @@ env = environ.Env(
     ELASTICSEARCH_API_KEY=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
+    AZURE_INSTRUMENTATION_KEY=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -92,13 +89,6 @@ USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
 DATABASES = {"default": env.db()}
 
 CACHES = {"default": env.cache()}
-
-sentry_sdk.init(
-    dsn=env.str("SENTRY_DSN"),
-    release="n/a",
-    environment=env("SENTRY_ENVIRONMENT"),
-    integrations=[DjangoIntegration()],
-)
 
 MEDIA_ROOT = env("MEDIA_ROOT")
 STATIC_ROOT = env("STATIC_ROOT")
@@ -195,9 +185,19 @@ LOGGING = {
         },
     },
     "loggers": {
-        "django": {"handlers": ["console"], "level": "ERROR"},
+        "django": {"handlers": ["console"], "level": "WARNING"},
     },
 }
+
+# Azure logging
+AZURE_INSTRUMENTATION_KEY = env.str("AZURE_INSTRUMENTATION_KEY")
+
+if AZURE_INSTRUMENTATION_KEY:
+    LOGGING["handlers"]["azure"] = {
+        "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
+        "instrumentation_key": AZURE_INSTRUMENTATION_KEY,
+    }
+    LOGGING["loggers"]["django"]["handlers"].append("azure")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
