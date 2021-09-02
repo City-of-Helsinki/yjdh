@@ -88,7 +88,7 @@
     "eslint-plugin-testing-library": "^4.1.2",
     "eslint-plugin-unicorn": "^31.0.0",
     "faker": "^5.5.3",
-    "husky": "^6.0.0",
+    "husky": "^7.0.2",
     "i18next": "^20.3.1",
     "jest": "^26.6.3",
     "jest-axe": "^4.1.0",
