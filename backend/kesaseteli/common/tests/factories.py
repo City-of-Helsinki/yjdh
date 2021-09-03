@@ -1,4 +1,5 @@
 import factory
+from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
     ApplicationStatus,
@@ -55,6 +56,7 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
 
 class ApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
+    user = factory.SubFactory(UserFactory)
     status = factory.Faker("random_element", elements=ApplicationStatus.values)
     street_address = factory.Faker("street_address")
     contact_person_name = factory.Faker("name")

@@ -8,28 +8,33 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
+from applications.api.v1.permissions import (
+    ALLOWED_APPLICATION_STATUSES,
+    ApplicationPermission,
+    SummerVoucherPermission,
+)
 from applications.api.v1.serializers import (
     ApplicationSerializer,
     AttachmentSerializer,
     SummerVoucherSerializer,
 )
-from applications.enums import ApplicationStatus
 from applications.models import Application, SummerVoucher
 
 
 class ApplicationViewSet(AuditLoggingModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
-    # TODO: Access control
+    permission_classes = [IsAuthenticated, ApplicationPermission]
 
     def get_queryset(self):
         """
-        Fetch all DRAFT status applications of the company.
+        Fetch all DRAFT status applications of the user & company.
         Should inlcude only 1 application since we don't allow creation of multiple
-        DRAFT applications per company.
+        DRAFT applications per user & company.
         """
         queryset = (
             super()
@@ -37,16 +42,22 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
             .select_related("company")
             .prefetch_related("summer_vouchers")
         )
-        eauth_profile = self.request.user.oidc_profile.eauthorization_profile
+        user = self.request.user
+        eauth_profile = user.oidc_profile.eauthorization_profile
         user_company = getattr(eauth_profile, "company", None)
-        return queryset.filter(company=user_company, status=ApplicationStatus.DRAFT)
+
+        return queryset.filter(
+            company=user_company,
+            user=user,
+            status__in=ALLOWED_APPLICATION_STATUSES,
+        )
 
     def create(self, request, *args, **kwargs):
         """
-        Allow only 1 (DRAFT) application per company.
+        Allow only 1 (DRAFT) application per user & company.
         """
         if self.get_queryset().exists():
-            raise ValidationError("Company can have only one draft application")
+            raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -56,7 +67,27 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
 class SummerVoucherViewSet(AuditLoggingModelViewSet):
     queryset = SummerVoucher.objects.all()
     serializer_class = SummerVoucherSerializer
-    # TODO: Access control
+    permission_classes = [IsAuthenticated, SummerVoucherPermission]
+
+    def get_queryset(self):
+        """
+        Fetch summer vouchers of DRAFT status applications of the user & company.
+        """
+        queryset = (
+            super()
+            .get_queryset()
+            .select_related("application")
+            .prefetch_related("attachments")
+        )
+        user = self.request.user
+        eauth_profile = user.oidc_profile.eauthorization_profile
+        user_company = getattr(eauth_profile, "company", None)
+
+        return queryset.filter(
+            application__company=user_company,
+            application__user=user,
+            application__status__in=ALLOWED_APPLICATION_STATUSES,
+        )
 
     def create(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

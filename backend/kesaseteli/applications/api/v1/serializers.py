@@ -235,8 +235,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "invoicer_email",
             "invoicer_phone_number",
             "company",
+            "user",
             "summer_vouchers",
         ]
+        read_only_fields = ["user"]
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -254,6 +256,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             user.oidc_profile.eauthorization_profile
         )
         validated_data["company"] = company
+        validated_data["user"] = user
 
         return super().create(validated_data)
 
