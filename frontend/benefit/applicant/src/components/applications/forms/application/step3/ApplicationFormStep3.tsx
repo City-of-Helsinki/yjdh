@@ -24,26 +24,26 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     <>
       <FormSection>
         <AttachmentsIngress />
-        {benefitType === BENEFIT_TYPES.SALARY ||
-          (benefitType === BENEFIT_TYPES.EMPLOYMENT && (
-            <>
+        {(benefitType === BENEFIT_TYPES.SALARY ||
+          benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
+          <>
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+            />
+            {apprenticeshipProgram && (
               <AttachmentsList
                 attachments={attachments}
-                attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+                attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
               />
-              {apprenticeshipProgram && (
-                <AttachmentsList
-                  attachments={attachments}
-                  attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
-                />
-              )}
-              <AttachmentsList
-                attachments={attachments}
-                attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-                showMessage={showSubsidyMessage}
-              />
-            </>
-          ))}
+            )}
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+              showMessage={showSubsidyMessage}
+            />
+          </>
+        )}
         {benefitType === BENEFIT_TYPES.COMMISSION && (
           <AttachmentsList
             attachments={attachments}

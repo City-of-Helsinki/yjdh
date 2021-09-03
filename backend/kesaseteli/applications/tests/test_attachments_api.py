@@ -121,7 +121,7 @@ def test_attachment_upload_invalid_status(
     response = _upload_file(
         request, api_client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
     )
-    assert response.status_code == 400
+    assert response.status_code == 404
     assert len(summer_voucher.attachments.all()) == 0
 
 

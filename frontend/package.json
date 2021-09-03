@@ -11,19 +11,19 @@
   ],
   "scripts": {
     "audit": "lerna-audit --level=high --groups=dependencies",
-    "ks-empl:build": "lerna run --scope @frontend/employer --stream build",
-    "bf-applicant:build": "lerna run --scope @frontend/applicant --stream build",
-    "ks-empl:dev": "lerna run --scope @frontend/employer --stream dev",
-    "bf-applicant:dev": "lerna run --scope @frontend/applicant --stream dev",
-    "ks-empl:start": "lerna run --scope  @frontend/employer --stream start",
-    "bf-applicant:start": "lerna run --scope  @frontend/applicant --stream start",
+    "ks-empl:build": "npx lerna run --scope @frontend/employer --stream build",
+    "bf-applicant:build": "npx lerna run --scope @frontend/applicant --stream build",
+    "ks-empl:dev": "npx lerna run --scope @frontend/employer --stream dev",
+    "bf-applicant:dev": "npx lerna run --scope @frontend/applicant --stream dev",
+    "ks-empl:start": "npx lerna run --scope  @frontend/employer --stream start",
+    "bf-applicant:start": "npx lerna run --scope  @frontend/applicant --stream start",
     "release": "cross-env HUSKY_BYPASS=true && lerna publish",
-    "husky:pre-commit": "lerna run --concurrency 1 --stream pre-commit",
-    "lint": "lerna run lint",
-    "test": "lerna run test --stream",
-    "test:debug": "lerna run test:debug",
-    "test:staged": "lerna run test:staged",
-    "test:coverage": "lerna run test:coverage --stream --concurrency 1",
+    "husky:pre-commit": "npx lerna run --concurrency 1 --stream pre-commit",
+    "lint": "npx lerna run lint",
+    "test": "npx lerna run test --stream",
+    "test:debug": "npx lerna run test:debug",
+    "test:staged": "npx lerna run test:staged",
+    "test:coverage": "npx lerna run test:coverage --stream --concurrency 1",
     "bf-applicant:test": "yarn --cwd benefit/applicant test",
     "ks-empl:test": " yarn --cwd kesaseteli/employer test",
     "ks-empl:browser-test": "yarn --cwd kesaseteli/employer browser-test",
@@ -107,7 +107,7 @@
     "typescript": "^4.3.4"
   },
   "resolutions": {
-    "conventional-changelog-core": "^4.2.3",
-    "globby": "^11.0.3"
+    "globby": "^11.0.3",
+    "@npmcli/arborist": "2.8.2"
   }
 }

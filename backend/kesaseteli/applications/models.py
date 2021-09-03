@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField
@@ -17,6 +18,12 @@ class Application(HistoricalModel, TimeStampedModel, UUIDModel):
         on_delete=models.CASCADE,
         related_name="applications",
         verbose_name=_("company"),
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="applications",
+        verbose_name=_("user"),
     )
     status = models.CharField(
         max_length=64,
