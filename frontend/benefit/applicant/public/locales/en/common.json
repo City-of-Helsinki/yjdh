@@ -44,12 +44,14 @@
       "deleteApplication": "Poista hakemus",
       "continue": "Jatka",
       "send": "Lähetä",
-      "back": "Back"
+      "back": "Back",
+      "edit": "Muokkaa"
     },
     "sections": {
       "company": {
         "heading1": "Yrityksen tiedot",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
+        "heading2Short": "Yhteyshenkilö",
         "heading3": "Hakijan de minimis-tuet",
         "heading4": "YT-tilanne",
         "businessId": "Y-tunnus: {{ businessId }}",
@@ -144,8 +146,10 @@
       },
       "employee": {
         "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
+        "heading1Short": "Palkattava henkilö",
         "heading2": "Palkkatukipäätös",
         "heading3": "Haettava tukimuoto",
+        "heading3Long": "Haettava tukimuoto ja ajankohta",
         "heading4": "Haetaan ajalle",
         "heading5Employment": "Työsuhde",
         "heading5Assignment": "Toimeksianto",
