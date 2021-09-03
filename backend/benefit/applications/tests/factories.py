@@ -83,6 +83,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     )
     pay_subsidy_granted = False
     pay_subsidy_percent = None
+
     additional_pay_subsidy_percent = None
 
     apprenticeship_program = factory.Faker("boolean")

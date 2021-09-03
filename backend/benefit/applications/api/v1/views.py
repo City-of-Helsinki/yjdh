@@ -30,9 +30,12 @@ class ApplicationFilter(filters.FilterSet):
         fields = {
             "batch": ["exact"],
             "archived": ["exact"],
+            "employee__social_security_number": ["exact"],
             "company__business_id": ["exact"],
             "benefit_type": ["exact"],
             "company_name": ["iexact", "icontains"],
+            "employee__first_name": ["iexact", "icontains"],
+            "employee__last_name": ["iexact", "icontains"],
         }
 
 

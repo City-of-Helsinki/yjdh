@@ -24,7 +24,13 @@ from applications.models import (
     Employee,
 )
 from common.exceptions import BenefitAPIException
-from common.utils import PhoneNumberField, xgroup
+from common.utils import (
+    date_range_overlap,
+    duration_in_months,
+    pairwise,
+    PhoneNumberField,
+    xgroup,
+)
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
@@ -809,10 +815,98 @@ class ApplicationSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError(
                         {"end_date": _("minimum duration of the benefit is one month")}
                     )
-                if start_date + relativedelta(months=12) <= end_date:
+                if (
+                    start_date + relativedelta(months=self.BENEFIT_MAX_MONTHS)
+                    <= end_date
+                ):
                     raise serializers.ValidationError(
                         {"end_date": _("maximum duration of the benefit is 12 months")}
                     )
+
+    BENEFIT_WAITING_PERIOD_MONTHS = 24
+    BENEFIT_MAX_MONTHS = 12
+
+    def _validate_previous_benefits(
+        self, company, employee_social_security_number, start_date, end_date, status
+    ):
+        if not all([start_date, end_date, employee_social_security_number]):
+            return
+        if status in [ApplicationStatus.CANCELLED, ApplicationStatus.REJECTED]:
+            # it must be possible to cancel/reject applications with this error, or they
+            # migth be impossible for admins to get rid of. For example, if there are two
+            # simultaneously submitted applications for the same employee and one of them is accepted, that might
+            # make the other application invalid.
+            return
+
+        # The waiting time starts at the end of the latest benefit period granted.
+        previously_granted_benefits = Application.objects.filter(
+            employee__social_security_number=employee_social_security_number,
+            company=company,
+            status=ApplicationStatus.ACCEPTED,
+            start_date__lte=end_date,  # catch also overlapping benefits
+        ).order_by("-start_date")
+        if self.instance:
+            previously_granted_benefits = previously_granted_benefits.exclude(
+                pk=self.instance.pk
+            )
+
+        self._validate_no_benefit_overlap(
+            start_date, end_date, previously_granted_benefits
+        )
+
+        most_recent_benefit = previously_granted_benefits.first()
+        if (
+            not most_recent_benefit
+            or most_recent_benefit.end_date
+            < start_date - relativedelta(months=self.BENEFIT_WAITING_PERIOD_MONTHS)
+        ):
+            # at least BENEFIT_WAITING_PERIOD_MONTHS elapsed since a Helsinki benefit was granted
+            # for this employee last time.
+            return
+
+        # scroll back previous benefits until we find a gap of BENEFIT_WAITING_PERIOD_MONTHS
+        applicable_benefits = [most_recent_benefit]
+        for old_benefit, older_benefit in pairwise(previously_granted_benefits):
+            # on the first round of loop, old_benefit == most_recent_benefit, which already is in
+            # applicable_benefits
+            if (
+                older_benefit.end_date
+                + relativedelta(months=self.BENEFIT_WAITING_PERIOD_MONTHS)
+                < old_benefit.start_date
+            ):
+                break
+            applicable_benefits.append(older_benefit)
+
+        past_months_of_benefit = sum(
+            benefit.duration_in_months for benefit in applicable_benefits
+        )
+        if (
+            past_months_of_benefit + duration_in_months(start_date, end_date)
+            > self.BENEFIT_MAX_MONTHS
+        ):
+            # granting this benefit would exceed the limit
+            raise serializers.ValidationError(
+                {
+                    "start_date": _(
+                        "Benefit can not be granted before 24-month waiting period expires"
+                    )
+                }
+            )
+
+    def _validate_no_benefit_overlap(
+        self, start_date, end_date, previously_granted_benefits
+    ):
+        for benefit in previously_granted_benefits:
+            if date_range_overlap(
+                start_date, end_date, benefit.start_date, benefit.end_date
+            ):
+                raise serializers.ValidationError(
+                    {
+                        "start_date": _(
+                            "There's already an accepted application with overlapping date range for this employee"
+                        )
+                    }
+                )
 
     def _validate_co_operation_negotiations(
         self, co_operation_negotiations, co_operation_negotiations_description
@@ -918,6 +1012,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 obj.company,
                 obj.association_has_business_activities,
                 obj.apprenticeship_program,
+                obj.pay_subsidy_granted,
             )
         ]
 
@@ -927,11 +1022,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
         benefit_type,
         association_has_business_activities,
         apprenticeship_program,
+        pay_subsidy_granted,
     ):
         if benefit_type == "":
             return
         if benefit_type not in ApplicationSerializer._get_available_benefit_types(
-            company, association_has_business_activities, apprenticeship_program
+            company,
+            association_has_business_activities,
+            apprenticeship_program,
+            pay_subsidy_granted,
         ):
             raise serializers.ValidationError(
                 {"benefit_type": _("This benefit type can not be selected")}
@@ -939,36 +1038,108 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _get_available_benefit_types(
-        company, association_has_business_activities, apprenticeship_program
+        company,
+        association_has_business_activities,
+        apprenticeship_program,
+        pay_subsidy_granted,
     ):
         """
         Make the logic of determining available benefit types available both for generating the list of
         benefit types and validating the incoming data
         """
+
         if (
             OrganizationType.resolve_organization_type(company.company_form)
             == OrganizationType.ASSOCIATION
             and not association_has_business_activities
         ):
-            return [BenefitType.SALARY_BENEFIT]
+            benefit_types = [BenefitType.SALARY_BENEFIT] if pay_subsidy_granted else []
         else:
             if apprenticeship_program:
-                return [
-                    BenefitType.SALARY_BENEFIT,
-                    BenefitType.EMPLOYMENT_BENEFIT,
-                ]
+                benefit_types = [BenefitType.EMPLOYMENT_BENEFIT]
+                if pay_subsidy_granted:
+                    benefit_types.append(BenefitType.SALARY_BENEFIT)
             else:
-                return [
-                    BenefitType.SALARY_BENEFIT,
+                benefit_types = [
                     BenefitType.COMMISSION_BENEFIT,
                     BenefitType.EMPLOYMENT_BENEFIT,
                 ]
+                if pay_subsidy_granted:
+                    benefit_types.append(BenefitType.SALARY_BENEFIT)
+        return benefit_types
+
+    def _handle_breaking_changes(self, company, data):
+        """
+        Handle cases where applicant is updating an application, moves back to a previous page
+        and changes a field value in an incompatible way.
+        """
+        if not self.instance:
+            # only handle the changes when doing updates.
+            # incompatible data that is sent when creating an application results in a validation error.
+            return
+
+        if OrganizationType.resolve_organization_type(
+            company.company_form
+        ) == OrganizationType.ASSOCIATION and self._field_value_changes(
+            data, "association_has_business_activities", False
+        ):
+            self._reset_de_minimis_aid(data)
+            if self._benefit_type_invalid(company, data):
+                self._reset_benefit_type(data)
+
+        if self._field_value_changes(
+            data, "pay_subsidy_granted", False
+        ) and self._benefit_type_invalid(company, data):
+            self._reset_benefit_type(data)
+
+    def _benefit_type_invalid(self, company, data):
+        return data[
+            "benefit_type"
+        ] not in ApplicationSerializer._get_available_benefit_types(
+            company,
+            data["association_has_business_activities"],
+            data["apprenticeship_program"],
+            data["pay_subsidy_granted"],
+        )
+
+    def _reset_de_minimis_aid(self, data):
+        data["de_minimis_aid"] = None
+        data["de_minimis_aid_set"] = []
+
+    def _reset_benefit_type(self, data):
+        # reset the benefit type and the fields in the employee that are tied to the benefit type
+        data["benefit_type"] = ""
+        data["employee"]["job_title"] = ""
+        data["employee"]["commission_description"] = ""
+        for key in [
+            "monthly_pay",
+            "vacation_money",
+            "other_expenses",
+            "working_hours",
+            "commission_amount",
+        ]:
+            data["employee"][key] = None
+
+    def _field_value_changes(self, data, field_name, to_value):
+        assert self.instance, "Existing application instance needed"
+        return (
+            data[field_name] == to_value
+            and getattr(self.instance, field_name) != to_value
+        )
 
     def validate(self, data):
         """ """
         company = self.get_company(data)
+        self._handle_breaking_changes(company, data)
         self._validate_date_range(
             data.get("start_date"), data.get("end_date"), data.get("benefit_type")
+        )
+        self._validate_previous_benefits(
+            company,
+            data.get("employee", {}).get("social_security_number"),
+            data.get("start_date"),
+            data.get("end_date"),
+            data.get("status"),
         )
         self._validate_co_operation_negotiations(
             data.get("co_operation_negotiations"),
@@ -993,6 +1164,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             data.get("benefit_type", ""),
             data.get("association_has_business_activities"),
             data.get("apprenticeship_program"),
+            data.get("pay_subsidy_granted"),
         )
         self._validate_non_draft_required_fields(data)
         return data
