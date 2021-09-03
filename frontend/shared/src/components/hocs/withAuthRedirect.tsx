@@ -4,10 +4,6 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useAuth from 'shared/hooks/useAuth';
 import isServerSide from 'shared/server/is-server-side';
 
-const DefaultLoadingFallback = (): React.ReactElement<unknown> => (
-  <PageLoadingSpinner />
-);
-
 type Props<P> = {
   WrappedComponent: React.FC<P>;
   LoadingComponent?: React.FC<unknown>;
@@ -28,7 +24,7 @@ type Props<P> = {
  */
 const withAuthRedirect = <P,>({
   WrappedComponent,
-  LoadingComponent = DefaultLoadingFallback,
+  LoadingComponent = PageLoadingSpinner,
   expectedAuth,
   redirectLocation,
 }: Props<P>): typeof WrappedComponent =>
