@@ -23,3 +23,6 @@ export const getBooleanValueFromString = (value?: string): boolean | null => {
   }
   return true;
 };
+
+export const isEmpty = (value?: string): boolean =>
+  value?.trim().length === 0 ?? true;

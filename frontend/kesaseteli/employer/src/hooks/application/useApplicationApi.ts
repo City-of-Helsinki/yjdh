@@ -1,7 +1,8 @@
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
-import Application from 'shared/types/employer-application';
+import Application, { DraftApplication } from 'shared/types/employer-application';
+import { isEmpty } from 'shared/utils/array.utils';
 
 type QueryResult = ReturnType<typeof useApplicationQuery>;
 type mutateResult = ReturnType<typeof useUpdateApplicationQuery>;
@@ -10,7 +11,7 @@ export type ApplicationApi = {
   applicationId?: string,
   application: QueryResult['data'];
   updateApplication: (
-    application: Application
+    application: DraftApplication
   ) => ReturnType<mutateResult['mutate']>;
   sendApplication: (
     application: Application
@@ -35,11 +36,12 @@ const useApplicationApi = (): ApplicationApi => {
     error: updatingError,
   } = useUpdateApplicationQuery(application);
 
-  const updateApplication = (draftApplication: Application): void => {
-    mutate({ ...draftApplication, status: 'draft' });
+  const updateApplication = (draftApplication: DraftApplication): void => {
+    const summer_vouchers = isEmpty(draftApplication.summer_vouchers) ? [{}] : draftApplication.summer_vouchers;
+    mutate({ ...draftApplication, status: 'draft', summer_vouchers });
   }
-  const sendApplication = (draftApplication: Application): void => {
-    mutate({ ...draftApplication, status: 'submitted' });
+  const sendApplication = (completeApplication: Application): void => {
+    mutate({ ...completeApplication, status: 'submitted' });
   }
 
 

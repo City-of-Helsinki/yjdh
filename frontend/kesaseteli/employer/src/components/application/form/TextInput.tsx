@@ -1,22 +1,25 @@
-import { TextInput as HdsTextInput, TextInputProps } from 'hds-react';
+import { TextInput as HdsTextInput } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
+// eslint-disable-next-line you-dont-need-lodash-underscore/get
+import get from 'lodash/get';
 import React from 'react';
-import { FieldError, RegisterOptions } from 'react-hook-form';
+import { RegisterOptions, UseFormRegister } from 'react-hook-form';
 import Application from 'shared/types/employer-application';
 
 import { $TextInput } from './TextInput.sc';
+import { getLastValue } from 'shared/utils/array.utils';
 
 type InputProps = {
   validation: RegisterOptions<Application>;
-  id: keyof Application;
+  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
 };
 
 const TextInput = ({
   id,
   validation,
   ...rest
-}: InputProps & TextInputProps): ReturnType<typeof HdsTextInput> => {
+}: InputProps): ReturnType<typeof HdsTextInput> => {
   const {
     translateLabel,
     translateError,
@@ -25,8 +28,9 @@ const TextInput = ({
   } = useApplicationForm();
   const { application, isLoading } = useApplicationApi();
 
-  const defaultValue = application?.[id] ? String(application[id]) : '';
-  const hasError = Boolean((errors?.[id] as FieldError)?.type);
+  const defaultValue = String(get(application, id)) ?? '';
+  const hasError = Boolean(get(errors, `${id}.type`));
+  const name = getLastValue(id.split('.')) as string;
 
   return (
     <$TextInput
@@ -39,10 +43,14 @@ const TextInput = ({
       required={Boolean(validation.required)}
       max={validation.maxLength ? String(validation.maxLength) : undefined}
       defaultValue={defaultValue}
-      errorText={hasError ? translateError(id) : undefined}
-      label={translateLabel(id)}
+      errorText={hasError ? translateError(name) : undefined}
+      label={translateLabel(name)}
     />
   );
 };
+
+TextInput.defaultProps = {
+  path: undefined,
+}
 
 export default TextInput;

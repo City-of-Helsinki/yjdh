@@ -47,7 +47,51 @@
     },
     "step2": {
       "name": "Employees",
-      "header": "2. Employments"
+      "header": "2. Employments",
+      "employment": "Employment",
+      "form": {
+        "title": "Employments",
+        "employee_name": "Employee name",
+        "employee_ssn": "Social security number",
+        "summer_voucher_exception_reason": {
+          "values": {
+            "9th_grader": "9th grader",
+            "born_2004": "Born in 2004"
+          }
+        },
+        "employee_home_city": "Home city",
+        "employee_postcode": "Postcode",
+        "employee_phone_number": "Phone number",
+        "work_postcode": "Workplace's postcode",
+        "summer_voucher_serial_number": "Summer voucher serial number",
+        "employee_school": "School",
+        "employment_start_date": "Employment start date",
+        "employment_end_date": "Employment start date",
+        "employment_work_hours": "Work hours",
+        "employment_salary_paid": "Salary paid",
+        "hired_without_voucher_assessment" : {
+          "title": "Would you have hired without summer voucher?",
+          "values": {
+            "yes": "Yes",
+            "no": "No",
+            "maybe": "Maybe"
+          }
+        },
+        "errors": {
+          "employee_name": "Name is missing",
+          "employee_ssn": "Social security nunber is invalid",
+          "employee_home_city": "Home city is missing",
+          "employee_postcode": "Postcode is invalid",
+          "employee_phone_number": "Phone number is missing",
+          "work_postcode": "Postcode is invalid",
+          "summer_voucher_serial_number": "Serial number is invalid",
+          "employee_school": "School is missing",
+          "employment_start_date": "Date is invalid",
+          "employment_end_date": "Date is invalid",
+          "employment_work_hours": "Value is invalid",
+          "employment_salary_paid": "Value is invalid"
+        }
+      }
     },
     "step3": {
       "name": "Send",

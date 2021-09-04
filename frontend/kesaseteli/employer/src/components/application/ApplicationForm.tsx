@@ -12,13 +12,14 @@ import Toast from 'shared/components/toast/Toast';
 import useSetQueryParam from 'shared/hooks/useSetQueryParam';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
+import Employment from 'shared/types/Employment';
 
 type Props = {
   stepTitle: string;
   children: React.ReactNode;
 };
 
-const ApplicationStepForm = ({
+const ApplicationForm = ({
   stepTitle,
   children,
 }: Props): JSX.Element => {
@@ -27,9 +28,9 @@ const ApplicationStepForm = ({
   useSetQueryParam('step', String(currentStep));
 
   const { t } = useTranslation();
-  const translateLabel = (key: keyof Application): string =>
+  const translateLabel = (key: keyof Application | keyof Employment): string =>
     key ? t(`common:application.step1.form.${key}`) : key;
-  const translateError = (key: keyof Application): string =>
+  const translateError = (key: keyof Application | keyof Employment): string =>
     key ? t(`common:application.step1.form.errors.${key}`) : key;
 
   const { loadingError, updatingError } = useApplicationApi();
@@ -69,4 +70,4 @@ const ApplicationStepForm = ({
   );
 };
 
-export default ApplicationStepForm;
+export default ApplicationForm;

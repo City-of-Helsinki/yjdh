@@ -1,5 +1,5 @@
 import Step1Employer from 'kesaseteli/employer/components/application/steps/step1/Step1Employer';
-import Step2Employees from 'kesaseteli/employer/components/application/steps/step2/Step2Employees';
+import Step2Employments from 'kesaseteli/employer/components/application/steps/step2/Step2Employments';
 import Step3Summary from 'kesaseteli/employer/components/application/steps/step3/Step3Summary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useGetCurrentStep from 'kesaseteli/employer/hooks/application/useGetCurrentStep';
@@ -58,7 +58,7 @@ const ApplicationPage: NextPage = () => {
   return (
     <ApplicationWizard initialStep={initialStep}>
       <Step1Employer />
-      <Step2Employees />
+      <Step2Employments />
       <Step3Summary />
     </ApplicationWizard>
   );

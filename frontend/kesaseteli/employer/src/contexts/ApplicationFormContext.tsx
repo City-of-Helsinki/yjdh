@@ -1,11 +1,10 @@
-
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form';
 import Application from 'shared/types/employer-application';
 
 export type FormContextProps = {
-  translateLabel: (field: keyof Application) => string;
-  translateError: (field: keyof Application) => string;
+  translateLabel: (field: string) => string;
+  translateError: (field: string) => string;
 } &
   UseFormReturn<Application>;
 

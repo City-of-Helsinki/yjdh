@@ -1,4 +1,5 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import merge from 'lodash/merge';
 import React from 'react'
 import { UseFormReturn} from 'react-hook-form'
 import Application from 'shared/types/employer-application';
@@ -12,10 +13,10 @@ const useSetFormDefaultValues = ({ reset, getValues }: UseFormReturn<Application
     if (!application || isLoading) {
       return;
     }
-    reset({
-      ...getValues(),
-      ...application,
-    });
+    reset(merge(
+      {...application},
+      getValues(),
+    ));
   }, [reset, application, getValues, isLoading]);
 
 }

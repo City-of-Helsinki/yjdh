@@ -46,7 +46,51 @@
     },
     "step2": {
       "name": "Työsuhteet SWE",
-      "header": "2. Selvitys työsuhteesta SWE"
+      "header": "2. Selvitys työsuhteesta SWE",
+      "employment": "Työsuhde SWE",
+      "form": {
+        "title": "Selvitys työsuhteesta SWE",
+        "employee_name": "Työntekijän nimi SWE",
+        "employee_ssn": "Henkilötunnus SWE",
+        "summer_voucher_exception_reason": {
+          "values": {
+            "9th_grader": "9. luokkalainen SWE",
+            "born_2004": "Syntynyt vuonna 2004 SWE"
+          }
+        },
+        "employee_home_city": "Kotipaikkakunta SWE",
+        "employee_postcode": "Postinumero SWE",
+        "employee_phone_number": "Puhelinnumero SWE",
+        "work_postcode": "Työn suorituspaikan postinumero SWE",
+        "summer_voucher_serial_number": "Kesäsetelin sarjanumero SWE",
+        "employee_school": "Koulu SWE",
+        "employment_start_date": "Työsuhde alkoi SWE",
+        "employment_end_date": "Työsyhde päättyi SWE",
+        "employment_work_hours": "Tehdyt työtunnit SWE",
+        "employment_salary_paid": "Maksettu palkka SWE",
+        "hired_without_voucher_assessment" : {
+          "title": "Olitko palkannut nuoren ilman kesäseteliä? SWE",
+          "values": {
+            "yes": "Kyllä SWE",
+            "no": "En SWE",
+            "maybe": "Ehkä SWE"
+          }
+        },
+        "errors": {
+          "employee_name": "Nimi puuttuu SWE",
+          "employee_ssn": "Henkilötunnus on virheellinen SWE",
+          "employee_home_city": "Kotipaikkakunta puuttuu SWE",
+          "employee_postcode": "Postinumero on virheellinen SWE",
+          "employee_phone_number": "Puhelinnumero puuttuu SWE",
+          "work_postcode": "Postinumero on virheellinen SWE",
+          "summer_voucher_serial_number": "Sarjanumero on virheellinen SWE",
+          "employee_school": "Koulu puuttuu SWE",
+          "employment_start_date": "Päivämäärä on virheellinen SWE",
+          "employment_end_date": "Päivämäärä on virheellinen SWE",
+          "employment_work_hours": "Arvo on virheellinen SWE",
+          "employment_salary_paid": "Arvo on virheellinen"
+        }
+      }
     },
     "step3": {
       "name": "Lähetys SWE",
