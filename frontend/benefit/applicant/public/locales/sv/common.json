@@ -131,6 +131,7 @@
           },
           "deMinimisAidGrantedAt": {
             "label": "Myöntämispäivämääärä",
+            "labelShort": "Myönnetty",
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
@@ -202,7 +203,9 @@
           },
           "isLivingInHelsinki": {
             "label": "Helsinki kotikuntana",
-            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa"
+            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
+            "yes": "Kyllä",
+            "no": "Ei"
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty palkkatuki?",
@@ -216,7 +219,7 @@
             "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
           },
           "apprenticeshipProgram": {
-            "label": "Onko kyseessä oppisopmus",
+            "label": "Onko kyseessä oppisopimus?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -232,7 +235,8 @@
           },
           "workingHours": {
             "label": "Työaika t/viikko",
-            "placeholder": "Tunteja"
+            "placeholder": "Tunteja",
+            "view": "Työaika: {{workingHours}} t / viikko"
           },
           "collectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
@@ -240,15 +244,18 @@
           },
           "monthlyPay": {
             "label": "Bruttopalkka €/kk",
-            "placeholder": "Palkka"
+            "placeholder": "Palkka",
+            "view": "Bruttopalkka {{monthlyPay}} €/kk"
           },
           "otherExpenses": {
             "label": "Sivukulut €/kk",
-            "placeholder": "Sivukulut"
+            "placeholder": "Sivukulut",
+            "view": "Sivukulut {{otherExpenses}} €/kk"
           },
           "vacationMoney": {
             "label": "Lomaraha",
-            "placeholder": "Lomaraha"
+            "placeholder": "Lomaraha",
+            "view": "Lomaraha {{vacationMoney}} €"
           },
           "commissionDescription": {
             "label": "Toimeksiannon kuvaus",
@@ -257,6 +264,14 @@
           "commissionAmount": {
             "label": "Palkkio €",
             "placeholder": "Palkkio"
+          },
+          "startDate": {
+            "label": "Alkaen",
+            "placeholder": "Alkaen"
+          },
+          "endDate": {
+            "label": "Päättyen",
+            "placeholder": "Päättyen"
           }
         }
       },
