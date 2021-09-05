@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {useFieldArray} from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { DraftApplication } from 'shared/types/employer-application';
-import Employment from 'shared/types/Employment';
+import DraftApplication from 'shared/types/draft-application';
+import Employment from 'shared/types/employment';
 
 const EmploymentAccordions: React.FC = () => {
 

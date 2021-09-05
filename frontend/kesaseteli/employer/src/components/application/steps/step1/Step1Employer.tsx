@@ -6,7 +6,7 @@ import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicat
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { DraftApplication } from 'shared/types/employer-application';
+import DraftApplication from 'shared/types/draft-application';
 
 import { $EmployerBasicInfoGrid } from './Step1Employer.sc';
 

@@ -1,7 +1,7 @@
-import type Status from 'shared/types/application-status';
-import type Company from 'shared/types/company';
-import Employment from 'shared/types/Employment';
-import type Invoicer from 'shared/types/invoicer';
+import type Status from './application-status';
+import type Company from './company';
+import Employment from './employment';
+import type Invoicer from './invoicer';
 
 type EmployerApplication = Invoicer & {
   id: string;
@@ -9,11 +9,5 @@ type EmployerApplication = Invoicer & {
   status: Status;
   summer_vouchers: Employment[];
 };
-
-export type DraftApplication = Omit<
-  Partial<EmployerApplication>,
-  'id',
-  'summer_vouchers'
-> & { id: string; summer_vouchers?: Partial<Employment>[] };
 
 export default EmployerApplication;

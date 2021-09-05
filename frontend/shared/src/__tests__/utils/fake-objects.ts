@@ -6,7 +6,7 @@ import faker from 'faker';
  */
 import type Company from '../../types/company';
 import type Application from '../../types/employer-application';
-import type Employment from '../../types/Employment';
+import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
 
@@ -61,8 +61,8 @@ export const fakeEmployment = (): Employment => ({
     max: 9999,
     precision: 1000,
   }),
-  employment_start_date: faker.date.past(),
-  employment_end_date: faker.date.future(),
+  employment_start_date: faker.date.past().toUTCString(),
+  employment_end_date: faker.date.future().toUTCString(),
   employment_work_hours: faker.datatype.number(100),
   employment_salary_paid: faker.datatype.number(3000),
   employment_description: faker.lorem.paragraph(1),

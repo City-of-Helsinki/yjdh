@@ -1,8 +1,9 @@
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
-import Application, { DraftApplication } from 'shared/types/employer-application';
+import Application from 'shared/types/employer-application';
 import { isEmpty } from 'shared/utils/array.utils';
+import DraftApplication from 'shared/types/draft-application';
 
 type QueryResult = ReturnType<typeof useApplicationQuery>;
 type mutateResult = ReturnType<typeof useUpdateApplicationQuery>;
