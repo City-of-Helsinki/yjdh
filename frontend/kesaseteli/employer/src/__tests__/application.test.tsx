@@ -6,8 +6,8 @@ import {
   expectUnauthorizedReply,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
-import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
+import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
 import React from 'react';
 import errorPageApi from 'shared/__tests__/component-apis/error-page-api';
@@ -31,7 +31,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       const queryClient = createReactQueryTestClient();
       expectUnauthorizedReply();
       const spyPush = jest.fn();
-      renderPage(ApplicationPage, queryClient, { push: spyPush });
+      await renderPage(ApplicationPage, queryClient, { push: spyPush });
       await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
     });
 
@@ -40,7 +40,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         const queryClient = createReactQueryTestClient();
         expectAuthorizedReply();
         const spyReplace = jest.fn();
-        renderPage(ApplicationPage, queryClient, {
+        await renderPage(ApplicationPage, queryClient, {
           replace: spyReplace,
           query: {},
         });
@@ -54,7 +54,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         expectAuthorizedReply();
         const locale: Language = 'en';
         const spyReplace = jest.fn();
-        renderPage(ApplicationPage, queryClient, {
+        await renderPage(ApplicationPage, queryClient, {
           replace: spyReplace,
           query: {},
           locale,
@@ -69,7 +69,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationErrorFromBackend(id);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           await errorPageApi.expectations.displayErrorPage();
         });
       });
@@ -79,7 +79,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
@@ -103,7 +103,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
@@ -123,11 +123,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           );
         });
 
-        it('saves application and goes to step 2 when next button is clicked', async () => {
+        it.only('saves application and goes to step 2 when next button is clicked', async () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
@@ -155,7 +155,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
