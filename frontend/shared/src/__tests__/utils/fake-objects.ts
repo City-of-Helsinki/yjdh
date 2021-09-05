@@ -74,7 +74,7 @@ export const fakeEmployment = (): Employment => ({
 });
 
 export const fakeEmployments = (
-  count = faker.random.number(10)
+  count = faker.datatype.number(10)
 ): Employment[] => generateNodeArray(() => fakeEmployment(), count);
 
 export const fakeApplication = (id: string): Application => ({
@@ -86,6 +86,6 @@ export const fakeApplication = (id: string): Application => ({
 });
 
 export const fakeApplications = (
-  count = faker.random.number(10)
+  count = faker.datatype.number(10)
 ): Application[] =>
   generateNodeArray(() => fakeApplication(faker.datatype.uuid()), count);
