@@ -5,7 +5,7 @@ import React from 'react';
 
 import EmployeeView, { EmployeeViewProps } from '../EmployeeView';
 
-describe('CompanyInfoView', () => {
+describe('EmployeeView', () => {
   const initialProps: EmployeeViewProps = {
     data: {
       company: {

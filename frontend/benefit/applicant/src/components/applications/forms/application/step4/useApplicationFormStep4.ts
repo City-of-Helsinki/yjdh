@@ -7,18 +7,22 @@ import {
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
+  t: TFunction;
   handleNext: () => void;
   handleBack: () => void;
   handleStepChange: (step: number) => void;
+  translationsBase: string;
 };
 
 const useApplicationFormStep4 = (
   application: Application
 ): ExtendedComponentProps => {
+  const translationsBase = 'common:applications.sections';
   const { applicationTempData, setApplicationTempData } = React.useContext(
     ApplicationContext
   );
@@ -73,9 +77,11 @@ const useApplicationFormStep4 = (
   const handleBack = (): void => handleStepChange(3);
 
   return {
+    t,
     handleNext,
     handleBack,
     handleStepChange,
+    translationsBase,
   };
 };
 

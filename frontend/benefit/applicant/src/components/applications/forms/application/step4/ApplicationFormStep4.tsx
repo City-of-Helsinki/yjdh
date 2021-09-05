@@ -1,6 +1,5 @@
 import { $SupplementaryButton } from 'benefit/applicant/components/applications/Applications.sc';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
-import { useTranslation } from 'benefit/applicant/i18n';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { IconPen } from 'hds-react';
 import * as React from 'react';
@@ -16,11 +15,13 @@ import { useApplicationFormStep4 } from './useApplicationFormStep4';
 const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  const { t } = useTranslation();
-  const { handleBack, handleNext, handleStepChange } = useApplicationFormStep4(
-    data
-  );
-  const translationsBase = 'common:applications.sections';
+  const {
+    t,
+    handleBack,
+    handleNext,
+    handleStepChange,
+    translationsBase,
+  } = useApplicationFormStep4(data);
 
   return (
     <>
