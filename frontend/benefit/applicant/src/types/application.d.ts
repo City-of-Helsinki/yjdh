@@ -221,7 +221,7 @@ export type Application = {
   applicationNumber?: number;
   employee?: Employee;
   bases?: string[];
-  company: Company;
+  company?: Company;
   [APPLICATION_FIELDS_STEP1.USE_ALTERNATIVE_ADDRESS]?: boolean;
   [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;
   [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY]?: string;
