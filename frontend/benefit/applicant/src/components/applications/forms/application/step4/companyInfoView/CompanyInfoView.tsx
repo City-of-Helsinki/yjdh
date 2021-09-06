@@ -43,8 +43,10 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
               data.company?.streetAddress}
           </$ViewField>
           <$ViewField>{`${
-            data.alternativeCompanyPostcode || data.company?.postcode
-          } ${data.alternativeCompanyCity || data.company?.city}`}</$ViewField>
+            data.alternativeCompanyPostcode || data.company?.postcode || ''
+          } ${
+            data.alternativeCompanyCity || data.company?.city || ''
+          }`}</$ViewField>
         </$ViewFieldsGroup>
       </$ViewFieldsContainer>
       <$ViewFieldsContainer>
