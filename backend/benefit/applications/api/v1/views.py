@@ -1,16 +1,28 @@
+from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
+
 from applications.api.v1.serializers import ApplicationSerializer, AttachmentSerializer
 from applications.enums import ApplicationStatus
 from applications.models import Application
+from companies.models import Company
 from django.core import exceptions
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
-from rest_framework import filters as drf_filters, status, viewsets
+from rest_framework import filters as drf_filters, status, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from users.utils import get_business_id_from_user
+
+
+class BFIsAuthenticated(IsAuthenticated):
+    def has_permission(self, request, view):
+        # FIXME: Remove this permission when FE implemented authentication
+        if settings.DISABLE_AUTHENTICATION:
+            return True
+        return super().has_permission(request, view)
 
 
 class ApplicationFilter(filters.FilterSet):
@@ -45,7 +57,7 @@ class ApplicationFilter(filters.FilterSet):
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
-    permission_classes = [AllowAny]  # TODO access control
+    permission_classes = [BFIsAuthenticated]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
@@ -53,6 +65,25 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     ]
     filterset_class = ApplicationFilter
     search_fields = ["company_name", "company_contact_person_email"]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # FIXME: Remove this when FE implemented authentication
+        if settings.DISABLE_AUTHENTICATION:
+            return qs
+        user = self.request.user
+        if user.is_authenticated:
+            if user.is_handler():
+                return qs
+            else:
+                business_id = get_business_id_from_user(self.request.user)
+                if business_id:
+                    try:
+                        company = Company.objects.get(business_id=business_id)
+                        return company.applications.all()
+                    except Company.DoesNotExist:
+                        pass
+        return Application.objects.none()
 
     @action(
         methods=("POST",),

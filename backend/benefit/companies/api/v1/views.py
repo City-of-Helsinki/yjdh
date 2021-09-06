@@ -62,16 +62,14 @@ class GetCompanyView(APIView):
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
-        # TODO: Remove business id params later after authentication is completed in FE
-        if not business_id and request.user.is_authenticated:
-            eauth_profile = request.user.oidc_profile.eauthorization_profile
+        eauth_profile = request.user.oidc_profile.eauthorization_profile
 
-            try:
-                organization_roles = get_organization_roles(eauth_profile, request)
-            except HTTPError:
-                return self.organization_roles_error
+        try:
+            organization_roles = get_organization_roles(eauth_profile, request)
+        except HTTPError:
+            return self.organization_roles_error
 
-            business_id = organization_roles.get("identifier")
+        business_id = organization_roles.get("identifier")
         try:
             # TODO: Switch to another API to be able to collect association data
             company = get_or_create_company_with_business_id(business_id)

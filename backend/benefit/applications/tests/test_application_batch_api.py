@@ -103,8 +103,14 @@ def test_applications_batch_list_with_filter(api_client, application_batch):
     ],
 )
 def test_get_application_with_ahjo_decision(
-    api_client, application_batch, status, batch_status, expected_decision
+    api_client,
+    application_batch,
+    status,
+    batch_status,
+    expected_decision,
+    mock_get_organisation_roles_and_create_company,
 ):
+    company = mock_get_organisation_roles_and_create_company
     application_batch.status = batch_status
     if expected_decision:
         application_batch.proposal_for_decision = expected_decision
@@ -113,8 +119,8 @@ def test_get_application_with_ahjo_decision(
     else:
         application_batch.proposal_for_decision = AhjoDecision.DECIDED_REJECTED
 
+    application_batch.applications.all().update(status=status, company=company)
     application_batch.save()
-    application_batch.applications.all().update(status=status)
     application = application_batch.applications.all().first()
     response = api_client.get(get_detail_url(application))
     assert response.status_code == 200
@@ -126,7 +132,9 @@ def test_application_post_success(api_client, application_batch):
     """
     Create a new application batch
     """
-    data = ApplicationBatchSerializer(application_batch).data
+    data = ApplicationBatchSerializer(
+        application_batch, context={"request": api_client}
+    ).data
     application_batch.delete()
     assert len(ApplicationBatch.objects.all()) == 0
 

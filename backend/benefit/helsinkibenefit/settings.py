@@ -79,6 +79,7 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
+    DISABLE_AUTHENTICATION=(bool, True),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -199,8 +200,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": [
-        # TODO: Enable default permission when after FE implemented Authentication
-        # "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.IsAuthenticated",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -242,6 +242,8 @@ AUTHENTICATION_BACKENDS = (
     # "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
+
+DISABLE_AUTHENTICATION = env.bool("DISABLE_AUTHENTICATION")
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid profile"

@@ -56,6 +56,7 @@ def test_applications_list_with_filter(api_client, application):
 
 
 def test_applications_filter_by_batch(api_client, application_batch, application):
+    application_batch.applications.all().update(company=application.company)
     url = reverse("v1:application-list") + f"?batch={application_batch.pk}"
     response = api_client.get(url)
     assert len(response.data) == 2
@@ -84,7 +85,9 @@ def test_application_single_read(api_client, application):
     assert response.status_code == 200
 
 
-def test_application_template(api_client):
+def test_application_template(
+    api_client, mock_get_organisation_roles_and_create_company
+):
     response = api_client.get(reverse("v1:application-get-application-template"))
     assert (
         len(response.data["de_minimis_aid_set"]) == 0
@@ -453,9 +456,14 @@ def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, appli
 
 
 def test_application_edit_benefit_type_business_association(
-    api_client, association_application
+    api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
     data = ApplicationSerializer(association_application).data
+    company = mock_get_organisation_roles_and_create_company
+    company.company_form = "ry"
+    company.save()
+    association_application.company = company
+    association_application.save()
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = False
@@ -475,9 +483,14 @@ def test_application_edit_benefit_type_business_association(
 
 
 def test_application_edit_benefit_type_business_association_with_apprenticeship(
-    api_client, association_application
+    api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
     data = ApplicationSerializer(association_application).data
+    company = mock_get_organisation_roles_and_create_company
+    company.company_form = "ry"
+    company.save()
+    association_application.company = company
+    association_application.save()
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = True
@@ -496,13 +509,17 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
 
 
 def test_application_edit_benefit_type_non_business(
-    api_client, association_application
+    api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
     association_application.pay_subsidy_granted = True
     association_application.pay_subsidy_percent = 50
     association_application.save()
     data = ApplicationSerializer(association_application).data
-
+    company = mock_get_organisation_roles_and_create_company
+    company.company_form = "ry"
+    company.save()
+    association_application.company = company
+    association_application.save()
     response = api_client.put(
         get_detail_url(association_application),
         data,
@@ -514,12 +531,14 @@ def test_application_edit_benefit_type_non_business(
 
 
 def test_application_edit_benefit_type_non_business_invalid(
-    api_client, association_application
+    api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
     association_application.pay_subsidy_granted = True
     association_application.pay_subsidy_percent = 50
     association_application.save()
     data = ApplicationSerializer(association_application).data
+    association_application.company = mock_get_organisation_roles_and_create_company
+    association_application.save()
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
 
     response = api_client.put(
@@ -1074,13 +1093,13 @@ def test_too_many_attachments(request, api_client, application):
 
 
 def test_attachment_requirements(
-    api_client,
-    application,
+    api_client, application, mock_get_organisation_roles_and_create_company
 ):
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     application.pay_subsidy_granted = True
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
+    application.company = mock_get_organisation_roles_and_create_company
     application.save()
     response = api_client.get(get_detail_url(application))
     assert json.loads(json.dumps(response.data["attachment_requirements"])) == [

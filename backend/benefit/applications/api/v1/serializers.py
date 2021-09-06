@@ -41,6 +41,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from rest_framework import serializers
+from users.utils import get_business_id_from_user
 
 
 class ApplicationBasisSerializer(serializers.ModelSerializer):
@@ -1312,9 +1313,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
         serializer.save()
 
     def logged_in_user_is_admin(self):
-        # TODO: user management
         return False
+        # return self.context["request"].user.is_handler()
 
     def get_logged_in_user_company(self):
-        # TODO: user management
-        return Company.objects.all().order_by("pk").first()
+        user = self.context["request"].user
+        business_id = get_business_id_from_user(user)
+        return Company.objects.get(business_id=business_id)

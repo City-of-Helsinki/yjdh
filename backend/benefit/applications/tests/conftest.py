@@ -8,10 +8,11 @@ from applications.tests.factories import (
     DecidedApplicationFactory,
     EmployeeFactory,
 )
+from companies.tests.conftest import *  # noqa
 
 
 @pytest.fixture
-def application():
+def anonymous_application():
     with factory.Faker.override_default_locale("fi_FI"):
         return ApplicationFactory()
 
@@ -59,3 +60,12 @@ def association_application():
 def employee():
     with factory.Faker.override_default_locale("fi_FI"):
         return EmployeeFactory()
+
+
+@pytest.fixture
+def application(mock_get_organisation_roles_and_create_company):
+    with factory.Faker.override_default_locale("fi_FI"):
+        app = ApplicationFactory()
+        app.company = mock_get_organisation_roles_and_create_company
+        app.save()
+        return app
