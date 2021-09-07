@@ -1174,11 +1174,20 @@ class ApplicationSerializer(serializers.ModelSerializer):
             # moving out of DRAFT or ADDITIONAL_INFORMATION_NEEDED, so the applicant
             # may have modified the application
             self._validate_attachments(instance)
+            self._validate_employee_consent(instance)
         ApplicationLogEntry.objects.create(
             application=instance,
             from_status=previous_status,
             to_status=instance.status,
         )
+
+    def _validate_employee_consent(self, instance):
+        if not instance.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ):
+            raise serializers.ValidationError(
+                _("Application does not have the employee consent attachment")
+            )
 
     def _validate_attachments(self, instance):
         """
@@ -1201,6 +1210,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
         attachments_with_invalid_type = []
 
         for attachment in instance.attachments.all().order_by("created_at"):
+            if attachment.attachment_type == AttachmentType.EMPLOYEE_CONSENT:
+                # validated separately
+                continue
             if attachment.attachment_type not in valid_attachment_types:
                 attachments_with_invalid_type.append(attachment)
             else:

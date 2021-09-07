@@ -791,6 +791,7 @@ def test_application_status_change(
         _add_pdf_attachment(
             request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER
         )
+        _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
     if data["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
 
@@ -1105,6 +1106,8 @@ def test_attachment_validation(request, api_client, application):
     application.apprenticeship_program = False
     application.save()
 
+    _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
+
     # try to submit the application without attachments
     response = _submit_application(api_client, application)
     assert response.status_code == 400
@@ -1154,6 +1157,8 @@ def test_purge_extra_attachments(request, api_client, application):
         AttachmentType.HELSINKI_BENEFIT_VOUCHER,
         AttachmentType.EDUCATION_CONTRACT,  # extra
         AttachmentType.EDUCATION_CONTRACT,  # extra
+        AttachmentType.EMPLOYEE_CONSENT,
+        AttachmentType.EMPLOYEE_CONSENT,
     ]
     for attachment_type in lots_of_attachments:
         response = _upload_pdf(request, api_client, application, attachment_type)
@@ -1163,7 +1168,50 @@ def test_purge_extra_attachments(request, api_client, application):
 
     response = _submit_application(api_client, application)
     assert response.status_code == 200
-    assert application.attachments.count() == 5
+    assert application.attachments.count() == 7
+
+
+def test_employee_consent_upload(request, api_client, application):
+    application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
+    application.pay_subsidy_granted = True
+    application.pay_subsidy_percent = 50
+    application.apprenticeship_program = False
+    application.save()
+    # add the required attachments except consent
+    response = _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    assert response.status_code == 201
+    response = _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.PAY_SUBSIDY_DECISION,
+    )
+    assert response.status_code == 201
+
+    # try to submit the application without consent
+    response = _submit_application(api_client, application)
+    assert response.status_code == 400
+    assert (
+        str(response.data[0])
+        == "Application does not have the employee consent attachment"
+    )
+
+    # upload the consent
+    response = _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYEE_CONSENT,
+    )
+    response = _submit_application(api_client, application)
+    assert response.status_code == 200
+    application.refresh_from_db()
+    assert application.status == ApplicationStatus.RECEIVED
 
 
 def test_application_number(api_client, application):
