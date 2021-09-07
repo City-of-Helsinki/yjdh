@@ -5,9 +5,12 @@ from encrypted_fields.fields import EncryptedCharField
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 
 from applications.enums import (
+    APPLICATION_LANGUAGE_CHOICES,
     ApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    HiredWithoutVoucherAssessment,
+    SummerVoucherExceptionReason,
 )
 from companies.models import Company
 
@@ -69,6 +72,11 @@ class Application(HistoricalModel, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("invoicer phone number"),
     )
+    language = models.CharField(
+        choices=APPLICATION_LANGUAGE_CHOICES,
+        default=APPLICATION_LANGUAGE_CHOICES[0][0],  # fi
+        max_length=2,
+    )
 
     class Meta:
         verbose_name = _("application")
@@ -83,22 +91,15 @@ class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         related_name="summer_vouchers",
         verbose_name=_("application"),
     )
-    summer_voucher_id = models.CharField(
+    summer_voucher_serial_number = models.CharField(
         max_length=256, blank=True, verbose_name=_("summer voucher id")
     )
-    contact_name = models.CharField(
+    summer_voucher_exception_reason = models.CharField(
         max_length=256,
         blank=True,
-        verbose_name=_("contact name"),
-    )
-    contact_email = models.EmailField(
-        blank=True,
-        verbose_name=_("contact email"),
-    )
-    work_postcode = models.CharField(
-        max_length=256,
-        blank=True,
-        verbose_name=_("work postcode"),
+        verbose_name=_("summer voucher exception class"),
+        help_text=_("Special case of admitting the summer voucher."),
+        choices=SummerVoucherExceptionReason.choices,
     )
 
     employee_name = models.CharField(
@@ -121,15 +122,56 @@ class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("employee phone number"),
     )
+    employee_home_city = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("employee home city"),
+    )
+    employee_postcode = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("employee postcode"),
+    )
 
-    is_unnumbered_summer_voucher = models.BooleanField(
-        default=False,
-        verbose_name=_("is unnumbered summer voucher"),
+    employment_postcode = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("employment postcode"),
     )
-    unnumbered_summer_voucher_reason = models.TextField(
-        default="",
-        verbose_name=_("unnumbered summer voucher reason"),
+    employment_start_date = models.DateField(
+        verbose_name=_("employment start date"), null=True, blank=True
     )
+    employment_end_date = models.DateField(
+        verbose_name=_("employment end date"), null=True, blank=True
+    )
+    employment_work_hours = models.DecimalField(
+        verbose_name=_("employment work hours"),
+        decimal_places=2,
+        max_digits=8,
+        null=True,
+        blank=True,
+    )
+    employment_salary_paid = models.DecimalField(
+        verbose_name=_("employment salary paid"),
+        decimal_places=2,
+        max_digits=8,
+        null=True,
+        blank=True,
+    )
+    employment_description = models.TextField(
+        verbose_name=_("employment description"), blank=True
+    )
+    hired_without_voucher_assessment = models.CharField(
+        max_length=32,
+        verbose_name=_("hired without voucher assessment"),
+        null=True,
+        blank=True,
+        help_text=_(
+            "Whether the employee would have been hired without a summer voucher."
+        ),
+        choices=HiredWithoutVoucherAssessment.choices,
+    )
+
     ordering = models.IntegerField(default=0)
 
     class Meta:

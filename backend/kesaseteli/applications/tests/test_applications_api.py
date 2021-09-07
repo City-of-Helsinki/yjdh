@@ -44,6 +44,19 @@ def test_application_put(api_client, application):
 
 
 @pytest.mark.django_db
+def test_application_put_invalid_data(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["language"] = "asd"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 400
+    assert "language" in response.data
+
+
+@pytest.mark.django_db
 def test_application_patch(api_client, application):
     data = {"status": ApplicationStatus.SUBMITTED.value}
     response = api_client.patch(
@@ -85,9 +98,12 @@ def test_add_summer_voucher(api_client, application, summer_voucher):
 
 
 @pytest.mark.django_db
-def test_update_summer_voucher(api_client, application, summer_voucher):
+def test_add_empty_summer_voucher(api_client, application):
+    original_summer_voucher_count = application.summer_vouchers.count()
+
     data = ApplicationSerializer(application).data
-    data["summer_vouchers"][0]["summer_voucher_id"] = "test"
+
+    data["summer_vouchers"].append({})
 
     response = api_client.put(
         get_detail_url(application),
@@ -95,7 +111,40 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
     )
 
     assert response.status_code == 200
-    assert response.data["summer_vouchers"][0]["summer_voucher_id"] == "test"
+
+    application.refresh_from_db()
+    summer_voucher_count_after_update = application.summer_vouchers.count()
+    assert summer_voucher_count_after_update == original_summer_voucher_count + 1
+
+
+@pytest.mark.django_db
+def test_update_summer_voucher(api_client, application, summer_voucher):
+    data = ApplicationSerializer(application).data
+    data["summer_vouchers"][0]["summer_voucher_serial_number"] = "test"
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 200
+    assert response.data["summer_vouchers"][0]["summer_voucher_serial_number"] == "test"
+
+
+@pytest.mark.django_db
+def test_update_summer_voucher_with_invalid_data(
+    api_client, application, summer_voucher
+):
+    data = ApplicationSerializer(application).data
+    data["summer_vouchers"][0]["summer_voucher_exception_reason"] = "test"
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 400
+    assert "summer_voucher_exception_reason" in str(response.data)
 
 
 @pytest.mark.django_db
