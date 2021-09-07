@@ -1,47 +1,44 @@
-import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
+import { $ApplicationAction, $PrimaryButton } from 'kesaseteli/employer/components/application/form/ActionButtons.sc';
 import EmploymentAccordion from 'kesaseteli/employer/components/application/steps/step2/EmploymentAccordion';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {useFieldArray} from 'react-hook-form';
+import {useFormContext, useWatch} from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import DraftApplication from 'shared/types/draft-application';
+import Application from 'shared/types/employer-application';
 import Employment from 'shared/types/employment';
 
 const EmploymentAccordions: React.FC = () => {
 
   const { t } = useTranslation();
   const {
-    updateApplication,
+    application,
+    addEmployment
   } = useApplicationApi();
-
-  const onSubmit = (draftApplication: DraftApplication): void => {
-    const summer_vouchers = (draftApplication.summer_vouchers ?? []) as Employment[];
-    const application = {
-      ...draftApplication,
-      // temporary hack until backend fixes the error
-      summer_vouchers: summer_vouchers.map((employment) => ({...employment, unnumbered_summer_voucher_reason: 'lorem ipsum'}))
-    }
-    updateApplication(application);
-  };
-
-  const { control } = useApplicationForm();
-
-  const { fields: employments  } = useFieldArray({
-    name: 'summer_vouchers',
-    control
-  });
-
+  const {control, getValues} = useFormContext<Application>();
+  const defaultValue = application?.summer_vouchers ?? [] as Employment[];
+  const employments = useWatch({name: 'summer_vouchers', defaultValue, control })
   const stepTitle = t('common:application.step2.header');
+
+  const addNewEmployment = React.useCallback(() => {
+    addEmployment(getValues());
+  }, [addEmployment, getValues]);
+
   return (
     <>
       <FormSection header={stepTitle} tooltip={t('common:application.step2.tooltip')}>
         {employments.map((employment, index) => <EmploymentAccordion employment={employment} index={index} key={employment.id} />)}
       </FormSection>
-      <ActionButtons
-        onSubmit={onSubmit}
-      />
+      <FormSection>
+        <$ApplicationAction>
+          <$PrimaryButton
+            data-testid="add-employment"
+            onClick={addNewEmployment}
+          >
+            {t(`common:application.step2.add_employment`)}
+          </$PrimaryButton>
+        </$ApplicationAction>
+      </FormSection>
     </>
   );
 };

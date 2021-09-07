@@ -162,19 +162,19 @@ const getApplicationPageApi = (
         typeInvoicerName: (name: string) =>
           typeInput(
             'invoicer_name',
-            /(yhteyshenkilön nimi)|(form.invoicer_name)/i,
+            /(yhteyshenkilön nimi)|(inputs.invoicer_name)/i,
             name
           ),
         typeInvoicerEmail: (email: string) =>
           typeInput(
             'invoicer_email',
-            /(yhteyshenkilön sähköposti)|(form.invoicer_email)/i,
+            /(yhteyshenkilön sähköposti)|(inputs.invoicer_email)/i,
             email
           ),
         typeInvoicerPhone: (phoneNumber: string) =>
           typeInput(
             'invoicer_phone_number',
-            /(yhteyshenkilön puhelinnumero)|(form.invoicer_phone_number)/i,
+            /(yhteyshenkilön puhelinnumero)|(inputs.invoicer_phone_number)/i,
             phoneNumber
           ),
         clickPreviousButton,

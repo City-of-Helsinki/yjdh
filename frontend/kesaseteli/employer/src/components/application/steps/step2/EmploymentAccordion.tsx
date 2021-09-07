@@ -1,10 +1,11 @@
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
-import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
+import EmploymentActionButtons from 'kesaseteli/employer/components/application/steps/step2/EmploymentActionButtons';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {useWatch} from 'react-hook-form';
+import { useFormContext,useWatch } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import Employment from 'shared/types/Employment';
+import EmployerApplication from 'shared/types/employer-application';
+import Employment from 'shared/types/employment';
 import { isEmpty } from 'shared/utils/string.utils';
 
 import { $Accordion, $EmploymentFormGrid } from './EmploymentAccordion.sc';
@@ -14,11 +15,12 @@ type Props = {
   index: number
 }
 
-const EmploymentAccordion: React.FC<Props> = ({employment, index}: Props) => {
+const EmploymentAccordion: React.FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
+  const {employment, index } = props;
   const defaultHeading = `${t(`common:application.step2.employment`)} #${index + 1}`
-  const { control } = useApplicationForm();
+  const { control } = useFormContext<EmployerApplication>();
   const employeeName = useWatch({name: `summer_vouchers.${index}.employee_name`, control});
   const heading = isEmpty(employeeName) ? defaultHeading : employeeName;
 
@@ -38,6 +40,9 @@ const EmploymentAccordion: React.FC<Props> = ({employment, index}: Props) => {
             }}
           />
         </$EmploymentFormGrid>
+      </FormSection>
+      <FormSection>
+        <EmploymentActionButtons {...props} />
       </FormSection>
     </$Accordion>
   );

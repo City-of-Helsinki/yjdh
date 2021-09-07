@@ -30,67 +30,16 @@
           "postcode": "Postiosoite",
           "city": "Kunta"
         }
-      },
-      "form": {
-        "title": "Työnantajan tiedot",
-        "invoicer_name": "Yhteyshenkilön nimi",
-        "invoicer_email": "Yhteyshenkilön sähköposti",
-        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
-        "submit_button": "Tallenna ja jatka",
-        "errors": {
-          "invoicer_name": "Nimi puuttuu",
-          "invoicer_email": "Sähköposti on virheellinen",
-          "invoicer_phone_number": "Puhelinnumero on virheellinen"
-        }
       }
     },
     "step2": {
       "name": "Työsuhteet",
       "header": "2. Selvitys työsuhteesta",
       "employment": "Työsuhde",
-      "form": {
-        "title": "Selvitys työsuhteesta",
-        "employee_name": "Työntekijän nimi",
-        "employee_ssn": "Henkilötunnus",
-        "summer_voucher_exception_reason": {
-          "values": {
-            "9th_grader": "9. luokkalainen",
-            "born_2004": "Syntynyt vuonna 2004"
-          }
-        },
-        "employee_home_city": "Kotipaikkakunta",
-        "employee_postcode": "Postinumero",
-        "employee_phone_number": "Puhelinnumero",
-        "work_postcode": "Työn suorituspaikan postinumero",
-        "summer_voucher_serial_number": "Kesäsetelin sarjanumero",
-        "employee_school": "Koulu",
-        "employment_start_date": "Työsuhde alkoi",
-        "employment_end_date": "Työsyhde päättyi",
-        "employment_work_hours": "Tehdyt työtunnit",
-        "employment_salary_paid": "Maksettu palkka",
-        "hired_without_voucher_assessment" : {
-          "title": "Olitko palkannut nuoren ilman kesäseteliä?",
-          "values": {
-            "yes": "Kyllä",
-            "no": "En",
-            "maybe": "Ehkä"
-          }
-        },
-        "errors": {
-          "employee_name": "Nimi puuttuu",
-          "employee_ssn": "Henkilötunnus on virheellinen",
-          "employee_home_city": "Kotipaikkakunta puuttuu",
-          "employee_postcode": "Postinumero on virheellinen",
-          "employee_phone_number": "Puhelinnumero puuttuu",
-          "work_postcode": "Postinumero on virheellinen",
-          "summer_voucher_serial_number": "Sarjanumero on virheellinen",
-          "employee_school": "Koulu puuttuu",
-          "employment_start_date": "Päivämäärä on virheellinen",
-          "employment_end_date": "Päivämäärä on virheellinen",
-          "employment_work_hours": "Arvo on virheellinen",
-          "employment_salary_paid": "Arvo on virheellinen"
-        }
-      }
+      "tooltip": "FI Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "add_employment": "Lisää uusi työsuhde",
+      "save_employment": "Tallenna tiedot",
+      "remove_employment": "Poista tiedot"
     },
     "step3": {
       "name": "Lähetys",
@@ -100,6 +49,56 @@
       "previous": "Palaa edelliseen",
       "save_and_continue": "Tallenna ja jatka",
       "send": "Lähetä hakemus"
+    },
+    "form": {
+      "summer_voucher_exception_reason": {
+        "values": {
+          "9th_grader": "9. luokkalainen",
+          "born_2004": "Syntynyt vuonna 2004"
+        }
+      },
+      "hired_without_voucher_assessment" : {
+        "title": "Olitko palkannut nuoren ilman kesäseteliä?",
+        "values": {
+          "yes": "Kyllä",
+          "no": "En",
+          "maybe": "Ehkä"
+        }
+      },
+      "inputs": {
+        "invoicer_name": "Yhteyshenkilön nimi",
+        "invoicer_email": "Yhteyshenkilön sähköposti",
+        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
+        "employee_name": "Työntekijän nimi",
+        "employee_ssn": "Henkilötunnus",
+        "employee_home_city": "Kotipaikkakunta",
+        "employee_postcode": "Postinumero",
+        "employee_phone_number": "Puhelinnumero",
+        "work_postcode": "Työn suorituspaikan postinumero",
+        "summer_voucher_serial_number": "Kesäsetelin sarjanumero",
+        "employee_school": "Koulu",
+        "employment_start_date": "Työsuhde alkoi",
+        "employment_end_date": "Työsyhde päättyi",
+        "employment_work_hours": "Tehdyt työtunnit",
+        "employment_salary_paid": "Maksettu palkka"
+      },
+      "errors": {
+        "invoicer_name": "Nimi puuttuu",
+        "invoicer_email": "Sähköposti on virheellinen",
+        "invoicer_phone_number": "Puhelinnumero on virheellinen",
+        "employee_name": "Nimi puuttuu",
+        "employee_ssn": "Henkilötunnus on virheellinen",
+        "employee_home_city": "Kotipaikkakunta puuttuu",
+        "employee_postcode": "Postinumero on virheellinen",
+        "employee_phone_number": "Puhelinnumero puuttuu",
+        "work_postcode": "Postinumero on virheellinen",
+        "summer_voucher_serial_number": "Sarjanumero on virheellinen",
+        "employee_school": "Koulu puuttuu",
+        "employment_start_date": "Päivämäärä on virheellinen",
+        "employment_end_date": "Päivämäärä on virheellinen",
+        "employment_work_hours": "Arvo on virheellinen",
+        "employment_salary_paid": "Arvo on virheellinen"
+      }
     }
   },
   "footer": {

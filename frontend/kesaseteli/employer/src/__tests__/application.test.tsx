@@ -6,8 +6,8 @@ import {
   expectUnauthorizedReply,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
-import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
+import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
 import React from 'react';
 import errorPageApi from 'shared/__tests__/component-apis/error-page-api';
@@ -123,7 +123,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           );
         });
 
-        it.only('saves application and goes to step 2 when next button is clicked', async () => {
+        it('saves application and goes to step 2 when next button is clicked', async () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);

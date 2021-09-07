@@ -41,7 +41,7 @@ export const fakeInvoicer = (): Invoicer => ({
 
 export const fakeEmployment = (): Employment => ({
   id: faker.datatype.uuid(),
-  unnumbered_summer_voucher_reason: 'test', // TODO: To be removed after backend hack
+  unnumbered_summer_voucher_reason: 'lorem ipsum', // TODO: To be removed after backend hack
   summer_voucher_exception_reason: faker.random.arrayElement([
     '9th_grader',
     'born_2004',
@@ -77,11 +77,11 @@ export const fakeEmployments = (
   count = faker.datatype.number(10)
 ): Employment[] => generateNodeArray(() => fakeEmployment(), count);
 
-export const fakeApplication = (id: string): Application => ({
+export const fakeApplication = (id: string, employments = 0): Application => ({
   id,
   company: fakeCompany,
   status: 'draft',
-  summer_vouchers: fakeEmployments(),
+  summer_vouchers: fakeEmployments(employments),
   ...fakeInvoicer(),
 });
 

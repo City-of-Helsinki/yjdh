@@ -1,10 +1,10 @@
 import { IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import {useFormContext} from 'react-hook-form'
 import useWizard from 'shared/hooks/useWizard';
-import Application from 'shared/types/employer-application';
+import EmployerApplication from 'shared/types/employer-application';
 
 import {
   $ApplicationAction,
@@ -14,16 +14,16 @@ import {
 } from './ActionButtons.sc';
 
 type Props = {
-  onSubmit: (application: Application) => void;
+  onNext: 'sendApplication' | 'updateApplication'
 };
 
-const ActionButtons: React.FC<Props> = ({ onSubmit }: Props) => {
+const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
   const { t } = useTranslation();
   const {
     handleSubmit,
     formState: { isSubmitting, isValid },
-  } = useApplicationForm();
-  const { isLoading: isApplicationLoading } = useApplicationApi();
+  } = useFormContext<EmployerApplication>();
+  const { isLoading: isApplicationLoading, ...apiOperations } = useApplicationApi();
   const {
     handleStep,
     isFirstStep,
@@ -33,7 +33,7 @@ const ActionButtons: React.FC<Props> = ({ onSubmit }: Props) => {
     isLoading: isWizardLoading,
   } = useWizard();
 
-  handleStep(handleSubmit(onSubmit));
+  handleStep(handleSubmit(apiOperations[onNext]));
   return (
     <$ApplicationActions>
       {!isFirstStep && (

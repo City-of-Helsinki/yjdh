@@ -2,21 +2,14 @@ import ApplicationForm from 'kesaseteli/employer/components/application/Applicat
 import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyInfo/CompanyInfoGrid';
 import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
-import DraftApplication from 'shared/types/draft-application';
 
 import { $EmployerBasicInfoGrid } from './Step1Employer.sc';
 
 const Step1Employer: React.FC = () => {
   const { t } = useTranslation();
-  const { updateApplication } = useApplicationApi();
-
-  const onSubmit = (draftApplication: DraftApplication): void => {
-    updateApplication(draftApplication);
-  };
   const stepTitle = t('common:application.step1.header');
   return (
     <ApplicationForm stepTitle={stepTitle}>
@@ -46,7 +39,7 @@ const Step1Employer: React.FC = () => {
           />
         </$EmployerBasicInfoGrid>
       </FormSection>
-      <ActionButtons onSubmit={onSubmit} />
+      <ActionButtons onNext="updateApplication" />
     </ApplicationForm>
   );
 };

@@ -31,7 +31,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     const queryClient = createReactQueryTestClient();
     expectUnauthorizedReply();
     const spyPush = jest.fn();
-    renderPage(IndexPage, queryClient, { push: spyPush });
+    await renderPage(IndexPage, queryClient, { push: spyPush });
     await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
   });
 
@@ -41,7 +41,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         const queryClient = createReactQueryTestClient();
         expectAuthorizedReply();
         expectToGetApplicationsErrorFromBackend();
-        renderPage(IndexPage, queryClient);
+        await renderPage(IndexPage, queryClient);
         await ErrorPageApi.expectations.displayErrorPage();
       });
       it('Should show errorPage when applications creation error', async () => {
@@ -49,7 +49,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationErrorFromBackend();
-        renderPage(IndexPage, queryClient);
+        await renderPage(IndexPage, queryClient);
         await ErrorPageApi.expectations.displayErrorPage();
       });
       describe('when clicking reload button', () => {
@@ -59,7 +59,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
           expectToGetApplicationsErrorFromBackend();
           const locale: Language = 'en';
           const spyReload = jest.fn();
-          renderPage(IndexPage, queryClient, {
+          await renderPage(IndexPage, queryClient, {
             reload: spyReload,
             locale,
           });
@@ -75,7 +75,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
           const errorReply = expectToGetApplicationsErrorFromBackend(2);
           const locale: Language = 'en';
           const spyPush = jest.fn();
-          renderPage(IndexPage, queryClient, {
+          await renderPage(IndexPage, queryClient, {
             push: spyPush,
             locale,
           });
@@ -100,7 +100,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectToGetApplicationsFromBackend([newApplication]);
         const locale: Language = 'en';
         const spyPush = jest.fn();
-        renderPage(IndexPage, queryClient, { push: spyPush, locale });
+        await renderPage(IndexPage, queryClient, { push: spyPush, locale });
         await waitFor(() => {
           expect(
             queryClient.getQueryData(['applications', newApplication.id])
@@ -119,7 +119,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend(applications);
         const spyPush = jest.fn();
-        renderPage(IndexPage, queryClient, { push: spyPush });
+        await renderPage(IndexPage, queryClient, { push: spyPush });
         const [latestApplication] = applications;
         await waitFor(() =>
           expect(spyPush).toHaveBeenCalledWith(
@@ -135,7 +135,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectToGetApplicationsFromBackend(applications);
         const locale: Language = 'en';
         const spyPush = jest.fn();
-        renderPage(IndexPage, queryClient, { push: spyPush, locale });
+        await renderPage(IndexPage, queryClient, { push: spyPush, locale });
         const [firstApplication] = applications;
         await waitFor(() =>
           expect(spyPush).toHaveBeenCalledWith(
