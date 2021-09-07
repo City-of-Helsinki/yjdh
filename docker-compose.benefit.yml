@@ -47,6 +47,21 @@ services:
       - "3000:3000"
     container_name: benefit-applicant
 
+  handler:
+    build:
+      context: ./frontend
+      dockerfile: benefit/handler/Dockerfile
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit
+    ports:
+      - "3100:3100"
+    container_name: benefit-handler
+
 volumes:
   pgdata:
     driver: local

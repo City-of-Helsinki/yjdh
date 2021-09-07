@@ -24,4 +24,11 @@
 !benefit/applicant/src
 !benefit/applicant/tsconfig.json
 !benefit/applicant/start.js
+!benefit/handler/next.config.js
+!benefit/handler/next-i18next.config.js
+!benefit/handler/package.json
+!benefit/handler/public
+!benefit/handler/src
+!benefit/handler/tsconfig.json
+!benefit/handler/start.js
 
