@@ -56,8 +56,8 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, ""),
     LOGIN_REDIRECT_URL_FAILURE=(str, ""),
-    EAUTHORIZATIONS_BASE_URL=(str, ""),
-    EAUTHORIZATIONS_CLIENT_ID=(str, ""),
+    EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
+    EAUTHORIZATIONS_CLIENT_ID=(str, "sample_client_id"),
     EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
     EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
     ADFS_CLIENT_ID=(str, "client_id"),
@@ -79,7 +79,7 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
-    DISABLE_AUTHENTICATION=(bool, True),
+    DISABLE_AUTHENTICATION=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)

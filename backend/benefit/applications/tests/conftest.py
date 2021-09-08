@@ -8,7 +8,9 @@ from applications.tests.factories import (
     DecidedApplicationFactory,
     EmployeeFactory,
 )
+from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
+from helsinkibenefit.tests.conftest import *  # noqa
 
 
 @pytest.fixture
@@ -64,6 +66,7 @@ def employee():
 
 @pytest.fixture
 def application(mock_get_organisation_roles_and_create_company):
+    # Application which belongs to logged in user company
     with factory.Faker.override_default_locale("fi_FI"):
         app = ApplicationFactory()
         app.company = mock_get_organisation_roles_and_create_company

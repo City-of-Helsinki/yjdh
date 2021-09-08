@@ -8,11 +8,8 @@ import pytz
 from applications.api.v1.serializers import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
-from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory
 from applications.tests.test_applications_api import get_detail_url
-from common.tests.conftest import *  # noqa
-from helsinkibenefit.tests.conftest import *  # noqa
 from rest_framework.reverse import reverse
 
 

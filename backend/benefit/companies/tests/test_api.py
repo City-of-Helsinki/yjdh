@@ -29,6 +29,13 @@ def set_up_mock_requests(
 
 
 @pytest.mark.django_db
+def test_get_company_unauthenticated(anonymous_client):
+    response = anonymous_client.get(get_company_api_url())
+    # Unauthenticated user cannot query company
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
 @override_settings(MOCK_FLAG=True)
 def test_get_mock_company(api_client, mock_get_organisation_roles_and_create_company):
     response = api_client.get(get_company_api_url())

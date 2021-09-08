@@ -1312,11 +1312,19 @@ class ApplicationSerializer(serializers.ModelSerializer):
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
 
+    def _get_request_user_from_context(self):
+        request = self.context.get("request")
+        if request:
+            return request.user
+        return None
+
     def logged_in_user_is_admin(self):
+        user = self._get_request_user_from_context()
+        if user:
+            return user.is_handler()
         return False
-        # return self.context["request"].user.is_handler()
 
     def get_logged_in_user_company(self):
-        user = self.context["request"].user
+        user = self._get_request_user_from_context()
         business_id = get_business_id_from_user(user)
         return Company.objects.get(business_id=business_id)

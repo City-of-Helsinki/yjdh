@@ -15,15 +15,21 @@ def setup_test_environment(settings):
 
 
 @pytest.fixture
-def user():
+def bf_user():
     eauth_profile = EAuthorizationProfileFactory()
     return eauth_profile.oidc_profile.user
 
 
 @pytest.fixture
-def api_client(user):
+def api_client(bf_user):
     permissions = Permission.objects.all()
-    user.user_permissions.set(permissions)
+    bf_user.user_permissions.set(permissions)
     client = APIClient()
-    client.force_authenticate(user)
+    client.force_authenticate(bf_user)
+    return client
+
+
+@pytest.fixture
+def anonymous_client():
+    client = APIClient()
     return client

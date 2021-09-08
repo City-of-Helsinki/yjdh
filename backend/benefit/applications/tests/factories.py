@@ -13,7 +13,6 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
-from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.contrib.auth import get_user_model
 
