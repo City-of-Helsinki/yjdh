@@ -5,6 +5,7 @@ from uuid import uuid4
 
 import requests
 from django.conf import settings
+from django.http import HttpRequest
 from django.utils import timezone
 
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
@@ -39,12 +40,9 @@ def get_checksum_header(path: str) -> str:
     return f"{settings.EAUTHORIZATIONS_CLIENT_ID} {timestamp} {checksum}"
 
 
-def get_organization_roles(eauth_profile: EAuthorizationProfile) -> dict:
-    """
-    Docs (only in Finnish):
-    Search for "Taulukossa 14"
-    https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
-    """
+def request_organization_roles(
+    eauth_profile: EAuthorizationProfile, request: HttpRequest = None
+) -> dict:
     request_id = uuid4()
     path = f"/service/ypa/api/organizationRoles/{eauth_profile.id_token}?requestId={request_id}"
     organization_roles_endpoint = f"{settings.EAUTHORIZATIONS_BASE_URL}{path}"
@@ -59,4 +57,23 @@ def get_organization_roles(eauth_profile: EAuthorizationProfile) -> dict:
         },
     )
     response.raise_for_status()
-    return response.json()[0]
+    org_roles = response.json()[0]
+    if request:
+        request.session["organization_roles"] = org_roles
+    return org_roles
+
+
+def get_organization_roles(
+    eauth_profile: EAuthorizationProfile, request: HttpRequest = None
+) -> dict:
+    """
+    Docs (only in Finnish):
+    Search for "Taulukossa 14"
+    https://palveluhallinta.suomi.fi/fi/tuki/artikkelit/592d774503f6d100018db5dd
+    """
+    org_roles = request.session.get("organization_roles") if request else None
+
+    if not org_roles:
+        org_roles = request_organization_roles(eauth_profile, request)
+
+    return org_roles
