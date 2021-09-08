@@ -1,4 +1,4 @@
-import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyInfo/CompanyInfoGrid';
+import CompanyInfo from 'kesaseteli/employer/components/application/companyInfo/CompanyInfo';
 import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import StepForm from 'kesaseteli/employer/components/application/StepForm';
@@ -8,7 +8,7 @@ import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import EmployerApplication from 'shared/types/employer-application';
 
-import { $EmployerBasicInfoGrid } from './Step1Employer.sc';
+import { $EmployerBasicInfo } from './Step1Employer.sc';
 
 const Step1Employer: React.FC = () => {
   const { t } = useTranslation();
@@ -24,10 +24,10 @@ const Step1Employer: React.FC = () => {
         header={stepTitle}
         tooltip={t('common:application.step1.tooltip')}
       >
-        <CompanyInfoGrid />
+        <CompanyInfo />
       </FormSection>
       <FormSection>
-        <$EmployerBasicInfoGrid>
+        <$EmployerBasicInfo>
           <TextInput
             id="invoicer_name"
             validation={{ required: true, maxLength: 256 }}
@@ -44,7 +44,7 @@ const Step1Employer: React.FC = () => {
             id="invoicer_phone_number"
             validation={{ required: true, maxLength: 64 }}
           />
-        </$EmployerBasicInfoGrid>
+        </$EmployerBasicInfo>
       </FormSection>
       <ActionButtons onSubmit={onSubmit} />
     </StepForm>

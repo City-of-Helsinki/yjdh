@@ -3,6 +3,7 @@ import logging
 import requests
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
+from django.db.utils import IntegrityError
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
@@ -82,7 +83,7 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
                 store_token_info_in_oidc_profile(user, token_info)
                 return user
             except SuspiciousOperation as exc:
-                LOGGER.warning("failed to get or create user: %s", exc)
+                LOGGER.error("failed to get or create user: %s", exc)
                 return None
 
         return None
@@ -113,6 +114,26 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
 
 class EAuthRestAuthentication(SessionAuthentication):
+    def get_or_create_oidc_profile(self, user):
+        from shared.oidc.models import OIDCProfile
+        from shared.oidc.tests.factories import OIDCProfileFactory
+
+        try:
+            oidc_profile = OIDCProfile.objects.get(user=user)
+        except OIDCProfile.DoesNotExist:
+            oidc_profile = OIDCProfileFactory(user=user)
+        return oidc_profile
+
+    def get_or_create_eauth_profile(self, oidc_profile):
+        from shared.oidc.models import EAuthorizationProfile
+        from shared.oidc.tests.factories import EAuthorizationProfileFactory
+
+        try:
+            eauth_profile = EAuthorizationProfile.objects.get(oidc_profile=oidc_profile)
+        except EAuthorizationProfile.DoesNotExist:
+            eauth_profile = EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+        return eauth_profile
+
     def authenticate(self, request):
         user_auth_tuple = super().authenticate(request)
 
@@ -120,21 +141,17 @@ class EAuthRestAuthentication(SessionAuthentication):
             return None
 
         if getattr(settings, "MOCK_FLAG", None):
-            from shared.oidc.models import EAuthorizationProfile, OIDCProfile
-            from shared.oidc.tests.factories import (
-                EAuthorizationProfileFactory,
-                OIDCProfileFactory,
-            )
+            try:
+                oidc_profile = self.get_or_create_oidc_profile(user_auth_tuple[0])
+            except IntegrityError:
+                # Handle a rare race condition by trying the operation again.
+                oidc_profile = self.get_or_create_oidc_profile(user_auth_tuple[0])
 
             try:
-                oidc_profile = OIDCProfile.objects.get(user=user_auth_tuple[0])
-            except OIDCProfile.DoesNotExist:
-                oidc_profile = OIDCProfileFactory(user=user_auth_tuple[0])
-
-            try:
-                EAuthorizationProfile.objects.get(oidc_profile=oidc_profile)
-            except EAuthorizationProfile.DoesNotExist:
-                EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+                self.get_or_create_eauth_profile(oidc_profile)
+            except IntegrityError:
+                # Handle a rare race condition by trying the operation again.
+                self.get_or_create_eauth_profile(oidc_profile)
 
             return user_auth_tuple
 

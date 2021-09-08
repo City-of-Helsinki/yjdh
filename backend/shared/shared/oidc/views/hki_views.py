@@ -134,7 +134,7 @@ class HelsinkiOIDCBackchannelLogoutView(View):
 
     def validate_logout_claims(self, logout_token):
         if not logout_token.get("sub"):
-            logger.debug("Incorrect backchannel logout_token: sub")
+            logger.error("Incorrect backchannel logout_token: sub")
             raise SuspiciousOperation("Incorrect logout_token: sub")
 
         events = logout_token.get("events")
@@ -144,14 +144,14 @@ class HelsinkiOIDCBackchannelLogoutView(View):
                 or "http://schemas.openid.net/event/backchannel-logout"
                 not in events.keys()
             ):
-                logger.debug("Incorrect backchannel logout_token: events")
+                logger.error("Incorrect backchannel logout_token: events")
                 raise SuspiciousOperation("Incorrect logout_token: events")
         except AttributeError:
-            logger.debug("Incorrect backchannel logout_token: events")
+            logger.error("Incorrect backchannel logout_token: events")
             raise SuspiciousOperation("Incorrect logout_token: events")
 
         if logout_token.get("nonce"):
-            logger.debug("Incorrect backchannel logout_token: nonce")
+            logger.error("Incorrect backchannel logout_token: nonce")
             raise SuspiciousOperation("Incorrect logout_token: nonce")
 
     def clear_user_sessions(self, user):
@@ -185,7 +185,7 @@ class HelsinkiOIDCBackchannelLogoutView(View):
             elif len(users) > 1:
                 # In the rare case that two user accounts have the same email address,
                 # bail. Randomly selecting one seems really wrong.
-                logger.warning(
+                logger.error(
                     f"Login failed: Multiple users found with the given 'sub' claim: {claims.get('sub', None)}"
                 )
                 return HttpResponse(
@@ -193,7 +193,7 @@ class HelsinkiOIDCBackchannelLogoutView(View):
                     status=400,
                 )
             else:
-                logger.warning(
+                logger.error(
                     f"Login failed: No user with sub {claims.get('sub', None)} found"
                 )
                 return HttpResponse(
