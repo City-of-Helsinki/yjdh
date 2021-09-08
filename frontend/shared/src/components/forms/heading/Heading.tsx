@@ -9,6 +9,8 @@ type HeadingProps = {
   as?: 'h1' | 'h2' | 'h3';
   header?: string;
   loading?: boolean;
+  loadingText?: string;
+  loadingFinishedText?: string;
   tooltip?: string;
 };
 

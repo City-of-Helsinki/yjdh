@@ -1,6 +1,6 @@
-import useLogin from 'kesaseteli/employer/hooks/useLogin';
-import useLogoutQuery from 'kesaseteli/employer/hooks/useLogoutQuery';
-import useUserQuery from 'kesaseteli/employer/hooks/useUserQuery';
+import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
+import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
+import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';

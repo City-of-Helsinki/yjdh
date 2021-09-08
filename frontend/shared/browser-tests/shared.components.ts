@@ -9,7 +9,7 @@ export const getSharedComponents = (t: TestController) => {
   const loadingSpinner = () => {
     const selectors = {
       spinner() {
-        return screen.queryAllByTestId('loading-spinner');
+        return screen.queryAllByTestId('hidden-loading-indicator');
       },
     };
     const expectations = {

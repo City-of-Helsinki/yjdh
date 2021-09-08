@@ -25,12 +25,14 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.tsx'],
+      files: ['*.test.tsx', '*.testcafe.ts'],
       rules: {
         'jest/expect-expect': 'off',
         'jest/no-done-callback': 'off',
         'security/detect-non-literal-regexp': 'off',
         'no-secrets/no-secrets': 'off',
+        'no-await-in-loop': 'off',
+        'no-restricted-syntax': 0,
       },
     },
     {

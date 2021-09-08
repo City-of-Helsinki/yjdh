@@ -1,13 +1,25 @@
 {
+  "appName": "Helsinki-Employer EN",
   "header": {
     "loginLabel": "Login",
     "logoutLabel": "Logout",
     "userAriaLabelPrefix": "User:"
     },
-  "appName": "Helsinki-Employer EN",
+  "errorPage": {
+    "title": "Unknown error occurred",
+    "message": "ENG: Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "retry": "Reload the page",
+    "logout": "Logout"
+  },
   "application": {
+    "new": "New application",
+    "common_error": "Unknown error occurred: ",
+    "loading": "Loading application...",
+    "loadingFinished": "Loading application has finished",
     "step1": {
+      "name": "Employer",
       "header": "1. Employer information",
+      "tooltip": "EN Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       "companyInfoGrid": {
         "title": "Company information",
         "header": {
@@ -26,13 +38,25 @@
         "invoicer_phone_number": "Invoicer's phone number",
         "submit_button": "Save and continue",
         "loading": "Loading...",
-        "common_error": "Unknown error occured: ",
         "errors": {
           "invoicer_name": "Invoicer's name is required",
           "invoicer_email": "Invoicer's email is invalid",
           "invoicer_phone_number": "Invoicer's phone number is invalid"
         }
       }
+    },
+    "step2": {
+      "name": "Employees",
+      "header": "2. Employments"
+    },
+    "step3": {
+      "name": "Send",
+      "header": "Check summary and send"
+    },
+    "buttons": {
+      "previous": "Back to previous step",
+      "save_and_continue": "Save and continue",
+      "send": "Send application"
     }
   },
   "footer": {

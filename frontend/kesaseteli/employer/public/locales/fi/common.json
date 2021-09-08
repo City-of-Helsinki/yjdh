@@ -1,13 +1,25 @@
 {
+  "appName": "Kesäseteli",
   "header": {
     "loginLabel": "Kirjaudu sisään",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:"
   },
-  "appName": "Helsinki-employer FI",
+  "errorPage": {
+    "title": "Palvelussa on valitettavasti tapahtunut virhe",
+    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "retry": "Lataa sivu uudelleen",
+    "logout": "Kirjaudu ulos"
+  },
   "application": {
+    "new": "Uusi hakemus",
+    "common_error": "Tapahtui tuntematon virhe",
+    "loading": "Ladataan hakemusta...",
+    "loadingFinished": "Hakemuksen lataus on valmis",
     "step1": {
+      "name": "Työnantaja",
       "header": "1. Työnantajan tiedot",
+      "tooltip": "FI Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot",
         "header": {
@@ -22,17 +34,28 @@
       "form": {
         "title": "Työnantajan tiedot",
         "invoicer_name": "Yhteyshenkilön nimi",
-        "invoicer_email": "Yhteyshenkilön Sähköposti",
-        "invoicer_phone_number": "Yhteyshenkilön Puhelinnumero",
+        "invoicer_email": "Yhteyshenkilön sähköposti",
+        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
         "submit_button": "Tallenna ja jatka",
-        "loading": "Ladataan...",
-        "common_error": "Tapahtui tuntematon virhe: ",
         "errors": {
           "invoicer_name": "Nimi puuttuu",
           "invoicer_email": "Sähköposti on virheellinen",
           "invoicer_phone_number": "Puhelinnumero on virheellinen"
         }
       }
+    },
+    "step2": {
+      "name": "Työsuhteet",
+      "header": "2. Selvitys työsuhteesta"
+    },
+    "step3": {
+      "name": "Lähetys",
+      "header": "3. Tarkistus ja lähettäminen"
+    },
+    "buttons": {
+      "previous": "Palaa edelliseen",
+      "save_and_continue": "Tallenna ja jatka",
+      "send": "Lähetä hakemus"
     }
   },
   "footer": {
