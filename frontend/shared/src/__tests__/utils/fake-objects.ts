@@ -77,11 +77,11 @@ export const fakeEmployments = (
   count = faker.datatype.number(10)
 ): Employment[] => generateNodeArray(() => fakeEmployment(), count);
 
-export const fakeApplication = (id: string, employments = 0): Application => ({
+export const fakeApplication = (id: string): Application => ({
   id,
   company: fakeCompany,
   status: 'draft',
-  summer_vouchers: fakeEmployments(employments),
+  summer_vouchers: fakeEmployments(2),
   ...fakeInvoicer(),
 });
 

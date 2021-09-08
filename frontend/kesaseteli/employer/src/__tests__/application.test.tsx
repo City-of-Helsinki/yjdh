@@ -165,9 +165,9 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           await applicationPage.step2.expectations.stepIsLoaded();
           await applicationPage.step2.actions.clickNextButton();
           await applicationPage.step3.expectations.stepIsLoaded();
-          applicationPage.step3.actions.clickPreviousButton();
+          await applicationPage.step3.actions.clickPreviousButton();
           await applicationPage.step2.expectations.stepIsLoaded();
-          applicationPage.step2.actions.clickPreviousButton();
+          await applicationPage.step2.actions.clickPreviousButton();
           await applicationPage.step1.expectations.stepIsLoaded();
         });
       });

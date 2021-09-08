@@ -2,9 +2,10 @@ import { IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {useFormContext} from 'react-hook-form'
+import { useFormContext } from 'react-hook-form';
+import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import useWizard from 'shared/hooks/useWizard';
-import EmployerApplication from 'shared/types/employer-application';
+import Application from 'shared/types/employer-application';
 
 import {
   $ApplicationAction,
@@ -14,7 +15,7 @@ import {
 } from './ActionButtons.sc';
 
 type Props = {
-  onNext: 'sendApplication' | 'updateApplication'
+  onNext: 'sendApplication' | 'updateApplication';
 };
 
 const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
@@ -22,18 +23,18 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
   const {
     handleSubmit,
     formState: { isSubmitting, isValid },
-  } = useFormContext<EmployerApplication>();
-  const { isLoading: isApplicationLoading, ...apiOperations } = useApplicationApi();
+  } = useFormContext<Application>();
   const {
-    handleStep,
     isFirstStep,
     isLastStep,
     previousStep,
     nextStep,
     isLoading: isWizardLoading,
   } = useWizard();
+  const apiOperations = useApplicationApi(() => void nextStep());
+  const { isSyncing } = useIsSyncingToBackend();
 
-  handleStep(handleSubmit(apiOperations[onNext]));
+  const isLoading = isSubmitting || isSyncing || isWizardLoading;
   return (
     <$ApplicationActions>
       {!isFirstStep && (
@@ -43,7 +44,8 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
             data-testid="previous-button"
             iconLeft={<IconArrowLeft />}
             onClick={() => previousStep()}
-            disabled={!isValid || isSubmitting}
+            isLoading={isLoading}
+            disabled={isLoading}
           >
             {t(`common:application.buttons.previous`)}
           </$SecondaryButton>
@@ -53,10 +55,10 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
         <$PrimaryButton
           data-testid="next-button"
           iconRight={<IconArrowRight />}
-          onClick={() => nextStep()}
+          onClick={handleSubmit(apiOperations[onNext])}
           loadingText={t(`common:application.loading`)}
-          isLoading={isApplicationLoading || isWizardLoading}
-          disabled={!isValid || isSubmitting}
+          isLoading={isLoading}
+          disabled={isLoading || !isValid}
         >
           {isLastStep
             ? t(`common:application.buttons.send`)

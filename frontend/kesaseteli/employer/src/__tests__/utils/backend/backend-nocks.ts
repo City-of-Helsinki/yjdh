@@ -106,17 +106,10 @@ export const expectToCreateApplicationErrorFromBackend = (): nock.Scope => {
 };
 export const expectToSaveApplication = (
   applicationToSave: Application
-): nock.Scope[] => [
-  nock(getBackendDomain())
-    .intercept(
-      `${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`,
-      'OPTIONS'
-    )
-    .reply(200, undefined, { 'Access-Control-Allow-Origin': '*' }),
+): nock.Scope =>
   nock(getBackendDomain())
     .put(`${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`, {
       ...applicationToSave,
       status: 'draft',
     } as DraftApplication)
-    .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' }),
-];
+    .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' });

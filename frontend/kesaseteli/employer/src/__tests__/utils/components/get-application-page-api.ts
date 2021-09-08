@@ -1,6 +1,11 @@
-import { expectToSaveApplication } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import {
+  expectToGetApplicationFromBackend,
+  expectToSaveApplication,
+} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import { QueryClient } from 'react-query';
-import { expectBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import {
+  expectBackendRequestsToComplete,
+} from 'shared/__tests__/utils/component.utils';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/employer-application';
 import Invoicer from 'shared/types/invoicer';
@@ -12,7 +17,7 @@ type StepExpections = {
 };
 
 type StepActions = {
-  clickPreviousButton: () => void;
+  clickPreviousButton: () => Promise<void>;
   clickNextButton: () => Promise<void>;
 };
 
@@ -46,9 +51,9 @@ export type ApplicationPageApi = {
 };
 
 const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
-  await waitFor(() => {
+  await waitFor(async () => {
     expectBackendRequestsToComplete();
-    expect(screen.getByRole('heading', { name: header })).toBeInTheDocument();
+    await screen.findByRole('heading', { name: header });
   });
 };
 
@@ -68,7 +73,10 @@ const expectNextButtonIsDisabled = (): void => {
   ).toBeDisabled();
 };
 
-const clickPreviousButton = (): void => {
+// Note: Needs to be promised event if there is nothing to wait
+// It prevents `Cannot read property 'createEvent' of null` error
+// which happens occasionally. Read more: https://stackoverflow.com/questions/60504720/jest-cannot-read-property-createevent-of-null
+const clickPreviousButton = async (): Promise<void> => {
   userEvent.click(
     screen.getByRole('button', {
       name: /(palaa edelliseen)|(application.buttons.previous)/i,
@@ -100,15 +108,18 @@ const getApplicationPageApi = (
   };
 
   const clickNextButton = async (): Promise<void> => {
-    const [options, put] = expectToSaveApplication(application);
-    expectNextButtonIsEnabled();
+    const put = expectToSaveApplication(application);
+    const get = expectToGetApplicationFromBackend(application);
     userEvent.click(
       screen.getByRole('button', {
         name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
       })
     );
-    await waitFor(() => options.done());
-    await waitFor(() => put.done());
+    await waitFor(() => {
+      put.done();
+      get.done();
+    });
+
   };
 
   return {

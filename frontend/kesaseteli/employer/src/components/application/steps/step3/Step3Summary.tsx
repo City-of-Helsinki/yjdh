@@ -4,14 +4,10 @@ import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicat
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
-import Application from 'shared/types/employer-application';
 
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, application, sendApplication } = useApplicationApi();
-
-  const onSubmit = (completeApplication: Application): void =>
-    sendApplication(completeApplication);
+  const { isLoading, application } = useApplicationApi();
 
   const stepTitle = t('common:application.step3.header');
   return (
@@ -23,7 +19,7 @@ const Step3Summary: React.FC = () => {
       >
         Yhteenveto: <p />
         <pre>{JSON.stringify(application, null, 2)}</pre>
-        <ActionButtons onSubmit={onSubmit} />
+        <ActionButtons onNext="sendApplication" />
       </FormSection>
     </ApplicationForm>
   );
