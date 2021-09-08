@@ -152,16 +152,21 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
         model = SummerVoucher
         fields = [
             "id",
-            "summer_voucher_id",
-            "contact_name",
-            "contact_email",
-            "work_postcode",
+            "summer_voucher_serial_number",
+            "summer_voucher_exception_reason",
             "employee_name",
             "employee_school",
             "employee_ssn",
             "employee_phone_number",
-            "is_unnumbered_summer_voucher",
-            "unnumbered_summer_voucher_reason",
+            "employee_home_city",
+            "employee_postcode",
+            "employment_postcode",
+            "employment_start_date",
+            "employment_end_date",
+            "employment_work_hours",
+            "employment_salary_paid",
+            "employment_description",
+            "hired_without_voucher_assessment",
             "attachments",
             "ordering",
         ]
@@ -175,16 +180,20 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
         return data
 
     REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS = [
-        "summer_voucher_id",
-        "contact_name",
-        "contact_email",
-        "work_postcode",
+        "summer_voucher_serial_number",
         "employee_name",
         "employee_school",
         "employee_ssn",
         "employee_phone_number",
-        "is_unnumbered_summer_voucher",
-        "unnumbered_summer_voucher_reason",
+        "employee_home_city",
+        "employee_postcode",
+        "employment_postcode",
+        "employment_start_date",
+        "employment_end_date",
+        "employment_work_hours",
+        "employment_salary_paid",
+        "employment_description",
+        "hired_without_voucher_assessment",
     ]
 
     def _validate_non_draft_required_fields(self, data):
@@ -235,8 +244,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "invoicer_email",
             "invoicer_phone_number",
             "company",
+            "user",
             "summer_vouchers",
+            "language",
         ]
+        read_only_fields = ["user"]
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -254,6 +266,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             user.oidc_profile.eauthorization_profile
         )
         validated_data["company"] = company
+        validated_data["user"] = user
 
         return super().create(validated_data)
 

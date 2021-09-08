@@ -11,4 +11,3 @@ export const $CompanyInfoGrid = styled.div`
 export const $CompanyInfoHeader = styled.div``;
 
 export const $CompanyInfoCell = styled.div``;
-

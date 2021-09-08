@@ -5,8 +5,8 @@ const useIsOperationPermitted = (): boolean => {
   const { isAuthenticated } = useAuth();
   const {
     isLoading: isLoadingLogout,
-    isSuccess: isLoggedOut,
+    isSuccess: isLogoutSucceeded,
   } = useLogoutQuery();
-  return isAuthenticated && !isLoadingLogout && !isLoggedOut;
+  return isAuthenticated && !isLoadingLogout && !isLogoutSucceeded;
 };
 export default useIsOperationPermitted;

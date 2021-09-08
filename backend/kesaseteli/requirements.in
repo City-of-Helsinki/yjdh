@@ -10,9 +10,9 @@ django-storages[azure]
 factory-boy
 filetype
 mozilla-django-oidc
+opencensus-ext-azure
 Pillow
 psycopg2
-sentry-sdk
 requests
 elasticsearch
 -e file:../shared

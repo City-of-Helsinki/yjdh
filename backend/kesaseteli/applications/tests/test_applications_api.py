@@ -44,8 +44,20 @@ def test_application_put(api_client, application):
 
 
 @pytest.mark.django_db
-def test_application_patch(api_client, company):
-    application = ApplicationFactory(company=company, status=ApplicationStatus.DRAFT)
+def test_application_put_invalid_data(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["language"] = "asd"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 400
+    assert "language" in response.data
+
+
+@pytest.mark.django_db
+def test_application_patch(api_client, application):
     data = {"status": ApplicationStatus.SUBMITTED.value}
     response = api_client.patch(
         get_detail_url(application),
@@ -86,9 +98,12 @@ def test_add_summer_voucher(api_client, application, summer_voucher):
 
 
 @pytest.mark.django_db
-def test_update_summer_voucher(api_client, application, summer_voucher):
+def test_add_empty_summer_voucher(api_client, application):
+    original_summer_voucher_count = application.summer_vouchers.count()
+
     data = ApplicationSerializer(application).data
-    data["summer_vouchers"][0]["summer_voucher_id"] = "test"
+
+    data["summer_vouchers"].append({})
 
     response = api_client.put(
         get_detail_url(application),
@@ -96,7 +111,40 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
     )
 
     assert response.status_code == 200
-    assert response.data["summer_vouchers"][0]["summer_voucher_id"] == "test"
+
+    application.refresh_from_db()
+    summer_voucher_count_after_update = application.summer_vouchers.count()
+    assert summer_voucher_count_after_update == original_summer_voucher_count + 1
+
+
+@pytest.mark.django_db
+def test_update_summer_voucher(api_client, application, summer_voucher):
+    data = ApplicationSerializer(application).data
+    data["summer_vouchers"][0]["summer_voucher_serial_number"] = "test"
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 200
+    assert response.data["summer_vouchers"][0]["summer_voucher_serial_number"] == "test"
+
+
+@pytest.mark.django_db
+def test_update_summer_voucher_with_invalid_data(
+    api_client, application, summer_voucher
+):
+    data = ApplicationSerializer(application).data
+    data["summer_vouchers"][0]["summer_voucher_exception_reason"] = "test"
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 400
+    assert "summer_voucher_exception_reason" in str(response.data)
 
 
 @pytest.mark.django_db
@@ -283,17 +331,41 @@ def test_application_create_double(api_client, company):
     )
 
     assert response.status_code == 400
-    assert str(response.data[0]) == "Company can have only one draft application"
+    assert str(response.data[0]) == "Company & user can have only one draft application"
 
 
 @pytest.mark.django_db
-def test_applications_list_only_finds_own_application(api_client, application):
+def test_applications_list_only_finds_own_application(
+    api_client, application, company, user_with_profile
+):
     ApplicationFactory()
+    ApplicationFactory(company=company)
+    ApplicationFactory(user=user_with_profile)
 
-    assert Application.objects.count() == 2
+    assert Application.objects.count() == 4
 
     response = api_client.get(reverse("v1:application-list"))
 
     assert response.status_code == 200
     assert len(response.data) == 1
     assert str(response.data[0]["id"]) == str(application.id)
+
+
+@pytest.mark.django_db
+def test_application_get_only_finds_own_application(
+    api_client, application, company, user_with_profile
+):
+    app1 = ApplicationFactory()
+    app2 = ApplicationFactory(company=company)
+    app3 = ApplicationFactory(user=user_with_profile)
+
+    assert Application.objects.count() == 4
+
+    applications_404 = [app1, app2, app3]
+    for app in applications_404:
+        response = api_client.get(get_detail_url(app))
+        assert response.status_code == 404
+
+    response = api_client.get(get_detail_url(application))
+    assert response.status_code == 200
+    assert str(response.data["id"]) == str(application.id)

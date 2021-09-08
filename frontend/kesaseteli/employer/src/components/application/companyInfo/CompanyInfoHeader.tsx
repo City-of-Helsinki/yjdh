@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import type Company from 'shared/types/company';
 
-import { $CompanyInfoHeader } from './CompanyInfoGrid.sc';
+import { $CompanyInfoHeader } from './CompanyInfo.sc';
 
 export type CompanyProp = { field: keyof Company };
 
