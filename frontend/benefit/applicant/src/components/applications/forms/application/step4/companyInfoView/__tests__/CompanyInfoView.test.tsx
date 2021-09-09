@@ -7,7 +7,17 @@ import CompanyInfoView, { CompanyInfoViewProps } from '../CompanyInfoView';
 
 describe('CompanyInfoView', () => {
   const initialProps: CompanyInfoViewProps = {
-    data: {},
+    data: {
+      company: {
+        name: 'Test company',
+        businessId: '123456-1234',
+        companyForm: 'OY',
+        streetAddress: 'Street address',
+        postcode: '12345',
+        city: 'Helsinki',
+        bankAccountNumber: 'FI1234567890',
+      },
+    },
   };
 
   const getComponent = (

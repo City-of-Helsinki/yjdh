@@ -20,11 +20,17 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   attachments,
   type,
   title,
-}) => (
+}) => {
+  const currentAttachemnts = React.useMemo(
+    (): Attachment[] => attachments,
+    [attachments]
+  );
+
+  return (
     <$ViewFieldsContainer>
       <$ViewFieldsGroup>
         <$ViewFieldBold>{title}</$ViewFieldBold>
-        {attachments
+        {currentAttachemnts
           ?.filter((att: Attachment) => att.attachmentType === type)
           .map((attachment: Attachment) => (
             <$ViewField
@@ -38,5 +44,6 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
       </$ViewFieldsGroup>
     </$ViewFieldsContainer>
   );
+};
 
 export default AttachmentsListView;

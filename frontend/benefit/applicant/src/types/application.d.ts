@@ -194,7 +194,7 @@ export type Employee = {
   [APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT]?: string;
   [APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION]?: string;
 };
-export interface Company {
+export type Company = {
   id?: string;
   name: string;
   businessId: string;
@@ -203,9 +203,9 @@ export interface Company {
   postcode: string;
   city: string;
   bankAccountNumber: string;
-}
+};
 
-export interface Attachment {
+export type Attachment = {
   id: string;
   application: string;
   attachmentType: ATTACHMENT_TYPES;
@@ -213,7 +213,7 @@ export interface Attachment {
   attachmentFileName: string;
   contentType: ATTACHMENT_CONTENT_TYPES;
   createdAt?: string;
-}
+};
 
 export type Application = {
   id?: string;

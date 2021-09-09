@@ -15,14 +15,8 @@ import { useApplicationFormStep4 } from './useApplicationFormStep4';
 const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  const {
-    t,
-    handleBack,
-    handleNext,
-    handleStepChange,
-    translationsBase,
-  } = useApplicationFormStep4(data);
-
+  const { t, handleBack, handleNext, handleStepChange, translationsBase } =
+    useApplicationFormStep4(data);
   return (
     <>
       <FormSection
