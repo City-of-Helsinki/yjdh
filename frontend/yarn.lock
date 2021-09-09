@@ -2446,7 +2446,7 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@npmcli/arborist@2.8.2", "@npmcli/arborist@^2.2.1":
+"@npmcli/arborist@^2.2.1":
   version "2.8.2"
   resolved "https://registry.yarnpkg.com/@npmcli/arborist/-/arborist-2.8.2.tgz#643f8c8a26ffbaa579983972f67a60cb6217e86a"
   integrity sha512-6E1XJ0YXBaI9J+25gcTF110MGNx3jv6npr4Rz1U0UAqkuVV7bbDznVJvNqi6F0p8vgrE+Smf9jDTn1DR+7uBjQ==
@@ -3204,9 +3204,9 @@
   integrity sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA==
 
 "@types/slack-node@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@types/slack-node/-/slack-node-0.1.3.tgz"
-  integrity sha512-/LDqb7I426FhPDg1m64EyyJJH1buBQcHzqwqB+wPmREBhE/hYVsSsRa9M2oKvr1xpAs6REws6ZC9UuA2mc+RgA==
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@types/slack-node/-/slack-node-0.1.4.tgz#36fea3e0c85e83bd0933ef10309c3244c98f23b2"
+  integrity sha512-SzcBUjD743ximvZ646uLyBdSQiPt+qqaoS+TbrYLvNBsLz2g0gyE0wl1kZJ23zqKNPIa8ZzMov/SdhJDb5r2jA==
   dependencies:
     "@types/request" "*"
 
