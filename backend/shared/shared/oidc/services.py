@@ -31,6 +31,16 @@ def clear_eauthorization_profiles(
     eauthorization_profiles.delete()
 
 
+def clear_user_sessions(user):
+    oidc_profile = getattr(user, "oidc_profile", None)
+    if oidc_profile:
+        eauthorization_profile = getattr(oidc_profile, "eauthorization_profile", None)
+
+        clear_oidc_profiles(oidc_profile)
+        if eauthorization_profile:
+            clear_eauthorization_profiles(eauthorization_profile)
+
+
 def get_defaults(token_info: dict):
     defaults = {}
 

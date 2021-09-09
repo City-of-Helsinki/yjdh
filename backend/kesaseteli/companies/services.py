@@ -1,6 +1,5 @@
 import logging
 
-from django.conf import settings
 from django.http import HttpRequest
 from requests.exceptions import HTTPError
 from rest_framework.exceptions import NotFound
@@ -8,7 +7,6 @@ from shared.oidc.models import EAuthorizationProfile
 from shared.oidc.utils import get_organization_roles
 from shared.ytj.ytj_client import YTJClient
 
-from common.tests.factories import CompanyFactory
 from companies.models import Company
 
 LOGGER = logging.getLogger(__name__)
@@ -103,10 +101,5 @@ def get_or_create_company_from_eauth_profile(
     company = getattr(eauth_profile, "company", None)
 
     if not company:
-        if settings.MOCK_FLAG:
-            company = CompanyFactory(eauth_profile=eauth_profile)
-        else:
-            company = get_or_create_company_using_organization_roles(
-                eauth_profile, request
-            )
+        company = get_or_create_company_using_organization_roles(eauth_profile, request)
     return company

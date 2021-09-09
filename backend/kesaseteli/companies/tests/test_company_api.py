@@ -4,19 +4,19 @@ from unittest import mock
 
 import pytest
 from django.conf import settings
+from django.shortcuts import reverse
 from django.test import override_settings
 
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.tests.data.company_data import (
-    DUMMY_COMPANY_DATA,
     DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE,
     DUMMY_YTJ_RESPONSE,
 )
 
 
 def get_company_api_url():
-    return "/v1/company/"
+    return reverse("company-detail")
 
 
 def set_up_mock_requests(
@@ -32,36 +32,15 @@ def set_up_mock_requests(
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=True)
-def test_get_mock_company(api_client):
+def test_get_company(api_client, company):
     response = api_client.get(get_company_api_url())
 
     assert response.status_code == 200
-
-    assert response.data["business_id"] == DUMMY_COMPANY_DATA["business_id"]
-
-
-@pytest.mark.django_db
-@override_settings(MOCK_FLAG=True)
-def test_get_mock_company_not_found_from_ytj(api_client):
-    api_client.credentials(HTTP_SESSION_ID="-1")
-    response = api_client.get(get_company_api_url())
-
-    assert response.status_code == 200
-    assert response.data["name"] == DUMMY_COMPANY_DATA["name"]
-    assert response.data["business_id"] == DUMMY_COMPANY_DATA["business_id"]
-
-    for field in [
-        f
-        for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json", "eauth_profile"]
-    ]:
-        assert response.data[field.name] == ""
+    assert response.data["business_id"] == company.business_id
 
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
     EAUTHORIZATIONS_BASE_URL="http://example.com",
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
@@ -83,7 +62,6 @@ def test_get_company_organization_roles_error(
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
 def test_get_company_from_ytj(api_client, requests_mock, user_with_profile):
@@ -118,7 +96,6 @@ def test_get_company_from_ytj(api_client, requests_mock, user_with_profile):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
 def test_get_company_not_found_from_ytj(api_client, requests_mock, user_with_profile):
@@ -151,7 +128,6 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user_with_pro
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
 def test_get_company_from_ytj_invalid_response(
