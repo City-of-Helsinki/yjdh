@@ -58,6 +58,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     )
     company_name = factory.Faker("sentence", nb_words=2)
     company_form = factory.Faker("sentence", nb_words=1)
+    company_department = factory.Faker("street_address")
     official_company_street_address = factory.Faker("street_address")
     official_company_city = factory.Faker("city")
     official_company_postcode = factory.Faker("postcode")
@@ -132,7 +133,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi_FI")
 
-    phone_number = factory.Faker("phone_number", locale="fi_FI")
+    phone_number = factory.Sequence(lambda n: f"050-10000{n}")
     email = factory.Faker("email")
 
     employee_language = factory.Faker(
@@ -142,7 +143,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     monthly_pay = factory.Faker("random_int", max=5000)
     vacation_money = factory.Faker("random_int", max=5000)
     other_expenses = factory.Faker("random_int", max=5000)
-    working_hours = factory.Faker("random_int", max=40)
+    working_hours = factory.Faker("random_int", min=18, max=40)
     is_living_in_helsinki = factory.Faker("boolean")
 
     collective_bargaining_agreement = factory.Faker("words")

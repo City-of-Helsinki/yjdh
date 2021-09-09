@@ -94,6 +94,10 @@ class Application(UUIDModel, TimeStampedModel):
 
     company_form = models.CharField(max_length=64, verbose_name=_("company form"))
 
+    company_department = models.CharField(
+        max_length=256, blank=True, verbose_name=_("company department")
+    )
+
     official_company_street_address = models.CharField(
         max_length=256,
         verbose_name=_("company street address"),
