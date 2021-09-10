@@ -36,7 +36,8 @@ const Step1Employer: React.FC = () => {
             id="invoicer_email"
             validation={{
               required: true,
-              maxLength: 254, // eslint-disable-next-line security/detect-unsafe-regex
+              maxLength: 254,
+              // eslint-disable-next-line security/detect-unsafe-regex
               pattern: /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/,
             }}
           />
