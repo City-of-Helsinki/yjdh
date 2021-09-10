@@ -1257,6 +1257,24 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 approve_terms["selected_applicant_consents"]
             )
 
+    def _update_applicant_terms_approval(self, instance, approve_terms):
+        if ApplicantTermsApproval.terms_approval_needed(instance):
+            if not approve_terms:
+                raise serializers.ValidationError(
+                    {"approve_terms": _("Terms must be approved")}
+                )
+            if hasattr(instance, "applicant_terms_approval"):
+                instance.applicant_terms_approval.delete()
+            approval = ApplicantTermsApproval.objects.create(
+                application=instance,
+                terms=approve_terms["terms"],
+                approved_at=datetime.now(),
+                approved_by=self.get_logged_in_user(),
+            )
+            approval.selected_applicant_consents.set(
+                approve_terms["selected_applicant_consents"]
+            )
+
     def _validate_attachments(self, instance):
         """
         The requirements for attachments are the minimum requirements.
