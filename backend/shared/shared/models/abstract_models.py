@@ -33,7 +33,9 @@ class HistoricalModel(models.Model):
 
 class AbstractCompany(UUIDModel):
     name = models.CharField(max_length=256, verbose_name=_("name"))
-    business_id = models.CharField(max_length=64, verbose_name=_("business id"))
+    business_id = models.CharField(
+        max_length=64, verbose_name=_("business id"), unique=True
+    )
     company_form = models.CharField(max_length=64, verbose_name=_("company form"))
 
     street_address = models.CharField(max_length=256, verbose_name=_("street address"))
