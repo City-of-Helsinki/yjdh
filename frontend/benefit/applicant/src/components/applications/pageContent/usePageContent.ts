@@ -1,6 +1,6 @@
 import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
-  DEFAULT_APPLICATION,
+  APPLICATION_INITIAL_VALUES,
   DEFAULT_APPLICATION_STEP,
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
@@ -89,7 +89,7 @@ const usePageContent = (): ExtendedComponentProps => {
   }, [router]);
 
   let application: Application = {};
-  const defaultApplication = DEFAULT_APPLICATION as Application;
+  const defaultApplication = APPLICATION_INITIAL_VALUES as Application;
 
   // if no id, get the application template date
   if (existingApplication || (!existingApplicationId && applicationTemplate)) {
