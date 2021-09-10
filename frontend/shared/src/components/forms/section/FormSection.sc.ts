@@ -27,6 +27,7 @@ export const $Section = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.colors.black20};
   padding-bottom: ${(props) => props.theme.spacing.m};
   margin-bottom: ${(props) => props.theme.spacing.s};
+  position: relative;
 `;
 
 export const $SubHeader = styled.h3`
@@ -38,9 +39,9 @@ export const $Grid = styled.div.attrs<
   GridProps,
   GridProps & { gap: SpacingValue }
 >((props) => ({
-    ...props,
-    gap: props.gap || props.theme.spacing.s,
-  }))<GridProps>`
+  ...props,
+  gap: props.gap || props.theme.spacing.s,
+}))<GridProps>`
   position: relative;
   display: grid;
   grid-template-columns: repeat(${(props) => props.columns ?? 12}, 1fr);
@@ -78,3 +79,10 @@ export const $GridCell = styled.div<GridCellProps>`
   align-self: ${(props) => props.alignSelf ?? 'initial'};
   justify-self: ${(props) => props.justifySelf ?? 'initial'};
 `;
+
+export const $Action = styled.div`
+  position: absolute;
+  right: 0;
+`;
+
+export const $ViewField = styled.div``;

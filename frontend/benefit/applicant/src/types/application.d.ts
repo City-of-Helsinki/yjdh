@@ -177,7 +177,18 @@ export type Employee = {
   [EMPLOYEE_KEYS.COMMISSION_DESCRIPTION]?: string;
 };
 
-export interface Attachment {
+export type Company = {
+  id?: string;
+  name: string;
+  businessId: string;
+  companyForm: string;
+  streetAddress: string;
+  postcode: string;
+  city: string;
+  bankAccountNumber: string;
+};
+
+export type Attachment = {
   id: string;
   application: string;
   attachmentType: ATTACHMENT_TYPES;
@@ -185,7 +196,7 @@ export interface Attachment {
   attachmentFileName: string;
   contentType: ATTACHMENT_CONTENT_TYPES;
   createdAt?: string;
-}
+};
 
 export type Application = {
   id?: string;
@@ -207,6 +218,7 @@ export type Application = {
   [APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE]?: SUPPORTED_LANGUAGES | '';
   [APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS]?: boolean | null;
   [APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION]?: string;
+  company?: Company;
   [APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED]?: boolean | null;
   [APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT]?: string | null; // number: 30, 40, 50, 100
   [APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT]?: string | null; // number: 30, 40, 50, 100
