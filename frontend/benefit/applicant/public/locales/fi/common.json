@@ -209,7 +209,7 @@
             "label": "Päätöksessä oleva palkkatukiprosentti"
           },
           "additionalPaySubsidyPercent": {
-            "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
+            "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki,\nanna siinä oleva palkkatukiprosentti"
           },
           "apprenticeshipProgram": {
             "label": "Onko kyseessä oppisopmus",
@@ -355,6 +355,9 @@
       },
       "iban": {
         "invalid": "Virheellinen IBAN-tilinumero"
+      },
+      "ssn": {
+        "invalid": "Virheellinen henkilötunnus"
       }
     }
   },
