@@ -141,7 +141,36 @@ class AttachmentSerializer(serializers.ModelSerializer):
         return mime_type == "application/pdf"
 
 
+class SummerVoucherListSerializer(serializers.ListSerializer):
+    """
+    https://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-update
+    """
+
+    def update(self, instance, validated_data):
+        # Maps for id->instance.
+        voucher_mapping = {voucher.id: voucher for voucher in instance}
+        # A list of ids of the validated data items. IDs do not exist for new instances.
+        existing_ids = [item["id"] for item in validated_data if item.get("id")]
+
+        # Perform creations and updates.
+        ret = []
+        for data in validated_data:
+            voucher = voucher_mapping.get(data.get("id"), None)
+            if voucher is None:
+                ret.append(self.child.create(data))
+            else:
+                ret.append(self.child.update(voucher, data))
+
+        # Perform deletions.
+        for voucher_id, voucher in voucher_mapping.items():
+            if voucher_id not in existing_ids:
+                voucher.delete()
+
+        return ret
+
+
 class SummerVoucherSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(required=False)
     attachments = AttachmentSerializer(
         read_only=True,
         many=True,
@@ -173,6 +202,7 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "ordering",
         ]
+        list_serializer_class = SummerVoucherListSerializer
 
     def validate(self, data):
         data = super().validate(data)
@@ -273,7 +303,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def _update_summer_vouchers(
         self, summer_vouchers_data: list, application: Application
     ) -> None:
-        serializer = SummerVoucherSerializer(data=summer_vouchers_data, many=True)
+        serializer = SummerVoucherSerializer(
+            application.summer_vouchers.all(), data=summer_vouchers_data, many=True
+        )
 
         if not serializer.is_valid():
             raise serializers.ValidationError(
@@ -283,9 +315,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 )
             )
 
-        # Clear the previous SummerVoucher objects from the database.
-        # The request must always contain all the SummerVoucher objects for this application.
-        application.summer_vouchers.all().delete()
         for idx, summer_voucher_item in enumerate(serializer.validated_data):
             summer_voucher_item["application_id"] = application.pk
             summer_voucher_item[
