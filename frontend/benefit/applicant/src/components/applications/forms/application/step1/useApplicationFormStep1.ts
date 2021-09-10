@@ -1,6 +1,6 @@
 import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
-  APPLICATION_FIELDS_STEP1,
+  APPLICATION_FIELDS_STEP1_KEYS,
   MAX_LONG_STRING_LENGTH,
   MAX_SHORT_STRING_LENGTH,
   VALIDATION_MESSAGE_KEYS,
@@ -20,9 +20,10 @@ import {
 } from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
+import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import { Field, FieldsDef } from 'shared/components/forms/fields/types';
+import { Field } from 'shared/components/forms/fields/types';
 import {
   ADDRESS_REGEX,
   CITY_REGEX,
@@ -37,8 +38,7 @@ import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  fieldNames: string[];
-  fields: FieldsDef;
+  fields: Record<APPLICATION_FIELDS_STEP1_KEYS, Field>;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
@@ -108,31 +108,31 @@ const useApplicationFormStep1 = (
   const formik = useFormik({
     initialValues: application || {},
     validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]: Yup.string()
         .matches(ADDRESS_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
         .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string()
         .matches(POSTAL_CODE_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY]: Yup.string()
         .matches(CITY_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
         .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string()
         .matches(
           COMPANY_BANK_ACCOUNT_NUMBER,
           t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
         )
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: Yup.string()
         .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string()
         .email(t(VALIDATION_MESSAGE_KEYS.EMAIL_INVALID))
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string()
         .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME]: Yup.string()
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME]: Yup.string()
         .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
     }),
@@ -160,32 +160,33 @@ const useApplicationFormStep1 = (
     },
   });
 
-  const fieldNames = React.useMemo(
-    (): string[] => Object.values(APPLICATION_FIELDS_STEP1),
-    []
-  );
-
-  const fields = React.useMemo((): FieldsDef => {
+  const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
     const fieldMasks: Record<Field['name'], Field['mask']> = {
-      [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: {
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
         format: 'FI99 9999 9999 9999 99',
         stripVal: (val: string) => val.replace(/\s/g, ''),
       },
     };
 
-    return fieldNames.reduce<FieldsDef>(
-      (acc, name) => ({
-        ...acc,
-        [name]: {
-          name,
-          label: t(`${translationsBase}.fields.${name}.label`),
-          placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
-          mask: fieldMasks[name],
-        },
-      }),
-      {}
-    );
-  }, [t, fieldNames]);
+    const fieldsValues = Object.values(APPLICATION_FIELDS_STEP1_KEYS);
+    const fieldsPairs: [
+      APPLICATION_FIELDS_STEP1_KEYS,
+      Field
+    ][] = fieldsValues.map((fieldName) => [
+      fieldName,
+      {
+        name: fieldName,
+        label: t(`${translationsBase}.fields.${fieldName}.label`),
+        placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
+        mask: fieldMasks[fieldName],
+      },
+    ]);
+
+    return fromPairs(fieldsPairs) as Record<
+      APPLICATION_FIELDS_STEP1_KEYS,
+      Field
+    >;
+  }, [t, translationsBase]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -220,7 +221,6 @@ const useApplicationFormStep1 = (
 
   return {
     t,
-    fieldNames,
     fields,
     translationsBase,
     formik,
