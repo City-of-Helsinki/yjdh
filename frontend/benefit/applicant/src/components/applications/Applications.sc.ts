@@ -1,14 +1,6 @@
 import { Button } from 'hds-react';
 import styled from 'styled-components';
 
-export const $SecondaryButton = styled(Button)`
-  color: ${(props) => props.theme.colors.black90} !important;
-  border-color: ${(props) => props.theme.colors.black90} !important;
-  border-width: 3px !important;
-  min-width: 170px;
-  max-height: 60px;
-`;
-
 export const $PrimaryButton = styled(Button)`
   background-color: ${(props) => props.theme.colors.coatOfArms} !important;
   border-color: ${(props) => props.theme.colors.coatOfArms} !important;
