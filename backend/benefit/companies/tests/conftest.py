@@ -21,3 +21,4 @@ def mock_get_organisation_roles_and_create_company(requests_mock):
     matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
     requests_mock.get(matcher, json=ORGANISATION_ROLE_JSON)
     return CompanyFactory(business_id=ORGANISATION_ROLE_JSON[0]["identifier"])
+

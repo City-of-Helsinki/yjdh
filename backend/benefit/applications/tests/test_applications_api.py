@@ -16,10 +16,13 @@ from applications.enums import (
     OrganizationType,
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
+from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
+from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
+from helsinkibenefit.tests.conftest import *  # noqa
 from PIL import Image
 from rest_framework.reverse import reverse
 
