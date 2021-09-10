@@ -1,10 +1,9 @@
-import useLocale from 'benefit/handler/hooks/useLocale';
-import { useTranslation } from 'benefit/handler/i18n';
-import { getLanguageOptions } from 'benefit/handler/utils/common';
 import { useRouter } from 'next/router';
-import { TFunction } from 'next-i18next';
+import { TFunction,useTranslation  } from 'next-i18next';
 import React from 'react';
+import useLocale from 'shared/hooks/useLocale';
 import { NavigationItem, OptionType } from 'shared/types/common';
+import { getLanguageOptions } from 'shared/utils/common';
 
 type ExtendedComponentProps = {
   t: TFunction;

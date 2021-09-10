@@ -1,5 +1,5 @@
-import { useTranslation } from 'benefit/handler/i18n';
 import { Footer } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import { $FooterWrapper } from './Footer.sc';

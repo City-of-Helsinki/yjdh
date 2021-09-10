@@ -6,14 +6,14 @@ import {
 } from 'benefit/handler/backend-api/backend-api';
 import Footer from 'benefit/handler/components/footer/Footer';
 import Header from 'benefit/handler/components/header/Header';
-import useLocale from 'benefit/handler/hooks/useLocale';
-import { appWithTranslation } from 'benefit/handler/i18n';
 import { AppProps } from 'next/app';
+import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
 import Layout from 'shared/components/layout/Layout';
+import useLocale from 'shared/hooks/useLocale';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
@@ -31,7 +31,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
         <ThemeProvider theme={theme}>
           <GlobalStyling />
           <Layout>
-            <Header /> d
+            <Header />
             <Content>
               <Component {...pageProps} />
             </Content>
