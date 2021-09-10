@@ -1,20 +1,66 @@
-import { useTranslation } from 'benefit/applicant/i18n';
+import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/AttachmentsIngress';
+import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 
+import StepperActions from '../stepperActions/StepperActions';
+import AttachmentsList from './attachmentsList/AttachmentsList';
+import { useApplicationFormStep3 } from './useApplicationFormStep3';
+
 const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
-  actions,
+  data,
 }) => {
-  const { t } = useTranslation();
-  const translationsBase = 'common:applications.sections.attachments';
+  const {
+    handleBack,
+    handleNext,
+    benefitType,
+    apprenticeshipProgram,
+    showSubsidyMessage,
+    attachments,
+  } = useApplicationFormStep3(data);
 
   return (
     <>
-      <FormSection header={t(`${translationsBase}.heading1`)}>
-        Content
+      <FormSection>
+        <AttachmentsIngress />
+        {(benefitType === BENEFIT_TYPES.SALARY ||
+          benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
+          <>
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+            />
+            {apprenticeshipProgram && (
+              <AttachmentsList
+                attachments={attachments}
+                attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+              />
+            )}
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+              showMessage={showSubsidyMessage}
+            />
+          </>
+        )}
+        {benefitType === BENEFIT_TYPES.COMMISSION && (
+          <AttachmentsList
+            attachments={attachments}
+            attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
+          />
+        )}
+        <AttachmentsList
+          attachments={attachments}
+          attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+        />
       </FormSection>
-      {actions}
+      <StepperActions
+        hasBack
+        hasNext
+        handleSubmit={handleNext}
+        handleBack={handleBack}
+      />
     </>
   );
 };

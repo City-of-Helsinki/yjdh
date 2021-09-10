@@ -1,12 +1,18 @@
 Django~=3.2
+django-auth-adfs
 django-cors-headers
-django-cryptography
 django-environ
 django-extensions
 djangorestframework
+django-searchable-encrypted-fields
 django-simple-history
+django-storages[azure]
 factory-boy
+filetype
 mozilla-django-oidc
+opencensus-ext-azure
+Pillow
 psycopg2
-sentry-sdk
 requests
+elasticsearch
+-e file:../shared

@@ -54,6 +54,52 @@ The project is now running at [localhost:8000](http://localhost:8000)
     * `pip-sync requirements.txt requirements-dev.txt`
 
 
+## Documentation
+
+The OpenAPI schema is served from [http://127.0.0.1:8000/openapi/](http://127.0.0.1:8000/openapi/).
+
+Swagger documentation can be found at [http://localhost:8000/api_docs/swagger/](http://localhost:8000/api_docs/swagger/)
+and redoc documentation at [http://localhost:8000/api_docs/redoc/](http://localhost:8000/api_docs/redoc/)
+
+(Assuming you are running the project locally)
+
+- `ModelSerializer`'s model fields defined in `Meta.fields` are given a description using `help_text` via `extra_kwargs`.
+  ```python
+  class Meta:
+      extra_kwargs = {
+          "field_name": {
+              "help_text": "Field description.",
+          }
+      }
+  ```
+- Non-model fields are given a description using `help_text` kwarg on the field.
+  ```python
+  field_name = serializers.SerializerMethodField(help_text="Field description.")
+  ```
+- Filters are given a description using `help_text` kwarg on the filter.
+  ```python
+  filter_name = filters.NumberFilter(help_text="Filter description.")
+  ```
+- ViewSets are given a description either by giving the class a docstring or by using the `extend_schema` decorator on the class.
+  ```python
+  @extend_schema(description="ViewSet description.")
+  ```
+  `extend_schema` overrides docstring, if both are used.
+- View specific descriptions within a ViewSet can be given using the `extend_schema_view` decorator on the ViewSet class.
+  ```python
+  @extend_schema_view(
+      list=extend_schema(description="list description."),
+      create=extend_schema(description="create description."),
+  )
+  ```
+- `SerializerMethodField`s are given a type using type hinting.
+  ```python
+  available_benefit_types = serializers.SerializerMethodField(
+    "get_available_benefit_types"
+  )
+  @extend_schema_field(serializers.ChoiceField(choices=BenefitType.choices), help_text="help")
+    def get_available_benefit_types(self, obj):
+  ```
 
 ## Code format
 
@@ -68,3 +114,16 @@ Basic `black` commands:
 
 * To let `black` do its magic: `black .`
 * To see which files `black` would change: `black --check .`
+
+## Storages
+
+This project uses
+[`django-storages`](https://github.com/jschneier/django-storages)
+for blob storage handling. Production / staging will use Azure blob storage
+which requires the `DEFAULT_FILE_STORAGE` env variable / setting to be set to
+`"storages.backends.azure_storage.AzureStorage"`. The following
+env variables / settings are provided by Azure blob storage:
+
+- `AZURE_ACCOUNT_NAME`
+- `AZURE_ACCOUNT_KEY`
+- `AZURE_CONTAINER`

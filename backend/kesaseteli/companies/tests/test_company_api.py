@@ -1,4 +1,6 @@
+import copy
 import re
+from unittest import mock
 
 import pytest
 from django.conf import settings
@@ -41,25 +43,65 @@ def test_get_mock_company(api_client):
 
 @pytest.mark.django_db
 @override_settings(MOCK_FLAG=True)
-def test_get_mock_company_results_in_error(api_client):
+def test_get_mock_company_not_found_from_ytj(api_client):
     api_client.credentials(HTTP_SESSION_ID="-1")
     response = api_client.get(get_company_api_url())
 
-    assert response.status_code == 500
+    assert response.status_code == 200
+    assert response.data["name"] == DUMMY_COMPANY_DATA["name"]
+    assert response.data["business_id"] == DUMMY_COMPANY_DATA["business_id"]
+
+    for field in [
+        f
+        for f in Company._meta.fields
+        if f.name not in ["id", "name", "business_id", "ytj_json", "eauth_profile"]
+    ]:
+        assert response.data[field.name] == ""
+
+
+@pytest.mark.django_db
+@override_settings(
+    MOCK_FLAG=False,
+    EAUTHORIZATIONS_BASE_URL="http://example.com",
+    EAUTHORIZATIONS_CLIENT_ID="test",
+    EAUTHORIZATIONS_CLIENT_SECRET="test",
+)
+def test_get_company_organization_roles_error(
+    api_client, requests_mock, user_with_profile
+):
+    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
+    requests_mock.get(matcher, text="Error", status_code=401)
+
+    response = api_client.get(get_company_api_url())
+
+    assert response.status_code == 404
     assert (
-        response.data
-        == "YTJ API is under heavy load or no company found with the given business id"
+        response.data["detail"]
+        == "Unable to fetch organization roles from eauthorizations API"
     )
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj(api_client, requests_mock):
+@override_settings(
+    MOCK_FLAG=False,
+    YTJ_BASE_URL="http://example.com",
+)
+def test_get_company_from_ytj(api_client, requests_mock, user_with_profile):
     set_up_mock_requests(
         DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
     )
 
-    response = api_client.get(get_company_api_url())
+    org_roles_json = {
+        "name": "Activenakusteri Oy",
+        "identifier": "0877830-0",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
+
+    with mock.patch(
+        "companies.services.get_organization_roles", return_value=org_roles_json
+    ):
+        response = api_client.get(get_company_api_url())
 
     assert response.status_code == 200
 
@@ -70,32 +112,69 @@ def test_get_company_from_ytj(api_client, requests_mock):
     assert (
         response.data["business_id"] == DUMMY_YTJ_RESPONSE["results"][0]["businessId"]
     )
+    for field in ["company_form", "industry", "street_address", "postcode", "city"]:
+        assert response.data[field]
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj_results_in_error(api_client, requests_mock):
+@override_settings(
+    MOCK_FLAG=False,
+    YTJ_BASE_URL="http://example.com",
+)
+def test_get_company_not_found_from_ytj(api_client, requests_mock, user_with_profile):
     matcher = re.compile(settings.YTJ_BASE_URL)
-    requests_mock.get(matcher, text="Error", status_code=500)
+    requests_mock.get(matcher, text="Error", status_code=404)
 
-    response = api_client.get(get_company_api_url())
+    org_roles_json = {
+        "name": "Activenakusteri Oy",
+        "identifier": "0877830-0",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
 
-    assert response.status_code == 500
-    assert (
-        response.data
-        == "YTJ API is under heavy load or no company found with the given business id"
+    with mock.patch(
+        "companies.services.get_organization_roles", return_value=org_roles_json
+    ):
+        response = api_client.get(get_company_api_url())
+
+    assert response.status_code == 200
+    assert response.data["name"] == org_roles_json["name"]
+    assert response.data["business_id"] == org_roles_json["identifier"]
+
+    for field in [
+        f
+        for f in Company._meta.fields
+        if f.name not in ["id", "name", "business_id", "ytj_json", "eauth_profile"]
+    ]:
+        assert response.data[field.name] == ""
+
+
+@pytest.mark.django_db
+@override_settings(
+    MOCK_FLAG=False,
+    YTJ_BASE_URL="http://example.com",
+)
+def test_get_company_from_ytj_invalid_response(
+    api_client, requests_mock, user_with_profile
+):
+    ytj_reponse = copy.deepcopy(DUMMY_YTJ_RESPONSE)
+    ytj_reponse["results"][0]["addresses"] = []
+
+    set_up_mock_requests(
+        ytj_reponse, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
     )
 
+    org_roles_json = {
+        "name": "Activenakusteri Oy",
+        "identifier": "0877830-0",
+        "complete": True,
+        "roles": ["NIMKO"],
+    }
 
-@pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj_invalid_response(api_client, requests_mock):
-    response = DUMMY_YTJ_RESPONSE
-    response["results"][0]["addresses"] = []
+    with mock.patch(
+        "companies.services.get_organization_roles", return_value=org_roles_json
+    ):
+        response = api_client.get(get_company_api_url())
 
-    set_up_mock_requests(response, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock)
-
-    response = api_client.get(get_company_api_url())
-
-    assert response.status_code == 500
-    assert response.data == "Could not handle the response from YTJ API"
+    assert response.status_code == 404
+    assert response.data["detail"] == "Could not handle the response from YTJ API"

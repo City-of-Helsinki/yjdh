@@ -1,44 +1,56 @@
-import { IconPlus } from 'hds-react';
+import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
+import { Button, IconPlus } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import theme from 'shared/styles/theme';
 
-import { useComponent } from './extended';
 import {
-  StyledActionContainer,
-  StyledButton,
-  StyledContainer,
-  StyledDescription,
-  StyledHeading,
-  StyledLink,
-  StyledTextContainer,
-} from './styled';
+  $ActionContainer,
+  $Container,
+  $Description,
+  $Heading,
+  $Link,
+  $Notification,
+  $TextContainer,
+} from './MainIngress.sc';
+import { useMainIngress } from './useMainIngress';
 
 const MainIngress: React.FC = () => {
-  const { handleNewApplicationClick, handleMoreInfoClick, t } = useComponent();
+  const { handleNewApplicationClick, handleMoreInfoClick, t } =
+    useMainIngress();
+  const { errors } = React.useContext(FrontPageContext);
+
+  const notificationItems = errors?.map(({ message, name }, i) => (
+    // eslint-disable-next-line react/no-array-index-key
+    <$Notification key={`${i}`} label={name} type="error">
+      {message}
+    </$Notification>
+  ));
 
   return (
     <Container backgroundColor={theme.colors.silverLight}>
-      <StyledContainer>
-        <StyledTextContainer>
-          <StyledHeading>{t('common:mainIngress.heading')}</StyledHeading>
-          <StyledDescription>
+      <$Container>
+        <$Heading>{t('common:mainIngress.heading')}</$Heading>
+        {notificationItems}
+        <$TextContainer>
+          <$Description>
             {t('common:mainIngress.description1')}
-            <StyledLink onClick={handleMoreInfoClick}>
+            <$Link onClick={handleMoreInfoClick}>
               {t('common:mainIngress.linkText')}
-            </StyledLink>
+            </$Link>
             {t('common:mainIngress.description2')}
-          </StyledDescription>
-        </StyledTextContainer>
-        <StyledActionContainer>
-          <StyledButton
-            iconLeft={<IconPlus />}
-            onClick={handleNewApplicationClick}
-          >
-            {t('common:mainIngress.newApplicationBtnText')}
-          </StyledButton>
-        </StyledActionContainer>
-      </StyledContainer>
+          </$Description>
+          <$ActionContainer>
+            <Button
+              iconLeft={<IconPlus />}
+              onClick={handleNewApplicationClick}
+              theme="coat"
+            >
+              {t('common:mainIngress.newApplicationBtnText')}
+            </Button>
+          </$ActionContainer>
+        </$TextContainer>
+      </$Container>
     </Container>
   );
 };

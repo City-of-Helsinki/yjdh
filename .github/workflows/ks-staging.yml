@@ -45,8 +45,8 @@ jobs:
         service: [ 'backend', 'employer' ]
         include:
           - service: backend
-            context: ./backend/kesaseteli
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             port: 8000
           - service: employer
             context: ./frontend
@@ -78,7 +78,7 @@ jobs:
         include:
           - service: kesaseteli-backend
             context: backend
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             database: true
           - service: kesaseteli-employer
             context: frontend/kesaseteli
@@ -147,7 +147,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: '14'
       - name: Get yarn cache directory path

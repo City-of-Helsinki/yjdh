@@ -7,6 +7,7 @@ on:
     paths:
       - 'backend/kesaseteli/**'
       - '.github/workflows/ks-pytest.yml'
+      - 'backend/shared/**'
 
 
 env:
@@ -50,10 +51,10 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/kesaseteli/requirements.txt -r backend/kesaseteli/requirements-dev.txt codecov
+        run: cd backend/kesaseteli && pip install -r requirements.txt -r requirements-dev.txt codecov
 
       - name: Run tests
-        run: pytest backend/kesaseteli/ -ra -vv --doctest-modules --cov=. -n auto
+        run: pytest backend/kesaseteli/ -ra -vv --doctest-modules --cov=. -n auto --dist loadfile --pyargs shared
         env:
           DATABASE_URL: postgres://kesaseteli:kesaseteli@postgres/kesaseteli
 

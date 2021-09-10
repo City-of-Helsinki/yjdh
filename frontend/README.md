@@ -10,7 +10,6 @@ Project is automatically deployed to testing environment when pushing to develop
 ## Requirements
 
 - Node 14.x
-- Lerna  
 - Yarn
 - Git
 - Docker

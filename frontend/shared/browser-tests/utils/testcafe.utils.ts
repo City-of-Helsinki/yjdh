@@ -20,7 +20,6 @@ const injectCallback = (
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     .filter((key: Key) => typeof obj[key] === 'function')
-    // eslint-disable-next-line unicorn/no-array-reduce
     .reduce(
       (acc, key) => ({
         ...acc,
@@ -46,23 +45,26 @@ export const screenContext = (t: TestController): typeof screen =>
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         matcher,
         key,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         ...(options && { options }),
       }
     );
   });
 
-export const withinContext = (t: TestController): typeof within => (selector) =>
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  injectCallback(within(selector), (key, params: unknown[]) => {
-    setDataToPrintOnFailure(t, 'latestSearch', {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      ...(t.ctx.within && { within: t.ctx.within }),
-      key,
-      params: params?.length === 1 ? params[0] : params,
+export const withinContext =
+  (t: TestController): typeof within =>
+  (selector) =>
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    injectCallback(within(selector), (key, params: unknown[]) => {
+      setDataToPrintOnFailure(t, 'latestSearch', {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        ...(t.ctx.within && { within: t.ctx.within }),
+        key,
+        params: params?.length === 1 ? params[0] : params,
+      });
     });
-  });
 
 const getHtml = ClientFunction(
   // eslint-disable-next-line testing-library/no-node-access

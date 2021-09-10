@@ -1,76 +1,148 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
 import { axe } from 'jest-axe';
 import {
-  authenticatedUser,
-  expectAuthorized,
-  expectToLogout,
-  expectUnauthorized,
-} from 'kesaseteli/employer/__tests__/utils/auth-utils';
-import {
-  createQueryClient,
-  renderPage,
-} from 'kesaseteli/employer/__tests__/utils/react-query-utils';
-import withAuth from 'kesaseteli/employer/components/withAuth';
-import EmployerIndex from 'kesaseteli/employer/pages/index';
+  expectAuthorizedReply,
+  expectToCreateApplicationErrorFromBackend,
+  expectToCreateApplicationToBackend,
+  expectToGetApplicationsErrorFromBackend,
+  expectToGetApplicationsFromBackend,
+  expectUnauthorizedReply,
+} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
+import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
+import IndexPage from 'kesaseteli/employer/pages';
 import React from 'react';
-import { render } from 'test-utils';
-
-axios.defaults.withCredentials = true;
+import ErrorPageApi from 'shared/__tests__/component-apis/error-page-api';
+import {
+  fakeApplication,
+  fakeApplications,
+} from 'shared/__tests__/utils/fake-objects';
+import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
+import { waitFor } from 'shared/__tests__/utils/test-utils';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
-  const queryClient = createQueryClient();
-  beforeEach(() => {
-    queryClient.clear();
-  });
-
   it('test for accessibility violations', async () => {
-    const { container } = render(<EmployerIndex />);
+    const { container } = renderComponent(<IndexPage />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
   it('Should redirect when unauthorized', async () => {
-    expectUnauthorized();
+    const queryClient = createReactQueryTestClient();
+    expectUnauthorizedReply();
     const spyPush = jest.fn();
-    renderPage(withAuth(EmployerIndex), queryClient, { push: spyPush });
+    renderPage(IndexPage, queryClient, { push: spyPush });
     await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
   });
 
-  it('Should show component when authorized', async () => {
-    expectAuthorized(true);
-    renderPage(withAuth(EmployerIndex), queryClient);
-    await screen.findByText(new RegExp(authenticatedUser.name, 'i'));
-    expect(queryClient.getQueryData('user')).toEqual(authenticatedUser);
-  });
+  describe('when authorized', () => {
+    describe('when backend returns error', () => {
+      it('Should show errorPage when applications loading error', async () => {
+        const queryClient = createReactQueryTestClient();
+        expectAuthorizedReply();
+        expectToGetApplicationsErrorFromBackend();
+        renderPage(IndexPage, queryClient);
+        await ErrorPageApi.expectations.displayErrorPage();
+      });
+      it('Should show errorPage when applications creation error', async () => {
+        const queryClient = createReactQueryTestClient();
+        expectAuthorizedReply();
+        expectToGetApplicationsFromBackend([]);
+        expectToCreateApplicationErrorFromBackend();
+        renderPage(IndexPage, queryClient);
+        await ErrorPageApi.expectations.displayErrorPage();
+      });
+      describe('when clicking reload button', () => {
+        it('Should reload the page', async () => {
+          const queryClient = createReactQueryTestClient();
+          expectAuthorizedReply();
+          expectToGetApplicationsErrorFromBackend();
+          const locale: Language = 'en';
+          const spyReload = jest.fn();
+          renderPage(IndexPage, queryClient, {
+            reload: spyReload,
+            locale,
+          });
+          await ErrorPageApi.expectations.displayErrorPage();
+          ErrorPageApi.actions.clickToRefreshPage();
+          await waitFor(() => expect(spyReload).toHaveBeenCalledTimes(1));
+        });
+      });
+      describe('when clicking Logout button', () => {
+        it('Should logout', async () => {
+          const queryClient = createReactQueryTestClient();
+          expectAuthorizedReply();
+          const errorReply = expectToGetApplicationsErrorFromBackend(2);
+          const locale: Language = 'en';
+          const spyPush = jest.fn();
+          renderPage(IndexPage, queryClient, {
+            push: spyPush,
+            locale,
+          });
+          await ErrorPageApi.expectations.displayErrorPage();
+          await ErrorPageApi.actions.clickLogoutButton();
+          await waitFor(() => {
+            expect(queryClient.getQueryData('user')).toBeUndefined();
+          });
+          expect(spyPush).toHaveBeenCalledWith('/login?logout=true');
+          await waitFor(() => errorReply.done());
+        });
+      });
+    });
 
-  it('Should redirect to logout and clear userdata when clicked logout button', async () => {
-    expectAuthorized(true);
-    expectToLogout();
-    const spyPush = jest.fn();
-    renderPage(withAuth(EmployerIndex), queryClient, { push: spyPush });
-    await screen.findByText(new RegExp(authenticatedUser.name, 'i'));
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: /kirjaudu ulos/i,
-      })
-    );
-    await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith('/login?logout=true')
-    );
-    expect(queryClient.getQueryData('user')).toBeUndefined();
-  });
+    describe('when user does not have previous applications', () => {
+      it('Should create a new application and redirect to its page', async () => {
+        const queryClient = createReactQueryTestClient();
+        const newApplication = fakeApplication('123-foo-bar');
+        expectAuthorizedReply();
+        expectToGetApplicationsFromBackend([]);
+        expectToCreateApplicationToBackend(newApplication);
+        expectToGetApplicationsFromBackend([newApplication]);
+        const locale: Language = 'en';
+        const spyPush = jest.fn();
+        renderPage(IndexPage, queryClient, { push: spyPush, locale });
+        await waitFor(() => {
+          expect(
+            queryClient.getQueryData(['applications', newApplication.id])
+          ).toEqual(newApplication);
+          expect(spyPush).toHaveBeenCalledWith(
+            `${locale}/application?id=${newApplication.id}`
+          );
+        });
+      });
+    });
 
-  it('Should redirect to company page when clicked create new application button', async () => {
-    expectAuthorized(true);
-    const spyPush = jest.fn();
-    renderPage(withAuth(EmployerIndex), queryClient, { push: spyPush });
-    await screen.findByText(new RegExp(authenticatedUser.name, 'i'));
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: /luo uusi hakemus/i,
-      })
-    );
-    await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/company'));
+    describe('when user has previous applications', () => {
+      it('Should redirect to latest application page with default locale', async () => {
+        const queryClient = createReactQueryTestClient();
+        const applications = fakeApplications(5);
+        expectAuthorizedReply();
+        expectToGetApplicationsFromBackend(applications);
+        const spyPush = jest.fn();
+        renderPage(IndexPage, queryClient, { push: spyPush });
+        const [latestApplication] = applications;
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/application?id=${latestApplication.id}`
+          )
+        );
+      });
+
+      it('Should redirect to latest application page with specified locale', async () => {
+        const queryClient = createReactQueryTestClient();
+        const applications = fakeApplications(5);
+        expectAuthorizedReply();
+        expectToGetApplicationsFromBackend(applications);
+        const locale: Language = 'en';
+        const spyPush = jest.fn();
+        renderPage(IndexPage, queryClient, { push: spyPush, locale });
+        const [firstApplication] = applications;
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(
+            `${locale}/application?id=${firstApplication.id}`
+          )
+        );
+      });
+    });
   });
 });

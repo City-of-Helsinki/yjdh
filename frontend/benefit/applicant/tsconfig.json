@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "../../",
-    "rootDir": ".",
     "lib": [
       "dom",
       "es7"
@@ -10,12 +9,10 @@
     "skipLibCheck": true,
     "jsx": "preserve"
   },
-  "exclude": [
-    "node_modules"
-  ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "../../shared/src/types/*.d.ts"
   ]
 }

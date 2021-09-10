@@ -1,9 +1,7 @@
 import os
 
 import environ
-import sentry_sdk
 from django.utils.translation import gettext_lazy as _
-from sentry_sdk.integrations.django import DjangoIntegration
 
 checkout_dir = environ.Path(__file__) - 2
 assert os.path.exists(checkout_dir("manage.py"))
@@ -33,8 +31,6 @@ env = environ.Env(
     MAIL_MAILGUN_KEY=(str, ""),
     MAIL_MAILGUN_DOMAIN=(str, ""),
     MAIL_MAILGUN_API=(str, ""),
-    SENTRY_DSN=(str, ""),
-    SENTRY_ENVIRONMENT=(str, ""),
     CORS_ORIGIN_WHITELIST=(list, []),
     CORS_ORIGIN_ALLOW_ALL=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
@@ -46,12 +42,35 @@ env = environ.Env(
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
-    LOGIN_REDIRECT_URL=(str, ""),
-    LOGIN_REDIRECT_URL_FAILURE=(str, ""),
+    LOGIN_REDIRECT_URL=(str, "/"),
+    LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, ""),
     EAUTHORIZATIONS_CLIENT_ID=(str, ""),
     EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
     EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
+    ADFS_CLIENT_ID=(str, "client_id"),
+    ADFS_CLIENT_SECRET=(str, "client_secret"),
+    ADFS_TENANT_ID=(str, "tenant_id"),
+    DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
+    AZURE_ACCOUNT_NAME=(str, ""),
+    AZURE_ACCOUNT_KEY=(str, ""),
+    AZURE_CONTAINER=(str, ""),
+    AUDIT_LOG_ORIGIN=(str, ""),
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in staging/production
+    # Always override this value from env variables
+    ENCRYPTION_KEY=(
+        str,
+        "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
+    ),
+    ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
+    ELASTICSEARCH_CLOUD_ID=(str, ""),
+    ELASTICSEARCH_API_ID=(str, ""),
+    ELASTICSEARCH_API_KEY=(str, ""),
+    CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
+    ENABLE_SEND_AUDIT_LOG=(bool, False),
+    AZURE_INSTRUMENTATION_KEY=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -62,6 +81,7 @@ DEBUG = env.bool("DEBUG")
 SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
+ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -69,13 +89,6 @@ USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
 DATABASES = {"default": env.db()}
 
 CACHES = {"default": env.cache()}
-
-sentry_sdk.init(
-    dsn=env.str("SENTRY_DSN"),
-    release="n/a",
-    environment=env("SENTRY_ENVIRONMENT"),
-    integrations=[DjangoIntegration()],
-)
 
 MEDIA_ROOT = env("MEDIA_ROOT")
 STATIC_ROOT = env("STATIC_ROOT")
@@ -91,6 +104,7 @@ TIME_ZONE = "Europe/Helsinki"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -103,11 +117,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "mozilla_django_oidc",
     "django_extensions",
+    "django_auth_adfs",
+    # shared apps
+    "shared.audit_log",
+    "shared.oidc",
     # local apps
     "applications",
     "companies",
-    "oidc",
-    "utils",
 ]
 
 MIDDLEWARE = [
@@ -120,6 +136,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 TEMPLATES = [
@@ -144,18 +161,51 @@ CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
+# Audit logging
+AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
+CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
+ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
+ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
+ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
+ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
+ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
-    "loggers": {"django": {"handlers": ["console"], "level": "ERROR"}},
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s p%(process)d %(name)s %(levelname)s: %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": "WARNING"},
+    },
 }
 
+# Azure logging
+AZURE_INSTRUMENTATION_KEY = env.str("AZURE_INSTRUMENTATION_KEY")
+
+if AZURE_INSTRUMENTATION_KEY:
+    LOGGING["handlers"]["azure"] = {
+        "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
+        "instrumentation_key": AZURE_INSTRUMENTATION_KEY,
+    }
+    LOGGING["loggers"]["django"]["handlers"].append("azure")
+
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
-    "DEFAULT_PERMISSION_CLASSES": [],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-}  # TODO: Replace with actual authentication & permissions.
+}
 
 YTJ_BASE_URL = env.str("YTJ_BASE_URL")
 YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
@@ -168,7 +218,8 @@ SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
 SESSION_COOKIE_SECURE = True
 
 AUTHENTICATION_BACKENDS = (
-    "oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
+    "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
@@ -192,6 +243,39 @@ EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
 EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
 EAUTHORIZATIONS_CLIENT_SECRET = env.str("EAUTHORIZATIONS_CLIENT_SECRET")
 EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
+
+# Azure ADFS
+LOGIN_URL = "django_auth_adfs:login"
+
+ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
+ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
+ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+
+# https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html#step-2-configuring-settings-py
+AUTH_ADFS = {
+    "AUDIENCE": ADFS_CLIENT_ID,
+    "CLIENT_ID": ADFS_CLIENT_ID,
+    "CLIENT_SECRET": ADFS_CLIENT_SECRET,
+    "CLAIM_MAPPING": {"email": "email"},
+    "USERNAME_CLAIM": "unique_name",
+    "TENANT_ID": ADFS_TENANT_ID,
+    "RELYING_PARTY_ID": ADFS_CLIENT_ID,
+}
+
+ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
+ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
+# End of Authentication
+
+FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
+
+# Django storages
+DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
+
+AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = env("AZURE_CONTAINER")
+
+MAX_UPLOAD_SIZE = 10485760  # 10MB
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

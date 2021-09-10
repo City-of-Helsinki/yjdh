@@ -1,49 +1,66 @@
-import { Button, IconPlus } from 'hds-react';
-import withAuth from 'kesaseteli/employer/components/withAuth';
-import useLogoutQuery from 'kesaseteli/employer/hooks/useLogoutQuery';
-import useUserQuery from 'kesaseteli/employer/hooks/useUserQuery';
-import { NextPage } from 'next';
+import useLoadDraftOrCreateNewApplication from 'kesaseteli/employer/hooks/application/useLoadDraftOrCreateNewApplication';
+import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
+import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
+import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
+import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import * as React from 'react';
-import Layout from 'shared/components/Layout';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
+import withAuth from 'shared/components/hocs/withAuth';
+import ErrorPage from 'shared/components/pages/ErrorPage';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
+import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const EmployerIndex: NextPage = () => {
-  const {
-    data: user,
-    isLoading: isLoadingUser,
-    error: loadingUserError,
-  } = useUserQuery();
-  const {
-    mutate: logout,
-    isLoading: isLoadingLogout,
-    error: logoutError,
-  } = useLogoutQuery();
-  const isLoading = isLoadingUser || isLoadingLogout || !user;
-  const errorMessage = (loadingUserError ?? logoutError)?.message;
+  const { isSyncing, isMutating } = useIsSyncingToBackend();
+  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
+  const isLoading = isSyncing || isLoadingLogout;
 
-  const onLogout = (event: React.SyntheticEvent): void => {
-    event.preventDefault();
-    logout();
-  };
-  const router = useRouter();
-  const handleNewApplicationClick = (): void => {
-    void router.push('/company');
-  };
+  const {
+    data: applications,
+    isError: loadApplicationsError,
+  } = useApplicationsQuery(!isMutating);
+  const {
+    data: newApplication,
+    mutate: createApplication,
+    isError: createApplicationError,
+  } = useCreateApplicationQuery();
 
-  return (
-    <Layout headingText="Työnantajan liittymä">
-      {user && <p>Tervetuloa {user.name}!</p>}
-      <Button iconLeft={<IconPlus />} onClick={handleNewApplicationClick}>
-        Luo uusi hakemus
-      </Button>
-      <br />
-      <br />
-      <Button onClick={onLogout} disabled={isLoading}>
-        {isLoadingLogout ? 'Kirjaudutaan ulos...' : 'Kirjaudu ulos'}
-      </Button>
-      {!isLoading && errorMessage && <p>Tapahtui virhe: {errorMessage}</p>}
-    </Layout>
+  const isError = loadApplicationsError || createApplicationError;
+
+  useLoadDraftOrCreateNewApplication(
+    isError,
+    applications,
+    newApplication,
+    createApplication
   );
+
+  const router = useRouter();
+  const refreshPage = (): void => {
+    router.reload();
+  };
+
+  const { t } = useTranslation();
+  if (isSyncing) {
+    return <PageLoadingSpinner />;
+  }
+  if (isError && !isLoading) {
+    return (
+      <ErrorPage
+        title={t('common:errorPage.title')}
+        message={t('common:errorPage.message')}
+        logout={logout as () => void}
+        retry={refreshPage}
+      />
+    );
+  }
+
+  return <></>;
 };
+
+export const getStaticProps: GetStaticProps = getServerSideTranslations(
+  'common'
+);
 
 export default withAuth(EmployerIndex);

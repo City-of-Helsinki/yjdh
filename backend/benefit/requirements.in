@@ -1,11 +1,24 @@
 Django~=3.2
 django-cors-headers
-django-cryptography
 django-environ
+django-extensions
 djangorestframework
 django-simple-history
 psycopg2
+python-dateutil
 sentry-sdk
 requests
+django-phonenumber-field[phonenumbers]
 django-localflavor~=3.1
--e ../shared
+django-searchable-encrypted-fields
+mozilla_django_oidc
+django_auth_adfs
+pyyaml
+uritemplate
+drf-spectacular
+django-filter
+django-storages[azure]
+Pillow
+filetype
+elasticsearch
+-e file:../shared

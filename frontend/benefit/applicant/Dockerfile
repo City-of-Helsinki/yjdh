@@ -17,7 +17,6 @@ COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser benefit/applicant/package.json benefit/applicant/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
-
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
 
 # Copy all files
@@ -59,7 +58,7 @@ RUN rm -rf node_modules
 RUN yarn cache clean
 
 # ==========================================
-FROM helsinkitest/node:12-slim AS production
+FROM helsinkitest/node:14-slim AS production
 # ==========================================
 
 # Use non-root user
@@ -84,6 +83,9 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-ser
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
 
+# install lerna
+RUN yarn add -W lerna
+
 USER root
 # Use non-root user and add it to the root group (0)
 RUN usermod -a -G 0 appuser
@@ -93,12 +95,9 @@ RUN chgrp -R 0 . \
   && chmod -R g+rwX .
 USER appuser
 
-
 # Expose port
 EXPOSE 3000
 
-# install lerna
-RUN yarn global add lerna
 
 # Start nextjs server
 # https://github.com/lerna/lerna/issues/2428

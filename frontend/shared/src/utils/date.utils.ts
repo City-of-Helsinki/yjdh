@@ -1,7 +1,15 @@
-import { format as formatDateStr } from 'date-fns';
+import formatDateStr from 'date-fns/format';
+import isFutureFn from 'date-fns/isFuture';
 import { enGB as en, fi, sv } from 'date-fns/locale';
+import parse from 'date-fns/parse';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
-const locales = { en, fi, sv };
+export const DATE_FORMATS = {
+  DATE: 'dd.MM.yyyy',
+  DATE_AND_TIME: 'dd.MM.yyyy. HH:mm',
+};
+
+const locales: Record<Language, Locale> = { fi, sv, en };
 /**
  * Format date string
  * @param date
@@ -11,15 +19,19 @@ const locales = { en, fi, sv };
  */
 export const formatDate = (
   date: Date | number | null,
-  format = 'dd.MM.yyyy',
-  locale = 'fi'
+  format = DATE_FORMATS.DATE,
+  locale: Language = DEFAULT_LANGUAGE
 ): string => {
   if (!date) {
     return '';
   }
 
   return formatDateStr(date, format, {
-    locale: locales[locale] as Locale,
+    locale: locales[locale],
   }).trim();
 };
 
+export const parseDate = (date: string, format = 'dd.MM.yyyy'): Date =>
+  parse(date, format, new Date());
+
+export const isFuture = (date: Date): boolean => isFutureFn(date);

@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto'],
+  extends: ['auto', 'next/core-web-vitals'],
   rules: {
     'jsx-a11y/anchor-is-valid': [
       'error',
@@ -17,6 +17,7 @@ module.exports = {
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
     'no-void': 'off',
+    'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
   },
   overrides: [
     {
@@ -30,12 +31,21 @@ module.exports = {
       rules: {
         'jest/expect-expect': 'off',
         'jest/no-done-callback': 'off',
+        'security/detect-non-literal-regexp': 'off',
+        'no-secrets/no-secrets': 'off',
+        'no-await-in-loop': 'off',
+        'no-restricted-syntax': 0,
       },
     },
     {
       files: ['*.components.ts'],
       rules: {
         'security/detect-non-literal-fs-filename': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        'testing-library/await-async-query': 'off',
+        'security/detect-non-literal-regexp': 'off',
+        'no-secrets/no-secrets': 'off',
       },
     },
   ],

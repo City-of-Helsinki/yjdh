@@ -1,7 +1,6 @@
-import useUserQuery from 'kesaseteli/employer/hooks/useUserQuery';
+import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
 import React from 'react';
-
-import AuthContext from './AuthContext';
+import AuthContext from 'shared/auth/AuthContext';
 
 const AuthProvider = <P,>({
   children,

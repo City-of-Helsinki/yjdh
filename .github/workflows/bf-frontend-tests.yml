@@ -10,11 +10,9 @@ on:
   push:
     branches: [develop, main]
   workflow_dispatch:
-env:
-  TZ: Europe/Helsinki
 defaults:
   run:
-    working-directory: ./frontend/benefit
+    working-directory: ./frontend/benefit/applicant
 jobs:
   test:
     name: Test
@@ -22,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -42,14 +40,14 @@ jobs:
       - name: Run tests
         run: yarn test:coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2.0.3
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -65,4 +63,4 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
-        run: yarn bf-applicant:build
+        run: yarn build

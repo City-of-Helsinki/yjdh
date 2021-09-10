@@ -1,4 +1,4 @@
-name: (KS) Audit, Lint, Unit and Component tests
+name: (KS) Lint, Unit and Component tests
 
 on:
   pull_request:
@@ -7,14 +7,10 @@ on:
       - 'frontend/*'
       - 'frontend/kesaseteli/**'
       - '.github/workflows/ks-frontend-tests.yml'
-  push:
-    branches: [develop, main]
   workflow_dispatch:
-env:
-  TZ: Europe/Helsinki
 defaults:
   run:
-    working-directory: ./frontend
+    working-directory: ./frontend/kesaseteli/employer
 jobs:
   test:
     name: Test
@@ -22,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -37,21 +33,19 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
-      - name: Run audit
-        run: yarn audit
       - name: Run linter
         run: yarn lint
       - name: Run tests
         run: yarn test:coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2.0.3
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -67,4 +61,4 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
-        run: yarn ks-empl:build
+        run: yarn build

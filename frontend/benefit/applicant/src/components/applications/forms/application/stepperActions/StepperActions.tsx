@@ -1,19 +1,20 @@
 import {
-  StyledApplicationAction,
-  StyledApplicationActions,
-  StyledPrimaryButton,
-  StyledSecondaryButton,
-  StyledSupplementaryButton,
-} from 'benefit/applicant/components/applications/styled';
+  $ApplicationAction,
+  $ApplicationActions,
+  $PrimaryButton,
+  $SecondaryButton,
+  $SupplementaryButton,
+} from 'benefit/applicant/components/applications/Applications.sc';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { IconArrowLeft, IconArrowRight, IconCross } from 'hds-react';
+import noop from 'lodash/noop';
 import * as React from 'react';
 
 type StepperActionsProps = {
-  hasBack: boolean;
-  hasNext: boolean;
-  handleBack: () => void;
-  handleSubmit: () => void;
+  hasBack?: boolean;
+  hasNext?: boolean;
+  handleBack?: () => void;
+  handleSubmit?: () => void;
 };
 
 const StepperActions: React.FC<StepperActionsProps> = ({
@@ -25,41 +26,44 @@ const StepperActions: React.FC<StepperActionsProps> = ({
   const { t } = useTranslation();
   const translationsBase = 'common:applications.actions';
   return (
-    <StyledApplicationActions>
-      <StyledApplicationAction>
+    <$ApplicationActions>
+      <$ApplicationAction>
         {hasBack && (
-          <StyledSecondaryButton
+          <$SecondaryButton
             variant="secondary"
             iconLeft={<IconArrowLeft />}
             onClick={handleBack}
           >
             {t(`${translationsBase}.back`)}
-          </StyledSecondaryButton>
+          </$SecondaryButton>
         )}
-      </StyledApplicationAction>
-      <StyledApplicationAction>
-        <StyledSecondaryButton variant="secondary">
+      </$ApplicationAction>
+      <$ApplicationAction>
+        <$SecondaryButton variant="secondary">
           {t(`${translationsBase}.saveAndContinueLater`)}
-        </StyledSecondaryButton>
-        <StyledSupplementaryButton
-          variant="supplementary"
-          iconLeft={<IconCross />}
-        >
+        </$SecondaryButton>
+        <$SupplementaryButton variant="supplementary" iconLeft={<IconCross />}>
           {t(`${translationsBase}.deleteApplication`)}
-        </StyledSupplementaryButton>
-      </StyledApplicationAction>
-      <StyledApplicationAction>
-        <StyledPrimaryButton
-          iconRight={<IconArrowRight />}
-          onClick={handleSubmit}
-        >
+        </$SupplementaryButton>
+      </$ApplicationAction>
+      <$ApplicationAction>
+        <$PrimaryButton iconRight={<IconArrowRight />} onClick={handleSubmit}>
           {hasNext
             ? t(`${translationsBase}.continue`)
             : t(`${translationsBase}.send`)}
-        </StyledPrimaryButton>
-      </StyledApplicationAction>
-    </StyledApplicationActions>
+        </$PrimaryButton>
+      </$ApplicationAction>
+    </$ApplicationActions>
   );
 };
+
+const defaultProps = {
+  hasBack: false,
+  hasNext: false,
+  handleBack: noop,
+  handleSubmit: noop,
+};
+
+StepperActions.defaultProps = defaultProps;
 
 export default StepperActions;

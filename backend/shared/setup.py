@@ -23,6 +23,9 @@ setup(
     author_email="dev@hel.fi",
     install_requires=[
         "Django",
+        "mozilla_django_oidc",
+        "django_auth_adfs",
+        "django-extensions",
     ],
     setup_requires=["pytest-runner"],
     tests_require=["pytest", "pytest-django"],

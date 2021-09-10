@@ -1,10 +1,12 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto'],
+  extends: ['auto', 'next/core-web-vitals'],
   rules: {
     'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
+    'sonarjs/cognitive-complexity': ['error', 20],
     'no-void': 'off',
+    'unicorn/prefer-module': 'off',
     'jsx-a11y/anchor-is-valid': [
       'error',
       {
@@ -18,6 +20,8 @@ module.exports = {
       // Use package.json from both this package folder and root.
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
+    'unicorn/no-array-reduce': 'off',
+    'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
   },
   overrides: [
     {
@@ -31,6 +35,8 @@ module.exports = {
       rules: {
         'jest/expect-expect': 'off',
         'jest/no-done-callback': 'off',
+        'no-await-in-loop': 'off',
+        'no-restricted-syntax': 0,
       },
     },
     {

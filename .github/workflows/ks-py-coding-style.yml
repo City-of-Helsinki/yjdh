@@ -7,6 +7,7 @@ on:
     paths:
       - 'backend/kesaseteli/**'
       - '.github/workflows/ks-pytest.yml'
+      - 'backend/shared/**'
 
 
 env:
@@ -39,13 +40,22 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: pip install -r backend/kesaseteli/requirements.txt -r backend/kesaseteli/requirements-dev.txt
+        run: cd backend/kesaseteli && pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Formatting
+      - name: (KS) Formatting
         run: cd backend/kesaseteli && black --check .
 
-      - name: Linting
+      - name: (KS) Linting
         run: cd backend/kesaseteli && flake8
 
-      - name: Import sorting
+      - name: (KS) Import sorting
         run: cd backend/kesaseteli && isort -c .
+
+      - name: (Shared) Formatting
+        run: cd backend/shared && black --check .
+
+      - name: (Shared) Linting
+        run: cd backend/shared && flake8
+
+      - name: (Shared) Import sorting
+        run: cd backend/shared && isort -c .

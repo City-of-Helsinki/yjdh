@@ -1,10 +1,10 @@
-import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
+import { IconGlobe, IconSignout, LogoLanguage, Navigation } from 'hds-react';
 import React from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
 import { NavigationItem, OptionType } from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
-import { useComponent } from './extended';
+import { useHeader } from './useHeader';
 
 export type HeaderProps = {
   title?: string;
@@ -18,6 +18,15 @@ export type HeaderProps = {
   ) => void;
   onTitleClick: (callback: () => void) => void;
   onNavigationItemClick: (pathname: string) => void;
+  login?: {
+    isAuthenticated: boolean;
+    loginLabel: string;
+    logoutLabel: string;
+    userAriaLabelPrefix: string;
+    onLogin: () => void;
+    onLogout: () => void;
+    userName?: string;
+  };
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -29,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({
   onTitleClick,
   onNavigationItemClick,
   onLanguageChange,
+  login,
 }) => {
   const {
     logoLang,
@@ -36,7 +46,9 @@ const Header: React.FC<HeaderProps> = ({
     toggleMenu,
     closeMenu,
     handleNavigationItemClick,
-  } = useComponent(locale, onNavigationItemClick);
+    handleLogin,
+    handleLogout,
+  } = useHeader(locale, onNavigationItemClick, login);
 
   return (
     <Navigation
@@ -63,15 +75,37 @@ const Header: React.FC<HeaderProps> = ({
           ))}
         </Navigation.Row>
       )}
-      {languages && (
-        <Navigation.Actions>
+
+      <Navigation.Actions>
+        {login && (
+          <Navigation.User
+            authenticated={login.isAuthenticated}
+            buttonAriaLabel={
+              login.userName
+                ? `${login.userAriaLabelPrefix} ${login.userName}`
+                : ''
+            }
+            label={login.loginLabel}
+            onSignIn={handleLogin}
+            userName={login.userName}
+          >
+            <Navigation.Item
+              href="#"
+              onClick={handleLogout}
+              variant="supplementary"
+              label={login.logoutLabel}
+              icon={<IconSignout aria-hidden />}
+            />
+          </Navigation.User>
+        )}
+        {languages && (
           <Navigation.LanguageSelector
             buttonAriaLabel={locale?.toUpperCase()}
             label={locale?.toUpperCase()}
             icon={<IconGlobe />}
             closeOnItemClick
           >
-            {languages?.map((option) => (
+            {languages.map((option) => (
               <Navigation.Item
                 key={option.value}
                 href="#"
@@ -83,8 +117,8 @@ const Header: React.FC<HeaderProps> = ({
               />
             ))}
           </Navigation.LanguageSelector>
-        </Navigation.Actions>
-      )}
+        )}
+      </Navigation.Actions>
     </Navigation>
   );
 };

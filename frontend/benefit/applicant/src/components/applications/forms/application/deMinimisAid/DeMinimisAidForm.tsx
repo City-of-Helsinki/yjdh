@@ -1,86 +1,103 @@
-import { StyledSubActionContainer } from 'benefit/applicant/components/applications/forms/application/styled';
-import { StyledSecondaryButton } from 'benefit/applicant/components/applications/styled';
-import { DateInput, IconPlusCircle, NumberInput, TextInput } from 'hds-react';
+import { $SecondaryButton } from 'benefit/applicant/components/applications/Applications.sc';
+import { $SubActionContainer } from 'benefit/applicant/components/applications/forms/application/Application.sc';
+import {
+  DE_MINIMIS_AID_FIELDS,
+  DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
+  MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
+} from 'benefit/applicant/constants';
+import { DeMinimisAid } from 'benefit/applicant/types/application';
+import { DateInput, IconPlusCircle, TextInput } from 'hds-react';
+import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
-  StyledFieldsContainerWithPadding,
-  StyledFormGroup,
-  StyledSubHeader,
-} from 'shared/components/forms/section/styled';
+  $FieldsContainerWithPadding,
+  $FormGroup,
+  $SubHeader,
+} from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 
-import { DE_MINIMIS_AID_FIELDS } from '../../../constants';
-import { DeMinimisAidProps, useComponent } from './extended';
+import { useDeminimisAid } from './useDeminimisAid';
 
-const DeMinimisAidForm: React.FC<DeMinimisAidProps> = ({ onSubmit }) => {
+interface DeMinimisAidFormProps {
+  data: DeMinimisAid[];
+}
+
+const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
   const {
     t,
+    language,
     handleSubmit,
     getErrorMessage,
     fields,
     translationsBase,
     formik,
-  } = useComponent(onSubmit);
+    grants,
+  } = useDeminimisAid(data);
 
   return (
     <>
-      <StyledSubHeader>
-        {t(`${translationsBase}.deMinimisAidsHeading`)}
-      </StyledSubHeader>
-      <form onSubmit={handleSubmit} noValidate>
-        <StyledFormGroup backgroundColor={theme.colors.silverLight}>
-          <StyledFieldsContainerWithPadding>
+      <$SubHeader>{t(`${translationsBase}.deMinimisAidsHeading`)}</$SubHeader>
+      <>
+        <$FormGroup backgroundColor={theme.colors.silverLight}>
+          <$FieldsContainerWithPadding>
             <TextInput
-              id={fields.deMinimisAidGranter.name}
-              name={fields.deMinimisAidGranter.name}
-              label={fields.deMinimisAidGranter.label}
-              placeholder={fields.deMinimisAidGranter.placeholder}
-              onChange={formik.handleChange}
+              id={fields.granter.name}
+              name={fields.granter.name}
+              label={fields.granter.label}
+              placeholder={fields.granter.placeholder}
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidGranter}
+              onChange={formik.handleChange}
+              value={formik.values.granter}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
               required
             />
-            <NumberInput
-              id={fields.deMinimisAidAmount.name}
-              name={fields.deMinimisAidAmount.name}
-              label={fields.deMinimisAidAmount.label || ''}
-              unit={fields.deMinimisAidAmount.placeholder}
-              onChange={formik.handleChange}
+            <TextInput
+              id={fields.amount.name}
+              name={fields.amount.name}
+              label={fields.amount.label || ''}
+              placeholder={fields.amount.placeholder}
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidAmount}
+              onChange={formik.handleChange}
+              value={formik.values.amount?.toString()}
               invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
               required
             />
             <DateInput
-              id={fields.deMinimisAidIssueDate.name}
-              name={fields.deMinimisAidIssueDate.name}
-              label={fields.deMinimisAidIssueDate.label}
-              placeholder={fields.deMinimisAidIssueDate.placeholder}
-              onChange={formik.handleChange}
+              id={fields.grantedAt.name}
+              name={fields.grantedAt.name}
+              label={fields.grantedAt.label}
+              placeholder={fields.grantedAt.placeholder}
+              language={language}
               onBlur={formik.handleBlur}
-              value={formik.values.deMinimisAidIssueDate}
-              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
-              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
-              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.ISSUE_DATE)}
+              onChange={(value) =>
+                formik.setFieldValue(fields.grantedAt.name, value)
+              }
+              value={formik.values.grantedAt}
+              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
+              maxDate={DE_MINIMIS_AID_GRANTED_AT_MAX_DATE}
               required
             />
-          </StyledFieldsContainerWithPadding>
-          <StyledSubActionContainer>
-            <StyledSecondaryButton
-              type="submit"
+          </$FieldsContainerWithPadding>
+          <$SubActionContainer>
+            <$SecondaryButton
+              disabled={
+                sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
+              }
+              onClick={(e) => handleSubmit(e)}
               variant="secondary"
               iconLeft={<IconPlusCircle />}
             >
               {t(`${translationsBase}.deMinimisAidsAdd`)}
-            </StyledSecondaryButton>
-          </StyledSubActionContainer>
-        </StyledFormGroup>
-      </form>
+            </$SecondaryButton>
+          </$SubActionContainer>
+        </$FormGroup>
+      </>
     </>
   );
 };

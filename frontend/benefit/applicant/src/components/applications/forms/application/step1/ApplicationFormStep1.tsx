@@ -1,346 +1,296 @@
+import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { Notification, SelectionGroup, TextArea, TextInput } from 'hds-react';
+import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
-import {
-  StyledCheckbox,
-  StyledRadioButton,
-} from 'shared/components/forms/fields/styled';
+import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
+import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { StyledFormGroup } from 'shared/components/forms/section/styled';
+import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
+import { phoneToLocal } from 'shared/utils/string.utils';
 
-import { APPLICATION_FIELDS } from '../../../constants';
+import { $ContactPersonContainer, $SubSection } from '../Application.sc';
 import DeMinimisAidForm from '../deMinimisAid/DeMinimisAidForm';
-import DeMinimisAidsList from '../deMinimisAid/DeMinimisAidsList';
-import {
-  StyledCompanyInfoColumn,
-  StyledCompanyInfoContainer,
-  StyledCompanyInfoRow,
-  StyledCompanyInfoSection,
-  StyledNotificationContent,
-  StyledSubSection,
-} from '../styled';
-import { useComponent } from './extended';
+import DeMinimisAidsList from '../deMinimisAid/list/DeMinimisAidsList';
+import StepperActions from '../stepperActions/StepperActions';
+import CompanyInfo from './companyInfo/CompanyInfo';
+import { useApplicationFormStep1 } from './useApplicationFormStep1';
 
 const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
-  actions,
+  data,
 }) => {
   const {
     t,
     handleSubmit,
     getErrorMessage,
+    erazeDeminimisAids,
+    getDefaultSelectValue,
+    languageOptions,
     fields,
     translationsBase,
     formik,
-  } = useComponent();
+    deMinimisAids,
+  } = useApplicationFormStep1(data);
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <FormSection header={t(`${translationsBase}.heading1`)}>
-        <StyledCompanyInfoContainer>
-          <StyledCompanyInfoSection>
-            <StyledCompanyInfoColumn>
-              <StyledCompanyInfoRow>Herkkulautanen Oy</StyledCompanyInfoRow>
-              <StyledCompanyInfoRow>Y-tunnus: 2114560-2</StyledCompanyInfoRow>
-            </StyledCompanyInfoColumn>
-            <StyledCompanyInfoColumn>
-              <StyledCompanyInfoRow>Keskuskatu 13 A 11</StyledCompanyInfoRow>
-              <StyledCompanyInfoRow>00100 Helsinki</StyledCompanyInfoRow>
-            </StyledCompanyInfoColumn>
-          </StyledCompanyInfoSection>
-          <StyledCompanyInfoSection>
-            <Notification
-              label={t(
-                `${translationsBase}.notifications.companyInformation.label`
-              )}
-              type="info"
-            >
-              <StyledNotificationContent>
-                {t(
-                  `${translationsBase}.notifications.companyInformation.content`
-                )}
-              </StyledNotificationContent>
-            </Notification>
-          </StyledCompanyInfoSection>
-        </StyledCompanyInfoContainer>
-        <StyledFormGroup>
-          <StyledCheckbox
-            id={fields.hasCompanyOtherAddress.name}
-            name={fields.hasCompanyOtherAddress.name}
-            label={fields.hasCompanyOtherAddress.label}
-            required
-            checked={formik.values.hasCompanyOtherAddress === true}
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS
-            )}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.HAS_COMPANY_OTHER_ADDRESS)
-            }
-          />
-        </StyledFormGroup>
-        {formik.values.hasCompanyOtherAddress && (
-          <StyledFormGroup>
-            <TextInput
-              id={fields.companyOtherAddressStreet.name}
-              name={fields.companyOtherAddressStreet.name}
-              label={fields.companyOtherAddressStreet.label}
-              placeholder={fields.companyOtherAddressStreet.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressStreet}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
-                )
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_STREET
-              )}
-              required
-            />
-            <TextInput
-              id={fields.companyOtherAddressZipCode.name}
-              name={fields.companyOtherAddressZipCode.name}
-              label={fields.companyOtherAddressZipCode.label}
-              placeholder={fields.companyOtherAddressZipCode.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressZipCode}
-              invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
-              }
-              aria-invalid={
-                !!getErrorMessage(APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP)
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_ZIP
-              )}
-              required
-            />
-            <TextInput
-              id={fields.companyOtherAddressPostalDistrict.name}
-              name={fields.companyOtherAddressPostalDistrict.name}
-              label={fields.companyOtherAddressPostalDistrict.label}
-              placeholder={fields.companyOtherAddressPostalDistrict.placeholder}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.companyOtherAddressPostalDistrict}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-                )
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS.COMPANY_OTHER_ADDRESS_DISTRICT
-              )}
-              required
-            />
-          </StyledFormGroup>
-        )}
-        <StyledFormGroup>
-          <TextInput
-            id={fields.companyIban.name}
-            name={fields.companyIban.name}
-            label={fields.companyIban.label}
-            placeholder={fields.companyIban.placeholder}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.companyIban}
-            invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-            aria-invalid={!!getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-            errorText={getErrorMessage(APPLICATION_FIELDS.COMPANY_IBAN)}
-            required
-          />
-        </StyledFormGroup>
-      </FormSection>
+      <CompanyInfo
+        getErrorMessage={getErrorMessage}
+        formik={formik}
+        translationsBase={translationsBase}
+        fields={fields}
+      />
       <FormSection header={t(`${translationsBase}.heading2`)}>
-        <StyledFormGroup>
+        <$ContactPersonContainer>
           <TextInput
-            id={fields.contactPersonFirstName.name}
-            name={fields.contactPersonFirstName.name}
-            label={fields.contactPersonFirstName.label}
-            placeholder={fields.contactPersonFirstName.placeholder}
-            onChange={formik.handleChange}
+            id={fields.companyContactPersonFirstName.name}
+            name={fields.companyContactPersonFirstName.name}
+            label={fields.companyContactPersonFirstName.label}
+            placeholder={fields.companyContactPersonFirstName.placeholder}
             onBlur={formik.handleBlur}
-            value={formik.values.contactPersonFirstName}
+            onChange={formik.handleChange}
+            value={formik.values.companyContactPersonFirstName}
             invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME)
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME
+              )
             }
             aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME)
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME
+              )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.CONTACT_PERSON_FIRST_NAME
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME
             )}
             required
           />
           <TextInput
-            id={fields.contactPersonLastName.name}
-            name={fields.contactPersonLastName.name}
-            label={fields.contactPersonLastName.label}
-            placeholder={fields.contactPersonLastName.placeholder}
-            onChange={formik.handleChange}
+            id={fields.companyContactPersonLastName.name}
+            name={fields.companyContactPersonLastName.name}
+            label={fields.companyContactPersonLastName.label}
+            placeholder={fields.companyContactPersonLastName.placeholder}
             onBlur={formik.handleBlur}
-            value={formik.values.contactPersonLastName}
+            onChange={formik.handleChange}
+            value={formik.values.companyContactPersonLastName}
             invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME)
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME
+              )
             }
             aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME)
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME
+              )
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.CONTACT_PERSON_LAST_NAME
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME
             )}
             required
           />
           <TextInput
-            id={fields.contactPersonPhone.name}
-            name={fields.contactPersonPhone.name}
-            label={fields.contactPersonPhone.label}
-            placeholder={fields.contactPersonPhone.placeholder}
-            onChange={formik.handleChange}
+            id={fields.companyContactPersonPhoneNumber.name}
+            name={fields.companyContactPersonPhoneNumber.name}
+            label={fields.companyContactPersonPhoneNumber.label}
+            placeholder={fields.companyContactPersonPhoneNumber.placeholder}
             onBlur={formik.handleBlur}
-            value={formik.values.contactPersonPhone}
-            invalid={!!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_PHONE)}
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_PHONE)
+            onChange={formik.handleChange}
+            value={phoneToLocal(formik.values.companyContactPersonPhoneNumber)}
+            invalid={
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER
+              )
             }
-            errorText={getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_PHONE)}
+            aria-invalid={
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER
+              )
+            }
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER
+            )}
             required
           />
           <TextInput
-            id={fields.contactPersonEmail.name}
-            name={fields.contactPersonEmail.name}
-            label={fields.contactPersonEmail.label}
-            placeholder={fields.contactPersonEmail.placeholder}
-            onChange={formik.handleChange}
+            id={fields.companyContactPersonEmail.name}
+            name={fields.companyContactPersonEmail.name}
+            label={fields.companyContactPersonEmail.label}
+            placeholder={fields.companyContactPersonEmail.placeholder}
             onBlur={formik.handleBlur}
-            value={formik.values.contactPersonEmail}
-            invalid={!!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_EMAIL)}
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_EMAIL)
+            onChange={formik.handleChange}
+            value={formik.values.companyContactPersonEmail}
+            invalid={
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL
+              )
             }
-            errorText={getErrorMessage(APPLICATION_FIELDS.CONTACT_PERSON_EMAIL)}
+            aria-invalid={
+              !!getErrorMessage(
+                APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL
+              )
+            }
+            errorText={getErrorMessage(
+              APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL
+            )}
             required
           />
-        </StyledFormGroup>
+          <Select
+            defaultValue={getDefaultSelectValue(
+              APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
+            )}
+            helper={getErrorMessage(
+              APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE
+            )}
+            optionLabelField="label"
+            label={fields.applicantLanguage.label}
+            onChange={(language: Option) =>
+              formik.setFieldValue(
+                APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE,
+                language.value
+              )
+            }
+            options={languageOptions}
+            id={fields.applicantLanguage.name}
+            placeholder={t('common:select')}
+            invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE)
+            }
+            aria-invalid={
+              !!getErrorMessage(APPLICATION_FIELDS_STEP1.APPLICANT_LANGUAGE)
+            }
+            required
+          />
+        </$ContactPersonContainer>
       </FormSection>
-      <FormSection header={t(`${translationsBase}.heading3`)}>
-        <StyledFormGroup>
+      <FormSection
+        header={t(`${translationsBase}.heading3`)}
+        tooltip={t(`${translationsBase}.tooltips.heading3`)}
+      >
+        <$FormGroup>
           <SelectionGroup
-            label={fields.deMinimisAidGranted.label}
+            label={fields.deMinimisAid.label}
             direction="vertical"
             required
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED
-            )}
+            errorText={getErrorMessage(APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID)}
           >
-            <StyledRadioButton
-              id={`${fields.deMinimisAidGranted.name}False`}
-              name={fields.deMinimisAidGranted.name}
+            <$RadioButton
+              id={`${fields.deMinimisAid.name}False`}
+              name={fields.deMinimisAid.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED}.no`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID}.no`
               )}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              checked={formik.values.deMinimisAidGranted === 'false'}
+              onChange={() => {
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID,
+                  false
+                );
+                erazeDeminimisAids();
+              }}
+              // 3 states: null (none is selected), true, false
+              checked={formik.values.deMinimisAid === false}
             />
-            <StyledRadioButton
-              id={`${fields.deMinimisAidGranted.name}True`}
-              name={fields.deMinimisAidGranted.name}
+            <$RadioButton
+              id={`${fields.deMinimisAid.name}True`}
+              name={fields.deMinimisAid.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.DE_MINIMIS_AIDS_GRANTED}.yes`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID}.yes`
               )}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              checked={formik.values.deMinimisAidGranted === 'true'}
+              onChange={() =>
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.DE_MINIMIS_AID,
+                  true
+                )
+              }
+              checked={formik.values.deMinimisAid === true}
             />
           </SelectionGroup>
-        </StyledFormGroup>
-        {formik.values.deMinimisAidGranted === 'true' && (
-          <StyledSubSection>
-            <DeMinimisAidForm onSubmit={() => null} />
+        </$FormGroup>
+        {formik.values.deMinimisAid && (
+          <$SubSection>
+            <DeMinimisAidForm data={deMinimisAids} />
             <DeMinimisAidsList />
-          </StyledSubSection>
+          </$SubSection>
         )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading4`)}>
-        <StyledFormGroup>
+        <$FormGroup>
           <SelectionGroup
-            label={fields.collectiveBargainingOngoing.label}
+            label={fields.coOperationNegotiations.label}
             direction="vertical"
             required
             errorText={getErrorMessage(
-              APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING
+              APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS
             )}
           >
-            <StyledRadioButton
-              id={`${fields.collectiveBargainingOngoing.name}False`}
-              name={fields.collectiveBargainingOngoing.name}
+            <$RadioButton
+              id={`${fields.coOperationNegotiations.name}False`}
+              name={fields.coOperationNegotiations.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING}.no`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS}.no`
               )}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              checked={formik.values.collectiveBargainingOngoing === 'false'}
+              onChange={() => {
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS,
+                  false
+                );
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION,
+                  ''
+                );
+              }}
+              checked={formik.values.coOperationNegotiations === false}
             />
-            <StyledRadioButton
-              id={`${fields.collectiveBargainingOngoing.name}True`}
-              name={fields.collectiveBargainingOngoing.name}
+            <$RadioButton
+              id={`${fields.coOperationNegotiations.name}True`}
+              name={fields.coOperationNegotiations.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS.COLLECTIVE_BARGAINING_ONGOING}.yes`
+                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              checked={formik.values.collectiveBargainingOngoing === 'true'}
+              onChange={() =>
+                formik.setFieldValue(
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS,
+                  true
+                )
+              }
+              checked={formik.values.coOperationNegotiations === true}
             />
           </SelectionGroup>
-        </StyledFormGroup>
-        {formik.values.collectiveBargainingOngoing === 'true' && (
-          <StyledSubSection>
-            <StyledFormGroup>
+        </$FormGroup>
+        {formik.values.coOperationNegotiations && (
+          <$SubSection>
+            <$FormGroup>
               <TextArea
-                id={fields.collectiveBargainingInfo.name}
-                name={fields.collectiveBargainingInfo.name}
-                label={fields.collectiveBargainingInfo.label}
-                placeholder={fields.collectiveBargainingInfo.placeholder}
-                onChange={formik.handleChange}
+                id={fields.coOperationNegotiationsDescription.name}
+                name={fields.coOperationNegotiationsDescription.name}
+                label={fields.coOperationNegotiationsDescription.label}
+                placeholder={
+                  fields.coOperationNegotiationsDescription.placeholder
+                }
                 onBlur={formik.handleBlur}
-                value={formik.values.collectiveBargainingInfo}
+                onChange={formik.handleChange}
+                value={formik.values.coOperationNegotiationsDescription}
                 invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO
+                    APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
                   )
                 }
                 aria-invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO
+                    APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
                   )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS.COLLECTIVE_BARGAINING_INFO
+                  APPLICATION_FIELDS_STEP1.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
                 )}
               />
-            </StyledFormGroup>
-          </StyledSubSection>
+            </$FormGroup>
+          </$SubSection>
         )}
       </FormSection>
-      {actions}
+      <StepperActions hasNext handleSubmit={handleSubmit} />
     </form>
   );
 };

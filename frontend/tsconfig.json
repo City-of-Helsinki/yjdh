@@ -16,11 +16,9 @@
     "jsx": "react",
     "baseUrl": "./",
     "paths": {
-      "testcafe/*": ["shared/testcafe/*"],
-      "kesaseteli/employer/*": ["kesaseteli/employer/src/*"],
+      "kesaseteli/employer/*": ["kesaseteli/employer/src/*", "kesaseteli/employer/browser-tests/*"],
       "benefit/applicant/*": ["benefit/applicant/src/*"],
-      "shared/*": ["shared/src/*"],
-      "test-utils": ["shared/test/test-utils"]
+      "shared/*": ["shared/src/*", "shared/browser-tests/*"],
     }
   },
   "exclude": ["node_modules"]

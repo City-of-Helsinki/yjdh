@@ -1,0 +1,71 @@
+{
+  "appName": "Helsinki-employer SV",
+  "header": {
+    "loginLabel": "Logga in",
+    "logoutLabel": "Logga ut",
+    "userAriaLabelPrefix": "Användare:"
+  },
+  "errorPage": {
+    "title": "SV Palvelussa on valitettavasti tapahtunut virhe",
+    "message": "SV Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "retry": "SV Lataa sivu uudelleen",
+    "logout": "SV Kirjaudu ulos"
+  },
+  "application": {
+    "new": "Uusi hakemus SWE",
+    "common_error": "Tapahtui tuntematon virhe: SWE",
+    "loading": "Ladataan hakemusta...",
+    "loadingFinished": "Hakemuksen lataus on valmis",
+    "step1": {
+      "name": "Työnantaja SWE",
+      "header": "1. Työnantajan tiedot SWE",
+      "tooltip": "SV Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "companyInfoGrid": {
+        "title": "Yrityksen tiedot SWE",
+        "header": {
+          "name": "Yritys SWE",
+          "business_id": "Y-tunnus SWE",
+          "industry": "Toimiala SWE",
+          "company_form": "Yritysmuoto SWE",
+          "postcode": "postiosoite SWE",
+          "city": "Kunta SWE"
+        }
+      },
+      "form": {
+        "title": "Työnantajan tiedot SWE",
+        "invoicer_name": "Yhteyshenkilön nimi SWE",
+        "invoicer_email": "Yhteyshenkilön Sähköposti SWE",
+        "invoicer_phone_number": "Yhteyshenkilön Puhelinnumero SWE",
+        "submit_button": "Tallenna ja jatka SWE",
+        "errors": {
+          "invoicer_name": "Nimi puuttuu SWE",
+          "invoicer_email": "Sähköposti on virheellinen SWE",
+          "invoicer_phone_number": "Puhelinnumero on virheellinen SWE"
+        }
+      }
+    },
+    "step2": {
+      "name": "Työsuhteet SWE",
+      "header": "2. Selvitys työsuhteesta SWE"
+    },
+    "step3": {
+      "name": "Lähetys SWE",
+      "header": "3. Tarkistus ja lähettäminen SWE"
+    },
+    "buttons": {
+      "previous": "Palaa edelliseen SWE",
+      "save_and_continue": "Tallenna ja jatka SWE",
+      "send": "Send application SWE"
+    }
+  },
+  "footer": {
+    "copyrightText": "Copyright text",
+    "allRightsReservedText": "All rights reserved text"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In english"
+  },
+  "menuToggleAriaLabel": "Menu"
+}

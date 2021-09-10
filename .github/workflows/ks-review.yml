@@ -39,14 +39,15 @@ env:
   MOCK_FLAG: 1
 jobs:
   build:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     strategy:
       fail-fast: false
       matrix:
         service: [ 'ks-bknd', 'ks-empl' ]
         include:
           - service: ks-bknd
-            context: ./backend/kesaseteli
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             port: 8000
           - service: ks-empl
             context: ./frontend
@@ -74,8 +75,8 @@ jobs:
         service: [ 'ks-bknd', 'ks-empl' ]
         include:
           - service: ks-bknd
-            context: ./backend/kesaseteli
-            dockerfile: ./backend/kesaseteli/Dockerfile
+            context: ./backend
+            dockerfile: ./backend/docker/kesaseteli.Dockerfile
             database: true
             port: 8000
           - service: ks-empl
@@ -189,7 +190,7 @@ jobs:
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
         shell: bash
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.4.0
         with:
           node-version: '14'
       - name: Get yarn cache directory path
