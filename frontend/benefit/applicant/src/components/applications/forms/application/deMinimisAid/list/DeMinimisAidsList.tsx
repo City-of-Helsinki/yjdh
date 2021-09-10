@@ -1,69 +1,86 @@
-import { $SecondaryButton } from 'benefit/applicant/components/applications/Applications.sc';
-import { $SubActionContainer } from 'benefit/applicant/components/applications/forms/application/Application.sc';
 import {
-  DE_MINIMIS_AID_FIELDS,
+  DE_MINIMIS_AID_KEYS,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/applicant/constants';
-import { IconMinusCircle, Notification } from 'hds-react';
+import { Button, IconMinusCircle, Notification } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
-  $FormGroup,
-  $ViewField,
-  $ViewFieldsContainer,
+  $Grid,
+  $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import theme from 'shared/styles/theme';
 import { formatDate, parseDate } from 'shared/utils/date.utils';
+import { useTheme } from 'styled-components';
 
 import { useDeminimisAidsList } from './useDeminimisAidsList';
 
 const DeMinimisAidsList: React.FC = () => {
   const { grants, t, translationsBase, handleRemove } = useDeminimisAidsList();
+  const theme = useTheme();
 
   return (
     <>
       {grants?.map((grant, i) => (
-        <$FormGroup
-          backgroundColor={theme.colors.silverLight}
-          key={`${grant[DE_MINIMIS_AID_FIELDS.GRANTER]}${
-            grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
-          }${grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT]}`}
+        <$GridCell
+          $colStart={3}
+          $colSpan={10}
+          as={$Grid}
+          columns={10}
+          key={`${grant[DE_MINIMIS_AID_KEYS.GRANTER]}${
+            grant[DE_MINIMIS_AID_KEYS.AMOUNT]
+          }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT]}`}
         >
-          <$ViewFieldsContainer>
-            <$ViewField>{grant[DE_MINIMIS_AID_FIELDS.GRANTER]}</$ViewField>
-            <$ViewField>{`${
-              grant[DE_MINIMIS_AID_FIELDS.AMOUNT]
-            } €`}</$ViewField>
-            <$ViewField>
+          <$GridCell
+            $colSpan={8}
+            as={$Grid}
+            columns={8}
+            alignItems="center"
+            bgColor
+            bgHorizontalPadding
+          >
+            <$GridCell $colSpan={4}>
+              {grant[DE_MINIMIS_AID_KEYS.GRANTER]}
+            </$GridCell>
+            <$GridCell $colSpan={2}>{`${
+              grant[DE_MINIMIS_AID_KEYS.AMOUNT]
+            } €`}</$GridCell>
+            <$GridCell $colSpan={2}>
               {formatDate(
-                parseDate(grant[DE_MINIMIS_AID_FIELDS.GRANTED_AT], 'yyyy-MM-dd')
+                parseDate(grant[DE_MINIMIS_AID_KEYS.GRANTED_AT], 'yyyy-MM-dd')
               )}
-            </$ViewField>
-          </$ViewFieldsContainer>
-          <$SubActionContainer>
-            <$SecondaryButton
+            </$GridCell>
+          </$GridCell>
+          <$GridCell
+            $colSpan={2}
+            css={`
+              padding-left: ${theme.spacing.s};
+            `}
+          >
+            <Button
               onClick={() => handleRemove(i)}
               variant="secondary"
+              theme="black"
               iconLeft={<IconMinusCircle />}
+              fullWidth
             >
               {t(`${translationsBase}.deMinimisAidsRemove`)}
-            </$SecondaryButton>
-          </$SubActionContainer>
-        </$FormGroup>
+            </Button>
+          </$GridCell>
+        </$GridCell>
       ))}
-      {sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
-        <$FormGroup>
-          <Notification
-            label={t(
-              `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
-            )}
-            type="error"
-          >
-            {t(
-              `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
-            )}
-          </Notification>
-        </$FormGroup>
+      {sumBy(grants, (grant) => Number(grant.amount)) >
+        MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
+        <$GridCell
+          $colSpan={8}
+          $colStart={3}
+          as={Notification}
+          label={t(
+            `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
+          )}
+          type="error"
+        >
+          {t(`${translationsBase}.notifications.deMinimisAidMaxAmount.content`)}
+        </$GridCell>
       )}
     </>
   );

@@ -121,7 +121,7 @@ export const APPLICATION_FIELDS = {
   ...APPLICATION_FIELDS_STEP2_KEYS,
 } as const;
 
-export enum DE_MINIMIS_AID_FIELDS {
+export enum DE_MINIMIS_AID_KEYS {
   GRANTER = 'granter',
   AMOUNT = 'amount',
   GRANTED_AT = 'grantedAt',
