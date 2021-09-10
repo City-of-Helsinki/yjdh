@@ -1,6 +1,7 @@
 import copy
 import uuid
 from datetime import datetime
+from unittest.mock import patch
 
 import pytest
 import pytz
@@ -406,3 +407,36 @@ def test_application_delete(api_client, application_batch):
         len(Application.objects.all()) == 2
     )  # applications are not deleted with the batch
     assert response.status_code == 204
+
+
+@patch("applications.api.v1.application_batch_views.export_application_batch")
+def test_application_batch_export(mock_export, api_client, application_batch):
+    # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
+    mock_export.return_value = {}
+    # Export invalid batch
+    application_batch.status = ApplicationBatchStatus.SENT_TO_TALPA
+    application_batch.save()
+    response = api_client.get(
+        reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
+    )
+    assert response.status_code == 400
+
+    # Export draft batch then change it status
+    application_batch.status = ApplicationBatchStatus.DRAFT
+    application_batch.save()
+    response = api_client.get(
+        reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
+    )
+    application_batch.refresh_from_db()
+    assert application_batch.status == ApplicationBatchStatus.AWAITING_AHJO_DECISION
+
+    assert response.headers["Content-Type"] == "application/x-zip-compressed"
+    assert response.status_code == 200
+
+    # Export empty batch
+    application_batch.applications.clear()
+    response = api_client.get(
+        reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
+    )
+    application_batch.refresh_from_db()
+    assert response.status_code == 400
