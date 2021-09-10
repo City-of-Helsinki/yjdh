@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import Heading from '../heading/Heading';
-import { $Content, $Section } from './FormSection.sc';
+import { $Grid, $Section } from './FormSection.sc';
 
 type FormSectionProps = {
   children: React.ReactNode;
@@ -12,23 +12,16 @@ type FormSectionProps = {
 
 const FormSection: React.FC<FormSectionProps> = ({
   children,
-  header,
+  header = '',
   loading,
-  tooltip,
+  tooltip = '',
 }) => (
   <$Section>
     {header && (
       <Heading loading={loading} header={header} tooltip={tooltip} as="h2" />
     )}
-    <$Content>{children}</$Content>
+    <$Grid>{children}</$Grid>
   </$Section>
 );
-
-const defaultProps = {
-  header: '',
-  tooltip: '',
-};
-
-FormSection.defaultProps = defaultProps;
 
 export default FormSection;
