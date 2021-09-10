@@ -137,6 +137,26 @@ class AbstractTermsApproval(UUIDModel, TimeStampedModel):
 
 
 class ApplicantTermsApproval(AbstractTermsApproval):
+    """
+
+    The "terms approval" process in UI has two steps:
+    1. User is shown a PDF file with terms
+    2. User needs to click a set of mandatory checkboxes in order to proceed
+
+    In discussion with the product owners, we gathered a few requirements for the backend:
+    1. The terms might change as a result of political decisions by the city, or for other reasons
+    2. The set of checkboxes shown to the applicant may change, together with the Terms
+    3. We need to store the exact version of terms that was shown to the user
+    4. It's not enough to just store the terms, we need to store also the fact that the user checked the
+       required checkboxes (even if the checkboxes are all mandatory)
+
+    So, here, the AbstractTermsApproval is used the store the fact that:
+    1. The user has been shown the terms pdf document (=one Terms object)
+    2.  The user has checked all the checkboxes (=selected_applicant_consents) defined by that Terms object
+        (this is actually redundant data, but I guess it helps us meet some auditing requirements). If we
+        didn't have that requirement, the data model would work fine with just a ForeignKey to Terms object,
+        as the applicant_consents can be accessed through it.
+    """
 
     application = models.OneToOneField(
         Application,
