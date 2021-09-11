@@ -1,18 +1,11 @@
 import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import Heading from 'shared/components/forms/heading/Heading';
+import FormSection from 'shared/components/forms/section/FormSection';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatDate, parseDate } from 'shared/utils/date.utils';
 
-import {
-  $ViewField,
-  $ViewFieldBold,
-  $ViewFieldsContainer,
-  $ViewFieldsGroup,
-  $ViewListContainer,
-  $ViewListHeading,
-  $ViewListRow,
-} from '../../Application.sc';
+import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
 export interface CompanyInfoViewProps {
   data: Application;
@@ -23,9 +16,11 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
   const { t } = useTranslation();
   return (
     <>
-      <Heading as="h2" header={t(`${translationsBase}.company.heading1`)} />
-      <$ViewFieldsContainer>
-        <$ViewFieldsGroup>
+      <FormSection
+        header={t(`${translationsBase}.company.heading1`)}
+        withoutDivider
+      >
+        <$GridCell $colSpan={3}>
           <$ViewField>{data.company?.name}</$ViewField>
           <$ViewField>{`${t(`${translationsBase}.company.businessId`, {
             businessId: data.company?.businessId,
@@ -36,8 +31,9 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
             )}
             : {data?.companyBankAccountNumber}
           </$ViewField>
-        </$ViewFieldsGroup>
-        <$ViewFieldsGroup>
+        </$GridCell>
+
+        <$GridCell $colSpan={3}>
           <$ViewField>
             {data.alternativeCompanyStreetAddress ||
               data.company?.streetAddress}
@@ -47,10 +43,9 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
           } ${
             data.alternativeCompanyCity || data.company?.city || ''
           }`}</$ViewField>
-        </$ViewFieldsGroup>
-      </$ViewFieldsContainer>
-      <$ViewFieldsContainer>
-        <$ViewField>
+        </$GridCell>
+
+        <$GridCell $colStart={1} $colSpan={6}>
           {t(
             `${translationsBase}.company.fields.coOperationNegotiations.label`
           )}
@@ -62,17 +57,22 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
               }`
             )}
           </$ViewFieldBold>
-        </$ViewField>
-      </$ViewFieldsContainer>
-      <Heading
-        as="h2"
+        </$GridCell>
+      </FormSection>
+
+      <FormSection
         header={t(`${translationsBase}.company.heading2Short`)}
-      />
-      <$ViewFieldsContainer>
-        <$ViewFieldsGroup>
-          <$ViewField>{`${data.companyContactPersonFirstName || ''} ${
-            data.companyContactPersonLastName || ''
-          }`}</$ViewField>
+        withoutDivider
+      >
+        <$GridCell $colSpan={3}>
+          <$ViewField>
+            {[
+              data.companyContactPersonFirstName || '',
+              data.companyContactPersonLastName || '',
+            ]
+              .join(' ')
+              .trim()}
+          </$ViewField>
           <$ViewField>{data.companyContactPersonPhoneNumber}</$ViewField>
           <$ViewField>{data.companyContactPersonEmail}</$ViewField>
           <$ViewField>
@@ -82,37 +82,51 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
               {t(`common:languages.${data.applicantLanguage || ''}`)}
             </$ViewFieldBold>
           </$ViewField>
-        </$ViewFieldsGroup>
-      </$ViewFieldsContainer>
-      <Heading as="h2" header={t(`${translationsBase}.company.heading3`)} />
-      {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 && (
-        <$ViewListContainer>
-          <$ViewListRow>
-            <$ViewListHeading>
-              {t(
-                `${translationsBase}.company.fields.deMinimisAidGranter.label`
-              )}
-            </$ViewListHeading>
-            <$ViewListHeading>
-              {t(`${translationsBase}.company.fields.deMinimisAidAmount.label`)}
-            </$ViewListHeading>
-            <$ViewListHeading>
-              {t(
-                `${translationsBase}.company.fields.deMinimisAidGrantedAt.labelShort`
-              )}
-            </$ViewListHeading>
-          </$ViewListRow>
-          {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
-            <$ViewListRow key={aid.granter}>
-              <$ViewField>{aid.granter}</$ViewField>
-              <$ViewField>{aid.amount}</$ViewField>
-              <$ViewField>
-                {formatDate(parseDate(aid.grantedAt, 'yyyy-MM-dd'))}
-              </$ViewField>
-            </$ViewListRow>
-          ))}
-        </$ViewListContainer>
-      )}
+        </$GridCell>
+      </FormSection>
+
+      <FormSection header={t(`${translationsBase}.company.heading3`)}>
+        {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 && (
+          <>
+            <$GridCell $colSpan={3}>
+              <$ViewFieldBold>
+                {t(
+                  `${translationsBase}.company.fields.deMinimisAidGranter.label`
+                )}
+              </$ViewFieldBold>
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <$ViewFieldBold>
+                {t(
+                  `${translationsBase}.company.fields.deMinimisAidAmount.label`
+                )}
+              </$ViewFieldBold>
+            </$GridCell>
+            <$GridCell>
+              <$ViewFieldBold>
+                {t(
+                  `${translationsBase}.company.fields.deMinimisAidGrantedAt.labelShort`
+                )}
+              </$ViewFieldBold>
+            </$GridCell>
+            {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
+              <React.Fragment key={aid.granter + aid.grantedAt}>
+                <$GridCell $colStart={1} $colSpan={3}>
+                  <$ViewField>{aid.granter}</$ViewField>
+                </$GridCell>
+                <$GridCell $colSpan={2}>
+                  <$ViewField>{aid.amount}</$ViewField>
+                </$GridCell>
+                <$GridCell>
+                  <$ViewField>
+                    {formatDate(parseDate(aid.grantedAt, 'yyyy-MM-dd'))}
+                  </$ViewField>
+                </$GridCell>
+              </React.Fragment>
+            ))}
+          </>
+        )}
+      </FormSection>
     </>
   );
 };

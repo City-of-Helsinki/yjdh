@@ -2,13 +2,9 @@ import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import { Attachment } from 'benefit/applicant/types/application';
 import { IconPaperclip } from 'hds-react';
 import * as React from 'react';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
-import {
-  $ViewField,
-  $ViewFieldBold,
-  $ViewFieldsContainer,
-  $ViewFieldsGroup,
-} from '../../Application.sc';
+import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
 export interface AttachmentsListViewProps {
   attachments: Attachment[];
@@ -26,22 +22,20 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   ]);
 
   return (
-    <$ViewFieldsContainer>
-      <$ViewFieldsGroup>
-        <$ViewFieldBold>{title}</$ViewFieldBold>
-        {currentAttachemnts
-          ?.filter((att: Attachment) => att.attachmentType === type)
-          .map((attachment: Attachment) => (
-            <$ViewField
-              style={{ display: 'flex', alignItems: 'center' }}
-              key={attachment.attachmentFileName}
-            >
-              <IconPaperclip aria-label={attachment.attachmentFileName} />
-              {attachment.attachmentFileName}
-            </$ViewField>
-          ))}
-      </$ViewFieldsGroup>
-    </$ViewFieldsContainer>
+    <$GridCell $colStart={1} $colSpan={6}>
+      <$ViewFieldBold>{title}</$ViewFieldBold>
+      {currentAttachemnts
+        ?.filter((att: Attachment) => att.attachmentType === type)
+        .map((attachment: Attachment) => (
+          <$ViewField
+            style={{ display: 'flex', alignItems: 'center' }}
+            key={attachment.attachmentFileName}
+          >
+            <IconPaperclip aria-label={attachment.attachmentFileName} />
+            {attachment.attachmentFileName}
+          </$ViewField>
+        ))}
+    </$GridCell>
   );
 };
 

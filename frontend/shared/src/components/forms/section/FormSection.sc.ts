@@ -24,9 +24,8 @@ type GridCellProps = {
 export const $Section = styled.div`
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid ${(props) => props.theme.colors.black20};
   padding-bottom: ${(props) => props.theme.spacing.m};
-  margin-bottom: ${(props) => props.theme.spacing.s};
+  /* margin-bottom: ${(props) => props.theme.spacing.s}; */
   position: relative;
 `;
 
@@ -85,4 +84,9 @@ export const $Action = styled.div`
   right: 0;
 `;
 
-export const $ViewField = styled.div``;
+export const $Hr = styled.hr`
+  border: none;
+  border-top: 1px solid ${(props) => props.theme.colors.black20};
+  margin-top: ${(props) => props.theme.spacing.xl2};
+  width: 100%;
+`;
