@@ -70,16 +70,17 @@ const DeMinimisAidsList: React.FC = () => {
       ))}
       {sumBy(grants, (grant) => Number(grant.amount)) >
         MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
-        <$GridCell
-          $colSpan={8}
-          $colStart={3}
-          as={Notification}
-          label={t(
-            `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
-          )}
-          type="error"
-        >
-          {t(`${translationsBase}.notifications.deMinimisAidMaxAmount.content`)}
+        <$GridCell $colSpan={8} $colStart={3}>
+          <Notification
+            label={t(
+              `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
+            )}
+            type="error"
+          >
+            {t(
+              `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
+            )}
+          </Notification>
         </$GridCell>
       )}
     </>

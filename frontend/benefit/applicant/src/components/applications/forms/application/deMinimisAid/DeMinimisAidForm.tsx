@@ -43,8 +43,8 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
         margin-bottom: ${theme.spacing.s};
       `}
     >
-      <$GridCell $colSpan={10} as={$SubHeader}>
-        {t(`${translationsBase}.deMinimisAidsHeading`)}
+      <$GridCell $colSpan={10}>
+        <$SubHeader>{t(`${translationsBase}.deMinimisAidsHeading`)}</$SubHeader>
       </$GridCell>
       <$GridCell
         $colSpan={8}
@@ -54,36 +54,36 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
         bgHorizontalPadding
         bgVerticalPadding
       >
-        <$GridCell
-          $colSpan={4}
-          as={TextInput}
-          id={fields.granter.name}
-          name={fields.granter.name}
-          label={fields.granter.label}
-          placeholder={fields.granter.placeholder}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          value={formik.values.granter}
-          invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
-          aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
-          errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
-          required
-        />
-        <$GridCell
-          $colSpan={2}
-          as={TextInput}
-          id={fields.amount.name}
-          name={fields.amount.name}
-          label={fields.amount.label || ''}
-          placeholder={fields.amount.placeholder}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          value={formik.values.amount?.toString()}
-          invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
-          aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
-          errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
-          required
-        />
+        <$GridCell $colSpan={4}>
+          <TextInput
+            id={fields.granter.name}
+            name={fields.granter.name}
+            label={fields.granter.label}
+            placeholder={fields.granter.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.granter}
+            invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
+            aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
+            errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <TextInput
+            id={fields.amount.name}
+            name={fields.amount.name}
+            label={fields.amount.label || ''}
+            placeholder={fields.amount.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.amount?.toString()}
+            invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
+            aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
+            errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
+            required
+          />
+        </$GridCell>
         <$GridCell $colSpan={2}>
           <DateInput
             id={fields.grantedAt.name}

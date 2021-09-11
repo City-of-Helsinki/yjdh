@@ -15,7 +15,6 @@ import { Option } from 'shared/components/forms/fields/types';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import Spacing from 'shared/components/forms/spacing/Spacing';
 import { phoneToLocal } from 'shared/utils/string.utils';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -44,70 +43,72 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   return (
     <form onSubmit={handleSubmitNext} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
-        <$GridCell
-          $colSpan={3}
-          as={TextInput}
-          id={fields.employee.firstName.name}
-          name={fields.employee.firstName.name}
-          label={fields.employee.firstName.label}
-          placeholder={fields.employee.firstName.placeholder}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          value={formik.values.employee?.firstName}
-          invalid={!!getErrorMessage(fields.employee.firstName.name)}
-          aria-invalid={!!getErrorMessage(fields.employee.firstName.name)}
-          errorText={getErrorMessage(fields.employee.firstName.name)}
-          required
-        />
-        <$GridCell
-          $colSpan={3}
-          as={TextInput}
-          id={fields.employee.lastName.name}
-          name={fields.employee.lastName.name}
-          label={fields.employee.lastName.label}
-          placeholder={fields.employee.lastName.placeholder}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          value={formik.values.employee?.lastName}
-          invalid={!!getErrorMessage(fields.employee.lastName.name)}
-          aria-invalid={!!getErrorMessage(fields.employee.lastName.name)}
-          errorText={getErrorMessage(fields.employee.lastName.name)}
-          required
-        />
-        <$GridCell
-          $colSpan={2}
-          as={TextInput}
-          id={fields.employee.socialSecurityNumber.name}
-          name={fields.employee.socialSecurityNumber.name}
-          label={fields.employee.socialSecurityNumber.label}
-          placeholder={fields.employee.socialSecurityNumber.placeholder}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          value={formik.values.employee?.socialSecurityNumber}
-          invalid={!!getErrorMessage(fields.employee.socialSecurityNumber.name)}
-          aria-invalid={
-            !!getErrorMessage(fields.employee.socialSecurityNumber.name)
-          }
-          errorText={getErrorMessage(fields.employee.socialSecurityNumber.name)}
-          required
-        />
-        <$GridCell
-          $colSpan={2}
-          as={TextInput}
-          id={fields.employee.phoneNumber.name}
-          name={fields.employee.phoneNumber.name}
-          label={fields.employee.phoneNumber.label}
-          placeholder={fields.employee.phoneNumber.placeholder}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          value={phoneToLocal(formik.values.employee?.phoneNumber)}
-          invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
-          aria-invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
-          errorText={getErrorMessage(fields.employee.phoneNumber.name)}
-          required
-        />
-
-        <Spacing size="m" />
+        <$GridCell $colSpan={3}>
+          <TextInput
+            id={fields.employee.firstName.name}
+            name={fields.employee.firstName.name}
+            label={fields.employee.firstName.label}
+            placeholder={fields.employee.firstName.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.employee?.firstName}
+            invalid={!!getErrorMessage(fields.employee.firstName.name)}
+            aria-invalid={!!getErrorMessage(fields.employee.firstName.name)}
+            errorText={getErrorMessage(fields.employee.firstName.name)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={3}>
+          <TextInput
+            id={fields.employee.lastName.name}
+            name={fields.employee.lastName.name}
+            label={fields.employee.lastName.label}
+            placeholder={fields.employee.lastName.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.employee?.lastName}
+            invalid={!!getErrorMessage(fields.employee.lastName.name)}
+            aria-invalid={!!getErrorMessage(fields.employee.lastName.name)}
+            errorText={getErrorMessage(fields.employee.lastName.name)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <TextInput
+            id={fields.employee.socialSecurityNumber.name}
+            name={fields.employee.socialSecurityNumber.name}
+            label={fields.employee.socialSecurityNumber.label}
+            placeholder={fields.employee.socialSecurityNumber.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.employee?.socialSecurityNumber}
+            invalid={
+              !!getErrorMessage(fields.employee.socialSecurityNumber.name)
+            }
+            aria-invalid={
+              !!getErrorMessage(fields.employee.socialSecurityNumber.name)
+            }
+            errorText={getErrorMessage(
+              fields.employee.socialSecurityNumber.name
+            )}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <TextInput
+            id={fields.employee.phoneNumber.name}
+            name={fields.employee.phoneNumber.name}
+            label={fields.employee.phoneNumber.label}
+            placeholder={fields.employee.phoneNumber.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={phoneToLocal(formik.values.employee?.phoneNumber)}
+            invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
+            aria-invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
+            errorText={getErrorMessage(fields.employee.phoneNumber.name)}
+            required
+          />
+        </$GridCell>
         <$GridCell $colSpan={6}>
           <FieldLabel
             value={fields.employee.isLivingInHelsinki.label}
@@ -415,65 +416,65 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         {(formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
           formik.values.benefitType === BENEFIT_TYPES.SALARY) && (
           <>
-            <$GridCell
-              $colSpan={4}
-              as={TextInput}
-              id={fields.employee.jobTitle.name}
-              name={fields.employee.jobTitle.name}
-              label={fields.employee.jobTitle.label}
-              placeholder={fields.employee.jobTitle.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.jobTitle}
-              invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
-              aria-invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
-              errorText={getErrorMessage(fields.employee.jobTitle.name)}
-              required
-            />
-            <$GridCell
-              $colSpan={2}
-              as={TextInput}
-              id={fields.employee.workingHours.name}
-              name={fields.employee.workingHours.name}
-              label={fields.employee.workingHours.label}
-              placeholder={fields.employee.workingHours.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.workingHours || ''}
-              invalid={!!getErrorMessage(fields.employee.workingHours.name)}
-              aria-invalid={
-                !!getErrorMessage(fields.employee.workingHours.name)
-              }
-              errorText={getErrorMessage(fields.employee.workingHours.name)}
-              required
-            />
-            <$GridCell
-              $colSpan={4}
-              as={TextInput}
-              id={fields.employee.collectiveBargainingAgreement.name}
-              name={fields.employee.collectiveBargainingAgreement.name}
-              label={fields.employee.collectiveBargainingAgreement.label}
-              placeholder={
-                fields.employee.collectiveBargainingAgreement.placeholder
-              }
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.collectiveBargainingAgreement}
-              invalid={
-                !!getErrorMessage(
+            <$GridCell $colSpan={4}>
+              <TextInput
+                id={fields.employee.jobTitle.name}
+                name={fields.employee.jobTitle.name}
+                label={fields.employee.jobTitle.label}
+                placeholder={fields.employee.jobTitle.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.jobTitle}
+                invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
+                aria-invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
+                errorText={getErrorMessage(fields.employee.jobTitle.name)}
+                required
+              />
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <TextInput
+                id={fields.employee.workingHours.name}
+                name={fields.employee.workingHours.name}
+                label={fields.employee.workingHours.label}
+                placeholder={fields.employee.workingHours.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.workingHours || ''}
+                invalid={!!getErrorMessage(fields.employee.workingHours.name)}
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.workingHours.name)
+                }
+                errorText={getErrorMessage(fields.employee.workingHours.name)}
+                required
+              />
+            </$GridCell>
+            <$GridCell $colSpan={4}>
+              <TextInput
+                id={fields.employee.collectiveBargainingAgreement.name}
+                name={fields.employee.collectiveBargainingAgreement.name}
+                label={fields.employee.collectiveBargainingAgreement.label}
+                placeholder={
+                  fields.employee.collectiveBargainingAgreement.placeholder
+                }
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.collectiveBargainingAgreement}
+                invalid={
+                  !!getErrorMessage(
+                    fields.employee.collectiveBargainingAgreement.name
+                  )
+                }
+                aria-invalid={
+                  !!getErrorMessage(
+                    fields.employee.collectiveBargainingAgreement.name
+                  )
+                }
+                errorText={getErrorMessage(
                   fields.employee.collectiveBargainingAgreement.name
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  fields.employee.collectiveBargainingAgreement.name
-                )
-              }
-              errorText={getErrorMessage(
-                fields.employee.collectiveBargainingAgreement.name
-              )}
-              required
-            />
+                )}
+                required
+              />
+            </$GridCell>
 
             <$GridCell $colSpan={12}>
               <Heading
@@ -486,97 +487,103 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
 
-            <$GridCell
-              $colSpan={2}
-              as={TextInput}
-              id={fields.employee.monthlyPay.name}
-              name={fields.employee.monthlyPay.name}
-              label={fields.employee.monthlyPay.label}
-              placeholder={fields.employee.monthlyPay.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.monthlyPay || ''}
-              invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
-              aria-invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
-              errorText={getErrorMessage(fields.employee.monthlyPay.name)}
-              required
-            />
-            <$GridCell
-              $colSpan={2}
-              as={TextInput}
-              id={fields.employee.otherExpenses.name}
-              name={fields.employee.otherExpenses.name}
-              label={fields.employee.otherExpenses.label}
-              placeholder={fields.employee.otherExpenses.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.otherExpenses || ''}
-              invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
-              aria-invalid={
-                !!getErrorMessage(fields.employee.otherExpenses.name)
-              }
-              errorText={getErrorMessage(fields.employee.otherExpenses.name)}
-              required
-            />
-            <$GridCell
-              $colSpan={2}
-              as={TextInput}
-              id={fields.employee.vacationMoney.name}
-              name={fields.employee.vacationMoney.name}
-              label={fields.employee.vacationMoney.label}
-              placeholder={fields.employee.vacationMoney.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.vacationMoney || ''}
-              invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
-              aria-invalid={
-                !!getErrorMessage(fields.employee.vacationMoney.name)
-              }
-              errorText={getErrorMessage(fields.employee.vacationMoney.name)}
-              required
-            />
+            <$GridCell $colSpan={2}>
+              <TextInput
+                id={fields.employee.monthlyPay.name}
+                name={fields.employee.monthlyPay.name}
+                label={fields.employee.monthlyPay.label}
+                placeholder={fields.employee.monthlyPay.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.monthlyPay || ''}
+                invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.monthlyPay.name)
+                }
+                errorText={getErrorMessage(fields.employee.monthlyPay.name)}
+                required
+              />
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <TextInput
+                id={fields.employee.otherExpenses.name}
+                name={fields.employee.otherExpenses.name}
+                label={fields.employee.otherExpenses.label}
+                placeholder={fields.employee.otherExpenses.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.otherExpenses || ''}
+                invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.otherExpenses.name)
+                }
+                errorText={getErrorMessage(fields.employee.otherExpenses.name)}
+                required
+              />
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <TextInput
+                id={fields.employee.vacationMoney.name}
+                name={fields.employee.vacationMoney.name}
+                label={fields.employee.vacationMoney.label}
+                placeholder={fields.employee.vacationMoney.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.vacationMoney || ''}
+                invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.vacationMoney.name)
+                }
+                errorText={getErrorMessage(fields.employee.vacationMoney.name)}
+                required
+              />
+            </$GridCell>
           </>
         )}
         {formik.values.benefitType === BENEFIT_TYPES.COMMISSION && (
           <>
-            <$GridCell
-              $colSpan={6}
-              as={TextInput}
-              id={fields.employee.commissionDescription.name}
-              name={fields.employee.commissionDescription.name}
-              label={fields.employee.commissionDescription.label}
-              placeholder={fields.employee.commissionDescription.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.commissionDescription}
-              invalid={
-                !!getErrorMessage(fields.employee.commissionDescription.name)
-              }
-              aria-invalid={
-                !!getErrorMessage(fields.employee.commissionDescription.name)
-              }
-              errorText={getErrorMessage(
-                fields.employee.commissionDescription.name
-              )}
-              required
-            />
-            <$GridCell
-              $colSpan={2}
-              as={TextInput}
-              id={fields.employee.commissionAmount.name}
-              name={fields.employee.commissionAmount.name}
-              label={fields.employee.commissionAmount.label}
-              placeholder={fields.employee.commissionAmount.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.employee?.commissionAmount}
-              invalid={!!getErrorMessage(fields.employee.commissionAmount.name)}
-              aria-invalid={
-                !!getErrorMessage(fields.employee.commissionAmount.name)
-              }
-              errorText={getErrorMessage(fields.employee.commissionAmount.name)}
-              required
-            />
+            <$GridCell $colSpan={6}>
+              <TextInput
+                id={fields.employee.commissionDescription.name}
+                name={fields.employee.commissionDescription.name}
+                label={fields.employee.commissionDescription.label}
+                placeholder={fields.employee.commissionDescription.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.commissionDescription}
+                invalid={
+                  !!getErrorMessage(fields.employee.commissionDescription.name)
+                }
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.commissionDescription.name)
+                }
+                errorText={getErrorMessage(
+                  fields.employee.commissionDescription.name
+                )}
+                required
+              />
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <TextInput
+                id={fields.employee.commissionAmount.name}
+                name={fields.employee.commissionAmount.name}
+                label={fields.employee.commissionAmount.label}
+                placeholder={fields.employee.commissionAmount.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.commissionAmount}
+                invalid={
+                  !!getErrorMessage(fields.employee.commissionAmount.name)
+                }
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.commissionAmount.name)
+                }
+                errorText={getErrorMessage(
+                  fields.employee.commissionAmount.name
+                )}
+                required
+              />
+            </$GridCell>
           </>
         )}
       </FormSection>
