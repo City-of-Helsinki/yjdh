@@ -85,6 +85,8 @@
         "employment_salary_paid": "Maksettu palkka SWE"
       },
       "errors": {
+        "title": "Virheitä kenttien tiedoissa SWE",
+        "description": "Täytä puuttuvat tai virheelliset tiedot SWE",
         "invoicer_name": "Nimi puuttuu SWE",
         "invoicer_email": "Sähköposti on virheellinen SWE",
         "invoicer_phone_number": "Puhelinnumero on virheellinen SWE",
@@ -99,7 +101,8 @@
         "employment_start_date": "Päivämäärä on virheellinen SWE",
         "employment_end_date": "Päivämäärä on virheellinen SWE",
         "employment_work_hours": "Arvo on virheellinen SWE",
-        "employment_salary_paid": "Arvo on virheellinen SWE"
+        "employment_salary_paid": "Arvo on virheellinen SWE",
+        "summer_vouchers": "Lisää ainakin yksi työsuhde SWE"
       }
     }
   },
@@ -108,9 +111,9 @@
     "allRightsReservedText": "Kaikki oikeudet pidätetään"
   },
   "languages": {
-    "fi": "Suomeksi SWE",
-    "sv": "På svenska SWE",
-    "en": "In english SWE"
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In english"
   },
   "menuToggleAriaLabel": "Menu SWE"
 }

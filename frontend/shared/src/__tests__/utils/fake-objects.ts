@@ -41,7 +41,6 @@ export const fakeInvoicer = (): Invoicer => ({
 
 export const fakeEmployment = (): Employment => ({
   id: faker.datatype.uuid(),
-  unnumbered_summer_voucher_reason: 'lorem ipsum', // TODO: To be removed after backend hack
   summer_voucher_exception_reason: faker.random.arrayElement([
     '9th_grader',
     'born_2004',

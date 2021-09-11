@@ -80,6 +80,8 @@
         "employment_salary_paid": "Salary paid"
       },
       "errors": {
+        "title": "There is errors in the form",
+        "description": "Please fill missing or invalid values",
         "invoicer_name": "Invoicer's name is required",
         "invoicer_email": "Invoicer's email is invalid",
         "invoicer_phone_number": "Invoicer's phone number is invalid",
@@ -94,7 +96,8 @@
         "employment_start_date": "Date is invalid",
         "employment_end_date": "Date is invalid",
         "employment_work_hours": "Value is invalid",
-        "employment_salary_paid": "Value is invalid"
+        "employment_salary_paid": "Value is invalid",
+        "summer_vouchers": "'Add at least one employment"
       }
     },
     "buttons": {

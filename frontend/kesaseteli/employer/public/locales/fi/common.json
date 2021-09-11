@@ -83,6 +83,8 @@
         "employment_salary_paid": "Maksettu palkka"
       },
       "errors": {
+        "title": "Virheitä kenttien tiedoissa",
+        "description": "Täytä puuttuvat tai virheelliset tiedot",
         "invoicer_name": "Nimi puuttuu",
         "invoicer_email": "Sähköposti on virheellinen",
         "invoicer_phone_number": "Puhelinnumero on virheellinen",
@@ -97,7 +99,8 @@
         "employment_start_date": "Päivämäärä on virheellinen",
         "employment_end_date": "Päivämäärä on virheellinen",
         "employment_work_hours": "Arvo on virheellinen",
-        "employment_salary_paid": "Arvo on virheellinen"
+        "employment_salary_paid": "Arvo on virheellinen",
+        "summer_vouchers": "Lisää ainakin yksi työsuhde"
       }
     }
   },

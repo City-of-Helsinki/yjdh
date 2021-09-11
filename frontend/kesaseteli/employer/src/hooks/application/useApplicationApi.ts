@@ -1,6 +1,7 @@
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
+import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import noop from 'lodash/noop';
 import { UseMutationResult, UseQueryResult } from 'react-query';
 import DraftApplication from 'shared/types/draft-application';
@@ -28,8 +29,11 @@ export type ApplicationApi = {
   isError: boolean;
 };
 
-const useApplicationApi = (onUpdateSuccess = noop): ApplicationApi => {
+const useApplicationApi = (
+  { onUpdateSuccess } = { onUpdateSuccess: noop }
+): ApplicationApi => {
   const applicationId = useApplicationIdQueryParam();
+
   const {
     data: application,
     isLoading,
@@ -44,10 +48,7 @@ const useApplicationApi = (onUpdateSuccess = noop): ApplicationApi => {
   const addEmployment: ApplicationApi['addEmployment'] = (
     draftApplication: DraftApplication
   ) => {
-    const summer_vouchers = [
-      ...(draftApplication.summer_vouchers ?? []),
-      { unnumbered_summer_voucher_reason: 'lorem ipsum' }, // todo later empty when backend bug addressed
-    ];
+    const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
     return mutate({ ...draftApplication, status: 'draft', summer_vouchers });
   };
 
@@ -71,7 +72,15 @@ const useApplicationApi = (onUpdateSuccess = noop): ApplicationApi => {
   };
   const sendApplication: ApplicationApi['sendApplication'] = (
     completeApplication: Application
-  ) => mutate({ ...completeApplication, status: 'submitted' });
+  ) =>
+    mutate(
+      { ...completeApplication, status: 'submitted' },
+      {
+        onSuccess: () => {
+          clearLocalStorage(`application-${completeApplication.id}`);
+        },
+      }
+    );
 
   return {
     applicationId,

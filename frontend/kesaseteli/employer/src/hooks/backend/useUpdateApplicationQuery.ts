@@ -15,14 +15,15 @@ const useUpdateApplicationQuery = (
 
   return useMutation<Application, Error, DraftApplication>(
     ['applications', id],
-    (application: DraftApplication) => !id
+    (application: DraftApplication) =>
+      !id
         ? Promise.reject(new Error('Missing id'))
         : handleResponse<Application>(
             axios.put(`${BackendEndpoint.APPLICATIONS}${id}/`, application)
           ),
     {
-      onSuccess: () => {
-        onSuccess();
+      onSuccess: (application) => {
+        onSuccess(application);
         void queryClient.invalidateQueries(['applications', id]);
       },
     }

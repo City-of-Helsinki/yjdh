@@ -1,10 +1,13 @@
 import { TextInput as HdsTextInput } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-// eslint-disable-next-line you-dont-need-lodash-underscore/get
-import get from 'lodash/get';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { RegisterOptions, useFormContext,UseFormRegister } from 'react-hook-form';
+import {
+  get,
+  RegisterOptions,
+  useFormContext,
+  UseFormRegister,
+} from 'react-hook-form';
 import Application from 'shared/types/employer-application';
 import { getLastValue } from 'shared/utils/array.utils';
 
@@ -20,16 +23,15 @@ const TextInput = ({
   validation,
   ...rest
 }: InputProps): ReturnType<typeof HdsTextInput> => {
-
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const {
     register,
+    getValues,
     formState: { errors },
   } = useFormContext<Application>();
-  const { application, isLoading } = useApplicationApi();
+  const { isLoading } = useApplicationApi();
 
-
-  const defaultValue = String(get(application, id)) ?? '';
+  const defaultValue = getValues('id') ?? '';
   const hasError = Boolean(get(errors, `${id}.type`));
   const name = getLastValue((id as string).split('.')) ?? '';
 
@@ -44,7 +46,9 @@ const TextInput = ({
       required={Boolean(validation.required)}
       max={validation.maxLength ? String(validation.maxLength) : undefined}
       defaultValue={defaultValue}
-      errorText={hasError ? t(`common:application.form.errors.${name}`) : undefined}
+      errorText={
+        hasError ? t(`common:application.form.errors.${name}`) : undefined
+      }
       label={t(`common:application.form.inputs.${name}`)}
     />
   );

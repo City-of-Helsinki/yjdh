@@ -22,7 +22,7 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
   const { t } = useTranslation();
   const {
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = useFormContext<Application>();
   const {
     isFirstStep,
@@ -31,7 +31,9 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
     nextStep,
     isLoading: isWizardLoading,
   } = useWizard();
-  const apiOperations = useApplicationApi(() => void nextStep());
+  const apiOperations = useApplicationApi({
+    onUpdateSuccess: () => void nextStep(),
+  });
   const { isSyncing } = useIsSyncingToBackend();
 
   const isLoading = isSubmitting || isSyncing || isWizardLoading;
@@ -58,7 +60,7 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
           onClick={handleSubmit(apiOperations[onNext])}
           loadingText={t(`common:application.loading`)}
           isLoading={isLoading}
-          disabled={isLoading || !isValid}
+          disabled={isLoading}
         >
           {isLastStep
             ? t(`common:application.buttons.send`)
