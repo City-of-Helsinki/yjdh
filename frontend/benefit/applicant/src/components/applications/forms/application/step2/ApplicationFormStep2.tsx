@@ -355,6 +355,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </$GridCell>
         )}
       </FormSection>
+
       <FormSection header={t(`${translationsBase}.heading4`)}>
         {!formik.values.benefitType && (
           <$GridCell $colSpan={8}>

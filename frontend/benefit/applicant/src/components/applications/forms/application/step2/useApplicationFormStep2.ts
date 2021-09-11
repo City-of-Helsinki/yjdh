@@ -151,24 +151,25 @@ const useApplicationFormStep2 = (
           test: mustBeSsn,
         }),
         [APPLICATION_FIELDS_STEP2.employee
-          .EMPLOYEE_COMMISSION_AMOUNT]: Yup.number().typeError(
-          t(VALIDATION_MESSAGE_KEYS.INVALID)
-        ),
+          .EMPLOYEE_COMMISSION_AMOUNT]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
         [APPLICATION_FIELDS_STEP2.employee
-          .WORKING_HOURS]: Yup.number().typeError(
-          t(VALIDATION_MESSAGE_KEYS.INVALID)
-        ),
+          .WORKING_HOURS]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
         [APPLICATION_FIELDS_STEP2.employee
-          .VACATION_MONEY]: Yup.number().typeError(
-          t(VALIDATION_MESSAGE_KEYS.INVALID)
-        ),
-        [APPLICATION_FIELDS_STEP2.employee.MONTHLY_PAY]: Yup.number().typeError(
-          t(VALIDATION_MESSAGE_KEYS.INVALID)
-        ),
+          .VACATION_MONEY]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
         [APPLICATION_FIELDS_STEP2.employee
-          .OTHER_EXPENSES]: Yup.number().typeError(
-          t(VALIDATION_MESSAGE_KEYS.INVALID)
-        ),
+          .MONTHLY_PAY]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
+        [APPLICATION_FIELDS_STEP2.employee
+          .OTHER_EXPENSES]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
         // .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
       }),
     }),
