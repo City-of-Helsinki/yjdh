@@ -1,6 +1,6 @@
 import {
-  DE_MINIMIS_AID_FIELDS,
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
+  DE_MINIMIS_AID_KEYS,
   SUPPORTED_LANGUAGES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
@@ -9,6 +9,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
+import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
@@ -21,11 +22,10 @@ import {
 import { capitalize } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
-type ExtendedComponentProps = {
+type UseDeminimisAidProps = {
   t: TFunction;
   language: SUPPORTED_LANGUAGES;
-  fieldNames: string[];
-  fields: FieldsDef;
+  fields: { [key in DE_MINIMIS_AID_KEYS]: Field };
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string;
   handleSubmit: (e: React.MouseEvent) => void;
@@ -33,17 +33,13 @@ type ExtendedComponentProps = {
   grants: DeMinimisAid[];
 };
 
-type FieldsDef = {
-  [key: string]: Field;
-};
-
 type FormFields = {
-  [DE_MINIMIS_AID_FIELDS.GRANTER]: string;
-  [DE_MINIMIS_AID_FIELDS.AMOUNT]: string;
-  [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: string;
+  [DE_MINIMIS_AID_KEYS.GRANTER]: string;
+  [DE_MINIMIS_AID_KEYS.AMOUNT]: string;
+  [DE_MINIMIS_AID_KEYS.GRANTED_AT]: string;
 };
 
-const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
+const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
   const { applicationTempData, setApplicationTempData } = React.useContext(
@@ -68,25 +64,25 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
 
   const formik = useFormik({
     initialValues: {
-      [DE_MINIMIS_AID_FIELDS.GRANTER]: '',
-      [DE_MINIMIS_AID_FIELDS.AMOUNT]: '',
-      [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: '',
+      [DE_MINIMIS_AID_KEYS.GRANTER]: '',
+      [DE_MINIMIS_AID_KEYS.AMOUNT]: '',
+      [DE_MINIMIS_AID_KEYS.GRANTED_AT]: '',
     },
     validationSchema: Yup.object().shape({
-      [DE_MINIMIS_AID_FIELDS.GRANTER]: Yup.string()
+      [DE_MINIMIS_AID_KEYS.GRANTER]: Yup.string()
         .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
         .max(64, (param) => ({
           max: param.max,
           key: VALIDATION_MESSAGE_KEYS.STRING_MAX,
         })),
-      [DE_MINIMIS_AID_FIELDS.AMOUNT]: Yup.number()
+      [DE_MINIMIS_AID_KEYS.AMOUNT]: Yup.number()
         .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
         .typeError(VALIDATION_MESSAGE_KEYS.INVALID)
         .min(0, (param) => ({
           min: param.min,
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
         })),
-      [DE_MINIMIS_AID_FIELDS.GRANTED_AT]: Yup.date()
+      [DE_MINIMIS_AID_KEYS.GRANTED_AT]: Yup.date()
         .transform((_, original) => parseDate(original, DATE_FORMATS.DATE))
         .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)
         .test({
@@ -105,17 +101,17 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
         }),
     }),
     validateOnChange: true,
-    validateOnBlur: false,
+    validateOnBlur: true,
     onSubmit: () => {
       setApplicationTempData({
         ...applicationTempData,
         deMinimisAids: [
           ...(applicationTempData.deMinimisAids || []),
           {
-            granter: formik.values[DE_MINIMIS_AID_FIELDS.GRANTER],
-            amount: parseFloat(formik.values[DE_MINIMIS_AID_FIELDS.AMOUNT]),
+            granter: formik.values[DE_MINIMIS_AID_KEYS.GRANTER],
+            amount: parseFloat(formik.values[DE_MINIMIS_AID_KEYS.AMOUNT]),
             grantedAt: formatDate(
-              parseDate(formik.values[DE_MINIMIS_AID_FIELDS.GRANTED_AT]),
+              parseDate(formik.values[DE_MINIMIS_AID_KEYS.GRANTED_AT]),
               'yyyy-MM-dd'
             ),
           },
@@ -126,32 +122,28 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
     },
   });
 
-  const fieldNames = React.useMemo(
-    (): string[] => [
-      DE_MINIMIS_AID_FIELDS.GRANTER,
-      DE_MINIMIS_AID_FIELDS.AMOUNT,
-      DE_MINIMIS_AID_FIELDS.GRANTED_AT,
-    ],
-    []
-  );
-
-  const fields = React.useMemo((): FieldsDef => {
-    const fieldsdef: FieldsDef = {};
-    fieldNames.forEach((name) => {
-      fieldsdef[name] = {
-        name,
+  const fields: UseDeminimisAidProps['fields'] = React.useMemo(() => {
+    const pairs = Object.values(DE_MINIMIS_AID_KEYS).map<
+      [DE_MINIMIS_AID_KEYS, Field]
+    >((fieldName) => [
+      fieldName,
+      {
+        name: fieldName,
         label: t(
-          `${translationsBase}.fields.deMinimisAid${capitalize(name)}.label`
+          `${translationsBase}.fields.deMinimisAid${capitalize(
+            fieldName
+          )}.label`
         ),
         placeholder: t(
           `${translationsBase}.fields.deMinimisAid${capitalize(
-            name
+            fieldName
           )}.placeholder`
         ),
-      };
-    });
-    return fieldsdef;
-  }, [t, fieldNames]);
+      },
+    ]);
+
+    return fromPairs<Field>(pairs) as Record<DE_MINIMIS_AID_KEYS, Field>;
+  }, [t, translationsBase]);
 
   const getErrorMessage = (fieldName: string): string =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -187,7 +179,6 @@ const useDeminimisAid = (data: DeMinimisAid[]): ExtendedComponentProps => {
   return {
     t,
     language,
-    fieldNames,
     fields,
     translationsBase,
     formik,

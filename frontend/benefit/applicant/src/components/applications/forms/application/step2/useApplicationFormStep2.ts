@@ -1,8 +1,11 @@
 import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP2,
+  APPLICATION_FIELDS_STEP2_KEYS,
+  EMPLOYEE_KEYS,
+  MAX_SHORT_STRING_LENGTH,
   PAY_SUBSIDY_OPTIONS,
-  // VALIDATION_MESSAGE_KEYS,
+  VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
@@ -13,18 +16,23 @@ import {
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
+import { FinnishSSN } from 'finnish-ssn';
 import { FormikProps, useFormik } from 'formik';
+import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { FieldsDef } from 'shared/components/forms/fields/types';
+import { Field } from 'shared/components/forms/fields/types';
+import { NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
 
-type ExtendedComponentProps = {
+type Step2Fields = Record<APPLICATION_FIELDS_STEP2_KEYS, Field> &
+  Record<APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE, Record<EMPLOYEE_KEYS, Field>>;
+
+type UseApplicationFormStep2Props = {
   t: TFunction;
-  fieldNames: string[];
-  fields: FieldsDef;
+  fields: Step2Fields;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmitBack: () => void;
@@ -37,10 +45,9 @@ type ExtendedComponentProps = {
 
 const useApplicationFormStep2 = (
   application: Application
-): ExtendedComponentProps => {
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+): UseApplicationFormStep2Props => {
+  const { applicationTempData, setApplicationTempData } =
+    React.useContext(ApplicationContext);
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -74,7 +81,39 @@ const useApplicationFormStep2 = (
 
   const formik = useFormik({
     initialValues: application,
-    validationSchema: Yup.object().shape({}),
+    validationSchema: Yup.object().shape({
+      employee: Yup.object().shape({
+        [APPLICATION_FIELDS_STEP2.employee.FIRST_NAME]: Yup.string()
+          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+        [APPLICATION_FIELDS_STEP2.employee.LAST_NAME]: Yup.string()
+          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+        [APPLICATION_FIELDS_STEP2.employee.PHONE_NUMBER]: Yup.string()
+          .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
+          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+        [APPLICATION_FIELDS_STEP2.employee.SOCIAL_SECURITY_NUMBER]:
+          Yup.string().test({
+            message: t(VALIDATION_MESSAGE_KEYS.SSN_INVALID),
+            test: (val = '') => FinnishSSN.validate(val),
+          }),
+        [APPLICATION_FIELDS_STEP2.employee.EMPLOYEE_COMMISSION_AMOUNT]:
+          Yup.number().nullable().typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
+        [APPLICATION_FIELDS_STEP2.employee.WORKING_HOURS]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
+        [APPLICATION_FIELDS_STEP2.employee.VACATION_MONEY]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
+        [APPLICATION_FIELDS_STEP2.employee.MONTHLY_PAY]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
+        [APPLICATION_FIELDS_STEP2.employee.OTHER_EXPENSES]: Yup.number()
+          .nullable()
+          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
+        // .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      }),
+    }),
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: () => {
@@ -90,11 +129,6 @@ const useApplicationFormStep2 = (
     },
   });
 
-  const fieldNames = React.useMemo(
-    (): string[] => Object.values(APPLICATION_FIELDS_STEP2),
-    []
-  );
-
   const subsidyOptions = React.useMemo(
     (): OptionType[] =>
       PAY_SUBSIDY_OPTIONS.map((option) => ({
@@ -104,21 +138,47 @@ const useApplicationFormStep2 = (
     []
   );
 
-  const fields = React.useMemo(
-    (): FieldsDef =>
-      fieldNames.reduce<FieldsDef>(
-        (acc, name) => ({
-          ...acc,
-          [name]: {
-            name,
-            label: t(`${translationsBase}.fields.${name}.label`),
-            placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
+  const fields = React.useMemo(() => {
+    const fieldEntries: (
+      | [APPLICATION_FIELDS_STEP2_KEYS, Field]
+      | [APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE, Record<EMPLOYEE_KEYS, Field>]
+    )[] = Object.values(APPLICATION_FIELDS_STEP2).map((field) => {
+      if (typeof field === 'string') {
+        return [
+          field,
+          {
+            name: field,
+            label: t(`${translationsBase}.fields.${field}.label`),
+            placeholder: t(`${translationsBase}.fields.${field}.placeholder`),
           },
-        }),
-        {}
-      ),
-    [t, fieldNames]
-  );
+        ];
+      }
+
+      const employeeFields: [EMPLOYEE_KEYS, Field][] = Object.values(field).map(
+        (employeeField) => [
+          employeeField,
+          {
+            name: `${APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE}.${employeeField}`,
+            label: t(`${translationsBase}.fields.${employeeField}.label`),
+            placeholder: t(
+              `${translationsBase}.fields.${employeeField}.placeholder`
+            ),
+          },
+        ]
+      );
+
+      const employeeDict = fromPairs(employeeFields) as Record<
+        EMPLOYEE_KEYS,
+        Field
+      >;
+
+      return [APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE, employeeDict];
+    });
+
+    return fromPairs<Field | Record<EMPLOYEE_KEYS, Field>>(
+      fieldEntries
+    ) as Step2Fields;
+  }, [t, translationsBase]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -150,14 +210,8 @@ const useApplicationFormStep2 = (
 
   const erazeCommissionFields = (e: ChangeEvent<HTMLInputElement>): void => {
     formik.handleChange(e);
-    void formik.setFieldValue(
-      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION}`,
-      ''
-    );
-    void formik.setFieldValue(
-      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT}`,
-      ''
-    );
+    void formik.setFieldValue(fields.employee.commissionDescription.name, '');
+    void formik.setFieldValue(fields.employee.commissionAmount.name, '');
   };
 
   const getDefaultSelectValue = (fieldName: keyof Application): OptionType =>
@@ -170,7 +224,6 @@ const useApplicationFormStep2 = (
 
   return {
     t,
-    fieldNames,
     fields,
     translationsBase,
     formik,
