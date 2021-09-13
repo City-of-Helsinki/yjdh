@@ -52,9 +52,9 @@ snapshots[
         <td>Y125007</td>
         <td>Example.</td>
         <td>8906333-4</td>
-        <td>Kimberly</td>
-        <td>Baker</td>
-        <td>2021-07-02</td>
+        <td>Renee</td>
+        <td>Hartman</td>
+        <td>2021-01-18</td>
     </tr>
 </table>
 
@@ -100,9 +100,9 @@ snapshots[
             <td>Y125008</td>
             <td>Example.</td>
             <td>8906333-4</td>
-            <td>Kimberly</td>
-            <td>Baker</td>
-            <td>2021-07-02</td>
+            <td>Renee</td>
+            <td>Hartman</td>
+            <td>2021-01-18</td>
         </tr>
     </table>
 
@@ -152,9 +152,9 @@ snapshots[
             <td>R125006</td>
             <td>Example.</td>
             <td>8906333-4</td>
-            <td>Kimberly</td>
-            <td>Baker</td>
-            <td>2021-07-02</td>
+            <td>Renee</td>
+            <td>Hartman</td>
+            <td>2021-01-18</td>
         </tr>
     </table>
 
