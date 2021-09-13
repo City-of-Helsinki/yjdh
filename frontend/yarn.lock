@@ -1495,11 +1495,6 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.0.tgz"
   integrity sha512-sqKVVVOe5ivCaXDWivIJYVSaEgdQK9ul7a4Kity5Iw7u9+wBAPbX1RMSnLLmp7O4Vzj0WOWwMAJsTL00xwaNug==
 
-"@hookform/error-message@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@hookform/error-message/-/error-message-2.0.0.tgz#9b1b037fd816ea9b1531c06aa7fab5f5154aa740"
-  integrity sha512-Y90nHzjgL2MP7GFy75kscdvxrCTjtyxGmOLLxX14nd08OXRIh9lMH/y9Kpdo0p1IPowJBiZMHyueg7p+yrqynQ==
-
 "@hutson/parse-repository-url@^3.0.0":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@hutson/parse-repository-url/-/parse-repository-url-3.0.2.tgz#98c23c950a3d9b6c8f0daed06da6c3af06981340"
