@@ -2446,7 +2446,7 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@npmcli/arborist@2.8.2", "@npmcli/arborist@^2.2.1":
+"@npmcli/arborist@^2.2.1":
   version "2.8.2"
   resolved "https://registry.yarnpkg.com/@npmcli/arborist/-/arborist-2.8.2.tgz#643f8c8a26ffbaa579983972f67a60cb6217e86a"
   integrity sha512-6E1XJ0YXBaI9J+25gcTF110MGNx3jv6npr4Rz1U0UAqkuVV7bbDznVJvNqi6F0p8vgrE+Smf9jDTn1DR+7uBjQ==
@@ -6766,6 +6766,11 @@ find-up@^5.0.0:
   dependencies:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
+
+finnish-ssn@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/finnish-ssn/-/finnish-ssn-2.0.4.tgz#5614b48b91ba63f4a27367971797291a47628d8c"
+  integrity sha512-boRI1T1W4Y+d6A8A5aujN7HJVE6HEXtXOevasvo8Xipi2gxcBKTSj07OWVoJl2bq4eBtH4drh2UgNMnQpHIJ+A==
 
 flat-cache@^3.0.4:
   version "3.0.4"

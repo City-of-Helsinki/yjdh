@@ -16,12 +16,13 @@ import {
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
+import { FinnishSSN } from 'finnish-ssn';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import { NAMES_REGEX, PHONE_NUMBER_REGEX, SSN_REGEX } from 'shared/constants';
+import { NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
@@ -42,65 +43,11 @@ type UseApplicationFormStep2Props = {
   getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
 };
 
-const ssnValidationTable = [
-  '0',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'H',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'P',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-];
-
-const validateSsn = (number: number, checkCharacter: string): boolean =>
-  checkCharacter === ssnValidationTable[number % 31];
-
-export const mustBeSsn = (value = ''): boolean => {
-  if (!value) return true;
-
-  const ssnRe = SSN_REGEX;
-
-  if (!ssnRe.test(value)) return false;
-
-  const groups = ssnRe.exec(value) ?? [];
-  const number = parseInt(`${groups[1]}${groups[3]}`, 10);
-  const checkCharacter = groups[4];
-
-  if (!validateSsn(number, checkCharacter)) return false;
-
-  return true;
-};
-
 const useApplicationFormStep2 = (
   application: Application
 ): UseApplicationFormStep2Props => {
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+  const { applicationTempData, setApplicationTempData } =
+    React.useContext(ApplicationContext);
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -145,29 +92,23 @@ const useApplicationFormStep2 = (
         [APPLICATION_FIELDS_STEP2.employee.PHONE_NUMBER]: Yup.string()
           .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
           .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-        [APPLICATION_FIELDS_STEP2.employee
-          .SOCIAL_SECURITY_NUMBER]: Yup.string().test({
-          message: t(VALIDATION_MESSAGE_KEYS.SSN_INVALID),
-          test: mustBeSsn,
-        }),
-        [APPLICATION_FIELDS_STEP2.employee
-          .EMPLOYEE_COMMISSION_AMOUNT]: Yup.number()
+        [APPLICATION_FIELDS_STEP2.employee.SOCIAL_SECURITY_NUMBER]:
+          Yup.string().test({
+            message: t(VALIDATION_MESSAGE_KEYS.SSN_INVALID),
+            test: (val = '') => FinnishSSN.validate(val),
+          }),
+        [APPLICATION_FIELDS_STEP2.employee.EMPLOYEE_COMMISSION_AMOUNT]:
+          Yup.number().nullable().typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
+        [APPLICATION_FIELDS_STEP2.employee.WORKING_HOURS]: Yup.number()
           .nullable()
           .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
-        [APPLICATION_FIELDS_STEP2.employee
-          .WORKING_HOURS]: Yup.number()
+        [APPLICATION_FIELDS_STEP2.employee.VACATION_MONEY]: Yup.number()
           .nullable()
           .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
-        [APPLICATION_FIELDS_STEP2.employee
-          .VACATION_MONEY]: Yup.number()
+        [APPLICATION_FIELDS_STEP2.employee.MONTHLY_PAY]: Yup.number()
           .nullable()
           .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
-        [APPLICATION_FIELDS_STEP2.employee
-          .MONTHLY_PAY]: Yup.number()
-          .nullable()
-          .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
-        [APPLICATION_FIELDS_STEP2.employee
-          .OTHER_EXPENSES]: Yup.number()
+        [APPLICATION_FIELDS_STEP2.employee.OTHER_EXPENSES]: Yup.number()
           .nullable()
           .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID)),
         // .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
