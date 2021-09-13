@@ -194,8 +194,18 @@ export type Employee = {
   [APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT]?: string;
   [APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION]?: string;
 };
+export type Company = {
+  id?: string;
+  name: string;
+  businessId: string;
+  companyForm: string;
+  streetAddress: string;
+  postcode: string;
+  city: string;
+  bankAccountNumber: string;
+};
 
-export interface Attachment {
+export type Attachment = {
   id: string;
   application: string;
   attachmentType: ATTACHMENT_TYPES;
@@ -203,7 +213,7 @@ export interface Attachment {
   attachmentFileName: string;
   contentType: ATTACHMENT_CONTENT_TYPES;
   createdAt?: string;
-}
+};
 
 export type Application = {
   id?: string;
@@ -211,6 +221,7 @@ export type Application = {
   applicationNumber?: number;
   employee?: Employee;
   bases?: string[];
+  company?: Company;
   [APPLICATION_FIELDS_STEP1.USE_ALTERNATIVE_ADDRESS]?: boolean;
   [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;
   [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY]?: string;

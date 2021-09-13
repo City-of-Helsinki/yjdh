@@ -62,6 +62,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         "official_company_street_address",
         "alternative_company_street_address",
         "company_name",
+        "company_department",
         "company_contact_person_email",
         "company_contact_person_first_name",
         "company_contact_person_last_name",

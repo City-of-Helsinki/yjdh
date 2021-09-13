@@ -1,13 +1,14 @@
 import * as React from 'react';
 
 import Heading from '../heading/Heading';
-import { $Content, $Section } from './FormSection.sc';
+import { $Action, $Content, $Section } from './FormSection.sc';
 
 type FormSectionProps = {
   children: React.ReactNode;
   header?: string;
   loading?: boolean;
   tooltip?: string;
+  action?: React.ReactNode;
 };
 
 const FormSection: React.FC<FormSectionProps> = ({
@@ -15,8 +16,10 @@ const FormSection: React.FC<FormSectionProps> = ({
   header,
   loading,
   tooltip,
+  action,
 }) => (
   <$Section>
+    {action && <$Action>{action}</$Action>}
     {header && (
       <Heading loading={loading} header={header} tooltip={tooltip} as="h2" />
     )}

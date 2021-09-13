@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Työllisyydenhoidon Helsinki-lisän myöntäminen yhteisöille vuonna {{ year }}, hakemus nro
+        {{ app.ahjo_application_number}}</h1>
+    <table style="border: 1px solid black">
+        <caption></caption>
+        <tr>
+            <th scope="col">Hakemus-numero</th>
+            <th scope="col">Hakija</th>
+            <th scope="col">Y-tunnus</th>
+            <th scope="col">Työllistetyn sukunimi</th>
+            <th scope="col">Työllistetyn etunimi</th>
+            <th scope="col">Alkaa</th>
+        </tr>
+        <tr>
+            <td>{{ app.ahjo_application_number }}</td>
+            <td>{{ app.company_name }}</td>
+            <td>{{ app.company.business_id }}</td>
+            <td>{{ app.employee.first_name }}</td>
+            <td>{{ app.employee.last_name }}</td>
+            <td>{{ app.start_date }}</td>
+        </tr>
+    </table>
+
+{% endblock %}
