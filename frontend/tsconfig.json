@@ -18,7 +18,8 @@
     "paths": {
       "kesaseteli/employer/*": ["kesaseteli/employer/src/*", "kesaseteli/employer/browser-tests/*"],
       "benefit/applicant/*": ["benefit/applicant/src/*"],
-      "shared/*": ["shared/src/*", "shared/browser-tests/*"],
+      "benefit/handler/*": ["benefit/handler/src/*"],
+      "shared/*": ["shared/src/*", "shared/browser-tests/*"]
     }
   },
   "exclude": ["node_modules"]

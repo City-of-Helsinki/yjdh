@@ -19,7 +19,7 @@ services:
       dockerfile: ./docker/benefit.Dockerfile
       target: development
     env_file:
-      - .env.benefit
+      - .env.benefit-backend
     environment:
       DATABASE_URL: postgres://benefit:benefit@benefit-db/benefit
       DATABASE_HOST: benefit-db.helsinki
@@ -42,10 +42,25 @@ services:
       - /app/node_modules
       - /app/.next
     env_file:
-      - .env.benefit
+      - .env.benefit-applicant
     ports:
       - "3000:3000"
     container_name: benefit-applicant
+
+  handler:
+    build:
+      context: ./frontend
+      dockerfile: benefit/handler/Dockerfile
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.benefit-handler
+    ports:
+      - "3100:3100"
+    container_name: benefit-handler
 
 volumes:
   pgdata:
