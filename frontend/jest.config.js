@@ -11,11 +11,13 @@ module.exports = {
   setupFilesAfterEnv: [
     '<rootDir>/shared/src/__tests_/utils/setupTests.ts',
     '<rootDir>benefit/applicant/test/i18n/i18n-test.ts',
+    '<rootDir>benefit/handler/test/i18n/i18n-test.ts',
     '<rootDir>kesaseteli/employer/src/__tests__/utils/i18n/i18n-test.ts',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/kesaseteli/employer/src/pages/',
     '<rootDir>/benefit/applicant/src/pages/',
+    '<rootDir>/benefit/handler/src/pages/',
     '<rootDir>/shared/src/server/next-server.js',
     '<rootDir>/shared/src/__tests__/component-apis/',
     '<rootDir>/shared/src/__tests__/utils/',
