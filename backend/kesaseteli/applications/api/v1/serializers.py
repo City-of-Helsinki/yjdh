@@ -291,9 +291,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        user = self.context["request"].user
+        request = self.context["request"]
+        user = request.user
         company = get_or_create_company_from_eauth_profile(
-            user.oidc_profile.eauthorization_profile
+            user.oidc_profile.eauthorization_profile, request
         )
         validated_data["company"] = company
         validated_data["user"] = user
