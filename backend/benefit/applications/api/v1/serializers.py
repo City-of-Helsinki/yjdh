@@ -1398,7 +1398,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def _get_request_user_from_context(self):
         request = self.context.get("request")
         if request:
-            return request.user
+            return request.us
         return None
 
     def logged_in_user_is_admin(self):

@@ -138,7 +138,6 @@ class AbstractTermsApproval(UUIDModel, TimeStampedModel):
 
 class ApplicantTermsApproval(AbstractTermsApproval):
     """
-
     The "terms approval" process in UI has two steps:
     1. User is shown a PDF file with terms
     2. User needs to click a set of mandatory checkboxes in order to proceed

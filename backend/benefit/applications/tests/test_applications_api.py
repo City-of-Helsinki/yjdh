@@ -863,6 +863,7 @@ def test_application_status_change(
 
     if to_status == ApplicationStatus.RECEIVED:
         add_attachments_to_application(request, application)
+
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
 
