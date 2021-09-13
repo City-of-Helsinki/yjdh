@@ -15,9 +15,25 @@ describe('CompanyInfo', () => {
             name: 'useAlternativeAddress',
             label: 'useAlternativeAddress',
           },
+          alternativeCompanyPostcode: {
+            name: 'alternativeCompanyPostcode',
+            label: 'alternativeCompanyPostcode',
+          },
+          alternativeCompanyStreetAddress: {
+            name: 'alternativeCompanyStreetAddress',
+            label: 'alternativeCompanyStreetAddress',
+          },
+          alternativeCompanyCity: {
+            name: 'alternativeCompanyCity',
+            label: 'alternativeCompanyCity',
+          },
           companyBankAccountNumber: {
             name: 'companyBankAccountNumber',
             label: 'companyBankAccountNumber',
+          },
+          associationHasBusinessActivities: {
+            name: 'associationHasBusinessActivities',
+            label: 'associationHasBusinessActivities',
           },
         }}
         translationsBase=""

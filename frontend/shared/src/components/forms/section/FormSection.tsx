@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import Heading from '../heading/Heading';
-import { $Action, $Content, $Section } from './FormSection.sc';
+import { $Action, $Grid, $Hr,$Section } from './FormSection.sc';
 
 type FormSectionProps = {
   children: React.ReactNode;
@@ -9,29 +9,25 @@ type FormSectionProps = {
   loading?: boolean;
   tooltip?: string;
   action?: React.ReactNode;
+  withoutDivider?: boolean;
 };
 
 const FormSection: React.FC<FormSectionProps> = ({
   children,
-  header,
+  header = '',
   loading,
   tooltip,
   action,
+  withoutDivider = false,
 }) => (
   <$Section>
     {action && <$Action>{action}</$Action>}
     {header && (
       <Heading loading={loading} header={header} tooltip={tooltip} as="h2" />
     )}
-    <$Content>{children}</$Content>
+    <$Grid>{children}</$Grid>
+    {!withoutDivider && <$Hr />}
   </$Section>
 );
-
-const defaultProps = {
-  header: '',
-  tooltip: '',
-};
-
-FormSection.defaultProps = defaultProps;
 
 export default FormSection;

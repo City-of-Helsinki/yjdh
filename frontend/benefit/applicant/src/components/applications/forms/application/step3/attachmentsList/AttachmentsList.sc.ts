@@ -10,7 +10,7 @@ export const $Container = styled.div`
   padding-top: ${(props) => props.theme.spacing.s};
 `;
 
-export const $Heading = styled.h2`
+export const $Heading = styled.h3`
   font-size: ${(props) => props.theme.fontSize.heading.s};
   font-weight: 600;
   margin-bottom: ${(props) => props.theme.spacing.s};

@@ -2,7 +2,6 @@ import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import * as React from 'react';
-import FormSection from 'shared/components/forms/section/FormSection';
 
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsList from './attachmentsList/AttachmentsList';
@@ -22,39 +21,37 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
 
   return (
     <>
-      <FormSection>
-        <AttachmentsIngress />
-        {(benefitType === BENEFIT_TYPES.SALARY ||
-          benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
-          <>
-            <AttachmentsList
-              attachments={attachments}
-              attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
-            />
-            {apprenticeshipProgram && (
-              <AttachmentsList
-                attachments={attachments}
-                attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
-              />
-            )}
-            <AttachmentsList
-              attachments={attachments}
-              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-              showMessage={showSubsidyMessage}
-            />
-          </>
-        )}
-        {benefitType === BENEFIT_TYPES.COMMISSION && (
+      <AttachmentsIngress />
+      {(benefitType === BENEFIT_TYPES.SALARY ||
+        benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
+        <>
           <AttachmentsList
             attachments={attachments}
-            attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
+            attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
           />
-        )}
+          {apprenticeshipProgram && (
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+            />
+          )}
+          <AttachmentsList
+            attachments={attachments}
+            attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+            showMessage={showSubsidyMessage}
+          />
+        </>
+      )}
+      {benefitType === BENEFIT_TYPES.COMMISSION && (
         <AttachmentsList
           attachments={attachments}
-          attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+          attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
         />
-      </FormSection>
+      )}
+      <AttachmentsList
+        attachments={attachments}
+        attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+      />
       <StepperActions
         hasBack
         hasNext

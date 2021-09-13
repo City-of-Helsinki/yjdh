@@ -6839,6 +6839,11 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
+finnish-ssn@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/finnish-ssn/-/finnish-ssn-2.0.4.tgz#5614b48b91ba63f4a27367971797291a47628d8c"
+  integrity sha512-boRI1T1W4Y+d6A8A5aujN7HJVE6HEXtXOevasvo8Xipi2gxcBKTSj07OWVoJl2bq4eBtH4drh2UgNMnQpHIJ+A==
+
 flat-cache@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.0.4.tgz"

@@ -1,14 +1,12 @@
+import { $SupplementaryButton } from 'benefit/applicant/components/applications/Applications.sc';
 import { Application } from 'benefit/applicant/types/application';
+import { IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import Heading from 'shared/components/forms/heading/Heading';
+import FormSection from 'shared/components/forms/section/FormSection';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
-import {
-  $ViewField,
-  $ViewFieldBold,
-  $ViewFieldsContainer,
-  $ViewFieldsGroup,
-} from '../../Application.sc';
+import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
 export interface EmployeeViewProps {
   data: Application;
@@ -19,12 +17,20 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({ data }) => {
   const { t } = useTranslation();
   return (
     <>
-      <Heading
-        as="h2"
+      <FormSection
         header={t(`${translationsBase}.employee.heading1Short`)}
-      />
-      <$ViewFieldsContainer>
-        <$ViewFieldsGroup>
+        action={
+          <$SupplementaryButton
+            // onClick={() => handleStepChange(2)}
+            variant="supplementary"
+            iconLeft={<IconPen />}
+          >
+            {t(`common:applications.actions.edit`)}
+          </$SupplementaryButton>
+        }
+        withoutDivider
+      >
+        <$GridCell $colSpan={3}>
           <$ViewField>{`${data.employee?.firstName || ''} ${
             data.employee?.lastName || ''
           }`}</$ViewField>
@@ -41,17 +47,20 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({ data }) => {
               )}
             </$ViewFieldBold>
           </$ViewField>
-        </$ViewFieldsGroup>
-      </$ViewFieldsContainer>
-      <Heading as="h2" header={t(`${translationsBase}.employee.heading2`)} />
-      <$ViewFieldsContainer>
-        <$ViewFieldsGroup>
+        </$GridCell>
+      </FormSection>
+
+      <FormSection
+        header={t(`${translationsBase}.employee.heading2`)}
+        withoutDivider
+      >
+        <$GridCell $colSpan={3}>
           <$ViewFieldBold>
             {t(
               `${translationsBase}.employee.fields.paySubsidyGranted.${
                 data.paySubsidyGranted ? 'yes' : 'no'
               }`
-            ) || ''}
+            )}
             {data.apprenticeshipProgram && (
               <$ViewField>{`, ${data.paySubsidyPercent || ''} %`}</$ViewField>
             )}
@@ -70,14 +79,14 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({ data }) => {
               </$ViewFieldBold>
             )}
           </$ViewField>
-        </$ViewFieldsGroup>
-      </$ViewFieldsContainer>{' '}
-      <Heading
-        as="h2"
+        </$GridCell>
+      </FormSection>
+
+      <FormSection
         header={t(`${translationsBase}.employee.heading3Long`)}
-      />
-      <$ViewFieldsContainer>
-        <$ViewFieldsGroup>
+        withoutDivider
+      >
+        <$GridCell $colSpan={5}>
           <$ViewField>
             {`${t(`${translationsBase}.employee.fields.benefitType.label`)}: `}
             {data.apprenticeshipProgram && (
@@ -90,28 +99,26 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({ data }) => {
               </$ViewFieldBold>
             )}
           </$ViewField>
-        </$ViewFieldsGroup>
-      </$ViewFieldsContainer>
-      <$ViewFieldsContainer>
-        <$ViewFieldsGroup>
+        </$GridCell>
+
+        <$GridCell $colStart={1} $colSpan={2}>
           <$ViewField>
             {t(`${translationsBase}.employee.fields.startDate.label`)}
           </$ViewField>
           <$ViewField>{data.startDate ? data.startDate : '-'}</$ViewField>
-        </$ViewFieldsGroup>
-        <$ViewFieldsGroup>
+        </$GridCell>
+        <$GridCell $colSpan={2}>
           <$ViewField>
             {t(`${translationsBase}.employee.fields.endDate.label`)}
           </$ViewField>
           <$ViewField>{data.endDate ? data.endDate : '-'}</$ViewField>
-        </$ViewFieldsGroup>
-      </$ViewFieldsContainer>
-      <Heading
-        as="h2"
+        </$GridCell>
+      </FormSection>
+
+      <FormSection
         header={t(`${translationsBase}.employee.heading5Employment`)}
-      />
-      <$ViewFieldsContainer>
-        <$ViewFieldsGroup>
+      >
+        <$GridCell $colSpan={5}>
           <$ViewField>
             {`${t(`${translationsBase}.employee.fields.jobTitle.label`)}: ${
               data.employee?.jobTitle || '-'
@@ -140,8 +147,8 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({ data }) => {
           <$ViewField>
             {data.employee?.collectiveBargainingAgreement}
           </$ViewField>
-        </$ViewFieldsGroup>
-      </$ViewFieldsContainer>
+        </$GridCell>
+      </FormSection>
     </>
   );
 };

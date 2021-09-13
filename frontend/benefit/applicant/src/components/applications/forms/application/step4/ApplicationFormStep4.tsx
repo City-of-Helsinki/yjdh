@@ -3,7 +3,6 @@ import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { IconPen } from 'hds-react';
 import * as React from 'react';
-import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -15,37 +14,20 @@ import { useApplicationFormStep4 } from './useApplicationFormStep4';
 const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  const { t, handleBack, handleNext, handleStepChange, translationsBase } =
-    useApplicationFormStep4(data);
+  const {
+    t,
+    handleBack,
+    handleNext,
+    handleStepChange,
+    translationsBase,
+  } = useApplicationFormStep4(data);
   return (
     <>
+      <CompanyInfoView data={data} />
+      <EmployeeView data={data} />
+
       <FormSection
-        action={
-          <$SupplementaryButton
-            onClick={() => handleStepChange(1)}
-            variant="supplementary"
-            iconLeft={<IconPen />}
-          >
-            {t(`common:applications.actions.edit`)}
-          </$SupplementaryButton>
-        }
-      >
-        <CompanyInfoView data={data} />
-      </FormSection>
-      <FormSection
-        action={
-          <$SupplementaryButton
-            onClick={() => handleStepChange(2)}
-            variant="supplementary"
-            iconLeft={<IconPen />}
-          >
-            {t(`common:applications.actions.edit`)}
-          </$SupplementaryButton>
-        }
-      >
-        <EmployeeView data={data} />
-      </FormSection>
-      <FormSection
+        header={t(`${translationsBase}.attachments.heading1`)}
         action={
           <$SupplementaryButton
             onClick={() => handleStepChange(3)}
@@ -56,10 +38,6 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
           </$SupplementaryButton>
         }
       >
-        <Heading
-          as="h2"
-          header={t(`${translationsBase}.attachments.heading1`)}
-        />
         <>
           {(data.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
             data.benefitType === BENEFIT_TYPES.SALARY) && (
@@ -105,6 +83,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
           attachments={data.attachments || []}
         />
       </FormSection>
+
       <StepperActions
         hasBack
         hasNext
