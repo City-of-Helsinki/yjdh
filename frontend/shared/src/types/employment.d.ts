@@ -1,9 +1,14 @@
+import {
+  EMPLOYEE_EXCEPTION_REASON,
+  EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
+} from '../contants/employee-constants';
+
 type Employment =
   // empty object to send backend when creating new employment.
   | Record<string, never>
   | {
       id: string;
-      summer_voucher_exception_reason?: '9th_grader' | 'born_2004';
+      summer_voucher_exception_reason?: typeof EMPLOYEE_EXCEPTION_REASON[number];
       employee_name?: string;
       employee_school?: string;
       employee_ssn?: string;
@@ -16,7 +21,7 @@ type Employment =
       employment_work_hours?: number;
       employment_salary_paid?: number;
       employment_description?: string;
-      employee_hired_without_voucher_assessment?: 'yes' | 'no' | 'maybe';
+      employee_hired_without_voucher_assessment?: typeof EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT[number];
     };
 
 export default Employment;

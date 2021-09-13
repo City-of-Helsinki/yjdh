@@ -46,17 +46,12 @@
       "header": "Check summary and send"
     },
     "form": {
-      "step1": "Employer information",
-      "step2": "Employments",
-      "summer_voucher_exception_reason": {
-        "values": {
+      "selectionGroups": {
+        "summer_voucher_exception_reason": {
           "9th_grader": "9th grader",
           "born_2004": "Born in 2004"
-        }
-      },
-      "hired_without_voucher_assessment" : {
-        "title": "Would you have hired without summer voucher?",
-        "values": {
+        },
+        "hired_without_voucher_assessment" : {
           "yes": "Yes",
           "no": "No",
           "maybe": "Maybe"
@@ -68,6 +63,7 @@
         "invoicer_phone_number": "Invoicer's phone number",
         "employee_name": "Employee name",
         "employee_ssn": "Social security number",
+        "summer_voucher_exception_reason": "School grade or birth year",
         "employee_home_city": "Home city",
         "employee_postcode": "Postcode",
         "employee_phone_number": "Phone number",
@@ -77,27 +73,19 @@
         "employment_start_date": "Employment start date",
         "employment_end_date": "Employment start date",
         "employment_work_hours": "Work hours",
-        "employment_salary_paid": "Salary paid"
+        "employment_salary_paid": "Salary paid",
+        "hired_without_voucher_assessment": "Would you have hired without summer voucher?"
       },
       "errors": {
+        "required": "Required",
+        "maxLength": "input is too long",
+        "pattern": "value is invalid",
+        "selectionGroups": "Choose an option",
+        "employmentsRequired": "Add at least one employment"
+      },
+      "notification": {
         "title": "There is errors in the form",
-        "description": "Please fill missing or invalid values",
-        "invoicer_name": "Invoicer's name is required",
-        "invoicer_email": "Invoicer's email is invalid",
-        "invoicer_phone_number": "Invoicer's phone number is invalid",
-        "employee_name": "Name is missing",
-        "employee_ssn": "Social security nunber is invalid",
-        "employee_home_city": "Home city is missing",
-        "employee_postcode": "Postcode is invalid",
-        "employee_phone_number": "Phone number is missing",
-        "work_postcode": "Postcode is invalid",
-        "summer_voucher_serial_number": "Serial number is invalid",
-        "employee_school": "School is missing",
-        "employment_start_date": "Date is invalid",
-        "employment_end_date": "Date is invalid",
-        "employment_work_hours": "Value is invalid",
-        "employment_salary_paid": "Value is invalid",
-        "summer_vouchers": "'Add at least one employment"
+        "description": "Please fill missing or invalid values"
       }
     },
     "buttons": {

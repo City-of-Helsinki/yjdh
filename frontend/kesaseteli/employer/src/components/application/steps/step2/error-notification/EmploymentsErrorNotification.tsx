@@ -19,30 +19,36 @@ const EmploymentsErrorNotification: React.FC = () => {
   }
   const getEmploymentId = (index: number): Employment['id'] =>
     getValues(`summer_vouchers.${index}.id`);
+
   const employmentsErrors = errors.summer_vouchers || [];
   const employmentErrorEntries = Array.isArray(employmentsErrors)
     ? employmentsErrors.map((employmentErrors, index) => ({
         index,
-        fields: Object.keys(employmentErrors ?? {}),
+        errors: Object.entries(employmentErrors ?? {}).map(([field, error]) => ({
+          field: field as keyof Employment,
+          errorType: error?.type || 'required',
+        }) ),
       }))
     : [];
+
   const isEmptyList =
     (errors.summer_vouchers as FieldError | undefined)?.type === 'minLength';
   const title = isEmptyList
-    ? t(`common:application.form.errors.summer_vouchers`)
-    : t(`common:application.form.errors.title`);
+    ? t(`common:application.form.errors.employmentsRequired`)
+    : t(`common:application.form.notification.title`);
+
   return (
     <Notification type="error" label={title}>
       {!isEmptyList && employmentErrorEntries?.length < 3 && (
         <>
           <$NotificationDescription>
-            {t(`common:application.form.errors.description`)}
+            {t(`common:application.form.notification.description`)}
           </$NotificationDescription>
-          {employmentErrorEntries.map(({ index, fields }) => (
+          {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
             <EmployeeErrorNotification
-              index={index}
               key={getEmploymentId(index)}
-              employmentErrorFields={fields as Array<keyof Employment>}
+              index={index}
+              errors={employmentErrors}
             />
           ))}
         </>

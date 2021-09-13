@@ -51,17 +51,12 @@
       "send": "Lähetä hakemus SWE"
     },
     "form": {
-      "step1": "Työnantajan tiedot SWE",
-      "step2": "Selvitys työsuhteesta SWE",
-      "summer_voucher_exception_reason": {
-        "values": {
+      "selectionGroups": {
+        "summer_voucher_exception_reason": {
           "9th_grader": "9. luokkalainen SWE",
           "born_2004": "Syntynyt vuonna 2004 SWE"
-        }
-      },
-      "hired_without_voucher_assessment" : {
-        "title": "Olitko palkannut nuoren ilman kesäseteliä? SWE",
-        "values": {
+        },
+        "hired_without_voucher_assessment" : {
           "yes": "Kyllä SWE",
           "no": "En SWE",
           "maybe": "Ehkä SWE"
@@ -73,6 +68,7 @@
         "invoicer_phone_number": "Yhteyshenkilön puhelinnumero SWE",
         "employee_name": "Työntekijän nimi SWE",
         "employee_ssn": "Henkilötunnus SWE",
+        "summer_voucher_exception_reason": "Luokka tai syntymävuosi SWE",
         "employee_home_city": "Kotipaikkakunta SWE",
         "employee_postcode": "Postinumero SWE",
         "employee_phone_number": "Puhelinnumero SWE",
@@ -82,27 +78,19 @@
         "employment_start_date": "Työsuhde alkoi SWE",
         "employment_end_date": "Työsyhde päättyi SWE",
         "employment_work_hours": "Tehdyt työtunnit SWE",
-        "employment_salary_paid": "Maksettu palkka SWE"
+        "employment_salary_paid": "Maksettu palkka SWE",
+        "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä? SWE"
       },
       "errors": {
+        "required": "Arvo puuttuu SWE",
+        "maxLength": "Syöttämäsi arvo on liian pitkä SWE",
+        "pattern": "Syöttämäsi arvo on virheellistä muotoa SWE",
+        "selectionGroups": "Valitse jokin vaihtoehto SWE",
+        "employmentsRequired": "Lisää ainakin yksi työsuhde SWE"
+      },
+      "notification": {
         "title": "Virheitä kenttien tiedoissa SWE",
-        "description": "Täytä puuttuvat tai virheelliset tiedot SWE",
-        "invoicer_name": "Nimi puuttuu SWE",
-        "invoicer_email": "Sähköposti on virheellinen SWE",
-        "invoicer_phone_number": "Puhelinnumero on virheellinen SWE",
-        "employee_name": "Nimi puuttuu SWE",
-        "employee_ssn": "Henkilötunnus on virheellinen SWE",
-        "employee_home_city": "Kotipaikkakunta puuttuu SWE",
-        "employee_postcode": "Postinumero on virheellinen SWE",
-        "employee_phone_number": "Puhelinnumero puuttuu SWE",
-        "work_postcode": "Postinumero on virheellinen SWE",
-        "summer_voucher_serial_number": "Sarjanumero on virheellinen SWE",
-        "employee_school": "Koulu puuttuu SWE",
-        "employment_start_date": "Päivämäärä on virheellinen SWE",
-        "employment_end_date": "Päivämäärä on virheellinen SWE",
-        "employment_work_hours": "Arvo on virheellinen SWE",
-        "employment_salary_paid": "Arvo on virheellinen SWE",
-        "summer_vouchers": "Lisää ainakin yksi työsuhde SWE"
+        "description": "Täytä puuttuvat tai virheelliset tiedot SWE"
       }
     }
   },

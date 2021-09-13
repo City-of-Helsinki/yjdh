@@ -3,11 +3,11 @@ import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicat
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
+  FieldError,
   get,
   RegisterOptions,
   useFormContext,
-  UseFormRegister,
-} from 'react-hook-form';
+  UseFormRegister} from 'react-hook-form';
 import Application from 'shared/types/employer-application';
 import { getLastValue } from 'shared/utils/array.utils';
 
@@ -31,8 +31,8 @@ const TextInput = ({
   } = useFormContext<Application>();
   const { isLoading } = useApplicationApi();
 
-  const defaultValue = getValues('id') ?? '';
-  const hasError = Boolean(get(errors, `${id}.type`));
+  const defaultValue = getValues(id) as string;
+  const errorType = get(errors, `${id}.type`) as FieldError['type'];
   const name = getLastValue((id as string).split('.')) ?? '';
 
   return (
@@ -47,7 +47,7 @@ const TextInput = ({
       max={validation.maxLength ? String(validation.maxLength) : undefined}
       defaultValue={defaultValue}
       errorText={
-        hasError ? t(`common:application.form.errors.${name}`) : undefined
+        errorType ? `${t(`common:application.form.errors.${errorType}`)}` : undefined
       }
       label={t(`common:application.form.inputs.${name}`)}
     />

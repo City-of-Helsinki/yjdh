@@ -1,3 +1,4 @@
+import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
 import React from 'react';
@@ -12,6 +13,7 @@ import {
   $EmploymentInputGrid,
 } from './EmploymentAccordion.sc';
 import EmploymentAccordionHeader from './EmploymentAccordionHeader';
+import { EMPLOYEE_EXCEPTION_REASON } from 'shared/contants/employee-constants';
 
 type Props = {
   index: number;
@@ -39,7 +41,6 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
   const headerBackgroundColor = displayError
     ? theme.colors.errorLight
     : undefined;
-
   return (
     <Accordion
       id={`accordion-${index}`}
@@ -60,6 +61,13 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
               required: true,
               maxLength: 20, // eslint-disable-next-line security/detect-unsafe-regex
             }}
+          />
+          <SelectionGroup
+            id={`summer_vouchers.${index}.summer_voucher_exception_reason`}
+            validation={{
+              required: true,
+            }}
+            values={EMPLOYEE_EXCEPTION_REASON}
           />
         </$EmploymentInputGrid>
         <AccordionActionButtons index={index} />

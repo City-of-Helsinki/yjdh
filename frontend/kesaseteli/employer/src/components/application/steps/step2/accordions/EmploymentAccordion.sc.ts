@@ -16,7 +16,9 @@ export const $AccordionContent = styled.div`
 export const $EmploymentInputGrid = styled($FormGroup)`
   display: grid;
   grid-template-columns: 50% 50%;
-  grid-gap: ${({ theme: { spacing } }) => spacing.xl2};
+  grid-template-rows: 50% 50%;
+  column-gap: ${({ theme: { spacing } }) => spacing.xl2};
+  row-gap: 0;
   margin: ${({ theme: { spacing } }) =>
     `${spacing.s} ${spacing.l} ${spacing.s} ${spacing.s}`};
   padding-right: ${({ theme: { spacing } }) => spacing.l};
