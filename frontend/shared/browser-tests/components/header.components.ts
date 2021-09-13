@@ -22,9 +22,9 @@ const translations = {
     userInfo: (user?: User) => new RegExp(`Användare: ${user?.name ?? ''}`),
   },
   en: {
-    login: 'Login',
-    logout: 'Logout',
-    language: 'In english',
+    login: 'Log in',
+    logout: 'Log out',
+    language: 'In English',
     userInfo: (user?: User) => new RegExp(`User: ${user?.name ?? ''}`),
   },
 };

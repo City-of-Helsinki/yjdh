@@ -1,15 +1,15 @@
 {
   "appName": "Kesäseteli EN",
   "header": {
-    "loginLabel": "Login",
-    "logoutLabel": "Logout",
+    "loginLabel": "Log in",
+    "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:"
     },
   "errorPage": {
     "title": "Unknown error occurred",
     "message": "ENG: Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
     "retry": "Reload the page",
-    "logout": "Logout"
+    "logout": "Log out"
   },
   "application": {
     "new": "New application",
@@ -101,7 +101,7 @@
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
-    "en": "In english"
+    "en": "In English"
   },
   "menuToggleAriaLabel": "Menu"
 }
