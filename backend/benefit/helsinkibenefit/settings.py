@@ -46,6 +46,10 @@ env = environ.Env(
         str,
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
+    SOCIAL_SECURITY_NUMBER_HASH_KEY=(
+        str,
+        "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+    ),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
@@ -86,6 +90,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
+SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")

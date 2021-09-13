@@ -99,3 +99,19 @@ def test_benefit_amount(application):
     assert application.benefit_amount == 100
     application.manual_benefit_amount = 200
     assert application.benefit_amount == 200
+
+
+def test_encrypted_searchable_social_security_number(employee):
+    # test exact ssn searches on the hashed field
+    assert employee.social_security_number
+    initial_ssn = employee.social_security_number
+    initial_encrypted_ssn = employee.encrypted_social_security_number
+    assert Employee.objects.filter(social_security_number=initial_ssn).count() == 1
+    assert Employee.objects.filter(social_security_number="does_not_exist").count() == 0
+    employee.social_security_number = ""
+    employee.save()
+    employee.refresh_from_db()
+    assert employee.encrypted_social_security_number != initial_encrypted_ssn
+    assert employee.social_security_number == ""
+    assert Employee.objects.filter(social_security_number=initial_ssn).count() == 0
+    assert Employee.objects.filter(social_security_number="").count() == 1
