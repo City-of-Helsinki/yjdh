@@ -480,6 +480,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "alternative_company_street_address",
             "alternative_company_city",
             "alternative_company_postcode",
+            "company_department",
             "company_bank_account_number",
             "company_contact_person_first_name",
             "company_contact_person_last_name",
@@ -552,6 +553,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
             },
             "alternative_company_postcode": {
                 "help_text": "User-supplied postcode, to be used in Helsinki Benefit related issues",
+            },
+            "company_department": {
+                "help_text": "Company department address",
             },
             "company_bank_account_number": {
                 "help_text": "IBAN formatted bank account number",

@@ -8,6 +8,7 @@ export const $Section = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.colors.black20};
   padding-bottom: ${(props) => props.theme.spacing.m};
   margin-bottom: ${(props) => props.theme.spacing.s};
+  position: relative;
 `;
 
 export const $SubHeader = styled.h3`
@@ -61,6 +62,11 @@ export const $ViewFieldsContainer = styled.div`
     margin-right: ${(props) => props.theme.spacing.xs};
   }
   width: 100%;
+`;
+
+export const $Action = styled.div`
+  position: absolute;
+  right: 0;
 `;
 
 export const $ViewField = styled.div``;
