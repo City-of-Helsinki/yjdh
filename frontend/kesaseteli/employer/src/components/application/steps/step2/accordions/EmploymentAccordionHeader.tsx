@@ -1,5 +1,5 @@
 import { IconAlertCircleFill } from 'hds-react';
-import useGetEmployeeDisplayName from 'kesaseteli/employer/hooks/application/useGetEmployeeDisplayName';
+import useGetEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useGetEmployeeDisplayName';
 import React from 'react';
 
 import {

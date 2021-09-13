@@ -2,6 +2,7 @@ import { IconTrash } from 'hds-react';
 import { $SecondaryButton } from 'kesaseteli/employer/components/application/form/ActionButtons.sc';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useValidateEmployment from 'kesaseteli/employer/hooks/employments/useValidateEmployment';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -15,9 +16,10 @@ import {
 
 type Props = {
   index: number;
+  onSave: () => void,
 };
 
-const AccordionActionButtons: React.FC<Props> = ({ index }: Props) => {
+const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
   const { t } = useTranslation();
   const {
     formState: { isSubmitting },
@@ -26,18 +28,20 @@ const AccordionActionButtons: React.FC<Props> = ({ index }: Props) => {
   const { isLoading, updateApplication, removeEmployment } =
     useApplicationApi();
 
-  const { persistToStorage, removeFromStorage } =
+  const { removeFromStorage } =
     useAccordionStateLocalStorage(index);
 
   const update = React.useCallback(() => {
-    persistToStorage(false);
+    onSave();
     updateApplication(getValues());
-  }, [updateApplication, getValues, persistToStorage]);
+  }, [onSave, updateApplication, getValues]);
 
   const remove = React.useCallback(() => {
     removeFromStorage();
     removeEmployment(getValues(), index);
-  }, [removeEmployment, getValues, index, removeFromStorage]);
+  }, [removeFromStorage, removeEmployment, getValues, index]);
+
+  const validate = useValidateEmployment(index, {onSuccess: update});
 
   return (
     <$EmploymentActions>
@@ -45,7 +49,7 @@ const AccordionActionButtons: React.FC<Props> = ({ index }: Props) => {
         <$SecondaryButton
           variant="secondary"
           data-testid={`update-employment-${index}`}
-          onClick={update}
+          onClick={validate}
           disabled={isLoading || isSubmitting}
         >
           {t(`common:application.step2.save_employment`)}

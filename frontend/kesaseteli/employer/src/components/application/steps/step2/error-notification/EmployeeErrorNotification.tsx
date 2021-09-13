@@ -1,4 +1,4 @@
-import useGetEmployeeDisplayName from 'kesaseteli/employer/hooks/application/useGetEmployeeDisplayName';
+import useGetEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useGetEmployeeDisplayName';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FieldError } from 'react-hook-form'

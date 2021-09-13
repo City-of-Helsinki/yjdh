@@ -1,7 +1,7 @@
 import AddNewEmploymentButton from 'kesaseteli/employer/components/application/steps/step2/accordions/AddNewEmploymentButton';
 import EmploymentAccordion from 'kesaseteli/employer/components/application/steps/step2/accordions/EmploymentAccordion';
 import EmploymentsErrorNotification from 'kesaseteli/employer/components/application/steps/step2/error-notification/EmploymentsErrorNotification';
-import useValidateEmploymentsNotEmpty from 'kesaseteli/employer/hooks/application/useValidateEmploymentsNotEmpty';
+import useValidateEmploymentsNotEmpty from 'kesaseteli/employer/hooks/employments/useValidateEmploymentsNotEmpty';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';

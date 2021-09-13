@@ -39,11 +39,12 @@ const useAccordion = ({
   };
 
   const toggleAccordion = (): void => {
-    onToggle(isOpen);
     if (isOpen) {
       closeAccordion();
+      onToggle(false);
     } else {
       openAccordion();
+      onToggle(true);
     }
   };
 
@@ -56,6 +57,8 @@ const useAccordion = ({
   if (isOpen === false) {
     contentProps.style = { display: 'none' };
   }
+
+  React.useEffect(() => setIsOpen(initiallyOpen), [initiallyOpen, setIsOpen]);
 
   return {
     isOpen,

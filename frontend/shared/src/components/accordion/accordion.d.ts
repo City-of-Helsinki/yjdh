@@ -6,7 +6,7 @@ type CommonAccordionProps = React.PropsWithChildren<{
   headerBackgroundColor?: string;
   id: string;
   initiallyOpen?: boolean;
-  onToggle: (isOpened: boolean) => void;
+  onToggle: (isOpen: boolean) => void;
   hasError?: boolean;
 }>;
 
