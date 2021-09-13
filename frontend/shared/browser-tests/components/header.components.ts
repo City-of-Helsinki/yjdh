@@ -8,10 +8,25 @@ import {
   withinContext,
 } from '../utils/testcafe.utils';
 
-const langTranslations = {
-  fi: 'Suomeksi',
-  sv: 'På svenska',
-  en: 'In english',
+const translations = {
+  fi: {
+    login: 'Kirjaudu sisään',
+    logout: 'Kirjaudu ulos',
+    language: 'Suomeksi',
+    userInfo: (user?: User) => new RegExp(`Käyttäjä: ${user?.name ?? ''}`),
+  },
+  sv: {
+    login: 'Logga in',
+    logout: 'Logga ut',
+    language: 'På svenska',
+    userInfo: (user?: User) => new RegExp(`Användare: ${user?.name ?? ''}`),
+  },
+  en: {
+    login: 'Login',
+    logout: 'Logout',
+    language: 'In english',
+    userInfo: (user?: User) => new RegExp(`User: ${user?.name ?? ''}`),
+  },
 };
 
 export const getHeaderComponents = (t: TestController) => {
@@ -21,19 +36,18 @@ export const getHeaderComponents = (t: TestController) => {
   const withinNavigationActions = (): ReturnType<typeof within> =>
     within(navigationActions);
 
-  const languageDropdown = async (lang: Language = DEFAULT_LANGUAGE) => {
-    let currentLang = lang;
+  const languageDropdown = async () => {
     const selectors = {
-      languageSelector(): SelectorPromise {
+      languageSelector(lang = DEFAULT_LANGUAGE): SelectorPromise {
+        setDataToPrintOnFailure(t, 'lang', lang);
         return withinNavigationActions().findByRole('button', {
-          name: new RegExp(currentLang, 'i'),
+          name: new RegExp(lang, 'i'),
         });
       },
       languageSelectorItem(toLang: Language): SelectorPromise {
         setDataToPrintOnFailure(t, 'expectedLanguage', toLang);
-        currentLang = toLang;
         return withinNavigationActions().findByRole('link', {
-          name: langTranslations[toLang],
+          name: translations[toLang].language,
         });
       },
     };
@@ -45,9 +59,9 @@ export const getHeaderComponents = (t: TestController) => {
       },
     };
     const actions = {
-      async changeLanguage(toLang: Language) {
+      async changeLanguage(fromLang = DEFAULT_LANGUAGE, toLang: Language) {
         await t
-          .click(selectors.languageSelector())
+          .click(selectors.languageSelector(fromLang))
           .click(selectors.languageSelectorItem(toLang));
       },
     };
@@ -62,19 +76,22 @@ export const getHeaderComponents = (t: TestController) => {
       userComponent(): Selector {
         return Selector(navigationActions);
       },
-      loginButton(buttonTranslationText = 'Kirjaudu sisään'): SelectorPromise {
+      loginButton(asLang = DEFAULT_LANGUAGE): SelectorPromise {
         return withinNavigationActions().findByRole('button', {
-          name: buttonTranslationText,
+          name: translations[asLang].login,
         });
       },
-      userInfoDropdown(user?: User): SelectorPromise {
+      userInfoDropdown(
+        user?: User,
+        asLang = DEFAULT_LANGUAGE
+      ): SelectorPromise {
         return withinNavigationActions().getByRole('button', {
-          name: new RegExp(`käyttäjä: ${user?.name ?? ''}`, 'i'),
+          name: translations[asLang].userInfo(user),
         });
       },
-      logoutButton(): SelectorPromise {
+      logoutButton(asLang = DEFAULT_LANGUAGE): SelectorPromise {
         return withinNavigationActions().getByRole('link', {
-          name: /kirjaudu ulos/i,
+          name: translations[asLang].logout,
         });
       },
     };
@@ -84,31 +101,30 @@ export const getHeaderComponents = (t: TestController) => {
           .expect(selectors.userComponent().exists)
           .ok(await getErrorMessage(t));
       },
-      async userIsLoggedIn(user?: User) {
-        setDataToPrintOnFailure(t, 'user', user);
+      async userIsLoggedIn(user: User, asLang = DEFAULT_LANGUAGE) {
         await t
-          .expect(selectors.userInfoDropdown(user).exists)
+          .expect(selectors.userInfoDropdown(user, asLang).exists)
           .ok(await getErrorMessage(t));
       },
-      async userIsLoggedOut() {
+      async userIsLoggedOut(asLang = DEFAULT_LANGUAGE) {
         await t
-          .expect(selectors.loginButton().exists)
+          .expect(selectors.loginButton(asLang).exists)
           .ok(await getErrorMessage(t), { timeout: 10000 });
       },
-      async loginButtonIsTranslatedAs(loginButtonTranslation: string) {
+      async loginButtonIsTranslatedAs(asLang: Language) {
         await t
-          .expect(selectors.loginButton(loginButtonTranslation).exists)
+          .expect(selectors.loginButton(asLang).exists)
           .ok(await getErrorMessage(t));
       },
     };
     const actions = {
-      async clickloginButton() {
-        await t.click(selectors.loginButton());
+      async clickloginButton(asLang = DEFAULT_LANGUAGE) {
+        await t.click(selectors.loginButton(asLang));
       },
-      async clicklogoutButton() {
+      async clicklogoutButton(user?: User, asLang = DEFAULT_LANGUAGE) {
         await t
-          .click(selectors.userInfoDropdown())
-          .click(selectors.logoutButton());
+          .click(selectors.userInfoDropdown(user, asLang))
+          .click(selectors.logoutButton(asLang));
       },
     };
     await expectations.isPresent();

@@ -33,3 +33,20 @@ The backend is now running at [localhost:8000](http://localhost:8000)
 
 1. Run `yarn install` and `yarn prepare` on project root
 2. Try `git commit -m foo`. It does not commit anything for real but pre-commit hook should be triggered.
+
+## Known errors
+
+1.  If github action deploy fail with error like this in your pull-request:
+    
+
+    Error: rendered manifests contain a resource that already exists. 
+    Unable to continue with install: Service "yjdh-135-send-localization-param-to-suomifi-yjdh-ks-service" 
+    in namespace "yjdh-yjdh-135-send-localization-param-to-suomifi-227" exists and cannot be 
+    imported into the current release: invalid ownership metadata; annotation validation error: 
+    key "meta.helm.sh/release-name" must equal "yjdh-135-send-localization-par-review-yjdh-ks-bknd": 
+    current value is "yjdh-135-send-localization-par-review-yjdh-ks-empl"
+
+   The reason is that your pr's branch name is too long. You have to rename it and create new pr.
+   Instructions: https://stackoverflow.com/questions/30590083/how-do-i-rename-both-a-git-local-and-remote-branch-name
+
+

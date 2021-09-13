@@ -12,12 +12,15 @@ expect.extend(toHaveNoViolations);
 const originalError = console.error;
 let consoleSpy: jest.SpyInstance;
 beforeAll(() => {
+  const messagesToIgnore = [
+    'Warning: You seem to have overlapping act() calls, this is not supported',
+    'react-i18next:: You will need to pass in an i18next instance by using initReactI18next',
+  ];
+
   consoleSpy = jest.spyOn(console, 'warn').mockImplementation((...args) => {
     if (
       typeof args[0] === 'string' &&
-      args[0].includes(
-        'react-i18next:: You will need to pass in an i18next instance by using initReactI18next'
-      )
+      messagesToIgnore.some((msg) => args[0].includes(msg))
     ) {
       return () => {};
     }

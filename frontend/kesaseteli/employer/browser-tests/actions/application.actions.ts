@@ -5,7 +5,7 @@ import type Application from '@frontend/shared/src/types/employer-application';
 import type Invoicer from '@frontend/shared/src/types/invoicer';
 import TestController from 'testcafe';
 
-import { getApplicationPageComponents } from '../index-page/applicationPage.components';
+import { getApplicationPageComponents } from '../application-page/applicationPage.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
 

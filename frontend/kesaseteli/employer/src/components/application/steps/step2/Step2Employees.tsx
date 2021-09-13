@@ -8,7 +8,7 @@ import Application from 'shared/types/employer-application';
 
 const Step2Employees: React.FC = () => {
   const { t } = useTranslation();
-  const { updateApplication } = useApplicationApi();
+  const { updateApplication, isLoading } = useApplicationApi();
 
   const onSubmit = (draftApplication: Application): void =>
     updateApplication(draftApplication);
@@ -18,6 +18,7 @@ const Step2Employees: React.FC = () => {
     <StepForm stepTitle={stepTitle}>
       <FormSection
         header={stepTitle}
+        loading={isLoading}
         tooltip={t('common:application.step2.tooltip')}
       >
         Työntekijöiden kaavake....
