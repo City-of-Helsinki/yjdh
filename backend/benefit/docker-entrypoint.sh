@@ -6,7 +6,7 @@ set -e
 if [ -z "$SKIP_DATABASE_CHECK" -o "$SKIP_DATABASE_CHECK" = "0" ]; then
     wait-for-it.sh "${DATABASE_HOST}:${DATABASE_PORT-5432}" --timeout=30
 fi
-
+./manage.py migrate --noinput
 # Apply database migrations
 if [[ "$APPLY_MIGRATIONS" = "1" ]]; then
     echo "Applying database migrations..."

@@ -85,7 +85,7 @@ if os.path.exists(env_file):
 
 BASE_DIR = str(checkout_dir)
 
-DEBUG = env.bool("DEBUG")
+DEBUG = True
 SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
