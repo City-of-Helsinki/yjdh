@@ -88,8 +88,8 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
     apprenticeship_program = factory.Faker("boolean")
     archived = factory.Faker("boolean")
-    application_step = factory.Faker("random_element", elements=ApplicationStep.values)
-    benefit_type = factory.Faker("random_element", elements=BenefitType.values)
+    application_step = ApplicationStep.STEP_1
+    benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     start_date = factory.Faker(
         "date_between_dates",
         date_start=date(date.today().year, 1, 1),
@@ -154,9 +154,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
 
 
 class ApplicationBatchFactory(factory.django.DjangoModelFactory):
-    proposal_for_decision = factory.Faker(
-        "random_element", elements=AhjoDecision.values
-    )
+    proposal_for_decision = AhjoDecision.DECIDED_ACCEPTED
     application_1 = factory.RelatedFactory(
         DecidedApplicationFactory,
         factory_related_name="batch",

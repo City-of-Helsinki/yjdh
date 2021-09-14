@@ -3,6 +3,7 @@ import zipfile
 from datetime import date
 from unittest.mock import patch
 
+import factory.random
 import pytest
 from applications.enums import ApplicationStatus
 from applications.models import Application
@@ -12,12 +13,12 @@ from applications.services.ahjo_integration import (
     generate_single_file,
 )
 from applications.tests.factories import ApplicationFactory
-from common.tests.conftest import *  # noqa
+from helsinkibenefit.tests.conftest import *  # noqa
 
 
 @pytest.fixture(autouse=True)
-def autouse_django_db(db, django_db_setup, django_db_blocker):
-    pass
+def reseed_fixtures(db, django_db_setup, django_db_blocker):
+    factory.random.reseed_random("888")
 
 
 @pytest.mark.parametrize(

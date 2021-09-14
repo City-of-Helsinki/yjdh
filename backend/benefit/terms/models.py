@@ -100,7 +100,7 @@ class AbstractTermsApproval(UUIDModel, TimeStampedModel):
 
 
 class ApplicantTermsApproval(AbstractTermsApproval):
-    '''
+    """
     The "terms approval" process in UI has two steps:
     1. User is shown a PDF file with terms
     2. User needs to click a set of mandatory checkboxes in order to proceed
@@ -118,7 +118,8 @@ class ApplicantTermsApproval(AbstractTermsApproval):
         (this is actually redundant data, but I guess it helps us meet some auditing requirements). If we
         didn't have that requirement, the data model would work fine with just a ForeignKey to Terms object,
         as the applicant_consents can be accessed through it.
-    '''
+    """
+
     application = models.OneToOneField(
         Application,
         verbose_name=_("application"),
