@@ -538,14 +538,9 @@ def test_application_edit_benefit_type_business_association(
 
 
 def test_application_edit_benefit_type_business_association_with_apprenticeship(
-    api_client, association_application, mock_get_organisation_roles_and_create_company
+    api_client, association_application
 ):
     data = ApplicationSerializer(association_application).data
-    company = mock_get_organisation_roles_and_create_company
-    company.company_form = "ry"
-    company.save()
-    association_application.company = company
-    association_application.save()
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = True
@@ -564,17 +559,12 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
 
 
 def test_application_edit_benefit_type_non_business(
-    api_client, association_application, mock_get_organisation_roles_and_create_company
+    api_client, association_application
 ):
     association_application.pay_subsidy_granted = True
     association_application.pay_subsidy_percent = 50
     association_application.save()
     data = ApplicationSerializer(association_application).data
-    company = mock_get_organisation_roles_and_create_company
-    company.company_form = "ry"
-    company.save()
-    association_application.company = company
-    association_application.save()
     response = api_client.put(
         get_detail_url(association_application),
         data,
@@ -586,14 +576,12 @@ def test_application_edit_benefit_type_non_business(
 
 
 def test_application_edit_benefit_type_non_business_invalid(
-    api_client, association_application, mock_get_organisation_roles_and_create_company
+    api_client, association_application
 ):
     association_application.pay_subsidy_granted = True
     association_application.pay_subsidy_percent = 50
     association_application.save()
     data = ApplicationSerializer(association_application).data
-    association_application.company = mock_get_organisation_roles_and_create_company
-    association_application.save()
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
 
     response = api_client.put(
