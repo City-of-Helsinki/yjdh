@@ -292,18 +292,21 @@ class EmployeeSerializer(serializers.ModelSerializer):
     def validate_monthly_pay(self, value):
         if value is not None and value <= 0:
             raise serializers.ValidationError(_("Monthly pay must be greater than 0"))
+        return value
 
     def validate_vacation_money(self, value):
         if value is not None and value < 0:
             raise serializers.ValidationError(
                 _("Vacation money must be a positive number")
             )
+        return value
 
     def validate_other_expenses(self, value):
         if value is not None and value < 0:
             raise serializers.ValidationError(
                 _("Other expenses must be a positive number")
             )
+        return value
 
 
 class ApplicationBatchSerializer(serializers.ModelSerializer):
