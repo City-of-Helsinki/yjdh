@@ -10,6 +10,11 @@ def user():
 
 
 @pytest.fixture()
+def staff_user():
+    return UserFactory(is_staff=True)
+
+
+@pytest.fixture()
 def other_user():
     return UserFactory()
 
@@ -17,6 +22,13 @@ def other_user():
 @pytest.fixture
 def client():
     client = Client()
+    return client
+
+
+@pytest.fixture
+def staff_client(staff_user):
+    client = Client()
+    client.force_login(staff_user)
     return client
 
 

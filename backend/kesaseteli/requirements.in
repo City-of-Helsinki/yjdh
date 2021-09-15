@@ -7,6 +7,7 @@ djangorestframework
 django-searchable-encrypted-fields
 django-simple-history
 django-storages[azure]
+elasticsearch
 factory-boy
 filetype
 mozilla-django-oidc
@@ -14,5 +15,5 @@ opencensus-ext-azure
 Pillow
 psycopg2
 requests
-elasticsearch
+xlsxwriter
 -e file:../shared
