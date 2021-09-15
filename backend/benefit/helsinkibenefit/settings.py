@@ -146,6 +146,7 @@ INSTALLED_APPS = [
     "users.apps.AppConfig",
     "companies",
     "applications.apps.AppConfig",
+    "terms.apps.AppConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"
