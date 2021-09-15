@@ -11,6 +11,13 @@
     "retry": "Lataa sivu uudelleen",
     "logout": "Kirjaudu ulos"
   },
+  "loginPage": {
+    "logoutMessageLabel": "Olet kirjautunut ulos",
+    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+  },
   "application": {
     "new": "Uusi hakemus",
     "common_error": "Tapahtui tuntematon virhe",
