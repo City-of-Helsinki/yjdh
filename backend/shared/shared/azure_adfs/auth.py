@@ -2,6 +2,7 @@ import logging
 import uuid
 
 import requests
+from django.conf import settings as django_settings
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django_auth_adfs.backend import AdfsAuthCodeBackend
@@ -59,7 +60,7 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
             user_oid, graph_api_access_token
         )
 
-        user_existing_groups_groups = [group.name for group in user.groups.all()]
+        user_existing_groups_groups = user.groups.all().values_list("name", flat=True)
 
         if sorted(groups) != sorted(user_existing_groups_groups):
             new_groups = [Group.objects.get_or_create(name=name)[0] for name in groups]
@@ -141,5 +142,16 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         self.update_user_groups_from_graph_api(
             user, claims["oid"], graph_api_access_token
         )
+
+        # Users with groups that are defined in ADFS_CONTROLLER_GROUP_UUIDS
+        # should be allowed the staff status so that they can access the
+        # controller UI.
+        controller_group_uuids = [
+            f"adfs-{group_uuid}"
+            for group_uuid in django_settings.ADFS_CONTROLLER_GROUP_UUIDS
+        ]
+        if user.groups.filter(name__in=controller_group_uuids).exists():
+            user.is_staff = True
+            user.save()
 
         return user

@@ -4,12 +4,19 @@
     "loginLabel": "Log in",
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:"
-    },
+  },
   "errorPage": {
     "title": "Unknown error occurred",
     "message": "ENG: Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
     "retry": "Reload the page",
     "logout": "Log out"
+  },
+  "loginPage": {
+    "logoutMessageLabel": "You have signed out",
+    "errorLabel": "Unknown error. Sign in again",
+    "sessionExpiredLabel": "Session expired. Sign in again",
+    "infoLabel": "Using the service requires authentication",
+    "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
   },
   "application": {
     "new": "New application",

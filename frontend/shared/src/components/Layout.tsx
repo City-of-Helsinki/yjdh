@@ -11,7 +11,7 @@ const Main = styled.main`
   padding: 1rem;
 `;
 
-type AppProps = { children: React.ReactNode; headingText: string };
+type AppProps = { children: React.ReactNode; headingText?: string };
 
 const Layout: React.FC<AppProps> = ({ children, headingText }) => (
   <Main id="main_content">

@@ -154,6 +154,8 @@ urllib3==1.26.5
     # via
     #   elasticsearch
     #   requests
+xlsxwriter==3.0.1
+    # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
