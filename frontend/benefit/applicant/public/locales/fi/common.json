@@ -306,7 +306,20 @@
         "heading1": "Ole hyvä ja tarkista hakemus"
       },
       "credentials": {
-        "heading1": "Valtakirja"
+        "heading1": "Valtakirja",
+        "sections": {
+          "electronicPowerOfAttorney": {
+            "title": "Sähköinen valtakirja",
+            "description": "Pyydä palkattavaa henkilöä tekemään sähköinen valtakirja. Saat ilmoituksen kun valtakirja on tehty.",
+            "action1": "Pyydä sähköistä valtakirjaa"
+          },
+          "uploadPowerOfAttorney": {
+            "title": "Liitä valtakirja",
+            "description": "Voit myös tulostaa valtakirjapohjan, pyytää siihen allekirjoitus ja liittää se hakemukseen.",
+            "action1": "Tulosta",
+            "action2": "Liitä valtakirja"
+          }
+        }
       },
       "send": {
         "heading1": "Otsikko tähän"
@@ -338,6 +351,9 @@
   "attachmentsIngress": {
     "text": "Lisää hakemukselle seuraavat liitteet. Liitteet ovat pakollisia, ellei toisin sanota. Tiedostomuoto voi olla JPG, PNG tai PDF. Suurin sallittu koko 10 MB.",
     "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+  },
+  "credentialsIngress": {
+    "text": "Valitse yksi alla olevista tavoista. Hakemus on valmis lähetettäväksi vasta, kun palkattava henkilö on tehnyt sähköisen valtakirjan tai olet liittänyt allekirjoitetun valtakirjan. Huomoithan, että tämän jälkeen hakemusta ei voi enää muokata."
   },
   "menuToggleAriaLabel": "Menu",
   "form": {

@@ -21,6 +21,10 @@ type GridCellProps = {
   justifySelf?: 'start' | 'end' | 'center' | 'stretch';
 };
 
+type HrProps = {
+  $hasMarginBottom?: boolean;
+};
+
 export const $Section = styled.div`
   display: flex;
   flex-direction: column;
@@ -84,9 +88,11 @@ export const $Action = styled.div`
   right: 0;
 `;
 
-export const $Hr = styled.hr`
+export const $Hr = styled.hr<HrProps>`
   border: none;
   border-top: 1px solid ${(props) => props.theme.colors.black20};
   margin-top: ${(props) => props.theme.spacing.xl2};
+  margin-bottom: ${(props) =>
+    props.$hasMarginBottom ? props.theme.spacing.xl2 : 0};
   width: 100%;
 `;
