@@ -7,7 +7,6 @@ import { UseMutationResult, UseQueryResult } from 'react-query';
 import DraftApplication from 'shared/types/draft-application';
 import Application from 'shared/types/employer-application';
 import { isEmpty } from 'shared/utils/array.utils';
-import { filterEmptyValues } from 'shared/utils/object.utils';
 
 export type ApplicationQueryResult = UseQueryResult<Application, Error>;
 export type ApplicationMutationResult = UseMutationResult<
@@ -50,8 +49,7 @@ const useApplicationApi = (
     draftApplication: DraftApplication
   ) => {
     const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
-    const applicationToSend = filterEmptyValues({ ...draftApplication, status: 'draft', summer_vouchers }) as DraftApplication;
-    return mutate(applicationToSend);
+    return mutate({ ...draftApplication, status: 'draft', summer_vouchers });
   };
 
   const removeEmployment: ApplicationApi['removeEmployment'] = (
@@ -70,8 +68,7 @@ const useApplicationApi = (
     if (isEmpty(draftApplication.summer_vouchers)) {
       return addEmployment(draftApplication);
     }
-    const applicationToSend = filterEmptyValues({ ...draftApplication, status: 'draft' }) as DraftApplication;
-    return mutate(applicationToSend);
+    return mutate({ ...draftApplication, status: 'draft' });
   };
   const sendApplication: ApplicationApi['sendApplication'] = (
     completeApplication: Application

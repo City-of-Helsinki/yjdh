@@ -25,4 +25,4 @@ export const getBooleanValueFromString = (value?: string): boolean | null => {
 };
 
 export const isEmpty = (value?: string): boolean =>
-  value ? value.trim().length === 0 : true;
+  typeof value === 'string' ? value?.trim().length === 0 : Boolean(value);

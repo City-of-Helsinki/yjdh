@@ -1,31 +1,26 @@
 import * as React from 'react';
 
 import Heading from '../heading/Heading';
-import { $Action, $Grid, $Hr,$Section } from './FormSection.sc';
-
-type FormSectionProps = {
-  children: React.ReactNode;
-  header?: string;
-  loading?: boolean;
-  tooltip?: string;
-  action?: React.ReactNode;
-  withoutDivider?: boolean;
-};
+import {
+  $Action,
+  $Grid,
+  $Hr,
+  $Section,
+  FormSectionProps,
+} from './FormSection.sc';
 
 const FormSection: React.FC<FormSectionProps> = ({
   children,
-  header = '',
-  loading,
-  tooltip,
+  header,
   action,
   withoutDivider = false,
+  'padding-bottom': paddingBottom = true,
+  ...rest
 }) => (
-  <$Section>
+  <$Section padding-bottom={paddingBottom}>
     {action && <$Action>{action}</$Action>}
-    {header && (
-      <Heading loading={loading} header={header} tooltip={tooltip} as="h2" />
-    )}
-    <$Grid>{children}</$Grid>
+    {header && <Heading header={header} {...rest} />}
+    {children && <$Grid {...rest}>{children}</$Grid>}
     {!withoutDivider && <$Hr />}
   </$Section>
 );

@@ -36,7 +36,6 @@ export const $AccordionHeader = styled.div<AccordionProps>`
 export const $AccordionContent = styled.div`
   font-size: var(--fontsize-body-m);
   line-height: var(--lineheight-l);
-  padding-bottom: var(--spacing-m);
   color: var(-color-black-90);
 `;
 export const $HeadingContainer = styled.div`

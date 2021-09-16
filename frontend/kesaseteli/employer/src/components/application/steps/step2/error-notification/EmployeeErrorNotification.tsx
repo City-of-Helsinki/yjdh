@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FieldError } from 'react-hook-form'
 import Employment from 'shared/types/employment';
-
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 type Props = {
   index: number;
   errors: Array<{
@@ -19,14 +19,14 @@ const EmployeeErrorNotification: React.FC<Props> = ({
   const { t } = useTranslation();
   const employeeDisplayname = useGetEmployeeDisplayName(index);
   return (
-    <React.Fragment key={index}>
+    <$GridCell key={index}>
       <h4>{employeeDisplayname}</h4>
       <ul>
         {errors.map(({field, errorType}) => (
           <li key={field}>{`${t(`common:application.form.inputs.${field}`)}: ${t(`common:application.form.errors.${errorType}`)}`}</li>
         ))}
       </ul>
-    </React.Fragment>
+    </$GridCell>
   );
 };
 

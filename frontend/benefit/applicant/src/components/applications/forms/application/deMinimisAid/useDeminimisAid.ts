@@ -42,9 +42,8 @@ type FormFields = {
 const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+  const { applicationTempData, setApplicationTempData } =
+    React.useContext(ApplicationContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [defaultValue, setDefaultValue] = useState(false);
 
@@ -83,13 +82,13 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
         })),
       [DE_MINIMIS_AID_KEYS.GRANTED_AT]: Yup.date()
-        .transform((_, original) => parseDate(original, DATE_FORMATS.DATE))
+        .transform((_, original) => parseDate(original, DATE_FORMATS.UI_DATE))
         .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)
         .test({
           message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
             max: formatDate(
               DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
-              DATE_FORMATS.DATE
+              DATE_FORMATS.UI_DATE
             ),
           }),
           test: (value) => {

@@ -10,3 +10,14 @@ export const POSTAL_CODE_REGEX = /^\d{5}$/;
 export const NAMES_REGEX =
   /^[\w',.ÄÅÖäåö-][^\d!#$%&()*+/:;<=>?@[\\\]_{|}~¡¿÷ˆ]+$/;
 export const CITY_REGEX = /^[ A-Za-zÄÅÖäåö-]+$/;
+
+// eslint-disable-next-line security/detect-unsafe-regex
+export const DECIMAL_NUMBER_REGEX = /^\d+(\.\d{1,2})?$/;
+
+export const EMAIL_REGEX =
+  // eslint-disable-next-line security/detect-unsafe-regex
+  /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
+
+// eslint-disable-next-line security/detect-unsafe-regex
+export const DATE_UI_REGEX = /^(?:\d{1,2}.){2}\d{4}$/;
+export const DATE_BACKEND_REGEX = /^\d{4}-\d{2}-\d{2}$/;

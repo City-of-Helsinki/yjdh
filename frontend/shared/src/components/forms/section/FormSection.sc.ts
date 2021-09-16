@@ -1,9 +1,19 @@
+import { HeadingProps } from 'shared/components/forms/heading/Heading.sc';
 import styled, { DefaultTheme } from 'styled-components';
 
 type SpacingKeys = keyof DefaultTheme['spacing'];
 type SpacingValue = DefaultTheme['spacing'][SpacingKeys];
 
-type GridProps = {
+export type FormSectionProps = {
+  children?: React.ReactNode;
+  action?: React.ReactNode;
+  withoutDivider?: boolean;
+  header?: string;
+  'padding-bottom'?: boolean;
+} & HeadingProps &
+  GridProps;
+
+export type GridProps = {
   gap?: SpacingValue;
   columns?: number;
   bgColor?: boolean;
@@ -13,7 +23,7 @@ type GridProps = {
   justifyItems?: 'start' | 'end' | 'center' | 'stretch';
 };
 
-type GridCellProps = {
+export type GridCellProps = {
   $colSpan?: number;
   $rowSpan?: number;
   $colStart?: number;
@@ -21,11 +31,11 @@ type GridCellProps = {
   justifySelf?: 'start' | 'end' | 'center' | 'stretch';
 };
 
-export const $Section = styled.div`
+export const $Section = styled.div<FormSectionProps>`
   display: flex;
   flex-direction: column;
-  padding-bottom: ${(props) => props.theme.spacing.m};
-  /* margin-bottom: ${(props) => props.theme.spacing.s}; */
+  padding-bottom: ${(props) =>
+    props['padding-bottom'] ? props.theme.spacing.m : ''};
   position: relative;
 `;
 

@@ -9,8 +9,10 @@ import {
   useFormContext,
   UseFormRegister,
 } from 'react-hook-form';
+import { $GridCell,GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/employer-application';
 import { getLastValue } from 'shared/utils/array.utils';
+import { isEmpty } from 'shared/utils/string.utils';
 
 import { $SelectionGroup } from './SelectionGroup.sc';
 
@@ -20,7 +22,7 @@ type Props<T extends readonly string[]> = {
   direction?: SelectionGroupProps['direction'],
   values: T,
   showTitle?: boolean,
-};
+} & GridCellProps;
 
 const SelectionGroup = <T extends readonly string[]>({
                      id,
@@ -28,7 +30,7 @@ const SelectionGroup = <T extends readonly string[]>({
                      direction,
                      values,
                      showTitle,
-                     ...rest
+                     ...gridCellProps
                    }: Props<T>): ReturnType<typeof HdsSelectionGroup> => {
   const { t } = useTranslation();
   const {
@@ -39,45 +41,49 @@ const SelectionGroup = <T extends readonly string[]>({
   const { isLoading } = useApplicationApi();
 
   const [selectedValue, setSelectedValue] = React.useState(getFormValues(id));
-  const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedValue(event.target.value);
   },[setSelectedValue])
 
   const errorType = get(errors, `${id}.type`) as FieldError['type'];
+  const isError = Boolean(errorType);
   const name = getLastValue((id as string).split('.')) ?? '';
 
+  const getValueForBackend = React.useCallback((value: string) => isEmpty(value) ? undefined : value, []);
+
   return (
-    <$SelectionGroup
-      {...rest}
-      id={id}
-      data-testid={id}
-      name={id}
-      disabled={isLoading}
-      required={showTitle && Boolean(validation?.required)}
-      direction={direction}
-      errorText={
-        errorType ? `${t(`common:application.form.errors.selectionGroups`)}` : undefined
-      }
-      label={showTitle ? t(`common:application.form.inputs.${name}`) : undefined}
-    >
-      {values.map((value) => <RadioButton
-        {...register(id, validation)}
-        key={`${id}-${value}`}
-        id={`${id}-${value}`}
-        data-testid={`${id}-${value}`}
-        label={t(`common:application.form.selectionGroups.${name}.${value}`)}
-        value={value}
-        onChange={onChange}
-        checked={value === selectedValue}
-        />)}
-    </$SelectionGroup>
+    <$GridCell {...gridCellProps}>
+      <$SelectionGroup
+        id={id}
+        data-testid={id}
+        name={id}
+        disabled={isLoading}
+        required={showTitle && Boolean(validation?.required)}
+        direction={direction}
+        errorText={
+          isError ? `${t(`common:application.form.errors.selectionGroups`)}` : undefined
+        }
+        label={showTitle ? t(`common:application.form.inputs.${name}`) : undefined}
+      >
+        {values.map((value) => <RadioButton
+          {...register(id, {...validation, setValueAs: getValueForBackend})}
+          key={`${id}-${value}`}
+          id={`${id}-${value}`}
+          data-testid={`${id}-${value}`}
+          label={t(`common:application.form.selectionGroups.${name}.${value}`)}
+          value={value}
+          onChange={handleChange}
+          checked={value === selectedValue}
+          />)}
+      </$SelectionGroup>
+    </$GridCell>
   );
 };
 
 SelectionGroup.defaultProps = {
   direction: 'horizontal',
   validation: undefined,
-  showTitle: false,
+  showTitle: true,
 }
 
 export default SelectionGroup;

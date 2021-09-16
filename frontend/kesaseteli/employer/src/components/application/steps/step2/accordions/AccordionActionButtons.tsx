@@ -6,14 +6,14 @@ import useValidateEmployment from 'kesaseteli/employer/hooks/employments/useVali
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import {
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/employer-application';
 
 import {
-  $EmploymentAction,
-  $EmploymentActions,
   $SupplementaryButton,
 } from './EmploymentAccordion.sc';
-
 type Props = {
   index: number;
   onSave: () => void,
@@ -44,8 +44,8 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
   const validate = useValidateEmployment(index, {onSuccess: update});
 
   return (
-    <$EmploymentActions>
-      <$EmploymentAction>
+    <>
+      <$GridCell justifySelf="start">
         <$SecondaryButton
           variant="secondary"
           data-testid={`update-employment-${index}`}
@@ -54,8 +54,8 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
         >
           {t(`common:application.step2.save_employment`)}
         </$SecondaryButton>
-      </$EmploymentAction>
-      <$EmploymentAction>
+      </$GridCell>
+      <$GridCell justifySelf="end">
         <$SupplementaryButton
           variant="supplementary"
           data-testid={`remove-employment-${index}`}
@@ -65,8 +65,8 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
         >
           {t(`common:application.step2.remove_employment`)}
         </$SupplementaryButton>
-      </$EmploymentAction>
-    </$EmploymentActions>
+      </$GridCell>
+    </>
   );
 };
 

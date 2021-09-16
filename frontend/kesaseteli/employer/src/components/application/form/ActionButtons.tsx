@@ -3,13 +3,15 @@ import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicat
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import {
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
 import {
-  $ApplicationAction,
-  $ApplicationActions,
+  $ButtonSection,
   $PrimaryButton,
   $SecondaryButton,
 } from './ActionButtons.sc';
@@ -38,9 +40,9 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
 
   const isLoading = isSubmitting || isSyncing || isWizardLoading;
   return (
-    <$ApplicationActions>
+    <$ButtonSection columns={isFirstStep ? 1 : 2} withoutDivider>
       {!isFirstStep && (
-        <$ApplicationAction>
+        <$GridCell justifySelf="start">
           <$SecondaryButton
             variant="secondary"
             data-testid="previous-button"
@@ -51,9 +53,9 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
           >
             {t(`common:application.buttons.previous`)}
           </$SecondaryButton>
-        </$ApplicationAction>
+        </$GridCell>
       )}
-      <$ApplicationAction>
+      <$GridCell justifySelf="end">
         <$PrimaryButton
           data-testid="next-button"
           iconRight={<IconArrowRight />}
@@ -66,8 +68,8 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
             ? t(`common:application.buttons.send`)
             : t(`common:application.buttons.save_and_continue`)}
         </$PrimaryButton>
-      </$ApplicationAction>
-    </$ApplicationActions>
+      </$GridCell>
+    </$ButtonSection>
   );
 };
 

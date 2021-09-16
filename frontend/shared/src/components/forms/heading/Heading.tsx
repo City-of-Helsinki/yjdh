@@ -1,27 +1,15 @@
 import { LoadingSpinner, Tooltip } from 'hds-react';
 import * as React from 'react';
-import { DefaultTheme } from 'styled-components';
 
-import { $Header } from './Heading.sc';
-
-type HeadingProps = {
-  size?: keyof DefaultTheme['fontSize']['heading'];
-  as?: 'h1' | 'h2' | 'h3';
-  header?: string;
-  loading?: boolean;
-  loadingText?: string;
-  loadingFinishedText?: string;
-  tooltip?: string;
-};
+import { $Header, HeadingProps } from './Heading.sc';
 
 const Heading: React.FC<HeadingProps> = ({
-  as,
-  size,
+  size = 'l',
   header,
   loading,
   tooltip,
 }) => (
-  <$Header size={size || 'm'} as={as}>
+  <$Header size={size}>
     {header}
     {tooltip && <Tooltip>{tooltip}</Tooltip>}
     {loading && <LoadingSpinner small />}

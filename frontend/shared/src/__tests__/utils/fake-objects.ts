@@ -70,6 +70,7 @@ export const fakeEmployment = (): Employment => ({
     'no',
     'maybe',
   ]),
+  summer_voucher_serial_number: faker.datatype.string(10),
 });
 
 export const fakeEmployments = (

@@ -1,11 +1,10 @@
-import { Notification } from 'hds-react';
-import { $NotificationDescription } from 'kesaseteli/employer/components/application/steps/step2/error-notification/EmploymentsErrorNotification.sc';
+import { $Notification,$NotificationDescription } from 'kesaseteli/employer/components/application/steps/step2/error-notification/EmploymentsErrorNotification.sc';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 import Application from 'shared/types/employer-application';
 import Employment from 'shared/types/employment';
-
+import { $Grid } from 'shared/components/forms/section/FormSection.sc';
 import EmployeeErrorNotification from './EmployeeErrorNotification';
 
 const EmploymentsErrorNotification: React.FC = () => {
@@ -38,10 +37,10 @@ const EmploymentsErrorNotification: React.FC = () => {
     : t(`common:application.form.notification.title`);
 
   return (
-    <Notification type="error" label={title}>
-      {!isEmptyList && employmentErrorEntries?.length < 3 && (
-        <>
-          <$NotificationDescription>
+    <$Notification type="error" label={title}>
+      {!isEmptyList && (
+        <$Grid columns={2}>
+          <$NotificationDescription $colSpan={2}>
             {t(`common:application.form.notification.description`)}
           </$NotificationDescription>
           {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
@@ -51,9 +50,9 @@ const EmploymentsErrorNotification: React.FC = () => {
               errors={employmentErrors}
             />
           ))}
-        </>
+        </$Grid>
       )}
-    </Notification>
+    </$Notification>
   );
 };
 

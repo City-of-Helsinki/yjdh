@@ -19,16 +19,21 @@ const EmploymentAccordions: React.FC = () => {
   useValidateEmploymentsNotEmpty(employments);
 
   return (
-    <FormSection
-      header={stepTitle}
-      tooltip={t('common:application.step2.tooltip')}
-    >
+    <>
+      <FormSection
+        header={stepTitle}
+        tooltip={t('common:application.step2.tooltip')}
+        withoutDivider
+      />
       <EmploymentsErrorNotification />
+      <FormSection columns={1} withoutDivider>
       {employments.map((employment, index) => (
         <EmploymentAccordion index={index} key={employment.id} />
       ))}
       <AddNewEmploymentButton />
-    </FormSection>
+      </FormSection>
+
+    </>
   );
 };
 export default EmploymentAccordions;
