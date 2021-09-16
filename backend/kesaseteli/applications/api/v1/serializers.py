@@ -6,7 +6,11 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
-from applications.enums import ApplicationStatus, AttachmentType
+from applications.enums import (
+    ApplicationStatus,
+    AttachmentType,
+    SummerVoucherExceptionReason,
+)
 from applications.models import Application, Attachment, SummerVoucher
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_from_eauth_profile
@@ -236,6 +240,13 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
             return
 
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS[:]
+
+        if (
+            data.get("summer_voucher_exception_reason")
+            == SummerVoucherExceptionReason.BORN_2004
+        ):
+            # If the student was born 2004, the summer voucher serial number is not required.
+            required_fields.remove("summer_voucher_serial_number")
 
         for field_name in required_fields:
             if data.get(field_name) in [None, "", []]:
