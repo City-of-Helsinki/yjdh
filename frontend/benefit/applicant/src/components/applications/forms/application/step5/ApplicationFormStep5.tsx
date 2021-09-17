@@ -13,6 +13,7 @@ import {
   $GridCell,
   $Hr,
 } from 'shared/components/forms/section/FormSection.sc';
+import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
 import CredentialsSection from './credentialsSection/CredentialsSection';
@@ -23,28 +24,35 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
 }) => {
   const { t, handleBack, handleNext, translationsBase } =
     useApplicationFormStep5(data);
+  const theme = useTheme();
+
+  // temporary disabled feature
+  const hasElectronicPowerOfAttorney = false;
+
   return (
     <>
       <CredentialsIngress />
       <$Grid>
-        <$GridCell $colSpan={6}>
-          <CredentialsSection
-            title={t(`${translationsBase}.electronicPowerOfAttorney.title`)}
-            description={t(
-              `${translationsBase}.electronicPowerOfAttorney.description`
-            )}
-            icon={<IconPenLine size="l" />}
-            actions={
-              <Button
-                theme="black"
-                variant="secondary"
-                iconRight={<IconArrowRight />}
-              >
-                {t(`${translationsBase}.electronicPowerOfAttorney.action1`)}
-              </Button>
-            }
-          />
-        </$GridCell>
+        {hasElectronicPowerOfAttorney && (
+          <$GridCell $colSpan={6}>
+            <CredentialsSection
+              title={t(`${translationsBase}.electronicPowerOfAttorney.title`)}
+              description={t(
+                `${translationsBase}.electronicPowerOfAttorney.description`
+              )}
+              icon={<IconPenLine size="l" />}
+              actions={
+                <Button
+                  theme="black"
+                  variant="secondary"
+                  iconRight={<IconArrowRight />}
+                >
+                  {t(`${translationsBase}.electronicPowerOfAttorney.action1`)}
+                </Button>
+              }
+            />
+          </$GridCell>
+        )}
         <$GridCell $colSpan={6}>
           <CredentialsSection
             title={t(`${translationsBase}.uploadPowerOfAttorney.title`)}
@@ -77,7 +85,11 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
       </$Grid>
-      <$Hr $hasMarginBottom />
+      <$Hr
+        css={`
+          margin-bottom: ${theme.spacing.l};
+        `}
+      />
       <StepperActions
         hasNext
         handleSubmit={handleNext}

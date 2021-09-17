@@ -25,7 +25,7 @@ const useApplicationFormStep5 = (
   const { applicationTempData, setApplicationTempData } =
     React.useContext(ApplicationContext);
   const { t } = useTranslation();
-  const [step, setStep] = useState<number>(3);
+  const [step, setStep] = useState<number>(5);
 
   const {
     mutate: updateApplicationStep4,

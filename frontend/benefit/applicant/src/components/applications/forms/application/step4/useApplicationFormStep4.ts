@@ -23,11 +23,10 @@ const useApplicationFormStep4 = (
   application: Application
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections';
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+  const { applicationTempData, setApplicationTempData } =
+    React.useContext(ApplicationContext);
   const { t } = useTranslation();
-  const [step, setStep] = useState<number>(3);
+  const [step, setStep] = useState<number>(4);
 
   const {
     mutate: updateApplicationStep4,
