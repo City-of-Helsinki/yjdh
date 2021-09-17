@@ -30,9 +30,7 @@ const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
   const { t } = useTranslation();
-  const { applicationTempData, setCurrentStep } = React.useContext(
-    ApplicationContext
-  );
+  const { applicationTempData } = React.useContext(ApplicationContext);
   const [isLoading, setIsLoading] = useState(true);
   // query param used in edit mode. id from context used for updating newly created application
   const existingApplicationId = id?.toString() || applicationTempData?.id;
@@ -41,10 +39,8 @@ const usePageContent = (): ExtendedComponentProps => {
     data: existingApplication,
     error: existingApplicationError,
   } = useApplicationQuery(existingApplicationId);
-  const {
-    data: applicationTemplate,
-    error: applicationTemplateError,
-  } = useApplicationTemplateQuery(existingApplicationId);
+  const { data: applicationTemplate, error: applicationTemplateError } =
+    useApplicationTemplateQuery(existingApplicationId);
 
   useEffect(() => {
     // todo:custom error messages
@@ -67,20 +63,8 @@ const usePageContent = (): ExtendedComponentProps => {
       existingApplicationStatus !== 'loading'
     ) {
       setIsLoading(false);
-      const existingApplicationCurrentStep = getApplicationStepFromString(
-        existingApplication?.application_step || DEFAULT_APPLICATION_STEP
-      );
-      if (applicationTempData.currentStep !== existingApplicationCurrentStep) {
-        setCurrentStep(existingApplicationCurrentStep);
-      }
     }
-  }, [
-    existingApplicationStatus,
-    id,
-    existingApplication,
-    setCurrentStep,
-    applicationTempData,
-  ]);
+  }, [existingApplicationStatus, id, existingApplication, applicationTempData]);
 
   useEffect(() => {
     if (router.isReady && !router.query.id) {
@@ -120,7 +104,9 @@ const usePageContent = (): ExtendedComponentProps => {
     t,
     id,
     steps,
-    currentStep: applicationTempData.currentStep,
+    currentStep: getApplicationStepFromString(
+      application.applicationStep || DEFAULT_APPLICATION_STEP
+    ),
     application: !isEmpty(application)
       ? { ...defaultApplication, ...application }
       : defaultApplication,

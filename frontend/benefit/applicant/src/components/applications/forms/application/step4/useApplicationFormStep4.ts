@@ -1,5 +1,4 @@
 import hdsToast from 'benefit/applicant/components/toast/Toast';
-import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
@@ -8,7 +7,7 @@ import {
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { TFunction } from 'next-i18next';
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
@@ -23,16 +22,10 @@ const useApplicationFormStep4 = (
   application: Application
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections';
-  const { applicationTempData, setApplicationTempData } =
-    React.useContext(ApplicationContext);
   const { t } = useTranslation();
-  const [step, setStep] = useState<number>(4);
 
-  const {
-    mutate: updateApplicationStep4,
-    error: updateApplicationErrorStep4,
-    isSuccess: isApplicationUpdatedStep4,
-  } = useUpdateApplicationQuery();
+  const { mutate: updateApplicationStep4, error: updateApplicationErrorStep4 } =
+    useUpdateApplicationQuery();
 
   useEffect(() => {
     // todo:custom error messages
@@ -48,19 +41,7 @@ const useApplicationFormStep4 = (
     }
   }, [t, updateApplicationErrorStep4]);
 
-  useEffect(() => {
-    if (isApplicationUpdatedStep4) {
-      setApplicationTempData({ ...applicationTempData, currentStep: step });
-    }
-  }, [
-    isApplicationUpdatedStep4,
-    applicationTempData,
-    step,
-    setApplicationTempData,
-  ]);
-
   const handleStepChange = (nextStep: number): void => {
-    setStep(nextStep);
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,
