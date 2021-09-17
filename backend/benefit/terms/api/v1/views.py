@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from companies.models import Company
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
@@ -30,7 +30,6 @@ class ApproveTermsOfServiceView(APIView):
             raise_exception=True
         )  # validate the terms and applicant consents
         user = request.user
-
         company = get_company_from_user(user)
         if TermsOfServiceApproval.terms_approval_needed(user, company):
             if not approve_terms:

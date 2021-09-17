@@ -2,11 +2,18 @@ from datetime import date, timedelta
 
 import pytest
 from common.tests.conftest import *  # noqa
+<<<<<<< HEAD
 from companies.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.enums import TermsType
 from terms.tests.factories import TermsFactory, TermsOfServiceApprovalFactory
 from users.utils import get_company_from_user
+=======
+from companies.tests.factories import CompanyFactory
+from helsinkibenefit.tests.conftest import *  # noqa
+from terms.enums import TermsType
+from terms.tests.factories import TermsFactory, TermsOfServiceApprovalFactory
+>>>>>>> f9a4667... HL-194: terms of service API. /users/me endpoint.
 
 
 def get_current_user_url():
@@ -122,6 +129,7 @@ def test_approve_wrong_terms(
     )
 
 
+
 def test_approve_no_terms(api_client, mock_get_organisation_roles_and_create_company):
     # current terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.TERMS_OF_SERVICE)
@@ -131,6 +139,7 @@ def test_approve_no_terms(api_client, mock_get_organisation_roles_and_create_com
     )
     assert response.status_code == 400
     assert response.data.keys() == {"terms", "selected_applicant_consents"}
+
 
 
 def test_approve_terms_missing_consent(
