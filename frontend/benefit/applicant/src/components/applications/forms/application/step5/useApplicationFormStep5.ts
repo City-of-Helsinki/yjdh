@@ -15,28 +15,27 @@ type ExtendedComponentProps = {
   t: TFunction;
   handleNext: () => void;
   handleBack: () => void;
-  handleStepChange: (step: number) => void;
   translationsBase: string;
 };
 
-const useApplicationFormStep4 = (
+const useApplicationFormStep5 = (
   application: Application
 ): ExtendedComponentProps => {
-  const translationsBase = 'common:applications.sections';
+  const translationsBase = 'common:applications.sections.credentials.sections';
   const { applicationTempData, setApplicationTempData } =
     React.useContext(ApplicationContext);
   const { t } = useTranslation();
-  const [step, setStep] = useState<number>(4);
+  const [step, setStep] = useState<number>(5);
 
   const {
     mutate: updateApplicationStep4,
-    error: updateApplicationErrorStep4,
-    isSuccess: isApplicationUpdatedStep4,
+    error: updateApplicationErrorStep5,
+    isSuccess: isApplicationUpdatedStep5,
   } = useUpdateApplicationQuery();
 
   useEffect(() => {
     // todo:custom error messages
-    if (updateApplicationErrorStep4) {
+    if (updateApplicationErrorStep5) {
       hdsToast({
         autoDismiss: true,
         autoDismissTime: 5000,
@@ -46,14 +45,14 @@ const useApplicationFormStep4 = (
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, updateApplicationErrorStep4]);
+  }, [t, updateApplicationErrorStep5]);
 
   useEffect(() => {
-    if (isApplicationUpdatedStep4) {
+    if (isApplicationUpdatedStep5) {
       setApplicationTempData({ ...applicationTempData, currentStep: step });
     }
   }, [
-    isApplicationUpdatedStep4,
+    isApplicationUpdatedStep5,
     applicationTempData,
     step,
     setApplicationTempData,
@@ -71,17 +70,16 @@ const useApplicationFormStep4 = (
     updateApplicationStep4(currentApplicationData);
   };
 
-  const handleNext = (): void => handleStepChange(5);
+  const handleNext = (): void => handleStepChange(6);
 
-  const handleBack = (): void => handleStepChange(3);
+  const handleBack = (): void => handleStepChange(4);
 
   return {
     t,
     handleNext,
     handleBack,
-    handleStepChange,
     translationsBase,
   };
 };
 
-export { useApplicationFormStep4 };
+export { useApplicationFormStep5 };

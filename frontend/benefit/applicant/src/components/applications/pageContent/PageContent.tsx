@@ -22,15 +22,8 @@ import ErrorPage from '../../errorPage/ErrorPage';
 import { usePageContent } from './usePageContent';
 
 const PageContent: React.FC = () => {
-  const {
-    t,
-    id,
-    steps,
-    currentStep,
-    application,
-    isError,
-    isLoading,
-  } = usePageContent();
+  const { t, id, steps, currentStep, application, isError, isLoading } =
+    usePageContent();
 
   if (isLoading) {
     return (
@@ -78,7 +71,7 @@ const PageContent: React.FC = () => {
       {currentStep === 2 && <ApplicationFormStep2 data={application} />}
       {currentStep === 3 && <ApplicationFormStep3 data={application} />}
       {currentStep === 4 && <ApplicationFormStep4 data={application} />}
-      {currentStep === 5 && <ApplicationFormStep5 />}
+      {currentStep === 5 && <ApplicationFormStep5 data={application} />}
       {currentStep === 6 && <ApplicationFormStep6 />}
     </Container>
   );
