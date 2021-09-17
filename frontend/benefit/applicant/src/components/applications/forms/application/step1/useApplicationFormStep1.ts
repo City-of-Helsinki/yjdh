@@ -53,9 +53,8 @@ const useApplicationFormStep1 = (
   application: Application
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+  const { applicationTempData, setApplicationTempData } =
+    React.useContext(ApplicationContext);
   const {
     mutate: createApplication,
     data: newApplication,
@@ -86,21 +85,18 @@ const useApplicationFormStep1 = (
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [step, setStep] = useState<number>(1);
 
   useEffect(() => {
     if (isApplicationCreated || isApplicationUpdated) {
       setApplicationTempData({
         ...applicationTempData,
         id: applicationTempData.id || newApplication?.id || '',
-        currentStep: step,
       });
     }
   }, [
     isApplicationCreated,
     isApplicationUpdated,
     newApplication,
-    step,
     applicationTempData,
     setApplicationTempData,
   ]);
@@ -108,9 +104,10 @@ const useApplicationFormStep1 = (
   const formik = useFormik({
     initialValues: application || {},
     validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]: Yup.string()
-        .matches(ADDRESS_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]:
+        Yup.string()
+          .matches(ADDRESS_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+          .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
       [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string()
         .matches(POSTAL_CODE_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
@@ -123,24 +120,26 @@ const useApplicationFormStep1 = (
           t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
         )
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: Yup.string()
-        .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]:
+        Yup.string()
+          .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
+          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
       [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string()
         .email(t(VALIDATION_MESSAGE_KEYS.EMAIL_INVALID))
         .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string()
-        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME]: Yup.string()
-        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]:
+        Yup.string()
+          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME]:
+        Yup.string()
+          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
+          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
     }),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
     onSubmit: () => {
-      setStep(2);
       const currentApplicationData: ApplicationData = snakecaseKeys(
         {
           ...application,
@@ -169,18 +168,16 @@ const useApplicationFormStep1 = (
     };
 
     const fieldsValues = Object.values(APPLICATION_FIELDS_STEP1_KEYS);
-    const fieldsPairs: [
-      APPLICATION_FIELDS_STEP1_KEYS,
-      Field
-    ][] = fieldsValues.map((fieldName) => [
-      fieldName,
-      {
-        name: fieldName,
-        label: t(`${translationsBase}.fields.${fieldName}.label`),
-        placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
-        mask: fieldMasks[fieldName],
-      },
-    ]);
+    const fieldsPairs: [APPLICATION_FIELDS_STEP1_KEYS, Field][] =
+      fieldsValues.map((fieldName) => [
+        fieldName,
+        {
+          name: fieldName,
+          label: t(`${translationsBase}.fields.${fieldName}.label`),
+          placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
+          mask: fieldMasks[fieldName],
+        },
+      ]);
 
     return fromPairs(fieldsPairs) as Record<
       APPLICATION_FIELDS_STEP1_KEYS,
