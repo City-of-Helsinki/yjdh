@@ -14,6 +14,7 @@ import Application from 'shared/types/employer-application';
 import {
   $SupplementaryButton,
 } from './EmploymentAccordion.sc';
+
 type Props = {
   index: number;
   onSave: () => void,

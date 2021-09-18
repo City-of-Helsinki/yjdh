@@ -2,9 +2,10 @@ import { $Notification,$NotificationDescription } from 'kesaseteli/employer/comp
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
+import { $Grid } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/employer-application';
 import Employment from 'shared/types/employment';
-import { $Grid } from 'shared/components/forms/section/FormSection.sc';
+
 import EmployeeErrorNotification from './EmployeeErrorNotification';
 
 const EmploymentsErrorNotification: React.FC = () => {
@@ -13,12 +14,13 @@ const EmploymentsErrorNotification: React.FC = () => {
     getValues,
     formState: { isValid, errors, isSubmitted },
   } = useFormContext<Application>();
+
+  const getEmploymentId = React.useCallback((index: number): Employment['id'] =>
+    getValues(`summer_vouchers.${index}.id`), [getValues]);
+
   if (!errors || isValid || !isSubmitted) {
     return null;
   }
-  const getEmploymentId = (index: number): Employment['id'] =>
-    getValues(`summer_vouchers.${index}.id`);
-
   const employmentsErrors = errors.summer_vouchers || [];
   const employmentErrorEntries = Array.isArray(employmentsErrors)
     ? employmentsErrors.map((employmentErrors, index) => ({

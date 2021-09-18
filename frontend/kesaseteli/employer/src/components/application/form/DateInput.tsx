@@ -1,87 +1,90 @@
 import { DateInput as HdsDateInput } from 'hds-react';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
-  FieldError,
-  get,
   RegisterOptions,
   useFormContext,
   UseFormRegister} from 'react-hook-form';
 import { $GridCell,GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/employer-application';
-import { getLastValue } from 'shared/utils/array.utils';
 import {
   convertToBackendDateFormat, convertToUIDateFormat, isValidDate, parseDate,
 } from 'shared/utils/date.utils';
-
-import { $DateInput } from './DateInput.sc';
 import { isEmpty } from 'shared/utils/string.utils';
 
-
+import { $DateInput } from './DateInput.sc';
 
 type Props = {
   validation: RegisterOptions<Application>;
   id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
 } & GridCellProps;
 
+// TODO: This can be removed after backend supports invalid values in draft save
+const convertDateForBackend = (dateString: string): string | undefined => {
+  const result = convertToBackendDateFormat(dateString);
+  return isEmpty(result) ? undefined : result;
+};
+
 const DateInput = ({
   id,
   validation,
-  ...gridCellProps
+  ...$gridCellProps
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
   const locale = useLocale();
   const {
     register,
-    getValues: getFormValues,
-    formState: { errors },
   } = useFormContext<Application>();
-  const { isLoading } = useApplicationApi();
+  const {fieldName, getValue, getError, setError, clearErrors, setValue, clearValue} = useApplicationFormField<string>(id);
 
-  const name = getLastValue((id as string).split('.')) ?? '';
-  const date = convertToUIDateFormat(getFormValues(id) as string);
+  const date = convertToUIDateFormat(getValue());
 
   const validate = React.useCallback((value) => isValidDate(parseDate(value)), []);
 
-  const errorType = get(errors, `${id}.type`) as FieldError['type'];
-  const isError = Boolean(errorType);
+  const errorType = getError()?.type;
   const errorText = React.useMemo((): string | undefined => {
-    if (!isError) {
+    if (!errorType) {
       return undefined;
     }
-    if (errorType === 'pattern') {
+    if (['pattern','required'].includes(errorType)) {
         return `${t(`common:application.form.errors.${errorType}`)}. ${t(`common:application.form.helpers.date`)}`;
     }
     return t(`common:application.form.errors.${errorType}`);
-  },[t,isError, errorType]);
+  },[t, errorType]);
 
-  const convertDateForBackend = React.useCallback((dateString: string): string | undefined => {
-    if (!dateString) {
-      return undefined;
+  // TODO: This can be removed after backend supports invalid values in draft save
+  const handleChange = React.useCallback((dateString: string) => {
+    const uiDate = convertToUIDateFormat(dateString);
+    if (isEmpty(uiDate)) {
+      setError('pattern');
+      clearValue();
     }
-    const result = convertToBackendDateFormat(dateString);
-    return isEmpty(result) ? dateString : result;
-  }, [])
+    else {
+      clearErrors();
+      setValue(uiDate);
+    }
+
+  },[setError,clearValue,setValue,clearErrors]);
 
   return (
-    <$GridCell {...gridCellProps}>
+    <$GridCell {...$gridCellProps}>
       <$DateInput
         {...register(id, {...validation, validate, setValueAs: convertDateForBackend})}
+        key={id}
         id={id}
         data-testid={id}
         name={id}
-        disabled={isLoading}
         required={Boolean(validation.required)}
         initialMonth={new Date()}
         defaultValue={date}
         language={locale}
-        onChange={convertToUIDateFormat}
+        onChange={handleChange}
         errorText={
           errorText
         }
-        label={t(`common:application.form.inputs.${name}`)}
+        label={t(`common:application.form.inputs.${fieldName}`)}
       />
     </$GridCell>
   );

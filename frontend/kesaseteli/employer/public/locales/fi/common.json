@@ -93,10 +93,10 @@
       },
       "helpers": {
         "date": "Käytä muotoa P.K.VVVV",
-        "decimal": "Käytä muotoa ####.##"
+        "format": "Käytä muotoa"
       },
       "errors": {
-        "required": "Tieto puuttuu",
+        "required": "Tieto puuttuu tai on virheellinen",
         "maxLength": "Syöttämäsi tieto on liian pitkä",
         "pattern": "Syöttämäsi tieto on virheellistä muotoa",
         "validate": "Syöttämäsi tieto on virheellistä muotoa",

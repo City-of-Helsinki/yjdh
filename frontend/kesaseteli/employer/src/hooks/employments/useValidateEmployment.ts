@@ -1,7 +1,6 @@
+import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import noop from 'lodash/noop';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import Application from 'shared/types/employer-application';
 
 type Options = {
   onSuccess: () => void
@@ -10,14 +9,13 @@ type Options = {
 const useValidateEmployment = (index: number, {onSuccess }: Options = {onSuccess: noop }): () => Promise<void> => {
   const {
     trigger,
-  } = useFormContext<Application>();
-
+  } = useApplicationFormField(`summer_vouchers.${index}`);
   return React.useCallback(async () => {
-    const isValid = await trigger([`summer_vouchers.${index}`], {shouldFocus: true});
+    const isValid = await trigger();
     if (isValid) {
       onSuccess();
     }
-  }, [trigger, onSuccess, index]);
+  }, [trigger, onSuccess]);
 };
 
 export default  useValidateEmployment

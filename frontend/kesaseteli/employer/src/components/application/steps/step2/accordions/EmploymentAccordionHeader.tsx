@@ -1,5 +1,5 @@
 import { IconAlertCircleFill } from 'hds-react';
-import useGetEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useGetEmployeeDisplayName';
+import useWatchEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useWatchEmployeeDisplayName';
 import React from 'react';
 
 import {
@@ -17,7 +17,7 @@ const EmploymentAccordionHeader: React.FC<Props> = ({
   index,
   displayError = false,
 }: Props) => {
-  const headingText = useGetEmployeeDisplayName(index);
+  const headingText = useWatchEmployeeDisplayName(index);
 
   return (
     <$AccordionHeader displayError={displayError}>

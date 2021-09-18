@@ -93,10 +93,10 @@
       },
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",
-        "decimal": "Använd ett format ####.##"
+        "format": "Använd ett format"
       },
       "errors": {
-        "required": "Tieto puuttuu SWE",
+        "required": "Tieto puuttuu tai on virheellinen SWE",
         "maxLength": "Syöttämäsi arvo on liian pitkä SWE",
         "pattern": "Syöttämäsi tieto on virheellistä muotoa SWE",
         "validate": "Syöttämäsi tieto on virheellistä muotoa SWE",

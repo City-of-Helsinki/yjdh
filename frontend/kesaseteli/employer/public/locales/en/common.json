@@ -88,10 +88,10 @@
       },
       "helpers": {
         "date": "Use format D.M.YYYY",
-        "decimal": "Use format ####.##"
+        "format": "Use format"
       },
       "errors": {
-        "required": "Required",
+        "required": "input is missing or invalid",
         "maxLength": "input is too long",
         "pattern": "input is invalid",
         "validate": "input is invalid",

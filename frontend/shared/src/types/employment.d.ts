@@ -3,12 +3,17 @@ import {
   EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
 } from '../contants/employee-constants';
 
+export type EmploymentExceptionReason =
+  typeof EMPLOYEE_EXCEPTION_REASON[number];
+export type EmployeeHiredWithoutVoucherAssessment =
+  typeof EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT[number];
+
 type Employment =
   // empty object to send backend when creating new employment.
   | Record<string, never>
   | {
       id: string;
-      summer_voucher_exception_reason?: typeof EMPLOYEE_EXCEPTION_REASON[number];
+      summer_voucher_exception_reason?: EmploymentExceptionReason;
       employee_name?: string;
       employee_ssn?: string;
       employee_phone_number?: string;
@@ -22,7 +27,7 @@ type Employment =
       employment_work_hours?: number;
       employment_salary_paid?: number;
       employment_description?: string;
-      employee_hired_without_voucher_assessment?: typeof EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT[number];
+      hired_without_voucher_assessment?: EmployeeHiredWithoutVoucherAssessment;
     };
 
 export default Employment;

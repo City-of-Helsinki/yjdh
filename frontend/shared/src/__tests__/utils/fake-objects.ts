@@ -65,7 +65,7 @@ export const fakeEmployment = (): Employment => ({
   employment_work_hours: faker.datatype.number(100),
   employment_salary_paid: faker.datatype.number(3000),
   employment_description: faker.lorem.paragraph(1),
-  employee_hired_without_voucher_assessment: faker.random.arrayElement([
+  hired_without_voucher_assessment: faker.random.arrayElement([
     'yes',
     'no',
     'maybe',
