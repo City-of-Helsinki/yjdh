@@ -165,9 +165,4 @@ class EAuthRestAuthentication(SessionAuthentication):
         ):
             return None
 
-        # Store organization roles in session
-        from shared.oidc.utils import get_organization_roles
-
-        get_organization_roles(user.oidc_profile.eauthorization_profile, request)
-
         return user, auth
