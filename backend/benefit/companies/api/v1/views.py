@@ -62,8 +62,7 @@ class GetCompanyView(APIView):
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
-        # TODO: Remove business id params later after authentication is completed in FE
-        if not business_id and request.user.is_authenticated:
+        if not settings.DISABLE_AUTHENTICATION:
             eauth_profile = request.user.oidc_profile.eauthorization_profile
 
             try:

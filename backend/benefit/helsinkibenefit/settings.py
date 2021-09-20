@@ -56,8 +56,8 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, ""),
     LOGIN_REDIRECT_URL_FAILURE=(str, ""),
-    EAUTHORIZATIONS_BASE_URL=(str, ""),
-    EAUTHORIZATIONS_CLIENT_ID=(str, ""),
+    EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
+    EAUTHORIZATIONS_CLIENT_ID=(str, "sample_client_id"),
     EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
     EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
     ADFS_CLIENT_ID=(str, "client_id"),
@@ -79,6 +79,7 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
+    DISABLE_AUTHENTICATION=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -199,8 +200,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": [
-        # TODO: Enable default permission when after FE implemented Authentication
-        # "rest_framework.permissions.IsAuthenticated",
+        "common.permissions.BFIsAuthenticated",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -242,6 +242,8 @@ AUTHENTICATION_BACKENDS = (
     # "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
+
+DISABLE_AUTHENTICATION = env.bool("DISABLE_AUTHENTICATION")
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid profile"
