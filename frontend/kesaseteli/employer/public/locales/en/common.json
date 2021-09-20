@@ -11,6 +11,10 @@
     "retry": "Reload the page",
     "logout": "Logout"
   },
+  "404Page": {
+    "pageNotFoundLabel": "Page not found",
+    "pageNotFoundContent": "ENG Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+  },
   "loginPage": {
     "logoutMessageLabel": "You have signed out",
     "errorLabel": "Unknown error. Sign in again",
