@@ -3,8 +3,9 @@ import isFutureFn from 'date-fns/isFuture';
 import isValid from 'date-fns/isValid';
 import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
-import { DATE_BACKEND_REGEX, DATE_UI_REGEX } from 'shared/constants';
-import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+
+import { DATE_BACKEND_REGEX, DATE_UI_REGEX } from '../constants';
+import { DEFAULT_LANGUAGE, Language } from '../i18n/i18n';
 
 export const DATE_FORMATS = {
   UI_DATE: 'd.M.yyyy',
