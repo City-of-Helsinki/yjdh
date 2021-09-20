@@ -45,9 +45,7 @@ const DeMinimisAidsList: React.FC = () => {
               grant[DE_MINIMIS_AID_KEYS.AMOUNT]
             } €`}</$GridCell>
             <$GridCell $colSpan={2}>
-              {formatDate(
-                parseDate(grant[DE_MINIMIS_AID_KEYS.GRANTED_AT], 'yyyy-MM-dd')
-              )}
+              {formatDate(parseDate(grant[DE_MINIMIS_AID_KEYS.GRANTED_AT]))}
             </$GridCell>
           </$GridCell>
           <$GridCell

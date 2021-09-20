@@ -82,7 +82,7 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
           key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
         })),
       [DE_MINIMIS_AID_KEYS.GRANTED_AT]: Yup.date()
-        .transform((_, original) => parseDate(original, DATE_FORMATS.UI_DATE))
+        .transform((_, original) => parseDate(original))
         .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)
         .test({
           message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {

@@ -119,7 +119,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
                 </$GridCell>
                 <$GridCell>
                   <$ViewField>
-                    {formatDate(parseDate(aid.grantedAt, 'yyyy-MM-dd'))}
+                    {formatDate(parseDate(aid.grantedAt))}
                   </$ViewField>
                 </$GridCell>
               </React.Fragment>
