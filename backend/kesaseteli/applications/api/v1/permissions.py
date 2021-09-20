@@ -1,23 +1,42 @@
+from typing import Optional
+
+from django.http import HttpRequest
 from rest_framework.permissions import BasePermission
 
 from applications.enums import ApplicationStatus
+from applications.models import Application
+from companies.models import Company
+from companies.services import get_or_create_company_from_eauth_profile
 
 ALLOWED_APPLICATION_STATUSES = [
     ApplicationStatus.DRAFT,
 ]
 
 
-def has_application_permission(request, application):
+def get_user_company(request: HttpRequest) -> Optional[Company]:
+    user = request.user
+
+    if not getattr(user, "oidc_profile", None):
+        return None
+
+    eauth_profile = user.oidc_profile.eauthorization_profile
+    user_company = getattr(eauth_profile, "company", None)
+
+    if not user_company:
+        user_company = get_or_create_company_from_eauth_profile(
+            user.oidc_profile.eauthorization_profile, request
+        )
+
+    return user_company
+
+
+def has_application_permission(request: HttpRequest, application: Application) -> bool:
     """
     Allow access only for DRAFT status applications of the user & company.
     """
     user = request.user
 
-    if not getattr(user, "oidc_profile", None):
-        return False
-
-    eauth_profile = user.oidc_profile.eauthorization_profile
-    user_company = getattr(eauth_profile, "company", None)
+    user_company = get_user_company(request)
 
     if (
         application.company == user_company
