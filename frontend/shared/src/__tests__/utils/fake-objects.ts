@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -60,10 +61,16 @@ export const fakeEmployment = (): Employment => ({
     max: 9999,
     precision: 1000,
   }),
-  employment_start_date: faker.date.past().toUTCString(),
-  employment_end_date: faker.date.future().toUTCString(),
-  employment_work_hours: faker.datatype.number(100),
-  employment_salary_paid: faker.datatype.number(3000),
+  employment_start_date: formatDate(
+    faker.date.past(),
+    DATE_FORMATS.BACKEND_DATE
+  ),
+  employment_end_date: formatDate(
+    faker.date.future(),
+    DATE_FORMATS.BACKEND_DATE
+  ),
+  employment_work_hours: faker.datatype.number({ max: 100, precision: 0.1 }),
+  employment_salary_paid: faker.datatype.number({ max: 4000, precision: 0.01 }),
   employment_description: faker.lorem.paragraph(1),
   hired_without_voucher_assessment: faker.random.arrayElement([
     'yes',
@@ -81,7 +88,7 @@ export const fakeApplication = (id: string): Application => ({
   id,
   company: fakeCompany,
   status: 'draft',
-  summer_vouchers: fakeEmployments(2),
+  summer_vouchers: fakeEmployments(1),
   ...fakeInvoicer(),
 });
 

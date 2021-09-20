@@ -7,14 +7,13 @@ import FormSection from 'shared/components/forms/section/FormSection';
 
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, application } = useApplicationApi();
+  const { application } = useApplicationApi();
 
   const stepTitle = t('common:application.step3.header');
   return (
     <ApplicationForm stepTitle={stepTitle}>
       <FormSection
         header={stepTitle}
-        loading={isLoading}
         tooltip={t('common:application.step3.tooltip')}
       >
         Yhteenveto: <p />

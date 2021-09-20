@@ -5,8 +5,14 @@ import {
 import { QueryClient } from 'react-query';
 import {
   expectBackendRequestsToComplete,
+  waitForBackendRequestsToComplete,
 } from 'shared/__tests__/utils/component.utils';
-import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import {
+  act,
+  screen,
+  userEvent,
+  waitFor,
+} from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/employer-application';
 import Invoicer from 'shared/types/invoicer';
 
@@ -25,7 +31,7 @@ type Step1Api = {
   expectations: StepExpections & {
     displayCompanyData: () => void;
     inputValueIsSet: (key: keyof Application, value?: string) => void;
-    inputHasError: (errorText: RegExp) => Promise<void>;
+    inputHasError: (key: keyof Application, errorText: RegExp) => Promise<void>;
   };
   actions: StepActions & {
     typeInvoicerName: (name: string) => void;
@@ -110,16 +116,19 @@ const getApplicationPageApi = (
   const clickNextButton = async (): Promise<void> => {
     const put = expectToSaveApplication(application);
     const get = expectToGetApplicationFromBackend(application);
-    userEvent.click(
-      screen.getByRole('button', {
-        name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
-      })
+    await waitForBackendRequestsToComplete();
+
+    await act(async () =>
+      userEvent.click(
+        screen.getByRole('button', {
+          name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
+        })
+      )
     );
     await waitFor(() => {
       put.done();
       get.done();
     });
-
   };
 
   return {
@@ -163,8 +172,15 @@ const getApplicationPageApi = (
           const inputValue = value ?? application[key]?.toString();
           expect(screen.getByTestId(key)).toHaveValue(inputValue);
         },
-        inputHasError: async (errorText: RegExp): Promise<void> => {
-          await screen.findByText(errorText);
+        inputHasError: async (
+          key: keyof Application,
+          errorText: RegExp
+        ): Promise<void> => {
+          await waitFor(() =>
+            expect(
+              screen.getByTestId(key)?.parentElement?.nextSibling?.textContent
+            ).toMatch(errorText)
+          );
         },
         nextButtonIsDisabled: expectNextButtonIsDisabled,
         nextButtonIsEnabled: expectNextButtonIsEnabled,

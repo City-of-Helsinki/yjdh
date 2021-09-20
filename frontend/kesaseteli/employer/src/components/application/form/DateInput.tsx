@@ -5,12 +5,19 @@ import React from 'react';
 import {
   RegisterOptions,
   useFormContext,
-  UseFormRegister} from 'react-hook-form';
-import { $GridCell,GridCellProps } from 'shared/components/forms/section/FormSection.sc';
+  UseFormRegister,
+} from 'react-hook-form';
+import {
+  $GridCell,
+  GridCellProps,
+} from 'shared/components/forms/section/FormSection.sc';
 import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/employer-application';
 import {
-  convertToBackendDateFormat, convertToUIDateFormat, isValidDate, parseDate,
+  convertToBackendDateFormat,
+  convertToUIDateFormat,
+  isValidDate,
+  parseDate,
 } from 'shared/utils/date.utils';
 import { isEmpty } from 'shared/utils/string.utils';
 
@@ -34,44 +41,60 @@ const DateInput = ({
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
   const locale = useLocale();
+  const { register } = useFormContext<Application>();
   const {
-    register,
-  } = useFormContext<Application>();
-  const {fieldName, getValue, getError, setError, clearErrors, setValue, clearValue} = useApplicationFormField<string>(id);
+    fieldName,
+    getValue,
+    getError,
+    setError,
+    clearErrors,
+    setValue,
+    clearValue,
+  } = useApplicationFormField<string>(id);
 
   const date = convertToUIDateFormat(getValue());
 
-  const validate = React.useCallback((value) => isValidDate(parseDate(value)), []);
+  const validate = React.useCallback(
+    (value) => isValidDate(parseDate(value)),
+    []
+  );
 
   const errorType = getError()?.type;
   const errorText = React.useMemo((): string | undefined => {
     if (!errorType) {
       return undefined;
     }
-    if (['pattern','required'].includes(errorType)) {
-        return `${t(`common:application.form.errors.${errorType}`)}. ${t(`common:application.form.helpers.date`)}`;
+    if (['pattern', 'required'].includes(errorType)) {
+      return `${t(`common:application.form.errors.${errorType}`)}. ${t(
+        `common:application.form.helpers.date`
+      )}`;
     }
     return t(`common:application.form.errors.${errorType}`);
-  },[t, errorType]);
+  }, [t, errorType]);
 
   // TODO: This can be removed after backend supports invalid values in draft save
-  const handleChange = React.useCallback((dateString: string) => {
-    const uiDate = convertToUIDateFormat(dateString);
-    if (isEmpty(uiDate)) {
-      setError('pattern');
-      clearValue();
-    }
-    else {
-      clearErrors();
-      setValue(uiDate);
-    }
-
-  },[setError,clearValue,setValue,clearErrors]);
+  const handleChange = React.useCallback(
+    (dateString: string) => {
+      const uiDate = convertToUIDateFormat(dateString);
+      if (isEmpty(uiDate)) {
+        setError('pattern');
+        clearValue();
+      } else {
+        clearErrors();
+        setValue(uiDate);
+      }
+    },
+    [setError, clearValue, setValue, clearErrors]
+  );
 
   return (
     <$GridCell {...$gridCellProps}>
       <$DateInput
-        {...register(id, {...validation, validate, setValueAs: convertDateForBackend})}
+        {...register(id, {
+          ...validation,
+          validate,
+          setValueAs: convertDateForBackend,
+        })}
         key={id}
         id={id}
         data-testid={id}
@@ -80,10 +103,10 @@ const DateInput = ({
         initialMonth={new Date()}
         defaultValue={date}
         language={locale}
+        // for some reason date picker causes error "Cannot read property 'createEvent' of null" in tests. It's not needed for tests so it's disabled for them.
+        disableDatePicker={process.env.NODE_ENV !== 'development'}
         onChange={handleChange}
-        errorText={
-          errorText
-        }
+        errorText={errorText}
         label={t(`common:application.form.inputs.${fieldName}`)}
       />
     </$GridCell>

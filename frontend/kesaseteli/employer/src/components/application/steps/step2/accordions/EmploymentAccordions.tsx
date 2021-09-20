@@ -10,7 +10,6 @@ import Application from 'shared/types/employer-application';
 
 const EmploymentAccordions: React.FC = () => {
   const { t } = useTranslation();
-
   const { getValues } = useFormContext<Application>();
 
   const employments = getValues('summer_vouchers') ?? [];
@@ -27,12 +26,11 @@ const EmploymentAccordions: React.FC = () => {
       />
       <EmploymentsErrorNotification />
       <FormSection columns={1} withoutDivider>
-      {employments.map((employment, index) => (
-        <EmploymentAccordion index={index} key={employment.id} />
-      ))}
-      <AddNewEmploymentButton />
+        {employments.map((employment, index) => (
+          <EmploymentAccordion index={index} key={employment.id} />
+        ))}
+        <AddNewEmploymentButton />
       </FormSection>
-
     </>
   );
 };

@@ -84,18 +84,23 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
             queryClient,
             application
           );
+          const required =
+            /(tieto puuttuu tai on virheellinen)|(errors.required)/i;
           await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.typeInvoicerName('');
           await applicationPage.step1.expectations.inputHasError(
-            /(nimi puuttuu)|(errors.invoicer_name)/i
+            'invoicer_name',
+            required
           );
           applicationPage.step1.actions.typeInvoicerEmail('');
           await applicationPage.step1.expectations.inputHasError(
-            /(sähköposti on virheellinen)|(errors.invoicer_email)/i
+            'invoicer_email',
+            required
           );
           applicationPage.step1.actions.typeInvoicerPhone('');
           await applicationPage.step1.expectations.inputHasError(
-            /(puhelinnumero on virheellinen)|(errors.invoicer_phone_number)/i
+            'invoicer_phone_number',
+            required
           );
         });
 
@@ -111,15 +116,18 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.typeInvoicerName('a'.repeat(257)); // max limit is 256
           await applicationPage.step1.expectations.inputHasError(
-            /(nimi puuttuu)|(errors.invoicer_name)/i
+            'invoicer_name',
+            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
           applicationPage.step1.actions.typeInvoicerEmail('john@doe');
           await applicationPage.step1.expectations.inputHasError(
-            /(sähköposti on virheellinen)|(errors.invoicer_email)/i
+            'invoicer_email',
+            /(syöttämäsi tieto on virheellistä muotoa)|(errors.pattern)/i
           );
           applicationPage.step1.actions.typeInvoicerPhone('1'.repeat(65)); // max limit is 64
           await applicationPage.step1.expectations.inputHasError(
-            /(puhelinnumero on virheellinen)|(errors.invoicer_phone_number)/i
+            'invoicer_phone_number',
+            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
         });
 
