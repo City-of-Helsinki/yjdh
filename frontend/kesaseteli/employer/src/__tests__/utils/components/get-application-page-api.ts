@@ -3,16 +3,9 @@ import {
   expectToSaveApplication,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import { QueryClient } from 'react-query';
-import {
-  expectBackendRequestsToComplete,
-  waitForBackendRequestsToComplete,
-} from 'shared/__tests__/utils/component.utils';
-import {
-  act,
-  screen,
-  userEvent,
-  waitFor,
-} from 'shared/__tests__/utils/test-utils';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/employer-application';
 import Invoicer from 'shared/types/invoicer';
 
@@ -57,10 +50,12 @@ export type ApplicationPageApi = {
 };
 
 const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
-  await waitFor(async () => {
-    expectBackendRequestsToComplete();
-    await screen.findByRole('heading', { name: header });
-  });
+  await screen.findByRole(
+    'heading',
+    { name: header },
+    { timeout: JEST_TIMEOUT }
+  );
+  await waitForBackendRequestsToComplete();
 };
 
 const expectNextButtonIsEnabled = (): void => {
@@ -117,13 +112,10 @@ const getApplicationPageApi = (
     const put = expectToSaveApplication(application);
     const get = expectToGetApplicationFromBackend(application);
     await waitForBackendRequestsToComplete();
-
-    await act(async () =>
-      userEvent.click(
-        screen.getByRole('button', {
-          name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
-        })
-      )
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
+      })
     );
     await waitFor(() => {
       put.done();

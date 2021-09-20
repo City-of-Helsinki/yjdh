@@ -104,7 +104,7 @@ const DateInput = ({
         defaultValue={date}
         language={locale}
         // for some reason date picker causes error "Cannot read property 'createEvent' of null" in tests. It's not needed for tests so it's disabled for them.
-        disableDatePicker={process.env.NODE_ENV !== 'development'}
+        disableDatePicker={process.env.NODE_ENV === 'test'}
         onChange={handleChange}
         errorText={errorText}
         label={t(`common:application.form.inputs.${fieldName}`)}
