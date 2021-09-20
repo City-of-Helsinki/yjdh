@@ -15,6 +15,7 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_STATUSES,
     ApplicationPermission,
+    get_user_company,
     SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
@@ -43,8 +44,7 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
             .prefetch_related("summer_vouchers")
         )
         user = self.request.user
-        eauth_profile = user.oidc_profile.eauthorization_profile
-        user_company = getattr(eauth_profile, "company", None)
+        user_company = get_user_company(self.request)
 
         return queryset.filter(
             company=user_company,
@@ -80,8 +80,7 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
             .prefetch_related("attachments")
         )
         user = self.request.user
-        eauth_profile = user.oidc_profile.eauthorization_profile
-        user_company = getattr(eauth_profile, "company", None)
+        user_company = get_user_company(self.request)
 
         return queryset.filter(
             application__company=user_company,

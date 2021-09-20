@@ -105,6 +105,7 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
 
 @pytest.mark.django_db
 @override_settings(
+    EAUTHORIZATIONS_CLIENT_ID="ed4b7ae7",
     EAUTHORIZATIONS_BASE_URL="http://example.com",
     LOGIN_REDIRECT_URL="http://example.com/success",
     MOCK_FLAG=False,
@@ -119,6 +120,16 @@ def test_eauth_callback_view(requests_mock, user_client, user):
     }
     matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
     requests_mock.post(matcher, json=token_info)
+
+    organization_roles_json = [
+        {
+            "name": "Activenakusteri Oy",
+            "identifier": "7769480-5",
+            "complete": True,
+            "roles": ["NIMKO"],
+        }
+    ]
+    requests_mock.get(matcher, json=organization_roles_json)
 
     callback_url = f"{reverse('eauth_authentication_callback')}?code=test"
     response = user_client.get(callback_url)
