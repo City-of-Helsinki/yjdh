@@ -4,9 +4,9 @@ import pytest
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.tests.data.company_data import (
-    DUMMY_COMPANY_DATA,
     DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE,
     DUMMY_YTJ_RESPONSE,
+    get_dummy_company_data,
 )
 from django.conf import settings
 from django.test import override_settings
@@ -42,7 +42,7 @@ def test_get_mock_company(api_client, mock_get_organisation_roles_and_create_com
 
     assert response.status_code == 200
 
-    assert response.data["business_id"] == DUMMY_COMPANY_DATA["business_id"]
+    assert response.data["business_id"] == get_dummy_company_data()["business_id"]
 
 
 @pytest.mark.django_db
@@ -138,7 +138,7 @@ def test_get_company_from_ytj_with_fallback_data(
 
     response = api_client.get(get_company_api_url())
     # Still be able to query company data
-    assert response.data["business_id"] == DUMMY_COMPANY_DATA["business_id"]
+    assert response.data["business_id"] == get_dummy_company_data()["business_id"]
 
 
 @pytest.mark.django_db
