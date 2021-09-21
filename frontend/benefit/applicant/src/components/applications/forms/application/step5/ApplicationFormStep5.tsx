@@ -5,6 +5,7 @@ import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/
 import {
   ATTACHMENT_MAX_SIZE,
   ATTACHMENT_TYPES,
+  EMPLOYEE_CONSENT_FILE,
 } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
@@ -93,7 +94,16 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
                 ) : (
                   <>
                     <$GridCell $colSpan={4}>
-                      <$Button variant="secondary" iconLeft={<IconPrinter />}>
+                      <$Button
+                        onClick={() =>
+                          // eslint-disable-next-line security/detect-non-literal-fs-filename
+                          window
+                            .open(`/${EMPLOYEE_CONSENT_FILE}`, '_blank')
+                            ?.focus()
+                        }
+                        variant="secondary"
+                        iconLeft={<IconPrinter />}
+                      >
                         {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
                       </$Button>
                     </$GridCell>
