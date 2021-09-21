@@ -14,22 +14,21 @@ type ExtendedComponentProps = {
   t: TFunction;
   handleNext: () => void;
   handleBack: () => void;
-  handleStepChange: (step: number) => void;
   translationsBase: string;
 };
 
-const useApplicationFormStep4 = (
+const useApplicationFormStep5 = (
   application: Application
 ): ExtendedComponentProps => {
-  const translationsBase = 'common:applications.sections';
+  const translationsBase = 'common:applications.sections.credentials.sections';
   const { t } = useTranslation();
 
-  const { mutate: updateApplicationStep4, error: updateApplicationErrorStep4 } =
+  const { mutate: updateApplicationStep4, error: updateApplicationErrorStep5 } =
     useUpdateApplicationQuery();
 
   useEffect(() => {
     // todo:custom error messages
-    if (updateApplicationErrorStep4) {
+    if (updateApplicationErrorStep5) {
       hdsToast({
         autoDismiss: true,
         autoDismissTime: 5000,
@@ -39,7 +38,7 @@ const useApplicationFormStep4 = (
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, updateApplicationErrorStep4]);
+  }, [t, updateApplicationErrorStep5]);
 
   const handleStepChange = (nextStep: number): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
@@ -52,17 +51,16 @@ const useApplicationFormStep4 = (
     updateApplicationStep4(currentApplicationData);
   };
 
-  const handleNext = (): void => handleStepChange(5);
+  const handleNext = (): void => handleStepChange(6);
 
-  const handleBack = (): void => handleStepChange(3);
+  const handleBack = (): void => handleStepChange(4);
 
   return {
     t,
     handleNext,
     handleBack,
-    handleStepChange,
     translationsBase,
   };
 };
 
-export { useApplicationFormStep4 };
+export { useApplicationFormStep5 };

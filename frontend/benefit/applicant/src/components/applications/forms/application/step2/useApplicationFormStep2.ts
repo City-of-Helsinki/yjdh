@@ -7,7 +7,6 @@ import {
   PAY_SUBSIDY_OPTIONS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
-import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
@@ -46,18 +45,13 @@ type UseApplicationFormStep2Props = {
 const useApplicationFormStep2 = (
   application: Application
 ): UseApplicationFormStep2Props => {
-  const { applicationTempData, setApplicationTempData } =
-    React.useContext(ApplicationContext);
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [step, setStep] = useState<number>(2);
 
-  const {
-    mutate: updateApplication,
-    error: updateApplicationError,
-    isSuccess: isApplicationUpdated,
-  } = useUpdateApplicationQuery();
+  const { mutate: updateApplication, error: updateApplicationError } =
+    useUpdateApplicationQuery();
 
   useEffect(() => {
     // todo:custom error messages
@@ -72,12 +66,6 @@ const useApplicationFormStep2 = (
       });
     }
   }, [t, updateApplicationError]);
-
-  useEffect(() => {
-    if (isApplicationUpdated) {
-      setApplicationTempData({ ...applicationTempData, currentStep: step });
-    }
-  }, [isApplicationUpdated, applicationTempData, step, setApplicationTempData]);
 
   const formik = useFormik({
     initialValues: application,
