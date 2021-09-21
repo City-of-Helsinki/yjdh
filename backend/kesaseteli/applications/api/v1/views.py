@@ -13,7 +13,8 @@ from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 from applications.api.v1.permissions import (
-    ALLOWED_APPLICATION_STATUSES,
+    ALLOWED_APPLICATION_UPDATE_STATUSES,
+    ALLOWED_APPLICATION_VIEW_STATUSES,
     ApplicationPermission,
     get_user_company,
     SummerVoucherPermission,
@@ -23,6 +24,7 @@ from applications.api.v1.serializers import (
     AttachmentSerializer,
     SummerVoucherSerializer,
 )
+from applications.enums import ApplicationStatus
 from applications.models import Application, SummerVoucher
 
 
@@ -49,16 +51,25 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
         return queryset.filter(
             company=user_company,
             user=user,
-            status__in=ALLOWED_APPLICATION_STATUSES,
+            status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
         )
 
     def create(self, request, *args, **kwargs):
         """
         Allow only 1 (DRAFT) application per user & company.
         """
-        if self.get_queryset().exists():
+        if self.get_queryset().filter(status=ApplicationStatus.DRAFT).exists():
             raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Allow to update only DRAFT status applications.
+        """
+        instance = self.get_object()
+        if instance.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
+            raise ValidationError("Only DRAFT applications can be updated")
+        return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -85,7 +96,7 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
         return queryset.filter(
             application__company=user_company,
             application__user=user,
-            application__status__in=ALLOWED_APPLICATION_STATUSES,
+            application__status__in=ALLOWED_APPLICATION_VIEW_STATUSES,
         )
 
     def create(self, request, *args, **kwargs):
@@ -114,6 +125,11 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
         Upload a single file as attachment
         """
         obj = self.get_object()
+
+        if obj.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
+            raise ValidationError(
+                "Attachments can be uploaded only for DRAFT applications"
+            )
 
         # Validate request data
         serializer = AttachmentSerializer(
@@ -159,6 +175,11 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
             """
             Delete a single attachment as file
             """
+            if obj.application.status not in ALLOWED_APPLICATION_UPDATE_STATUSES:
+                raise ValidationError(
+                    "Attachments can be deleted only for DRAFT applications"
+                )
+
             if (
                 obj.application.status
                 not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES

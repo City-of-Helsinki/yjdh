@@ -37,11 +37,36 @@ def application(company, user_with_profile):
 
 
 @pytest.fixture
+def submitted_application(company, user_with_profile):
+    return ApplicationFactory(
+        status=ApplicationStatus.SUBMITTED, company=company, user=user_with_profile
+    )
+
+
+@pytest.fixture
 def summer_voucher(application):
     summer_voucher = SummerVoucherFactory(application=application)
     yield summer_voucher
     for attachment in summer_voucher.attachments.all():
         attachment.attachment_file.delete(save=False)
+
+
+@pytest.fixture
+def submitted_summer_voucher(submitted_application):
+    summer_voucher = SummerVoucherFactory(application=submitted_application)
+    yield summer_voucher
+    for attachment in summer_voucher.attachments.all():
+        attachment.attachment_file.delete(save=False)
+
+
+@pytest.fixture
+def submitted_employment_contract_attachment(submitted_summer_voucher):
+    attachment = AttachmentFactory(
+        summer_voucher=submitted_summer_voucher,
+        attachment_type=AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    yield attachment
+    attachment.attachment_file.delete(save=False)
 
 
 @pytest.fixture
