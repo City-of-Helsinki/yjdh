@@ -1,7 +1,13 @@
+import { $Button } from 'benefit/applicant/components/applications/Applications.sc';
+import AttachmentItem from 'benefit/applicant/components/applications/attachmentItem/AttachmentItem';
+import UploadAttachment from 'benefit/applicant/components/applications/uploadAttachment/UploadAttachment';
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
+import {
+  ATTACHMENT_MAX_SIZE,
+  ATTACHMENT_TYPES,
+} from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
-  Button,
   IconArrowRight,
   IconDocument,
   IconPenLine,
@@ -22,8 +28,15 @@ import { useApplicationFormStep5 } from './useApplicationFormStep5';
 const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  const { t, handleBack, handleNext, translationsBase } =
-    useApplicationFormStep5(data);
+  const {
+    t,
+    handleBack,
+    handleNext,
+    translationsBase,
+    attachment,
+    isRemoving,
+    handleRemoveAttachment,
+  } = useApplicationFormStep5(data);
   const theme = useTheme();
 
   // temporary disabled feature
@@ -42,13 +55,9 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
               )}
               icon={<IconPenLine size="l" />}
               actions={
-                <Button
-                  theme="black"
-                  variant="secondary"
-                  iconRight={<IconArrowRight />}
-                >
+                <$Button variant="secondary" iconRight={<IconArrowRight />}>
                   {t(`${translationsBase}.electronicPowerOfAttorney.action1`)}
-                </Button>
+                </$Button>
               }
             />
           </$GridCell>
@@ -62,24 +71,47 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
             icon={<IconDocument size="l" />}
             actions={
               <$Grid>
-                <$GridCell $colSpan={4}>
-                  <Button
-                    theme="black"
-                    variant="secondary"
-                    iconLeft={<IconPrinter />}
-                  >
-                    {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
-                  </Button>
-                </$GridCell>
-                <$GridCell $colSpan={6}>
-                  <Button
-                    theme="black"
-                    variant="secondary"
-                    iconLeft={<IconArrowRight />}
-                  >
-                    {t(`${translationsBase}.uploadPowerOfAttorney.action2`)}
-                  </Button>
-                </$GridCell>
+                {attachment ? (
+                  <$GridCell>
+                    <AttachmentItem
+                      id={attachment.id}
+                      name={attachment.attachmentFileName}
+                      removeText={t(
+                        `common:applications.sections.attachments.remove`
+                      )}
+                      onClick={() =>
+                        // eslint-disable-next-line security/detect-non-literal-fs-filename
+                        window
+                          .open(attachment.attachmentFile, '_blank')
+                          ?.focus()
+                      }
+                      onRemove={() =>
+                        !isRemoving && handleRemoveAttachment(attachment.id)
+                      }
+                    />
+                  </$GridCell>
+                ) : (
+                  <>
+                    <$GridCell $colSpan={4}>
+                      <$Button variant="secondary" iconLeft={<IconPrinter />}>
+                        {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
+                      </$Button>
+                    </$GridCell>
+                    <$GridCell $colSpan={6}>
+                      <UploadAttachment
+                        applicationId={data.id || ''}
+                        attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
+                        allowedFileTypes={['application/pdf']}
+                        maxSize={ATTACHMENT_MAX_SIZE}
+                        uploadText={t(
+                          `${translationsBase}.uploadPowerOfAttorney.action2`
+                        )}
+                        variant="secondary"
+                        icon={<IconArrowRight />}
+                      />
+                    </$GridCell>
+                  </>
+                )}
               </$Grid>
             }
           />

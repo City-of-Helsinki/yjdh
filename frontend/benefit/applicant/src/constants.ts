@@ -56,6 +56,7 @@ export enum ATTACHMENT_TYPES {
   COMMISSION_CONTRACT = 'commission_contract',
   EDUCATION_CONTRACT = 'education_contract',
   HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
+  EMPLOYEE_CONSENT = 'employee_consent',
 }
 
 export enum ATTACHMENT_CONTENT_TYPES {

@@ -1,9 +1,12 @@
 import hdsToast from 'benefit/applicant/components/toast/Toast';
+import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
+import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
+  Attachment,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { TFunction } from 'next-i18next';
@@ -15,6 +18,9 @@ type ExtendedComponentProps = {
   handleNext: () => void;
   handleBack: () => void;
   translationsBase: string;
+  attachment: Attachment | null;
+  isRemoving: boolean;
+  handleRemoveAttachment: (attachmentId: string) => void;
 };
 
 const useApplicationFormStep5 = (
@@ -26,9 +32,15 @@ const useApplicationFormStep5 = (
   const { mutate: updateApplicationStep4, error: updateApplicationErrorStep5 } =
     useUpdateApplicationQuery();
 
+  const {
+    mutate: removeAttachment,
+    isLoading: isRemoving,
+    isError: isRemovingError,
+  } = useRemoveAttachmentQuery();
+
   useEffect(() => {
     // todo:custom error messages
-    if (updateApplicationErrorStep5) {
+    if (updateApplicationErrorStep5 || isRemovingError) {
       hdsToast({
         autoDismiss: true,
         autoDismissTime: 5000,
@@ -38,7 +50,7 @@ const useApplicationFormStep5 = (
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, updateApplicationErrorStep5]);
+  }, [t, updateApplicationErrorStep5, isRemovingError]);
 
   const handleStepChange = (nextStep: number): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
@@ -55,11 +67,29 @@ const useApplicationFormStep5 = (
 
   const handleBack = (): void => handleStepChange(4);
 
+  const getEmployeeConsentAttachment = (): Attachment | null => {
+    const consentArray = application.attachments?.filter(
+      (attachment) =>
+        attachment.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+    );
+    return consentArray?.length === 1 ? consentArray[0] : null;
+  };
+
+  const handleRemoveAttachment = (attachmentId: string): void => {
+    removeAttachment({
+      applicationId: application.id || '',
+      attachmentId,
+    });
+  };
+
   return {
     t,
     handleNext,
     handleBack,
+    isRemoving,
+    handleRemoveAttachment,
     translationsBase,
+    attachment: getEmployeeConsentAttachment(),
   };
 };
 

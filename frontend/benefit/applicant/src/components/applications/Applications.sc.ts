@@ -1,5 +1,5 @@
 import { Button } from 'hds-react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const $PrimaryButton = styled(Button)`
   background-color: ${(props) => props.theme.colors.coatOfArms} !important;
@@ -18,6 +18,32 @@ export const $SupplementaryButton = styled(Button)`
   min-width: 170px;
   max-height: 60px;
   margin-top: ${(props) => props.theme.spacing.xs2};
+`;
+
+export const $Button = styled(Button)`
+  ${(props) =>
+    props.variant === 'primary' &&
+    css`
+      background-color: ${props.theme.colors.coatOfArms} !important;
+      border-color: ${props.theme.colors.coatOfArms} !important;
+      color: ${props.theme.colors.white};
+      & > div {
+        --spinner-color: ${props.theme.colors.white} !important;
+      }
+    `}
+  ${(props) =>
+    props.variant === 'secondary' &&
+    css`
+      background-color: ${props.theme.colors.white} !important;
+      border-color: ${props.theme.colors.black} !important;
+      color: ${props.theme.colors.black};
+      &:hover {
+        background-color: var(--color-black-5) !important;
+      }
+      & > div {
+        --spinner-color: ${props.theme.colors.black} !important;
+      }
+    `}
 `;
 
 export const $PageHeader = styled.div`
