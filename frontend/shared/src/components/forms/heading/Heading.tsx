@@ -8,8 +8,9 @@ const Heading: React.FC<HeadingProps> = ({
   header,
   loading,
   tooltip,
+  as,
 }) => (
-  <$Header size={size}>
+  <$Header size={size} as={as}>
     {header}
     {tooltip && <Tooltip>{tooltip}</Tooltip>}
     {loading && <LoadingSpinner small />}

@@ -7,6 +7,7 @@ export type HeadingProps = {
   loadingText?: string;
   loadingFinishedText?: string;
   tooltip?: string;
+  as?: 'h1' | 'h2' | 'h3' | 'div';
 };
 
 export const $Header = styled.h1<HeadingProps>`
