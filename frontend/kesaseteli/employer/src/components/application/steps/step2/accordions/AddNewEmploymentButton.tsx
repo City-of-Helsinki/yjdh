@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 
 const AddNewEmploymentButton: React.FC = () => {
   const { t } = useTranslation();
@@ -20,11 +20,11 @@ const AddNewEmploymentButton: React.FC = () => {
 
   return (
     <$ButtonSection columns={1}>
-    <$GridCell>
-      <$PrimaryButton data-testid="add-employment" onClick={addNewEmployment}>
-        {t(`common:application.step2.add_employment`)}
-      </$PrimaryButton>
-    </$GridCell>
+      <$GridCell>
+        <$PrimaryButton data-testid="add-employment" onClick={addNewEmployment}>
+          {t(`common:application.step2.add_employment`)}
+        </$PrimaryButton>
+      </$GridCell>
     </$ButtonSection>
   );
 };

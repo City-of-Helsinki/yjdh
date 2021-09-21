@@ -226,7 +226,6 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
         "employment_end_date",
         "employment_work_hours",
         "employment_salary_paid",
-        "employment_description",
         "hired_without_voucher_assessment",
     ]
 
@@ -374,8 +373,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
                         )
                     }
                 )
-
-        self._validate_attachments()
+        """
+        uncomment this after attachments are implemented in ui
+        """
+        #self._validate_attachments()
 
     def _validate_attachments(self):
         """

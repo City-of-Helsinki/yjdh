@@ -1,7 +1,7 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application';
 
 const useCreateApplicationQuery = (): UseMutationResult<
   Application,

@@ -1,19 +1,28 @@
-import { NumberInput as HdsNumberInput, TextArea as HdsTextArea,TextInput as HdsTextInput } from 'hds-react';
+import {
+  NumberInput as HdsNumberInput,
+  TextArea as HdsTextArea,
+  TextInput as HdsTextInput,
+} from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
   RegisterOptions,
   useFormContext,
-  UseFormRegister} from 'react-hook-form';
-import { $GridCell,GridCellProps } from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/employer-application';
+  UseFormRegister,
+} from 'react-hook-form';
+import {
+  $GridCell,
+  GridCellProps,
+} from 'shared/components/forms/section/FormSection.sc';
+import Application from 'shared/types/application-form-data';
 
 import { $TextInput, $TextInputProps } from './TextInput.sc';
 
-
-const getComponentType = (type: TextInputProps['type']): typeof HdsTextInput | typeof HdsNumberInput |  typeof HdsTextArea => {
-  switch(type) {
+const getComponentType = (
+  type: TextInputProps['type']
+): typeof HdsTextInput | typeof HdsNumberInput | typeof HdsTextArea => {
+  switch (type) {
     case 'number':
     case 'decimal':
       return HdsNumberInput;
@@ -25,16 +34,16 @@ const getComponentType = (type: TextInputProps['type']): typeof HdsTextInput | t
     default:
       return HdsTextInput;
   }
-}
+};
 
 export type TextInputProps = {
   validation?: RegisterOptions<Application>;
   id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
-  type?: $TextInputProps['$type'],
-  helperFormat?: string,
+  type?: $TextInputProps['$type'];
+  helperFormat?: string;
 } & GridCellProps;
 
-const TextInput : React.FC<TextInputProps> = ({
+const TextInput: React.FC<TextInputProps> = ({
   id,
   validation = {},
   type = 'text',
@@ -42,9 +51,7 @@ const TextInput : React.FC<TextInputProps> = ({
   ...$gridCellProps
 }) => {
   const { t } = useTranslation();
-  const {
-    register,
-  } = useFormContext<Application>();
+  const { register } = useFormContext<Application>();
 
   const { getValue, getError, fieldName } = useApplicationFormField<string>(id);
   const errorType = getError()?.type;
@@ -54,27 +61,30 @@ const TextInput : React.FC<TextInputProps> = ({
       return undefined;
     }
     const error = t(`common:application.form.errors.${errorType}`);
-    const helperText = helperFormat ? `${t('common:application.form.helpers.format')}: ${helperFormat}` : undefined;
-    if (['pattern','required'].includes(errorType) && helperText) {
+    const helperText = helperFormat
+      ? `${t('common:application.form.helpers.format')}: ${helperFormat}`
+      : undefined;
+    if (['pattern', 'required'].includes(errorType) && helperText) {
       return `${error}. ${helperText}`;
     }
     return error;
-  },[t,errorType, helperFormat]);
+  }, [t, errorType, helperFormat]);
 
   // TODO: This can be removed after backend supports invalid values in draft save
-  const setValueForBackend = React.useCallback((newValue: string) =>
-    // getError does not always update: https://github.com/react-hook-form/react-hook-form/issues/2893
-    // if value hasnt changed (getValue is same as new value), then error is present and invalid value is changed to undefined
-    // to prevent backend to fail
-    getError() && getValue() === newValue ? undefined : newValue,
-   [getError,getValue]);
-
+  const setValueForBackend = React.useCallback(
+    (newValue: string) =>
+      // getError does not always update: https://github.com/react-hook-form/react-hook-form/issues/2893
+      // if value hasnt changed (getValue is same as new value), then error is present and invalid value is changed to undefined
+      // to prevent backend to fail
+      getError() && getValue() === newValue ? undefined : newValue,
+    [getError, getValue]
+  );
 
   return (
     <$GridCell {...$gridCellProps}>
       <$TextInput
         as={getComponentType(type)}
-        {...register(id, {...validation, setValueAs: setValueForBackend})}
+        {...register(id, { ...validation, setValueAs: setValueForBackend })}
         $type={type}
         key={id}
         id={id}
@@ -86,7 +96,7 @@ const TextInput : React.FC<TextInputProps> = ({
         errorText={errorText}
         label={t(`common:application.form.inputs.${fieldName}`)}
       />
-  </$GridCell>
+    </$GridCell>
   );
 };
 

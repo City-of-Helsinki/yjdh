@@ -4,7 +4,7 @@ import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-r
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
-import { loginAndfillInvoicerForm } from '../actions/application.actions';
+import { loginAndfillEmployerForm } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getEmployerUiUrl } from '../utils/settings';
 import { getUrlUtils } from '../utils/url.utils';
@@ -27,12 +27,12 @@ fixture('Application')
   });
 
 if (isRealIntegrationsEnabled()) {
-  test('Fills up invoicer form and retrieves its data when logged out and in', async (t: TestController) => {
+  test('Fills up employer form and retrieves its data when logged out and in', async (t: TestController) => {
     const {
       user,
       id: applicationId,
-      ...invoicerFormData
-    } = await loginAndfillInvoicerForm(t);
+      ...employerFormData
+    } = await loginAndfillEmployerForm(t);
     const headerUser = await headerComponents.headerUser();
     await headerUser.actions.clicklogoutButton();
     await doEmployerLogin(t, 'fi', user);
@@ -40,14 +40,14 @@ if (isRealIntegrationsEnabled()) {
       'fi',
       applicationId
     );
-    const invoicerForm = await applicationPageComponents.invoicerForm();
-    await invoicerForm.expectations.isPresent();
-    await invoicerForm.expectations.isFulFilledWith(invoicerFormData);
+    const employerForm = await applicationPageComponents.employerForm();
+    await employerForm.expectations.isPresent();
+    await employerForm.expectations.isFulFilledWith(employerFormData);
   });
 } else {
-  test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
-    const invoicerFormData = await loginAndfillInvoicerForm(t);
-    const invoicerForm = await applicationPageComponents.invoicerForm();
-    await invoicerForm.expectations.isFulFilledWith(invoicerFormData);
+  test('Fills up employer form and retrieves its data when reloading page', async (t: TestController) => {
+    const employerFormData = await loginAndfillEmployerForm(t);
+    const employerForm = await applicationPageComponents.employerForm();
+    await employerForm.expectations.isFulFilledWith(employerFormData);
   });
 }

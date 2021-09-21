@@ -12,7 +12,7 @@ import {
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
 import useLocale from 'shared/hooks/useLocale';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 import {
   convertToBackendDateFormat,
   convertToUIDateFormat,

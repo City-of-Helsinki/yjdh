@@ -56,12 +56,15 @@
     },
     "step3": {
       "name": "Lähetys SWE",
-      "header": "3. Tarkistus ja lähettäminen"
+      "header": "3. Tarkistus ja lähettäminen SWE",
+      "employerTitle": "Työnantajan tiedot SWE",
+      "employmentTitle": "Selvitys työsuhteesta SWE",
+      "tooltip": "SV Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     },
     "buttons": {
       "previous": "Palaa edelliseen SWE",
-      "save_and_continue": "Tallenna ja jatka SWE",
-      "send": "Lähetä hakemus SWE"
+      "next": "Tallenna ja jatka SWE",
+      "last": "Lähetä hakemus SWE"
     },
     "form": {
       "selectionGroups": {
@@ -76,9 +79,10 @@
         }
       },
       "inputs": {
-        "invoicer_name": "Yhteyshenkilön nimi SWE",
-        "invoicer_email": "Yhteyshenkilön sähköposti SWE",
-        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero SWE",
+        "contact_person_name": "Yhteyshenkilön nimi SWE",
+        "contact_person_email": "Yhteyshenkilön sähköposti SWE",
+        "street_address": "Työpaikan lähiosoite SWE",
+        "contact_person_phone_number": "Yhteyshenkilön puhelinnumero SWE",
         "employee_name": "Työntekijän nimi SWE",
         "employee_ssn": "Henkilötunnus SWE",
         "summer_voucher_exception_reason": "Luokka tai syntymävuosi SWE",
@@ -93,7 +97,8 @@
         "employment_description": "Kuvaus työtehtävistä SWE",
         "employment_work_hours": "Tehdyt työtunnit SWE",
         "employment_salary_paid": "Maksettu palkka SWE",
-        "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä? SWE"
+        "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä? SWE",
+        "termsAndConditions": "Olen lukenut palvelun käyttöehdot ja hyväksyn ne. SWE"
       },
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",
@@ -105,6 +110,7 @@
         "pattern": "Syöttämäsi tieto on virheellistä muotoa SWE",
         "validate": "Syöttämäsi tieto on virheellistä muotoa SWE",
         "selectionGroups": "Valitse jokin vaihtoehto SWE",
+        "checkboxRequired": "Valinta on pakollinen SWE",
         "employmentsRequired": "Lisää ainakin yksi työsuhde SWE"
       },
       "notification": {

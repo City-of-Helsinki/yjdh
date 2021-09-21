@@ -1,9 +1,12 @@
-import { $Notification,$NotificationDescription } from 'kesaseteli/employer/components/application/steps/step2/error-notification/EmploymentsErrorNotification.sc';
+import {
+  $Notification,
+  $NotificationDescription,
+} from 'kesaseteli/employer/components/application/steps/step2/error-notification/EmploymentsErrorNotification.sc';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { $Grid } from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
 
 import EmployeeErrorNotification from './EmployeeErrorNotification';
@@ -15,8 +18,11 @@ const EmploymentsErrorNotification: React.FC = () => {
     formState: { isValid, errors, isSubmitted },
   } = useFormContext<Application>();
 
-  const getEmploymentId = React.useCallback((index: number): Employment['id'] =>
-    getValues(`summer_vouchers.${index}.id`), [getValues]);
+  const getEmploymentId = React.useCallback(
+    (index: number): Employment['id'] =>
+      getValues(`summer_vouchers.${index}.id`),
+    [getValues]
+  );
 
   if (!errors || isValid || !isSubmitted) {
     return null;
@@ -25,10 +31,12 @@ const EmploymentsErrorNotification: React.FC = () => {
   const employmentErrorEntries = Array.isArray(employmentsErrors)
     ? employmentsErrors.map((employmentErrors, index) => ({
         index,
-        errors: Object.entries(employmentErrors ?? {}).map(([field, error]) => ({
-          field: field as keyof Employment,
-          errorType: error?.type || 'required',
-        }) ),
+        errors: Object.entries(employmentErrors ?? {}).map(
+          ([field, error]) => ({
+            field: field as keyof Employment,
+            errorType: error?.type || 'required',
+          })
+        ),
       }))
     : [];
 

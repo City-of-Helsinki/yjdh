@@ -1,14 +1,13 @@
 import { IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import {
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import useWizard from 'shared/hooks/useWizard';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 
 import {
   $ButtonSection,
@@ -17,10 +16,10 @@ import {
 } from './ActionButtons.sc';
 
 type Props = {
-  onNext: 'sendApplication' | 'updateApplication';
+  onAfterLastStep?: () => void;
 };
 
-const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
+const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   const { t } = useTranslation();
   const {
     handleSubmit,
@@ -33,10 +32,18 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
     nextStep,
     isLoading: isWizardLoading,
   } = useWizard();
-  const apiOperations = useApplicationApi({
-    onUpdateSuccess: () => void nextStep(),
-  });
+  const { updateApplication, sendApplication } = useApplicationApi();
   const { isSyncing } = useIsSyncingToBackend();
+
+  const handleSuccess = React.useCallback(
+    (validatedApplication) => {
+      if (!isLastStep) {
+        return updateApplication(validatedApplication, () => void nextStep());
+      }
+      return sendApplication(validatedApplication, onAfterLastStep);
+    },
+    [isLastStep, updateApplication, nextStep, sendApplication, onAfterLastStep]
+  );
 
   const isLoading = isSubmitting || isSyncing || isWizardLoading;
   return (
@@ -59,14 +66,14 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
         <$PrimaryButton
           data-testid="next-button"
           iconRight={<IconArrowRight />}
-          onClick={handleSubmit(apiOperations[onNext])}
+          onClick={handleSubmit(handleSuccess)}
           loadingText={t(`common:application.loading`)}
           isLoading={isLoading}
           disabled={isLoading}
         >
           {isLastStep
-            ? t(`common:application.buttons.send`)
-            : t(`common:application.buttons.save_and_continue`)}
+            ? t(`common:application.buttons.last`)
+            : t(`common:application.buttons.next`)}
         </$PrimaryButton>
       </$GridCell>
     </$ButtonSection>

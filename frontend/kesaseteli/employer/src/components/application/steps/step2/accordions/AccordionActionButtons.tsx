@@ -6,18 +6,14 @@ import useValidateEmployment from 'kesaseteli/employer/hooks/employments/useVali
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import {
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/employer-application';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import Application from 'shared/types/application-form-data';
 
-import {
-  $SupplementaryButton,
-} from './EmploymentAccordion.sc';
+import { $SupplementaryButton } from './EmploymentAccordion.sc';
 
 type Props = {
   index: number;
-  onSave: () => void,
+  onSave: () => void;
 };
 
 const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
@@ -29,8 +25,7 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
   const { isLoading, updateApplication, removeEmployment } =
     useApplicationApi();
 
-  const { removeFromStorage } =
-    useAccordionStateLocalStorage(index);
+  const { removeFromStorage } = useAccordionStateLocalStorage(index);
 
   const update = React.useCallback(() => {
     onSave();
@@ -42,7 +37,7 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
     removeEmployment(getValues(), index);
   }, [removeFromStorage, removeEmployment, getValues, index]);
 
-  const validate = useValidateEmployment(index, {onSuccess: update});
+  const validate = useValidateEmployment(index, { onSuccess: update });
 
   return (
     <>

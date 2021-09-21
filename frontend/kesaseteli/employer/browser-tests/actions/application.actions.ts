@@ -1,18 +1,18 @@
 import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
-import { fakeInvoicer } from '@frontend/shared/src/__tests__/utils/fake-objects';
-import type Application from '@frontend/shared/src/types/employer-application';
-import type Invoicer from '@frontend/shared/src/types/invoicer';
+import { fakeContactPerson } from '@frontend/shared/src/__tests__/utils/fake-objects';
+import type Application from '@frontend/shared/src/types/application';
+import ContactPerson from 'shared/types/contact_person';
 import TestController from 'testcafe';
 
 import { getApplicationPageComponents } from '../application-page/applicationPage.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
 
-type UserAndApplicationData = { id: Application['id'] } & Invoicer &
+type UserAndApplicationData = { id: Application['id'] } & ContactPerson &
   SuomiFiData;
 
-export const loginAndfillInvoicerForm = async (
+export const loginAndfillEmployerForm = async (
   t: TestController
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
@@ -30,16 +30,20 @@ export const loginAndfillInvoicerForm = async (
     );
     await companyTable.expectations.isCompanyDataPresent();
   }
-  const invoicerForm = await applicationPageComponents.invoicerForm();
-  const invoicerFormData = fakeInvoicer();
+  const employerForm = await applicationPageComponents.employerForm();
+  const employerFormData = fakeContactPerson();
   const {
-    invoicer_name,
-    invoicer_email,
-    invoicer_phone_number,
-  } = invoicerFormData;
-  await invoicerForm.actions.fillName(invoicer_name);
-  await invoicerForm.actions.fillEmail(invoicer_email);
-  await invoicerForm.actions.fillPhone(invoicer_phone_number);
-  await invoicerForm.actions.clickSaveAndContinueButton();
-  return { ...invoicerFormData, ...suomiFiData, id: applicationId };
+    contact_person_name,
+    contact_person_email,
+    street_address,
+    contact_person_phone_number,
+  } = employerFormData;
+  await employerForm.actions.fillContactPersonName(contact_person_name);
+  await employerForm.actions.fillContactPersonEmail(contact_person_email);
+  await employerForm.actions.fillStreetAddress(street_address);
+  await employerForm.actions.fillContactPersonPhone(
+    contact_person_phone_number
+  );
+  await employerForm.actions.clickSaveAndContinueButton();
+  return { ...employerFormData, ...suomiFiData, id: applicationId };
 };

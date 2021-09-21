@@ -1,25 +1,32 @@
 import ApplicationForm from 'kesaseteli/employer/components/application/ApplicationForm';
 import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
+import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
+import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();
-  const { application } = useApplicationApi();
+  const router = useRouter();
+  const locale = router.locale ?? DEFAULT_LANGUAGE;
+  const applicationId = useApplicationIdQueryParam();
+  const goToThankYouPage = React.useCallback(() => {
+    if (applicationId) {
+      void router.push(`${locale}/thankyou?id=${applicationId}`);
+    }
+  }, [applicationId, router, locale]);
 
-  const stepTitle = t('common:application.step3.header');
   return (
-    <ApplicationForm stepTitle={stepTitle}>
-      <FormSection
-        header={stepTitle}
-        tooltip={t('common:application.step3.tooltip')}
-      >
-        Yhteenveto: <p />
-        <pre>{JSON.stringify(application, null, 2)}</pre>
-        <ActionButtons onNext="sendApplication" />
+    <ApplicationForm stepTitle={t('common:application.step3.header')}>
+      <ApplicationSummary />
+      <FormSection columns={1}>
+        <Checkbox id="termsAndConditions" validation={{ required: true }} />
       </FormSection>
+      <ActionButtons onAfterLastStep={goToThankYouPage} />
     </ApplicationForm>
   );
 };
