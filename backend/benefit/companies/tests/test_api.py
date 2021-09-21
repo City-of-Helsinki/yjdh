@@ -12,8 +12,8 @@ from django.conf import settings
 from django.test import override_settings
 
 
-def get_company_api_url():
-    return "/v1/company/"
+def get_company_api_url(business_id=""):
+    return "/v1/company/{id}".format(id=business_id)
 
 
 def set_up_mock_requests(
@@ -69,6 +69,26 @@ def test_get_company_from_ytj(
         DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
     )
     response = api_client.get(get_company_api_url())
+    assert response.status_code == 200
+
+    company = Company.objects.first()
+    company_data = CompanySerializer(company).data
+
+    assert response.data == company_data
+    assert (
+        response.data["business_id"] == DUMMY_YTJ_RESPONSE["results"][0]["businessId"]
+    )
+
+
+@pytest.mark.django_db
+@override_settings(MOCK_FLAG=False, DISABLE_AUTHENTICATION=True)
+def test_get_company_from_ytj_with_business_id(api_client, requests_mock):
+    set_up_mock_requests(
+        DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
+    )
+    business_id = DUMMY_YTJ_RESPONSE["results"][0]["businessId"]
+    response = api_client.get(get_company_api_url(business_id))
+
     assert response.status_code == 200
 
     company = Company.objects.first()
