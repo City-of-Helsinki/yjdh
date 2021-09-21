@@ -146,3 +146,4 @@ def test_eauth_callback_view(requests_mock, user_client, user):
     assert abs(
         eauth_profile.access_token_expires - access_token_expires
     ) < timezone.timedelta(seconds=10)
+    assert user_client.session["organization_roles"] == organization_roles_json[0]

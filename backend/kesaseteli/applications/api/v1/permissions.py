@@ -20,12 +20,7 @@ def get_user_company(request: HttpRequest) -> Optional[Company]:
         return None
 
     eauth_profile = user.oidc_profile.eauthorization_profile
-    user_company = getattr(eauth_profile, "company", None)
-
-    if not user_company:
-        user_company = get_or_create_company_from_eauth_profile(
-            user.oidc_profile.eauthorization_profile, request
-        )
+    user_company = get_or_create_company_from_eauth_profile(eauth_profile, request)
 
     return user_company
 
