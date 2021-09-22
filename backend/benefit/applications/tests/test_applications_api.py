@@ -1265,7 +1265,6 @@ def test_purge_extra_attachments(request, api_client, application):
         AttachmentType.EDUCATION_CONTRACT,  # extra
         AttachmentType.EDUCATION_CONTRACT,  # extra
         AttachmentType.EMPLOYEE_CONSENT,
-        AttachmentType.EMPLOYEE_CONSENT,
     ]
     for attachment_type in lots_of_attachments:
         response = _upload_pdf(request, api_client, application, attachment_type)
@@ -1275,7 +1274,7 @@ def test_purge_extra_attachments(request, api_client, application):
 
     response = _submit_application(api_client, application)
     assert response.status_code == 200
-    assert application.attachments.count() == 7
+    assert application.attachments.count() == 6
 
 
 def test_employee_consent_upload(request, api_client, application):
@@ -1309,11 +1308,39 @@ def test_employee_consent_upload(request, api_client, application):
     )
 
     # upload the consent
-    response = _upload_pdf(
+    _upload_pdf(
         request,
         api_client,
         application,
         attachment_type=AttachmentType.EMPLOYEE_CONSENT,
+    )
+    _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYEE_CONSENT,
+    )
+    assert (
+        application.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ).count()
+        == 2
+    )
+    # Cannot upload multiple employee consent
+    response = _submit_application(api_client, application)
+    assert response.status_code == 400
+    assert (
+        str(response.data[0])
+        == "Application cannot have more than one employee consent attachment"
+    )
+    application.attachments.filter(attachment_type=AttachmentType.EMPLOYEE_CONSENT)[
+        0
+    ].delete()
+    assert (
+        application.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ).count()
+        == 1
     )
     response = _submit_application(api_client, application)
     assert response.status_code == 200

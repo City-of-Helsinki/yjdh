@@ -1186,11 +1186,16 @@ class ApplicationSerializer(serializers.ModelSerializer):
         )
 
     def _validate_employee_consent(self, instance):
-        if not instance.attachments.filter(
+        consent_count = instance.attachments.filter(
             attachment_type=AttachmentType.EMPLOYEE_CONSENT
-        ):
+        ).count()
+        if consent_count == 0:
             raise serializers.ValidationError(
                 _("Application does not have the employee consent attachment")
+            )
+        if consent_count > 1:
+            raise serializers.ValidationError(
+                _("Application cannot have more than one employee consent attachment")
             )
 
     def _validate_attachments(self, instance):
