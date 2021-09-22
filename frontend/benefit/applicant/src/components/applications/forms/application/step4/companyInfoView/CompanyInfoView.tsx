@@ -1,23 +1,38 @@
+import { $SupplementaryButton } from 'benefit/applicant/components/applications/Applications.sc';
 import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
+import { IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { formatDate, parseDate } from 'shared/utils/date.utils';
+import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
 
 import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
 export interface CompanyInfoViewProps {
   data: Application;
+  handleStepChange: (step: number) => void;
 }
 
-const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
+const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
+  data,
+  handleStepChange,
+}) => {
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
   return (
     <>
       <FormSection
         header={t(`${translationsBase}.company.heading1`)}
+        action={
+          <$SupplementaryButton
+            onClick={() => handleStepChange(1)}
+            variant="supplementary"
+            iconLeft={<IconPen />}
+          >
+            {t(`common:applications.actions.edit`)}
+          </$SupplementaryButton>
+        }
         withoutDivider
       >
         <$GridCell $colSpan={3}>
@@ -119,7 +134,9 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
                 </$GridCell>
                 <$GridCell>
                   <$ViewField>
-                    {formatDate(parseDate(aid.grantedAt, 'yyyy-MM-dd'))}
+                    {formatDate(
+                      parseDate(aid.grantedAt, DATE_FORMATS.DATE_BACKEND)
+                    )}
                   </$ViewField>
                 </$GridCell>
               </React.Fragment>

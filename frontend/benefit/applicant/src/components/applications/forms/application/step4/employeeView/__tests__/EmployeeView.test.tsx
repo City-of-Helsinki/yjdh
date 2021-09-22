@@ -8,6 +8,7 @@ import EmployeeView, { EmployeeViewProps } from '../EmployeeView';
 describe('EmployeeView', () => {
   const initialProps: EmployeeViewProps = {
     data: {},
+    handleStepChange: jest.fn(),
   };
 
   const getComponent = (props: Partial<EmployeeViewProps> = {}): RenderResult =>

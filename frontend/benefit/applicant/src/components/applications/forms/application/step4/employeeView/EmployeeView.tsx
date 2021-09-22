@@ -10,9 +10,13 @@ import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
 export interface EmployeeViewProps {
   data: Application;
+  handleStepChange: (step: number) => void;
 }
 
-const EmployeeView: React.FC<EmployeeViewProps> = ({ data }) => {
+const EmployeeView: React.FC<EmployeeViewProps> = ({
+  data,
+  handleStepChange,
+}) => {
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
   return (
@@ -21,7 +25,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({ data }) => {
         header={t(`${translationsBase}.employee.heading1Short`)}
         action={
           <$SupplementaryButton
-            // onClick={() => handleStepChange(2)}
+            onClick={() => handleStepChange(2)}
             variant="supplementary"
             iconLeft={<IconPen />}
           >
