@@ -42,7 +42,7 @@ type ExtendedComponentProps = {
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
-  erazeDeminimisAids: () => void;
+  clearDeminimisAids: () => void;
   formik: FormikProps<Application>;
   deMinimisAids: DeMinimisAid[];
   languageOptions: OptionType[];
@@ -200,7 +200,7 @@ const useApplicationFormStep1 = (
     });
   };
 
-  const erazeDeminimisAids = (): void =>
+  const clearDeminimisAids = (): void =>
     setApplicationTempData({ ...applicationTempData, deMinimisAids: [] });
 
   const languageOptions = React.useMemo(
@@ -223,7 +223,7 @@ const useApplicationFormStep1 = (
     formik,
     getErrorMessage,
     handleSubmit,
-    erazeDeminimisAids,
+    clearDeminimisAids,
     deMinimisAids: application.deMinimisAidSet || [],
     languageOptions,
     getDefaultSelectValue,

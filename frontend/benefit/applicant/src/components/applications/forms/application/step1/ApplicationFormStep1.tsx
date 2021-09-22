@@ -1,7 +1,7 @@
 import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -21,7 +21,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     t,
     handleSubmit,
     getErrorMessage,
-    erazeDeminimisAids,
+    clearDeminimisAids,
     getDefaultSelectValue,
     languageOptions,
     fields,
@@ -29,6 +29,10 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     formik,
     deMinimisAids,
   } = useApplicationFormStep1(data);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -197,7 +201,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                   APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID,
                   false
                 );
-                erazeDeminimisAids();
+                clearDeminimisAids();
               }}
               // 3 states: null (none is selected), true, false
               checked={formik.values.deMinimisAid === false}
