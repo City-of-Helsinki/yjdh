@@ -18,7 +18,7 @@ interface CompanyInfoProps {
   error: Error | null;
   isLoading: boolean;
   shouldShowSkeleton: boolean;
-  erazeAlternativeAddressFields: () => void;
+  clearAlternativeAddressValues: () => void;
 }
 
 const useCompanyInfo = (
@@ -52,7 +52,7 @@ const useCompanyInfo = (
       businessId: '-',
     };
 
-  const erazeAlternativeAddressFields = (): void => {
+  const clearAlternativeAddressValues = (): void => {
     void formik?.setFieldValue(
       APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS,
       !formik.values.useAlternativeAddress
@@ -77,7 +77,7 @@ const useCompanyInfo = (
     error,
     isLoading,
     shouldShowSkeleton: isLoading && !isServerSide(),
-    erazeAlternativeAddressFields,
+    clearAlternativeAddressValues,
   };
 };
 
