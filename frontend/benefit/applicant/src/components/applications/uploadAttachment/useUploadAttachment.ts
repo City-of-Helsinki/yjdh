@@ -26,7 +26,7 @@ const useUploadAttachment = (
   }, [uploadRef]);
 
   const handleUploadClick = (): void => {
-    void uploadRef?.current?.click();
+    void uploadRef.current?.click();
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
