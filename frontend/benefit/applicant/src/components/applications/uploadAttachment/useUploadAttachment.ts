@@ -1,11 +1,8 @@
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
-import { useTranslation } from 'benefit/applicant/i18n';
 import { showErrorToast } from 'benefit/applicant/utils/common';
-import { TFunction } from 'next-i18next';
 import React from 'react';
 
 type ExtendedComponentProps = {
-  t: TFunction;
   handleUploadClick: () => void;
   handleUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   uploadRef: React.RefObject<HTMLInputElement>;
@@ -21,7 +18,6 @@ const useUploadAttachment = (
   onUpload: (data: FormData) => void
 ): ExtendedComponentProps => {
   const uploadRef = React.createRef<HTMLInputElement>();
-  const { t } = useTranslation();
 
   const resetUploadInput = React.useCallback(() => {
     if (uploadRef.current?.value) {
@@ -59,7 +55,6 @@ const useUploadAttachment = (
   };
 
   return {
-    t,
     handleUploadClick,
     handleUpload,
     uploadRef,
