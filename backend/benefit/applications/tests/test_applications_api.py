@@ -868,7 +868,7 @@ def test_application_status_change(
             request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER
         )
         _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
-    if data["organization_type"] == OrganizationType.ASSOCIATION:
+    if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
 
     response = api_client.put(

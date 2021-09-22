@@ -2,14 +2,14 @@ import re
 
 import pytest
 from common.tests.conftest import *  # noqa
-from companies.tests.data.company_data import DUMMY_COMPANY_DATA
+from companies.tests.data.company_data import get_dummy_company_data
 from companies.tests.factories import CompanyFactory
 from django.conf import settings
 
 ORGANISATION_ROLE_JSON = [
     {
-        "name": DUMMY_COMPANY_DATA["name"],
-        "identifier": DUMMY_COMPANY_DATA["business_id"],
+        "name": get_dummy_company_data()["name"],
+        "identifier": get_dummy_company_data()["business_id"],
         "complete": True,
         "roles": ["NIMKO"],
     }

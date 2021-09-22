@@ -477,7 +477,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "company",
             "company_name",
             "company_form",
-            "organization_type",
             "submitted_at",
             "bases",
             "available_bases",
@@ -639,11 +638,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
-    organization_type = serializers.SerializerMethodField(
-        "get_organization_type",
-        help_text="The general type of the applicant organization",
-    )
-
     available_bases = serializers.SerializerMethodField(
         "get_available_bases", help_text="List of available application basis slugs"
     )
@@ -676,10 +670,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
-
-    @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
-    def get_organization_type(self, obj):
-        return OrganizationType.resolve_organization_type(obj.company.company_form)
 
     @extend_schema_field(ApplicationBasisSerializer(many=True))
     def get_available_bases(self, obj):
