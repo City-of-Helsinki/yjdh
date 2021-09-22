@@ -42,9 +42,8 @@ type FormFields = {
 const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+  const { applicationTempData, setApplicationTempData } =
+    React.useContext(ApplicationContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [defaultValue, setDefaultValue] = useState(false);
 
@@ -108,11 +107,11 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
         deMinimisAids: [
           ...(applicationTempData.deMinimisAids || []),
           {
-            granter: formik.values[DE_MINIMIS_AID_KEYS.GRANTER],
-            amount: parseFloat(formik.values[DE_MINIMIS_AID_KEYS.AMOUNT]),
+            granter: formik.values.granter,
+            amount: parseFloat(formik.values.amount),
             grantedAt: formatDate(
-              parseDate(formik.values[DE_MINIMIS_AID_KEYS.GRANTED_AT]),
-              'yyyy-MM-dd'
+              parseDate(formik.values.grantedAt),
+              DATE_FORMATS.DATE_BACKEND
             ),
           },
         ],
