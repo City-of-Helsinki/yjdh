@@ -5,36 +5,42 @@ import { $Button } from '../Applications.sc';
 import { useUploadAttachment } from './useUploadAttachment';
 
 export interface UploadAttachmentProps {
-  applicationId: string;
+  onUpload: (data: FormData) => void;
+  isUploading: boolean;
   attachmentType: ATTACHMENT_TYPES;
   allowedFileTypes: string[];
   maxSize: number;
-  uploadText?: string;
+  uploadText: string;
+  loadingText: string;
+  errorTitle: string;
+  errorFileSizeText: string;
+  errorFileTypeText: string;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'success' | 'danger';
 }
 
 const UploadAttachment: React.FC<UploadAttachmentProps> = ({
-  applicationId,
   attachmentType,
   allowedFileTypes,
   maxSize,
   icon,
   variant,
+  isUploading,
   uploadText,
+  loadingText,
+  errorTitle,
+  errorFileSizeText,
+  errorFileTypeText,
+  onUpload,
 }) => {
-  const {
-    t,
-    handleUploadClick,
-    handleUpload,
-    translationsBase,
-    uploadRef,
-    isUploading,
-  } = useUploadAttachment(
-    applicationId,
+  const { handleUploadClick, handleUpload, uploadRef } = useUploadAttachment(
     attachmentType,
     allowedFileTypes,
-    maxSize
+    maxSize,
+    errorTitle,
+    errorFileSizeText,
+    errorFileTypeText,
+    onUpload
   );
 
   return (
@@ -43,10 +49,10 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
         onClick={handleUploadClick}
         variant={variant}
         isLoading={isUploading}
-        loadingText={t(`common:upload.isUploading`)}
+        loadingText={loadingText}
         iconLeft={icon}
       >
-        {uploadText || t(`${translationsBase}.add`)}
+        {uploadText}
       </$Button>
       <input
         style={{ display: 'none' }}

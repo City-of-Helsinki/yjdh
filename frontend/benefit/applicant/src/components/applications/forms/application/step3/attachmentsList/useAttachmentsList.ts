@@ -1,6 +1,7 @@
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
+import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Attachment } from 'benefit/applicant/types/application';
 import { showErrorToast } from 'benefit/applicant/utils/common';
@@ -13,9 +14,11 @@ type ExtendedComponentProps = {
   translationsBase: string;
   applicationId: string;
   attachments: [];
-  handleRemove: (attachmentId: string) => void;
   files?: Attachment[];
   isRemoving: boolean;
+  isUploading: boolean;
+  handleRemove: (attachmentId: string) => void;
+  handleUpload: (attachment: FormData) => void;
 };
 
 const useAttachmentsList = (
@@ -36,14 +39,20 @@ const useAttachmentsList = (
     isError: isRemovingError,
   } = useRemoveAttachmentQuery();
 
+  const {
+    mutate: uploadAttachment,
+    isLoading: isUploading,
+    isError: isUploadingError,
+  } = useUploadAttachmentQuery();
+
   useEffect(() => {
-    if (isRemovingError) {
+    if (isRemovingError || isUploadingError) {
       showErrorToast(
         t(`common:remove.errorTitle`),
         t(`common:remove.errorMessage`)
       );
     }
-  }, [isRemovingError, t]);
+  }, [isRemovingError, isUploadingError, t]);
 
   const files = React.useMemo(
     (): Attachment[] =>
@@ -58,6 +67,13 @@ const useAttachmentsList = (
     });
   };
 
+  const handleUpload = (attachment: FormData): void => {
+    uploadAttachment({
+      applicationId,
+      data: attachment,
+    });
+  };
+
   return {
     t,
     applicationId,
@@ -65,7 +81,9 @@ const useAttachmentsList = (
     translationsBase,
     files,
     isRemoving,
+    isUploading,
     handleRemove,
+    handleUpload,
   };
 };
 

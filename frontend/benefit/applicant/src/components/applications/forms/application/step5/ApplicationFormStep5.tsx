@@ -33,10 +33,12 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
     t,
     handleBack,
     handleNext,
+    handleRemoveAttachment,
+    handleUploadAttachment,
     translationsBase,
     attachment,
     isRemoving,
-    handleRemoveAttachment,
+    isUploading,
   } = useApplicationFormStep5(data);
   const theme = useTheme();
 
@@ -109,12 +111,19 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
                     </$GridCell>
                     <$GridCell $colSpan={6}>
                       <UploadAttachment
-                        applicationId={data.id || ''}
+                        onUpload={handleUploadAttachment}
+                        isUploading={isUploading}
                         attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
                         allowedFileTypes={['application/pdf']}
                         maxSize={ATTACHMENT_MAX_SIZE}
                         uploadText={t(
                           `${translationsBase}.uploadPowerOfAttorney.action2`
+                        )}
+                        loadingText={t(`common:upload.isUploading`)}
+                        errorTitle={t('common:error.attachments.title')}
+                        errorFileSizeText={t('common:error.attachments.tooBig')}
+                        errorFileTypeText={t(
+                          'common:error.attachments.fileType'
                         )}
                         variant="secondary"
                         icon={<IconArrowRight />}

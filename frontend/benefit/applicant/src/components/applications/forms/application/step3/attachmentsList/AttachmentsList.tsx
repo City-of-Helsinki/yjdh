@@ -6,7 +6,7 @@ import {
   ATTACHMENT_TYPES,
 } from 'benefit/applicant/constants';
 import { Attachment } from 'benefit/applicant/types/application';
-import { IconArrowRight } from 'hds-react';
+import { IconPlus } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 
@@ -27,10 +27,11 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   const {
     t,
     handleRemove,
+    handleUpload,
     translationsBase,
     files,
     isRemoving,
-    applicationId,
+    isUploading,
   } = useAttachmentsList(attachmentType, attachments);
 
   return (
@@ -66,13 +67,18 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
         </>
       )}
       <UploadAttachment
-        applicationId={applicationId}
+        onUpload={handleUpload}
+        isUploading={isUploading}
         attachmentType={attachmentType}
         allowedFileTypes={ATTACHMENT_ALLOWED_TYPES}
         maxSize={ATTACHMENT_MAX_SIZE}
-        uploadText={t(`${translationsBase}.add`)}
         variant="primary"
-        icon={<IconArrowRight />}
+        icon={<IconPlus />}
+        uploadText={t(`${translationsBase}.add`)}
+        loadingText={t(`common:upload.isUploading`)}
+        errorTitle={t('common:error.attachments.title')}
+        errorFileSizeText={t('common:error.attachments.tooBig')}
+        errorFileTypeText={t('common:error.attachments.fileType')}
       />
     </$Container>
   );

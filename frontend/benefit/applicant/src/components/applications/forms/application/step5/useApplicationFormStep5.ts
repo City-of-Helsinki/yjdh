@@ -2,13 +2,17 @@ import hdsToast from 'benefit/applicant/components/toast/Toast';
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
+import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
   Attachment,
 } from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import {
+  getApplicationStepString,
+  showErrorToast,
+} from 'benefit/applicant/utils/common';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
 import snakecaseKeys from 'snakecase-keys';
@@ -17,10 +21,12 @@ type ExtendedComponentProps = {
   t: TFunction;
   handleNext: () => void;
   handleBack: () => void;
-  translationsBase: string;
-  attachment: Attachment | null;
-  isRemoving: boolean;
   handleRemoveAttachment: (attachmentId: string) => void;
+  handleUploadAttachment: (attachment: FormData) => void;
+  translationsBase: string;
+  attachment: Attachment | undefined;
+  isRemoving: boolean;
+  isUploading: boolean;
 };
 
 const useApplicationFormStep5 = (
@@ -31,6 +37,21 @@ const useApplicationFormStep5 = (
 
   const { mutate: updateApplicationStep4, error: updateApplicationErrorStep5 } =
     useUpdateApplicationQuery();
+
+  const {
+    mutate: uploadAttachment,
+    isLoading: isUploading,
+    isError: isUploadingError,
+  } = useUploadAttachmentQuery();
+
+  useEffect(() => {
+    if (isUploadingError) {
+      showErrorToast(
+        t(`common:upload.errorTitle`),
+        t(`common:upload.errorMessage`)
+      );
+    }
+  }, [isUploadingError, t]);
 
   const {
     mutate: removeAttachment,
@@ -67,27 +88,32 @@ const useApplicationFormStep5 = (
 
   const handleBack = (): void => handleStepChange(4);
 
-  const getEmployeeConsentAttachment = (): Attachment | null => {
-    const consentArray = application.attachments?.filter(
+  const getEmployeeConsentAttachment = (): Attachment | undefined =>
+    application.attachments?.find(
       (attachment) =>
         attachment.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
     );
-    return consentArray?.length === 1 ? consentArray[0] : null;
-  };
 
-  const handleRemoveAttachment = (attachmentId: string): void => {
+  const handleRemoveAttachment = (attachmentId: string): void =>
     removeAttachment({
       applicationId: application.id || '',
       attachmentId,
     });
-  };
+
+  const handleUploadAttachment = (attachment: FormData): void =>
+    uploadAttachment({
+      applicationId: application.id || '',
+      data: attachment,
+    });
 
   return {
     t,
     handleNext,
     handleBack,
-    isRemoving,
+    handleUploadAttachment,
     handleRemoveAttachment,
+    isRemoving,
+    isUploading,
     translationsBase,
     attachment: getEmployeeConsentAttachment(),
   };

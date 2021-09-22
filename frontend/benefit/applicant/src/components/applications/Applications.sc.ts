@@ -2,48 +2,54 @@ import { Button } from 'hds-react';
 import styled, { css } from 'styled-components';
 
 export const $PrimaryButton = styled(Button)`
-  background-color: ${(props) => props.theme.colors.coatOfArms} !important;
-  border-color: ${(props) => props.theme.colors.coatOfArms} !important;
-  color: ${(props) => props.theme.colors.white};
-  & > div {
-    --spinner-color: ${(props) => props.theme.colors.white} !important;
-  }
+  &&& {
+    background-color: ${(props) => props.theme.colors.coatOfArms};
+    border-color: ${(props) => props.theme.colors.coatOfArms};
+    color: ${(props) => props.theme.colors.white};
+    & > div {
+      --spinner-color: ${(props) => props.theme.colors.white};
+    }
 
-  border-width: 3px !important;
+    border-width: 3px;
+  }
   width: 170px;
 `;
 
 export const $SupplementaryButton = styled(Button)`
-  color: ${(props) => props.theme.colors.black90} !important;
-  min-width: 170px;
-  max-height: 60px;
-  margin-top: ${(props) => props.theme.spacing.xs2};
+  &&& {
+    color: ${(props) => props.theme.colors.black90};
+    min-width: 170px;
+    max-height: 60px;
+    margin-top: ${(props) => props.theme.spacing.xs2};
+  }
 `;
 
 export const $Button = styled(Button)`
-  ${(props) =>
-    props.variant === 'primary' &&
-    css`
-      background-color: ${props.theme.colors.coatOfArms} !important;
-      border-color: ${props.theme.colors.coatOfArms} !important;
-      color: ${props.theme.colors.white};
-      & > div {
-        --spinner-color: ${props.theme.colors.white} !important;
-      }
-    `}
-  ${(props) =>
-    props.variant === 'secondary' &&
-    css`
-      background-color: ${props.theme.colors.white} !important;
-      border-color: ${props.theme.colors.black} !important;
-      color: ${props.theme.colors.black};
-      &:hover {
-        background-color: var(--color-black-5) !important;
-      }
-      & > div {
-        --spinner-color: ${props.theme.colors.black} !important;
-      }
-    `}
+  &&& {
+    ${(props) =>
+      props.variant === 'primary' &&
+      css`
+        background-color: ${props.theme.colors.coatOfArms};
+        border-color: ${props.theme.colors.coatOfArms};
+        color: ${props.theme.colors.white};
+        & > div {
+          --spinner-color: ${props.theme.colors.white};
+        }
+      `}
+    ${(props) =>
+      props.variant === 'secondary' &&
+      css`
+        background-color: ${props.theme.colors.white};
+        border-color: ${props.theme.colors.black};
+        color: ${props.theme.colors.black};
+        &:hover {
+          background-color: var(--color-black-5);
+        }
+        & > div {
+          --spinner-color: ${props.theme.colors.black};
+        }
+      `}
+  }
 `;
 
 export const $PageHeader = styled.div`
