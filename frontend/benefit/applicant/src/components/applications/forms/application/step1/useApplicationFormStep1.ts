@@ -33,6 +33,7 @@ import {
   POSTAL_CODE_REGEX,
 } from 'shared/constants';
 import { OptionType } from 'shared/types/common';
+import { focusAndScroll } from 'shared/utils/dom.utils';
 import snakecaseKeys from 'snakecase-keys';
 import * as Yup from 'yup';
 
@@ -139,11 +140,11 @@ const useApplicationFormStep1 = (
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: () => {
+    onSubmit: (values) => {
       const currentApplicationData: ApplicationData = snakecaseKeys(
         {
           ...application,
-          ...formik.values,
+          ...values,
           // update from context
           deMinimisAidSet: applicationTempData.deMinimisAids,
           deMinimisAid: applicationTempData.deMinimisAids?.length !== 0,
@@ -191,12 +192,13 @@ const useApplicationFormStep1 = (
   const handleSubmit = (): void => {
     setIsSubmitted(true);
     void formik.validateForm().then((errors) => {
-      // todo: Focus the first invalid field
-      const invalidFields = Object.keys(errors);
-      if (invalidFields.length === 0) {
-        void formik.submitForm();
+      const errorFieldKey = Object.keys(errors)[0];
+
+      if (errorFieldKey) {
+        return focusAndScroll(errorFieldKey);
       }
-      return null;
+
+      return formik.submitForm();
     });
   };
 
