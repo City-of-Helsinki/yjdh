@@ -33,7 +33,7 @@ const useUploadAttachment = (
     const file = e.target.files?.[0];
     const fileSize = file?.size;
     // validate file extention
-    if (file && !allowedFileTypes.includes(file?.type || '')) {
+    if (file && !allowedFileTypes.includes(file.type || '')) {
       showErrorToast(errorTitle, errorFileTypeText);
       resetUploadInput();
       return;
