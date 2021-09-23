@@ -13,6 +13,7 @@ const CompanyInfo: React.FC = () => {
       aria-label={t(`common:application.step1.companyInfoGrid.title`)}
       size="xs"
       columns={6}
+      role="grid"
     >
       <CompanyInfoHeader field="name" />
       <CompanyInfoHeader field="business_id" />

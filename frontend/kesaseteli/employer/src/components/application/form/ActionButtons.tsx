@@ -1,20 +1,14 @@
-import { IconArrowLeft, IconArrowRight } from 'hds-react';
+import { Button, IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import {
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
-import {
-  $ButtonSection,
-  $PrimaryButton,
-  $SecondaryButton,
-} from './ActionButtons.sc';
+import { $ButtonSection } from './ActionButtons.sc';
 
 type Props = {
   onNext: 'sendApplication' | 'updateApplication';
@@ -43,8 +37,9 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
     <$ButtonSection columns={isFirstStep ? 1 : 2} withoutDivider>
       {!isFirstStep && (
         <$GridCell justifySelf="start">
-          <$SecondaryButton
+          <Button
             variant="secondary"
+            theme="black"
             data-testid="previous-button"
             iconLeft={<IconArrowLeft />}
             onClick={() => previousStep()}
@@ -52,11 +47,12 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
             disabled={isLoading}
           >
             {t(`common:application.buttons.previous`)}
-          </$SecondaryButton>
+          </Button>
         </$GridCell>
       )}
       <$GridCell justifySelf="end">
-        <$PrimaryButton
+        <Button
+          theme="coat"
           data-testid="next-button"
           iconRight={<IconArrowRight />}
           onClick={handleSubmit(apiOperations[onNext])}
@@ -67,7 +63,7 @@ const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
           {isLastStep
             ? t(`common:application.buttons.send`)
             : t(`common:application.buttons.save_and_continue`)}
-        </$PrimaryButton>
+        </Button>
       </$GridCell>
     </$ButtonSection>
   );

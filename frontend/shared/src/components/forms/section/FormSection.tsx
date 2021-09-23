@@ -15,12 +15,17 @@ const FormSection: React.FC<FormSectionProps> = ({
   action,
   withoutDivider = false,
   'padding-bottom': paddingBottom = true,
+  role,
   ...rest
 }) => (
   <$Section padding-bottom={paddingBottom}>
     {action && <$Action>{action}</$Action>}
     {header && <Heading header={header} {...rest} />}
-    {children && <$Grid {...rest}>{children}</$Grid>}
+    {children && (
+      <$Grid role={role} {...rest}>
+        {children}
+      </$Grid>
+    )}
     {!withoutDivider && <$Hr />}
   </$Section>
 );

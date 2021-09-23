@@ -1,23 +1,16 @@
-import { IconTrash } from 'hds-react';
-import { $SecondaryButton } from 'kesaseteli/employer/components/application/form/ActionButtons.sc';
+import { Button, IconTrash } from 'hds-react';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useValidateEmployment from 'kesaseteli/employer/hooks/employments/useValidateEmployment';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import {
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/employer-application';
-
-import {
-  $SupplementaryButton,
-} from './EmploymentAccordion.sc';
 
 type Props = {
   index: number;
-  onSave: () => void,
+  onSave: () => void;
 };
 
 const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
@@ -29,8 +22,7 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
   const { isLoading, updateApplication, removeEmployment } =
     useApplicationApi();
 
-  const { removeFromStorage } =
-    useAccordionStateLocalStorage(index);
+  const { removeFromStorage } = useAccordionStateLocalStorage(index);
 
   const update = React.useCallback(() => {
     onSave();
@@ -42,30 +34,32 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
     removeEmployment(getValues(), index);
   }, [removeFromStorage, removeEmployment, getValues, index]);
 
-  const validate = useValidateEmployment(index, {onSuccess: update});
+  const validate = useValidateEmployment(index, { onSuccess: update });
 
   return (
     <>
       <$GridCell justifySelf="start">
-        <$SecondaryButton
+        <Button
           variant="secondary"
+          theme="black"
           data-testid={`update-employment-${index}`}
           onClick={validate}
           disabled={isLoading || isSubmitting}
         >
           {t(`common:application.step2.save_employment`)}
-        </$SecondaryButton>
+        </Button>
       </$GridCell>
       <$GridCell justifySelf="end">
-        <$SupplementaryButton
+        <Button
           variant="supplementary"
+          theme="black"
           data-testid={`remove-employment-${index}`}
           iconLeft={<IconTrash />}
           onClick={remove}
           disabled={isLoading || isSubmitting}
         >
           {t(`common:application.step2.remove_employment`)}
-        </$SupplementaryButton>
+        </Button>
       </$GridCell>
     </>
   );

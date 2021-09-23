@@ -8,7 +8,12 @@ from applications.models import Application
 from companies.models import Company
 from companies.services import get_or_create_company_from_eauth_profile
 
-ALLOWED_APPLICATION_STATUSES = [
+ALLOWED_APPLICATION_VIEW_STATUSES = [
+    ApplicationStatus.DRAFT,
+    ApplicationStatus.SUBMITTED,
+]
+
+ALLOWED_APPLICATION_UPDATE_STATUSES = [
     ApplicationStatus.DRAFT,
 ]
 
@@ -36,7 +41,7 @@ def has_application_permission(request: HttpRequest, application: Application) -
     if (
         application.company == user_company
         and application.user == user
-        and application.status in ALLOWED_APPLICATION_STATUSES
+        and application.status in ALLOWED_APPLICATION_VIEW_STATUSES
     ):
         return True
     return False

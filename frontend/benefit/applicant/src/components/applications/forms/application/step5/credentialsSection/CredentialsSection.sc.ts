@@ -20,8 +20,6 @@ export const $IconContainer = styled.span`
   svg {
     font-size: ${(props) => props.theme.fontSize.body.m};
   }
-
-  margin-bottom: ${(props) => props.theme.spacing.s};
 `;
 
 export const $Description = styled.p`

@@ -1,4 +1,4 @@
-import { IconSignin } from 'hds-react';
+import { Button, IconSignin } from 'hds-react';
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -9,7 +9,7 @@ import Layout from 'shared/components/Layout';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
-import { $Notification, $PrimaryButton } from '../components/application/login.sc';
+import { $Notification } from '../components/application/login.sc';
 
 const Login: NextPage = () => {
   useClearQueryParams();
@@ -33,8 +33,9 @@ const Login: NextPage = () => {
   };
 
   const notificationLabelKey = getNotificationLabelKey();
-  const notificationContent = !logout && !error && !sessionExpired && t(`common:loginPage.infoContent`)
-  const notificationType = error || sessionExpired ? "error" : "info"
+  const notificationContent =
+    !logout && !error && !sessionExpired && t(`common:loginPage.infoContent`);
+  const notificationType = error || sessionExpired ? 'error' : 'info';
 
   return (
     <Container>
@@ -46,19 +47,15 @@ const Login: NextPage = () => {
         >
           {notificationContent}
         </$Notification>
-        <$PrimaryButton
-          iconLeft={<IconSignin />}
-          onClick={login}
-        >
+        <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
           {t(`common:header.loginLabel`)}
-        </$PrimaryButton>
+        </Button>
       </Layout>
     </Container>
   );
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-  'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withoutAuth(Login);
