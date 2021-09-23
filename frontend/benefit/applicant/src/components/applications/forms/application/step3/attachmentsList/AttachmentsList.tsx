@@ -67,12 +67,13 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
         </>
       )}
       <UploadAttachment
+        theme="coat"
+        variant="primary"
         onUpload={handleUpload}
         isUploading={isUploading}
         attachmentType={attachmentType}
         allowedFileTypes={ATTACHMENT_ALLOWED_TYPES}
         maxSize={ATTACHMENT_MAX_SIZE}
-        variant="primary"
         icon={<IconPlus />}
         uploadText={t(`${translationsBase}.add`)}
         loadingText={t(`common:upload.isUploading`)}

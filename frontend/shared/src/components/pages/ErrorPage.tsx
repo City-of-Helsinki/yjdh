@@ -1,3 +1,4 @@
+import { Button } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -8,7 +9,6 @@ import {
   $ErrorPageMessage,
   $ErrorPageTitle,
   $IconAlertCircle,
-  $PrimaryButton,
 } from './ErrorPage.sc';
 
 export type ErrorPageProps = {
@@ -34,14 +34,14 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         {(retry || logout) && (
           <$ActionsContainer>
             {retry && (
-              <$PrimaryButton onClick={retry}>
+              <Button theme="coat" onClick={retry}>
                 {t('common:errorPage.retry')}
-              </$PrimaryButton>
+              </Button>
             )}
             {logout && (
-              <$PrimaryButton onClick={logout}>
+              <Button theme="coat" onClick={logout}>
                 {t('common:errorPage.logout')}
-              </$PrimaryButton>
+              </Button>
             )}
           </$ActionsContainer>
         )}

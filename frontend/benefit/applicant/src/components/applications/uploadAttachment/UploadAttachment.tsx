@@ -1,7 +1,7 @@
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
+import { Button, ButtonTheme } from 'hds-react';
 import * as React from 'react';
 
-import { $Button } from '../Applications.sc';
 import { useUploadAttachment } from './useUploadAttachment';
 
 export interface UploadAttachmentProps {
@@ -15,6 +15,7 @@ export interface UploadAttachmentProps {
   errorTitle: string;
   errorFileSizeText: string;
   errorFileTypeText: string;
+  theme: ButtonTheme;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'success' | 'danger';
 }
@@ -23,6 +24,7 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
   attachmentType,
   allowedFileTypes,
   maxSize,
+  theme,
   icon,
   variant,
   isUploading,
@@ -45,7 +47,8 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
 
   return (
     <div>
-      <$Button
+      <Button
+        theme={theme}
         onClick={handleUploadClick}
         variant={variant}
         isLoading={isUploading}
@@ -53,7 +56,7 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
         iconLeft={icon}
       >
         {uploadText}
-      </$Button>
+      </Button>
       <input
         style={{ display: 'none' }}
         ref={uploadRef}

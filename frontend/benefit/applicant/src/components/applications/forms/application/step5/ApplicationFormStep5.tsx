@@ -1,4 +1,3 @@
-import { $Button } from 'benefit/applicant/components/applications/Applications.sc';
 import AttachmentItem from 'benefit/applicant/components/applications/attachmentItem/AttachmentItem';
 import UploadAttachment from 'benefit/applicant/components/applications/uploadAttachment/UploadAttachment';
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
@@ -9,6 +8,7 @@ import {
 } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
+  Button,
   IconArrowRight,
   IconDocument,
   IconPenLine,
@@ -58,9 +58,13 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
               )}
               icon={<IconPenLine size="l" />}
               actions={
-                <$Button variant="secondary" iconRight={<IconArrowRight />}>
+                <Button
+                  theme="black"
+                  variant="secondary"
+                  iconRight={<IconArrowRight />}
+                >
                   {t(`${translationsBase}.electronicPowerOfAttorney.action1`)}
-                </$Button>
+                </Button>
               }
             />
           </$GridCell>
@@ -96,7 +100,8 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
                 ) : (
                   <>
                     <$GridCell $colSpan={4}>
-                      <$Button
+                      <Button
+                        theme="black"
                         onClick={() =>
                           // eslint-disable-next-line security/detect-non-literal-fs-filename
                           window
@@ -107,10 +112,12 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
                         iconLeft={<IconPrinter />}
                       >
                         {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
-                      </$Button>
+                      </Button>
                     </$GridCell>
                     <$GridCell $colSpan={6}>
                       <UploadAttachment
+                        theme="black"
+                        variant="secondary"
                         onUpload={handleUploadAttachment}
                         isUploading={isUploading}
                         attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
@@ -125,7 +132,6 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
                         errorFileTypeText={t(
                           'common:error.attachments.fileType'
                         )}
-                        variant="secondary"
                         icon={<IconArrowRight />}
                       />
                     </$GridCell>
