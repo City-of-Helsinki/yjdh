@@ -12,7 +12,7 @@ import { doEmployerLogin } from './employer-header.actions';
 type UserAndApplicationData = { id: Application['id'] } & ContactPerson &
   SuomiFiData;
 
-export const loginAndfillEmployerForm = async (
+export const loginAndfillStep1Form = async (
   t: TestController
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
@@ -30,20 +30,18 @@ export const loginAndfillEmployerForm = async (
     );
     await companyTable.expectations.isCompanyDataPresent();
   }
-  const employerForm = await applicationPageComponents.employerForm();
-  const employerFormData = fakeContactPerson();
+  const step1 = await applicationPageComponents.step1();
+  const contactPerson = fakeContactPerson();
   const {
     contact_person_name,
     contact_person_email,
     street_address,
     contact_person_phone_number,
-  } = employerFormData;
-  await employerForm.actions.fillContactPersonName(contact_person_name);
-  await employerForm.actions.fillContactPersonEmail(contact_person_email);
-  await employerForm.actions.fillStreetAddress(street_address);
-  await employerForm.actions.fillContactPersonPhone(
-    contact_person_phone_number
-  );
-  await employerForm.actions.clickSaveAndContinueButton();
-  return { ...employerFormData, ...suomiFiData, id: applicationId };
+  } = contactPerson;
+  await step1.actions.fillContactPersonName(contact_person_name);
+  await step1.actions.fillContactPersonEmail(contact_person_email);
+  await step1.actions.fillStreetAddress(street_address);
+  await step1.actions.fillContactPersonPhone(contact_person_phone_number);
+  await step1.actions.clickSaveAndContinueButton();
+  return { ...contactPerson, ...suomiFiData, id: applicationId };
 };

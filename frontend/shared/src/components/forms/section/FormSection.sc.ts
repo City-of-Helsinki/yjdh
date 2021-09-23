@@ -31,7 +31,7 @@ export type GridCellProps = {
   justifySelf?: 'start' | 'end' | 'center' | 'stretch';
 };
 
-export const $Section = styled.div<FormSectionProps>`
+export const $Section = styled.section<FormSectionProps>`
   display: flex;
   flex-direction: column;
   padding-bottom: ${(props) =>
@@ -50,6 +50,7 @@ export const $Grid = styled.div.attrs<
 >((props) => ({
   ...props,
   gap: props.gap || props.theme.spacing.s,
+  role: 'grid',
 }))<GridProps>`
   position: relative;
   display: grid;
@@ -80,7 +81,9 @@ export const $Grid = styled.div.attrs<
   }
 `;
 
-export const $GridCell = styled.div<GridCellProps>`
+export const $GridCell = styled.div.attrs<GridCellProps>(() => ({
+  role: 'gridcell',
+}))<GridCellProps>`
   position: relative;
   grid-column: ${(props) => props.$colStart ?? 'auto'} / span
     ${(props) => props.$colSpan ?? 1};

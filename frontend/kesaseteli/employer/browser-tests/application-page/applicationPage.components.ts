@@ -55,7 +55,17 @@ export const getApplicationPageComponents = (t: TestController) => {
       actions,
     };
   };
-  const EmployerForm = async () => {
+  const commonSelectors = {
+    saveAndContinueButton: () =>
+      screen.findByRole('button', {
+        name: /tallenna ja jatka/i,
+      }),
+    previousStepButton: () =>
+      screen.findByRole('button', {
+        name: /palaa edelliseen/i,
+      }),
+  };
+  const step1 = async () => {
     const formSelector = screen.getByRole('form', {
       name: /työnantajan tiedot/i,
     });
@@ -87,11 +97,8 @@ export const getApplicationPageComponents = (t: TestController) => {
           name: /yhteyshenkilön puhelinnumero/i,
         });
       },
-      saveAndContinueButton() {
-        return withinForm().findByRole('button', {
-          name: /tallenna ja jatka/i,
-        });
-      },
+      saveAndContinueButton: commonSelectors.saveAndContinueButton,
+      previousStepButton: commonSelectors.previousStepButton,
     };
     const expectations = {
       async isPresent() {
@@ -151,6 +158,49 @@ export const getApplicationPageComponents = (t: TestController) => {
       async clickSaveAndContinueButton() {
         await t.click(selectors.saveAndContinueButton());
       },
+      async clickGoToPreviousStepButton() {
+        await t.click(selectors.previousStepButton());
+      },
+    };
+
+    await expectations.isPresent();
+    return {
+      selectors,
+      expectations,
+      actions,
+    };
+  };
+  const step2 = async () => {
+    /*
+    const formSelector = screen.getByRole('form', {
+      name: /selvitys työsuhteesta/i,
+    });
+    const withinForm = (): ReturnType<typeof within> => within(formSelector);
+    */
+    const selectors = {
+      employmentForm() {
+        return screen.findByRole('form', {
+          name: /selvitys työsuhteesta/i,
+        });
+      },
+      saveAndContinueButton: commonSelectors.saveAndContinueButton,
+      previousStepButton: commonSelectors.previousStepButton,
+    };
+    const expectations = {
+      async isPresent() {
+        await t
+          .expect(selectors.employmentForm().exists)
+          .ok(await getErrorMessage(t), { timeout: 10000 });
+      },
+    };
+
+    const actions = {
+      async clickSaveAndContinueButton() {
+        await t.click(selectors.saveAndContinueButton());
+      },
+      async clickGoToPreviousStepButton() {
+        await t.click(selectors.previousStepButton());
+      },
     };
 
     await expectations.isPresent();
@@ -162,6 +212,7 @@ export const getApplicationPageComponents = (t: TestController) => {
   };
   return {
     companyTable,
-    employerForm: EmployerForm,
+    step1,
+    step2,
   };
 };

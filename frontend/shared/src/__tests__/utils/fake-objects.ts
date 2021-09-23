@@ -42,12 +42,13 @@ export const fakeContactPerson = (): ContactPerson => ({
   street_address: faker.address.streetAddress(),
 });
 
-export const fakeInvoicer = (): Invoicer => ({
+export const fakeInvoicer = (): Required<Invoicer> => ({
   invoicer_name: faker.name.findName(),
   invoicer_email: faker.internet.email(),
   invoicer_phone_number: faker.phone.phoneNumber(),
 });
-export const fakeEmployment = (): Employment => ({
+
+export const fakeEmployment = (): Required<Employment> => ({
   id: faker.datatype.uuid(),
   summer_voucher_exception_reason: faker.random.arrayElement([
     '9th_grader',
@@ -89,7 +90,7 @@ export const fakeEmployment = (): Employment => ({
 
 export const fakeEmployments = (
   count = faker.datatype.number(10)
-): Employment[] => generateNodeArray(() => fakeEmployment(), count);
+): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
 
 export const fakeApplication = (
   id: string,

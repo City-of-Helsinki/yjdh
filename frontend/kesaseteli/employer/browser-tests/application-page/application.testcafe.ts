@@ -4,7 +4,7 @@ import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-r
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
-import { loginAndfillEmployerForm } from '../actions/application.actions';
+import { loginAndfillStep1Form } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getEmployerUiUrl } from '../utils/settings';
 import { getUrlUtils } from '../utils/url.utils';
@@ -31,23 +31,33 @@ if (isRealIntegrationsEnabled()) {
     const {
       user,
       id: applicationId,
-      ...employerFormData
-    } = await loginAndfillEmployerForm(t);
+      ...invoicerFormData
+    } = await loginAndfillStep1Form(t);
     const headerUser = await headerComponents.headerUser();
     await headerUser.actions.clicklogoutButton();
     await doEmployerLogin(t, 'fi', user);
     await urlUtils.expectations.urlChangedToApplicationPage(
       'fi',
-      applicationId
+      applicationId,
+      '1'
     );
-    const employerForm = await applicationPageComponents.employerForm();
-    await employerForm.expectations.isPresent();
-    await employerForm.expectations.isFulFilledWith(employerFormData);
+    const step1 = await applicationPageComponents.step1();
+    await step1.expectations.isPresent();
+    await step1.expectations.isFulFilledWith(invoicerFormData);
   });
 } else {
-  test('Fills up employer form and retrieves its data when reloading page', async (t: TestController) => {
-    const employerFormData = await loginAndfillEmployerForm(t);
-    const employerForm = await applicationPageComponents.employerForm();
-    await employerForm.expectations.isFulFilledWith(employerFormData);
+  test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
+    const invoicerFormData = await loginAndfillStep1Form(t);
+    await urlUtils.expectations.urlChangedToApplicationPage(
+      'fi',
+      invoicerFormData.id,
+      '2'
+    );
+    const step2 = await applicationPageComponents.step2();
+    await step2.actions.clickGoToPreviousStepButton();
+    await applicationPageComponents.step1();
+    await urlUtils.actions.refreshPage();
+    const step1 = await applicationPageComponents.step1();
+    await step1.expectations.isFulFilledWith(invoicerFormData);
   });
 }
