@@ -3,6 +3,13 @@ from companies.models import Company
 from shared.oidc.utils import get_organization_roles
 
 
+def get_request_user_from_context(serializer):
+    request = serializer.context.get("request")
+    if request:
+        return request.user
+    return None
+
+
 def get_business_id_from_user(user):
     if user.is_authenticated:
         eauth_profile = user.oidc_profile.eauthorization_profile

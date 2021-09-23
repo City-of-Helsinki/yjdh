@@ -1,5 +1,6 @@
 from datetime import datetime
-from companies.models import Company
+
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
@@ -46,6 +47,9 @@ class ApproveTermsOfServiceView(APIView):
             approval.selected_applicant_consents.set(
                 approve_terms.validated_data["selected_applicant_consents"]
             )
+            # Set the TOS approval flag to session
+            request.session[settings.TERMS_OF_SERVICE_SESSION_KEY] = True
+            request.session.save()
             return Response(TermsOfServiceApprovalSerializer(approval).data)
         else:
             raise ValidationError(

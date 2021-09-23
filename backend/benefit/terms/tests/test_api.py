@@ -14,7 +14,7 @@ from terms.enums import TermsType
 from terms.tests.factories import ApplicantTermsApprovalFactory, TermsFactory
 
 
-def test_applicant_terms_in_effect(api_client, application):
+def test_applicant_terms_in_effect(api_client, application, accept_tos):
     """
     Test that the API returns the correct Terms and ApplicantConsents in the applicant_terms_in_effect field.
     """
@@ -33,8 +33,6 @@ def test_applicant_terms_in_effect(api_client, application):
         effective_from=date.today() + timedelta(days=1),
         terms_type=TermsType.APPLICANT_TERMS,
     )
-    # ... terms of service
-    TermsFactory(effective_from=date.today(), terms_type=TermsType.TERMS_OF_SERVICE)
 
     response = api_client.get(get_detail_url(application))
     assert response.data["applicant_terms_in_effect"]["id"] == str(current_terms.pk)

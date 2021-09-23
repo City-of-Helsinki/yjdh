@@ -11,6 +11,8 @@ from applications.tests.factories import (
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
+from terms.tests.conftest import *  # noqa
+from terms.tests.factories import TermsOfServiceApprovalFactory
 
 
 @pytest.fixture
@@ -74,3 +76,14 @@ def association_application(mock_get_organisation_roles_and_create_company):
     application.association_has_business_activities = False
     application.de_minimis_aid_set.all().delete()
     return application
+
+
+@pytest.fixture()
+def accept_tos(
+    bf_user, mock_get_organisation_roles_and_create_company, terms_of_service
+):
+    return TermsOfServiceApprovalFactory(
+        user=bf_user,
+        company=mock_get_organisation_roles_and_create_company,
+        terms=terms_of_service,
+    )
