@@ -41,6 +41,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from rest_framework import serializers
+from users.utils import get_business_id_from_user
 
 
 class ApplicationBasisSerializer(serializers.ModelSerializer):
@@ -476,7 +477,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "company",
             "company_name",
             "company_form",
-            "organization_type",
             "submitted_at",
             "bases",
             "available_bases",
@@ -638,11 +638,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
-    organization_type = serializers.SerializerMethodField(
-        "get_organization_type",
-        help_text="The general type of the applicant organization",
-    )
-
     available_bases = serializers.SerializerMethodField(
         "get_available_bases", help_text="List of available application basis slugs"
     )
@@ -675,10 +670,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
-
-    @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
-    def get_organization_type(self, obj):
-        return OrganizationType.resolve_organization_type(obj.company.company_form)
 
     @extend_schema_field(ApplicationBasisSerializer(many=True))
     def get_available_bases(self, obj):
@@ -1185,11 +1176,16 @@ class ApplicationSerializer(serializers.ModelSerializer):
         )
 
     def _validate_employee_consent(self, instance):
-        if not instance.attachments.filter(
+        consent_count = instance.attachments.filter(
             attachment_type=AttachmentType.EMPLOYEE_CONSENT
-        ):
+        ).count()
+        if consent_count == 0:
             raise serializers.ValidationError(
                 _("Application does not have the employee consent attachment")
+            )
+        if consent_count > 1:
+            raise serializers.ValidationError(
+                _("Application cannot have more than one employee consent attachment")
             )
 
     def _validate_attachments(self, instance):
@@ -1311,10 +1307,19 @@ class ApplicationSerializer(serializers.ModelSerializer):
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
 
+    def _get_request_user_from_context(self):
+        request = self.context.get("request")
+        if request:
+            return request.user
+        return None
+
     def logged_in_user_is_admin(self):
-        # TODO: user management
+        user = self._get_request_user_from_context()
+        if user:
+            return user.is_handler()
         return False
 
     def get_logged_in_user_company(self):
-        # TODO: user management
-        return Company.objects.all().order_by("pk").first()
+        user = self._get_request_user_from_context()
+        business_id = get_business_id_from_user(user)
+        return Company.objects.get(business_id=business_id)

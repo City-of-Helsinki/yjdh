@@ -3,7 +3,6 @@ import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import withoutAuth from 'shared/components/hocs/withoutAuth';
 import Layout from 'shared/components/Layout';
@@ -21,15 +20,16 @@ const Login: NextPage = () => {
   const login = useLogin();
 
   const getNotificationLabelKey = (): string => {
-    let notificationLabel = `common:loginPage.infoLabel`;
     if (logout) {
-      notificationLabel = `common:loginPage.logoutMessageLabel`;
-    } else if (error) {
-      notificationLabel = `common:loginPage.errorLabel`;
-    } else if (sessionExpired) {
-      notificationLabel = `common:loginPage.sessionExpiredLabel`;
+      return `common:loginPage.logoutMessageLabel`;
     }
-    return notificationLabel;
+    if (error) {
+      return `common:loginPage.errorLabel`;
+    }
+    if (sessionExpired) {
+      return `common:loginPage.sessionExpiredLabel`;
+    }
+    return `common:loginPage.infoLabel`;
   };
 
   const notificationLabelKey = getNotificationLabelKey();

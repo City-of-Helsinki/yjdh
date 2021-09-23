@@ -15,19 +15,29 @@ from applications.enums import (
     OrganizationType,
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
-from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
-from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
-from helsinkibenefit.tests.conftest import *  # noqa
 from PIL import Image
 from rest_framework.reverse import reverse
 
 
 def get_detail_url(application):
     return reverse("v1:application-detail", kwargs={"pk": application.id})
+
+
+def test_applications_unauthenticated(anonymous_client, application):
+    response = anonymous_client.get(reverse("v1:application-list"))
+    assert response.status_code == 403
+
+
+def test_applications_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    response = api_client.get(reverse("v1:application-list"))
+    assert len(response.data) == 0
+    assert response.status_code == 200
 
 
 def test_applications_list(api_client, application):
@@ -56,6 +66,7 @@ def test_applications_list_with_filter(api_client, application):
 
 
 def test_applications_filter_by_batch(api_client, application_batch, application):
+    application_batch.applications.all().update(company=application.company)
     url = reverse("v1:application-list") + f"?batch={application_batch.pk}"
     response = api_client.get(url)
     assert len(response.data) == 2
@@ -77,6 +88,18 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     assert response.status_code == 200
 
 
+def test_application_single_read_unauthenticated(anonymous_client, application):
+    response = anonymous_client.get(get_detail_url(application))
+    assert response.status_code == 403
+
+
+def test_application_single_read_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    response = api_client.get(get_detail_url(anonymous_application))
+    assert response.status_code == 404
+
+
 def test_application_single_read(api_client, application):
     response = api_client.get(get_detail_url(application))
     assert response.data["batch"] is None
@@ -89,6 +112,19 @@ def test_application_template(api_client):
     assert (
         len(response.data["de_minimis_aid_set"]) == 0
     )  # as of 2021-06-16, just a dummy implementation exists
+
+
+def test_application_post_success_unauthenticated(anonymous_client, application):
+    data = ApplicationSerializer(application).data
+    application.delete()
+    assert len(Application.objects.all()) == 0
+
+    del data["id"]  # id is read-only field and would be ignored
+    response = anonymous_client.post(
+        reverse("v1:application-list"),
+        data,
+    )
+    assert response.status_code == 403
 
 
 def test_application_post_success(api_client, application):
@@ -244,6 +280,28 @@ def test_application_post_invalid_employee_data(api_client, application):
     assert (
         "monthly_pay" in response.data["employee"].keys()
     )  # Check if the error still there
+
+
+def test_application_put_edit_fields_unauthenticated(anonymous_client, application):
+    data = ApplicationSerializer(application).data
+    data["company_contact_person_phone_number"] = "+358505658789"
+    response = anonymous_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 403
+
+
+def test_application_put_edit_fields_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    data = ApplicationSerializer(anonymous_application).data
+    data["company_contact_person_phone_number"] = "+358505658789"
+    response = api_client.put(
+        get_detail_url(anonymous_application),
+        data,
+    )
+    assert response.status_code == 404
 
 
 def test_application_put_edit_fields(api_client, application):
@@ -453,9 +511,14 @@ def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, appli
 
 
 def test_application_edit_benefit_type_business_association(
-    api_client, association_application
+    api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
     data = ApplicationSerializer(association_application).data
+    company = mock_get_organisation_roles_and_create_company
+    company.company_form = "ry"
+    company.save()
+    association_application.company = company
+    association_application.save()
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = False
@@ -502,7 +565,6 @@ def test_application_edit_benefit_type_non_business(
     association_application.pay_subsidy_percent = 50
     association_application.save()
     data = ApplicationSerializer(association_application).data
-
     response = api_client.put(
         get_detail_url(association_application),
         data,
@@ -527,6 +589,20 @@ def test_application_edit_benefit_type_non_business_invalid(
         data,
     )
     assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_application_delete_unauthenticated(anonymous_client, application):
+    response = anonymous_client.delete(get_detail_url(application))
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_application_delete_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    response = api_client.delete(get_detail_url(anonymous_application))
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -792,7 +868,7 @@ def test_application_status_change(
             request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER
         )
         _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
-    if data["organization_type"] == OrganizationType.ASSOCIATION:
+    if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
 
     response = api_client.put(
@@ -974,6 +1050,37 @@ def _add_pdf_attachment(
         return attachment
 
 
+@pytest.mark.django_db
+def test_attachment_delete_unauthenticated(request, anonymous_client, application):
+    attachment = _add_pdf_attachment(request, application)
+    response = anonymous_client.delete(
+        reverse(
+            "v1:application-delete-attachment",
+            kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_attachment_delete_unauthorized(
+    request,
+    api_client,
+    anonymous_application,
+    mock_get_organisation_roles_and_create_company,
+):
+    attachment = _add_pdf_attachment(request, anonymous_application)
+    response = api_client.delete(
+        reverse(
+            "v1:application-delete-attachment",
+            kwargs={"pk": anonymous_application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 404
+
+
 @pytest.mark.parametrize(
     "status,expected_code",
     [
@@ -1074,13 +1181,13 @@ def test_too_many_attachments(request, api_client, application):
 
 
 def test_attachment_requirements(
-    api_client,
-    application,
+    api_client, application, mock_get_organisation_roles_and_create_company
 ):
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     application.pay_subsidy_granted = True
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
+    application.company = mock_get_organisation_roles_and_create_company
     application.save()
     response = api_client.get(get_detail_url(application))
     assert json.loads(json.dumps(response.data["attachment_requirements"])) == [
@@ -1158,7 +1265,6 @@ def test_purge_extra_attachments(request, api_client, application):
         AttachmentType.EDUCATION_CONTRACT,  # extra
         AttachmentType.EDUCATION_CONTRACT,  # extra
         AttachmentType.EMPLOYEE_CONSENT,
-        AttachmentType.EMPLOYEE_CONSENT,
     ]
     for attachment_type in lots_of_attachments:
         response = _upload_pdf(request, api_client, application, attachment_type)
@@ -1168,7 +1274,7 @@ def test_purge_extra_attachments(request, api_client, application):
 
     response = _submit_application(api_client, application)
     assert response.status_code == 200
-    assert application.attachments.count() == 7
+    assert application.attachments.count() == 6
 
 
 def test_employee_consent_upload(request, api_client, application):
@@ -1202,11 +1308,39 @@ def test_employee_consent_upload(request, api_client, application):
     )
 
     # upload the consent
-    response = _upload_pdf(
+    _upload_pdf(
         request,
         api_client,
         application,
         attachment_type=AttachmentType.EMPLOYEE_CONSENT,
+    )
+    _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYEE_CONSENT,
+    )
+    assert (
+        application.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ).count()
+        == 2
+    )
+    # Cannot upload multiple employee consent
+    response = _submit_application(api_client, application)
+    assert response.status_code == 400
+    assert (
+        str(response.data[0])
+        == "Application cannot have more than one employee consent attachment"
+    )
+    application.attachments.filter(attachment_type=AttachmentType.EMPLOYEE_CONSENT)[
+        0
+    ].delete()
+    assert (
+        application.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ).count()
+        == 1
     )
     response = _submit_application(api_client, application)
     assert response.status_code == 200

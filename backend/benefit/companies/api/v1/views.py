@@ -1,7 +1,7 @@
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.services import get_or_create_company_with_business_id
-from companies.tests.data.company_data import DUMMY_COMPANY_DATA
+from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpRequest
@@ -43,7 +43,7 @@ class GetCompanyView(APIView):
         if session_id == "-1":
             return self.ytj_api_error
 
-        company = Company(**DUMMY_COMPANY_DATA)
+        company = Company(**get_dummy_company_data())
         company_data = CompanySerializer(company).data
 
         return Response(company_data)
@@ -62,8 +62,7 @@ class GetCompanyView(APIView):
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
-        # TODO: Remove business id params later after authentication is completed in FE
-        if not business_id and request.user.is_authenticated:
+        if not settings.DISABLE_AUTHENTICATION:
             eauth_profile = request.user.oidc_profile.eauthorization_profile
 
             try:
