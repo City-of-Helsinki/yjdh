@@ -1,4 +1,4 @@
-import { Button, IconAlertCircle } from 'hds-react';
+import { IconAlertCircle } from 'hds-react';
 import styled from 'styled-components';
 
 export const $ErrorPageContainer = styled.div`
@@ -27,11 +27,4 @@ export const $ActionsContainer = styled.div`
 
 export const $ErrorPageTitle = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.m};
-`;
-
-export const $PrimaryButton = styled(Button)`
-  background-color: ${(props) => props.theme.colors.coatOfArms} !important;
-  border-color: ${(props) => props.theme.colors.coatOfArms} !important;
-  border-width: 3px !important;
-  width: 170px;
 `;

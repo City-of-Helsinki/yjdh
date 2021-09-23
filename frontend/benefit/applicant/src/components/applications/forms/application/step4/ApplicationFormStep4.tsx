@@ -1,7 +1,6 @@
-import { $SupplementaryButton } from 'benefit/applicant/components/applications/Applications.sc';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { IconPen } from 'hds-react';
+import { Button, IconPen } from 'hds-react';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 
@@ -14,13 +13,8 @@ import { useApplicationFormStep4 } from './useApplicationFormStep4';
 const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  const {
-    t,
-    handleBack,
-    handleNext,
-    handleStepChange,
-    translationsBase,
-  } = useApplicationFormStep4(data);
+  const { t, handleBack, handleNext, handleStepChange, translationsBase } =
+    useApplicationFormStep4(data);
   return (
     <>
       <CompanyInfoView data={data} />
@@ -29,13 +23,14 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
       <FormSection
         header={t(`${translationsBase}.attachments.heading1`)}
         action={
-          <$SupplementaryButton
+          <Button
+            theme="black"
             onClick={() => handleStepChange(3)}
             variant="supplementary"
             iconLeft={<IconPen />}
           >
             {t(`common:applications.actions.edit`)}
-          </$SupplementaryButton>
+          </Button>
         }
       >
         <>

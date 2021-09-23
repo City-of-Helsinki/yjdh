@@ -1,17 +1,16 @@
-import { $PrimaryButton } from 'benefit/applicant/components/applications/Applications.sc';
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
+import AttachmentItem from 'benefit/applicant/components/applications/attachmentItem/AttachmentItem';
+import UploadAttachment from 'benefit/applicant/components/applications/uploadAttachment/UploadAttachment';
+import {
+  ATTACHMENT_ALLOWED_TYPES,
+  ATTACHMENT_MAX_SIZE,
+  ATTACHMENT_TYPES,
+} from 'benefit/applicant/constants';
 import { Attachment } from 'benefit/applicant/types/application';
 import { IconPlus } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 
-import AttachmentItem from './attachmentItem/AttachmentItem';
-import {
-  $Container,
-  $Heading,
-  $Message,
-  $UploadContainer,
-} from './AttachmentsList.sc';
+import { $Container, $Heading, $Message } from './AttachmentsList.sc';
 import { useAttachmentsList } from './useAttachmentsList';
 
 export interface AttachmentsListProps {
@@ -27,14 +26,12 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
 }) => {
   const {
     t,
-    handleUploadClick,
-    handleUpload,
     handleRemove,
+    handleUpload,
     translationsBase,
-    uploadRef,
     files,
-    isUploading,
     isRemoving,
+    isUploading,
   } = useAttachmentsList(attachmentType, attachments);
 
   return (
@@ -69,23 +66,21 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
           )}
         </>
       )}
-      <$UploadContainer onClick={handleUploadClick}>
-        <$PrimaryButton
-          isLoading={isUploading}
-          loadingText={t(`common:upload.isUploading`)}
-          style={{ width: 'auto' }}
-          iconLeft={<IconPlus />}
-        >
-          {t(`${translationsBase}.add`)}
-        </$PrimaryButton>
-        <input
-          style={{ display: 'none' }}
-          ref={uploadRef}
-          onChange={handleUpload}
-          id={`upload_attachment_${attachmentType}`}
-          type="file"
-        />
-      </$UploadContainer>
+      <UploadAttachment
+        theme="coat"
+        variant="primary"
+        onUpload={handleUpload}
+        isUploading={isUploading}
+        attachmentType={attachmentType}
+        allowedFileTypes={ATTACHMENT_ALLOWED_TYPES}
+        maxSize={ATTACHMENT_MAX_SIZE}
+        icon={<IconPlus />}
+        uploadText={t(`${translationsBase}.add`)}
+        loadingText={t(`common:upload.isUploading`)}
+        errorTitle={t('common:error.attachments.title')}
+        errorFileSizeText={t('common:error.attachments.tooBig')}
+        errorFileTypeText={t('common:error.attachments.fileType')}
+      />
     </$Container>
   );
 };
