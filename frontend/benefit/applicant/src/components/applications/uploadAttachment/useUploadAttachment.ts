@@ -26,14 +26,16 @@ const useUploadAttachment = (
   }, [uploadRef]);
 
   const handleUploadClick = (): void => {
-    void uploadRef?.current?.click();
+    void uploadRef.current?.click();
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
+    if (!file) return;
+
     const fileSize = file?.size;
     // validate file extention
-    if (file && !allowedFileTypes.includes(file?.type || '')) {
+    if (!allowedFileTypes.includes(file.type || '')) {
       showErrorToast(errorTitle, errorFileTypeText);
       resetUploadInput();
       return;
@@ -45,13 +47,11 @@ const useUploadAttachment = (
       return;
     }
 
-    if (file) {
-      const formData = new FormData();
-      formData.append('attachment_type', attachmentType);
-      formData.append('attachment_file', file);
-      onUpload(formData);
-      resetUploadInput();
-    }
+    const formData = new FormData();
+    formData.append('attachment_type', attachmentType);
+    formData.append('attachment_file', file);
+    onUpload(formData);
+    resetUploadInput();
   };
 
   return {
