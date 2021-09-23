@@ -11,7 +11,10 @@ import Employment from 'shared/types/employment';
 import { getLastValue } from 'shared/utils/array.utils';
 
 type Key = keyof Application | keyof Employment;
-type Value = Application[keyof Application] | Employment[keyof Employment];
+type Value =
+  | Application[keyof Application]
+  | Employment
+  | Employment[keyof Employment];
 
 type ApplicationFormField<V extends Value> = {
   fieldName: Key;

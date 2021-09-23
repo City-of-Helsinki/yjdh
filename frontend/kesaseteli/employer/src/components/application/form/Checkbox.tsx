@@ -1,5 +1,6 @@
 import { Checkbox as HdsCheckbox } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -12,7 +13,6 @@ import {
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/application-form-data';
-import { isEmpty } from 'shared/utils/string.utils';
 
 type Props = {
   id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;

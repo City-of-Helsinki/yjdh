@@ -8,7 +8,4 @@ export const getLastValue = <T>(value: T[] | T | undefined): T | undefined =>
       : undefined
     : value;
 
-export const isEmpty = (arr?: Array<unknown>): boolean =>
-  arr?.length === 0 ?? true;
-
 export type ArrayType<A> = A extends (infer I)[] ? I : never;

@@ -4,6 +4,7 @@ import {
   SelectionGroupProps,
 } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -17,7 +18,6 @@ import {
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/application-form-data';
-import { isEmpty } from 'shared/utils/string.utils';
 
 import { $SelectionGroup } from './SelectionGroup.sc';
 

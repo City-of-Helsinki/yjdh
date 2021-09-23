@@ -2,11 +2,11 @@ import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/us
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import { UseMutationResult, UseQueryResult } from 'react-query';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
-import { isEmpty } from 'shared/utils/array.utils';
 
 export type ApplicationQueryResult = UseQueryResult<Application, Error>;
 export type ApplicationMutationResult = UseMutationResult<
