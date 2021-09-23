@@ -8,7 +8,7 @@ type Props = { field: keyof Company };
 const CompanyInfoHeader: React.FC<Props> = ({ field }: Props) => {
   const { t } = useTranslation();
   return (
-    <$GridCell role="gridcell" id={field}>
+    <$GridCell id={field}>
       {t(`common:application.step1.companyInfoGrid.header.${field}`)}
     </$GridCell>
   );
