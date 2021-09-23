@@ -10,7 +10,7 @@ type Props = { field: keyof Company };
 const CompanyInfoCell: React.FC<Props> = ({ field }: Props) => {
   const { application, isError, isLoading } = useApplicationApi();
   return (
-    <$GridCell aria-labelledby={field}>
+    <$GridCell aria-labelledby={field} role="gridcell">
       {isLoading && !isServerSide() && <LoadingSkeleton width="90%" />}
       {(!isLoading && !isError && <pre>{application?.company?.[field]}</pre>) ||
         ''}

@@ -14,6 +14,7 @@ export type FormSectionProps = {
   GridProps;
 
 export type GridProps = {
+  role?: React.HTMLAttributes<'div'>['role'];
   gap?: SpacingValue;
   columns?: number;
   bgColor?: boolean;
@@ -50,7 +51,6 @@ export const $Grid = styled.div.attrs<
 >((props) => ({
   ...props,
   gap: props.gap || props.theme.spacing.s,
-  role: 'grid',
 }))<GridProps>`
   position: relative;
   display: grid;
@@ -81,9 +81,7 @@ export const $Grid = styled.div.attrs<
   }
 `;
 
-export const $GridCell = styled.div.attrs<GridCellProps>(() => ({
-  role: 'gridcell',
-}))<GridCellProps>`
+export const $GridCell = styled.div<GridCellProps>`
   position: relative;
   grid-column: ${(props) => props.$colStart ?? 'auto'} / span
     ${(props) => props.$colSpan ?? 1};

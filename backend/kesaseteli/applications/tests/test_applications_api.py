@@ -376,3 +376,25 @@ def test_application_get_only_finds_own_application(
     response = api_client.get(get_detail_url(application))
     assert response.status_code == 200
     assert str(response.data["id"]) == str(application.id)
+
+
+@pytest.mark.django_db
+def test_application_update_submitted_application(api_client, submitted_application):
+    data = ApplicationSerializer(submitted_application).data
+    data["invoicer_name"] = "test"
+    response = api_client.put(
+        get_detail_url(submitted_application),
+        data,
+    )
+
+    assert response.status_code == 400
+    assert "Only DRAFT applications can be updated" in response.data
+
+
+@pytest.mark.django_db
+def test_applications_view_permissions(api_client, application, submitted_application):
+    response = api_client.get(reverse("v1:application-list"))
+
+    assert response.status_code == 200
+    assert any(x["id"] == str(application.id) for x in response.data)
+    assert any(x["id"] == str(submitted_application.id) for x in response.data)

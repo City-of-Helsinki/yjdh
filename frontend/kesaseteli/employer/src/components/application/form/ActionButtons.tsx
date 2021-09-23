@@ -1,4 +1,4 @@
-import { IconArrowLeft, IconArrowRight } from 'hds-react';
+import { Button, IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
@@ -9,11 +9,7 @@ import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/application-form-data';
 
-import {
-  $ButtonSection,
-  $PrimaryButton,
-  $SecondaryButton,
-} from './ActionButtons.sc';
+import { $ButtonSection } from './ActionButtons.sc';
 
 type Props = {
   onAfterLastStep?: () => void;
@@ -50,8 +46,9 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     <$ButtonSection columns={isFirstStep ? 1 : 2} withoutDivider>
       {!isFirstStep && (
         <$GridCell justifySelf="start">
-          <$SecondaryButton
+          <Button
             variant="secondary"
+            theme="black"
             data-testid="previous-button"
             iconLeft={<IconArrowLeft />}
             onClick={() => previousStep()}
@@ -59,11 +56,12 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
             disabled={isLoading}
           >
             {t(`common:application.buttons.previous`)}
-          </$SecondaryButton>
+          </Button>
         </$GridCell>
       )}
       <$GridCell justifySelf="end">
-        <$PrimaryButton
+        <Button
+          theme="coat"
           data-testid="next-button"
           iconRight={<IconArrowRight />}
           onClick={handleSubmit(handleSuccess)}
@@ -74,7 +72,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
           {isLastStep
             ? t(`common:application.buttons.last`)
             : t(`common:application.buttons.next`)}
-        </$PrimaryButton>
+        </Button>
       </$GridCell>
     </$ButtonSection>
   );

@@ -1,7 +1,5 @@
-import {
-  $ButtonSection,
-  $PrimaryButton,
-} from 'kesaseteli/employer/components/application/form/ActionButtons.sc';
+import { Button } from 'hds-react';
+import { $ButtonSection } from 'kesaseteli/employer/components/application/form/ActionButtons.sc';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -21,9 +19,13 @@ const AddNewEmploymentButton: React.FC = () => {
   return (
     <$ButtonSection columns={1}>
       <$GridCell>
-        <$PrimaryButton data-testid="add-employment" onClick={addNewEmployment}>
+        <Button
+          theme="coat"
+          data-testid="add-employment"
+          onClick={addNewEmployment}
+        >
           {t(`common:application.step2.add_employment`)}
-        </$PrimaryButton>
+        </Button>
       </$GridCell>
     </$ButtonSection>
   );
