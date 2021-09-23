@@ -88,6 +88,7 @@ env = environ.Env(
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DISABLE_AUTHENTICATION=(bool, False),
     DUMMY_COMPANY_FORM=(str, "OY"),
+    TERMS_OF_SERVICE_SESSION_KEY=(str, "_tos_session"),
     ENABLE_DEBUG_ENV=(bool, False),
 )
 if os.path.exists(env_file):
@@ -261,6 +262,8 @@ ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 # Authentication settings begin
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
 SESSION_COOKIE_SECURE = True
+
+TERMS_OF_SERVICE_SESSION_KEY = env.str("TERMS_OF_SERVICE_SESSION_KEY")
 
 AUTHENTICATION_BACKENDS = (
     "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
