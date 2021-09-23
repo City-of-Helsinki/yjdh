@@ -5,7 +5,7 @@ import {
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import Company from '@frontend/shared/src/types/company';
-import ContactPerson from 'shared/types/contact_person';
+import ContactPerson from '@frontend/shared/src/types/contact_person';
 import TestController from 'testcafe';
 
 export const getApplicationPageComponents = (t: TestController) => {

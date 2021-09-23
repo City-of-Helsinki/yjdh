@@ -2,7 +2,7 @@ import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-a
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { fakeContactPerson } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import type Application from '@frontend/shared/src/types/application';
-import ContactPerson from 'shared/types/contact_person';
+import ContactPerson from '@frontend/shared/src/types/contact_person';
 import TestController from 'testcafe';
 
 import { getApplicationPageComponents } from '../application-page/applicationPage.components';
