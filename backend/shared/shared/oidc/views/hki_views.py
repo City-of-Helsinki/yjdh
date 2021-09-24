@@ -16,7 +16,7 @@ from requests.exceptions import HTTPError
 
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 from shared.oidc.models import OIDCProfile
-from shared.oidc.services import clear_eauthorization_profiles, clear_oidc_profiles
+from shared.oidc.services import clear_user_sessions
 from shared.oidc.utils import get_userinfo, refresh_hki_tokens
 
 logger = logging.getLogger(__name__)
@@ -57,13 +57,6 @@ class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
 class HelsinkiOIDCLogoutView(OIDCLogoutView):
     """Override OIDCLogoutView to match the keycloak backchannel logout"""
 
-    def clear_user_sessions(self, oidc_profile):
-        eauthorization_profile = getattr(oidc_profile, "eauthorization_profile", None)
-
-        clear_oidc_profiles(oidc_profile)
-        if eauthorization_profile:
-            clear_eauthorization_profiles(eauthorization_profile)
-
     def post(self, request):
         if request.user.is_authenticated:
             try:
@@ -93,7 +86,7 @@ class HelsinkiOIDCLogoutView(OIDCLogoutView):
                 logger.error(str(e))
 
             auth.logout(request)
-            self.clear_user_sessions(oidc_profile)
+            clear_user_sessions(request.user)
 
         return HttpResponse("OK", status=200)
 
@@ -154,17 +147,6 @@ class HelsinkiOIDCBackchannelLogoutView(View):
             logger.error("Incorrect backchannel logout_token: nonce")
             raise SuspiciousOperation("Incorrect logout_token: nonce")
 
-    def clear_user_sessions(self, user):
-        oidc_profile = getattr(user, "oidc_profile", None)
-        if oidc_profile:
-            eauthorization_profile = getattr(
-                oidc_profile, "eauthorization_profile", None
-            )
-
-            clear_oidc_profiles(oidc_profile)
-            if eauthorization_profile:
-                clear_eauthorization_profiles(eauthorization_profile)
-
     def post(self, request):
         logout_token = request.POST.get("logout_token", None)
 
@@ -180,7 +162,7 @@ class HelsinkiOIDCBackchannelLogoutView(View):
 
             if len(users) == 1:
                 user = users.first()
-                self.clear_user_sessions(user)
+                clear_user_sessions(user)
 
             elif len(users) > 1:
                 # In the rare case that two user accounts have the same email address,

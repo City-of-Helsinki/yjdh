@@ -14,7 +14,7 @@ router.register(r"summervouchers", application_views.SummerVoucherViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
-    path("v1/company/", GetCompanyView.as_view()),
+    path("v1/company/", GetCompanyView.as_view(), name="company-detail"),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(

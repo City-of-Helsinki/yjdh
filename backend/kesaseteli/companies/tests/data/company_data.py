@@ -1,15 +1,3 @@
-DUMMY_COMPANY_DATA = {
-    "id": "8c0c7a56-cb98-4c31-87ca-6f1853253986",
-    "name": "I. Haanpää Oy",
-    "business_id": "0877830-0",
-    "company_form": "OY",
-    "industry": "Taloustavaroiden vähittäiskauppa",
-    "street_address": "Vasaratie 4 A 3",
-    "postcode": "65350",
-    "city": "Vaasa",
-}
-
-
 DUMMY_YTJ_RESPONSE = {
     "type": "fi.prh.opendata.tr",
     "version": "1",
