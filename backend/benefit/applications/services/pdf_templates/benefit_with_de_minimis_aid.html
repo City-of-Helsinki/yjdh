@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>Työllisyydenhoidon Helsinki-lisän myöntäminen työnantajille</p>
-<table aria-label="AHJO report" style="border: 1px solid black">
-    <tr>
+    <p>Työllisyydenhoidon Helsinki-lisän myöntäminen työnantajille</p>
+    <table aria-label="AHJO report" style="border: 1px solid black">
+        <tr>
             <th scope="col">Hakemus-numero</th>
             <th scope="col">Hakija</th>
             <th scope="col">Y-tunnus</th>
@@ -21,14 +21,17 @@
                 <td>{{ app.employee.first_name }} {{ app.employee.last_name }}</td>
                 <td>{{ app.start_date.strftime("%d.%m.%Y") }} - {{ app.end_date.strftime("%d.%m.%Y")}}</td>
                 <td>{{ app.get_benefit_type_display() }}</td>
-                <td class="text-right">{{ "%.0f €" | format(app.benefit_amount/(app.duration_in_months | round | int))}}
-                </td>
+                <td class="text-right">{{ "%.0f €" | format(app.benefit_amount/(app.duration_in_months | round | int))}} </td>
                 <td class="text-right"><b>{{ "%.0f €" | format(app.benefit_amount)}}</b></td>
             </tr>
         {% endfor %}
         <tr>
-            <td colspan="8"  class="footer text-right"> Kaikki yhteensä <b>{{ "%.0f €" | format(apps | sum
+            <td colspan="8" class="footer text-right"> Kaikki yhteensä <b>{{ "%.0f €" | format(apps | sum
                     (attribute='benefit_amount'))}}</b></td>
         </tr>
-</table>
+    </table>
+
+    <p style="color: #999898; padding: 0px 50px; text-align: center">Tämän päätöksen suoma tuki myönnetään vähämerkityksisenä eli ns. de
+        minimis -tukena.
+        Tuen myöntämisessä noudatetaan komission asetusta (EU) 1407/2013, 24.12.2013, perustamissopimuksen 107 ja 108 artiklan soveltamisesta vähämerkityksiseen tukeen (EUVL nro L352, 24.12.2013).</p>
 {% endblock %}
