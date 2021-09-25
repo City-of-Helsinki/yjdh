@@ -703,7 +703,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def get_applicant_terms_in_effect(self, obj):
         terms = Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS)
         if terms:
-            return TermsSerializer(terms).data
+            # If given the request in context, DRF will output the URL for FileFields
+            context = {"request": self.context.get("request")}
+            return TermsSerializer(terms, context=context).data
         else:
             return None
 
@@ -1389,7 +1391,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     def logged_in_user_is_admin(self):
         user = self._get_request_user_from_context()
-        if user:
+        if user and hasattr(user, "is_handler"):
             return user.is_handler()
         return False
 
