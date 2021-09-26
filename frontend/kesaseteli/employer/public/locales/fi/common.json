@@ -102,7 +102,7 @@
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
-        "termsAndConditions": "Olen lukenut palvelun käyttöehdot ja hyväksyn ne."
+        "termsAndConditions": "Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne."
       },
       "helpers": {
         "date": "Käytä muotoa P.K.VVVV",
@@ -132,5 +132,6 @@
     "sv": "På svenska",
     "en": "In english"
   },
-  "menuToggleAriaLabel": "Menu"
+  "menuToggleAriaLabel": "Menu",
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/"
 }

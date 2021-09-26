@@ -23,7 +23,6 @@ const ApplicationSummary: React.FC = () => {
     invoicer_email,
     invoicer_name,
     invoicer_phone_number,
-
     summer_vouchers,
   } = application;
 
@@ -59,7 +58,7 @@ const ApplicationSummary: React.FC = () => {
         {is_separate_invoicer && (
           <$GridCell as="pre" data-testid="invoicer">
             {t('common:application.form.inputs.is_separate_invoicer')}:{' '}
-            {invoicer_name}, {invoicer_email},{invoicer_phone_number}
+            {invoicer_name}, {invoicer_email}, {invoicer_phone_number}
           </$GridCell>
         )}
       </FormSection>
@@ -70,14 +69,10 @@ const ApplicationSummary: React.FC = () => {
         withoutDivider
       >
         {summer_vouchers.map((employment, index) => (
-          <>
-            <EmploymentSummary
-              employment={employment}
-              index={index}
-              key={employment.id}
-            />
+          <React.Fragment key={employment.id}>
+            <EmploymentSummary index={index} />
             <$Hr />
-          </>
+          </React.Fragment>
         ))}
       </FormSection>
     </>

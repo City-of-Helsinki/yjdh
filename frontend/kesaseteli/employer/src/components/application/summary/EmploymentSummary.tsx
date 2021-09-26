@@ -1,117 +1,102 @@
 import EmploymentFieldSummary from 'kesaseteli/employer/components/application/summary/EmploymentFieldSummary';
+import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import { getApplicationFormFieldLabel as getLabel } from 'kesaseteli/employer/utils/application.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
-import Employment from 'shared/types/employment';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import {
+  EmployeeHiredWithoutVoucherAssessment,
+  EmploymentExceptionReason,
+} from 'shared/types/employment';
 
 type Props = {
-  employment: Employment;
   index: number;
 };
 
-const EmploymentSummary: React.FC<Props> = ({ index, employment }) => {
-  const {
-    id,
-    summer_voucher_exception_reason,
-    employee_name,
-    employee_ssn,
-    employment_start_date, // yyyy-MM-dd
-    employment_end_date, // yyyy-MM-dd
-    employment_work_hours,
-    employment_salary_paid,
-    employment_description,
-    hired_without_voucher_assessment,
-  } = employment;
+const EmploymentSummary: React.FC<Props> = ({ index }) => {
+  const { getValue: getExceptionReason } =
+    useApplicationFormField<EmploymentExceptionReason>(
+      `summer_vouchers.${index}.summer_voucher_exception_reason`
+    );
+  const { getValue: getName } = useApplicationFormField<string>(
+    `summer_vouchers.${index}.employee_name`
+  );
+  const { getValue: getSsn } = useApplicationFormField<string>(
+    `summer_vouchers.${index}.employee_ssn`
+  );
+  const { getValue: getStartDate } = useApplicationFormField<string>(
+    `summer_vouchers.${index}.employment_start_date`
+  );
+  const { getValue: getEndDate } = useApplicationFormField<string>(
+    `summer_vouchers.${index}.employment_end_date`
+  );
+  const { getSummaryText: getWorkHoursSummary } =
+    useApplicationFormField<number>(
+      `summer_vouchers.${index}.employment_work_hours`
+    );
+  const { getSummaryText: getSalaryPaidSummary } =
+    useApplicationFormField<number>(
+      `summer_vouchers.${index}.employment_salary_paid`
+    );
+  const { getValue: getDescription } = useApplicationFormField<string>(
+    `summer_vouchers.${index}.employment_description`
+  );
+  const { getValue: getHired } =
+    useApplicationFormField<EmployeeHiredWithoutVoucherAssessment>(
+      `summer_vouchers.${index}.hired_without_voucher_assessment`
+    );
 
   const { t } = useTranslation();
 
   return (
     <>
       <FormSectionHeading
-        header={`${employee_name ?? ''} ${employee_ssn ?? ''}`}
+        header={`${getName() ?? ''} ${getSsn() ?? ''}`}
         size="s"
         as="h3"
-        key={id}
         data-testid={`employee-info-${index}`}
       />
       <EmploymentFieldSummary
         fieldName="summer_voucher_exception_reason"
-        employment={employment}
         index={index}
       >
         {t(
           `common:application.form.selectionGroups.summer_voucher_exception_reason.${
-            summer_voucher_exception_reason ?? ''
+            getExceptionReason() ?? ''
           }`
         )}
       </EmploymentFieldSummary>
-      <EmploymentFieldSummary
-        fieldName="employee_postcode"
-        employment={employment}
-        index={index}
-      />
-      <EmploymentFieldSummary
-        fieldName="employee_home_city"
-        employment={employment}
-        index={index}
-      />
-      <EmploymentFieldSummary
-        fieldName="employee_phone_number"
-        employment={employment}
-        index={index}
-      />
-      <EmploymentFieldSummary
-        fieldName="employment_postcode"
-        employment={employment}
-        index={index}
-      />
+      <EmploymentFieldSummary fieldName="employee_postcode" index={index} />
+      <EmploymentFieldSummary fieldName="employee_home_city" index={index} />
+      <EmploymentFieldSummary fieldName="employee_phone_number" index={index} />
+      <EmploymentFieldSummary fieldName="employment_postcode" index={index} />
       <EmploymentFieldSummary
         fieldName="summer_voucher_serial_number"
-        employment={employment}
         index={index}
       />
-      <EmploymentFieldSummary
-        fieldName="employee_school"
-        employment={employment}
-        index={index}
-      />
+      <EmploymentFieldSummary fieldName="employee_school" index={index} />
       {/* TODO: palkkatodistus, työsopimus attachments */}
-      <EmploymentFieldSummary
-        fieldName="employment"
-        employment={employment}
-        index={index}
-      >
-        {t('common:application.step2.employment')}:{' '}
-        {convertToUIDateFormat(employment_start_date)} -{' '}
-        {convertToUIDateFormat(employment_end_date)}
+      <EmploymentFieldSummary fieldName="employment" index={index}>
+        {t('common:application.step2.employment')}: {getStartDate()} -{' '}
+        {getEndDate()}
       </EmploymentFieldSummary>
-      <EmploymentFieldSummary
-        fieldName="employment_work_hours"
-        employment={employment}
-        index={index}
-      >
-        {t('common:application.form.inputs.employment_work_hours')}:{' '}
-        {employment_work_hours},{' '}
-        {t('common:application.form.inputs.employment_salary_paid')}:{' '}
-        {employment_salary_paid}{' '}
+      <EmploymentFieldSummary fieldName="employment_work_hours" index={index}>
+        {getWorkHoursSummary()}, {getSalaryPaidSummary()}
       </EmploymentFieldSummary>
-      {employment_description && (
+      {getDescription() && (
         <EmploymentFieldSummary
           fieldName="employment_description"
-          employment={employment}
           index={index}
         />
       )}
       <EmploymentFieldSummary
         fieldName="hired_without_voucher_assessment"
-        employment={employment}
         index={index}
       >
-        {t('common:application.form.inputs.hired_without_voucher_assessment')}:{' '}
+        {getLabel(t, 'hired_without_voucher_assessment')}:{' '}
         {t(
           `common:application.form.selectionGroups.hired_without_voucher_assessment.${
-            hired_without_voucher_assessment ?? ''
+            getHired() ?? ''
           }`
         )}
       </EmploymentFieldSummary>

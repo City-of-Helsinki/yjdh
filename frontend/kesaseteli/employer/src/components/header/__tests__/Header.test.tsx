@@ -53,6 +53,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
       await waitFor(() =>
         expect(spyRouterPush).toHaveBeenCalledWith(undefined, undefined, {
           locale: String(lang),
+          shallow: true,
         })
       );
     }

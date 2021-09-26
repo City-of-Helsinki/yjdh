@@ -3,8 +3,9 @@ import ActionButtons from 'kesaseteli/employer/components/application/form/Actio
 import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
+import { getApplicationFormFieldLabel } from 'kesaseteli/employer/utils/application.utils';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
@@ -24,7 +25,26 @@ const Step3Summary: React.FC = () => {
     <ApplicationForm stepTitle={t('common:application.step3.header')}>
       <ApplicationSummary />
       <FormSection columns={1}>
-        <Checkbox id="termsAndConditions" validation={{ required: true }} />
+        <Checkbox
+          id="termsAndConditions"
+          validation={{ required: true }}
+          label={
+            <Trans
+              i18nKey={getApplicationFormFieldLabel(t, 'termsAndConditions')}
+              t={t}
+            >
+              Olen lukenut palvelun{' '}
+              <a
+                href={t('common:termsAndConditionsLink')}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                käyttöehdot
+              </a>{' '}
+              ja hyväksyn ne.
+            </Trans>
+          }
+        />
       </FormSection>
       <ActionButtons onAfterLastStep={goToThankYouPage} />
     </ApplicationForm>

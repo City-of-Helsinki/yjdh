@@ -53,22 +53,23 @@ const TextInput: React.FC<TextInputProps> = ({
   const { t } = useTranslation();
   const { register } = useFormContext<Application>();
 
-  const { getValue, getError, fieldName } = useApplicationFormField<string>(id);
-  const errorType = getError()?.type;
+  const { getValue, getError, fieldName, getErrorText } =
+    useApplicationFormField<string>(id);
 
   const errorText = React.useMemo((): string | undefined => {
-    if (!errorType) {
+    const errorType = getError()?.type;
+    const text = getErrorText();
+    if (!text || !errorType) {
       return undefined;
     }
-    const error = t(`common:application.form.errors.${errorType}`);
     const helperText = helperFormat
       ? `${t('common:application.form.helpers.format')}: ${helperFormat}`
       : undefined;
     if (['pattern', 'required'].includes(errorType) && helperText) {
-      return `${error}. ${helperText}`;
+      return `${text}. ${helperText}`;
     }
-    return error;
-  }, [t, errorType, helperFormat]);
+    return text;
+  }, [t, getError, getErrorText, helperFormat]);
 
   // TODO: This can be removed after backend supports invalid values in draft save
   const setValueForBackend = React.useCallback(

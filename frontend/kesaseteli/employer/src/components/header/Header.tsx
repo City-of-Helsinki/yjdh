@@ -32,6 +32,7 @@ const Header: React.FC = () => {
     e.preventDefault();
     void router.push(asPath, asPath, {
       locale: lang,
+      shallow: true,
     });
   };
 
