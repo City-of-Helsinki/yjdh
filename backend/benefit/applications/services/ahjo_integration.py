@@ -8,57 +8,45 @@ from applications.enums import ApplicationStatus, OrganizationType
 from django.utils import timezone
 
 PDF_PATH = os.path.join(os.path.dirname(__file__) + "/pdf_templates")
-TEMPLATE_ID_ASSOCIATION = "associations"
-TEMPLATE_ID_COMPANIES_BENEFIT_WITH_DE_MINIMIS_AID = (
-    "companies_benefit_with_de_minimis_aid"
-)
-TEMPLATE_ID_COMPANIES_BENEFIT_WITHOUT_DE_MINIMIS_AID = (
-    "companies_benefit_without_de_minimis_aid"
-)
+TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID = "benefit_with_de_minimis_aid"
+TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID = "benefit_without_de_minimis_aid"
+TEMPLATE_ID_BENEFIT_DECLINED = "benefit_declined"
 TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC = "composed_accepted_public"
 TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE = "composed_accepted_private"
-TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC = "composed_declined_public"
 TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE = "composed_declined_private"
 
 JINJA_TEMPLATES_COMPOSED = {
     TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC: {
         "path": "composed_accepted_public.html",
         "file_name": "Liite 1 Helsinki-lisä 2021 koontiliite yhteisöille "
-        "mallipohja julkinen.pdf",
+        "julkinen.pdf",
     },
     TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE: {
         "path": "composed_accepted_private.html",
-        "file_name": "Helsinki-lisä 2021 koontiliite yhteisöille mallipohja "
+        "file_name": "Helsinki-lisä 2021 koontiliite yhteisöille "
         "salassa pidettävä.pdf",
     },
-    TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC: {
-        "path": "composed_declined_public.html",
-        "file_name": "Helsinki-lisä 2021 kielteiset päätökset hakijakohtainen "
-        "mallipohja {start_number}-{end_number} salassa "
-        "pidettävä.pdf",
-    },
     TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE: {
-        "path": "composed_declined_private.html",
+        "path": "benefit_declined.html",  # Composed decline template reuse single company decline template
         "file_name": "Helsinki-lisä 2021 kielteiset päätökset koontiliite "
-        "yrityksille {start_number}-{end_number} mallipohja salassa "
-        "pidettävä.pdf",
+        "yrityksille salassa pidettävä.pdf",
     },
 }
 
 JINJA_TEMPLATES_SINGLE = {
-    TEMPLATE_ID_ASSOCIATION: {
-        "path": "associations.html",
-        "file_name": "Liite 2 hakijakohtainen mallipohja yhteisöt {app_number}.pdf",
+    TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID: {
+        "path": "benefit_with_de_minimis_aid.html",
+        "file_name": "[{company_name}] Liite 2 hakijakohtainen de minimis "
+        "yritykset.pdf",
     },
-    TEMPLATE_ID_COMPANIES_BENEFIT_WITH_DE_MINIMIS_AID: {
-        "path": "companies_benefit_with_de_minimis_aid.html",
-        "file_name": "Liite 2 hakijakohtainen mallipohja de minimis "
-        "yritykset {app_number}.pdf",
+    TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID: {
+        "path": "benefit_without_de_minimis_aid.html",
+        "file_name": "[{company_name}] Liite 3 hakijakohtainen ei de"
+        "minimis yritykset.pdf",
     },
-    TEMPLATE_ID_COMPANIES_BENEFIT_WITHOUT_DE_MINIMIS_AID: {
-        "path": "companies_benefit_without_de_minimis_aid.html",
-        "file_name": "Liite 3 hakijakohtainen mallipohja ei de "
-        "minimis yritykset {app_number}.pdf",
+    TEMPLATE_ID_BENEFIT_DECLINED: {
+        "path": "benefit_declined.html",
+        "file_name": "[{company_name}] Työllisyydenhoidon Helsinki-lisä, kielteiset päätökset yrityksille.pdf",
     },
 }
 
@@ -71,70 +59,72 @@ def _get_template(path):
 
 def prepare_pdf_files(apps):
     pdf_files = []
-    # SINGLE FILE PER APP
-    for app in apps:
-        pdf_files.append(generate_single_file(app))
+    # SINGLE COMPANY/ASSOCIATION PER DECISION PER FILE
+    accepted_apps = [app for app in apps if app.status == ApplicationStatus.ACCEPTED]
+    rejected_apps = [app for app in apps if app.status == ApplicationStatus.REJECTED]
+    accepted_groups = {}
+    for app in accepted_apps:
+        accepted_groups.setdefault(app.company, []).append(app)
+    for group, grouped_accepted_apps in accepted_groups.items():
+        pdf_files.append(generate_single_approved_file(group, grouped_accepted_apps))
+
+    declined_groups = {}
+    for app in rejected_apps:
+        declined_groups.setdefault(app.company, []).append(app)
+    for group, grouped_rejected_apps in declined_groups.items():
+        pdf_files.append(generate_single_declined_file(group, grouped_rejected_apps))
 
     # COMPOSED FILES
-    pdf_files += generate_composed_files(apps)
+    pdf_files += generate_composed_files(accepted_apps, rejected_apps)
 
     return pdf_files
 
 
-def generate_single_file(app):
-    # Association
-    if (
-        OrganizationType.resolve_organization_type(app.company.company_form)
-        == OrganizationType.ASSOCIATION
-    ):
-        template_config = JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_ASSOCIATION]
-        file_name = template_config["file_name"].format(
-            app_number=app.ahjo_application_number
-        )
-        temp = _get_template(template_config["path"])
-        html = temp.render(app=app, year=timezone.now().year)
-    # Company application
-    elif app.de_minimis_aid:
-        template_config = JINJA_TEMPLATES_SINGLE[
-            TEMPLATE_ID_COMPANIES_BENEFIT_WITH_DE_MINIMIS_AID
-        ]
-        file_name = template_config["file_name"].format(
-            app_number=app.ahjo_application_number
-        )
-        temp = _get_template(template_config["path"])
-        html = temp.render(app=app, year=timezone.now().year)
-    # Company application without de minimis aid
-    else:
-        template_config = JINJA_TEMPLATES_SINGLE[
-            TEMPLATE_ID_COMPANIES_BENEFIT_WITHOUT_DE_MINIMIS_AID
-        ]
-        file_name = template_config["file_name"].format(
-            app_number=app.ahjo_application_number
-        )
-        temp = _get_template(template_config["path"])
-        html = temp.render(app=app, year=timezone.now().year)
+def generate_single_declined_file(company, apps):
+    template_config = JINJA_TEMPLATES_SINGLE[TEMPLATE_ID_BENEFIT_DECLINED]
+    file_name = template_config["file_name"].format(company_name=company.name)
+    temp = _get_template(template_config["path"])
+    html = temp.render(apps=apps)
     single_pdf = pdfkit.from_string(html, False)
     return file_name, single_pdf, html
 
 
-def generate_composed_files(apps):
+def generate_single_approved_file(company, apps):
+    # FIXME: Need to change the logic later when we have multiple benefit per application
+    # Association without business activity
+    if (
+        OrganizationType.resolve_organization_type(company.company_form)
+        == OrganizationType.ASSOCIATION
+        and not apps[0].association_has_business_activities
+    ):
+        template_config = JINJA_TEMPLATES_SINGLE[
+            TEMPLATE_ID_BENEFIT_WITHOUT_DE_MINIMIS_AID
+        ]
+        file_name = template_config["file_name"].format(company_name=company.name)
+        temp = _get_template(template_config["path"])
+        html = temp.render(apps=apps)
+    # Company and Association with business activity
+    else:
+        template_config = JINJA_TEMPLATES_SINGLE[
+            TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID
+        ]
+        file_name = template_config["file_name"].format(company_name=company.name)
+        temp = _get_template(template_config["path"])
+        html = temp.render(apps=apps)
+    single_pdf = pdfkit.from_string(html, False)
+    return file_name, single_pdf, html
+
+
+def generate_composed_files(accepted_apps=[], rejected_apps=[]):
     files = []
     # Accepted applications
-    accepted_apps = [app for app in apps if app.status == ApplicationStatus.ACCEPTED]
     if len(accepted_apps):
-        start_number = accepted_apps[0].application_number
-        end_number = accepted_apps[-1].application_number
-
         template_config = JINJA_TEMPLATES_COMPOSED[TEMPLATE_ID_COMPOSED_ACCEPTED_PUBLIC]
         public_accepted_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"].format(
-            start_number=start_number, end_number=end_number
-        )
+        file_name = template_config["file_name"]
         html = public_accepted_template.render(
             apps=accepted_apps,
             year=timezone.now().year,
-            start_number=start_number,
-            end_number=end_number,
         )
         files.append((file_name, pdfkit.from_string(html, False), html))
 
@@ -142,48 +132,23 @@ def generate_composed_files(apps):
             TEMPLATE_ID_COMPOSED_ACCEPTED_PRIVATE
         ]
         private_accepted_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"].format(
-            start_number=start_number, end_number=end_number
-        )
+        file_name = template_config["file_name"]
         html = private_accepted_template.render(
             apps=accepted_apps,
             year=timezone.now().year,
-            start_number=start_number,
-            end_number=end_number,
         )
         files.append((file_name, pdfkit.from_string(html, False), html))
 
     # Rejected applications
-    rejected_apps = [app for app in apps if app.status == ApplicationStatus.REJECTED]
     if len(rejected_apps):
-        start_number = rejected_apps[0].application_number
-        end_number = rejected_apps[-1].application_number
-
-        template_config = JINJA_TEMPLATES_COMPOSED[TEMPLATE_ID_COMPOSED_DECLINED_PUBLIC]
-        public_declined_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"].format(
-            start_number=start_number, end_number=end_number
-        )
-        html = public_declined_template.render(
-            apps=rejected_apps,
-            year=timezone.now().year,
-            start_number=start_number,
-            end_number=end_number,
-        )
-        files.append((file_name, pdfkit.from_string(html, False), html))
-
         template_config = JINJA_TEMPLATES_COMPOSED[
             TEMPLATE_ID_COMPOSED_DECLINED_PRIVATE
         ]
         private_declined_template = _get_template(template_config["path"])
-        file_name = template_config["file_name"].format(
-            start_number=start_number, end_number=end_number
-        )
+        file_name = template_config["file_name"]
         html = private_declined_template.render(
             apps=rejected_apps,
             year=timezone.now().year,
-            start_number=start_number,
-            end_number=end_number,
         )
         files.append((file_name, pdfkit.from_string(html, False), html))
     return files

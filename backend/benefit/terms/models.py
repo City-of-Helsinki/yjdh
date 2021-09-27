@@ -2,6 +2,7 @@ from datetime import date
 
 from applications.models import Application
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from terms.enums import TermsType
@@ -9,7 +10,20 @@ from terms.enums import TermsType
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 
+class TermsManager(models.Manager):
+    def get_terms_in_effect(self, terms_type):
+        return (
+            self.get_queryset()
+            .filter(terms_type=terms_type, effective_from__lte=date.today())
+            .order_by("-effective_from")
+            .first()
+        )  # unique constraint in ensures there's at most only one
+
+
 class Terms(UUIDModel, TimeStampedModel):
+
+    objects = TermsManager()
+
     terms_type = models.CharField(
         max_length=64,
         verbose_name=_("type of terms"),
@@ -101,6 +115,7 @@ class AbstractTermsApproval(UUIDModel, TimeStampedModel):
 
 class ApplicantTermsApproval(AbstractTermsApproval):
     """
+
     The "terms approval" process in UI has two steps:
     1. User is shown a PDF file with terms
     2. User needs to click a set of mandatory checkboxes in order to proceed
@@ -129,6 +144,18 @@ class ApplicantTermsApproval(AbstractTermsApproval):
 
     def __str__(self):
         return f"{self.approved_by.email} approved terms {self.terms} at {self.approved_at}"
+
+    @staticmethod
+    def terms_approval_needed(application):
+        try:
+            application.applicant_terms_approval
+        except ObjectDoesNotExist:
+            return True
+        else:
+            return (
+                Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS)
+                != application.applicant_terms_approval.terms
+            )
 
     class Meta:
         db_table = "bf_applicanttermsapproval"
