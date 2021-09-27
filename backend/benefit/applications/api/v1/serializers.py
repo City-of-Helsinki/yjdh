@@ -34,6 +34,7 @@ from common.utils import (
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
 from django.db import transaction
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
@@ -1397,5 +1398,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     def get_logged_in_user_company(self):
         user = self._get_request_user_from_context()
+        if settings.DISABLE_AUTHENTICATION:
+            return Company.objects.all().order_by("name").first()
         business_id = get_business_id_from_user(user)
         return Company.objects.get(business_id=business_id)
