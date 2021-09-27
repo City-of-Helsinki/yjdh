@@ -25,7 +25,7 @@ import * as Yup from 'yup';
 type UseDeminimisAidProps = {
   t: TFunction;
   language: SUPPORTED_LANGUAGES;
-  fields: { [key in DE_MINIMIS_AID_KEYS]: Field };
+  fields: { [key in DE_MINIMIS_AID_KEYS]: Field<DE_MINIMIS_AID_KEYS> };
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string;
   handleSubmit: (e: React.MouseEvent) => void;
@@ -123,7 +123,7 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
 
   const fields: UseDeminimisAidProps['fields'] = React.useMemo(() => {
     const pairs = Object.values(DE_MINIMIS_AID_KEYS).map<
-      [DE_MINIMIS_AID_KEYS, Field]
+      [DE_MINIMIS_AID_KEYS, Field<DE_MINIMIS_AID_KEYS>]
     >((fieldName) => [
       fieldName,
       {
@@ -141,7 +141,10 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
       },
     ]);
 
-    return fromPairs<Field>(pairs) as Record<DE_MINIMIS_AID_KEYS, Field>;
+    return fromPairs<Field<DE_MINIMIS_AID_KEYS>>(pairs) as Record<
+      DE_MINIMIS_AID_KEYS,
+      Field<DE_MINIMIS_AID_KEYS>
+    >;
   }, [t, translationsBase]);
 
   const getErrorMessage = (fieldName: string): string =>

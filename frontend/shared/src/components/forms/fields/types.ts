@@ -1,6 +1,6 @@
-export type Field = {
-  name: string;
-  label?: string;
+export type Field<T = string> = {
+  name: T;
+  label: string;
   placeholder?: string;
   mask?: { format: string; stripVal(val: string): string };
 };

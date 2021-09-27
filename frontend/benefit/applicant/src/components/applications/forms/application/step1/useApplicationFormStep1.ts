@@ -39,7 +39,10 @@ import * as Yup from 'yup';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  fields: Record<APPLICATION_FIELDS_STEP1_KEYS, Field>;
+  fields: Record<
+    APPLICATION_FIELDS_STEP1_KEYS,
+    Field<APPLICATION_FIELDS_STEP1_KEYS>
+  >;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
@@ -161,7 +164,7 @@ const useApplicationFormStep1 = (
   });
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
-    const fieldMasks: Record<Field['name'], Field['mask']> = {
+    const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
       [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
         format: 'FI99 9999 9999 9999 99',
         stripVal: (val: string) => val.replace(/\s/g, ''),
@@ -169,20 +172,22 @@ const useApplicationFormStep1 = (
     };
 
     const fieldsValues = Object.values(APPLICATION_FIELDS_STEP1_KEYS);
-    const fieldsPairs: [APPLICATION_FIELDS_STEP1_KEYS, Field][] =
-      fieldsValues.map((fieldName) => [
-        fieldName,
-        {
-          name: fieldName,
-          label: t(`${translationsBase}.fields.${fieldName}.label`),
-          placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
-          mask: fieldMasks[fieldName],
-        },
-      ]);
+    const fieldsPairs: [
+      APPLICATION_FIELDS_STEP1_KEYS,
+      Field<APPLICATION_FIELDS_STEP1_KEYS>
+    ][] = fieldsValues.map((fieldName) => [
+      fieldName,
+      {
+        name: fieldName,
+        label: t(`${translationsBase}.fields.${fieldName}.label`),
+        placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
+        mask: fieldMasks[fieldName],
+      },
+    ]);
 
     return fromPairs(fieldsPairs) as Record<
       APPLICATION_FIELDS_STEP1_KEYS,
-      Field
+      Field<APPLICATION_FIELDS_STEP1_KEYS>
     >;
   }, [t, translationsBase]);
 
