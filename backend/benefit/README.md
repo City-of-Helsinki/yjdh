@@ -37,7 +37,7 @@ The project is now running at [localhost:8000](http://localhost:8000)
 
 ### Testing and debugging
 
-To run the backend without integrations, set MOCK_FLAG=1 in the .env.benefit-backend
+To run the backend without integrations, set MOCK_FLAG=1 in .env.benefit-backend
 If MOCK_FLAG is set, additionally DUMMY_COMPANY_FORM can be set to test with different company_form parameters.
 
 ## Keeping Python requirements up to date

@@ -121,6 +121,10 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
 class DecidedApplicationFactory(ApplicationFactory):
     status = ApplicationStatus.ACCEPTED
+    applicant_terms_approval = factory.RelatedFactory(
+        "terms.tests.factories.ApplicantTermsApprovalFactory",
+        factory_related_name="application",
+    )
     calculated_benefit_amount = factory.Faker(
         "pydecimal", left_digits=4, right_digits=2, min_value=1
     )

@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from datetime import date, datetime
+from unittest import mock
 
 import pytest
 import pytz
@@ -858,23 +859,18 @@ def test_application_status_change(
     data["status"] = to_status
 
     if to_status == ApplicationStatus.RECEIVED:
-        # Add enough attachments so that the state transition is valid. See separete test
-        # for attachment validation.
-        _add_pdf_attachment(request, application, AttachmentType.PAY_SUBSIDY_DECISION)
-        _add_pdf_attachment(request, application, AttachmentType.EMPLOYMENT_CONTRACT)
-        _add_pdf_attachment(request, application, AttachmentType.EDUCATION_CONTRACT)
-        _add_pdf_attachment(request, application, AttachmentType.COMMISSION_CONTRACT)
-        _add_pdf_attachment(
-            request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER
-        )
-        _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
+        add_attachments_to_application(request, application)
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
 
-    response = api_client.put(
-        get_detail_url(application),
-        data,
-    )
+    with mock.patch(
+        "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
+    ):
+        # terms approval is tested separately
+        response = api_client.put(
+            get_detail_url(application),
+            data,
+        )
     assert response.status_code == expected_code
     if expected_code == 200:
         assert application.log_entries.all().count() == 1
@@ -882,6 +878,17 @@ def test_application_status_change(
         assert application.log_entries.all().first().to_status == to_status
     else:
         assert application.log_entries.all().count() == 0
+
+
+def add_attachments_to_application(request, application):
+    # Add enough attachments so that the state transition is valid. See separete test
+    # for attachment validation.
+    _add_pdf_attachment(request, application, AttachmentType.PAY_SUBSIDY_DECISION)
+    _add_pdf_attachment(request, application, AttachmentType.EMPLOYMENT_CONTRACT)
+    _add_pdf_attachment(request, application, AttachmentType.EDUCATION_CONTRACT)
+    _add_pdf_attachment(request, application, AttachmentType.COMMISSION_CONTRACT)
+    _add_pdf_attachment(request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER)
+    _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
 
 
 def test_application_last_modified_at_draft(api_client, application):
@@ -1016,12 +1023,17 @@ def test_attachment_upload_and_delete(api_client, application):
 VALID_PDF_FILE = "valid_pdf_file.pdf"
 
 
+def _pdf_file_path(request):
+    # path that is accessible from other application's tests too
+    return os.path.join(
+        request.fspath.dirname, "../../applications/tests/", VALID_PDF_FILE
+    )
+
+
 def _upload_pdf(
     request, api_client, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
 ):
-    with open(
-        os.path.join(request.fspath.dirname, VALID_PDF_FILE), "rb"
-    ) as valid_pdf_file:
+    with open(os.path.join(_pdf_file_path(request)), "rb") as valid_pdf_file:
         return api_client.post(
             reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
             {
@@ -1037,9 +1049,7 @@ def _add_pdf_attachment(
 ):
     # add attachment, bypassing validation, so attachment can be added even if application
     # state does not allow it
-    with open(
-        os.path.join(request.fspath.dirname, VALID_PDF_FILE), "rb"
-    ) as valid_pdf_file:
+    with open(_pdf_file_path(request), "rb") as valid_pdf_file:
         file_upload = SimpleUploadedFile(VALID_PDF_FILE, valid_pdf_file.read())
         attachment = Attachment.objects.create(
             application=application,
@@ -1200,10 +1210,14 @@ def test_attachment_requirements(
 def _submit_application(api_client, application):
     data = ApplicationSerializer(application).data
     data["status"] = ApplicationStatus.RECEIVED
-    return api_client.put(
-        get_detail_url(application),
-        data,
-    )
+    with mock.patch(
+        "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
+    ):
+        # terms approval is tested separately
+        return api_client.put(
+            get_detail_url(application),
+            data,
+        )
 
 
 def test_attachment_validation(request, api_client, application):
