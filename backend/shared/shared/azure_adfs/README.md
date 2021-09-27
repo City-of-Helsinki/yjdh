@@ -37,9 +37,9 @@ To start using this package, follow these steps:
     ```
     LOGIN_URL = "django_auth_adfs:login"
     
-    ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
-    ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
-    ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+    ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID") or "client_id"
+    ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET") or "client_secret"
+    ADFS_TENANT_ID = env.str("ADFS_TENANT_ID") or "tenant_id"
     
     AUTH_ADFS = {
         "AUDIENCE": ADFS_CLIENT_ID,
