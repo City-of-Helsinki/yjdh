@@ -81,6 +81,7 @@ env = environ.Env(
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DISABLE_AUTHENTICATION=(bool, False),
     DUMMY_COMPANY_FORM=(str, "OY"),
+    ENABLE_DEBUG_ENV=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -233,6 +234,7 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
 DUMMY_COMPANY_FORM = env.str("DUMMY_COMPANY_FORM")
+ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 
 # Authentication settings begin
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
