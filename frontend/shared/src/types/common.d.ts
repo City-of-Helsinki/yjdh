@@ -2,7 +2,7 @@ import React from 'react';
 
 export type OptionType = {
   label: string;
-  value: string;
+  value: string | number;
 };
 
 export type NavigationItem = {
