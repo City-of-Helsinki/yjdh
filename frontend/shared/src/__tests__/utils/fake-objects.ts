@@ -102,6 +102,7 @@ export const fakeApplication = (
   summer_vouchers: fakeEmployments(1),
   ...fakeContactPerson(),
   is_separate_invoicer: invoicer || false,
+  modified_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),
   ...(invoicer && fakeInvoicer()),
 });
 

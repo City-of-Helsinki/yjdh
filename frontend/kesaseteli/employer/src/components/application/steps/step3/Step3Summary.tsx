@@ -3,6 +3,7 @@ import ActionButtons from 'kesaseteli/employer/components/application/form/Actio
 import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
+import useSetCurrentStep from 'kesaseteli/employer/hooks/application/useSetCurrentStep';
 import { getApplicationFormFieldLabel } from 'kesaseteli/employer/utils/application.utils';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
@@ -20,10 +21,13 @@ const Step3Summary: React.FC = () => {
       void router.push(`${locale}/thankyou?id=${applicationId}`);
     }
   }, [applicationId, router, locale]);
+  const title = t('common:application.step3.header');
+  const tooltip = t('common:application.step3.tooltip');
 
+  useSetCurrentStep();
   return (
-    <ApplicationForm stepTitle={t('common:application.step3.header')}>
-      <ApplicationSummary />
+    <ApplicationForm title={title}>
+      <ApplicationSummary header={title} tooltip={tooltip} />
       <FormSection columns={1}>
         <Checkbox
           id="termsAndConditions"

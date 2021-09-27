@@ -1,24 +1,17 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useResetApplicationFormValues from 'kesaseteli/employer/hooks/application/useResetApplicationFormValues';
-import { getStepNumber } from 'kesaseteli/employer/utils/application-wizard.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'shared/components/toast/Toast';
-import useSetQueryParam from 'shared/hooks/useSetQueryParam';
-import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/application-form-data';
 
 type Props = {
-  stepTitle: string;
+  title?: string;
   children: React.ReactNode;
 };
 
-const ApplicationForm = ({ stepTitle, children }: Props): JSX.Element => {
-  const { activeStep } = useWizard();
-  const currentStep = getStepNumber(activeStep + 1);
-  useSetQueryParam('step', String(currentStep));
-
+const ApplicationForm = ({ title, children }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { loadingError, updatingError } = useApplicationApi();
   const errorMessage = (loadingError || updatingError)?.message;
@@ -44,9 +37,12 @@ const ApplicationForm = ({ stepTitle, children }: Props): JSX.Element => {
 
   return (
     <FormProvider {...methods}>
-      <form aria-label={stepTitle}>{children}</form>
+      <form aria-label={title}>{children}</form>
     </FormProvider>
   );
+};
+ApplicationForm.defaultProps = {
+  title: undefined,
 };
 
 export default ApplicationForm;

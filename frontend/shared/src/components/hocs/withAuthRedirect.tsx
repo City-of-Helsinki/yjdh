@@ -36,7 +36,7 @@ const withAuthRedirect = <P,>({
     }
     if (!isServerSide() && expectedAuth !== isAuthenticated) {
       void router.push(redirectLocation);
-      return null;
+      return <PageLoadingSpinner />;
     }
     return <WrappedComponent {...props} />;
   };

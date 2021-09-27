@@ -3,11 +3,19 @@ import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicat
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';
+import {
+  $GridCell,
+  $Hr,
+  FormSectionProps,
+} from 'shared/components/forms/section/FormSection.sc';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 
-const ApplicationSummary: React.FC = () => {
+type Props = {
+  header?: FormSectionProps['header'];
+  tooltip?: FormSectionProps['tooltip'];
+};
+const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
   const { t } = useTranslation();
   const { application, isLoading } = useApplicationApi();
   if (!application || isLoading) {
@@ -26,14 +34,9 @@ const ApplicationSummary: React.FC = () => {
     summer_vouchers,
   } = application;
 
-  const stepTitle = t('common:application.step3.header');
   return (
     <>
-      <FormSection
-        header={stepTitle}
-        tooltip={t('common:application.step3.tooltip')}
-        columns={1}
-      >
+      <FormSection header={header} tooltip={tooltip} columns={1}>
         <FormSectionHeading
           header={t('common:application.step3.employerTitle')}
           size="m"

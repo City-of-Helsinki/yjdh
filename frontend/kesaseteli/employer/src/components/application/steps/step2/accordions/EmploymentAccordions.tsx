@@ -13,14 +13,14 @@ const EmploymentAccordions: React.FC = () => {
   const { getValues } = useFormContext<Application>();
 
   const employments = getValues('summer_vouchers') ?? [];
-  const stepTitle = t('common:application.step2.header');
+  const title = t('common:application.step2.header');
 
   useValidateEmploymentsNotEmpty(employments);
 
   return (
     <>
       <FormSection
-        header={stepTitle}
+        header={title}
         tooltip={t('common:application.step2.tooltip')}
         withoutDivider
       />

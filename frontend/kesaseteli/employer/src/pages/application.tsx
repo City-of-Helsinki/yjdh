@@ -23,6 +23,7 @@ const ApplicationPage: NextPage = () => {
   const locale = router.locale ?? DEFAULT_LANGUAGE;
   const {
     applicationId,
+    application,
     isLoading: isLoadingApplication,
     loadingError: loadingApplicationError,
   } = useApplicationApi();
@@ -38,7 +39,11 @@ const ApplicationPage: NextPage = () => {
 
   if (!applicationId) {
     void router.replace(`${locale}/`);
-    return null;
+    return <PageLoadingSpinner />;
+  }
+  if (application?.status === 'submitted') {
+    void router.push(`${locale}/thankyou?id=${applicationId}`);
+    return <PageLoadingSpinner />;
   }
 
   if (isLoading) {
@@ -64,8 +69,7 @@ const ApplicationPage: NextPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-  'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withAuth(ApplicationPage);
