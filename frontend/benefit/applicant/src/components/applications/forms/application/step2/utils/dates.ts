@@ -8,7 +8,7 @@ import { parseDate } from 'shared/utils/date.utils';
 
 export const getMinEndDate = (
   startDate: string | undefined,
-  benefitType: BENEFIT_TYPES | undefined
+  benefitType: BENEFIT_TYPES | undefined | null
 ): Date => {
   let months = 0;
   let days = 0;
