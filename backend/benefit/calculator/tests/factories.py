@@ -26,6 +26,8 @@ class PaySubsidyFactory(factory.django.DjangoModelFactory):
     end_date = factory.LazyAttribute(
         lambda o: o.start_date + timedelta(days=random.randint(31, 364))
     )
+    pay_subsidy_percent = decimal.Decimal(50)
+    work_time_percent = decimal.Decimal(100)
     amount = factory.Faker("pydecimal", left_digits=3, right_digits=2, min_value=0)
 
     class Meta:
