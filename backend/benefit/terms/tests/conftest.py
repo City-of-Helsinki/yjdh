@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from common.tests.conftest import *  # noqa
 from terms.enums import TermsType
@@ -15,7 +17,9 @@ def applicant_consent():
 
 @pytest.fixture
 def applicant_terms():
-    return TermsFactory(terms_type=TermsType.APPLICANT_TERMS)
+    return TermsFactory(
+        terms_type=TermsType.APPLICANT_TERMS, effective_from=date.today()
+    )
 
 
 @pytest.fixture
