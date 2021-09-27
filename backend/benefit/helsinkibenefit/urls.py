@@ -1,4 +1,5 @@
 from applications.api.v1 import application_batch_views, views as application_views
+from common.debug_util import debug_env
 from companies.api.v1.views import GetCompanyView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -40,6 +41,8 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+if settings.ENABLE_DEBUG_ENV:
+    urlpatterns.append(path("debug_env", debug_env))
 
 # Kubernetes liveness & readiness probes
 

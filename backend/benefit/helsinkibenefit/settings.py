@@ -81,6 +81,7 @@ env = environ.Env(
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DISABLE_AUTHENTICATION=(bool, False),
     DUMMY_COMPANY_FORM=(str, "OY"),
+    ENABLE_DEBUG_ENV=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -233,6 +234,7 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
 DUMMY_COMPANY_FORM = env.str("DUMMY_COMPANY_FORM")
+ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 
 # Authentication settings begin
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
@@ -271,9 +273,9 @@ EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
 
-ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
-ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
-ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID") or "client_id"
+ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET") or "client_secret"
+ADFS_TENANT_ID = env.str("ADFS_TENANT_ID") or "tenant_id"
 
 # https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html#step-2-configuring-settings-py
 AUTH_ADFS = {
