@@ -6,7 +6,7 @@ from django.conf import settings as django_settings
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django_auth_adfs.backend import AdfsAuthCodeBackend
-from django_auth_adfs.config import provider_config, settings
+from django_auth_adfs.config import ConfigLoadError, provider_config, settings
 from django_auth_adfs.exceptions import MFARequired
 
 LOGGER = logging.getLogger(__name__)
@@ -125,7 +125,10 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         Docs: https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens#groups-overage-claim
         """
         # If loaded data is too old, reload it again
-        provider_config.load_config()
+        try:
+            provider_config.load_config()
+        except ConfigLoadError:
+            return
 
         # If there's no token or code, we pass control to the next authentication backend
         if authorization_code is None or authorization_code == "":

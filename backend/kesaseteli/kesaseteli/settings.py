@@ -248,9 +248,9 @@ EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
 
-ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
-ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
-ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID") or "client_id"
+ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET") or "client_secret"
+ADFS_TENANT_ID = env.str("ADFS_TENANT_ID") or "tenant_id"
 
 # https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html#step-2-configuring-settings-py
 AUTH_ADFS = {
