@@ -1,6 +1,5 @@
-import { $SupplementaryButton } from 'benefit/applicant/components/applications/Applications.sc';
 import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
-import { IconPen } from 'hds-react';
+import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -25,13 +24,14 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
       <FormSection
         header={t(`${translationsBase}.company.heading1`)}
         action={
-          <$SupplementaryButton
+          <Button
+            theme="black"
             onClick={() => handleStepChange(1)}
             variant="supplementary"
             iconLeft={<IconPen />}
           >
             {t(`common:applications.actions.edit`)}
-          </$SupplementaryButton>
+          </Button>
         }
         withoutDivider
       >

@@ -14,8 +14,10 @@ const Header: React.FC = () => {
   const locale = useLocale();
   const router = useRouter();
   const { asPath } = router;
-  const getLanguageOptions = (): OptionType[] => {
-    const createOptions = (languages: readonly string[]): OptionType[] =>
+  const getLanguageOptions = (): OptionType<string>[] => {
+    const createOptions = (
+      languages: readonly string[]
+    ): OptionType<string>[] =>
       languages.map((language) => ({
         label: t(`common:languages.${language}`),
         value: language,
@@ -23,11 +25,11 @@ const Header: React.FC = () => {
     return createOptions(SUPPORTED_LANGUAGES);
   };
 
-  const languageOptions: OptionType[] = getLanguageOptions();
+  const languageOptions = getLanguageOptions();
 
   const handleLanguageChange = (
     e: React.SyntheticEvent<unknown>,
-    { value: lang }: OptionType
+    { value: lang }: OptionType<string>
   ): void => {
     e.preventDefault();
     void router.push(asPath, asPath, {

@@ -1,26 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Liite 1 Työllisyydenhoidon Helsinki-lisän myöntäminen yhteisöille vuonna {{ year }}, hakemus nro
-    {{ start_number }} - {{ end_number }}</h1>
-<table aria-label="AHJO report""AHJO report" style="border: 1px solid black">
+<p>Työllisyydenhoidon Helsinki-lisän myöntäminen työnantajille</p>
+<table aria-label="AHJO report" style="border: 1px solid black">
     <tr>
-    <th scope="col">Hakemus-numero</th>
-    <th scope="col">Hakija</th>
-    <th scope="col">Y-tunnus</th>
-    <th scope="col">Työllistetyn sukunimi</th>
-    <th scope="col">Työllistetyn etunimi</th>
-    <th scope="col">Alkaa</th>
-    </tr>
-    {% for app in apps %}
-        <tr>
-            <td>{{ app.ahjo_application_number }}</td>
-            <td>{{ app.company_name }}</td>
-            <td>{{ app.company.business_id }}</td>
-            <td>{{ app.employee.first_name }}</td>
-            <td>{{ app.employee.last_name }}</td>
-            <td>{{ app.start_date }}</td>
+            <th scope="col">Hakemus-numero</th>
+            <th scope="col">Hakija</th>
+            <th scope="col">Y-tunnus</th>
+            <th scope="col">Työllistetty</th>
+            <th scope="col">Aika</th>
+            <th scope="col">Tukimuoto</th>
+            <th class="text-right" scope="col">Summa/kk</th>
+            <th class="text-right" scope="col">Yhteensä</th>
         </tr>
-    {% endfor %}
+        {% for app in apps %}
+            <tr>
+                <td>{{ app.ahjo_application_number }}</td>
+                <td>{{ app.company_name }}</td>
+                <td>{{ app.company.business_id }}</td>
+                <td>{{ app.employee.first_name }} {{ app.employee.last_name }}</td>
+                <td>{{ app.start_date.strftime("%d.%m.%Y") }} - {{ app.end_date.strftime("%d.%m.%Y")}}</td>
+                <td>{{ app.get_benefit_type_display() }}</td>
+                <td class="text-right">{{ "%.0f €" | format(app.benefit_amount/(app.duration_in_months | round | int))}}
+                </td>
+                <td class="text-right"><b>{{ "%.0f €" | format(app.benefit_amount)}}</b></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="8"  class="footer text-right"> Kaikki yhteensä <b>{{ "%.0f €" | format(apps | sum
+                    (attribute='benefit_amount'))}}</b></td>
+        </tr>
 </table>
 {% endblock %}

@@ -10,11 +10,11 @@ export type HeaderProps = {
   title?: string;
   menuToggleAriaLabel?: string;
   locale: string;
-  languages: OptionType[];
+  languages: OptionType<string>[];
   navigationItems?: NavigationItem[];
   onLanguageChange: (
     e: React.SyntheticEvent<unknown>,
-    language: OptionType
+    language: OptionType<string>
   ) => void;
   onTitleClick: (callback: () => void) => void;
   onNavigationItemClick: (pathname: string) => void;

@@ -1,8 +1,8 @@
 import React from 'react';
 
-export type OptionType = {
+export type OptionType<T extends string | number = string | number> = {
   label: string;
-  value: string | number;
+  value: T;
 };
 
 export type NavigationItem = {

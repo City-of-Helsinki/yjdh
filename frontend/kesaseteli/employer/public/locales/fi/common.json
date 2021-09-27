@@ -11,12 +11,21 @@
     "retry": "Lataa sivu uudelleen",
     "logout": "Kirjaudu ulos"
   },
+  "404Page": {
+    "pageNotFoundLabel": "Sivua ei löytynyt",
+    "pageNotFoundContent": "Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+  },
   "loginPage": {
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
     "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+  },
+  "thankyouPage": {
+    "thankyouMessageLabel": "Hakemus on lähetetty",
+    "thankyouMessageContent": "Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
+    "createNewApplication": "Tee uusi hakemus"
   },
   "application": {
     "new": "Uusi hakemus",

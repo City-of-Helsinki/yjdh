@@ -13,7 +13,6 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
-from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.contrib.auth import get_user_model
 
@@ -122,6 +121,10 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
 class DecidedApplicationFactory(ApplicationFactory):
     status = ApplicationStatus.ACCEPTED
+    applicant_terms_approval = factory.RelatedFactory(
+        "terms.tests.factories.ApplicantTermsApprovalFactory",
+        factory_related_name="application",
+    )
     calculated_benefit_amount = factory.Faker(
         "pydecimal", left_digits=4, right_digits=2, min_value=1
     )
@@ -133,7 +136,6 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi_FI")
-
     phone_number = factory.Sequence(lambda n: f"050-10000{n}")
     email = factory.Faker("email")
 

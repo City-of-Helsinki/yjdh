@@ -33,4 +33,5 @@ export const $ActionContainer = styled.a`
   color: ${(props) => props.theme.colors.black};
   text-decoration: none;
   padding: ${(props) => props.theme.spacing.xs};
+  min-width: 120px;
 `;

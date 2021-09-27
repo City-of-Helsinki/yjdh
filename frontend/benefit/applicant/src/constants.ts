@@ -56,6 +56,7 @@ export enum ATTACHMENT_TYPES {
   COMMISSION_CONTRACT = 'commission_contract',
   EDUCATION_CONTRACT = 'education_contract',
   HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
+  EMPLOYEE_CONSENT = 'employee_consent',
 }
 
 export enum ATTACHMENT_CONTENT_TYPES {
@@ -214,3 +215,6 @@ export const ATTACHMENT_ALLOWED_TYPES = [
   'image/jpeg',
   'application/pdf',
 ];
+
+// temporary consent file
+export const EMPLOYEE_CONSENT_FILE = 'employee_consent.pdf';

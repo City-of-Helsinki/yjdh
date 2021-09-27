@@ -19,10 +19,10 @@ router.register(r"applicationbatches", application_batch_views.ApplicationBatchV
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
+    path("v1/company/", GetCompanyView.as_view()),
     path(
         "v1/company/<str:business_id>", GetCompanyView.as_view()
-    ),  # FIXME: Remove this later`
-    path("v1/company/", GetCompanyView.as_view()),
+    ),  # FIXME: Remove this later
     path("oidc/", include("shared.oidc.urls")),
     # path("oauth2/", include("shared.azure_adfs.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
@@ -39,6 +39,7 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 # Kubernetes liveness & readiness probes
 

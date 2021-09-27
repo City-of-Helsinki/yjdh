@@ -1,7 +1,7 @@
+import { Button } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 
-import { $PrimaryButton } from '../applications/Applications.sc';
 import {
   $ActionsContainer,
   $ErrorPageContainer,
@@ -31,10 +31,10 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         <$ErrorPageMessage>{message}</$ErrorPageMessage>
         {showActions && (
           <$ActionsContainer>
-            <$PrimaryButton onClick={handleBackClick}>
+            <Button theme="coat" onClick={handleBackClick}>
               {t('common:errorPage.home')}
-            </$PrimaryButton>
-            <$PrimaryButton>{t('common:errorPage.logout')}</$PrimaryButton>
+            </Button>
+            <Button theme="coat">{t('common:errorPage.logout')}</Button>
           </$ActionsContainer>
         )}
       </$ErrorPageContainer>

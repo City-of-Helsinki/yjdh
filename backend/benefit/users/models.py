@@ -9,3 +9,7 @@ class User(AbstractUser):
 
     class Meta:
         db_table = "bf_users_user"
+
+    def is_handler(self):
+        # TODO: Check if user is handler
+        return False

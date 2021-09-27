@@ -1,16 +1,15 @@
-import { IconSignin } from 'hds-react';
+import { Button, IconSignin } from 'hds-react';
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import withoutAuth from 'shared/components/hocs/withoutAuth';
 import Layout from 'shared/components/Layout';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
-import { $Notification, $PrimaryButton } from '../components/application/login.sc';
+import { $Notification } from '../components/application/login.sc';
 
 const Login: NextPage = () => {
   useClearQueryParams();
@@ -21,20 +20,22 @@ const Login: NextPage = () => {
   const login = useLogin();
 
   const getNotificationLabelKey = (): string => {
-    let notificationLabel = `common:loginPage.infoLabel`
     if (logout) {
-      notificationLabel = `common:loginPage.logoutMessageLabel`;
-    } else if (error) {
-      notificationLabel = `common:loginPage.errorLabel`;
-    } else if (sessionExpired) {
-      notificationLabel = `common:loginPage.sessionExpiredLabel`;
+      return `common:loginPage.logoutMessageLabel`;
     }
-    return notificationLabel;
+    if (error) {
+      return `common:loginPage.errorLabel`;
+    }
+    if (sessionExpired) {
+      return `common:loginPage.sessionExpiredLabel`;
+    }
+    return `common:loginPage.infoLabel`;
   };
 
   const notificationLabelKey = getNotificationLabelKey();
-  const notificationContent = !logout && !error && !sessionExpired && t(`common:loginPage.infoContent`)
-  const notificationType = error || sessionExpired ? "error" : "info"
+  const notificationContent =
+    !logout && !error && !sessionExpired && t(`common:loginPage.infoContent`);
+  const notificationType = error || sessionExpired ? 'error' : 'info';
 
   return (
     <Container>
@@ -46,19 +47,15 @@ const Login: NextPage = () => {
         >
           {notificationContent}
         </$Notification>
-        <$PrimaryButton
-          iconLeft={<IconSignin />}
-          onClick={login}
-        >
+        <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
           {t(`common:header.loginLabel`)}
-        </$PrimaryButton>
+        </Button>
       </Layout>
     </Container>
   );
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-  'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withoutAuth(Login);

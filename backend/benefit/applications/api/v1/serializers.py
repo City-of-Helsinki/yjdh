@@ -1,5 +1,5 @@
 import re
-from datetime import date
+from datetime import date, datetime
 
 import filetype
 from applications.api.v1.status_transition_validator import (
@@ -41,6 +41,15 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from rest_framework import serializers
+from terms.api.v1.serializers import (
+    ApplicantTermsApprovalSerializer,
+    ApproveTermsSerializer,
+    TermsSerializer,
+)
+from terms.enums import TermsType
+from terms.models import ApplicantTermsApproval, Terms
+from users.models import User
+from users.utils import get_business_id_from_user
 
 
 class ApplicationBasisSerializer(serializers.ModelSerializer):
@@ -431,6 +440,21 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     employee = EmployeeSerializer()
 
+    applicant_terms_approval = ApplicantTermsApprovalSerializer(
+        read_only=True, help_text="Currently approved applicant terms, if any"
+    )
+
+    approve_terms = ApproveTermsSerializer(
+        required=False,
+        write_only=True,
+        help_text=(
+            "Set the approved terms of this application."
+            "Only used when application status is changed"
+            "from DRAFT or ADDITIONAL_INFORMATION_NEEDED to RECEIVED"
+            "in the same request."
+        ),
+    )
+
     company = CompanySerializer(read_only=True)
 
     attachments = AttachmentSerializer(
@@ -472,15 +496,18 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "id",
             "status",
             "employee",
+            "applicant_terms_approval",
+            "approve_terms",
             "batch",
             "company",
             "company_name",
             "company_form",
-            "organization_type",
             "submitted_at",
             "bases",
             "available_bases",
             "attachment_requirements",
+            "applicant_terms_approval_needed",
+            "applicant_terms_in_effect",
             "available_benefit_types",
             "official_company_street_address",
             "official_company_city",
@@ -521,6 +548,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "application_number",
             "available_bases",
             "attachment_requirements",
+            "applicant_terms_approval_needed",
+            "applicant_terms_in_effect",
             "company_name",
             "company_form",
             "official_company_street_address",
@@ -638,17 +667,23 @@ class ApplicationSerializer(serializers.ModelSerializer):
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
-    organization_type = serializers.SerializerMethodField(
-        "get_organization_type",
-        help_text="The general type of the applicant organization",
-    )
-
     available_bases = serializers.SerializerMethodField(
         "get_available_bases", help_text="List of available application basis slugs"
     )
 
     attachment_requirements = serializers.SerializerMethodField(
         "get_attachment_requirements", help_text="get the attachment requirements"
+    )
+    applicant_terms_approval_needed = serializers.SerializerMethodField(
+        "get_applicant_terms_approval_needed",
+        help_text="Applicant needs to provide approve_terms field in any future submit operation",
+    )
+    applicant_terms_in_effect = serializers.SerializerMethodField(
+        "get_applicant_terms_in_effect",
+        help_text=(
+            "The applicant terms that need to be approved when applicant submits this application."
+            "These terms are not necessarily yet approved by the applicant - see applicant_terms_approval"
+        ),
     )
 
     available_benefit_types = serializers.SerializerMethodField(
@@ -660,6 +695,17 @@ class ApplicationSerializer(serializers.ModelSerializer):
         allow_blank=True,
         help_text="Company contact person phone number normalized (start with zero, without country code)",
     )
+
+    def get_applicant_terms_approval_needed(self, obj):
+        return ApplicantTermsApproval.terms_approval_needed(obj)
+
+    @extend_schema_field(TermsSerializer())
+    def get_applicant_terms_in_effect(self, obj):
+        terms = Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS)
+        if terms:
+            return TermsSerializer(terms).data
+        else:
+            return None
 
     def get_submitted_at(self, obj):
         if (
@@ -675,10 +721,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
-
-    @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
-    def get_organization_type(self, obj):
-        return OrganizationType.resolve_organization_type(obj.company.company_form)
 
     @extend_schema_field(ApplicationBasisSerializer(many=True))
     def get_available_bases(self, obj):
@@ -1172,12 +1214,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
         self._validate_non_draft_required_fields(data)
         return data
 
-    def handle_status_transition(self, instance, previous_status):
+    def handle_status_transition(self, instance, previous_status, approve_terms):
         if instance.status == ApplicationStatus.RECEIVED:
             # moving out of DRAFT or ADDITIONAL_INFORMATION_NEEDED, so the applicant
             # may have modified the application
             self._validate_attachments(instance)
             self._validate_employee_consent(instance)
+            self._update_applicant_terms_approval(instance, approve_terms)
         ApplicationLogEntry.objects.create(
             application=instance,
             from_status=previous_status,
@@ -1185,11 +1228,34 @@ class ApplicationSerializer(serializers.ModelSerializer):
         )
 
     def _validate_employee_consent(self, instance):
-        if not instance.attachments.filter(
+        consent_count = instance.attachments.filter(
             attachment_type=AttachmentType.EMPLOYEE_CONSENT
-        ):
+        ).count()
+        if consent_count == 0:
             raise serializers.ValidationError(
                 _("Application does not have the employee consent attachment")
+            )
+        if consent_count > 1:
+            raise serializers.ValidationError(
+                _("Application cannot have more than one employee consent attachment")
+            )
+
+    def _update_applicant_terms_approval(self, instance, approve_terms):
+        if ApplicantTermsApproval.terms_approval_needed(instance):
+            if not approve_terms:
+                raise serializers.ValidationError(
+                    {"approve_terms": _("Terms must be approved")}
+                )
+            if hasattr(instance, "applicant_terms_approval"):
+                instance.applicant_terms_approval.delete()
+            approval = ApplicantTermsApproval.objects.create(
+                application=instance,
+                terms=approve_terms["terms"],
+                approved_at=datetime.now(),
+                approved_by=self.get_logged_in_user(),
+            )
+            approval.selected_applicant_consents.set(
+                approve_terms["selected_applicant_consents"]
             )
 
     def _validate_attachments(self, instance):
@@ -1234,6 +1300,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
         employee_data = validated_data.pop("employee", None)
+        approve_terms = validated_data.pop("approve_terms", None)
         pre_update_status = instance.status
         application = super().update(instance, validated_data)
         if de_minimis_data is not None:
@@ -1243,7 +1310,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             self._update_or_create_employee(application, employee_data)
 
         if instance.status != pre_update_status:
-            self.handle_status_transition(instance, pre_update_status)
+            self.handle_status_transition(instance, pre_update_status, approve_terms)
 
         return application
 
@@ -1311,10 +1378,22 @@ class ApplicationSerializer(serializers.ModelSerializer):
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
 
+    def get_logged_in_user(self):
+        return User.objects.all().first()
+
+    def _get_request_user_from_context(self):
+        request = self.context.get("request")
+        if request:
+            return request.user
+        return None
+
     def logged_in_user_is_admin(self):
-        # TODO: user management
+        user = self._get_request_user_from_context()
+        if user:
+            return user.is_handler()
         return False
 
     def get_logged_in_user_company(self):
-        # TODO: user management
-        return Company.objects.all().order_by("pk").first()
+        user = self._get_request_user_from_context()
+        business_id = get_business_id_from_user(user)
+        return Company.objects.get(business_id=business_id)

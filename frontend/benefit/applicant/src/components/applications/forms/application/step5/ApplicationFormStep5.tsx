@@ -1,4 +1,11 @@
+import AttachmentItem from 'benefit/applicant/components/applications/attachmentItem/AttachmentItem';
+import UploadAttachment from 'benefit/applicant/components/applications/uploadAttachment/UploadAttachment';
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
+import {
+  ATTACHMENT_MAX_SIZE,
+  ATTACHMENT_TYPES,
+  EMPLOYEE_CONSENT_FILE,
+} from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
   Button,
@@ -22,8 +29,17 @@ import { useApplicationFormStep5 } from './useApplicationFormStep5';
 const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  const { t, handleBack, handleNext, translationsBase } =
-    useApplicationFormStep5(data);
+  const {
+    t,
+    handleBack,
+    handleNext,
+    handleRemoveAttachment,
+    handleUploadAttachment,
+    translationsBase,
+    attachment,
+    isRemoving,
+    isUploading,
+  } = useApplicationFormStep5(data);
   const theme = useTheme();
 
   // temporary disabled feature
@@ -62,24 +78,65 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
             icon={<IconDocument size="l" />}
             actions={
               <$Grid>
-                <$GridCell $colSpan={4}>
-                  <Button
-                    theme="black"
-                    variant="secondary"
-                    iconLeft={<IconPrinter />}
-                  >
-                    {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
-                  </Button>
-                </$GridCell>
-                <$GridCell $colSpan={6}>
-                  <Button
-                    theme="black"
-                    variant="secondary"
-                    iconLeft={<IconArrowRight />}
-                  >
-                    {t(`${translationsBase}.uploadPowerOfAttorney.action2`)}
-                  </Button>
-                </$GridCell>
+                {attachment ? (
+                  <$GridCell>
+                    <AttachmentItem
+                      id={attachment.id}
+                      name={attachment.attachmentFileName}
+                      removeText={t(
+                        `common:applications.sections.attachments.remove`
+                      )}
+                      onClick={() =>
+                        // eslint-disable-next-line security/detect-non-literal-fs-filename
+                        window
+                          .open(attachment.attachmentFile, '_blank')
+                          ?.focus()
+                      }
+                      onRemove={() =>
+                        !isRemoving && handleRemoveAttachment(attachment.id)
+                      }
+                    />
+                  </$GridCell>
+                ) : (
+                  <>
+                    <$GridCell $colSpan={4}>
+                      <Button
+                        theme="black"
+                        onClick={() =>
+                          // eslint-disable-next-line security/detect-non-literal-fs-filename
+                          window
+                            .open(`/${EMPLOYEE_CONSENT_FILE}`, '_blank')
+                            ?.focus()
+                        }
+                        variant="secondary"
+                        iconLeft={<IconPrinter />}
+                      >
+                        {t(`${translationsBase}.uploadPowerOfAttorney.action1`)}
+                      </Button>
+                    </$GridCell>
+                    <$GridCell $colSpan={6}>
+                      <UploadAttachment
+                        theme="black"
+                        variant="secondary"
+                        onUpload={handleUploadAttachment}
+                        isUploading={isUploading}
+                        attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
+                        allowedFileTypes={['application/pdf']}
+                        maxSize={ATTACHMENT_MAX_SIZE}
+                        uploadText={t(
+                          `${translationsBase}.uploadPowerOfAttorney.action2`
+                        )}
+                        loadingText={t(`common:upload.isUploading`)}
+                        errorTitle={t('common:error.attachments.title')}
+                        errorFileSizeText={t('common:error.attachments.tooBig')}
+                        errorFileTypeText={t(
+                          'common:error.attachments.fileType'
+                        )}
+                        icon={<IconArrowRight />}
+                      />
+                    </$GridCell>
+                  </>
+                )}
               </$Grid>
             }
           />

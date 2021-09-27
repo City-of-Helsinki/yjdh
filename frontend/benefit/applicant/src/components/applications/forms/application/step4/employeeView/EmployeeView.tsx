@@ -1,6 +1,5 @@
-import { $SupplementaryButton } from 'benefit/applicant/components/applications/Applications.sc';
 import { Application } from 'benefit/applicant/types/application';
-import { IconPen } from 'hds-react';
+import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -24,13 +23,14 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
       <FormSection
         header={t(`${translationsBase}.employee.heading1Short`)}
         action={
-          <$SupplementaryButton
+          <Button
+            theme="black"
             onClick={() => handleStepChange(2)}
             variant="supplementary"
             iconLeft={<IconPen />}
           >
             {t(`common:applications.actions.edit`)}
-          </$SupplementaryButton>
+          </Button>
         }
         withoutDivider
       >

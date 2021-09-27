@@ -3,7 +3,6 @@ from unittest import mock
 
 import pytest
 from django.conf import settings
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import override_settings, RequestFactory
 
 from shared.oidc.auth import EAuthRestAuthentication
@@ -19,10 +18,6 @@ def test_eauth_rest_auth_success(requests_mock, eauthorization_profile):
     request = factory.get("/")
     user = eauthorization_profile.oidc_profile.user
     request.user = user
-
-    session_middleware = SessionMiddleware()
-    session_middleware.process_request(request)
-    request.session.save()
 
     organization_roles_json = [
         {
@@ -43,7 +38,6 @@ def test_eauth_rest_auth_success(requests_mock, eauthorization_profile):
         user, auth = eauth_rest_auth.authenticate(request)
 
     assert user == eauthorization_profile.oidc_profile.user
-    assert request.session["organization_roles"] == organization_roles_json[0]
 
 
 @pytest.mark.django_db
