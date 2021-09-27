@@ -3,7 +3,7 @@ import React from 'react';
 
 interface FieldValues {
   apprenticeshipProgram?: boolean | null;
-  benefitType?: BENEFIT_TYPES;
+  benefitType?: BENEFIT_TYPES | '';
   paySubsidyGranted?: boolean | null;
   startDate?: string;
 }

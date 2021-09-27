@@ -32,6 +32,7 @@ import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   data,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     t,
@@ -88,7 +89,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             placeholder={fields.employee.firstName.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.employee?.firstName}
+            value={formik.values.employee?.firstName ?? ''}
             invalid={!!getErrorMessage(fields.employee.firstName.name)}
             aria-invalid={!!getErrorMessage(fields.employee.firstName.name)}
             errorText={getErrorMessage(fields.employee.firstName.name)}
@@ -103,7 +104,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             placeholder={fields.employee.lastName.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.employee?.lastName}
+            value={formik.values.employee?.lastName ?? ''}
             invalid={!!getErrorMessage(fields.employee.lastName.name)}
             aria-invalid={!!getErrorMessage(fields.employee.lastName.name)}
             errorText={getErrorMessage(fields.employee.lastName.name)}
@@ -118,7 +119,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             placeholder={fields.employee.socialSecurityNumber.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.employee?.socialSecurityNumber}
+            value={formik.values.employee?.socialSecurityNumber ?? ''}
             invalid={
               !!getErrorMessage(fields.employee.socialSecurityNumber.name)
             }
@@ -398,7 +399,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             onChange={(value) =>
               formik.setFieldValue(fields.startDate.name, value)
             }
-            value={formik.values.startDate}
+            value={formik.values.startDate ?? ''}
             invalid={!!getErrorMessage(fields.startDate.name)}
             aria-invalid={!!getErrorMessage(fields.startDate.name)}
             errorText={getErrorMessage(fields.startDate.name)}
@@ -418,7 +419,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             onChange={(value) =>
               formik.setFieldValue(fields.endDate.name, value)
             }
-            value={formik.values.endDate}
+            value={formik.values.endDate ?? ''}
             invalid={!!getErrorMessage(fields.endDate.name)}
             aria-invalid={!!getErrorMessage(fields.endDate.name)}
             errorText={getErrorMessage(fields.endDate.name)}
@@ -491,7 +492,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 label={fields.employee.workingHours.label}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.employee?.workingHours}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                value={formik.values.employee?.workingHours ?? ''}
                 invalid={!!getErrorMessage(fields.employee.workingHours.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.workingHours.name)
@@ -510,7 +513,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 }
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.employee?.collectiveBargainingAgreement}
+                value={
+                  formik.values.employee?.collectiveBargainingAgreement ?? ''
+                }
                 invalid={
                   !!getErrorMessage(
                     fields.employee.collectiveBargainingAgreement.name
@@ -546,7 +551,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 label={fields.employee.monthlyPay.label}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.employee?.monthlyPay}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                value={formik.values.employee?.monthlyPay ?? ''}
                 invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.monthlyPay.name)
@@ -562,7 +569,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 label={fields.employee.otherExpenses.label}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.employee?.otherExpenses}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                value={formik.values.employee?.otherExpenses ?? ''}
                 invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.otherExpenses.name)
@@ -578,7 +587,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 label={fields.employee.vacationMoney.label}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.employee?.vacationMoney}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                value={formik.values.employee?.vacationMoney ?? ''}
                 invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.vacationMoney.name)
@@ -599,7 +610,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 placeholder={fields.employee.commissionDescription.placeholder}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.employee?.commissionDescription}
+                value={formik.values.employee?.commissionDescription ?? ''}
                 invalid={
                   !!getErrorMessage(fields.employee.commissionDescription.name)
                 }
@@ -619,7 +630,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 label={fields.employee.commissionAmount.label}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.employee?.commissionAmount}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                value={formik.values.employee?.commissionAmount ?? ''}
                 invalid={
                   !!getErrorMessage(fields.employee.commissionAmount.name)
                 }
