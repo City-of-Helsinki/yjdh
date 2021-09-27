@@ -54,8 +54,8 @@ def test_talpa_csv_delimiter(talpa_service_with_one_application):
 
 def test_talpa_csv_decimal(talpa_service_with_one_application):
     application = talpa_service_with_one_application.get_applications().first()
-    application.calculated_benefit_amount = decimal.Decimal("123.45")
-    application.save()
+    application.calculation.calculated_benefit_amount = decimal.Decimal("123.45")
+    application.calculation.save()
     csv_lines = _split_csv(talpa_service_with_one_application.get_talpa_csv_string())
     assert csv_lines[1][8] == "123.45"
 
