@@ -13,8 +13,9 @@ export const CITY_REGEX = /^[ A-Za-zÄÅÖäåö-]+$/;
 
 export const EMAIL_REGEX =
   // eslint-disable-next-line security/detect-unsafe-regex
-  /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
+  /^[\w&*+-]+(?:\.[\w&*+-]+)*@(?:[\dA-Za-z-]+\.)+[A-Za-z]{2,7}$/;
 
-// eslint-disable-next-line security/detect-unsafe-regex
-export const DATE_UI_REGEX = /^(?:\d{1,2}.){2}\d{4}$/;
-export const DATE_BACKEND_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+export const DATE_UI_REGEX =
+  /^(0?[1-9]|[12]\d|3[01])\.(0?[1-9]|1[0-2])\.\d{4}$/;
+export const DATE_BACKEND_REGEX =
+  /^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$/;
