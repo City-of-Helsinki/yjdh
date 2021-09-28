@@ -125,7 +125,9 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               </$ViewFieldBold>
             </$GridCell>
             {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
-              <React.Fragment key={aid.granter + aid.grantedAt}>
+              <React.Fragment
+                key={`${aid.granter ?? ''}${aid.grantedAt ?? ''}`}
+              >
                 <$GridCell $colStart={1} $colSpan={3}>
                   <$ViewField>{aid.granter}</$ViewField>
                 </$GridCell>
@@ -134,9 +136,11 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 </$GridCell>
                 <$GridCell>
                   <$ViewField>
-                    {formatDate(
-                      parseDate(aid.grantedAt, DATE_FORMATS.DATE_BACKEND)
-                    )}
+                    {aid.grantedAt
+                      ? formatDate(
+                          parseDate(aid.grantedAt, DATE_FORMATS.DATE_BACKEND)
+                        )
+                      : ''}
                   </$ViewField>
                 </$GridCell>
               </React.Fragment>

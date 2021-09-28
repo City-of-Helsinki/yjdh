@@ -26,9 +26,9 @@ const DeMinimisAidsList: React.FC = () => {
           $colSpan={10}
           as={$Grid}
           columns={10}
-          key={`${grant[DE_MINIMIS_AID_KEYS.GRANTER]}${
-            grant[DE_MINIMIS_AID_KEYS.AMOUNT]
-          }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT]}`}
+          key={`${grant[DE_MINIMIS_AID_KEYS.GRANTER] ?? ''}${
+            grant[DE_MINIMIS_AID_KEYS.AMOUNT] ?? ''
+          }${grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] ?? ''}`}
         >
           <$GridCell
             $colSpan={8}
@@ -42,15 +42,17 @@ const DeMinimisAidsList: React.FC = () => {
               {grant[DE_MINIMIS_AID_KEYS.GRANTER]}
             </$GridCell>
             <$GridCell $colSpan={2}>{`${
-              grant[DE_MINIMIS_AID_KEYS.AMOUNT]
+              grant[DE_MINIMIS_AID_KEYS.AMOUNT] ?? ''
             } €`}</$GridCell>
             <$GridCell $colSpan={2}>
-              {formatDate(
-                parseDate(
-                  grant[DE_MINIMIS_AID_KEYS.GRANTED_AT],
-                  DATE_FORMATS.DATE_BACKEND
-                )
-              )}
+              {grant[DE_MINIMIS_AID_KEYS.GRANTED_AT]
+                ? formatDate(
+                    parseDate(
+                      grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] as string,
+                      DATE_FORMATS.DATE_BACKEND
+                    )
+                  )
+                : ''}
             </$GridCell>
           </$GridCell>
           <$GridCell
