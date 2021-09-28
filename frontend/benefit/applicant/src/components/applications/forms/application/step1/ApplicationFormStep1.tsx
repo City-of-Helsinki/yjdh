@@ -1,4 +1,5 @@
 import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
+import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React, { useEffect } from 'react';
@@ -34,6 +35,8 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     window.scrollTo(0, 0);
   }, []);
 
+  useAlertBeforeLeaving(formik.dirty);
+
   return (
     <form onSubmit={handleSubmit} noValidate>
       <CompanyInfo
@@ -53,17 +56,13 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             value={formik.values.companyContactPersonFirstName}
             invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME
-              )
+              !!getErrorMessage(fields.companyContactPersonFirstName.name)
             }
             aria-invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME
-              )
+              !!getErrorMessage(fields.companyContactPersonFirstName.name)
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME
+              fields.companyContactPersonFirstName.name
             )}
             required
           />
@@ -78,17 +77,13 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             value={formik.values.companyContactPersonLastName}
             invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME
-              )
+              !!getErrorMessage(fields.companyContactPersonLastName.name)
             }
             aria-invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME
-              )
+              !!getErrorMessage(fields.companyContactPersonLastName.name)
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME
+              fields.companyContactPersonLastName.name
             )}
             required
           />
@@ -103,17 +98,13 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onChange={formik.handleChange}
             value={phoneToLocal(formik.values.companyContactPersonPhoneNumber)}
             invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER
-              )
+              !!getErrorMessage(fields.companyContactPersonPhoneNumber.name)
             }
             aria-invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER
-              )
+              !!getErrorMessage(fields.companyContactPersonPhoneNumber.name)
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER
+              fields.companyContactPersonPhoneNumber.name
             )}
             required
           />
@@ -127,51 +118,31 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.companyContactPersonEmail}
-            invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_EMAIL
-              )
-            }
+            invalid={!!getErrorMessage(fields.companyContactPersonEmail.name)}
             aria-invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_EMAIL
-              )
+              !!getErrorMessage(fields.companyContactPersonEmail.name)
             }
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_EMAIL
-            )}
+            errorText={getErrorMessage(fields.companyContactPersonEmail.name)}
             required
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
           <Select
-            defaultValue={getDefaultSelectValue(
-              APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE
-            )}
-            helper={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE
-            )}
+            defaultValue={getDefaultSelectValue(fields.applicantLanguage.name)}
+            helper={getErrorMessage(fields.applicantLanguage.name)}
             optionLabelField="label"
             label={fields.applicantLanguage.label}
             onChange={(language: Option) =>
               formik.setFieldValue(
-                APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE,
+                fields.applicantLanguage.name,
                 language.value
               )
             }
             options={languageOptions}
             id={fields.applicantLanguage.name}
             placeholder={t('common:select')}
-            invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE
-              )
-            }
-            aria-invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.APPLICANT_LANGUAGE
-              )
-            }
+            invalid={!!getErrorMessage(fields.applicantLanguage.name)}
+            aria-invalid={!!getErrorMessage(fields.applicantLanguage.name)}
             required
           />
         </$GridCell>
@@ -182,12 +153,11 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
       >
         <$GridCell $colSpan={8}>
           <SelectionGroup
+            id={fields.deMinimisAid.name}
             label={fields.deMinimisAid.label}
             direction="vertical"
             required
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID
-            )}
+            errorText={getErrorMessage(fields.deMinimisAid.name)}
           >
             <$RadioButton
               id={`${fields.deMinimisAid.name}False`}
@@ -197,10 +167,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.no`
               )}
               onChange={() => {
-                formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID,
-                  false
-                );
+                formik.setFieldValue(fields.deMinimisAid.name, false);
                 clearDeminimisAids();
               }}
               // 3 states: null (none is selected), true, false
@@ -214,10 +181,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.yes`
               )}
               onChange={() =>
-                formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID,
-                  true
-                )
+                formik.setFieldValue(fields.deMinimisAid.name, true)
               }
               checked={formik.values.deMinimisAid === true}
             />
@@ -234,12 +198,11 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
       <FormSection header={t(`${translationsBase}.heading4`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
+            id={fields.coOperationNegotiations.name}
             label={fields.coOperationNegotiations.label}
             direction="vertical"
             required
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS
-            )}
+            errorText={getErrorMessage(fields.coOperationNegotiations.name)}
           >
             <$RadioButton
               id={`${fields.coOperationNegotiations.name}False`}
@@ -250,7 +213,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               )}
               onChange={() => {
                 formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS,
+                  fields.coOperationNegotiations.name,
                   false
                 );
                 formik.setFieldValue(
@@ -268,10 +231,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
                 `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS}.yes`
               )}
               onChange={() =>
-                formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS,
-                  true
-                )
+                formik.setFieldValue(fields.coOperationNegotiations.name, true)
               }
               checked={formik.values.coOperationNegotiations === true}
             />
@@ -291,16 +251,16 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
               value={formik.values.coOperationNegotiationsDescription}
               invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
+                  fields.coOperationNegotiationsDescription.name
                 )
               }
               aria-invalid={
                 !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
+                  fields.coOperationNegotiationsDescription.name
                 )
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.CO_OPERATION_NEGOTIATIONS_DESCRIPTION
+                fields.coOperationNegotiationsDescription.name
               )}
             />
           </$GridCell>
