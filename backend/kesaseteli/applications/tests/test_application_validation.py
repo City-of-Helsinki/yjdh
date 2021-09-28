@@ -4,7 +4,7 @@ from applications.api.v1.serializers import (
     ApplicationSerializer,
     SummerVoucherSerializer,
 )
-from applications.enums import ApplicationStatus, AttachmentType
+from applications.enums import ApplicationStatus  # , AttachmentType
 from applications.tests.test_applications_api import get_detail_url
 
 
@@ -129,6 +129,7 @@ def test_application_status_change_with_missing_summer_voucher_data(
 
     application.refresh_from_db()
     assert application.status == from_status
+
 
 # Commented until attachments are implemented on frontend
 #

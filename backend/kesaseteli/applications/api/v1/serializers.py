@@ -269,6 +269,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         help_text=_("Status of the application, visible to the applicant"),
         required=False,
     )
+    submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
     class Meta:
         model = Application
@@ -287,6 +288,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "user",
             "summer_vouchers",
             "language",
+            "submitted_at",
         ]
         read_only_fields = ["user"]
 
@@ -310,6 +312,16 @@ class ApplicationSerializer(serializers.ModelSerializer):
         validated_data["user"] = user
 
         return super().create(validated_data)
+
+    def get_submitted_at(self, obj):
+        if (
+            hisory_entry := obj.history.filter(status=ApplicationStatus.SUBMITTED)
+            .order_by("modified_at")
+            .first()
+        ):
+            return hisory_entry.modified_at
+        else:
+            return None
 
     def _update_summer_vouchers(
         self, summer_vouchers_data: list, application: Application
@@ -376,7 +388,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         """
         uncomment this after attachments are implemented in ui
         """
-        #self._validate_attachments()
+        # self._validate_attachments()
 
     def _validate_attachments(self):
         """
