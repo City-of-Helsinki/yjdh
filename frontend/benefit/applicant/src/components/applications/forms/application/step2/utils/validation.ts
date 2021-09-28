@@ -5,6 +5,7 @@ import {
   EMPLOYEE_MAX_WORKING_HOURS,
   EMPLOYEE_MIN_WORKING_HOURS,
   MAX_SHORT_STRING_LENGTH,
+  PAY_SUBSIDY_OPTIONS,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { Step2 } from 'benefit/applicant/types/application';
@@ -26,7 +27,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
       .when(APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED, {
         is: true,
         then: Yup.mixed()
-          .oneOf([30, 40, 50, 100], t(VALIDATION_MESSAGE_KEYS.INVALID))
+          .oneOf([...PAY_SUBSIDY_OPTIONS], t(VALIDATION_MESSAGE_KEYS.INVALID))
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.ADDITIONAL_PAY_SUBSIDY_PERCENT]: Yup.mixed()
@@ -34,7 +35,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
       .when(APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED, {
         is: true,
         then: Yup.mixed()
-          .oneOf([30, 40, 50, 100], t(VALIDATION_MESSAGE_KEYS.INVALID))
+          .oneOf([...PAY_SUBSIDY_OPTIONS], t(VALIDATION_MESSAGE_KEYS.INVALID))
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
