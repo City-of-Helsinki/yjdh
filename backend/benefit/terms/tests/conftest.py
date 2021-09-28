@@ -7,6 +7,7 @@ from terms.tests.factories import (
     ApplicantConsentFactory,
     ApplicantTermsApprovalFactory,
     TermsFactory,
+    TermsOfServiceApprovalFactory,
 )
 
 
@@ -23,5 +24,17 @@ def applicant_terms():
 
 
 @pytest.fixture
+def terms_of_service():
+    return TermsFactory(
+        terms_type=TermsType.TERMS_OF_SERVICE, effective_from=date.today()
+    )
+
+
+@pytest.fixture
 def applicant_terms_approval():
     return ApplicantTermsApprovalFactory()
+
+
+@pytest.fixture
+def terms_of_service_approval():
+    return TermsOfServiceApprovalFactory()

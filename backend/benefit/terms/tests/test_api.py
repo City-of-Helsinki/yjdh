@@ -44,6 +44,7 @@ def test_applicant_terms_in_effect(api_client, application):
         for obj in response.data["applicant_terms_in_effect"]["applicant_consents"]
     } == {str(obj.pk) for obj in current_terms.applicant_consents.all()}
 
+    assert response.data["applicant_terms_in_effect"]["terms_pdf_fi"].startswith("http")
     assert response.data["applicant_terms_approval_needed"] is True
     assert response.status_code == 200
 

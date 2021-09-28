@@ -1,11 +1,13 @@
 import factory
 from applications.enums import ApplicationStatus
 from applications.tests.factories import ApplicationFactory
+from companies.tests.factories import CompanyFactory
 from terms.models import (
     AbstractTermsApproval,
     ApplicantConsent,
     ApplicantTermsApproval,
     Terms,
+    TermsOfServiceApproval,
 )
 from users.tests.factories import UserFactory
 
@@ -67,3 +69,11 @@ class ApplicantTermsApprovalFactory(AbstractTermsApprovalFactory):
     application = factory.SubFactory(
         ApplicationFactory, status=ApplicationStatus.RECEIVED
     )
+
+
+class TermsOfServiceApprovalFactory(AbstractTermsApprovalFactory):
+    class Meta:
+        model = TermsOfServiceApproval
+
+    user = factory.SubFactory(UserFactory)
+    company = factory.SubFactory(CompanyFactory)

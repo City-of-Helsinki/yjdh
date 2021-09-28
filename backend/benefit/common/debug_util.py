@@ -1,8 +1,32 @@
 import functools
+import os
 import pdb
 import traceback
 
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseServerError
 from rest_framework.views import exception_handler
+
+
+def _debug_dict(mapping):
+    sensitive_keys = ["password", "secret", "private", "token"]
+    lines = []
+    for k, v in sorted(mapping.items()):
+        if any(item in k.lower() for item in sensitive_keys):
+            v = "***" if v else ""
+        lines.append(f"{k}={v}")
+    return lines
+
+
+def debug_env(request):
+    if not settings.ENABLE_DEBUG_ENV:
+        raise HttpResponseServerError("Configuration error")
+
+    lines = (
+        _debug_dict(request.headers) + ["", "ENVIRONMENT:"] + _debug_dict(os.environ)
+    )
+
+    return HttpResponse("\n".join(lines), content_type="text/plain")
 
 
 def debug_on_exception(func):
