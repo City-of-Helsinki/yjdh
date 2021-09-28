@@ -14,7 +14,7 @@ import Layout from 'shared/components/Layout';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 import { $Notification } from '../components/application/login.sc';
 
@@ -38,7 +38,7 @@ const ThankYouPage: NextPage = () => {
     return <PageLoadingSpinner />;
   }
 
-  const { modified_at } = application;
+  const { submitted_at } = application;
 
   return (
     <Container>
@@ -53,7 +53,7 @@ const ThankYouPage: NextPage = () => {
         <ApplicationForm>
           <ApplicationSummary
             header={t(`common:thankyouPage.title`, {
-              modified_at: convertToUIDateFormat(modified_at),
+              submitted_at: convertToUIDateAndTimeFormat(submitted_at),
             })}
           />
           <FormSection columns={1} withoutDivider>
