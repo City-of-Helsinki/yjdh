@@ -87,10 +87,10 @@ const useApplicationFormStep2 = (
     initialValues: {
       ...application,
       [APPLICATION_FIELDS_STEP2.START_DATE]: application.startDate
-        ? formatDate(parseDate(application.startDate), DATE_FORMATS.DATE)
+        ? formatDate(parseDate(application.startDate))
         : undefined,
       [APPLICATION_FIELDS_STEP2.END_DATE]: application.endDate
-        ? formatDate(parseDate(application.endDate), DATE_FORMATS.DATE)
+        ? formatDate(parseDate(application.endDate))
         : undefined,
     },
     validationSchema: getValidationSchema(t),
@@ -103,16 +103,10 @@ const useApplicationFormStep2 = (
           ...application,
           ...values,
           startDate: values.startDate
-            ? formatDate(
-                parseDate(values.startDate, DATE_FORMATS.DATE),
-                DATE_FORMATS.DATE_BACKEND
-              )
+            ? formatDate(parseDate(values.startDate), DATE_FORMATS.DATE_BACKEND)
             : null,
           endDate: values.endDate
-            ? formatDate(
-                parseDate(values.endDate, DATE_FORMATS.DATE),
-                DATE_FORMATS.DATE_BACKEND
-              )
+            ? formatDate(parseDate(values.endDate), DATE_FORMATS.DATE_BACKEND)
             : null,
           applicationStep: getApplicationStepString(step),
         },

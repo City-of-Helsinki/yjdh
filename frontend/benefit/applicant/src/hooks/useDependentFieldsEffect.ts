@@ -100,7 +100,12 @@ export const useDependentFieldsEffect = (
     dispatch(createUpdateAction([EFFECTS.CLEAR_BENEFIT_VALUES]));
 
     if (!paySubsidyGranted) {
-      dispatch(createUpdateAction([EFFECTS.CLEAR_PAY_SUBSIDY_VALUES]));
+      dispatch(
+        createUpdateAction([
+          EFFECTS.CLEAR_PAY_SUBSIDY_VALUES,
+          EFFECTS.CLEAR_BENEFIT_VALUES,
+        ])
+      );
     }
   }, [paySubsidyGranted]);
 

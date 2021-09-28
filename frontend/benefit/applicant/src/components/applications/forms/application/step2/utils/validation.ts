@@ -46,8 +46,10 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE]: Yup.mixed()
-      .nullable()
-      .oneOf(Object.values(BENEFIT_TYPES), t(VALIDATION_MESSAGE_KEYS.INVALID))
+      .oneOf(
+        [null, ...Object.values(BENEFIT_TYPES)],
+        t(VALIDATION_MESSAGE_KEYS.INVALID)
+      )
       .when(APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM, {
         is: true,
         then: Yup.mixed().notOneOf([BENEFIT_TYPES.COMMISSION]),
@@ -61,20 +63,12 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
         }),
         test: (value = '') => {
           const date = parseDate(value);
-          return !!isThisYear(date);
+          return isThisYear(date);
         },
       }),
-    [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string()
-      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED))
-      .test({
-        message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
-          min: Yup.ref(APPLICATION_FIELDS_STEP2_KEYS.START_DATE),
-        }),
-        test: (value = '') => {
-          const date = parseDate(value);
-          return !!isThisYear(date);
-        },
-      }),
+    [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
+      t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+    ),
     [APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE]: Yup.object()
       .shape({
         [EMPLOYEE_KEYS.FIRST_NAME]: Yup.string()
@@ -116,6 +110,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.WORKING_HOURS]: Yup.number()
+            .nullable()
             .min(EMPLOYEE_MIN_WORKING_HOURS, (param) => ({
               min: param.min,
               key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,
@@ -125,15 +120,15 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
               key: VALIDATION_MESSAGE_KEYS.NUMBER_MAX,
             }))
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-          [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number().required(
-            t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-          ),
-          [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number().required(
-            t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-          ),
-          [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number().required(
-            t(VALIDATION_MESSAGE_KEYS.REQUIRED)
-          ),
+          [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
+            .nullable()
+            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+          [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
+            .nullable()
+            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+          [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
+            .nullable()
+            .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }),
       }),
   });

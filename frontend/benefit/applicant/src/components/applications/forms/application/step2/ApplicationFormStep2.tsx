@@ -3,6 +3,7 @@ import {
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
 } from 'benefit/applicant/constants';
+import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
@@ -77,6 +78,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       setEndDate,
     }
   );
+
+  useAlertBeforeLeaving(formik.dirty);
 
   return (
     <form onSubmit={handleSubmitNext} noValidate>
@@ -218,10 +221,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           <>
             <$GridCell $colSpan={2} $colStart={4}>
               <Select
-                // TODO: remove undefined when HDS is fixed
-                value={
-                  getSelectValue(fields.paySubsidyPercent.name) ?? undefined
-                }
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove ts-ts-ignore when HDS is fixed
+                value={getSelectValue(fields.paySubsidyPercent.name)}
                 optionLabelField="label"
                 label={fields.paySubsidyPercent.label}
                 onChange={(paySubsidyPercent: Option) =>
@@ -246,11 +248,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             </$GridCell>
             <$GridCell $colSpan={2} $colStart={4}>
               <Select
-                // TODO: remove undefined when HDS is fixed
-                value={
-                  getSelectValue(fields.additionalPaySubsidyPercent.name) ??
-                  undefined
-                }
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove ts-ts-ignore when HDS is fixed
+                value={getSelectValue(fields.additionalPaySubsidyPercent.name)}
                 optionLabelField="label"
                 label={fields.additionalPaySubsidyPercent.label}
                 onChange={(additionalPaySubsidyPercent: Option) =>
@@ -493,7 +493,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formik.values.employee?.workingHours ?? ''}
                 invalid={!!getErrorMessage(fields.employee.workingHours.name)}
                 aria-invalid={
@@ -552,7 +552,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formik.values.employee?.monthlyPay ?? ''}
                 invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
                 aria-invalid={
@@ -570,7 +570,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formik.values.employee?.otherExpenses ?? ''}
                 invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
                 aria-invalid={
@@ -588,7 +588,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formik.values.employee?.vacationMoney ?? ''}
                 invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
                 aria-invalid={
@@ -631,7 +631,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ignore when HDS-1013 is resolved
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formik.values.employee?.commissionAmount ?? ''}
                 invalid={
                   !!getErrorMessage(fields.employee.commissionAmount.name)
