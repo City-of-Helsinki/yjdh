@@ -49,7 +49,6 @@ from terms.api.v1.serializers import (
 )
 from terms.enums import TermsType
 from terms.models import ApplicantTermsApproval, Terms
-from users.models import User
 from users.utils import get_business_id_from_user
 
 
@@ -1255,7 +1254,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 application=instance,
                 terms=approve_terms["terms"],
                 approved_at=datetime.now(),
-                approved_by=self.get_logged_in_user(),
+                approved_by=self._get_request_user_from_context(),
             )
             approval.selected_applicant_consents.set(
                 approve_terms["selected_applicant_consents"]
@@ -1380,9 +1379,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 "ordering"
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
-
-    def get_logged_in_user(self):
-        return User.objects.all().first()
 
     def _get_request_user_from_context(self):
         request = self.context.get("request")
