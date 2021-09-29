@@ -174,6 +174,12 @@ class Application(UUIDModel, TimeStampedModel):
         max_length=2,
     )
 
+    """
+    This field is required if the applicant company form is an association.
+    For "normal" businesses, this field has no effect and should always be set to None.
+    """
+    association_immediate_manager_check = models.BooleanField(null=True)
+
     co_operation_negotiations = models.BooleanField(null=True)
     co_operation_negotiations_description = models.CharField(
         max_length=256,
