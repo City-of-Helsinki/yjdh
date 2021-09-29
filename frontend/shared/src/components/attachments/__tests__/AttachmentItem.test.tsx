@@ -1,10 +1,12 @@
 import { RenderResult } from '@testing-library/react';
-import renderComponent from 'benefit/applicant/__tests__/utils/render-component';
 import { axe } from 'jest-axe';
 import noop from 'lodash/noop';
 import React from 'react';
+import renderComponent from 'shared/__tests__/utils/render-component/render-component';
 
 import AttachmentItem, { AttachmentItemProps } from '../AttachmentItem';
+
+const render = renderComponent('http://localhost:8000');
 
 describe('AttachmentItem', () => {
   const initialProps: AttachmentItemProps = {
@@ -17,8 +19,7 @@ describe('AttachmentItem', () => {
 
   const getComponent = (
     props: Partial<AttachmentItemProps> = {}
-  ): RenderResult =>
-    renderComponent(<AttachmentItem {...initialProps} {...props} />);
+  ): RenderResult => render(<AttachmentItem {...initialProps} {...props} />);
 
   it('should render with no accessibility violations', async () => {
     const { container } = getComponent();

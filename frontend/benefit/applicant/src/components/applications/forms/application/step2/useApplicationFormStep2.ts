@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_FIELDS_STEP2_KEYS,
@@ -21,6 +20,7 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
+import hdsToast from 'shared/components/toast/Toast';
 import { NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 import { OptionType } from 'shared/types/common';
 import snakecaseKeys from 'snakecase-keys';

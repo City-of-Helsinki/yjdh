@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
@@ -7,14 +6,13 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
-  Attachment,
 } from 'benefit/applicant/types/application';
-import {
-  getApplicationStepString,
-  showErrorToast,
-} from 'benefit/applicant/utils/common';
+import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
+import showErrorToast from 'shared/components/toast/show-error-toast';
+import hdsToast from 'shared/components/toast/Toast';
+import Attachment from 'shared/types/attachment';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {

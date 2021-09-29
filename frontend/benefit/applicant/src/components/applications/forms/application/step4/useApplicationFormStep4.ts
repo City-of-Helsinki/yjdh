@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
@@ -8,6 +7,7 @@ import {
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
+import hdsToast from 'shared/components/toast/Toast';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {

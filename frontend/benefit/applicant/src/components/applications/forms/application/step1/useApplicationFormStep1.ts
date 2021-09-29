@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   MAX_LONG_STRING_LENGTH,
@@ -24,6 +23,7 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
+import hdsToast from 'shared/components/toast/Toast';
 import {
   ADDRESS_REGEX,
   CITY_REGEX,

@@ -1,11 +1,9 @@
 import { RenderResult } from '@testing-library/react';
 import renderComponent from 'benefit/applicant/__tests__/utils/render-component';
-import {
-  ATTACHMENT_CONTENT_TYPES,
-  ATTACHMENT_TYPES,
-} from 'benefit/applicant/constants';
+import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import { axe } from 'jest-axe';
 import React from 'react';
+import { ATTACHMENT_CONTENT_TYPES } from 'shared/constants';
 
 import AttachmentsListView, {
   AttachmentsListViewProps,

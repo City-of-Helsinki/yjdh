@@ -27,8 +27,9 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.tsx', '*.testcafe.ts'],
+      files: ['**/__tests__/**', '*.testcafe.ts'],
       rules: {
+        'testing-library/render-result-naming-convention': 'off',
         'jest/expect-expect': 'off',
         'jest/no-done-callback': 'off',
         'security/detect-non-literal-regexp': 'off',
