@@ -18,6 +18,7 @@ describe('CompanyInfoView', () => {
         bankAccountNumber: 'FI1234567890',
       },
     },
+    handleStepChange: jest.fn(),
   };
 
   const getComponent = (
