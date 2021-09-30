@@ -1,30 +1,24 @@
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Attachment } from 'benefit/applicant/types/application';
-import { showErrorToast } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect } from 'react';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 
 type ExtendedComponentProps = {
   t: TFunction;
   translationsBase: string;
   applicationId: string;
   attachments: [];
-  files?: Attachment[];
   isRemoving: boolean;
   isUploading: boolean;
   handleRemove: (attachmentId: string) => void;
   handleUpload: (attachment: FormData) => void;
 };
 
-const useAttachmentsList = (
-  attachmentType: ATTACHMENT_TYPES,
-  attachments?: Attachment[]
-): ExtendedComponentProps => {
+const useAttachmentsList = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
   const { t } = useTranslation();
@@ -54,12 +48,6 @@ const useAttachmentsList = (
     }
   }, [isRemovingError, isUploadingError, t]);
 
-  const files = React.useMemo(
-    (): Attachment[] =>
-      attachments?.filter((att) => att.attachmentType === attachmentType) || [],
-    [attachmentType, attachments]
-  );
-
   const handleRemove = (attachmentId: string): void => {
     removeAttachment({
       applicationId,
@@ -79,7 +67,6 @@ const useAttachmentsList = (
     applicationId,
     attachments: [],
     translationsBase,
-    files,
     isRemoving,
     isUploading,
     handleRemove,

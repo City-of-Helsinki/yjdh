@@ -1,16 +1,13 @@
-import AttachmentItem from 'benefit/applicant/components/applications/attachmentItem/AttachmentItem';
-import UploadAttachment from 'benefit/applicant/components/applications/uploadAttachment/UploadAttachment';
 import {
   ATTACHMENT_ALLOWED_TYPES,
   ATTACHMENT_MAX_SIZE,
   ATTACHMENT_TYPES,
 } from 'benefit/applicant/constants';
-import { Attachment } from 'benefit/applicant/types/application';
-import { IconPlus } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
+import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
+import Attachment from 'shared/types/attachment';
 
-import { $Container, $Heading, $Message } from './AttachmentsList.sc';
 import { useAttachmentsList } from './useAttachmentsList';
 
 export interface AttachmentsListProps {
@@ -29,59 +26,26 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     handleRemove,
     handleUpload,
     translationsBase,
-    files,
     isRemoving,
     isUploading,
-  } = useAttachmentsList(attachmentType, attachments);
+  } = useAttachmentsList();
 
   return (
-    <$Container>
-      <$Heading>
-        {t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
-      </$Heading>
-      {files && files.length > 0 ? (
-        <>
-          {files?.map((file) => (
-            <AttachmentItem
-              key={file.id}
-              id={file.id}
-              name={file.attachmentFileName}
-              removeText={t(`${translationsBase}.remove`)}
-              onClick={() =>
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                window.open(file.attachmentFile, '_blank')?.focus()
-              }
-              onRemove={() => !isRemoving && handleRemove(file.id)}
-            />
-          ))}
-        </>
-      ) : (
-        <>
-          {showMessage && (
-            <$Message>
-              {t(
-                `${translationsBase}.types.${camelCase(attachmentType)}.message`
-              )}
-            </$Message>
-          )}
-        </>
-      )}
-      <UploadAttachment
-        theme="coat"
-        variant="primary"
-        onUpload={handleUpload}
-        isUploading={isUploading}
-        attachmentType={attachmentType}
-        allowedFileTypes={ATTACHMENT_ALLOWED_TYPES}
-        maxSize={ATTACHMENT_MAX_SIZE}
-        icon={<IconPlus />}
-        uploadText={t(`${translationsBase}.add`)}
-        loadingText={t(`common:upload.isUploading`)}
-        errorTitle={t('common:error.attachments.title')}
-        errorFileSizeText={t('common:error.attachments.tooBig')}
-        errorFileTypeText={t('common:error.attachments.fileType')}
-      />
-    </$Container>
+    <AttachmentsListBase
+      title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
+      attachmentType={attachmentType}
+      allowedFileTypes={ATTACHMENT_ALLOWED_TYPES}
+      maxSize={ATTACHMENT_MAX_SIZE}
+      message={
+        showMessage &&
+        `${translationsBase}.types.${camelCase(attachmentType)}.message`
+      }
+      attachments={attachments}
+      onUpload={handleUpload}
+      onRemove={handleRemove}
+      isUploading={isUploading}
+      isRemoving={isRemoving}
+    />
   );
 };
 

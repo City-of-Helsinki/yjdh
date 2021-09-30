@@ -1,8 +1,8 @@
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
-import { Attachment } from 'benefit/applicant/types/application';
 import { IconPaperclip } from 'hds-react';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import Attachment from 'shared/types/attachment';
 
 import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
@@ -17,9 +17,10 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   type,
   title,
 }) => {
-  const currentAttachemnts = React.useMemo((): Attachment[] => attachments, [
-    attachments,
-  ]);
+  const currentAttachemnts = React.useMemo(
+    (): Attachment[] => attachments,
+    [attachments]
+  );
 
   return (
     <$GridCell $colStart={1} $colSpan={6}>

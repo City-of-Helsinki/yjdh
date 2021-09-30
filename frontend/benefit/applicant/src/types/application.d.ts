@@ -1,3 +1,4 @@
+import Attachment from 'shared/types/attachment';
 import { DefaultTheme } from 'styled-components';
 
 import {
@@ -169,16 +170,6 @@ export type Company = {
   bankAccountNumber: string;
 };
 
-export type Attachment = {
-  id: string;
-  application: string;
-  attachmentType: ATTACHMENT_TYPES;
-  attachmentFile: string;
-  attachmentFileName: string;
-  contentType: ATTACHMENT_CONTENT_TYPES;
-  createdAt?: string;
-};
-
 export interface Step1 {
   [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]?: boolean;
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;
@@ -240,13 +231,3 @@ export type ApplicationTempData = {
   id: string;
   deMinimisAids: DeMinimisAid[];
 };
-
-export interface UploadAttachmentData {
-  applicationId: string;
-  data: FormData;
-}
-
-export interface RemoveAttachmentData {
-  applicationId: string;
-  attachmentId: string;
-}

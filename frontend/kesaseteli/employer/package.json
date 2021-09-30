@@ -36,6 +36,7 @@
     "react-hook-form": "^7.14.0",
     "react-loading-skeleton": "^2.2.0",
     "react-query": "^3.22.0",
+    "react-toastify": "^8.0.3",
     "rexreplace": "^7.0.3",
     "styled-components": "^5.3.0",
     "ts-node": "^10.0.0",

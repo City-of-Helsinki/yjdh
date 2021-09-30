@@ -1,4 +1,3 @@
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import { Button, ButtonTheme } from 'hds-react';
 import * as React from 'react';
 
@@ -7,7 +6,7 @@ import { useUploadAttachment } from './useUploadAttachment';
 export interface UploadAttachmentProps {
   onUpload: (data: FormData) => void;
   isUploading: boolean;
-  attachmentType: ATTACHMENT_TYPES;
+  attachmentType: string;
   allowedFileTypes: string[];
   maxSize: number;
   uploadText: string;

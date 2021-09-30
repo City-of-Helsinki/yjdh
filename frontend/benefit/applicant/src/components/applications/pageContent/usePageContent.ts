@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_INITIAL_VALUES,
   DEFAULT_APPLICATION_STEP,
@@ -15,6 +14,7 @@ import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
+import hdsToast from 'shared/components/toast/Toast';
 
 type ExtendedComponentProps = {
   t: TFunction;
