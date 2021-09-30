@@ -478,6 +478,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
 
             <$GridCell $colSpan={12}>
               <Heading
+                as="h3"
                 size="xs"
                 header={t(`${translationsBase}.heading5EmploymentSub1`)}
                 tooltip={t(
