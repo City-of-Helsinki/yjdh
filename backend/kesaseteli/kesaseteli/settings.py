@@ -75,6 +75,7 @@ env = environ.Env(
     ELASTICSEARCH_API_KEY=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
+    ENABLE_ADMIN=(bool, True),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -86,6 +87,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
+ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -118,7 +120,6 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -136,6 +137,9 @@ INSTALLED_APPS = [
     "applications",
     "companies",
 ]
+
+if ENABLE_ADMIN:
+    INSTALLED_APPS.append("django.contrib.admin")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

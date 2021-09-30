@@ -26,6 +26,7 @@ module.exports = {
     ],
     'unicorn/no-array-reduce': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'chai-friendly/no-unused-expressions': 'off',
   },
   overrides: [
     {
