@@ -1,6 +1,12 @@
 export const MAIN_CONTENT_ID = 'main_content';
 export const INVALID_FIELD_CLASS = 'invalid-field';
 
+export enum ATTACHMENT_CONTENT_TYPES {
+  APPLICATION_PDF = 'application/pdf',
+  IMAGE_PNG = 'image/png',
+  IMAGE_JPEG = 'image/jpeg',
+}
+
 // For the following regex constants, see: frontend/shared/src/__tests__/constants.test.ts
 export const ADDRESS_REGEX = /^([\d (),./A-Za-zÄÅÖäåö-]+)$/;
 export const COMPANY_BANK_ACCOUNT_NUMBER = /^FI\d{16}$/;

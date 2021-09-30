@@ -37,10 +37,12 @@ env = environ.Env(
     SENTRY_ENVIRONMENT=(str, ""),
     CORS_ORIGIN_WHITELIST=(list, []),
     CORS_ORIGIN_ALLOW_ALL=(bool, False),
+    CSRF_COOKIE_DOMAIN=(str, "localhost"),
+    CSRF_TRUSTED_ORIGINS=(list, []),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     MOCK_FLAG=(bool, False),
-    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in staging/production
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use the same value in staging/production
     # Always override this value from env variables
     ENCRYPTION_KEY=(
         str,
@@ -54,8 +56,10 @@ env = environ.Env(
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
-    LOGIN_REDIRECT_URL=(str, ""),
-    LOGIN_REDIRECT_URL_FAILURE=(str, ""),
+    LOGIN_REDIRECT_URL=(str, "/"),
+    LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
     EAUTHORIZATIONS_CLIENT_ID=(str, "sample_client_id"),
     EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
@@ -63,8 +67,7 @@ env = environ.Env(
     ADFS_CLIENT_ID=(str, "client_id"),
     ADFS_CLIENT_SECRET=(str, "client_secret"),
     ADFS_TENANT_ID=(str, "tenant_id"),
-    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
-    ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    ADFS_CONTROLLER_GROUP_UUIDS=(list, []),
     DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_ACCOUNT_KEY=(str, ""),
@@ -183,10 +186,20 @@ TEMPLATES = [
     }
 ]
 
-
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
+CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+
+# Audit logging
+AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
+CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
+ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
+ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
+ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
+ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
+ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 
 LOGGING = {
     "version": 1,
@@ -305,15 +318,6 @@ AZURE_URL_EXPIRATION_SECS = env("AZURE_URL_EXPIRATION_SECS")  # default 900s
 
 MAX_UPLOAD_SIZE = 10485760  # 10MB
 MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
-
-
-AUDIT_LOG_ORIGIN = env("AUDIT_LOG_ORIGIN")
-CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
-ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
-ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
-ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
-ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
-ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 
 WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 

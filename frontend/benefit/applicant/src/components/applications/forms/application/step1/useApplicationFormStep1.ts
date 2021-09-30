@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useCreateApplicationQuery from 'benefit/applicant/hooks/useCreateApplicationQuery';
@@ -19,6 +18,7 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
+import hdsToast from 'shared/components/toast/Toast';
 import { OptionType } from 'shared/types/common';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';

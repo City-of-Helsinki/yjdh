@@ -1,26 +1,10 @@
-import { NextRouter } from 'next/router';
-import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import getDefaultReactQueryTestClient from 'shared/__tests__/utils/react-query/get-default-react-query-test-client';
-import { render, RenderResult } from 'shared/__tests__/utils/test-utils';
-import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
-import theme from 'shared/styles/theme';
-import { ThemeProvider } from 'styled-components';
+import { getBackendDomain } from 'benefit/applicant/backend-api/backend-api';
+import renderComponentF from 'shared/__tests__/utils/render-component/render-component';
 
-import AxiosTestContext from '../../utils/test-utils/axios-test-context';
+const render = renderComponentF(getBackendDomain());
 
 const renderComponent = (
-  Component: JSX.Element,
-  client: QueryClient = getDefaultReactQueryTestClient(),
-  router: Partial<NextRouter> = {}
-): RenderResult =>
-  render(
-    <BackendAPIContext.Provider value={AxiosTestContext}>
-      <ThemeProvider theme={theme}>
-        <QueryClientProvider client={client}>{Component}</QueryClientProvider>
-      </ThemeProvider>
-    </BackendAPIContext.Provider>,
-    router
-  );
+  ...params: Parameters<typeof render>
+): ReturnType<typeof render> => render(...params);
 
 export default renderComponent;

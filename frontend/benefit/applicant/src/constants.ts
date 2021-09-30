@@ -59,12 +59,6 @@ export enum ATTACHMENT_TYPES {
   EMPLOYEE_CONSENT = 'employee_consent',
 }
 
-export enum ATTACHMENT_CONTENT_TYPES {
-  APPLICATION_PDF = 'application/pdf',
-  IMAGE_PNG = 'image/png',
-  IMAGE_JPEG = 'image/jpeg',
-}
-
 export enum APPLICATION_FIELDS_STEP1_KEYS {
   USE_ALTERNATIVE_ADDRESS = 'useAlternativeAddress',
   ALTERNATIVE_COMPANY_STREET_ADDRESS = 'alternativeCompanyStreetAddress',
