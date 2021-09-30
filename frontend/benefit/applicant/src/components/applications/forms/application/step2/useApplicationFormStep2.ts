@@ -21,7 +21,12 @@ import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 import { OptionType } from 'shared/types/common';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import {
+  convertToBackendDateFormat,
+  convertToUIDateFormat,
+  formatDate,
+  parseDate,
+} from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import snakecaseKeys from 'snakecase-keys';
 
@@ -103,10 +108,10 @@ const useApplicationFormStep2 = (
           ...application,
           ...values,
           startDate: values.startDate
-            ? formatDate(parseDate(values.startDate), DATE_FORMATS.DATE_BACKEND)
+            ? convertToBackendDateFormat(values.startDate)
             : null,
           endDate: values.endDate
-            ? formatDate(parseDate(values.endDate), DATE_FORMATS.DATE_BACKEND)
+            ? convertToBackendDateFormat(values.endDate)
             : null,
           applicationStep: getApplicationStepString(step),
         },
@@ -258,9 +263,9 @@ const useApplicationFormStep2 = (
   ]);
 
   const minEndDate = getMinEndDate(values.startDate, values.benefitType);
-  const minEndDateFormatted = formatDate(minEndDate, DATE_FORMATS.DATE);
-  const isEndDateEligible =
-    values.endDate && isAfter(parseDate(values.endDate), minEndDate);
+  const minEndDateFormatted = convertToUIDateFormat(minEndDate);
+  const endDate = parseDate(values.endDate);
+  const isEndDateEligible = endDate && isAfter(endDate, minEndDate);
 
   const setEndDate = React.useCallback(() => {
     if (!values.startDate && values.endDate) {

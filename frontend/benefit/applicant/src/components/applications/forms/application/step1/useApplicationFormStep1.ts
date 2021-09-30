@@ -20,7 +20,7 @@ import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 import { OptionType } from 'shared/types/common';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import snakecaseKeys from 'snakecase-keys';
 
@@ -106,10 +106,10 @@ const useApplicationFormStep1 = (
           ...application,
           ...values,
           startDate: values.startDate
-            ? formatDate(parseDate(values.startDate), DATE_FORMATS.DATE_BACKEND)
+            ? convertToBackendDateFormat(values.startDate)
             : null,
           endDate: values.endDate
-            ? formatDate(parseDate(values.endDate), DATE_FORMATS.DATE_BACKEND)
+            ? convertToBackendDateFormat(values.endDate)
             : null,
 
           // update from context

@@ -6,7 +6,7 @@ import {
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import isFuture from 'date-fns/isFuture';
 import { TFunction } from 'next-i18next';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
 import * as Yup from 'yup';
 
 export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
@@ -28,17 +28,14 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
       .typeError(VALIDATION_MESSAGE_KEYS.DATE_FORMAT)
       .test({
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MAX, {
-          max: formatDate(
-            DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
-            DATE_FORMATS.DATE
-          ),
+          max: convertToUIDateFormat(DE_MINIMIS_AID_GRANTED_AT_MAX_DATE),
         }),
         test: (value) => {
           if (!value) return false;
 
           const date = parseDate(value);
 
-          if (isFuture(date)) {
+          if (date && isFuture(date)) {
             return false;
           }
           return true;
