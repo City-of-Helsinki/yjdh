@@ -12,14 +12,14 @@ import { ThemeProvider } from 'styled-components';
 const renderComponent =
   (backendUrl = 'http://localhost:8000') =>
   (
-    Component: JSX.Element,
+    Element: JSX.Element,
     client: QueryClient = getDefaultReactQueryTestClient(),
     router: Partial<NextRouter> = {}
   ): RenderResult =>
     render(
       <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
         <QueryClientProvider client={client}>
-          <ThemeProvider theme={theme}>{Component}</ThemeProvider>
+          <ThemeProvider theme={theme}>{Element}</ThemeProvider>
           <HiddenLoadingIndicator />
         </QueryClientProvider>
       </BackendAPIContext.Provider>,
