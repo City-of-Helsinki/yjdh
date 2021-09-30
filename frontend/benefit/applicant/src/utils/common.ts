@@ -5,8 +5,8 @@ import { OptionType } from 'shared/types/common';
 export const getLanguageOptions = (
   t: TFunction,
   containerKey: string
-): OptionType[] => {
-  const createOptions = (languages: string[]): OptionType[] =>
+): OptionType<string>[] => {
+  const createOptions = (languages: string[]): OptionType<string>[] =>
     languages.map((language) => ({
       label: t(`common:${containerKey}.${language}`),
       value: language,

@@ -1,9 +1,4 @@
-import {
-  APPLICATION_FIELDS_STEP1_KEYS,
-  MAX_LONG_STRING_LENGTH,
-  MAX_SHORT_STRING_LENGTH,
-  VALIDATION_MESSAGE_KEYS,
-} from 'benefit/applicant/constants';
+import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useCreateApplicationQuery from 'benefit/applicant/hooks/useCreateApplicationQuery';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
@@ -24,25 +19,23 @@ import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 import hdsToast from 'shared/components/toast/Toast';
-import {
-  ADDRESS_REGEX,
-  CITY_REGEX,
-  COMPANY_BANK_ACCOUNT_NUMBER,
-  NAMES_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX,
-} from 'shared/constants';
 import { OptionType } from 'shared/types/common';
+import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { focusAndScroll } from 'shared/utils/dom.utils';
 import snakecaseKeys from 'snakecase-keys';
-import * as Yup from 'yup';
+
+import { getValidationSchema } from './utils/validation';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  fields: Record<APPLICATION_FIELDS_STEP1_KEYS, Field>;
+  fields: Record<
+    APPLICATION_FIELDS_STEP1_KEYS,
+    Field<APPLICATION_FIELDS_STEP1_KEYS>
+  >;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
-  erazeDeminimisAids: () => void;
+  clearDeminimisAids: () => void;
   formik: FormikProps<Application>;
   deMinimisAids: DeMinimisAid[];
   languageOptions: OptionType[];
@@ -103,47 +96,22 @@ const useApplicationFormStep1 = (
 
   const formik = useFormik({
     initialValues: application || {},
-    validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]:
-        Yup.string()
-          .matches(ADDRESS_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string()
-        .matches(POSTAL_CODE_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY]: Yup.string()
-        .matches(CITY_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string()
-        .matches(
-          COMPANY_BANK_ACCOUNT_NUMBER,
-          t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
-        )
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]:
-        Yup.string()
-          .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
-          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string()
-        .email(t(VALIDATION_MESSAGE_KEYS.EMAIL_INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]:
-        Yup.string()
-          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME]:
-        Yup.string()
-          .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-    }),
+    validationSchema: getValidationSchema(t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: () => {
+    onSubmit: (values) => {
       const currentApplicationData: ApplicationData = snakecaseKeys(
         {
           ...application,
-          ...formik.values,
+          ...values,
+          startDate: values.startDate
+            ? formatDate(parseDate(values.startDate), DATE_FORMATS.DATE_BACKEND)
+            : null,
+          endDate: values.endDate
+            ? formatDate(parseDate(values.endDate), DATE_FORMATS.DATE_BACKEND)
+            : null,
+
           // update from context
           deMinimisAidSet: applicationTempData.deMinimisAids,
           deMinimisAid: applicationTempData.deMinimisAids?.length !== 0,
@@ -160,7 +128,7 @@ const useApplicationFormStep1 = (
   });
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
-    const fieldMasks: Record<Field['name'], Field['mask']> = {
+    const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
       [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
         format: 'FI99 9999 9999 9999 99',
         stripVal: (val: string) => val.replace(/\s/g, ''),
@@ -168,20 +136,22 @@ const useApplicationFormStep1 = (
     };
 
     const fieldsValues = Object.values(APPLICATION_FIELDS_STEP1_KEYS);
-    const fieldsPairs: [APPLICATION_FIELDS_STEP1_KEYS, Field][] =
-      fieldsValues.map((fieldName) => [
-        fieldName,
-        {
-          name: fieldName,
-          label: t(`${translationsBase}.fields.${fieldName}.label`),
-          placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
-          mask: fieldMasks[fieldName],
-        },
-      ]);
+    const fieldsPairs: [
+      APPLICATION_FIELDS_STEP1_KEYS,
+      Field<APPLICATION_FIELDS_STEP1_KEYS>
+    ][] = fieldsValues.map((fieldName) => [
+      fieldName,
+      {
+        name: fieldName,
+        label: t(`${translationsBase}.fields.${fieldName}.label`),
+        placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
+        mask: fieldMasks[fieldName],
+      },
+    ]);
 
     return fromPairs(fieldsPairs) as Record<
       APPLICATION_FIELDS_STEP1_KEYS,
-      Field
+      Field<APPLICATION_FIELDS_STEP1_KEYS>
     >;
   }, [t, translationsBase]);
 
@@ -191,16 +161,17 @@ const useApplicationFormStep1 = (
   const handleSubmit = (): void => {
     setIsSubmitted(true);
     void formik.validateForm().then((errors) => {
-      // todo: Focus the first invalid field
-      const invalidFields = Object.keys(errors);
-      if (invalidFields.length === 0) {
-        void formik.submitForm();
+      const errorFieldKey = Object.keys(errors)[0];
+
+      if (errorFieldKey) {
+        return focusAndScroll(errorFieldKey);
       }
-      return null;
+
+      return formik.submitForm();
     });
   };
 
-  const erazeDeminimisAids = (): void =>
+  const clearDeminimisAids = (): void =>
     setApplicationTempData({ ...applicationTempData, deMinimisAids: [] });
 
   const languageOptions = React.useMemo(
@@ -223,7 +194,7 @@ const useApplicationFormStep1 = (
     formik,
     getErrorMessage,
     handleSubmit,
-    erazeDeminimisAids,
+    clearDeminimisAids,
     deMinimisAids: application.deMinimisAidSet || [],
     languageOptions,
     getDefaultSelectValue,
