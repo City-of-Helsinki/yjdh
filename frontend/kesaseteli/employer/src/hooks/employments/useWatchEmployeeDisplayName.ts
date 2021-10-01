@@ -7,8 +7,10 @@ const useWatchEmployeeDisplayName = (index: number): string => {
   const defaultHeading = `${t(`common:application.step2.employment`)} #${
     index + 1
   }`;
-  const { watch: watchEmployeeName } = useApplicationFormField<string>(`summer_vouchers.${index}.employee_name`);
+  const { watch: watchEmployeeName } = useApplicationFormField<string>(
+    `summer_vouchers.${index}.employee_name`
+  );
   const employeeName = watchEmployeeName();
-  return !employeeName || isEmpty(employeeName) ? defaultHeading : employeeName;
+  return isEmpty(employeeName) ? defaultHeading : employeeName;
 };
 export default useWatchEmployeeDisplayName;
