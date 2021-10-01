@@ -101,7 +101,7 @@ const DateInput = ({
         name={id}
         required={Boolean(validation.required)}
         initialMonth={new Date()}
-        defaultValue={date}
+        value={date}
         language={locale}
         // for some reason date picker causes error "Cannot read property 'createEvent' of null" in tests. It's not needed for tests so it's disabled for them.
         disableDatePicker={process.env.NODE_ENV === 'test'}

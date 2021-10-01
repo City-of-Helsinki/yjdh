@@ -1,4 +1,3 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
   APPLICATION_INITIAL_VALUES,
   DEFAULT_APPLICATION_STEP,
@@ -15,6 +14,7 @@ import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
+import hdsToast from 'shared/components/toast/Toast';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -73,7 +73,7 @@ const usePageContent = (): ExtendedComponentProps => {
   }, [router]);
 
   let application: Application = {};
-  const defaultApplication = APPLICATION_INITIAL_VALUES as Application;
+  const defaultApplication: Application = APPLICATION_INITIAL_VALUES;
 
   // if no id, get the application template date
   if (existingApplication || (!existingApplicationId && applicationTemplate)) {
@@ -83,7 +83,7 @@ const usePageContent = (): ExtendedComponentProps => {
       {
         deep: true,
       }
-    ) as Application;
+    );
   }
 
   const steps = React.useMemo((): StepProps[] => {
