@@ -130,7 +130,6 @@ def test_application_status_change_with_missing_summer_voucher_data(
     application.refresh_from_db()
     assert application.status == from_status
 
-
     # Commented until attachments are implemented on frontend
     #
     # @pytest.mark.django_db
