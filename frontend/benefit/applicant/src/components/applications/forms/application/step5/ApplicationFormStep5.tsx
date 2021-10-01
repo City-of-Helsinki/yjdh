@@ -1,5 +1,3 @@
-import AttachmentItem from 'benefit/applicant/components/applications/attachmentItem/AttachmentItem';
-import UploadAttachment from 'benefit/applicant/components/applications/uploadAttachment/UploadAttachment';
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
 import {
   ATTACHMENT_MAX_SIZE,
@@ -15,6 +13,8 @@ import {
   IconPrinter,
 } from 'hds-react';
 import * as React from 'react';
+import AttachmentItem from 'shared/components/attachments/AttachmentItem';
+import UploadAttachment from 'shared/components/attachments/UploadAttachment';
 import {
   $Grid,
   $GridCell,

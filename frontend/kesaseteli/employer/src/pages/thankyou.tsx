@@ -11,50 +11,49 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 import { $Notification } from '../components/application/login.sc';
 
 const ThankYouPage: NextPage = () => {
-    const { t } = useTranslation();
-    const router = useRouter();
-    const { application } = useApplicationApi();
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { application } = useApplicationApi();
 
-    if (!application || application.status === "draft") {
-        void router.push("/");
-        return null
-    }
+  if (!application || application.status === 'draft') {
+    void router.push('/');
+    return null;
+  }
 
-    const createNewApplicationClick = (): void => {
-        void router.push("/");
-    };
+  const createNewApplicationClick = (): void => {
+    void router.push('/');
+  };
 
-    return (
-        <Container>
-            <Layout>
-                <$Notification
-                    label={t(`common:thankyouPage.thankyouMessageLabel`)}
-                    type="success"
-                    size="large"
-                >
-                    {t(`common:thankyouPage.thankyouMessageContent`)}
-                </$Notification>
+  return (
+    <Container>
+      <Layout>
+        <$Notification
+          label={t(`common:thankyouPage.thankyouMessageLabel`)}
+          type="success"
+          size="large"
+        >
+          {t(`common:thankyouPage.thankyouMessageContent`)}
+        </$Notification>
 
-                {/* To be replaced with the application summary component: */}
-                <div>
-                    Yhteenveto: <p />
-                    {JSON.stringify(application, null, 2)} <p />
-                </div>
+        {/* To be replaced with the application summary component: */}
+        <div>
+          Yhteenveto: <p />
+          {JSON.stringify(application, null, 2)} <p />
+        </div>
 
-                <Button
-                    theme="coat"
-                    iconLeft={<IconPlus />}
-                    onClick={createNewApplicationClick}
-                >
-                    {t(`common:thankyouPage.createNewApplication`)}
-                </Button>
-            </Layout>
-        </Container>
-    );
+        <Button
+          theme="coat"
+          iconLeft={<IconPlus />}
+          onClick={createNewApplicationClick}
+        >
+          {t(`common:thankyouPage.createNewApplication`)}
+        </Button>
+      </Layout>
+    </Container>
+  );
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-    'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withAuth(ThankYouPage);

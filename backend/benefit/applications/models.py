@@ -277,6 +277,7 @@ class Application(UUIDModel, TimeStampedModel):
         verbose_name=_("ahjo batch"),
         related_name="applications",
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
     )
 
