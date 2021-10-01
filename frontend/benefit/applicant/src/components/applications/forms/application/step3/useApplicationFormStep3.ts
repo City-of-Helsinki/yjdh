@@ -1,14 +1,14 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import { BENEFIT_TYPES } from 'benefit/applicant/constants';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
-  Attachment,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { useEffect } from 'react';
+import hdsToast from 'shared/components/toast/Toast';
+import Attachment from 'shared/types/attachment';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {

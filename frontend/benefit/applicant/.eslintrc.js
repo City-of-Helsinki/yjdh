@@ -26,6 +26,7 @@ module.exports = {
     ],
     'unicorn/no-array-reduce': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'chai-friendly/no-unused-expressions': 'off',
   },
   overrides: [
     {
@@ -35,8 +36,9 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.tsx', '*.testcafe.ts'],
+      files: ['**/__tests__/**', '*.testcafe.ts'],
       rules: {
+        'testing-library/render-result-naming-convention': 'off',
         'jest/expect-expect': 'off',
         'jest/no-done-callback': 'off',
         'no-await-in-loop': 'off',

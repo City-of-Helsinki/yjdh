@@ -14,7 +14,11 @@ import {
 } from 'shared/components/forms/fields/Fields.sc';
 import { Field } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
+import { useTheme } from 'styled-components';
 
 import { $CompanyInfoRow, $Notification } from './CompanyInfo.sc';
 import useCompanyInfo from './useCompanyInfo';
@@ -47,8 +51,9 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
     isLoading,
     shouldShowSkeleton,
     error,
-    erazeAlternativeAddressFields,
+    clearAlternativeAddressValues,
   } = useCompanyInfo(formik);
+  const theme = useTheme();
 
   return (
     <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
@@ -85,7 +90,12 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             t(`${translationsBase}.notifications.companyInformation.content`)}
         </$Notification>
       </$GridCell>
-      <$GridCell $colSpan={6}>
+      <$GridCell
+        $colSpan={6}
+        css={`
+          margin-bottom: ${theme.spacing.l};
+        `}
+      >
         <$Checkbox
           id={fields.useAlternativeAddress.name}
           disabled={isLoading || !!error}
@@ -96,7 +106,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           errorText={getErrorMessage(
             APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS
           )}
-          onChange={() => erazeAlternativeAddressFields()}
+          onChange={() => clearAlternativeAddressValues()}
           onBlur={formik?.handleBlur}
           aria-invalid={
             !!getErrorMessage(
@@ -106,7 +116,13 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         />
       </$GridCell>
       {formik?.values.useAlternativeAddress && (
-        <>
+        <$GridCell
+          as={$Grid}
+          $colSpan={12}
+          css={`
+            margin-bottom: ${theme.spacing.l};
+          `}
+        >
           <$GridCell $colSpan={4}>
             <TextInput
               id={fields.alternativeCompanyStreetAddress.name}
@@ -182,7 +198,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               required
             />
           </$GridCell>
-        </>
+        </$GridCell>
       )}
 
       <$GridCell $colSpan={3}>

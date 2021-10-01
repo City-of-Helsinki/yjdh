@@ -1,8 +1,8 @@
 import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
 import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
-import { RemoveAttachmentData } from 'benefit/applicant/types/application';
 import { ErrorResponse } from 'benefit/applicant/types/common';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import { RemoveAttachmentData } from 'shared/types/attachment';
 
 const useRemoveAttachmentQuery = (): UseMutationResult<
   RemoveAttachmentData,

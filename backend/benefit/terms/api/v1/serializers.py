@@ -1,6 +1,11 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from terms.models import ApplicantConsent, ApplicantTermsApproval, Terms
+from terms.models import (
+    ApplicantConsent,
+    ApplicantTermsApproval,
+    Terms,
+    TermsOfServiceApproval,
+)
 
 
 class ApplicantConsentSerializer(serializers.ModelSerializer):
@@ -100,3 +105,23 @@ class ApproveTermsSerializer(serializers.ModelSerializer):
             "terms",
             "selected_applicant_consents",
         ]
+
+
+class TermsOfServiceApprovalSerializer(serializers.ModelSerializer):
+    selected_applicant_consents = ApplicantConsentSerializer(
+        many=True, help_text="Applicant consents that were selected"
+    )
+    terms = TermsSerializer(help_text="Terms that were approved")
+
+    class Meta:
+        model = TermsOfServiceApproval
+        fields = [
+            "id",
+            "approved_at",
+            "approved_by",
+            "terms",
+            "selected_applicant_consents",
+            "company",
+            "user",
+        ]
+        read_only_fields = ["approved_at", "approved_by"]

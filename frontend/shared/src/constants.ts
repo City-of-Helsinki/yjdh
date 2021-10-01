@@ -1,6 +1,12 @@
 export const MAIN_CONTENT_ID = 'main_content';
 export const INVALID_FIELD_CLASS = 'invalid-field';
 
+export enum ATTACHMENT_CONTENT_TYPES {
+  APPLICATION_PDF = 'application/pdf',
+  IMAGE_PNG = 'image/png',
+  IMAGE_JPEG = 'image/jpeg',
+}
+
 // For the following regex constants, see: frontend/shared/src/__tests__/constants.test.ts
 export const ADDRESS_REGEX = /^([\d (),./A-Za-zÄÅÖäåö-]+)$/;
 export const COMPANY_BANK_ACCOUNT_NUMBER = /^FI\d{16}$/;
@@ -13,8 +19,9 @@ export const CITY_REGEX = /^[ A-Za-zÄÅÖäåö-]+$/;
 
 export const EMAIL_REGEX =
   // eslint-disable-next-line security/detect-unsafe-regex
-  /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
+  /^[\w&*+-]+(?:\.[\w&*+-]+)*@(?:[\dA-Za-z-]+\.)+[A-Za-z]{2,7}$/;
 
-// eslint-disable-next-line security/detect-unsafe-regex
-export const DATE_UI_REGEX = /^(?:\d{1,2}.){2}\d{4}$/;
-export const DATE_BACKEND_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+export const DATE_UI_REGEX =
+  /^(0?[1-9]|[12]\d|3[01])\.(0?[1-9]|1[0-2])\.\d{4}$/;
+export const DATE_BACKEND_REGEX =
+  /^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$/;
