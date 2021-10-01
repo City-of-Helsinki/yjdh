@@ -34,6 +34,7 @@ from common.utils import (
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
 from django.db import transaction
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
@@ -48,7 +49,6 @@ from terms.api.v1.serializers import (
 )
 from terms.enums import TermsType
 from terms.models import ApplicantTermsApproval, Terms
-from users.models import User
 from users.utils import get_business_id_from_user
 
 
@@ -703,7 +703,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def get_applicant_terms_in_effect(self, obj):
         terms = Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS)
         if terms:
-            return TermsSerializer(terms).data
+            # If given the request in context, DRF will output the URL for FileFields
+            context = {"request": self.context.get("request")}
+            return TermsSerializer(terms, context=context).data
         else:
             return None
 
@@ -1252,7 +1254,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 application=instance,
                 terms=approve_terms["terms"],
                 approved_at=datetime.now(),
-                approved_by=self.get_logged_in_user(),
+                approved_by=self._get_request_user_from_context(),
             )
             approval.selected_applicant_consents.set(
                 approve_terms["selected_applicant_consents"]
@@ -1378,9 +1380,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
 
-    def get_logged_in_user(self):
-        return User.objects.all().first()
-
     def _get_request_user_from_context(self):
         request = self.context.get("request")
         if request:
@@ -1389,11 +1388,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     def logged_in_user_is_admin(self):
         user = self._get_request_user_from_context()
-        if user:
+        if user and hasattr(user, "is_handler"):
             return user.is_handler()
         return False
 
     def get_logged_in_user_company(self):
         user = self._get_request_user_from_context()
+        if settings.DISABLE_AUTHENTICATION:
+            return Company.objects.all().order_by("name").first()
         business_id = get_business_id_from_user(user)
         return Company.objects.get(business_id=business_id)

@@ -1,7 +1,7 @@
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -15,10 +15,16 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
 }) => {
   const { t, handleBack, handleNext, handleStepChange, translationsBase } =
     useApplicationFormStep4(data);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
-      <CompanyInfoView data={data} />
-      <EmployeeView data={data} />
+      <CompanyInfoView data={data} handleStepChange={handleStepChange} />
+
+      <EmployeeView data={data} handleStepChange={handleStepChange} />
 
       <FormSection
         header={t(`${translationsBase}.attachments.heading1`)}

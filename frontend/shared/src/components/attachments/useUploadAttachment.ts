@@ -1,6 +1,5 @@
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
-import { showErrorToast } from 'benefit/applicant/utils/common';
 import React from 'react';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 
 type ExtendedComponentProps = {
   handleUploadClick: () => void;
@@ -9,7 +8,7 @@ type ExtendedComponentProps = {
 };
 
 const useUploadAttachment = (
-  attachmentType: ATTACHMENT_TYPES,
+  attachmentType: string,
   allowedFileTypes: string[],
   maxSize: number,
   errorTitle: string,
