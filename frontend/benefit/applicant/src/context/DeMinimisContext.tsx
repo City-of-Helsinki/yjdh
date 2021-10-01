@@ -1,20 +1,17 @@
-import { ApplicationTempData } from 'benefit/applicant/types/application';
+import { DeMinimisAid } from 'benefit/applicant/types/application';
 import noop from 'lodash/noop';
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
-export type ApplicationContextType = {
-  applicationTempData: ApplicationTempData;
+export type DeMinimisContextType = {
+  deMinimisAids: DeMinimisAid[];
   isLoading: boolean;
-  setApplicationTempData: (data: ApplicationTempData) => void;
+  setDeMinimisAids: Dispatch<SetStateAction<DeMinimisAid[]>>;
 };
 
-const ApplicationContext = React.createContext<ApplicationContextType>({
-  applicationTempData: {
-    id: '',
-    deMinimisAids: [],
-  },
+const DeMinimisContext = React.createContext<DeMinimisContextType>({
+  deMinimisAids: [],
   isLoading: true,
-  setApplicationTempData: noop,
+  setDeMinimisAids: noop,
 });
 
-export default ApplicationContext;
+export default DeMinimisContext;
