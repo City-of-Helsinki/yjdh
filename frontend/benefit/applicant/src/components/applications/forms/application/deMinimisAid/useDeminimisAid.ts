@@ -2,7 +2,7 @@ import {
   DE_MINIMIS_AID_KEYS,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
-import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
+import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
@@ -36,24 +36,18 @@ type FormFields = {
 const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const { applicationTempData, setApplicationTempData } =
-    React.useContext(ApplicationContext);
+  const { deMinimisAids, setDeMinimisAids } =
+    React.useContext(DeMinimisContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [defaultValue, setDefaultValue] = useState(false);
 
   // initial data
   useEffect(() => {
     if (!defaultValue) {
-      setApplicationTempData({ ...applicationTempData, deMinimisAids: data });
+      setDeMinimisAids(data);
       setDefaultValue(true);
     }
-  }, [
-    data,
-    defaultValue,
-    setDefaultValue,
-    applicationTempData,
-    setApplicationTempData,
-  ]);
+  }, [data, defaultValue, setDefaultValue, setDeMinimisAids]);
 
   const formik = useFormik({
     initialValues: {
@@ -65,20 +59,17 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: () => {
-      setApplicationTempData({
-        ...applicationTempData,
-        deMinimisAids: [
-          ...(applicationTempData.deMinimisAids || []),
+      setDeMinimisAids((prevDeMinimisAids) => [
+          ...prevDeMinimisAids,
           {
-            granter: formik.values.granter,
-            amount: parseFloat(formik.values.amount),
-            grantedAt: formatDate(
+            [DE_MINIMIS_AID_KEYS.GRANTER]: formik.values.granter,
+            [DE_MINIMIS_AID_KEYS.AMOUNT]: parseFloat(formik.values.amount),
+            [DE_MINIMIS_AID_KEYS.GRANTED_AT]: formatDate(
               parseDate(formik.values.grantedAt),
               DATE_FORMATS.DATE_BACKEND
             ),
           },
-        ],
-      });
+        ]);
       formik.resetForm();
       setIsSubmitted(false);
     },
@@ -149,7 +140,7 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
     formik,
     getErrorMessage,
     handleSubmit,
-    grants: applicationTempData.deMinimisAids || [],
+    grants: deMinimisAids,
   };
 };
 

@@ -225,9 +225,3 @@ export type Application = {
   // create_application_for_company ? not present in the UI?
 } & Step1 &
   Step2;
-
-// for context
-export type ApplicationTempData = {
-  id: string;
-  deMinimisAids: DeMinimisAid[];
-};
