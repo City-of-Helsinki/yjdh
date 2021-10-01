@@ -2,7 +2,6 @@ import {
   APPLICATION_INITIAL_VALUES,
   DEFAULT_APPLICATION_STEP,
 } from 'benefit/applicant/constants';
-import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import useApplicationTemplateQuery from 'benefit/applicant/hooks/useApplicationTemplateQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -28,19 +27,17 @@ type ExtendedComponentProps = {
 
 const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
-  const id = router?.query?.id;
+  const id = router?.query?.id?.toString() ?? '';
   const { t } = useTranslation();
-  const { applicationTempData } = React.useContext(ApplicationContext);
   const [isLoading, setIsLoading] = useState(true);
   // query param used in edit mode. id from context used for updating newly created application
-  const existingApplicationId = id?.toString() || applicationTempData?.id;
   const {
     status: existingApplicationStatus,
     data: existingApplication,
     error: existingApplicationError,
-  } = useApplicationQuery(existingApplicationId);
+  } = useApplicationQuery(id);
   const { data: applicationTemplate, error: applicationTemplateError } =
-    useApplicationTemplateQuery(existingApplicationId);
+    useApplicationTemplateQuery(id);
 
   useEffect(() => {
     // todo:custom error messages
@@ -64,7 +61,7 @@ const usePageContent = (): ExtendedComponentProps => {
     ) {
       setIsLoading(false);
     }
-  }, [existingApplicationStatus, id, existingApplication, applicationTempData]);
+  }, [existingApplicationStatus, id, existingApplication]);
 
   useEffect(() => {
     if (router.isReady && !router.query.id) {
@@ -76,7 +73,7 @@ const usePageContent = (): ExtendedComponentProps => {
   const defaultApplication: Application = APPLICATION_INITIAL_VALUES;
 
   // if no id, get the application template date
-  if (existingApplication || (!existingApplicationId && applicationTemplate)) {
+  if (existingApplication || (!id && applicationTemplate)) {
     // transform application data to camel case
     application = camelcaseKeys(
       existingApplication || applicationTemplate || {},

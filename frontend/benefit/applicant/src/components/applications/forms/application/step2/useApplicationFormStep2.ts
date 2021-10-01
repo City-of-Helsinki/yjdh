@@ -5,25 +5,19 @@ import {
   PAY_SUBSIDY_OPTIONS,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
-import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
+import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
-import {
-  Application,
-  ApplicationData,
-} from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import { Application } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import isAfter from 'date-fns/isAfter';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import hdsToast from 'shared/components/toast/Toast';
 import { OptionType } from 'shared/types/common';
 import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
-import snakecaseKeys from 'snakecase-keys';
 
 import { getMinEndDate } from './utils/dates';
 import { getValidationSchema } from './utils/validation';
@@ -44,8 +38,8 @@ type UseApplicationFormStep2Props = {
   translationsBase: string;
   minEndDate: Date;
   getErrorMessage: (fieldName: string) => string | undefined;
-  handleSubmitBack: () => void;
-  handleSubmitNext: () => void;
+  handleBack: () => void;
+  handleSubmit: () => void;
   clearBenefitValues: () => void;
   clearCommissionValues: () => void;
   clearContractValues: () => void;
@@ -59,29 +53,12 @@ type UseApplicationFormStep2Props = {
 
 const useApplicationFormStep2 = (
   application: Application
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): UseApplicationFormStep2Props => {
   const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [step, setStep] = useState<number>(2);
 
-  const { mutate: updateApplication, error: updateApplicationError } =
-    useUpdateApplicationQuery();
-
-  useEffect(() => {
-    // todo:custom error messages
-    if (updateApplicationError) {
-      hdsToast({
-        autoDismiss: true,
-        autoDismissTime: 5000,
-        type: 'error',
-        translated: true,
-        labelText: t('common:error.generic.label'),
-        text: t('common:error.generic.text'),
-      });
-    }
-  }, [t, updateApplicationError]);
+  const { handleNext, handleBack } = useFormActions(application, 2);
 
   const formik = useFormik<Application>({
     initialValues: {
@@ -97,23 +74,7 @@ const useApplicationFormStep2 = (
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: (values) => {
-      const currentApplicationData: ApplicationData = snakecaseKeys(
-        {
-          ...application,
-          ...values,
-          startDate: values.startDate
-            ? formatDate(parseDate(values.startDate), DATE_FORMATS.DATE_BACKEND)
-            : null,
-          endDate: values.endDate
-            ? formatDate(parseDate(values.endDate), DATE_FORMATS.DATE_BACKEND)
-            : null,
-          applicationStep: getApplicationStepString(step),
-        },
-        { deep: true }
-      );
-      updateApplication(currentApplicationData);
-    },
+    onSubmit: handleNext,
   });
 
   const { values, errors, touched, setFieldValue } = formik;
@@ -176,9 +137,9 @@ const useApplicationFormStep2 = (
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
 
-  const handleSubmitNext = (): void => {
+  const handleSubmit = (): void => {
     setIsSubmitted(true);
-    setStep(3);
+
     void formik.validateForm().then((errs) => {
       let fieldName = Object.keys(errs)[0];
 
@@ -197,18 +158,6 @@ const useApplicationFormStep2 = (
 
       return focusAndScroll(fieldName);
     });
-  };
-
-  const handleSubmitBack = (): void => {
-    setStep(1);
-    const currentApplicationData: ApplicationData = snakecaseKeys(
-      {
-        ...application,
-        applicationStep: getApplicationStepString(1),
-      },
-      { deep: true }
-    );
-    updateApplication(currentApplicationData);
   };
 
   const clearCommissionValues = React.useCallback((): void => {
@@ -313,8 +262,8 @@ const useApplicationFormStep2 = (
     getSelectValue,
     getErrorMessage,
     setEndDate,
-    handleSubmitNext,
-    handleSubmitBack,
+    handleSubmit,
+    handleBack,
   };
 };
 
