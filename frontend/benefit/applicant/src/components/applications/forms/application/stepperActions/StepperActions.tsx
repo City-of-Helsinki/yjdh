@@ -45,7 +45,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
       <$GridCell $colSpan={2}>
         <Button
           theme="coat"
-          iconRight={<IconArrowRight />}
+          iconRight={hasNext ? <IconArrowRight /> : null}
           onClick={handleSubmit}
           fullWidth
         >

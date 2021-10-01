@@ -212,6 +212,30 @@ export interface Step2 {
   [APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE]?: Employee;
 }
 
+export type ApplicantConsent = {
+  id: string;
+  textFi?: string;
+  textEn?: string;
+  textSv?: string;
+};
+
+export type ApplicantTerms = {
+  applicantConsents: ApplicantConsent[];
+  effectiveFrom?: string;
+  id?: string;
+  termsPdfEn?: string;
+  termsPdfFi?: string;
+  termsPdfSv?: string;
+  termsType: ATTACHMENT_TYPES;
+};
+
+export type ApplicantTermsApproval = {
+  id?: string;
+  approvedAt?: string;
+  approvedBy?: string;
+  terms?: ApplicantTerms[];
+};
+
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -223,6 +247,9 @@ export type Application = {
   applicationStep?: string | null;
   attachments?: Attachment[];
   // create_application_for_company ? not present in the UI?
+  applicantTermsApproval?: ApplicantTermsApproval;
+  applicantTermsApprovalNeeded?: boolean;
+  applicantTermsInEffect?: ApplicantTerms;
 } & Step1 &
   Step2;
 
