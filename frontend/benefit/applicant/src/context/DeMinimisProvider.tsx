@@ -12,7 +12,6 @@ const ApplicationProvider = <P,>({
     <DeMinimisContext.Provider
       value={{
         deMinimisAids,
-        isLoading: true,
         setDeMinimisAids,
       }}
     >
