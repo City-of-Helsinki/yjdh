@@ -18,6 +18,8 @@ import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
+type PdfDocument = { pages: number };
+
 type ExtendedComponentProps = {
   t: TFunction;
   handleBack: () => void;
@@ -25,10 +27,12 @@ type ExtendedComponentProps = {
   handleStepChange: (step: number) => void;
   handleClick: (consentIndex: number) => void;
   getErrorText: (consentIndex: number) => string;
+  handleDocumentLoadSuccess: (pdf: PdfDocument) => void;
   translationsBase: string;
   cbPrefix: string;
   textLocale: string;
   checkedArray: boolean[];
+  numPages: number;
 };
 
 const useApplicationFormStep6 = (
@@ -51,6 +55,8 @@ const useApplicationFormStep6 = (
   );
 
   const [errorsArray, setErrorsArray] = useState<boolean[]>(getInitialvalues());
+
+  const [numPages, setNumPages] = useState<number>(1);
 
   const {
     mutate: updateApplicationStep6,
@@ -134,6 +140,9 @@ const useApplicationFormStep6 = (
     }
   };
 
+  const handleDocumentLoadSuccess = ({ pages }: PdfDocument): void =>
+    setNumPages(pages || 1);
+
   return {
     t,
     handleBack,
@@ -141,10 +150,12 @@ const useApplicationFormStep6 = (
     handleStepChange,
     handleClick,
     getErrorText,
+    handleDocumentLoadSuccess,
     translationsBase,
     cbPrefix,
     textLocale,
     checkedArray,
+    numPages,
   };
 };
 

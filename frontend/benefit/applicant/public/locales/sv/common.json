@@ -307,6 +307,7 @@
       },
       "credentials": {
         "heading1": "Valtakirja",
+        "heading2": "Suostumus",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",

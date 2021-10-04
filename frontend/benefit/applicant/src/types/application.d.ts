@@ -287,7 +287,7 @@ export type Application = {
   // create_application_for_company ? not present in the UI?
   applicantTermsApproval?: ApplicantTermsApproval;
   applicantTermsApprovalNeeded?: boolean;
-  applicantTermsInEffect?: ApplicantTerms;
+  applicantTermsInEffect: ApplicantTerms;
   approveTerms?: ApproveTerms;
 } & Step1 &
   Step2;

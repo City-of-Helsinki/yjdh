@@ -84,7 +84,24 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           attachments={data.attachments || []}
         />
       </FormSection>
-
+      <FormSection
+        header={t(`${translationsBase}.credentials.heading2`)}
+        action={
+          <Button
+            theme="black"
+            onClick={() => handleStepChange(4)}
+            variant="supplementary"
+            iconLeft={<IconPen />}
+          >
+            {t(`common:applications.actions.edit`)}
+          </Button>
+        }
+      >
+        <AttachmentsListView
+          type={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
+          attachments={data.attachments || []}
+        />
+      </FormSection>
       <StepperActions
         hasBack
         hasNext
