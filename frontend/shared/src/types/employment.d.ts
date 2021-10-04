@@ -2,6 +2,7 @@ import {
   EMPLOYEE_EXCEPTION_REASON,
   EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
 } from '../contants/employee-constants';
+import Attachment from 'shared/types/attachment';
 
 export type EmploymentExceptionReason =
   typeof EMPLOYEE_EXCEPTION_REASON[number];
@@ -28,6 +29,7 @@ type Employment =
       employment_salary_paid?: number;
       employment_description?: string;
       hired_without_voucher_assessment?: EmployeeHiredWithoutVoucherAssessment;
+      attachments: Attachment[];
     };
 
 export default Employment;

@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
+import { ATTACHMENT_CONTENT_TYPES, ATTACHMENT_MAX_SIZE } from 'shared/contants/attachment-constants';
 import Attachment from 'shared/types/attachment';
 
 import { $Container, $Heading, $Message } from './AttachmentsList.sc';
@@ -10,8 +11,8 @@ import { $Container, $Heading, $Message } from './AttachmentsList.sc';
 type Props = {
   title: string;
   attachmentType: string;
-  allowedFileTypes: string[];
-  maxSize: number;
+  allowedFileTypes?: readonly string[];
+  maxSize?: number;
   message?: string | false;
   attachments?: Attachment[];
   onUpload: (data: FormData) => void;
@@ -23,8 +24,8 @@ type Props = {
 const AttachmentsList: React.FC<Props> = ({
   title,
   attachmentType,
-  allowedFileTypes,
-  maxSize,
+  allowedFileTypes = ATTACHMENT_CONTENT_TYPES,
+  maxSize = ATTACHMENT_MAX_SIZE,
   message,
   attachments,
   onUpload,
@@ -34,9 +35,10 @@ const AttachmentsList: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
+  console.log('attachments',attachments);
   const files = React.useMemo(
     (): Attachment[] =>
-      attachments?.filter((att) => att.attachmentType === attachmentType) || [],
+      attachments?.filter((att) => att.attachmentType === attachmentType || att.attachment_type === attachmentType) || [],
     [attachmentType, attachments]
   );
 

@@ -22,6 +22,7 @@ import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 import AccordionActionButtons from './AccordionActionButtons';
 import { $Accordion, $AccordionFormSection } from './EmploymentAccordion.sc';
 import EmploymentAccordionHeader from './EmploymentAccordionHeader';
+import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
 
 type Props = {
   index: number;
@@ -158,6 +159,8 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           size="s"
           $colSpan={2}
         />
+        <AttachmentInput index={index} attachmentType="employment_contract" showMessage  />
+        <AttachmentInput index={index} attachmentType="payslip" showMessage  />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading
           header={t('common:application.step2.employment_section')}

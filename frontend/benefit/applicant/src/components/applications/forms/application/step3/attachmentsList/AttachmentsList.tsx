@@ -1,6 +1,4 @@
 import {
-  ATTACHMENT_ALLOWED_TYPES,
-  ATTACHMENT_MAX_SIZE,
   ATTACHMENT_TYPES,
 } from 'benefit/applicant/constants';
 import camelCase from 'lodash/camelCase';
@@ -34,8 +32,6 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     <AttachmentsListBase
       title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
       attachmentType={attachmentType}
-      allowedFileTypes={ATTACHMENT_ALLOWED_TYPES}
-      maxSize={ATTACHMENT_MAX_SIZE}
       message={
         showMessage &&
         `${translationsBase}.types.${camelCase(attachmentType)}.message`
