@@ -67,6 +67,35 @@ export interface AttachmentData {
   created_at?: string;
 }
 
+export interface ApplicantConsentData {
+  id: string;
+  text_fi: string;
+  text_en: string;
+  text_sv: string;
+}
+
+export interface ApplicantTermsData {
+  id: string;
+  applicant_consents: ApplicantConsentData[];
+  effective_from: string;
+  terms_pdf_en: string;
+  terms_pdf_fi: string;
+  terms_pdf_sv: string;
+  terms_type?: ATTACHMENT_TYPES;
+}
+
+export interface ApplicantTermsApprovalData {
+  id: string;
+  approved_at: string;
+  approved_by: string;
+  terms: ApplicantTermsData[];
+}
+
+export interface ApproveTermsData {
+  terms: string;
+  selected_applicant_consents: string[];
+}
+
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
@@ -111,6 +140,10 @@ export type ApplicationData = {
   create_application_for_company?: string;
   created_at?: string;
   application_step?: string;
+  applicant_terms_approval?: ApplicantTermsApprovalData;
+  applicant_terms_approval_needed?: boolean;
+  applicant_terms_in_effect?: ApplicantTermsData;
+  approve_terms?: ApproveTermsData;
 };
 
 interface ApplicationAllowedAction {
@@ -214,26 +247,31 @@ export interface Step2 {
 
 export type ApplicantConsent = {
   id: string;
-  textFi?: string;
-  textEn?: string;
-  textSv?: string;
+  textFi: string;
+  textEn: string;
+  textSv: string;
 };
 
 export type ApplicantTerms = {
   applicantConsents: ApplicantConsent[];
-  effectiveFrom?: string;
-  id?: string;
-  termsPdfEn?: string;
-  termsPdfFi?: string;
-  termsPdfSv?: string;
+  effectiveFrom: string;
+  id: string;
+  termsPdfEn: string;
+  termsPdfFi: string;
+  termsPdfSv: string;
   termsType: ATTACHMENT_TYPES;
 };
 
 export type ApplicantTermsApproval = {
-  id?: string;
-  approvedAt?: string;
-  approvedBy?: string;
+  id: string;
+  approvedAt: string;
+  approvedBy: string;
   terms?: ApplicantTerms[];
+};
+
+export type ApproveTerms = {
+  terms: string;
+  selectedApplicantConsents: string[];
 };
 
 export type Application = {
@@ -250,6 +288,7 @@ export type Application = {
   applicantTermsApproval?: ApplicantTermsApproval;
   applicantTermsApprovalNeeded?: boolean;
   applicantTermsInEffect?: ApplicantTerms;
+  approveTerms?: ApproveTerms;
 } & Step1 &
   Step2;
 

@@ -44,6 +44,7 @@ const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
           ))}
         </FormSection>
         <StepperActions
+          disabledNext={checkedArray.some((c) => !c)}
           hasBack
           handleSubmit={handleSubmit}
           handleBack={handleBack}

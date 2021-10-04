@@ -10,7 +10,6 @@ import {
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
-import some from 'lodash/some';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useEffect, useState } from 'react';
@@ -43,10 +42,9 @@ const useApplicationFormStep6 = (
   const textLocale = capitalize(locale);
   const cbPrefix = 'application_consent';
 
-  const getInitialvalues = (): boolean[] => (
-      application?.applicantTermsInEffect?.applicantConsents.map(() => false) ||
-      []
-    );
+  const getInitialvalues = (): boolean[] =>
+    application?.applicantTermsInEffect?.applicantConsents.map(() => false) ||
+    [];
 
   const [checkedArray, setCheckedArray] = useState<boolean[]>(
     getInitialvalues()
@@ -76,8 +74,10 @@ const useApplicationFormStep6 = (
 
   useEffect(() => {
     // todo: redirect to Thank you page, change status to received
-    void router.push('/');
-  }, [router, isApplicationUpdated]);
+    if (isApplicationUpdated && application.applicantTermsApproval) {
+      void router.push('/');
+    }
+  }, [router, isApplicationUpdated, application.applicantTermsApproval]);
 
   const handleClick = (consentIndex: number): void => {
     const newValue = !checkedArray[consentIndex];
@@ -87,7 +87,9 @@ const useApplicationFormStep6 = (
       ...checkedArray.slice(consentIndex + 1),
     ];
     setCheckedArray(newArray);
-    setErrorsArray(invertBooleanArray(newArray));
+    const newErrorsArray = [...errorsArray];
+    newErrorsArray[consentIndex] = !newArray[consentIndex];
+    setErrorsArray(newErrorsArray);
   };
 
   const handleStepChange = (nextStep: number): void => {
@@ -105,7 +107,7 @@ const useApplicationFormStep6 = (
 
   const getErrors = (): boolean => {
     setErrorsArray(invertBooleanArray(checkedArray));
-    return some(checkedArray, false);
+    return checkedArray.some((c) => !c);
   };
 
   const getErrorText = (consentIndex: number): string =>
@@ -117,8 +119,11 @@ const useApplicationFormStep6 = (
         {
           ...application,
           approveTerms: {
-            terms: 'id',
-            selectedApplicantConsents: ['id1', 'id2', 'id3'],
+            terms: application?.applicantTermsInEffect?.id,
+            selectedApplicantConsents:
+              application?.applicantTermsInEffect?.applicantConsents.map(
+                (consent) => consent.id
+              ),
           },
           status: APPLICATION_STATUSES.RECEIVED,
         },

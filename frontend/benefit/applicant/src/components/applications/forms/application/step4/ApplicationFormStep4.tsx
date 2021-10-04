@@ -12,6 +12,7 @@ import {
   IconPenLine,
   IconPrinter,
 } from 'hds-react';
+import isEmpty from 'lodash/isEmpty';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
@@ -148,6 +149,11 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
         `}
       />
       <StepperActions
+        disabledNext={isEmpty(
+          data.attachments?.find(
+            (att) => att.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+          )
+        )}
         hasNext
         hasBack
         handleSubmit={handleNext}
