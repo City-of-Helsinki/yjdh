@@ -118,6 +118,55 @@
         "description": "Please fill missing or invalid values"
       }
     },
+    "form": {
+      "selectionGroups": {
+        "summer_voucher_exception_reason": {
+          "9th_grader": "9th grader",
+          "born_2004": "Born in 2004"
+        },
+        "hired_without_voucher_assessment" : {
+          "yes": "Yes",
+          "no": "No",
+          "maybe": "Maybe"
+        }
+      },
+      "inputs": {
+        "invoicer_name": "Invoicer's name",
+        "invoicer_email": "Invoicer's email",
+        "invoicer_phone_number": "Invoicer's phone number",
+        "employee_name": "Employee name",
+        "employee_ssn": "Social security number",
+        "summer_voucher_exception_reason": "School grade or birth year",
+        "employee_home_city": "Home city",
+        "employee_postcode": "Postcode",
+        "employee_phone_number": "Phone number",
+        "employment_postcode": "Workplace's postcode",
+        "summer_voucher_serial_number": "Summer voucher serial number",
+        "employee_school": "School",
+        "employment_start_date": "Employment start date",
+        "employment_end_date": "Employment start date",
+        "employment_work_hours": "Work hours",
+        "employment_description": "Employment description",
+        "employment_salary_paid": "Salary paid (€)",
+        "hired_without_voucher_assessment": "Would you have hired without summer voucher?"
+      },
+      "helpers": {
+        "date": "Use format D.M.YYYY",
+        "format": "Use format"
+      },
+      "errors": {
+        "required": "input is missing or invalid",
+        "maxLength": "input is too long",
+        "pattern": "input is invalid",
+        "validate": "input is invalid",
+        "selectionGroups": "Choose an option",
+        "employmentsRequired": "Add at least one employment"
+      },
+      "notification": {
+        "title": "There is errors in the form",
+        "description": "Please fill missing or invalid values"
+      }
+    },
     "buttons": {
       "previous": "Back to previous step",
       "next": "Save and continue",
