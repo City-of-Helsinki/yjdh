@@ -2,7 +2,9 @@ import logging
 
 from django.conf import settings
 from django.shortcuts import redirect
-from django_auth_adfs.views import OAuth2CallbackView
+from django_auth_adfs.views import OAuth2CallbackView, OAuth2LoginView
+
+from shared.azure_adfs.config import provider_config
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,3 +28,14 @@ class HelsinkiOAuth2CallbackView(OAuth2CallbackView):
             f"Invalid login. Status code: {response.status_code}. Error message: {error_message}."
         )
         return redirect(settings.ADFS_LOGIN_REDIRECT_URL_FAILURE)
+
+
+class HelsinkiOAuth2LoginView(OAuth2LoginView):
+    def get(self, request):
+        """
+        Initiates the OAuth2 flow and redirect the user agent to ADFS
+
+        Args:
+            request (django.http.request.HttpRequest): A Django Request object
+        """
+        return redirect(provider_config.build_authorization_endpoint(request))
