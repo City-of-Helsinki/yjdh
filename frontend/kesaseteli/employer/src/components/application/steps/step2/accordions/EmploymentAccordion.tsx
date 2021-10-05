@@ -1,6 +1,8 @@
 import DateInput from 'kesaseteli/employer/components/application/form/DateInput';
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
-import TextInput, { TextInputProps } from 'kesaseteli/employer/components/application/form/TextInput';
+import TextInput, {
+  TextInputProps,
+} from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import useGetEmploymentErrors from 'kesaseteli/employer/hooks/employments/useGetEmploymentErrors';
@@ -18,10 +20,7 @@ import Employment, { EmploymentExceptionReason } from 'shared/types/employment';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
 import AccordionActionButtons from './AccordionActionButtons';
-import {
-  $Accordion,
-  $AccordionFormSection,
-} from './EmploymentAccordion.sc';
+import { $Accordion, $AccordionFormSection } from './EmploymentAccordion.sc';
 import EmploymentAccordionHeader from './EmploymentAccordionHeader';
 
 type Props = {
@@ -43,7 +42,10 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
     [persistToStorage]
   );
 
-  const closeAccordion = React.useCallback(() => handleToggle(false), [handleToggle]);
+  const closeAccordion = React.useCallback(
+    () => handleToggle(false),
+    [handleToggle]
+  );
 
   const hasError = Boolean(useGetEmploymentErrors(index));
   const displayError = hasError && !isOpen;
@@ -54,19 +56,33 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
     ? theme.colors.errorLight
     : undefined;
 
-  const getId = React.useCallback((field: keyof Employment): TextInputProps['id'] => `summer_vouchers.${index}.${field}`, [index]);
-  const {getValue: getReason } = useApplicationFormField<EmploymentExceptionReason>(getId('summer_voucher_exception_reason'));
-  const {clearValue: clearSerialNumber } = useApplicationFormField<string>(getId('summer_voucher_serial_number'));
+  const getId = React.useCallback(
+    (field: keyof Employment): TextInputProps['id'] =>
+      `summer_vouchers.${index}.${field}`,
+    [index]
+  );
+  const { getValue: getReason } =
+    useApplicationFormField<EmploymentExceptionReason>(
+      getId('summer_voucher_exception_reason')
+    );
+  const { clearValue: clearSerialNumber } = useApplicationFormField<string>(
+    getId('summer_voucher_serial_number')
+  );
 
-  const [showSerialNumberInput, setShowSerialNumberInput] = React.useState(getReason() !== 'born_2004');
+  const [showSerialNumberInput, setShowSerialNumberInput] = React.useState(
+    getReason() !== 'born_2004'
+  );
 
-  const handleReasonChange = React.useCallback((value: string) => {
-    const isBorn2004 = value === 'born_2004'
-    setShowSerialNumberInput(!isBorn2004);
-    if (isBorn2004) {
-      clearSerialNumber();
-    }
-  },[setShowSerialNumberInput,clearSerialNumber])
+  const handleReasonChange = React.useCallback(
+    (value: string) => {
+      const isBorn2004 = value === 'born_2004';
+      setShowSerialNumberInput(!isBorn2004);
+      if (isBorn2004) {
+        clearSerialNumber();
+      }
+    },
+    [setShowSerialNumberInput, clearSerialNumber]
+  );
 
   return (
     <$Accordion
@@ -76,7 +92,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       onToggle={handleToggle}
       headerBackgroundColor={headerBackgroundColor}
     >
-      <$AccordionFormSection columns={2} withoutDivider padding-bottom={false}>
+      <$AccordionFormSection columns={2} withoutDivider paddingBottom={false}>
         <TextInput
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}
@@ -98,7 +114,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           onChange={handleReasonChange}
           $colSpan={2}
         />
-        <FormSectionDivider $colSpan={2}/>
+        <FormSectionDivider $colSpan={2} />
         <TextInput
           id={getId('employee_home_city')}
           validation={{ required: true, pattern: CITY_REGEX, maxLength: 256 }}
@@ -106,7 +122,11 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
         <TextInput
           id={getId('employee_postcode')}
           type="number"
-          validation={{ required: true, pattern: POSTAL_CODE_REGEX, maxLength: 256 }}
+          validation={{
+            required: true,
+            pattern: POSTAL_CODE_REGEX,
+            maxLength: 256,
+          }}
         />
         <TextInput
           id={getId('employee_phone_number')}
@@ -115,21 +135,35 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
         <TextInput
           id={getId('employment_postcode')}
           type="number"
-          validation={{ required: true, pattern: POSTAL_CODE_REGEX, maxLength: 256 }}
+          validation={{
+            required: true,
+            pattern: POSTAL_CODE_REGEX,
+            maxLength: 256,
+          }}
         />
-        <FormSectionDivider $colSpan={2}/>
+        <FormSectionDivider $colSpan={2} />
         <TextInput
           id={getId('employee_school')}
           validation={{ required: true, maxLength: 256 }}
         />
-        {showSerialNumberInput && <TextInput
-          id={getId('summer_voucher_serial_number')}
-          validation={{ required: true, maxLength: 64 }}
-        />}
-        <FormSectionDivider $colSpan={2}/>
-        <FormSectionHeading header={t('common:application.step2.attachments_section')} size="s" $colSpan={2} />
-        <FormSectionDivider $colSpan={2}/>
-        <FormSectionHeading header={t('common:application.step2.employment_section')} size="s" $colSpan={2} />
+        {showSerialNumberInput && (
+          <TextInput
+            id={getId('summer_voucher_serial_number')}
+            validation={{ required: true, maxLength: 64 }}
+          />
+        )}
+        <FormSectionDivider $colSpan={2} />
+        <FormSectionHeading
+          header={t('common:application.step2.attachments_section')}
+          size="s"
+          $colSpan={2}
+        />
+        <FormSectionDivider $colSpan={2} />
+        <FormSectionHeading
+          header={t('common:application.step2.employment_section')}
+          size="s"
+          $colSpan={2}
+        />
         <DateInput
           id={getId('employment_start_date')}
           validation={{ required: true }}
@@ -141,7 +175,11 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
         <TextInput
           id={getId('employment_work_hours')}
           type="decimal"
-          validation={{ required: true, maxLength: 18, pattern: getDecimalNumberRegex(2)}}
+          validation={{
+            required: true,
+            maxLength: 18,
+            pattern: getDecimalNumberRegex(2),
+          }}
           helperFormat="####.##"
         />
         <TextInput
@@ -151,7 +189,11 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
         />
         <TextInput
           id={getId('employment_salary_paid')}
-          validation={{ required: true, maxLength: 18, pattern: getDecimalNumberRegex(2) }}
+          validation={{
+            required: true,
+            maxLength: 18,
+            pattern: getDecimalNumberRegex(2),
+          }}
           type="decimal"
           helperFormat="####.##"
         />

@@ -9,7 +9,7 @@ export type FormSectionProps = {
   action?: React.ReactNode;
   withoutDivider?: boolean;
   header?: string;
-  'padding-bottom'?: boolean;
+  paddingBottom?: boolean;
 } & HeadingProps &
   GridProps;
 
@@ -36,7 +36,7 @@ export const $Section = styled.section<FormSectionProps>`
   display: flex;
   flex-direction: column;
   padding-bottom: ${(props) =>
-    props['padding-bottom'] ? props.theme.spacing.m : ''};
+    props.paddingBottom ? props.theme.spacing.m : ''};
   position: relative;
 `;
 

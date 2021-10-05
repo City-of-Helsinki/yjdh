@@ -5,7 +5,7 @@ import { $Header, HeadingProps } from './Heading.sc';
 
 const Heading: React.FC<HeadingProps> = ({
   as,
-  size = 'l',
+  size,
   header,
   loading,
   tooltip,
