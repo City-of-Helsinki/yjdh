@@ -1,14 +1,12 @@
+import PdfViewver from 'benefit/applicant/components/pdfViewer/PdfViewer';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import * as React from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep6 } from './useApplicationFormStep6';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
   data,
@@ -21,7 +19,6 @@ const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
     handleBack,
     handleClick,
     getErrorText,
-    handleDocumentLoadSuccess,
     cbPrefix,
     textLocale,
     checkedArray,
@@ -33,16 +30,13 @@ const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
         <>
           {data && (
             <$GridCell $colSpan={12}>
-              <Document
-                onLoadSuccess={handleDocumentLoadSuccess}
+              <PdfViewver
                 file={
                   data.applicantTermsInEffect[
                     `termsPdf${textLocale}` as TermsProp
                   ]
                 }
-              >
-                <Page pageNumber={1} />
-              </Document>
+              />
             </$GridCell>
           )}
           {data?.applicantTermsInEffect?.applicantConsents.map((consent, i) => (
