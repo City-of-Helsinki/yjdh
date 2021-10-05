@@ -1,6 +1,4 @@
-import {
-  ATTACHMENT_TYPES,
-} from 'benefit/applicant/constants';
+import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
@@ -23,6 +21,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     t,
     handleRemove,
     handleUpload,
+    handleOpenFile,
     translationsBase,
     isRemoving,
     isUploading,
@@ -39,6 +38,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
       attachments={attachments}
       onUpload={handleUpload}
       onRemove={handleRemove}
+      onOpen={handleOpenFile}
       isUploading={isUploading}
       isRemoving={isRemoving}
     />

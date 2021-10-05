@@ -139,5 +139,43 @@
     "en": "In english"
   },
   "menuToggleAriaLabel": "Menu",
-  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/"
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "error": {
+    "generic": {
+      "label": "Tuntematon virhe",
+      "text": " Yritä myöhemmin uudelleen"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe",
+      "tooBig": "Tiedosto on liian iso",
+      "fileType": "Tiedoston tyyppi ei ole sallittu."
+    }
+  },
+  "upload": {
+    "isUploading": "Lähetetään...",
+    "errorTitle": "Lähetys epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "delete": {
+    "errorTitle": "Poistaminen epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "applications": {
+    "sections" : {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Työsopimus",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Palkkatodistus",
+            "message": ""
+          }
+        },
+        "add": "Liitä tiedosto",
+        "remove": "Poista tiedosto"
+      }
+    }
+  }
 }

@@ -3,7 +3,10 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
-import { ATTACHMENT_CONTENT_TYPES, ATTACHMENT_MAX_SIZE } from 'shared/contants/attachment-constants';
+import {
+  ATTACHMENT_CONTENT_TYPES,
+  ATTACHMENT_MAX_SIZE,
+} from 'shared/contants/attachment-constants';
 import Attachment from 'shared/types/attachment';
 
 import { $Container, $Heading, $Message } from './AttachmentsList.sc';
@@ -17,6 +20,7 @@ type Props = {
   attachments?: Attachment[];
   onUpload: (data: FormData) => void;
   onRemove: (fileId: string) => void;
+  onOpen: (attachment: Attachment) => void;
   isUploading: boolean;
   isRemoving: boolean;
 };
@@ -30,15 +34,20 @@ const AttachmentsList: React.FC<Props> = ({
   attachments,
   onUpload,
   onRemove,
+  onOpen,
   isUploading,
   isRemoving,
 }) => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
-  console.log('attachments',attachments);
+
   const files = React.useMemo(
     (): Attachment[] =>
-      attachments?.filter((att) => att.attachmentType === attachmentType || att.attachment_type === attachmentType) || [],
+      attachments?.filter(
+        (att) =>
+          att.attachmentType === attachmentType ||
+          att.attachment_type === attachmentType
+      ) || [],
     [attachmentType, attachments]
   );
 
@@ -51,12 +60,9 @@ const AttachmentsList: React.FC<Props> = ({
             <AttachmentItem
               key={file.id}
               id={file.id}
-              name={file.attachmentFileName}
+              name={file.attachmentFileName ?? file.attachment_file_name}
               removeText={t(`${translationsBase}.remove`)}
-              onClick={() =>
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                window.open(file.attachmentFile, '_blank')?.focus()
-              }
+              onClick={() => onOpen(file)}
               onRemove={() => !isRemoving && onRemove(file.id)}
             />
           ))}

@@ -139,5 +139,43 @@
     "en": "In english"
   },
   "menuToggleAriaLabel": "Menu SWE",
-  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/"
+  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "error": {
+    "generic": {
+      "label": "Tuntematon virhe SWE",
+      "text": " Yritä myöhemmin uudelleen SWE"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe SWE",
+      "tooBig": "Tiedosto on liian iso SWE",
+      "fileType": "Tiedoston tyyppi ei ole sallittu. SWE"
+    }
+  },
+  "upload": {
+    "isUploading": "Lähetetään... SWE",
+    "errorTitle": "Lähetys epäonnistui SWE",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen. SWE"
+  },
+  "delete": {
+    "errorTitle": "Poistaminen epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen. SWE"
+  },
+  "applications": {
+    "sections" : {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Työsopimus SWE",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Palkkatodistus SWE",
+            "message": ""
+          }
+        },
+        "add": "Liitä tiedosto SWE",
+        "remove": "Poista tiedosto SWE"
+      }
+    }
+  }
 }

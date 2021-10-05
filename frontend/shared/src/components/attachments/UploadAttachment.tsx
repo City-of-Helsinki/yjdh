@@ -7,7 +7,7 @@ export interface UploadAttachmentProps {
   onUpload: (data: FormData) => void;
   isUploading: boolean;
   attachmentType: string;
-  allowedFileTypes: string[];
+  allowedFileTypes: readonly string[];
   maxSize: number;
   uploadText: string;
   loadingText: string;

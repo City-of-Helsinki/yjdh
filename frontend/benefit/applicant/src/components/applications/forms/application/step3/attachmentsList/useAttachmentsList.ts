@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import Attachment from 'shared/types/attachment';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -16,6 +17,7 @@ type ExtendedComponentProps = {
   isUploading: boolean;
   handleRemove: (attachmentId: string) => void;
   handleUpload: (attachment: FormData) => void;
+  handleOpenFile: (attachment: Attachment) => void;
 };
 
 const useAttachmentsList = (): ExtendedComponentProps => {
@@ -48,6 +50,13 @@ const useAttachmentsList = (): ExtendedComponentProps => {
     }
   }, [isRemovingError, isUploadingError, t]);
 
+  const handleOpenFile = React.useCallback(
+    (file: Attachment) =>
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      window.open(file.attachmentFile, '_blank')?.focus(),
+    []
+  );
+
   const handleRemove = (attachmentId: string): void => {
     removeAttachment({
       applicationId,
@@ -71,6 +80,7 @@ const useAttachmentsList = (): ExtendedComponentProps => {
     isUploading,
     handleRemove,
     handleUpload,
+    handleOpenFile,
   };
 };
 
