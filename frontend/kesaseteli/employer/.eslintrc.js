@@ -1,7 +1,11 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto', 'next/core-web-vitals'],
+  extends: [
+    'auto',
+    'next/core-web-vitals',
+    'plugin:you-dont-need-lodash-underscore/compatible',
+  ],
   rules: {
     'jsx-a11y/anchor-is-valid': [
       'error',

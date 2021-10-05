@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { TFunction,useTranslation  } from 'next-i18next';
+import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
 import { NavigationItem, OptionType } from 'shared/types/common';

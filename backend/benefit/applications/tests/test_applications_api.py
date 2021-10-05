@@ -235,6 +235,7 @@ def test_application_post_invalid_data(api_client, application):
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
+
     data[
         "company_contact_person_phone_number"
     ] = "+359505658789"  # Invalid country code
@@ -595,6 +596,16 @@ def test_application_edit_benefit_type_non_business_invalid(
     assert response.status_code == 400
 
 
+def test_association_immediate_manager_check(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["association_immediate_manager_check"] = False  # invalid value
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 400
+
+
 @pytest.mark.django_db
 def test_application_delete_unauthenticated(anonymous_client, application):
     response = anonymous_client.delete(get_detail_url(application))
@@ -865,6 +876,7 @@ def test_application_status_change(
         add_attachments_to_application(request, application)
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
+        data["association_immediate_manager_check"] = True
 
     with mock.patch(
         "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False

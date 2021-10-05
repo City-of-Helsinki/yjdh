@@ -9,7 +9,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
 import { useDeminimisAidsList } from './useDeminimisAidsList';
@@ -45,14 +45,7 @@ const DeMinimisAidsList: React.FC = () => {
               grant[DE_MINIMIS_AID_KEYS.AMOUNT] ?? ''
             } €`}</$GridCell>
             <$GridCell $colSpan={2}>
-              {grant[DE_MINIMIS_AID_KEYS.GRANTED_AT]
-                ? formatDate(
-                    parseDate(
-                      grant[DE_MINIMIS_AID_KEYS.GRANTED_AT] as string,
-                      DATE_FORMATS.DATE_BACKEND
-                    )
-                  )
-                : ''}
+              {convertToUIDateFormat(grant[DE_MINIMIS_AID_KEYS.GRANTED_AT])}
             </$GridCell>
           </$GridCell>
           <$GridCell

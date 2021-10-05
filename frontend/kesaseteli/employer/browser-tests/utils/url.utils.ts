@@ -44,7 +44,8 @@ export const getUrlUtils = (t: TestController) => {
     },
     async urlChangedToApplicationPage(
       locale: Language = 'fi',
-      expectedApplicationId?: string
+      expectedApplicationId?: string,
+      expectedStep: '1' | '2' | '3' = '1'
     ) {
       await t
         .expect(getCurrentPathname())
@@ -57,7 +58,10 @@ export const getUrlUtils = (t: TestController) => {
           .expect(applicationId)
           .eql(expectedApplicationId, await getErrorMessage(t));
       }
-      await t.expect(applicationId).ok(await getErrorMessage(t));
+      const step = (await getUrlParam('step')) ?? undefined;
+      if (step) {
+        await t.expect(step).eql(expectedStep, await getErrorMessage(t));
+      }
       return applicationId;
     },
   };

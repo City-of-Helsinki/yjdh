@@ -11,7 +11,7 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { capitalize } from 'shared/utils/string.utils';
 
 import { getValidationSchema } from './utils/validation';
@@ -72,10 +72,7 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
           {
             granter: formik.values.granter,
             amount: parseFloat(formik.values.amount),
-            grantedAt: formatDate(
-              parseDate(formik.values.grantedAt),
-              DATE_FORMATS.DATE_BACKEND
-            ),
+            grantedAt: convertToUIDateFormat(formik.values.grantedAt),
           },
         ],
       });

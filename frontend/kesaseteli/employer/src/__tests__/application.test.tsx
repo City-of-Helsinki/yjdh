@@ -31,7 +31,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       const queryClient = createReactQueryTestClient();
       expectUnauthorizedReply();
       const spyPush = jest.fn();
-      renderPage(ApplicationPage, queryClient, { push: spyPush });
+      await renderPage(ApplicationPage, queryClient, { push: spyPush });
       await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
     });
 
@@ -40,7 +40,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         const queryClient = createReactQueryTestClient();
         expectAuthorizedReply();
         const spyReplace = jest.fn();
-        renderPage(ApplicationPage, queryClient, {
+        await renderPage(ApplicationPage, queryClient, {
           replace: spyReplace,
           query: {},
         });
@@ -54,7 +54,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
         expectAuthorizedReply();
         const locale: Language = 'en';
         const spyReplace = jest.fn();
-        renderPage(ApplicationPage, queryClient, {
+        await renderPage(ApplicationPage, queryClient, {
           replace: spyReplace,
           query: {},
           locale,
@@ -69,7 +69,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationErrorFromBackend(id);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           await errorPageApi.expectations.displayErrorPage();
         });
       });
@@ -79,23 +79,28 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
           );
+          const required =
+            /(tieto puuttuu tai on virheellinen)|(errors.required)/i;
           await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.typeInvoicerName('');
           await applicationPage.step1.expectations.inputHasError(
-            /(nimi puuttuu)|(errors.invoicer_name)/i
+            'invoicer_name',
+            required
           );
           applicationPage.step1.actions.typeInvoicerEmail('');
           await applicationPage.step1.expectations.inputHasError(
-            /(sähköposti on virheellinen)|(errors.invoicer_email)/i
+            'invoicer_email',
+            required
           );
           applicationPage.step1.actions.typeInvoicerPhone('');
           await applicationPage.step1.expectations.inputHasError(
-            /(puhelinnumero on virheellinen)|(errors.invoicer_phone_number)/i
+            'invoicer_phone_number',
+            required
           );
         });
 
@@ -103,7 +108,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
@@ -111,15 +116,18 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.actions.typeInvoicerName('a'.repeat(257)); // max limit is 256
           await applicationPage.step1.expectations.inputHasError(
-            /(nimi puuttuu)|(errors.invoicer_name)/i
+            'invoicer_name',
+            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
           applicationPage.step1.actions.typeInvoicerEmail('john@doe');
           await applicationPage.step1.expectations.inputHasError(
-            /(sähköposti on virheellinen)|(errors.invoicer_email)/i
+            'invoicer_email',
+            /(syöttämäsi tieto on virheellistä muotoa)|(errors.pattern)/i
           );
           applicationPage.step1.actions.typeInvoicerPhone('1'.repeat(65)); // max limit is 64
           await applicationPage.step1.expectations.inputHasError(
-            /(puhelinnumero on virheellinen)|(errors.invoicer_phone_number)/i
+            'invoicer_phone_number',
+            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
         });
 
@@ -127,7 +135,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
@@ -155,7 +163,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          renderPage(ApplicationPage, queryClient, { query: { id } });
+          await renderPage(ApplicationPage, queryClient, { query: { id } });
           const applicationPage = getApplicationPageApi(
             queryClient,
             application
@@ -165,9 +173,9 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           await applicationPage.step2.expectations.stepIsLoaded();
           await applicationPage.step2.actions.clickNextButton();
           await applicationPage.step3.expectations.stepIsLoaded();
-          applicationPage.step3.actions.clickPreviousButton();
+          await applicationPage.step3.actions.clickPreviousButton();
           await applicationPage.step2.expectations.stepIsLoaded();
-          applicationPage.step2.actions.clickPreviousButton();
+          await applicationPage.step2.actions.clickPreviousButton();
           await applicationPage.step1.expectations.stepIsLoaded();
         });
       });

@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto'],
+  extends: ['auto', 'plugin:you-dont-need-lodash-underscore/compatible'],
   rules: {
     'no-secrets/no-secrets': [
       'error',

@@ -1,47 +1,92 @@
-import { TextInput as HdsTextInput, TextInputProps } from 'hds-react';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
+import { NumberInput as HdsNumberInput, TextArea as HdsTextArea,TextInput as HdsTextInput } from 'hds-react';
+import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { FieldError, RegisterOptions } from 'react-hook-form';
+import {
+  RegisterOptions,
+  useFormContext,
+  UseFormRegister} from 'react-hook-form';
+import { $GridCell,GridCellProps } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/employer-application';
 
-import { $TextInput } from './TextInput.sc';
+import { $TextInput, $TextInputProps } from './TextInput.sc';
 
-type InputProps = {
-  validation: RegisterOptions<Application>;
-  id: keyof Application;
-};
 
-const TextInput = ({
+const getComponentType = (type: TextInputProps['type']): typeof HdsTextInput | typeof HdsNumberInput |  typeof HdsTextArea => {
+  switch(type) {
+    case 'number':
+    case 'decimal':
+      return HdsNumberInput;
+
+    case 'textArea':
+      return HdsTextArea;
+
+    case 'text':
+    default:
+      return HdsTextInput;
+  }
+}
+
+export type TextInputProps = {
+  validation?: RegisterOptions<Application>;
+  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  type?: $TextInputProps['$type'],
+  helperFormat?: string,
+} & GridCellProps;
+
+const TextInput : React.FC<TextInputProps> = ({
   id,
-  validation,
-  ...rest
-}: InputProps & TextInputProps): ReturnType<typeof HdsTextInput> => {
+  validation = {},
+  type = 'text',
+  helperFormat,
+  ...$gridCellProps
+}) => {
+  const { t } = useTranslation();
   const {
-    translateLabel,
-    translateError,
     register,
-    formState: { errors },
-  } = useApplicationForm();
-  const { application, isLoading } = useApplicationApi();
+  } = useFormContext<Application>();
 
-  const defaultValue = application?.[id] ? String(application[id]) : '';
-  const hasError = Boolean((errors?.[id] as FieldError)?.type);
+  const { getValue, getError, fieldName } = useApplicationFormField<string>(id);
+  const errorType = getError()?.type;
+
+  const errorText = React.useMemo((): string | undefined => {
+    if (!errorType) {
+      return undefined;
+    }
+    const error = t(`common:application.form.errors.${errorType}`);
+    const helperText = helperFormat ? `${t('common:application.form.helpers.format')}: ${helperFormat}` : undefined;
+    if (['pattern','required'].includes(errorType) && helperText) {
+      return `${error}. ${helperText}`;
+    }
+    return error;
+  },[t,errorType, helperFormat]);
+
+  // TODO: This can be removed after backend supports invalid values in draft save
+  const setValueForBackend = React.useCallback((newValue: string) =>
+    // getError does not always update: https://github.com/react-hook-form/react-hook-form/issues/2893
+    // if value hasnt changed (getValue is same as new value), then error is present and invalid value is changed to undefined
+    // to prevent backend to fail
+    getError() && getValue() === newValue ? undefined : newValue,
+   [getError,getValue]);
+
 
   return (
-    <$TextInput
-      {...rest}
-      {...register(id, validation)}
-      id={id}
-      data-testid={id}
-      name={id}
-      disabled={isLoading}
-      required={Boolean(validation.required)}
-      max={validation.maxLength ? String(validation.maxLength) : undefined}
-      defaultValue={defaultValue}
-      errorText={hasError ? translateError(id) : undefined}
-      label={translateLabel(id)}
-    />
+    <$GridCell {...$gridCellProps}>
+      <$TextInput
+        as={getComponentType(type)}
+        {...register(id, {...validation, setValueAs: setValueForBackend})}
+        $type={type}
+        key={id}
+        id={id}
+        data-testid={id}
+        name={id}
+        required={Boolean(validation.required)}
+        max={validation.maxLength ? String(validation.maxLength) : undefined}
+        defaultValue={getValue()}
+        errorText={errorText}
+        label={t(`common:application.form.inputs.${fieldName}`)}
+      />
+  </$GridCell>
   );
 };
 

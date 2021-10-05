@@ -10,7 +10,7 @@
     "shared"
   ],
   "scripts": {
-    "audit": "lerna-audit --level=high --groups=dependencies",
+    "audit": "npx lerna-audit --level=high --groups=dependencies",
     "ks-empl:build": "npx lerna run --scope @frontend/employer --stream build",
     "bf-applicant:build": "npx lerna run --scope @frontend/applicant --stream build",
     "bf-handler:build": "npx lerna run --scope @frontend/bf-handler --stream build",
@@ -91,6 +91,7 @@
     "eslint-plugin-switch-case": "^1.1.2",
     "eslint-plugin-testing-library": "^4.1.2",
     "eslint-plugin-unicorn": "^31.0.0",
+    "eslint-plugin-you-dont-need-lodash-underscore": "^6.12.0",
     "faker": "^5.5.3",
     "husky": "^7.0.2",
     "i18next": "^20.3.1",
@@ -108,6 +109,6 @@
     "testcafe-reporter-custom": "^1.1.1",
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^26.5.5",
-    "typescript": "^4.3.4"
+    "typescript": "^4.4.3"
   }
 }

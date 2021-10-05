@@ -1,15 +1,15 @@
 {
-  "appName": "Kesäseteli SV",
+  "appName": "Kesäseteli SWE",
   "header": {
     "loginLabel": "Logga in",
     "logoutLabel": "Logga ut",
     "userAriaLabelPrefix": "Användare:"
   },
   "errorPage": {
-    "title": "SV Palvelussa on valitettavasti tapahtunut virhe",
-    "message": "SV Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
-    "retry": "SV Lataa sivu uudelleen",
-    "logout": "SV Kirjaudu ulos"
+    "title": "Palvelussa on valitettavasti tapahtunut virhe SWE",
+    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen. SWE",
+    "retry": "Lataa sivu uudelleen SWE",
+    "logout": "Kirjaudu ulos  SWE"
   },
   "404Page": {
     "pageNotFoundLabel": "Sivua ei löytynyt SWE",
@@ -29,13 +29,13 @@
   },
   "application": {
     "new": "Uusi hakemus SWE",
-    "common_error": "Tapahtui tuntematon virhe: SWE",
-    "loading": "Ladataan hakemusta...",
-    "loadingFinished": "Hakemuksen lataus on valmis",
+    "common_error": "Tapahtui tuntematon virhe SWE",
+    "loading": "Ladataan hakemusta... SWE",
+    "loadingFinished": "Hakemuksen lataus on valmis SWE",
     "step1": {
       "name": "Työnantaja SWE",
       "header": "1. Työnantajan tiedot SWE",
-      "tooltip": "SV Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "tooltip": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. SWE",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot SWE",
         "header": {
@@ -43,45 +43,89 @@
           "business_id": "Y-tunnus SWE",
           "industry": "Toimiala SWE",
           "company_form": "Yritysmuoto SWE",
-          "postcode": "postiosoite SWE",
+          "postcode": "Postiosoite SWE",
           "city": "Kunta SWE"
-        }
-      },
-      "form": {
-        "title": "Työnantajan tiedot SWE",
-        "invoicer_name": "Yhteyshenkilön nimi SWE",
-        "invoicer_email": "Yhteyshenkilön Sähköposti SWE",
-        "invoicer_phone_number": "Yhteyshenkilön Puhelinnumero SWE",
-        "submit_button": "Tallenna ja jatka SWE",
-        "errors": {
-          "invoicer_name": "Nimi puuttuu SWE",
-          "invoicer_email": "Sähköposti on virheellinen SWE",
-          "invoicer_phone_number": "Puhelinnumero on virheellinen SWE"
         }
       }
     },
     "step2": {
       "name": "Työsuhteet SWE",
-      "header": "2. Selvitys työsuhteesta SWE"
+      "header": "2. Selvitys työsuhteesta SWE",
+      "employment": "Työsuhde SWE",
+      "attachments_section": "Pakolliset liitteet SWE",
+      "employment_section": "Työsuhteen kuvaus SWE",
+      "tooltip": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "add_employment": "Lisää uusi työsuhde SWE",
+      "save_employment": "Tallenna tiedot SWE",
+      "remove_employment": "Poista tiedot SWE"
     },
     "step3": {
       "name": "Lähetys SWE",
-      "header": "3. Tarkistus ja lähettäminen SWE"
+      "header": "3. Tarkistus ja lähettäminen"
     },
     "buttons": {
       "previous": "Palaa edelliseen SWE",
       "save_and_continue": "Tallenna ja jatka SWE",
-      "send": "Send application SWE"
+      "send": "Lähetä hakemus SWE"
+    },
+    "form": {
+      "selectionGroups": {
+        "summer_voucher_exception_reason": {
+          "9th_grader": "9. luokkalainen SWE",
+          "born_2004": "Syntynyt vuonna 2004 SWE"
+        },
+        "hired_without_voucher_assessment" : {
+          "yes": "Kyllä SWE",
+          "no": "En SWE",
+          "maybe": "Ehkä SWE"
+        }
+      },
+      "inputs": {
+        "invoicer_name": "Yhteyshenkilön nimi SWE",
+        "invoicer_email": "Yhteyshenkilön sähköposti SWE",
+        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero SWE",
+        "employee_name": "Työntekijän nimi SWE",
+        "employee_ssn": "Henkilötunnus SWE",
+        "summer_voucher_exception_reason": "Luokka tai syntymävuosi SWE",
+        "employee_home_city": "Kotipaikkakunta SWE",
+        "employee_postcode": "Postinumero SWE",
+        "employee_phone_number": "Puhelinnumero SWE",
+        "employment_postcode": "Työn suorituspaikan postinumero SWE",
+        "summer_voucher_serial_number": "Kesäsetelin sarjanumero SWE",
+        "employee_school": "Koulu SWE",
+        "employment_start_date": "Työsuhde alkoi SWE",
+        "employment_end_date": "Työsuhde päättyi SWE",
+        "employment_description": "Kuvaus työtehtävistä SWE",
+        "employment_work_hours": "Tehdyt työtunnit SWE",
+        "employment_salary_paid": "Maksettu palkka SWE",
+        "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä? SWE"
+      },
+      "helpers": {
+        "date": "Använd ett format D.M.ÅÅÅÅ",
+        "format": "Använd ett format"
+      },
+      "errors": {
+        "required": "Tieto puuttuu tai on virheellinen SWE",
+        "maxLength": "Syöttämäsi arvo on liian pitkä SWE",
+        "pattern": "Syöttämäsi tieto on virheellistä muotoa SWE",
+        "validate": "Syöttämäsi tieto on virheellistä muotoa SWE",
+        "selectionGroups": "Valitse jokin vaihtoehto SWE",
+        "employmentsRequired": "Lisää ainakin yksi työsuhde SWE"
+      },
+      "notification": {
+        "title": "Virheitä kenttien tiedoissa SWE",
+        "description": "Täytä puuttuvat tai virheelliset tiedot SWE"
+      }
     }
   },
   "footer": {
-    "copyrightText": "Copyright text",
-    "allRightsReservedText": "All rights reserved text"
+    "copyrightText": "Copyright teksti SWE",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään"
   },
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
     "en": "In english"
   },
-  "menuToggleAriaLabel": "Menu"
+  "menuToggleAriaLabel": "Menu SWE"
 }

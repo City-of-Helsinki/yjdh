@@ -1,13 +1,15 @@
 import faker from 'faker';
 
-/* these are relatively resolved paths because fake-objects is used from
+/* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
 import type Company from '../../types/company';
 import type Application from '../../types/employer-application';
+import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
+import { DATE_FORMATS, formatDate } from '../../utils/date.utils';
 
 const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
   fakeFunc: F,
@@ -32,18 +34,65 @@ export const fakeCompany: Company = {
   company_form: 'oy',
 };
 
-export const fakeInvoicer = (): Invoicer => ({
+export const fakeInvoicer = (): Required<Invoicer> => ({
   invoicer_name: faker.name.findName(),
   invoicer_email: faker.internet.email(),
   invoicer_phone_number: faker.phone.phoneNumber(),
 });
 
+export const fakeEmployment = (): Required<Employment> => ({
+  id: faker.datatype.uuid(),
+  summer_voucher_exception_reason: faker.random.arrayElement([
+    '9th_grader',
+    'born_2004',
+  ]),
+  employee_name: faker.name.findName(),
+  employee_school: faker.commerce.department(),
+  employee_ssn: '111111-111C',
+  employee_phone_number: faker.phone.phoneNumber(),
+  employee_home_city: faker.address.cityName(),
+  employee_postcode: faker.datatype.number({
+    min: 0,
+    max: 9999,
+    precision: 1000,
+  }),
+  employment_postcode: faker.datatype.number({
+    min: 0,
+    max: 9999,
+    precision: 1000,
+  }),
+  employment_start_date: formatDate(
+    faker.date.past(),
+    DATE_FORMATS.BACKEND_DATE
+  ),
+  employment_end_date: formatDate(
+    faker.date.future(),
+    DATE_FORMATS.BACKEND_DATE
+  ),
+  employment_work_hours: faker.datatype.number({ max: 100, precision: 0.1 }),
+  employment_salary_paid: faker.datatype.number({ max: 4000, precision: 0.01 }),
+  employment_description: faker.lorem.paragraph(1),
+  hired_without_voucher_assessment: faker.random.arrayElement([
+    'yes',
+    'no',
+    'maybe',
+  ]),
+  summer_voucher_serial_number: faker.datatype.string(10),
+});
+
+export const fakeEmployments = (
+  count = faker.datatype.number(10)
+): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
+
 export const fakeApplication = (id: string): Application => ({
   id,
   company: fakeCompany,
   status: 'draft',
+  summer_vouchers: fakeEmployments(1),
   ...fakeInvoicer(),
 });
 
-export const fakeApplications = (count: number): Application[] =>
+export const fakeApplications = (
+  count = faker.datatype.number(10)
+): Required<Application[]> =>
   generateNodeArray(() => fakeApplication(faker.datatype.uuid()), count);
