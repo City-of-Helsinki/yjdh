@@ -85,6 +85,7 @@ env = environ.Env(
     DISABLE_AUTHENTICATION=(bool, False),
     DUMMY_COMPANY_FORM=(str, "OY"),
     ENABLE_DEBUG_ENV=(bool, False),
+    PUBLIC_URL=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -100,6 +101,7 @@ SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
+PUBLIC_URL = env.str("PUBLIC_URL")
 
 DATABASES = {"default": env.db()}
 
