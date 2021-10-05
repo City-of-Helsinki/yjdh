@@ -60,14 +60,10 @@ const ApplicationSummary: React.FC = () => {
         withoutDivider
       >
         {summer_vouchers.map((employment, index) => (
-          <>
-            <EmploymentSummary
-              employment={employment}
-              index={index}
-              key={employment.id}
-            />
+          <React.Fragment key={employment.id}>
+            <EmploymentSummary employment={employment} index={index} />
             <$Hr />
-          </>
+          </React.Fragment>
         ))}
       </FormSection>
     </>
