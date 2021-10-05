@@ -1,4 +1,5 @@
 import logging
+from urllib import parse
 
 import requests
 from django.conf import settings
@@ -14,6 +15,7 @@ from mozilla_django_oidc.views import (
 )
 from requests.exceptions import HTTPError
 
+from shared.common.utils import get_public_reverse_url
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
 from shared.oidc.models import OIDCProfile
 from shared.oidc.services import clear_eauthorization_profiles, clear_oidc_profiles
@@ -31,7 +33,19 @@ class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
             lang = "fi"
 
         response_redirect = super().get(request)
-        response = HttpResponseRedirect(f"{response_redirect.url}&ui_locales={lang}")
+
+        url = response_redirect.url
+        query_string = parse.urlsplit(url).query
+        params = dict(parse.parse_qsl(query_string))
+        params["ui_locales"] = lang
+        params["redirect_uri"] = get_public_reverse_url(
+            request, "oidc_authentication_callback"
+        )
+
+        query = parse.urlencode(params)
+        redirect_url = f"{self.OIDC_OP_AUTH_ENDPOINT}?{query}"
+        response = HttpResponseRedirect(redirect_url)
+
         response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang, httponly=True)
 
         return response

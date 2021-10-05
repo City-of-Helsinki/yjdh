@@ -11,6 +11,7 @@ from django.views import View
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
+from shared.common.utils import get_public_reverse_url
 from shared.oidc.services import store_token_info_in_eauth_profile
 from shared.oidc.utils import get_checksum_header, get_userinfo
 
@@ -71,12 +72,14 @@ class EauthAuthenticationRequestView(View):
 
         auth_url = settings.EAUTHORIZATIONS_BASE_URL + "/oauth/authorize"
 
+        redirect_uri = get_public_reverse_url(
+            request, "eauth_authentication_callback"
+        ).replace("http://", "https://")
+
         params = {
             "client_id": settings.EAUTHORIZATIONS_CLIENT_ID,
             "response_type": "code",
-            "redirect_uri": request.build_absolute_uri(
-                reverse("eauth_authentication_callback")
-            ).replace("http://", "https://"),
+            "redirect_uri": redirect_uri,
             "user": user_id,
         }
 
