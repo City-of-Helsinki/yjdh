@@ -1,12 +1,7 @@
+import FormSection from 'shared/components/forms/section/FormSection';
 import styled from 'styled-components';
 
-export const $ApplicationActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: ${(props) => props.theme.spacing.l};
-`;
-
-export const $ApplicationAction = styled.div`
-  display: flex;
-  flex-direction: column;
+export const $ButtonSection = styled(FormSection)`
+  margin-top: ${(props) => props.theme.spacing.m};
+  padding-bottom: ${(props) => props.theme.spacing.m};
 `;

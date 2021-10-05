@@ -11,8 +11,7 @@ const useApplicationQuery = (
   const operationPermitted = useIsOperationPermitted();
   return useQuery<Application, Error>(
     ['applications', id],
-    () =>
-      !id
+    () => !id
         ? Promise.reject(new Error('Missing id'))
         : handleResponse<Application>(
             axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)

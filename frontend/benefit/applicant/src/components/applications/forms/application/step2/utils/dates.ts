@@ -20,15 +20,15 @@ export const getMinEndDate = (
     months = 12;
     days = -1;
   }
-
-  if (!startDate || !isValid(parseDate(startDate))) {
+  const parsedStartDate = parseDate(startDate);
+  if (!parsedStartDate || !isValid(parsedStartDate)) {
     return add(APPLICATION_START_DATE, {
       months,
       days,
     });
   }
 
-  return add(parseDate(startDate), {
+  return add(parsedStartDate, {
     months,
     days,
   });

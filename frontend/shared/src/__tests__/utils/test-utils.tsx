@@ -39,13 +39,13 @@ type CustomRenderResult = RenderResult;
 
 export { customRender as render };
 
-export const waitFor = <T,>(
-  callback: () => T | Promise<T>,
+export const waitFor = (
+  callback: () => void | Promise<void>,
   options?: waitForOptions
-): Promise<T> => {
+): Promise<void> => {
   // Overwrite default options
   const mergedOptions = {
-    timeout: JEST_TIMEOUT,
+    timeout: JEST_TIMEOUT / 2,
     ...options,
   };
   return _waitFor(callback, mergedOptions);

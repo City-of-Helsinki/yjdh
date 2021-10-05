@@ -1,66 +1,71 @@
 import { Button, IconArrowLeft, IconArrowRight } from 'hds-react';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useApplicationForm from 'kesaseteli/employer/hooks/application/useApplicationForm';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/employer-application';
 
-import { $ApplicationAction, $ApplicationActions } from './ActionButtons.sc';
+import { $ButtonSection } from './ActionButtons.sc';
 
 type Props = {
-  onSubmit: (application: Application) => void;
+  onNext: 'sendApplication' | 'updateApplication';
 };
 
-const ActionButtons: React.FC<Props> = ({ onSubmit }: Props) => {
+const ActionButtons: React.FC<Props> = ({ onNext }: Props) => {
   const { t } = useTranslation();
   const {
     handleSubmit,
-    formState: { isSubmitting, isValid },
-  } = useApplicationForm();
-  const { isLoading: isApplicationLoading } = useApplicationApi();
+    formState: { isSubmitting },
+  } = useFormContext<Application>();
   const {
-    handleStep,
     isFirstStep,
     isLastStep,
     previousStep,
     nextStep,
     isLoading: isWizardLoading,
   } = useWizard();
+  const apiOperations = useApplicationApi({
+    onUpdateSuccess: () => void nextStep(),
+  });
+  const { isSyncing } = useIsSyncingToBackend();
 
-  handleStep(handleSubmit(onSubmit));
+  const isLoading = isSubmitting || isSyncing || isWizardLoading;
   return (
-    <$ApplicationActions>
+    <$ButtonSection columns={isFirstStep ? 1 : 2} withoutDivider>
       {!isFirstStep && (
-        <$ApplicationAction>
+        <$GridCell justifySelf="start">
           <Button
             variant="secondary"
             theme="black"
             data-testid="previous-button"
             iconLeft={<IconArrowLeft />}
             onClick={() => previousStep()}
-            disabled={!isValid || isSubmitting}
+            isLoading={isLoading}
+            disabled={isLoading}
           >
             {t(`common:application.buttons.previous`)}
           </Button>
-        </$ApplicationAction>
+        </$GridCell>
       )}
-      <$ApplicationAction>
+      <$GridCell justifySelf="end">
         <Button
           theme="coat"
           data-testid="next-button"
           iconRight={<IconArrowRight />}
-          onClick={() => nextStep()}
+          onClick={handleSubmit(apiOperations[onNext])}
           loadingText={t(`common:application.loading`)}
-          isLoading={isApplicationLoading || isWizardLoading}
-          disabled={!isValid || isSubmitting}
+          isLoading={isLoading}
+          disabled={isLoading}
         >
           {isLastStep
             ? t(`common:application.buttons.send`)
             : t(`common:application.buttons.save_and_continue`)}
         </Button>
-      </$ApplicationAction>
-    </$ApplicationActions>
+      </$GridCell>
+    </$ButtonSection>
   );
 };
 

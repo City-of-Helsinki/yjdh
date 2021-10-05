@@ -12,7 +12,7 @@ import { doEmployerLogin } from './employer-header.actions';
 type UserAndApplicationData = { id: Application['id'] } & Invoicer &
   SuomiFiData;
 
-export const loginAndfillInvoicerForm = async (
+export const loginAndfillStep1Form = async (
   t: TestController
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
@@ -30,16 +30,15 @@ export const loginAndfillInvoicerForm = async (
     );
     await companyTable.expectations.isCompanyDataPresent();
   }
-  const invoicerForm = await applicationPageComponents.invoicerForm();
+  const step1 = await applicationPageComponents.step1();
   const invoicerFormData = fakeInvoicer();
-  const {
-    invoicer_name,
-    invoicer_email,
-    invoicer_phone_number,
-  } = invoicerFormData;
-  await invoicerForm.actions.fillName(invoicer_name);
-  await invoicerForm.actions.fillEmail(invoicer_email);
-  await invoicerForm.actions.fillPhone(invoicer_phone_number);
-  await invoicerForm.actions.clickSaveAndContinueButton();
+  const { invoicer_name, invoicer_email, invoicer_phone_number } =
+    invoicerFormData;
+
+  await step1.actions.fillName(invoicer_name);
+  await step1.actions.fillEmail(invoicer_email);
+  await step1.actions.fillPhone(invoicer_phone_number);
+  await step1.actions.clickSaveAndContinueButton();
+
   return { ...invoicerFormData, ...suomiFiData, id: applicationId };
 };
