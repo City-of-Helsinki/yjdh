@@ -21,4 +21,6 @@ django-storages[azure]
 Pillow
 filetype
 elasticsearch
+Jinja2
+pdfkit
 -e file:../shared

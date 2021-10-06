@@ -151,7 +151,14 @@ class EauthAuthenticationCallbackView(View):
         elif "code" in request.GET:
             try:
                 token_info = self.get_token_info(request.GET["code"])
-                store_token_info_in_eauth_profile(request.user.oidc_profile, token_info)
+                eauthorization_profile = store_token_info_in_eauth_profile(
+                    request.user.oidc_profile, token_info
+                )
+
+                # Store organization roles in session
+                from shared.oidc.utils import request_organization_roles
+
+                request_organization_roles(eauthorization_profile, request)
             except HTTPError as e:
                 logger.error(str(e))
                 return self.login_failure()

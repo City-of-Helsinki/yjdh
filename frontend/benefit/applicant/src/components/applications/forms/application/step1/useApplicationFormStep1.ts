@@ -1,10 +1,4 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
-import {
-  APPLICATION_FIELDS_STEP1,
-  MAX_LONG_STRING_LENGTH,
-  MAX_SHORT_STRING_LENGTH,
-  VALIDATION_MESSAGE_KEYS,
-} from 'benefit/applicant/constants';
+import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useCreateApplicationQuery from 'benefit/applicant/hooks/useCreateApplicationQuery';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
@@ -20,29 +14,28 @@ import {
 } from 'benefit/applicant/utils/common';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import { FormikProps, useFormik } from 'formik';
+import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import { Field, FieldsDef } from 'shared/components/forms/fields/types';
-import {
-  ADDRESS_REGEX,
-  CITY_REGEX,
-  COMPANY_BANK_ACCOUNT_NUMBER,
-  NAMES_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX,
-} from 'shared/constants';
+import { Field } from 'shared/components/forms/fields/types';
+import hdsToast from 'shared/components/toast/Toast';
 import { OptionType } from 'shared/types/common';
+import { convertToBackendDateFormat } from 'shared/utils/date.utils';
+import { focusAndScroll } from 'shared/utils/dom.utils';
 import snakecaseKeys from 'snakecase-keys';
-import * as Yup from 'yup';
+
+import { getValidationSchema } from './utils/validation';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  fieldNames: string[];
-  fields: FieldsDef;
+  fields: Record<
+    APPLICATION_FIELDS_STEP1_KEYS,
+    Field<APPLICATION_FIELDS_STEP1_KEYS>
+  >;
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
-  erazeDeminimisAids: () => void;
+  clearDeminimisAids: () => void;
   formik: FormikProps<Application>;
   deMinimisAids: DeMinimisAid[];
   languageOptions: OptionType[];
@@ -85,67 +78,40 @@ const useApplicationFormStep1 = (
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [step, setStep] = useState<number>(1);
 
   useEffect(() => {
     if (isApplicationCreated || isApplicationUpdated) {
       setApplicationTempData({
         ...applicationTempData,
         id: applicationTempData.id || newApplication?.id || '',
-        currentStep: step,
       });
     }
   }, [
     isApplicationCreated,
     isApplicationUpdated,
     newApplication,
-    step,
     applicationTempData,
     setApplicationTempData,
   ]);
 
   const formik = useFormik({
     initialValues: application || {},
-    validationSchema: Yup.object().shape({
-      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS]:
-        Yup.string()
-          .matches(ADDRESS_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE]: Yup.string()
-        .matches(POSTAL_CODE_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY]: Yup.string()
-        .matches(CITY_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: Yup.string()
-        .matches(
-          COMPANY_BANK_ACCOUNT_NUMBER,
-          t(VALIDATION_MESSAGE_KEYS.IBAN_INVALID)
-        )
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_PHONE_NUMBER]:
-        Yup.string()
-          .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
-          .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string()
-        .email(t(VALIDATION_MESSAGE_KEYS.EMAIL_INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_FIRST_NAME]: Yup.string()
-        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-      [APPLICATION_FIELDS_STEP1.COMPANY_CONTACT_PERSON_LAST_NAME]: Yup.string()
-        .matches(NAMES_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX)),
-    }),
+    validationSchema: getValidationSchema(t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: () => {
-      setStep(2);
+    onSubmit: (values) => {
       const currentApplicationData: ApplicationData = snakecaseKeys(
         {
           ...application,
-          ...formik.values,
+          ...values,
+          startDate: values.startDate
+            ? convertToBackendDateFormat(values.startDate)
+            : null,
+          endDate: values.endDate
+            ? convertToBackendDateFormat(values.endDate)
+            : null,
+
           // update from context
           deMinimisAidSet: applicationTempData.deMinimisAids,
           deMinimisAid: applicationTempData.deMinimisAids?.length !== 0,
@@ -161,32 +127,33 @@ const useApplicationFormStep1 = (
     },
   });
 
-  const fieldNames = React.useMemo(
-    (): string[] => Object.values(APPLICATION_FIELDS_STEP1),
-    []
-  );
-
-  const fields = React.useMemo((): FieldsDef => {
-    const fieldMasks: Record<Field['name'], Field['mask']> = {
-      [APPLICATION_FIELDS_STEP1.COMPANY_BANK_ACCOUNT_NUMBER]: {
+  const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
+    const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
+      [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: {
         format: 'FI99 9999 9999 9999 99',
         stripVal: (val: string) => val.replace(/\s/g, ''),
       },
     };
 
-    return fieldNames.reduce<FieldsDef>(
-      (acc, name) => ({
-        ...acc,
-        [name]: {
-          name,
-          label: t(`${translationsBase}.fields.${name}.label`),
-          placeholder: t(`${translationsBase}.fields.${name}.placeholder`),
-          mask: fieldMasks[name],
-        },
-      }),
-      {}
-    );
-  }, [t, fieldNames]);
+    const fieldsValues = Object.values(APPLICATION_FIELDS_STEP1_KEYS);
+    const fieldsPairs: [
+      APPLICATION_FIELDS_STEP1_KEYS,
+      Field<APPLICATION_FIELDS_STEP1_KEYS>
+    ][] = fieldsValues.map((fieldName) => [
+      fieldName,
+      {
+        name: fieldName,
+        label: t(`${translationsBase}.fields.${fieldName}.label`),
+        placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
+        mask: fieldMasks[fieldName],
+      },
+    ]);
+
+    return fromPairs(fieldsPairs) as Record<
+      APPLICATION_FIELDS_STEP1_KEYS,
+      Field<APPLICATION_FIELDS_STEP1_KEYS>
+    >;
+  }, [t, translationsBase]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
@@ -194,16 +161,17 @@ const useApplicationFormStep1 = (
   const handleSubmit = (): void => {
     setIsSubmitted(true);
     void formik.validateForm().then((errors) => {
-      // todo: Focus the first invalid field
-      const invalidFields = Object.keys(errors);
-      if (invalidFields.length === 0) {
-        void formik.submitForm();
+      const errorFieldKey = Object.keys(errors)[0];
+
+      if (errorFieldKey) {
+        return focusAndScroll(errorFieldKey);
       }
-      return null;
+
+      return formik.submitForm();
     });
   };
 
-  const erazeDeminimisAids = (): void =>
+  const clearDeminimisAids = (): void =>
     setApplicationTempData({ ...applicationTempData, deMinimisAids: [] });
 
   const languageOptions = React.useMemo(
@@ -221,13 +189,12 @@ const useApplicationFormStep1 = (
 
   return {
     t,
-    fieldNames,
     fields,
     translationsBase,
     formik,
     getErrorMessage,
     handleSubmit,
-    erazeDeminimisAids,
+    clearDeminimisAids,
     deMinimisAids: application.deMinimisAidSet || [],
     languageOptions,
     getDefaultSelectValue,

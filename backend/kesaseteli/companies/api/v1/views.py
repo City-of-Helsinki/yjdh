@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import transaction
-from rest_framework.request import Request
+from django.http import HttpRequest
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,7 +16,7 @@ class GetCompanyView(APIView):
     """
 
     @transaction.atomic
-    def get_mock(self, request: Request, format: str = None) -> Response:
+    def get_mock(self, request: HttpRequest, format: str = None) -> Response:
         # This mocked get method will be used for testing purposes for the frontend.
         session_id = request.META.get("HTTP_SESSION_ID")
         if session_id == "-1":
@@ -32,12 +32,12 @@ class GetCompanyView(APIView):
         return Response(company_data)
 
     @transaction.atomic
-    def get(self, request: Request, format: str = None) -> Response:
+    def get(self, request: HttpRequest, format: str = None) -> Response:
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
         company = get_or_create_company_from_eauth_profile(
-            request.user.oidc_profile.eauthorization_profile
+            request.user.oidc_profile.eauthorization_profile, request
         )
 
         company_data = CompanySerializer(company).data

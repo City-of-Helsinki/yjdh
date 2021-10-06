@@ -5,7 +5,8 @@ import {
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';
-import Application from 'shared/types/employer-application';
+import type DraftApplication from 'shared/types/draft-application';
+import type Application from 'shared/types/employer-application';
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
@@ -105,17 +106,10 @@ export const expectToCreateApplicationErrorFromBackend = (): nock.Scope => {
 };
 export const expectToSaveApplication = (
   applicationToSave: Application
-): nock.Scope[] => [
-  nock(getBackendDomain())
-    .intercept(
-      `${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`,
-      'OPTIONS'
-    )
-    .reply(200, undefined, { 'Access-Control-Allow-Origin': '*' }),
+): nock.Scope =>
   nock(getBackendDomain())
     .put(`${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`, {
       ...applicationToSave,
       status: 'draft',
-    } as Application)
-    .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' }),
-];
+    } as DraftApplication)
+    .reply(200, applicationToSave, { 'Access-Control-Allow-Origin': '*' });

@@ -48,6 +48,11 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      - name: Install wkhtmltopdf dependency
+        run: |
+          apt-get update
+          apt-get install -y wkhtmltopdf
+
       - name: Install dependencies
         run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt codecov
 

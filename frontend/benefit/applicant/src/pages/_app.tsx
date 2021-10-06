@@ -14,11 +14,10 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
 import Layout from 'shared/components/layout/Layout';
+import ToastContainer from 'shared/components/toast/ToastContainer';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-
-import HDSToastContainer from '../components/toast/ToastContainer';
 
 const queryClient = new QueryClient();
 
@@ -34,7 +33,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
           <GlobalStyling />
           <Layout>
             <Header />
-            <HDSToastContainer />
+            <ToastContainer />
             <Content>
               <Component {...pageProps} />
             </Content>

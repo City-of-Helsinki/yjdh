@@ -6,7 +6,7 @@ const withTranspileModules = require('next-transpile-modules');
 const { i18n } = require('./next-i18next.config');
 
 const { parsed: env } = require('dotenv').config({
-  path: '../../../.env.benefit',
+  path: '../../../.env.benefit-applicant',
 });
 
 const nextConfig = {

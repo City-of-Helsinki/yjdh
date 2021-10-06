@@ -1,12 +1,8 @@
 import pytest
+from common.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
 
 from .factories import UserFactory
-
-
-@pytest.fixture
-def user():
-    return UserFactory()
 
 
 @pytest.fixture

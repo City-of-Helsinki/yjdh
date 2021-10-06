@@ -8,10 +8,13 @@ from applications.tests.factories import (
     DecidedApplicationFactory,
     EmployeeFactory,
 )
+from common.tests.conftest import *  # noqa
+from companies.tests.conftest import *  # noqa
+from helsinkibenefit.tests.conftest import *  # noqa
 
 
 @pytest.fixture
-def application():
+def anonymous_application():
     with factory.Faker.override_default_locale("fi_FI"):
         return ApplicationFactory()
 
@@ -41,11 +44,29 @@ def talpa_service_with_one_application(talpa_service):
 
 
 @pytest.fixture
-def association_application():
+def employee():
+    with factory.Faker.override_default_locale("fi_FI"):
+        return EmployeeFactory()
+
+
+@pytest.fixture
+def application(mock_get_organisation_roles_and_create_company):
+    # Application which belongs to logged in user company
+    with factory.Faker.override_default_locale("fi_FI"):
+        app = ApplicationFactory()
+        app.company = mock_get_organisation_roles_and_create_company
+        app.save()
+        return app
+
+
+@pytest.fixture
+def association_application(mock_get_organisation_roles_and_create_company):
     """
     :return: A valid application by an association
     """
     application = ApplicationFactory()
+    application.company = mock_get_organisation_roles_and_create_company
+    application.save()
     application.company.company_form = "association"  # TODO: fix with actual value
     application.company.save()
     application.benefit_type = BenefitType.SALARY_BENEFIT
@@ -53,9 +74,3 @@ def association_application():
     application.association_has_business_activities = False
     application.de_minimis_aid_set.all().delete()
     return application
-
-
-@pytest.fixture
-def employee():
-    with factory.Faker.override_default_locale("fi_FI"):
-        return EmployeeFactory()

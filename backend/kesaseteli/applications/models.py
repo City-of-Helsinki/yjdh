@@ -172,6 +172,12 @@ class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         choices=HiredWithoutVoucherAssessment.choices,
     )
 
+    is_exported = models.BooleanField(
+        default=False,
+        verbose_name=_("is exported"),
+        help_text=_("Has been exported to Excel"),
+    )
+
     ordering = models.IntegerField(default=0)
 
     class Meta:

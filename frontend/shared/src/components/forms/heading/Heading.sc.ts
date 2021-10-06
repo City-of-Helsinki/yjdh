@@ -1,14 +1,20 @@
 import styled, { DefaultTheme } from 'styled-components';
 
-export interface HeadingProps {
-  size: keyof DefaultTheme['fontSize']['heading'];
-}
+export type HeadingProps = {
+  size?: keyof DefaultTheme['fontSize']['heading'];
+  header?: string;
+  loading?: boolean;
+  loadingText?: string;
+  loadingFinishedText?: string;
+  tooltip?: string;
+  as?: 'h1' | 'h2' | 'h3' | 'h4';
+};
 
 export const $Header = styled.h1<HeadingProps>`
+  ${(props) =>
+    props.size ? `font-size: ${props.theme.fontSize.heading[props.size]};` : ''}
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.s};
-  font-size: ${(props) => props.theme.fontSize.heading[props.size]};
   font-weight: 500;
-  margin-bottom: ${(props) => props.theme.spacing.l};
 `;

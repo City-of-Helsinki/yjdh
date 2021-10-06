@@ -1,15 +1,31 @@
 {
-  "appName": "Helsinki-Employer EN",
+  "appName": "Kesäseteli EN",
   "header": {
-    "loginLabel": "Login",
-    "logoutLabel": "Logout",
+    "loginLabel": "Log in",
+    "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:"
-    },
+  },
   "errorPage": {
     "title": "Unknown error occurred",
     "message": "ENG: Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
     "retry": "Reload the page",
-    "logout": "Logout"
+    "logout": "Log out"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Page not found",
+    "pageNotFoundContent": "ENG Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+  },
+  "loginPage": {
+    "logoutMessageLabel": "You have signed out",
+    "errorLabel": "Unknown error. Sign in again",
+    "sessionExpiredLabel": "Session expired. Sign in again",
+    "infoLabel": "Using the service requires authentication",
+    "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+  },
+  "thankyouPage": {
+    "thankyouMessageLabel": "The application has been submitted",
+    "thankyouMessageContent": "ENG Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
+    "createNewApplication": "Create new application"
   },
   "application": {
     "new": "New application",
@@ -30,28 +46,71 @@
           "postcode": "Postcode",
           "city": "Municipality"
         }
-      },
-      "form": {
-        "title": "Employer information",
-        "invoicer_name": "Invoicer's name",
-        "invoicer_email": "Invoicer's email",
-        "invoicer_phone_number": "Invoicer's phone number",
-        "submit_button": "Save and continue",
-        "loading": "Loading...",
-        "errors": {
-          "invoicer_name": "Invoicer's name is required",
-          "invoicer_email": "Invoicer's email is invalid",
-          "invoicer_phone_number": "Invoicer's phone number is invalid"
-        }
       }
     },
     "step2": {
       "name": "Employees",
-      "header": "2. Employments"
+      "header": "2. Employments",
+      "employment": "Employment",
+      "tooltip": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "attachments_section": "Mandatory attachments",
+      "employment_section": "Employment description",
+      "add_employment": "Add new employment",
+      "save_employment": "Save employment",
+      "remove_employment": "Remove employment"
     },
     "step3": {
       "name": "Send",
       "header": "Check summary and send"
+    },
+    "form": {
+      "selectionGroups": {
+        "summer_voucher_exception_reason": {
+          "9th_grader": "9th grader",
+          "born_2004": "Born in 2004"
+        },
+        "hired_without_voucher_assessment" : {
+          "yes": "Yes",
+          "no": "No",
+          "maybe": "Maybe"
+        }
+      },
+      "inputs": {
+        "invoicer_name": "Invoicer's name",
+        "invoicer_email": "Invoicer's email",
+        "invoicer_phone_number": "Invoicer's phone number",
+        "employee_name": "Employee name",
+        "employee_ssn": "Social security number",
+        "summer_voucher_exception_reason": "School grade or birth year",
+        "employee_home_city": "Home city",
+        "employee_postcode": "Postcode",
+        "employee_phone_number": "Phone number",
+        "employment_postcode": "Workplace's postcode",
+        "summer_voucher_serial_number": "Summer voucher serial number",
+        "employee_school": "School",
+        "employment_start_date": "Employment start date",
+        "employment_end_date": "Employment start date",
+        "employment_work_hours": "Work hours",
+        "employment_description": "Employment description",
+        "employment_salary_paid": "Salary paid (€)",
+        "hired_without_voucher_assessment": "Would you have hired without summer voucher?"
+      },
+      "helpers": {
+        "date": "Use format D.M.YYYY",
+        "format": "Use format"
+      },
+      "errors": {
+        "required": "input is missing or invalid",
+        "maxLength": "input is too long",
+        "pattern": "input is invalid",
+        "validate": "input is invalid",
+        "selectionGroups": "Choose an option",
+        "employmentsRequired": "Add at least one employment"
+      },
+      "notification": {
+        "title": "There is errors in the form",
+        "description": "Please fill missing or invalid values"
+      }
     },
     "buttons": {
       "previous": "Back to previous step",

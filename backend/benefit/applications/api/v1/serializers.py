@@ -1,5 +1,5 @@
 import re
-from datetime import date
+from datetime import date, datetime
 
 import filetype
 from applications.api.v1.status_transition_validator import (
@@ -24,10 +24,17 @@ from applications.models import (
     Employee,
 )
 from common.exceptions import BenefitAPIException
-from common.utils import PhoneNumberField, xgroup
+from common.utils import (
+    date_range_overlap,
+    duration_in_months,
+    pairwise,
+    PhoneNumberField,
+    xgroup,
+)
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
 from django.db import transaction
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
@@ -35,6 +42,14 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from rest_framework import serializers
+from terms.api.v1.serializers import (
+    ApplicantTermsApprovalSerializer,
+    ApproveTermsSerializer,
+    TermsSerializer,
+)
+from terms.enums import TermsType
+from terms.models import ApplicantTermsApproval, Terms
+from users.utils import get_business_id_from_user
 
 
 class ApplicationBasisSerializer(serializers.ModelSerializer):
@@ -286,18 +301,21 @@ class EmployeeSerializer(serializers.ModelSerializer):
     def validate_monthly_pay(self, value):
         if value is not None and value <= 0:
             raise serializers.ValidationError(_("Monthly pay must be greater than 0"))
+        return value
 
     def validate_vacation_money(self, value):
         if value is not None and value < 0:
             raise serializers.ValidationError(
                 _("Vacation money must be a positive number")
             )
+        return value
 
     def validate_other_expenses(self, value):
         if value is not None and value < 0:
             raise serializers.ValidationError(
                 _("Other expenses must be a positive number")
             )
+        return value
 
 
 class ApplicationBatchSerializer(serializers.ModelSerializer):
@@ -422,6 +440,21 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     employee = EmployeeSerializer()
 
+    applicant_terms_approval = ApplicantTermsApprovalSerializer(
+        read_only=True, help_text="Currently approved applicant terms, if any"
+    )
+
+    approve_terms = ApproveTermsSerializer(
+        required=False,
+        write_only=True,
+        help_text=(
+            "Set the approved terms of this application."
+            "Only used when application status is changed"
+            "from DRAFT or ADDITIONAL_INFORMATION_NEEDED to RECEIVED"
+            "in the same request."
+        ),
+    )
+
     company = CompanySerializer(read_only=True)
 
     attachments = AttachmentSerializer(
@@ -463,15 +496,18 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "id",
             "status",
             "employee",
+            "applicant_terms_approval",
+            "approve_terms",
             "batch",
             "company",
             "company_name",
             "company_form",
-            "organization_type",
             "submitted_at",
             "bases",
             "available_bases",
             "attachment_requirements",
+            "applicant_terms_approval_needed",
+            "applicant_terms_in_effect",
             "available_benefit_types",
             "official_company_street_address",
             "official_company_city",
@@ -487,6 +523,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "company_contact_person_phone_number",
             "company_contact_person_email",
             "association_has_business_activities",
+            "association_immediate_manager_check",
             "applicant_language",
             "co_operation_negotiations",
             "co_operation_negotiations_description",
@@ -512,6 +549,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "application_number",
             "available_bases",
             "attachment_requirements",
+            "applicant_terms_approval_needed",
+            "applicant_terms_in_effect",
             "company_name",
             "company_form",
             "official_company_street_address",
@@ -576,6 +615,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 "help_text": "field is visible and yes/no answer is required/allowed"
                 "only if applicant is an association",
             },
+            "association_immediate_manager_check": {
+                "help_text": "field is visible and yes answer is allowed (and required)"
+                "only if applicant is an association",
+            },
             "applicant_language": {
                 "help_text": "Language to be used when contacting the contact person",
             },
@@ -629,17 +672,23 @@ class ApplicationSerializer(serializers.ModelSerializer):
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
-    organization_type = serializers.SerializerMethodField(
-        "get_organization_type",
-        help_text="The general type of the applicant organization",
-    )
-
     available_bases = serializers.SerializerMethodField(
         "get_available_bases", help_text="List of available application basis slugs"
     )
 
     attachment_requirements = serializers.SerializerMethodField(
         "get_attachment_requirements", help_text="get the attachment requirements"
+    )
+    applicant_terms_approval_needed = serializers.SerializerMethodField(
+        "get_applicant_terms_approval_needed",
+        help_text="Applicant needs to provide approve_terms field in any future submit operation",
+    )
+    applicant_terms_in_effect = serializers.SerializerMethodField(
+        "get_applicant_terms_in_effect",
+        help_text=(
+            "The applicant terms that need to be approved when applicant submits this application."
+            "These terms are not necessarily yet approved by the applicant - see applicant_terms_approval"
+        ),
     )
 
     available_benefit_types = serializers.SerializerMethodField(
@@ -651,6 +700,19 @@ class ApplicationSerializer(serializers.ModelSerializer):
         allow_blank=True,
         help_text="Company contact person phone number normalized (start with zero, without country code)",
     )
+
+    def get_applicant_terms_approval_needed(self, obj):
+        return ApplicantTermsApproval.terms_approval_needed(obj)
+
+    @extend_schema_field(TermsSerializer())
+    def get_applicant_terms_in_effect(self, obj):
+        terms = Terms.objects.get_terms_in_effect(TermsType.APPLICANT_TERMS)
+        if terms:
+            # If given the request in context, DRF will output the URL for FileFields
+            context = {"request": self.context.get("request")}
+            return TermsSerializer(terms, context=context).data
+        else:
+            return None
 
     def get_submitted_at(self, obj):
         if (
@@ -666,10 +728,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
-
-    @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
-    def get_organization_type(self, obj):
-        return OrganizationType.resolve_organization_type(obj.company.company_form)
 
     @extend_schema_field(ApplicationBasisSerializer(many=True))
     def get_available_bases(self, obj):
@@ -724,6 +782,37 @@ class ApplicationSerializer(serializers.ModelSerializer):
             return []
         else:
             raise BenefitAPIException(_("This should be unreachable"))
+
+    def _validate_association_immediate_manager_check(
+        self, company, association_immediate_manager_check
+    ):
+
+        """
+        Validate association_immediate_manager_check:
+        * company: the organization applying for the benefit
+        * association_immediate_manager_check: boolean True/False/None value
+        NOTE: False is not allowed, and True is allowed only for associations.
+        """
+        if (
+            OrganizationType.resolve_organization_type(company.company_form)
+            == OrganizationType.ASSOCIATION
+        ):
+            if association_immediate_manager_check not in [None, True]:
+                raise serializers.ValidationError(
+                    {
+                        "association_immediate_manager_check": _(
+                            "Invalid value for association_immediate_manager_check"
+                        )
+                    }
+                )
+        elif association_immediate_manager_check is not None:
+            raise serializers.ValidationError(
+                {
+                    "association_immediate_manager_check": _(
+                        "for companies, association_immediate_manager_check must always be null"
+                    )
+                }
+            )
 
     def _validate_de_minimis_aid_set(
         self,
@@ -809,10 +898,98 @@ class ApplicationSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError(
                         {"end_date": _("minimum duration of the benefit is one month")}
                     )
-                if start_date + relativedelta(months=12) <= end_date:
+                if (
+                    start_date + relativedelta(months=self.BENEFIT_MAX_MONTHS)
+                    <= end_date
+                ):
                     raise serializers.ValidationError(
                         {"end_date": _("maximum duration of the benefit is 12 months")}
                     )
+
+    BENEFIT_WAITING_PERIOD_MONTHS = 24
+    BENEFIT_MAX_MONTHS = 12
+
+    def _validate_previous_benefits(
+        self, company, employee_social_security_number, start_date, end_date, status
+    ):
+        if not all([start_date, end_date, employee_social_security_number]):
+            return
+        if status in [ApplicationStatus.CANCELLED, ApplicationStatus.REJECTED]:
+            # it must be possible to cancel/reject applications with this error, or they
+            # migth be impossible for admins to get rid of. For example, if there are two
+            # simultaneously submitted applications for the same employee and one of them is accepted, that might
+            # make the other application invalid.
+            return
+
+        # The waiting time starts at the end of the latest benefit period granted.
+        previously_granted_benefits = Application.objects.filter(
+            employee__social_security_number=employee_social_security_number,
+            company=company,
+            status=ApplicationStatus.ACCEPTED,
+            start_date__lte=end_date,  # catch also overlapping benefits
+        ).order_by("-start_date")
+        if self.instance:
+            previously_granted_benefits = previously_granted_benefits.exclude(
+                pk=self.instance.pk
+            )
+
+        self._validate_no_benefit_overlap(
+            start_date, end_date, previously_granted_benefits
+        )
+
+        most_recent_benefit = previously_granted_benefits.first()
+        if (
+            not most_recent_benefit
+            or most_recent_benefit.end_date
+            < start_date - relativedelta(months=self.BENEFIT_WAITING_PERIOD_MONTHS)
+        ):
+            # at least BENEFIT_WAITING_PERIOD_MONTHS elapsed since a Helsinki benefit was granted
+            # for this employee last time.
+            return
+
+        # scroll back previous benefits until we find a gap of BENEFIT_WAITING_PERIOD_MONTHS
+        applicable_benefits = [most_recent_benefit]
+        for old_benefit, older_benefit in pairwise(previously_granted_benefits):
+            # on the first round of loop, old_benefit == most_recent_benefit, which already is in
+            # applicable_benefits
+            if (
+                older_benefit.end_date
+                + relativedelta(months=self.BENEFIT_WAITING_PERIOD_MONTHS)
+                < old_benefit.start_date
+            ):
+                break
+            applicable_benefits.append(older_benefit)
+
+        past_months_of_benefit = sum(
+            benefit.duration_in_months for benefit in applicable_benefits
+        )
+        if (
+            past_months_of_benefit + duration_in_months(start_date, end_date)
+            > self.BENEFIT_MAX_MONTHS
+        ):
+            # granting this benefit would exceed the limit
+            raise serializers.ValidationError(
+                {
+                    "start_date": _(
+                        "Benefit can not be granted before 24-month waiting period expires"
+                    )
+                }
+            )
+
+    def _validate_no_benefit_overlap(
+        self, start_date, end_date, previously_granted_benefits
+    ):
+        for benefit in previously_granted_benefits:
+            if date_range_overlap(
+                start_date, end_date, benefit.start_date, benefit.end_date
+            ):
+                raise serializers.ValidationError(
+                    {
+                        "start_date": _(
+                            "There's already an accepted application with overlapping date range for this employee"
+                        )
+                    }
+                )
 
     def _validate_co_operation_negotiations(
         self, co_operation_negotiations, co_operation_negotiations_description
@@ -884,6 +1061,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
         ):
             required_fields.append("association_has_business_activities")
 
+            # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
+            # at submit time, only True is allowed.
+            required_fields.append("association_immediate_manager_check")
+
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:
                 raise serializers.ValidationError(
@@ -918,6 +1099,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 obj.company,
                 obj.association_has_business_activities,
                 obj.apprenticeship_program,
+                obj.pay_subsidy_granted,
             )
         ]
 
@@ -927,11 +1109,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
         benefit_type,
         association_has_business_activities,
         apprenticeship_program,
+        pay_subsidy_granted,
     ):
         if benefit_type == "":
             return
         if benefit_type not in ApplicationSerializer._get_available_benefit_types(
-            company, association_has_business_activities, apprenticeship_program
+            company,
+            association_has_business_activities,
+            apprenticeship_program,
+            pay_subsidy_granted,
         ):
             raise serializers.ValidationError(
                 {"benefit_type": _("This benefit type can not be selected")}
@@ -939,36 +1125,108 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _get_available_benefit_types(
-        company, association_has_business_activities, apprenticeship_program
+        company,
+        association_has_business_activities,
+        apprenticeship_program,
+        pay_subsidy_granted,
     ):
         """
         Make the logic of determining available benefit types available both for generating the list of
         benefit types and validating the incoming data
         """
+
         if (
             OrganizationType.resolve_organization_type(company.company_form)
             == OrganizationType.ASSOCIATION
             and not association_has_business_activities
         ):
-            return [BenefitType.SALARY_BENEFIT]
+            benefit_types = [BenefitType.SALARY_BENEFIT] if pay_subsidy_granted else []
         else:
             if apprenticeship_program:
-                return [
-                    BenefitType.SALARY_BENEFIT,
-                    BenefitType.EMPLOYMENT_BENEFIT,
-                ]
+                benefit_types = [BenefitType.EMPLOYMENT_BENEFIT]
+                if pay_subsidy_granted:
+                    benefit_types.append(BenefitType.SALARY_BENEFIT)
             else:
-                return [
-                    BenefitType.SALARY_BENEFIT,
+                benefit_types = [
                     BenefitType.COMMISSION_BENEFIT,
                     BenefitType.EMPLOYMENT_BENEFIT,
                 ]
+                if pay_subsidy_granted:
+                    benefit_types.append(BenefitType.SALARY_BENEFIT)
+        return benefit_types
+
+    def _handle_breaking_changes(self, company, data):
+        """
+        Handle cases where applicant is updating an application, moves back to a previous page
+        and changes a field value in an incompatible way.
+        """
+        if not self.instance:
+            # only handle the changes when doing updates.
+            # incompatible data that is sent when creating an application results in a validation error.
+            return
+
+        if OrganizationType.resolve_organization_type(
+            company.company_form
+        ) == OrganizationType.ASSOCIATION and self._field_value_changes(
+            data, "association_has_business_activities", False
+        ):
+            self._reset_de_minimis_aid(data)
+            if self._benefit_type_invalid(company, data):
+                self._reset_benefit_type(data)
+
+        if self._field_value_changes(
+            data, "pay_subsidy_granted", False
+        ) and self._benefit_type_invalid(company, data):
+            self._reset_benefit_type(data)
+
+    def _benefit_type_invalid(self, company, data):
+        return data[
+            "benefit_type"
+        ] not in ApplicationSerializer._get_available_benefit_types(
+            company,
+            data["association_has_business_activities"],
+            data["apprenticeship_program"],
+            data["pay_subsidy_granted"],
+        )
+
+    def _reset_de_minimis_aid(self, data):
+        data["de_minimis_aid"] = None
+        data["de_minimis_aid_set"] = []
+
+    def _reset_benefit_type(self, data):
+        # reset the benefit type and the fields in the employee that are tied to the benefit type
+        data["benefit_type"] = ""
+        data["employee"]["job_title"] = ""
+        data["employee"]["commission_description"] = ""
+        for key in [
+            "monthly_pay",
+            "vacation_money",
+            "other_expenses",
+            "working_hours",
+            "commission_amount",
+        ]:
+            data["employee"][key] = None
+
+    def _field_value_changes(self, data, field_name, to_value):
+        assert self.instance, "Existing application instance needed"
+        return (
+            data[field_name] == to_value
+            and getattr(self.instance, field_name) != to_value
+        )
 
     def validate(self, data):
         """ """
         company = self.get_company(data)
+        self._handle_breaking_changes(company, data)
         self._validate_date_range(
             data.get("start_date"), data.get("end_date"), data.get("benefit_type")
+        )
+        self._validate_previous_benefits(
+            company,
+            data.get("employee", {}).get("social_security_number"),
+            data.get("start_date"),
+            data.get("end_date"),
+            data.get("status"),
         )
         self._validate_co_operation_negotiations(
             data.get("co_operation_negotiations"),
@@ -985,6 +1243,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
             data.get("de_minimis_aid_set"),
             data.get("association_has_business_activities"),
         )
+        self._validate_association_immediate_manager_check(
+            company, data.get("association_immediate_manager_check")
+        )
         self._validate_association_has_business_activities(
             company, data.get("association_has_business_activities")
         )
@@ -993,20 +1254,54 @@ class ApplicationSerializer(serializers.ModelSerializer):
             data.get("benefit_type", ""),
             data.get("association_has_business_activities"),
             data.get("apprenticeship_program"),
+            data.get("pay_subsidy_granted"),
         )
         self._validate_non_draft_required_fields(data)
         return data
 
-    def handle_status_transition(self, instance, previous_status):
+    def handle_status_transition(self, instance, previous_status, approve_terms):
         if instance.status == ApplicationStatus.RECEIVED:
             # moving out of DRAFT or ADDITIONAL_INFORMATION_NEEDED, so the applicant
             # may have modified the application
             self._validate_attachments(instance)
+            self._validate_employee_consent(instance)
+            self._update_applicant_terms_approval(instance, approve_terms)
         ApplicationLogEntry.objects.create(
             application=instance,
             from_status=previous_status,
             to_status=instance.status,
         )
+
+    def _validate_employee_consent(self, instance):
+        consent_count = instance.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ).count()
+        if consent_count == 0:
+            raise serializers.ValidationError(
+                _("Application does not have the employee consent attachment")
+            )
+        if consent_count > 1:
+            raise serializers.ValidationError(
+                _("Application cannot have more than one employee consent attachment")
+            )
+
+    def _update_applicant_terms_approval(self, instance, approve_terms):
+        if ApplicantTermsApproval.terms_approval_needed(instance):
+            if not approve_terms:
+                raise serializers.ValidationError(
+                    {"approve_terms": _("Terms must be approved")}
+                )
+            if hasattr(instance, "applicant_terms_approval"):
+                instance.applicant_terms_approval.delete()
+            approval = ApplicantTermsApproval.objects.create(
+                application=instance,
+                terms=approve_terms["terms"],
+                approved_at=datetime.now(),
+                approved_by=self._get_request_user_from_context(),
+            )
+            approval.selected_applicant_consents.set(
+                approve_terms["selected_applicant_consents"]
+            )
 
     def _validate_attachments(self, instance):
         """
@@ -1029,6 +1324,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
         attachments_with_invalid_type = []
 
         for attachment in instance.attachments.all().order_by("created_at"):
+            if attachment.attachment_type == AttachmentType.EMPLOYEE_CONSENT:
+                # validated separately
+                continue
             if attachment.attachment_type not in valid_attachment_types:
                 attachments_with_invalid_type.append(attachment)
             else:
@@ -1047,6 +1345,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
         employee_data = validated_data.pop("employee", None)
+        approve_terms = validated_data.pop("approve_terms", None)
         pre_update_status = instance.status
         application = super().update(instance, validated_data)
         if de_minimis_data is not None:
@@ -1056,7 +1355,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             self._update_or_create_employee(application, employee_data)
 
         if instance.status != pre_update_status:
-            self.handle_status_transition(instance, pre_update_status)
+            self.handle_status_transition(instance, pre_update_status, approve_terms)
 
         return application
 
@@ -1124,10 +1423,21 @@ class ApplicationSerializer(serializers.ModelSerializer):
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
 
+    def _get_request_user_from_context(self):
+        request = self.context.get("request")
+        if request:
+            return request.user
+        return None
+
     def logged_in_user_is_admin(self):
-        # TODO: user management
+        user = self._get_request_user_from_context()
+        if user and hasattr(user, "is_handler"):
+            return user.is_handler()
         return False
 
     def get_logged_in_user_company(self):
-        # TODO: user management
-        return Company.objects.all().order_by("pk").first()
+        user = self._get_request_user_from_context()
+        if settings.DISABLE_AUTHENTICATION:
+            return Company.objects.all().order_by("name").first()
+        business_id = get_business_id_from_user(user)
+        return Company.objects.get(business_id=business_id)

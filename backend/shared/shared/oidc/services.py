@@ -7,10 +7,12 @@ from django.utils import timezone
 from shared.oidc.models import EAuthorizationProfile, OIDCProfile
 
 
-def update_or_create_oidc_profile(user, defaults) -> OIDCProfile:
-    oidc_profile, _ = OIDCProfile.objects.update_or_create(
+def create_oidc_profile(user, defaults: dict) -> OIDCProfile:
+    if getattr(user, "oidc_profile", None):
+        user.oidc_profile.delete()
+    oidc_profile = OIDCProfile.objects.create(
         user=user,
-        defaults=defaults,
+        **defaults,
     )
     return oidc_profile
 
@@ -57,20 +59,17 @@ def store_token_info_in_oidc_profile(user, token_info):
     """Store token info in the OIDCProfile model and return the model instance."""
     defaults = get_defaults(token_info)
 
-    oidc_profile = update_or_create_oidc_profile(user, defaults)
+    oidc_profile = create_oidc_profile(user, defaults)
     return oidc_profile
 
 
 def update_or_create_eauth_profile(
     oidc_profile: OIDCProfile, defaults: dict
 ) -> EAuthorizationProfile:
-    eauth_profile, created = EAuthorizationProfile.objects.update_or_create(
+    eauth_profile, _ = EAuthorizationProfile.objects.update_or_create(
         oidc_profile=oidc_profile,
         defaults=defaults,
     )
-    if not created and getattr(eauth_profile, "company", None):
-        eauth_profile.company = None
-        eauth_profile.save()
     return eauth_profile
 
 
