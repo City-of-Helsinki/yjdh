@@ -10,7 +10,7 @@ interface HDSToastArgs {
   autoDismissTime?: number;
   type: NotificationProps['type'];
   labelText: string;
-  text: JSX.Element | JSX.Element[];
+  text: string | JSX.Element | Array<string | JSX.Element>;
   toastId?: string;
 }
 
@@ -43,8 +43,9 @@ const NotificationWrapper = ({
   if (Array.isArray(text)) {
     body = (
       <ul>
-        {text.map((item) => (
-          <li key={item}>{item}</li>
+        {text.map((item, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <li key={i}>{item}</li>
         ))}
       </ul>
     );
