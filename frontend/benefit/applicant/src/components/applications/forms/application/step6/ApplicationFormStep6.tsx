@@ -32,9 +32,11 @@ const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
             <$GridCell $colSpan={12}>
               <PdfViewver
                 file={
-                  data.applicantTermsInEffect[
-                    `termsPdf${textLocale}` as TermsProp
-                  ]
+                  (data.applicantTermsInEffect &&
+                    data.applicantTermsInEffect[
+                      `termsPdf${textLocale}` as TermsProp
+                    ]) ||
+                  ''
                 }
               />
             </$GridCell>
