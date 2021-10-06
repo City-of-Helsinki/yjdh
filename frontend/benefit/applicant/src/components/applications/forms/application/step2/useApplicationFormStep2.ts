@@ -16,7 +16,11 @@ import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 import { OptionType } from 'shared/types/common';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import {
+  convertToUIDateFormat,
+  formatDate,
+  parseDate,
+} from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 
 import { getMinEndDate } from './utils/dates';
@@ -207,9 +211,9 @@ const useApplicationFormStep2 = (
   ]);
 
   const minEndDate = getMinEndDate(values.startDate, values.benefitType);
-  const minEndDateFormatted = formatDate(minEndDate, DATE_FORMATS.DATE);
-  const isEndDateEligible =
-    values.endDate && isAfter(parseDate(values.endDate), minEndDate);
+  const minEndDateFormatted = convertToUIDateFormat(minEndDate);
+  const endDate = parseDate(values.endDate);
+  const isEndDateEligible = endDate && isAfter(endDate, minEndDate);
 
   const setEndDate = React.useCallback(() => {
     if (!values.startDate && values.endDate) {

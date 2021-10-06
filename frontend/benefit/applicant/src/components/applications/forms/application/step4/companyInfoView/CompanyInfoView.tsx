@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
 import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
@@ -136,11 +136,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                 </$GridCell>
                 <$GridCell>
                   <$ViewField>
-                    {aid.grantedAt
-                      ? formatDate(
-                          parseDate(aid.grantedAt, DATE_FORMATS.DATE_BACKEND)
-                        )
-                      : ''}
+                    {aid.grantedAt ? convertToUIDateFormat(aid.grantedAt) : ''}
                   </$ViewField>
                 </$GridCell>
               </React.Fragment>

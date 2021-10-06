@@ -1,5 +1,6 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
+import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import { useRouter } from 'next/router';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 
@@ -13,6 +14,7 @@ const useLogoutQuery = (): UseMutationResult<unknown, Error, void> => {
     {
       onSuccess: () => {
         void queryClient.removeQueries();
+        clearLocalStorage('application');
         void router.push('/login?logout=true');
       },
     }

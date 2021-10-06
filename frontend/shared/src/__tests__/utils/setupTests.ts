@@ -4,10 +4,8 @@ import { toHaveNoViolations } from 'jest-axe';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 
 jest.setTimeout(JEST_TIMEOUT);
-
 expect.extend(toHaveNoViolations);
 
-// hide initReactI18next warning
 // eslint-disable-next-line no-console
 const originalError = console.error;
 let consoleSpy: jest.SpyInstance;

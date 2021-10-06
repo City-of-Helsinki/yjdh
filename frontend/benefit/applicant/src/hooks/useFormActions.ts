@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import hdsToast from 'shared/components/toast/Toast';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import DeMinimisContext from '../context/DeMinimisContext';
@@ -66,16 +66,10 @@ export const useFormActions = (
     const normalizedValues = {
       ...currentValues,
       startDate: currentValues.startDate
-        ? formatDate(
-            parseDate(currentValues.startDate),
-            DATE_FORMATS.DATE_BACKEND
-          )
+        ? convertToBackendDateFormat(parseDate(currentValues.startDate))
         : undefined,
       endDate: currentValues.endDate
-        ? formatDate(
-            parseDate(currentValues.endDate),
-            DATE_FORMATS.DATE_BACKEND
-          )
+        ? convertToBackendDateFormat(parseDate(currentValues.endDate))
         : undefined,
     };
 

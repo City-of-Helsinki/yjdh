@@ -1,7 +1,11 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto', 'next/core-web-vitals'],
+  extends: [
+    'auto',
+    'next/core-web-vitals',
+    'plugin:you-dont-need-lodash-underscore/compatible',
+  ],
   rules: {
     'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
     'sonarjs/cognitive-complexity': ['error', 20],

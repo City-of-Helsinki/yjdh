@@ -1,6 +1,10 @@
-import { expectToSaveApplication } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import {
+  expectToGetApplicationFromBackend,
+  expectToSaveApplication,
+} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
 import { QueryClient } from 'react-query';
-import { expectBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/employer-application';
 import Invoicer from 'shared/types/invoicer';
@@ -12,7 +16,7 @@ type StepExpections = {
 };
 
 type StepActions = {
-  clickPreviousButton: () => void;
+  clickPreviousButton: () => Promise<void>;
   clickNextButton: () => Promise<void>;
 };
 
@@ -20,7 +24,7 @@ type Step1Api = {
   expectations: StepExpections & {
     displayCompanyData: () => void;
     inputValueIsSet: (key: keyof Application, value?: string) => void;
-    inputHasError: (errorText: RegExp) => Promise<void>;
+    inputHasError: (key: keyof Application, errorText: RegExp) => Promise<void>;
   };
   actions: StepActions & {
     typeInvoicerName: (name: string) => void;
@@ -46,10 +50,12 @@ export type ApplicationPageApi = {
 };
 
 const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
-  await waitFor(() => {
-    expectBackendRequestsToComplete();
-    expect(screen.getByRole('heading', { name: header })).toBeInTheDocument();
-  });
+  await screen.findByRole(
+    'heading',
+    { name: header },
+    { timeout: JEST_TIMEOUT }
+  );
+  await waitForBackendRequestsToComplete();
 };
 
 const expectNextButtonIsEnabled = (): void => {
@@ -68,7 +74,10 @@ const expectNextButtonIsDisabled = (): void => {
   ).toBeDisabled();
 };
 
-const clickPreviousButton = (): void => {
+// Note: Needs to be promised event if there is nothing to wait
+// It prevents `Cannot read property 'createEvent' of null` error
+// which happens occasionally. Read more: https://stackoverflow.com/questions/60504720/jest-cannot-read-property-createevent-of-null
+const clickPreviousButton = async (): Promise<void> => {
   userEvent.click(
     screen.getByRole('button', {
       name: /(palaa edelliseen)|(application.buttons.previous)/i,
@@ -100,15 +109,18 @@ const getApplicationPageApi = (
   };
 
   const clickNextButton = async (): Promise<void> => {
-    const [options, put] = expectToSaveApplication(application);
-    expectNextButtonIsEnabled();
+    const put = expectToSaveApplication(application);
+    const get = expectToGetApplicationFromBackend(application);
+    await waitForBackendRequestsToComplete();
     userEvent.click(
       screen.getByRole('button', {
         name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
       })
     );
-    await waitFor(() => options.done());
-    await waitFor(() => put.done());
+    await waitFor(() => {
+      put.done();
+      get.done();
+    });
   };
 
   return {
@@ -152,8 +164,15 @@ const getApplicationPageApi = (
           const inputValue = value ?? application[key]?.toString();
           expect(screen.getByTestId(key)).toHaveValue(inputValue);
         },
-        inputHasError: async (errorText: RegExp): Promise<void> => {
-          await screen.findByText(errorText);
+        inputHasError: async (
+          key: keyof Application,
+          errorText: RegExp
+        ): Promise<void> => {
+          await waitFor(() =>
+            expect(
+              screen.getByTestId(key)?.parentElement?.nextSibling?.textContent
+            ).toMatch(errorText)
+          );
         },
         nextButtonIsDisabled: expectNextButtonIsDisabled,
         nextButtonIsEnabled: expectNextButtonIsEnabled,
@@ -162,19 +181,19 @@ const getApplicationPageApi = (
         typeInvoicerName: (name: string) =>
           typeInput(
             'invoicer_name',
-            /(yhteyshenkilön nimi)|(form.invoicer_name)/i,
+            /(yhteyshenkilön nimi)|(inputs.invoicer_name)/i,
             name
           ),
         typeInvoicerEmail: (email: string) =>
           typeInput(
             'invoicer_email',
-            /(yhteyshenkilön sähköposti)|(form.invoicer_email)/i,
+            /(yhteyshenkilön sähköposti)|(inputs.invoicer_email)/i,
             email
           ),
         typeInvoicerPhone: (phoneNumber: string) =>
           typeInput(
             'invoicer_phone_number',
-            /(yhteyshenkilön puhelinnumero)|(form.invoicer_phone_number)/i,
+            /(yhteyshenkilön puhelinnumero)|(inputs.invoicer_phone_number)/i,
             phoneNumber
           ),
         clickPreviousButton,

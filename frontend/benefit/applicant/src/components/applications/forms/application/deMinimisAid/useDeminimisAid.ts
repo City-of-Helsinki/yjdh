@@ -11,7 +11,7 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import { DATE_FORMATS, formatDate, parseDate } from 'shared/utils/date.utils';
+import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { capitalize } from 'shared/utils/string.utils';
 
 import { getValidationSchema } from './utils/validation';
@@ -60,16 +60,15 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
     validateOnBlur: true,
     onSubmit: () => {
       setDeMinimisAids((prevDeMinimisAids) => [
-          ...prevDeMinimisAids,
-          {
-            [DE_MINIMIS_AID_KEYS.GRANTER]: formik.values.granter,
-            [DE_MINIMIS_AID_KEYS.AMOUNT]: parseFloat(formik.values.amount),
-            [DE_MINIMIS_AID_KEYS.GRANTED_AT]: formatDate(
-              parseDate(formik.values.grantedAt),
-              DATE_FORMATS.DATE_BACKEND
-            ),
-          },
-        ]);
+        ...prevDeMinimisAids,
+        {
+          [DE_MINIMIS_AID_KEYS.GRANTER]: formik.values.granter,
+          [DE_MINIMIS_AID_KEYS.AMOUNT]: parseFloat(formik.values.amount),
+          [DE_MINIMIS_AID_KEYS.GRANTED_AT]: convertToBackendDateFormat(
+            formik.values.grantedAt
+          ),
+        },
+      ]);
       formik.resetForm();
       setIsSubmitted(false);
     },
