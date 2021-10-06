@@ -1,4 +1,5 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
@@ -17,7 +18,7 @@ interface FormActions {
   onSave: (values: Application) => void;
 }
 
-export const useFormActions = (
+const useFormActions = (
   application: Application,
   currentStep: number
 ): FormActions => {
@@ -47,15 +48,20 @@ export const useFormActions = (
   const { t } = useTranslation();
 
   useEffect(() => {
-    // todo:custom error messages
     const error = updateApplicationError || createApplicationError;
 
     if (error) {
+      const errorData = camelcaseKeys(error.response?.data ?? {});
+
       hdsToast({
         autoDismissTime: 0,
         type: 'error',
         labelText: t('common:error.generic.label'),
-        text: t('common:error.generic.text'),
+        text: Object.entries(errorData).map(([key, value]) => (
+          <a key={key} href={`#${key}`}>
+            {value}
+          </a>
+        )),
       });
     }
   }, [t, updateApplicationError, createApplicationError]);
@@ -145,3 +151,5 @@ export const useFormActions = (
     onSave,
   };
 };
+
+export default useFormActions;

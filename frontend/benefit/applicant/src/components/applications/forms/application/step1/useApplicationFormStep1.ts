@@ -1,6 +1,6 @@
 import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
-import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';

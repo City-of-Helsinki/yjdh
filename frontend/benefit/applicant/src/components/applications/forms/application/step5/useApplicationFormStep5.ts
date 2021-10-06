@@ -1,5 +1,5 @@
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
-import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';

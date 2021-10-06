@@ -10,7 +10,7 @@ interface HDSToastArgs {
   autoDismissTime?: number;
   type: NotificationProps['type'];
   labelText: string;
-  text: string | string[];
+  text: JSX.Element | JSX.Element[];
   toastId?: string;
 }
 

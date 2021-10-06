@@ -1,5 +1,5 @@
 import { BENEFIT_TYPES } from 'benefit/applicant/constants';
-import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { Application } from 'benefit/applicant/types/application';
 import Attachment from 'shared/types/attachment';
 

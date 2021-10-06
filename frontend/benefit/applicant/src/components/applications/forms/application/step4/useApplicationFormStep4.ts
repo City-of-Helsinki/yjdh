@@ -1,4 +1,4 @@
-import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {

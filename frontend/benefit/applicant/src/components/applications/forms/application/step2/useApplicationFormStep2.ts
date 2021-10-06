@@ -5,7 +5,7 @@ import {
   PAY_SUBSIDY_OPTIONS,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
-import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
