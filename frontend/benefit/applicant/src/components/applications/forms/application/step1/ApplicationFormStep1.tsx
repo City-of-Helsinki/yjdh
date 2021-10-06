@@ -21,6 +21,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   const {
     t,
     handleSubmit,
+    handleSave,
     getErrorMessage,
     clearDeminimisAids,
     getDefaultSelectValue,
@@ -266,7 +267,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </$GridCell>
         )}
       </FormSection>
-      <StepperActions hasNext handleSubmit={handleSubmit} />
+      <StepperActions handleSubmit={handleSubmit} handleSave={handleSave} />
     </form>
   );
 };

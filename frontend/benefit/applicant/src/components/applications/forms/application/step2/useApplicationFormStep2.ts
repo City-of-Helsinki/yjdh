@@ -43,6 +43,7 @@ type UseApplicationFormStep2Props = {
   minEndDate: Date;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleBack: () => void;
+  handleSave: () => void;
   handleSubmit: () => void;
   clearBenefitValues: () => void;
   clearCommissionValues: () => void;
@@ -62,7 +63,7 @@ const useApplicationFormStep2 = (
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const { handleNext, handleBack } = useFormActions(application, 2);
+  const { onNext, onSave, onBack } = useFormActions(application, 2);
 
   const formik = useFormik<Application>({
     initialValues: {
@@ -78,7 +79,7 @@ const useApplicationFormStep2 = (
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: handleNext,
+    onSubmit: onNext,
   });
 
   const { values, errors, touched, setFieldValue } = formik;
@@ -163,6 +164,8 @@ const useApplicationFormStep2 = (
       return focusAndScroll(fieldName);
     });
   };
+
+  const handleSave = (): void => onSave(values);
 
   const clearCommissionValues = React.useCallback((): void => {
     void setFieldValue(fields.employee.commissionDescription.name, '');
@@ -267,7 +270,8 @@ const useApplicationFormStep2 = (
     getErrorMessage,
     setEndDate,
     handleSubmit,
-    handleBack,
+    handleSave,
+    handleBack: onBack,
   };
 };
 

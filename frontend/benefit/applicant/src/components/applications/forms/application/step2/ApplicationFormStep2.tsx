@@ -44,6 +44,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     clearPaySubsidyValues,
     setEndDate,
     handleSubmit,
+    handleSave,
     handleBack,
     getErrorMessage,
     getSelectValue,
@@ -649,9 +650,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <StepperActions
-        hasBack
-        hasNext
         handleSubmit={handleSubmit}
+        handleSave={handleSave}
         handleBack={handleBack}
       />
     </form>

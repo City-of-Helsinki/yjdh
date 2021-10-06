@@ -24,6 +24,7 @@ type ExtendedComponentProps = {
   translationsBase: string;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
+  handleSave: () => void;
   clearDeminimisAids: () => void;
   formik: FormikProps<Application>;
   deMinimisAids: DeMinimisAid[];
@@ -36,8 +37,7 @@ const useApplicationFormStep1 = (
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-
-  const { handleNext } = useFormActions(application, 1);
+  const { onNext, onSave } = useFormActions(application, 1);
 
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
@@ -49,7 +49,7 @@ const useApplicationFormStep1 = (
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
-    onSubmit: handleNext,
+    onSubmit: onNext,
   });
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
@@ -96,6 +96,8 @@ const useApplicationFormStep1 = (
     });
   };
 
+  const handleSave = (): void => onSave(formik.values);
+
   const clearDeminimisAids = (): void => setDeMinimisAids([]);
 
   const languageOptions = React.useMemo(
@@ -118,6 +120,7 @@ const useApplicationFormStep1 = (
     formik,
     getErrorMessage,
     handleSubmit,
+    handleSave,
     clearDeminimisAids,
     deMinimisAids: application.deMinimisAidSet || [],
     languageOptions,

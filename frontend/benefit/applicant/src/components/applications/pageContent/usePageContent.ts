@@ -43,10 +43,8 @@ const usePageContent = (): ExtendedComponentProps => {
     // todo:custom error messages
     if (applicationTemplateError) {
       hdsToast({
-        autoDismiss: true,
         autoDismissTime: 5000,
         type: 'error',
-        translated: true,
         labelText: t('common:error.generic.label'),
         text: t('common:error.generic.text'),
       });

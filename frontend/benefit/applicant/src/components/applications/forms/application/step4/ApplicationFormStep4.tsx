@@ -13,8 +13,14 @@ import { useApplicationFormStep4 } from './useApplicationFormStep4';
 const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  const { t, handleBack, handleNext, handleStepChange, translationsBase } =
-    useApplicationFormStep4(data);
+  const {
+    t,
+    handleBack,
+    handleNext,
+    handleSave,
+    handleStepChange,
+    translationsBase,
+  } = useApplicationFormStep4(data);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -86,9 +92,8 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
       </FormSection>
 
       <StepperActions
-        hasBack
-        hasNext
         handleSubmit={handleNext}
+        handleSave={handleSave}
         handleBack={handleBack}
       />
     </>

@@ -1,23 +1,19 @@
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
+import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
-import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import {
-  Application,
-  ApplicationData,
-} from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import { Application } from 'benefit/applicant/types/application';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import hdsToast from 'shared/components/toast/Toast';
 import Attachment from 'shared/types/attachment';
-import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
   t: TFunction;
   handleNext: () => void;
+  handleSave: () => void;
   handleBack: () => void;
   handleRemoveAttachment: (attachmentId: string) => void;
   handleUploadAttachment: (attachment: FormData) => void;
@@ -32,9 +28,6 @@ const useApplicationFormStep5 = (
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.credentials.sections';
   const { t } = useTranslation();
-
-  const { mutate: updateApplicationStep4, error: updateApplicationErrorStep5 } =
-    useUpdateApplicationQuery();
 
   const {
     mutate: uploadAttachment,
@@ -59,32 +52,20 @@ const useApplicationFormStep5 = (
 
   useEffect(() => {
     // todo:custom error messages
-    if (updateApplicationErrorStep5 || isRemovingError) {
+    if (isRemovingError) {
       hdsToast({
-        autoDismiss: true,
         autoDismissTime: 5000,
         type: 'error',
-        translated: true,
         labelText: t('common:error.generic.label'),
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, updateApplicationErrorStep5, isRemovingError]);
+  }, [t, isRemovingError]);
 
-  const handleStepChange = (nextStep: number): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
-      {
-        ...application,
-        applicationStep: getApplicationStepString(nextStep),
-      },
-      { deep: true }
-    );
-    updateApplicationStep4(currentApplicationData);
-  };
+  const { onNext, onSave, onBack } = useFormActions(application, 5);
 
-  const handleNext = (): void => handleStepChange(6);
-
-  const handleBack = (): void => handleStepChange(4);
+  const handleNext = (): void => onNext(application);
+  const handleSave = (): void => onSave(application);
 
   const getEmployeeConsentAttachment = (): Attachment | undefined =>
     application.attachments?.find(
@@ -107,7 +88,8 @@ const useApplicationFormStep5 = (
   return {
     t,
     handleNext,
-    handleBack,
+    handleSave,
+    handleBack: onBack,
     handleUploadAttachment,
     handleRemoveAttachment,
     isRemoving,

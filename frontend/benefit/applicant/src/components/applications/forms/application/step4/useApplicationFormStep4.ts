@@ -1,3 +1,4 @@
+import { useFormActions } from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
@@ -13,6 +14,7 @@ import snakecaseKeys from 'snakecase-keys';
 type ExtendedComponentProps = {
   t: TFunction;
   handleNext: () => void;
+  handleSave: () => void;
   handleBack: () => void;
   handleStepChange: (step: number) => void;
   translationsBase: string;
@@ -27,14 +29,14 @@ const useApplicationFormStep4 = (
   const { mutate: updateApplicationStep4, error: updateApplicationErrorStep4 } =
     useUpdateApplicationQuery();
 
+  const { onNext, onSave, onBack } = useFormActions(application, 4);
+
   useEffect(() => {
     // todo:custom error messages
     if (updateApplicationErrorStep4) {
       hdsToast({
-        autoDismiss: true,
         autoDismissTime: 5000,
         type: 'error',
-        translated: true,
         labelText: t('common:error.generic.label'),
         text: t('common:error.generic.text'),
       });
@@ -52,14 +54,15 @@ const useApplicationFormStep4 = (
     updateApplicationStep4(currentApplicationData);
   };
 
-  const handleNext = (): void => handleStepChange(5);
+  const handleNext = (): void => onNext(application);
 
-  const handleBack = (): void => handleStepChange(3);
+  const handleSave = (): void => onSave(application);
 
   return {
     t,
     handleNext,
-    handleBack,
+    handleSave,
+    handleBack: onBack,
     handleStepChange,
     translationsBase,
   };

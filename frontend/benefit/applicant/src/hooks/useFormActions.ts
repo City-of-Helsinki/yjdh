@@ -1,6 +1,6 @@
+import { useTranslation } from 'benefit/applicant/i18n';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import hdsToast from 'shared/components/toast/Toast';
 import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -12,9 +12,9 @@ import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface FormActions {
-  handleNext: (values: Application) => void;
-  handleBack: () => void;
-  handleSave: (values: Application) => void;
+  onNext: (values: Application) => void;
+  onBack: () => void;
+  onSave: (values: Application) => void;
 }
 
 export const useFormActions = (
@@ -24,7 +24,7 @@ export const useFormActions = (
   const router = useRouter();
 
   const {
-    mutate: createApplication,
+    mutateAsync: createApplication,
     data: newApplication,
     error: createApplicationError,
   } = useCreateApplicationQuery();
@@ -41,19 +41,19 @@ export const useFormActions = (
 
   const applicationId = router.query.id;
 
-  const { mutate: updateApplication, error: updateApplicationError } =
+  const { mutateAsync: updateApplication, error: updateApplicationError } =
     useUpdateApplicationQuery();
 
   const { t } = useTranslation();
 
   useEffect(() => {
     // todo:custom error messages
-    if (updateApplicationError || createApplicationError) {
+    const error = updateApplicationError || createApplicationError;
+
+    if (error) {
       hdsToast({
-        autoDismiss: true,
-        autoDismissTime: 5000,
+        autoDismissTime: 0,
         type: 'error',
-        translated: true,
         labelText: t('common:error.generic.label'),
         text: t('common:error.generic.text'),
       });
@@ -95,24 +95,51 @@ export const useFormActions = (
       { deep: true }
     );
 
-  const handleNext = (currentValues: Application): void => {
+  const onNext = async (
+    currentValues: Application
+  ): Promise<ApplicationData | void> => {
     const data = getData(getModifiedValues(currentValues), currentStep + 1);
-    return applicationId ? updateApplication(data) : createApplication(data);
+
+    try {
+      return applicationId ? updateApplication(data) : createApplication(data);
+    } catch (error) {
+      // useEffect will catch this error
+    }
+    return undefined;
   };
 
-  const handleBack = (): void => {
+  const onBack = async (): Promise<ApplicationData | void> => {
     const data = getData(application, currentStep - 1);
-    return updateApplication(data);
+
+    try {
+      return updateApplication(data);
+    } catch (error) {
+      // useEffect will catch this error
+    }
+    return undefined;
   };
 
-  const handleSave = (currentValues: Application): void => {
+  const onSave = async (
+    currentValues: Application
+  ): Promise<ApplicationData | void> => {
     const data = getData(getModifiedValues(currentValues), currentStep);
-    return applicationId ? updateApplication(data) : createApplication(data);
+
+    try {
+      const result = applicationId
+        ? await updateApplication(data)
+        : await createApplication(data);
+
+      await router.push('/');
+      return result;
+    } catch (error) {
+      // useEffect will catch this error
+    }
+    return undefined;
   };
 
   return {
-    handleNext,
-    handleBack,
-    handleSave,
+    onNext,
+    onBack,
+    onSave,
   };
 };
