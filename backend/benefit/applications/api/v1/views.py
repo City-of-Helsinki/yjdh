@@ -1,6 +1,8 @@
 from applications.api.v1.serializers import ApplicationSerializer, AttachmentSerializer
 from applications.enums import ApplicationStatus
 from applications.models import Application
+from companies.models import Company
+from django.conf import settings
 from django.core import exceptions
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
@@ -9,8 +11,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from users.utils import get_business_id_from_user
 
 
 class ApplicationFilter(filters.FilterSet):
@@ -30,9 +32,12 @@ class ApplicationFilter(filters.FilterSet):
         fields = {
             "batch": ["exact"],
             "archived": ["exact"],
+            "employee__social_security_number": ["exact"],
             "company__business_id": ["exact"],
             "benefit_type": ["exact"],
             "company_name": ["iexact", "icontains"],
+            "employee__first_name": ["iexact", "icontains"],
+            "employee__last_name": ["iexact", "icontains"],
         }
 
 
@@ -42,7 +47,6 @@ class ApplicationFilter(filters.FilterSet):
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
-    permission_classes = [AllowAny]  # TODO access control
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
@@ -50,6 +54,25 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     ]
     filterset_class = ApplicationFilter
     search_fields = ["company_name", "company_contact_person_email"]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # FIXME: Remove this when FE implemented authentication
+        if settings.DISABLE_AUTHENTICATION:
+            return qs
+        user = self.request.user
+        if user.is_authenticated:
+            if user.is_handler():
+                return qs
+            else:
+                business_id = get_business_id_from_user(self.request.user)
+                if business_id:
+                    try:
+                        company = Company.objects.get(business_id=business_id)
+                        return company.applications.all()
+                    except Company.DoesNotExist:
+                        pass
+        return Application.objects.none()
 
     @action(
         methods=("POST",),

@@ -1,13 +1,13 @@
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.services import get_or_create_company_with_business_id
-from companies.tests.data.company_data import DUMMY_COMPANY_DATA
+from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.db import transaction
+from django.http import HttpRequest
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from requests.exceptions import HTTPError
 from rest_framework import status
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -37,13 +37,13 @@ class GetCompanyView(APIView):
         return Response(message, status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
-    def get_mock(self, request: Request, format: str = None) -> Response:
+    def get_mock(self, request: HttpRequest, format: str = None) -> Response:
         # This mocked get method will be used for testing purposes for the frontend.
         session_id = request.META.get("HTTP_SESSION_ID")
         if session_id == "-1":
             return self.ytj_api_error
 
-        company = Company(**DUMMY_COMPANY_DATA)
+        company = Company(**get_dummy_company_data())
         company_data = CompanySerializer(company).data
 
         return Response(company_data)
@@ -57,17 +57,16 @@ class GetCompanyView(APIView):
     )
     @transaction.atomic
     def get(
-        self, request: Request, business_id: str = None, format: str = None
+        self, request: HttpRequest, business_id: str = None, format: str = None
     ) -> Response:
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
-        # TODO: Remove business id params later after authentication is completed in FE
-        if not business_id and request.user.is_authenticated:
+        if not settings.DISABLE_AUTHENTICATION:
             eauth_profile = request.user.oidc_profile.eauthorization_profile
 
             try:
-                organization_roles = get_organization_roles(eauth_profile)
+                organization_roles = get_organization_roles(eauth_profile, request)
             except HTTPError:
                 return self.organization_roles_error
 

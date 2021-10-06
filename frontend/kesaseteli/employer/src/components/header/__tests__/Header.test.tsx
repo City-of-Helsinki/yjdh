@@ -10,7 +10,7 @@ import headerApi from 'shared/__tests__/component-apis/header-api';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
-import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 
 describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => {
   it('Redirects to backend when clicked login button', async () => {
@@ -22,7 +22,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     headerApi.actions.clickLoginButton();
     await waitFor(() =>
       expect(spyRouterPush).toHaveBeenCalledWith(
-        getBackendUrl('/oidc/authenticate/')
+        `${getBackendUrl('/oidc/authenticate/')}?lang=${DEFAULT_LANGUAGE}`
       )
     );
   });
@@ -53,7 +53,6 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
       await waitFor(() =>
         expect(spyRouterPush).toHaveBeenCalledWith(undefined, undefined, {
           locale: String(lang),
-          shallow: true,
         })
       );
     }

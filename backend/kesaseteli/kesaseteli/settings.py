@@ -1,7 +1,9 @@
 import os
 
 import environ
+import sentry_sdk
 from django.utils.translation import gettext_lazy as _
+from sentry_sdk.integrations.django import DjangoIntegration
 
 checkout_dir = environ.Path(__file__) - 2
 assert os.path.exists(checkout_dir("manage.py"))
@@ -31,6 +33,8 @@ env = environ.Env(
     MAIL_MAILGUN_KEY=(str, ""),
     MAIL_MAILGUN_DOMAIN=(str, ""),
     MAIL_MAILGUN_API=(str, ""),
+    SENTRY_DSN=(str, ""),
+    SENTRY_ENVIRONMENT=(str, ""),
     CORS_ORIGIN_WHITELIST=(list, []),
     CORS_ORIGIN_ALLOW_ALL=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
@@ -44,7 +48,7 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
-    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL=(str, "/excel-download/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, ""),
     EAUTHORIZATIONS_CLIENT_ID=(str, ""),
@@ -53,6 +57,7 @@ env = environ.Env(
     ADFS_CLIENT_ID=(str, "client_id"),
     ADFS_CLIENT_SECRET=(str, "client_secret"),
     ADFS_TENANT_ID=(str, "tenant_id"),
+    ADFS_CONTROLLER_GROUP_UUIDS=(list, []),
     DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_ACCOUNT_KEY=(str, ""),
@@ -70,7 +75,7 @@ env = environ.Env(
     ELASTICSEARCH_API_KEY=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
-    AZURE_INSTRUMENTATION_KEY=(str, ""),
+    ENABLE_ADMIN=(bool, True),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -82,6 +87,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
+ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -89,6 +95,13 @@ USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
 DATABASES = {"default": env.db()}
 
 CACHES = {"default": env.cache()}
+
+sentry_sdk.init(
+    dsn=env.str("SENTRY_DSN"),
+    release="n/a",
+    environment=env("SENTRY_ENVIRONMENT"),
+    integrations=[DjangoIntegration()],
+)
 
 MEDIA_ROOT = env("MEDIA_ROOT")
 STATIC_ROOT = env("STATIC_ROOT")
@@ -107,7 +120,6 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -125,6 +137,9 @@ INSTALLED_APPS = [
     "applications",
     "companies",
 ]
+
+if ENABLE_ADMIN:
+    INSTALLED_APPS.append("django.contrib.admin")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -189,16 +204,6 @@ LOGGING = {
     },
 }
 
-# Azure logging
-AZURE_INSTRUMENTATION_KEY = env.str("AZURE_INSTRUMENTATION_KEY")
-
-if AZURE_INSTRUMENTATION_KEY:
-    LOGGING["handlers"]["azure"] = {
-        "class": "opencensus.ext.azure.log_exporter.AzureLogHandler",
-        "instrumentation_key": AZURE_INSTRUMENTATION_KEY,
-    }
-    LOGGING["loggers"]["django"]["handlers"].append("azure")
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -247,9 +252,9 @@ EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
 
-ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
-ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
-ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID") or "client_id"
+ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET") or "client_secret"
+ADFS_TENANT_ID = env.str("ADFS_TENANT_ID") or "tenant_id"
 
 # https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html#step-2-configuring-settings-py
 AUTH_ADFS = {
@@ -264,6 +269,8 @@ AUTH_ADFS = {
 
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
+
+ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
 # End of Authentication
 
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]

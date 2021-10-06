@@ -56,6 +56,7 @@ class AttachmentType(models.TextChoices):
         "education contract of the apprenticeship office"
     )
     HELSINKI_BENEFIT_VOUCHER = "helsinki_benefit_voucher", _("helsinki benefit voucher")
+    EMPLOYEE_CONSENT = "employee_consent", _("helsinki benefit voucher")
 
 
 class AttachmentRequirement(models.TextChoices):

@@ -1,6 +1,5 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import {
-  DEFAULT_APPLICATION,
+  APPLICATION_INITIAL_VALUES,
   DEFAULT_APPLICATION_STEP,
 } from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
@@ -15,6 +14,7 @@ import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { StepProps } from 'shared/components/stepper/Step';
+import hdsToast from 'shared/components/toast/Toast';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -30,8 +30,7 @@ const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
   const { t } = useTranslation();
-  const { applicationTempData, setCurrentStep } =
-    React.useContext(ApplicationContext);
+  const { applicationTempData } = React.useContext(ApplicationContext);
   const [isLoading, setIsLoading] = useState(true);
   // query param used in edit mode. id from context used for updating newly created application
   const existingApplicationId = id?.toString() || applicationTempData?.id;
@@ -64,20 +63,8 @@ const usePageContent = (): ExtendedComponentProps => {
       existingApplicationStatus !== 'loading'
     ) {
       setIsLoading(false);
-      const existingApplicationCurrentStep = getApplicationStepFromString(
-        existingApplication?.application_step || DEFAULT_APPLICATION_STEP
-      );
-      if (applicationTempData.currentStep !== existingApplicationCurrentStep) {
-        setCurrentStep(existingApplicationCurrentStep);
-      }
     }
-  }, [
-    existingApplicationStatus,
-    id,
-    existingApplication,
-    setCurrentStep,
-    applicationTempData,
-  ]);
+  }, [existingApplicationStatus, id, existingApplication, applicationTempData]);
 
   useEffect(() => {
     if (router.isReady && !router.query.id) {
@@ -86,7 +73,7 @@ const usePageContent = (): ExtendedComponentProps => {
   }, [router]);
 
   let application: Application = {};
-  const defaultApplication = DEFAULT_APPLICATION as Application;
+  const defaultApplication: Application = APPLICATION_INITIAL_VALUES;
 
   // if no id, get the application template date
   if (existingApplication || (!existingApplicationId && applicationTemplate)) {
@@ -96,7 +83,7 @@ const usePageContent = (): ExtendedComponentProps => {
       {
         deep: true,
       }
-    ) as Application;
+    );
   }
 
   const steps = React.useMemo((): StepProps[] => {
@@ -117,7 +104,9 @@ const usePageContent = (): ExtendedComponentProps => {
     t,
     id,
     steps,
-    currentStep: applicationTempData.currentStep,
+    currentStep: getApplicationStepFromString(
+      application.applicationStep || DEFAULT_APPLICATION_STEP
+    ),
     application: !isEmpty(application)
       ? { ...defaultApplication, ...application }
       : defaultApplication,

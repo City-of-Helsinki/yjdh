@@ -44,12 +44,14 @@
       "deleteApplication": "Poista hakemus",
       "continue": "Jatka",
       "send": "Lähetä",
-      "back": "Back"
+      "back": "Back",
+      "edit": "Muokkaa"
     },
     "sections": {
       "company": {
         "heading1": "Yrityksen tiedot",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
+        "heading2Short": "Yhteyshenkilö",
         "heading3": "Hakijan de minimis-tuet",
         "heading4": "YT-tilanne",
         "businessId": "Y-tunnus: {{ businessId }}",
@@ -129,6 +131,7 @@
           },
           "deMinimisAidGrantedAt": {
             "label": "Myöntämispäivämääärä",
+            "labelShort": "Myönnetty",
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
@@ -144,8 +147,10 @@
       },
       "employee": {
         "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
+        "heading1Short": "Palkattava henkilö",
         "heading2": "Palkkatukipäätös",
         "heading3": "Haettava tukimuoto",
+        "heading3Long": "Haettava tukimuoto ja ajankohta",
         "heading4": "Haetaan ajalle",
         "heading5Employment": "Työsuhde",
         "heading5Assignment": "Toimeksianto",
@@ -198,7 +203,9 @@
           },
           "isLivingInHelsinki": {
             "label": "Helsinki kotikuntana",
-            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa"
+            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
+            "yes": "Kyllä",
+            "no": "Ei"
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty palkkatuki?",
@@ -209,10 +216,10 @@
             "label": "Päätöksessä oleva palkkatukiprosentti"
           },
           "additionalPaySubsidyPercent": {
-            "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki, anna siinä oleva palkkatukiprosentti"
+            "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki,\nanna siinä oleva palkkatukiprosentti"
           },
           "apprenticeshipProgram": {
-            "label": "Onko kyseessä oppisopmus",
+            "label": "Onko kyseessä oppisopimus?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -228,7 +235,8 @@
           },
           "workingHours": {
             "label": "Työaika t/viikko",
-            "placeholder": "Tunteja"
+            "placeholder": "Tunteja",
+            "view": "Työaika: {{workingHours}} t / viikko"
           },
           "collectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
@@ -236,15 +244,18 @@
           },
           "monthlyPay": {
             "label": "Bruttopalkka €/kk",
-            "placeholder": "Palkka"
+            "placeholder": "Palkka",
+            "view": "Bruttopalkka {{monthlyPay}} €/kk"
           },
           "otherExpenses": {
             "label": "Sivukulut €/kk",
-            "placeholder": "Sivukulut"
+            "placeholder": "Sivukulut",
+            "view": "Sivukulut {{otherExpenses}} €/kk"
           },
           "vacationMoney": {
             "label": "Lomaraha",
-            "placeholder": "Lomaraha"
+            "placeholder": "Lomaraha",
+            "view": "Lomaraha {{vacationMoney}} €"
           },
           "commissionDescription": {
             "label": "Toimeksiannon kuvaus",
@@ -253,6 +264,14 @@
           "commissionAmount": {
             "label": "Palkkio €",
             "placeholder": "Palkkio"
+          },
+          "startDate": {
+            "label": "Alkaen",
+            "placeholder": "Alkaen"
+          },
+          "endDate": {
+            "label": "Päättyen",
+            "placeholder": "Päättyen"
           }
         }
       },
@@ -287,7 +306,20 @@
         "heading1": "Ole hyvä ja tarkista hakemus"
       },
       "credentials": {
-        "heading1": "Valtakirja"
+        "heading1": "Valtakirja",
+        "sections": {
+          "electronicPowerOfAttorney": {
+            "title": "Sähköinen valtakirja",
+            "description": "Pyydä palkattavaa henkilöä tekemään sähköinen valtakirja. Saat ilmoituksen kun valtakirja on tehty.",
+            "action1": "Pyydä sähköistä valtakirjaa"
+          },
+          "uploadPowerOfAttorney": {
+            "title": "Liitä valtakirja",
+            "description": "Voit myös tulostaa valtakirjapohjan, pyytää siihen allekirjoitus ja liittää se hakemukseen.",
+            "action1": "Tulosta",
+            "action2": "Liitä valtakirja"
+          }
+        }
       },
       "send": {
         "heading1": "Otsikko tähän"
@@ -319,6 +351,9 @@
   "attachmentsIngress": {
     "text": "Lisää hakemukselle seuraavat liitteet. Liitteet ovat pakollisia, ellei toisin sanota. Tiedostomuoto voi olla JPG, PNG tai PDF. Suurin sallittu koko 10 MB.",
     "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+  },
+  "credentialsIngress": {
+    "text": "Valitse yksi alla olevista tavoista. Hakemus on valmis lähetettäväksi vasta, kun palkattava henkilö on tehnyt sähköisen valtakirjan tai olet liittänyt allekirjoitetun valtakirjan. Huomoithan, että tämän jälkeen hakemusta ei voi enää muokata."
   },
   "menuToggleAriaLabel": "Menu",
   "form": {
@@ -355,6 +390,9 @@
       },
       "iban": {
         "invalid": "Invalid IBAN value"
+      },
+      "ssn": {
+        "invalid": "Invalid SSN value"
       }
     }
   },

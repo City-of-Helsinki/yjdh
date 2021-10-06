@@ -13,6 +13,7 @@ RUN apt-install.sh \
         netcat \
         libpq-dev \
         build-essential \
+        gettext \
     && pip install -U pip \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && pip install --no-cache-dir  -r /app/requirements-prod.txt \

@@ -6,6 +6,8 @@
 #
 appdirs==1.4.4
     # via black
+appnope==0.1.2
+    # via ipython
 attrs==21.2.0
     # via pytest
 backcall==0.2.0

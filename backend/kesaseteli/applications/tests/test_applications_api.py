@@ -120,6 +120,7 @@ def test_add_empty_summer_voucher(api_client, application):
 @pytest.mark.django_db
 def test_update_summer_voucher(api_client, application, summer_voucher):
     data = ApplicationSerializer(application).data
+    summer_voucher_id = summer_voucher.id
     data["summer_vouchers"][0]["summer_voucher_serial_number"] = "test"
 
     response = api_client.put(
@@ -129,6 +130,8 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
 
     assert response.status_code == 200
     assert response.data["summer_vouchers"][0]["summer_voucher_serial_number"] == "test"
+    # Make sure that the summer voucher ID stays the same
+    assert response.data["summer_vouchers"][0]["id"] == str(summer_voucher_id)
 
 
 @pytest.mark.django_db
@@ -149,10 +152,13 @@ def test_update_summer_voucher_with_invalid_data(
 
 @pytest.mark.django_db
 def test_remove_single_summer_voucher(api_client, application, summer_voucher):
+    SummerVoucherFactory(application=application)  # Add a second voucher
+    application.refresh_from_db()
     original_summer_voucher_count = application.summer_vouchers.count()
 
     data = ApplicationSerializer(application).data
     data["summer_vouchers"].pop()
+    existing_summer_voucher = data["summer_vouchers"][0]
 
     response = api_client.put(
         get_detail_url(application),
@@ -164,6 +170,7 @@ def test_remove_single_summer_voucher(api_client, application, summer_voucher):
     application.refresh_from_db()
     summer_voucher_count_after_update = application.summer_vouchers.count()
     assert summer_voucher_count_after_update == original_summer_voucher_count - 1
+    assert response.data["summer_vouchers"][0]["id"] == existing_summer_voucher["id"]
 
 
 @pytest.mark.django_db
@@ -369,3 +376,25 @@ def test_application_get_only_finds_own_application(
     response = api_client.get(get_detail_url(application))
     assert response.status_code == 200
     assert str(response.data["id"]) == str(application.id)
+
+
+@pytest.mark.django_db
+def test_application_update_submitted_application(api_client, submitted_application):
+    data = ApplicationSerializer(submitted_application).data
+    data["invoicer_name"] = "test"
+    response = api_client.put(
+        get_detail_url(submitted_application),
+        data,
+    )
+
+    assert response.status_code == 400
+    assert "Only DRAFT applications can be updated" in response.data
+
+
+@pytest.mark.django_db
+def test_applications_view_permissions(api_client, application, submitted_application):
+    response = api_client.get(reverse("v1:application-list"))
+
+    assert response.status_code == 200
+    assert any(x["id"] == str(application.id) for x in response.data)
+    assert any(x["id"] == str(submitted_application.id) for x in response.data)

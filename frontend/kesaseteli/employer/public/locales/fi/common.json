@@ -11,6 +11,22 @@
     "retry": "Lataa sivu uudelleen",
     "logout": "Kirjaudu ulos"
   },
+  "404Page": {
+    "pageNotFoundLabel": "Sivua ei löytynyt",
+    "pageNotFoundContent": "Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+  },
+  "loginPage": {
+    "logoutMessageLabel": "Olet kirjautunut ulos",
+    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+  },
+  "thankyouPage": {
+    "thankyouMessageLabel": "Hakemus on lähetetty",
+    "thankyouMessageContent": "Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
+    "createNewApplication": "Tee uusi hakemus"
+  },
   "application": {
     "new": "Uusi hakemus",
     "common_error": "Tapahtui tuntematon virhe",
@@ -30,23 +46,18 @@
           "postcode": "Postiosoite",
           "city": "Kunta"
         }
-      },
-      "form": {
-        "title": "Työnantajan tiedot",
-        "invoicer_name": "Yhteyshenkilön nimi",
-        "invoicer_email": "Yhteyshenkilön sähköposti",
-        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
-        "submit_button": "Tallenna ja jatka",
-        "errors": {
-          "invoicer_name": "Nimi puuttuu",
-          "invoicer_email": "Sähköposti on virheellinen",
-          "invoicer_phone_number": "Puhelinnumero on virheellinen"
-        }
       }
     },
     "step2": {
       "name": "Työsuhteet",
-      "header": "2. Selvitys työsuhteesta"
+      "header": "2. Selvitys työsuhteesta",
+      "employment": "Työsuhde",
+      "tooltip": "FI Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "attachments_section": "Pakolliset liitteet",
+      "employment_section": "Työsuhteen kuvaus",
+      "add_employment": "Lisää uusi työsuhde",
+      "save_employment": "Tallenna tiedot",
+      "remove_employment": "Poista tiedot"
     },
     "step3": {
       "name": "Lähetys",
@@ -56,6 +67,55 @@
       "previous": "Palaa edelliseen",
       "save_and_continue": "Tallenna ja jatka",
       "send": "Lähetä hakemus"
+    },
+    "form": {
+      "selectionGroups": {
+        "summer_voucher_exception_reason": {
+          "9th_grader": "9. luokkalainen",
+          "born_2004": "Syntynyt vuonna 2004"
+        },
+        "hired_without_voucher_assessment" : {
+          "yes": "Kyllä",
+          "no": "En",
+          "maybe": "Ehkä"
+        }
+      },
+      "inputs": {
+        "invoicer_name": "Yhteyshenkilön nimi",
+        "invoicer_email": "Yhteyshenkilön sähköposti",
+        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
+        "employee_name": "Työntekijän nimi",
+        "employee_ssn": "Henkilötunnus",
+        "summer_voucher_exception_reason": "Luokka tai syntymävuosi",
+        "employee_home_city": "Kotipaikkakunta",
+        "employee_postcode": "Postinumero",
+        "employee_phone_number": "Puhelinnumero",
+        "employment_postcode": "Työn suorituspaikan postinumero",
+        "summer_voucher_serial_number": "Kesäsetelin sarjanumero",
+        "employee_school": "Koulu",
+        "employment_start_date": "Työsuhde alkoi",
+        "employment_end_date": "Työsuhde päättyi",
+        "employment_work_hours": "Tehdyt työtunnit",
+        "employment_description": "Kuvaus työtehtävistä",
+        "employment_salary_paid": "Maksettu palkka (€)",
+        "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä?"
+      },
+      "helpers": {
+        "date": "Käytä muotoa P.K.VVVV",
+        "format": "Käytä muotoa"
+      },
+      "errors": {
+        "required": "Tieto puuttuu tai on virheellinen",
+        "maxLength": "Syöttämäsi tieto on liian pitkä",
+        "pattern": "Syöttämäsi tieto on virheellistä muotoa",
+        "validate": "Syöttämäsi tieto on virheellistä muotoa",
+        "selectionGroups": "Valitse jokin vaihtoehto",
+        "employmentsRequired": "Lisää ainakin yksi työsuhde"
+      },
+      "notification": {
+        "title": "Virheitä kenttien tiedoissa",
+        "description": "Täytä puuttuvat tai virheelliset tiedot"
+      }
     }
   },
   "footer": {

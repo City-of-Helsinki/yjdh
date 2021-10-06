@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from datetime import date, datetime
+from unittest import mock
 
 import pytest
 import pytz
@@ -16,7 +17,7 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationFactory
+from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -28,6 +29,19 @@ from rest_framework.reverse import reverse
 
 def get_detail_url(application):
     return reverse("v1:application-detail", kwargs={"pk": application.id})
+
+
+def test_applications_unauthenticated(anonymous_client, application):
+    response = anonymous_client.get(reverse("v1:application-list"))
+    assert response.status_code == 403
+
+
+def test_applications_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    response = api_client.get(reverse("v1:application-list"))
+    assert len(response.data) == 0
+    assert response.status_code == 200
 
 
 def test_applications_list(api_client, application):
@@ -56,10 +70,38 @@ def test_applications_list_with_filter(api_client, application):
 
 
 def test_applications_filter_by_batch(api_client, application_batch, application):
+    application_batch.applications.all().update(company=application.company)
     url = reverse("v1:application-list") + f"?batch={application_batch.pk}"
     response = api_client.get(url)
     assert len(response.data) == 2
     assert response.status_code == 200
+
+
+def test_applications_filter_by_ssn(api_client, application, association_application):
+    assert (
+        application.employee.social_security_number
+        != association_application.employee.social_security_number
+    )
+    url = (
+        reverse("v1:application-list")
+        + f"?employee__social_security_number={application.employee.social_security_number}"
+    )
+    response = api_client.get(url)
+    assert len(response.data) == 1
+    assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_application_single_read_unauthenticated(anonymous_client, application):
+    response = anonymous_client.get(get_detail_url(application))
+    assert response.status_code == 403
+
+
+def test_application_single_read_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    response = api_client.get(get_detail_url(anonymous_application))
+    assert response.status_code == 404
 
 
 def test_application_single_read(api_client, application):
@@ -74,6 +116,19 @@ def test_application_template(api_client):
     assert (
         len(response.data["de_minimis_aid_set"]) == 0
     )  # as of 2021-06-16, just a dummy implementation exists
+
+
+def test_application_post_success_unauthenticated(anonymous_client, application):
+    data = ApplicationSerializer(application).data
+    application.delete()
+    assert len(Application.objects.all()) == 0
+
+    del data["id"]  # id is read-only field and would be ignored
+    response = anonymous_client.post(
+        reverse("v1:application-list"),
+        data,
+    )
+    assert response.status_code == 403
 
 
 def test_application_post_success(api_client, application):
@@ -180,6 +235,7 @@ def test_application_post_invalid_data(api_client, application):
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
+
     data[
         "company_contact_person_phone_number"
     ] = "+359505658789"  # Invalid country code
@@ -229,6 +285,28 @@ def test_application_post_invalid_employee_data(api_client, application):
     assert (
         "monthly_pay" in response.data["employee"].keys()
     )  # Check if the error still there
+
+
+def test_application_put_edit_fields_unauthenticated(anonymous_client, application):
+    data = ApplicationSerializer(application).data
+    data["company_contact_person_phone_number"] = "+358505658789"
+    response = anonymous_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 403
+
+
+def test_application_put_edit_fields_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    data = ApplicationSerializer(anonymous_application).data
+    data["company_contact_person_phone_number"] = "+358505658789"
+    response = api_client.put(
+        get_detail_url(anonymous_application),
+        data,
+    )
+    assert response.status_code == 404
 
 
 def test_application_put_edit_fields(api_client, application):
@@ -406,37 +484,62 @@ def test_application_edit_benefit_type_business(api_client, application):
     data = ApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["apprenticeship_program"] = False
-
+    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_percent"] = 50
     response = api_client.put(
         get_detail_url(application),
         data,
     )
     assert response.status_code == 200
-    assert response.data["available_benefit_types"] == [
+    assert set(response.data["available_benefit_types"]) == {
         BenefitType.SALARY_BENEFIT,
         BenefitType.COMMISSION_BENEFIT,
         BenefitType.EMPLOYMENT_BENEFIT,
-    ]
+    }
+
+
+def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
+    data["apprenticeship_program"] = False
+    data["pay_subsidy_granted"] = False
+    data["pay_subsidy_percent"] = None
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 200
+    assert set(response.data["available_benefit_types"]) == {
+        BenefitType.COMMISSION_BENEFIT,
+        BenefitType.EMPLOYMENT_BENEFIT,
+    }
 
 
 def test_application_edit_benefit_type_business_association(
-    api_client, association_application
+    api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
     data = ApplicationSerializer(association_application).data
+    company = mock_get_organisation_roles_and_create_company
+    company.company_form = "ry"
+    company.save()
+    association_application.company = company
+    association_application.save()
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = False
+    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_percent"] = 50
 
     response = api_client.put(
         get_detail_url(association_application),
         data,
     )
     assert response.status_code == 200
-    assert response.data["available_benefit_types"] == [
+    assert set(response.data["available_benefit_types"]) == {
         BenefitType.SALARY_BENEFIT,
         BenefitType.COMMISSION_BENEFIT,
         BenefitType.EMPLOYMENT_BENEFIT,
-    ]
+    }
 
 
 def test_application_edit_benefit_type_business_association_with_apprenticeship(
@@ -446,23 +549,27 @@ def test_application_edit_benefit_type_business_association_with_apprenticeship(
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = True
+    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_percent"] = 50
 
     response = api_client.put(
         get_detail_url(association_application),
         data,
     )
     assert response.status_code == 200
-    assert response.data["available_benefit_types"] == [
+    assert set(response.data["available_benefit_types"]) == {
         BenefitType.SALARY_BENEFIT,
         BenefitType.EMPLOYMENT_BENEFIT,
-    ]
+    }
 
 
 def test_application_edit_benefit_type_non_business(
     api_client, association_application
 ):
+    association_application.pay_subsidy_granted = True
+    association_application.pay_subsidy_percent = 50
+    association_application.save()
     data = ApplicationSerializer(association_application).data
-
     response = api_client.put(
         get_detail_url(association_application),
         data,
@@ -476,6 +583,9 @@ def test_application_edit_benefit_type_non_business(
 def test_application_edit_benefit_type_non_business_invalid(
     api_client, association_application
 ):
+    association_application.pay_subsidy_granted = True
+    association_application.pay_subsidy_percent = 50
+    association_application.save()
     data = ApplicationSerializer(association_application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
 
@@ -484,6 +594,30 @@ def test_application_edit_benefit_type_non_business_invalid(
         data,
     )
     assert response.status_code == 400
+
+
+def test_association_immediate_manager_check(api_client, application):
+    data = ApplicationSerializer(application).data
+    data["association_immediate_manager_check"] = False  # invalid value
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_application_delete_unauthenticated(anonymous_client, application):
+    response = anonymous_client.delete(get_detail_url(application))
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_application_delete_unauthorized(
+    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+):
+    response = api_client.delete(get_detail_url(anonymous_application))
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db
@@ -518,6 +652,9 @@ def test_application_date_range(
     data["benefit_type"] = benefit_type
     data["start_date"] = start_date
     data["end_date"] = end_date
+    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_percent"] = 50
+
     response = api_client.put(
         get_detail_url(application),
         data,
@@ -526,6 +663,184 @@ def test_application_date_range(
     if status_code == 200:
         assert response.data["start_date"] == start_date
         assert response.data["end_date"] == end_date
+
+
+@pytest.mark.parametrize(
+    "previous_benefits, benefit_type, expected_result",
+    [
+        (
+            [
+                (
+                    "2020-01-01",
+                    "2020-12-31",
+                )
+            ],
+            BenefitType.SALARY_BENEFIT,
+            400,
+        ),  # 12 months of benefit used, 24 months not elapsed
+        (
+            [
+                (
+                    "2020-01-01",
+                    "2020-12-31",
+                )
+            ],
+            BenefitType.EMPLOYMENT_BENEFIT,
+            400,
+        ),  # same as above, benefit_type does not matter
+        (
+            [
+                (
+                    "2019-01-01",
+                    "2019-12-31",
+                )
+            ],
+            BenefitType.EMPLOYMENT_BENEFIT,
+            400,
+        ),  # 12 months of benefit used, 24 months not elapsed
+        (
+            [
+                (
+                    "2018-01-01",
+                    "2018-12-31",
+                )
+            ],
+            BenefitType.EMPLOYMENT_BENEFIT,
+            200,
+        ),  # 24 months is elapsed
+        (
+            [
+                (
+                    "2020-01-01",
+                    "2020-06-30",
+                )
+            ],
+            BenefitType.SALARY_BENEFIT,
+            200,
+        ),  # only 6 months of benefit used
+        (
+            [
+                (
+                    "2020-01-01",
+                    "2020-07-01",
+                ),
+            ],
+            BenefitType.SALARY_BENEFIT,
+            400,
+        ),
+        # 6 months + 1 day of benefit used, one day too much for a new 6-month benefit
+        (
+            [
+                (
+                    "2019-07-01",
+                    "2019-12-31",
+                ),
+                (
+                    "2020-07-01",
+                    "2020-12-31",
+                ),
+            ],
+            BenefitType.SALARY_BENEFIT,
+            400,
+        ),  # 24 months not elapsed
+        (
+            [
+                (
+                    "2019-01-01",
+                    "2019-06-30",
+                ),
+                (
+                    "2020-07-01",
+                    "2020-12-31",
+                ),
+            ],
+            BenefitType.SALARY_BENEFIT,
+            400,
+        ),  # 24 months not elapsed
+        (
+            [
+                (
+                    "2018-01-01",
+                    "2018-06-30",
+                ),
+                (
+                    "2018-07-01",
+                    "2018-12-31",
+                ),
+            ],
+            BenefitType.SALARY_BENEFIT,
+            200,
+        ),  # 24 months elapsed
+        (
+            [
+                (
+                    "2017-07-01",
+                    "2018-06-30",
+                ),
+                (
+                    "2020-07-01",
+                    "2020-12-31",
+                ),
+            ],
+            BenefitType.SALARY_BENEFIT,
+            200,
+        ),
+        # 24-month gap in past benefits so the benefit from 2017-2018 is not included and application is valid
+        (
+            [
+                (
+                    "2018-01-01",
+                    "2018-03-31",
+                ),
+                (
+                    "2019-01-01",
+                    "2019-03-31",
+                ),
+                (
+                    "2020-01-01",
+                    "2020-03-31",
+                ),
+            ],
+            BenefitType.SALARY_BENEFIT,
+            400,
+        ),
+        # several previously granted benefits that don't have a 24-month gap
+    ],
+)
+def test_application_with_previously_granted_benefits(
+    api_client, application, previous_benefits, benefit_type, expected_result
+):
+    for previous_start_date, previous_end_date in previous_benefits:
+        # previous, already granted benefits for the same employee+company
+        decided_application = DecidedApplicationFactory()
+        decided_application.benefit_type = BenefitType.SALARY_BENEFIT
+        decided_application.start_date = previous_start_date
+        decided_application.end_date = previous_end_date
+        decided_application.company = application.company
+        decided_application.save()
+        decided_application.employee.social_security_number = (
+            application.employee.social_security_number
+        )
+        decided_application.employee.save()
+
+    data = ApplicationSerializer(application).data
+
+    data["benefit_type"] = benefit_type
+    data["start_date"] = date(2021, 7, 1)
+    data["end_date"] = date(2021, 12, 31)
+    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_percent"] = 50
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == expected_result
+    if expected_result == 200:
+        assert response.data["start_date"] == "2021-07-01"
+        assert response.data["end_date"] == "2021-12-31"
+    else:
+        assert response.data.keys() == {"start_date"}
 
 
 @pytest.mark.parametrize(
@@ -558,22 +873,19 @@ def test_application_status_change(
     data["status"] = to_status
 
     if to_status == ApplicationStatus.RECEIVED:
-        # Add enough attachments so that the state transition is valid. See separete test
-        # for attachment validation.
-        _add_pdf_attachment(request, application, AttachmentType.PAY_SUBSIDY_DECISION)
-        _add_pdf_attachment(request, application, AttachmentType.EMPLOYMENT_CONTRACT)
-        _add_pdf_attachment(request, application, AttachmentType.EDUCATION_CONTRACT)
-        _add_pdf_attachment(request, application, AttachmentType.COMMISSION_CONTRACT)
-        _add_pdf_attachment(
-            request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER
-        )
-    if data["organization_type"] == OrganizationType.ASSOCIATION:
+        add_attachments_to_application(request, application)
+    if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
+        data["association_immediate_manager_check"] = True
 
-    response = api_client.put(
-        get_detail_url(application),
-        data,
-    )
+    with mock.patch(
+        "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
+    ):
+        # terms approval is tested separately
+        response = api_client.put(
+            get_detail_url(application),
+            data,
+        )
     assert response.status_code == expected_code
     if expected_code == 200:
         assert application.log_entries.all().count() == 1
@@ -581,6 +893,17 @@ def test_application_status_change(
         assert application.log_entries.all().first().to_status == to_status
     else:
         assert application.log_entries.all().count() == 0
+
+
+def add_attachments_to_application(request, application):
+    # Add enough attachments so that the state transition is valid. See separete test
+    # for attachment validation.
+    _add_pdf_attachment(request, application, AttachmentType.PAY_SUBSIDY_DECISION)
+    _add_pdf_attachment(request, application, AttachmentType.EMPLOYMENT_CONTRACT)
+    _add_pdf_attachment(request, application, AttachmentType.EDUCATION_CONTRACT)
+    _add_pdf_attachment(request, application, AttachmentType.COMMISSION_CONTRACT)
+    _add_pdf_attachment(request, application, AttachmentType.HELSINKI_BENEFIT_VOUCHER)
+    _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
 
 
 def test_application_last_modified_at_draft(api_client, application):
@@ -642,6 +965,16 @@ def test_application_pay_subsidy(
         data,
     )
     assert response.status_code == expected_code
+    if response.status_code == 200:
+        if pay_subsidy_granted:
+            assert (
+                BenefitType.SALARY_BENEFIT in response.data["available_benefit_types"]
+            )
+        else:
+            assert (
+                BenefitType.SALARY_BENEFIT
+                not in response.data["available_benefit_types"]
+            )
 
 
 def test_attachment_upload_too_big(api_client, application):
@@ -682,6 +1015,7 @@ def test_attachment_upload_and_delete(api_client, application):
         },
         format="multipart",
     )
+
     assert response.status_code == 201
     assert len(application.attachments.all()) == 1
     assert response.data["attachment_file_name"] == os.path.basename(tmp_file.name)
@@ -704,12 +1038,17 @@ def test_attachment_upload_and_delete(api_client, application):
 VALID_PDF_FILE = "valid_pdf_file.pdf"
 
 
+def _pdf_file_path(request):
+    # path that is accessible from other application's tests too
+    return os.path.join(
+        request.fspath.dirname, "../../applications/tests/", VALID_PDF_FILE
+    )
+
+
 def _upload_pdf(
     request, api_client, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
 ):
-    with open(
-        os.path.join(request.fspath.dirname, VALID_PDF_FILE), "rb"
-    ) as valid_pdf_file:
+    with open(os.path.join(_pdf_file_path(request)), "rb") as valid_pdf_file:
         return api_client.post(
             reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
             {
@@ -725,9 +1064,7 @@ def _add_pdf_attachment(
 ):
     # add attachment, bypassing validation, so attachment can be added even if application
     # state does not allow it
-    with open(
-        os.path.join(request.fspath.dirname, VALID_PDF_FILE), "rb"
-    ) as valid_pdf_file:
+    with open(_pdf_file_path(request), "rb") as valid_pdf_file:
         file_upload = SimpleUploadedFile(VALID_PDF_FILE, valid_pdf_file.read())
         attachment = Attachment.objects.create(
             application=application,
@@ -736,6 +1073,37 @@ def _add_pdf_attachment(
             attachment_type=attachment_type,
         )
         return attachment
+
+
+@pytest.mark.django_db
+def test_attachment_delete_unauthenticated(request, anonymous_client, application):
+    attachment = _add_pdf_attachment(request, application)
+    response = anonymous_client.delete(
+        reverse(
+            "v1:application-delete-attachment",
+            kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_attachment_delete_unauthorized(
+    request,
+    api_client,
+    anonymous_application,
+    mock_get_organisation_roles_and_create_company,
+):
+    attachment = _add_pdf_attachment(request, anonymous_application)
+    response = api_client.delete(
+        reverse(
+            "v1:application-delete-attachment",
+            kwargs={"pk": anonymous_application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 404
 
 
 @pytest.mark.parametrize(
@@ -838,13 +1206,13 @@ def test_too_many_attachments(request, api_client, application):
 
 
 def test_attachment_requirements(
-    api_client,
-    application,
+    api_client, application, mock_get_organisation_roles_and_create_company
 ):
     application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
     application.pay_subsidy_granted = True
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
+    application.company = mock_get_organisation_roles_and_create_company
     application.save()
     response = api_client.get(get_detail_url(application))
     assert json.loads(json.dumps(response.data["attachment_requirements"])) == [
@@ -857,10 +1225,14 @@ def test_attachment_requirements(
 def _submit_application(api_client, application):
     data = ApplicationSerializer(application).data
     data["status"] = ApplicationStatus.RECEIVED
-    return api_client.put(
-        get_detail_url(application),
-        data,
-    )
+    with mock.patch(
+        "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
+    ):
+        # terms approval is tested separately
+        return api_client.put(
+            get_detail_url(application),
+            data,
+        )
 
 
 def test_attachment_validation(request, api_client, application):
@@ -869,6 +1241,8 @@ def test_attachment_validation(request, api_client, application):
     application.pay_subsidy_percent = 50
     application.apprenticeship_program = False
     application.save()
+
+    _add_pdf_attachment(request, application, AttachmentType.EMPLOYEE_CONSENT)
 
     # try to submit the application without attachments
     response = _submit_application(api_client, application)
@@ -919,6 +1293,7 @@ def test_purge_extra_attachments(request, api_client, application):
         AttachmentType.HELSINKI_BENEFIT_VOUCHER,
         AttachmentType.EDUCATION_CONTRACT,  # extra
         AttachmentType.EDUCATION_CONTRACT,  # extra
+        AttachmentType.EMPLOYEE_CONSENT,
     ]
     for attachment_type in lots_of_attachments:
         response = _upload_pdf(request, api_client, application, attachment_type)
@@ -928,7 +1303,78 @@ def test_purge_extra_attachments(request, api_client, application):
 
     response = _submit_application(api_client, application)
     assert response.status_code == 200
-    assert application.attachments.count() == 5
+    assert application.attachments.count() == 6
+
+
+def test_employee_consent_upload(request, api_client, application):
+    application.benefit_type = BenefitType.EMPLOYMENT_BENEFIT
+    application.pay_subsidy_granted = True
+    application.pay_subsidy_percent = 50
+    application.apprenticeship_program = False
+    application.save()
+    # add the required attachments except consent
+    response = _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    assert response.status_code == 201
+    response = _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.PAY_SUBSIDY_DECISION,
+    )
+    assert response.status_code == 201
+
+    # try to submit the application without consent
+    response = _submit_application(api_client, application)
+    assert response.status_code == 400
+    assert (
+        str(response.data[0])
+        == "Application does not have the employee consent attachment"
+    )
+
+    # upload the consent
+    _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYEE_CONSENT,
+    )
+    _upload_pdf(
+        request,
+        api_client,
+        application,
+        attachment_type=AttachmentType.EMPLOYEE_CONSENT,
+    )
+    assert (
+        application.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ).count()
+        == 2
+    )
+    # Cannot upload multiple employee consent
+    response = _submit_application(api_client, application)
+    assert response.status_code == 400
+    assert (
+        str(response.data[0])
+        == "Application cannot have more than one employee consent attachment"
+    )
+    application.attachments.filter(attachment_type=AttachmentType.EMPLOYEE_CONSENT)[
+        0
+    ].delete()
+    assert (
+        application.attachments.filter(
+            attachment_type=AttachmentType.EMPLOYEE_CONSENT
+        ).count()
+        == 1
+    )
+    response = _submit_application(api_client, application)
+    assert response.status_code == 200
+    application.refresh_from_db()
+    assert application.status == ApplicationStatus.RECEIVED
 
 
 def test_application_number(api_client, application):

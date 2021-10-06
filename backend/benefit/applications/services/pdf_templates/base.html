@@ -1,0 +1,45 @@
+<!doctype html>
+
+<html lang="fi">
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<head>
+    <title>Ahjo PDF</title>
+   <style>
+    table, td, th {
+        color: #1a1a1a;
+        padding: 7px;
+        line-height: 1.5;
+        font-size: 12px;
+    }
+    table th, .footer {
+        background-color: #0072c6;
+        color: white;
+    }
+    table tr:nth-child(odd){
+        background-color: #e8f3fc;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    td.text-right, th.text-right {
+        text-align: right;
+    }
+
+    body {
+        font-family: ArialMT, sans-serif;
+    }
+    </style>
+</head>
+<body>
+<div>
+    <img src="https://www.hel.fi/wps/wcm/connect/b3717cdb-45a7-4575-946b-5ea799506c80/1/HELSINKI_Tunnus_MUSTA.png?MOD=AJPERES" width="80" height="37">
+</div>
+<h1>Helsingin Kaupunki</h1>
+<hr>
+{% block content %}
+{%  endblock %}
+</body>
+</html>

@@ -105,23 +105,23 @@ def test_attachment_upload_too_big(api_client, summer_voucher):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "status",
+    "status, response_code",
     [
-        ApplicationStatus.SUBMITTED,
-        ApplicationStatus.ACCEPTED,
-        ApplicationStatus.DELETED_BY_CUSTOMER,
-        ApplicationStatus.REJECTED,
+        (ApplicationStatus.SUBMITTED, 400),
+        (ApplicationStatus.ACCEPTED, 404),
+        (ApplicationStatus.DELETED_BY_CUSTOMER, 404),
+        (ApplicationStatus.REJECTED, 404),
     ],
 )
 def test_attachment_upload_invalid_status(
-    request, api_client, application, summer_voucher, status
+    request, api_client, application, summer_voucher, status, response_code
 ):
     application.status = status
     application.save()
     response = _upload_file(
         request, api_client, summer_voucher, "pdf", AttachmentType.EMPLOYMENT_CONTRACT
     )
-    assert response.status_code == 404
+    assert response.status_code == response_code
     assert len(summer_voucher.attachments.all()) == 0
 
 
@@ -198,3 +198,49 @@ def test_delete_attachment_when_not_saved(api_client, summer_voucher):
     response = api_client.delete(employment_contract_url)
 
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_delete_attachment_for_submitted_application(
+    api_client, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    attachment_delete_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment
+    )
+
+    response = api_client.delete(attachment_delete_url)
+
+    assert response.status_code == 400
+    assert "Attachments can be deleted only for DRAFT applications" in response.data
+    submitted_summer_voucher.refresh_from_db()
+    assert submitted_summer_voucher.attachments.count() == 1
+
+
+@pytest.mark.django_db
+def test_get_attachment_for_submitted_application(
+    api_client, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    attachment_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment
+    )
+
+    response = api_client.get(attachment_url)
+
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_upload_attachment_for_submitted_application(
+    request, api_client, submitted_summer_voucher
+):
+    response = _upload_file(
+        request,
+        api_client,
+        submitted_summer_voucher,
+        "pdf",
+        AttachmentType.EMPLOYMENT_CONTRACT,
+    )
+    assert response.status_code == 400
+    assert "Attachments can be uploaded only for DRAFT applications" in response.data
+    submitted_summer_voucher.refresh_from_db()
+    assert submitted_summer_voucher.attachments.count() == 0

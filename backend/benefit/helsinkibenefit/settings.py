@@ -37,30 +37,37 @@ env = environ.Env(
     SENTRY_ENVIRONMENT=(str, ""),
     CORS_ORIGIN_WHITELIST=(list, []),
     CORS_ORIGIN_ALLOW_ALL=(bool, False),
+    CSRF_COOKIE_DOMAIN=(str, "localhost"),
+    CSRF_TRUSTED_ORIGINS=(list, []),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     MOCK_FLAG=(bool, False),
-    # Random 32 bytes AES key, for testing purpose only, DO NOT use it value in staging/production
+    # Random 32 bytes AES key, for testing purpose only, DO NOT use the same value in staging/production
     # Always override this value from env variables
     ENCRYPTION_KEY=(
         str,
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
+    SOCIAL_SECURITY_NUMBER_HASH_KEY=(
+        str,
+        "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+    ),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
     OIDC_OP_BASE_URL=(str, ""),
-    LOGIN_REDIRECT_URL=(str, ""),
-    LOGIN_REDIRECT_URL_FAILURE=(str, ""),
-    EAUTHORIZATIONS_BASE_URL=(str, ""),
-    EAUTHORIZATIONS_CLIENT_ID=(str, ""),
+    LOGIN_REDIRECT_URL=(str, "/"),
+    LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
+    ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    EAUTHORIZATIONS_BASE_URL=(str, "https://asiointivaltuustarkastus.test.suomi.fi"),
+    EAUTHORIZATIONS_CLIENT_ID=(str, "sample_client_id"),
     EAUTHORIZATIONS_CLIENT_SECRET=(str, ""),
     EAUTHORIZATIONS_API_OAUTH_SECRET=(str, ""),
     ADFS_CLIENT_ID=(str, "client_id"),
     ADFS_CLIENT_SECRET=(str, "client_secret"),
     ADFS_TENANT_ID=(str, "tenant_id"),
-    ADFS_LOGIN_REDIRECT_URL=(str, "/"),
-    ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    ADFS_CONTROLLER_GROUP_UUIDS=(list, []),
     DEFAULT_FILE_STORAGE=(str, "django.core.files.storage.FileSystemStorage"),
     AZURE_ACCOUNT_NAME=(str, ""),
     AZURE_ACCOUNT_KEY=(str, ""),
@@ -74,6 +81,10 @@ env = environ.Env(
     ELASTICSEARCH_API_KEY=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
+    WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
+    DISABLE_AUTHENTICATION=(bool, False),
+    DUMMY_COMPANY_FORM=(str, "OY"),
+    ENABLE_DEBUG_ENV=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -85,6 +96,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
+SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -140,6 +152,7 @@ INSTALLED_APPS = [
     "users.apps.AppConfig",
     "companies",
     "applications.apps.AppConfig",
+    "terms.apps.AppConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -173,10 +186,20 @@ TEMPLATES = [
     }
 ]
 
-
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
+CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+
+# Audit logging
+AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
+CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
+ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
+ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
+ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
+ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
+ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 
 LOGGING = {
     "version": 1,
@@ -192,8 +215,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": [
-        # TODO: Enable default permission when after FE implemented Authentication
-        # "rest_framework.permissions.IsAuthenticated",
+        "common.permissions.BFIsAuthenticated",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -224,6 +246,8 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
+DUMMY_COMPANY_FORM = env.str("DUMMY_COMPANY_FORM")
+ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 
 # Authentication settings begin
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
@@ -235,6 +259,8 @@ AUTHENTICATION_BACKENDS = (
     # "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
+
+DISABLE_AUTHENTICATION = env.bool("DISABLE_AUTHENTICATION")
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid profile"
@@ -260,9 +286,9 @@ EAUTHORIZATIONS_API_OAUTH_SECRET = env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
 
-ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID")
-ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET")
-ADFS_TENANT_ID = env.str("ADFS_TENANT_ID")
+ADFS_CLIENT_ID = env.str("ADFS_CLIENT_ID") or "client_id"
+ADFS_CLIENT_SECRET = env.str("ADFS_CLIENT_SECRET") or "client_secret"
+ADFS_TENANT_ID = env.str("ADFS_TENANT_ID") or "tenant_id"
 
 # https://django-auth-adfs.readthedocs.io/en/latest/azure_ad_config_guide.html#step-2-configuring-settings-py
 AUTH_ADFS = {
@@ -293,14 +319,7 @@ AZURE_URL_EXPIRATION_SECS = env("AZURE_URL_EXPIRATION_SECS")  # default 900s
 MAX_UPLOAD_SIZE = 10485760  # 10MB
 MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
 
-
-AUDIT_LOG_ORIGIN = env("AUDIT_LOG_ORIGIN")
-CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
-ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
-ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
-ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
-ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
-ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
+WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

@@ -1,5 +1,6 @@
 import TestController from 'testcafe';
 
+import { DEFAULT_LANGUAGE } from '../../src/i18n/i18n';
 import Company from '../../src/types/company';
 import User from '../../src/types/user';
 import { getSuomiFiAuthenticationComponents } from '../components/suomiFiAuthentication.components';
@@ -29,6 +30,7 @@ export type SuomiFiData = {
 
 const doSuomiFiLogin = async (
   t: TestController,
+  lang = DEFAULT_LANGUAGE,
   cachedUser?: User
 ): Promise<SuomiFiData> => {
   // when logging in second time, suomifi remembers the user from previous session so following steps are skipped
@@ -58,16 +60,17 @@ const doSuomiFiLogin = async (
   const companiesTable = await suomiFiValtuutusComponents.companiesTable();
   const company = await companiesTable.actions.selectCompanyRadioButton(0);
   const authorizeForm = await suomiFiValtuutusComponents.authorizeForm();
-  await authorizeForm.actions.clickSubmitButton();
+  await authorizeForm.actions.clickSubmitButton(lang);
   return { user, company };
 };
 // eslint-disable-next-line arrow-body-style
 export const doLogin = (
   t: TestController,
+  lang = DEFAULT_LANGUAGE,
   cachedUser?: User
 ): Promise<SuomiFiData> => {
   if (isRealIntegrationsEnabled()) {
-    return doSuomiFiLogin(t, cachedUser);
+    return doSuomiFiLogin(t, lang, cachedUser);
   }
   return Promise.resolve({});
 };

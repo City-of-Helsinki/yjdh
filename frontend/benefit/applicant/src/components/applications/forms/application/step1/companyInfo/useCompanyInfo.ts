@@ -1,14 +1,10 @@
-import { APPLICATION_FIELDS_STEP1 } from 'benefit/applicant/constants';
+import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
 import { FormikProps } from 'formik';
 import { TFunction } from 'next-i18next';
 import isServerSide from 'shared/server/is-server-side';
-
-interface CompanyInfoArgs {
-  formik?: FormikProps<Application>;
-}
 
 interface CompanyInfoProps {
   t: TFunction;
@@ -22,10 +18,12 @@ interface CompanyInfoProps {
   error: Error | null;
   isLoading: boolean;
   shouldShowSkeleton: boolean;
-  erazeAlternativeAddressFields: () => void;
+  clearAlternativeAddressValues: () => void;
 }
 
-const useCompanyInfo = ({ formik }: CompanyInfoArgs): CompanyInfoProps => {
+const useCompanyInfo = (
+  formik?: FormikProps<Application>
+): CompanyInfoProps => {
   const { t } = useTranslation();
   // TODO: replace the hardcoded company ID when auth is implemented
   const { isLoading, error, data } = useCompanyQuery('0877830-0');
@@ -54,21 +52,21 @@ const useCompanyInfo = ({ formik }: CompanyInfoArgs): CompanyInfoProps => {
       businessId: '-',
     };
 
-  const erazeAlternativeAddressFields = (): void => {
+  const clearAlternativeAddressValues = (): void => {
     void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1.USE_ALTERNATIVE_ADDRESS,
+      APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS,
       !formik.values.useAlternativeAddress
     );
     void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_STREET_ADDRESS,
+      APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS,
       ''
     );
     void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_POSTCODE,
+      APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE,
       ''
     );
     void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1.ALTERNATIVE_COMPANY_CITY,
+      APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY,
       ''
     );
   };
@@ -79,7 +77,7 @@ const useCompanyInfo = ({ formik }: CompanyInfoArgs): CompanyInfoProps => {
     error,
     isLoading,
     shouldShowSkeleton: isLoading && !isServerSide(),
-    erazeAlternativeAddressFields,
+    clearAlternativeAddressValues,
   };
 };
 

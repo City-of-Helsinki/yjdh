@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.http import HttpRequest
 from requests.exceptions import HTTPError
 from rest_framework.exceptions import NotFound
 from shared.oidc.models import EAuthorizationProfile
@@ -53,8 +54,39 @@ def get_or_create_company_with_name_and_business_id(
     return company
 
 
+def get_or_create_company_using_organization_roles(
+    eauth_profile: EAuthorizationProfile, request: HttpRequest
+) -> Company:
+    try:
+        organization_roles = get_organization_roles(eauth_profile, request)
+    except HTTPError:
+        raise NotFound(
+            detail="Unable to fetch organization roles from eauthorizations API"
+        )
+
+    business_id = organization_roles.get("identifier")
+
+    company = Company.objects.filter(business_id=business_id).first()
+
+    if not company or not company.ytj_json:
+        try:
+            company = get_or_create_company_from_ytj_api(business_id)
+        except ValueError:
+            raise NotFound(detail="Could not handle the response from YTJ API")
+        except HTTPError:
+            LOGGER.warning(
+                f"YTJ API is under heavy load or no company found with the given business id: {business_id}"
+            )
+            name = organization_roles.get("name")
+            company = get_or_create_company_with_name_and_business_id(name, business_id)
+
+    company.eauth_profile = eauth_profile
+    company.save()
+    return company
+
+
 def get_or_create_company_from_eauth_profile(
-    eauth_profile: EAuthorizationProfile,
+    eauth_profile: EAuthorizationProfile, request: HttpRequest
 ) -> Company:
     """
     The flow will execute only step 1 or steps 1-4 if company does not exist in db.
@@ -74,32 +106,7 @@ def get_or_create_company_from_eauth_profile(
         if settings.MOCK_FLAG:
             company = CompanyFactory(eauth_profile=eauth_profile)
         else:
-            try:
-                organization_roles = get_organization_roles(eauth_profile)
-            except HTTPError:
-                raise NotFound(
-                    detail="Unable to fetch organization roles from eauthorizations API"
-                )
-
-            business_id = organization_roles.get("identifier")
-
-            company = Company.objects.filter(business_id=business_id).first()
-
-            if not company or not company.ytj_json:
-                try:
-                    company = get_or_create_company_from_ytj_api(business_id)
-                except ValueError:
-                    raise NotFound(detail="Could not handle the response from YTJ API")
-                except HTTPError:
-                    LOGGER.warning(
-                        f"YTJ API is under heavy load or no company found with the given business id: {business_id}"
-                    )
-                    name = organization_roles.get("name")
-                    company = get_or_create_company_with_name_and_business_id(
-                        name, business_id
-                    )
-
-            company.eauth_profile = eauth_profile
-            company.save()
-
+            company = get_or_create_company_using_organization_roles(
+                eauth_profile, request
+            )
     return company

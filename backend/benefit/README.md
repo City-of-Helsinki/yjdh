@@ -5,10 +5,13 @@ Prerequisites:
 * PostgreSQL 12
 * Python 3.8
 
+
 ### Installing Python requirements
 
 * Run `pip install -r requirements.txt`
 * Run `pip install -r requirements-dev.txt` (development requirements)
+* If you are not using Docker image, in order to export application batch as PDF (via `pdfkit`), it's required to install
+ `wkhtmltopdf`. Run: `sudo apt-get install wkhtmltopdf`
 
 ### Database
 
@@ -32,6 +35,11 @@ Allow user to create test database
 
 The project is now running at [localhost:8000](http://localhost:8000)
 
+### Testing and debugging
+
+To run the backend without integrations, set MOCK_FLAG=1 in .env.benefit-backend
+If MOCK_FLAG is set, additionally DUMMY_COMPANY_FORM can be set to test with different company_form parameters.
+
 ## Keeping Python requirements up to date
 
 1. Install `pip-tools`:
@@ -52,6 +60,7 @@ The project is now running at [localhost:8000](http://localhost:8000)
 5. To install Python requirements run:
 
     * `pip-sync requirements.txt requirements-dev.txt`
+   
 
 
 ## Documentation

@@ -5,11 +5,14 @@ from applications.enums import (
     ApplicationStep,
     AttachmentType,
     BenefitType,
+    OrganizationType,
 )
+from common.utils import duration_in_months
 from companies.models import Company
+from django.conf import settings
 from django.db import connection, models
 from django.utils.translation import gettext_lazy as _
-from encrypted_fields.fields import EncryptedCharField
+from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
 from phonenumber_field.modelfields import PhoneNumberField
 from simple_history.models import HistoricalRecords
@@ -171,6 +174,12 @@ class Application(UUIDModel, TimeStampedModel):
         max_length=2,
     )
 
+    """
+    This field is required if the applicant company form is an association.
+    For "normal" businesses, this field has no effect and should always be set to None.
+    """
+    association_immediate_manager_check = models.BooleanField(null=True)
+
     co_operation_negotiations = models.BooleanField(null=True)
     co_operation_negotiations_description = models.CharField(
         max_length=256,
@@ -274,6 +283,7 @@ class Application(UUIDModel, TimeStampedModel):
         verbose_name=_("ahjo batch"),
         related_name="applications",
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
     )
 
@@ -287,8 +297,25 @@ class Application(UUIDModel, TimeStampedModel):
             return self.batch.ahjo_decision
         return None
 
+    @property
+    def ahjo_application_number(self):
+        # Adding prefix to application number before sending to AHJO based on the company form
+        if (
+            OrganizationType.resolve_organization_type(self.company.company_form)
+            == OrganizationType.ASSOCIATION
+        ):
+            return "R{}".format(self.application_number)
+        return "Y{}".format(self.application_number)
+
+    @property
+    def duration_in_months(self):
+        # The application calculation Excel file used the DAYS360 function, so we're doing the same
+        return duration_in_months(self.start_date, self.end_date)
+
     def __str__(self):
-        return "{}: {} {}".format(self.pk, self.company_name, self.status)
+        return "{}: {} {} {}-{}".format(
+            self.pk, self.company_name, self.status, self.start_date, self.end_date
+        )
 
     class Meta:
         db_table = "bf_applications_application"
@@ -467,9 +494,15 @@ class Employee(UUIDModel, TimeStampedModel):
     last_name = models.CharField(
         max_length=128, verbose_name=_("last name"), blank=True
     )
-    social_security_number = EncryptedCharField(
+
+    encrypted_social_security_number = EncryptedCharField(
         max_length=11, verbose_name=_("social security number"), blank=True
     )
+    social_security_number = SearchField(
+        hash_key=settings.SOCIAL_SECURITY_NUMBER_HASH_KEY,
+        encrypted_field_name="encrypted_social_security_number",
+    )
+
     phone_number = PhoneNumberField(
         verbose_name=_("phone number"),
         blank=True,

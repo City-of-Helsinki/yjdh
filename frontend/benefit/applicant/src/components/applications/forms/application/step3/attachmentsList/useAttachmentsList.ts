@@ -1,46 +1,31 @@
-import {
-  ATTACHMENT_ALLOWED_TYPES,
-  ATTACHMENT_MAX_SIZE,
-  ATTACHMENT_TYPES,
-} from 'benefit/applicant/constants';
 import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { Attachment } from 'benefit/applicant/types/application';
-import { showErrorToast } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect } from 'react';
+import showErrorToast from 'shared/components/toast/show-error-toast';
 
 type ExtendedComponentProps = {
   t: TFunction;
   translationsBase: string;
+  applicationId: string;
   attachments: [];
-  handleUploadClick: () => void;
-  handleUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRemove: (attachmentId: string) => void;
-  uploadRef: React.RefObject<HTMLInputElement>;
-  files?: Attachment[];
-  isUploading: boolean;
   isRemoving: boolean;
+  isUploading: boolean;
+  handleRemove: (attachmentId: string) => void;
+  handleUpload: (attachment: FormData) => void;
 };
 
-const useAttachmentsList = (
-  attachmentType: ATTACHMENT_TYPES,
-  attachments?: Attachment[]
-): ExtendedComponentProps => {
+const useAttachmentsList = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id;
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
   const { applicationTempData } = React.useContext(ApplicationContext);
 
-  const {
-    mutate: uploadAttachment,
-    isLoading: isUploading,
-    isError: isUploadingError,
-  } = useUploadAttachmentQuery();
+  const applicationId = applicationTempData.id || id?.toString() || '';
 
   const {
     mutate: removeAttachment,
@@ -48,85 +33,44 @@ const useAttachmentsList = (
     isError: isRemovingError,
   } = useRemoveAttachmentQuery();
 
+  const {
+    mutate: uploadAttachment,
+    isLoading: isUploading,
+    isError: isUploadingError,
+  } = useUploadAttachmentQuery();
+
   useEffect(() => {
-    if (isUploadingError || isRemovingError) {
-      const prefix = isUploadingError ? 'upload' : 'remove';
+    if (isRemovingError || isUploadingError) {
       showErrorToast(
-        t(`common:${prefix}.errorTitle`),
-        t(`common:${prefix}.errorMessage`)
+        t(`common:remove.errorTitle`),
+        t(`common:remove.errorMessage`)
       );
     }
-  }, [isUploadingError, isRemovingError, t]);
-
-  const uploadRef = React.createRef<HTMLInputElement>();
-
-  const files = React.useMemo(
-    (): Attachment[] =>
-      attachments?.filter((att) => att.attachmentType === attachmentType) || [],
-    [attachmentType, attachments]
-  );
-
-  const handleUploadClick = (): void => {
-    void uploadRef?.current?.click();
-  };
-
-  const resetUploadInput = (): void => {
-    if (uploadRef.current?.value) {
-      uploadRef.current.value = '';
-    }
-  };
-
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files?.[0];
-    const fileSize = file?.size;
-    // validate file extention
-    if (file && !ATTACHMENT_ALLOWED_TYPES.includes(file?.type || '')) {
-      showErrorToast(
-        t('common:error.attachments.title'),
-        t('common:error.attachments.fileType')
-      );
-      resetUploadInput();
-      return;
-    }
-    // validate file size
-    if (fileSize && fileSize > ATTACHMENT_MAX_SIZE) {
-      showErrorToast(
-        t('common:error.attachments.title'),
-        t('common:error.attachments.tooBig')
-      );
-      resetUploadInput();
-      return;
-    }
-
-    if (file) {
-      const formData = new FormData();
-      formData.append('attachment_type', attachmentType);
-      formData.append('attachment_file', file);
-      uploadAttachment({
-        applicationId: applicationTempData.id || id?.toString() || '',
-        data: formData,
-      });
-    }
-  };
+  }, [isRemovingError, isUploadingError, t]);
 
   const handleRemove = (attachmentId: string): void => {
     removeAttachment({
-      applicationId: applicationTempData.id || id?.toString() || '',
+      applicationId,
       attachmentId,
+    });
+  };
+
+  const handleUpload = (attachment: FormData): void => {
+    uploadAttachment({
+      applicationId,
+      data: attachment,
     });
   };
 
   return {
     t,
+    applicationId,
     attachments: [],
     translationsBase,
-    uploadRef,
-    files,
-    isUploading,
     isRemoving,
-    handleUploadClick,
-    handleUpload,
+    isUploading,
     handleRemove,
+    handleUpload,
   };
 };
 

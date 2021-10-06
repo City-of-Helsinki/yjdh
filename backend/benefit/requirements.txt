@@ -40,7 +40,7 @@ django-auth-adfs==1.7.0
     #   yjdh-backend-shared
 django-cors-headers==3.7.0
     # via -r requirements.in
-django-environ==0.4.5
+django-environ==0.7.0
     # via -r requirements.in
 django-extensions==3.1.3
     # via
@@ -87,14 +87,20 @@ idna==2.10
     # via requests
 inflection==0.5.1
     # via drf-spectacular
+jinja2==3.0.1
+    # via -r requirements.in
 josepy==1.8.0
     # via mozilla-django-oidc
 jsonschema==3.2.0
     # via drf-spectacular
+markupsafe==2.0.1
+    # via jinja2
 mozilla-django-oidc==1.2.4
     # via
     #   -r requirements.in
     #   yjdh-backend-shared
+pdfkit==0.6.1
+    # via -r requirements.in
 phonenumbers==8.12.25
     # via django-phonenumber-field
 pillow==8.3.0

@@ -106,6 +106,9 @@ def test_application_status_change_with_missing_summer_voucher_data(
     payslip_attachment,
     missing_field,
 ):
+    summer_voucher.summer_voucher_exception_reason = ""
+    summer_voucher.save()
+
     from_status = ApplicationStatus.DRAFT
     to_status = ApplicationStatus.SUBMITTED
 

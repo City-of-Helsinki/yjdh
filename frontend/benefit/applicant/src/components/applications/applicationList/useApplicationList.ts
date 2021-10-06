@@ -8,6 +8,7 @@ import {
 } from 'benefit/applicant/types/application';
 import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
+// eslint-disable-next-line you-dont-need-lodash-underscore/find
 import find from 'lodash/find';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';

@@ -1,14 +1,11 @@
-import {
-  $ApplicationAction,
-  $ApplicationActions,
-  $PrimaryButton,
-  $SecondaryButton,
-  $SupplementaryButton,
-} from 'benefit/applicant/components/applications/Applications.sc';
 import { useTranslation } from 'benefit/applicant/i18n';
-import { IconArrowLeft, IconArrowRight, IconCross } from 'hds-react';
+import { Button, IconArrowLeft, IconArrowRight, IconCross } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 
 type StepperActionsProps = {
   hasBack?: boolean;
@@ -26,34 +23,48 @@ const StepperActions: React.FC<StepperActionsProps> = ({
   const { t } = useTranslation();
   const translationsBase = 'common:applications.actions';
   return (
-    <$ApplicationActions>
-      <$ApplicationAction>
+    <$Grid>
+      <$GridCell $colSpan={2}>
         {hasBack && (
-          <$SecondaryButton
+          <Button
+            theme="black"
             variant="secondary"
             iconLeft={<IconArrowLeft />}
             onClick={handleBack}
+            fullWidth
           >
             {t(`${translationsBase}.back`)}
-          </$SecondaryButton>
+          </Button>
         )}
-      </$ApplicationAction>
-      <$ApplicationAction>
-        <$SecondaryButton variant="secondary">
+      </$GridCell>
+      <$GridCell $colSpan={8} justifySelf="center">
+        <Button theme="black" variant="secondary" fullWidth>
           {t(`${translationsBase}.saveAndContinueLater`)}
-        </$SecondaryButton>
-        <$SupplementaryButton variant="supplementary" iconLeft={<IconCross />}>
-          {t(`${translationsBase}.deleteApplication`)}
-        </$SupplementaryButton>
-      </$ApplicationAction>
-      <$ApplicationAction>
-        <$PrimaryButton iconRight={<IconArrowRight />} onClick={handleSubmit}>
+        </Button>
+      </$GridCell>
+      <$GridCell $colSpan={2}>
+        <Button
+          theme="coat"
+          iconRight={<IconArrowRight />}
+          onClick={handleSubmit}
+          fullWidth
+        >
           {hasNext
             ? t(`${translationsBase}.continue`)
             : t(`${translationsBase}.send`)}
-        </$PrimaryButton>
-      </$ApplicationAction>
-    </$ApplicationActions>
+        </Button>
+      </$GridCell>
+      <$GridCell $colSpan={10} $colStart={2} justifySelf="center">
+        <Button
+          theme="black"
+          variant="supplementary"
+          iconLeft={<IconCross />}
+          fullWidth
+        >
+          {t(`${translationsBase}.deleteApplication`)}
+        </Button>
+      </$GridCell>
+    </$Grid>
   );
 };
 

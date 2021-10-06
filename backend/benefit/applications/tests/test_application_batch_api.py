@@ -1,17 +1,15 @@
 import copy
 import uuid
 from datetime import datetime
+from unittest.mock import patch
 
 import pytest
 import pytz
 from applications.api.v1.serializers import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
-from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory
 from applications.tests.test_applications_api import get_detail_url
-from common.tests.conftest import *  # noqa
-from helsinkibenefit.tests.conftest import *  # noqa
 from rest_framework.reverse import reverse
 
 
@@ -102,8 +100,14 @@ def test_applications_batch_list_with_filter(api_client, application_batch):
     ],
 )
 def test_get_application_with_ahjo_decision(
-    api_client, application_batch, status, batch_status, expected_decision
+    api_client,
+    application_batch,
+    status,
+    batch_status,
+    expected_decision,
+    mock_get_organisation_roles_and_create_company,
 ):
+    company = mock_get_organisation_roles_and_create_company
     application_batch.status = batch_status
     if expected_decision:
         application_batch.proposal_for_decision = expected_decision
@@ -112,8 +116,8 @@ def test_get_application_with_ahjo_decision(
     else:
         application_batch.proposal_for_decision = AhjoDecision.DECIDED_REJECTED
 
+    application_batch.applications.all().update(status=status, company=company)
     application_batch.save()
-    application_batch.applications.all().update(status=status)
     application = application_batch.applications.all().first()
     response = api_client.get(get_detail_url(application))
     assert response.status_code == 200
@@ -125,7 +129,9 @@ def test_application_post_success(api_client, application_batch):
     """
     Create a new application batch
     """
-    data = ApplicationBatchSerializer(application_batch).data
+    data = ApplicationBatchSerializer(
+        application_batch, context={"request": api_client}
+    ).data
     application_batch.delete()
     assert len(ApplicationBatch.objects.all()) == 0
 
@@ -406,3 +412,36 @@ def test_application_delete(api_client, application_batch):
         len(Application.objects.all()) == 2
     )  # applications are not deleted with the batch
     assert response.status_code == 204
+
+
+@patch("applications.api.v1.application_batch_views.export_application_batch")
+def test_application_batch_export(mock_export, api_client, application_batch):
+    # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
+    mock_export.return_value = {}
+    # Export invalid batch
+    application_batch.status = ApplicationBatchStatus.SENT_TO_TALPA
+    application_batch.save()
+    response = api_client.get(
+        reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
+    )
+    assert response.status_code == 400
+
+    # Export draft batch then change it status
+    application_batch.status = ApplicationBatchStatus.DRAFT
+    application_batch.save()
+    response = api_client.get(
+        reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
+    )
+    application_batch.refresh_from_db()
+    assert application_batch.status == ApplicationBatchStatus.AWAITING_AHJO_DECISION
+
+    assert response.headers["Content-Type"] == "application/x-zip-compressed"
+    assert response.status_code == 200
+
+    # Export empty batch
+    application_batch.applications.clear()
+    response = api_client.get(
+        reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
+    )
+    application_batch.refresh_from_db()
+    assert response.status_code == 400

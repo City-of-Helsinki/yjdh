@@ -1,9 +1,19 @@
 import {
   APPLICATION_FIELDS_STEP2,
+  APPLICATION_START_DATE,
   BENEFIT_TYPES,
 } from 'benefit/applicant/constants';
+import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
+import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import { Notification, Select, SelectionGroup, TextInput } from 'hds-react';
+import {
+  DateInput,
+  Notification,
+  NumberInput,
+  Select,
+  SelectionGroup,
+  TextInput,
+} from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import React, { useEffect } from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
@@ -14,191 +24,177 @@ import {
 import { Option } from 'shared/components/forms/fields/types';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { $FormGroup } from 'shared/components/forms/section/FormSection.sc';
-import Spacing from 'shared/components/forms/spacing/Spacing';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { phoneToLocal } from 'shared/utils/string.utils';
+import { useTheme } from 'styled-components';
 
-import {
-  $CommissionContainer,
-  $EmployerBasicInfoContainer,
-  $EmploymentMoneyContainer,
-  $EmploymentRelationshipContainer,
-  $FieldsWithInfoColumn,
-  $FieldsWithInfoContainer,
-  $SubSection,
-} from '../Application.sc';
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
 const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   data,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     t,
+    clearDatesValues,
+    clearBenefitValues,
+    clearCommissionValues,
+    clearContractValues,
+    clearPaySubsidyValues,
+    setEndDate,
     handleSubmitNext,
     handleSubmitBack,
     getErrorMessage,
-    erazeCommissionFields,
-    getDefaultSelectValue,
+    getSelectValue,
     fields,
     translationsBase,
     formik,
     subsidyOptions,
+    language,
+    minEndDate,
   } = useApplicationFormStep2(data);
+
+  const theme = useTheme();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  useDependentFieldsEffect(
+    {
+      apprenticeshipProgram: formik.values.apprenticeshipProgram,
+      benefitType: formik.values.benefitType,
+      paySubsidyGranted: formik.values.paySubsidyGranted,
+      startDate: formik.values.startDate,
+    },
+    {
+      isFormDirty: formik.dirty,
+      clearBenefitValues,
+      clearDatesValues,
+      clearCommissionValues,
+      clearContractValues,
+      clearPaySubsidyValues,
+      setEndDate,
+    }
+  );
+
+  useAlertBeforeLeaving(formik.dirty);
+
   return (
     <form onSubmit={handleSubmitNext} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
-        <$EmployerBasicInfoContainer>
+        <$GridCell $colSpan={3}>
           <TextInput
-            id={fields.firstName.name}
-            name={fields.firstName.name}
-            label={fields.firstName.label}
-            placeholder={fields.firstName.placeholder}
-            onChange={(e) =>
-              formik.setFieldValue(
-                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME}`,
-                e.target.value
-              )
-            }
-            value={formik.values.employee?.firstName}
+            id={fields.employee.firstName.name}
+            name={fields.employee.firstName.name}
+            label={fields.employee.firstName.label}
+            placeholder={fields.employee.firstName.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.employee?.firstName ?? ''}
+            invalid={!!getErrorMessage(fields.employee.firstName.name)}
+            aria-invalid={!!getErrorMessage(fields.employee.firstName.name)}
+            errorText={getErrorMessage(fields.employee.firstName.name)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={3}>
+          <TextInput
+            id={fields.employee.lastName.name}
+            name={fields.employee.lastName.name}
+            label={fields.employee.lastName.label}
+            placeholder={fields.employee.lastName.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.employee?.lastName ?? ''}
+            invalid={!!getErrorMessage(fields.employee.lastName.name)}
+            aria-invalid={!!getErrorMessage(fields.employee.lastName.name)}
+            errorText={getErrorMessage(fields.employee.lastName.name)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <TextInput
+            id={fields.employee.socialSecurityNumber.name}
+            name={fields.employee.socialSecurityNumber.name}
+            label={fields.employee.socialSecurityNumber.label}
+            placeholder={fields.employee.socialSecurityNumber.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.employee?.socialSecurityNumber ?? ''}
             invalid={
-              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME)
+              !!getErrorMessage(fields.employee.socialSecurityNumber.name)
             }
             aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME)
+              !!getErrorMessage(fields.employee.socialSecurityNumber.name)
             }
             errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP2.EMPLOYEE_FIRST_NAME
+              fields.employee.socialSecurityNumber.name
             )}
             required
           />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
           <TextInput
-            id={fields.lastName.name}
-            name={fields.lastName.name}
-            label={fields.lastName.label}
-            placeholder={fields.lastName.placeholder}
-            onChange={(e) =>
-              formik.setFieldValue(
-                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME}`,
-                e.target.value
-              )
-            }
-            value={formik.values.employee?.lastName}
-            invalid={
-              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME)
-            }
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME)
-            }
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP2.EMPLOYEE_LAST_NAME
-            )}
-            required
-          />
-          <TextInput
-            id={fields.socialSecurityNumber.name}
-            name={fields.socialSecurityNumber.name}
-            label={fields.socialSecurityNumber.label}
-            placeholder={fields.socialSecurityNumber.placeholder}
-            onChange={(e) =>
-              formik.setFieldValue(
-                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER}`,
-                e.target.value
-              )
-            }
-            value={formik.values.employee?.socialSecurityNumber}
-            invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER
-              )
-            }
-            aria-invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER
-              )
-            }
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP2.EMPLOYEE_SOCIAL_SECURITY_NUMBER
-            )}
-            required
-          />
-          <TextInput
-            id={fields.phoneNumber.name}
-            name={fields.phoneNumber.name}
-            label={fields.phoneNumber.label}
-            placeholder={fields.phoneNumber.placeholder}
-            onChange={(e) =>
-              formik.setFieldValue(
-                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER}`,
-                e.target.value
-              )
-            }
+            id={fields.employee.phoneNumber.name}
+            name={fields.employee.phoneNumber.name}
+            label={fields.employee.phoneNumber.label}
+            placeholder={fields.employee.phoneNumber.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
             value={phoneToLocal(formik.values.employee?.phoneNumber)}
-            invalid={
-              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER)
-            }
-            aria-invalid={
-              !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER)
-            }
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP2.EMPLOYEE_PHONE_NUMBER
-            )}
+            invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
+            aria-invalid={!!getErrorMessage(fields.employee.phoneNumber.name)}
+            errorText={getErrorMessage(fields.employee.phoneNumber.name)}
             required
           />
-        </$EmployerBasicInfoContainer>
-        <Spacing size="m" />
-        <FieldLabel value={fields.isLivingInHelsinki.label} required />
-        <$FormGroup>
+        </$GridCell>
+        <$GridCell
+          $colStart={1}
+          $colSpan={6}
+          css={`
+            margin-top: ${theme.spacing.l};
+          `}
+        >
+          <FieldLabel
+            value={fields.employee.isLivingInHelsinki.label}
+            required
+          />
           <$Checkbox
-            id={fields.isLivingInHelsinki.name}
-            name={fields.isLivingInHelsinki.name}
-            label={fields.isLivingInHelsinki.placeholder}
-            onChange={() => {
-              formik.setFieldValue(
-                `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_IS_LIVING_IN_HELSINKI}`,
-                !formik.values.employee?.isLivingInHelsinki
-              );
-            }}
+            id={fields.employee.isLivingInHelsinki.name}
+            name={fields.employee.isLivingInHelsinki.name}
+            label={fields.employee.isLivingInHelsinki.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
             aria-invalid={
-              !!getErrorMessage(
-                APPLICATION_FIELDS_STEP2.EMPLOYEE_IS_LIVING_IN_HELSINKI
-              )
+              !!getErrorMessage(fields.employee.isLivingInHelsinki.name)
             }
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP2.EMPLOYEE_IS_LIVING_IN_HELSINKI
-            )}
+            errorText={getErrorMessage(fields.employee.isLivingInHelsinki.name)}
             required
             checked={formik.values.employee?.isLivingInHelsinki === true}
           />
-        </$FormGroup>
+        </$GridCell>
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading2`)}>
-        <$FormGroup>
+        <$GridCell $colSpan={8}>
           <SelectionGroup
+            id={fields.paySubsidyGranted.name}
             label={fields.paySubsidyGranted.label}
             direction="vertical"
             required
-            errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED
-            )}
+            errorText={getErrorMessage(fields.paySubsidyGranted.name)}
           >
             <$RadioButton
               id={`${fields.paySubsidyGranted.name}False`}
               name={fields.paySubsidyGranted.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED}.no`
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.no`
               )}
+              onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED,
-                  false
-                );
+                formik.setFieldValue(fields.paySubsidyGranted.name, false);
                 formik.setFieldValue(
                   APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM,
                   null
@@ -211,68 +207,55 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               name={fields.paySubsidyGranted.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED}.yes`
+                `${translationsBase}.fields.${fields.paySubsidyGranted.name}.yes`
               )}
+              onBlur={formik.handleBlur}
               onChange={() => {
-                formik.setFieldValue(
-                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_GRANTED,
-                  true
-                );
+                formik.setFieldValue(fields.paySubsidyGranted.name, true);
               }}
               checked={formik.values.paySubsidyGranted === true}
             />
           </SelectionGroup>
-        </$FormGroup>
+        </$GridCell>
         {formik.values.paySubsidyGranted && (
-          <$SubSection>
-            <$FormGroup>
+          <>
+            <$GridCell $colSpan={2} $colStart={4}>
               <Select
-                defaultValue={getDefaultSelectValue(
-                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
-                )}
-                style={{ width: 350 }}
-                helper={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
-                )}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove ts-ts-ignore when HDS is fixed
+                value={getSelectValue(fields.paySubsidyPercent.name)}
                 optionLabelField="label"
                 label={fields.paySubsidyPercent.label}
                 onChange={(paySubsidyPercent: Option) =>
                   formik.setFieldValue(
-                    APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT,
+                    fields.paySubsidyPercent.name,
                     paySubsidyPercent.value
                   )
                 }
                 options={subsidyOptions}
                 id={fields.paySubsidyPercent.name}
                 placeholder={t('common:select')}
-                invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
-                  )
-                }
-                aria-invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.PAY_SUBSIDY_PERCENT
-                  )
-                }
+                invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
+                aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
+                error={getErrorMessage(fields.paySubsidyPercent.name)}
                 required
+                css={`
+                  label {
+                    white-space: pre;
+                  }
+                `}
               />
-            </$FormGroup>
-            <Spacing size="m" />
-            <$FormGroup>
+            </$GridCell>
+            <$GridCell $colSpan={2} $colStart={4}>
               <Select
-                defaultValue={getDefaultSelectValue(
-                  APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
-                )}
-                style={{ width: 350 }}
-                helper={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
-                )}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove ts-ts-ignore when HDS is fixed
+                value={getSelectValue(fields.additionalPaySubsidyPercent.name)}
                 optionLabelField="label"
                 label={fields.additionalPaySubsidyPercent.label}
                 onChange={(additionalPaySubsidyPercent: Option) =>
                   formik.setFieldValue(
-                    APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT,
+                    fields.additionalPaySubsidyPercent.name,
                     additionalPaySubsidyPercent.value
                   )
                 }
@@ -280,37 +263,37 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 id={fields.additionalPaySubsidyPercent.name}
                 placeholder={t('common:select')}
                 invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
-                  )
+                  !!getErrorMessage(fields.additionalPaySubsidyPercent.name)
                 }
                 aria-invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.ADDITIONAL_PAY_SUBSIDY_PERCENT
-                  )
+                  !!getErrorMessage(fields.additionalPaySubsidyPercent.name)
                 }
+                error={getErrorMessage(fields.additionalPaySubsidyPercent.name)}
+                css={`
+                  label {
+                    white-space: pre;
+                  }
+                `}
               />
-            </$FormGroup>
-            <Spacing size="m" />
-            <$FormGroup>
+            </$GridCell>
+            <$GridCell $colSpan={3} $colStart={4}>
               <SelectionGroup
                 label={fields.apprenticeshipProgram.label}
+                id={fields.apprenticeshipProgram.name}
                 direction="vertical"
                 required
-                errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM
-                )}
+                errorText={getErrorMessage(fields.apprenticeshipProgram.name)}
               >
                 <$RadioButton
                   id={`${fields.apprenticeshipProgram.name}False`}
                   name={fields.apprenticeshipProgram.name}
                   value="false"
                   label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM}.no`
+                    `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.no`
                   )}
                   onChange={() => {
                     formik.setFieldValue(
-                      APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM,
+                      fields.apprenticeshipProgram.name,
                       false
                     );
                   }}
@@ -321,146 +304,147 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   name={fields.apprenticeshipProgram.name}
                   value="true"
                   label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM}.yes`
+                    `${translationsBase}.fields.${fields.apprenticeshipProgram.name}.yes`
                   )}
                   onChange={() => {
                     formik.setFieldValue(
-                      APPLICATION_FIELDS_STEP2.APPRENTICESHIP_PROGRAM,
+                      fields.apprenticeshipProgram.name,
                       true
                     );
                   }}
                   checked={formik.values.apprenticeshipProgram === true}
                 />
               </SelectionGroup>
-            </$FormGroup>
-          </$SubSection>
+            </$GridCell>
+          </>
         )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading3`)}>
-        <$FieldsWithInfoContainer>
-          <$FieldsWithInfoColumn>
-            <$FormGroup>
-              <SelectionGroup
-                label={fields.benefitType.label}
-                direction="vertical"
-                required
-                errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.BENEFIT_TYPE
-                )}
-              >
-                <$RadioButton
-                  id={`${fields.benefitType.name}Employment`}
-                  name={fields.benefitType.name}
-                  value={BENEFIT_TYPES.EMPLOYMENT}
-                  label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.employment`
-                  )}
-                  onChange={(val) => erazeCommissionFields(val)}
-                  checked={
-                    formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT
-                  }
-                />
-                <$RadioButton
-                  id={`${fields.benefitType.name}Salary`}
-                  name={fields.benefitType.name}
-                  value={BENEFIT_TYPES.SALARY}
-                  label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.salary`
-                  )}
-                  onChange={(val) => erazeCommissionFields(val)}
-                  checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
-                />
-                <$RadioButton
-                  id={`${fields.benefitType.name}Commission`}
-                  name={fields.benefitType.name}
-                  value={BENEFIT_TYPES.COMMISSION}
-                  label={t(
-                    `${translationsBase}.fields.${APPLICATION_FIELDS_STEP2.BENEFIT_TYPE}.commission`
-                  )}
-                  onChange={(e) => {
-                    formik.handleChange(e);
-                    formik.setFieldValue(
-                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE}`,
-                      ''
-                    );
-                    formik.setFieldValue(
-                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS}`,
-                      ''
-                    );
-                    formik.setFieldValue(
-                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT}`,
-                      ''
-                    );
-                    formik.setFieldValue(
-                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY}`,
-                      ''
-                    );
-                    formik.setFieldValue(
-                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES}`,
-                      ''
-                    );
-                    formik.setFieldValue(
-                      `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY}`,
-                      ''
-                    );
-                  }}
-                  checked={
-                    formik.values.benefitType === BENEFIT_TYPES.COMMISSION
-                  }
-                />
-              </SelectionGroup>
-            </$FormGroup>
-          </$FieldsWithInfoColumn>
-          <$FieldsWithInfoColumn>
-            {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
-              <Notification
-                label={t(
-                  `${translationsBase}.notifications.salaryBenefit.label`
-                )}
-              >
-                {t(`${translationsBase}.notifications.salaryBenefit.content`)}
-              </Notification>
-            )}
-          </$FieldsWithInfoColumn>
-        </$FieldsWithInfoContainer>
-      </FormSection>
-      <FormSection header={t(`${translationsBase}.heading4`)}>
-        {!formik.values.benefitType && (
-          <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
-        )}
-        <$FieldsWithInfoContainer>
-          <$FieldsWithInfoColumn>
-            <$FormGroup>
-              {formik.values.benefitType && (
-                <>
-                  {t(
-                    `${translationsBase}.messages.${camelCase(
-                      formik.values.benefitType
-                    )}Selected`
-                  )}
-                </>
+        <$GridCell $colSpan={6}>
+          <SelectionGroup
+            label={fields.benefitType.label}
+            id={fields.benefitType.name}
+            direction="vertical"
+            required
+            errorText={getErrorMessage(fields.benefitType.name)}
+          >
+            <$RadioButton
+              id={`${fields.benefitType.name}Employment`}
+              name={fields.benefitType.name}
+              value={BENEFIT_TYPES.EMPLOYMENT}
+              label={t(
+                `${translationsBase}.fields.${fields.benefitType.name}.employment`
               )}
-            </$FormGroup>
-            <$FormGroup>todo: datepicker range to implement</$FormGroup>
-          </$FieldsWithInfoColumn>
-          <$FieldsWithInfoColumn>
-            {formik.values.benefitType && (
-              <Notification
-                label={t(
-                  `${translationsBase}.notifications.${camelCase(
-                    formik.values.benefitType
-                  )}Selected.label`
-                )}
-              >
-                {t(
-                  `${translationsBase}.notifications.${camelCase(
-                    formik.values.benefitType
-                  )}Selected.content`
-                )}
-              </Notification>
-            )}
-          </$FieldsWithInfoColumn>
-        </$FieldsWithInfoContainer>
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              checked={formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT}
+            />
+            <$RadioButton
+              id={`${fields.benefitType.name}Salary`}
+              name={fields.benefitType.name}
+              value={BENEFIT_TYPES.SALARY}
+              label={t(
+                `${translationsBase}.fields.${fields.benefitType.name}.salary`
+              )}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
+              disabled={formik.values.paySubsidyGranted !== true}
+            />
+            <$RadioButton
+              id={`${fields.benefitType.name}Commission`}
+              name={fields.benefitType.name}
+              value={BENEFIT_TYPES.COMMISSION}
+              label={t(
+                `${translationsBase}.fields.${fields.benefitType.name}.commission`
+              )}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              checked={formik.values.benefitType === BENEFIT_TYPES.COMMISSION}
+              disabled={formik.values.apprenticeshipProgram === true}
+            />
+          </SelectionGroup>
+        </$GridCell>
+
+        {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
+          <$GridCell $colSpan={6}>
+            <Notification
+              label={t(`${translationsBase}.notifications.salaryBenefit.label`)}
+            >
+              {t(`${translationsBase}.notifications.salaryBenefit.content`)}
+            </Notification>
+          </$GridCell>
+        )}
+      </FormSection>
+
+      <FormSection header={t(`${translationsBase}.heading4`)}>
+        <$GridCell $colSpan={8}>
+          {!formik.values.benefitType
+            ? t(`${translationsBase}.messages.selectBenefitType`)
+            : t(
+                `${translationsBase}.messages.${camelCase(
+                  formik.values.benefitType
+                )}Selected`
+              )}
+        </$GridCell>
+        <$GridCell $colStart={1} $colSpan={2}>
+          <DateInput
+            id={fields.startDate.name}
+            name={fields.startDate.name}
+            label={fields.startDate.label}
+            placeholder={fields.startDate.placeholder}
+            disabled={!formik.values.benefitType}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) =>
+              formik.setFieldValue(fields.startDate.name, value)
+            }
+            value={formik.values.startDate ?? ''}
+            invalid={!!getErrorMessage(fields.startDate.name)}
+            aria-invalid={!!getErrorMessage(fields.startDate.name)}
+            errorText={getErrorMessage(fields.startDate.name)}
+            minDate={APPLICATION_START_DATE}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <DateInput
+            id={fields.endDate.name}
+            name={fields.endDate.name}
+            label={fields.endDate.label}
+            placeholder={fields.endDate.placeholder}
+            disabled={!formik.values.benefitType || !formik.values.startDate}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) =>
+              formik.setFieldValue(fields.endDate.name, value)
+            }
+            value={formik.values.endDate ?? ''}
+            invalid={!!getErrorMessage(fields.endDate.name)}
+            aria-invalid={!!getErrorMessage(fields.endDate.name)}
+            errorText={getErrorMessage(fields.endDate.name)}
+            initialMonth={!formik.values.endDate ? minEndDate : undefined}
+            minDate={minEndDate}
+            required
+          />
+        </$GridCell>
+        {formik.values.benefitType && (
+          <$GridCell $colStart={7} $colSpan={6}>
+            <Notification
+              label={t(
+                `${translationsBase}.notifications.${camelCase(
+                  formik.values.benefitType
+                )}Selected.label`
+              )}
+            >
+              {t(
+                `${translationsBase}.notifications.${camelCase(
+                  formik.values.benefitType
+                )}Selected.content`
+              )}
+            </Notification>
+          </$GridCell>
+        )}
       </FormSection>
       <FormSection
         header={t(
@@ -479,238 +463,189 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         )}
       >
         {!formik.values.benefitType && (
-          <>{t(`${translationsBase}.messages.selectBenefitType`)}</>
+          <$GridCell $colSpan={8}>
+            {t(`${translationsBase}.messages.selectBenefitType`)}
+          </$GridCell>
         )}
         {(formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
           formik.values.benefitType === BENEFIT_TYPES.SALARY) && (
           <>
-            <$EmploymentRelationshipContainer>
+            <$GridCell $colSpan={4}>
               <TextInput
-                id={fields.jobTitle.name}
-                name={fields.jobTitle.name}
-                label={fields.jobTitle.label}
-                placeholder={fields.jobTitle.placeholder}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE}`,
-                    e.target.value
-                  )
-                }
-                value={formik.values.employee?.jobTitle}
-                invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE)
-                }
-                aria-invalid={
-                  !!getErrorMessage(APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE)
-                }
-                errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_JOB_TITLE
-                )}
+                id={fields.employee.jobTitle.name}
+                name={fields.employee.jobTitle.name}
+                label={fields.employee.jobTitle.label}
+                placeholder={fields.employee.jobTitle.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.jobTitle ?? ''}
+                invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
+                aria-invalid={!!getErrorMessage(fields.employee.jobTitle.name)}
+                errorText={getErrorMessage(fields.employee.jobTitle.name)}
                 required
               />
-              <TextInput
-                id={fields.workingHours.name}
-                name={fields.workingHours.name}
-                label={fields.workingHours.label}
-                placeholder={fields.workingHours.placeholder}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS}`,
-                    e.target.value
-                  )
-                }
-                value={formik.values.employee?.workingHours || ''}
-                invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS
-                  )
-                }
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <NumberInput
+                id={fields.employee.workingHours.name}
+                name={fields.employee.workingHours.name}
+                label={fields.employee.workingHours.label}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
+                value={formik.values.employee?.workingHours ?? ''}
+                invalid={!!getErrorMessage(fields.employee.workingHours.name)}
                 aria-invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS
-                  )
+                  !!getErrorMessage(fields.employee.workingHours.name)
                 }
-                errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_WORKING_HOURS
-                )}
+                errorText={getErrorMessage(fields.employee.workingHours.name)}
                 required
               />
+            </$GridCell>
+            <$GridCell $colSpan={4}>
               <TextInput
-                id={fields.collectiveBargainingAgreement.name}
-                name={fields.collectiveBargainingAgreement.name}
-                label={fields.collectiveBargainingAgreement.label}
-                placeholder={fields.collectiveBargainingAgreement.placeholder}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT}`,
-                    e.target.value
-                  )
+                id={fields.employee.collectiveBargainingAgreement.name}
+                name={fields.employee.collectiveBargainingAgreement.name}
+                label={fields.employee.collectiveBargainingAgreement.label}
+                placeholder={
+                  fields.employee.collectiveBargainingAgreement.placeholder
                 }
-                value={formik.values.employee?.collectiveBargainingAgreement}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={
+                  formik.values.employee?.collectiveBargainingAgreement ?? ''
+                }
                 invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
+                    fields.employee.collectiveBargainingAgreement.name
                   )
                 }
                 aria-invalid={
                   !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
+                    fields.employee.collectiveBargainingAgreement.name
                   )
                 }
                 errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COLLECTIVE_BARGAINING_AGREEMENT
+                  fields.employee.collectiveBargainingAgreement.name
                 )}
                 required
               />
-            </$EmploymentRelationshipContainer>
-            <Spacing size="s" />
-            <Heading
-              size="xs"
-              header={t(`${translationsBase}.heading5EmploymentSub1`)}
-              tooltip={t(`${translationsBase}.tooltips.heading5EmploymentSub1`)}
-            />
-            <$EmploymentMoneyContainer>
-              <TextInput
-                id={fields.monthlyPay.name}
-                name={fields.monthlyPay.name}
-                label={fields.monthlyPay.label}
-                placeholder={fields.monthlyPay.placeholder}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY}`,
-                    e.target.value
-                  )
-                }
-                value={formik.values.employee?.monthlyPay || ''}
-                invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY
-                  )
-                }
+            </$GridCell>
+
+            <$GridCell $colSpan={12}>
+              <Heading
+                as="h3"
+                size="xs"
+                header={t(`${translationsBase}.heading5EmploymentSub1`)}
+                tooltip={t(
+                  `${translationsBase}.tooltips.heading5EmploymentSub1`
+                )}
+              />
+            </$GridCell>
+
+            <$GridCell $colSpan={2}>
+              <NumberInput
+                id={fields.employee.monthlyPay.name}
+                name={fields.employee.monthlyPay.name}
+                label={fields.employee.monthlyPay.label}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
+                value={formik.values.employee?.monthlyPay ?? ''}
+                invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
                 aria-invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY
-                  )
+                  !!getErrorMessage(fields.employee.monthlyPay.name)
                 }
-                errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_MONTHLY_PAY
-                )}
+                errorText={getErrorMessage(fields.employee.monthlyPay.name)}
                 required
               />
-              <TextInput
-                id={fields.otherExpenses.name}
-                name={fields.otherExpenses.name}
-                label={fields.otherExpenses.label}
-                placeholder={fields.otherExpenses.placeholder}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES}`,
-                    e.target.value
-                  )
-                }
-                value={formik.values.employee?.otherExpenses || ''}
-                invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES
-                  )
-                }
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <NumberInput
+                id={fields.employee.otherExpenses.name}
+                name={fields.employee.otherExpenses.name}
+                label={fields.employee.otherExpenses.label}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
+                value={formik.values.employee?.otherExpenses ?? ''}
+                invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
                 aria-invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES
-                  )
+                  !!getErrorMessage(fields.employee.otherExpenses.name)
                 }
-                errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_OTHER_EXPENSES
-                )}
+                errorText={getErrorMessage(fields.employee.otherExpenses.name)}
                 required
               />
-              <TextInput
-                id={fields.vacationMoney.name}
-                name={fields.vacationMoney.name}
-                label={fields.vacationMoney.label}
-                placeholder={fields.vacationMoney.placeholder}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY}`,
-                    e.target.value
-                  )
-                }
-                value={formik.values.employee?.vacationMoney || ''}
-                invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY
-                  )
-                }
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <NumberInput
+                id={fields.employee.vacationMoney.name}
+                name={fields.employee.vacationMoney.name}
+                label={fields.employee.vacationMoney.label}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
+                value={formik.values.employee?.vacationMoney ?? ''}
+                invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
                 aria-invalid={
-                  !!getErrorMessage(
-                    APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY
-                  )
+                  !!getErrorMessage(fields.employee.vacationMoney.name)
                 }
-                errorText={getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_VACATION_MONEY
-                )}
+                errorText={getErrorMessage(fields.employee.vacationMoney.name)}
                 required
               />
-            </$EmploymentMoneyContainer>
+            </$GridCell>
           </>
         )}
         {formik.values.benefitType === BENEFIT_TYPES.COMMISSION && (
-          <$CommissionContainer>
-            <TextInput
-              id={fields.commissionDescription.name}
-              name={fields.commissionDescription.name}
-              label={fields.commissionDescription.label}
-              placeholder={fields.commissionDescription.placeholder}
-              onChange={(e) =>
-                formik.setFieldValue(
-                  `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION}`,
-                  e.target.value
-                )
-              }
-              value={formik.values.employee?.commissionDescription}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION
-                )
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_DESCRIPTION
-              )}
-              required
-            />
-            <TextInput
-              id={fields.commissionAmount.name}
-              name={fields.commissionAmount.name}
-              label={fields.commissionAmount.label}
-              placeholder={fields.commissionAmount.placeholder}
-              onChange={(e) =>
-                formik.setFieldValue(
-                  `employee.${APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT}`,
-                  e.target.value
-                )
-              }
-              value={formik.values.employee?.commissionAmount}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT
-                )
-              }
-              aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT
-                )
-              }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS_STEP2.EMPLOYEE_COMMISSION_AMOUNT
-              )}
-              required
-            />
-          </$CommissionContainer>
+          <>
+            <$GridCell $colSpan={6}>
+              <TextInput
+                id={fields.employee.commissionDescription.name}
+                name={fields.employee.commissionDescription.name}
+                label={fields.employee.commissionDescription.label}
+                placeholder={fields.employee.commissionDescription.placeholder}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.employee?.commissionDescription ?? ''}
+                invalid={
+                  !!getErrorMessage(fields.employee.commissionDescription.name)
+                }
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.commissionDescription.name)
+                }
+                errorText={getErrorMessage(
+                  fields.employee.commissionDescription.name
+                )}
+                required
+              />
+            </$GridCell>
+            <$GridCell $colSpan={2}>
+              <NumberInput
+                id={fields.employee.commissionAmount.name}
+                name={fields.employee.commissionAmount.name}
+                label={fields.employee.commissionAmount.label}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
+                value={formik.values.employee?.commissionAmount ?? ''}
+                invalid={
+                  !!getErrorMessage(fields.employee.commissionAmount.name)
+                }
+                aria-invalid={
+                  !!getErrorMessage(fields.employee.commissionAmount.name)
+                }
+                errorText={getErrorMessage(
+                  fields.employee.commissionAmount.name
+                )}
+                required
+              />
+            </$GridCell>
+          </>
         )}
       </FormSection>
       <StepperActions

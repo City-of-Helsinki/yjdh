@@ -1,15 +1,14 @@
-import hdsToast from 'benefit/applicant/components/toast/Toast';
 import { BENEFIT_TYPES } from 'benefit/applicant/constants';
-import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
-  Attachment,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import hdsToast from 'shared/components/toast/Toast';
+import Attachment from 'shared/types/attachment';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
@@ -24,16 +23,10 @@ type ExtendedComponentProps = {
 const useApplicationFormStep3 = (
   application: Application
 ): ExtendedComponentProps => {
-  const { applicationTempData, setApplicationTempData } =
-    React.useContext(ApplicationContext);
   const { t } = useTranslation();
-  const [step, setStep] = useState<number>(3);
 
-  const {
-    mutate: updateApplicationStep3,
-    error: updateApplicationErrorStep3,
-    isSuccess: isApplicationUpdatedStep3,
-  } = useUpdateApplicationQuery();
+  const { mutate: updateApplicationStep3, error: updateApplicationErrorStep3 } =
+    useUpdateApplicationQuery();
 
   useEffect(() => {
     // todo:custom error messages
@@ -49,19 +42,7 @@ const useApplicationFormStep3 = (
     }
   }, [t, updateApplicationErrorStep3]);
 
-  useEffect(() => {
-    if (isApplicationUpdatedStep3) {
-      setApplicationTempData({ ...applicationTempData, currentStep: step });
-    }
-  }, [
-    isApplicationUpdatedStep3,
-    applicationTempData,
-    step,
-    setApplicationTempData,
-  ]);
-
   const handleStepChange = (nextStep: number): void => {
-    setStep(nextStep);
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,

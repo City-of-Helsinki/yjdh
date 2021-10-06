@@ -1,20 +1,18 @@
-import { $SecondaryButton } from 'benefit/applicant/components/applications/Applications.sc';
-import { $SubActionContainer } from 'benefit/applicant/components/applications/forms/application/Application.sc';
 import {
-  DE_MINIMIS_AID_FIELDS,
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
+  DE_MINIMIS_AID_KEYS,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/applicant/constants';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
-import { DateInput, IconPlusCircle, TextInput } from 'hds-react';
+import { Button, DateInput, IconPlusCircle, TextInput } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
-  $FieldsContainerWithPadding,
-  $FormGroup,
+  $Grid,
+  $GridCell,
   $SubHeader,
 } from 'shared/components/forms/section/FormSection.sc';
-import theme from 'shared/styles/theme';
+import { useTheme } from 'styled-components';
 
 import { useDeminimisAid } from './useDeminimisAid';
 
@@ -33,72 +31,105 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
     formik,
     grants,
   } = useDeminimisAid(data);
+  const theme = useTheme();
 
   return (
-    <>
-      <$SubHeader>{t(`${translationsBase}.deMinimisAidsHeading`)}</$SubHeader>
-      <>
-        <$FormGroup backgroundColor={theme.colors.silverLight}>
-          <$FieldsContainerWithPadding>
-            <TextInput
-              id={fields.granter.name}
-              name={fields.granter.name}
-              label={fields.granter.label}
-              placeholder={fields.granter.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.granter}
-              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
-              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
-              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTER)}
-              required
-            />
-            <TextInput
-              id={fields.amount.name}
-              name={fields.amount.name}
-              label={fields.amount.label || ''}
-              placeholder={fields.amount.placeholder}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.amount?.toString()}
-              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
-              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
-              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.AMOUNT)}
-              required
-            />
-            <DateInput
-              id={fields.grantedAt.name}
-              name={fields.grantedAt.name}
-              label={fields.grantedAt.label}
-              placeholder={fields.grantedAt.placeholder}
-              language={language}
-              onBlur={formik.handleBlur}
-              onChange={(value) =>
-                formik.setFieldValue(fields.grantedAt.name, value)
-              }
-              value={formik.values.grantedAt}
-              invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
-              aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
-              errorText={getErrorMessage(DE_MINIMIS_AID_FIELDS.GRANTED_AT)}
-              maxDate={DE_MINIMIS_AID_GRANTED_AT_MAX_DATE}
-              required
-            />
-          </$FieldsContainerWithPadding>
-          <$SubActionContainer>
-            <$SecondaryButton
-              disabled={
-                sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
-              }
-              onClick={(e) => handleSubmit(e)}
-              variant="secondary"
-              iconLeft={<IconPlusCircle />}
-            >
-              {t(`${translationsBase}.deMinimisAidsAdd`)}
-            </$SecondaryButton>
-          </$SubActionContainer>
-        </$FormGroup>
-      </>
-    </>
+    <$GridCell
+      $colStart={3}
+      $colSpan={10}
+      as={$Grid}
+      columns={10}
+      css={`
+        margin-bottom: ${theme.spacing.s};
+      `}
+    >
+      <$GridCell $colSpan={10}>
+        <$SubHeader>{t(`${translationsBase}.deMinimisAidsHeading`)}</$SubHeader>
+      </$GridCell>
+      <$GridCell
+        $colSpan={8}
+        as={$Grid}
+        columns={8}
+        bgColor
+        bgHorizontalPadding
+        bgVerticalPadding
+      >
+        <$GridCell $colSpan={4}>
+          <TextInput
+            id={fields.granter.name}
+            name={fields.granter.name}
+            label={fields.granter.label}
+            placeholder={fields.granter.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.granter}
+            invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
+            aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
+            errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTER)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <TextInput
+            id={fields.amount.name}
+            name={fields.amount.name}
+            label={fields.amount.label || ''}
+            placeholder={fields.amount.placeholder}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.amount?.toString()}
+            invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
+            aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
+            errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
+            required
+          />
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <DateInput
+            id={fields.grantedAt.name}
+            name={fields.grantedAt.name}
+            label={fields.grantedAt.label}
+            placeholder={fields.grantedAt.placeholder}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) =>
+              formik.setFieldValue(fields.grantedAt.name, value)
+            }
+            value={formik.values.grantedAt}
+            invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTED_AT)}
+            aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTED_AT)}
+            errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.GRANTED_AT)}
+            maxDate={DE_MINIMIS_AID_GRANTED_AT_MAX_DATE}
+            required
+          />
+        </$GridCell>
+      </$GridCell>
+      <$GridCell
+        $colSpan={2}
+        css={`
+          padding-top: 25px;
+          padding-left: ${theme.spacing.s};
+        `}
+      >
+        <Button
+          theme="coat"
+          disabled={
+            !(
+              formik.values.granter &&
+              formik.values.amount &&
+              formik.values.grantedAt
+            ) ||
+            !formik.isValid ||
+            sumBy(grants, 'amount') > MAX_DEMINIMIS_AID_TOTAL_AMOUNT
+          }
+          onClick={(e) => handleSubmit(e)}
+          iconLeft={<IconPlusCircle />}
+          fullWidth
+        >
+          {t(`${translationsBase}.deMinimisAidsAdd`)}
+        </Button>
+      </$GridCell>
+    </$GridCell>
   );
 };
 

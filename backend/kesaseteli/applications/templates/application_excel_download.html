@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+<div class="container">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{error}}
+            </div>
+        {% endif %}
+
+
+        <div class="col-md-12 text-end mt-2">
+            <a href="{% url 'django_auth_adfs:logout' %}" class="btn btn-info btn-md">{% trans 'Kirjaudu ulos' %}</a>
+        </div>
+
+        <h1>Lataa Excel tiedostoja</h1>
+        <p>
+            {% trans 'Luo uusi excel tiedosto kaikista järjestelmän käsittelemättömistä hakemuksista. Kun hakemus lisätään käsittelemättömien hakemusten excel tiedostoon, se merkataan järjestelmässä "käsitellyiksi" eikä sitä tuoda enää seuraavaan käsittelemättömien hakemusten exceliin.' %}
+        </p>
+        <div class="col-xs-6">
+            <a href="{% url 'excel-download' %}?download=unhandled" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Excel tiedosto käsittelemättömistä hakemuksista' %}</a>
+        </div>
+        <hr/>
+        <p>
+            {% trans 'Luo uusi excel tiedosto kaikista järjestelmän tämän vuoden hakemuksista. Tiedosto sisältää myös kaikki käsitellyt hakemukset.' %}
+        </p>
+        <div class="col-xs-6">
+            <a href="{% url 'excel-download' %}?download=annual" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Excel tiedosto kaikista tämän vuoden hakemuksista' %}</a>
+        </div>
+</div>
