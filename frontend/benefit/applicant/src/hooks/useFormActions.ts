@@ -101,7 +101,9 @@ export const useFormActions = (
     const data = getData(getModifiedValues(currentValues), currentStep + 1);
 
     try {
-      return applicationId ? updateApplication(data) : createApplication(data);
+      return applicationId
+        ? await updateApplication(data)
+        : await createApplication(data);
     } catch (error) {
       // useEffect will catch this error
     }
@@ -112,7 +114,7 @@ export const useFormActions = (
     const data = getData(application, currentStep - 1);
 
     try {
-      return updateApplication(data);
+      return await updateApplication(data);
     } catch (error) {
       // useEffect will catch this error
     }
