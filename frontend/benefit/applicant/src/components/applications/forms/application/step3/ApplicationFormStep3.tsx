@@ -1,7 +1,7 @@
 import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/AttachmentsIngress';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsList from './attachmentsList/AttachmentsList';
@@ -19,10 +19,6 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     showSubsidyMessage,
     attachments,
   } = useApplicationFormStep3(data);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <>

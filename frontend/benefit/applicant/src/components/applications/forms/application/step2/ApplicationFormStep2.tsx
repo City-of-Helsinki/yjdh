@@ -15,7 +15,7 @@ import {
   TextInput,
 } from 'hds-react';
 import camelCase from 'lodash/camelCase';
-import React, { useEffect } from 'react';
+import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
 import {
   $Checkbox,
@@ -57,10 +57,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   } = useApplicationFormStep2(data);
 
   const theme = useTheme();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   useDependentFieldsEffect(
     {

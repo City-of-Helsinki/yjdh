@@ -1,7 +1,7 @@
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -21,10 +21,6 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
     handleStepChange,
     translationsBase,
   } = useApplicationFormStep5(data);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <>
