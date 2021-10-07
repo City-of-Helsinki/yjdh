@@ -1,10 +1,11 @@
-import { Notification, NotificationProps } from 'hds-react';
+import { NotificationProps } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { ReactText, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 
 import { HDSToastContainerId } from './ToastContainer';
+import { $Notification } from './ToastContainer.sc';
 
 interface HDSToastArgs {
   autoDismissTime?: number;
@@ -52,7 +53,7 @@ const NotificationWrapper = ({
   }
 
   return (
-    <Notification
+    <$Notification
       type={type}
       dismissible
       closeButtonLabelText={t('common:toast.closeToast') ?? ''}
@@ -60,7 +61,7 @@ const NotificationWrapper = ({
       onClose={() => toast.dismiss(toastId)}
     >
       {body}
-    </Notification>
+    </$Notification>
   );
 };
 
