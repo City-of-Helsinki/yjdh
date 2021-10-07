@@ -9,7 +9,7 @@ import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 export interface AttachmentsListViewProps {
   attachments: Attachment[];
   type: ATTACHMENT_TYPES;
-  title: string;
+  title?: string;
 }
 
 const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
@@ -24,7 +24,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
 
   return (
     <$GridCell $colStart={1} $colSpan={6}>
-      <$ViewFieldBold>{title}</$ViewFieldBold>
+      {title && <$ViewFieldBold>{title}</$ViewFieldBold>}
       {currentAttachemnts
         ?.filter((att: Attachment) => att.attachmentType === type)
         .map((attachment: Attachment) => (

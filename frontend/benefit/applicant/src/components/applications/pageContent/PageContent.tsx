@@ -72,7 +72,7 @@ const PageContent: React.FC = () => {
       {currentStep === 3 && <ApplicationFormStep3 data={application} />}
       {currentStep === 4 && <ApplicationFormStep4 data={application} />}
       {currentStep === 5 && <ApplicationFormStep5 data={application} />}
-      {currentStep === 6 && <ApplicationFormStep6 />}
+      {currentStep === 6 && <ApplicationFormStep6 data={application} />}
     </Container>
   );
 };

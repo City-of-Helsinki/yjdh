@@ -91,8 +91,8 @@ const usePageContent = (): ExtendedComponentProps => {
       'company',
       'hired',
       'attachments',
-      'summary',
       'credentials',
+      'summary',
       'send',
     ];
     return applicationSteps.map((step) => ({

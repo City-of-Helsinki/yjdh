@@ -43,7 +43,7 @@
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
       "deleteApplication": "Poista hakemus",
       "continue": "Jatka",
-      "send": "Lähetä",
+      "send": "Lähetä hakemus",
       "back": "Back",
       "edit": "Muokkaa"
     },
@@ -307,6 +307,7 @@
       },
       "credentials": {
         "heading1": "Valtakirja",
+        "heading2": "Suostumus",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",
