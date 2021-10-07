@@ -41,7 +41,7 @@ const PdfViewver: React.FC<PdfViewerProps> = ({ file }) => {
       >
         <$GridCell>
           <Button theme="black" variant="secondary" onClick={handleBack}>
-            Previos
+            Previous
           </Button>
         </$GridCell>
         <$GridCell>
