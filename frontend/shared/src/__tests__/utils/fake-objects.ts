@@ -4,8 +4,9 @@ import faker from 'faker';
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
+import type Application from '../../types/application';
 import type Company from '../../types/company';
-import type Application from '../../types/employer-application';
+import ContactPerson from '../../types/contact_person';
 import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
@@ -33,6 +34,13 @@ export const fakeCompany: Company = {
   city: 'Vaasa',
   company_form: 'oy',
 };
+
+export const fakeContactPerson = (): ContactPerson => ({
+  contact_person_name: faker.name.findName(),
+  contact_person_email: faker.internet.email(),
+  contact_person_phone_number: faker.phone.phoneNumber(),
+  street_address: faker.address.streetAddress(),
+});
 
 export const fakeInvoicer = (): Required<Invoicer> => ({
   invoicer_name: faker.name.findName(),
@@ -84,15 +92,20 @@ export const fakeEmployments = (
   count = faker.datatype.number(10)
 ): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
 
-export const fakeApplication = (id: string): Application => ({
+export const fakeApplication = (
+  id: string,
+  invoicer?: boolean
+): Application => ({
   id,
   company: fakeCompany,
   status: 'draft',
   summer_vouchers: fakeEmployments(1),
-  ...fakeInvoicer(),
+  ...fakeContactPerson(),
+  is_separate_invoicer: invoicer,
+  ...(invoicer && fakeInvoicer()),
 });
 
 export const fakeApplications = (
   count = faker.datatype.number(10)
-): Required<Application[]> =>
+): Application[] =>
   generateNodeArray(() => fakeApplication(faker.datatype.uuid()), count);

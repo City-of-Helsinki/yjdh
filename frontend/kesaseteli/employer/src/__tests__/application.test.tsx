@@ -87,19 +87,24 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const required =
             /(tieto puuttuu tai on virheellinen)|(errors.required)/i;
           await applicationPage.step1.expectations.stepIsLoaded();
-          applicationPage.step1.actions.typeInvoicerName('');
+          applicationPage.step1.actions.typeContactPersonName('');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_name',
+            'contact_person_name',
             required
           );
-          applicationPage.step1.actions.typeInvoicerEmail('');
+          applicationPage.step1.actions.typeContactPersonEmail('');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_email',
+            'contact_person_email',
             required
           );
-          applicationPage.step1.actions.typeInvoicerPhone('');
+          applicationPage.step1.actions.typeStreetAddress('');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_phone_number',
+            'street_address',
+            required
+          );
+          applicationPage.step1.actions.typeContactPersonPhone('');
+          await applicationPage.step1.expectations.inputHasError(
+            'contact_person_phone_number',
             required
           );
         });
@@ -114,19 +119,24 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
             application
           );
           await applicationPage.step1.expectations.stepIsLoaded();
-          applicationPage.step1.actions.typeInvoicerName('a'.repeat(257)); // max limit is 256
+          applicationPage.step1.actions.typeContactPersonName('a'.repeat(257)); // max limit is 256
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_name',
+            'contact_person_name',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
-          applicationPage.step1.actions.typeInvoicerEmail('john@doe');
+          applicationPage.step1.actions.typeContactPersonEmail('john@doe');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_email',
+            'contact_person_email',
             /(syöttämäsi tieto on virheellistä muotoa)|(errors.pattern)/i
           );
-          applicationPage.step1.actions.typeInvoicerPhone('1'.repeat(65)); // max limit is 64
+          applicationPage.step1.actions.typeStreetAddress('s'.repeat(257)); // max limit is 64
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_phone_number',
+            'street_address',
+            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
+          );
+          applicationPage.step1.actions.typeContactPersonPhone('1'.repeat(65)); // max limit is 64
+          await applicationPage.step1.expectations.inputHasError(
+            'contact_person_phone_number',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
         });
@@ -142,18 +152,28 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           );
           await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.expectations.displayCompanyData();
-          applicationPage.step1.expectations.inputValueIsSet('invoicer_name');
-          applicationPage.step1.expectations.inputValueIsSet('invoicer_email');
           applicationPage.step1.expectations.inputValueIsSet(
-            'invoicer_phone_number'
+            'contact_person_name'
           );
-          const invoicer_name = 'John Doe';
-          const invoicer_email = 'john@doe.com';
-          const invoicer_phone_number = '+358503758288';
-          applicationPage.step1.actions.typeInvoicerName(invoicer_name);
-          applicationPage.step1.actions.typeInvoicerEmail(invoicer_email);
-          applicationPage.step1.actions.typeInvoicerPhone(
-            invoicer_phone_number
+          applicationPage.step1.expectations.inputValueIsSet(
+            'contact_person_email'
+          );
+          applicationPage.step1.expectations.inputValueIsSet(
+            'contact_person_phone_number'
+          );
+          const contact_person_name = 'John Doe';
+          const contact_person_email = 'john@doe.com';
+          const contact_person_phone_number = '+358503758288';
+          const street_address = 'Pohjoisesplanadi 11-13, 00170 Helsinki';
+          applicationPage.step1.actions.typeContactPersonName(
+            contact_person_name
+          );
+          applicationPage.step1.actions.typeContactPersonEmail(
+            contact_person_email
+          );
+          applicationPage.step1.actions.typeStreetAddress(street_address);
+          applicationPage.step1.actions.typeContactPersonPhone(
+            contact_person_phone_number
           );
           await applicationPage.step1.actions.clickNextButton();
           await applicationPage.step2.expectations.stepIsLoaded();

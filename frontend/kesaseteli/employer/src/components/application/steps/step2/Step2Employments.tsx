@@ -10,7 +10,7 @@ const Step2Employments: React.FC = () => {
   return (
     <ApplicationForm stepTitle={stepTitle}>
       <EmploymentAccordions />
-      <ActionButtons onNext="updateApplication" />
+      <ActionButtons />
     </ApplicationForm>
   );
 };

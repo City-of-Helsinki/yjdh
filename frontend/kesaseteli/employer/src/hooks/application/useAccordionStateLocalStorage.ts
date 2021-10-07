@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import useLocalStorage from 'react-use/lib/useLocalStorage';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 
 type AccordionState = {
   storageValue: boolean;

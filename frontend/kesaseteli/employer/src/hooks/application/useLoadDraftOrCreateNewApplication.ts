@@ -3,22 +3,16 @@ import React from 'react';
 import { UseMutateFunction } from 'react-query';
 import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import EmployerApplication from 'shared/types/employer-application';
+import Application from 'shared/types/application';
 
 const useLoadDraftOrCreateNewApplication = (
   isError: boolean,
-  applications: EmployerApplication[] | undefined,
-  newApplication: EmployerApplication | undefined,
-  createApplication: UseMutateFunction<
-    EmployerApplication,
-    Error,
-    void,
-    unknown
-  >
+  applications: Application[] | undefined,
+  newApplication: Application | undefined,
+  createApplication: UseMutateFunction<Application, Error, void, unknown>
 ): void => {
   const router = useRouter();
   const locale = router.locale ?? DEFAULT_LANGUAGE;
-
   const { isSyncing } = useIsSyncingToBackend();
 
   React.useEffect(() => {

@@ -180,7 +180,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             maxLength: 18,
             pattern: getDecimalNumberRegex(2),
           }}
-          helperFormat="####.##"
+          helperFormat="######.##"
         />
         <TextInput
           $rowSpan={3}
@@ -195,7 +195,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             pattern: getDecimalNumberRegex(2),
           }}
           type="decimal"
-          helperFormat="####.##"
+          helperFormat="######.##"
         />
         <SelectionGroup
           id={getId('hired_without_voucher_assessment')}

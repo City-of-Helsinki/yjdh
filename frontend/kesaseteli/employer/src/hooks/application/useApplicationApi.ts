@@ -2,11 +2,11 @@ import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/us
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import { UseMutationResult, UseQueryResult } from 'react-query';
+import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
-import Application from 'shared/types/employer-application';
-import { isEmpty } from 'shared/utils/array.utils';
 
 export type ApplicationQueryResult = UseQueryResult<Application, Error>;
 export type ApplicationMutationResult = UseMutationResult<
@@ -18,15 +18,30 @@ export type ApplicationMutationResult = UseMutationResult<
 export type ApplicationApi = {
   applicationId?: string;
   application: ApplicationQueryResult['data'];
-  updateApplication: (application: DraftApplication) => void;
-  sendApplication: (application: Application) => void;
-  addEmployment: (application: DraftApplication) => void;
-  removeEmployment: (application: DraftApplication, index: number) => void;
+  updateApplication: (
+    application: DraftApplication,
+    onSuccess?: () => void
+  ) => void;
+  sendApplication: (application: Application, onSuccess?: () => void) => void;
+  addEmployment: (
+    application: DraftApplication,
+    onSuccess?: () => void
+  ) => void;
+  removeEmployment: (
+    application: DraftApplication,
+    index: number,
+    onSuccess?: () => void
+  ) => void;
   isLoading: ApplicationQueryResult['isLoading'];
   isUpdating: ApplicationQueryResult['isLoading'];
   loadingError: ApplicationQueryResult['error'];
   updatingError: ApplicationMutationResult['error'];
   isError: boolean;
+};
+
+export type Params = {
+  onUpdateSuccess: (application: DraftApplication) => void;
+  onSendSuccess: (application: Application) => void;
 };
 
 const useApplicationApi = (
@@ -46,38 +61,58 @@ const useApplicationApi = (
   } = useUpdateApplicationQuery(application, onUpdateSuccess);
 
   const addEmployment: ApplicationApi['addEmployment'] = (
-    draftApplication: DraftApplication
+    draftApplication: DraftApplication,
+    onSuccess: (application: DraftApplication) => void = noop
   ) => {
     const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
-    return mutate({ ...draftApplication, status: 'draft', summer_vouchers });
+    return mutate(
+      { ...draftApplication, status: 'draft', summer_vouchers },
+      {
+        onSuccess: () => onSuccess(draftApplication),
+      }
+    );
   };
 
   const removeEmployment: ApplicationApi['removeEmployment'] = (
     draftApplication: DraftApplication,
-    index: number
+    index: number,
+    onSuccess: (application: DraftApplication) => void = noop
   ) => {
     const summer_vouchers = (draftApplication.summer_vouchers ?? []).filter(
       (elem, i) => i !== index
     );
-    return mutate({ ...draftApplication, status: 'draft', summer_vouchers });
+    return mutate(
+      { ...draftApplication, status: 'draft', summer_vouchers },
+      {
+        onSuccess: () => onSuccess(draftApplication),
+      }
+    );
   };
 
   const updateApplication: ApplicationApi['updateApplication'] = (
-    draftApplication: DraftApplication
+    draftApplication: DraftApplication,
+    onSuccess = noop
   ) => {
     if (isEmpty(draftApplication.summer_vouchers)) {
-      return addEmployment(draftApplication);
+      return addEmployment(draftApplication, onSuccess);
     }
-    return mutate({ ...draftApplication, status: 'draft' });
+    return mutate(
+      { ...draftApplication, status: 'draft' },
+      {
+        onSuccess,
+      }
+    );
   };
   const sendApplication: ApplicationApi['sendApplication'] = (
-    completeApplication: Application
+    completeApplication: Application,
+    onSuccess = noop
   ) =>
     mutate(
       { ...completeApplication, status: 'submitted' },
       {
         onSuccess: () => {
           clearLocalStorage(`application-${completeApplication.id}`);
+          onSuccess();
         },
       }
     );

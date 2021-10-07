@@ -1,5 +1,6 @@
 import { DateInput as HdsDateInput } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -12,14 +13,13 @@ import {
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
 import useLocale from 'shared/hooks/useLocale';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 import {
   convertToBackendDateFormat,
   convertToUIDateFormat,
   isValidDate,
   parseDate,
 } from 'shared/utils/date.utils';
-import { isEmpty } from 'shared/utils/string.utils';
 
 import { $DateInput } from './DateInput.sc';
 

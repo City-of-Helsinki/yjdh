@@ -6,7 +6,7 @@ import { Main } from './main';
 const GlobalStyle = createGlobalStyle`
   ${Fonts}
   ${Main}
-  
+
   h1 {
     margin: ${(props) => props.theme.spacing.l} 0;
     font-size: ${(props) => props.theme.fontSize.heading.l};
@@ -21,6 +21,10 @@ const GlobalStyle = createGlobalStyle`
   h3 {
     margin: ${(props) => props.theme.spacing.s} 0;
     font-size: ${(props) => props.theme.fontSize.heading.s};
+  }
+  pre {
+    margin: 0;
+    white-space: initial;
   }
 `;
 export default GlobalStyle;

@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 
 const AddNewEmploymentButton: React.FC = () => {
   const { t } = useTranslation();

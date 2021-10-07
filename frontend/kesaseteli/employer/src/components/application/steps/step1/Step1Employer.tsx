@@ -20,11 +20,11 @@ const Step1Employer: React.FC = () => {
       <CompanyInfoGrid />
       <FormSection columns={2}>
         <TextInput
-          id="invoicer_name"
+          id="contact_person_name"
           validation={{ required: true, maxLength: 256 }}
         />
         <TextInput
-          id="invoicer_email"
+          id="contact_person_email"
           validation={{
             required: true,
             maxLength: 254,
@@ -32,11 +32,15 @@ const Step1Employer: React.FC = () => {
           }}
         />
         <TextInput
-          id="invoicer_phone_number"
+          id="street_address"
+          validation={{ required: true, maxLength: 256 }}
+        />
+        <TextInput
+          id="contact_person_phone_number"
           validation={{ required: true, maxLength: 64 }}
         />
       </FormSection>
-      <ActionButtons onNext="updateApplication" />
+      <ActionButtons />
     </ApplicationForm>
   );
 };

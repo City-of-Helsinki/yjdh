@@ -6,7 +6,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
 
 import EmployeeErrorNotification from './EmployeeErrorNotification';

@@ -1,6 +1,6 @@
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
-import { isEmpty } from 'shared/utils/string.utils';
 
 const useWatchEmployeeDisplayName = (index: number): string => {
   const { t } = useTranslation();
