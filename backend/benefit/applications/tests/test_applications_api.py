@@ -860,6 +860,7 @@ def test_application_status_change(
     application.save()
     data = ApplicationSerializer(application).data
     data["status"] = to_status
+    data["bases"] = []  # as of 2021-10, bases are not used when submitting application
 
     if to_status == ApplicationStatus.RECEIVED:
         add_attachments_to_application(request, application)

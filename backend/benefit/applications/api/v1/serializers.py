@@ -1008,7 +1008,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         "benefit_type",
         "start_date",
         "end_date",
-        "bases",
     ]
 
     def _validate_non_draft_required_fields(self, data):
