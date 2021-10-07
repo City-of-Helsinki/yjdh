@@ -114,6 +114,7 @@ const useApplicationFormStep2 = (
             ? convertToBackendDateFormat(values.endDate)
             : null,
           applicationStep: getApplicationStepString(step),
+          apprenticeshipProgram: values.apprenticeshipProgram || false,
         },
         { deep: true }
       );

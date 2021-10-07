@@ -23,7 +23,8 @@ const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
     textLocale,
     checkedArray,
   } = useApplicationFormStep6(data);
-  // todo: implement resizing for pdf reader (f. ex. react-sizeme) and pagination
+
+  // todo: implement resizing for pdf reader (f. ex. react-sizeme), styling as in design
   return (
     <form onSubmit={handleSubmit} noValidate>
       <FormSection>

@@ -33,6 +33,10 @@ const useApplicationFormStep4 = (
   const translationsBase = 'common:applications.sections.credentials.sections';
   const { t } = useTranslation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { mutate: updateApplicationStep4, error: updateApplicationErrorStep4 } =
     useUpdateApplicationQuery();
 
