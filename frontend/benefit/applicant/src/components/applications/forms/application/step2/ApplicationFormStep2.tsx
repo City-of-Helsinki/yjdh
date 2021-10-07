@@ -24,7 +24,10 @@ import {
 import { Option } from 'shared/components/forms/fields/types';
 import Heading from 'shared/components/forms/heading/Heading';
 import FormSection from 'shared/components/forms/section/FormSection';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import { phoneToLocal } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
@@ -218,11 +221,17 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </SelectionGroup>
         </$GridCell>
         {formik.values.paySubsidyGranted && (
-          <>
+          <$GridCell
+            as={$Grid}
+            $colSpan={12}
+            css={`
+              row-gap: ${theme.spacing.xl};
+            `}
+          >
             <$GridCell $colSpan={2} $colStart={4}>
               <Select
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove ts-ts-ignore when HDS is fixed
+                // @ts-ignore TODO: remove ts-ignore when HDS is fixed
                 value={getSelectValue(fields.paySubsidyPercent.name)}
                 optionLabelField="label"
                 label={fields.paySubsidyPercent.label}
@@ -249,7 +258,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             <$GridCell $colSpan={2} $colStart={4}>
               <Select
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove ts-ts-ignore when HDS is fixed
+                // @ts-ignore TODO: remove ts-ignore when HDS is fixed
                 value={getSelectValue(fields.additionalPaySubsidyPercent.name)}
                 optionLabelField="label"
                 label={fields.additionalPaySubsidyPercent.label}
@@ -316,7 +325,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 />
               </SelectionGroup>
             </$GridCell>
-          </>
+          </$GridCell>
         )}
       </FormSection>
       <FormSection header={t(`${translationsBase}.heading3`)}>
