@@ -74,6 +74,12 @@ export interface ApplicantConsentData {
   text_sv: string;
 }
 
+export type ApplicantConsent = {
+  id: string;
+  textFi: string;
+  textEn: string;
+  textSv: string;
+};
 export interface ApplicantTermsData {
   id: string;
   applicant_consents: ApplicantConsentData[];
