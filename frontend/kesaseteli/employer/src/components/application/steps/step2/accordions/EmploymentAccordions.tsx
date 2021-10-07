@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 
 const EmploymentAccordions: React.FC = () => {
   const { t } = useTranslation();

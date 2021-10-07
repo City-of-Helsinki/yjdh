@@ -6,12 +6,15 @@ import {
   useFormContext,
   UseFormRegister,
 } from 'react-hook-form';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
 import { getLastValue } from 'shared/utils/array.utils';
 
 type Key = keyof Application | keyof Employment;
-type Value = Application[keyof Application] | Employment[keyof Employment]
+type Value =
+  | Application[keyof Application]
+  | Employment
+  | Employment[keyof Employment];
 
 type ApplicationFormField<V extends Value> = {
   fieldName: Key;
@@ -43,8 +46,7 @@ const useApplicationFormField = <V extends Value>(
     () => ({
       fieldName,
       getValue: () => getValues(id) as V,
-      setValue: (value: V) =>
-        setValue(id, value),
+      setValue: (value: V) => setValue(id, value),
       watch: () => watch(id) as V,
       getError: () => get(formState.errors, id) as FieldError | undefined,
       setError: (type: ErrorOption['type']) => setError(id, { type }),

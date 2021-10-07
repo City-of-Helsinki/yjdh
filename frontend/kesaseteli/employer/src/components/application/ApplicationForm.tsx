@@ -7,7 +7,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'shared/components/toast/Toast';
 import useSetQueryParam from 'shared/hooks/useSetQueryParam';
 import useWizard from 'shared/hooks/useWizard';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 
 type Props = {
   stepTitle: string;

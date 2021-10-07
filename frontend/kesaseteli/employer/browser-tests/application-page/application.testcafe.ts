@@ -27,7 +27,7 @@ fixture('Application')
   });
 
 if (isRealIntegrationsEnabled()) {
-  test('Fills up invoicer form and retrieves its data when logged out and in', async (t: TestController) => {
+  test('Fills up employer form and retrieves its data when logged out and in', async (t: TestController) => {
     const {
       user,
       id: applicationId,

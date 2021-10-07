@@ -8,6 +8,7 @@ import {
 
 type StepperActionsProps = {
   lastStep?: boolean;
+  disabledNext?: boolean;
   handleBack?: () => void;
   handleSubmit: () => void;
   handleSave: () => void;
@@ -15,6 +16,7 @@ type StepperActionsProps = {
 
 const StepperActions: React.FC<StepperActionsProps> = ({
   lastStep,
+  disabledNext,
   handleBack,
   handleSubmit,
   handleSave,
@@ -49,7 +51,8 @@ const StepperActions: React.FC<StepperActionsProps> = ({
       <$GridCell $colSpan={2}>
         <Button
           theme="coat"
-          iconRight={<IconArrowRight />}
+          disabled={disabledNext}
+          iconRight={lastStep ? <IconArrowRight /> : null}
           onClick={handleSubmit}
           fullWidth
         >
@@ -75,6 +78,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
 const defaultProps = {
   lastStep: false,
   handleBack: undefined,
+  disabledNext: false,
 };
 
 StepperActions.defaultProps = defaultProps;

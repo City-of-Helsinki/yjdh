@@ -21,12 +21,12 @@ const CredentialsSection: React.FC<CredentialsSectionProps> = ({
   icon,
   actions,
 }) => (
-    <$Container>
-      <$Heading>{title}</$Heading>
-      <$IconContainer>{icon}</$IconContainer>
-      <$Description>{description}</$Description>
-      <$ActionsContainer>{actions}</$ActionsContainer>
-    </$Container>
-  );
+  <$Container>
+    <$Heading>{title}</$Heading>
+    <$IconContainer>{icon}</$IconContainer>
+    <$Description>{description}</$Description>
+    <$ActionsContainer>{actions}</$ActionsContainer>
+  </$Container>
+);
 
 export default CredentialsSection;
