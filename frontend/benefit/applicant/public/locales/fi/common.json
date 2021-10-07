@@ -49,7 +49,7 @@
     },
     "sections": {
       "company": {
-        "heading1": "Yrityksen tiedot",
+        "heading1": "Työnantajan tiedot",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading2Short": "Yhteyshenkilö",
         "heading3": "Työnantajan de minimis-tuet",
@@ -61,7 +61,7 @@
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haettu YTJ:stä",
-            "content": "Yrityksen perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+            "content": "Työnantajan perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -74,7 +74,7 @@
         },
         "fields": {
           "useAlternativeAddress": {
-            "label": "Yrityksellä on toinen postiosoite"
+            "label": "Työnantajalle on toinen postiosoite"
           },
           "alternativeCompanyStreetAddress": {
             "label": "Osoite",
