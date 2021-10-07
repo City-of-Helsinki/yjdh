@@ -64,6 +64,7 @@ const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
         handleSubmit={handleSubmit}
         handleSave={handleSave}
         handleBack={handleBack}
+        lastStep
       />
     </form>
   );
