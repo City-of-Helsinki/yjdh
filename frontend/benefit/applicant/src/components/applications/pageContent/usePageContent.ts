@@ -83,7 +83,7 @@ const usePageContent = (): ExtendedComponentProps => {
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [
-      'company',
+      'employer',
       'hired',
       'attachments',
       'credentials',

@@ -32,7 +32,7 @@
       "rejected": "Hylätty"
     },
     "steps": {
-      "company": "Yritys",
+      "company": "Työnantaja",
       "hired": "Palkattava",
       "attachments": "Liittet",
       "summary": "Yhteenveto",
@@ -52,7 +52,7 @@
         "heading1": "Yrityksen tiedot",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis-tuet",
+        "heading3": "Työnantajan de minimis-tuet",
         "heading4": "YT-tilanne",
         "businessId": "Y-tunnus: {{ businessId }}",
         "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
@@ -69,7 +69,7 @@
           }
         },
         "tooltips": {
-          "heading3": "Hakijan de minimis-tuet tooltip text",
+          "heading3": "Työnantajan de minimis-tuet tooltip text",
           "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
         },
         "fields": {
@@ -117,7 +117,7 @@
             "no": "Ei"
           },
           "deMinimisAid": {
-            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
+            "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -135,7 +135,7 @@
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
-            "label": "Onko hakijalla menossa YT-neuvottelut?",
+            "label": "Onko työnantajalla menossa YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
