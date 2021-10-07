@@ -32,10 +32,8 @@ const ApplicationForm = ({ stepTitle, children }: Props): JSX.Element => {
   React.useEffect(() => {
     if (errorMessage) {
       Toast({
-        autoDismiss: true,
         autoDismissTime: 5000,
         type: 'error',
-        translated: true,
         labelText: t('common:application.common_error'),
         text: errorMessage,
       });

@@ -2,6 +2,7 @@ import {
   APPLICATION_STATUSES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -9,11 +10,9 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useEffect, useState } from 'react';
-import hdsToast from 'shared/components/toast/Toast';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -22,7 +21,7 @@ type ExtendedComponentProps = {
   t: TFunction;
   handleBack: () => void;
   handleSubmit: () => void;
-  handleStepChange: (step: number) => void;
+  handleSave: () => void;
   handleClick: (consentIndex: number) => void;
   getErrorText: (consentIndex: number) => string;
   translationsBase: string;
@@ -52,25 +51,10 @@ const useApplicationFormStep6 = (
 
   const [errorsArray, setErrorsArray] = useState<boolean[]>(getInitialvalues());
 
-  const {
-    mutate: updateApplicationStep6,
-    error: updateApplicationErrorStep6,
-    isSuccess: isApplicationUpdated,
-  } = useUpdateApplicationQuery();
+  const { onSave, onBack } = useFormActions(application, 6);
 
-  useEffect(() => {
-    // todo:custom error messages
-    if (updateApplicationErrorStep6) {
-      hdsToast({
-        autoDismiss: true,
-        autoDismissTime: 5000,
-        type: 'error',
-        translated: true,
-        labelText: t('common:error.generic.label'),
-        text: t('common:error.generic.text'),
-      });
-    }
-  }, [t, updateApplicationErrorStep6]);
+  const { mutate: updateApplicationStep6, isSuccess: isApplicationUpdated } =
+    useUpdateApplicationQuery();
 
   useEffect(() => {
     // todo: redirect to Thank you page, change status to received
@@ -91,19 +75,6 @@ const useApplicationFormStep6 = (
     newErrorsArray[consentIndex] = !newArray[consentIndex];
     setErrorsArray(newErrorsArray);
   };
-
-  const handleStepChange = (nextStep: number): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
-      {
-        ...application,
-        applicationStep: getApplicationStepString(nextStep),
-      },
-      { deep: true }
-    );
-    updateApplicationStep6(currentApplicationData);
-  };
-
-  const handleBack = (): void => handleStepChange(5);
 
   const getErrors = (): boolean => {
     setErrorsArray(invertBooleanArray(checkedArray));
@@ -134,11 +105,13 @@ const useApplicationFormStep6 = (
     }
   };
 
+  const handleSave = (): void => onSave(application);
+
   return {
     t,
-    handleBack,
+    handleBack: onBack,
     handleSubmit,
-    handleStepChange,
+    handleSave,
     handleClick,
     getErrorText,
     translationsBase,

@@ -13,6 +13,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
   const {
     handleBack,
     handleNext,
+    handleSave,
     benefitType,
     apprenticeshipProgram,
     showSubsidyMessage,
@@ -57,9 +58,8 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
         attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
       />
       <StepperActions
-        hasBack
-        hasNext
         handleSubmit={handleNext}
+        handleSave={handleSave}
         handleBack={handleBack}
       />
     </>

@@ -7,7 +7,7 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
 
-import { $ActionsWrapper,$ViewerWrapper } from './PdfViewer.sc';
+import { $ActionsWrapper, $ViewerWrapper } from './PdfViewer.sc';
 import { usePdfViewer } from './usePdfViewer';
 // test if it works in production
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;

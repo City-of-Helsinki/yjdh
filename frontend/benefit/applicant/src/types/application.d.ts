@@ -291,9 +291,3 @@ export type Application = {
   approveTerms?: ApproveTerms;
 } & Step1 &
   Step2;
-
-// for context
-export type ApplicationTempData = {
-  id: string;
-  deMinimisAids: DeMinimisAid[];
-};

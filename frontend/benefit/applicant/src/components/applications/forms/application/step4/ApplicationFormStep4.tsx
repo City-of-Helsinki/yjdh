@@ -34,6 +34,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
     t,
     handleBack,
     handleNext,
+    handleSave,
     handleRemoveAttachment,
     handleUploadAttachment,
     translationsBase,
@@ -154,9 +155,8 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
             (att) => att.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
           )
         )}
-        hasNext
-        hasBack
         handleSubmit={handleNext}
+        handleSave={handleSave}
         handleBack={handleBack}
       />
     </>

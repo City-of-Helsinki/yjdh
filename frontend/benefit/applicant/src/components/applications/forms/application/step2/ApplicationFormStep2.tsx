@@ -43,8 +43,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     clearContractValues,
     clearPaySubsidyValues,
     setEndDate,
-    handleSubmitNext,
-    handleSubmitBack,
+    handleSubmit,
+    handleSave,
+    handleBack,
     getErrorMessage,
     getSelectValue,
     fields,
@@ -82,7 +83,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   useAlertBeforeLeaving(formik.dirty);
 
   return (
-    <form onSubmit={handleSubmitNext} noValidate>
+    <form onSubmit={handleSubmit} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
         <$GridCell $colSpan={3}>
           <TextInput
@@ -649,10 +650,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <StepperActions
-        hasBack
-        hasNext
-        handleSubmit={handleSubmitNext}
-        handleBack={handleSubmitBack}
+        handleSubmit={handleSubmit}
+        handleSave={handleSave}
+        handleBack={handleBack}
       />
     </form>
   );
