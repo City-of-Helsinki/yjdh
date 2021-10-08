@@ -1,7 +1,5 @@
-import {
-  APPLICATION_FIELDS_STEP1_KEYS,
-  ORGANIZATION_TYPES,
-} from 'benefit/applicant/constants';
+import { ORGANIZATION_TYPES } from 'benefit/applicant/constants';
+import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { Application } from 'benefit/applicant/types/application';
 import { FormikProps } from 'formik';
 import { SelectionGroup, TextInput } from 'hds-react';
@@ -12,7 +10,6 @@ import {
   $Checkbox,
   $RadioButton,
 } from 'shared/components/forms/fields/Fields.sc';
-import { Field } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
 import {
   $Grid,
@@ -21,22 +18,13 @@ import {
 import { useTheme } from 'styled-components';
 
 import { $CompanyInfoRow, $Notification } from './CompanyInfo.sc';
-import useCompanyInfo from './useCompanyInfo';
+import useCompanyInfo, { CompanyInfoFields } from './useCompanyInfo';
 
-export type CompanyInfoFields = Pick<
-  Record<APPLICATION_FIELDS_STEP1_KEYS, Field>,
-  | APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS
-  | APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS
-  | APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE
-  | APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY
-  | APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER
-  | APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES
->;
 export interface CompanyInfoProps {
   getErrorMessage: (fieldName: string) => string | undefined;
   fields: CompanyInfoFields;
   translationsBase: string;
-  formik?: FormikProps<Application>;
+  formik: FormikProps<Application>;
 }
 
 const CompanyInfo: React.FC<CompanyInfoProps> = ({
@@ -52,7 +40,18 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
     shouldShowSkeleton,
     error,
     clearAlternativeAddressValues,
-  } = useCompanyInfo(formik);
+  } = useCompanyInfo(fields, formik);
+
+  useDependentFieldsEffect(
+    {
+      useAlternativeAddress: formik.values.useAlternativeAddress,
+    },
+    {
+      isFormDirty: formik.dirty,
+      clearAlternativeAddressValues,
+    }
+  );
+
   const theme = useTheme();
 
   return (
@@ -103,16 +102,10 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           label={fields.useAlternativeAddress.label}
           required
           checked={formik?.values.useAlternativeAddress === true}
-          errorText={getErrorMessage(
-            APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS
-          )}
-          onChange={() => clearAlternativeAddressValues()}
+          errorText={getErrorMessage(fields.useAlternativeAddress.name)}
+          onChange={formik?.handleChange}
           onBlur={formik?.handleBlur}
-          aria-invalid={
-            !!getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS
-            )
-          }
+          aria-invalid={!!getErrorMessage(fields.useAlternativeAddress.name)}
         />
       </$GridCell>
       {formik?.values.useAlternativeAddress && (
@@ -123,7 +116,26 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
             margin-bottom: ${theme.spacing.l};
           `}
         >
-          <$GridCell $colSpan={4}>
+          <$GridCell
+            $colSpan={4}
+            css={`
+              margin-bottom: ${theme.spacing.l};
+            `}
+          >
+            <TextInput
+              id={fields.companyDepartment.name}
+              name={fields.companyDepartment.name}
+              label={fields.companyDepartment.label}
+              placeholder={fields.companyDepartment.placeholder}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.companyDepartment}
+              invalid={!!getErrorMessage(fields.companyDepartment.name)}
+              aria-invalid={!!getErrorMessage(fields.companyDepartment.name)}
+              errorText={getErrorMessage(fields.companyDepartment.name)}
+            />
+          </$GridCell>
+          <$GridCell $colStart={1} $colSpan={4}>
             <TextInput
               id={fields.alternativeCompanyStreetAddress.name}
               name={fields.alternativeCompanyStreetAddress.name}
@@ -133,17 +145,13 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               onChange={formik.handleChange}
               value={formik.values.alternativeCompanyStreetAddress}
               invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS
-                )
+                !!getErrorMessage(fields.alternativeCompanyStreetAddress.name)
               }
               aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS
-                )
+                !!getErrorMessage(fields.alternativeCompanyStreetAddress.name)
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS
+                fields.alternativeCompanyStreetAddress.name
               )}
               required
             />
@@ -158,17 +166,13 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               onChange={formik.handleChange}
               value={formik.values.alternativeCompanyPostcode}
               invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE
-                )
+                !!getErrorMessage(fields.alternativeCompanyPostcode.name)
               }
               aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE
-                )
+                !!getErrorMessage(fields.alternativeCompanyPostcode.name)
               }
               errorText={getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE
+                fields.alternativeCompanyPostcode.name
               )}
               required
             />
@@ -182,19 +186,11 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.alternativeCompanyCity}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY
-                )
-              }
+              invalid={!!getErrorMessage(fields.alternativeCompanyCity.name)}
               aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY
-                )
+                !!getErrorMessage(fields.alternativeCompanyCity.name)
               }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY
-              )}
+              errorText={getErrorMessage(fields.alternativeCompanyCity.name)}
               required
             />
           </$GridCell>
@@ -224,36 +220,27 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               name={fields.companyBankAccountNumber.name}
               label={fields.companyBankAccountNumber.label}
               placeholder={fields.companyBankAccountNumber.placeholder}
-              invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER
-                )
-              }
+              invalid={!!getErrorMessage(fields.companyBankAccountNumber.name)}
               aria-invalid={
-                !!getErrorMessage(
-                  APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER
-                )
+                !!getErrorMessage(fields.companyBankAccountNumber.name)
               }
-              errorText={getErrorMessage(
-                APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER
-              )}
+              errorText={getErrorMessage(fields.companyBankAccountNumber.name)}
               required
             />
           )}
         </InputMask>
       </$GridCell>
-      {formik?.values[APPLICATION_FIELDS_STEP1_KEYS.ORGANIZATION_TYPE] ===
-        ORGANIZATION_TYPES.ASSOCIATION && (
+      {formik?.values.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
         <$GridCell $colSpan={8} $colStart={1}>
           <SelectionGroup
             label={fields.associationHasBusinessActivities.label}
             tooltipText={t(
-              `${translationsBase}.tooltips.${APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES}`
+              `${translationsBase}.tooltips.${fields.associationHasBusinessActivities.name}`
             )}
             direction="vertical"
             required
             errorText={getErrorMessage(
-              APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES
+              fields.associationHasBusinessActivities.name
             )}
           >
             <$RadioButton
@@ -261,11 +248,11 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               name={fields.associationHasBusinessActivities.name}
               value="false"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES}.no`
+                `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
               )}
               onChange={() => {
                 void formik?.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES,
+                  fields.associationHasBusinessActivities.name,
                   false
                 );
               }}
@@ -279,11 +266,11 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
               name={fields.associationHasBusinessActivities.name}
               value="true"
               label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES}.yes`
+                `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
               )}
               onChange={() =>
                 formik?.setFieldValue(
-                  APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES,
+                  fields.associationHasBusinessActivities.name,
                   true
                 )
               }
