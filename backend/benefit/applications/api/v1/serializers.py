@@ -35,6 +35,8 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
@@ -1292,11 +1294,19 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 )
             if hasattr(instance, "applicant_terms_approval"):
                 instance.applicant_terms_approval.delete()
+
+            approved_by = self._get_request_user_from_context()
+            if settings.DISABLE_AUTHENTICATION and isinstance(
+                approved_by, AnonymousUser
+            ):
+                approved_by = (
+                    get_user_model().objects.all().order_by("username").first()
+                )
             approval = ApplicantTermsApproval.objects.create(
                 application=instance,
                 terms=approve_terms["terms"],
                 approved_at=datetime.now(),
-                approved_by=self._get_request_user_from_context(),
+                approved_by=approved_by,
             )
             approval.selected_applicant_consents.set(
                 approve_terms["selected_applicant_consents"]
