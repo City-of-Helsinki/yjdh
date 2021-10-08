@@ -2,6 +2,8 @@ import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import React from 'react';
+import { $Hr } from 'shared/components/forms/section/FormSection.sc';
+import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsList from './attachmentsList/AttachmentsList';
@@ -20,6 +22,8 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     attachments,
     hasRequiredAttachments,
   } = useApplicationFormStep3(data);
+
+  const theme = useTheme();
 
   return (
     <>
@@ -53,6 +57,11 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
       <AttachmentsList
         attachments={attachments}
         attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+      />
+      <$Hr
+        css={`
+          margin: ${theme.spacing.l} 0;
+        `}
       />
       <StepperActions
         disabledNext={!hasRequiredAttachments}

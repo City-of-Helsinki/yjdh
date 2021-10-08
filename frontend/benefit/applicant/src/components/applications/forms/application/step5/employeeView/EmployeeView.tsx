@@ -1,9 +1,11 @@
+import { BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { Application } from 'benefit/applicant/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { useTheme } from 'styled-components';
 
 import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
@@ -16,6 +18,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
   data,
   handleStepChange,
 }) => {
+  const theme = useTheme();
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
   return (
@@ -25,6 +28,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         action={
           <Button
             theme="black"
+            style={{ marginTop: theme.spacing.s }}
             onClick={() => handleStepChange(2)}
             variant="supplementary"
             iconLeft={<IconPen />}
@@ -59,29 +63,30 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         withoutDivider
       >
         <$GridCell $colSpan={3}>
-          <$ViewFieldBold>
-            {t(
-              `${translationsBase}.employee.fields.paySubsidyGranted.${
-                data.paySubsidyGranted ? 'yes' : 'no'
-              }`
-            )}
-            {data.apprenticeshipProgram && (
-              <$ViewField>{`, ${data.paySubsidyPercent || ''} %`}</$ViewField>
-            )}
-          </$ViewFieldBold>
+          {data.paySubsidyGranted && (
+            <$ViewFieldBold>
+              {t(
+                `${translationsBase}.employee.fields.paySubsidyGranted.${
+                  data.paySubsidyGranted ? 'yes' : 'no'
+                }`
+              )}
+              {data.apprenticeshipProgram && (
+                <$ViewField>{`, ${data.paySubsidyPercent || ''} %`}</$ViewField>
+              )}
+            </$ViewFieldBold>
+          )}
+
           <$ViewField>
             {t(
               `${translationsBase}.employee.fields.apprenticeshipProgram.label`
             )}{' '}
-            {data.apprenticeshipProgram && (
-              <$ViewFieldBold>
-                {t(
-                  `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                    data.apprenticeshipProgram ? 'yes' : 'no'
-                  }`
-                )}
-              </$ViewFieldBold>
-            )}
+            <$ViewFieldBold>
+              {t(
+                `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                  data.apprenticeshipProgram ? 'yes' : 'no'
+                }`
+              )}
+            </$ViewFieldBold>
           </$ViewField>
         </$GridCell>
       </FormSection>
@@ -93,15 +98,13 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         <$GridCell $colSpan={5}>
           <$ViewField>
             {`${t(`${translationsBase}.employee.fields.benefitType.label`)}: `}
-            {data.apprenticeshipProgram && (
-              <$ViewFieldBold>
-                {t(
-                  `${translationsBase}.employee.fields.benefitType.${
-                    data.benefitType?.split('_')[0] || ''
-                  }`
-                )}
-              </$ViewFieldBold>
-            )}
+            <$ViewFieldBold>
+              {t(
+                `${translationsBase}.employee.fields.benefitType.${
+                  data.benefitType?.split('_')[0] || ''
+                }`
+              )}
+            </$ViewFieldBold>
           </$ViewField>
         </$GridCell>
 
@@ -118,41 +121,49 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           <$ViewField>{data.endDate ? data.endDate : '-'}</$ViewField>
         </$GridCell>
       </FormSection>
-
-      <FormSection
-        header={t(`${translationsBase}.employee.heading5Employment`)}
-      >
-        <$GridCell $colSpan={5}>
-          <$ViewField>
-            {`${t(`${translationsBase}.employee.fields.jobTitle.label`)}: ${
-              data.employee?.jobTitle || '-'
-            }`}
-          </$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.workingHours.view`, {
-              workingHours: data.employee?.workingHours,
-            })}
-          </$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.monthlyPay.view`, {
-              monthlyPay: data.employee?.monthlyPay,
-            })}
-          </$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.otherExpenses.view`, {
-              otherExpenses: data.employee?.otherExpenses,
-            })}
-          </$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.employee.fields.vacationMoney.view`, {
-              vacationMoney: data.employee?.vacationMoney,
-            })}
-          </$ViewField>
-          <$ViewField>
-            {data.employee?.collectiveBargainingAgreement}
-          </$ViewField>
-        </$GridCell>
-      </FormSection>
+      {(data.benefitType === BENEFIT_TYPES.SALARY ||
+        data.benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
+        <FormSection
+          header={t(`${translationsBase}.employee.heading5Employment`)}
+        >
+          <$GridCell $colSpan={5}>
+            <$ViewField>
+              {`${t(`${translationsBase}.employee.fields.jobTitle.label`)}: ${
+                data.employee?.jobTitle || '-'
+              }`}
+            </$ViewField>
+            <$ViewField>
+              {t(`${translationsBase}.employee.fields.workingHours.view`, {
+                workingHours: data.employee?.workingHours,
+              })}
+            </$ViewField>
+            <$ViewField>
+              {t(`${translationsBase}.employee.fields.monthlyPay.view`, {
+                monthlyPay: data.employee?.monthlyPay,
+              })}
+            </$ViewField>
+            <$ViewField>
+              {t(`${translationsBase}.employee.fields.otherExpenses.view`, {
+                otherExpenses: data.employee?.otherExpenses,
+              })}
+            </$ViewField>
+            <$ViewField
+              css={`
+                &&& {
+                  padding-bottom: 0;
+                }
+              `}
+            >
+              {t(`${translationsBase}.employee.fields.vacationMoney.view`, {
+                vacationMoney: data.employee?.vacationMoney,
+              })}
+            </$ViewField>
+            <$ViewField>
+              {data.employee?.collectiveBargainingAgreement}
+            </$ViewField>
+          </$GridCell>
+        </FormSection>
+      )}
     </>
   );
 };

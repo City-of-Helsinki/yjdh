@@ -453,6 +453,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         )}
       </FormSection>
       <FormSection
+        paddingBottom
         header={t(
           `${translationsBase}.heading5${
             formik.values.benefitType === BENEFIT_TYPES.COMMISSION

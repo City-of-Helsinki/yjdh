@@ -3,6 +3,7 @@ import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
+import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsListView from './attachmentsListView/AttachmentsListView';
@@ -20,7 +21,10 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
     handleSave,
     handleStepChange,
     translationsBase,
+    isSubmit,
   } = useApplicationFormStep5(data);
+
+  const theme = useTheme();
 
   return (
     <>
@@ -33,6 +37,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         action={
           <Button
             theme="black"
+            style={{ marginTop: theme.spacing.s }}
             onClick={() => handleStepChange(3)}
             variant="supplementary"
             iconLeft={<IconPen />}
@@ -87,10 +92,12 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         />
       </FormSection>
       <FormSection
+        paddingBottom
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
           <Button
             theme="black"
+            style={{ marginTop: theme.spacing.s }}
             onClick={() => handleStepChange(4)}
             variant="supplementary"
             iconLeft={<IconPen />}
@@ -105,6 +112,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         />
       </FormSection>
       <StepperActions
+        lastStep={isSubmit}
         handleSave={handleSave}
         handleSubmit={handleNext}
         handleBack={handleBack}

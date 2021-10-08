@@ -29,7 +29,10 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
         ?.filter((att: Attachment) => att.attachmentType === type)
         .map((attachment: Attachment) => (
           <$ViewField
-            style={{ display: 'flex', alignItems: 'center' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
             key={attachment.attachmentFileName}
           >
             <IconPaperclip aria-label={attachment.attachmentFileName} />

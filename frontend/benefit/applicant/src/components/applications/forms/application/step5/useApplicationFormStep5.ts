@@ -1,3 +1,4 @@
+import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -6,6 +7,7 @@ import {
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import isEmpty from 'lodash/isEmpty';
 import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
@@ -18,6 +20,7 @@ type ExtendedComponentProps = {
   handleBack: () => void;
   handleStepChange: (step: number) => void;
   translationsBase: string;
+  isSubmit: boolean;
 };
 
 const useApplicationFormStep5 = (
@@ -28,6 +31,8 @@ const useApplicationFormStep5 = (
 
   const { mutate: updateApplicationStep5, error: updateApplicationErrorStep5 } =
     useUpdateApplicationQuery();
+
+  const isSubmit = !isEmpty(application?.applicantTermsApproval);
 
   useEffect(() => {
     // todo:custom error messages
@@ -44,10 +49,21 @@ const useApplicationFormStep5 = (
   const { onNext, onSave, onBack } = useFormActions(application, 5);
 
   const handleStepChange = (nextStep: number): void => {
+    let submitFields = {};
+    submitFields = isSubmit ? {
+        approveTerms: {
+          terms: application?.applicantTermsInEffect?.id,
+          selectedApplicantConsents:
+            application?.applicantTermsInEffect?.applicantConsents.map(
+              (consent) => consent.id
+            ),
+        },
+        status: APPLICATION_STATUSES.RECEIVED,
+      } : { applicationStep: getApplicationStepString(nextStep) };
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,
-        applicationStep: getApplicationStepString(nextStep),
+        ...submitFields,
       },
       { deep: true }
     );
@@ -64,6 +80,7 @@ const useApplicationFormStep5 = (
     handleBack: onBack,
     handleStepChange,
     translationsBase,
+    isSubmit,
   };
 };
 
