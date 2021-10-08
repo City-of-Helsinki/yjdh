@@ -17,7 +17,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   type,
   title,
 }) => {
-  const currentAttachemnts = React.useMemo(
+  const currentAttachments = React.useMemo(
     (): Attachment[] => attachments,
     [attachments]
   );
@@ -25,7 +25,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   return (
     <$GridCell $colStart={1} $colSpan={6}>
       {title && <$ViewFieldBold>{title}</$ViewFieldBold>}
-      {currentAttachemnts
+      {currentAttachments
         ?.filter((att: Attachment) => att.attachmentType === type)
         .map((attachment: Attachment) => (
           <$ViewField
