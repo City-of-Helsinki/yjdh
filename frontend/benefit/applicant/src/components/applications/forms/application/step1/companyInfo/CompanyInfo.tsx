@@ -54,7 +54,6 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
 
   const theme = useTheme();
 
-  console.log('formik.values.organizationType', formik.values);
   return (
     <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
       <$GridCell $colSpan={3}>
