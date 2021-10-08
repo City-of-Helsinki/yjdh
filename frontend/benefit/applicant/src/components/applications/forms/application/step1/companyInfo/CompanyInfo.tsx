@@ -54,6 +54,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
 
   const theme = useTheme();
 
+  console.log('formik.values.organizationType', formik.values);
   return (
     <FormSection header={t(`${translationsBase}.heading1`)} loading={isLoading}>
       <$GridCell $colSpan={3}>
@@ -101,14 +102,14 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           name={fields.useAlternativeAddress.name}
           label={fields.useAlternativeAddress.label}
           required
-          checked={formik?.values.useAlternativeAddress === true}
+          checked={formik.values.useAlternativeAddress === true}
           errorText={getErrorMessage(fields.useAlternativeAddress.name)}
-          onChange={formik?.handleChange}
-          onBlur={formik?.handleBlur}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           aria-invalid={!!getErrorMessage(fields.useAlternativeAddress.name)}
         />
       </$GridCell>
-      {formik?.values.useAlternativeAddress && (
+      {formik.values.useAlternativeAddress && (
         <$GridCell
           as={$Grid}
           $colSpan={12}
@@ -201,14 +202,14 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
         <InputMask
           mask={fields.companyBankAccountNumber.mask?.format ?? ''}
           maskChar={null}
-          value={formik?.values.companyBankAccountNumber}
-          onBlur={formik?.handleBlur}
+          value={formik.values.companyBankAccountNumber}
+          onBlur={formik.handleBlur}
           onChange={(e) => {
             const initValue = e.target.value;
             const value =
               fields.companyBankAccountNumber.mask?.stripVal(initValue) ??
               initValue;
-            return formik?.setFieldValue(
+            return formik.setFieldValue(
               fields.companyBankAccountNumber.name,
               value
             );
@@ -230,7 +231,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
           )}
         </InputMask>
       </$GridCell>
-      {formik?.values.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
+      {formik.values.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
         <$GridCell $colSpan={8} $colStart={1}>
           <SelectionGroup
             label={fields.associationHasBusinessActivities.label}
@@ -251,15 +252,13 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.no`
               )}
               onChange={() => {
-                void formik?.setFieldValue(
+                void formik.setFieldValue(
                   fields.associationHasBusinessActivities.name,
                   false
                 );
               }}
               // 3 states: null (none is selected), true, false
-              checked={
-                formik?.values.associationHasBusinessActivities === false
-              }
+              checked={formik.values.associationHasBusinessActivities === false}
             />
             <$RadioButton
               id={`${fields.associationHasBusinessActivities.name}True`}
@@ -269,12 +268,12 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 `${translationsBase}.fields.${fields.associationHasBusinessActivities.name}.yes`
               )}
               onChange={() =>
-                formik?.setFieldValue(
+                formik.setFieldValue(
                   fields.associationHasBusinessActivities.name,
                   true
                 )
               }
-              checked={formik?.values.associationHasBusinessActivities === true}
+              checked={formik.values.associationHasBusinessActivities === true}
             />
           </SelectionGroup>
         </$GridCell>
