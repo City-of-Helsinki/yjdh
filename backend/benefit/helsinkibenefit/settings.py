@@ -137,6 +137,16 @@ USE_TZ = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
 INSTALLED_APPS = [
+    # shared apps
+    "shared.oidc",
+    "shared.audit_log",
+    # local apps
+    "users.apps.AppConfig",
+    "companies",
+    "applications.apps.AppConfig",
+    "terms.apps.AppConfig",
+    "calculator.apps.AppConfig",
+    # libraries
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -152,15 +162,6 @@ INSTALLED_APPS = [
     "encrypted_fields",
     "mozilla_django_oidc",
     "django_auth_adfs",
-    # shared apps
-    "shared.oidc",
-    "shared.audit_log",
-    # local apps
-    "users.apps.AppConfig",
-    "companies",
-    "applications.apps.AppConfig",
-    "terms.apps.AppConfig",
-    "calculator.apps.AppConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"
