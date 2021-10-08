@@ -231,30 +231,6 @@ class Application(UUIDModel, TimeStampedModel):
         verbose_name=_("benefit end date"), null=True, blank=True
     )
 
-    calculated_benefit_amount = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        verbose_name=_("amount of the benefit granted, calculated by the system"),
-        blank=True,
-        null=True,
-    )
-    manual_benefit_amount = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        verbose_name=_(
-            "amount of the benefit manually entered by the application handler"
-        ),
-        blank=True,
-        null=True,
-    )
-
-    @property
-    def benefit_amount(self):
-        if self.manual_benefit_amount is not None:
-            return self.manual_benefit_amount
-        else:
-            return self.calculated_benefit_amount
-
     APPLICATION_NUMBER_SEQUENCE_ID = "seq_application_number"
 
     def get_available_benefit_types(self):
@@ -290,6 +266,13 @@ class Application(UUIDModel, TimeStampedModel):
     bases = models.ManyToManyField("ApplicationBasis", related_name="applications")
 
     history = HistoricalRecords(table_name="bf_applications_application_history")
+
+    @property
+    def benefit_amount(self):
+        if hasattr(self, "calculation"):
+            return self.calculation.benefit_amount
+        else:
+            return None
 
     @property
     def ahjo_decision(self):

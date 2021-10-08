@@ -52,6 +52,10 @@ env = environ.Env(
         str,
         "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
     ),
+    PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY=(
+        str,
+        "d5c8a2743d726a33dbd637fac39d6f0712dcee4af36142fb4fb15afa17b1d9bf",
+    ),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
@@ -97,6 +101,9 @@ if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
+PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str(
+    "PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY"
+)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -153,6 +160,7 @@ INSTALLED_APPS = [
     "companies",
     "applications.apps.AppConfig",
     "terms.apps.AppConfig",
+    "calculator.apps.AppConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"

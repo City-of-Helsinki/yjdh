@@ -36,7 +36,7 @@ class TalpaService:
         TalpaColumn("Address of the employer", "effective_company_street_address"),
         TalpaColumn("Postal code of the employer", "effective_company_postcode"),
         TalpaColumn("City of the employer", "effective_company_city"),
-        TalpaColumn("Amount of benefit", "benefit_amount"),
+        TalpaColumn("Amount of benefit", "calculation.benefit_amount"),
         TalpaColumn("Title of decision maker", "batch.decision_maker_title"),
         TalpaColumn("Section of the law", "batch.section_of_the_law"),
         TalpaColumn("Date of the decision", "batch.decision_date"),
