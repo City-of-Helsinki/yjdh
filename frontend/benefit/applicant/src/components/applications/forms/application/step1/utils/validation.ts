@@ -23,6 +23,12 @@ import { getValidationSchema as getDeminimisValidationSchema } from '../../deMin
 export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step1> =>
   Yup.object().shape({
     [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]: Yup.boolean(),
+    [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_DEPARTMENT]: Yup.string()
+      .max(MAX_LONG_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX))
+      .when(APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS, {
+        is: true,
+        then: Yup.string(),
+      }),
     [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]:
       Yup.string()
         .matches(ADDRESS_REGEX, t(VALIDATION_MESSAGE_KEYS.INVALID))
