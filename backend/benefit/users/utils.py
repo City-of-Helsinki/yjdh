@@ -1,4 +1,5 @@
 from companies.models import Company
+from django.conf import settings
 
 from shared.oidc.utils import get_organization_roles
 
@@ -12,6 +13,9 @@ def get_business_id_from_user(user):
 
 
 def get_company_from_user(user):
+    if settings.DISABLE_AUTHENTICATION:
+        return Company.objects.all().order_by("name").first()
+
     if business_id := get_business_id_from_user(user):
         return Company.objects.filter(
             business_id=business_id

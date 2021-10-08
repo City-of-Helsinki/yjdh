@@ -3,7 +3,7 @@ from datetime import datetime
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from terms.api.v1.serializers import (
@@ -32,6 +32,12 @@ class ApproveTermsOfServiceView(APIView):
         user = request.user
 
         company = get_company_from_user(user)
+        if not company:
+            raise PermissionDenied(
+                detail=_(
+                    "The user has no company, terms of service can not be accepted"
+                )
+            )
         if TermsOfServiceApproval.terms_approval_needed(user, company):
             if not approve_terms:
                 raise serializers.ValidationError(
