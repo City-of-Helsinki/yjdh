@@ -1,4 +1,4 @@
-import { IconPlus } from 'hds-react';
+import { IconAlertCircleFill, IconPlus } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
@@ -6,10 +6,16 @@ import UploadAttachment from 'shared/components/attachments/UploadAttachment';
 import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_MAX_SIZE,
-} from 'shared/contants/attachment-constants';
+} from 'shared/constants/attachment-constants';
 import Attachment from 'shared/types/attachment';
+import { getAttachmentsByType } from 'shared/utils/attachment.utils';
 
-import { $Container, $Heading, $Message } from './AttachmentsList.sc';
+import {
+  $Container,
+  $ErrorMessage,
+  $Heading,
+  $Message,
+} from './AttachmentsList.sc';
 
 type Props = {
   title: string;
@@ -17,12 +23,16 @@ type Props = {
   allowedFileTypes?: readonly string[];
   maxSize?: number;
   message?: string | false;
+  errorMessage?: string | false;
   attachments?: Attachment[];
-  onUpload: (data: FormData) => void;
-  onRemove: (fileId: string) => void;
-  onOpen: (attachment: Attachment) => void;
+  onUpload: (data: FormData) => void | Promise<void>;
+  onRemove: (fileId: string) => void | Promise<void>;
+  onOpen: (attachment: Attachment) => void | Promise<void>;
   isUploading: boolean;
   isRemoving: boolean;
+  required?: boolean;
+  buttonRef?: React.Ref<HTMLButtonElement>;
+  name?: string;
 };
 
 const AttachmentsList: React.FC<Props> = ({
@@ -31,29 +41,29 @@ const AttachmentsList: React.FC<Props> = ({
   allowedFileTypes = ATTACHMENT_CONTENT_TYPES,
   maxSize = ATTACHMENT_MAX_SIZE,
   message,
+  errorMessage,
   attachments,
   onUpload,
   onRemove,
   onOpen,
   isUploading,
   isRemoving,
+  required,
+  name,
+  buttonRef,
 }) => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
 
   const files = React.useMemo(
-    (): Attachment[] =>
-      attachments?.filter(
-        (att) =>
-          att.attachmentType === attachmentType ||
-          att.attachment_type === attachmentType
-      ) || [],
+    (): Attachment[] => getAttachmentsByType(attachments ?? [], attachmentType),
     [attachmentType, attachments]
   );
-
   return (
     <$Container>
-      <$Heading>{title}</$Heading>
+      <$Heading>
+        {title} {required && ' *'}
+      </$Heading>
       {files && files.length > 0 ? (
         <>
           {files.map((file) => (
@@ -71,6 +81,8 @@ const AttachmentsList: React.FC<Props> = ({
         <>{message && <$Message>{message}</$Message>}</>
       )}
       <UploadAttachment
+        buttonRef={buttonRef}
+        name={name}
         theme="coat"
         variant="primary"
         onUpload={onUpload}
@@ -85,6 +97,12 @@ const AttachmentsList: React.FC<Props> = ({
         errorFileSizeText={t('common:error.attachments.tooBig')}
         errorFileTypeText={t('common:error.attachments.fileType')}
       />
+      {errorMessage && (
+        <$ErrorMessage>
+          <IconAlertCircleFill size="s" />
+          {errorMessage}
+        </$ErrorMessage>
+      )}
     </$Container>
   );
 };

@@ -7,3 +7,4 @@ export const ATTACHMENT_CONTENT_TYPES = [
   'application/pdf',
 ] as const;
 
+export const ATTACHMENT_TYPES = ['employment_contract', 'payslip'] as const;

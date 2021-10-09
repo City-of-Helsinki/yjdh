@@ -26,10 +26,11 @@ type Value =
 type ApplicationFormField<V extends Value> = {
   fieldName: ApplicationFieldName;
   defaultLabel: string;
-  getValue: () => V | string;
+  getValue: () => V;
   watch: () => V;
   setValue: (value: V) => void;
   getError: () => FieldError | undefined;
+  hasError: () => boolean;
   getErrorText: () => string | undefined;
   setError: (type: ErrorOption['type']) => void;
   clearValue: () => void;
@@ -49,59 +50,86 @@ const useApplicationFormField = <V extends Value>(
     trigger,
     clearErrors,
     formState,
-    setError,
+    setError: setErrorF,
   } = useFormContext<Application>();
   const fieldName = (getLastValue((id as string).split('.')) ??
     '') as ApplicationFieldName;
   const defaultLabel = useGetApplicationFormFieldLabel(fieldName);
 
-  const getValue = React.useCallback((): V | string => {
+  const getValue = React.useCallback((): V => {
     const value = getValues(id) as string;
     if (isDateObject(parseDate(value))) {
-      return convertToUIDateFormat(value);
+      return convertToUIDateFormat(value) as V;
     }
     return value as V;
   }, [getValues, id]);
 
+  const setValueF = React.useCallback(
+    (value: V) => setValue(id, value),
+    [setValue, id]
+  );
+  const watchF = React.useCallback(() => watch(id) as V, [watch, id]);
   const getError = React.useCallback(
     (): FieldError | undefined =>
       get(formState.errors, id) as FieldError | undefined,
     [formState, id]
   );
+  const hasError = React.useCallback(() => Boolean(getError()), [getError]);
+
+  const setError = React.useCallback(
+    (type: ErrorOption['type']) => setErrorF(id, { type }),
+    [id, setErrorF]
+  );
+
+  const getErrorText = React.useCallback((): string | undefined => {
+    const type = getError()?.type as string;
+    return type ? t(`common:application.form.errors.${type}`) : undefined;
+  }, [getError, t]);
+
+  const clearValue = React.useCallback(() => setValue(id, ''), [setValue, id]);
+  const triggerF = React.useCallback(
+    () => trigger(id, { shouldFocus: true }),
+    [trigger, id]
+  );
+  const clearErrorsF = React.useCallback(
+    () => clearErrors(id),
+    [clearErrors, id]
+  );
+  const getSummaryText = React.useCallback(() => {
+    const value = getValue();
+    return `${defaultLabel}: ${value ? value.toString() : '-'}`;
+  }, [getValue, defaultLabel]);
 
   return React.useMemo(
     () => ({
       fieldName,
       defaultLabel,
       getValue,
-      setValue: (value: V) => setValue(id, value),
-      watch: () => watch(id) as V,
+      setValue: setValueF,
+      watch: watchF,
       getError,
-      getErrorText: () => {
-        const type = getError()?.type;
-        return type ? t(`common:application.form.errors.${type}`) : undefined;
-      },
-      setError: (type: ErrorOption['type']) => setError(id, { type }),
-      clearValue: () => setValue(id, ''),
-      trigger: () => trigger(id, { shouldFocus: true }),
-      clearErrors: () => clearErrors(id),
-      getSummaryText: () => {
-        const value = getValue();
-        return `${defaultLabel}: ${value ? value.toString() : '-'}`;
-      },
+      hasError,
+      getErrorText,
+      setError,
+      clearValue,
+      trigger: triggerF,
+      clearErrors: clearErrorsF,
+      getSummaryText,
     }),
     [
-      id,
-      t,
-      defaultLabel,
-      clearErrors,
       fieldName,
-      setValue,
-      trigger,
-      setError,
-      watch,
+      defaultLabel,
       getValue,
+      setValueF,
+      watchF,
       getError,
+      hasError,
+      getErrorText,
+      setError,
+      clearValue,
+      triggerF,
+      clearErrorsF,
+      getSummaryText,
     ]
   );
 };

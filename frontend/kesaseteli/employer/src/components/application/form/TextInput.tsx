@@ -57,7 +57,7 @@ const TextInput: React.FC<TextInputProps> = ({
     useApplicationFormField<string>(id);
 
   const errorText = React.useMemo((): string | undefined => {
-    const errorType = getError()?.type;
+    const errorType = getError()?.type as string;
     const text = getErrorText();
     if (!text || !errorType) {
       return undefined;

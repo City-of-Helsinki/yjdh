@@ -1,6 +1,6 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import { useMutation, UseMutationResult } from 'react-query';
 import Attachment from 'shared/types/attachment';
 
 type RemoveAttachmentData = {
@@ -8,26 +8,22 @@ type RemoveAttachmentData = {
   id: Attachment['id'];
 };
 
-const useRemoveAttachmentQuery = (
-  applicationId?: string
-): UseMutationResult<RemoveAttachmentData, Error, RemoveAttachmentData> => {
+const useRemoveAttachmentQuery = (): UseMutationResult<
+  RemoveAttachmentData,
+  Error,
+  RemoveAttachmentData
+> => {
   const { axios, handleResponse } = useBackendAPI();
-  const queryClient = useQueryClient();
   return useMutation<RemoveAttachmentData, Error, RemoveAttachmentData>(
     ['attachment'],
     ({ id, summer_voucher }: RemoveAttachmentData) =>
-      !applicationId
-        ? Promise.reject(new Error('Missing applicationId'))
+      !summer_voucher || !id
+        ? Promise.reject(new Error('Missing summer_voucher or attachment id'))
         : handleResponse<RemoveAttachmentData>(
             axios.delete(
               `${BackendEndpoint.SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}${id}/`
             )
-          ),
-    {
-      onSuccess: () => {
-        void queryClient.invalidateQueries(['applications', applicationId]);
-      },
-    }
+          )
   );
 };
 

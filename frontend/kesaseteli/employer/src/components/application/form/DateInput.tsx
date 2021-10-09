@@ -59,7 +59,7 @@ const DateInput = ({
     []
   );
 
-  const errorType = getError()?.type;
+  const errorType = getError()?.type as string;
   const errorText = React.useMemo((): string | undefined => {
     if (!errorType) {
       return undefined;

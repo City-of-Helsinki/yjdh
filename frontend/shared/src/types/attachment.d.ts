@@ -1,6 +1,9 @@
-import { ATTACHMENT_CONTENT_TYPES } from 'shared/contants/attachment-constants';
+import {
+  ATTACHMENT_CONTENT_TYPES,
+  ATTACHMENT_TYPES,
+} from 'shared/constants/attachment-constants';
 
-export type AttachmentType = 'employment_contract' | 'payslip';
+export type AttachmentType = typeof ATTACHMENT_TYPES[number];
 
 export type AttachmentContentType = typeof ATTACHMENT_CONTENT_TYPES[number];
 

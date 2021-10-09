@@ -1,100 +1,124 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
-import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
+import useOpenAttachment from 'kesaseteli/employer/hooks/backend/useOpenAttachment';
 import useRemoveAttachmentQuery from 'kesaseteli/employer/hooks/backend/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'kesaseteli/employer/hooks/backend/useUploadAttachmentQuery';
+import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import { useFormContext, UseFormRegister } from 'react-hook-form';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import Application from 'shared/types/application-form-data';
 import Attachment, { AttachmentType } from 'shared/types/attachment';
-import Employment from 'shared/types/employment';
+import { validateAttachments } from 'shared/utils/attachment.utils';
 
 type Props = {
   index: number;
-  attachmentType: AttachmentType;
+  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  required?: boolean;
 };
 
-const AttachmentInput: React.FC<Props> = ({ index, attachmentType }) => {
+const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
   const { t } = useTranslation();
 
-  const { getValue: getEmployment } = useApplicationFormField<Employment>(
-    `summer_vouchers.${index}`
-  );
-  const { id: summerVoucherId, attachments } = getEmployment() as Employment;
-  const { applicationId } = useApplicationApi();
-  const {
-    mutate: removeAttachment,
-    isLoading: isRemoving,
-    isError: isRemovingError,
-  } = useRemoveAttachmentQuery(applicationId);
+  const { register } = useFormContext<Application>();
 
   const {
-    mutate: uploadAttachment,
-    isLoading: isUploading,
-    isError: isUploadingError,
-  } = useUploadAttachmentQuery(applicationId);
+    setValue: setAttachments,
+    hasError,
+    fieldName,
+    setError,
+    watch,
+    clearErrors,
+  } = useApplicationFormField<Attachment[]>(id);
+  const attachments = watch();
+
+  const attachmentType = fieldName as AttachmentType;
+
+  const { getValue: getId } = useApplicationFormField<string>(
+    `summer_vouchers.${index}.id`
+  );
+  const summerVoucherId = getId();
+
+  const { mutateAsync: removeAttachment, isLoading: isRemoving } =
+    useRemoveAttachmentQuery();
+
+  const { mutateAsync: uploadAttachment, isLoading: isUploading } =
+    useUploadAttachmentQuery();
 
   const handleRemove = React.useCallback(
-    (attachmentId: string): void => {
-      removeAttachment({
-        summer_voucher: summerVoucherId,
-        id: attachmentId,
-      });
+    async (attachmentId: string): Promise<void> => {
+      try {
+        await removeAttachment({
+          summer_voucher: summerVoucherId,
+          id: attachmentId,
+        });
+        const resultList = attachments.filter(
+          (attachment) => attachment.id !== attachmentId
+        );
+        setAttachments(resultList);
+        if (required && isEmpty(resultList)) {
+          setError(attachmentType);
+        }
+      } catch (error) {
+        // TODO proper error handling
+        // eslint-disable-next-line no-console
+        console.log(error);
+        showErrorToast(
+          t(`common:delete.errorTitle`),
+          t(`common:delete.errorMessage`)
+        );
+      }
     },
-    [removeAttachment, summerVoucherId]
+    [
+      attachments,
+      removeAttachment,
+      summerVoucherId,
+      setAttachments,
+      required,
+      setError,
+      attachmentType,
+      t,
+    ]
   );
 
   const handleUpload = React.useCallback(
-    (attachment: FormData): void => {
-      uploadAttachment({
-        summer_voucher: summerVoucherId,
-        data: attachment,
-      });
-    },
-    [uploadAttachment, summerVoucherId]
-  );
-
-  const { axios, handleResponse } = useBackendAPI();
-
-  const openAttachment = React.useCallback(
-    async ({ id, summer_voucher, content_type }: Attachment) => {
-      const data = await handleResponse<Blob>(
-        axios.get(
-          `${BackendEndpoint.SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}${id}`,
-          { responseType: 'blob' }
-        )
-      );
-      if (data instanceof Blob) {
-        const file = new Blob([data], { type: content_type });
-        const fileURL = URL.createObjectURL(file);
-        // eslint-disable-next-line security/detect-non-literal-fs-filename
-        const newTab = window.open(fileURL, '_blank');
-        if (newTab) {
-          newTab.focus();
-        }
+    async (attachment: FormData): Promise<void> => {
+      try {
+        const newFile = await uploadAttachment({
+          summer_voucher: summerVoucherId,
+          data: attachment,
+        });
+        setAttachments([...attachments, newFile]);
+        clearErrors();
+      } catch (error) {
+        // TODO proper error handling
+        // eslint-disable-next-line no-console
+        console.log(error);
+        showErrorToast(
+          t(`common:upload.errorTitle`),
+          t(`common:upload.errorMessage`)
+        );
       }
     },
-    [axios, handleResponse]
+    [
+      attachments,
+      uploadAttachment,
+      summerVoucherId,
+      setAttachments,
+      clearErrors,
+      t,
+    ]
   );
 
-  React.useEffect(() => {
-    if (isRemovingError) {
-      showErrorToast(
-        t(`common:remove.errorTitle`),
-        t(`common:remove.errorMessage`)
-      );
-    } else if (isUploadingError) {
-      showErrorToast(
-        t(`common:upload.errorTitle`),
-        t(`common:upload.errorMessage`)
-      );
-    }
-  }, [isRemovingError, isUploadingError, t]);
+  const openAttachment = useOpenAttachment();
+
+  const { ref } = register(id, { validate: validateAttachments });
 
   return (
     <AttachmentsListBase
+      buttonRef={ref}
+      name={id}
       title={t(
         `common:applications.sections.attachments.types.${attachmentType}.title`
       )}
@@ -105,6 +129,12 @@ const AttachmentInput: React.FC<Props> = ({ index, attachmentType }) => {
       onOpen={openAttachment}
       isUploading={isUploading}
       isRemoving={isRemoving}
+      errorMessage={
+        hasError()
+          ? `${t(`common:application.form.errors.${attachmentType}`)}`
+          : undefined
+      }
+      required={required}
     />
   );
 };
