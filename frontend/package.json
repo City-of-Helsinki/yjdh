@@ -109,6 +109,6 @@
     "testcafe-reporter-custom": "^1.1.1",
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^26.5.5",
-    "typescript": "^4.3.4"
+    "typescript": "^4.4.3"
   }
 }

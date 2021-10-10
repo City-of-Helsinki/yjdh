@@ -1,5 +1,3 @@
-import os
-
 from django.core import exceptions
 from django.http import FileResponse
 from django.utils.text import format_lazy
@@ -160,7 +158,7 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
             Read a single attachment as file
             """
             attachment = obj.attachments.filter(pk=attachment_pk).first()
-            if not attachment or not os.path.isfile(attachment.attachment_file.path):
+            if not attachment or not attachment.attachment_file:
                 return Response(
                     {
                         "detail": format_lazy(
@@ -194,6 +192,5 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
                 return Response(
                     {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
                 )
-            instance.attachment_file.delete(save=False)
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

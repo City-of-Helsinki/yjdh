@@ -2,7 +2,7 @@ import {
   DE_MINIMIS_AID_KEYS,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
-import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
+import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
@@ -11,7 +11,7 @@ import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { capitalize } from 'shared/utils/string.utils';
 
 import { getValidationSchema } from './utils/validation';
@@ -36,24 +36,18 @@ type FormFields = {
 const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const { applicationTempData, setApplicationTempData } =
-    React.useContext(ApplicationContext);
+  const { deMinimisAids, setDeMinimisAids } =
+    React.useContext(DeMinimisContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [defaultValue, setDefaultValue] = useState(false);
 
   // initial data
   useEffect(() => {
     if (!defaultValue) {
-      setApplicationTempData({ ...applicationTempData, deMinimisAids: data });
+      setDeMinimisAids(data);
       setDefaultValue(true);
     }
-  }, [
-    data,
-    defaultValue,
-    setDefaultValue,
-    applicationTempData,
-    setApplicationTempData,
-  ]);
+  }, [data, defaultValue, setDefaultValue, setDeMinimisAids]);
 
   const formik = useFormik({
     initialValues: {
@@ -65,17 +59,16 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: () => {
-      setApplicationTempData({
-        ...applicationTempData,
-        deMinimisAids: [
-          ...(applicationTempData.deMinimisAids || []),
-          {
-            granter: formik.values.granter,
-            amount: parseFloat(formik.values.amount),
-            grantedAt: convertToUIDateFormat(formik.values.grantedAt),
-          },
-        ],
-      });
+      setDeMinimisAids((prevDeMinimisAids) => [
+        ...prevDeMinimisAids,
+        {
+          [DE_MINIMIS_AID_KEYS.GRANTER]: formik.values.granter,
+          [DE_MINIMIS_AID_KEYS.AMOUNT]: parseFloat(formik.values.amount),
+          [DE_MINIMIS_AID_KEYS.GRANTED_AT]: convertToBackendDateFormat(
+            formik.values.grantedAt
+          ),
+        },
+      ]);
       formik.resetForm();
       setIsSubmitted(false);
     },
@@ -146,7 +139,7 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
     formik,
     getErrorMessage,
     handleSubmit,
-    grants: applicationTempData.deMinimisAids || [],
+    grants: deMinimisAids,
   };
 };
 

@@ -11,3 +11,7 @@ interface Loading {
 interface ErrorResponse {
   response: unknown;
 }
+
+interface ErrorData {
+  data?: Record<string, string[]>;
+}

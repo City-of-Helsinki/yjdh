@@ -44,7 +44,9 @@ export type Params = {
   onSendSuccess: (application: Application) => void;
 };
 
-const useApplicationApi = (): ApplicationApi => {
+const useApplicationApi = (
+  { onUpdateSuccess } = { onUpdateSuccess: noop }
+): ApplicationApi => {
   const applicationId = useApplicationIdQueryParam();
 
   const {
@@ -56,7 +58,7 @@ const useApplicationApi = (): ApplicationApi => {
     mutate,
     isLoading: isUpdating,
     error: updatingError,
-  } = useUpdateApplicationQuery(application);
+  } = useUpdateApplicationQuery(application, onUpdateSuccess);
 
   const addEmployment: ApplicationApi['addEmployment'] = (
     draftApplication: DraftApplication,
