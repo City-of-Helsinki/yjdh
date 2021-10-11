@@ -1,19 +1,25 @@
 import { RenderResult } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import renderComponent from 'benefit/applicant/__tests__/utils/render-component';
+import { useFormik } from 'formik';
 import { axe } from 'jest-axe';
 import React from 'react';
 
-import CompanyInfo from '../CompanyInfo';
+import CompanyInfo, { CompanyInfoProps } from '../CompanyInfo';
 
 describe('CompanyInfo', () => {
-  const getComponent = (): RenderResult =>
+  const getComponent = (formik: CompanyInfoProps['formik']): RenderResult =>
     renderComponent(
       <CompanyInfo
-        getErrorMessage={() => ''}
+        getErrorMessage={jest.fn()}
         fields={{
           useAlternativeAddress: {
             name: 'useAlternativeAddress',
             label: 'useAlternativeAddress',
+          },
+          companyDepartment: {
+            name: 'companyDepartment',
+            label: 'companyDepartment',
           },
           alternativeCompanyPostcode: {
             name: 'alternativeCompanyPostcode',
@@ -36,12 +42,17 @@ describe('CompanyInfo', () => {
             label: 'associationHasBusinessActivities',
           },
         }}
+        formik={formik}
         translationsBase=""
       />
     );
 
   it('should render with no accessibility violations', async () => {
-    const { container } = getComponent();
+    const { result } = renderHook(() =>
+      useFormik({ initialValues: {}, onSubmit: jest.fn() })
+    );
+
+    const { container } = getComponent(result.current);
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();

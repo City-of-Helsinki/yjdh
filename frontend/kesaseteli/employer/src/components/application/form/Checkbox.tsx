@@ -1,6 +1,7 @@
-import { Checkbox as HdsCheckbox } from 'hds-react';
+import { Checkbox as HdsCheckbox, CheckboxProps } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import isEmpty from 'lodash/isEmpty';
+import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -17,30 +18,44 @@ import Application from 'shared/types/application-form-data';
 type Props = {
   id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
   validation?: RegisterOptions<Application>;
+  onChange?: (value: boolean) => void;
+  initialValue?: boolean;
+  label?: CheckboxProps['label'];
 } & GridCellProps;
 
 const Checkbox: React.FC<Props> = ({
   id,
   validation = {},
+  onChange = noop,
+  initialValue,
+  label,
   ...$gridCellProps
 }: Props) => {
   const { t } = useTranslation();
   const { register } = useFormContext<Application>();
 
-  const { getValue, getError, fieldName } =
+  const { getError, defaultLabel, setError, clearErrors } =
     useApplicationFormField<boolean>(id);
-  const [selectedValue, setSelectedValue] = React.useState(getValue());
+
+  const [selectedValue, setSelectedValue] = React.useState(initialValue);
   const required = Boolean(validation.required);
   const handleChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSelectedValue(event.target.checked);
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.checked;
+      onChange(value);
+      setSelectedValue(value);
+      if (required && !value) {
+        setError('required');
+      } else if (required && value) {
+        clearErrors();
+      }
     },
-    [setSelectedValue]
+    [setSelectedValue, onChange, required, clearErrors, setError]
   );
 
   // TODO: This can be removed after backend supports invalid values in draft save
   const getValueForBackend = React.useCallback(
-    (value: string) => (isEmpty(value) ? undefined : value),
+    (value: string) => (isEmpty(value) ? false : value),
     []
   );
 
@@ -58,9 +73,9 @@ const Checkbox: React.FC<Props> = ({
             ? `${t(`common:application.form.errors.checkboxRequired`)}`
             : undefined
         }
-        label={t(`common:application.form.inputs.${fieldName}`)}
+        label={label || defaultLabel}
         onChange={handleChange}
-        checked={selectedValue}
+        checked={selectedValue ?? initialValue}
       />
     </$GridCell>
   );
@@ -68,6 +83,9 @@ const Checkbox: React.FC<Props> = ({
 
 Checkbox.defaultProps = {
   validation: {},
+  onChange: noop,
+  initialValue: false,
+  label: undefined,
 };
 
 export default Checkbox;

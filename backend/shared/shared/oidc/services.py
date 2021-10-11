@@ -17,6 +17,14 @@ def create_oidc_profile(user, defaults: dict) -> OIDCProfile:
     return oidc_profile
 
 
+def update_oidc_profile(oidc_profile, defaults: dict) -> OIDCProfile:
+    oidc_profile, _ = OIDCProfile.objects.update_or_create(
+        user=oidc_profile.user,
+        defaults=defaults,
+    )
+    return oidc_profile
+
+
 def clear_oidc_profiles(
     oidc_profiles: Union[OIDCProfile, "QuerySet[OIDCProfile]"]
 ) -> None:
@@ -60,6 +68,14 @@ def store_token_info_in_oidc_profile(user, token_info):
     defaults = get_defaults(token_info)
 
     oidc_profile = create_oidc_profile(user, defaults)
+    return oidc_profile
+
+
+def update_token_info_in_oidc_profile(oidc_profile, token_info):
+    """Update token info in the OIDCProfile instance and return the updated instance."""
+    defaults = get_defaults(token_info)
+
+    oidc_profile = update_oidc_profile(oidc_profile, defaults)
     return oidc_profile
 
 

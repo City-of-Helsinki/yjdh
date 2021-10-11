@@ -17,13 +17,13 @@ const useLoadDraftOrCreateNewApplication = (
 
   React.useEffect(() => {
     if (!isSyncing && !isError) {
-      const draftApplication =
-        applications && applications?.length > 0
-          ? applications[0]
-          : newApplication;
+      const previousApplication = applications?.find(
+        (application) => application.status === 'draft'
+      );
+      const draftApplication = previousApplication ?? newApplication;
       if (draftApplication) {
         void router.push(`${locale}/application?id=${draftApplication.id}`);
-      } else if (applications?.length === 0) {
+      } else if (applications && !previousApplication) {
         createApplication();
       }
     }

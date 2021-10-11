@@ -88,6 +88,10 @@
         "contact_person_email": "Yhteyshenkilön sähköposti",
         "street_address": "Työpaikan lähiosoite",
         "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
+        "is_separate_invoicer": "Laskutusta hoitaa yrityksessä eri yhteyshenkilö",
+        "invoicer_name": "Yhteyshenkilön nimi",
+        "invoicer_email": "Yhteyshenkilön sähköposti",
+        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
         "summer_voucher_exception_reason": "Luokka tai syntymävuosi",
@@ -103,7 +107,7 @@
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
-        "termsAndConditions": "Olen lukenut palvelun käyttöehdot ja hyväksyn ne."
+        "termsAndConditions": "Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne."
       },
       "helpers": {
         "date": "Käytä muotoa P.K.VVVV",
@@ -133,5 +137,6 @@
     "sv": "På svenska",
     "en": "In english"
   },
-  "menuToggleAriaLabel": "Menu"
+  "menuToggleAriaLabel": "Menu",
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/"
 }

@@ -10,7 +10,10 @@ from mozilla_django_oidc.utils import absolutify
 from requests.exceptions import HTTPError
 from rest_framework.authentication import SessionAuthentication
 
-from shared.oidc.services import store_token_info_in_oidc_profile
+from shared.oidc.services import (
+    store_token_info_in_oidc_profile,
+    update_token_info_in_oidc_profile,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -110,7 +113,7 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         )
         response.raise_for_status()
 
-        return store_token_info_in_oidc_profile(oidc_profile.user, response.json())
+        return update_token_info_in_oidc_profile(oidc_profile, response.json())
 
 
 class EAuthRestAuthentication(SessionAuthentication):
@@ -160,8 +163,6 @@ class EAuthRestAuthentication(SessionAuthentication):
         if not (
             hasattr(user, "oidc_profile")
             and hasattr(user.oidc_profile, "eauthorization_profile")
-            and user.oidc_profile.eauthorization_profile.id_token
-            and user.oidc_profile.eauthorization_profile.access_token
         ):
             return None
 

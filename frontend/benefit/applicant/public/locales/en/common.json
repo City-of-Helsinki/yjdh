@@ -88,6 +88,10 @@
             "label": "Postitoimipaikka",
             "placeholder": "Postitoimipaikka"
           },
+          "companyDepartment": {
+            "label": "Toimipiste tai osasto (valinnainen)",
+            "placeholder": "Toimipiste / osasto"
+          },
           "companyBankAccountNumber": {
             "label": "Tilinumero",
             "placeholder": "IBAN muodossa"

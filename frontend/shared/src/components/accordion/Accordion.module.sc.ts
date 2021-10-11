@@ -6,14 +6,14 @@ export const $Accordion = styled.div<AccordionProps>`
   ${(props) =>
     !props.card
       ? `
-    border-bottom: 1px solid ${props.theme.colors.black60};`
+    border-bottom: 1px solid var(--color-black-60)`
       : ''}
   ${(props) =>
     props.card
       ? `
-    background-color: ${props.theme.colors.black60};
-    padding-left: ${props.theme.spacing.m};
-    padding-right: ${props.theme.spacing.m};
+    background-color: var(--color-black-60);
+    padding-left: var(--spacing-m);
+    padding-right: var(--spacing-m);
     `
       : ''};
   ${(props) => (props.border ? `border: 2px solid var(--color-black-60)` : '')};
@@ -22,21 +22,21 @@ export const $Accordion = styled.div<AccordionProps>`
 export const $AccordionHeader = styled.div<AccordionProps>`
   position: relative;
   background-color: ${(props) => props.headerBackgroundColor};
-  color: ${(props) => props.theme.colors.black90};
-  font-size: ${(props) => props.theme.fontSize.heading.m};
+  color: var(--color-black-90);
+  font-size: var(--fontsize-heading-m);
   font-weight: bold;
-  line-height: ${(props) => props.theme.lineHeight.m};
-  padding-top: ${(props) => props.theme.spacing.m};
-  padding-bottom: ${(props) => props.theme.spacing.m};
+  line-height: var(--lineheight-m);
+  padding-top: var(--spacing-m);
+  padding-bottom: var(--spacing-m);
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
 export const $AccordionContent = styled.div`
-  font-size: ${(props) => props.theme.fontSize.body.m};
-  line-height: ${(props) => props.theme.lineHeight.l};
-  color: ${(props) => props.theme.colors.black90};
+  font-size: var(--fontsize-body-m);
+  line-height: var(--lineheight-l);
+  color: var(-color-black-90);
 `;
 export const $HeadingContainer = styled.div`
   cursor: pointer;

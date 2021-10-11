@@ -20,7 +20,7 @@ const EmployeeErrorNotification: React.FC<Props> = ({
   const { t } = useTranslation();
   const employeeDisplayname = useWatchEmployeeDisplayName(index);
   return (
-    <$GridCell>
+    <$GridCell key={index}>
       <h4>{employeeDisplayname}</h4>
       <ul>
         {errors.map(({ field, errorType }) => (
