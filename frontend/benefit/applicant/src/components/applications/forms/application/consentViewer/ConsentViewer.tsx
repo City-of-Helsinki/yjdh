@@ -11,6 +11,8 @@ import { useConsentViewer } from './useConsentViewer';
 const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
   const { textLocale, cbPrefix, t } = useConsentViewer();
   const theme = useTheme();
+  
+  if (!data) return null;
   return (
     <>
       {data && (
@@ -22,10 +24,9 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
             size="M"
             openInNewTab
             href={
-              (data.applicantTermsApproval?.terms &&
-                data.applicantTermsApproval.terms[
+              (data.applicantTermsApproval?.terms?.[
                   `termsPdf${textLocale}` as TermsProp
-                ]) ||
+                ]) ??
               ''
             }
           >
