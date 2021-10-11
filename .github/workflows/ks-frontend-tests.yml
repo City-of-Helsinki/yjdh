@@ -61,4 +61,6 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: yarn build

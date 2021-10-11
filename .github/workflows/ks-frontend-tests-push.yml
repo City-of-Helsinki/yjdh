@@ -68,6 +68,8 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: yarn build
       - name: Frontend build failure slack notification
         uses: rtCamp/action-slack-notify@v2
