@@ -21,7 +21,7 @@ const FormSection: React.FC<FormSectionProps> = ({
 }) => (
   <$Section paddingBottom={paddingBottom}>
     {action && <$Action>{action}</$Action>}
-    {header && <Heading size="s" header={header} {...rest} />}
+    {header && <Heading header={header} loading={loading} {...rest} />}
     {children && (
       <$Grid role={role} {...rest}>
         {children}

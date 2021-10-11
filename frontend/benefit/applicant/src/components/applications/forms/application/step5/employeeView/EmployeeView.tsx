@@ -28,7 +28,9 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         action={
           <Button
             theme="black"
-            style={{ marginTop: theme.spacing.s }}
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
             onClick={() => handleStepChange(2)}
             variant="supplementary"
             iconLeft={<IconPen />}

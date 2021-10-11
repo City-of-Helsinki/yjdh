@@ -39,7 +39,9 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         action={
           <Button
             theme="black"
-            style={{ marginTop: theme.spacing.s }}
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
             onClick={() => handleStepChange(3)}
             variant="supplementary"
             iconLeft={<IconPen />}
@@ -98,7 +100,9 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         action={
           <Button
             theme="black"
-            style={{ marginTop: theme.spacing.s }}
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
             onClick={() => handleStepChange(4)}
             variant="supplementary"
             iconLeft={<IconPen />}

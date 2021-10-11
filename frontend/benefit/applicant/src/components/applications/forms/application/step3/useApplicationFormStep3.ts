@@ -46,7 +46,7 @@ const useApplicationFormStep3 = (
     }
     if (application.benefitType === BENEFIT_TYPES.COMMISSION) {
       return !isEmpty(
-        application?.attachments?.find(
+        application.attachments?.find(
           (att) => att.attachmentType === ATTACHMENT_TYPES.COMMISSION_CONTRACT
         )
       );
