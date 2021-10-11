@@ -1,5 +1,6 @@
 import { GetStaticProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 import Container from 'shared/components/container/Container';
 import Layout from 'shared/components/Layout';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
