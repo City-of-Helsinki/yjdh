@@ -43,7 +43,7 @@ const DateInput = ({
   const locale = useLocale();
   const { register } = useFormContext<Application>();
   const {
-    fieldName,
+    defaultLabel,
     getValue,
     getError,
     setError,
@@ -107,7 +107,7 @@ const DateInput = ({
         disableDatePicker={process.env.NODE_ENV === 'test'}
         onChange={handleChange}
         errorText={errorText}
-        label={t(`common:application.form.inputs.${fieldName}`)}
+        label={defaultLabel}
       />
     </$GridCell>
   );

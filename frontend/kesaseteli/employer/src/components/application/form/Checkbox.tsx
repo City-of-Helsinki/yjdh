@@ -1,4 +1,4 @@
-import { Checkbox as HdsCheckbox } from 'hds-react';
+import { Checkbox as HdsCheckbox, CheckboxProps } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
@@ -20,6 +20,7 @@ type Props = {
   validation?: RegisterOptions<Application>;
   onChange?: (value: boolean) => void;
   initialValue?: boolean;
+  label?: CheckboxProps['label'];
 } & GridCellProps;
 
 const Checkbox: React.FC<Props> = ({
@@ -27,20 +28,29 @@ const Checkbox: React.FC<Props> = ({
   validation = {},
   onChange = noop,
   initialValue,
+  label,
   ...$gridCellProps
 }: Props) => {
   const { t } = useTranslation();
   const { register } = useFormContext<Application>();
 
-  const { getError, fieldName } = useApplicationFormField<boolean>(id);
+  const { getError, defaultLabel, setError, clearErrors } =
+    useApplicationFormField<boolean>(id);
+
   const [selectedValue, setSelectedValue] = React.useState(initialValue);
   const required = Boolean(validation.required);
   const handleChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(event.target.checked);
-      setSelectedValue(event.target.checked);
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.checked;
+      onChange(value);
+      setSelectedValue(value);
+      if (required && !value) {
+        setError('required');
+      } else if (required && value) {
+        clearErrors();
+      }
     },
-    [setSelectedValue, onChange]
+    [setSelectedValue, onChange, required, clearErrors, setError]
   );
 
   // TODO: This can be removed after backend supports invalid values in draft save
@@ -63,7 +73,7 @@ const Checkbox: React.FC<Props> = ({
             ? `${t(`common:application.form.errors.checkboxRequired`)}`
             : undefined
         }
-        label={t(`common:application.form.inputs.${fieldName}`)}
+        label={label || defaultLabel}
         onChange={handleChange}
         checked={selectedValue ?? initialValue}
       />
@@ -75,6 +85,7 @@ Checkbox.defaultProps = {
   validation: {},
   onChange: noop,
   initialValue: false,
+  label: undefined,
 };
 
 export default Checkbox;

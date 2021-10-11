@@ -107,7 +107,7 @@
         "employment_work_hours": "Tehdyt työtunnit SWE",
         "employment_salary_paid": "Maksettu palkka SWE",
         "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä? SWE",
-        "termsAndConditions": "Olen lukenut palvelun käyttöehdot ja hyväksyn ne. SWE"
+        "termsAndConditions": "SWE Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne"
       },
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",
@@ -137,5 +137,6 @@
     "sv": "På svenska",
     "en": "In english"
   },
-  "menuToggleAriaLabel": "Menu SWE"
+  "menuToggleAriaLabel": "Menu SWE",
+  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/"
 }

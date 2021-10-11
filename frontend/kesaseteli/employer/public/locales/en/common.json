@@ -102,7 +102,7 @@
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have hired without summer voucher?",
-        "termsAndConditions": "I have read and agreed to the terms and conditions"
+        "termsAndConditions": "I have read and agreed to the <1>terms and conditions</1>"
       },
       "helpers": {
         "date": "Use format D.M.YYYY",
@@ -137,5 +137,6 @@
     "sv": "På svenska",
     "en": "In english"
   },
-  "menuToggleAriaLabel": "Menu"
+  "menuToggleAriaLabel": "Menu",
+  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/"
 }
