@@ -11,7 +11,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const ApplicationForm = ({ title, children }: Props): JSX.Element => {
+const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
   const { t } = useTranslation();
   const { loadingError, updatingError } = useApplicationApi();
   const errorMessage = (loadingError || updatingError)?.message;
