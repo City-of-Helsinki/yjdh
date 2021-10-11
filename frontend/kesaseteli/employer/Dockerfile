@@ -2,6 +2,9 @@
 FROM helsinkitest/node:14-slim as appbase
 # =======================================
 
+# Required for sentry-cli
+RUN apt-install.sh ca-certificates
+
 # Use non-root user
 USER appuser
 
@@ -41,6 +44,8 @@ FROM appbase as staticbuilder
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG MOCK_FLAG
+ARG NEXT_PUBLIC_SENTRY_DSN
+ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT
 
 # Use non-root user
 USER appuser
