@@ -3,6 +3,7 @@ export const getFirstValue = <T>(value: T[] | T | undefined): T | undefined =>
 
 export const invertBooleanArray = (arr: boolean[]): boolean[] =>
   arr.map((c) => !c);
+
 export const getLastValue = <T>(value: T[] | T | undefined): T | undefined =>
   Array.isArray(value)
     ? value.length > 0

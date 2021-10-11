@@ -17,10 +17,8 @@ const EmployerIndex: NextPage = () => {
   const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
   const isLoading = isSyncing || isLoadingLogout;
 
-  const {
-    data: applications,
-    isError: loadApplicationsError,
-  } = useApplicationsQuery(!isMutating);
+  const { data: applications, isError: loadApplicationsError } =
+    useApplicationsQuery(!isMutating);
   const {
     data: newApplication,
     mutate: createApplication,
@@ -56,11 +54,10 @@ const EmployerIndex: NextPage = () => {
     );
   }
 
-  return <></>;
+  return <PageLoadingSpinner />;
 };
 
-export const getStaticProps: GetStaticProps = getServerSideTranslations(
-  'common'
-);
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withAuth(EmployerIndex);

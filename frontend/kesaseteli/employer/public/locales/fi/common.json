@@ -25,7 +25,8 @@
   "thankyouPage": {
     "thankyouMessageLabel": "Hakemus on lähetetty",
     "thankyouMessageContent": "Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
-    "createNewApplication": "Tee uusi hakemus"
+    "createNewApplication": "Tee uusi hakemus",
+    "title": "Hakemus {{submitted_at}}"
   },
   "application": {
     "new": "Uusi hakemus",

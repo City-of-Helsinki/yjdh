@@ -10,6 +10,7 @@ type Application = ContactPerson &
     company: Company;
     is_separate_invoicer?: boolean;
     status: Status;
+    submitted_at: string; // yyyy-MM-dd
     summer_vouchers: Employment[];
   };
 
