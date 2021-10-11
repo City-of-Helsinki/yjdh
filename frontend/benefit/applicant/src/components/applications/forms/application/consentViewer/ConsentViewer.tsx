@@ -24,10 +24,9 @@ const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
             size="M"
             openInNewTab
             href={
-              (data.applicantTermsApproval?.terms &&
-                data.applicantTermsApproval.terms[
+              (data.applicantTermsApproval?.terms?.[
                   `termsPdf${textLocale}` as TermsProp
-                ]) ||
+                ]) ??
               ''
             }
           >
