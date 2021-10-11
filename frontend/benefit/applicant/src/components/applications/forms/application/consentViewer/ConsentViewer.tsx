@@ -11,6 +11,8 @@ import { useConsentViewer } from './useConsentViewer';
 const ConsentViewer: React.FC<DynamicFormStepComponentProps> = ({ data }) => {
   const { textLocale, cbPrefix, t } = useConsentViewer();
   const theme = useTheme();
+  
+  if (!data) return null;
   return (
     <>
       {data && (
