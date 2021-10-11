@@ -1,7 +1,6 @@
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
-import { getFormApplication } from 'kesaseteli/employer/utils/application.utils';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
@@ -9,6 +8,7 @@ import React from 'react';
 import { UseMutationResult, UseQueryResult } from 'react-query';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
+import { getFormApplication } from 'shared/utils/application.utils';
 
 export type ApplicationQueryResult = UseQueryResult<Application, Error>;
 export type ApplicationMutationResult = UseMutationResult<

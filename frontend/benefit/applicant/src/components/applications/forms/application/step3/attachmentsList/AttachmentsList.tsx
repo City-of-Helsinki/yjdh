@@ -27,14 +27,15 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     isUploading,
   } = useAttachmentsList();
 
+  const message = t(
+    `${translationsBase}.types.${camelCase(attachmentType)}.message`
+  );
+
   return (
     <AttachmentsListBase
       title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
       attachmentType={attachmentType}
-      message={
-        showMessage &&
-        `${translationsBase}.types.${camelCase(attachmentType)}.message`
-      }
+      message={showMessage && message}
       attachments={attachments}
       onUpload={handleUpload}
       onRemove={handleRemove}

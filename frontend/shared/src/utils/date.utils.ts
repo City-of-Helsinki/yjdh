@@ -85,6 +85,7 @@ export const convertDateFormat = (
 export const convertToUIDateFormat = (
   date: string | Date | number | undefined
 ): string => convertDateFormat(date, DATE_FORMATS.UI_DATE);
+
 export const convertToBackendDateFormat = (
   date: string | Date | number | undefined
 ): string => convertDateFormat(date, DATE_FORMATS.BACKEND_DATE);

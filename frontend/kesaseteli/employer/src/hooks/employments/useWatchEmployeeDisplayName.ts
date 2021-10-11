@@ -11,6 +11,6 @@ const useWatchEmployeeDisplayName = (index: number): string => {
     `summer_vouchers.${index}.employee_name`
   );
   const employeeName = watchEmployeeName();
-  return !employeeName || isEmpty(employeeName) ? defaultHeading : employeeName;
+  return isEmpty(employeeName) ? defaultHeading : employeeName;
 };
 export default useWatchEmployeeDisplayName;
