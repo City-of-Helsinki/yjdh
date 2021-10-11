@@ -35,6 +35,8 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.forms import ImageField, ValidationError as DjangoFormsValidationError
 from django.utils.text import format_lazy
@@ -523,6 +525,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "company_contact_person_phone_number",
             "company_contact_person_email",
             "association_has_business_activities",
+            "association_immediate_manager_check",
             "applicant_language",
             "co_operation_negotiations",
             "co_operation_negotiations_description",
@@ -612,6 +615,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
             },
             "association_has_business_activities": {
                 "help_text": "field is visible and yes/no answer is required/allowed"
+                "only if applicant is an association",
+            },
+            "association_immediate_manager_check": {
+                "help_text": "field is visible and yes answer is allowed (and required)"
                 "only if applicant is an association",
             },
             "applicant_language": {
@@ -777,6 +784,37 @@ class ApplicationSerializer(serializers.ModelSerializer):
             return []
         else:
             raise BenefitAPIException(_("This should be unreachable"))
+
+    def _validate_association_immediate_manager_check(
+        self, company, association_immediate_manager_check
+    ):
+
+        """
+        Validate association_immediate_manager_check:
+        * company: the organization applying for the benefit
+        * association_immediate_manager_check: boolean True/False/None value
+        NOTE: False is not allowed, and True is allowed only for associations.
+        """
+        if (
+            OrganizationType.resolve_organization_type(company.company_form)
+            == OrganizationType.ASSOCIATION
+        ):
+            if association_immediate_manager_check not in [None, True]:
+                raise serializers.ValidationError(
+                    {
+                        "association_immediate_manager_check": _(
+                            "Invalid value for association_immediate_manager_check"
+                        )
+                    }
+                )
+        elif association_immediate_manager_check is not None:
+            raise serializers.ValidationError(
+                {
+                    "association_immediate_manager_check": _(
+                        "for companies, association_immediate_manager_check must always be null"
+                    )
+                }
+            )
 
     def _validate_de_minimis_aid_set(
         self,
@@ -1008,7 +1046,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         "benefit_type",
         "start_date",
         "end_date",
-        "bases",
     ]
 
     def _validate_non_draft_required_fields(self, data):
@@ -1024,6 +1061,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
             == OrganizationType.ASSOCIATION
         ):
             required_fields.append("association_has_business_activities")
+
+            # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
+            # at submit time, only True is allowed.
+            required_fields.append("association_immediate_manager_check")
 
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:
@@ -1203,6 +1244,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
             data.get("de_minimis_aid_set"),
             data.get("association_has_business_activities"),
         )
+        self._validate_association_immediate_manager_check(
+            company, data.get("association_immediate_manager_check")
+        )
         self._validate_association_has_business_activities(
             company, data.get("association_has_business_activities")
         )
@@ -1250,11 +1294,19 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 )
             if hasattr(instance, "applicant_terms_approval"):
                 instance.applicant_terms_approval.delete()
+
+            approved_by = self._get_request_user_from_context()
+            if settings.DISABLE_AUTHENTICATION and isinstance(
+                approved_by, AnonymousUser
+            ):
+                approved_by = (
+                    get_user_model().objects.all().order_by("username").first()
+                )
             approval = ApplicantTermsApproval.objects.create(
                 application=instance,
                 terms=approve_terms["terms"],
                 approved_at=datetime.now(),
-                approved_by=self._get_request_user_from_context(),
+                approved_by=approved_by,
             )
             approval.selected_applicant_consents.set(
                 approve_terms["selected_applicant_consents"]

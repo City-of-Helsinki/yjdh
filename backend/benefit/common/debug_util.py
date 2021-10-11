@@ -9,7 +9,7 @@ from rest_framework.views import exception_handler
 
 
 def _debug_dict(mapping):
-    sensitive_keys = ["password", "secret", "private", "token"]
+    sensitive_keys = ["password", "secret", "private", "token", "hash_key"]
     lines = []
     for k, v in sorted(mapping.items()):
         if any(item in k.lower() for item in sensitive_keys):

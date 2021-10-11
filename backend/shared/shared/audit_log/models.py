@@ -11,6 +11,7 @@ class AuditLogEntry(models.Model):
         return " ".join(
             [
                 str(self.is_sent),
+                _safe_get(self.message, "audit_event", "status"),
                 _safe_get(self.message, "audit_event", "date_time"),
                 _safe_get(self.message, "audit_event", "actor", "role"),
                 _safe_get(self.message, "audit_event", "actor", "user_id"),
@@ -28,4 +29,4 @@ def _safe_get(value: dict, *keys: str) -> str:
             value = value[key]
         except KeyError:
             return "UNKNOWN"
-    return str(value)
+    return str(value) or "UNKNOWN"

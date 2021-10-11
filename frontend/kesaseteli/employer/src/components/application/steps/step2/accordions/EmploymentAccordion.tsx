@@ -92,7 +92,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       onToggle={handleToggle}
       headerBackgroundColor={headerBackgroundColor}
     >
-      <$AccordionFormSection columns={2} withoutDivider padding-bottom={false}>
+      <$AccordionFormSection columns={2} withoutDivider paddingBottom={false}>
         <TextInput
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}

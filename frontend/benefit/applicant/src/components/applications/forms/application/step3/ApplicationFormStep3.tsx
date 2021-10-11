@@ -1,7 +1,7 @@
 import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/AttachmentsIngress';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsList from './attachmentsList/AttachmentsList';
@@ -13,15 +13,12 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
   const {
     handleBack,
     handleNext,
+    handleSave,
     benefitType,
     apprenticeshipProgram,
     showSubsidyMessage,
     attachments,
   } = useApplicationFormStep3(data);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <>
@@ -57,9 +54,8 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
         attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
       />
       <StepperActions
-        hasBack
-        hasNext
         handleSubmit={handleNext}
+        handleSave={handleSave}
         handleBack={handleBack}
       />
     </>

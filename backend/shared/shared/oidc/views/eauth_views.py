@@ -7,7 +7,9 @@ from django.conf import settings
 from django.contrib import auth
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
@@ -141,6 +143,7 @@ class EauthAuthenticationCallbackView(View):
 
         return response.json()
 
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request):
         """Eauth client authentication callback HTTP endpoint"""
         if request.GET.get("error"):

@@ -125,8 +125,9 @@ class DecidedApplicationFactory(ApplicationFactory):
         "terms.tests.factories.ApplicantTermsApprovalFactory",
         factory_related_name="application",
     )
-    calculated_benefit_amount = factory.Faker(
-        "pydecimal", left_digits=4, right_digits=2, min_value=1
+    calculation = factory.RelatedFactory(
+        "calculator.tests.factories.CalculationFactory",
+        factory_related_name="application",
     )
 
 
