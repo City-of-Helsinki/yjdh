@@ -394,10 +394,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                         )
                     }
                 )
-        """
-        uncomment this after attachments are implemented in ui
-        """
-        # self._validate_attachments()
+        self._validate_attachments()
 
     def _validate_attachments(self):
         """
