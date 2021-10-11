@@ -29,7 +29,7 @@ const useApplicationFormStep3 = (
       application.benefitType === BENEFIT_TYPES.SALARY
     ) {
       const hasWorkContract = !isEmpty(
-        application?.attachments?.find(
+        application.attachments?.find(
           (att) => att.attachmentType === ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT
         )
       );
