@@ -1,5 +1,4 @@
 import faker from 'faker';
-import { getFormApplication } from 'kesaseteli/employer/utils/application.utils';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -17,6 +16,7 @@ import ContactPerson from '../../types/contact_person';
 import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
+import { getFormApplication } from '../../utils/application.utils';
 import { DATE_FORMATS, formatDate } from '../../utils/date.utils';
 
 const generateNodeArray = <T, F extends (...args: unknown[]) => T>(

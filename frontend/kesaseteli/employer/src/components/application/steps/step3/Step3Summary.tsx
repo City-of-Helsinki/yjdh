@@ -4,12 +4,12 @@ import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useSetCurrentStep from 'kesaseteli/employer/hooks/application/useSetCurrentStep';
-import { getApplicationFormFieldLabel } from 'kesaseteli/employer/utils/application.utils';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import { getApplicationFormFieldLabel } from 'shared/utils/application.utils';
 
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();

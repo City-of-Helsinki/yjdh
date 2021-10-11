@@ -1,6 +1,5 @@
 import EmploymentFieldSummary from 'kesaseteli/employer/components/application/summary/EmploymentFieldSummary';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
-import { getApplicationFormFieldLabel as getLabel } from 'kesaseteli/employer/utils/application.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
@@ -9,6 +8,7 @@ import {
   EmployeeHiredWithoutVoucherAssessment,
   EmploymentExceptionReason,
 } from 'shared/types/employment';
+import { getApplicationFormFieldLabel as getLabel } from 'shared/utils/application.utils';
 import { getAttachmentsSummary } from 'shared/utils/attachment.utils';
 
 type Props = {
