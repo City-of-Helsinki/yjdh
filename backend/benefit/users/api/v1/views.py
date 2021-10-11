@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,5 +11,10 @@ from users.api.v1.serializers import UserSerializer
 )
 class CurrentUserView(APIView):
     def get(self, request):
-        serializer = UserSerializer(request.user)
+        serializer = UserSerializer(self._get_current_user(request))
         return Response(serializer.data)
+
+    def _get_current_user(self, request):
+        if not request.user.is_authenticated and not settings.DISABLE_AUTHENTICATION:
+            raise PermissionDenied
+        return request.user

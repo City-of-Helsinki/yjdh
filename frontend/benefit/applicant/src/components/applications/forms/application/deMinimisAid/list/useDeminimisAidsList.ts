@@ -1,4 +1,4 @@
-import ApplicationContext from 'benefit/applicant/context/ApplicationContext';
+import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import { TFunction } from 'next-i18next';
@@ -15,25 +15,21 @@ type ExtendedComponentProps = {
 const useDeminimisAidsList = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.company';
-  const { applicationTempData, setApplicationTempData } = React.useContext(
-    ApplicationContext
-  );
+  const { deMinimisAids, setDeMinimisAids } =
+    React.useContext(DeMinimisContext);
 
   const handleRemove = (index: number): void => {
     // remove value
-    const currentGrants = [...(applicationTempData.deMinimisAids || [])];
+    const currentGrants = [...deMinimisAids];
     currentGrants.splice(index, 1);
-    setApplicationTempData({
-      ...applicationTempData,
-      deMinimisAids: currentGrants,
-    });
+    setDeMinimisAids(currentGrants);
   };
 
   return {
     t,
     translationsBase,
     handleRemove,
-    grants: applicationTempData.deMinimisAids || [],
+    grants: deMinimisAids,
   };
 };
 

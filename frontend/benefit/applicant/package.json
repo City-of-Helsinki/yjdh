@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@frontend/shared": "*",
+    "@react-pdf/renderer": "^1.6.17",
+    "@testing-library/react-hooks": "^7.0.2",
     "@types/next": "^9.0.0",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.6",
@@ -37,22 +39,25 @@
     "next-i18next": "^8.8.0",
     "next-plugin-custom-babel-config": "^1.0.5",
     "next-transpile-modules": "^8.0.0",
+    "pdfjs-dist": "^2.10.377",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.11.0",
     "react-input-mask": "^2.0.4",
     "react-loading-skeleton": "^2.2.0",
+    "react-pdf": "^5.4.0",
     "react-query": "^3.22.0",
     "react-toastify": "^8.0.2",
     "rexreplace": "^7.0.3",
     "snakecase-keys": "^4.0.2",
     "styled-components": "^5.3.0",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.4",
+    "typescript": "^4.4.3",
     "uuid": "^8.3.2",
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@types/react-pdf": "^5.0.7",
     "@types/uuid": "^8.3.1",
     "eslint-config-adjunct": "^4.11.1"
   }

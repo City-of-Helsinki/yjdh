@@ -11,7 +11,7 @@ from applications.services.ahjo_integration import (
     generate_single_approved_file,
     generate_single_declined_file,
 )
-from applications.tests.factories import ApplicationFactory
+from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 
@@ -37,13 +37,15 @@ def test_generate_single_approved_template_html(
 ):
     mock_pdf_convert.return_value = {}
     company = CompanyFactory(company_form=company_type)
-    apps = ApplicationFactory.create_batch(
+    apps = DecidedApplicationFactory.create_batch(
         3,
         company=company,
         de_minimis_aid=de_minimis_aid,
         status=ApplicationStatus.ACCEPTED,
-        calculated_benefit_amount=1000,
     )
+    for app in apps:
+        app.calculation.calculated_benefit_amount = 1000
+        app.calculation.save()
     # Only assert html content for easier comparison
     _, _, html = generate_single_approved_file(apps[0].company, apps)
     for app in apps:
@@ -80,20 +82,22 @@ def test_generate_single_declined_template_html(mock_pdf_convert):
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_composed_template_html(mock_pdf_convert):
     mock_pdf_convert.return_value = {}
-    accepted_app_1 = ApplicationFactory(
+    accepted_app_1 = DecidedApplicationFactory(
         status=ApplicationStatus.ACCEPTED,
         start_date=date.today(),
-        calculated_benefit_amount=1000,
     )
-    accepted_app_2 = ApplicationFactory(
+    accepted_app_1.calculation.calculated_benefit_amount = 1000
+    accepted_app_1.calculation.save()
+    accepted_app_2 = DecidedApplicationFactory(
         status=ApplicationStatus.ACCEPTED,
         start_date=date.today(),
-        calculated_benefit_amount=1000,
     )
-    rejected_app_1 = ApplicationFactory(
+    accepted_app_2.calculation.calculated_benefit_amount = 1000
+    accepted_app_2.calculation.save()
+    rejected_app_1 = DecidedApplicationFactory(
         status=ApplicationStatus.REJECTED, start_date=date.today()
     )
-    rejected_app_2 = ApplicationFactory(
+    rejected_app_2 = DecidedApplicationFactory(
         status=ApplicationStatus.REJECTED, start_date=date.today()
     )
 
@@ -142,17 +146,17 @@ def test_generate_composed_template_html(mock_pdf_convert):
 
 def test_export_application_batch(application_batch):
     application_batch.applications.add(
-        ApplicationFactory.create(
-            status=ApplicationStatus.ACCEPTED, calculated_benefit_amount=1000
+        DecidedApplicationFactory.create(
+            status=ApplicationStatus.ACCEPTED,
+            calculation__calculated_benefit_amount=1000,
         )
     )
     application_batch.applications.add(
-        ApplicationFactory.create(status=ApplicationStatus.REJECTED)
+        DecidedApplicationFactory.create(status=ApplicationStatus.REJECTED)
     )
     application_batch.applications.add(
-        ApplicationFactory.create(status=ApplicationStatus.CANCELLED)
+        DecidedApplicationFactory.create(status=ApplicationStatus.CANCELLED)
     )
-
     zip_file = export_application_batch(application_batch)
     file_like_object = io.BytesIO(zip_file)
     archive = zipfile.ZipFile(file_like_object)

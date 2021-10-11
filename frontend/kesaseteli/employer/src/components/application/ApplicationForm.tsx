@@ -11,7 +11,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const ApplicationForm = ({ title, children }: Props): JSX.Element => {
+const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
   const { t } = useTranslation();
   const { loadingError, updatingError } = useApplicationApi();
   const errorMessage = (loadingError || updatingError)?.message;
@@ -25,10 +25,8 @@ const ApplicationForm = ({ title, children }: Props): JSX.Element => {
   React.useEffect(() => {
     if (errorMessage) {
       Toast({
-        autoDismiss: true,
         autoDismissTime: 5000,
         type: 'error',
-        translated: true,
         labelText: t('common:application.common_error'),
         text: errorMessage,
       });

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.http import HttpResponse
 from django.urls import include, path
 from rest_framework import routers
@@ -20,6 +21,7 @@ urlpatterns = [
     path(
         "excel-download/", ApplicationExcelDownloadView.as_view(), name="excel-download"
     ),
+    path("logout/", LogoutView.as_view(), name="logout"),
 ]
 
 
