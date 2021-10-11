@@ -63,7 +63,6 @@ const useApplicationFormStep6 = (
     useUpdateApplicationQuery();
 
   useEffect(() => {
-    // todo: redirect to Thank you page, change status to received
     if (isApplicationUpdated && application.applicantTermsApproval) {
       setSubmittedApplication({
         applicantName: getApplicantFullName(
