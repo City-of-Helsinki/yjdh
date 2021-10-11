@@ -327,7 +327,7 @@
         }
       },
       "send": {
-        "heading1": "Otsikko tähän"
+        "heading1": "Ehdot"
       }
     }
   },
@@ -437,6 +437,7 @@
   "pdfViewer": {
     "previous": "Edellinen",
     "next": "Seuraava",
-    "page": "Sivu"
+    "page": "Sivu",
+    "terms": "Ehdot.PDF"
   }
 }

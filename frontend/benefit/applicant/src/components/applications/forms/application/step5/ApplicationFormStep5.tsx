@@ -1,10 +1,12 @@
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
+import isEmpty from 'lodash/isEmpty';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { useTheme } from 'styled-components';
 
+import ConsentViewer from '../consentViewer/ConsentViewer';
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsListView from './attachmentsListView/AttachmentsListView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
@@ -92,7 +94,6 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         />
       </FormSection>
       <FormSection
-        paddingBottom
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
           <Button
@@ -111,6 +112,14 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           attachments={data.attachments || []}
         />
       </FormSection>
+      {!isEmpty(data.applicantTermsApproval) && (
+        <FormSection
+          paddingBottom
+          header={t(`${translationsBase}.send.heading1`)}
+        >
+          <ConsentViewer data={data} />
+        </FormSection>
+      )}
       <StepperActions
         lastStep={isSubmit}
         handleSave={handleSave}
