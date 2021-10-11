@@ -14,13 +14,14 @@ const FormSection: React.FC<FormSectionProps> = ({
   header,
   action,
   withoutDivider = false,
-  'padding-bottom': paddingBottom = true,
+  paddingBottom = true,
   role,
+  loading,
   ...rest
 }) => (
-  <$Section padding-bottom={paddingBottom}>
+  <$Section paddingBottom={paddingBottom}>
     {action && <$Action>{action}</$Action>}
-    {header && <Heading header={header} {...rest} />}
+    {header && <Heading header={header} loading={loading} {...rest} />}
     {children && (
       <$Grid role={role} {...rest}>
         {children}

@@ -2,7 +2,7 @@ import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -21,6 +21,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
   const {
     t,
     handleSubmit,
+    handleSave,
     getErrorMessage,
     clearDeminimisAids,
     getDefaultSelectValue,
@@ -30,10 +31,6 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     formik,
     deMinimisAids,
   } = useApplicationFormStep1(data);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   useAlertBeforeLeaving(formik.dirty);
 
@@ -266,7 +263,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </$GridCell>
         )}
       </FormSection>
-      <StepperActions hasNext handleSubmit={handleSubmit} />
+      <StepperActions handleSubmit={handleSubmit} handleSave={handleSave} />
     </form>
   );
 };

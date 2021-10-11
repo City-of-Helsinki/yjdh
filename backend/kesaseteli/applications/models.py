@@ -209,6 +209,10 @@ class Attachment(UUIDModel, TimeStampedModel):
     )
     attachment_file = models.FileField(verbose_name=_("application attachment content"))
 
+    def delete(self, using=None, keep_parents=False):
+        self.attachment_file.delete()
+        super().delete(using=using, keep_parents=keep_parents)
+
     class Meta:
         verbose_name = _("attachment")
         verbose_name_plural = _("attachments")

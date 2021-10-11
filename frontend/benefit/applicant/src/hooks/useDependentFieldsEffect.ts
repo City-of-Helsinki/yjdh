@@ -2,6 +2,7 @@ import { BENEFIT_TYPES } from 'benefit/applicant/constants';
 import React from 'react';
 
 interface FieldValues {
+  useAlternativeAddress?: boolean | null;
   apprenticeshipProgram?: boolean | null;
   benefitType?: BENEFIT_TYPES | '';
   paySubsidyGranted?: boolean | null;
@@ -10,6 +11,7 @@ interface FieldValues {
 
 interface Options {
   isFormDirty: boolean;
+  clearAlternativeAddressValues?: () => void;
   clearCommissionValues?: () => void;
   clearContractValues?: () => void;
   clearDatesValues?: () => void;
@@ -22,17 +24,16 @@ const UPDATE_DEPENDENTS = 'UPDATE_DEPENDENTS' as const;
 
 interface UpdateAction {
   type: typeof UPDATE_DEPENDENTS;
-  payload: string[];
+  payload: EFFECTS[];
 }
 
-const createUpdateAction = (payload: string[]): UpdateAction => ({
+const createUpdateAction = (payload: EFFECTS[]): UpdateAction => ({
   type: UPDATE_DEPENDENTS,
   payload,
 });
 
-type State = string[];
-
 enum EFFECTS {
+  CLEAR_ALTERNATIVE_ADDRESS_VALUES = 'clearAlternativeAddressValues',
   CLEAR_COMMISSION_VALUES = 'clearCommissionValues',
   CLEAR_CONTRACT_VALUES = 'clearContractValues',
   CLEAR_DATES_VALUES = 'clearDatesValues',
@@ -41,8 +42,11 @@ enum EFFECTS {
   SET_END_DATE = 'setEndDate',
 }
 
+type State = EFFECTS[];
+
 export const useDependentFieldsEffect = (
   {
+    useAlternativeAddress,
     apprenticeshipProgram,
     benefitType,
     paySubsidyGranted,
@@ -50,6 +54,7 @@ export const useDependentFieldsEffect = (
   }: FieldValues,
   {
     isFormDirty,
+    clearAlternativeAddressValues,
     clearCommissionValues,
     clearContractValues,
     clearDatesValues,
@@ -67,6 +72,11 @@ export const useDependentFieldsEffect = (
   const [state, dispatch] = React.useReducer(reducer, []);
 
   // Calling the corresponding callbacks based on the current state
+  React.useEffect(() => {
+    if (state.includes(EFFECTS.CLEAR_ALTERNATIVE_ADDRESS_VALUES))
+      clearAlternativeAddressValues?.();
+  }, [state, clearAlternativeAddressValues]);
+
   React.useEffect(() => {
     if (state.includes(EFFECTS.CLEAR_COMMISSION_VALUES))
       clearCommissionValues?.();
@@ -94,6 +104,13 @@ export const useDependentFieldsEffect = (
   }, [state, setEndDate]);
 
   /** **************************************************** */
+
+  // Effects when useAlternativeAddress changes
+  React.useEffect(() => {
+    if (!useAlternativeAddress) {
+      dispatch(createUpdateAction([EFFECTS.CLEAR_ALTERNATIVE_ADDRESS_VALUES]));
+    }
+  }, [useAlternativeAddress]);
 
   // Effects when paySubsidyGranted changes
   React.useEffect(() => {

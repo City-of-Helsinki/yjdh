@@ -34,6 +34,25 @@ export interface EmployeeData {
   created_at?: string;
 }
 
+export type Employee = {
+  id?: string;
+  [EMPLOYEE_KEYS.FIRST_NAME]?: string;
+  [EMPLOYEE_KEYS.LAST_NAME]?: string;
+  [EMPLOYEE_KEYS.SOCIAL_SECURITY_NUMBER]?: string;
+  [EMPLOYEE_KEYS.PHONE_NUMBER]?: string;
+  // [EMPLOYEE.EMPLOYEE_EMAIL]?: string; does not exist in UI but in model
+  // employee language: does not exist in UI but in model
+  [EMPLOYEE_KEYS.JOB_TITLE]?: string;
+  [EMPLOYEE_KEYS.MONTHLY_PAY]?: number | '';
+  [EMPLOYEE_KEYS.VACATION_MONEY]?: number | '';
+  [EMPLOYEE_KEYS.OTHER_EXPENSES]?: number | '';
+  [EMPLOYEE_KEYS.WORKING_HOURS]?: number | '';
+  [EMPLOYEE_KEYS.COLLECTIVE_BARGAINING_AGREEMENT]?: string;
+  [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]?: boolean;
+  [EMPLOYEE_KEYS.EMPLOYEE_COMMISSION_AMOUNT]?: number | '';
+  [EMPLOYEE_KEYS.COMMISSION_DESCRIPTION]?: string;
+};
+
 export interface CompanyData {
   id?: string;
   name: string;
@@ -44,6 +63,17 @@ export interface CompanyData {
   city: string;
   bank_account_number: string;
 }
+
+export type Company = {
+  id?: string;
+  name: string;
+  businessId: string;
+  companyForm: string;
+  streetAddress: string;
+  postcode: string;
+  city: string;
+  bankAccountNumber: string;
+};
 
 export interface BaseData {
   identifier: string;
@@ -57,6 +87,12 @@ export interface DeMinimisAidData {
   ordering?: number;
 }
 
+export type DeMinimisAid = {
+  [DE_MINIMIS_AID_KEYS.GRANTER]?: string;
+  [DE_MINIMIS_AID_KEYS.AMOUNT]?: number | '';
+  [DE_MINIMIS_AID_KEYS.GRANTED_AT]?: string;
+};
+
 export interface AttachmentData {
   id?: string;
   application: string;
@@ -67,6 +103,64 @@ export interface AttachmentData {
   created_at?: string;
 }
 
+export interface ApplicantConsentData {
+  id: string;
+  text_fi: string;
+  text_en: string;
+  text_sv: string;
+}
+
+export type ApplicantConsent = {
+  id: string;
+  textFi: string;
+  textEn: string;
+  textSv: string;
+};
+
+export interface ApplicantTermsData {
+  id: string;
+  applicant_consents: ApplicantConsentData[];
+  effective_from: string;
+  terms_pdf_en: string;
+  terms_pdf_fi: string;
+  terms_pdf_sv: string;
+  terms_type?: ATTACHMENT_TYPES;
+}
+
+export type ApplicantTerms = {
+  applicantConsents: ApplicantConsent[];
+  effectiveFrom: string;
+  id: string;
+  termsPdfEn: string;
+  termsPdfFi: string;
+  termsPdfSv: string;
+  termsType: ATTACHMENT_TYPES;
+};
+
+export interface ApplicantTermsApprovalData {
+  id: string;
+  approved_at: string;
+  approved_by: string;
+  terms: ApplicantTermsData[];
+}
+
+export type ApplicantTermsApproval = {
+  id: string;
+  approvedAt: string;
+  approvedBy: string;
+  terms?: ApplicantTerms[];
+};
+
+export interface ApproveTermsData {
+  terms: string;
+  selected_applicant_consents: string[];
+}
+
+export type ApproveTerms = {
+  terms: string;
+  selectedApplicantConsents: string[];
+};
+
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
@@ -74,6 +168,7 @@ export type ApplicationData = {
   application_step: string; // required
   employee: EmployeeData; // required
   company?: CompanyData;
+  company_department?: string;
   company_name?: string;
   company_form?: string;
   organization_type?: ORGANIZATION_TYPES;
@@ -111,6 +206,10 @@ export type ApplicationData = {
   create_application_for_company?: string;
   created_at?: string;
   application_step?: string;
+  applicant_terms_approval?: ApplicantTermsApprovalData;
+  applicant_terms_approval_needed?: boolean;
+  applicant_terms_in_effect?: ApplicantTermsData;
+  approve_terms?: ApproveTermsData;
 };
 
 interface ApplicationAllowedAction {
@@ -134,47 +233,12 @@ export interface ApplicationListItemData {
   allowedAction: ApplicationAllowedAction;
 }
 
-export type DeMinimisAid = {
-  [DE_MINIMIS_AID_KEYS.GRANTER]?: string;
-  [DE_MINIMIS_AID_KEYS.AMOUNT]?: number | '';
-  [DE_MINIMIS_AID_KEYS.GRANTED_AT]?: string;
-};
-
-export type Employee = {
-  id?: string;
-  [EMPLOYEE_KEYS.FIRST_NAME]?: string;
-  [EMPLOYEE_KEYS.LAST_NAME]?: string;
-  [EMPLOYEE_KEYS.SOCIAL_SECURITY_NUMBER]?: string;
-  [EMPLOYEE_KEYS.PHONE_NUMBER]?: string;
-  // [EMPLOYEE.EMPLOYEE_EMAIL]?: string; does not exist in UI but in model
-  // employee language: does not exist in UI but in model
-  [EMPLOYEE_KEYS.JOB_TITLE]?: string;
-  [EMPLOYEE_KEYS.MONTHLY_PAY]?: number | '';
-  [EMPLOYEE_KEYS.VACATION_MONEY]?: number | '';
-  [EMPLOYEE_KEYS.OTHER_EXPENSES]?: number | '';
-  [EMPLOYEE_KEYS.WORKING_HOURS]?: number | '';
-  [EMPLOYEE_KEYS.COLLECTIVE_BARGAINING_AGREEMENT]?: string;
-  [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]?: boolean;
-  [EMPLOYEE_KEYS.EMPLOYEE_COMMISSION_AMOUNT]?: number | '';
-  [EMPLOYEE_KEYS.COMMISSION_DESCRIPTION]?: string;
-};
-
-export type Company = {
-  id?: string;
-  name: string;
-  businessId: string;
-  companyForm: string;
-  streetAddress: string;
-  postcode: string;
-  city: string;
-  bankAccountNumber: string;
-};
-
 export interface Step1 {
   [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]?: boolean;
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE]?: string;
+  [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_DEPARTMENT]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.ORGANIZATION_TYPE]?: ORGANIZATION_TYPES | null;
   [APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES]?:
@@ -223,11 +287,9 @@ export type Application = {
   applicationStep?: string | null;
   attachments?: Attachment[];
   // create_application_for_company ? not present in the UI?
+  applicantTermsApproval?: ApplicantTermsApproval;
+  applicantTermsApprovalNeeded?: boolean;
+  applicantTermsInEffect?: ApplicantTerms;
+  approveTerms?: ApproveTerms;
 } & Step1 &
   Step2;
-
-// for context
-export type ApplicationTempData = {
-  id: string;
-  deMinimisAids: DeMinimisAid[];
-};

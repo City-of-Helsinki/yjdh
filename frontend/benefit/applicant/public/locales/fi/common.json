@@ -32,7 +32,7 @@
       "rejected": "Hylätty"
     },
     "steps": {
-      "company": "Yritys",
+      "employer": "Työnantaja",
       "hired": "Palkattava",
       "attachments": "Liittet",
       "summary": "Yhteenveto",
@@ -43,16 +43,16 @@
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
       "deleteApplication": "Poista hakemus",
       "continue": "Jatka",
-      "send": "Lähetä",
+      "send": "Lähetä hakemus",
       "back": "Back",
       "edit": "Muokkaa"
     },
     "sections": {
       "company": {
-        "heading1": "Yrityksen tiedot",
+        "heading1": "Työnantajan tiedot",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis-tuet",
+        "heading3": "Työnantajan de minimis-tuet",
         "heading4": "YT-tilanne",
         "businessId": "Y-tunnus: {{ businessId }}",
         "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
@@ -61,7 +61,7 @@
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haettu YTJ:stä",
-            "content": "Yrityksen perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+            "content": "Työnantajan perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -69,12 +69,12 @@
           }
         },
         "tooltips": {
-          "heading3": "Hakijan de minimis-tuet tooltip text",
+          "heading3": "Työnantajan de minimis-tuet tooltip text",
           "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
         },
         "fields": {
           "useAlternativeAddress": {
-            "label": "Yrityksellä on toinen postiosoite"
+            "label": "Työnantajalle on toinen postiosoite"
           },
           "alternativeCompanyStreetAddress": {
             "label": "Osoite",
@@ -87,6 +87,10 @@
           "alternativeCompanyCity": {
             "label": "Postitoimipaikka",
             "placeholder": "Postitoimipaikka"
+          },
+          "companyDepartment": {
+            "label": "Toimipiste tai osasto (valinnainen)",
+            "placeholder": "Toimipiste / osasto"
           },
           "companyBankAccountNumber": {
             "label": "Tilinumero",
@@ -117,7 +121,7 @@
             "no": "Ei"
           },
           "deMinimisAid": {
-            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
+            "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -135,7 +139,7 @@
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
-            "label": "Onko hakijalla menossa YT-neuvottelut?",
+            "label": "Onko työnantajalla menossa YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -307,6 +311,7 @@
       },
       "credentials": {
         "heading1": "Valtakirja",
+        "heading2": "Suostumus",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",

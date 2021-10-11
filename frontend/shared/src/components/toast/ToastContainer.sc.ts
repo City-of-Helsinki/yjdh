@@ -1,3 +1,4 @@
+import { Notification } from 'hds-react';
 import { ToastContainer } from 'react-toastify';
 import styled from 'styled-components';
 
@@ -7,6 +8,8 @@ export const $ToastContainer = styled(ToastContainer).attrs({
   bodyClassName: 'body',
   progressClassName: 'progress',
 })`
+  width: unset;
+
   .close-button {
     display: none;
   }
@@ -17,10 +20,7 @@ export const $ToastContainer = styled(ToastContainer).attrs({
     justify-content: center;
     left: 0;
     margin: 0 auto;
-    position: fixed;
     padding: 0;
-    right: 0;
-    top: 0;
     width: 100%;
     z-index: 1;
   }
@@ -31,4 +31,8 @@ export const $ToastContainer = styled(ToastContainer).attrs({
     border-radius: 0;
     box-shadow: none;
   }
+`;
+
+export const $Notification = styled(Notification)`
+  min-width: ${(props) => props.theme.containerWidth.s};
 `;
