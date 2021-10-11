@@ -16,9 +16,14 @@ const ApplicationSummary: React.FC = () => {
   const {
     company,
     contact_person_name,
+    contact_person_email,
     contact_person_phone_number,
     street_address,
-    contact_person_email,
+    is_separate_invoicer,
+    invoicer_email,
+    invoicer_name,
+    invoicer_phone_number,
+
     summer_vouchers,
   } = application;
 
@@ -51,7 +56,12 @@ const ApplicationSummary: React.FC = () => {
         <$GridCell as="pre" data-testid="street-address">
           {street_address}
         </$GridCell>
-        {/* TODO: Laskuttajan Lisäkentät */}
+        {is_separate_invoicer && (
+          <$GridCell as="pre" data-testid="invoicer">
+            {t('common:application.form.inputs.is_separate_invoicer')}:{' '}
+            {invoicer_name}, {invoicer_email},{invoicer_phone_number}
+          </$GridCell>
+        )}
       </FormSection>
       <FormSection
         header={t('common:application.step3.employmentTitle')}
@@ -60,10 +70,14 @@ const ApplicationSummary: React.FC = () => {
         withoutDivider
       >
         {summer_vouchers.map((employment, index) => (
-          <React.Fragment key={employment.id}>
-            <EmploymentSummary employment={employment} index={index} />
+          <>
+            <EmploymentSummary
+              employment={employment}
+              index={index}
+              key={employment.id}
+            />
             <$Hr />
-          </React.Fragment>
+          </>
         ))}
       </FormSection>
     </>

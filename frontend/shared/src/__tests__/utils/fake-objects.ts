@@ -101,7 +101,7 @@ export const fakeApplication = (
   status: 'draft',
   summer_vouchers: fakeEmployments(1),
   ...fakeContactPerson(),
-  is_separate_invoicer: invoicer,
+  is_separate_invoicer: invoicer || false,
   ...(invoicer && fakeInvoicer()),
 });
 

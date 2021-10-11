@@ -50,9 +50,7 @@ const useApplicationFormField = <V extends Value>(
       watch: () => watch(id) as V,
       getError: () => get(formState.errors, id) as FieldError | undefined,
       setError: (type: ErrorOption['type']) => setError(id, { type }),
-      // todo undefined can be changed to "" after backend allows invalid values
-      // eslint-disable-next-line unicorn/no-useless-undefined
-      clearValue: () => setValue(id, undefined),
+      clearValue: () => setValue(id, ''),
       trigger: () => trigger(id, { shouldFocus: true }),
       clearErrors: () => clearErrors(id),
     }),
