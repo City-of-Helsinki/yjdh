@@ -311,7 +311,7 @@ const CompanyInfo: React.FC<CompanyInfoProps> = ({
                 id={fields.associationImmediateManagerCheck.name}
                 disabled={isLoading || !!error}
                 name={fields.associationImmediateManagerCheck.name}
-                label={fields.associationImmediateManagerCheck.label}
+                label={fields.associationImmediateManagerCheck.placeholder}
                 required
                 checked={
                   formik.values.associationImmediateManagerCheck === true

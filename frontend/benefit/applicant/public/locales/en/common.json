@@ -120,6 +120,10 @@
             "yes": "Kyllä",
             "no": "Ei"
           },
+          "associationImmediateManagerCheck": {
+            "label": "Lähiesihenkilö palkattavalle henkilölle",
+            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen. ei palkkatuettu esihenkilö palkattavalle henkilölle."
+          },
           "deMinimisAid": {
             "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
             "yes": "Kyllä",
