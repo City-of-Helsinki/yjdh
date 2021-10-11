@@ -332,6 +332,12 @@
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
   },
+  "notifications": {
+    "applicationSubmitted": {
+      "label": "Hakemus lähetty onnistuneesti",
+      "message": "Helsinki-lisä hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen kun hakemus on käsitelty."
+    }
+  },
   "languages": {
     "fi": "Suomi",
     "sv": "Ruotsi",

@@ -291,3 +291,8 @@ export type Application = {
   approveTerms?: ApproveTerms;
 } & Step1 &
   Step2;
+
+export type SubmittedApplication = {
+  applicationNumber: number;
+  applicantName: string;
+};

@@ -50,16 +50,18 @@ const useApplicationFormStep5 = (
 
   const handleStepChange = (nextStep: number): void => {
     let submitFields = {};
-    submitFields = isSubmit ? {
-        approveTerms: {
-          terms: application?.applicantTermsInEffect?.id,
-          selectedApplicantConsents:
-            application?.applicantTermsInEffect?.applicantConsents.map(
-              (consent) => consent.id
-            ),
-        },
-        status: APPLICATION_STATUSES.RECEIVED,
-      } : { applicationStep: getApplicationStepString(nextStep) };
+    submitFields = isSubmit
+      ? {
+          approveTerms: {
+            terms: application?.applicantTermsInEffect?.id,
+            selectedApplicantConsents:
+              application?.applicantTermsInEffect?.applicantConsents.map(
+                (consent) => consent.id
+              ),
+          },
+          status: APPLICATION_STATUSES.RECEIVED,
+        }
+      : { applicationStep: getApplicationStepString(nextStep) };
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,
