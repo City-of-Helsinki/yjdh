@@ -64,6 +64,7 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   ALTERNATIVE_COMPANY_STREET_ADDRESS = 'alternativeCompanyStreetAddress',
   ALTERNATIVE_COMPANY_POSTCODE = 'alternativeCompanyPostcode',
   ALTERNATIVE_COMPANY_CITY = 'alternativeCompanyCity',
+  COMPANY_DEPARTMENT = 'companyDepartment',
   COMPANY_BANK_ACCOUNT_NUMBER = 'companyBankAccountNumber',
   ORGANIZATION_TYPE = 'organizationType',
   ASSOCIATION_HAS_BUSINESS_ACTIVITIES = 'associationHasBusinessActivities',
