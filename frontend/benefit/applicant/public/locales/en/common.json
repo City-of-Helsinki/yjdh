@@ -433,5 +433,10 @@
   "delete": {
     "errorTitle": "Deleting failed",
     "errorMessage": "Something went wrong. Please try again later."
+  },
+  "pdfViewer": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page"
   }
 }
