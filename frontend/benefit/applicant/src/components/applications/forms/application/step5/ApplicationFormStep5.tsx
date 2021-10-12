@@ -20,6 +20,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
     t,
     handleBack,
     handleSave,
+    handleSubmit,
     handleStepChange,
     translationsBase,
     isSubmit,
@@ -127,7 +128,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
       <StepperActions
         lastStep={isSubmit}
         handleSave={handleSave}
-        handleSubmit={handleSave}
+        handleSubmit={handleSubmit}
         handleBack={handleBack}
       />
     </>

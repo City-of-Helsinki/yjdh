@@ -21,6 +21,7 @@ import snakecaseKeys from 'snakecase-keys';
 type ExtendedComponentProps = {
   t: TFunction;
   handleSave: () => void;
+  handleSubmit: () => void;
   handleBack: () => void;
   handleStepChange: (step: number) => void;
   translationsBase: string;
@@ -78,7 +79,7 @@ const useApplicationFormStep5 = (
     }
   }, [t, updateApplicationErrorStep5]);
 
-  const { onBack } = useFormActions(application, 5);
+  const { onBack, onSave } = useFormActions(application, 5);
 
   const handleStepChange = (nextStep: number): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
@@ -91,7 +92,9 @@ const useApplicationFormStep5 = (
     updateApplicationStep5(currentApplicationData);
   };
 
-  const handleSave = (): void => {
+  const handleSave = (): void => onSave(application);
+
+  const handleSubmit = (): void => {
     const submitFields = isSubmit
       ? { status: APPLICATION_STATUSES.RECEIVED }
       : { applicationStep: getApplicationStepString(6) };
@@ -108,6 +111,7 @@ const useApplicationFormStep5 = (
   return {
     t,
     handleSave,
+    handleSubmit,
     handleBack: onBack,
     handleStepChange,
     translationsBase,
