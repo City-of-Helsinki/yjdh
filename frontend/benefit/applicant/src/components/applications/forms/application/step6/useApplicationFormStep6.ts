@@ -120,7 +120,6 @@ const useApplicationFormStep6 = (
         },
         { deep: true }
       );
-      // console.log(currentApplicationData);
       updateApplicationStep6(currentApplicationData);
     }
   };

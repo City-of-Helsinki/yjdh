@@ -20,7 +20,6 @@ import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  handleNext: () => void;
   handleSave: () => void;
   handleBack: () => void;
   handleStepChange: (step: number) => void;
@@ -79,22 +78,23 @@ const useApplicationFormStep5 = (
     }
   }, [t, updateApplicationErrorStep5]);
 
-  const { onNext, onSave, onBack } = useFormActions(application, 5);
+  const { onBack } = useFormActions(application, 5);
 
   const handleStepChange = (nextStep: number): void => {
-    let submitFields = {};
-    submitFields = isSubmit
-      ? {
-          approveTerms: {
-            terms: application?.applicantTermsInEffect?.id,
-            selectedApplicantConsents:
-              application?.applicantTermsInEffect?.applicantConsents.map(
-                (consent) => consent.id
-              ),
-          },
-          status: APPLICATION_STATUSES.RECEIVED,
-        }
-      : { applicationStep: getApplicationStepString(nextStep) };
+    const currentApplicationData: ApplicationData = snakecaseKeys(
+      {
+        ...application,
+        applicationStep: getApplicationStepString(nextStep),
+      },
+      { deep: true }
+    );
+    updateApplicationStep5(currentApplicationData);
+  };
+
+  const handleSave = (): void => {
+    const submitFields = isSubmit
+      ? { status: APPLICATION_STATUSES.RECEIVED }
+      : { applicationStep: getApplicationStepString(6) };
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,
@@ -105,12 +105,8 @@ const useApplicationFormStep5 = (
     updateApplicationStep5(currentApplicationData);
   };
 
-  const handleNext = (): void => onNext(application);
-  const handleSave = (): void => onSave(application);
-
   return {
     t,
-    handleNext,
     handleSave,
     handleBack: onBack,
     handleStepChange,
