@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -116,7 +117,11 @@ export const fakeEmployments = (
   count = faker.datatype.number(10)
 ): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
 
-export const fakeApplication = (id: string, invoicer?: boolean): Application =>
+export const fakeApplication = (
+  id: string,
+  invoicer?: boolean,
+  language?: Language
+): Application =>
   getFormApplication({
     id,
     company: fakeCompany,
@@ -126,6 +131,7 @@ export const fakeApplication = (id: string, invoicer?: boolean): Application =>
     is_separate_invoicer: invoicer || false,
     submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),
     ...(invoicer && fakeInvoicer()),
+    language: language ?? DEFAULT_LANGUAGE,
   });
 
 export const fakeApplications = (

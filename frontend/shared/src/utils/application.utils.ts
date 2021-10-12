@@ -1,8 +1,9 @@
 import { TFunction } from 'next-i18next';
-import Application from 'shared/types/application';
-import ApplicationFieldName from 'shared/types/application-field-name';
-import Employment from 'shared/types/employment';
-import { getAttachmentsByType } from 'shared/utils/attachment.utils';
+
+import Application from '../types/application';
+import ApplicationFieldName from '../types/application-field-name';
+import Employment from '../types/employment';
+import { getAttachmentsByType } from './attachment.utils';
 
 export const getApplicationFormFieldLabel = (
   t: TFunction,
