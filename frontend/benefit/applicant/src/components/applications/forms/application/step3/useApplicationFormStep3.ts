@@ -13,6 +13,7 @@ type ExtendedComponentProps = {
   handleBack: () => void;
   attachments: Attachment[];
   hasRequiredAttachments: boolean;
+  paySubsidyGranted: boolean;
 };
 
 const useApplicationFormStep3 = (
@@ -66,6 +67,7 @@ const useApplicationFormStep3 = (
     ),
     attachments: application.attachments || [],
     hasRequiredAttachments: isRequiredAttachmentsUploaded(),
+    paySubsidyGranted: Boolean(application.paySubsidyGranted),
   };
 };
 

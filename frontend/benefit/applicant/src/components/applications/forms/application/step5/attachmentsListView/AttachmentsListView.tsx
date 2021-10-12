@@ -17,28 +17,28 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   type,
   title,
 }) => {
-  const currentAttachments = React.useMemo(
-    (): Attachment[] => attachments,
-    [attachments]
+  const attachmentItems = React.useMemo(
+    (): Attachment[] =>
+      attachments?.filter((att: Attachment) => att.attachmentType === type),
+    [attachments, type]
   );
 
   return (
     <$GridCell $colStart={1} $colSpan={6}>
       {title && <$ViewFieldBold>{title}</$ViewFieldBold>}
-      {currentAttachments
-        ?.filter((att: Attachment) => att.attachmentType === type)
-        .map((attachment: Attachment) => (
-          <$ViewField
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            key={attachment.attachmentFileName}
-          >
-            <IconPaperclip aria-label={attachment.attachmentFileName} />
-            {attachment.attachmentFileName}
-          </$ViewField>
-        ))}
+      {attachmentItems.map((attachment: Attachment) => (
+        <$ViewField
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          key={attachment.attachmentFileName}
+        >
+          <IconPaperclip aria-label={attachment.attachmentFileName} />
+          {attachment.attachmentFileName}
+        </$ViewField>
+      ))}
+      {attachmentItems.length === 0 && <$ViewField>-</$ViewField>}
     </$GridCell>
   );
 };

@@ -18,6 +18,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     handleSave,
     benefitType,
     apprenticeshipProgram,
+    paySubsidyGranted,
     showSubsidyMessage,
     attachments,
     hasRequiredAttachments,
@@ -41,11 +42,13 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
               attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
             />
           )}
-          <AttachmentsList
-            attachments={attachments}
-            attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-            showMessage={showSubsidyMessage}
-          />
+          {paySubsidyGranted && (
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+              showMessage={showSubsidyMessage}
+            />
+          )}
         </>
       )}
       {benefitType === BENEFIT_TYPES.COMMISSION && (

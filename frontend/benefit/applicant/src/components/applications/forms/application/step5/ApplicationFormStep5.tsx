@@ -96,6 +96,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         />
       </FormSection>
       <FormSection
+        paddingBottom={isEmpty(data.applicantTermsApproval)}
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
           <Button
