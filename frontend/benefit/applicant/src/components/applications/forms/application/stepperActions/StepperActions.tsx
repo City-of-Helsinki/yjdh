@@ -25,7 +25,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
   const translationsBase = 'common:applications.actions';
   return (
     <$Grid>
-      <$GridCell $colSpan={2}>
+      <$GridCell $colSpan={3}>
         {handleBack && (
           <Button
             theme="black"
@@ -38,7 +38,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           </Button>
         )}
       </$GridCell>
-      <$GridCell $colSpan={8} justifySelf="center">
+      <$GridCell $colSpan={6} justifySelf="center">
         <Button
           theme="black"
           variant="secondary"
@@ -48,7 +48,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           {t(`${translationsBase}.saveAndContinueLater`)}
         </Button>
       </$GridCell>
-      <$GridCell $colSpan={2}>
+      <$GridCell $colSpan={3}>
         <Button
           theme="coat"
           disabled={disabledNext}

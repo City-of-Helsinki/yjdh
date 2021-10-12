@@ -1,4 +1,5 @@
 import PdfViewver from 'benefit/applicant/components/pdfViewer/PdfViewer';
+import { TermsProp, TextProp } from 'benefit/applicant/types/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import * as React from 'react';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
@@ -11,9 +12,6 @@ import { useApplicationFormStep6 } from './useApplicationFormStep6';
 const ApplicationFormStep6: React.FC<DynamicFormStepComponentProps> = ({
   data,
 }) => {
-  type TextProp = 'textFi' | 'textEn' | 'textSv';
-  type TermsProp = 'termsPdfFi' | 'termsPdfEn' | 'termsPdfSv';
-
   const {
     handleSubmit,
     handleSave,

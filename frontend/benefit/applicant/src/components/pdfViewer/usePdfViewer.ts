@@ -1,3 +1,5 @@
+import { useTranslation } from 'benefit/applicant/i18n';
+import { TFunction } from 'next-i18next';
 import { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api';
 import { useState } from 'react';
 
@@ -7,9 +9,11 @@ type ExtendedComponentProps = {
   handleNext: () => void;
   currentPage: number;
   pagesCount: number;
+  t: TFunction;
 };
 
 const usePdfViewer = (): ExtendedComponentProps => {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesCount, setPagesCount] = useState<number>(1);
 
@@ -36,6 +40,7 @@ const usePdfViewer = (): ExtendedComponentProps => {
     handleBack,
     currentPage,
     pagesCount,
+    t,
   };
 };
 
