@@ -5,6 +5,7 @@ import * as React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { useTheme } from 'styled-components';
 
 import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
@@ -19,6 +20,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
 }) => {
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
+  const theme = useTheme();
   return (
     <>
       <FormSection
@@ -26,6 +28,9 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         action={
           <Button
             theme="black"
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
             onClick={() => handleStepChange(1)}
             variant="supplementary"
             iconLeft={<IconPen />}
@@ -60,12 +65,17 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
           }`}</$ViewField>
         </$GridCell>
 
-        <$GridCell $colStart={1} $colSpan={6}>
+        <$GridCell
+          $colStart={1}
+          $colSpan={6}
+          css={`
+            margin-top: ${theme.spacing.s};
+          `}
+        >
           {t(
             `${translationsBase}.company.fields.coOperationNegotiations.label`
-          )}
+          )}{' '}
           <$ViewFieldBold>
-            {' '}
             {t(
               `${translationsBase}.company.fields.coOperationNegotiations.${
                 data.coOperationNegotiations ? 'yes' : 'no'
@@ -101,7 +111,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
       </FormSection>
 
       <FormSection header={t(`${translationsBase}.company.heading3`)}>
-        {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 && (
+        {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
           <>
             <$GridCell $colSpan={3}>
               <$ViewFieldBold>
@@ -142,6 +152,8 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               </React.Fragment>
             ))}
           </>
+        ) : (
+          '-'
         )}
       </FormSection>
     </>

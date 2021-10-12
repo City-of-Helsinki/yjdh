@@ -1,9 +1,12 @@
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
+import isEmpty from 'lodash/isEmpty';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
+import { useTheme } from 'styled-components';
 
+import ConsentViewer from '../consentViewer/ConsentViewer';
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsListView from './attachmentsListView/AttachmentsListView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
@@ -16,11 +19,14 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
   const {
     t,
     handleBack,
-    handleNext,
     handleSave,
+    handleSubmit,
     handleStepChange,
     translationsBase,
+    isSubmit,
   } = useApplicationFormStep5(data);
+
+  const theme = useTheme();
 
   return (
     <>
@@ -33,6 +39,9 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         action={
           <Button
             theme="black"
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
             onClick={() => handleStepChange(3)}
             variant="supplementary"
             iconLeft={<IconPen />}
@@ -87,10 +96,14 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         />
       </FormSection>
       <FormSection
+        paddingBottom={isEmpty(data.applicantTermsApproval)}
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
           <Button
             theme="black"
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
             onClick={() => handleStepChange(4)}
             variant="supplementary"
             iconLeft={<IconPen />}
@@ -104,9 +117,18 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           attachments={data.attachments || []}
         />
       </FormSection>
+      {!isEmpty(data.applicantTermsApproval) && (
+        <FormSection
+          paddingBottom
+          header={t(`${translationsBase}.send.heading1`)}
+        >
+          <ConsentViewer data={data} />
+        </FormSection>
+      )}
       <StepperActions
+        lastStep={isSubmit}
         handleSave={handleSave}
-        handleSubmit={handleNext}
+        handleSubmit={handleSubmit}
         handleBack={handleBack}
       />
     </>

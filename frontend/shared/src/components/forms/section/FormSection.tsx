@@ -14,7 +14,7 @@ const FormSection: React.FC<FormSectionProps> = ({
   header,
   action,
   withoutDivider = false,
-  paddingBottom = true,
+  paddingBottom = false,
   role,
   loading,
   ...rest

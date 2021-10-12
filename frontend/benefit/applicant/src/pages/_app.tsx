@@ -19,6 +19,8 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
+import AppContextProvider from '../context/AppContextProvider';
+
 const queryClient = new QueryClient();
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
@@ -28,19 +30,21 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       baseURL={getBackendDomain()}
       headers={getHeaders(locale)}
     >
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyling />
-          <Layout>
-            <Header />
-            <ToastContainer />
-            <Content>
-              <Component {...pageProps} />
-            </Content>
-            <Footer />
-          </Layout>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <AppContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>
+            <GlobalStyling />
+            <Layout>
+              <Header />
+              <ToastContainer />
+              <Content>
+                <Component {...pageProps} />
+              </Content>
+              <Footer />
+            </Layout>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </AppContextProvider>
     </BackendAPIProvider>
   );
 };

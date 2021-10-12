@@ -327,7 +327,7 @@
         }
       },
       "send": {
-        "heading1": "Otsikko tähän"
+        "heading1": "Ehdot"
       }
     }
   },
@@ -335,6 +335,12 @@
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
+  },
+  "notifications": {
+    "applicationSubmitted": {
+      "label": "Hakemus lähetty onnistuneesti",
+      "message": "Helsinki-lisä hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen kun hakemus on käsitelty."
+    }
   },
   "languages": {
     "fi": "Suomi",
@@ -427,5 +433,11 @@
   "delete": {
     "errorTitle": "Deleting failed",
     "errorMessage": "Something went wrong. Please try again later."
+  },
+  "pdfViewer": {
+    "previous": "Edellinen",
+    "next": "Seuraava",
+    "page": "Sivu",
+    "terms": "Ehdot.PDF"
   }
 }
