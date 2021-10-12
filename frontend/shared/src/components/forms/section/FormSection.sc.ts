@@ -36,7 +36,7 @@ export const $Section = styled.section<FormSectionProps>`
   display: flex;
   flex-direction: column;
   padding-bottom: ${(props) =>
-    props.paddingBottom ? props.theme.spacing.m : ''};
+    props.paddingBottom ? props.theme.spacing.l : ''};
   position: relative;
 `;
 
@@ -98,6 +98,6 @@ export const $Action = styled.div`
 export const $Hr = styled.hr`
   border: none;
   border-top: 1px solid ${(props) => props.theme.colors.black20};
-  margin-top: ${(props) => props.theme.spacing.xl2};
+  margin-top: ${(props) => props.theme.spacing.xl};
   width: 100%;
 `;

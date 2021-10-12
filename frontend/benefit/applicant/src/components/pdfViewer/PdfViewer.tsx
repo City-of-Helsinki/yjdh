@@ -18,6 +18,7 @@ type PdfViewerProps = {
 
 const PdfViewver: React.FC<PdfViewerProps> = ({ file }) => {
   const {
+    t,
     handleDocumentLoadSuccess,
     handleNext,
     handleBack,
@@ -31,22 +32,34 @@ const PdfViewver: React.FC<PdfViewerProps> = ({ file }) => {
       <Document onLoadSuccess={handleDocumentLoadSuccess} file={file}>
         <Page pageNumber={currentPage} />
       </Document>
-      <$ActionsWrapper>
-        Page: {currentPage}({pagesCount})
-      </$ActionsWrapper>
       <$Grid
         css={`
           margin-bottom: ${theme.spacing.l};
         `}
       >
         <$GridCell>
-          <Button theme="black" variant="secondary" onClick={handleBack}>
-            Previous
+          <Button
+            disabled={currentPage === 1}
+            theme="black"
+            variant="secondary"
+            onClick={handleBack}
+          >
+            {t('common:pdfViewer.previous')}
           </Button>
         </$GridCell>
         <$GridCell>
-          <Button theme="black" variant="secondary" onClick={handleNext}>
-            Next
+          <$ActionsWrapper>
+            {`${t('common:pdfViewer.page')} ${currentPage} / ${pagesCount}`}
+          </$ActionsWrapper>
+        </$GridCell>
+        <$GridCell>
+          <Button
+            disabled={currentPage === pagesCount}
+            theme="black"
+            variant="secondary"
+            onClick={handleNext}
+          >
+            {t('common:pdfViewer.next')}
           </Button>
         </$GridCell>
       </$Grid>

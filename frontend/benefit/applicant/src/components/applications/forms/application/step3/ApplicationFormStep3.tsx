@@ -2,6 +2,8 @@ import AttachmentsIngress from 'benefit/applicant/components/attachmentsIngress/
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import React from 'react';
+import { $Hr } from 'shared/components/forms/section/FormSection.sc';
+import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
 import AttachmentsList from './attachmentsList/AttachmentsList';
@@ -16,9 +18,13 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     handleSave,
     benefitType,
     apprenticeshipProgram,
+    paySubsidyGranted,
     showSubsidyMessage,
     attachments,
+    hasRequiredAttachments,
   } = useApplicationFormStep3(data);
+
+  const theme = useTheme();
 
   return (
     <>
@@ -36,11 +42,13 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
               attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
             />
           )}
-          <AttachmentsList
-            attachments={attachments}
-            attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-            showMessage={showSubsidyMessage}
-          />
+          {paySubsidyGranted && (
+            <AttachmentsList
+              attachments={attachments}
+              attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+              showMessage={showSubsidyMessage}
+            />
+          )}
         </>
       )}
       {benefitType === BENEFIT_TYPES.COMMISSION && (
@@ -53,7 +61,13 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
         attachments={attachments}
         attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
       />
+      <$Hr
+        css={`
+          margin: ${theme.spacing.l} 0;
+        `}
+      />
       <StepperActions
+        disabledNext={!hasRequiredAttachments}
         handleSubmit={handleNext}
         handleSave={handleSave}
         handleBack={handleBack}

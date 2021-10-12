@@ -148,7 +148,7 @@ export type ApplicantTermsApproval = {
   id: string;
   approvedAt: string;
   approvedBy: string;
-  terms?: ApplicantTerms[];
+  terms?: ApplicantTerms;
 };
 
 export interface ApproveTermsData {
@@ -293,3 +293,11 @@ export type Application = {
   approveTerms?: ApproveTerms;
 } & Step1 &
   Step2;
+
+export type SubmittedApplication = {
+  applicationNumber: number;
+  applicantName: string;
+};
+
+export type TextProp = 'textFi' | 'textEn' | 'textSv';
+export type TermsProp = 'termsPdfFi' | 'termsPdfEn' | 'termsPdfSv';
