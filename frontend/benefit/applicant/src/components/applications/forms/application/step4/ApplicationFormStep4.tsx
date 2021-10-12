@@ -146,6 +146,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
       </$Grid>
       <$Hr
         css={`
+          margin-top: ${theme.spacing.s};
           margin-bottom: ${theme.spacing.l};
         `}
       />

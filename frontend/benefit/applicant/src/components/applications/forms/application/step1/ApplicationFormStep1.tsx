@@ -192,7 +192,7 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </>
         )}
       </FormSection>
-      <FormSection header={t(`${translationsBase}.heading4`)}>
+      <FormSection paddingBottom header={t(`${translationsBase}.heading4`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
             id={fields.coOperationNegotiations.name}

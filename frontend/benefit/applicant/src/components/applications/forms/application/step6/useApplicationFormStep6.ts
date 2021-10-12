@@ -1,7 +1,9 @@
 import {
   APPLICATION_STATUSES,
+  ROUTES,
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
@@ -10,9 +12,10 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
+import { getApplicantFullName } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -53,15 +56,32 @@ const useApplicationFormStep6 = (
 
   const { onSave, onBack } = useFormActions(application, 6);
 
+  const { setSubmittedApplication, submittedApplication } =
+    useContext(AppContext);
+
   const { mutate: updateApplicationStep6, isSuccess: isApplicationUpdated } =
     useUpdateApplicationQuery();
 
   useEffect(() => {
-    // todo: redirect to Thank you page, change status to received
-    if (isApplicationUpdated && application.applicantTermsApproval) {
-      void router.push('/');
+    if (
+      isApplicationUpdated &&
+      application.status === APPLICATION_STATUSES.RECEIVED
+    ) {
+      setSubmittedApplication({
+        applicantName: getApplicantFullName(
+          application.employee?.firstName,
+          application.employee?.lastName
+        ),
+        applicationNumber: application.applicationNumber || 0,
+      });
     }
-  }, [router, isApplicationUpdated, application.applicantTermsApproval]);
+  }, [isApplicationUpdated, application, setSubmittedApplication]);
+
+  useEffect(() => {
+    if (submittedApplication) {
+      void router.push(ROUTES.HOME);
+    }
+  }, [router, submittedApplication]);
 
   const handleClick = (consentIndex: number): void => {
     const newValue = !checkedArray[consentIndex];
@@ -100,7 +120,6 @@ const useApplicationFormStep6 = (
         },
         { deep: true }
       );
-      // console.log(currentApplicationData);
       updateApplicationStep6(currentApplicationData);
     }
   };
