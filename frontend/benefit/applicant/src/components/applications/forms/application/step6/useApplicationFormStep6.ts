@@ -63,7 +63,10 @@ const useApplicationFormStep6 = (
     useUpdateApplicationQuery();
 
   useEffect(() => {
-    if (isApplicationUpdated && application.applicantTermsApproval) {
+    if (
+      isApplicationUpdated &&
+      application.status === APPLICATION_STATUSES.RECEIVED
+    ) {
       setSubmittedApplication({
         applicantName: getApplicantFullName(
           application.employee?.firstName,
@@ -72,7 +75,7 @@ const useApplicationFormStep6 = (
         applicationNumber: application.applicationNumber || 0,
       });
     }
-  }, [router, isApplicationUpdated, application, setSubmittedApplication]);
+  }, [isApplicationUpdated, application, setSubmittedApplication]);
 
   useEffect(() => {
     if (submittedApplication) {

@@ -1,4 +1,5 @@
-import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
+import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -6,10 +7,14 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import {
+  getApplicantFullName,
+  getApplicationStepString,
+} from 'benefit/applicant/utils/common';
 import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import snakecaseKeys from 'snakecase-keys';
 
@@ -28,11 +33,39 @@ const useApplicationFormStep5 = (
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
+  const router = useRouter();
 
-  const { mutate: updateApplicationStep5, error: updateApplicationErrorStep5 } =
-    useUpdateApplicationQuery();
+  const { setSubmittedApplication, submittedApplication } =
+    useContext(AppContext);
+
+  const {
+    mutate: updateApplicationStep5,
+    error: updateApplicationErrorStep5,
+    isSuccess: isApplicationUpdatedStep5,
+  } = useUpdateApplicationQuery();
 
   const isSubmit = !isEmpty(application?.applicantTermsApproval);
+
+  useEffect(() => {
+    if (
+      isApplicationUpdatedStep5 &&
+      application.status === APPLICATION_STATUSES.RECEIVED
+    ) {
+      setSubmittedApplication({
+        applicantName: getApplicantFullName(
+          application.employee?.firstName,
+          application.employee?.lastName
+        ),
+        applicationNumber: application.applicationNumber || 0,
+      });
+    }
+  }, [isApplicationUpdatedStep5, application, setSubmittedApplication]);
+
+  useEffect(() => {
+    if (submittedApplication) {
+      void router.push(ROUTES.HOME);
+    }
+  }, [router, submittedApplication]);
 
   useEffect(() => {
     // todo:custom error messages
