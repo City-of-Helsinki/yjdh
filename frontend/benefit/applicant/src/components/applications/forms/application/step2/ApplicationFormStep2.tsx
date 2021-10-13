@@ -81,6 +81,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
 
   useAlertBeforeLeaving(formik.dirty);
 
+  const selectLabel = t('common:select');
+
   return (
     <form onSubmit={handleSubmit} noValidate>
       <FormSection header={t(`${translationsBase}.heading1`)}>
@@ -240,7 +242,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 }
                 options={subsidyOptions}
                 id={fields.paySubsidyPercent.name}
-                placeholder={t('common:select')}
+                placeholder={selectLabel}
                 invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
                 aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
                 error={getErrorMessage(fields.paySubsidyPercent.name)}
@@ -265,9 +267,15 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     additionalPaySubsidyPercent.value
                   )
                 }
-                options={subsidyOptions}
+                options={[
+                  {
+                    label: selectLabel,
+                    value: '',
+                  },
+                  ...subsidyOptions,
+                ]}
                 id={fields.additionalPaySubsidyPercent.name}
-                placeholder={t('common:select')}
+                placeholder={selectLabel}
                 invalid={
                   !!getErrorMessage(fields.additionalPaySubsidyPercent.name)
                 }
