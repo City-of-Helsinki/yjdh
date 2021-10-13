@@ -57,6 +57,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     subsidyOptions,
     language,
     minEndDate,
+    maxEndDate,
   } = useApplicationFormStep2(data);
 
   const theme = useTheme();
@@ -431,6 +432,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             errorText={getErrorMessage(fields.endDate.name)}
             initialMonth={!formik.values.endDate ? minEndDate : undefined}
             minDate={minEndDate}
+            maxDate={maxEndDate}
             required
           />
         </$GridCell>
