@@ -102,12 +102,15 @@
         "employment_postcode": "Työn suorituspaikan postinumero SWE",
         "summer_voucher_serial_number": "Kesäsetelin sarjanumero SWE",
         "employee_school": "Koulu SWE",
+        "employment_contract": "Työsopimus SWE",
+        "payslip": "Palkkatodistus SWE",
         "employment_start_date": "Työsuhde alkoi SWE",
         "employment_end_date": "Työsuhde päättyi SWE",
         "employment_description": "Kuvaus työtehtävistä SWE",
         "employment_work_hours": "Tehdyt työtunnit SWE",
         "employment_salary_paid": "Maksettu palkka SWE",
         "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä? SWE",
+        "attachments": "Liitetiedostot SWE",
         "termsAndConditions": "SWE Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne"
       },
       "helpers": {
@@ -121,7 +124,9 @@
         "validate": "Syöttämäsi tieto on virheellistä muotoa SWE",
         "selectionGroups": "Valitse jokin vaihtoehto SWE",
         "checkboxRequired": "Valinta on pakollinen SWE",
-        "employmentsRequired": "Lisää ainakin yksi työsuhde SWE"
+        "employmentsRequired": "Lisää ainakin yksi työsuhde SWE",
+        "employment_contract": "Liitä ainakin yksi tiedosto työsopimukselle SWE",
+        "payslip": "Liitä ainakin yksi tiedosto palkkatodistukselle SWE"
       },
       "notification": {
         "title": "Virheitä kenttien tiedoissa SWE",
@@ -139,5 +144,43 @@
     "en": "In english"
   },
   "menuToggleAriaLabel": "Menu SWE",
-  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/"
+  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "error": {
+    "generic": {
+      "label": "Tuntematon virhe SWE",
+      "text": " Yritä myöhemmin uudelleen SWE"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe SWE",
+      "tooBig": "Tiedosto on liian iso SWE",
+      "fileType": "Tiedoston tyyppi ei ole sallittu. SWE"
+    }
+  },
+  "upload": {
+    "isUploading": "Lähetetään... SWE",
+    "errorTitle": "Lähetys epäonnistui SWE",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen. SWE"
+  },
+  "delete": {
+    "errorTitle": "Poistaminen epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen. SWE"
+  },
+  "applications": {
+    "sections" : {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Työsopimus SWE",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Palkkatodistus SWE",
+            "message": ""
+          }
+        },
+        "add": "Liitä tiedosto SWE",
+        "remove": "Poista tiedosto SWE"
+      }
+    }
+  }
 }

@@ -1,6 +1,5 @@
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
 import {
-  ATTACHMENT_MAX_SIZE,
   ATTACHMENT_TYPES,
   EMPLOYEE_CONSENT_FILE,
 } from 'benefit/applicant/constants';
@@ -21,6 +20,7 @@ import {
   $GridCell,
   $Hr,
 } from 'shared/components/forms/section/FormSection.sc';
+import { ATTACHMENT_MAX_SIZE } from 'shared/constants/attachment-constants';
 import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';

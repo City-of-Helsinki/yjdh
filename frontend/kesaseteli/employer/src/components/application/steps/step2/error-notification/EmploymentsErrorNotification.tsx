@@ -34,7 +34,7 @@ const EmploymentsErrorNotification: React.FC = () => {
         errors: Object.entries(employmentErrors ?? {}).map(
           ([field, error]) => ({
             field: field as keyof Employment,
-            errorType: error?.type || 'required',
+            errorType: ((error as FieldError).type || 'required') as string,
           })
         ),
       }))

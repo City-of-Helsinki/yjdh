@@ -97,12 +97,15 @@
         "employment_postcode": "Workplace's postcode",
         "summer_voucher_serial_number": "Summer voucher serial number",
         "employee_school": "School",
+        "employment_contract": "Employment contract",
+        "payslip": "Payslip",
         "employment_start_date": "Employment start date",
         "employment_end_date": "Employment start date",
         "employment_work_hours": "Work hours",
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have hired without summer voucher?",
+        "attachments": "Attachments",
         "termsAndConditions": "I have read and agreed to the <1>terms and conditions</1>"
       },
       "helpers": {
@@ -116,7 +119,9 @@
         "validate": "input is invalid",
         "selectionGroups": "Choose an option",
         "checkboxRequired": "Check mark is required",
-        "employmentsRequired": "Add at least one employment"
+        "employmentsRequired": "Add at least one employment",
+        "employment_contract": "Add at least one file",
+        "payslip": "Add at least one file"
       },
       "notification": {
         "title": "There is errors in the form",
@@ -139,5 +144,43 @@
     "en": "In english"
   },
   "menuToggleAriaLabel": "Menu",
-  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/"
+  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "error": {
+    "generic": {
+      "label": "Error occurred",
+      "text": "Please try again later."
+    },
+    "attachments": {
+      "title": "Error occurred",
+      "tooBig": "The attachemnt size is too big.",
+      "fileType": "The attachment file type is not allowed."
+    }
+  },
+  "upload": {
+    "isUploading": "Uploading...",
+    "errorTitle": "Uploading failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "delete": {
+    "errorTitle": "Deleting failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "applications": {
+    "sections" : {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Employment contract",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Payslip",
+            "message": ""
+          }
+        },
+        "add": "Add file",
+        "remove": "Remove file"
+      }
+    }
+  }
 }

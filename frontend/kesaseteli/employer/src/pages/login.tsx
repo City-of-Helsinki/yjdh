@@ -3,6 +3,7 @@ import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 import Container from 'shared/components/container/Container';
 import withoutAuth from 'shared/components/hocs/withoutAuth';
 import Layout from 'shared/components/Layout';

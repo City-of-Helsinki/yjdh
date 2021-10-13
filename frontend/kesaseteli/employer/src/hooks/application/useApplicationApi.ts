@@ -4,9 +4,11 @@ import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpda
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
+import React from 'react';
 import { UseMutationResult, UseQueryResult } from 'react-query';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
+import { getFormApplication } from 'shared/utils/application.utils';
 
 export type ApplicationQueryResult = UseQueryResult<Application, Error>;
 export type ApplicationMutationResult = UseMutationResult<
@@ -44,9 +46,7 @@ export type Params = {
   onSendSuccess: (application: Application) => void;
 };
 
-const useApplicationApi = (
-  { onUpdateSuccess } = { onUpdateSuccess: noop }
-): ApplicationApi => {
+const useApplicationApi = (): ApplicationApi => {
   const applicationId = useApplicationIdQueryParam();
 
   const {
@@ -58,7 +58,7 @@ const useApplicationApi = (
     mutate,
     isLoading: isUpdating,
     error: updatingError,
-  } = useUpdateApplicationQuery(application, onUpdateSuccess);
+  } = useUpdateApplicationQuery(application);
 
   const addEmployment: ApplicationApi['addEmployment'] = (
     draftApplication: DraftApplication,
@@ -117,9 +117,14 @@ const useApplicationApi = (
       }
     );
 
+  const formApplication = React.useMemo(
+    () => application && getFormApplication(application),
+    [application]
+  );
+
   return {
     applicationId,
-    application,
+    application: formApplication,
     updateApplication,
     sendApplication,
     addEmployment,

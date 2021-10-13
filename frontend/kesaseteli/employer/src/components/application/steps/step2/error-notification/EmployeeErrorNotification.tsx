@@ -1,7 +1,6 @@
 import useWatchEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useWatchEmployeeDisplayName';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { FieldError } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Employment from 'shared/types/employment';
 
@@ -9,7 +8,7 @@ type Props = {
   index: number;
   errors: Array<{
     field: keyof Employment;
-    errorType: FieldError['type'];
+    errorType: string;
   }>;
 };
 

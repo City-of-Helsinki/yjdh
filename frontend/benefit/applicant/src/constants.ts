@@ -203,13 +203,5 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MAX = 'common:form.validation.time.max',
 }
 
-// 10mb
-export const ATTACHMENT_MAX_SIZE = 10485760;
-export const ATTACHMENT_ALLOWED_TYPES = [
-  'image/png',
-  'image/jpeg',
-  'application/pdf',
-];
-
 // temporary consent file
 export const EMPLOYEE_CONSENT_FILE = 'employee_consent.pdf';

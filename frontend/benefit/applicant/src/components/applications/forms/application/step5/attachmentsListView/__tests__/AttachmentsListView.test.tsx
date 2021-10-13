@@ -3,7 +3,7 @@ import renderComponent from 'benefit/applicant/__tests__/utils/render-component'
 import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import { axe } from 'jest-axe';
 import React from 'react';
-import { ATTACHMENT_CONTENT_TYPES } from 'shared/constants';
+import Attachment from 'shared/types/attachment';
 
 import AttachmentsListView, {
   AttachmentsListViewProps,
@@ -19,10 +19,10 @@ describe('AttachmentsListView', () => {
         attachmentFile: 'http://localhost:8000/media/Contract.png',
         attachmentFileName: 'Contract.png',
         attachmentType: ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER,
-        contentType: ATTACHMENT_CONTENT_TYPES.IMAGE_PNG,
+        contentType: 'image/png',
         createdAt: '2021-09-09T10:37:13.341633+03:00',
         id: '68034254-0dff-423d-8659-58864a930ae7',
-      },
+      } as Attachment,
     ],
   };
 

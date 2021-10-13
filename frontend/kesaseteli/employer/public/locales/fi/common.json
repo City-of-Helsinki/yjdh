@@ -102,12 +102,15 @@
         "employment_postcode": "Työn suorituspaikan postinumero",
         "summer_voucher_serial_number": "Kesäsetelin sarjanumero",
         "employee_school": "Koulu",
+        "employment_contract": "Työsopimus",
+        "payslip": "Palkkatodistus",
         "employment_start_date": "Työsuhde alkoi",
         "employment_end_date": "Työsuhde päättyi",
         "employment_work_hours": "Tehdyt työtunnit",
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
+        "attachments": "Liitetiedostot",
         "termsAndConditions": "Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne."
       },
       "helpers": {
@@ -121,7 +124,9 @@
         "validate": "Syöttämäsi tieto on virheellistä muotoa",
         "selectionGroups": "Valitse jokin vaihtoehto",
         "checkboxRequired": "Valinta on pakollinen",
-        "employmentsRequired": "Lisää ainakin yksi työsuhde"
+        "employmentsRequired": "Lisää ainakin yksi työsuhde",
+        "employment_contract": "Liitä ainakin yksi tiedosto",
+        "payslip": "Liitä ainakin yksi tiedosto"
       },
       "notification": {
         "title": "Virheitä kenttien tiedoissa",
@@ -139,5 +144,43 @@
     "en": "In english"
   },
   "menuToggleAriaLabel": "Menu",
-  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/"
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "error": {
+    "generic": {
+      "label": "Tuntematon virhe",
+      "text": " Yritä myöhemmin uudelleen"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe",
+      "tooBig": "Tiedosto on liian iso",
+      "fileType": "Tiedoston tyyppi ei ole sallittu."
+    }
+  },
+  "upload": {
+    "isUploading": "Lähetetään...",
+    "errorTitle": "Lähetys epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "delete": {
+    "errorTitle": "Poistaminen epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "applications": {
+    "sections" : {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Työsopimus",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Palkkatodistus",
+            "message": ""
+          }
+        },
+        "add": "Liitä tiedosto",
+        "remove": "Poista tiedosto"
+      }
+    }
+  }
 }

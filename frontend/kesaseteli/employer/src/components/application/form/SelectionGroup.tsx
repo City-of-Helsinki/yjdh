@@ -44,7 +44,7 @@ const SelectionGroup = <T extends readonly string[]>({
 
   const {
     getValue: getInitialValue,
-    getError,
+    hasError,
     fieldName,
   } = useApplicationFormField<string>(id);
   const [selectedValue, setSelectedValue] = React.useState(getInitialValue());
@@ -73,7 +73,7 @@ const SelectionGroup = <T extends readonly string[]>({
         required={showTitle && Boolean(validation?.required)}
         direction={direction}
         errorText={
-          getError()
+          hasError()
             ? `${t(`common:application.form.errors.selectionGroups`)}`
             : undefined
         }

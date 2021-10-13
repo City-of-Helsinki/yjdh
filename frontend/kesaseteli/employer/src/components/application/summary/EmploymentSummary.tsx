@@ -1,13 +1,15 @@
 import EmploymentFieldSummary from 'kesaseteli/employer/components/application/summary/EmploymentFieldSummary';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
-import { getApplicationFormFieldLabel as getLabel } from 'kesaseteli/employer/utils/application.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
+import Attachment from 'shared/types/attachment';
 import {
   EmployeeHiredWithoutVoucherAssessment,
   EmploymentExceptionReason,
 } from 'shared/types/employment';
+import { getApplicationFormFieldLabel as getLabel } from 'shared/utils/application.utils';
+import { getAttachmentsSummary } from 'shared/utils/attachment.utils';
 
 type Props = {
   index: number;
@@ -24,6 +26,14 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
   const { getValue: getSsn } = useApplicationFormField<string>(
     `summer_vouchers.${index}.employee_ssn`
   );
+
+  const { getValue: getEmploymentContracts } = useApplicationFormField<
+    Attachment[]
+  >(`summer_vouchers.${index}.employment_contract`);
+  const { getValue: getPayslips } = useApplicationFormField<Attachment[]>(
+    `summer_vouchers.${index}.payslip`
+  );
+
   const { getValue: getStartDate } = useApplicationFormField<string>(
     `summer_vouchers.${index}.employment_start_date`
   );
@@ -75,7 +85,14 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
         index={index}
       />
       <EmploymentFieldSummary fieldName="employee_school" index={index} />
-      {/* TODO: palkkatodistus, työsopimus attachments */}
+      <EmploymentFieldSummary fieldName="employment_contract" index={index}>
+        {t(`common:application.form.inputs.employment_contract`)}:{' '}
+        {getAttachmentsSummary(getEmploymentContracts())}
+      </EmploymentFieldSummary>
+      <EmploymentFieldSummary fieldName="payslip" index={index}>
+        {t(`common:application.form.inputs.payslip`)}:{' '}
+        {getAttachmentsSummary(getPayslips())}
+      </EmploymentFieldSummary>
       <EmploymentFieldSummary fieldName="employment" index={index}>
         {t('common:application.step2.employment')}: {getStartDate()} -{' '}
         {getEndDate()}

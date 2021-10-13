@@ -1,3 +1,4 @@
+import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
 import DateInput from 'kesaseteli/employer/components/application/form/DateInput';
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
 import TextInput, {
@@ -14,7 +15,7 @@ import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
 import {
   EMPLOYEE_EXCEPTION_REASON,
   EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
-} from 'shared/contants/employee-constants';
+} from 'shared/constants/employee-constants';
 import theme from 'shared/styles/theme';
 import Employment, { EmploymentExceptionReason } from 'shared/types/employment';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
@@ -158,6 +159,12 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           size="s"
           $colSpan={2}
         />
+        <AttachmentInput
+          index={index}
+          id={getId('employment_contract')}
+          required
+        />
+        <AttachmentInput index={index} id={getId('payslip')} required />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading
           header={t('common:application.step2.employment_section')}
