@@ -1,12 +1,13 @@
 import 'react-toastify/dist/ReactToastify.css';
 
+import * as Sentry from '@sentry/nextjs';
 import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
 import Header from 'kesaseteli/employer/components/header/Header';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
@@ -19,6 +20,19 @@ import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
 import { getBackendDomain } from '../backend-api/backend-api';
+
+// Sentry logger
+setLogger({
+  log: message => {
+    Sentry.captureMessage(message)
+  },
+  warn: message => {
+    Sentry.captureMessage(message)
+  },
+  error: error => {
+    Sentry.captureException(error)
+  },
+})
 
 const queryClient = new QueryClient({
   defaultOptions: {

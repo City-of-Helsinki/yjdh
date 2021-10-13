@@ -2,6 +2,7 @@ import os
 
 import environ
 import sentry_sdk
+from corsheaders.defaults import default_headers
 from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -176,6 +177,9 @@ TEMPLATES = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "sentry-trace",
+]
 CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
