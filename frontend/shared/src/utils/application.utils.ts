@@ -14,20 +14,15 @@ export const getFormApplication = (
   backendApplication: Application
 ): Application => ({
   ...backendApplication,
-  summer_vouchers: [
-    ...(backendApplication.summer_vouchers ?? []).map(
-      (employment) =>
-        ({
-          ...employment,
-          employment_contract: getAttachmentsByType(
-            employment.attachments ?? [],
-            'employment_contract'
-          ),
-          payslip: getAttachmentsByType(
-            employment.attachments ?? [],
-            'payslip'
-          ),
-        } as Employment)
-    ),
-  ],
+  summer_vouchers: (backendApplication.summer_vouchers ?? []).map(
+    (employment) =>
+      ({
+        ...employment,
+        employment_contract: getAttachmentsByType(
+          employment.attachments ?? [],
+          'employment_contract'
+        ),
+        payslip: getAttachmentsByType(employment.attachments ?? [], 'payslip'),
+      } as Employment)
+  ),
 });
