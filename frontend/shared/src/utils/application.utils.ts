@@ -8,7 +8,7 @@ import { getAttachmentsByType } from './attachment.utils';
 export const getApplicationFormFieldLabel = (
   t: TFunction,
   field: ApplicationFieldName
-): string => t(`common:application.form.inputs.${field}`);
+): string => t(`common:application.form.inputs.${String(field)}`);
 
 export const getFormApplication = (
   backendApplication: Application

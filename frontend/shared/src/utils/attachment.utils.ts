@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
-import Attachment from 'shared/types/attachment';
+
+import Attachment from '../types/attachment';
 
 export const getAttachmentsByType = (
   attachments: Attachment[],
