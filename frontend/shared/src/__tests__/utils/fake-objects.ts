@@ -1,5 +1,4 @@
 import faker from 'faker';
-import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -10,6 +9,7 @@ import {
   ATTACHMENT_TYPES,
 } from '../../constants/attachment-constants';
 import { EMPLOYEE_EXCEPTION_REASON } from '../../constants/employee-constants';
+import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
 import type Application from '../../types/application';
 import Attachment from '../../types/attachment';
 import type Company from '../../types/company';
