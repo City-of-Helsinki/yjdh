@@ -82,7 +82,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["created_at"]
 
-    MAX_ATTACHMENTS_PER_APPLICATION = 10
+    MAX_ATTACHMENTS_PER_TYPE = 5
 
     ATTACHMENT_MODIFICATION_ALLOWED_STATUSES = (
         ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
@@ -112,8 +112,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
             )
 
         if (
-            len(data["summer_voucher"].attachments.all())
-            >= self.MAX_ATTACHMENTS_PER_APPLICATION
+            data["summer_voucher"]
+            .attachments.filter(attachment_type=data["attachment_type"])
+            .count()
+            >= self.MAX_ATTACHMENTS_PER_TYPE
         ):
             raise serializers.ValidationError(_("Too many attachments"))
 
