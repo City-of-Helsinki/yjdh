@@ -13,23 +13,22 @@ export const getMinEndDate = (
   let months = 0;
   let days = 0;
 
-  if (benefitType === BENEFIT_TYPES.EMPLOYMENT) {
+  if (
+    benefitType === BENEFIT_TYPES.EMPLOYMENT ||
+    benefitType === BENEFIT_TYPES.SALARY
+  ) {
     months = 1;
-    days = -1;
-  } else if (benefitType === BENEFIT_TYPES.SALARY) {
-    months = 12;
     days = -1;
   }
   const parsedStartDate = parseDate(startDate);
-  if (!parsedStartDate || !isValid(parsedStartDate)) {
-    return add(APPLICATION_START_DATE, {
+
+  return add(
+    parsedStartDate && isValid(parsedStartDate)
+      ? parsedStartDate
+      : APPLICATION_START_DATE,
+    {
       months,
       days,
-    });
-  }
-
-  return add(parsedStartDate, {
-    months,
-    days,
-  });
+    }
+  );
 };
