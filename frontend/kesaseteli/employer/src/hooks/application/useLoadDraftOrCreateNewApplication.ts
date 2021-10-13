@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { UseMutateFunction } from 'react-query';
 import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
-import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/application';
 
 const useLoadDraftOrCreateNewApplication = (
@@ -12,7 +12,7 @@ const useLoadDraftOrCreateNewApplication = (
   createApplication: UseMutateFunction<Application, Error, void, unknown>
 ): void => {
   const router = useRouter();
-  const locale = router.locale ?? DEFAULT_LANGUAGE;
+  const language = useLocale();
   const { isSyncing } = useIsSyncingToBackend();
 
   React.useEffect(() => {
@@ -22,6 +22,7 @@ const useLoadDraftOrCreateNewApplication = (
       );
       const draftApplication = previousApplication ?? newApplication;
       if (draftApplication) {
+        const locale = draftApplication.language ?? language;
         void router.push(`${locale}/application?id=${draftApplication.id}`);
       } else if (applications && !previousApplication) {
         createApplication();
@@ -33,7 +34,7 @@ const useLoadDraftOrCreateNewApplication = (
     newApplication,
     createApplication,
     isError,
-    locale,
+    language,
     router,
   ]);
 };

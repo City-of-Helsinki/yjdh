@@ -9,6 +9,7 @@ import {
   ATTACHMENT_TYPES,
 } from '../../constants/attachment-constants';
 import { EMPLOYEE_EXCEPTION_REASON } from '../../constants/employee-constants';
+import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
 import type Application from '../../types/application';
 import Attachment from '../../types/attachment';
 import type Company from '../../types/company';
@@ -116,7 +117,11 @@ export const fakeEmployments = (
   count = faker.datatype.number(10)
 ): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
 
-export const fakeApplication = (id: string, invoicer?: boolean): Application =>
+export const fakeApplication = (
+  id: string,
+  invoicer?: boolean,
+  language?: Language
+): Application =>
   getFormApplication({
     id,
     company: fakeCompany,
@@ -126,6 +131,7 @@ export const fakeApplication = (id: string, invoicer?: boolean): Application =>
     is_separate_invoicer: invoicer || false,
     submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),
     ...(invoicer && fakeInvoicer()),
+    language: language ?? DEFAULT_LANGUAGE,
   });
 
 export const fakeApplications = (
