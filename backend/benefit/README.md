@@ -26,6 +26,14 @@ Allow user to create test database
 
     sudo -u postgres psql -c "ALTER USER helsinkibenefit CREATEDB;"
 
+Load test fixtures
+
+    python manage.py loaddata default_terms.json
+
+This creates terms of service and applicant terms in the database. The attachment PDF files are not actually
+created by loading the fixture. In order to actually download the PDF files, log in via the django admin
+and upload the files manually.
+
 ### Daily running
 
 * Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
