@@ -76,6 +76,7 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, True),
+    DB_PREFIX=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -88,6 +89,10 @@ if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
+
+DB_PREFIX = {
+    None: env.str("DB_PREFIX"),
+}
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
