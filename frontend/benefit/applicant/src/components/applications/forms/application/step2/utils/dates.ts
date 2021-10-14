@@ -2,64 +2,44 @@ import {
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
 } from 'benefit/applicant/constants';
-import add from 'date-fns/add';
-import isValid from 'date-fns/isValid';
+import addMonths from 'date-fns/addMonths';
+import subDays from 'date-fns/subDays';
 import { parseDate } from 'shared/utils/date.utils';
 
 export const getMinEndDate = (
   startDate: string | undefined,
   benefitType: BENEFIT_TYPES | undefined | ''
 ): Date => {
-  let months = 0;
-  let days = 0;
+  const parsedStartDate = parseDate(startDate) ?? APPLICATION_START_DATE;
 
-  if (
-    benefitType === BENEFIT_TYPES.EMPLOYMENT ||
-    benefitType === BENEFIT_TYPES.SALARY
-  ) {
-    months = 1;
-    days = -1;
+  switch (benefitType) {
+    case BENEFIT_TYPES.EMPLOYMENT:
+    case BENEFIT_TYPES.SALARY:
+      return addMonths(subDays(parsedStartDate, 1), 1);
+
+    case BENEFIT_TYPES.COMMISSION:
+      return parsedStartDate;
+
+    default:
+      return parsedStartDate;
   }
-  const parsedStartDate = parseDate(startDate);
-
-  return add(
-    parsedStartDate && isValid(parsedStartDate)
-      ? parsedStartDate
-      : APPLICATION_START_DATE,
-    {
-      months,
-      days,
-    }
-  );
 };
 
 export const getMaxEndDate = (
   startDate: string | undefined,
   benefitType: BENEFIT_TYPES | undefined | ''
 ): Date | undefined => {
-  if (!benefitType || benefitType === BENEFIT_TYPES.COMMISSION) {
-    return undefined;
+  const parsedStartDate = parseDate(startDate) ?? APPLICATION_START_DATE;
+
+  switch (benefitType) {
+    case BENEFIT_TYPES.EMPLOYMENT:
+    case BENEFIT_TYPES.SALARY:
+      return addMonths(subDays(parsedStartDate, 1), 12);
+
+    case BENEFIT_TYPES.COMMISSION:
+      return undefined;
+
+    default:
+      return undefined;
   }
-
-  let months = 0;
-  let days = 0;
-
-  if (
-    benefitType === BENEFIT_TYPES.EMPLOYMENT ||
-    benefitType === BENEFIT_TYPES.SALARY
-  ) {
-    months = 12;
-    days = -1;
-  }
-  const parsedStartDate = parseDate(startDate);
-
-  return add(
-    parsedStartDate && isValid(parsedStartDate)
-      ? parsedStartDate
-      : APPLICATION_START_DATE,
-    {
-      months,
-      days,
-    }
-  );
 };
