@@ -91,16 +91,37 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     });
 
     describe('when user does not have previous applications', () => {
-      it('Should create a new application and redirect to its page', async () => {
+      it('Should create a new application and redirect to its page with default language', async () => {
         const queryClient = createReactQueryTestClient();
         const newApplication = fakeApplication('123-foo-bar');
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationToBackend(newApplication);
         expectToGetApplicationsFromBackend([newApplication]);
-        const locale: Language = 'en';
         const spyPush = jest.fn();
-        await renderPage(IndexPage, queryClient, { push: spyPush, locale });
+        await renderPage(IndexPage, queryClient, { push: spyPush });
+        await waitFor(() => {
+          expect(
+            queryClient.getQueryData(['applications', newApplication.id])
+          ).toEqual(newApplication);
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/application?id=${newApplication.id}`
+          );
+        });
+      });
+      it('Should create a new application and redirect to its page with router locale', async () => {
+        const queryClient = createReactQueryTestClient();
+        const locale: Language = 'en';
+        const newApplication = fakeApplication('123-foo-bar', false, locale);
+        expectAuthorizedReply();
+        expectToGetApplicationsFromBackend([]);
+        expectToCreateApplicationToBackend(newApplication);
+        expectToGetApplicationsFromBackend([newApplication]);
+        const spyPush = jest.fn();
+        await renderPage(IndexPage, queryClient, {
+          push: spyPush,
+          defaultLocale: locale,
+        });
         await waitFor(() => {
           expect(
             queryClient.getQueryData(['applications', newApplication.id])
@@ -113,34 +134,20 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     });
 
     describe('when user has previous applications', () => {
-      it('Should redirect to latest application page with default locale', async () => {
+      it("Should redirect to latest application page with application's locale", async () => {
         const queryClient = createReactQueryTestClient();
-        const applications = fakeApplications(5);
-        expectAuthorizedReply();
-        expectToGetApplicationsFromBackend(applications);
-        const spyPush = jest.fn();
-        await renderPage(IndexPage, queryClient, { push: spyPush });
-        const [latestApplication] = applications;
-        await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/application?id=${latestApplication.id}`
-          )
-        );
-      });
-
-      it('Should redirect to latest application page with specified locale', async () => {
-        const queryClient = createReactQueryTestClient();
-        const applications = fakeApplications(5);
+        const application = fakeApplication('my-id', false, 'sv');
+        const applications = [application, ...fakeApplications(4)];
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend(applications);
         const locale: Language = 'en';
         const spyPush = jest.fn();
-        await renderPage(IndexPage, queryClient, { push: spyPush, locale });
-        const [firstApplication] = applications;
+        await renderPage(IndexPage, queryClient, {
+          push: spyPush,
+          defaultLocale: locale,
+        });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(
-            `${locale}/application?id=${firstApplication.id}`
-          )
+          expect(spyPush).toHaveBeenCalledWith(`sv/application?id=my-id`)
         );
       });
     });
