@@ -20,11 +20,11 @@
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
-    "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+    "infoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta."
   },
   "thankyouPage": {
     "thankyouMessageLabel": "Hakemus on lähetetty",
-    "thankyouMessageContent": "Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
+    "thankyouMessageContent": "Jää odottamaan hakemuksen käsittelyä. Olemme sinuun yhteydessä, kun käsittely on valmis, jolloin saat laskutusluvan. Voit nyt sulkea tämän sivun.",
     "createNewApplication": "Tee uusi hakemus",
     "title": "Hakemus {{submitted_at}}"
   },
@@ -36,7 +36,7 @@
     "step1": {
       "name": "Työnantaja",
       "header": "1. Työnantajan tiedot",
-      "tooltip": "FI Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "tooltip": "Kirjoita kaavakkeeseen tietosi. Jatka painamalla Etene ja jatka. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot",
         "header": {
@@ -53,7 +53,7 @@
       "name": "Työsuhteet",
       "header": "2. Selvitys työsuhteesta",
       "employment": "Työsuhde",
-      "tooltip": "FI Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "tooltip": "Kirjoita kaavakkeeseen kesätyöntekijän tiedot sekä Kesäsetelin sarjanumero. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
       "attachments_section": "Pakolliset liitteet",
       "employment_section": "Työsuhteen kuvaus",
       "add_employment": "Lisää uusi työsuhde",
