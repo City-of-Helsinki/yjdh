@@ -305,7 +305,7 @@ AUTH_ADFS = {
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
     "CLAIM_MAPPING": {"email": "email"},
-    "USERNAME_CLAIM": "unique_name",
+    "USERNAME_CLAIM": "name",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,
 }
