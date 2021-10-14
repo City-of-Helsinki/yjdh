@@ -1,7 +1,7 @@
 {
   "appName": "Kesäseteli",
   "header": {
-    "loginLabel": "Kirjaudu sisään",
+    "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:"
   },
@@ -20,7 +20,7 @@
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
-    "infoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta."
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   },
   "thankyouPage": {
     "thankyouMessageLabel": "Hakemus on lähetetty",
@@ -136,7 +136,9 @@
   },
   "footer": {
     "copyrightText": "Copyright teksti",
-    "allRightsReservedText": "Kaikki oikeudet pidätetään"
+    "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "accessibilityStatement": "Saavutettavuusseloste",
+    "information": "Tietoa palvelusta"
   },
   "languages": {
     "fi": "Suomeksi",
