@@ -30,6 +30,22 @@ def user_with_profile(oidc_profile, eauthorization_profile):
 
 
 @pytest.fixture
+def company2(eauthorization_profile2):
+    company = CompanyFactory(eauth_profile=eauthorization_profile2)
+    return company
+
+
+@pytest.fixture
+def user2_with_profile(oidc_profile2, eauthorization_profile2, company2):
+    user = UserFactory(oidc_profile=oidc_profile2)
+
+    eauthorization_profile2.oidc_profile = oidc_profile2
+    eauthorization_profile2.save()
+
+    return user
+
+
+@pytest.fixture
 def application(company, user_with_profile):
     return ApplicationFactory(
         status=ApplicationStatus.DRAFT, company=company, user=user_with_profile
@@ -94,6 +110,15 @@ def api_client(user_with_profile):
     user_with_profile.user_permissions.set(permissions)
     client = APIClient()
     client.force_authenticate(user_with_profile)
+    return client
+
+
+@pytest.fixture
+def api_client2(user2_with_profile):
+    permissions = Permission.objects.all()
+    user2_with_profile.user_permissions.set(permissions)
+    client = APIClient()
+    client.force_authenticate(user2_with_profile)
     return client
 
 
