@@ -112,7 +112,7 @@
         "employment_description": "Beskrivning av arbetsuppgifter",
         "employment_salary_paid": "Utbetalt lönebelopp (€)",
         "hired_without_voucher_assessment": "Skulle du ha anställt en ung sommarjobbare utan Sommarsedeln?",
-        "termsAndConditions": "ag har läst och godkänner <1>villkoren</1>."
+        "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>."
       },
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",

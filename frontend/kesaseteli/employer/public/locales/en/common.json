@@ -112,7 +112,7 @@
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have employed without the Summer Job Voucher?",
-        "termsAndConditions": "I have read and accept the <1>terms of use</1>"
+        "termsAndConditions": "I have read and accept the <a>terms of use</a>."
       },
       "helpers": {
         "date": "Use format D.M.YYYY",
