@@ -57,6 +57,7 @@
       "tooltip": "Kirjoita kaavakkeeseen kesätyöntekijän tiedot sekä Kesäsetelin sarjanumero. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
       "attachments_section": "Pakolliset liitteet",
       "employment_section": "Työsuhteen kuvaus",
+      "employment_description_placeholder": "Kerro tähän työtehtävistä, joita nuori teki.",
       "add_employment": "Lisää uusi työsuhde",
       "save_employment": "Tallenna tiedot",
       "remove_employment": "Poista tiedot"

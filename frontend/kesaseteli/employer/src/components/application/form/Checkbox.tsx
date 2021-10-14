@@ -45,7 +45,7 @@ const Checkbox: React.FC<Props> = ({
       onChange(value);
       setSelectedValue(value);
       if (required && !value) {
-        setError('required');
+        setError({ type: 'required' });
       } else if (required && value) {
         clearErrors();
       }

@@ -57,6 +57,7 @@
       "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
       "attachments_section": "Mandatory attachments",
       "employment_section": "Description of the employment",
+      "employment_description_placeholder": "Write here which working tasks the youth did.",
       "add_employment": "Add new employment",
       "save_employment": "Save employment",
       "remove_employment": "Delete the information"
@@ -106,7 +107,7 @@
         "employment_contract": "Employment contract",
         "payslip": "Pay Statement",
         "employment_start_date": "Employment start date",
-        "employment_end_date": "Employment start date",
+        "employment_end_date": "Employment end date",
         "employment_work_hours": "Hours worked",
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",

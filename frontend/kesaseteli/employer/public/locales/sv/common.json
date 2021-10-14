@@ -57,6 +57,7 @@
       "tooltip": "Skriv i formuläret sommararbetarens uppgifter samt Sommarsedelns serienummer. Du kan återvända för att redigera uppgifterna också i följande skede.",
       "attachments_section": "Obligatoriska bilagor",
       "employment_section": "Beskrivning av arbetsförhållandet",
+      "employment_description_placeholder": "Skriv här vilka arbetsuppgifter den unga gjorde.",
       "add_employment": "Lisää uusi työsuhde SWE",
       "save_employment": "Tallenna tiedot SWE",
       "remove_employment": "Ta bort uppgifterna"

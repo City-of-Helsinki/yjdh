@@ -46,6 +46,7 @@ const DateInput = ({
     defaultLabel,
     getValue,
     getError,
+    getErrorText,
     setError,
     clearErrors,
     setValue,
@@ -60,24 +61,29 @@ const DateInput = ({
   );
 
   const errorType = getError()?.type;
-  const errorText = React.useMemo((): string | undefined => {
-    if (!errorType) {
-      return undefined;
+  const errorMessage = getError()?.message;
+
+  React.useEffect(() => {
+    if (
+      errorType &&
+      ['pattern', 'required'].includes(errorType) &&
+      !errorMessage
+    ) {
+      setError({
+        type: errorType,
+        message: `${t(`common:application.form.errors.${errorType}`)}. ${t(
+          `common:application.form.helpers.date`
+        )}`,
+      });
     }
-    if (['pattern', 'required'].includes(errorType)) {
-      return `${t(`common:application.form.errors.${errorType}`)}. ${t(
-        `common:application.form.helpers.date`
-      )}`;
-    }
-    return t(`common:application.form.errors.${errorType}`);
-  }, [t, errorType]);
+  }, [errorType, errorMessage, setError, t]);
 
   // TODO: This can be removed after backend supports invalid values in draft save
   const handleChange = React.useCallback(
     (dateString: string) => {
       const uiDate = convertToUIDateFormat(dateString);
       if (isEmpty(uiDate)) {
-        setError('pattern');
+        setError({ type: 'pattern' });
         clearValue();
       } else {
         clearErrors();
@@ -106,7 +112,7 @@ const DateInput = ({
         // for some reason date picker causes error "Cannot read property 'createEvent' of null" in tests. It's not needed for tests so it's disabled for them.
         disableDatePicker={process.env.NODE_ENV === 'test'}
         onChange={handleChange}
-        errorText={errorText}
+        errorText={getErrorText()}
         label={defaultLabel}
       />
     </$GridCell>

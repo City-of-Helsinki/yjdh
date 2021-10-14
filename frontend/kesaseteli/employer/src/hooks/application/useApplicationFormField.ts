@@ -32,7 +32,7 @@ type ApplicationFormField<V extends Value> = {
   getError: () => FieldError | undefined;
   hasError: () => boolean;
   getErrorText: () => string | undefined;
-  setError: (type: ErrorOption['type']) => void;
+  setError: (error: ErrorOption) => void;
   clearValue: () => void;
   trigger: () => Promise<boolean>;
   clearErrors: () => void;
@@ -77,11 +77,15 @@ const useApplicationFormField = <V extends Value>(
   const hasError = React.useCallback(() => Boolean(getError()), [getError]);
 
   const setError = React.useCallback(
-    (type: ErrorOption['type']) => setErrorF(id, { type }),
+    (error: ErrorOption) => setErrorF(id, error),
     [id, setErrorF]
   );
 
   const getErrorText = React.useCallback((): string | undefined => {
+    const message = getError()?.message as string;
+    if (message) {
+      return message;
+    }
     const type = getError()?.type as string;
     return type ? t(`common:application.form.errors.${type}`) : undefined;
   }, [getError, t]);
