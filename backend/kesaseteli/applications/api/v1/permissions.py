@@ -63,3 +63,12 @@ class SummerVoucherPermission(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return has_application_permission(request, obj.application)
+
+
+class StaffPermission(BasePermission):
+    """
+    Permission check for summer vouchers.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_staff

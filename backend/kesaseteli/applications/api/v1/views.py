@@ -9,12 +9,15 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
+from shared.oidc.auth import EAuthRestAuthentication
 
+from applications.api.v1.auth import StaffAuthentication
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
     ApplicationPermission,
     get_user_company,
+    StaffPermission,
     SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
@@ -43,7 +46,11 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
             .select_related("company")
             .prefetch_related("summer_vouchers")
         )
+
         user = self.request.user
+        if user.is_anonymous:
+            return queryset.none()
+
         user_company = get_user_company(self.request)
 
         return queryset.filter(
@@ -76,7 +83,8 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
 class SummerVoucherViewSet(AuditLoggingModelViewSet):
     queryset = SummerVoucher.objects.all()
     serializer_class = SummerVoucherSerializer
-    permission_classes = [IsAuthenticated, SummerVoucherPermission]
+    authentication_classes = [EAuthRestAuthentication, StaffAuthentication]
+    permission_classes = [IsAuthenticated, SummerVoucherPermission | StaffPermission]
 
     def get_queryset(self):
         """
@@ -88,7 +96,13 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
             .select_related("application")
             .prefetch_related("attachments")
         )
+
         user = self.request.user
+        if user.is_staff:
+            return queryset
+        elif user.is_anonymous:
+            return queryset.none()
+
         user_company = get_user_company(self.request)
 
         return queryset.filter(
