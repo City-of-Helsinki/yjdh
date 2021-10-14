@@ -20,7 +20,7 @@ const Login: NextPage = () => {
   } = useRouter();
   const login = useLogin();
 
-  const getNotificationLabelKey = (): string => {
+  const notificationLabelKey = React.useMemo((): string => {
     if (logout) {
       return `common:loginPage.logoutMessageLabel`;
     }
@@ -31,11 +31,17 @@ const Login: NextPage = () => {
       return `common:loginPage.sessionExpiredLabel`;
     }
     return `common:loginPage.infoLabel`;
-  };
+  }, [logout, error, sessionExpired]);
 
-  const notificationLabelKey = getNotificationLabelKey();
-  const notificationContent =
-    !logout && !error && !sessionExpired && t(`common:loginPage.infoContent`);
+  const notificationContent = React.useMemo((): string | null => {
+    if (error || logout) {
+      return null;
+    }
+    if (sessionExpired) {
+      return t(`common:loginPage.sessionExpiredInfoContent`);
+    }
+    return t(`common:loginPage.infoContent`);
+  }, [logout, error, sessionExpired, t]);
   const notificationType = error || sessionExpired ? 'error' : 'info';
 
   return (

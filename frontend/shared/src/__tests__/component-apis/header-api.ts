@@ -25,7 +25,7 @@ const expectations = {
     await waitFor(() => {
       expect(
         screen.queryAllByRole('button', {
-          name: /(kirjaudu sisään)|(header.loginlabel)/i,
+          name: /(kirjaudu palveluun)|(header.loginlabel)/i,
         })
       ).toHaveLength(2); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     });
@@ -35,7 +35,7 @@ const actions = {
   clickLoginButton: (): void => {
     userEvent.click(
       screen.getAllByRole('button', {
-        name: /(kirjaudu sisään)|(header.loginlabel)/i,
+        name: /(kirjaudu palveluun)|(header.loginlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },

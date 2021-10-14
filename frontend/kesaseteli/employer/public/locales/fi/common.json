@@ -1,13 +1,13 @@
 {
   "appName": "Kesäseteli",
   "header": {
-    "loginLabel": "Kirjaudu sisään",
+    "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:"
   },
   "errorPage": {
-    "title": "Palvelussa on valitettavasti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "title": "Tapahtui odottamaton virhe",
+    "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
     "retry": "Lataa sivu uudelleen",
     "logout": "Kirjaudu ulos"
   },
@@ -20,17 +20,18 @@
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   },
   "thankyouPage": {
-    "thankyouMessageLabel": "Hakemus on lähetetty",
+    "thankyouMessageLabel": "Hakemus on lähetetty.",
     "thankyouMessageContent": "Jää odottamaan hakemuksen käsittelyä. Olemme sinuun yhteydessä, kun käsittely on valmis, jolloin saat laskutusluvan. Voit nyt sulkea tämän sivun.",
     "createNewApplication": "Tee uusi hakemus",
     "title": "Hakemus {{submitted_at}}"
   },
   "application": {
     "new": "Uusi hakemus",
-    "common_error": "Tapahtui tuntematon virhe",
+    "common_error": "Tapahtui odottamaton virhe",
     "loading": "Ladataan hakemusta...",
     "loadingFinished": "Hakemuksen lataus on valmis",
     "step1": {
@@ -75,7 +76,7 @@
     "form": {
       "selectionGroups": {
         "summer_voucher_exception_reason": {
-          "9th_grader": "9. luokkalainen",
+          "9th_grader": "9.-luokkalainen",
           "born_2004": "Syntynyt vuonna 2004"
         },
         "hired_without_voucher_assessment" : {
@@ -96,7 +97,7 @@
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
         "summer_voucher_exception_reason": "Luokka tai syntymävuosi",
-        "employee_home_city": "Kotipaikkakunta",
+        "employee_home_city": "Kotipaikka",
         "employee_postcode": "Postinumero",
         "employee_phone_number": "Puhelinnumero",
         "employment_postcode": "Työn suorituspaikan postinumero",
@@ -110,7 +111,6 @@
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
-        "attachments": "Liitetiedostot",
         "termsAndConditions": "Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne."
       },
       "helpers": {
@@ -135,7 +135,7 @@
     }
   },
   "footer": {
-    "copyrightText": "Copyright teksti",
+    "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
     "information": "Tietoa palvelusta"
@@ -153,7 +153,7 @@
       "text": " Yritä myöhemmin uudelleen"
     },
     "attachments": {
-      "title": "Tiedoston latauksessa tapahtui virhe",
+      "title": "Tiedoston littämisessä tapahtui virhe",
       "tooBig": "Tiedosto on liian iso",
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
