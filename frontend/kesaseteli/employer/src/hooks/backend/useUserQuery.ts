@@ -7,7 +7,7 @@ import User from 'shared/types/user';
 const useUserQuery = (): UseQueryResult<User, Error> => {
   const { isLoading: isLoadingLogout } = useLogoutQuery();
   const { axios, handleResponse } = useBackendAPI();
-  return useQuery<User, Error>(
+  return useQuery(
     'user',
     () => handleResponse<User>(axios.get(BackendEndpoint.USER)),
     { enabled: !isLoadingLogout }

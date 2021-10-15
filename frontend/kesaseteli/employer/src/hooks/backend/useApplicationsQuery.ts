@@ -8,7 +8,7 @@ const useApplicationsQuery = (
   enabled: boolean
 ): UseQueryResult<Application[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
-  return useQuery<Application[], Error>(
+  return useQuery(
     'applications',
     () =>
       handleResponse<Application[]>(axios.get(BackendEndpoint.APPLICATIONS)),

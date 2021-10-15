@@ -14,7 +14,7 @@ const useUploadAttachmentQuery = (): UseMutationResult<
   UploadAttachmentData
 > => {
   const { axios, handleResponse } = useBackendAPI();
-  return useMutation<Attachment, Error, UploadAttachmentData>(
+  return useMutation(
     ['attachment'],
     ({ summer_voucher, data }: UploadAttachmentData) =>
       !summer_voucher
