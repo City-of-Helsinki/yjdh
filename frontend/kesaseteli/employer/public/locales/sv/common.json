@@ -17,8 +17,8 @@
   },
   "loginPage": {
     "logoutMessageLabel": "Du har loggat ut",
-    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään SWE",
-    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään SWE",
+    "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
+    "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista SWE",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
@@ -27,19 +27,19 @@
     "thankyouMessageLabel": "Ansökan är skickad.",
     "thankyouMessageContent": "Vänta på att ansökan behandlas. Vi tar kontakt när ansökan har behandlats, då får du med samma rätten att fakturera.  Nu kan stänga sidan.",
     "createNewApplication": "Ny ansökan",
-    "title": "Hakemus {{submitted_at}} SWE"
+    "title": "Ansökan {{submitted_at}}"
   },
   "application": {
     "new": "Ny ansökan",
     "common_error": "Ett oförväntat fel skedde",
-    "loading": "Ladataan hakemusta... SWE",
-    "loadingFinished": "Hakemuksen lataus on valmis SWE",
+    "loading": "Ansökan laddas...",
+    "loadingFinished": "Nedladdningen av ansökan är färdig",
     "step1": {
       "name": "Arbetsgivare",
       "header": "1. Arbetsgivarens uppgifter",
       "tooltip": "Skriv in dina uppgifter i formuläret. Fortsätt med att klicka på fortsätt. Du kan återvända för att redigera uppgifterna också i följande skede.",
       "companyInfoGrid": {
-        "title": "Yrityksen tiedot SWE",
+        "title": "Foretag information",
         "header": {
           "name": "Företag",
           "business_id": "FO-nummer",
@@ -52,7 +52,7 @@
     },
     "step2": {
       "name": "Arbetsanställning",
-      "header": "2. Utredning om den unga personens anställningsrhållande",
+      "header": "2. Utredning om anställningshållande",
       "employment": "Anställning",
       "tooltip": "Skriv i formuläret sommararbetarens uppgifter samt Sommarsedelns serienummer. Du kan återvända för att redigera uppgifterna också i följande skede.",
       "attachments_section": "Obligatoriska bilagor",
@@ -112,11 +112,14 @@
         "employment_description": "Beskrivning av arbetsuppgifter",
         "employment_salary_paid": "Utbetalt lönebelopp (€)",
         "hired_without_voucher_assessment": "Skulle du ha anställt en ung sommarjobbare utan Sommarsedeln?",
-        "termsAndConditions": "SWE Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne"
+        "termsAndConditions": "ag har läst och godkänner <1>villkoren</1>."
       },
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",
-        "format": "Använd ett format"
+        "format": "Använd ett format",
+        "attachments": "SWE Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+        "employment_contract": "Bifoga här arbetskontraktet för sommarjobbaren du anställt med Sommarjobbsedeln.",
+        "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln."
       },
       "errors": {
         "required": "Tieto puuttuu tai on virheellinen SWE",
@@ -130,8 +133,7 @@
         "payslip": "Liitä ainakin yksi tiedosto palkkatodistukselle SWE"
       },
       "notification": {
-        "title": "Virheitä kenttien tiedoissa SWE",
-        "description": "Täytä puuttuvat tai virheelliset tiedot SWE"
+        "title": "Fyll i de uppgifter som fattas eller är felaktiga"
       }
     }
   },
@@ -150,8 +152,8 @@
   "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
   "error": {
     "generic": {
-      "label": "Tuntematon virhe SWE",
-      "text": " Yritä myöhemmin uudelleen SWE"
+      "label": "Ett okänt fel inträffade.",
+      "text": "Försök igen senare."
     },
     "attachments": {
       "title": "Tiedoston latauksessa tapahtui virhe SWE",
@@ -162,11 +164,11 @@
   "upload": {
     "isUploading": "Lähetetään... SWE",
     "errorTitle": "Lähetys epäonnistui SWE",
-    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen. SWE"
+    "errorMessage": "Något gick fel. Försök igen senare."
   },
   "delete": {
     "errorTitle": "Poistaminen epäonnistui SWE",
-    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen. SWE"
+    "errorMessage": "Något gick fel. Försök igen senare."
   },
   "applications": {
     "sections" : {
@@ -182,7 +184,7 @@
           }
         },
         "add": "Bifoga bilaga",
-        "remove": "Poista tiedosto SWE"
+        "remove": "Ta bort filen"
       }
     }
   }

@@ -7,7 +7,7 @@
   },
   "errorPage": {
     "title": "An unexpected error occured",
-    "message": "Something went wrong. To reload the page might help.",
+    "message": "Something went wrong. Refreshing the page might help.",
     "retry": "Reload the page again",
     "logout": "Log out"
   },
@@ -17,8 +17,8 @@
   },
   "loginPage": {
     "logoutMessageLabel": "You have logged out",
-    "errorLabel": "Unknown error. Sign in again",
-    "sessionExpiredLabel": "Session expired. Sign in again",
+    "errorLabel": "An unexpected error occurred. Please, sign in again. ",
+    "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires authentication",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
     "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
@@ -32,8 +32,8 @@
   "application": {
     "new": "Application",
     "common_error": "An unexpected error occurred: ",
-    "loading": "Loading application...",
-    "loadingFinished": "Loading application has finished",
+    "loading": "Loading the application...",
+    "loadingFinished": "Loading the application is complete",
     "step1": {
       "name": "Employer",
       "header": "1. Details of the employer",
@@ -52,12 +52,12 @@
     },
     "step2": {
       "name": "Employment",
-      "header": "2. Description of the young person’s employment",
+      "header": "2. Emoloyment reports",
       "employment": "Employment",
       "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
       "attachments_section": "Mandatory attachments",
       "employment_section": "Description of the employment",
-      "employment_description_placeholder": "Write here which working tasks the youth did.",
+      "employment_description_placeholder": "Describe the the work tasks of the employee.",
       "add_employment": "Add new employment",
       "save_employment": "Save employment",
       "remove_employment": "Delete the information"
@@ -87,15 +87,15 @@
         }
       },
       "inputs": {
-        "contact_person_name": "Name of contact person",
+        "contact_person_name": "Name of the contact person",
         "contact_person_email": "Email of the contact person",
         "street_address": "Company street address",
         "contact_person_phone_number": "Telephone number",
         "is_separate_invoicer": "The billing is handled by an other person",
-        "invoicer_name": "Name of contact person",
+        "invoicer_name": "Name of the contact person",
         "invoicer_email": "Email of the contact person",
         "invoicer_phone_number": "Telephone number",
-        "employee_name": "Name of the employed",
+        "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
         "summer_voucher_exception_reason": "School grade or birth year",
         "employee_home_city": "Domicile",
@@ -112,26 +112,28 @@
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have employed without the Summer Job Voucher?",
-        "termsAndConditions": "I have read and agreed to the <1>terms and conditions</1>"
+        "termsAndConditions": "I have read and accept the <1>terms of use</1>"
       },
       "helpers": {
         "date": "Use format D.M.YYYY",
-        "format": "Use format"
+        "format": "Use format",
+        "attachments": "EN Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+        "employment_contract": "Attach here the employment contract of the youth employed with the Summer Job Voucher.",
+        "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher."
       },
       "errors": {
-        "required": "input is missing or invalid",
-        "maxLength": "input is too long",
-        "pattern": "input is invalid",
-        "validate": "input is invalid",
-        "selectionGroups": "Choose an option",
-        "checkboxRequired": "Check mark is required",
-        "employmentsRequired": "Add at least one employment",
+        "required": "Information is missing or is incorrect",
+        "maxLength": "The information you entered is too long",
+        "pattern": "The information you entered is in an incorrect format",
+        "validate": "The information you entered is in an incorrect format",
+        "selectionGroups": "Select an option",
+        "checkboxRequired": "Selection is required",
+        "employmentsRequired": "Add at least one employment report",
         "employment_contract": "Add at least one file",
         "payslip": "Add at least one file"
       },
       "notification": {
-        "title": "There is errors in the form",
-        "description": "Please fill missing or invalid values"
+        "title": "Fill in the missing or incorrect information"
       }
     }
   },
@@ -150,7 +152,7 @@
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {
-      "label": "Error occurred",
+      "label": "An unexpectrd error occurred",
       "text": "Please try again later."
     },
     "attachments": {

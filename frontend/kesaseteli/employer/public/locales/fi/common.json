@@ -116,7 +116,10 @@
       },
       "helpers": {
         "date": "Käytä muotoa P.K.VVVV",
-        "format": "Käytä muotoa"
+        "format": "Käytä muotoa",
+        "attachments": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+        "employment_contract": "Liitä tähän Kesäsetelillä palkatun nuoren työsopimus.",
+        "payslip": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus."
       },
       "errors": {
         "required": "Tieto puuttuu tai on virheellinen",
@@ -130,8 +133,7 @@
         "payslip": "Liitä ainakin yksi tiedosto"
       },
       "notification": {
-        "title": "Virheitä kenttien tiedoissa",
-        "description": "Täytä puuttuvat tai virheelliset tiedot"
+        "title": "Täytä puuttuvat tai virheelliset tiedot"
       }
     }
   },
@@ -150,7 +152,7 @@
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {
-      "label": "Tuntematon virhe",
+      "label": "Tapahtui tuntematon virhe",
       "text": " Yritä myöhemmin uudelleen"
     },
     "attachments": {

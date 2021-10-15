@@ -122,6 +122,10 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     }
   }, [getError, hasError, setError, attachmentType]);
 
+  const message = `${t(
+    `common:application.form.helpers.${attachmentType}`
+  )} ${t(`common:application.form.helpers.attachments`)}`;
+
   return (
     <AttachmentsListBase
       buttonRef={ref}
@@ -136,6 +140,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
       onOpen={openAttachment}
       isUploading={isUploading}
       isRemoving={isRemoving}
+      message={message}
       errorMessage={
         hasError()
           ? `${t(`common:application.form.errors.${attachmentType}`)}`
