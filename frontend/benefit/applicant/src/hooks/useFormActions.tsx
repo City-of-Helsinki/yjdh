@@ -142,7 +142,7 @@ const useFormActions = (
         result?.employee?.first_name,
         result?.employee?.last_name
       );
-      const applicantName = fullName ? `(${fullName})` : 'ff';
+      const applicantName = fullName ? `(${fullName})` : '';
       const applicationNumber = result?.application_number ?? '';
 
       hdsToast({
