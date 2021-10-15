@@ -18,8 +18,6 @@ export const getMinEndDate = (
       return addMonths(subDays(parsedStartDate, 1), 1);
 
     case BENEFIT_TYPES.COMMISSION:
-      return parsedStartDate;
-
     default:
       return parsedStartDate;
   }
@@ -37,8 +35,6 @@ export const getMaxEndDate = (
       return addMonths(subDays(parsedStartDate, 1), 12);
 
     case BENEFIT_TYPES.COMMISSION:
-      return undefined;
-
     default:
       return undefined;
   }
