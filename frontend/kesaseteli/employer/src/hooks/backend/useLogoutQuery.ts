@@ -4,11 +4,11 @@ import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils'
 import { useRouter } from 'next/router';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 
-const useLogoutQuery = (): UseMutationResult<unknown, Error, void> => {
+const useLogoutQuery = (): UseMutationResult => {
   const { axios, handleResponse } = useBackendAPI();
   const router = useRouter();
   const queryClient = useQueryClient();
-  return useMutation<unknown, Error, void>(
+  return useMutation(
     'logout',
     () => handleResponse<unknown>(axios.post(BackendEndpoint.LOGOUT)),
     {

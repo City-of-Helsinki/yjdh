@@ -12,7 +12,7 @@ const useCreateApplicationQuery = (): UseMutationResult<
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const language = useLocale();
-  return useMutation<Application, Error, void>(
+  return useMutation(
     'createApplication',
     () =>
       handleResponse<Application>(

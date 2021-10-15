@@ -15,7 +15,7 @@ const useUpdateApplicationQuery = (
   const language = useLocale();
   const id = draftApplication?.id;
 
-  return useMutation<Application, Error, DraftApplication>(
+  return useMutation(
     ['applications', id],
     (application: DraftApplication) =>
       !id

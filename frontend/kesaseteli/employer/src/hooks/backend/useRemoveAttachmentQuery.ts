@@ -14,7 +14,7 @@ const useRemoveAttachmentQuery = (): UseMutationResult<
   RemoveAttachmentData
 > => {
   const { axios, handleResponse } = useBackendAPI();
-  return useMutation<RemoveAttachmentData, Error, RemoveAttachmentData>(
+  return useMutation(
     ['attachment'],
     ({ id, summer_voucher }: RemoveAttachmentData) =>
       !summer_voucher || !id
