@@ -8,12 +8,13 @@ import Company from 'shared/types/company';
 type Props = { field: keyof Company };
 
 const CompanyInfoCell: React.FC<Props> = ({ field }: Props) => {
-  const { application, isError, isLoading } = useApplicationApi();
+  const { application, isLoading } = useApplicationApi();
   return (
     <$CompanyInfoCell aria-labelledby={field} role="gridcell">
-      {isLoading && !isServerSide() && <LoadingSkeleton width="90%" />}
-      {(!isLoading && !isError && <>{application?.company?.[field]}</>) ||
-        ''}
+      {isLoading && !application && !isServerSide() && (
+        <LoadingSkeleton width="90%" />
+      )}
+      {(application && <>{application?.company?.[field]}</>) || ''}
     </$CompanyInfoCell>
   );
 };

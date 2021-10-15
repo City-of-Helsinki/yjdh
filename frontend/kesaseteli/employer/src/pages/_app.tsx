@@ -23,16 +23,16 @@ import { getBackendDomain } from '../backend-api/backend-api';
 
 // Sentry logger
 setLogger({
-  log: message => {
-    Sentry.captureMessage(message)
+  log: (message) => {
+    Sentry.captureMessage(message);
   },
-  warn: message => {
-    Sentry.captureMessage(message)
+  warn: (message) => {
+    Sentry.captureMessage(message);
   },
-  error: error => {
-    Sentry.captureException(error)
+  error: (error) => {
+    Sentry.captureException(error);
   },
-})
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,7 +42,8 @@ const queryClient = new QueryClient({
         failureCount < 3 &&
         !/40[134]/.test((error as Error).message),
       staleTime: 30000,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: process.env.NODE_ENV === 'production',
+      notifyOnChangeProps: 'tracked',
     },
   },
 });

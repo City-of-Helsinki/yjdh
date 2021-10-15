@@ -13,9 +13,8 @@ import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const EmployerIndex: NextPage = () => {
-  const { isSyncing, isMutating } = useIsSyncingToBackend();
-  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
-  const isLoading = isSyncing || isLoadingLogout;
+  const { isMutating } = useIsSyncingToBackend();
+  const { mutate: logout } = useLogoutQuery();
 
   const { data: applications, isError: loadApplicationsError } =
     useApplicationsQuery(!isMutating);
@@ -40,10 +39,7 @@ const EmployerIndex: NextPage = () => {
   };
 
   const { t } = useTranslation();
-  if (isSyncing) {
-    return <PageLoadingSpinner />;
-  }
-  if (isError && !isLoading) {
+  if (isError) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}
@@ -53,7 +49,6 @@ const EmployerIndex: NextPage = () => {
       />
     );
   }
-
   return <PageLoadingSpinner />;
 };
 
