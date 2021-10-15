@@ -23,4 +23,5 @@ filetype
 elasticsearch
 Jinja2
 pdfkit
+factory-boy # TODO: added temporarily so that MOCK_FLAG can be set on dev env, remove when authentication done
 -e file:../shared
