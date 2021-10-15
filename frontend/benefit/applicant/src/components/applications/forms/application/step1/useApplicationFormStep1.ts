@@ -1,5 +1,6 @@
 import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
+import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
@@ -43,9 +44,13 @@ const useApplicationFormStep1 = (
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
+  // TODO: replace the hardcoded company ID when auth is implemented
+  const { data } = useCompanyQuery('0877830-0');
+  const organizationType = data?.organization_type;
+
   const formik = useFormik({
     initialValues: application || {},
-    validationSchema: getValidationSchema(t),
+    validationSchema: getValidationSchema(organizationType, t),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,

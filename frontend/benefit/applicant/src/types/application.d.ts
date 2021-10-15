@@ -188,6 +188,7 @@ export type ApplicationData = {
   company_contact_person_phone_number?: string;
   company_contact_person_email?: string;
   association_has_business_activities?: boolean;
+  association_immediate_manager_check?: boolean;
   applicant_language?: SUPPORTED_LANGUAGES;
   co_operation_negotiations?: boolean;
   co_operation_negotiations_description?: string;
@@ -242,6 +243,9 @@ export interface Step1 {
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]?: string;
   [APPLICATION_FIELDS_STEP1_KEYS.ORGANIZATION_TYPE]?: ORGANIZATION_TYPES | null;
   [APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES]?:
+    | boolean
+    | null;
+  [APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]?:
     | boolean
     | null;
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]?: string;

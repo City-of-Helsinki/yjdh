@@ -20,7 +20,10 @@ import * as Yup from 'yup';
 
 import { getValidationSchema as getDeminimisValidationSchema } from '../../deMinimisAid/utils/validation';
 
-export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step1> =>
+export const getValidationSchema = (
+  organizationType: string | undefined,
+  t: TFunction
+): Yup.SchemaOf<Step1> =>
   Yup.object().shape({
     [APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS]: Yup.boolean(),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_DEPARTMENT]: Yup.string()
@@ -58,16 +61,35 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step1> =>
       )
       .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX))
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
-    [APPLICATION_FIELDS_STEP1_KEYS.ORGANIZATION_TYPE]: Yup.mixed().oneOf(
-      [null, ...Object.values(ORGANIZATION_TYPES)],
-      t(VALIDATION_MESSAGE_KEYS.INVALID)
-    ),
     [APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES]:
       Yup.boolean()
         .nullable()
-        .when(APPLICATION_FIELDS_STEP1_KEYS.ORGANIZATION_TYPE, {
-          is: ORGANIZATION_TYPES.ASSOCIATION,
-          then: Yup.boolean().required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+        .test({
+          message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+          test: (val) => {
+            if (
+              organizationType?.toLowerCase() ===
+              ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
+            )
+              return typeof val === 'boolean';
+
+            return true;
+          },
+        }),
+    [APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK]:
+      Yup.boolean()
+        .nullable()
+        .test({
+          message: t(VALIDATION_MESSAGE_KEYS.REQUIRED),
+          test: (val) => {
+            if (
+              organizationType?.toLowerCase() ===
+              ORGANIZATION_TYPES.ASSOCIATION.toLowerCase()
+            )
+              return val === true;
+
+            return true;
+          },
         }),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]:
       Yup.string()
