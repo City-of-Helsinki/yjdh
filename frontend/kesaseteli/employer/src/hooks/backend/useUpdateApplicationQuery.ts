@@ -16,7 +16,7 @@ const useUpdateApplicationQuery = (
   const id = draftApplication?.id;
 
   return useMutation(
-    ['applications', id],
+    `${BackendEndpoint.APPLICATIONS}${String(id)}/`,
     (application: DraftApplication) =>
       !id
         ? Promise.reject(new Error('Missing id'))
@@ -29,7 +29,9 @@ const useUpdateApplicationQuery = (
     {
       onSuccess: (application) => {
         onSuccess(application);
-        void queryClient.invalidateQueries(['applications', id]);
+        void queryClient.invalidateQueries(
+          `${BackendEndpoint.APPLICATIONS}${String(id)}/`
+        );
       },
     }
   );

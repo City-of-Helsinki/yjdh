@@ -8,16 +8,14 @@ import Header from 'kesaseteli/employer/components/header/Header';
 import React from 'react';
 import headerApi from 'shared/__tests__/component-apis/header-api';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';
-import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 
 describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => {
   it('Redirects to backend when clicked login button', async () => {
-    const queryClient = createReactQueryTestClient();
     expectUnauthorizedReply();
     const spyRouterPush = jest.fn();
-    renderComponent(<Header />, queryClient, { push: spyRouterPush });
+    renderComponent(<Header />, { push: spyRouterPush });
     await headerApi.expectations.userIsLoggedOut();
     headerApi.actions.clickLoginButton();
     await waitFor(() =>
@@ -28,12 +26,12 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
   });
 
   it('Redirects to logout and clear userdata when clicked logout button', async () => {
-    const queryClient = createReactQueryTestClient();
     const user = fakeUser();
     expectAuthorizedReply(user);
-
     const spyRouterPush = jest.fn();
-    renderComponent(<Header />, queryClient, { push: spyRouterPush });
+    const { queryClient } = renderComponent(<Header />, {
+      push: spyRouterPush,
+    });
     await headerApi.expectations.userIsLoggedIn(user);
     await headerApi.actions.clickLogoutButton(user);
     await waitFor(() =>
@@ -43,10 +41,9 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
   });
 
   it('can change supported language', async () => {
-    const queryClient = createReactQueryTestClient();
     expectUnauthorizedReply();
     const spyRouterPush = jest.fn();
-    renderComponent(<Header />, queryClient, { push: spyRouterPush });
+    renderComponent(<Header />, { push: spyRouterPush });
     await headerApi.expectations.userIsLoggedOut();
     for (const lang of SUPPORTED_LANGUAGES) {
       headerApi.actions.changeLanguage('fi', lang);
