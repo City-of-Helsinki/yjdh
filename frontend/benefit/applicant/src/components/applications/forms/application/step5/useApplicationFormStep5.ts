@@ -8,8 +8,8 @@ import {
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import {
-  getApplicantFullName,
   getApplicationStepString,
+  getFullName,
 } from 'benefit/applicant/utils/common';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
@@ -52,7 +52,7 @@ const useApplicationFormStep5 = (
       application.status === APPLICATION_STATUSES.RECEIVED
     ) {
       setSubmittedApplication({
-        applicantName: getApplicantFullName(
+        applicantName: getFullName(
           application.employee?.firstName,
           application.employee?.lastName
         ),
