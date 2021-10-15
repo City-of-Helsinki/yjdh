@@ -22,11 +22,15 @@ const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const locale = useLocale();
-  const { application, applicationId } = useApplicationApi();
+  const { application, applicationId, isLoading } = useApplicationApi();
 
   const createNewApplicationClick = React.useCallback((): void => {
     void router.push(`${locale}/`);
   }, [router, locale]);
+
+  if (isLoading) {
+    return <PageLoadingSpinner />;
+  }
 
   if (!application) {
     void router.push(`${locale}/`);

@@ -22,10 +22,12 @@ const useCreateApplicationQuery = (): UseMutationResult<
       onSuccess: (newApplication) => {
         if (newApplication?.id) {
           queryClient.setQueryData(
-            ['applications', newApplication.id],
+            `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`,
             newApplication
           );
-          void queryClient.invalidateQueries('applications', { exact: true });
+          void queryClient.invalidateQueries(BackendEndpoint.APPLICATIONS, {
+            exact: true,
+          });
         } else {
           throw new Error('Missing id');
         }

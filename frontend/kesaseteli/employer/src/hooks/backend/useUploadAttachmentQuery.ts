@@ -15,7 +15,7 @@ const useUploadAttachmentQuery = (): UseMutationResult<
 > => {
   const { axios, handleResponse } = useBackendAPI();
   return useMutation(
-    ['attachment'],
+    BackendEndpoint.ATTACHMENTS,
     ({ summer_voucher, data }: UploadAttachmentData) =>
       !summer_voucher
         ? Promise.reject(new Error('Missing summer_voucher id'))

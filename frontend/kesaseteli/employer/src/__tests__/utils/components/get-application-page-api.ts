@@ -2,7 +2,6 @@ import {
   expectToGetApplicationFromBackend,
   expectToSaveApplication,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import { QueryClient } from 'react-query';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
@@ -87,7 +86,6 @@ const clickPreviousButton = async (): Promise<void> => {
 };
 
 const getApplicationPageApi = (
-  queryClient: QueryClient,
   initialApplication: Application
 ): ApplicationPageApi => {
   const application = { ...initialApplication };
