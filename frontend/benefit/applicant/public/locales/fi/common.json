@@ -340,6 +340,10 @@
     "applicationSubmitted": {
       "label": "Hakemus lähetty onnistuneesti",
       "message": "Helsinki-lisä hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen kun hakemus on käsitelty."
+    },
+    "applicationSaved": {
+      "label": "Hakemus tallennettu",
+      "message": "Helsinki-lisä hakemus {{applicantName}} on tallennettu."
     }
   },
   "languages": {

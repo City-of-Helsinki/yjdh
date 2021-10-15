@@ -8,7 +8,7 @@ import snakecaseKeys from 'snakecase-keys';
 
 import DeMinimisContext from '../context/DeMinimisContext';
 import { Application, ApplicationData } from '../types/application';
-import { getApplicationStepString } from '../utils/common';
+import { getApplicationStepString,getFullName } from '../utils/common';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
@@ -137,6 +137,22 @@ const useFormActions = (
       const result = applicationId
         ? await updateApplication(data)
         : await createApplication(data);
+
+      const {
+        employee: { first_name, last_name },
+      } = result;
+
+      const fullName = getFullName(first_name, last_name);
+      const applicantName = fullName ? `(${fullName})` : '';
+
+      hdsToast({
+        autoDismissTime: 5000,
+        type: 'success',
+        labelText: t('common:notifications.applicationSaved.label'),
+        text: t('common:notifications.applicationSaved.message', {
+          applicantName,
+        }),
+      });
 
       await router.push('/');
       return result;
