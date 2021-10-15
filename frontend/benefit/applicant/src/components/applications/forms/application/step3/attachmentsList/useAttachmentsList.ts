@@ -3,8 +3,9 @@ import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmen
 import { useTranslation } from 'benefit/applicant/i18n';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import { useEffect } from 'react';
+import React from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import Attachment from 'shared/types/attachment';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -15,6 +16,7 @@ type ExtendedComponentProps = {
   isUploading: boolean;
   handleRemove: (attachmentId: string) => void;
   handleUpload: (attachment: FormData) => void;
+  handleOpenFile: (attachment: Attachment) => void;
 };
 
 const useAttachmentsList = (): ExtendedComponentProps => {
@@ -37,7 +39,7 @@ const useAttachmentsList = (): ExtendedComponentProps => {
     isError: isUploadingError,
   } = useUploadAttachmentQuery();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isRemovingError || isUploadingError) {
       showErrorToast(
         t(`common:remove.errorTitle`),
@@ -45,6 +47,13 @@ const useAttachmentsList = (): ExtendedComponentProps => {
       );
     }
   }, [isRemovingError, isUploadingError, t]);
+
+  const handleOpenFile = React.useCallback(
+    (file: Attachment) =>
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      window.open(file.attachmentFile, '_blank')?.focus(),
+    []
+  );
 
   const handleRemove = (attachmentId: string): void => {
     removeAttachment({
@@ -69,6 +78,7 @@ const useAttachmentsList = (): ExtendedComponentProps => {
     isUploading,
     handleRemove,
     handleUpload,
+    handleOpenFile,
   };
 };
 

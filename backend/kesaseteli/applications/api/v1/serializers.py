@@ -76,8 +76,9 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "id",
             "summer_voucher",
             "attachment_file",
-            "content_type",
             "attachment_type",
+            "attachment_file_name",
+            "content_type",
             "created_at",
         ]
         read_only_fields = ["created_at"]
@@ -88,6 +89,14 @@ class AttachmentSerializer(serializers.ModelSerializer):
         ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         ApplicationStatus.DRAFT,
     )
+
+    attachment_file_name = serializers.SerializerMethodField(
+        "get_attachment_file_name",
+        help_text="Name of the uploaded file",
+    )
+
+    def get_attachment_file_name(self, obj):
+        return getattr(obj.attachment_file, "name", "")
 
     def validate(self, data):
         """
@@ -385,10 +394,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                         )
                     }
                 )
-        """
-        uncomment this after attachments are implemented in ui
-        """
-        # self._validate_attachments()
+        self._validate_attachments()
 
     def _validate_attachments(self):
         """

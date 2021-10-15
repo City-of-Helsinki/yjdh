@@ -9,7 +9,7 @@ type ExtendedComponentProps = {
 
 const useUploadAttachment = (
   attachmentType: string,
-  allowedFileTypes: string[],
+  allowedFileTypes: readonly string[],
   maxSize: number,
   errorTitle: string,
   errorFileSizeText: string,

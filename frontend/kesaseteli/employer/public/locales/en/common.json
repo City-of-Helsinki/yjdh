@@ -20,11 +20,11 @@
     "errorLabel": "Unknown error. Sign in again",
     "sessionExpiredLabel": "Session expired. Sign in again",
     "infoLabel": "Using the service requires authentication",
-    "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+    "infoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below."
   },
   "thankyouPage": {
     "thankyouMessageLabel": "The application has been submitted",
-    "thankyouMessageContent": "ENG Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
+    "thankyouMessageContent": "Please wait for your application to be handled. We will be in touch with you once the handling process is finished, and you will then be permited the billing license. You may now close this page. ",
     "createNewApplication": "Create new application",
     "title": "Application {{submitted_at}}"
   },
@@ -36,7 +36,7 @@
     "step1": {
       "name": "Employer",
       "header": "1. Employer information",
-      "tooltip": "EN Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "tooltip": "Write your information in the form. Click on to continue to move forward. You can return to the data also at the next stage.",
       "companyInfoGrid": {
         "title": "Company information",
         "header": {
@@ -53,7 +53,7 @@
       "name": "Employees",
       "header": "2. Employments",
       "employment": "Employment",
-      "tooltip": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
       "attachments_section": "Mandatory attachments",
       "employment_section": "Employment description",
       "add_employment": "Add new employment",
@@ -97,12 +97,15 @@
         "employment_postcode": "Workplace's postcode",
         "summer_voucher_serial_number": "Summer voucher serial number",
         "employee_school": "School",
+        "employment_contract": "Employment contract",
+        "payslip": "Payslip",
         "employment_start_date": "Employment start date",
         "employment_end_date": "Employment start date",
         "employment_work_hours": "Work hours",
         "employment_description": "Employment description",
         "employment_salary_paid": "Salary paid (€)",
         "hired_without_voucher_assessment": "Would you have hired without summer voucher?",
+        "attachments": "Attachments",
         "termsAndConditions": "I have read and agreed to the <1>terms and conditions</1>"
       },
       "helpers": {
@@ -116,7 +119,9 @@
         "validate": "input is invalid",
         "selectionGroups": "Choose an option",
         "checkboxRequired": "Check mark is required",
-        "employmentsRequired": "Add at least one employment"
+        "employmentsRequired": "Add at least one employment",
+        "employment_contract": "Add at least one file",
+        "payslip": "Add at least one file"
       },
       "notification": {
         "title": "There is errors in the form",
@@ -139,5 +144,43 @@
     "en": "In english"
   },
   "menuToggleAriaLabel": "Menu",
-  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/"
+  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "error": {
+    "generic": {
+      "label": "Error occurred",
+      "text": "Please try again later."
+    },
+    "attachments": {
+      "title": "Error occurred",
+      "tooBig": "The attachemnt size is too big.",
+      "fileType": "The attachment file type is not allowed."
+    }
+  },
+  "upload": {
+    "isUploading": "Uploading...",
+    "errorTitle": "Uploading failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "delete": {
+    "errorTitle": "Deleting failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "applications": {
+    "sections" : {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Employment contract",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Payslip",
+            "message": ""
+          }
+        },
+        "add": "Add file",
+        "remove": "Remove file"
+      }
+    }
+  }
 }

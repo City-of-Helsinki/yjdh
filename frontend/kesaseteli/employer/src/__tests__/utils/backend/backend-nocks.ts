@@ -5,6 +5,7 @@ import {
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import type Application from 'shared/types/application';
 import type DraftApplication from 'shared/types/draft-application';
 
@@ -93,13 +94,15 @@ export const expectToCreateApplicationToBackend = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .post(`${BackendEndpoint.APPLICATIONS}`, {})
+    .post(`${BackendEndpoint.APPLICATIONS}`, {
+      language: applicationToCreate.language,
+    })
     .reply(200, applicationToCreate, { 'Access-Control-Allow-Origin': '*' });
 };
 export const expectToCreateApplicationErrorFromBackend = (): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .post(`${BackendEndpoint.APPLICATIONS}`, {})
+    .post(`${BackendEndpoint.APPLICATIONS}`, { language: DEFAULT_LANGUAGE })
     .replyWithError(
       'This is a create application test error. Please ignore this error message.'
     );

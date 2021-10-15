@@ -10,6 +10,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
 import isAfter from 'date-fns/isAfter';
+import isWithinInterval from 'date-fns/isWithinInterval';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
@@ -23,7 +24,7 @@ import {
 } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 
-import { getMinEndDate } from './utils/dates';
+import { getMaxEndDate,getMinEndDate } from './utils/dates';
 import { getValidationSchema } from './utils/validation';
 
 type Step2Fields = Record<
@@ -41,6 +42,7 @@ type UseApplicationFormStep2Props = {
   fields: Step2Fields;
   translationsBase: string;
   minEndDate: Date;
+  maxEndDate: Date | undefined;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleBack: () => void;
   handleSave: () => void;
@@ -58,6 +60,7 @@ type UseApplicationFormStep2Props = {
 
 const useApplicationFormStep2 = (
   application: Application
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): UseApplicationFormStep2Props => {
   const { t, i18n } = useTranslation();
   const translationsBase = 'common:applications.sections.employee';
@@ -215,8 +218,13 @@ const useApplicationFormStep2 = (
 
   const minEndDate = getMinEndDate(values.startDate, values.benefitType);
   const minEndDateFormatted = convertToUIDateFormat(minEndDate);
+  const maxEndDate = getMaxEndDate(values.startDate, values.benefitType);
   const endDate = parseDate(values.endDate);
-  const isEndDateEligible = endDate && isAfter(endDate, minEndDate);
+  const isEndDateEligible =
+    endDate &&
+    (maxEndDate
+      ? isWithinInterval(endDate, { start: minEndDate, end: maxEndDate })
+      : isAfter(endDate, minEndDate));
 
   const setEndDate = React.useCallback(() => {
     if (!values.startDate && values.endDate) {
@@ -261,6 +269,7 @@ const useApplicationFormStep2 = (
     formik,
     subsidyOptions,
     minEndDate,
+    maxEndDate,
     clearBenefitValues,
     clearCommissionValues,
     clearContractValues,

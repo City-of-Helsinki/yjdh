@@ -4,7 +4,7 @@ from applications.api.v1.serializers import (
     ApplicationSerializer,
     SummerVoucherSerializer,
 )
-from applications.enums import ApplicationStatus  # , AttachmentType
+from applications.enums import ApplicationStatus, AttachmentType
 from applications.tests.test_applications_api import get_detail_url
 
 
@@ -130,53 +130,52 @@ def test_application_status_change_with_missing_summer_voucher_data(
     application.refresh_from_db()
     assert application.status == from_status
 
-    # Commented until attachments are implemented on frontend
-    #
-    # @pytest.mark.django_db
-    # @pytest.mark.parametrize(
-    #     "missing_attachment",
-    #     AttachmentType.values + ["all"],
-    # )
-    # def test_application_status_change_with_missing_attachments(
-    #     api_client,
-    #     application,
-    #     summer_voucher,
-    #     employment_contract_attachment,
-    #     payslip_attachment,
-    #     missing_attachment,
-    # ):
-    #     from_status = ApplicationStatus.DRAFT
-    #     to_status = ApplicationStatus.SUBMITTED
-    #
-    #     application.status = from_status
-    #     application.save()
-    #
-    #     if missing_attachment == "all":
-    #         for attachment in summer_voucher.attachments.all():
-    #             attachment.attachment_file.delete(save=False)
-    #             attachment.delete()
-    #     else:
-    #         attachment = summer_voucher.attachments.get(attachment_type=missing_attachment)
-    #         attachment.attachment_file.delete(save=False)
-    #         attachment.delete()
-    #
-    #     data = ApplicationSerializer(application).data
-    #     data["status"] = to_status
-    #
-    #     response = api_client.put(
-    #         get_detail_url(application),
-    #         data,
-    #     )
-    #
-    #     assert response.status_code == 400
-    #
-    #     if missing_attachment == "all":
-    #         assert "Attachments missing from summer voucher" in str(response.data)
-    #     else:
-    #         assert missing_attachment in str(response.data)
-    #
-    #     application.refresh_from_db()
-    #     assert application.status == from_status
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "missing_attachment",
+    AttachmentType.values + ["all"],
+)
+def test_application_status_change_with_missing_attachments(
+    api_client,
+    application,
+    summer_voucher,
+    employment_contract_attachment,
+    payslip_attachment,
+    missing_attachment,
+):
+    from_status = ApplicationStatus.DRAFT
+    to_status = ApplicationStatus.SUBMITTED
+
+    application.status = from_status
+    application.save()
+
+    if missing_attachment == "all":
+        for attachment in summer_voucher.attachments.all():
+            attachment.attachment_file.delete(save=False)
+            attachment.delete()
+    else:
+        attachment = summer_voucher.attachments.get(attachment_type=missing_attachment)
+        attachment.attachment_file.delete(save=False)
+        attachment.delete()
+
+    data = ApplicationSerializer(application).data
+    data["status"] = to_status
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+
+    assert response.status_code == 400
+
+    if missing_attachment == "all":
+        assert "Attachments missing from summer voucher" in str(response.data)
+    else:
+        assert missing_attachment in str(response.data)
+
+    application.refresh_from_db()
+    assert application.status == from_status
 
 
 @pytest.mark.django_db

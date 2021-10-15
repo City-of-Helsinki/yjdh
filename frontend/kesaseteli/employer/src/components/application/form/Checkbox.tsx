@@ -34,7 +34,7 @@ const Checkbox: React.FC<Props> = ({
   const { t } = useTranslation();
   const { register } = useFormContext<Application>();
 
-  const { getError, defaultLabel, setError, clearErrors } =
+  const { hasError, defaultLabel, setError, clearErrors } =
     useApplicationFormField<boolean>(id);
 
   const [selectedValue, setSelectedValue] = React.useState(initialValue);
@@ -69,7 +69,7 @@ const Checkbox: React.FC<Props> = ({
         name={id}
         required={required}
         errorText={
-          getError() && required
+          hasError() && required
             ? `${t(`common:application.form.errors.checkboxRequired`)}`
             : undefined
         }
