@@ -8,6 +8,10 @@ export const $CompanyInfoGrid = styled.div`
   padding-bottom: ${(props) => props.theme.spacing.s};
 `;
 
-export const $CompanyInfoHeader = styled.div``;
+export const $CompanyInfoHeader = styled.div`
+  font-weight: 500;
+`;
 
-export const $CompanyInfoCell = styled.div``;
+export const $CompanyInfoCell = styled.div`
+  font-size: 18px;
+`;

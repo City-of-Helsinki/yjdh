@@ -1,6 +1,6 @@
+import { $EmploymentFieldSummary } from 'kesaseteli/employer/components/application/summary/EmploymentFieldSummary.sc';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import React from 'react';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Employment from 'shared/types/employment';
 
 type Props = {
@@ -18,9 +18,9 @@ const EmploymentFieldSummary: React.FC<Props> = ({
     `summer_vouchers.${index}.${fieldName as keyof Employment}`
   );
   return (
-    <$GridCell as="pre" data-testid={`${fieldName}_${index}`}>
+    <$EmploymentFieldSummary data-testid={`${fieldName}_${index}`}>
       {children ?? getSummaryText()}
-    </$GridCell>
+    </$EmploymentFieldSummary>
   );
 };
 export default EmploymentFieldSummary;
