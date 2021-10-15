@@ -35,11 +35,13 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
           <AttachmentsList
             attachments={attachments}
             attachmentType={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+            required
           />
           {apprenticeshipProgram && (
             <AttachmentsList
               attachments={attachments}
               attachmentType={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+              required
             />
           )}
           {paySubsidyGranted && (
@@ -47,6 +49,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
               attachments={attachments}
               attachmentType={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
               showMessage={showSubsidyMessage}
+              required
             />
           )}
         </>
@@ -55,6 +58,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
         <AttachmentsList
           attachments={attachments}
           attachmentType={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
+          required
         />
       )}
       <AttachmentsList

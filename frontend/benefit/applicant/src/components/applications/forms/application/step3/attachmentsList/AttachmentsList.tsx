@@ -10,12 +10,14 @@ export interface AttachmentsListProps {
   attachmentType: ATTACHMENT_TYPES;
   showMessage?: boolean;
   attachments?: Attachment[];
+  required?: boolean;
 }
 
 const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachmentType,
   showMessage,
   attachments,
+  required,
 }) => {
   const {
     t,
@@ -42,6 +44,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
       onOpen={handleOpenFile}
       isUploading={isUploading}
       isRemoving={isRemoving}
+      required={required}
     />
   );
 };
