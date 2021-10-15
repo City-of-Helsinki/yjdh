@@ -12,7 +12,7 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import { getApplicantFullName } from 'benefit/applicant/utils/common';
+import { getFullName } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useContext, useEffect, useState } from 'react';
@@ -68,7 +68,7 @@ const useApplicationFormStep6 = (
       application.status === APPLICATION_STATUSES.RECEIVED
     ) {
       setSubmittedApplication({
-        applicantName: getApplicantFullName(
+        applicantName: getFullName(
           application.employee?.firstName,
           application.employee?.lastName
         ),
