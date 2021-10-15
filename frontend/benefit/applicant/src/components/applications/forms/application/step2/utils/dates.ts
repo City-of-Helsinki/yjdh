@@ -2,34 +2,40 @@ import {
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
 } from 'benefit/applicant/constants';
-import add from 'date-fns/add';
-import isValid from 'date-fns/isValid';
+import addMonths from 'date-fns/addMonths';
+import subDays from 'date-fns/subDays';
 import { parseDate } from 'shared/utils/date.utils';
 
 export const getMinEndDate = (
   startDate: string | undefined,
   benefitType: BENEFIT_TYPES | undefined | ''
 ): Date => {
-  let months = 0;
-  let days = 0;
+  const parsedStartDate = parseDate(startDate) ?? APPLICATION_START_DATE;
 
-  if (benefitType === BENEFIT_TYPES.EMPLOYMENT) {
-    months = 1;
-    days = -1;
-  } else if (benefitType === BENEFIT_TYPES.SALARY) {
-    months = 12;
-    days = -1;
-  }
-  const parsedStartDate = parseDate(startDate);
-  if (!parsedStartDate || !isValid(parsedStartDate)) {
-    return add(APPLICATION_START_DATE, {
-      months,
-      days,
-    });
-  }
+  switch (benefitType) {
+    case BENEFIT_TYPES.EMPLOYMENT:
+    case BENEFIT_TYPES.SALARY:
+      return addMonths(subDays(parsedStartDate, 1), 1);
 
-  return add(parsedStartDate, {
-    months,
-    days,
-  });
+    case BENEFIT_TYPES.COMMISSION:
+    default:
+      return parsedStartDate;
+  }
+};
+
+export const getMaxEndDate = (
+  startDate: string | undefined,
+  benefitType: BENEFIT_TYPES | undefined | ''
+): Date | undefined => {
+  const parsedStartDate = parseDate(startDate) ?? APPLICATION_START_DATE;
+
+  switch (benefitType) {
+    case BENEFIT_TYPES.EMPLOYMENT:
+    case BENEFIT_TYPES.SALARY:
+      return addMonths(subDays(parsedStartDate, 1), 12);
+
+    case BENEFIT_TYPES.COMMISSION:
+    default:
+      return undefined;
+  }
 };
