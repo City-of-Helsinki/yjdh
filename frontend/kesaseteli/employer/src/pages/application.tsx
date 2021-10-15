@@ -24,13 +24,11 @@ const ApplicationPage: NextPage = () => {
   const {
     applicationId,
     application,
-    isLoading: isLoadingApplication,
     loadingError: loadingApplicationError,
   } = useApplicationApi();
 
-  const { mutate: logout, isLoading: isLoadingLogout } = useLogoutQuery();
+  const { mutate: logout } = useLogoutQuery();
 
-  const isLoading = isLoadingApplication || isLoadingLogout;
   const isError = loadingApplicationError;
 
   const refreshPage = (): void => {
@@ -46,8 +44,14 @@ const ApplicationPage: NextPage = () => {
     return <PageLoadingSpinner />;
   }
 
-  if (isLoading) {
-    return <PageLoadingSpinner />;
+  if (application) {
+    return (
+      <ApplicationWizard initialStep={initialStep}>
+        <Step1Employer />
+        <Step2Employments />
+        <Step3Summary />
+      </ApplicationWizard>
+    );
   }
   if (isError) {
     return (
@@ -59,14 +63,7 @@ const ApplicationPage: NextPage = () => {
       />
     );
   }
-
-  return (
-    <ApplicationWizard initialStep={initialStep}>
-      <Step1Employer />
-      <Step2Employments />
-      <Step3Summary />
-    </ApplicationWizard>
-  );
+  return <PageLoadingSpinner />;
 };
 
 export const getStaticProps: GetStaticProps =
