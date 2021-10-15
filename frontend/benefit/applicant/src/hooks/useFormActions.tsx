@@ -8,7 +8,7 @@ import snakecaseKeys from 'snakecase-keys';
 
 import DeMinimisContext from '../context/DeMinimisContext';
 import { Application, ApplicationData } from '../types/application';
-import { getApplicationStepString,getFullName } from '../utils/common';
+import { getApplicationStepString, getFullName } from '../utils/common';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
@@ -138,11 +138,10 @@ const useFormActions = (
         ? await updateApplication(data)
         : await createApplication(data);
 
-      const {
-        employee: { first_name, last_name },
-      } = result;
-
-      const fullName = getFullName(first_name, last_name);
+      const fullName = getFullName(
+        result?.employee?.first_name,
+        result?.employee?.last_name
+      );
       const applicantName = fullName ? `(${fullName})` : '';
 
       hdsToast({
