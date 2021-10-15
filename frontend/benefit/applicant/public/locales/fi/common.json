@@ -343,7 +343,7 @@
     },
     "applicationSaved": {
       "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicantName}} on tallennettu."
+      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
     }
   },
   "languages": {

@@ -142,13 +142,15 @@ const useFormActions = (
         result?.employee?.first_name,
         result?.employee?.last_name
       );
-      const applicantName = fullName ? `(${fullName})` : '';
+      const applicantName = fullName ? `(${fullName})` : 'ff';
+      const applicationNumber = result?.application_number ?? '';
 
       hdsToast({
         autoDismissTime: 5000,
         type: 'success',
         labelText: t('common:notifications.applicationSaved.label'),
         text: t('common:notifications.applicationSaved.message', {
+          applicationNumber,
           applicantName,
         }),
       });
