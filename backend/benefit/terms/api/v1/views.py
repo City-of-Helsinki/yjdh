@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from common.permissions import BFIsAuthenticated
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -16,6 +17,8 @@ from users.utils import get_company_from_user
 
 
 class ApproveTermsOfServiceView(APIView):
+    permission_classes = [BFIsAuthenticated]
+
     @extend_schema(
         description=(
             (

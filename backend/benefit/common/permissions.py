@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
+from rest_framework.exceptions import PermissionDenied
 from users.utils import get_company_from_user
 
 
@@ -28,6 +29,9 @@ class TermsOfServiceAccepted(permissions.BasePermission):
         else:
             from terms.models import TermsOfServiceApproval
 
-            return not TermsOfServiceApproval.terms_approval_needed(
-                user, get_company_from_user(user)
-            )
+            company = get_company_from_user(user)
+            if not company:
+                # company deleted from the db? Whatever has happened, applicant can't
+                # proceed without a company.
+                raise PermissionDenied(_("Company information is not available"))
+            return not TermsOfServiceApproval.terms_approval_needed(user, company)

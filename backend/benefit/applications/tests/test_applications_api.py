@@ -30,11 +30,6 @@ from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
 
 
-@pytest.fixture(autouse=True)
-def auto_accept_tos(accept_tos):
-    return accept_tos
-
-
 def get_detail_url(application):
     return reverse("v1:application-detail", kwargs={"pk": application.id})
 

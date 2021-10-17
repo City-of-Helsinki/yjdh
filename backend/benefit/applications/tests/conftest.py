@@ -87,3 +87,8 @@ def accept_tos(
         company=mock_get_organisation_roles_and_create_company,
         terms=terms_of_service,
     )
+
+
+@pytest.fixture(autouse=True)
+def auto_accept_tos(autouse_django_db, accept_tos):
+    return accept_tos

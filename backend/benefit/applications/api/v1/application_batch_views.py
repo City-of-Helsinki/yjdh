@@ -2,6 +2,7 @@ from applications.api.v1.serializers import ApplicationBatchSerializer
 from applications.enums import ApplicationBatchStatus
 from applications.models import ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
+from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
@@ -11,7 +12,6 @@ from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
@@ -40,7 +40,7 @@ class ApplicationBatchFilter(filters.FilterSet):
 class ApplicationBatchViewSet(viewsets.ModelViewSet):
     queryset = ApplicationBatch.objects.all()
     serializer_class = ApplicationBatchSerializer
-    permission_classes = [AllowAny]  # TODO access control
+    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
