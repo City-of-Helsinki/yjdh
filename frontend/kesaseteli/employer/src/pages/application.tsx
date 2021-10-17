@@ -21,15 +21,9 @@ const ApplicationPage: NextPage = () => {
   const initialStep = useGetCurrentStep();
 
   const locale = router.locale ?? DEFAULT_LANGUAGE;
-  const {
-    applicationId,
-    application,
-    loadingError: loadingApplicationError,
-  } = useApplicationApi();
+  const { applicationId, applicationQuery } = useApplicationApi();
 
   const { mutate: logout } = useLogoutQuery();
-
-  const isError = loadingApplicationError;
 
   const refreshPage = (): void => {
     router.reload();
@@ -39,12 +33,8 @@ const ApplicationPage: NextPage = () => {
     void router.replace(`${locale}/`);
     return <PageLoadingSpinner />;
   }
-  if (application?.status === 'submitted') {
-    void router.push(`${locale}/thankyou?id=${applicationId}`);
-    return <PageLoadingSpinner />;
-  }
 
-  if (application) {
+  if (applicationQuery.isSuccess) {
     return (
       <ApplicationWizard initialStep={initialStep}>
         <Step1Employer />
@@ -53,7 +43,7 @@ const ApplicationPage: NextPage = () => {
       </ApplicationWizard>
     );
   }
-  if (isError) {
+  if (applicationQuery.isError) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}

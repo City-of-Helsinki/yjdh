@@ -14,9 +14,12 @@ const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
   const stepTitle = t('common:application.step1.header');
 
-  const { application } = useApplicationApi();
+  const { applicationQuery, updateApplication } = useApplicationApi();
 
-  const showInitially = application?.is_separate_invoicer || false;
+  const showInitially =
+    (applicationQuery.isSuccess &&
+      applicationQuery.data.is_separate_invoicer) ||
+    false;
   const [showInvoicer, setShowInvoicer] =
     React.useState<boolean>(showInitially);
 
@@ -25,8 +28,6 @@ const EmployerForm: React.FC = () => {
   });
 
   const { getValues } = useFormContext<Application>();
-
-  const { updateApplication } = useApplicationApi();
 
   const handleInvoicerCheckboxChange = React.useCallback(
     (value: boolean) => {

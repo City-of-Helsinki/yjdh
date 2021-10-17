@@ -7,13 +7,12 @@ import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 
 const useUpdateApplicationQuery = (
-  draftApplication?: DraftApplication,
+  id: Application['id'] | undefined,
   onSuccess = noop
 ): UseMutationResult<Application, Error, DraftApplication> => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const language = useLocale();
-  const id = draftApplication?.id;
 
   return useMutation(
     `${BackendEndpoint.APPLICATIONS}${String(id)}/`,

@@ -36,7 +36,6 @@ type ApplicationFormField<V extends Value> = {
   clearValue: () => void;
   trigger: () => Promise<boolean>;
   clearErrors: () => void;
-  getSummaryText: () => string;
 };
 
 const useApplicationFormField = <V extends Value>(
@@ -99,10 +98,6 @@ const useApplicationFormField = <V extends Value>(
     () => clearErrors(id),
     [clearErrors, id]
   );
-  const getSummaryText = React.useCallback(() => {
-    const value = getValue();
-    return `${defaultLabel}: ${value ? value.toString() : '-'}`;
-  }, [getValue, defaultLabel]);
 
   return React.useMemo(
     () => ({
@@ -118,7 +113,6 @@ const useApplicationFormField = <V extends Value>(
       clearValue,
       trigger: triggerF,
       clearErrors: clearErrorsF,
-      getSummaryText,
     }),
     [
       fieldName,
@@ -133,7 +127,6 @@ const useApplicationFormField = <V extends Value>(
       clearValue,
       triggerF,
       clearErrorsF,
-      getSummaryText,
     ]
   );
 };

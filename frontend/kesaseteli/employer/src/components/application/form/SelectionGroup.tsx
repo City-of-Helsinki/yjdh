@@ -44,6 +44,7 @@ const SelectionGroup = <T extends readonly string[]>({
 
   const {
     getValue: getInitialValue,
+    clearErrors,
     hasError,
     fieldName,
   } = useApplicationFormField<string>(id);
@@ -53,8 +54,9 @@ const SelectionGroup = <T extends readonly string[]>({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChange(event.target.value);
       setSelectedValue(event.target.value);
+      clearErrors();
     },
-    [setSelectedValue, onChange]
+    [setSelectedValue, onChange, clearErrors]
   );
 
   // TODO: This can be removed after backend supports invalid values in draft save

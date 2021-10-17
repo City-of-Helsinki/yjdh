@@ -2,19 +2,19 @@ import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicat
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import isServerSide from 'shared/server/is-server-side';
 import Company from 'shared/types/company';
 
 type Props = { field: keyof Company };
 
 const CompanyInfoCell: React.FC<Props> = ({ field }: Props) => {
-  const { application, isLoading } = useApplicationApi();
+  const { applicationQuery } = useApplicationApi();
   return (
     <$GridCell aria-labelledby={field} role="gridcell">
-      {isLoading && !application && !isServerSide() && (
+      {applicationQuery.isSuccess ? (
+        <pre>{applicationQuery.data.company?.[field]}</pre>
+      ) : (
         <LoadingSkeleton width="90%" />
       )}
-      {(application && <pre>{application?.company?.[field]}</pre>) || ''}
     </$GridCell>
   );
 };

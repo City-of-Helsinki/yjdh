@@ -5,7 +5,6 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/application-form-data';
 
@@ -28,20 +27,21 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     nextStep,
     isLoading: isWizardLoading,
   } = useWizard();
-  const { updateApplication, sendApplication } = useApplicationApi();
-  const { isSyncing } = useIsSyncingToBackend();
+  const { updateApplication, sendApplication, updateApplicationQuery } =
+    useApplicationApi();
 
   const handleSuccess = React.useCallback(
     (validatedApplication) => {
       if (!isLastStep) {
-        return updateApplication(validatedApplication, () => void nextStep());
+        return updateApplication(validatedApplication, () => nextStep());
       }
       return sendApplication(validatedApplication, onAfterLastStep);
     },
     [isLastStep, updateApplication, nextStep, sendApplication, onAfterLastStep]
   );
 
-  const isLoading = isSubmitting || isSyncing || isWizardLoading;
+  const isLoading =
+    isSubmitting || updateApplicationQuery.isLoading || isWizardLoading;
   return (
     <$ButtonSection columns={isFirstStep ? 1 : 2} withoutDivider>
       {!isFirstStep && (

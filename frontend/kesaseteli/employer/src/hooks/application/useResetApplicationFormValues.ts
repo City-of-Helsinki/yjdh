@@ -6,12 +6,11 @@ import Application from 'shared/types/application';
 const useResetApplicationFormValues = ({
   reset,
 }: UseFormReturn<Application>): void => {
-  const { application, isLoading } = useApplicationApi();
+  const { applicationQuery } = useApplicationApi();
   React.useEffect(() => {
-    if (!application || isLoading) {
-      return;
+    if (applicationQuery.isSuccess) {
+      reset(applicationQuery.data);
     }
-    reset(application);
-  }, [reset, application, isLoading]);
+  }, [reset, applicationQuery.isSuccess, applicationQuery.data]);
 };
 export default useResetApplicationFormValues;

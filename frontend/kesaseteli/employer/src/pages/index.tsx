@@ -11,27 +11,19 @@ import ErrorPage from 'shared/components/pages/ErrorPage';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useIsSyncingToBackend from 'shared/hooks/useIsSyncingToBackend';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import Application from 'shared/types/application';
 
 const EmployerIndex: NextPage = () => {
   const { isMutating } = useIsSyncingToBackend();
   const { mutate: logout } = useLogoutQuery();
 
-  const { data: applications, isError: loadApplicationsError } =
-    useApplicationsQuery(!isMutating);
-  const {
-    data: newApplication,
-    mutate: createApplication,
-    isError: createApplicationError,
-  } = useCreateApplicationQuery();
-
-  const isError = loadApplicationsError || createApplicationError;
-
-  useLoadDraftOrCreateNewApplication(
-    isError,
-    applications,
-    newApplication,
-    createApplication
+  const applicationsQuery = useApplicationsQuery<Application | undefined>(
+    !isMutating,
+    (applications) => applications.find((app) => app.status === 'draft')
   );
+  const createApplicationQuery = useCreateApplicationQuery();
+
+  useLoadDraftOrCreateNewApplication(applicationsQuery, createApplicationQuery);
 
   const router = useRouter();
   const refreshPage = (): void => {
@@ -39,7 +31,7 @@ const EmployerIndex: NextPage = () => {
   };
 
   const { t } = useTranslation();
-  if (isError) {
+  if (applicationsQuery.isError || createApplicationQuery.isError) {
     return (
       <ErrorPage
         title={t('common:errorPage.title')}

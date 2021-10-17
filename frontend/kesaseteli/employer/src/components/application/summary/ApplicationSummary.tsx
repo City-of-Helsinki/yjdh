@@ -17,8 +17,8 @@ type Props = {
 };
 const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
   const { t } = useTranslation();
-  const { application } = useApplicationApi();
-  if (application) {
+  const { applicationQuery } = useApplicationApi();
+  if (applicationQuery.isSuccess) {
     const {
       company,
       contact_person_name,
@@ -30,7 +30,7 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
       invoicer_name,
       invoicer_phone_number,
       summer_vouchers,
-    } = application;
+    } = applicationQuery.data;
 
     return (
       <>
