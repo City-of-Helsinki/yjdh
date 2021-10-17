@@ -3,6 +3,7 @@ import useResetApplicationFormValues from 'kesaseteli/employer/hooks/application
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import Toast from 'shared/components/toast/Toast';
 import Application from 'shared/types/application-form-data';
 
@@ -13,8 +14,9 @@ type Props = {
 
 const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
   const { t } = useTranslation();
-  const { loadingError, updatingError } = useApplicationApi();
-  const errorMessage = (loadingError || updatingError)?.message;
+  const { applicationQuery, updateApplicationQuery } = useApplicationApi();
+  const errorMessage = (applicationQuery.error || updateApplicationQuery.error)
+    ?.message;
   const methods = useForm<Application>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -33,11 +35,14 @@ const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
     }
   }, [t, errorMessage]);
 
-  return (
-    <FormProvider {...methods}>
-      <form aria-label={title}>{children}</form>
-    </FormProvider>
-  );
+  if (applicationQuery.isSuccess) {
+    return (
+      <FormProvider {...methods}>
+        <form aria-label={title}>{children}</form>
+      </FormProvider>
+    );
+  }
+  return <PageLoadingSpinner />;
 };
 ApplicationForm.defaultProps = {
   title: undefined,

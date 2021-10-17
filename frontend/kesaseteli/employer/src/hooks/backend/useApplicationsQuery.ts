@@ -3,11 +3,15 @@ import useOperationPermitted from 'kesaseteli/employer/hooks/backend/useOperatio
 import { useQuery, UseQueryResult } from 'react-query';
 import Application from 'shared/types/application';
 
-const useApplicationsQuery = (
-  enabled: boolean
-): UseQueryResult<Application[], Error> =>
+const useApplicationsQuery = <T = Application[]>(
+  enabled: boolean,
+  select?: (applications: Application[]) => T
+): UseQueryResult<T, Error> =>
   useQuery(BackendEndpoint.APPLICATIONS, {
     enabled: useOperationPermitted() && enabled,
+    select: select
+      ? (applications: Application[]) => select(applications)
+      : undefined,
   });
 
 export default useApplicationsQuery;
