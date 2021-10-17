@@ -55,27 +55,29 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
       if (!summerVoucherId) {
         throw new Error('id is missing');
       }
-      try {
-        await removeAttachmentQuery.mutateAsync({
+      removeAttachmentQuery.mutate(
+        {
           summer_voucher: summerVoucherId,
           id: attachmentId,
-        });
-        const resultList = attachments.filter(
-          (attachment) => attachment.id !== attachmentId
-        );
-        setAttachments(resultList);
-        if (required && isEmpty(resultList)) {
-          setError({ type: attachmentType });
+        },
+        {
+          onSuccess: () => {
+            const resultList = attachments.filter(
+              (attachment) => attachment.id !== attachmentId
+            );
+            setAttachments(resultList);
+            if (required && isEmpty(resultList)) {
+              setError({ type: attachmentType });
+            }
+          },
+          onError: () => {
+            showErrorToast(
+              t(`common:delete.errorTitle`),
+              t(`common:delete.errorMessage`)
+            );
+          },
         }
-      } catch (error) {
-        // TODO proper error handling
-        // eslint-disable-next-line no-console
-        console.log(error);
-        showErrorToast(
-          t(`common:delete.errorTitle`),
-          t(`common:delete.errorMessage`)
-        );
-      }
+      );
     },
     [
       attachments,
@@ -94,22 +96,24 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
       if (!summerVoucherId) {
         throw new Error('id is missing');
       }
-      try {
-        const newFile = await uploadAttachmentQuery.mutateAsync({
+      uploadAttachmentQuery.mutate(
+        {
           summer_voucher: summerVoucherId,
           data: attachment,
-        });
-        setAttachments([...attachments, newFile]);
-        clearErrors();
-      } catch (error) {
-        // TODO proper error handling
-        // eslint-disable-next-line no-console
-        console.log(error);
-        showErrorToast(
-          t(`common:upload.errorTitle`),
-          t(`common:upload.errorMessage`)
-        );
-      }
+        },
+        {
+          onSuccess: (newFile) => {
+            setAttachments([...attachments, newFile]);
+            clearErrors();
+          },
+          onError: () => {
+            showErrorToast(
+              t(`common:upload.errorTitle`),
+              t(`common:upload.errorMessage`)
+            );
+          },
+        }
+      );
     },
     [
       attachments,
