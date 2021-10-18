@@ -416,6 +416,15 @@
     }
   },
   "select": "Valitse",
+  "login": {
+    "login": "Sign in to the service",
+    "logoutMessageLabel": "You have logged out",
+    "errorLabel": "An unexpected error occurred. Please, sign in again. ",
+    "sessionExpiredLabel": "User session expired. Sign in again",
+    "infoLabel": "Using the service requires strong authentication",
+    "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
+    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+  },
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
