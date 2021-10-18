@@ -63,7 +63,7 @@
       "remove_employment": "Poista tiedot"
     },
     "step3": {
-      "name": "Lähetys",
+      "name": "Lähetä",
       "header": "3. Tarkistus ja lähettäminen",
       "employerTitle": "Työnantajan tiedot",
       "employmentTitle": "Selvitys työsuhteesta",
@@ -156,7 +156,7 @@
       "text": " Yritä myöhemmin uudelleen"
     },
     "attachments": {
-      "title": "Tiedoston littämisessä tapahtui virhe",
+      "title": "Tiedoston latauksessa tapahtui virhe",
       "tooBig": "Tiedosto on liian iso",
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }

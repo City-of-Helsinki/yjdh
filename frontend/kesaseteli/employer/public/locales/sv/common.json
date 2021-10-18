@@ -12,8 +12,8 @@
     "logout": "Logga ut"
   },
   "404Page": {
-    "pageNotFoundLabel": "Sivua ei löytynyt SWE",
-    "pageNotFoundContent": "SWE Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+    "pageNotFoundLabel": "Sidan kunde inte hittas",
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
   },
   "loginPage": {
     "logoutMessageLabel": "Du har loggat ut",
@@ -26,7 +26,7 @@
   "thankyouPage": {
     "thankyouMessageLabel": "Ansökan är skickad.",
     "thankyouMessageContent": "Vänta på att ansökan behandlas. Vi tar kontakt när ansökan har behandlats, då får du med samma rätten att fakturera.  Nu kan stänga sidan.",
-    "createNewApplication": "Ny ansökan",
+    "createNewApplication": "Gör en ny ansökan",
     "title": "Ansökan {{submitted_at}}"
   },
   "application": {
@@ -117,20 +117,20 @@
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",
         "format": "Använd ett format",
-        "attachments": "SWE Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+        "attachments": "Du kan lägga till upp till 5 bilagor. Tillåtna filformat: pdf, jpg och png. Maximal storlek 10 MB",
         "employment_contract": "Bifoga här arbetskontraktet för sommarjobbaren du anställt med Sommarjobbsedeln.",
         "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln."
       },
       "errors": {
-        "required": "Tieto puuttuu tai on virheellinen SWE",
-        "maxLength": "Syöttämäsi arvo on liian pitkä SWE",
-        "pattern": "Syöttämäsi tieto on virheellistä muotoa SWE",
-        "validate": "Syöttämäsi tieto on virheellistä muotoa SWE",
-        "selectionGroups": "Valitse jokin vaihtoehto SWE",
-        "checkboxRequired": "Valinta on pakollinen SWE",
-        "employmentsRequired": "Lisää ainakin yksi työsuhde SWE",
-        "employment_contract": "Liitä ainakin yksi tiedosto työsopimukselle SWE",
-        "payslip": "Liitä ainakin yksi tiedosto palkkatodistukselle SWE"
+        "required": "Uppgifter fattas eller är ofullständiga",
+        "maxLength": "Den inmatade texten är för lång",
+        "pattern": "Den inmatade uppgiftern är i fel format",
+        "validate": "Den inmatade uppgiftern är i fel format",
+        "selectionGroups": "Välj något alternativ",
+        "checkboxRequired": "Obligatoriskt val",
+        "employmentsRequired": "Lägg till åtminstone ett arbetsförhållande",
+        "employment_contract": "Lägg till åtminstone en fil",
+        "payslip": "Lägg till åtminstone en fil"
       },
       "notification": {
         "title": "Fyll i de uppgifter som fattas eller är felaktiga"
@@ -148,7 +148,7 @@
     "sv": "På svenska",
     "en": "In english"
   },
-  "menuToggleAriaLabel": "Menu SWE",
+  "menuToggleAriaLabel": "Menu",
   "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
   "error": {
     "generic": {
@@ -156,18 +156,18 @@
       "text": "Försök igen senare."
     },
     "attachments": {
-      "title": "Tiedoston latauksessa tapahtui virhe SWE",
-      "tooBig": "Tiedosto on liian iso SWE",
+      "title": "Det skedde ett fel i nedladdningen av filen",
+      "tooBig": "Filtypen är inte tillåten",
       "fileType": "Tiedoston tyyppi ei ole sallittu. SWE"
     }
   },
   "upload": {
-    "isUploading": "Lähetetään... SWE",
-    "errorTitle": "Lähetys epäonnistui SWE",
+    "isUploading": "Sänder...",
+    "errorTitle": "Uppladdningen av filen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "delete": {
-    "errorTitle": "Poistaminen epäonnistui SWE",
+    "errorTitle": "Borttagningen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "applications": {

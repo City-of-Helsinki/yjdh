@@ -12,8 +12,8 @@
     "logout": "Log out"
   },
   "404Page": {
-    "pageNotFoundLabel": "Page not found",
-    "pageNotFoundContent": "ENG Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+    "pageNotFoundLabel": "Page was not found",
+    "pageNotFoundContent": "Oh no, something went wrong. Try to enter the application <lnk>here</lnk>, through the front page"
   },
   "loginPage": {
     "logoutMessageLabel": "You have logged out",
@@ -26,7 +26,7 @@
   "thankyouPage": {
     "thankyouMessageLabel": "The application is submitted.",
     "thankyouMessageContent": "Please wait for your application to be handled. We will be in touch with you once the handling process is finished, and you will then be permited the billing license. You may now close this page. ",
-    "createNewApplication": "Create new application",
+    "createNewApplication": "Create a new application",
     "title": "Application {{submitted_at}}"
   },
   "application": {
@@ -117,7 +117,7 @@
       "helpers": {
         "date": "Use format D.M.YYYY",
         "format": "Use format",
-        "attachments": "EN Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+        "attachments": "You may add a maximum of 5 attachments. The approved file forms are: pdf, jpg, png. The maximum size 10MB.",
         "employment_contract": "Attach here the employment contract of the youth employed with the Summer Job Voucher.",
         "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher."
       },
@@ -127,7 +127,7 @@
         "pattern": "The information you entered is in an incorrect format",
         "validate": "The information you entered is in an incorrect format",
         "selectionGroups": "Select an option",
-        "checkboxRequired": "Selection is required",
+        "checkboxRequired": "Selection is mandatory",
         "employmentsRequired": "Add at least one employment report",
         "employment_contract": "Add at least one file",
         "payslip": "Add at least one file"
@@ -152,22 +152,22 @@
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {
-      "label": "An unexpectrd error occurred",
-      "text": "Please try again later."
+      "label": "An unexpected error occurred",
+      "text": "Try again later."
     },
     "attachments": {
-      "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big.",
-      "fileType": "The attachment file type is not allowed."
+      "title": "An error occured while uploading the file.",
+      "tooBig": "The file is too big.",
+      "fileType": "The file type is not allowed."
     }
   },
   "upload": {
-    "isUploading": "Uploading...",
-    "errorTitle": "Uploading failed",
+    "isUploading": "Sending...",
+    "errorTitle": "The Uploading of the file failed",
     "errorMessage": "Something went wrong. Please try again later."
   },
   "delete": {
-    "errorTitle": "Deleting failed",
+    "errorTitle": "Deleting the file failed.",
     "errorMessage": "Something went wrong. Please try again later."
   },
   "applications": {
