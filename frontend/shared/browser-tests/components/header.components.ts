@@ -10,19 +10,19 @@ import {
 
 const translations = {
   fi: {
-    login: 'Kirjaudu sisään',
+    login: 'Kirjaudu palveluun',
     logout: 'Kirjaudu ulos',
     language: 'Suomeksi',
     userInfo: (user?: User) => new RegExp(`Käyttäjä: ${user?.name ?? ''}`),
   },
   sv: {
-    login: 'Logga in',
+    login: 'Logga in i tjänsten',
     logout: 'Logga ut',
     language: 'På svenska',
     userInfo: (user?: User) => new RegExp(`Användare: ${user?.name ?? ''}`),
   },
   en: {
-    login: 'Log in',
+    login: 'Sign in to the service',
     logout: 'Log out',
     language: 'In english',
     userInfo: (user?: User) => new RegExp(`User: ${user?.name ?? ''}`),

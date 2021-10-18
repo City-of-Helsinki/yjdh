@@ -1,36 +1,37 @@
 {
   "appName": "Kesäseteli",
   "header": {
-    "loginLabel": "Kirjaudu sisään",
+    "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:"
   },
   "errorPage": {
-    "title": "Palvelussa on valitettavasti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "title": "Tapahtui odottamaton virhe",
+    "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
     "retry": "Lataa sivu uudelleen",
     "logout": "Kirjaudu ulos"
   },
   "404Page": {
     "pageNotFoundLabel": "Sivua ei löytynyt",
-    "pageNotFoundContent": "Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+    "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> etusivun kautta takaisin hakemukseen."
   },
   "loginPage": {
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   },
   "thankyouPage": {
-    "thankyouMessageLabel": "Hakemus on lähetetty",
+    "thankyouMessageLabel": "Hakemus on lähetetty.",
     "thankyouMessageContent": "Jää odottamaan hakemuksen käsittelyä. Olemme sinuun yhteydessä, kun käsittely on valmis, jolloin saat laskutusluvan. Voit nyt sulkea tämän sivun.",
     "createNewApplication": "Tee uusi hakemus",
     "title": "Hakemus {{submitted_at}}"
   },
   "application": {
     "new": "Uusi hakemus",
-    "common_error": "Tapahtui tuntematon virhe",
+    "common_error": "Tapahtui odottamaton virhe",
     "loading": "Ladataan hakemusta...",
     "loadingFinished": "Hakemuksen lataus on valmis",
     "step1": {
@@ -56,12 +57,13 @@
       "tooltip": "Kirjoita kaavakkeeseen kesätyöntekijän tiedot sekä Kesäsetelin sarjanumero. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
       "attachments_section": "Pakolliset liitteet",
       "employment_section": "Työsuhteen kuvaus",
+      "employment_description_placeholder": "Kerro tähän työtehtävistä, joita nuori teki.",
       "add_employment": "Lisää uusi työsuhde",
       "save_employment": "Tallenna tiedot",
       "remove_employment": "Poista tiedot"
     },
     "step3": {
-      "name": "Lähetys",
+      "name": "Lähetä",
       "header": "3. Tarkistus ja lähettäminen",
       "employerTitle": "Työnantajan tiedot",
       "employmentTitle": "Selvitys työsuhteesta",
@@ -75,7 +77,7 @@
     "form": {
       "selectionGroups": {
         "summer_voucher_exception_reason": {
-          "9th_grader": "9. luokkalainen",
+          "9th_grader": "9.-luokkalainen",
           "born_2004": "Syntynyt vuonna 2004"
         },
         "hired_without_voucher_assessment" : {
@@ -95,8 +97,8 @@
         "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
-        "summer_voucher_exception_reason": "Luokka tai syntymävuosi",
-        "employee_home_city": "Kotipaikkakunta",
+        "summer_voucher_exception_reason": "Vuosiluokka tai syntymävuosi",
+        "employee_home_city": "Kotipaikka",
         "employee_postcode": "Postinumero",
         "employee_phone_number": "Puhelinnumero",
         "employment_postcode": "Työn suorituspaikan postinumero",
@@ -110,12 +112,14 @@
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
         "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
-        "attachments": "Liitetiedostot",
         "termsAndConditions": "Olen lukenut palvelun <1>käyttöehdot</1> ja hyväksyn ne."
       },
       "helpers": {
         "date": "Käytä muotoa P.K.VVVV",
-        "format": "Käytä muotoa"
+        "format": "Käytä muotoa",
+        "attachments": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+        "employment_contract": "Liitä tähän Kesäsetelillä palkatun nuoren työsopimus.",
+        "payslip": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus."
       },
       "errors": {
         "required": "Tieto puuttuu tai on virheellinen",
@@ -129,13 +133,12 @@
         "payslip": "Liitä ainakin yksi tiedosto"
       },
       "notification": {
-        "title": "Virheitä kenttien tiedoissa",
-        "description": "Täytä puuttuvat tai virheelliset tiedot"
+        "title": "Täytä puuttuvat tai virheelliset tiedot"
       }
     }
   },
   "footer": {
-    "copyrightText": "Copyright teksti",
+    "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
     "information": "Tietoa palvelusta"
@@ -149,7 +152,7 @@
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {
-      "label": "Tuntematon virhe",
+      "label": "Tapahtui tuntematon virhe",
       "text": " Yritä myöhemmin uudelleen"
     },
     "attachments": {

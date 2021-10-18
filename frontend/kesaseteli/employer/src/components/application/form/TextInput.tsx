@@ -40,6 +40,7 @@ export type TextInputProps = {
   validation?: RegisterOptions<Application>;
   id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
   type?: $TextInputProps['$type'];
+  placeholder?: string;
   helperFormat?: string;
 } & GridCellProps;
 
@@ -48,6 +49,7 @@ const TextInput: React.FC<TextInputProps> = ({
   validation = {},
   type = 'text',
   helperFormat,
+  placeholder,
   ...$gridCellProps
 }) => {
   const { t } = useTranslation();
@@ -91,6 +93,7 @@ const TextInput: React.FC<TextInputProps> = ({
         id={id}
         data-testid={id}
         name={id}
+        placeholder={placeholder}
         required={Boolean(validation.required)}
         max={validation.maxLength ? String(validation.maxLength) : undefined}
         defaultValue={getValue()}

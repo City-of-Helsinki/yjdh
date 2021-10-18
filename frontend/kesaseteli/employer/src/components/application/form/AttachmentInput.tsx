@@ -27,6 +27,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     setValue: setAttachments,
     hasError,
     fieldName,
+    getError,
     setError,
     watch,
     clearErrors,
@@ -58,7 +59,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
         );
         setAttachments(resultList);
         if (required && isEmpty(resultList)) {
-          setError(attachmentType);
+          setError({ type: attachmentType });
         }
       } catch (error) {
         // TODO proper error handling
@@ -115,6 +116,16 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
 
   const { ref } = register(id, { validate: validateAttachments });
 
+  React.useEffect(() => {
+    if (hasError() && getError()?.type !== attachmentType) {
+      setError({ type: attachmentType });
+    }
+  }, [getError, hasError, setError, attachmentType]);
+
+  const message = `${t(
+    `common:application.form.helpers.${attachmentType}`
+  )} ${t(`common:application.form.helpers.attachments`)}`;
+
   return (
     <AttachmentsListBase
       buttonRef={ref}
@@ -129,6 +140,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
       onOpen={openAttachment}
       isUploading={isUploading}
       isRemoving={isRemoving}
+      message={message}
       errorMessage={
         hasError()
           ? `${t(`common:application.form.errors.${attachmentType}`)}`

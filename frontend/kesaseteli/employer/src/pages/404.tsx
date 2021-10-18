@@ -1,8 +1,9 @@
 import { GetStaticProps, NextPage } from 'next';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import Layout from 'shared/components/Layout';
+import LinkText from 'shared/components/link-text/LinkText';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 import { $Notification } from '../components/application/login.sc';
@@ -17,7 +18,12 @@ const PageNotFound: NextPage = () => {
           type="alert"
           size="large"
         >
-          {t(`common:404Page.pageNotFoundContent`)}
+          <Trans
+            i18nKey="common:404Page.pageNotFoundContent"
+            components={{
+              lnk: <LinkText href="/">{}</LinkText>,
+            }}
+          />
         </$Notification>
       </Layout>
     </Container>

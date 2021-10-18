@@ -193,6 +193,9 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           $rowSpan={3}
           id={getId('employment_description')}
           type="textArea"
+          placeholder={t(
+            'common:application.step2.employment_description_placeholder'
+          )}
         />
         <TextInput
           id={getId('employment_salary_paid')}
