@@ -1,7 +1,10 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
 import noop from 'lodash/noop';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import handleError from 'shared/error-handler/error-handler';
 import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
@@ -13,7 +16,9 @@ const useUpdateApplicationQuery = (
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const language = useLocale();
-
+  const { t } = useTranslation();
+  const router = useRouter();
+  const locale = useLocale();
   return useMutation(
     `${BackendEndpoint.APPLICATIONS}${String(id)}/`,
     (application: DraftApplication) =>
@@ -32,6 +37,7 @@ const useUpdateApplicationQuery = (
           `${BackendEndpoint.APPLICATIONS}${String(id)}/`
         );
       },
+      onError: (error) => handleError(error, t, router, locale),
     }
   );
 };

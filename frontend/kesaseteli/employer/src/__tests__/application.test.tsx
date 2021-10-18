@@ -10,7 +10,6 @@ import renderComponent from 'kesaseteli/employer/__tests__/utils/components/rend
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
 import React from 'react';
-import errorPageApi from 'shared/__tests__/component-apis/error-page-api';
 import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
@@ -63,11 +62,14 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       });
 
       describe('When loading application from backend returns error page', () => {
-        it('Should show errorPage', async () => {
+        it('Should redirect to errorPage', async () => {
           expectAuthorizedReply();
           expectToGetApplicationErrorFromBackend(id);
-          await renderPage(ApplicationPage, { query: { id } });
-          await errorPageApi.expectations.displayErrorPage();
+          const spyPush = jest.fn();
+          await renderPage(ApplicationPage, { query: { id }, push: spyPush });
+          await waitFor(() => {
+            expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`);
+          });
         });
       });
 
