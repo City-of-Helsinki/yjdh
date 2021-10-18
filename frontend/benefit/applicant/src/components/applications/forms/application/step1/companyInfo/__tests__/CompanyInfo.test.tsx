@@ -49,7 +49,7 @@ describe('CompanyInfo', () => {
         formik={formik}
         translationsBase=""
       />
-    );
+    ).renderResult;
 
   it('should render with no accessibility violations', async () => {
     const { result } = renderHook(() =>
