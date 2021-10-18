@@ -45,4 +45,5 @@ export const $HeadingContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
+  padding-right: var(--spacing-m);
 `;
