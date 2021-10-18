@@ -24,7 +24,8 @@ describe('CompanyInfoView', () => {
   const getComponent = (
     props: Partial<CompanyInfoViewProps> = {}
   ): RenderResult =>
-    renderComponent(<CompanyInfoView {...initialProps} {...props} />);
+    renderComponent(<CompanyInfoView {...initialProps} {...props} />)
+      .renderResult;
 
   it('should render with no accessibility violations', async () => {
     const { container } = getComponent();

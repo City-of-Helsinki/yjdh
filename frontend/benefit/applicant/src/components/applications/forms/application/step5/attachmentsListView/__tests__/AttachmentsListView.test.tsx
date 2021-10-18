@@ -29,7 +29,8 @@ describe('AttachmentsListView', () => {
   const getComponent = (
     props: Partial<AttachmentsListViewProps> = {}
   ): RenderResult =>
-    renderComponent(<AttachmentsListView {...initialProps} {...props} />);
+    renderComponent(<AttachmentsListView {...initialProps} {...props} />)
+      .renderResult;
 
   it('should render with no accessibility violations', async () => {
     const { container } = getComponent();
