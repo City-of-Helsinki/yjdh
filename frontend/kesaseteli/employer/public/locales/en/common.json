@@ -26,7 +26,7 @@
   "thankyouPage": {
     "thankyouMessageLabel": "The application is submitted.",
     "thankyouMessageContent": "Please wait for your application to be handled. We will be in touch with you once the handling process is finished, and you will then be permited the billing license. You may now close this page. ",
-    "createNewApplication": "Create a new application",
+    "createNewApplication": "Create new application",
     "title": "Application {{submitted_at}}"
   },
   "application": {
