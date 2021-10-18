@@ -12,7 +12,7 @@ describe('EmployeeView', () => {
   };
 
   const getComponent = (props: Partial<EmployeeViewProps> = {}): RenderResult =>
-    renderComponent(<EmployeeView {...initialProps} {...props} />);
+    renderComponent(<EmployeeView {...initialProps} {...props} />).renderResult;
 
   it('should render with no accessibility violations', async () => {
     const { container } = getComponent();

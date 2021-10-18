@@ -14,7 +14,8 @@ describe('AttachmentsList', () => {
   const getComponent = (
     props: Partial<AttachmentsListProps> = {}
   ): RenderResult =>
-    renderComponent(<AttachmentsList {...initialProps} {...props} />);
+    renderComponent(<AttachmentsList {...initialProps} {...props} />)
+      .renderResult;
 
   it('should render with no accessibility violations', async () => {
     const { container } = getComponent();
