@@ -97,7 +97,7 @@
         "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
-        "summer_voucher_exception_reason": "Luokka tai syntymävuosi",
+        "summer_voucher_exception_reason": "Vuosiluokka tai syntymävuosi",
         "employee_home_city": "Kotipaikka",
         "employee_postcode": "Postinumero",
         "employee_phone_number": "Puhelinnumero",

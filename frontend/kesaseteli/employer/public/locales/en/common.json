@@ -19,7 +19,7 @@
     "logoutMessageLabel": "You have logged out",
     "errorLabel": "An unexpected error occurred. Please, sign in again. ",
     "sessionExpiredLabel": "User session expired. Sign in again",
-    "infoLabel": "Using the service requires authentication",
+    "infoLabel": "Using the service requires strong authentication",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
     "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
   },
@@ -58,8 +58,8 @@
       "attachments_section": "Mandatory attachments",
       "employment_section": "Description of the employment",
       "employment_description_placeholder": "Describe the the work tasks of the employee.",
-      "add_employment": "Add new employment",
-      "save_employment": "Save employment",
+      "add_employment": "Add a new employment",
+      "save_employment": "Save the information",
       "remove_employment": "Delete the information"
     },
     "step3": {
@@ -97,7 +97,7 @@
         "invoicer_phone_number": "Telephone number",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
-        "summer_voucher_exception_reason": "School grade or birth year",
+        "summer_voucher_exception_reason": "Grade or birth year",
         "employee_home_city": "Domicile",
         "employee_postcode": "Postal code of the workplace",
         "employee_phone_number": "Phone number",
@@ -163,7 +163,7 @@
   },
   "upload": {
     "isUploading": "Sending...",
-    "errorTitle": "The Uploading of the file failed",
+    "errorTitle": "File upload failed",
     "errorMessage": "Something went wrong. Please try again later."
   },
   "delete": {

@@ -19,7 +19,7 @@
     "logoutMessageLabel": "Du har loggat ut",
     "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
-    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista SWE",
+    "infoLabel": "Att använda tjänsten kräver stark autentisering",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
   },
@@ -58,8 +58,8 @@
       "attachments_section": "Obligatoriska bilagor",
       "employment_section": "Beskrivning av arbetsförhållandet",
       "employment_description_placeholder": "Skriv här vilka arbetsuppgifter den unga gjorde.",
-      "add_employment": "Lisää uusi työsuhde SWE",
-      "save_employment": "Tallenna tiedot SWE",
+      "add_employment": "Lägg till en ny anställning",
+      "save_employment": "Spara informationen",
       "remove_employment": "Ta bort uppgifterna"
     },
     "step3": {
@@ -97,7 +97,7 @@
         "invoicer_phone_number": "Telefonnummer",
         "employee_name": "Arbetstagarens namn",
         "employee_ssn": "Personnummer",
-        "summer_voucher_exception_reason": "Luokka tai syntymävuosi SWE",
+        "summer_voucher_exception_reason": "Årslass eller födelseår",
         "employee_home_city": "Hemort",
         "employee_postcode": "Post nummer",
         "employee_phone_number": "Telefonnummer",
@@ -157,8 +157,8 @@
     },
     "attachments": {
       "title": "Det skedde ett fel i nedladdningen av filen",
-      "tooBig": "Filtypen är inte tillåten",
-      "fileType": "Tiedoston tyyppi ei ole sallittu. SWE"
+      "tooBig": "Filen är för stor",
+      "fileType": "Filtypen är inte tillåten"
     }
   },
   "upload": {
