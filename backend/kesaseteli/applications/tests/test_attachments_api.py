@@ -127,10 +127,7 @@ def test_attachment_upload_invalid_status(
 
 @pytest.mark.django_db
 def test_too_many_attachments(request, api_client, summer_voucher):
-
-    for idx, _ in enumerate(
-        range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION)
-    ):
+    for idx, _ in enumerate(range(AttachmentSerializer.MAX_ATTACHMENTS_PER_TYPE)):
         response = _upload_file(
             request,
             api_client,
@@ -146,7 +143,7 @@ def test_too_many_attachments(request, api_client, summer_voucher):
     assert response.status_code == 400
     assert (
         summer_voucher.attachments.count()
-        == AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION
+        == AttachmentSerializer.MAX_ATTACHMENTS_PER_TYPE
     )
 
 
