@@ -5,18 +5,13 @@ import AuthContext from 'shared/auth/AuthContext';
 const AuthProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
-  const { data: user, isLoading, isError } = useUserQuery();
-  const [, setAuthenticated] = React.useState(false);
-  const [, setError] = React.useState(false);
-
+  const userQuery = useUserQuery((user) => Boolean(user));
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: Boolean(user),
-        isLoading,
-        isError,
-        setAuthenticated,
-        setError,
+        isAuthenticated: userQuery.isSuccess && userQuery.data,
+        isLoading: userQuery.isLoading,
+        isError: userQuery.isError,
       }}
     >
       {children}

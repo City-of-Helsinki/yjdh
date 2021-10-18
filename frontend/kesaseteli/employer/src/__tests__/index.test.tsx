@@ -12,7 +12,6 @@ import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-pa
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import IndexPage from 'kesaseteli/employer/pages';
 import React from 'react';
-import ErrorPageApi from 'shared/__tests__/component-apis/error-page-api';
 import {
   fakeApplication,
   fakeApplications,
@@ -41,49 +40,21 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       it('Should show errorPage when applications loading error', async () => {
         expectAuthorizedReply();
         expectToGetApplicationsErrorFromBackend();
-        await renderPage(IndexPage);
-        await ErrorPageApi.expectations.displayErrorPage();
+        const spyPush = jest.fn();
+        await renderPage(IndexPage, { push: spyPush });
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+        );
       });
       it('Should show errorPage when applications creation error', async () => {
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationErrorFromBackend();
-        await renderPage(IndexPage);
-        await ErrorPageApi.expectations.displayErrorPage();
-      });
-      describe('when clicking reload button', () => {
-        it('Should reload the page', async () => {
-          expectAuthorizedReply();
-          expectToGetApplicationsErrorFromBackend();
-          const locale: Language = 'en';
-          const spyReload = jest.fn();
-          await renderPage(IndexPage, {
-            reload: spyReload,
-            locale,
-          });
-          await ErrorPageApi.expectations.displayErrorPage();
-          ErrorPageApi.actions.clickToRefreshPage();
-          await waitFor(() => expect(spyReload).toHaveBeenCalledTimes(1));
-        });
-      });
-      describe('when clicking Logout button', () => {
-        it('Should logout', async () => {
-          expectAuthorizedReply();
-          const errorReply = expectToGetApplicationsErrorFromBackend(2);
-          const locale: Language = 'en';
-          const spyPush = jest.fn();
-          const queryClient = await renderPage(IndexPage, {
-            push: spyPush,
-            locale,
-          });
-          await ErrorPageApi.expectations.displayErrorPage();
-          await ErrorPageApi.actions.clickLogoutButton();
-          await waitFor(() => {
-            expect(queryClient.getQueryData('user')).toBeUndefined();
-          });
-          expect(spyPush).toHaveBeenCalledWith('/login?logout=true');
-          await waitFor(() => errorReply.done());
-        });
+        const spyPush = jest.fn();
+        await renderPage(IndexPage, { push: spyPush });
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+        );
       });
     });
 

@@ -68,7 +68,7 @@ export const expectToGetApplicationErrorFromBackend = (
   return nock(getBackendDomain())
     .get(`${BackendEndpoint.APPLICATIONS}${id}/`)
     .replyWithError(
-      'This is a load application test error. Please ignore this error message.'
+      '500: This is a load application test server error. Please ignore this error message.'
     );
 };
 export const expectToGetApplicationsFromBackend = (
@@ -86,7 +86,7 @@ export const expectToGetApplicationsErrorFromBackend = (
     .get(`${BackendEndpoint.APPLICATIONS}`)
     .times(times)
     .replyWithError(
-      'This is a load applications test error. Please ignore this error message.'
+      '500: This is a load applications test error. Please ignore this error message.'
     );
 };
 export const expectToCreateApplicationToBackend = (
@@ -104,7 +104,7 @@ export const expectToCreateApplicationErrorFromBackend = (): nock.Scope => {
   return nock(getBackendDomain())
     .post(`${BackendEndpoint.APPLICATIONS}`, { language: DEFAULT_LANGUAGE })
     .replyWithError(
-      'This is a create application test error. Please ignore this error message.'
+      '500: This is a create application test error. Please ignore this error message.'
     );
 };
 export const expectToSaveApplication = (
