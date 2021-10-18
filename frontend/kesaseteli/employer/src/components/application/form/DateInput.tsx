@@ -50,6 +50,7 @@ const DateInput = ({
     clearErrors,
     setValue,
     clearValue,
+    hasError,
   } = useApplicationFormField<string>(id);
 
   const date = convertToUIDateFormat(getValue());
@@ -108,6 +109,8 @@ const DateInput = ({
         onChange={handleChange}
         errorText={errorText}
         label={defaultLabel}
+        invalid={hasError()}
+        aria-invalid={hasError()}
       />
     </$GridCell>
   );

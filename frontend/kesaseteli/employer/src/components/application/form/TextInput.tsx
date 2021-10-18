@@ -53,7 +53,7 @@ const TextInput: React.FC<TextInputProps> = ({
   const { t } = useTranslation();
   const { register } = useFormContext<Application>();
 
-  const { getValue, getError, fieldName, getErrorText } =
+  const { getValue, getError, fieldName, getErrorText, hasError } =
     useApplicationFormField<string>(id);
 
   const errorText = React.useMemo((): string | undefined => {
@@ -96,6 +96,8 @@ const TextInput: React.FC<TextInputProps> = ({
         defaultValue={getValue()}
         errorText={errorText}
         label={t(`common:application.form.inputs.${fieldName}`)}
+        invalid={hasError()}
+        aria-invalid={hasError()}
       />
     </$GridCell>
   );
