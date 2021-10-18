@@ -23,12 +23,16 @@ const Wizard: React.FC<WizardProps> = React.memo(
     const goToNextStep = React.useRef((stepIndex?: number) => {
       if (hasNextStep.current || stepIndex) {
         setActiveStep((step) => stepIndex ?? step + 1);
+        // Scroll to top
+        window.scrollTo(0, 0);
       }
     });
 
     const goToPreviousStep = React.useRef((stepIndex?: number) => {
       if (hasPreviousStep.current || stepIndex) {
         setActiveStep((step) => stepIndex ?? step - 1);
+        // Scroll to top
+        window.scrollTo(0, 0);
       }
     });
 
