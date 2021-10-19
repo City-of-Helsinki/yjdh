@@ -86,9 +86,19 @@ def log(
         and not additional_information
         and hasattr(target, "history")
     ):
-        # Model is using django-simple-history
-        latest_record = target.history.latest()
-        previous_record = latest_record.prev_record
+        _add_changes(target, message)
+
+    AuditLogEntry.objects.create(
+        message=message,
+    )
+
+
+def _add_changes(target: Union[Model, ModelBase], message: dict) -> None:
+    # Model is using django-simple-history
+    latest_record = target.history.latest()
+    previous_record = latest_record.prev_record
+
+    if previous_record:
         delta = latest_record.diff_against(previous_record)
 
         changes_list = []
@@ -98,11 +108,7 @@ def log(
             )
 
         if changes_list:
-            message["audit_event"]["target"].update({"changes": changes_list})
-
-    AuditLogEntry.objects.create(
-        message=message,
-    )
+            message["audit_event"]["target"]["changes"] = changes_list
 
 
 def _get_target_id(target: Union[Model, ModelBase]) -> Optional[str]:
