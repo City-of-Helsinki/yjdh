@@ -44,7 +44,6 @@ const createQueryClient = (axios: AxiosInstance): QueryClient =>
           failureCount < 3 &&
           !/40[134]/.test((error as Error).message),
         staleTime: 30000,
-        refetchOnWindowFocus: process.env.NODE_ENV === 'production',
         notifyOnChangeProps: 'tracked',
         queryFn: async ({ queryKey: [url] }) => {
           // Best practice: https://react-query.tanstack.com/guides/default-query-function
