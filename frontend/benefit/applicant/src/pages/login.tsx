@@ -19,7 +19,7 @@ const Login: NextPage = () => {
 
   const theme = useTheme();
 
-  const getNotificationLabelKey = (): string => {
+  const notificationLabelKey = React.useMemo((): string => {
     if (logout) {
       return `common:login.logoutMessageLabel`;
     }
@@ -30,9 +30,8 @@ const Login: NextPage = () => {
       return `common:login.sessionExpiredLabel`;
     }
     return `common:login.infoLabel`;
-  };
+  }, [logout, error, sessionExpired]);
 
-  const notificationLabelKey = getNotificationLabelKey();
   const notificationContent =
     !logout && !error && !sessionExpired && t(`common:login.infoContent`);
   const notificationType = error || sessionExpired ? 'error' : 'info';
