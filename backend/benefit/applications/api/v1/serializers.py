@@ -498,6 +498,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "id",
             "status",
             "employee",
+            "application_number",
             "applicant_terms_approval",
             "approve_terms",
             "batch",
