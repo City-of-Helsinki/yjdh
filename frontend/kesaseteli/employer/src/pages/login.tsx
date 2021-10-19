@@ -33,7 +33,7 @@ const Login: NextPage = () => {
   }, [logout, error, sessionExpired]);
 
   const notificationContent = React.useMemo((): string | null => {
-    if (error || logout || sessionExpired) {
+    if (error || logout) {
       return null;
     }
     if (sessionExpired) {
@@ -41,6 +41,7 @@ const Login: NextPage = () => {
     }
     return t(`common:loginPage.infoContent`);
   }, [logout, error, sessionExpired, t]);
+
   const notificationType = error || sessionExpired ? 'error' : 'info';
 
   return (
