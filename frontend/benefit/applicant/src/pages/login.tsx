@@ -1,4 +1,9 @@
-import { Button, IconSignin, Notification } from 'hds-react';
+import {
+  Button,
+  IconSignin,
+  Notification,
+  NotificationProps as HDSNotificationProps,
+} from 'hds-react';
 import noop from 'lodash/noop';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -10,6 +15,10 @@ import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
 
+type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
+  content?: string;
+};
+
 const Login: NextPage = () => {
   useClearQueryParams();
   const { t } = useTranslation();
@@ -19,38 +28,38 @@ const Login: NextPage = () => {
 
   const theme = useTheme();
 
-  const notificationLabelKey = React.useMemo((): string => {
-    if (logout) {
-      return `common:login.logoutMessageLabel`;
-    }
+  const notificationProps = React.useMemo((): NotificationProps => {
     if (error) {
-      return `common:login.errorLabel`;
+      return { type: 'error', label: t('common:login.errorLabel') };
     }
     if (sessionExpired) {
-      return `common:login.sessionExpiredLabel`;
+      return { type: 'error', label: t('common:login.sessionExpiredLabel') };
     }
-    return `common:login.infoLabel`;
-  }, [logout, error, sessionExpired]);
-
-  const notificationContent =
-    !logout && !error && !sessionExpired && t(`common:login.infoContent`);
-  const notificationType = error || sessionExpired ? 'error' : 'info';
+    if (logout) {
+      return { type: 'info', label: t('common:login.logoutMessageLabel') };
+    }
+    return {
+      type: 'info',
+      label: t('common:login.infoLabel'),
+      content: t('common:login.infoContent'),
+    };
+  }, [t, error, sessionExpired, logout]);
 
   return (
     <Container>
       <Layout>
         <Notification
-          label={t(notificationLabelKey)}
-          type={notificationType}
+          type={notificationProps.type}
+          label={notificationProps.label}
           size="large"
           css={`
             margin-bottom: ${theme.spacing.xl};
           `}
         >
-          {notificationContent}
+          {notificationProps.content}
         </Notification>
         <Button theme="coat" iconLeft={<IconSignin />} onClick={noop}>
-          {t(`common:login.login`)}
+          {t('common:login.login')}
         </Button>
       </Layout>
     </Container>
