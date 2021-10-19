@@ -22,9 +22,9 @@ const GlobalStyle = createGlobalStyle`
     margin: ${(props) => props.theme.spacing.s} 0;
     font-size: ${(props) => props.theme.fontSize.heading.s};
   }
-  pre {
-    margin: 0;
-    white-space: initial;
-  }
+    pre {
+      margin: 0;
+      white-space: initial;
+    }
 `;
 export default GlobalStyle;
