@@ -10,7 +10,6 @@ const Header: React.FC = () => {
     languageOptions,
     handleLanguageChange,
     handleNavigationItemClick,
-    handleTitleClick,
   } = useHeader();
 
   return (
@@ -21,7 +20,6 @@ const Header: React.FC = () => {
       locale={locale}
       onLanguageChange={handleLanguageChange}
       onNavigationItemClick={handleNavigationItemClick}
-      onTitleClick={handleTitleClick}
     />
   );
 };

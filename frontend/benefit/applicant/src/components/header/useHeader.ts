@@ -16,7 +16,6 @@ type ExtendedComponentProps = {
     newLanguage: OptionType<string>
   ) => void;
   handleNavigationItemClick: (pathname: string) => void;
-  handleTitleClick: () => void;
 };
 
 const useHeader = (): ExtendedComponentProps => {
@@ -41,15 +40,12 @@ const useHeader = (): ExtendedComponentProps => {
     void router.push(pathname);
   };
 
-  const handleTitleClick = (): void => handleNavigationItemClick('/');
-
   return {
     t,
     languageOptions,
     locale,
     handleLanguageChange,
     handleNavigationItemClick,
-    handleTitleClick,
   };
 };
 
