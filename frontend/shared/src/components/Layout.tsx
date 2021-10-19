@@ -15,7 +15,7 @@ type AppProps = { children: React.ReactNode; headingText?: string };
 
 const Layout: React.FC<AppProps> = ({ children, headingText }) => (
   <Main id="main_content">
-    <Heading>{headingText}</Heading>
+    {headingText && <Heading>{headingText}</Heading>}
     {children}
   </Main>
 );
