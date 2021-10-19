@@ -9,7 +9,6 @@ import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import { getApplicationFormFieldLabel } from 'shared/utils/application.utils';
 
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();
@@ -34,18 +33,20 @@ const Step3Summary: React.FC = () => {
           validation={{ required: true }}
           label={
             <Trans
-              i18nKey={getApplicationFormFieldLabel(t, 'termsAndConditions')}
-              t={t}
+              i18nKey="common:application.form.inputs.termsAndConditions"
+              components={{
+                a: (
+                  <a
+                    href={t('common:termsAndConditionsLink')}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {}
+                  </a>
+                ),
+              }}
             >
-              Olen lukenut palvelun{' '}
-              <a
-                href={t('common:termsAndConditionsLink')}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                käyttöehdot
-              </a>{' '}
-              ja hyväksyn ne.
+              {'Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.'}
             </Trans>
           }
         />
