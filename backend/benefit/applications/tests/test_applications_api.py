@@ -19,12 +19,15 @@ from applications.models import Application, ApplicationLogEntry, Attachment, Em
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from common.tests.conftest import *  # noqa
+from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
 from PIL import Image
 from rest_framework.reverse import reverse
+from terms.models import TermsOfServiceApproval
+from terms.tests.conftest import *  # noqa
 
 
 def get_detail_url(application):
@@ -1407,3 +1410,58 @@ def test_application_number(api_client, application):
     next_application = ApplicationFactory()
     assert Application.objects.count() == 2
     assert next_application.application_number == application.application_number + 2
+
+
+def test_application_api_before_accept_tos(api_client, application):
+    # Clear user TOS approval
+    TermsOfServiceApproval.objects.all().delete()
+
+    # Application list
+    response = api_client.get(reverse("v1:application-list"))
+    assert response.status_code == 403
+    assert (
+        str(response.data["detail"])
+        == "You have to accept Terms of Service before doing any action"
+    )
+
+    # Application get
+    response = api_client.get(get_detail_url(application))
+    assert response.status_code == 403
+    assert (
+        str(response.data["detail"])
+        == "You have to accept Terms of Service before doing any action"
+    )
+
+    # Application post
+    data = ApplicationSerializer(application).data
+    del data["id"]  # id is read-only field and would be ignored
+    response = api_client.post(
+        reverse("v1:application-list"),
+        data,
+    )
+    assert response.status_code == 403
+    assert (
+        str(response.data["detail"])
+        == "You have to accept Terms of Service before doing any action"
+    )
+
+    # Application put
+    data = ApplicationSerializer(application).data
+    data["company_contact_person_phone_number"] = "+358505658789"
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert response.status_code == 403
+    assert (
+        str(response.data["detail"])
+        == "You have to accept Terms of Service before doing any action"
+    )
+
+    # Application delete
+    response = api_client.delete(get_detail_url(application))
+    assert response.status_code == 403
+    assert (
+        str(response.data["detail"])
+        == "You have to accept Terms of Service before doing any action"
+    )

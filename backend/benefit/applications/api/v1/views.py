@@ -1,7 +1,7 @@
 from applications.api.v1.serializers import ApplicationSerializer, AttachmentSerializer
 from applications.enums import ApplicationStatus
 from applications.models import Application
-from companies.models import Company
+from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
 from django.utils.translation import gettext_lazy as _
@@ -12,7 +12,7 @@ from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from users.utils import get_business_id_from_user
+from users.utils import get_company_from_user
 
 
 class ApplicationFilter(filters.FilterSet):
@@ -47,6 +47,7 @@ class ApplicationFilter(filters.FilterSet):
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
+    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
@@ -65,13 +66,9 @@ class ApplicationViewSet(viewsets.ModelViewSet):
             if user.is_handler():
                 return qs
             else:
-                business_id = get_business_id_from_user(self.request.user)
-                if business_id:
-                    try:
-                        company = Company.objects.get(business_id=business_id)
-                        return company.applications.all()
-                    except Company.DoesNotExist:
-                        pass
+                company = get_company_from_user(user)
+                if company:
+                    return company.applications.all()
         return Application.objects.none()
 
     @action(

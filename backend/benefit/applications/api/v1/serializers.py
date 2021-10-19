@@ -51,7 +51,7 @@ from terms.api.v1.serializers import (
 )
 from terms.enums import TermsType
 from terms.models import ApplicantTermsApproval, Terms
-from users.utils import get_business_id_from_user
+from users.utils import get_company_from_user, get_request_user_from_context
 
 
 class ApplicationBasisSerializer(serializers.ModelSerializer):
@@ -1296,7 +1296,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             if hasattr(instance, "applicant_terms_approval"):
                 instance.applicant_terms_approval.delete()
 
-            approved_by = self._get_request_user_from_context()
+            approved_by = get_request_user_from_context(self)
             if settings.DISABLE_AUTHENTICATION and isinstance(
                 approved_by, AnonymousUser
             ):
@@ -1433,21 +1433,17 @@ class ApplicationSerializer(serializers.ModelSerializer):
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
 
-    def _get_request_user_from_context(self):
-        request = self.context.get("request")
-        if request:
-            return request.user
-        return None
+    def get_logged_in_user(self):
+        return get_request_user_from_context(self)
 
     def logged_in_user_is_admin(self):
-        user = self._get_request_user_from_context()
+        user = get_request_user_from_context(self)
         if user and hasattr(user, "is_handler"):
             return user.is_handler()
         return False
 
     def get_logged_in_user_company(self):
-        user = self._get_request_user_from_context()
+        user = get_request_user_from_context(self)
         if settings.DISABLE_AUTHENTICATION:
             return Company.objects.all().order_by("name").first()
-        business_id = get_business_id_from_user(user)
-        return Company.objects.get(business_id=business_id)
+        return get_company_from_user(user)

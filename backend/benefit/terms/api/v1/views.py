@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from common.permissions import BFIsAuthenticated
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
@@ -15,6 +17,8 @@ from users.utils import get_company_from_user
 
 
 class ApproveTermsOfServiceView(APIView):
+    permission_classes = [BFIsAuthenticated]
+
     @extend_schema(
         description=(
             (
@@ -53,6 +57,9 @@ class ApproveTermsOfServiceView(APIView):
             approval.selected_applicant_consents.set(
                 approve_terms.validated_data["selected_applicant_consents"]
             )
+            # Set the TOS approval flag to session
+            request.session[settings.TERMS_OF_SERVICE_SESSION_KEY] = True
+            request.session.save()
             return Response(TermsOfServiceApprovalSerializer(approval).data)
         else:
             raise ValidationError(

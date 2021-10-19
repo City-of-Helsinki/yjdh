@@ -1,6 +1,7 @@
 import re
 
 import pytest
+from applications.tests.conftest import *  # noqa
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.tests.data.company_data import (
@@ -52,7 +53,6 @@ def test_get_mock_company_results_in_error(
 ):
     api_client.credentials(HTTP_SESSION_ID="-1")
     response = api_client.get(get_company_api_url())
-
     assert response.status_code == 404
     assert (
         response.data
@@ -111,11 +111,8 @@ def test_get_company_from_ytj_results_in_error(
     mock_get_organisation_roles_and_create_company.delete()
     response = api_client.get(get_company_api_url())
 
-    assert response.status_code == 404
-    assert (
-        response.data
-        == "YTJ API is under heavy load or no company found with the given business id"
-    )
+    assert response.status_code == 403
+    assert response.data["detail"] == "Company information is not available"
 
 
 @pytest.mark.django_db

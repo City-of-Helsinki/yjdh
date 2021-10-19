@@ -1,3 +1,4 @@
+from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.services import get_or_create_company_with_business_id
@@ -18,6 +19,8 @@ class GetCompanyView(APIView):
     """
     API View to retrieve company info using the YTJ API integration.
     """
+
+    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
 
     @property
     def ytj_api_error(self):
