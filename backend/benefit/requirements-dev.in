@@ -8,3 +8,4 @@ pytest-django
 pytest-freezegun
 requests-mock
 Werkzeug
+openpyxl # for the Excel testcases from the handlers

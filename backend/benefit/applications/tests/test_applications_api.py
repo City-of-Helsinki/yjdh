@@ -596,7 +596,7 @@ def test_application_edit_benefit_type_non_business_invalid(
     assert response.status_code == 400
 
 
-def test_association_immediate_manager_check(api_client, application):
+def test_association_immediate_manager_check_invalid(api_client, application):
     data = ApplicationSerializer(application).data
     data["association_immediate_manager_check"] = False  # invalid value
     response = api_client.put(
@@ -604,6 +604,16 @@ def test_association_immediate_manager_check(api_client, application):
         data,
     )
     assert response.status_code == 400
+
+
+def test_association_immediate_manager_check_valid(api_client, association_application):
+    data = ApplicationSerializer(association_application).data
+    data["association_immediate_manager_check"] = True  # valid value for associations
+    response = api_client.put(
+        get_detail_url(association_application),
+        data,
+    )
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
