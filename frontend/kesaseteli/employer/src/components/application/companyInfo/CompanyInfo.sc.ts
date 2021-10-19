@@ -1,3 +1,4 @@
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import styled from 'styled-components';
 
 export const $CompanyInfoGrid = styled.div`
@@ -12,6 +13,6 @@ export const $CompanyInfoHeader = styled.div`
   font-weight: 500;
 `;
 
-export const $CompanyInfoCell = styled.div`
-  font-size: 18px;
+export const $CompanyInfoCell = styled($GridCell)`
+  font-size: ${(props) => props.theme.fontSize.body.l};
 `;
