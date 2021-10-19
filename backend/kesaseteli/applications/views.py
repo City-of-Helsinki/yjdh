@@ -42,7 +42,7 @@ class ApplicationExcelDownloadView(TemplateView):
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
         response["Content-Disposition"] = "attachment; filename=%s" % filename
-        response.content = export_applications_as_xlsx_output(queryset)
+        response.content = export_applications_as_xlsx_output(queryset, self.request)
         return response
 
     def render_error(self, error) -> HttpResponseRedirect:
