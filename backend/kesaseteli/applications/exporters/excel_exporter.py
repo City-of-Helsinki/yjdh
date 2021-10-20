@@ -69,6 +69,28 @@ FIELDS = (
         30,
         "#E7E3F9",
     ),
+    (
+        _("Erillinen laskuttaja"),
+        "%s",
+        ["application__is_separate_invoicer"],
+        30,
+        "#E7E3F9",
+    ),
+    (_("Laskuttajan nimi"), "%s", ["application__invoicer_name"], 30, "#E7E3F9"),
+    (
+        _("Laskuttajan sähköposti"),
+        "%s",
+        ["application__invoicer_email"],
+        30,
+        "#E7E3F9",
+    ),
+    (
+        _("Laskuttajan Puhelin"),
+        "%s",
+        ["application__invoicer_phone_number"],
+        30,
+        "#E7E3F9",
+    ),
     (_("Yrityksen toimiala"), "%s", ["application__company__industry"], 30, "#E7E3F9"),
     ("", "", [], 5, "#7F7F7F"),
     (
@@ -167,6 +189,18 @@ def get_attachment_uri(summer_voucher: SummerVoucher, field: tuple, value, reque
     return request.build_absolute_uri(path)
 
 
+def handle_special_cases(value, attr_str, summer_voucher, field, request):
+    if isinstance(value, bool):
+        value = str(_("Kyllä")) if value else str(_("Ei"))
+    elif attr_str == "attachments":
+        value = get_attachment_uri(summer_voucher, field, value, request)
+    elif "application__invoicer" in attr_str and getattr(
+        summer_voucher, "application", None
+    ):
+        value = value if summer_voucher.application.is_separate_invoicer else ""
+    return value
+
+
 def write_data_row(ws, row_number, summer_voucher, request):
     ws.write(row_number, 0, row_number)
 
@@ -178,10 +212,9 @@ def write_data_row(ws, row_number, summer_voucher, request):
         values = []
         for attr_str in attr_names:
             value = getattr_nested(summer_voucher, attr_str.split("__"))
-            if isinstance(value, bool):
-                value = str(_("Kyllä")) if value else str(_("Ei"))
-            elif attr_str == "attachments":
-                value = get_attachment_uri(summer_voucher, field, value, request)
+            value = handle_special_cases(
+                value, attr_str, summer_voucher, field, request
+            )
             values.append(value)
 
         cell_value = field[1] % tuple(values)
