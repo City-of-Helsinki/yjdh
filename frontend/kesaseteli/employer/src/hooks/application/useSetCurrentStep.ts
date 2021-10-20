@@ -1,11 +1,16 @@
-import { getStepNumber } from 'kesaseteli/employer/utils/application-wizard.utils';
-import useSetQueryParam from 'shared/hooks/useSetQueryParam';
-import useWizard from 'shared/hooks/useWizard';
+import useStepStorage from 'kesaseteli/employer/hooks/application/useStepStorage';
 
-const useSetCurrentStep = (): void => {
-  const { activeStep } = useWizard();
-  const currentStep = getStepNumber(activeStep + 1);
-  useSetQueryParam('step', String(currentStep));
+import useMountEffect from 'shared/hooks/useMountEffect';
+
+const useSetCurrentStep = (step: number): void => {
+  const [,setCurrentStep] = useStepStorage('current')
+  const [lastStep,setLastStep] = useStepStorage('last-visited')
+  useMountEffect(() => {
+    setCurrentStep(step);
+    if (!lastStep || lastStep < step) {
+      setLastStep(step);
+    }
+  });
 };
 
 export default useSetCurrentStep;

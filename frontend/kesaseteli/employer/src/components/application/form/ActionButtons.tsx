@@ -23,8 +23,8 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   const {
     isFirstStep,
     isLastStep,
-    previousStep,
-    nextStep,
+    goToPreviousStep,
+    goToNextStep,
     isLoading: isWizardLoading,
   } = useWizard();
   const { updateApplication, sendApplication, updateApplicationQuery } =
@@ -33,11 +33,11 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   const handleSuccess = React.useCallback(
     (validatedApplication) => {
       if (!isLastStep) {
-        return updateApplication(validatedApplication, () => nextStep());
+        return updateApplication(validatedApplication, () => goToNextStep());
       }
       return sendApplication(validatedApplication, onAfterLastStep);
     },
-    [isLastStep, updateApplication, nextStep, sendApplication, onAfterLastStep]
+    [isLastStep, updateApplication, goToNextStep, sendApplication, onAfterLastStep]
   );
 
   const isLoading =
@@ -51,7 +51,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
             theme="black"
             data-testid="previous-button"
             iconLeft={<IconArrowLeft />}
-            onClick={() => previousStep()}
+            onClick={() => goToPreviousStep()}
             isLoading={isLoading}
             disabled={isLoading}
           >

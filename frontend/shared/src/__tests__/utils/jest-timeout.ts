@@ -1,3 +1,3 @@
-const JEST_TIMEOUT = 60_000;
+const JEST_TIMEOUT = 90_000;
 
 export default JEST_TIMEOUT;

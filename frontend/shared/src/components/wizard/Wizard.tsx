@@ -61,8 +61,8 @@ const Wizard: React.FC<WizardProps> = React.memo(
     const steps = React.Children.toArray(children).length;
     const wizardValue = React.useMemo(
       () => ({
-        nextStep: doNextStep.current,
-        previousStep: goToPreviousStep.current,
+        goToNextStep: doNextStep.current,
+        goToPreviousStep: goToPreviousStep.current,
         handleStep: handleStep.current,
         isLoading,
         activeStep,

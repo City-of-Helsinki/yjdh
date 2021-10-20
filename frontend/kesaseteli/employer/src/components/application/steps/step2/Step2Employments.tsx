@@ -8,7 +8,7 @@ import React from 'react';
 const Step2Employments: React.FC = () => {
   const { t } = useTranslation();
   const title = t('common:application.step2.header');
-  useSetCurrentStep();
+  useSetCurrentStep(2);
   return (
     <ApplicationForm title={title}>
       <EmploymentAccordions />

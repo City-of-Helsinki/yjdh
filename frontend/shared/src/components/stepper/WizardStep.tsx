@@ -3,15 +3,21 @@ import useWizard from 'shared/hooks/useWizard';
 
 import { $StepCircle, $StepContainer, $StepTitle } from './Stepper.sc';
 
-export type StepProps = { title: string; index?: number; activeStep?: number };
+type Props = { title: string; index?: number; lastVisitedStep?: number };
 
-const WizardStep = ({ title, index = 0 }: StepProps): React.ReactElement => {
-  const { activeStep, previousStep } = useWizard();
-  const isActive = index < activeStep + 1;
+const WizardStep: React.FC<Props> = ({ title, index = 0, lastVisitedStep }) => {
+  const { activeStep, goToPreviousStep, goToNextStep } = useWizard();
+  const isActive = index < (lastVisitedStep ?? activeStep + 1);
 
   const goToStep = (): void => {
     if (index < activeStep) {
-      previousStep(index);
+      goToPreviousStep(index);
+    } else if (
+      index > activeStep &&
+      lastVisitedStep &&
+      index < lastVisitedStep
+    ) {
+      void goToNextStep(index);
     }
   };
 

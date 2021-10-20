@@ -26,6 +26,8 @@ beforeAll(() => {
   });
 });
 
+window.scrollTo = jest.fn();
+
 afterAll(() => {
   consoleSpy.mockRestore();
 });
