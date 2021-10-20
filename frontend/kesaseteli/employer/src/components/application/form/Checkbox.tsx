@@ -13,6 +13,7 @@ import {
   $GridCell,
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
+import useToggle from 'shared/hooks/useToggle';
 import Application from 'shared/types/application-form-data';
 
 type Props = {
@@ -37,20 +38,20 @@ const Checkbox: React.FC<Props> = ({
   const { hasError, defaultLabel, setError, clearErrors } =
     useApplicationFormField<boolean>(id);
 
-  const [selectedValue, setSelectedValue] = React.useState(initialValue);
+  const [selectedValue, toggleSelectedValue] = useToggle(initialValue);
   const required = Boolean(validation.required);
   const handleChange = React.useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.checked;
       onChange(value);
-      setSelectedValue(value);
+      toggleSelectedValue();
       if (required && !value) {
         setError({ type: 'required' });
       } else if (required && value) {
         clearErrors();
       }
     },
-    [setSelectedValue, onChange, required, clearErrors, setError]
+    [toggleSelectedValue, onChange, required, clearErrors, setError]
   );
 
   // TODO: This can be removed after backend supports invalid values in draft save

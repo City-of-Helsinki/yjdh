@@ -5,7 +5,7 @@ import TextInput, {
   TextInputProps,
 } from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
-import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import useToggleSerialNumberInput from 'kesaseteli/employer/hooks/application/useToggleSerialNumberInput';
 import useGetEmploymentErrors from 'kesaseteli/employer/hooks/employments/useGetEmploymentErrors';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -17,7 +17,7 @@ import {
   EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
 } from 'shared/constants/employee-constants';
 import theme from 'shared/styles/theme';
-import Employment, { EmploymentExceptionReason } from 'shared/types/employment';
+import Employment from 'shared/types/employment';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
 import AccordionActionButtons from './AccordionActionButtons';
@@ -62,28 +62,9 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       `summer_vouchers.${index}.${field}`,
     [index]
   );
-  const { getValue: getReason } =
-    useApplicationFormField<EmploymentExceptionReason>(
-      getId('summer_voucher_exception_reason')
-    );
-  const { clearValue: clearSerialNumber } = useApplicationFormField<string>(
-    getId('summer_voucher_serial_number')
-  );
 
-  const [showSerialNumberInput, setShowSerialNumberInput] = React.useState(
-    getReason() !== 'born_2004'
-  );
-
-  const handleReasonChange = React.useCallback(
-    (value: string) => {
-      const isBorn2004 = value === 'born_2004';
-      setShowSerialNumberInput(!isBorn2004);
-      if (isBorn2004) {
-        clearSerialNumber();
-      }
-    },
-    [setShowSerialNumberInput, clearSerialNumber]
-  );
+  const [showSerialNumberInput, toggleShowSerialNumberInput] =
+    useToggleSerialNumberInput(index);
 
   return (
     <$Accordion
@@ -112,7 +93,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             required: true,
           }}
           values={EMPLOYEE_EXCEPTION_REASON}
-          onChange={handleReasonChange}
+          onChange={toggleShowSerialNumberInput}
           $colSpan={2}
         />
         <FormSectionDivider $colSpan={2} />
