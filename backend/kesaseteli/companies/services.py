@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.http import HttpRequest
-from requests.exceptions import HTTPError
+from requests.exceptions import RequestException
 from rest_framework.exceptions import NotFound
 from shared.oidc.models import EAuthorizationProfile
 from shared.oidc.utils import get_organization_roles
@@ -59,7 +59,7 @@ def get_or_create_company_using_organization_roles(
 ) -> Company:
     try:
         organization_roles = get_organization_roles(eauth_profile, request)
-    except HTTPError:
+    except RequestException:
         raise NotFound(
             detail="Unable to fetch organization roles from eauthorizations API"
         )
@@ -73,7 +73,7 @@ def get_or_create_company_using_organization_roles(
             company = get_or_create_company_from_ytj_api(business_id)
         except ValueError:
             raise NotFound(detail="Could not handle the response from YTJ API")
-        except HTTPError:
+        except RequestException:
             LOGGER.warning(
                 f"YTJ API is under heavy load or no company found with the given business id: {business_id}"
             )
