@@ -1,10 +1,10 @@
+import { $ApplicationSummaryField } from 'kesaseteli/employer/components/application/summary/ApplicationSummary.sc';
 import EmploymentSummary from 'kesaseteli/employer/components/application/summary/EmploymentSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import {
-  $GridCell,
   $Hr,
   FormSectionProps,
 } from 'shared/components/forms/section/FormSection.sc';
@@ -47,22 +47,22 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
           as="div"
           data-testid="company-heading"
         />
-        <$GridCell as="pre" data-testid="company-data">
+        <$ApplicationSummaryField data-testid="company-data">
           {company.industry}, {company.company_form}, {company.postcode}{' '}
           {company.city}
-        </$GridCell>
-        <$GridCell as="pre" data-testid="contact-person">
+        </$ApplicationSummaryField>
+        <$ApplicationSummaryField data-testid="contact-person">
           {contact_person_name}, {contact_person_email},
           {contact_person_phone_number}
-        </$GridCell>
-        <$GridCell as="pre" data-testid="street-address">
+        </$ApplicationSummaryField>
+        <$ApplicationSummaryField data-testid="street-address">
           {street_address}
-        </$GridCell>
+        </$ApplicationSummaryField>
         {is_separate_invoicer && (
-          <$GridCell as="pre" data-testid="invoicer">
+          <$ApplicationSummaryField data-testid="invoicer">
             {t('common:application.form.inputs.is_separate_invoicer')}:{' '}
             {invoicer_name}, {invoicer_email}, {invoicer_phone_number}
-          </$GridCell>
+          </$ApplicationSummaryField>
         )}
       </FormSection>
       <FormSection
