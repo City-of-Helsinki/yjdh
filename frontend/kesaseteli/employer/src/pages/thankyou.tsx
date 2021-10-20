@@ -1,5 +1,4 @@
 import { Button, IconPlus } from 'hds-react';
-import ApplicationForm from 'kesaseteli/employer/components/application/ApplicationForm';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { GetStaticProps, NextPage } from 'next';
@@ -22,38 +21,38 @@ const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const locale = useLocale();
-  const { application, applicationId } = useApplicationApi();
+  const { applicationQuery, applicationId } = useApplicationApi();
 
   const createNewApplicationClick = React.useCallback((): void => {
     void router.push(`${locale}/`);
   }, [router, locale]);
 
-  if (!application) {
+  if (!applicationId) {
     void router.push(`${locale}/`);
     return <PageLoadingSpinner />;
   }
 
-  if (applicationId && application.status === 'draft') {
-    void router.push(`${locale}/application?id=${applicationId}`);
-    return <PageLoadingSpinner />;
-  }
-
-  const { submitted_at } = application;
-
-  return (
-    <Container>
-      <Layout>
-        <$Notification
-          label={t(`common:thankyouPage.thankyouMessageLabel`)}
-          type="success"
-          size="large"
-        >
-          {t(`common:thankyouPage.thankyouMessageContent`)}
-        </$Notification>
-        <ApplicationForm>
+  if (applicationQuery.isSuccess) {
+    const application = applicationQuery.data;
+    if (application.status === 'draft') {
+      void router.push(`${locale}/application?id=${applicationId}`);
+      return <PageLoadingSpinner />;
+    }
+    return (
+      <Container>
+        <Layout>
+          <$Notification
+            label={t(`common:thankyouPage.thankyouMessageLabel`)}
+            type="success"
+            size="large"
+          >
+            {t(`common:thankyouPage.thankyouMessageContent`)}
+          </$Notification>
           <ApplicationSummary
             header={t(`common:thankyouPage.title`, {
-              submitted_at: convertToUIDateAndTimeFormat(submitted_at),
+              submitted_at: convertToUIDateAndTimeFormat(
+                application.submitted_at
+              ),
             })}
           />
           <FormSection columns={1} withoutDivider>
@@ -67,10 +66,11 @@ const ThankYouPage: NextPage = () => {
               </Button>
             </$GridCell>
           </FormSection>
-        </ApplicationForm>
-      </Layout>
-    </Container>
-  );
+        </Layout>
+      </Container>
+    );
+  }
+  return <PageLoadingSpinner />;
 };
 
 export const getStaticProps: GetStaticProps =

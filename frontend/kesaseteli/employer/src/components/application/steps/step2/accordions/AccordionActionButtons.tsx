@@ -19,7 +19,7 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
     formState: { isSubmitting },
     getValues,
   } = useFormContext<Application>();
-  const { isLoading, updateApplication, removeEmployment } =
+  const { updateApplicationQuery, updateApplication, removeEmployment } =
     useApplicationApi();
 
   const { removeFromStorage } = useAccordionStateLocalStorage(index);
@@ -44,7 +44,7 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
           theme="black"
           data-testid={`update-employment-${index}`}
           onClick={validate}
-          disabled={isLoading || isSubmitting}
+          disabled={updateApplicationQuery.isLoading || isSubmitting}
         >
           {t(`common:application.step2.save_employment`)}
         </Button>
@@ -56,7 +56,7 @@ const AccordionActionButtons: React.FC<Props> = ({ index, onSave }: Props) => {
           data-testid={`remove-employment-${index}`}
           iconLeft={<IconTrash />}
           onClick={remove}
-          disabled={isLoading || isSubmitting}
+          disabled={updateApplicationQuery.isLoading || isSubmitting}
         >
           {t(`common:application.step2.remove_employment`)}
         </Button>

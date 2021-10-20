@@ -1,9 +1,8 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useResetApplicationFormValues from 'kesaseteli/employer/hooks/application/useResetApplicationFormValues';
-import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import Toast from 'shared/components/toast/Toast';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import Application from 'shared/types/application-form-data';
 
 type Props = {
@@ -12,9 +11,8 @@ type Props = {
 };
 
 const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
-  const { t } = useTranslation();
-  const { loadingError, updatingError } = useApplicationApi();
-  const errorMessage = (loadingError || updatingError)?.message;
+  const { applicationQuery } = useApplicationApi();
+
   const methods = useForm<Application>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -22,22 +20,14 @@ const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
   });
   useResetApplicationFormValues(methods);
 
-  React.useEffect(() => {
-    if (errorMessage) {
-      Toast({
-        autoDismissTime: 5000,
-        type: 'error',
-        labelText: t('common:application.common_error'),
-        text: errorMessage,
-      });
-    }
-  }, [t, errorMessage]);
-
-  return (
-    <FormProvider {...methods}>
-      <form aria-label={title}>{children}</form>
-    </FormProvider>
-  );
+  if (applicationQuery.isSuccess) {
+    return (
+      <FormProvider {...methods}>
+        <form aria-label={title}>{children}</form>
+      </FormProvider>
+    );
+  }
+  return <PageLoadingSpinner />;
 };
 ApplicationForm.defaultProps = {
   title: undefined,

@@ -1,3 +1,4 @@
+import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import useOpenAttachment from 'kesaseteli/employer/hooks/backend/useOpenAttachment';
 import useRemoveAttachmentQuery from 'kesaseteli/employer/hooks/backend/useRemoveAttachmentQuery';
@@ -7,6 +8,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { useFormContext, UseFormRegister } from 'react-hook-form';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import Application from 'shared/types/application-form-data';
 import Attachment, { AttachmentType } from 'shared/types/attachment';
@@ -36,44 +38,50 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
 
   const attachmentType = fieldName as AttachmentType;
 
-  const { getValue: getId } = useApplicationFormField<string>(
-    `summer_vouchers.${index}.id`
+  const { applicationQuery } = useApplicationApi<string>(
+    (application) => application.summer_vouchers[index].id
   );
-  const summerVoucherId = getId();
 
-  const { mutateAsync: removeAttachment, isLoading: isRemoving } =
-    useRemoveAttachmentQuery();
+  const summerVoucherId = applicationQuery.isSuccess
+    ? applicationQuery.data
+    : undefined;
 
-  const { mutateAsync: uploadAttachment, isLoading: isUploading } =
-    useUploadAttachmentQuery();
+  const removeAttachmentQuery = useRemoveAttachmentQuery();
+
+  const uploadAttachmentQuery = useUploadAttachmentQuery();
 
   const handleRemove = React.useCallback(
     async (attachmentId: string): Promise<void> => {
-      try {
-        await removeAttachment({
+      if (!summerVoucherId) {
+        throw new Error('id is missing');
+      }
+      removeAttachmentQuery.mutate(
+        {
           summer_voucher: summerVoucherId,
           id: attachmentId,
-        });
-        const resultList = attachments.filter(
-          (attachment) => attachment.id !== attachmentId
-        );
-        setAttachments(resultList);
-        if (required && isEmpty(resultList)) {
-          setError({ type: attachmentType });
+        },
+        {
+          onSuccess: () => {
+            const resultList = attachments.filter(
+              (attachment) => attachment.id !== attachmentId
+            );
+            setAttachments(resultList);
+            if (required && isEmpty(resultList)) {
+              setError({ type: attachmentType });
+            }
+          },
+          onError: () => {
+            showErrorToast(
+              t(`common:delete.errorTitle`),
+              t(`common:delete.errorMessage`)
+            );
+          },
         }
-      } catch (error) {
-        // TODO proper error handling
-        // eslint-disable-next-line no-console
-        console.log(error);
-        showErrorToast(
-          t(`common:delete.errorTitle`),
-          t(`common:delete.errorMessage`)
-        );
-      }
+      );
     },
     [
       attachments,
-      removeAttachment,
+      removeAttachmentQuery,
       summerVoucherId,
       setAttachments,
       required,
@@ -85,26 +93,31 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
 
   const handleUpload = React.useCallback(
     async (attachment: FormData): Promise<void> => {
-      try {
-        const newFile = await uploadAttachment({
+      if (!summerVoucherId) {
+        throw new Error('id is missing');
+      }
+      uploadAttachmentQuery.mutate(
+        {
           summer_voucher: summerVoucherId,
           data: attachment,
-        });
-        setAttachments([...attachments, newFile]);
-        clearErrors();
-      } catch (error) {
-        // TODO proper error handling
-        // eslint-disable-next-line no-console
-        console.log(error);
-        showErrorToast(
-          t(`common:upload.errorTitle`),
-          t(`common:upload.errorMessage`)
-        );
-      }
+        },
+        {
+          onSuccess: (newFile) => {
+            setAttachments([...attachments, newFile]);
+            clearErrors();
+          },
+          onError: () => {
+            showErrorToast(
+              t(`common:upload.errorTitle`),
+              t(`common:upload.errorMessage`)
+            );
+          },
+        }
+      );
     },
     [
       attachments,
-      uploadAttachment,
+      uploadAttachmentQuery,
       summerVoucherId,
       setAttachments,
       clearErrors,
@@ -126,29 +139,32 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     `common:application.form.helpers.${attachmentType}`
   )} ${t(`common:application.form.helpers.attachments`)}`;
 
-  return (
-    <AttachmentsListBase
-      buttonRef={ref}
-      name={id}
-      title={t(
-        `common:applications.sections.attachments.types.${attachmentType}.title`
-      )}
-      attachmentType={attachmentType}
-      attachments={attachments}
-      onUpload={handleUpload}
-      onRemove={handleRemove}
-      onOpen={openAttachment}
-      isUploading={isUploading}
-      isRemoving={isRemoving}
-      message={message}
-      errorMessage={
-        hasError()
-          ? `${t(`common:application.form.errors.${attachmentType}`)}`
-          : undefined
-      }
-      required={required}
-    />
-  );
+  if (applicationQuery.isSuccess) {
+    return (
+      <AttachmentsListBase
+        buttonRef={ref}
+        name={id}
+        title={t(
+          `common:applications.sections.attachments.types.${attachmentType}.title`
+        )}
+        attachmentType={attachmentType}
+        attachments={attachments}
+        onUpload={handleUpload}
+        onRemove={handleRemove}
+        onOpen={openAttachment}
+        isUploading={uploadAttachmentQuery.isLoading}
+        isRemoving={removeAttachmentQuery.isLoading}
+        message={message}
+        errorMessage={
+          hasError()
+            ? `${t(`common:application.form.errors.${attachmentType}`)}`
+            : undefined
+        }
+        required={required}
+      />
+    );
+  }
+  return <PageLoadingSpinner />;
 };
 
 export default AttachmentInput;

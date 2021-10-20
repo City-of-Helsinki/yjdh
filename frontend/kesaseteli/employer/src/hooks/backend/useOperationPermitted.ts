@@ -1,12 +1,9 @@
 import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
-import useAuth from 'shared/hooks/useAuth';
+import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
 
 const useIsOperationPermitted = (): boolean => {
-  const { isAuthenticated } = useAuth();
-  const {
-    isLoading: isLoadingLogout,
-    isSuccess: isLogoutSucceeded,
-  } = useLogoutQuery();
-  return isAuthenticated && !isLoadingLogout && !isLogoutSucceeded;
+  const userQuery = useUserQuery();
+  const logoutQuery = useLogoutQuery();
+  return userQuery.isSuccess && logoutQuery.isIdle;
 };
 export default useIsOperationPermitted;

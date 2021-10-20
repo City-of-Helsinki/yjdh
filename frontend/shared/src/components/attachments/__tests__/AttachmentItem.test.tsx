@@ -1,4 +1,3 @@
-import { RenderResult } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import noop from 'lodash/noop';
 import React from 'react';
@@ -19,10 +18,13 @@ describe('AttachmentItem', () => {
 
   const getComponent = (
     props: Partial<AttachmentItemProps> = {}
-  ): RenderResult => render(<AttachmentItem {...initialProps} {...props} />);
+  ): ReturnType<typeof render> =>
+    render(<AttachmentItem {...initialProps} {...props} />);
 
   it('should render with no accessibility violations', async () => {
-    const { container } = getComponent();
+    const {
+      renderResult: { container },
+    } = getComponent();
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });

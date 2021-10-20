@@ -8,37 +8,32 @@ import React from 'react';
 import { UseMutationResult, UseQueryResult } from 'react-query';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
-import { getFormApplication } from 'shared/utils/application.utils';
 
-export type ApplicationQueryResult = UseQueryResult<Application, Error>;
-export type ApplicationMutationResult = UseMutationResult<
-  Application,
-  Error,
-  DraftApplication
->;
-
-export type ApplicationApi = {
+export type ApplicationApi<T> = {
   applicationId?: string;
-  application: ApplicationQueryResult['data'];
+  applicationQuery: UseQueryResult<T, Error>;
+  updateApplicationQuery: UseMutationResult<
+    Application,
+    Error,
+    DraftApplication
+  >;
   updateApplication: (
     application: DraftApplication,
-    onSuccess?: () => void
+    onSuccess?: () => void | Promise<void>
   ) => void;
-  sendApplication: (application: Application, onSuccess?: () => void) => void;
+  sendApplication: (
+    application: Application,
+    onSuccess?: () => void | Promise<void>
+  ) => void;
   addEmployment: (
     application: DraftApplication,
-    onSuccess?: () => void
+    onSuccess?: () => void | Promise<void>
   ) => void;
   removeEmployment: (
     application: DraftApplication,
     index: number,
-    onSuccess?: () => void
+    onSuccess?: () => void | Promise<void>
   ) => void;
-  isLoading: ApplicationQueryResult['isLoading'];
-  isUpdating: ApplicationQueryResult['isLoading'];
-  loadingError: ApplicationQueryResult['error'];
-  updatingError: ApplicationMutationResult['error'];
-  isError: boolean;
 };
 
 export type Params = {
@@ -46,94 +41,89 @@ export type Params = {
   onSendSuccess: (application: Application) => void;
 };
 
-const useApplicationApi = (): ApplicationApi => {
+const useApplicationApi = <T = Application>(
+  select?: (application: Application) => T
+): ApplicationApi<T> => {
   const applicationId = useApplicationIdQueryParam();
 
-  const {
-    data: application,
-    isLoading,
-    error: loadingError,
-  } = useApplicationQuery(applicationId);
-  const {
-    mutate,
-    isLoading: isUpdating,
-    error: updatingError,
-  } = useUpdateApplicationQuery(application);
+  const applicationQuery = useApplicationQuery<T>(applicationId, select);
+  const updateApplicationQuery = useUpdateApplicationQuery(applicationId);
 
-  const addEmployment: ApplicationApi['addEmployment'] = (
-    draftApplication: DraftApplication,
-    onSuccess: (application: DraftApplication) => void = noop
-  ) => {
-    const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
-    return mutate(
-      { ...draftApplication, status: 'draft', summer_vouchers },
-      {
-        onSuccess: () => onSuccess(draftApplication),
-      }
-    );
-  };
-
-  const removeEmployment: ApplicationApi['removeEmployment'] = (
-    draftApplication: DraftApplication,
-    index: number,
-    onSuccess: (application: DraftApplication) => void = noop
-  ) => {
-    const summer_vouchers = (draftApplication.summer_vouchers ?? []).filter(
-      (elem, i) => i !== index
-    );
-    return mutate(
-      { ...draftApplication, status: 'draft', summer_vouchers },
-      {
-        onSuccess: () => onSuccess(draftApplication),
-      }
-    );
-  };
-
-  const updateApplication: ApplicationApi['updateApplication'] = (
-    draftApplication: DraftApplication,
-    onSuccess = noop
-  ) => {
-    if (isEmpty(draftApplication.summer_vouchers)) {
-      return addEmployment(draftApplication, onSuccess);
-    }
-    return mutate(
-      { ...draftApplication, status: 'draft' },
-      {
-        onSuccess,
-      }
-    );
-  };
-  const sendApplication: ApplicationApi['sendApplication'] = (
-    completeApplication: Application,
-    onSuccess = noop
-  ) =>
-    mutate(
-      { ...completeApplication, status: 'submitted' },
-      {
-        onSuccess: () => {
-          clearLocalStorage(`application-${completeApplication.id}`);
-          onSuccess();
-        },
-      }
-    );
-
-  const formApplication = React.useMemo(
-    () => application && getFormApplication(application),
-    [application]
+  const addEmployment: ApplicationApi<T>['addEmployment'] = React.useCallback(
+    (
+      draftApplication: DraftApplication,
+      onSuccess: (application: DraftApplication) => void = noop
+    ) => {
+      const summer_vouchers = [...(draftApplication.summer_vouchers ?? []), {}];
+      return updateApplicationQuery.mutate(
+        { ...draftApplication, status: 'draft', summer_vouchers },
+        {
+          onSuccess: () => onSuccess(draftApplication),
+        }
+      );
+    },
+    [updateApplicationQuery]
   );
+
+  const removeEmployment: ApplicationApi<T>['removeEmployment'] =
+    React.useCallback(
+      (
+        draftApplication: DraftApplication,
+        index: number,
+        onSuccess: (application: DraftApplication) => void = noop
+      ) => {
+        const summer_vouchers = (draftApplication.summer_vouchers ?? []).filter(
+          (elem, i) => i !== index
+        );
+        return updateApplicationQuery.mutate(
+          { ...draftApplication, status: 'draft', summer_vouchers },
+          {
+            onSuccess: () => onSuccess(draftApplication),
+          }
+        );
+      },
+      [updateApplicationQuery]
+    );
+
+  const updateApplication: ApplicationApi<T>['updateApplication'] =
+    React.useCallback(
+      (draftApplication: DraftApplication, onSuccess = noop) => {
+        if (isEmpty(draftApplication.summer_vouchers)) {
+          return addEmployment(draftApplication, onSuccess);
+        }
+        return updateApplicationQuery.mutate(
+          { ...draftApplication, status: 'draft' },
+          {
+            onSuccess,
+          }
+        );
+      },
+      [updateApplicationQuery, addEmployment]
+    );
+
+  const sendApplication: ApplicationApi<T>['sendApplication'] =
+    React.useCallback(
+      (completeApplication: Application, onSuccess = noop) =>
+        updateApplicationQuery.mutate(
+          { ...completeApplication, status: 'submitted' },
+          {
+            onSuccess: () => {
+              clearLocalStorage(`application-${completeApplication.id}`);
+              return onSuccess();
+            },
+          }
+        ),
+      [updateApplicationQuery]
+    );
 
   return {
     applicationId,
-    application: formApplication,
+    applicationQuery,
+    updateApplicationQuery,
     updateApplication,
     sendApplication,
     addEmployment,
     removeEmployment,
-    isLoading,
-    isUpdating,
-    loadingError,
-    updatingError,
-    isError: Boolean(loadingError || updatingError),
   };
 };
 
