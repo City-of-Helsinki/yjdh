@@ -10,6 +10,7 @@ from applications.enums import (
 from common.utils import duration_in_months
 from companies.models import Company
 from django.conf import settings
+from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
@@ -147,6 +148,10 @@ class Application(UUIDModel, TimeStampedModel):
     company_contact_person_phone_number = PhoneNumberField(
         verbose_name=_("company contact person's phone number"),
         blank=True,
+        validators=[
+            MinLengthValidator(limit_value=3),
+            MaxLengthValidator(limit_value=13),
+        ],
     )
     company_contact_person_email = models.EmailField(
         blank=True, verbose_name=_("company contact person's email")
@@ -489,6 +494,10 @@ class Employee(UUIDModel, TimeStampedModel):
     phone_number = PhoneNumberField(
         verbose_name=_("phone number"),
         blank=True,
+        validators=[
+            MinLengthValidator(limit_value=3),
+            MaxLengthValidator(limit_value=13),
+        ],
     )
     email = models.EmailField(blank=True, verbose_name=_("email"))
 
