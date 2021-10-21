@@ -74,10 +74,24 @@ const expectNextButtonIsDisabled = (): void => {
   ).toBeDisabled();
 };
 
-// Note: Needs to be promised event if there is nothing to wait
-// It prevents `Cannot read property 'createEvent' of null` error
-// which happens occasionally. Read more: https://stackoverflow.com/questions/60504720/jest-cannot-read-property-createevent-of-null
+const expectPreviousButtonIsEnabled = (): void => {
+  expect(
+    screen.getByRole('button', {
+      name: /(palaa edelliseen)|(application.buttons.previous)/i,
+    })
+  ).toBeEnabled();
+};
+
+const waitForNextButtonIsEnabled = async (): Promise<void> => {
+  await waitFor(expectNextButtonIsEnabled);
+};
+
+const waitForPreviousButtonIsEnabled = async (): Promise<void> => {
+  await waitFor(expectPreviousButtonIsEnabled);
+};
+
 const clickPreviousButton = async (): Promise<void> => {
+  await waitForPreviousButtonIsEnabled();
   userEvent.click(
     screen.getByRole('button', {
       name: /(palaa edelliseen)|(application.buttons.previous)/i,
@@ -111,6 +125,7 @@ const getApplicationPageApi = (
     const put = expectToSaveApplication(application);
     const get = expectToGetApplicationFromBackend(application);
     await waitForBackendRequestsToComplete();
+    await waitForNextButtonIsEnabled();
     userEvent.click(
       screen.getByRole('button', {
         name: /(tallenna ja jatka)|(application.buttons.next)/i,
