@@ -25,9 +25,9 @@ YJDH-Benefit
 
 2. Run `docker-compose -f docker-compose.benefit.yml up`
 
-The Applicant Frontend is now running at [localhost:3000](http://localhost:3000)
-The Handler Frontend is now running at [localhost:3100](http://localhost:3100)
-The backend is now running at [localhost:8000](http://localhost:8000)
+The Applicant Frontend is now running at [localhost:3000](https://localhost:3000)
+The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
+The backend is now running at [localhost:8000](https://localhost:8000)
 
 ## Setting up Husky pre-commit hooks:
 

@@ -8,7 +8,7 @@ export const BackendEndpoint: Record<string, BackendPath> = {
 } as const;
 
 export const getBackendDomain = (): string =>
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
 
 export const getHeaders = (language: string): Headers => ({ 'Accept-Language': language });
 
