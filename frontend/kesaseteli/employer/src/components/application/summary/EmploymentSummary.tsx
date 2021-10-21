@@ -58,10 +58,12 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
           index={index}
         />
         <EmploymentFieldSummary fieldName="employment_postcode" index={index} />
-        <EmploymentFieldSummary
-          fieldName="summer_voucher_serial_number"
-          index={index}
-        />
+        {summer_voucher_exception_reason === '9th_grader' && (
+          <EmploymentFieldSummary
+            fieldName="summer_voucher_serial_number"
+            index={index}
+          />
+        )}
         <EmploymentFieldSummary fieldName="employee_school" index={index} />
         <EmploymentFieldSummary fieldName="employment_contract" index={index}>
           {t(`common:application.form.inputs.employment_contract`)}:{' '}

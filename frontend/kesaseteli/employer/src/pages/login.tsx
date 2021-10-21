@@ -41,6 +41,7 @@ const Login: NextPage = () => {
     }
     return t(`common:loginPage.infoContent`);
   }, [logout, error, sessionExpired, t]);
+
   const notificationType = error || sessionExpired ? 'error' : 'info';
 
   return (

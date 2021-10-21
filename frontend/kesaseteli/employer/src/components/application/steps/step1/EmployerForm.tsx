@@ -2,47 +2,16 @@ import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyI
 import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import ContactInputs from 'kesaseteli/employer/components/application/steps/step1/ContactInputs';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useInvoicerToggle from 'kesaseteli/employer/hooks/application/useInvoicerToggle';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import useMountEffect from 'shared/hooks/useMountEffect';
-import Application from 'shared/types/application-form-data';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
   const stepTitle = t('common:application.step1.header');
 
-  const { applicationQuery, updateApplication } = useApplicationApi();
-
-  const showInitially =
-    (applicationQuery.isSuccess &&
-      applicationQuery.data.is_separate_invoicer) ||
-    false;
-  const [showInvoicer, setShowInvoicer] =
-    React.useState<boolean>(showInitially);
-
-  useMountEffect(() => {
-    setShowInvoicer(showInitially);
-  });
-
-  const { getValues } = useFormContext<Application>();
-
-  const handleInvoicerCheckboxChange = React.useCallback(
-    (value: boolean) => {
-      setShowInvoicer(value);
-      if (!value) {
-        updateApplication({
-          ...getValues(),
-          invoicer_name: '',
-          invoicer_email: '',
-          invoicer_phone_number: '',
-        });
-      }
-    },
-    [setShowInvoicer, updateApplication, getValues]
-  );
+  const [showInvoicer, toggleInvoicer] = useInvoicerToggle();
 
   return (
     <>
@@ -61,8 +30,8 @@ const EmployerForm: React.FC = () => {
         <Checkbox
           $colSpan={2}
           id="is_separate_invoicer"
-          onChange={handleInvoicerCheckboxChange}
-          initialValue={showInitially}
+          onChange={toggleInvoicer}
+          initialValue={showInvoicer}
         />
         {showInvoicer && <ContactInputs type="invoicer" />}
       </FormSection>
