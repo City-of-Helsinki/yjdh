@@ -2,6 +2,7 @@ import {
   expectToGetApplicationFromBackend,
   expectToSaveApplication,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
@@ -16,7 +17,8 @@ type StepExpections = {
 
 type StepActions = {
   clickPreviousButton: () => Promise<void>;
-  clickNextButton: () => Promise<void>;
+  clickNextButton: () => Promise<nock.Scope[]>;
+  clickNextButtonAndExpectToSaveApplication: () => Promise<void>;
 };
 
 type Step1Api = {
@@ -121,20 +123,28 @@ const getApplicationPageApi = (
     userEvent.click(document.body);
   };
 
-  const clickNextButton = async (): Promise<void> => {
-    const put = expectToSaveApplication(application);
-    const get = expectToGetApplicationFromBackend(application);
+  const clickNextButton = async (): Promise<nock.Scope[]> => {
     await waitForBackendRequestsToComplete();
     await waitForNextButtonIsEnabled();
+    const put = expectToSaveApplication(application);
+    const get = expectToGetApplicationFromBackend(application);
     userEvent.click(
       screen.getByRole('button', {
         name: /(tallenna ja jatka)|(application.buttons.next)/i,
       })
     );
-    await waitFor(() => {
-      put.done();
-      get.done();
-    });
+    return [put, get];
+  };
+
+  const clickNextButtonAndExpectToSaveApplication = async (): Promise<void> => {
+    const expectations = await clickNextButton();
+    await Promise.all(
+      expectations.map((expectation) =>
+        waitFor(() => {
+          expectation.done();
+        })
+      )
+    );
   };
 
   return {
@@ -219,6 +229,7 @@ const getApplicationPageApi = (
           ),
         clickPreviousButton,
         clickNextButton,
+        clickNextButtonAndExpectToSaveApplication,
       },
     },
     step2: {
@@ -233,6 +244,7 @@ const getApplicationPageApi = (
       actions: {
         clickPreviousButton,
         clickNextButton,
+        clickNextButtonAndExpectToSaveApplication,
       },
     },
     step3: {
@@ -247,6 +259,7 @@ const getApplicationPageApi = (
       actions: {
         clickPreviousButton,
         clickNextButton,
+        clickNextButtonAndExpectToSaveApplication,
       },
     },
   };

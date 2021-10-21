@@ -164,7 +164,8 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           applicationPage.step1.actions.typeContactPersonPhone(
             contact_person_phone_number
           );
-          await applicationPage.step1.actions.clickNextButton();
+          await applicationPage.step1.actions.clickNextButtonAndExpectToSaveApplication();
+          await applicationPage.step2.expectations.stepIsLoaded();
         });
 
         it('can traverse between wizard steps', async () => {
