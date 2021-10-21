@@ -11,7 +11,7 @@ const CompanyInfoCell: React.FC<Props> = ({ field }: Props) => {
   return (
     <$CompanyInfoCell aria-labelledby={field} role="gridcell">
       {applicationQuery.isSuccess ? (
-        <pre>{applicationQuery.data.company?.[field]}</pre>
+        applicationQuery.data.company?.[field]
       ) : (
         <LoadingSkeleton width="90%" />
       )}
