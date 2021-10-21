@@ -4,15 +4,10 @@ import {
   SelectionGroupProps,
 } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
-import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {
-  RegisterOptions,
-  useFormContext,
-  UseFormRegister,
-} from 'react-hook-form';
+import { Controller, RegisterOptions, UseFormRegister } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -40,9 +35,9 @@ const SelectionGroup = <T extends readonly string[]>({
   ...$gridCellProps
 }: Props<T>): ReturnType<typeof HdsSelectionGroup> => {
   const { t } = useTranslation();
-  const { register } = useFormContext<Application>();
 
   const {
+    control,
     getValue: getInitialValue,
     clearErrors,
     hasError,
@@ -59,47 +54,47 @@ const SelectionGroup = <T extends readonly string[]>({
     [setSelectedValue, onChange, clearErrors]
   );
 
-  // TODO: This can be removed after backend supports invalid values in draft save
-  const getValueForBackend = React.useCallback(
-    (value: string) => (isEmpty(value) ? undefined : value),
-    []
-  );
-
   return (
     <$GridCell {...$gridCellProps}>
-      <$SelectionGroup
-        key={id}
-        id={id}
-        data-testid={id}
+      <Controller
         name={id}
-        required={showTitle && Boolean(validation?.required)}
-        direction={direction}
-        errorText={
-          hasError()
-            ? `${t(`common:application.form.errors.selectionGroups`)}`
-            : undefined
-        }
-        label={
-          showTitle
-            ? t(`common:application.form.inputs.${fieldName}`)
-            : undefined
-        }
-      >
-        {values.map((value) => (
-          <RadioButton
-            {...register(id, { ...validation, setValueAs: getValueForBackend })}
-            key={`${id}-${value}`}
-            id={`${id}-${value}`}
-            data-testid={`${id}-${value}`}
-            label={t(
-              `common:application.form.selectionGroups.${fieldName}.${value}`
-            )}
-            value={value}
-            onChange={handleChange}
-            checked={value === selectedValue}
-          />
-        ))}
-      </$SelectionGroup>
+        rules={validation}
+        control={control}
+        render={({ field }) => (
+          <$SelectionGroup
+            {...field}
+            id={id}
+            data-testid={id}
+            name={id}
+            required={showTitle && Boolean(validation?.required)}
+            direction={direction}
+            errorText={
+              hasError()
+                ? `${t(`common:application.form.errors.selectionGroups`)}`
+                : undefined
+            }
+            label={
+              showTitle
+                ? t(`common:application.form.inputs.${fieldName}`)
+                : undefined
+            }
+          >
+            {values.map((value) => (
+              <RadioButton
+                key={`${id}-${value}`}
+                id={`${id}-${value}`}
+                data-testid={`${id}-${value}`}
+                label={t(
+                  `common:application.form.selectionGroups.${fieldName}.${value}`
+                )}
+                value={value}
+                onChange={handleChange}
+                checked={value === selectedValue}
+              />
+            ))}
+          </$SelectionGroup>
+        )}
+      />
     </$GridCell>
   );
 };

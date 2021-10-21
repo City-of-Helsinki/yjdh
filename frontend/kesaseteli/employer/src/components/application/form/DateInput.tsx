@@ -3,11 +3,7 @@ import useApplicationFormField from 'kesaseteli/employer/hooks/application/useAp
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {
-  RegisterOptions,
-  useFormContext,
-  UseFormRegister,
-} from 'react-hook-form';
+import { RegisterOptions, UseFormRegister } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -41,8 +37,9 @@ const DateInput = ({
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
   const locale = useLocale();
-  const { register } = useFormContext<Application>();
+
   const {
+    register,
     defaultLabel,
     getValue,
     getError,

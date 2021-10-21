@@ -6,7 +6,7 @@ import useUploadAttachmentQuery from 'kesaseteli/employer/hooks/backend/useUploa
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { useFormContext, UseFormRegister } from 'react-hook-form';
+import { UseFormRegister } from 'react-hook-form';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import showErrorToast from 'shared/components/toast/show-error-toast';
@@ -23,9 +23,8 @@ type Props = {
 const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
   const { t } = useTranslation();
 
-  const { register } = useFormContext<Application>();
-
   const {
+    register,
     setValue: setAttachments,
     hasError,
     fieldName,

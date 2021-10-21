@@ -6,11 +6,7 @@ import {
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {
-  RegisterOptions,
-  useFormContext,
-  UseFormRegister,
-} from 'react-hook-form';
+import { RegisterOptions, UseFormRegister } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -53,9 +49,8 @@ const TextInput: React.FC<TextInputProps> = ({
   ...$gridCellProps
 }) => {
   const { t } = useTranslation();
-  const { register } = useFormContext<Application>();
 
-  const { getValue, getError, fieldName, getErrorText, hasError } =
+  const { register, getValue, getError, fieldName, getErrorText, hasError } =
     useApplicationFormField<string>(id);
 
   const errorText = React.useMemo((): string | undefined => {
