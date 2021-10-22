@@ -83,6 +83,11 @@ const TextInput: React.FC<TextInputProps> = ({
     [getError, getValue]
   );
 
+  const preventScrolling = React.useCallback(
+    (event: React.WheelEvent<HTMLInputElement>) => event.currentTarget.blur(),
+    []
+  );
+
   return (
     <$GridCell {...$gridCellProps}>
       <$TextInput
@@ -97,6 +102,7 @@ const TextInput: React.FC<TextInputProps> = ({
         required={Boolean(validation.required)}
         max={validation.maxLength ? String(validation.maxLength) : undefined}
         defaultValue={getValue()}
+        onWheel={preventScrolling}
         errorText={errorText}
         label={t(`common:application.form.inputs.${fieldName}`)}
         invalid={hasError()}
