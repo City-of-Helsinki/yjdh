@@ -80,7 +80,7 @@
           "9th_grader": "9 klassist",
           "born_2004": "Född 2004"
         },
-        "hired_without_voucher_assessment" : {
+        "hired_without_voucher_assessment": {
           "yes": "Jo",
           "no": "Nej",
           "maybe": "Kanske"
@@ -141,7 +141,9 @@
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
-    "information": "Information om servicen"
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
+    "information": "Information om servicen",
+    "informationLink": "https://kesaseteli.fi/sv/"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -171,7 +173,7 @@
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "applications": {
-    "sections" : {
+    "sections": {
       "attachments": {
         "types": {
           "employment_contract": {

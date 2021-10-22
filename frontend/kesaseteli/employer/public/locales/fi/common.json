@@ -80,7 +80,7 @@
           "9th_grader": "9.-luokkalainen",
           "born_2004": "Syntynyt vuonna 2004"
         },
-        "hired_without_voucher_assessment" : {
+        "hired_without_voucher_assessment": {
           "yes": "Kyllä",
           "no": "En",
           "maybe": "Ehkä"
@@ -141,7 +141,9 @@
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
-    "information": "Tietoa palvelusta"
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "information": "Tietoa palvelusta",
+    "informationLink": "https://kesaseteli.fi/"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -171,7 +173,7 @@
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
   "applications": {
-    "sections" : {
+    "sections": {
       "attachments": {
         "types": {
           "employment_contract": {

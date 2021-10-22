@@ -80,7 +80,7 @@
           "9th_grader": "9th grader",
           "born_2004": "Born in 2004"
         },
-        "hired_without_voucher_assessment" : {
+        "hired_without_voucher_assessment": {
           "yes": "Yes",
           "no": "No",
           "maybe": "Maybe"
@@ -141,7 +141,9 @@
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
-    "information": "Information on the service"
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
+    "information": "Information on the service",
+    "informationLink": "https://kesaseteli.fi/en/"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -171,7 +173,7 @@
     "errorMessage": "Something went wrong. Please try again later."
   },
   "applications": {
-    "sections" : {
+    "sections": {
       "attachments": {
         "types": {
           "employment_contract": {
