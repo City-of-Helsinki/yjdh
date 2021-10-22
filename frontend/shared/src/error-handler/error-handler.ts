@@ -9,6 +9,8 @@ const handleError = (
   router: NextRouter,
   locale: Language
 ): void => {
+  // eslint-disable-next-line no-console
+  console.error('Unexpected backend error', error);
   if (/40[13]/.test(error.message)) {
     void router.push(`${locale}/login?sessionExpired=true`);
   } else if (/5\d{2}/.test(error.message)) {

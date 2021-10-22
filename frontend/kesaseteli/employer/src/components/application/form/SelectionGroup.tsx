@@ -60,9 +60,9 @@ const SelectionGroup = <T extends readonly string[]>({
         name={id}
         rules={validation}
         control={control}
-        render={({ field }) => (
+        render={({ field: { ref, ...fieldProps } }) => (
           <$SelectionGroup
-            {...field}
+            {...fieldProps}
             id={id}
             data-testid={id}
             name={id}
