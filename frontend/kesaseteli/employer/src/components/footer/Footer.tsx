@@ -12,7 +12,13 @@ const FooterSection: React.FC = () => {
         <Footer.Base
           copyrightHolder={t('common:footer.copyrightText')}
           copyrightText={t('common:footer.allRightsReservedText')}
-        />
+        >
+          <Footer.Item
+            as="a"
+            href="https://kesaseteli.fi/"
+            label={t('common:footer.information')}
+          />
+        </Footer.Base>
       </Footer>
     </$FooterWrapper>
   );
