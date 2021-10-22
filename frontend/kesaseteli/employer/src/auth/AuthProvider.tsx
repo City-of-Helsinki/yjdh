@@ -2,10 +2,16 @@ import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
 import React from 'react';
 import AuthContext from 'shared/auth/AuthContext';
 
+// check that authentication is still every 5 minutes
+const FIVE_MINUTES = 5 * 60 * 1_000;
+
 const AuthProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
-  const userQuery = useUserQuery((user) => Boolean(user));
+  const userQuery = useUserQuery<boolean>({
+    select: (user) => Boolean(user),
+    refetchInterval: FIVE_MINUTES,
+  });
   return (
     <AuthContext.Provider
       value={{
