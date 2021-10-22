@@ -6,9 +6,6 @@
 !babel.config.js
 !kesaseteli/employer/next.config.js
 !kesaseteli/employer/next-i18next.config.js
-!kesaseteli/employer/sentry.client.config.js
-!kesaseteli/employer/sentry.server.config.js
-!kesaseteli/employer/sentry.properties
 !kesaseteli/employer/public
 !kesaseteli/employer/src
 !shared/src
