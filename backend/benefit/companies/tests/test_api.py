@@ -11,6 +11,7 @@ from companies.tests.data.company_data import (
 )
 from django.conf import settings
 from django.test import override_settings
+from requests import HTTPError
 
 
 def get_company_api_url(business_id=""):
@@ -109,10 +110,8 @@ def test_get_company_from_ytj_results_in_error(
     requests_mock.get(matcher, text="Error", status_code=404)
     # Delete company so that API cannot return object from DB
     mock_get_organisation_roles_and_create_company.delete()
-    response = api_client.get(get_company_api_url())
-
-    assert response.status_code == 403
-    assert response.data["detail"] == "Company information is not available"
+    with pytest.raises(HTTPError):
+        api_client.get(get_company_api_url())
 
 
 @pytest.mark.django_db
