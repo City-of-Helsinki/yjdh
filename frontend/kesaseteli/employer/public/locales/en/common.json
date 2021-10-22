@@ -128,7 +128,6 @@
         "validate": "The information you entered is in an incorrect format",
         "selectionGroups": "Select an option",
         "checkboxRequired": "Selection is mandatory",
-        "employmentsRequired": "Add at least one employment report",
         "employment_contract": "Add at least one file",
         "payslip": "Add at least one file"
       },

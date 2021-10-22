@@ -1,6 +1,7 @@
 import { DateInput as HdsDateInput } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import isEmpty from 'lodash/isEmpty';
+import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -20,7 +21,6 @@ import {
   isValidDate,
   parseDate,
 } from 'shared/utils/date.utils';
-import noop from 'lodash/noop';
 
 import { $DateInput } from './DateInput.sc';
 

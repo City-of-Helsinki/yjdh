@@ -128,7 +128,6 @@
         "validate": "Den inmatade uppgiftern är i fel format",
         "selectionGroups": "Välj något alternativ",
         "checkboxRequired": "Obligatoriskt val",
-        "employmentsRequired": "Lägg till åtminstone ett arbetsförhållande",
         "employment_contract": "Lägg till åtminstone en fil",
         "payslip": "Lägg till åtminstone en fil"
       },
