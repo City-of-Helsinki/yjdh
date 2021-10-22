@@ -20,6 +20,7 @@ import {
   isValidDate,
   parseDate,
 } from 'shared/utils/date.utils';
+import noop from 'lodash/noop';
 
 import { $DateInput } from './DateInput.sc';
 
@@ -80,9 +81,9 @@ const DateInput = ({
   }, [errorType, errorMessage, setError, t]);
 
   // TODO: This can be removed after backend supports invalid values in draft save
-  const handleChange = React.useCallback(
-    (dateString: string) => {
-      const uiDate = convertToUIDateFormat(dateString);
+  const handleBlur = React.useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      const uiDate = convertToUIDateFormat(event.target.value);
       if (isEmpty(uiDate)) {
         setError({ type: 'pattern' });
         clearValue();
@@ -110,9 +111,8 @@ const DateInput = ({
         initialMonth={new Date()}
         defaultValue={date}
         language={locale}
-        // for some reason date picker causes error "Cannot read property 'createEvent' of null" in tests. It's not needed for tests so it's disabled for them.
-        disableDatePicker={process.env.NODE_ENV === 'test'}
-        onChange={handleChange}
+        onBlur={handleBlur}
+        onChange={noop}
         errorText={getErrorText()}
         label={defaultLabel}
         invalid={hasError()}
