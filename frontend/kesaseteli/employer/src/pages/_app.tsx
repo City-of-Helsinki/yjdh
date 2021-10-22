@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from '@sentry/browser';
 import Axios, { AxiosInstance } from 'axios';
 import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
@@ -22,7 +22,11 @@ import { ThemeProvider } from 'styled-components';
 
 import { BackendEndPoints, getBackendDomain } from '../backend-api/backend-api';
 
-// Sentry logger
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
+  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
+});
+
 setLogger({
   log: (message) => {
     Sentry.captureMessage(message);

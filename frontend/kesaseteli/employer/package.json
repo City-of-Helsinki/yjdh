@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@frontend/shared": "*",
-    "@sentry/nextjs": "^6.13.3",
+    "@sentry/browser": "^6.13.3",
     "@types/next": "^9.0.0",
     "@types/react": "^17.0.28",
     "@types/react-dom": "^17.0.6",
