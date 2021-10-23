@@ -8,12 +8,14 @@ import { $Header, $HeaderItem, $Heading } from './ApplicationWizard.sc';
 
 type WizardProps = {
   initialStep: number;
-  children: React.ReactNode;
+  lastVisitedStep?: number;
   footer?: React.ReactNode;
+  children: React.ReactNode;
 };
 
 const ApplicationWizard: React.FC<WizardProps> = ({
   initialStep,
+  lastVisitedStep,
   children,
   footer,
 }: WizardProps) => {
@@ -24,7 +26,7 @@ const ApplicationWizard: React.FC<WizardProps> = ({
         <$Heading>{t('common:application.new')}</$Heading>
       </$HeaderItem>
       <$HeaderItem>
-        <WizardStepper />
+        <WizardStepper lastVisitedStep={lastVisitedStep} />
       </$HeaderItem>
     </$Header>
   );
@@ -39,6 +41,7 @@ const ApplicationWizard: React.FC<WizardProps> = ({
 };
 
 ApplicationWizard.defaultProps = {
+  lastVisitedStep: undefined,
   footer: undefined,
 };
 
