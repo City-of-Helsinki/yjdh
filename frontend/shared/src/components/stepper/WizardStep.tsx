@@ -22,7 +22,11 @@ const WizardStep: React.FC<Props> = ({ title, index = 0, lastVisitedStep }) => {
   };
 
   return (
-    <$StepContainer onClick={goToStep} isActive={isActive}>
+    <$StepContainer
+      onClick={goToStep}
+      isActive={isActive}
+      role={isActive ? 'button' : undefined}
+    >
       <$StepCircle isActive={isActive}>{index + 1}</$StepCircle>
       <$StepTitle isActive={isActive}>{title}</$StepTitle>
     </$StepContainer>
