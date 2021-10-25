@@ -6,7 +6,8 @@ import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
 import Header from 'kesaseteli/employer/components/header/Header';
 import { AppProps } from 'next/app';
-import { appWithTranslation } from 'next-i18next';
+import Head from 'next/head';
+import { appWithTranslation, useTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -75,27 +76,33 @@ const queryClient: QueryClient = new QueryClient({
   },
 });
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => (
-  <BackendAPIProvider baseURL={getBackendDomain()}>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStyling />
-          <Layout>
-            <Header />
-            <HDSToastContainer />
-            <Content>
-              <Component {...pageProps} />
-            </Content>
-            <Footer />
-          </Layout>
-        </ThemeProvider>
-      </AuthProvider>
-      <HiddenLoadingIndicator />
-      {process.env.NODE_ENV === 'development' &&
-        process.env.TEST_CAFE !== 'true' && <ReactQueryDevtools />}
-    </QueryClientProvider>
-  </BackendAPIProvider>
-);
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  const { t } = useTranslation();
+  return (
+    <BackendAPIProvider baseURL={getBackendDomain()}>
+      <Head>
+        <title>{t('common:appName')}</title>
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
+            <GlobalStyling />
+            <Layout>
+              <Header />
+              <HDSToastContainer />
+              <Content>
+                <Component {...pageProps} />
+              </Content>
+              <Footer />
+            </Layout>
+          </ThemeProvider>
+        </AuthProvider>
+        <HiddenLoadingIndicator />
+        {process.env.NODE_ENV === 'development' &&
+          process.env.TEST_CAFE !== 'true' && <ReactQueryDevtools />}
+      </QueryClientProvider>
+    </BackendAPIProvider>
+  );
+};
 
 export default appWithTranslation(initLocale(App));

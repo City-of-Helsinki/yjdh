@@ -2,6 +2,7 @@ import { Button, IconPlus } from 'hds-react';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { GetStaticProps, NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -40,6 +41,12 @@ const ThankYouPage: NextPage = () => {
     }
     return (
       <Container>
+        <Head>
+          <title>
+            {t(`common:thankyouPage.thankyouMessageLabel`)} |{' '}
+            {t(`common:appName`)}
+          </title>
+        </Head>
         <Layout>
           <$Notification
             label={t(`common:thankyouPage.thankyouMessageLabel`)}
