@@ -336,6 +336,11 @@
     }
   },
   "appName": "Helsinki-benefit EN",
+  "header": {
+    "loginLabel": "Sign in to the service",
+    "logoutLabel": "Log out",
+    "userAriaLabelPrefix": "User:"
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"

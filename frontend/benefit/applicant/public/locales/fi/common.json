@@ -336,6 +336,11 @@
     }
   },
   "appName": "Helsinki-benefit FI",
+  "header": {
+    "loginLabel": "Kirjaudu palveluun",
+    "logoutLabel": "Kirjaudu ulos",
+    "userAriaLabelPrefix": "Käyttäjä:"
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
