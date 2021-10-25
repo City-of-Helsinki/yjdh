@@ -90,6 +90,7 @@ env = environ.Env(
     DUMMY_COMPANY_FORM=(str, "OY"),
     TERMS_OF_SERVICE_SESSION_KEY=(str, "_tos_session"),
     ENABLE_DEBUG_ENV=(bool, False),
+    TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -332,6 +333,8 @@ MAX_UPLOAD_SIZE = 10485760  # 10MB
 MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
 
 WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
+
+TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
