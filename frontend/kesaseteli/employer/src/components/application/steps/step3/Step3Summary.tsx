@@ -11,6 +11,7 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const Step3Summary: React.FC = () => {
+  useSetCurrentStep(3);
   const { t } = useTranslation();
   const router = useRouter();
   const locale = router.locale ?? DEFAULT_LANGUAGE;
@@ -22,8 +23,6 @@ const Step3Summary: React.FC = () => {
   }, [applicationId, router, locale]);
   const title = t('common:application.step3.header');
   const tooltip = t('common:application.step3.tooltip');
-
-  useSetCurrentStep();
   return (
     <ApplicationForm title={title}>
       <ApplicationSummary header={title} tooltip={tooltip} />

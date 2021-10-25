@@ -9,12 +9,14 @@ import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/component
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
+import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import React from 'react';
 import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
+  afterEach(() => clearLocalStorage('application'));
   it('should not violate accessibility', async () => {
     const {
       renderResult: { container },
@@ -132,7 +134,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           );
         });
 
-        it('saves application and goes to step 2 when next button is clicked', async () => {
+        it('saves application when next button is clicked', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
           await renderPage(ApplicationPage, { query: { id } });
@@ -162,7 +164,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           applicationPage.step1.actions.typeContactPersonPhone(
             contact_person_phone_number
           );
-          await applicationPage.step1.actions.clickNextButton();
+          await applicationPage.step1.actions.clickNextButtonAndExpectToSaveApplication();
           await applicationPage.step2.expectations.stepIsLoaded();
         });
 

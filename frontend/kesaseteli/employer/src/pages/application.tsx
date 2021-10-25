@@ -2,7 +2,7 @@ import Step1Employer from 'kesaseteli/employer/components/application/steps/step
 import Step2Employments from 'kesaseteli/employer/components/application/steps/step2/Step2Employments';
 import Step3Summary from 'kesaseteli/employer/components/application/steps/step3/Step3Summary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useGetCurrentStep from 'kesaseteli/employer/hooks/application/useGetCurrentStep';
+import useStepStorage from 'kesaseteli/employer/hooks/application/useStepStorage';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -14,10 +14,13 @@ import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const ApplicationPage: NextPage = () => {
   const router = useRouter();
-  const initialStep = useGetCurrentStep();
 
   const locale = router.locale ?? DEFAULT_LANGUAGE;
   const { applicationId, applicationQuery } = useApplicationApi();
+
+  const [initialStep] = useStepStorage('current');
+  const [lastVisitedStep] = useStepStorage('last-visited');
+
 
   if (!applicationId) {
     void router.replace(`${locale}/`);
@@ -26,7 +29,7 @@ const ApplicationPage: NextPage = () => {
 
   if (applicationQuery.isSuccess) {
     return (
-      <ApplicationWizard initialStep={initialStep}>
+      <ApplicationWizard initialStep={initialStep} lastVisitedStep={lastVisitedStep}>
         <Step1Employer />
         <Step2Employments />
         <Step3Summary />

@@ -10,7 +10,7 @@
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --runInBand --no-cache",
     "test:debug-nock": "cross-env DEBUG=nock.* yarn test",
-    "test:debug-dom": "cross-env DEBUG_PRINT_LIMIT=100000 yarn test",
+    "test:debug-dom": "cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test:debug-dom --verbose --coverage",
     "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",
