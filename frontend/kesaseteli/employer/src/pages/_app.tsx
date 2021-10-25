@@ -1,7 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
 
 import * as Sentry from '@sentry/browser';
-import Axios, { AxiosInstance } from 'axios';
+import Axios from 'axios';
 import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
 import Footer from 'kesaseteli/employer/components/footer/Footer';
 import Header from 'kesaseteli/employer/components/header/Header';
@@ -39,33 +39,6 @@ setLogger({
   },
 });
 
-const createQueryClient = (axios: AxiosInstance): QueryClient =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: (failureCount, error) =>
-          process.env.NODE_ENV === 'production' &&
-          failureCount < 3 &&
-          !/40[134]/.test((error as Error).message),
-        staleTime: 30000,
-        notifyOnChangeProps: 'tracked',
-        queryFn: async ({ queryKey: [url] }) => {
-          // Best practice: https://react-query.tanstack.com/guides/default-query-function
-          if (
-            typeof url === 'string' &&
-            BackendEndPoints.some((endpoint) => url.startsWith(endpoint))
-          ) {
-            const { data } = await axios.get(
-              `${getBackendDomain()}${url.toLowerCase()}`
-            );
-            return data;
-          }
-          throw new Error(`Invalid QueryKey: '${String(url)}'`);
-        },
-      },
-    },
-  });
-
 const axios = Axios.create({
   baseURL: getBackendDomain(),
   headers: {
@@ -76,9 +49,35 @@ const axios = Axios.create({
   xsrfHeaderName: 'X-CSRFToken',
 });
 
+const queryClient: QueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) =>
+        process.env.NODE_ENV === 'production' &&
+        failureCount < 3 &&
+        !/40[134]/.test((error as Error).message),
+      staleTime: 30000,
+      notifyOnChangeProps: 'tracked',
+      queryFn: async ({ queryKey: [url] }) => {
+        // Best practice: https://react-query.tanstack.com/guides/default-query-function
+        if (
+          typeof url === 'string' &&
+          BackendEndPoints.some((endpoint) => url.startsWith(endpoint))
+        ) {
+          const { data } = await axios.get(
+            `${getBackendDomain()}${url.toLowerCase()}`
+          );
+          return data;
+        }
+        throw new Error(`Invalid QueryKey: '${String(url)}'`);
+      },
+    },
+  },
+});
+
 const App: React.FC<AppProps> = ({ Component, pageProps }) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
-    <QueryClientProvider client={createQueryClient(axios)}>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider theme={theme}>
           <GlobalStyling />
