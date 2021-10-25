@@ -4,7 +4,6 @@ import {
   Notification,
   NotificationProps as HDSNotificationProps,
 } from 'hds-react';
-import noop from 'lodash/noop';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -14,6 +13,8 @@ import Layout from 'shared/components/Layout';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
+
+import useLogin from '../hooks/useLogin';
 
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
@@ -25,6 +26,7 @@ const Login: NextPage = () => {
   const {
     query: { logout, error, sessionExpired },
   } = useRouter();
+  const login = useLogin();
 
   const theme = useTheme();
 
@@ -58,7 +60,7 @@ const Login: NextPage = () => {
         >
           {notificationProps.content}
         </Notification>
-        <Button theme="coat" iconLeft={<IconSignin />} onClick={noop}>
+        <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
           {t('common:login.login')}
         </Button>
       </Layout>
@@ -69,5 +71,4 @@ const Login: NextPage = () => {
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
 
-// TODO: redirect when the user is authenticated: withoutAuth(Login)
 export default Login;

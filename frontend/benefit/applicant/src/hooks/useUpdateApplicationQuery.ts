@@ -14,7 +14,7 @@ const useUpdateApplicationQuery = (): UseMutationResult<
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   return useMutation<ApplicationData, AxiosError<ErrorData>, ApplicationData>(
-    ['application'],
+    'updateApplication',
     (application: ApplicationData) =>
       handleResponse<ApplicationData>(
         axios.put(
