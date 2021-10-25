@@ -8,6 +8,7 @@ import { useHeader } from './useHeader';
 
 export type HeaderProps = {
   title?: string;
+  skipToContentLabel?: string;
   menuToggleAriaLabel?: string;
   locale: string;
   languages: OptionType<string>[];
@@ -30,6 +31,7 @@ export type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({
+  skipToContentLabel,
   title,
   menuToggleAriaLabel,
   languages,
@@ -60,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({
       onMenuToggle={toggleMenu}
       menuToggleAriaLabel={menuToggleAriaLabel || ''}
       skipTo={`#${MAIN_CONTENT_ID}`}
-      skipToContentLabel={MAIN_CONTENT_ID}
+      skipToContentLabel={skipToContentLabel}
       onTitleClick={handleTitleClick}
       logoLanguage={logoLang as LogoLanguage}
       title={title}

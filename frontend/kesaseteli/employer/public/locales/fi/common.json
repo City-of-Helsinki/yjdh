@@ -3,7 +3,8 @@
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
-    "userAriaLabelPrefix": "Käyttäjä:"
+    "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Siirry sisältöön"
   },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
