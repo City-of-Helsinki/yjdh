@@ -10,7 +10,6 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import Layout from 'shared/components/Layout';
-import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
 
@@ -21,7 +20,6 @@ type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
 };
 
 const Login: NextPage = () => {
-  useClearQueryParams();
   const { t } = useTranslation();
   const {
     query: { logout, error, sessionExpired },
