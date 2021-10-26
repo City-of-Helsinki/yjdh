@@ -1,5 +1,6 @@
 import collections
 import datetime
+import decimal
 
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from calculator.enums import RowType
@@ -12,7 +13,6 @@ from calculator.models import (  # SalaryBenefitPaySubsidySubTotalRow,
     StateAidMaxMonthlyRow,
 )
 from django.db import transaction
-from django.utils.translation import gettext_lazy as _
 
 BenefitSubRange = collections.namedtuple(
     "BenefitSubRange", ["start_date", "end_date", "pay_subsidy"]
@@ -30,13 +30,13 @@ class HelsinkiBenefitCalculator:
         if calculation.application.benefit_type == BenefitType.SALARY_BENEFIT:
             return SalaryBenefitCalculator2021(calculation)
         else:
-            raise Exception("tbd")
+            return DummyBenefitCalculator(calculation)
 
     def get_sub_total_ranges(self):
         # return a list of (start_date, end_date, pay_subsidy) that require a separate calculation.
         # date range are inclusive
         if pay_subsidies := list(
-            self.calculation.application.calculator_pay_subsidies.order_by("start_date")
+            self.calculation.application.pay_subsidies.order_by("start_date")
         ):
             ranges = []
             if self.calculation.start_date < pay_subsidies[0].start_date:
@@ -84,6 +84,7 @@ class HelsinkiBenefitCalculator:
 
     # if calculation is enabled for non-handler users, need to change this
     # locked applications (transferred to Ahjo) should never be re-calculated.
+    # TODO: add "HANDLING" here
     CALCULATION_ALLOWED_STATUSES = [ApplicationStatus.RECEIVED]
 
     @transaction.atomic
@@ -96,12 +97,6 @@ class HelsinkiBenefitCalculator:
                 RowType.HELSINKI_BENEFIT_TOTAL_EUR
             )
             self.calculation.save()
-        else:
-            raise ValueError(
-                _(
-                    "Benefit amount be calculated only for received non-locked applications"
-                )
-            )
 
     def _create_row(self, row_class, **kwargs):
         row = row_class(
@@ -110,6 +105,20 @@ class HelsinkiBenefitCalculator:
         self._row_counter += 1
         row.update_row()
         row.save()
+
+
+class DummyBenefitCalculator(HelsinkiBenefitCalculator):
+    def create_rows(self):
+        self._create_row(
+            DescriptionRow,
+            description_fi_template="Laskentalogiikka ei käytössä",
+        )
+        self._create_row(
+            SalaryBenefitTotalRow,
+        )
+
+    def get_amount(self, row_type, default=None):
+        return decimal.Decimal(0)
 
 
 class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):

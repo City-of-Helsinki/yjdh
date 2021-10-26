@@ -57,7 +57,13 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     search_fields = ["company_name", "company_contact_person_email"]
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = (
+            super()
+            .get_queryset()
+            .select_related("company", "calculation")
+            .prefetch_related("pay_subsidies")
+        )
+
         # FIXME: Remove this when FE implemented authentication
         if settings.DISABLE_AUTHENTICATION:
             return qs

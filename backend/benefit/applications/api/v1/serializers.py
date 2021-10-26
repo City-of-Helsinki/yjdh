@@ -23,6 +23,9 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
+from calculator.api.v1.serializers import CalculationSerializer, PaySubsidySerializer
+from calculator.models import Calculation
+from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
 from common.utils import (
     date_range_overlap,
@@ -432,6 +435,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
     """
     Fields in the Company model come from YTJ/other source and are not editable by user, and are listed
     in read_only_fields. If sent in the request, these fields are ignored.
+
+    The following fields are available for logged in handlers only:
+    * calculation
+    * pay_subsidies
+    * batch
     """
 
     status = serializers.ChoiceField(
@@ -441,6 +449,18 @@ class ApplicationSerializer(serializers.ModelSerializer):
     )
 
     employee = EmployeeSerializer()
+
+    calculation = CalculationSerializer(
+        help_text="Calculation of this application, available for handlers only",
+        allow_null=True,
+        required=False,
+    )
+
+    pay_subsidies = PaySubsidySerializer(
+        many=True,
+        help_text="PaySubsidy objects, available for handlers only",
+        required=False,
+    )
 
     applicant_terms_approval = ApplicantTermsApprovalSerializer(
         read_only=True, help_text="Currently approved applicant terms, if any"
@@ -505,6 +525,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "company",
             "company_name",
             "company_form",
+            "calculation",
+            "pay_subsidies",
             "submitted_at",
             "bases",
             "available_bases",
@@ -703,6 +725,19 @@ class ApplicationSerializer(serializers.ModelSerializer):
         allow_blank=True,
         help_text="Company contact person phone number normalized (start with zero, without country code)",
     )
+
+    HANDLER_ONLY_FIELDS = [
+        "calculation",
+        "pay_subsidies",
+        "batch",
+    ]
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.context.get("request") and not self.logged_in_user_is_admin():
+            for field_name in self.HANDLER_ONLY_FIELDS:
+                del fields[field_name]
+        return fields
 
     def get_applicant_terms_approval_needed(self, obj):
         return ApplicantTermsApproval.terms_approval_needed(obj)
@@ -1264,6 +1299,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
             self._validate_attachments(instance)
             self._validate_employee_consent(instance)
             self._update_applicant_terms_approval(instance, approve_terms)
+            if not hasattr(instance, "calculation"):
+                # if the previous status was ADDITIONAL_INFORMATION_NEEDED, then calculation already
+                # exists
+                Calculation.objects.create_for_application(instance)
+
+            call_now_or_later(
+                instance.calculation.calculate,
+                duplicate_check=("calculation.calculate", instance.pk),
+            )
         ApplicationLogEntry.objects.create(
             application=instance,
             from_status=previous_status,
@@ -1348,10 +1392,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
             attach.delete()
 
     @transaction.atomic
+    @do_delayed_calls_at_end()  # application recalculation
     def update(self, instance, validated_data):
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
         employee_data = validated_data.pop("employee", None)
         approve_terms = validated_data.pop("approve_terms", None)
+        calculation_data = validated_data.pop("calculation", None)
+        pay_subsidy_data = validated_data.pop("pay_subsidies", None)
         pre_update_status = instance.status
         application = super().update(instance, validated_data)
         if de_minimis_data is not None:
@@ -1362,7 +1409,10 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
         if instance.status != pre_update_status:
             self.handle_status_transition(instance, pre_update_status, approve_terms)
-
+        if calculation_data is not None:
+            self._update_calculation(instance, calculation_data)
+        if pay_subsidy_data is not None:
+            self._update_pay_subsidies(instance, pay_subsidy_data)
         return application
 
     @transaction.atomic
@@ -1379,6 +1429,73 @@ class ApplicationSerializer(serializers.ModelSerializer):
         self._update_de_minimis_aid(application, de_minimis_data)
         self._update_or_create_employee(application, employee_data)
         return application
+
+    def _update_pay_subsidies(self, application, pay_subsidy_data):
+
+        if application.status != ApplicationStatus.RECEIVED:
+            # pay subsidies are not editable after application is locked,
+            # and draft applications can't have them
+            # TODO: check for ApplicationStatus.HANDLING here
+            return
+
+        serializer = PaySubsidySerializer(
+            application.pay_subsidies.all(), data=pay_subsidy_data, many=True
+        )
+
+        if not serializer.is_valid():
+            raise serializers.ValidationError(
+                format_lazy(
+                    _("Reading pay subsidy data failed: {errors}"),
+                    errors=serializer.errors,
+                )
+            )
+        for idx, pay_subsidy in enumerate(serializer.validated_data):
+            pay_subsidy["application_id"] = application.pk
+            pay_subsidy[
+                "ordering"
+            ] = idx  # use the ordering defined in the JSON sent by the client
+        serializer.save()
+        call_now_or_later(
+            application.calculation.calculate,
+            duplicate_check=("calculation.calculate", application.pk),
+        )
+
+    def _update_calculation(self, application, calculation_data):
+        request = self.context.get("request")
+        if application.status not in [ApplicationStatus.RECEIVED]:
+            # TODO: add ApplicationStatus.HANDLING here
+            return
+        if not request and request.method != "PUT":
+            return
+        if not self.logged_in_user_is_admin():
+            # only admins are allowed to modify calculations
+            return
+        if not hasattr(application, "calculation") and calculation_data is not None:
+            raise serializers.ValidationError(
+                _("The calculation should be created when the application is submitted")
+            )
+        if application.calculation.id != calculation_data["id"]:
+            raise serializers.ValidationError(
+                _("The calculation id does not match existing id")
+            )
+        serializer = CalculationSerializer(
+            application.calculation,
+            data=calculation_data,
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            call_now_or_later(
+                application.calculation.calculate,
+                duplicate_check=("calculation.calculate", application.pk),
+            )
+        else:
+            raise serializers.ValidationError(
+                format_lazy(
+                    _("Reading calculation data failed: {errors}"),
+                    errors=serializer.errors,
+                )
+            )
 
     def _update_or_create_employee(self, application, employee_data):
         employee, created = Employee.objects.update_or_create(

@@ -109,9 +109,9 @@ def test_application_single_read_unauthorized(
 
 def test_application_single_read(api_client, application):
     response = api_client.get(get_detail_url(application))
-    assert response.data["batch"] is None
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
+    assert "batch" not in response.data
     assert response.status_code == 200
 
 
