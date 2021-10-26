@@ -12,6 +12,7 @@ let consoleSpy: jest.SpyInstance;
 beforeAll(() => {
   const messagesToIgnore = [
     'Warning: You seem to have overlapping act() calls, this is not supported',
+    'Using ReactElement as a label is against good usability and accessibility practices. Please prefer plain strings.',
     'react-i18next:: You will need to pass in an i18next instance by using initReactI18next',
   ];
 

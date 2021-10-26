@@ -2,6 +2,7 @@ import useGetApplicationFormFieldLabel from 'kesaseteli/employer/hooks/applicati
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
+  Control,
   ErrorOption,
   FieldError,
   get,
@@ -24,6 +25,8 @@ type Value =
   | Employment[keyof Employment];
 
 type ApplicationFormField<V extends Value> = {
+  control: Control<Application>;
+  register: UseFormRegister<Application>;
   fieldName: ApplicationFieldName;
   defaultLabel: string;
   getValue: () => V;
@@ -43,6 +46,8 @@ const useApplicationFormField = <V extends Value>(
 ): ApplicationFormField<V> => {
   const { t } = useTranslation();
   const {
+    control,
+    register,
     getValues,
     setValue,
     watch,
@@ -99,35 +104,21 @@ const useApplicationFormField = <V extends Value>(
     [clearErrors, id]
   );
 
-  return React.useMemo(
-    () => ({
-      fieldName,
-      defaultLabel,
-      getValue,
-      setValue: setValueF,
-      watch: watchF,
-      getError,
-      hasError,
-      getErrorText,
-      setError,
-      clearValue,
-      trigger: triggerF,
-      clearErrors: clearErrorsF,
-    }),
-    [
-      fieldName,
-      defaultLabel,
-      getValue,
-      setValueF,
-      watchF,
-      getError,
-      hasError,
-      getErrorText,
-      setError,
-      clearValue,
-      triggerF,
-      clearErrorsF,
-    ]
-  );
+  return {
+    control,
+    register,
+    fieldName,
+    defaultLabel,
+    getValue,
+    setValue: setValueF,
+    watch: watchF,
+    getError,
+    hasError,
+    getErrorText,
+    setError,
+    clearValue,
+    trigger: triggerF,
+    clearErrors: clearErrorsF,
+  };
 };
 export default useApplicationFormField;

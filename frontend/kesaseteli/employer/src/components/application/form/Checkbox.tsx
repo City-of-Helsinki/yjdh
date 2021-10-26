@@ -1,14 +1,9 @@
 import { Checkbox as HdsCheckbox, CheckboxProps } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
-import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {
-  RegisterOptions,
-  useFormContext,
-  UseFormRegister,
-} from 'react-hook-form';
+import { Controller, RegisterOptions, UseFormRegister } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -33,9 +28,8 @@ const Checkbox: React.FC<Props> = ({
   ...$gridCellProps
 }: Props) => {
   const { t } = useTranslation();
-  const { register } = useFormContext<Application>();
 
-  const { hasError, defaultLabel, setError, clearErrors } =
+  const { hasError, defaultLabel, setError, clearErrors, control } =
     useApplicationFormField<boolean>(id);
 
   const [selectedValue, toggleSelectedValue] = useToggle(initialValue);
@@ -54,29 +48,36 @@ const Checkbox: React.FC<Props> = ({
     [toggleSelectedValue, onChange, required, clearErrors, setError]
   );
 
-  // TODO: This can be removed after backend supports invalid values in draft save
-  const getValueForBackend = React.useCallback(
-    (value: string) => (isEmpty(value) ? false : value),
-    []
-  );
-
   return (
     <$GridCell {...$gridCellProps}>
-      <HdsCheckbox
-        {...register(id, { ...validation, setValueAs: getValueForBackend })}
-        key={id}
-        id={id}
-        data-testid={id}
+      <Controller
         name={id}
-        required={required}
-        errorText={
-          hasError() && required
-            ? `${t(`common:application.form.errors.checkboxRequired`)}`
-            : undefined
-        }
-        label={label || defaultLabel}
-        onChange={handleChange}
-        checked={selectedValue ?? initialValue}
+        control={control}
+        defaultValue={initialValue}
+        rules={validation}
+        render={({ field }) => (
+          <HdsCheckbox
+            {...field}
+            id={id}
+            data-testid={id}
+            required={required}
+            errorText={
+              hasError() && required
+                ? `${t(`common:application.form.errors.checkboxRequired`)}`
+                : undefined
+            }
+            label={
+              <>
+                {label ?? defaultLabel} {required ? '*' : ''}
+              </>
+            }
+            onChange={(event) => {
+              field.onChange(event);
+              return handleChange(event);
+            }}
+            checked={selectedValue}
+          />
+        )}
       />
     </$GridCell>
   );

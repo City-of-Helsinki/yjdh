@@ -21,7 +21,7 @@ const useToggleSerialNumberInput = (
     getId('summer_voucher_serial_number')
   );
 
-  const [showInput, toggleShowInput] = useToggle(getReason() !== 'born_2004');
+  const [showInput, toggleShowInput] = useToggle(getReason() === '9th_grader');
 
   const toggleShowSerialNumberInput = React.useCallback(
     (value: string) => {
