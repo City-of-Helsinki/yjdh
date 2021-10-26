@@ -7,12 +7,12 @@ import { getLanguageOptions } from 'shared/utils/common';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  languageOptions: OptionType[];
+  languageOptions: OptionType<string>[];
   locale: string;
   navigationItems?: NavigationItem[];
   handleLanguageChange: (
     e: React.SyntheticEvent<unknown>,
-    newLanguage: OptionType
+    newLanguage: OptionType<string>
   ) => void;
   handleNavigationItemClick: (pathname: string) => void;
   handleTitleClick: () => void;
@@ -24,13 +24,13 @@ const useHeader = (): ExtendedComponentProps => {
   const router = useRouter();
 
   const languageOptions = React.useMemo(
-    (): OptionType[] => getLanguageOptions(t, 'supportedLanguages'),
+    (): OptionType<string>[] => getLanguageOptions(t, 'supportedLanguages'),
     [t]
   );
 
   const handleLanguageChange = (
     e: React.SyntheticEvent<unknown>,
-    newLanguage: OptionType
+    newLanguage: OptionType<string>
   ): void => {
     e.preventDefault();
     void router.push('/', '/', { locale: newLanguage.value });
