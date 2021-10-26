@@ -37,7 +37,7 @@
     "step1": {
       "name": "Arbetsgivare",
       "header": "1. Arbetsgivarens uppgifter",
-      "tooltip": "Skriv in dina uppgifter i formuläret. Fortsätt med att klicka på fortsätt. Du kan återvända för att redigera uppgifterna också i följande skede.",
+      "tooltip": "Skriv in dina uppgifter i formuläret. Fortsätt med att klicka på Spara och fortsätt. Du kan återvända för att redigera uppgifterna också i följande skede.",
       "companyInfoGrid": {
         "title": "Foretag information",
         "header": {
@@ -91,7 +91,7 @@
         "contact_person_email": "Kontakt personens epost",
         "street_address": "Arbetsplatsens gatuadress",
         "contact_person_phone_number": "Telefonnummer",
-        "is_separate_invoicer": "aktureringen sköts av en annan person",
+        "is_separate_invoicer": "Faktureringen sköts av en annan person",
         "invoicer_name": "Kontakt personens namn",
         "invoicer_email": "Kontakt personens epost",
         "invoicer_phone_number": "Telefonnummer",
@@ -103,7 +103,7 @@
         "employee_phone_number": "Telefonnummer",
         "employment_postcode": "Arbetsplatsens postnummer",
         "summer_voucher_serial_number": "Sommarsedelns serienummer",
-        "employee_school": "Skola",
+        "employee_school": "Skolans namn",
         "employment_contract": "Arbetskontrakt",
         "payslip": "Löneintyg",
         "employment_start_date": "Anställningen började",

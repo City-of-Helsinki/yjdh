@@ -37,7 +37,7 @@
     "step1": {
       "name": "Employer",
       "header": "1. Details of the employer",
-      "tooltip": "Write your information in the form. Click on to continue to move forward. You can return to the data also at the next stage.",
+      "tooltip": "Write your information in the form. Click Save and continue to move forward. You can return to the data also at the next stage.",
       "companyInfoGrid": {
         "title": "Company information",
         "header": {
@@ -52,7 +52,7 @@
     },
     "step2": {
       "name": "Employment",
-      "header": "2. Emoloyment reports",
+      "header": "2. Emoloyments reports",
       "employment": "Employment",
       "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
       "attachments_section": "Mandatory attachments",
@@ -103,7 +103,7 @@
         "employee_phone_number": "Phone number",
         "employment_postcode": "Workplace's postcode",
         "summer_voucher_serial_number": "Serial number of the Summer Job Voucher",
-        "employee_school": "School",
+        "employee_school": "Name of the school",
         "employment_contract": "Employment contract",
         "payslip": "Pay Statement",
         "employment_start_date": "Employment start date",

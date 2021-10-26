@@ -37,7 +37,7 @@
     "step1": {
       "name": "Työnantaja",
       "header": "1. Työnantajan tiedot",
-      "tooltip": "Kirjoita kaavakkeeseen tietosi. Jatka painamalla Etene ja jatka. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
+      "tooltip": "Kirjoita kaavakkeeseen tietosi. Jatka painamalla Tallenna ja jatka. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot",
         "header": {
@@ -103,11 +103,11 @@
         "employee_phone_number": "Puhelinnumero",
         "employment_postcode": "Työn suorituspaikan postinumero",
         "summer_voucher_serial_number": "Kesäsetelin sarjanumero",
-        "employee_school": "Koulu",
+        "employee_school": "Koulun nimi",
         "employment_contract": "Työsopimus",
         "payslip": "Palkkatodistus",
-        "employment_start_date": "Työsuhde alkoi",
-        "employment_end_date": "Työsuhde päättyi",
+        "employment_start_date": "Työsuhteen alkamispäivä",
+        "employment_end_date": "Työsuhteen päättymispäivä",
         "employment_work_hours": "Tehdyt työtunnit",
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
