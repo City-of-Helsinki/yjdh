@@ -3,7 +3,8 @@
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
-    "userAriaLabelPrefix": "Användaren:"
+    "userAriaLabelPrefix": "Användaren:",
+    "linkSkipToContent": "Gå till innehållet"
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",

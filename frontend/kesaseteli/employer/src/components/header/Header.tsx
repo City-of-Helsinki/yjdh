@@ -59,6 +59,7 @@ const Header: React.FC = () => {
   return (
     <BaseHeader
       title={t('common:appName')}
+      skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
       languages={languageOptions}
       locale={locale}
