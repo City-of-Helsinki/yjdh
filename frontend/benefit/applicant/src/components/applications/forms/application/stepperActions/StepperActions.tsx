@@ -25,36 +25,29 @@ const StepperActions: React.FC<StepperActionsProps> = ({
   const translationsBase = 'common:applications.actions';
   return (
     <$Grid>
-      <$GridCell $colSpan={3}>
+      <$GridCell $colSpan={3} justifySelf="start">
         {handleBack && (
           <Button
             theme="black"
             variant="secondary"
             iconLeft={<IconArrowLeft />}
             onClick={handleBack}
-            fullWidth
           >
             {t(`${translationsBase}.back`)}
           </Button>
         )}
       </$GridCell>
       <$GridCell $colSpan={6} justifySelf="center">
-        <Button
-          theme="black"
-          variant="secondary"
-          onClick={handleSave}
-          fullWidth
-        >
+        <Button theme="black" variant="secondary" onClick={handleSave}>
           {t(`${translationsBase}.saveAndContinueLater`)}
         </Button>
       </$GridCell>
-      <$GridCell $colSpan={3}>
+      <$GridCell $colSpan={3} justifySelf="end">
         <Button
           theme="coat"
           disabled={disabledNext}
-          iconRight={lastStep ? <IconArrowRight /> : null}
+          iconRight={!lastStep ? <IconArrowRight /> : null}
           onClick={handleSubmit}
-          fullWidth
         >
           {lastStep
             ? t(`${translationsBase}.send`)
@@ -62,12 +55,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
         </Button>
       </$GridCell>
       <$GridCell $colSpan={10} $colStart={2} justifySelf="center">
-        <Button
-          theme="black"
-          variant="supplementary"
-          iconLeft={<IconCross />}
-          fullWidth
-        >
+        <Button theme="black" variant="supplementary" iconLeft={<IconCross />}>
           {t(`${translationsBase}.deleteApplication`)}
         </Button>
       </$GridCell>
