@@ -24,7 +24,7 @@ const translations = {
   en: {
     login: 'Sign in to the service',
     logout: 'Log out',
-    language: 'In english',
+    language: 'In English',
     userInfo: (user?: User) => new RegExp(`User: ${user?.name ?? ''}`),
   },
 };
