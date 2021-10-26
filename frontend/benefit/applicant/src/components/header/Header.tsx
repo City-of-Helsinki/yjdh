@@ -39,7 +39,7 @@ const Header: React.FC = () => {
         loginLabel: t('common:header.loginLabel'),
         logoutLabel: t('common:header.logoutLabel'),
         onLogin: !isLoading ? login : noop,
-        onLogout: !isLoading ? (logoutQuery.mutate as () => void) : noop,
+        onLogout: !isLoading ? () => logoutQuery.mutate({}) : noop,
         userName: userQuery.isSuccess ? userQuery.data.name : undefined,
         userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
       }}
