@@ -7,6 +7,9 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import useLocale from 'shared/hooks/useLocale';
 import User from 'shared/types/user';
 
+// check that authentication is still alive in every 5 minutes
+const FIVE_MINUTES = 5 * 60 * 1_000;
+
 const useUserQuery = <T = User>(
   select?: (user: User) => T
 ): UseQueryResult<T, Error> => {
@@ -33,10 +36,11 @@ const useUserQuery = <T = User>(
     `${BackendEndpoint.USER}`,
     () => handleResponse<User>(axios.get(BackendEndpoint.USER)),
     {
+      refetchInterval: FIVE_MINUTES,
       enabled: !logout,
-      onError: (error) => handleError(error),
       retry: false,
       select,
+      onError: (error) => handleError(error),
     }
   );
 };
