@@ -45,22 +45,56 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
             as="div"
             data-testid="company-heading"
           />
-          <$ApplicationSummaryField data-testid="company-data">
-            {company.industry}, {company.company_form}, {company.postcode}{' '}
-            {company.city}
+          <$ApplicationSummaryField data-testid="company-data-industry">
+            {t('common:application.step1.companyInfoGrid.header.industry')}:{' '}
+            {company.industry || '-'}
           </$ApplicationSummaryField>
-          <$ApplicationSummaryField data-testid="contact-person">
-            {contact_person_name}, {contact_person_email},
+          <$ApplicationSummaryField data-testid="company-data-company-form">
+            {t('common:application.step1.companyInfoGrid.header.company_form')}:{' '}
+            {company.company_form || '-'}
+          </$ApplicationSummaryField>
+          <$ApplicationSummaryField data-testid="company-data-postcode">
+            {t('common:application.step1.companyInfoGrid.header.postcode')}:{' '}
+            {company.postcode || '-'}
+          </$ApplicationSummaryField>
+          <$ApplicationSummaryField data-testid="company-data-city">
+            {t('common:application.step1.companyInfoGrid.header.city')}:{' '}
+            {company.city || '-'}
+          </$ApplicationSummaryField>
+          <$ApplicationSummaryField data-testid="contact-person-name">
+            {t('common:application.form.inputs.contact_person_name')}:{' '}
+            {contact_person_name}
+          </$ApplicationSummaryField>
+          <$ApplicationSummaryField data-testid="contact-person-email">
+            {t('common:application.form.inputs.contact_person_email')}:{' '}
+            {contact_person_email}
+          </$ApplicationSummaryField>
+          <$ApplicationSummaryField data-testid="contact-person-phone-number">
+            {t('common:application.form.inputs.contact_person_phone_number')}:{' '}
             {contact_person_phone_number}
           </$ApplicationSummaryField>
           <$ApplicationSummaryField data-testid="street-address">
+            {t('common:application.form.inputs.street_address')}:{' '}
             {street_address}
           </$ApplicationSummaryField>
           {is_separate_invoicer && (
-            <$ApplicationSummaryField data-testid="invoicer">
-              {t('common:application.form.inputs.is_separate_invoicer')}:{' '}
-              {invoicer_name}, {invoicer_email}, {invoicer_phone_number}
-            </$ApplicationSummaryField>
+            <>
+              <$ApplicationSummaryField data-testid="invoicer">
+                {t('common:application.form.inputs.is_separate_invoicer')}:
+              </$ApplicationSummaryField>
+              <$ApplicationSummaryField data-testid="invoicer-name">
+                {t('common:application.form.inputs.invoicer_name')}:{' '}
+                {invoicer_name}
+              </$ApplicationSummaryField>
+              <$ApplicationSummaryField data-testid="invoicer-email">
+                {t('common:application.form.inputs.invoicer_email')}:{' '}
+                {invoicer_email}
+              </$ApplicationSummaryField>
+              <$ApplicationSummaryField data-testid="invoicer-phone-number">
+                {t('common:application.form.inputs.invoicer_phone_number')}:{' '}
+                {invoicer_phone_number}
+              </$ApplicationSummaryField>
+            </>
           )}
         </FormSection>
         <FormSection

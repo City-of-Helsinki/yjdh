@@ -3,7 +3,8 @@
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
-    "userAriaLabelPrefix": "User:"
+    "userAriaLabelPrefix": "User:",
+    "linkSkipToContent": "Skip to content"
   },
   "errorPage": {
     "title": "An unexpected error occured",

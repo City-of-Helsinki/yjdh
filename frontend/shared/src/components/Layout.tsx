@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const Heading = styled.h1`
@@ -14,7 +14,7 @@ const Main = styled.main`
 type AppProps = { children: React.ReactNode; headingText?: string };
 
 const Layout: React.FC<AppProps> = ({ children, headingText }) => (
-  <Main id="main_content">
+  <Main>
     {headingText && <Heading>{headingText}</Heading>}
     {children}
   </Main>

@@ -20,6 +20,7 @@
     "@types/react": "^17.0.28",
     "@types/react-dom": "^17.0.6",
     "axios": "^0.22.0",
+    "babel-plugin-import": "^1.13.3",
     "babel-plugin-styled-components": "^1.13.2",
     "camelcase-keys": "^7.0.0",
     "dotenv": "^9.0.0",
