@@ -66,7 +66,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
             if user.is_handler():
                 return qs
             else:
-                company = get_company_from_user(user)
+                company = get_company_from_user(user, self.request)
                 if company:
                     return company.applications.all()
         return Application.objects.none()

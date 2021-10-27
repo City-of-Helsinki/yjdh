@@ -29,7 +29,7 @@ class TermsOfServiceAccepted(permissions.BasePermission):
         else:
             from terms.models import TermsOfServiceApproval
 
-            company = get_company_from_user(user)
+            company = get_company_from_user(user, request)
             if not company:
                 # company deleted from the db? Whatever has happened, applicant can't
                 # proceed without a company.
