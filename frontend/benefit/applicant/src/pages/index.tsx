@@ -4,6 +4,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
+import withAuth from 'shared/components/hocs/withAuth';
 
 import FrontPageProvider from '../context/FrontPageProvider';
 
@@ -37,4 +38,4 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   },
 });
 
-export default ApplicantIndex;
+export default withAuth(ApplicantIndex);

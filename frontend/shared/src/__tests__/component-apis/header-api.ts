@@ -9,7 +9,7 @@ import User from 'shared/types/user';
 const defaultTranslations = {
   fi: 'Suomeksi',
   sv: 'På svenska',
-  en: 'In english',
+  en: 'In English',
 };
 
 const expectations = {

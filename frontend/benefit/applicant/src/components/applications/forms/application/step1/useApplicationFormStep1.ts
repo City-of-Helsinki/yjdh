@@ -44,8 +44,7 @@ const useApplicationFormStep1 = (
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  // TODO: replace the hardcoded company ID when auth is implemented
-  const { data } = useCompanyQuery('0877830-0');
+  const { data } = useCompanyQuery();
   const organizationType = data?.organization_type;
 
   const formik = useFormik({

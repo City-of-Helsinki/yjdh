@@ -22,7 +22,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   message,
   showActions = false,
 }) => {
-  const { t, handleBackClick } = useErrorPage();
+  const { t, handleBackClick, handleLogout } = useErrorPage();
   return (
     <Container>
       <$ErrorPageContainer>
@@ -34,7 +34,9 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
             <Button theme="coat" onClick={handleBackClick}>
               {t('common:errorPage.home')}
             </Button>
-            <Button theme="coat">{t('common:errorPage.logout')}</Button>
+            <Button theme="coat" onClick={handleLogout}>
+              {t('common:errorPage.logout')}
+            </Button>
           </$ActionsContainer>
         )}
       </$ErrorPageContainer>

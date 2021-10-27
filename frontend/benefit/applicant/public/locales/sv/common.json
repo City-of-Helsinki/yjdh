@@ -336,6 +336,11 @@
     }
   },
   "appName": "Helsinki-benefit SV",
+  "header": {
+    "loginLabel": "Logga in i tjänsten",
+    "logoutLabel": "Logga ut",
+    "userAriaLabelPrefix": "Användaren:"
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
@@ -358,7 +363,7 @@
   "supportedLanguages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
-    "en": "In english"
+    "en": "In English"
   },
   "mainIngress": {
     "heading": "Hakemukset",

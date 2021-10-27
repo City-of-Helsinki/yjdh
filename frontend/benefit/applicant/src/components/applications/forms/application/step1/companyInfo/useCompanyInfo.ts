@@ -44,8 +44,7 @@ const useCompanyInfo = (
 
   const { setFieldValue } = formik;
 
-  // TODO: replace the hardcoded company ID when auth is implemented
-  const { isLoading, error, data } = useCompanyQuery('0877830-0');
+  const { isLoading, error, data } = useCompanyQuery();
 
   const companyData = {
     name: data?.name ?? '',
