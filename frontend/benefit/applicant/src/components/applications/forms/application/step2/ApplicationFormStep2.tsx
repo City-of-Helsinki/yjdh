@@ -271,7 +271,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 options={[
                   {
                     label: selectLabel,
-                    value: '',
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore TODO: remove ts-ignore when HDS is fixed
+                    value: null,
                   },
                   ...subsidyOptions,
                 ]}
