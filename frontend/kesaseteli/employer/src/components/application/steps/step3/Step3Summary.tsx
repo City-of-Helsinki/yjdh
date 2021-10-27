@@ -3,7 +3,6 @@ import ActionButtons from 'kesaseteli/employer/components/application/form/Actio
 import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
-import useSetCurrentStep from 'kesaseteli/employer/hooks/application/useSetCurrentStep';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -11,7 +10,6 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const Step3Summary: React.FC = () => {
-  useSetCurrentStep(3);
   const { t } = useTranslation();
   const router = useRouter();
   const locale = router.locale ?? DEFAULT_LANGUAGE;
@@ -24,7 +22,7 @@ const Step3Summary: React.FC = () => {
   const title = t('common:application.step3.header');
   const tooltip = t('common:application.step3.tooltip');
   return (
-    <ApplicationForm title={title}>
+    <ApplicationForm title={title} step={3}>
       <ApplicationSummary header={title} tooltip={tooltip} />
       <FormSection columns={1}>
         <Checkbox

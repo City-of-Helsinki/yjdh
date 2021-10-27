@@ -16,7 +16,7 @@ const useUserQuery = <T = User>({
   const router = useRouter();
   const locale = useLocale();
   return useQuery(`${BackendEndpoint.USER}`, {
-    enabled: !logoutQuery.isLoading,
+    enabled: logoutQuery.isIdle,
     onError: (error) => handleError(error, t, router, locale),
     select,
     refetchInterval,

@@ -6,12 +6,19 @@ import useInvoicerToggle from 'kesaseteli/employer/hooks/application/useInvoicer
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
+import useWizard from 'shared/hooks/useWizard';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
   const stepTitle = t('common:application.step1.header');
 
   const [showInvoicer, toggleInvoicer] = useInvoicerToggle();
+  const { clearStepHistory } = useWizard();
+
+  const onToggleInvoicer = React.useCallback(() => {
+    toggleInvoicer();
+    clearStepHistory();
+  }, [toggleInvoicer, clearStepHistory]);
 
   return (
     <>
@@ -30,7 +37,7 @@ const EmployerForm: React.FC = () => {
         <Checkbox
           $colSpan={2}
           id="is_separate_invoicer"
-          onChange={toggleInvoicer}
+          onChange={onToggleInvoicer}
           initialValue={showInvoicer}
         />
         {showInvoicer && <ContactInputs type="invoicer" />}
