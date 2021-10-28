@@ -6,6 +6,8 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import theme from 'shared/styles/theme';
 
+import MainIngress from '../components/mainIngress/MainIngress';
+
 const ApplicantIndex: NextPage = () => {
   const { setIsNavigationVisible, setLayoutBackgroundColor } =
     React.useContext(AppContext);
@@ -20,7 +22,11 @@ const ApplicantIndex: NextPage = () => {
     };
   }, [setIsNavigationVisible, setLayoutBackgroundColor]);
 
-  return <FrontPageProvider>Hanlder frontpage</FrontPageProvider>;
+  return (
+    <FrontPageProvider>
+      <MainIngress />
+    </FrontPageProvider>
+  );
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({

@@ -8,6 +8,10 @@
       "reports": "Raportointi"
     }
   },
+  "mainIngress": {
+    "heading": "Hakemukset",
+    "btnText": "Syötä hakemus"
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
