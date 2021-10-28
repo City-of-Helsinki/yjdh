@@ -13,9 +13,8 @@ const EmployerErrorSummary: React.FC = () => {
   const { formState } = useFormContext<Application>();
 
   // focus to error summary only after clicking submit button, but not when user is inputting an invalid field value
-  const isJustSubmitted = usePreviousValue(formState.isSubmitting)
-    ? formState.isSubmitted
-    : false;
+  const isJustSubmitted =
+    usePreviousValue(formState.isSubmitting) && formState.isSubmitted;
 
   if (!formState.errors || formState.isValid || !formState.isSubmitted) {
     return null;

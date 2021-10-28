@@ -53,7 +53,7 @@
     },
     "step2": {
       "name": "Employment",
-      "header": "2. Emoloyments reports",
+      "header": "2. Employments reports",
       "employment": "Employment",
       "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
       "attachments_section": "Mandatory attachments",
