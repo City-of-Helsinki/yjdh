@@ -35,7 +35,7 @@ class ApproveTermsOfServiceView(APIView):
         )  # validate the terms and applicant consents
         user = request.user
 
-        company = get_company_from_user(user)
+        company = get_company_from_user(user, request)
         if not company:
             raise PermissionDenied(
                 detail=_(

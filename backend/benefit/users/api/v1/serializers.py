@@ -65,5 +65,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     def is_terms_of_service_approval_needed(self, obj):
         return TermsOfServiceApproval.terms_approval_needed(
-            obj, get_company_from_user(obj)
+            obj, get_company_from_user(obj, self.context.get("request"))
         )

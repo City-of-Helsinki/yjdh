@@ -12,19 +12,19 @@ def get_request_user_from_context(serializer):
     return None
 
 
-def get_business_id_from_user(user):
+def get_business_id_from_user(user, request=None):
     if user.is_authenticated:
         eauth_profile = user.oidc_profile.eauthorization_profile
-        organization_roles = get_organization_roles(eauth_profile)
+        organization_roles = get_organization_roles(eauth_profile, request)
         return organization_roles.get("identifier")
     return None
 
 
-def get_company_from_user(user):
+def get_company_from_user(user, request=None):
     if settings.DISABLE_AUTHENTICATION:
         return Company.objects.all().order_by("name").first()
 
-    if business_id := get_business_id_from_user(user):
+    if business_id := get_business_id_from_user(user, request):
         try:
             return Company.objects.get(
                 business_id=business_id

@@ -1442,4 +1442,4 @@ class ApplicationSerializer(serializers.ModelSerializer):
         user = get_request_user_from_context(self)
         if settings.DISABLE_AUTHENTICATION:
             return Company.objects.all().order_by("name").first()
-        return get_company_from_user(user)
+        return get_company_from_user(user, self.context.get("request"))
