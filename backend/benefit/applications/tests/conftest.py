@@ -35,7 +35,7 @@ def application_batch():
 
 @pytest.fixture
 def talpa_service(application_batch):
-    return TalpaService(application_batch)
+    return TalpaService([application_batch])
 
 
 @pytest.fixture

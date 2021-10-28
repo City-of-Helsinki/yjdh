@@ -48,8 +48,8 @@ class TalpaService:
     def _get_header_row(self):
         return [col.heading for col in self.TALPA_COLUMNS]
 
-    def __init__(self, application_batch):
-        self.application_batch = application_batch
+    def __init__(self, application_batches):
+        self.application_batches = application_batches
 
     def write_talpa_csv_file(self, path):
         csv_string = self.get_talpa_csv_string()
@@ -60,7 +60,9 @@ class TalpaService:
         return self._make_csv(self.get_talpa_lines())
 
     def get_applications(self):
-        return self.application_batch.applications.order_by(
+        from applications.models import Application
+
+        return Application.objects.filter(batch__in=self.application_batches).order_by(
             "company__name", "application_number"
         )
 
