@@ -17,7 +17,9 @@ class CurrentUserView(APIView):
     permission_classes = [BFIsAuthenticated]
 
     def get(self, request):
-        serializer = UserSerializer(self._get_current_user(request))
+        serializer = UserSerializer(
+            self._get_current_user(request), context={"request": request}
+        )
         return Response(serializer.data)
 
     def _get_current_user(self, request):

@@ -51,7 +51,7 @@ from terms.api.v1.serializers import (
 )
 from terms.enums import TermsType
 from terms.models import ApplicantTermsApproval, Terms
-from users.utils import get_company_from_user, get_request_user_from_context
+from users.utils import get_company_from_request, get_request_user_from_context
 
 
 class ApplicationBasisSerializer(serializers.ModelSerializer):
@@ -1439,7 +1439,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         return False
 
     def get_logged_in_user_company(self):
-        user = get_request_user_from_context(self)
         if settings.DISABLE_AUTHENTICATION:
             return Company.objects.all().order_by("name").first()
-        return get_company_from_user(user, self.context.get("request"))
+        return get_company_from_request(self.context.get("request"))
