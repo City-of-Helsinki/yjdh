@@ -91,6 +91,7 @@ env = environ.Env(
     TERMS_OF_SERVICE_SESSION_KEY=(str, "_tos_session"),
     ENABLE_DEBUG_ENV=(bool, False),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
+    DISABLE_TOS_APPROVAL_CHECK=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -274,6 +275,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 DISABLE_AUTHENTICATION = env.bool("DISABLE_AUTHENTICATION")
+DISABLE_TOS_APPROVAL_CHECK = env.bool("DISABLE_TOS_APPROVAL_CHECK")
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid profile"
