@@ -745,10 +745,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             req.append(
                 (AttachmentType.PAY_SUBSIDY_DECISION, AttachmentRequirement.REQUIRED)
             )
-        if application.additional_pay_subsidy_percent:
-            req.append(
-                (AttachmentType.PAY_SUBSIDY_DECISION, AttachmentRequirement.REQUIRED)
-            )
         return req
 
     def get_attachment_requirements(self, obj):
