@@ -2,7 +2,10 @@ export const IS_CLIENT = typeof window !== 'undefined';
 
 export enum ROUTES {
   HOME = '/',
-  APPLICATION_FORM = '/application',
+  // temporary urls, not defined yet
+  APPLICATIONS_PROCESSED = '/applications/processed',
+  APPLICATIONS_ARCHIVE = 'applications/archive',
+  APPLICATIONS_REPORTS = 'applications/reports',
 }
 
 export enum SUPPORTED_LANGUAGES {

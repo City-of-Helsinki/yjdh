@@ -1,5 +1,13 @@
 {
   "appName": "Helsinki-benefit handler EN",
+  "header": {
+    "navigation": {
+      "applications": "Hakemukset",
+      "processed": "Käsitellyt",
+      "archive": "Arkisto",
+      "reports": "Raportointi"
+    }
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"

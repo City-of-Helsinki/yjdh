@@ -1,3 +1,5 @@
+import { ROUTES } from 'benefit/handler/constants';
+import AppContext from 'benefit/handler/context/AppContext';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -9,6 +11,7 @@ type ExtendedComponentProps = {
   t: TFunction;
   languageOptions: OptionType<string>[];
   locale: string;
+  isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
   handleLanguageChange: (
     e: React.SyntheticEvent<unknown>,
@@ -22,11 +25,28 @@ const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
+  const { isNavigationVisible } = React.useContext(AppContext);
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'supportedLanguages'),
     [t]
   );
+
+  const navigationItems = React.useMemo((): NavigationItem[] => [
+      { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
+      {
+        label: t('common:header.navigation.processed'),
+        url: '#1',
+      },
+      {
+        label: t('common:header.navigation.archive'),
+        url: '#2',
+      },
+      {
+        label: t('common:header.navigation.reports'),
+        url: '#3',
+      },
+    ], [t]);
 
   const handleLanguageChange = (
     e: React.SyntheticEvent<unknown>,
@@ -45,6 +65,8 @@ const useHeader = (): ExtendedComponentProps => {
   return {
     t,
     languageOptions,
+    isNavigationVisible,
+    navigationItems,
     locale,
     handleLanguageChange,
     handleNavigationItemClick,
