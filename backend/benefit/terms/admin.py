@@ -1,6 +1,11 @@
 # Register your models here.
 from django.contrib import admin  # noqa
-from terms.models import ApplicantConsent, ApplicantTermsApproval, Terms
+from terms.models import (
+    ApplicantConsent,
+    ApplicantTermsApproval,
+    Terms,
+    TermsOfServiceApproval,
+)
 
 
 @admin.register(ApplicantConsent)
@@ -53,6 +58,30 @@ class ApplicantTermsApprovalAdmin(admin.ModelAdmin):
         "approved_by__email",
         "approved_by__first_name",
         "approved_by__last_name",
+    )
+    date_hierarchy = "approved_at"
+    ordering = ("-approved_at",)
+
+
+@admin.register(TermsOfServiceApproval)
+class TermsOfServiceApprovalAdmin(admin.ModelAdmin):
+    list_display = (
+        "approved_at",
+        "approved_by",
+        "user",
+        "company",
+    )
+    list_filter = (
+        "approved_by__email",
+        "approved_by__last_name",
+        "approved_by__last_name",
+        "terms__terms_type",
+        "terms__effective_from",
+    )
+    search_fields = (
+        "approved_by__email",
+        "approved_by__first_name",
+        "company__business_id",
     )
     date_hierarchy = "approved_at"
     ordering = ("-approved_at",)

@@ -17,7 +17,7 @@ class TermsOfServiceAccepted(permissions.BasePermission):
     message = _("You have to accept Terms of Service before doing any action")
 
     def has_permission(self, request, view):
-        if settings.DISABLE_AUTHENTICATION:
+        if settings.DISABLE_AUTHENTICATION or settings.DISABLE_TOS_APPROVAL_CHECK:
             return True
         user = request.user
         # Checking the session first before querying the database
