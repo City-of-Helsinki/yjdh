@@ -1,8 +1,8 @@
 import pytest
 from django.contrib.auth.models import Permission
 from rest_framework.test import APIClient
-from shared.common.tests.factories import UserFactory
-from shared.oidc.tests.conftest import *  # noqa
+from shared.common.tests.conftest import *  # noqa
+from shared.common.tests.conftest import store_tokens_in_session
 
 from applications.enums import ApplicationStatus, AttachmentType
 from common.tests.factories import (
@@ -14,48 +14,28 @@ from common.tests.factories import (
 
 
 @pytest.fixture
-def company(eauthorization_profile):
-    company = CompanyFactory(eauth_profile=eauthorization_profile)
+def company():
+    company = CompanyFactory()
     return company
 
 
 @pytest.fixture
-def user_with_profile(oidc_profile, eauthorization_profile):
-    user = UserFactory(oidc_profile=oidc_profile)
-
-    eauthorization_profile.oidc_profile = oidc_profile
-    eauthorization_profile.save()
-
-    return user
-
-
-@pytest.fixture
-def company2(eauthorization_profile2):
-    company = CompanyFactory(eauth_profile=eauthorization_profile2)
+def company2():
+    company = CompanyFactory()
     return company
 
 
 @pytest.fixture
-def user2_with_profile(oidc_profile2, eauthorization_profile2, company2):
-    user = UserFactory(oidc_profile=oidc_profile2)
-
-    eauthorization_profile2.oidc_profile = oidc_profile2
-    eauthorization_profile2.save()
-
-    return user
-
-
-@pytest.fixture
-def application(company, user_with_profile):
+def application(company, user):
     return ApplicationFactory(
-        status=ApplicationStatus.DRAFT, company=company, user=user_with_profile
+        status=ApplicationStatus.DRAFT, company=company, user=user
     )
 
 
 @pytest.fixture
-def submitted_application(company, user_with_profile):
+def submitted_application(company, user):
     return ApplicationFactory(
-        status=ApplicationStatus.SUBMITTED, company=company, user=user_with_profile
+        status=ApplicationStatus.SUBMITTED, company=company, user=user
     )
 
 
@@ -104,21 +84,44 @@ def payslip_attachment(summer_voucher):
     attachment.attachment_file.delete(save=False)
 
 
+def store_company_in_session(client, company):
+    s = client.session
+    s.update(
+        {
+            "organization_roles": {
+                "name": "Activenakusteri Oy",
+                "identifier": company.business_id,
+                "complete": True,
+                "roles": ["NIMKO"],
+            }
+        }
+    )
+    s.save()
+
+
 @pytest.fixture
-def api_client(user_with_profile):
+def api_client(user, company):
     permissions = Permission.objects.all()
-    user_with_profile.user_permissions.set(permissions)
+    user.user_permissions.set(permissions)
     client = APIClient()
-    client.force_authenticate(user_with_profile)
+    client.force_authenticate(user)
+
+    store_tokens_in_session(client)
+    store_company_in_session(client, company)
+
     return client
 
 
 @pytest.fixture
-def api_client2(user2_with_profile):
+def api_client2(other_user, company2):
     permissions = Permission.objects.all()
-    user2_with_profile.user_permissions.set(permissions)
+    other_user.user_permissions.set(permissions)
     client = APIClient()
-    client.force_authenticate(user2_with_profile)
+    client.force_authenticate(other_user)
+
+    store_tokens_in_session(client)
+    store_company_in_session(client, company2)
+
     return client
 
 

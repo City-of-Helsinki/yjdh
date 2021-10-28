@@ -10,6 +10,14 @@ DUMMY_COMPANY_DATA = {
 }
 
 
+DUMMY_ORG_ROLES = {
+    "name": "Activenakusteri Oy",
+    "identifier": "7769480-5",
+    "complete": True,
+    "roles": ["NIMKO"],
+}
+
+
 DUMMY_YTJ_RESPONSE = {
     "type": "fi.prh.opendata.tr",
     "version": "1",
