@@ -1,12 +1,11 @@
 from unittest import mock
 
 import pytest
+from django.contrib import auth
 from django.test import override_settings
 from django.urls import reverse
 
 from shared.common.tests.factories import UserFactory
-from shared.oidc.models import EAuthorizationProfile, OIDCProfile
-from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 
 def get_token_claims():
@@ -43,12 +42,10 @@ def test_backchannel_logout(client):
 
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/1209040912/SSO+session+handling#Practical-backchannel-logout-request-example
     """
-    user = UserFactory(username="e9dbc682-2d93-4b5e-a472-6ee0ebe79fc7")
-    oidc_profile = OIDCProfileFactory(user=user)
-    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
+    claims = get_token_claims()
+    user = UserFactory(username=claims["sub"])
 
-    assert OIDCProfile.objects.exists()
-    assert EAuthorizationProfile.objects.exists()
+    client.force_login(user)
 
     claims = get_token_claims()
     response = post_to_backchannel_logout(claims, client)
@@ -56,8 +53,8 @@ def test_backchannel_logout(client):
     assert response.status_code == 200
     assert response.content == b"OK"
 
-    assert not OIDCProfile.objects.exists()
-    assert not EAuthorizationProfile.objects.exists()
+    user = auth.get_user(client)
+    assert not user.is_authenticated
 
 
 @pytest.mark.django_db
@@ -104,22 +101,19 @@ def test_backchannel_logout_invalid_logout_token_without_events(client):
 
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/1209040912/SSO+session+handling#Practical-backchannel-logout-request-example
     """
-    user = UserFactory(username="e9dbc682-2d93-4b5e-a472-6ee0ebe79fc7")
-    oidc_profile = OIDCProfileFactory(user=user)
-    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
-
-    assert OIDCProfile.objects.exists()
-    assert EAuthorizationProfile.objects.exists()
-
     claims = get_token_claims()
+    user = UserFactory(username=claims["sub"])
+
+    client.force_login(user)
+
     claims.pop("events")
     response = post_to_backchannel_logout(claims, client)
 
     assert response.status_code == 400
     assert response.content == b"Incorrect logout_token: events"
 
-    assert OIDCProfile.objects.exists()
-    assert EAuthorizationProfile.objects.exists()
+    user = auth.get_user(client)
+    assert user.is_authenticated
 
 
 @pytest.mark.django_db
@@ -132,19 +126,16 @@ def test_backchannel_logout_invalid_logout_token_with_nonce(client):
 
     https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/1209040912/SSO+session+handling#Practical-backchannel-logout-request-example
     """
-    user = UserFactory(username="e9dbc682-2d93-4b5e-a472-6ee0ebe79fc7")
-    oidc_profile = OIDCProfileFactory(user=user)
-    EAuthorizationProfileFactory(oidc_profile=oidc_profile)
-
-    assert OIDCProfile.objects.exists()
-    assert EAuthorizationProfile.objects.exists()
-
     claims = get_token_claims()
     claims.update({"nonce": "test"})
+    user = UserFactory(username=claims["sub"])
+
+    client.force_login(user)
+
     response = post_to_backchannel_logout(claims, client)
 
     assert response.status_code == 400
     assert response.content == b"Incorrect logout_token: nonce"
 
-    assert OIDCProfile.objects.exists()
-    assert EAuthorizationProfile.objects.exists()
+    user = auth.get_user(client)
+    assert user.is_authenticated

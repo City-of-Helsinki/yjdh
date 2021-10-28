@@ -2,13 +2,13 @@ import re
 from unittest import mock
 
 import pytest
+from dateutil.parser import isoparse
 from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from freezegun import freeze_time
 
-from shared.oidc.tests.factories import OIDCProfileFactory
 from shared.oidc.utils import get_checksum_header, get_organization_roles
 
 
@@ -50,7 +50,7 @@ def test_get_checksum_header():
     EAUTHORIZATIONS_CLIENT_SECRET="test",
     MOCK_FLAG=False,
 )
-def test_get_organization_roles(requests_mock, eauthorization_profile):
+def test_get_organization_roles(session_request, requests_mock):
     organization_roles_json = [
         {
             "name": "Activenakusteri Oy",
@@ -63,10 +63,11 @@ def test_get_organization_roles(requests_mock, eauthorization_profile):
     matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
     requests_mock.get(matcher, json=organization_roles_json)
 
-    organization_roles = get_organization_roles(eauthorization_profile)
+    organization_roles = get_organization_roles(session_request)
 
     assert organization_roles["name"] == organization_roles_json[0]["name"]
     assert organization_roles["identifier"] == organization_roles_json[0]["identifier"]
+    assert session_request.session["organization_roles"] == organization_roles_json[0]
 
 
 @pytest.mark.django_db
@@ -77,8 +78,6 @@ def test_get_organization_roles(requests_mock, eauthorization_profile):
     MOCK_FLAG=False,
 )
 def test_eauth_authentication_init_view(requests_mock, user_client, user):
-    OIDCProfileFactory(user=user)
-
     register_user_info = {
         "sessionId": "test_session",
         "userId": "test_user",
@@ -111,8 +110,6 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
     MOCK_FLAG=False,
 )
 def test_eauth_callback_view(requests_mock, user_client, user):
-    oidc_profile = OIDCProfileFactory(user=user)
-
     token_info = {
         "access_token": "test2",
         "expires_in": 600,
@@ -137,13 +134,11 @@ def test_eauth_callback_view(requests_mock, user_client, user):
     assert response.status_code == 302
     assert response.url == settings.LOGIN_REDIRECT_URL
 
-    oidc_profile.refresh_from_db()
-    eauth_profile = oidc_profile.eauthorization_profile
-
     access_token_expires = timezone.now() + timezone.timedelta(seconds=600)
-    assert eauth_profile.access_token == "test2"
-    assert eauth_profile.refresh_token == "test3"
+    assert user_client.session.get("eauth_access_token") == "test2"
+    assert user_client.session.get("eauth_refresh_token") == "test3"
     assert abs(
-        eauth_profile.access_token_expires - access_token_expires
+        isoparse(user_client.session.get("eauth_access_token_expires"))
+        - access_token_expires
     ) < timezone.timedelta(seconds=10)
     assert user_client.session["organization_roles"] == organization_roles_json[0]

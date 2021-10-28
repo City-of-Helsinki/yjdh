@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
 
-from shared.oidc.tests.factories import UserFactory
+from shared.common.tests.factories import UserFactory
 
 
 class MockLogoutView(View):
