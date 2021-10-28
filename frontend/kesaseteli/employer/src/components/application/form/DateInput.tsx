@@ -1,10 +1,11 @@
 import { DateInput as HdsDateInput } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { RegisterOptions, UseFormRegister } from 'react-hook-form';
+import { RegisterOptions } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -22,7 +23,7 @@ import { $DateInput } from './DateInput.sc';
 
 type Props = {
   validation: RegisterOptions<Application>;
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  id: ApplicationFieldPath;
 } & GridCellProps;
 
 // TODO: This can be removed after backend supports invalid values in draft save

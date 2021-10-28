@@ -51,6 +51,7 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
   return (
     <div>
       <Button
+        id={name}
         theme={theme}
         onClick={handleUploadClick}
         variant={variant}

@@ -3,20 +3,19 @@ import useApplicationFormField from 'kesaseteli/employer/hooks/application/useAp
 import useOpenAttachment from 'kesaseteli/employer/hooks/backend/useOpenAttachment';
 import useRemoveAttachmentQuery from 'kesaseteli/employer/hooks/backend/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'kesaseteli/employer/hooks/backend/useUploadAttachmentQuery';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { UseFormRegister } from 'react-hook-form';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import Application from 'shared/types/application-form-data';
 import Attachment, { AttachmentType } from 'shared/types/attachment';
 import { validateAttachments } from 'shared/utils/attachment.utils';
 
 type Props = {
   index: number;
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  id: ApplicationFieldPath;
   required?: boolean;
 };
 

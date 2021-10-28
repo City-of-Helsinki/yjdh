@@ -1,6 +1,7 @@
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
+import { getEmploymentFieldPath } from 'shared/utils/application.utils';
 
 const useWatchEmployeeDisplayName = (index: number): string => {
   const { t } = useTranslation();
@@ -8,7 +9,7 @@ const useWatchEmployeeDisplayName = (index: number): string => {
     index + 1
   }`;
   const { watch: watchEmployeeName } = useApplicationFormField<string>(
-    `summer_vouchers.${index}.employee_name`
+    getEmploymentFieldPath(index, 'employee_name')
   );
   const employeeName = watchEmployeeName();
   return isEmpty(employeeName) ? defaultHeading : employeeName;
