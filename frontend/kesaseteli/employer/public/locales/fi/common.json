@@ -129,7 +129,6 @@
         "validate": "Syöttämäsi tieto on virheellistä muotoa",
         "selectionGroups": "Valitse jokin vaihtoehto",
         "checkboxRequired": "Valinta on pakollinen",
-        "employmentsRequired": "Lisää ainakin yksi työsuhde",
         "employment_contract": "Liitä ainakin yksi tiedosto",
         "payslip": "Liitä ainakin yksi tiedosto"
       },
