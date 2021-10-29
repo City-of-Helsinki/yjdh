@@ -23,8 +23,7 @@ jobs:
     strategy:
       fail-fast: false
     runs-on: ubuntu-latest
-    needs: deploy
-    name: Acceptance tests for Staging
+    name: Acceptance tests for Test Environment
     defaults:
       run:
         working-directory: ./frontend
