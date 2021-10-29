@@ -8,12 +8,12 @@ export const getSuomiFiAuthenticationComponents = (t: TestController) => {
   const authenticationSelector = async () => {
     const selectors = {
       authenticationSelector() {
-        return screen.getByRole('heading', {
+        return screen.findByRole('heading', {
           name: /valitse tunnistustapa/i,
         });
       },
       testitunnistajaAuthentication() {
-        return screen.getByRole('link', {
+        return screen.findByRole('link', {
           name: /testitunnistaja/i,
         });
       },
