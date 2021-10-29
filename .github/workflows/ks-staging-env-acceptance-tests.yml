@@ -1,9 +1,10 @@
 name: Kesäseteli Staging Environment Acceptance tests
 on:
+  # To be removed
+  pull_request:
   push:
     branches:
       - main
-      - staging-browser-tests
     paths:
       - 'backend/kesaseteli/**'
       - 'frontend/kesaseteli/**'

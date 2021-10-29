@@ -1,5 +1,7 @@
 name: Kesäseteli Test Environment Acceptance tests
 on:
+  # To be removed
+  pull_request:
   push:
     branches:
       - develop

@@ -2,7 +2,7 @@ name: Shared Lint, Unit and Component tests
 
 on:
   push:
-    branches: [ develop, main, staging-browser-tests ]
+    branches: [ develop, main ]
   pull_request:
     paths:
       - 'frontend/shared/**'
@@ -49,4 +49,4 @@ jobs:
           SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
           SLACK_MESSAGE: "*Shared tests have failed on ${{ github.ref }}!*"
           SLACK_CHANNEL: yjdh-alerts
-        if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main') || contains(github.ref, 'staging-browser-tests'))
+        if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main'))
