@@ -16,7 +16,7 @@
     "@types/react": "^17.0.28",
     "@types/react-dom": "^17.0.6",
     "@types/uuid": "^8.3.1",
-    "axios": "^0.22.0",
+    "axios": "^0.24.0",
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
     "dotenv": "^9.0.0",
