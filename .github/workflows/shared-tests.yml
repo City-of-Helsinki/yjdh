@@ -47,7 +47,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_USERNAME: GitHub-Alerts
           SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
-          SLACK_MESSAGE: "*Shared tests have failed on ${{GITHUB_REF#refs/heads/}}!*"
+          SLACK_MESSAGE: "*Shared tests have failed on ${{ github.ref }}!*"
           SLACK_CHANNEL: yjdh-alerts
         if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main')
       refs/heads/staging
