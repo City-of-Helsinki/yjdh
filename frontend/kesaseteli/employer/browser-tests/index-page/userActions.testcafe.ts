@@ -1,4 +1,3 @@
-import { doLogin } from '@frontend/shared/browser-tests/actions/login-action';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
@@ -40,20 +39,3 @@ test('can change to languages', async () => {
   await languageDropdown.actions.changeLanguage('en', 'fi');
   await headerUser.expectations.loginButtonIsTranslatedAs('fi');
 });
-
-if (isRealIntegrationsEnabled()) {
-  test('preserve language through the suomifi login', async (t) => {
-    const languageDropdown = await headerComponents.languageDropdown();
-    const headerUser = await headerComponents.headerUser();
-    await languageDropdown.actions.changeLanguage('fi', 'sv');
-    await headerUser.actions.clickloginButton('sv');
-    const { user } = await doLogin(t, 'sv');
-    await headerUser.actions.clicklogoutButton(user, 'sv');
-    await headerUser.expectations.userIsLoggedOut('sv');
-    await languageDropdown.actions.changeLanguage('sv', 'en');
-    await headerUser.actions.clickloginButton('en');
-    await doLogin(t, 'en', user);
-    await headerUser.actions.clicklogoutButton(user, 'en');
-    await headerUser.expectations.userIsLoggedOut('en');
-  });
-}
