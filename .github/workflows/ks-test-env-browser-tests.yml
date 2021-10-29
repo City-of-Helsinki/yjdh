@@ -1,4 +1,4 @@
-name: (KS) Build & Staging
+name: (KS) Test Environment Acceptance tests
 on:
   push:
     branches:
