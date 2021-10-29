@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - develop
-      - staging-browser-tests
     paths:
       - 'backend/kesaseteli/**'
       - 'frontend/kesaseteli/**'
@@ -13,7 +12,7 @@ on:
       - 'frontend/*'
       - '.github/workflows/ks-staging.yml'
 env:
-  EMPLOYER_URL: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi/login
+  EMPLOYER_URL: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi
 jobs:
   acceptance-tests:
     strategy:
@@ -52,7 +51,7 @@ jobs:
           TESTCAFE_SLACK_USERNAME: GitHub-Alerts
       - name: Upload results
         run: |
-          zip -r report.zip report/ > no_output 2>&1
+          zip -r report.zip kesaseteli/employer/report/ > no_output 2>&1
           curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
           echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
         if: always() && steps.testcafe.outcome == 'failure'
@@ -66,9 +65,9 @@ jobs:
           SLACK_MESSAGE: "*Check the testcafe report here: ${{env.REPORT_URL}}*"
           SLACK_CHANNEL: yjdh-alerts
         if: always() && steps.testcafe.outcome == 'failure'
-      - name: Upload screenshots and videos of failed tests to artifact for ${{env.EMPLOYER_URL}}
+      - name: Create zip of screenshots and videos of failed tests to artifact for ${{env.EMPLOYER_URL}}
         uses: actions/upload-artifact@v2
         with:
           name: report
-          path: report/
+          path: ./frontend/kesaseteli/employer/report
         if: always() && steps.testcafe.outcome == 'failure'

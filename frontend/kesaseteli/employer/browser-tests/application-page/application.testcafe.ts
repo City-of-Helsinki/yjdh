@@ -38,8 +38,7 @@ if (isRealIntegrationsEnabled()) {
     await doEmployerLogin(t, 'fi', user);
     await urlUtils.expectations.urlChangedToApplicationPage(
       'fi',
-      applicationId,
-      '1'
+      applicationId
     );
     const step1 = await applicationPageComponents.step1();
     await step1.expectations.isPresent();
@@ -50,8 +49,7 @@ if (isRealIntegrationsEnabled()) {
     const invoicerFormData = await loginAndfillStep1Form(t);
     await urlUtils.expectations.urlChangedToApplicationPage(
       'fi',
-      invoicerFormData.id,
-      '2'
+      invoicerFormData.id
     );
     const step2 = await applicationPageComponents.step2();
     await step2.actions.clickGoToPreviousStepButton();
