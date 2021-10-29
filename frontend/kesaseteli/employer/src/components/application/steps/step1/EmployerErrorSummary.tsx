@@ -29,6 +29,7 @@ const EmployerErrorSummary: React.FC = () => {
         {Object.entries(formState.errors).map(([key, error]) => (
           <ErrorNotificationRow
             key={key}
+            data-testid={key}
             fieldPath={key as ApplicationFieldPath}
             error={error as FieldError}
           />

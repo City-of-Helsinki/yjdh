@@ -1,4 +1,3 @@
-import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import { TFunction } from 'next-i18next';
 
 import Application from '../types/application';
@@ -27,8 +26,3 @@ export const getFormApplication = (
       } as Employment)
   ),
 });
-
-export const getEmploymentFieldPath = (
-  index: number,
-  field: keyof Employment
-): ApplicationFieldPath => `summer_vouchers.${index}.${field}`;

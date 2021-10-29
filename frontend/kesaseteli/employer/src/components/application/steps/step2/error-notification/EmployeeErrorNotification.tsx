@@ -1,10 +1,10 @@
 import ErrorNotificationRow from 'kesaseteli/employer/components/application/form/error-summary/ErrorNotificationRow';
 import useWatchEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useWatchEmployeeDisplayName';
+import { getEmploymentFieldPath } from 'kesaseteli/employer/utils/application-form.utils';
 import React from 'react';
 import { FieldError } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Employment from 'shared/types/employment';
-import { getEmploymentFieldPath } from 'shared/utils/application.utils';
 
 type Props = {
   index: number;

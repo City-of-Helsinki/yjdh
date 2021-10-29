@@ -1,11 +1,11 @@
 import { ErrorSummary } from 'hds-react';
+import { getEmploymentFieldPath } from 'kesaseteli/employer/utils/application-form.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { $Grid } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
-import { getEmploymentFieldPath } from 'shared/utils/application.utils';
 
 import EmployeeErrorNotification from './EmployeeErrorNotification';
 
