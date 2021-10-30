@@ -1,9 +1,8 @@
 import { getSharedComponents } from '@frontend/shared/browser-tests/shared.components';
 import { getErrorMessage } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { getFrontendUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController, { ClientFunction } from 'testcafe';
-
-import { getEmployerUiUrl } from './settings';
 
 const getCurrentPathname = ClientFunction(() => document.location.pathname);
 const getUrlParam = ClientFunction((param: string) => {
@@ -19,15 +18,15 @@ export const getUrlUtils = (t: TestController) => {
 
   const actions = {
     async navigateToIndexPage() {
-      await t.navigateTo(getEmployerUiUrl(`/`));
+      await t.navigateTo(getFrontendUrl(`/`));
       await pageIsLoaded();
     },
     async navigateToLoginPage() {
-      await t.navigateTo(getEmployerUiUrl(`/login`));
+      await t.navigateTo(getFrontendUrl(`/login`));
       await pageIsLoaded();
     },
     async navigateToCompanyPage() {
-      await t.navigateTo(getEmployerUiUrl(`/company`));
+      await t.navigateTo(getFrontendUrl(`/company`));
       await pageIsLoaded();
     },
     async refreshPage() {

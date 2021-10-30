@@ -2,12 +2,12 @@ import { getHeaderComponents } from '@frontend/shared/browser-tests/components/h
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { getFrontendUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import TestController from 'testcafe';
 
 import { doEmployerLogin } from '../actions/employer-header.actions';
-import { getEmployerUiUrl } from '../utils/settings';
 
-const url = getEmployerUiUrl('/');
+const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 fixture('Frontpage')

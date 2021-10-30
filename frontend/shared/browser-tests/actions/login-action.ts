@@ -7,8 +7,8 @@ import { getSuomiFiAuthenticationComponents } from '../components/suomiFiAuthent
 import { getSuomiFiProfileComponents } from '../components/suomiFiProfile.components';
 import { getSuomiFiTestIdentificationComponents } from '../components/suomiFiTestIdentification.components';
 import { getSuomiFiValtuutusComponents } from '../components/suomiFiValtuutus.components';
+import { getUrlApi } from '../components/url.api';
 import isRealIntegrationsEnabled from '../utils/is-real-integrations-enabled';
-import { getUrlUtils } from '../utils/url.utils';
 
 let suomiFiAuthenticationComponents: ReturnType<
   typeof getSuomiFiAuthenticationComponents
@@ -21,7 +21,7 @@ let suomiFiProfileComponents: ReturnType<typeof getSuomiFiProfileComponents>;
 let suomiFiValtuutusComponents: ReturnType<
   typeof getSuomiFiValtuutusComponents
 >;
-let urlUtils: ReturnType<typeof getUrlUtils>;
+let urlUtils: ReturnType<typeof getUrlApi>;
 
 export type SuomiFiData = {
   user?: User;
@@ -36,17 +36,18 @@ const doSuomiFiLogin = async (
   // when logging in second time, suomifi remembers the user from previous session so following steps are skipped
   if (!cachedUser) {
     suomiFiAuthenticationComponents = getSuomiFiAuthenticationComponents(t);
-    suomiFiTestIdentificationComponents = getSuomiFiTestIdentificationComponents(
-      t
-    );
+    suomiFiTestIdentificationComponents =
+      getSuomiFiTestIdentificationComponents(t);
     suomiFiProfileComponents = getSuomiFiProfileComponents(t);
     suomiFiValtuutusComponents = getSuomiFiValtuutusComponents(t);
-    urlUtils = getUrlUtils(t);
+    urlUtils = getUrlApi(t);
 
     await urlUtils.expectations.urlChangedToAuthorizationEndpoint();
-    const authenticatorSelector = await suomiFiAuthenticationComponents.authenticationSelector();
+    const authenticatorSelector =
+      await suomiFiAuthenticationComponents.authenticationSelector();
     await authenticatorSelector.actions.selectTestitunnistajaAuthentication();
-    const identificationForm = await suomiFiTestIdentificationComponents.identificationForm();
+    const identificationForm =
+      await suomiFiTestIdentificationComponents.identificationForm();
     await identificationForm.actions.selectTestitunnistajaAuthentication();
     await identificationForm.actions.clickSubmitButton();
   }

@@ -33,7 +33,7 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 400Mi
-  EMPLOYER_URL: https://ks-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  FRONTEND_URL: https://ks-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   HANDLER_URL: https://ks-hndl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://ks-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   MOCK_FLAG: 1
@@ -116,8 +116,8 @@ jobs:
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_COOKIE_DOMAIN=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
-          echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.FRONTEND_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.FRONTEND_URL }}/login?error=true" >> $GITHUB_ENV
 
       - name: Review-Services
         if: matrix.database
@@ -147,9 +147,9 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
-          CSRF_TRUSTED_ORIGINS: ${{ env.EMPLOYER_URL }}
-          LOGIN_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
-          LOGIN_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
+          CSRF_TRUSTED_ORIGINS: ${{ env.FRONTEND_URL }}
+          LOGIN_REDIRECT_URL: ${{ env.FRONTEND_URL }}
+          LOGIN_REDIRECT_URL_FAILURE: ${{ env.FRONTEND_URL }}/login?error=true
 
       - name: Deploy Cronjobs
         if: matrix.database
