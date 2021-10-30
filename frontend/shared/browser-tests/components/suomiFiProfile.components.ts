@@ -30,7 +30,7 @@ export const getSuomiFiProfileComponents = (t: TestController) => {
           .nextSibling();
       },
       continueButton() {
-        return withinForm().getByRole('button', {
+        return withinForm().findByRole('button', {
           name: /jatka palveluun/i,
         });
       },
