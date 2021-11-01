@@ -1,16 +1,9 @@
 name: Kesäseteli Staging Environment Acceptance tests
 on:
-  # To be removed
-  pull_request:
-  push:
-    branches:
-      - main
-    paths:
-      - 'backend/kesaseteli/**'
-      - 'frontend/kesaseteli/**'
-      - 'frontend/shared/**'
-      - 'frontend/*'
-      - '.github/workflows/ks-staging.yml'
+  schedule:
+    # At every hour from 7-20 (finnish winter time)
+    # Disabled until staging is not behind vpn anymore
+    - cron: "*/30 5-18 * * *"
 env:
   FRONTEND_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi
 jobs:
