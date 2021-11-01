@@ -54,7 +54,7 @@ def test_get_mock_company_not_found_from_ytj(api_client):
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json", "eauth_profile"]
+        if f.name not in ["id", "name", "business_id", "ytj_json"]
     ]:
         assert response.data[field.name] == ""
 
@@ -66,9 +66,11 @@ def test_get_mock_company_not_found_from_ytj(api_client):
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
 )
-def test_get_company_organization_roles_error(
-    api_client, requests_mock, user_with_profile
-):
+def test_get_company_organization_roles_error(api_client, requests_mock, user):
+    session = api_client.session
+    session.pop("organization_roles")
+    session.save()
+
     matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=401)
 
@@ -86,7 +88,13 @@ def test_get_company_organization_roles_error(
     MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
-def test_get_company_from_ytj(api_client, requests_mock, user_with_profile):
+def test_get_company_from_ytj(api_client, requests_mock):
+    session = api_client.session
+    session.pop("organization_roles")
+    session.save()
+
+    Company.objects.all().delete()
+
     set_up_mock_requests(
         DUMMY_YTJ_RESPONSE, DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE, requests_mock
     )
@@ -121,7 +129,7 @@ def test_get_company_from_ytj(api_client, requests_mock, user_with_profile):
     MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
-def test_get_company_not_found_from_ytj(api_client, requests_mock, user_with_profile):
+def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
     matcher = re.compile(settings.YTJ_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=404)
 
@@ -144,7 +152,7 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user_with_pro
     for field in [
         f
         for f in Company._meta.fields
-        if f.name not in ["id", "name", "business_id", "ytj_json", "eauth_profile"]
+        if f.name not in ["id", "name", "business_id", "ytj_json"]
     ]:
         assert response.data[field.name] == ""
 
@@ -154,9 +162,7 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user_with_pro
     MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
-def test_get_company_from_ytj_invalid_response(
-    api_client, requests_mock, user_with_profile
-):
+def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):
     ytj_reponse = copy.deepcopy(DUMMY_YTJ_RESPONSE)
     ytj_reponse["results"][0]["addresses"] = []
 

@@ -13,8 +13,11 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
-from shared.oidc.services import store_token_info_in_eauth_profile
-from shared.oidc.utils import get_checksum_header, get_userinfo
+from shared.oidc.utils import (
+    get_checksum_header,
+    get_userinfo,
+    store_token_info_in_eauth_session,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -54,14 +57,10 @@ class EauthAuthenticationRequestView(View):
 
     def get(self, request):
         """Eauth client authentication initialization HTTP endpoint"""
-        if not (
-            hasattr(request.user, "oidc_profile")
-            and request.user.oidc_profile.access_token
-        ):
+        if not (request.session.get("oidc_access_token")):
             return self.login_failure()
 
-        oidc_profile = request.user.oidc_profile
-        user_info = get_userinfo(oidc_profile.access_token)
+        user_info = get_userinfo(request)
 
         user_ssn = user_info.get("national_id_num")
         register_info = self.register_user(user_ssn)
@@ -69,7 +68,7 @@ class EauthAuthenticationRequestView(View):
         session_id = register_info.get("sessionId")
         user_id = register_info.get("userId")
 
-        store_token_info_in_eauth_profile(oidc_profile, {"id_token": session_id})
+        store_token_info_in_eauth_session(request, {"id_token": session_id})
 
         auth_url = settings.EAUTHORIZATIONS_BASE_URL + "/oauth/authorize"
 
@@ -154,14 +153,12 @@ class EauthAuthenticationCallbackView(View):
         elif "code" in request.GET:
             try:
                 token_info = self.get_token_info(request.GET["code"])
-                eauthorization_profile = store_token_info_in_eauth_profile(
-                    request.user.oidc_profile, token_info
-                )
+                store_token_info_in_eauth_session(request, token_info)
 
                 # Store organization roles in session
                 from shared.oidc.utils import request_organization_roles
 
-                request_organization_roles(eauthorization_profile, request)
+                request_organization_roles(request)
             except HTTPError as e:
                 logger.error(str(e))
                 return self.login_failure()

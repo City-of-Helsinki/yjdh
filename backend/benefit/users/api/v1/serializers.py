@@ -4,7 +4,7 @@ from terms.api.v1.serializers import TermsOfServiceApprovalSerializer, TermsSeri
 from terms.enums import TermsType
 from terms.models import Terms, TermsOfServiceApproval
 from users.models import User
-from users.utils import get_company_from_user
+from users.utils import get_company_from_request
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -65,5 +65,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     def is_terms_of_service_approval_needed(self, obj):
         return TermsOfServiceApproval.terms_approval_needed(
-            obj, get_company_from_user(obj, self.context.get("request"))
+            obj, get_company_from_request(self.context.get("request"))
         )

@@ -13,7 +13,7 @@ from terms.api.v1.serializers import (
     TermsOfServiceApprovalSerializer,
 )
 from terms.models import TermsOfServiceApproval
-from users.utils import get_company_from_user
+from users.utils import get_company_from_request
 
 
 class ApproveTermsOfServiceView(APIView):
@@ -35,7 +35,7 @@ class ApproveTermsOfServiceView(APIView):
         )  # validate the terms and applicant consents
         user = request.user
 
-        company = get_company_from_user(user, request)
+        company = get_company_from_request(request)
         if not company:
             raise PermissionDenied(
                 detail=_(

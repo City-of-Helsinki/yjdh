@@ -3,6 +3,7 @@ import logging
 import requests
 from django.conf import settings
 from django.contrib import auth
+from django.contrib.sessions.models import Session
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
@@ -15,9 +16,11 @@ from mozilla_django_oidc.views import (
 from requests.exceptions import HTTPError
 
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
-from shared.oidc.models import OIDCProfile
-from shared.oidc.services import clear_eauthorization_profiles, clear_oidc_profiles
-from shared.oidc.utils import get_userinfo, refresh_hki_tokens
+from shared.oidc.utils import (
+    get_userinfo,
+    is_active_oidc_access_token,
+    refresh_hki_tokens,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -57,24 +60,15 @@ class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
 class HelsinkiOIDCLogoutView(OIDCLogoutView):
     """Override OIDCLogoutView to match the keycloak backchannel logout"""
 
-    def clear_user_sessions(self, oidc_profile):
-        eauthorization_profile = getattr(oidc_profile, "eauthorization_profile", None)
-
-        clear_oidc_profiles(oidc_profile)
-        if eauthorization_profile:
-            clear_eauthorization_profiles(eauthorization_profile)
-
     def post(self, request):
         if request.user.is_authenticated:
-            try:
-                oidc_profile = request.user.oidc_profile
-            except OIDCProfile.DoesNotExist:
+            if not request.session.get("oidc_id_token"):
                 auth.logout(request)
                 return HttpResponse("OK", status=200)
 
             payload = {
-                "id_token_hint": oidc_profile.id_token,
-                "refresh_token": oidc_profile.refresh_token,
+                "id_token_hint": request.session.get("oidc_id_token"),
+                "refresh_token": request.session.get("oidc_refresh_token"),
                 "client_id": settings.OIDC_RP_CLIENT_ID,
                 "client_secret": settings.OIDC_RP_CLIENT_SECRET,
             }
@@ -93,7 +87,6 @@ class HelsinkiOIDCLogoutView(OIDCLogoutView):
                 logger.error(str(e))
 
             auth.logout(request)
-            self.clear_user_sessions(oidc_profile)
 
         return HttpResponse("OK", status=200)
 
@@ -103,8 +96,8 @@ class HelsinkiOIDCUserInfoView(View):
 
     http_method_names = ["get"]
 
-    def get_userinfo(self, access_token):
-        response = get_userinfo(access_token)
+    def get_userinfo(self, request):
+        response = get_userinfo(request)
         return JsonResponse(response)
 
     def get(self, request):
@@ -112,12 +105,16 @@ class HelsinkiOIDCUserInfoView(View):
 
         if request.user.is_authenticated:
             try:
-                oidc_profile = request.user.oidc_profile
-                if not oidc_profile.is_active_access_token:
-                    oidc_profile = refresh_hki_tokens(oidc_profile)
+                access_token = request.session.get("oidc_access_token")
 
-                response = self.get_userinfo(oidc_profile.access_token)
-            except (HTTPError, SuspiciousOperation, OIDCProfile.DoesNotExist):
+                if not access_token:
+                    raise SuspiciousOperation("User has no hki profile access token")
+
+                if not is_active_oidc_access_token(request):
+                    refresh_hki_tokens(request)
+
+                response = self.get_userinfo(request)
+            except (HTTPError, SuspiciousOperation):
                 auth.logout(request)
         return response
 
@@ -155,15 +152,10 @@ class HelsinkiOIDCBackchannelLogoutView(View):
             raise SuspiciousOperation("Incorrect logout_token: nonce")
 
     def clear_user_sessions(self, user):
-        oidc_profile = getattr(user, "oidc_profile", None)
-        if oidc_profile:
-            eauthorization_profile = getattr(
-                oidc_profile, "eauthorization_profile", None
-            )
-
-            clear_oidc_profiles(oidc_profile)
-            if eauthorization_profile:
-                clear_eauthorization_profiles(eauthorization_profile)
+        for session in Session.objects.all():
+            session_data = session.get_decoded()
+            if str(user.pk) == str(session_data.get("_auth_user_id")):
+                session.delete()
 
     def post(self, request):
         logout_token = request.POST.get("logout_token", None)

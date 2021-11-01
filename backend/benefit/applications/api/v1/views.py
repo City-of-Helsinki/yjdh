@@ -12,7 +12,7 @@ from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from users.utils import get_company_from_user
+from users.utils import get_company_from_request
 
 
 class ApplicationFilter(filters.FilterSet):
@@ -66,7 +66,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
             if user.is_handler():
                 return qs
             else:
-                company = get_company_from_user(user, self.request)
+                company = get_company_from_request(self.request)
                 if company:
                     return company.applications.all()
         return Application.objects.none()

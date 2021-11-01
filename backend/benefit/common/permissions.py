@@ -2,7 +2,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
-from users.utils import get_company_from_user
+from users.utils import get_company_from_request
 
 
 class BFIsAuthenticated(permissions.IsAuthenticated):
@@ -29,7 +29,7 @@ class TermsOfServiceAccepted(permissions.BasePermission):
         else:
             from terms.models import TermsOfServiceApproval
 
-            company = get_company_from_user(user, request)
+            company = get_company_from_request(request)
             if not company:
                 # company deleted from the db? Whatever has happened, applicant can't
                 # proceed without a company.

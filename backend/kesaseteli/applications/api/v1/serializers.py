@@ -13,7 +13,7 @@ from applications.enums import (
 )
 from applications.models import Application, Attachment, SummerVoucher
 from companies.api.v1.serializers import CompanySerializer
-from companies.services import get_or_create_company_from_eauth_profile
+from companies.services import get_or_create_company_using_organization_roles
 
 
 class ApplicationStatusValidator:
@@ -316,9 +316,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context["request"]
         user = request.user
-        company = get_or_create_company_from_eauth_profile(
-            user.oidc_profile.eauthorization_profile, request
-        )
+        company = get_or_create_company_using_organization_roles(request)
         validated_data["company"] = company
         validated_data["user"] = user
 
