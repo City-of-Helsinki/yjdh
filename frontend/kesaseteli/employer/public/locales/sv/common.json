@@ -36,6 +36,7 @@
     "loading": "Ansökan laddas...",
     "loadingFinished": "Nedladdningen av ansökan är färdig",
     "wizardStepButton": "Gå till steg",
+    "tooltipShowInfo": "Visa information",
     "step1": {
       "name": "Arbetsgivare",
       "header": "1. Arbetsgivarens uppgifter",

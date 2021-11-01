@@ -36,6 +36,7 @@
     "loading": "Ladataan hakemusta...",
     "loadingFinished": "Hakemuksen lataus on valmis",
     "wizardStepButton": "Siirry hakemuksen vaiheeseen",
+    "tooltipShowInfo": "Näytä info",
     "step1": {
       "name": "Työnantaja",
       "header": "1. Työnantajan tiedot",
