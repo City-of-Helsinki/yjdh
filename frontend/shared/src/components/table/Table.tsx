@@ -408,7 +408,7 @@ const defaultProps = {
   canSelectRows: false,
   canSelectOneRow: false,
   globalFilter: undefined,
-  getCellProps: noop,
+  getCellProps: () => ({}),
   renderTableToolsTop: undefined,
   renderSubComponent: undefined,
   renderMainHeader: undefined,
