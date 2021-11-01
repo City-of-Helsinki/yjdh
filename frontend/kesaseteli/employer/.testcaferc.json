@@ -1,6 +1,7 @@
 {
   "clientScripts": [
-    { "module": "@testing-library/dom/dist/@testing-library/dom.umd.js" }
+    { "module": "@testing-library/dom/dist/@testing-library/dom.umd.js" },
+    "../../testcafeClientErrorHandler.js"
   ],
   "screenshots": {
     "takeOnFails": true
