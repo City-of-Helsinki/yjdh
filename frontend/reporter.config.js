@@ -1,5 +1,5 @@
 module.exports = {
-  path: 'browser-tests/reporter/slackReporter.ts',
+  path: 'shared/browser-tests/reporter/slackReporter.ts',
   tsOptions: {
     project: 'tsconfig.testcafe.json',
   },
