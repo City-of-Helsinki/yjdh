@@ -8,6 +8,7 @@ on:
     - cron: "*/30 5-18 * * *"
 env:
   FRONTEND_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi
+  BRANCH: main
 jobs:
   acceptance-tests:
     strategy:
@@ -20,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: main
+          ref: ${{env.BRANCH}}
       - run: |
           echo "COMMIT_INFO=$(git log -1 --pretty=format:'%h%x09%an%x09%ad%x09%s')" >> $GITHUB_ENV
       - name: Setup Node.js environment
@@ -64,9 +65,9 @@ jobs:
           SLACK_CHANNEL: yjdh-alerts
           SLACK_MESSAGE: |
             *Check the testcafe report here: ${{env.REPORT_URL}}*
-            The latest commit was:
+            The latest fetched commit on _${{env.BRANCH}}_-branch was:
             ```${{ env.COMMIT_INFO }}```
-            *NOTE* There is a chance that it was not deployed!
+            *NOTE*: There is a chance that it was not yet deployed!
         if: always() && steps.testcafe.outcome == 'failure'
       - name: Create zip of screenshots and videos of failed tests to artifact for ${{env.FRONTEND_URL}}
         uses: actions/upload-artifact@v2
