@@ -1,5 +1,4 @@
-import { formatDate } from 'shared/utils/date.utils';
-
+import { formatDate } from '../../src/utils/date.utils';
 import { getFrontendUrl } from '../utils/url.utils';
 import { createSlackMessageSender } from './slackMessageSender';
 import { emojis } from './utils/emojis';
@@ -48,7 +47,6 @@ const getTestDoneMessage = (name: string, testRunInfo: TestRunInfo): string => {
  * Custom slack reporter for testcafe:
  * https://github.com/ocassio/testcafe-reporter-custom
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const SlackReporter = (): Reporter => {
   let startTime: number;
   let testCount: number;
