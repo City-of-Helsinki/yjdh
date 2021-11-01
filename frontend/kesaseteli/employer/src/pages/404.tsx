@@ -1,4 +1,5 @@
 import { GetStaticProps, NextPage } from 'next';
+import Head from 'next/head';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
@@ -12,6 +13,11 @@ const PageNotFound: NextPage = () => {
   const { t } = useTranslation();
   return (
     <Container>
+      <Head>
+        <title>
+          {t(`common:404Page.pageNotFoundLabel`)} | {t(`common:appName`)}
+        </title>
+      </Head>
       <Layout>
         <$Notification
           label={t(`common:404Page.pageNotFoundLabel`)}
