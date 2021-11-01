@@ -98,7 +98,12 @@ class HelsinkiOIDCUserInfoView(View):
 
     def get_userinfo(self, request):
         response = get_userinfo(request)
-        return JsonResponse(response)
+        userinfo = {
+            "given_name": response.get("given_name", ""),
+            "family_name": response.get("family_name", ""),
+            "name": response.get("name", ""),
+        }
+        return JsonResponse(userinfo)
 
     def get(self, request):
         response = HttpResponse("Unauthorized", status=401)
