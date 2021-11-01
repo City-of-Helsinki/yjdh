@@ -1,5 +1,7 @@
 name: Kesäseteli Test Environment Acceptance tests
 on:
+  # To be removed
+  pull_request:
   schedule:
     # At half past every hour from 7-20 (finnish winter time)
     - cron: "0 5-18 * * *"
@@ -16,6 +18,11 @@ jobs:
         working-directory: ./frontend
     steps:
       - uses: actions/checkout@v2
+      - name: Commit info
+        id: commit
+          shell: bash
+          run: |
+            echo "::set-output name=commit_info::$(git log -1 --pretty=format:'%h%x09%an%x09%ad%x09%s')"
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.4.1
         with:
@@ -54,8 +61,12 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_USERNAME: GitHub-Alerts
           SLACK_TITLE: ${{ github.workflow }} have *FAILED* in ${{env.FRONTEND_URL}}!
-          SLACK_MESSAGE: "*Check the testcafe report here: ${{env.REPORT_URL}}*"
           SLACK_CHANNEL: yjdh-alerts
+          SLACK_MESSAGE: |
+              *Check the testcafe report here: ${{env.REPORT_URL}}*
+              The latest commit was:
+              ```${{ steps.vars.outputs.sha_short }}```
+              *NOTE* There is a chance that it was not deployed!
         if: always() && steps.testcafe.outcome == 'failure'
       - name: Create zip of screenshots and videos of failed tests to artifact for ${{env.FRONTEND_URL}}
         uses: actions/upload-artifact@v2
