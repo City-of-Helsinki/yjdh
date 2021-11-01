@@ -20,9 +20,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Commit info
         id: commit
-          shell: bash
-          run: |
-            echo "::set-output name=commit_info::$(git log -1 --pretty=format:'%h%x09%an%x09%ad%x09%s')"
+        shell: bash
+        run: |
+          echo "::set-output name=commit_info::$(git log -1 --pretty=format:'%h%x09%an%x09%ad%x09%s')"
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.4.1
         with:
