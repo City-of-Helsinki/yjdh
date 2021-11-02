@@ -13,6 +13,14 @@ class BFIsAuthenticated(permissions.IsAuthenticated):
         return super().has_permission(request, view)
 
 
+class BFIsHandler(permissions.IsAdminUser):
+    def has_permission(self, request, view):
+        # FIXME: Remove this permission when FE implemented authentication
+        if settings.DISABLE_AUTHENTICATION:
+            return True
+        return super().has_permission(request, view)
+
+
 class TermsOfServiceAccepted(permissions.BasePermission):
     message = _("You have to accept Terms of Service before doing any action")
 

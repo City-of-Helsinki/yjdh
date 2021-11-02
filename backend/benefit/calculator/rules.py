@@ -84,8 +84,11 @@ class HelsinkiBenefitCalculator:
 
     # if calculation is enabled for non-handler users, need to change this
     # locked applications (transferred to Ahjo) should never be re-calculated.
-    # TODO: add "HANDLING" here
-    CALCULATION_ALLOWED_STATUSES = [ApplicationStatus.RECEIVED]
+    CALCULATION_ALLOWED_STATUSES = [
+        ApplicationStatus.RECEIVED,
+        ApplicationStatus.HANDLING,
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+    ]
 
     @transaction.atomic
     def calculate(self):

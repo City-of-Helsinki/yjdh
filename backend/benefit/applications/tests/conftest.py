@@ -7,6 +7,7 @@ from applications.tests.factories import (
     ApplicationFactory,
     DecidedApplicationFactory,
     EmployeeFactory,
+    HandlingApplicationFactory,
     ReceivedApplicationFactory,
 )
 from common.tests.conftest import *  # noqa
@@ -26,6 +27,12 @@ def anonymous_application():
 def received_application():
     with factory.Faker.override_default_locale("fi_FI"):
         return ReceivedApplicationFactory()
+
+
+@pytest.fixture
+def handling_application():
+    with factory.Faker.override_default_locale("fi_FI"):
+        return HandlingApplicationFactory()
 
 
 @pytest.fixture

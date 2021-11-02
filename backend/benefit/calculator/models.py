@@ -41,6 +41,15 @@ class Calculation(UUIDModel, TimeStampedModel):
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
 
+    handler = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="calculations",
+        verbose_name=_("handler"),
+        blank=True,
+        null=True,
+    )
+
     objects = CalculationManager()
 
     application = models.OneToOneField(

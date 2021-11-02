@@ -33,6 +33,7 @@ from common.utils import (
     duration_in_months,
     pairwise,
     PhoneNumberField,
+    update_object,
     xgroup,
 )
 from companies.api.v1.serializers import CompanySerializer
@@ -457,7 +458,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         help_text=(
             "Set the approved terms of this application."
             "Only used when application status is changed"
-            "from DRAFT or ADDITIONAL_INFORMATION_NEEDED to RECEIVED"
+            "from DRAFT->RECEIVED or ADDITIONAL_INFORMATION_NEEDED->HANDLING"
             "in the same request."
         ),
     )
@@ -1250,7 +1251,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         return data
 
     def handle_status_transition(self, instance, previous_status, approve_terms):
-        if instance.status == ApplicationStatus.RECEIVED:
+        if (
+            (
+                previous_status,
+                instance.status,
+            )
+            in ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
+        ):
             # moving out of DRAFT or ADDITIONAL_INFORMATION_NEEDED, so the applicant
             # may have modified the application
             self._validate_attachments(instance)
@@ -1527,10 +1534,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
 
     def _update_calculation(self, application, calculation_data):
         request = self.context.get("request")
-        if application.status not in [ApplicationStatus.RECEIVED]:
-            # TODO: add ApplicationStatus.HANDLING here
-            return
-        if not request and request.method != "PUT":
+        if not request or request.method != "PUT":
             return
         if not self.logged_in_user_is_admin():
             # only admins are allowed to modify calculations
@@ -1539,29 +1543,20 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             raise serializers.ValidationError(
                 _("The calculation should be created when the application is submitted")
             )
-        if application.calculation.id != calculation_data["id"]:
-            raise serializers.ValidationError(
-                _("The calculation id does not match existing id")
-            )
-        serializer = CalculationSerializer(
-            application.calculation,
-            data=calculation_data,
+        if calculation_data is not None:
+            if not ApplicationStatus.is_handler_editable_status(application.status):
+                raise serializers.ValidationError(
+                    _("The calculation can not be updated in this status")
+                )
+            if application.calculation.id != calculation_data["id"]:
+                raise serializers.ValidationError(
+                    _("The calculation id does not match existing id")
+                )
+            update_object(application.calculation, calculation_data)
+        call_now_or_later(
+            application.calculation.calculate,
+            duplicate_check=("calculation.calculate", application.pk),
         )
-
-        if serializer.is_valid():
-            serializer.save()
-            if hasattr(application, "calculation"):
-                call_now_or_later(
-                    application.calculation.calculate,
-                    duplicate_check=("calculation.calculate", application.pk),
-                )
-        else:
-            raise serializers.ValidationError(
-                format_lazy(
-                    _("Reading calculation data failed: {errors}"),
-                    errors=serializer.errors,
-                )
-            )
 
     def _update_pay_subsidies(self, application, pay_subsidy_data):
 

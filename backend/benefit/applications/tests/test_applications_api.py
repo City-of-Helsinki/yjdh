@@ -12,6 +12,9 @@ from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
     AttachmentSerializer,
 )
+from applications.api.v1.status_transition_validator import (
+    ApplicantApplicationStatusValidator,
+)
 from applications.enums import (
     ApplicationStatus,
     AttachmentType,
@@ -892,20 +895,27 @@ def test_application_with_previously_granted_benefits(
     "from_status,to_status,expected_code",
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING, 400),
         (
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             400,
         ),
         (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.RECEIVED,
+            400,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.HANDLING,
             200,
         ),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 400),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 400),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 400),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
@@ -923,7 +933,10 @@ def test_application_status_change_as_applicant(
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
 
-    if to_status == ApplicationStatus.RECEIVED:
+    if (
+        from_status,
+        to_status,
+    ) in ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS:
         add_attachments_to_application(request, application)
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
@@ -951,18 +964,18 @@ def test_application_status_change_as_applicant(
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
         (
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             200,
         ),
         (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             200,
         ),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200),
+        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200),
+        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
@@ -981,7 +994,7 @@ def test_application_status_change_as_handler(
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
 
-    if to_status == ApplicationStatus.RECEIVED:
+    if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
         add_attachments_to_application(request, application)
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
@@ -1029,6 +1042,7 @@ def test_application_last_modified_at_draft(api_client, application):
     "status",
     [
         ApplicationStatus.RECEIVED,
+        ApplicationStatus.HANDLING,
         ApplicationStatus.ACCEPTED,
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
         ApplicationStatus.REJECTED,
@@ -1227,6 +1241,7 @@ def test_attachment_delete_unauthorized(
     [
         (ApplicationStatus.DRAFT, 204),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 204),
+        (ApplicationStatus.HANDLING, 403),
         (ApplicationStatus.RECEIVED, 403),
         (ApplicationStatus.ACCEPTED, 403),
         (ApplicationStatus.CANCELLED, 403),

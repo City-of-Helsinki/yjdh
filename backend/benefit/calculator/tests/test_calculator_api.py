@@ -2,6 +2,7 @@ import copy
 import decimal
 from unittest import mock
 
+import pytest
 from applications.api.v1.serializers import HandlerApplicationSerializer
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from applications.tests.conftest import *  # noqa
@@ -12,6 +13,10 @@ from applications.tests.test_applications_api import (
 )
 from calculator.api.v1.serializers import CalculationSerializer
 from calculator.tests.factories import CalculationFactory, PaySubsidyFactory
+
+
+def _get_user(api_client):
+    return api_client.handler._force_user
 
 
 def test_application_retrieve_calculation_as_handler(handler_api_client, application):
@@ -79,8 +84,7 @@ def test_application_can_not_create_calculation_through_api(
         get_handler_detail_url(application),
         data,
     )
-    assert response.status_code == 200
-    assert response.data["calculation"] is None
+    assert response.status_code == 400
     application.refresh_from_db()
     assert not hasattr(application, "calculation")
 
@@ -124,6 +128,40 @@ def test_modify_calculation(handler_api_client, received_application):
         received_application.pay_subsidies.first().end_date
         == received_application.end_date
     )
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+        ApplicationStatus.REJECTED,
+    ],
+)
+def test_modify_calculation_invalid_status(
+    handler_api_client, handling_application, status
+):
+    handling_application.status = status
+    data = HandlerApplicationSerializer(handling_application).data
+    assert handling_application.calculation
+    assert handling_application.pay_subsidies.count() == 0
+    data["calculation"]["handler"] = None
+    data["pay_subsidies"] = [
+        {
+            "start_date": str(handling_application.start_date),
+            "end_date": str(handling_application.end_date),
+            "pay_subsidy_percent": 50,
+            "work_time_percent": 100,
+        }
+    ]
+    with mock.patch("calculator.models.Calculation.calculate") as calculate_wrap:
+        response = handler_api_client.put(
+            get_handler_detail_url(handling_application),
+            data,
+        )
+        calculate_wrap.assert_not_called()
+
+    assert response.status_code == 400
 
 
 def test_can_not_delete_calculation(handler_api_client, received_application):
@@ -224,3 +262,95 @@ def test_application_edit_pay_subsidy_invalid_values(
     received_application.refresh_from_db()
     data_after = HandlerApplicationSerializer(received_application).data
     assert previous_data == data_after["pay_subsidies"]
+
+
+def test_assign_handler(handler_api_client, received_application):
+    user = _get_user(handler_api_client)
+    user.first_name = "adminFirst"
+    user.last_name = "adminFirst"
+    user.save()
+    data = HandlerApplicationSerializer(received_application).data
+    assert received_application.calculation
+    assert received_application.pay_subsidies.count() == 0
+    data["status"] = ApplicationStatus.HANDLING
+    data["calculation"]["handler"] = _get_user(handler_api_client).pk
+    response = handler_api_client.put(
+        get_handler_detail_url(received_application),
+        data,
+    )
+
+    assert response.status_code == 200
+    assert response.data["calculation"]["handler_details"]["id"] == str(
+        _get_user(handler_api_client).pk
+    )
+    assert (
+        response.data["calculation"]["handler_details"]["first_name"]
+        == _get_user(handler_api_client).first_name
+    )
+    assert (
+        response.data["calculation"]["handler_details"]["last_name"]
+        == _get_user(handler_api_client).last_name
+    )
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+        ApplicationStatus.REJECTED,
+        ApplicationStatus.DRAFT,
+    ],
+)
+def test_assign_handler_invalid_status(
+    handler_api_client, received_application, status
+):
+    received_application.status = status
+    received_application.save()
+    data = HandlerApplicationSerializer(received_application).data
+    assert received_application.calculation
+    assert received_application.pay_subsidies.count() == 0
+    data["status"] = ApplicationStatus.HANDLING
+    data["calculation"]["handler"] = _get_user(handler_api_client).pk
+    response = handler_api_client.put(
+        get_handler_detail_url(received_application),
+        data,
+    )
+    assert response.status_code == 400
+
+
+def test_unassign_handler_valid_status(handler_api_client, handling_application):
+    data = HandlerApplicationSerializer(handling_application).data
+    assert handling_application.calculation
+    assert handling_application.pay_subsidies.count() == 0
+    data["calculation"]["handler"] = None
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 200
+    assert response.data["calculation"]["handler_details"] is None
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+        ApplicationStatus.REJECTED,
+    ],
+)
+def test_unassign_handler_invalid_status(
+    handler_api_client, handling_application, status
+):
+    handling_application.status = status
+    handling_application.save()
+    data = HandlerApplicationSerializer(handling_application).data
+    assert handling_application.calculation
+    assert handling_application.pay_subsidies.count() == 0
+    data["calculation"]["handler"] = None
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 400
