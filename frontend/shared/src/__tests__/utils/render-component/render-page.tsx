@@ -26,6 +26,7 @@ const renderPage =
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     // act because of async handlers in react-hook-form and react-query
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       render(
         <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
