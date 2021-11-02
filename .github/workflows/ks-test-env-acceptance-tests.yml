@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
-      - name: Run TestCafe tests for Staging
+      - name: Run TestCafe tests for Testing
         id: testcafe
         run: yarn --cwd kesaseteli/employer browser-test:ci
         env:
