@@ -1,5 +1,5 @@
 {
-  "appName": "Helsinki-benefit handler FI",
+  "appName": "Helsinki-benefit handler EN",
   "header": {
     "navigation": {
       "applications": "Hakemukset",
@@ -47,10 +47,20 @@
         "submittedAt": "Saapunut",
         "applicationNum": "Numero",
         "employeeName": "Työntekijä",
-        "applicantName": "Käsittelijä"
+        "handlerName": "Käsittelijä"
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"
+      },
+      "headings": {
+        "received": "Saapuneet",
+        "handled": "Käsittelyssä"
+      },
+      "errors": {
+        "fetch": {
+          "label": "Error occurred",
+          "text": "Unable to fetch applications with status {{status}}"
+        }
       }
     }
   }

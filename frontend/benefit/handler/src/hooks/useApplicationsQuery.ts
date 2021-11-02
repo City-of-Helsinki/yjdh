@@ -1,6 +1,6 @@
-import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
-import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
-import { ApplicationData } from 'benefit/applicant/types/application';
+import { BackendEndpoint } from 'benefit/handler/backend-api/backend-api';
+import useBackendAPI from 'benefit/handler/hooks/useBackendAPI';
+import { ApplicationData } from 'benefit/handler/types/application';
 import { useQuery, UseQueryResult } from 'react-query';
 
 const useApplicationsQuery = (

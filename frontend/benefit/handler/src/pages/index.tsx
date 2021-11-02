@@ -7,6 +7,7 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 import { useEffect } from 'react';
+import { useTranslation } from 'next-i18next';
 import theme from 'shared/styles/theme';
 
 const ApplicantIndex: NextPage = () => {
@@ -23,15 +24,17 @@ const ApplicantIndex: NextPage = () => {
     };
   }, [setIsNavigationVisible, setLayoutBackgroundColor]);
 
+  const { t } = useTranslation();
+
   return (
     <FrontPageProvider>
       <MainIngress />
       <ApplicationList
-        heading="Käsittelyssä"
-        status={[APPLICATION_STATUSES.RECEIVED]}
+        heading={t('common:applications.list.headings.handled')}
+        status={[APPLICATION_STATUSES.HANDLED]}
       />
       <ApplicationList
-        heading="Saapuneet"
+        heading={t('common:applications.list.headings.received')}
         status={[APPLICATION_STATUSES.RECEIVED]}
       />
     </FrontPageProvider>

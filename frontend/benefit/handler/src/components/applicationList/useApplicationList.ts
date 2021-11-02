@@ -1,9 +1,11 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import useApplicationsQuery from 'benefit/handler/hooks/useApplicationsQuery';
 import { ApplicationListItemData } from 'benefit/handler/types/application';
+import { useEffect } from 'react';
 import { TFunction, useTranslation } from 'next-i18next';
 import isServerSide from 'shared/server/is-server-side';
 import { formatDate } from 'shared/utils/date.utils';
+import hdsToast from 'shared/components/toast/Toast';
 
 interface ApplicationListProps {
   t: TFunction;
@@ -11,6 +13,7 @@ interface ApplicationListProps {
   shouldShowSkeleton: boolean;
   shouldHideList: boolean;
   getHeader: (id: string) => string;
+  translationsBase: string;
 }
 
 const getFullName = (firstName: string, lastName: string): string => {
@@ -18,13 +21,26 @@ const getFullName = (firstName: string, lastName: string): string => {
   return name === ' ' ? '-' : name;
 };
 
+const translationsBase = 'common:applications.list';
+
 const useApplicationList = (
   status: APPLICATION_STATUSES[]
 ): ApplicationListProps => {
   const { t } = useTranslation();
   const { data, error, isLoading } = useApplicationsQuery(status);
 
-  // todo: error handling with toast
+  useEffect(() => {
+    if (error) {
+      hdsToast({
+        autoDismissTime: 5000,
+        type: 'error',
+        labelText: t(`${translationsBase}.errors.fetch.label`),
+        text: t(`${translationsBase}.errors.fetch.text`, {
+          status: status,
+        }),
+      });
+    }
+  }, [t, error, status]);
 
   const list = data?.reduce<ApplicationListItemData[]>((acc, application) => {
     const {
@@ -57,9 +73,16 @@ const useApplicationList = (
     (!shouldShowSkeleton && Array.isArray(data) && data.length === 0);
 
   const getHeader = (id: string): string =>
-    t(`common:applications.list.columns.${id}`);
+    t(`${translationsBase}.columns.${id}`);
 
-  return { t, list: list || [], shouldShowSkeleton, shouldHideList, getHeader };
+  return {
+    t,
+    list: list || [],
+    shouldShowSkeleton,
+    shouldHideList,
+    getHeader,
+    translationsBase,
+  };
 };
 
 export { useApplicationList };

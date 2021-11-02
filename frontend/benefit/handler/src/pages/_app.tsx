@@ -18,6 +18,7 @@ import useLocale from 'shared/hooks/useLocale';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
+import HDSToastContainer from 'shared/components/toast/ToastContainer';
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
             <GlobalStyling />
             <Layout>
               <Header />
+              <HDSToastContainer />
               <Content>
                 <Component {...pageProps} />
               </Content>

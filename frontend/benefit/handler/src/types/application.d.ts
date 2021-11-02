@@ -213,7 +213,7 @@ export type ApplicationListItemData = {
   submittedAt?: string;
   applicationNum?: number;
   employeeName?: string;
-  applicantName?: string;
+  handlerName?: string;
 };
 
 export interface Step1 {

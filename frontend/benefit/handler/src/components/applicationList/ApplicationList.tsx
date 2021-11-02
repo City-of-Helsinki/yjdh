@@ -20,8 +20,14 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   heading,
   status,
 }) => {
-  const { t, list, shouldShowSkeleton, shouldHideList, getHeader } =
-    useApplicationList(status);
+  const {
+    t,
+    list,
+    shouldShowSkeleton,
+    shouldHideList,
+    translationsBase,
+    getHeader,
+  } = useApplicationList(status);
 
   const rawColumns: (ColumnType | undefined)[] = [
     {
@@ -65,8 +71,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
 
   if (status.includes(APPLICATION_STATUSES.RECEIVED)) {
     rawColumns.push({
-      Header: getHeader('applicantName'),
-      accessor: 'applicantName',
+      Header: getHeader('handlerName'),
+      accessor: 'handlerName',
       disableSortBy: true,
       width: COLUMN_WIDTH.M,
     });
@@ -79,7 +85,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   if (shouldShowSkeleton) {
     return (
       <Container>
-        <LoadingSkeleton width="100%" height="50px" />
+        <LoadingSkeleton width="150px" height="50px" />
       </Container>
     );
   }
@@ -90,7 +96,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       {!shouldHideList ? (
         <Table data={list} columns={columns} />
       ) : (
-        <$Empty>{t('common:applications.list.messages.empty')}</$Empty>
+        <$Empty>{t(`${translationsBase}.messages.empty`)}</$Empty>
       )}
     </Container>
   );
