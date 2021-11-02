@@ -1,7 +1,7 @@
 name: Kesäseteli Test Environment Acceptance tests
 on:
   schedule:
-    # At half past every hour from 7-20 (finnish winter time)
+    # At every hour from 7-20 (finnish winter time)
     - cron: "0 5-18 * * *"
 env:
   FRONTEND_URL: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi
