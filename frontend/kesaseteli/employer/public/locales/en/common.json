@@ -35,6 +35,7 @@
     "common_error": "An unexpected error occurred: ",
     "loading": "Loading the application...",
     "loadingFinished": "Loading the application is complete",
+    "wizardStepButton": "Go to step",
     "step1": {
       "name": "Employer",
       "header": "1. Details of the employer",

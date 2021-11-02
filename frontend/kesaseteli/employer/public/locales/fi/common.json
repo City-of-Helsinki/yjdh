@@ -35,6 +35,7 @@
     "common_error": "Tapahtui odottamaton virhe",
     "loading": "Ladataan hakemusta...",
     "loadingFinished": "Hakemuksen lataus on valmis",
+    "wizardStepButton": "Siirry hakemuksen vaiheeseen",
     "step1": {
       "name": "Työnantaja",
       "header": "1. Työnantajan tiedot",
