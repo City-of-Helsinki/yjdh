@@ -1,5 +1,6 @@
-import ApplicationsList from 'benefit/handler/components/applicationsList/ApplicationsList';
+import ApplicationList from 'benefit/handler/components/applicationList/ApplicationList';
 import MainIngress from 'benefit/handler/components/mainIngress/MainIngress';
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
 import { GetStaticProps, NextPage } from 'next';
@@ -25,8 +26,14 @@ const ApplicantIndex: NextPage = () => {
   return (
     <FrontPageProvider>
       <MainIngress />
-      <ApplicationsList />
-      <ApplicationsList />
+      <ApplicationList
+        heading="Käsittelyssä"
+        status={[APPLICATION_STATUSES.RECEIVED]}
+      />
+      <ApplicationList
+        heading="Saapuneet"
+        status={[APPLICATION_STATUSES.RECEIVED]}
+      />
     </FrontPageProvider>
   );
 };

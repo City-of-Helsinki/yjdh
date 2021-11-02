@@ -38,5 +38,20 @@
       "label": "Error occurred",
       "text": "Please try again later."
     }
+  },
+  "applications": {
+    "list": {
+      "columns": {
+        "companyName": "Hakija",
+        "companyId": "Y-tunnus",
+        "submittedAt": "Saapunut",
+        "applicationNum": "Numero",
+        "employeeName": "Työntekijä",
+        "applicantName": "Käsittelijä"
+      },
+      "messages": {
+        "empty": "Ei eriä tällä hetkellä"
+      }
+    }
   }
 }
