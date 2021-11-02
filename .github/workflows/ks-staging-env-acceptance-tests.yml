@@ -1,7 +1,5 @@
 name: Kesäseteli Staging Environment Acceptance tests
 on:
-  # To be removed
-  pull_request:
   schedule:
     # At every hour from 7-20 (finnish winter time)
     # Disabled until staging is not behind vpn anymore

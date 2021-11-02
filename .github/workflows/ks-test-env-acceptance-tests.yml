@@ -1,7 +1,5 @@
 name: Kesäseteli Test Environment Acceptance tests
 on:
-  # To be removed
-  pull_request:
   schedule:
     # At half past every hour from 7-20 (finnish winter time)
     - cron: "0 5-18 * * *"
