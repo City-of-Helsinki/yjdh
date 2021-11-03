@@ -1,14 +1,14 @@
 name: Kesäseteli Staging Environment Acceptance tests
 on:
   schedule:
-    # Disabled until staging is not behind vpn anymore
     # At half past every hour from 7-20 (finnish winter time)
-    # - cron: "*/30 5-18 * * *"
+    - cron: "*/30 5-18 * * *"
 env:
   FRONTEND_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi
   BRANCH: main
 jobs:
   acceptance-tests:
+    if: ${{ false }} # Disabled until staging is not behind vpn anymore
     strategy:
       fail-fast: false
     runs-on: ubuntu-latest
