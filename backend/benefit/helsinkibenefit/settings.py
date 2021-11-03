@@ -271,8 +271,7 @@ TERMS_OF_SERVICE_SESSION_KEY = env.str("TERMS_OF_SERVICE_SESSION_KEY")
 
 AUTHENTICATION_BACKENDS = (
     "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
-    # Temporary disable ADFS
-    # "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+    "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 

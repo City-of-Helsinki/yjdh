@@ -29,7 +29,7 @@ urlpatterns = [
     ),  # FIXME: Remove this later
     path("v1/users/me/", CurrentUserView.as_view()),
     path("oidc/", include("shared.oidc.urls")),
-    # path("oauth2/", include("shared.azure_adfs.urls")),
+    path("oauth2/", include("shared.azure_adfs.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("openapi/", SpectacularAPIView.as_view(), name="schema"),
     path(
