@@ -123,7 +123,7 @@ class PaySubsidyListSerializer(serializers.ListSerializer):
                 ret.append(self.child.create(data))
             else:
                 ret.append(self.child.update(pay_subsidy, data))
-            # ordering field is not exposed in API, it is added in ApplicationSerializer
+            # ordering field is not exposed in API, it is added in ApplicantApplicationSerializer
             if ordering := data.get("ordering"):
                 ret[-1].ordering = ordering
                 ret[-1].save()

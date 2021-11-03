@@ -8,7 +8,10 @@ from unittest import mock
 
 import pytest
 import pytz
-from applications.api.v1.serializers import ApplicationSerializer, AttachmentSerializer
+from applications.api.v1.serializers import (
+    ApplicantApplicationSerializer,
+    AttachmentSerializer,
+)
 from applications.enums import (
     ApplicationStatus,
     AttachmentType,
@@ -31,24 +34,31 @@ from terms.tests.conftest import *  # noqa
 
 
 def get_detail_url(application):
-    return reverse("v1:application-detail", kwargs={"pk": application.id})
+    return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
 
 
-def test_applications_unauthenticated(anonymous_client, application):
-    response = anonymous_client.get(reverse("v1:application-list"))
+def get_handler_detail_url(application):
+    return reverse("v1:handler-application-detail", kwargs={"pk": application.id})
+
+
+@pytest.mark.parametrize(
+    "view_name", ["v1:applicant-application-list", "v1:handler-application-list"]
+)
+def test_applications_unauthenticated(anonymous_client, application, view_name):
+    response = anonymous_client.get(reverse(view_name))
     assert response.status_code == 403
 
 
 def test_applications_unauthorized(
     api_client, anonymous_application, mock_get_organisation_roles_and_create_company
 ):
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(reverse("v1:applicant-application-list"))
     assert len(response.data) == 0
     assert response.status_code == 200
 
 
 def test_applications_list(api_client, application):
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(reverse("v1:applicant-application-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
 
@@ -56,26 +66,28 @@ def test_applications_list(api_client, application):
 def test_applications_list_with_filter(api_client, application):
     application.status = ApplicationStatus.DRAFT
     application.save()
-    url1 = reverse("v1:application-list") + "?status=draft"
+    url1 = reverse("v1:applicant-application-list") + "?status=draft"
     response = api_client.get(url1)
     assert len(response.data) == 1
     assert response.status_code == 200
 
-    url2 = reverse("v1:application-list") + "?status=cancelled"
+    url2 = reverse("v1:applicant-application-list") + "?status=cancelled"
     response = api_client.get(url2)
     assert len(response.data) == 0
     assert response.status_code == 200
 
-    url3 = reverse("v1:application-list") + "?status=cancelled,draft"
+    url3 = reverse("v1:applicant-application-list") + "?status=cancelled,draft"
     response = api_client.get(url3)
     assert len(response.data) == 1
     assert response.status_code == 200
 
 
-def test_applications_filter_by_batch(api_client, application_batch, application):
+def test_applications_filter_by_batch(
+    handler_api_client, application_batch, application
+):
     application_batch.applications.all().update(company=application.company)
-    url = reverse("v1:application-list") + f"?batch={application_batch.pk}"
-    response = api_client.get(url)
+    url = reverse("v1:handler-application-list") + f"?batch={application_batch.pk}"
+    response = handler_api_client.get(url)
     assert len(response.data) == 2
     assert response.status_code == 200
 
@@ -86,7 +98,7 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
         != association_application.employee.social_security_number
     )
     url = (
-        reverse("v1:application-list")
+        reverse("v1:applicant-application-list")
         + f"?employee__social_security_number={application.employee.social_security_number}"
     )
     response = api_client.get(url)
@@ -95,8 +107,11 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     assert response.status_code == 200
 
 
-def test_application_single_read_unauthenticated(anonymous_client, application):
-    response = anonymous_client.get(get_detail_url(application))
+@pytest.mark.parametrize("url_func", [get_detail_url, get_handler_detail_url])
+def test_application_single_read_unauthenticated(
+    anonymous_client, application, url_func
+):
+    response = anonymous_client.get(url_func(application))
     assert response.status_code == 403
 
 
@@ -107,7 +122,7 @@ def test_application_single_read_unauthorized(
     assert response.status_code == 404
 
 
-def test_application_single_read(api_client, application):
+def test_application_single_read_as_applicant(api_client, application):
     response = api_client.get(get_detail_url(application))
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
@@ -115,21 +130,31 @@ def test_application_single_read(api_client, application):
     assert response.status_code == 200
 
 
+def test_application_single_read_as_handler(handler_api_client, application):
+    response = handler_api_client.get(get_handler_detail_url(application))
+    assert response.data["ahjo_decision"] is None
+    assert response.data["application_number"] is not None
+    assert "batch" in response.data
+    assert response.status_code == 200
+
+
 def test_application_template(api_client):
-    response = api_client.get(reverse("v1:application-get-application-template"))
+    response = api_client.get(
+        reverse("v1:applicant-application-get-application-template")
+    )
     assert (
         len(response.data["de_minimis_aid_set"]) == 0
     )  # as of 2021-06-16, just a dummy implementation exists
 
 
 def test_application_post_success_unauthenticated(anonymous_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
 
     del data["id"]  # id is read-only field and would be ignored
     response = anonymous_client.post(
-        reverse("v1:application-list"),
+        reverse("v1:applicant-application-list"),
         data,
     )
     assert response.status_code == 403
@@ -139,13 +164,13 @@ def test_application_post_success(api_client, application):
     """
     Create a new application
     """
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
 
     del data["id"]  # id is read-only field and would be ignored
     response = api_client.post(
-        reverse("v1:application-list"),
+        reverse("v1:applicant-application-list"),
         data,
     )
     assert response.status_code == 201
@@ -185,7 +210,7 @@ def test_application_post_unfinished(api_client, application):
     like when hitting "save as draft" without entering any fields
     """
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
     assert len(Employee.objects.all()) == 0
@@ -212,7 +237,7 @@ def test_application_post_unfinished(api_client, application):
                 dict_object[key] = None
 
     response = api_client.post(
-        reverse("v1:application-list"),
+        reverse("v1:applicant-application-list"),
         data,
     )
     assert response.status_code == 201
@@ -230,7 +255,7 @@ def test_application_post_unfinished(api_client, application):
 
 
 def test_application_post_invalid_data(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
 
@@ -243,7 +268,9 @@ def test_application_post_invalid_data(api_client, application):
     data[
         "company_contact_person_phone_number"
     ] = "+359505658789"  # Invalid country code
-    response = api_client.post(reverse("v1:application-list"), data, format="json")
+    response = api_client.post(
+        reverse("v1:applicant-application-list"), data, format="json"
+    )
     assert response.status_code == 400
     assert response.data.keys() == {
         "status",
@@ -257,7 +284,7 @@ def test_application_post_invalid_data(api_client, application):
 
 
 def test_application_post_invalid_employee_data(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
 
@@ -269,7 +296,9 @@ def test_application_post_invalid_employee_data(api_client, application):
     data["employee"]["working_hours"] = 16  # Must be > 18 hour per weeek
     data["employee"]["vacation_money"] = -1  # Must be >= 0
     data["employee"]["other_expenses"] = -1  # Must be >= 0
-    response = api_client.post(reverse("v1:application-list"), data, format="json")
+    response = api_client.post(
+        reverse("v1:applicant-application-list"), data, format="json"
+    )
     assert response.status_code == 400
     assert response.data.keys() == {"employee"}
     assert response.data["employee"].keys() == {
@@ -283,7 +312,9 @@ def test_application_post_invalid_employee_data(api_client, application):
     }
 
     data["employee"]["monthly_pay"] = 0  # Zero salary
-    response = api_client.post(reverse("v1:application-list"), data, format="json")
+    response = api_client.post(
+        reverse("v1:applicant-application-list"), data, format="json"
+    )
     assert response.status_code == 400
     assert response.data.keys() == {"employee"}
     assert (
@@ -292,7 +323,7 @@ def test_application_post_invalid_employee_data(api_client, application):
 
 
 def test_application_put_edit_fields_unauthenticated(anonymous_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["company_contact_person_phone_number"] = "+358505658789"
     response = anonymous_client.put(
         get_detail_url(application),
@@ -304,7 +335,7 @@ def test_application_put_edit_fields_unauthenticated(anonymous_client, applicati
 def test_application_put_edit_fields_unauthorized(
     api_client, anonymous_application, mock_get_organisation_roles_and_create_company
 ):
-    data = ApplicationSerializer(anonymous_application).data
+    data = ApplicantApplicationSerializer(anonymous_application).data
     data["company_contact_person_phone_number"] = "+358505658789"
     response = api_client.put(
         get_detail_url(anonymous_application),
@@ -317,7 +348,7 @@ def test_application_put_edit_fields(api_client, application):
     """
     modify existing application
     """
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["company_contact_person_phone_number"] = "+358505658789"
     response = api_client.put(
         get_detail_url(application),
@@ -335,7 +366,7 @@ def test_application_put_edit_employee(api_client, application):
     """
     modify existing application
     """
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["employee"]["phone_number"] = "0505658789"
     data["employee"]["social_security_number"] = "080597-953Y"
     old_employee_pk = application.employee.pk
@@ -359,7 +390,7 @@ def test_application_put_read_only_fields(api_client, application):
     Also, the company of the application can not be changed.
     """
     another_company = CompanyFactory()
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     original_data = data.copy()
     data["company_name"] = "Something completely different"
     data["official_company_street_address"] = "another address"
@@ -385,7 +416,7 @@ def test_application_put_read_only_fields(api_client, application):
 
 
 def test_application_put_invalid_data(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["de_minimis_aid_set"][0]["amount"] = "300000.00"  # value too high
     data[
         "status"
@@ -408,7 +439,7 @@ def test_application_put_invalid_data(api_client, application):
 
 
 def test_application_replace_de_minimis_aid(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     data["de_minimis_aid"] = True
     data["de_minimis_aid_set"] = [
@@ -424,7 +455,7 @@ def test_application_replace_de_minimis_aid(api_client, application):
     )
     assert response.status_code == 200
     application.refresh_from_db()
-    new_data = ApplicationSerializer(application).data
+    new_data = ApplicantApplicationSerializer(application).data
     del new_data["de_minimis_aid_set"][0]["id"]
     assert new_data["de_minimis_aid_set"][0]["ordering"] == 0
     del new_data["de_minimis_aid_set"][0]["ordering"]
@@ -432,7 +463,7 @@ def test_application_replace_de_minimis_aid(api_client, application):
 
 
 def test_application_edit_de_minimis_aid(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     data["de_minimis_aid"] = True
     data["de_minimis_aid_set"][0]["granter"] = "something else"
@@ -452,7 +483,7 @@ def test_application_edit_de_minimis_aid(api_client, application):
 
 
 def test_application_delete_de_minimis_aid(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     data["de_minimis_aid"] = False
     data["de_minimis_aid_set"] = []
@@ -466,7 +497,7 @@ def test_application_delete_de_minimis_aid(api_client, application):
 
 
 def test_application_edit_de_minimis_aid_too_high(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     previous_aid = copy.deepcopy(data["de_minimis_aid_set"])
     data["de_minimis_aid"] = True
@@ -480,12 +511,12 @@ def test_application_edit_de_minimis_aid_too_high(api_client, application):
     assert response.status_code == 400
 
     application.refresh_from_db()
-    data_after = ApplicationSerializer(application).data
+    data_after = ApplicantApplicationSerializer(application).data
     assert previous_aid == data_after["de_minimis_aid_set"]
 
 
 def test_application_edit_benefit_type_business(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["apprenticeship_program"] = False
     data["pay_subsidy_granted"] = True
@@ -503,7 +534,7 @@ def test_application_edit_benefit_type_business(api_client, application):
 
 
 def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["apprenticeship_program"] = False
     data["pay_subsidy_granted"] = False
@@ -522,7 +553,7 @@ def test_application_edit_benefit_type_business_no_pay_subsidy(api_client, appli
 def test_application_edit_benefit_type_business_association(
     api_client, association_application, mock_get_organisation_roles_and_create_company
 ):
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
     company = mock_get_organisation_roles_and_create_company
     company.company_form = "ry"
     company.save()
@@ -549,7 +580,7 @@ def test_application_edit_benefit_type_business_association(
 def test_application_edit_benefit_type_business_association_with_apprenticeship(
     api_client, association_application
 ):
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
     data["association_has_business_activities"] = True
     data["apprenticeship_program"] = True
@@ -573,7 +604,7 @@ def test_application_edit_benefit_type_non_business(
     association_application.pay_subsidy_granted = True
     association_application.pay_subsidy_percent = 50
     association_application.save()
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
     response = api_client.put(
         get_detail_url(association_application),
         data,
@@ -590,7 +621,7 @@ def test_application_edit_benefit_type_non_business_invalid(
     association_application.pay_subsidy_granted = True
     association_application.pay_subsidy_percent = 50
     association_application.save()
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
     data["benefit_type"] = BenefitType.EMPLOYMENT_BENEFIT
 
     response = api_client.put(
@@ -601,7 +632,7 @@ def test_application_edit_benefit_type_non_business_invalid(
 
 
 def test_association_immediate_manager_check_invalid(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["association_immediate_manager_check"] = False  # invalid value
     response = api_client.put(
         get_detail_url(application),
@@ -611,7 +642,7 @@ def test_association_immediate_manager_check_invalid(api_client, application):
 
 
 def test_association_immediate_manager_check_valid(api_client, association_application):
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
     data["association_immediate_manager_check"] = True  # valid value for associations
     response = api_client.put(
         get_detail_url(association_application),
@@ -661,7 +692,7 @@ def test_application_date_range(
     """
     modify existing application
     """
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     data["benefit_type"] = benefit_type
     data["start_date"] = start_date
@@ -837,7 +868,7 @@ def test_application_with_previously_granted_benefits(
         )
         decided_application.employee.save()
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     data["benefit_type"] = benefit_type
     data["start_date"] = date(2021, 7, 1)
@@ -864,18 +895,23 @@ def test_application_with_previously_granted_benefits(
         (
             ApplicationStatus.RECEIVED,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            400,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.RECEIVED,
             200,
         ),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 400),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 400),
         (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
-def test_application_status_change(
+def test_application_status_change_as_applicant(
     request, api_client, application, from_status, to_status, expected_code
 ):
     """
@@ -883,7 +919,7 @@ def test_application_status_change(
     """
     application.status = from_status
     application.save()
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
 
@@ -899,6 +935,64 @@ def test_application_status_change(
         # terms approval is tested separately
         response = api_client.put(
             get_detail_url(application),
+            data,
+        )
+    assert response.status_code == expected_code
+    if expected_code == 200:
+        assert application.log_entries.all().count() == 1
+        assert application.log_entries.all().first().from_status == from_status
+        assert application.log_entries.all().first().to_status == to_status
+    else:
+        assert application.log_entries.all().count() == 0
+
+
+@pytest.mark.parametrize(
+    "from_status,to_status,expected_code",
+    [
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
+        (
+            ApplicationStatus.RECEIVED,
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            200,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.RECEIVED,
+            200,
+        ),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
+    ],
+)
+def test_application_status_change_as_handler(
+    request, handler_api_client, application, from_status, to_status, expected_code
+):
+    """
+    modify existing application
+    """
+    application.status = from_status
+    application.save()
+    data = ApplicantApplicationSerializer(application).data
+    data["status"] = to_status
+    data["bases"] = []  # as of 2021-10, bases are not used when submitting application
+
+    if to_status == ApplicationStatus.RECEIVED:
+        add_attachments_to_application(request, application)
+    if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
+        data["association_has_business_activities"] = False
+        data["association_immediate_manager_check"] = True
+
+    with mock.patch(
+        "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
+    ):
+        # terms approval is tested separately
+        response = handler_api_client.put(
+            get_handler_detail_url(application),
             data,
         )
     assert response.status_code == expected_code
@@ -927,7 +1021,7 @@ def test_application_last_modified_at_draft(api_client, application):
     """
     application.status = ApplicationStatus.DRAFT
     application.save()
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     assert data["last_modified_at"] == datetime(2021, 6, 4, tzinfo=pytz.UTC)
 
 
@@ -946,7 +1040,7 @@ def test_application_last_modified_at_non_draft(api_client, application, status)
     """
     application.status = status
     application.save()
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     assert data["last_modified_at"] is None
 
 
@@ -970,7 +1064,7 @@ def test_application_pay_subsidy(
     additional_pay_subsidy_percent,
     expected_code,
 ):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["pay_subsidy_granted"] = pay_subsidy_granted
     data["pay_subsidy_percent"] = pay_subsidy_percent
     data["additional_pay_subsidy_percent"] = additional_pay_subsidy_percent
@@ -1001,7 +1095,9 @@ def test_attachment_upload_too_big(api_client, application):
     image.save(tmp_file)
     tmp_file.seek(0)
     response = api_client.post(
-        reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+        reverse(
+            "v1:applicant-application-post-attachment", kwargs={"pk": application.pk}
+        ),
         {
             "attachment_file": tmp_file,
             "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
@@ -1023,7 +1119,9 @@ def test_attachment_upload_and_delete(api_client, application):
     tmp_file.seek(0)
 
     response = api_client.post(
-        reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+        reverse(
+            "v1:applicant-application-post-attachment", kwargs={"pk": application.pk}
+        ),
         {
             "attachment_file": tmp_file,
             "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
@@ -1040,7 +1138,7 @@ def test_attachment_upload_and_delete(api_client, application):
 
     response = api_client.delete(
         reverse(
-            "v1:application-delete-attachment",
+            "v1:applicant-application-delete-attachment",
             kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
         ),
         format="multipart",
@@ -1065,7 +1163,10 @@ def _upload_pdf(
 ):
     with open(os.path.join(_pdf_file_path(request)), "rb") as valid_pdf_file:
         return api_client.post(
-            reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+            reverse(
+                "v1:applicant-application-post-attachment",
+                kwargs={"pk": application.pk},
+            ),
             {
                 "attachment_file": valid_pdf_file,
                 "attachment_type": attachment_type,
@@ -1095,7 +1196,7 @@ def test_attachment_delete_unauthenticated(request, anonymous_client, applicatio
     attachment = _add_pdf_attachment(request, application)
     response = anonymous_client.delete(
         reverse(
-            "v1:application-delete-attachment",
+            "v1:applicant-application-delete-attachment",
             kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
         ),
         format="multipart",
@@ -1113,7 +1214,7 @@ def test_attachment_delete_unauthorized(
     attachment = _add_pdf_attachment(request, anonymous_application)
     response = api_client.delete(
         reverse(
-            "v1:application-delete-attachment",
+            "v1:applicant-application-delete-attachment",
             kwargs={"pk": anonymous_application.pk, "attachment_pk": attachment.pk},
         ),
         format="multipart",
@@ -1138,7 +1239,7 @@ def test_attachment_delete(request, api_client, application, status, expected_co
     attachment = _add_pdf_attachment(request, application)
     response = api_client.delete(
         reverse(
-            "v1:application-delete-attachment",
+            "v1:applicant-application-delete-attachment",
             kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
         ),
         format="multipart",
@@ -1182,7 +1283,7 @@ def test_attachment_upload_invalid_status(request, api_client, application, stat
     application.status = status
     application.save()
     response = _upload_pdf(request, api_client, application)
-    assert response.status_code == 400
+    assert response.status_code == 403
     assert len(application.attachments.all()) == 0
 
 
@@ -1194,7 +1295,9 @@ def test_invalid_attachment_upload(api_client, application, extension):
     tmp_file.seek(0)
 
     response = api_client.post(
-        reverse("v1:application-post-attachment", kwargs={"pk": application.pk}),
+        reverse(
+            "v1:applicant-application-post-attachment", kwargs={"pk": application.pk}
+        ),
         {
             "attachment_file": tmp_file,
             "attachment_type": AttachmentType.EMPLOYMENT_CONTRACT,
@@ -1238,7 +1341,7 @@ def test_attachment_requirements(
 
 
 def _submit_application(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["status"] = ApplicationStatus.RECEIVED
     with mock.patch(
         "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
@@ -1417,7 +1520,7 @@ def test_application_api_before_accept_tos(api_client, application):
     TermsOfServiceApproval.objects.all().delete()
 
     # Application list
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(reverse("v1:applicant-application-list"))
     assert response.status_code == 403
     assert (
         str(response.data["detail"])
@@ -1433,10 +1536,10 @@ def test_application_api_before_accept_tos(api_client, application):
     )
 
     # Application post
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     del data["id"]  # id is read-only field and would be ignored
     response = api_client.post(
-        reverse("v1:application-list"),
+        reverse("v1:applicant-application-list"),
         data,
     )
     assert response.status_code == 403
@@ -1446,7 +1549,7 @@ def test_application_api_before_accept_tos(api_client, application):
     )
 
     # Application put
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["company_contact_person_phone_number"] = "+358505658789"
     response = api_client.put(
         get_detail_url(application),

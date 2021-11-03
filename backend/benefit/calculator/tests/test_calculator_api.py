@@ -2,25 +2,26 @@ import copy
 import decimal
 from unittest import mock
 
-from applications.api.v1.serializers import ApplicationSerializer
+from applications.api.v1.serializers import HandlerApplicationSerializer
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from applications.tests.conftest import *  # noqa
 from applications.tests.test_applications_api import (
     add_attachments_to_application,
     get_detail_url,
+    get_handler_detail_url,
 )
 from calculator.api.v1.serializers import CalculationSerializer
 from calculator.tests.factories import CalculationFactory, PaySubsidyFactory
 
 
-def test_application_retrieve_calculation_as_admin(handler_api_client, application):
-    response = handler_api_client.get(get_detail_url(application))
+def test_application_retrieve_calculation_as_handler(handler_api_client, application):
+    response = handler_api_client.get(get_handler_detail_url(application))
     assert "calculation" in response.data
     assert "pay_subsidies" in response.data
     assert response.status_code == 200
 
 
-def test_application_retrieve_calculation_as_applicant(api_client, application):
+def test_application_try_retrieve_calculation_as_applicant(api_client, application):
     response = api_client.get(get_detail_url(application))
     assert "calculation" not in response.data
     assert "pay_subsidies" not in response.data
@@ -36,7 +37,7 @@ def test_application_create_calculation_on_submit(
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.save()
     assert not hasattr(application, "calculation")
-    data = ApplicationSerializer(application).data
+    data = HandlerApplicationSerializer(application).data
 
     data["status"] = ApplicationStatus.RECEIVED
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
@@ -49,7 +50,7 @@ def test_application_create_calculation_on_submit(
         "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
     ):
         response = handler_api_client.put(
-            get_detail_url(application),
+            get_handler_detail_url(application),
             data,
         )
 
@@ -71,11 +72,11 @@ def test_application_can_not_create_calculation_through_api(
 ):
     """ """
     assert not hasattr(application, "calculation")
-    data = ApplicationSerializer(application).data
+    data = HandlerApplicationSerializer(application).data
     calc_data = CalculationSerializer(CalculationFactory()).data
     data["calculation"] = calc_data
     response = handler_api_client.put(
-        get_detail_url(application),
+        get_handler_detail_url(application),
         data,
     )
     assert response.status_code == 200
@@ -88,7 +89,7 @@ def test_modify_calculation(handler_api_client, received_application):
     """
     modify existing calculation
     """
-    data = ApplicationSerializer(received_application).data
+    data = HandlerApplicationSerializer(received_application).data
     assert received_application.calculation
     assert received_application.pay_subsidies.count() == 0
     data["calculation"]["monthly_pay"] = "1234.56"
@@ -104,7 +105,7 @@ def test_modify_calculation(handler_api_client, received_application):
     ]
     with mock.patch("calculator.models.Calculation.calculate") as calculate_wrap:
         response = handler_api_client.put(
-            get_detail_url(received_application),
+            get_handler_detail_url(received_application),
             data,
         )
         calculate_wrap.assert_called_once()
@@ -129,10 +130,10 @@ def test_can_not_delete_calculation(handler_api_client, received_application):
     """
     application.calculation can not be deleted through the API - setting application to None is ignored
     """
-    data = ApplicationSerializer(received_application).data
+    data = HandlerApplicationSerializer(received_application).data
     data["calculation"] = None
     handler_api_client.put(
-        get_detail_url(received_application),
+        get_handler_detail_url(received_application),
         data,
     )
     received_application.refresh_from_db()
@@ -140,7 +141,7 @@ def test_can_not_delete_calculation(handler_api_client, received_application):
 
 
 def test_application_replace_pay_subsidy(handler_api_client, received_application):
-    data = ApplicationSerializer(received_application).data
+    data = HandlerApplicationSerializer(received_application).data
 
     data["pay_subsidies"] = [
         {
@@ -152,12 +153,12 @@ def test_application_replace_pay_subsidy(handler_api_client, received_applicatio
         }
     ]
     response = handler_api_client.put(
-        get_detail_url(received_application),
+        get_handler_detail_url(received_application),
         data,
     )
     assert response.status_code == 200
     received_application.refresh_from_db()
-    new_data = ApplicationSerializer(received_application).data
+    new_data = HandlerApplicationSerializer(received_application).data
     del new_data["pay_subsidies"][0]["id"]
     assert new_data["pay_subsidies"] == data["pay_subsidies"]
 
@@ -165,7 +166,7 @@ def test_application_replace_pay_subsidy(handler_api_client, received_applicatio
 def test_application_edit_pay_subsidy(handler_api_client, received_application):
     PaySubsidyFactory(application=received_application)
     PaySubsidyFactory(application=received_application)
-    data = ApplicationSerializer(received_application).data
+    data = HandlerApplicationSerializer(received_application).data
 
     # edit fields
     data["pay_subsidies"][0]["start_date"] = "2021-06-01"
@@ -176,7 +177,7 @@ def test_application_edit_pay_subsidy(handler_api_client, received_application):
         data["pay_subsidies"][0],
     )
     response = handler_api_client.put(
-        get_detail_url(received_application),
+        get_handler_detail_url(received_application),
         data,
     )
     assert response.status_code == 200
@@ -186,12 +187,12 @@ def test_application_edit_pay_subsidy(handler_api_client, received_application):
 
 
 def test_application_delete_pay_subsidy(handler_api_client, received_application):
-    data = ApplicationSerializer(received_application).data
+    data = HandlerApplicationSerializer(received_application).data
 
     data["pay_subsidies"] = []
 
     response = handler_api_client.put(
-        get_detail_url(received_application),
+        get_handler_detail_url(received_application),
         data,
     )
     assert response.status_code == 200
@@ -201,7 +202,7 @@ def test_application_delete_pay_subsidy(handler_api_client, received_application
 def test_application_edit_pay_subsidy_invalid_values(
     handler_api_client, received_application
 ):
-    data = ApplicationSerializer(received_application).data
+    data = HandlerApplicationSerializer(received_application).data
 
     previous_data = copy.deepcopy(data["pay_subsidies"])
 
@@ -215,11 +216,11 @@ def test_application_edit_pay_subsidy_invalid_values(
     ]
 
     response = handler_api_client.put(
-        get_detail_url(received_application),
+        get_handler_detail_url(received_application),
         data,
     )
     assert response.status_code == 400
 
     received_application.refresh_from_db()
-    data_after = ApplicationSerializer(received_application).data
+    data_after = HandlerApplicationSerializer(received_application).data
     assert previous_data == data_after["pay_subsidies"]

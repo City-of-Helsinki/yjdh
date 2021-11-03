@@ -17,7 +17,16 @@ from terms.api.v1.views import ApproveTermsOfServiceView
 from users.api.v1.views import CurrentUserView
 
 router = routers.DefaultRouter()
-router.register(r"applications", application_views.ApplicationViewSet)
+router.register(
+    r"applications",
+    application_views.ApplicantApplicationViewSet,
+    basename="applicant-application",
+)
+router.register(
+    r"handlerapplications",
+    application_views.HandlerApplicationViewSet,
+    basename="handler-application",
+)
 router.register(r"applicationbatches", application_batch_views.ApplicationBatchViewSet)
 router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 

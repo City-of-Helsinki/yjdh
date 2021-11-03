@@ -11,7 +11,7 @@ from applications.enums import AhjoDecision, ApplicationBatchStatus, Application
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
-from applications.tests.test_applications_api import get_detail_url
+from applications.tests.test_applications_api import get_handler_detail_url
 from django.conf import settings
 from rest_framework.reverse import reverse
 
@@ -132,7 +132,7 @@ def test_get_application_with_ahjo_decision(
     application_batch.applications.all().update(status=status, company=company)
     application_batch.save()
     application = application_batch.applications.all().first()
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(application))
     assert response.status_code == 200
     assert response.data["ahjo_decision"] == expected_decision
     assert response.data["batch"]["status"] == batch_status
