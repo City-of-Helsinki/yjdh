@@ -1,7 +1,7 @@
 name: Kesäseteli Staging Environment Acceptance tests
-# Disabled until staging is not behind vpn anymore
-# on:
-  # schedule:
+on:
+  schedule:
+    # Disabled until staging is not behind vpn anymore
     # At half past every hour from 7-20 (finnish winter time)
     # - cron: "*/30 5-18 * * *"
 env:
