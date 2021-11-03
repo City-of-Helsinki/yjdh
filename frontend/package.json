@@ -116,5 +116,6 @@
     "ansi-regex": "^5.0.1",
     "tmpl": "^1.0.5",
     "next": "^11.1.2"
-  }
+  },
+  "dependencies": {}
 }
