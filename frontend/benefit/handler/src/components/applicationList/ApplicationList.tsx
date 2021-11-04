@@ -85,7 +85,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
   if (shouldShowSkeleton) {
     return (
       <Container>
-        <LoadingSkeleton width="150px" height="50px" />
+        <LoadingSkeleton width="100%" height="50px" />
       </Container>
     );
   }

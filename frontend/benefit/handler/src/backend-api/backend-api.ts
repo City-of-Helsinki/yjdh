@@ -1,9 +1,9 @@
 import { Headers } from 'shared/types/common';
 
-type BackendPath = '/v1/applications/';
+type BackendPath = '/v1/handlerapplications/';
 
 export const BackendEndpoint: Record<string, BackendPath> = {
-  APPLICATIONS: '/v1/applications/',
+  APPLICATIONS: '/v1/handlerapplications/',
 } as const;
 
 export const getBackendDomain = (): string =>

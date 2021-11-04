@@ -28,7 +28,7 @@ export enum APPLICATION_STATUSES {
   RECEIVED = 'received',
   APPROVED = 'approved',
   REJECTED = 'rejected',
-  HANDLED = 'handled',
+  HANDLING = 'handling',
 }
 
 export enum APPLICATION_FIELDS_STEP1_KEYS {

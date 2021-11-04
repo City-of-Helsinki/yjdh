@@ -4,10 +4,10 @@ import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
 import { GetStaticProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
 import theme from 'shared/styles/theme';
 
 const ApplicantIndex: NextPage = () => {
@@ -30,8 +30,8 @@ const ApplicantIndex: NextPage = () => {
     <FrontPageProvider>
       <MainIngress />
       <ApplicationList
-        heading={t('common:applications.list.headings.handled')}
-        status={[APPLICATION_STATUSES.HANDLED]}
+        heading={t('common:applications.list.headings.handling')}
+        status={[APPLICATION_STATUSES.HANDLING]}
       />
       <ApplicationList
         heading={t('common:applications.list.headings.received')}

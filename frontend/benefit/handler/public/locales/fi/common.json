@@ -54,7 +54,7 @@
       },
       "headings": {
         "received": "Saapuneet",
-        "handled": "Käsittelyssä"
+        "handling": "Käsittelyssä"
       },
       "errors": {
         "fetch": {
