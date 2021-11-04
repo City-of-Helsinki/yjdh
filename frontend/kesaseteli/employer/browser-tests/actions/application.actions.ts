@@ -1,6 +1,6 @@
 import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
-import { fakeContactPerson } from '@frontend/shared/src/__tests__/utils/fake-objects';
+import { fakeApplication } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import type Application from '@frontend/shared/src/types/application';
 import ContactPerson from '@frontend/shared/src/types/contact_person';
 import TestController from 'testcafe';
@@ -12,8 +12,47 @@ import { doEmployerLogin } from './employer-header.actions';
 type UserAndApplicationData = { id: Application['id'] } & ContactPerson &
   SuomiFiData;
 
-export const loginAndfillStep1Form = async (
-  t: TestController
+export const fillStep1Form = async (
+  t: TestController,
+  application: Application
+): Promise<void> => {
+  const step1 = await getApplicationPageComponents(t).step1();
+  const {
+    contact_person_name,
+    contact_person_email,
+    street_address,
+    contact_person_phone_number,
+  } = application;
+  await step1.actions.fillContactPersonName(contact_person_name);
+  await step1.actions.fillContactPersonEmail(contact_person_email);
+  await step1.actions.fillStreetAddress(street_address);
+  await step1.actions.fillContactPersonPhone(contact_person_phone_number);
+  await step1.actions.clickSaveAndContinueButton();
+};
+
+export const fillStep2Form = async (
+  t: TestController,
+  application: Application,
+  index = 0
+): Promise<void> => {
+  const step2 = await getApplicationPageComponents(t).step2(index);
+  const { employment_contract, payslip } = application.summer_vouchers[index];
+
+  await Promise.all(
+    employment_contract.map(async (attachment) =>
+      step2.actions.addEmploymentContractAttachment(attachment)
+    )
+  );
+  await Promise.all(
+    payslip.map(async (attachment) =>
+      step2.actions.addPayslipAttachments(attachment)
+    )
+  );
+};
+
+export const loginAndfillApplication = async (
+  t: TestController,
+  toStep = 3
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
   const applicationPageComponents = getApplicationPageComponents(t);
@@ -24,24 +63,19 @@ export const loginAndfillStep1Form = async (
   if (!applicationId) {
     throw new Error('application id is missing');
   }
-  if (isRealIntegrationsEnabled() && suomiFiData?.company) {
+  const application = fakeApplication(applicationId, suomiFiData?.company);
+
+  if (isRealIntegrationsEnabled()) {
     const companyTable = await applicationPageComponents.companyTable(
-      suomiFiData.company
+      application.company
     );
     await companyTable.expectations.isCompanyDataPresent();
   }
-  const step1 = await applicationPageComponents.step1();
-  const contactPerson = fakeContactPerson();
-  const {
-    contact_person_name,
-    contact_person_email,
-    street_address,
-    contact_person_phone_number,
-  } = contactPerson;
-  await step1.actions.fillContactPersonName(contact_person_name);
-  await step1.actions.fillContactPersonEmail(contact_person_email);
-  await step1.actions.fillStreetAddress(street_address);
-  await step1.actions.fillContactPersonPhone(contact_person_phone_number);
-  await step1.actions.clickSaveAndContinueButton();
-  return { ...contactPerson, ...suomiFiData, id: applicationId };
+  if (toStep >= 1) {
+    await fillStep1Form(t, application);
+  }
+  if (toStep >= 2) {
+    await fillStep2Form(t, application, 0);
+  }
+  return { ...application, ...suomiFiData };
 };

@@ -4,9 +4,20 @@ import {
   setDataToPrintOnFailure,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import Attachment from '@frontend/shared/src/types/attachment';
 import Company from '@frontend/shared/src/types/company';
 import ContactPerson from '@frontend/shared/src/types/contact_person';
+import { getLastValue } from '@frontend/shared/src/utils/array.utils';
 import TestController from 'testcafe';
+
+const getAttachmentFilePath = (attachment: Attachment): string =>
+  attachment.attachment_file_name ?? attachment.attachmentFileName;
+
+const getAttachmentFileName = (attachment: Attachment): string => {
+  const filePath = getAttachmentFilePath(attachment);
+  const filename = getLastValue(filePath.split('/')) ?? filePath;
+  return filename.replace(`.${getLastValue(filename.split('.')) ?? ''}`, '');
+};
 
 export const getApplicationPageComponents = (t: TestController) => {
   const screen = screenContext(t);
@@ -14,7 +25,7 @@ export const getApplicationPageComponents = (t: TestController) => {
   const companyTable = async (company: Company) => {
     const selectors = {
       companyTable() {
-        return screen.findByRole('grid', { name: /yrityksen tiedot/i });
+        return screen.findAllByRole('grid', { name: /yrityksen tiedot/i });
       },
     };
     const expectations = {
@@ -64,19 +75,22 @@ export const getApplicationPageComponents = (t: TestController) => {
       screen.findByRole('button', {
         name: /palaa edelliseen/i,
       }),
+    step1Form: () =>
+      screen.findByRole('form', {
+        name: /työnantajan tiedot/i,
+      }),
+    step2Form: (employeeIndex: number) =>
+      screen
+        .findAllByRole('form', {
+          name: /selvitys työsuhteesta/i,
+        })
+        .nth(employeeIndex),
   };
   const step1 = async () => {
-    const formSelector = screen.findByRole('form', {
-      name: /työnantajan tiedot/i,
-    });
-    const withinForm = (): ReturnType<typeof within> => within(formSelector);
+    const withinForm = (): ReturnType<typeof within> =>
+      within(commonSelectors.step1Form());
 
     const selectors = {
-      employerForm() {
-        return screen.findByRole('form', {
-          name: /työnantajan tiedot/i,
-        });
-      },
       contactPersonNameInput() {
         return withinForm().findByRole('textbox', {
           name: /yhteyshenkilön nimi/i,
@@ -103,7 +117,7 @@ export const getApplicationPageComponents = (t: TestController) => {
     const expectations = {
       async isPresent() {
         await t
-          .expect(selectors.employerForm().exists)
+          .expect(commonSelectors.step1Form().exists)
           .ok(await getErrorMessage(t), { timeout: 10000 });
       },
       async isFulFilledWith({
@@ -113,7 +127,7 @@ export const getApplicationPageComponents = (t: TestController) => {
         street_address,
       }: ContactPerson) {
         await t
-          .expect(selectors.employerForm().exists)
+          .expect(commonSelectors.step1Form().exists)
           .ok(await getErrorMessage(t));
         await t
           .expect(selectors.contactPersonNameInput().value)
@@ -170,26 +184,48 @@ export const getApplicationPageComponents = (t: TestController) => {
       actions,
     };
   };
-  const step2 = async () => {
-    /*
-    const formSelector = screen.findByRole('form', {
-      name: /selvitys työsuhteesta/i,
-    });
-    const withinForm = (): ReturnType<typeof within> => within(formSelector);
-    */
+  const step2 = async (employeeIndex = 0) => {
+    const formSelector = () => commonSelectors.step2Form(employeeIndex);
+    const withinForm = (): ReturnType<typeof within> => within(formSelector());
+
     const selectors = {
-      employmentForm() {
-        return screen.findByRole('form', {
-          name: /selvitys työsuhteesta/i,
+      employeeNameInput() {
+        return withinForm().findByRole('textbox', {
+          name: /työntekijän nimi/i,
         });
       },
+      employmentContractAttachmentInput: () =>
+        withinForm().findByTestId(
+          `summer_vouchers.${employeeIndex}.employment_contract`
+        ),
+      employmentContractAttachmentButton: () =>
+        withinForm().findByRole('button', {
+          name: /työsopimus/i,
+        }),
+      attachmentLink: (attachment: Attachment) =>
+        withinForm()
+          .findAllByRole('link', {
+            name: new RegExp(getAttachmentFileName(attachment), 'i'),
+          })
+          .nth(0),
+      payslipAttachmentInput: () =>
+        withinForm().findByTestId(`summer_vouchers.${employeeIndex}.payslip`),
+      payslipAttachmentButton: () =>
+        withinForm().findByRole('button', {
+          name: /palkkatodistus/i,
+        }),
       saveAndContinueButton: commonSelectors.saveAndContinueButton,
       previousStepButton: commonSelectors.previousStepButton,
     };
     const expectations = {
       async isPresent() {
         await t
-          .expect(selectors.employmentForm().exists)
+          .expect(formSelector().exists)
+          .ok(await getErrorMessage(t), { timeout: 10000 });
+      },
+      async isAttachmentUploaded(attachment: Attachment) {
+        await t
+          .expect(selectors.attachmentLink(attachment).exists)
           .ok(await getErrorMessage(t), { timeout: 10000 });
       },
     };
@@ -200,6 +236,24 @@ export const getApplicationPageComponents = (t: TestController) => {
       },
       async clickGoToPreviousStepButton() {
         await t.click(selectors.previousStepButton());
+      },
+      async addEmploymentContractAttachment(attachment: Attachment) {
+        await t
+          .setFilesToUpload(
+            selectors.employmentContractAttachmentInput(),
+            getAttachmentFilePath(attachment)
+          )
+          .click(selectors.employmentContractAttachmentButton());
+        await expectations.isAttachmentUploaded(attachment);
+      },
+      async addPayslipAttachments(attachment: Attachment) {
+        await t
+          .setFilesToUpload(
+            selectors.payslipAttachmentInput(),
+            getAttachmentFilePath(attachment)
+          )
+          .click(selectors.payslipAttachmentButton());
+        await expectations.isAttachmentUploaded(attachment);
       },
     };
 
