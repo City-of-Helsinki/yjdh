@@ -228,7 +228,7 @@ class Migration(migrations.Migration):
                     "application",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="calculator_pay_subsidies",
+                        related_name="pay_subsidies",
                         to="applications.application",
                         verbose_name="application",
                     ),

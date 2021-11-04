@@ -7,6 +7,7 @@ from applications.tests.factories import (
     ApplicationFactory,
     DecidedApplicationFactory,
     EmployeeFactory,
+    ReceivedApplicationFactory,
 )
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
@@ -19,6 +20,12 @@ from terms.tests.factories import TermsOfServiceApprovalFactory
 def anonymous_application():
     with factory.Faker.override_default_locale("fi_FI"):
         return ApplicationFactory()
+
+
+@pytest.fixture
+def received_application():
+    with factory.Faker.override_default_locale("fi_FI"):
+        return ReceivedApplicationFactory()
 
 
 @pytest.fixture
@@ -35,7 +42,7 @@ def application_batch():
 
 @pytest.fixture
 def talpa_service(application_batch):
-    return TalpaService(application_batch)
+    return TalpaService([application_batch])
 
 
 @pytest.fixture

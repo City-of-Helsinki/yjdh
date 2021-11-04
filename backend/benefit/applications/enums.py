@@ -5,12 +5,40 @@ from django.utils.translation import gettext_lazy as _
 class ApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     RECEIVED = "received", _("Received")
+    HANDLING = "handling", _("Handling")
     ADDITIONAL_INFORMATION_NEEDED = "additional_information_needed", _(
         "Additional information requested"
     )
     CANCELLED = "cancelled", _("Cancelled")
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
+
+    @classmethod
+    def is_editable_status(cls, user, status):
+        if not user.is_authenticated:
+            return False
+        if user.is_handler():
+            return cls.is_handler_editable_status(status)
+        else:
+            return cls.is_applicant_editable_status(status)
+
+    @classmethod
+    def is_handler_editable_status(cls, status):
+        if status not in cls.values:
+            raise ValueError(_("Invalid application status"))
+        # drafts may be edited by the handler when entering data from a paper application
+        return status in (
+            cls.DRAFT,
+            cls.RECEIVED,
+            cls.HANDLING,
+            cls.ADDITIONAL_INFORMATION_NEEDED,
+        )
+
+    @classmethod
+    def is_applicant_editable_status(cls, status):
+        if status not in cls.values:
+            raise ValueError(_("Invalid application status"))
+        return status in (cls.DRAFT, cls.ADDITIONAL_INFORMATION_NEEDED)
 
 
 class BenefitType(models.TextChoices):

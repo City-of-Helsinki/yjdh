@@ -35,10 +35,12 @@
     "common_error": "An unexpected error occurred: ",
     "loading": "Loading the application...",
     "loadingFinished": "Loading the application is complete",
+    "wizardStepButton": "Go to step",
+    "tooltipShowInfo": "Show information",
     "step1": {
       "name": "Employer",
       "header": "1. Details of the employer",
-      "tooltip": "Write your information in the form. Click on to continue to move forward. You can return to the data also at the next stage.",
+      "tooltip": "Write your information in the form. Click Save and continue to move forward. You can return to the data also at the next stage.",
       "companyInfoGrid": {
         "title": "Company information",
         "header": {
@@ -53,7 +55,7 @@
     },
     "step2": {
       "name": "Employment",
-      "header": "2. Emoloyment reports",
+      "header": "2. Emoloyments reports",
       "employment": "Employment",
       "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
       "attachments_section": "Mandatory attachments",
@@ -93,9 +95,9 @@
         "street_address": "Company street address",
         "contact_person_phone_number": "Telephone number",
         "is_separate_invoicer": "The billing is handled by an other person",
-        "invoicer_name": "Name of the contact person",
-        "invoicer_email": "Email of the contact person",
-        "invoicer_phone_number": "Telephone number",
+        "invoicer_name": "Name of the billing contact person",
+        "invoicer_email": "Email of the billing contact person",
+        "invoicer_phone_number": "Phone number of the billing contact person",
         "employee_name": "Name of the employee",
         "employee_ssn": "Social security number",
         "summer_voucher_exception_reason": "Grade or birth year",
@@ -104,7 +106,7 @@
         "employee_phone_number": "Phone number",
         "employment_postcode": "Workplace's postcode",
         "summer_voucher_serial_number": "Serial number of the Summer Job Voucher",
-        "employee_school": "School",
+        "employee_school": "Name of the school",
         "employment_contract": "Employment contract",
         "payslip": "Pay Statement",
         "employment_start_date": "Employment start date",
@@ -129,7 +131,6 @@
         "validate": "The information you entered is in an incorrect format",
         "selectionGroups": "Select an option",
         "checkboxRequired": "Selection is mandatory",
-        "employmentsRequired": "Add at least one employment report",
         "employment_contract": "Add at least one file",
         "payslip": "Add at least one file"
       },

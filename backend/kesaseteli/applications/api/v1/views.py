@@ -9,9 +9,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
-from shared.oidc.auth import EAuthRestAuthentication
 
-from applications.api.v1.auth import StaffAuthentication
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
@@ -83,8 +81,7 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
 class SummerVoucherViewSet(AuditLoggingModelViewSet):
     queryset = SummerVoucher.objects.all()
     serializer_class = SummerVoucherSerializer
-    authentication_classes = [EAuthRestAuthentication, StaffAuthentication]
-    permission_classes = [IsAuthenticated, SummerVoucherPermission | StaffPermission]
+    permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]
 
     def get_queryset(self):
         """

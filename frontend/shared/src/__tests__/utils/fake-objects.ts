@@ -26,7 +26,6 @@ const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
 ): T[] => Array.from({ length: count }, (_, i) => fakeFunc(i));
 
 export const fakeUser = (): User => ({
-  national_id_num: '111111-111C',
   given_name: faker.name.findName(),
   family_name: faker.name.findName(),
   name: faker.name.findName(),

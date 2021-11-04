@@ -3,17 +3,19 @@ import re
 from unittest import mock
 
 import pytest
+from dateutil.parser import isoparse
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import override_settings, RequestFactory
 from django.utils import timezone
 
+from shared.common.tests.conftest import store_tokens_in_session
 from shared.oidc.auth import HelsinkiOIDCAuthenticationBackend
-from shared.oidc.models import OIDCProfile
-from shared.oidc.services import store_token_info_in_oidc_profile
+from shared.oidc.utils import store_token_info_in_oidc_session
 
 
-def check_token_info(user, oidc_profile, token_info):
+def check_token_info(request, token_info):
     access_token_expires = timezone.now() + datetime.timedelta(
         seconds=token_info["expires_in"]
     )
@@ -21,15 +23,16 @@ def check_token_info(user, oidc_profile, token_info):
         seconds=token_info["refresh_expires_in"]
     )
 
-    assert oidc_profile.user == user
-    assert oidc_profile.id_token == token_info["id_token"]
-    assert oidc_profile.access_token == token_info["access_token"]
+    assert request.session.get("oidc_id_token") == token_info["id_token"]
+    assert request.session.get("oidc_access_token") == token_info["access_token"]
     assert abs(
-        oidc_profile.access_token_expires - access_token_expires
+        isoparse(request.session.get("oidc_access_token_expires"))
+        - access_token_expires
     ) < datetime.timedelta(seconds=10)
-    assert oidc_profile.refresh_token == token_info["refresh_token"]
+    assert request.session.get("oidc_refresh_token") == token_info["refresh_token"]
     assert abs(
-        oidc_profile.refresh_token_expires - refresh_token_expires
+        isoparse(request.session.get("oidc_refresh_token_expires"))
+        - refresh_token_expires
     ) < datetime.timedelta(seconds=10)
 
 
@@ -63,6 +66,9 @@ def test_authenticate(requests_mock):
     code = "test"
     factory = RequestFactory()
     request = factory.get("/", {"code": code, "state": state})
+    middleware = SessionMiddleware()
+    middleware.process_request(request)
+    request.session.save()
 
     token_info = {
         "id_token": "test1",
@@ -82,11 +88,7 @@ def test_authenticate(requests_mock):
         ):
             user = auth_backend.authenticate(request)
 
-    assert OIDCProfile.objects.count() == 1
-
-    oidc_profile = OIDCProfile.objects.first()
-
-    check_token_info(user, oidc_profile, token_info)
+    check_token_info(request, token_info)
     check_user_info(user, claims)
 
 
@@ -125,7 +127,7 @@ def test_create_user():
 
 
 @pytest.mark.django_db
-def test_store_token_info_in_oidc_profile(user):
+def test_store_token_info_in_session(session_request):
     token_info = {
         "id_token": "test1",
         "access_token": "test2",
@@ -134,9 +136,9 @@ def test_store_token_info_in_oidc_profile(user):
         "refresh_expires_in": 1800,
     }
 
-    oidc_profile = store_token_info_in_oidc_profile(user, token_info)
+    store_token_info_in_oidc_session(session_request, token_info)
 
-    check_token_info(user, oidc_profile, token_info)
+    check_token_info(session_request, token_info)
 
 
 @pytest.mark.django_db
@@ -144,7 +146,8 @@ def test_store_token_info_in_oidc_profile(user):
     OIDC_OP_TOKEN_ENDPOINT="http://example.com/token/",
     MOCK_FLAG=False,
 )
-def test_refresh_token(oidc_profile, requests_mock):
+def test_refresh_token(session_request, requests_mock):
+    store_tokens_in_session(session_request)
     auth_backend = HelsinkiOIDCAuthenticationBackend()
 
     token_info = {
@@ -158,6 +161,6 @@ def test_refresh_token(oidc_profile, requests_mock):
     matcher = re.compile(settings.OIDC_OP_TOKEN_ENDPOINT)
     requests_mock.post(matcher, json=token_info)
 
-    new_oidc_profile = auth_backend.refresh_tokens(oidc_profile)
+    auth_backend.refresh_tokens(session_request)
 
-    check_token_info(oidc_profile.user, new_oidc_profile, token_info)
+    check_token_info(session_request, token_info)

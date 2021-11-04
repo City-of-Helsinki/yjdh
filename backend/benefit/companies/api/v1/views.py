@@ -66,10 +66,9 @@ class GetCompanyView(APIView):
             return self.get_mock(request, format)
 
         if not settings.DISABLE_AUTHENTICATION:
-            eauth_profile = request.user.oidc_profile.eauthorization_profile
 
             try:
-                organization_roles = get_organization_roles(eauth_profile, request)
+                organization_roles = get_organization_roles(request)
             except HTTPError:
                 return self.organization_roles_error
 

@@ -20,6 +20,8 @@ class CalculationAdmin(admin.ModelAdmin):
         "end_date",
         "calculated_benefit_amount",
         "override_benefit_amount",
+        "granted_as_de_minimis_aid",
+        "target_group_check",
         "created_at",
         "modified_at",
         "__str__",

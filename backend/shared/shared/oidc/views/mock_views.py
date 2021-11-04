@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
 
-from shared.oidc.tests.factories import UserFactory
+from shared.common.tests.factories import UserFactory
 
 
 class MockLogoutView(View):
@@ -34,12 +34,9 @@ class MockUserInfoView(View):
         if request.user.is_authenticated:
             user = request.user
             userinfo = {
-                "sub": "82e17287-f34e-4e4b-b3d2-15857b3f952a",
-                "national_id_num": "210281-9988",
-                "name": f"{user.first_name} {user.last_name}",
-                "preferred_username": user.username,
                 "given_name": user.first_name,
                 "family_name": user.last_name,
+                "name": f"{user.first_name} {user.last_name}",
             }
             return JsonResponse(userinfo)
         else:

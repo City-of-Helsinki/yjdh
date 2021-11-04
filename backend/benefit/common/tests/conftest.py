@@ -4,7 +4,8 @@ from django.contrib.auth.models import Permission
 from freezegun import freeze_time
 from rest_framework.test import APIClient
 
-from shared.oidc.tests.factories import EAuthorizationProfileFactory
+from shared.common.tests.conftest import *  # noqa
+from shared.common.tests.conftest import store_tokens_in_session
 
 
 @pytest.fixture(autouse=True)
@@ -15,9 +16,8 @@ def setup_test_environment(settings):
 
 
 @pytest.fixture
-def bf_user():
-    eauth_profile = EAuthorizationProfileFactory()
-    return eauth_profile.oidc_profile.user
+def bf_user(user):
+    return user
 
 
 @pytest.fixture
@@ -26,6 +26,16 @@ def api_client(bf_user):
     bf_user.user_permissions.set(permissions)
     client = APIClient()
     client.force_authenticate(bf_user)
+    store_tokens_in_session(client)
+    return client
+
+
+@pytest.fixture
+def handler_api_client(admin_user):
+    permissions = Permission.objects.all()
+    admin_user.user_permissions.set(permissions)
+    client = APIClient()
+    client.force_authenticate(admin_user)
     return client
 
 

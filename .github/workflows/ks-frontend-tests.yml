@@ -1,6 +1,8 @@
-name: (KS) Lint, Unit and Component tests
+name: (KS) Frontend Lint, Unit and Component tests
 
 on:
+  push:
+    branches: [ develop, main ]
   pull_request:
     paths:
       - 'frontend/shared/**'
@@ -39,6 +41,17 @@ jobs:
         run: yarn test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
+      - name: Frontend test failure slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_USERNAME: GitHub-Alerts
+          SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
+          SLACK_MESSAGE: "*Frontend tests have failed on ${{ github.ref }}!*"
+          SLACK_CHANNEL: yjdh-alerts
+        if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main'))
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -62,3 +75,13 @@ jobs:
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Check that building dev application works
         run: yarn build
+      - name: Frontend build failure slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_USERNAME: GitHub-Alerts
+          SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
+          SLACK_MESSAGE: "*Frontend build has failed on ${{ github.ref }}!*"
+          SLACK_CHANNEL: yjdh-alerts
+        if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main'))

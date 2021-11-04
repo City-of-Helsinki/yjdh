@@ -1,8 +1,10 @@
 import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
 import { GetStaticProps, NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import Container from 'shared/components/container/Container';
 import withAuth from 'shared/components/hocs/withAuth';
 import ErrorPage from 'shared/components/pages/ErrorPage';
 import useLocale from 'shared/hooks/useLocale';
@@ -17,12 +19,19 @@ const ServerErrorPage: NextPage = () => {
     void router.push(`/${locale}/`);
   }, [router, locale]);
   return (
-    <ErrorPage
-      title={t('common:errorPage.title')}
-      message={t('common:errorPage.message')}
-      logout={logout as () => void}
-      retry={redirect}
-    />
+    <Container>
+      <Head>
+        <title>
+          {t('common:errorPage.title')} | {t(`common:appName`)}
+        </title>
+      </Head>
+      <ErrorPage
+        title={t('common:errorPage.title')}
+        message={t('common:errorPage.message')}
+        logout={logout as () => void}
+        retry={redirect}
+      />
+    </Container>
   );
 };
 

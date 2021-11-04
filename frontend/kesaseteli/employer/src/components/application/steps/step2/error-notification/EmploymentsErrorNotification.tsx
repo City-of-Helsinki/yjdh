@@ -37,25 +37,18 @@ const EmploymentsErrorNotification: React.FC = () => {
       }))
     : [];
 
-  const isEmptyList =
-    (errors.summer_vouchers as FieldError | undefined)?.type === 'minLength';
-  const title = isEmptyList
-    ? t(`common:application.form.errors.employmentsRequired`)
-    : t(`common:application.form.notification.title`);
 
   return (
-    <$Notification type="error" label={title}>
-      {!isEmptyList && (
-        <$Grid columns={2}>
-          {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
-            <EmployeeErrorNotification
-              key={getEmploymentId(index)}
-              index={index}
-              errors={employmentErrors}
-            />
-          ))}
-        </$Grid>
-      )}
+    <$Notification type="error" label={t(`common:application.form.notification.title`)}>
+      <$Grid columns={2}>
+        {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
+          <EmployeeErrorNotification
+            key={getEmploymentId(index)}
+            index={index}
+            errors={employmentErrors}
+          />
+        ))}
+      </$Grid>
     </$Notification>
   );
 };

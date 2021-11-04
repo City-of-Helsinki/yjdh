@@ -9,7 +9,7 @@ from helsinkibenefit.tests.conftest import *  # noqa
 from terms.enums import TermsType
 from terms.models import Terms
 from terms.tests.factories import TermsFactory, TermsOfServiceApprovalFactory
-from users.utils import get_company_from_user
+from users.utils import get_company_from_request
 
 
 def get_current_user_url():
@@ -26,10 +26,6 @@ def test_terms_of_service_in_effect(
     """
     Test that the API returns the correct Terms and ApplicantConsents in the terms_of_service_in_effect field.
     """
-    assert (
-        get_company_from_user(_get_user(api_client))
-        == mock_get_organisation_roles_and_create_company
-    )
     current_terms = TermsFactory(
         effective_from=date.today(), terms_type=TermsType.TERMS_OF_SERVICE
     )
@@ -48,6 +44,11 @@ def test_terms_of_service_in_effect(
     # ... wrong type of terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
     response = api_client.get(get_current_user_url())
+
+    assert (
+        get_company_from_request(response.wsgi_request)
+        == mock_get_organisation_roles_and_create_company
+    )
     assert response.data["terms_of_service_in_effect"]["id"] == str(current_terms.pk)
 
     assert {
@@ -188,7 +189,7 @@ def test_validate_tos_approval_by_session(
     bf_user,
 ):
     # This should be declined because use hasn't accept TOS yet
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(reverse("v1:applicant-application-list"))
 
     assert response.status_code == 403
     assert (
@@ -221,7 +222,7 @@ def test_validate_tos_approval_by_session(
     }
 
     # Now applications request should be OK
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(reverse("v1:applicant-application-list"))
     assert response.status_code == 200
 
     # Now effective TOS change
@@ -237,12 +238,12 @@ def test_validate_tos_approval_by_session(
         TermsType.TERMS_OF_SERVICE
     )
     # Applications request should be still OK
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(reverse("v1:applicant-application-list"))
     assert response.status_code == 200
     # Until the session is gone
     api_client.logout()
     api_client.force_authenticate(bf_user)
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(reverse("v1:applicant-application-list"))
     assert response.status_code == 403
     assert (
         str(response.data["detail"])

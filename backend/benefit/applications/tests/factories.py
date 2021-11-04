@@ -1,3 +1,4 @@
+import decimal
 import itertools
 import random
 from datetime import date, timedelta
@@ -13,6 +14,7 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
+from calculator.models import Calculation
 from companies.tests.factories import CompanyFactory
 from django.contrib.auth import get_user_model
 
@@ -119,8 +121,8 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         model = Application
 
 
-class DecidedApplicationFactory(ApplicationFactory):
-    status = ApplicationStatus.ACCEPTED
+class ReceivedApplicationFactory(ApplicationFactory):
+    status = ApplicationStatus.RECEIVED
     applicant_terms_approval = factory.RelatedFactory(
         "terms.tests.factories.ApplicantTermsApprovalFactory",
         factory_related_name="application",
@@ -129,6 +131,16 @@ class DecidedApplicationFactory(ApplicationFactory):
         "calculator.tests.factories.CalculationFactory",
         factory_related_name="application",
     )
+
+    @factory.post_generation
+    def calculation(self, created, extracted, **kwargs):
+        self.calculation = Calculation.objects.create_for_application(self)
+        self.calculation.calculated_benefit_amount = decimal.Decimal("321.00")
+        self.calculation.save()
+
+
+class DecidedApplicationFactory(ReceivedApplicationFactory):
+    status = ApplicationStatus.ACCEPTED
 
 
 class EmployeeFactory(factory.django.DjangoModelFactory):

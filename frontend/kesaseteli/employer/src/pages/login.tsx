@@ -1,6 +1,7 @@
 import { Button, IconSignin } from 'hds-react';
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -46,6 +47,11 @@ const Login: NextPage = () => {
 
   return (
     <Container>
+      <Head>
+        <title>
+          {t(notificationLabelKey)} | {t(`common:appName`)}
+        </title>
+      </Head>
       <Layout>
         <$Notification
           label={t(notificationLabelKey)}
