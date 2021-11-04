@@ -16,7 +16,12 @@ const useApplicationTemplateQuery = (
       );
       return handleResponse(res);
     },
-    { enabled: !id, retry: false }
+    {
+      enabled: !id,
+      retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
   );
 };
 

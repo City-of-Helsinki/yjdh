@@ -16,7 +16,12 @@ const useApplicationQuery = (
         : handleResponse<ApplicationData>(
             axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)
           ),
-    { enabled: Boolean(id), retry: false }
+    {
+      enabled: Boolean(id),
+      retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
   );
 };
 
