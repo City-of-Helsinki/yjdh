@@ -29,45 +29,48 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     getHeader,
   } = useApplicationList(status);
 
-  const rawColumns: (ColumnType | undefined)[] = [
-    {
-      // eslint-disable-next-line react/display-name
-      Cell: ({
-        cell: {
-          row: {
-            original: { companyName },
+  const rawColumns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        // eslint-disable-next-line react/display-name
+        Cell: ({
+          cell: {
+            row: {
+              original: { companyName },
+            },
           },
-        },
-      }) => <$Link>{companyName}</$Link>,
-      Header: getHeader('companyName'),
-      accessor: 'companyName',
-      width: COLUMN_WIDTH.L,
-    },
-    {
-      Header: getHeader('companyId'),
-      accessor: 'companyId',
-      disableSortBy: true,
-      width: COLUMN_WIDTH.S,
-    },
-    {
-      Header: getHeader('submittedAt'),
-      accessor: 'submittedAt',
-      disableSortBy: true,
-      width: COLUMN_WIDTH.S,
-    },
-    {
-      Header: getHeader('applicationNum'),
-      accessor: 'applicationNum',
-      disableSortBy: true,
-      width: COLUMN_WIDTH.S,
-    },
-    {
-      Header: getHeader('employeeName'),
-      accessor: 'employeeName',
-      disableSortBy: true,
-      width: COLUMN_WIDTH.M,
-    },
-  ];
+        }) => <$Link>{companyName}</$Link>,
+        Header: getHeader('companyName'),
+        accessor: 'companyName',
+        width: COLUMN_WIDTH.L,
+      },
+      {
+        Header: getHeader('companyId'),
+        accessor: 'companyId',
+        disableSortBy: true,
+        width: COLUMN_WIDTH.S,
+      },
+      {
+        Header: getHeader('submittedAt'),
+        accessor: 'submittedAt',
+        disableSortBy: true,
+        width: COLUMN_WIDTH.S,
+      },
+      {
+        Header: getHeader('applicationNum'),
+        accessor: 'applicationNum',
+        disableSortBy: true,
+        width: COLUMN_WIDTH.S,
+      },
+      {
+        Header: getHeader('employeeName'),
+        accessor: 'employeeName',
+        disableSortBy: true,
+        width: COLUMN_WIDTH.M,
+      },
+    ],
+    [getHeader]
+  );
 
   if (status.includes(APPLICATION_STATUSES.RECEIVED)) {
     rawColumns.push({
@@ -78,9 +81,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     });
   }
 
-  const columns: ColumnType[] = rawColumns.filter(
-    (column): column is ColumnType => column !== undefined
-  );
+  const columns: ColumnType[] = rawColumns.filter(Boolean);
 
   if (shouldShowSkeleton) {
     return (
