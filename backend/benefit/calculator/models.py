@@ -2,7 +2,8 @@ import decimal
 
 from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
 from calculator.enums import RowType
-from common.utils import duration_in_months
+from common.exceptions import BenefitAPIException
+from common.utils import duration_in_months, nested_getattr
 from companies.models import Company
 from django.conf import settings
 from django.db import models
@@ -18,6 +19,16 @@ STATE_AID_MAX_PERCENTAGE_CHOICES = (
 )
 
 
+class CalculationManager(models.Manager):
+    def create_for_application(self, application):
+        if hasattr(application, "calculation"):
+            raise BenefitAPIException(_("Calculation already exists"))
+        calculation = Calculation(application=application)
+        calculation.reset_values()
+        calculation.save()
+        return calculation
+
+
 class Calculation(UUIDModel, TimeStampedModel):
     """
     Data model for Helsinki benefit calculations
@@ -29,6 +40,8 @@ class Calculation(UUIDModel, TimeStampedModel):
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
+
+    objects = CalculationManager()
 
     application = models.OneToOneField(
         Application,
@@ -61,6 +74,7 @@ class Calculation(UUIDModel, TimeStampedModel):
     state_aid_max_percentage = models.IntegerField(
         verbose_name=_("State aid maximum %"),
         choices=STATE_AID_MAX_PERCENTAGE_CHOICES,
+        default=STATE_AID_MAX_PERCENTAGE_CHOICES[0][0],
     )
 
     calculated_benefit_amount = models.DecimalField(
@@ -79,6 +93,9 @@ class Calculation(UUIDModel, TimeStampedModel):
         blank=True,
         null=True,
     )
+    granted_as_de_minimis_aid = models.BooleanField(default=False)
+
+    target_group_check = models.BooleanField(default=False)
 
     @property
     def benefit_amount(self):
@@ -90,9 +107,34 @@ class Calculation(UUIDModel, TimeStampedModel):
     override_benefit_amount_comment = models.CharField(
         max_length=256,
         verbose_name=_("reason for overriding the calculated benefit amount"),
+        blank=True,
     )
 
     history = HistoricalRecords(table_name="bf_calculator_calculator_history")
+
+    copy_fields_from_application = {
+        "employee.monthly_pay": "monthly_pay",
+        "employee.vacation_money": "vacation_money",
+        "employee.other_expenses": "other_expenses",
+        "start_date": "start_date",
+        "end_date": "end_date",
+    }
+
+    def reset_values(self):
+        # Reset the source data for calculation.
+        # 1. Fill the fields of this Calculation based on the data that the applicant
+        #    entered in the Application. The handlers are supposed to edit the values
+        #    in Calculation, so the data entered by applicant stays intact.
+        # 2. reset pay subsidy objects according to the applicant's input
+        for (
+            source_field_name,
+            target_field_name,
+        ) in self.copy_fields_from_application.items():
+            value = nested_getattr(self.application, source_field_name)
+            if value in [None, ""]:
+                raise BenefitAPIException(_("Incomplete application"))
+            setattr(self, target_field_name, value)
+        PaySubsidy.reset_pay_subsidies(self.application)
 
     @property
     def duration_in_months(self):
@@ -135,9 +177,11 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
     application = models.ForeignKey(
         Application,
         verbose_name=_("application"),
-        related_name="calculator_pay_subsidies",
+        related_name="pay_subsidies",
         on_delete=models.CASCADE,
     )
+    # ordering of the pay subsidies within application.
+    ordering = models.IntegerField()
     start_date = models.DateField(verbose_name=_("Pay subsidy start date"))
     end_date = models.DateField(verbose_name=_("Pay subsidy end date"))
     pay_subsidy_percent = models.IntegerField(
@@ -152,10 +196,26 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
         null=True,
         blank=True,
     )
-    amount = models.DecimalField(
-        max_digits=7, decimal_places=2, verbose_name=_("amount of the pay subsidy")
-    )
+    disability_or_illness = models.BooleanField(default=False)
+
     history = HistoricalRecords(table_name="bf_calculator_paysubsidy_history")
+
+    @staticmethod
+    def reset_pay_subsidies(application):
+        application.pay_subsidies.all().delete()
+        for ordering, percent in enumerate(
+            [
+                application.pay_subsidy_percent,
+                application.additional_pay_subsidy_percent,
+            ]
+        ):
+            if percent:
+                application.pay_subsidies.create(
+                    start_date=application.start_date,
+                    end_date=application.end_date,
+                    pay_subsidy_percent=percent,
+                    ordering=ordering,
+                )
 
     @property
     def duration_in_months(self):
@@ -163,13 +223,13 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
         return duration_in_months(self.start_date, self.end_date)
 
     def __str__(self):
-        return f"PaySubsidy {self.start_date}-{self.end_date} of {self.amount}"
+        return f"PaySubsidy {self.start_date}-{self.end_date} of {self.pay_subsidy_percent}%"
 
     class Meta:
         db_table = "bf_calculator_paysubsidy"
         verbose_name = _("pay subsidy")
         verbose_name_plural = _("pay subsidies")
-        ordering = ["application__created_at", "start_date"]
+        ordering = ["application__created_at", "ordering"]
 
 
 class PreviousBenefit(UUIDModel, TimeStampedModel):
@@ -215,19 +275,6 @@ class PreviousBenefit(UUIDModel, TimeStampedModel):
         db_table = "bf_calculator_previousbenefit"
         verbose_name = _("Previously granted benefit")
         verbose_name_plural = _("Previously granted benefits")
-
-
-"""
-class CalculationRowManager(models.Manager):
-    # Make it easier to maintain creation order in UI
-    _default_ordering = 0
-
-    def create(self, *args, **kwargs):
-        if "ordering" not in kwargs:
-            kwargs["ordering"] = self._default_ordering
-            self._default_ordering += 1
-        return super(CalculationRowManager, self).create(*args, **kwargs)
-"""
 
 
 class CalculationRow(UUIDModel, TimeStampedModel):

@@ -4,7 +4,6 @@ from applications.models import ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
 from common.authentications import RobotBasicAuthentication
-from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -15,7 +14,7 @@ from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 
 
@@ -44,7 +43,7 @@ class ApplicationBatchFilter(filters.FilterSet):
 class ApplicationBatchViewSet(viewsets.ModelViewSet):
     queryset = ApplicationBatch.objects.all()
     serializer_class = ApplicationBatchSerializer
-    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
+    permission_classes = [IsAdminUser]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,

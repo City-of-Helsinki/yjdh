@@ -3,8 +3,9 @@ from datetime import date, datetime
 
 import filetype
 from applications.api.v1.status_transition_validator import (
+    ApplicantApplicationStatusValidator,
     ApplicationBatchStatusValidator,
-    ApplicationStatusValidator,
+    HandlerApplicationStatusValidator,
 )
 from applications.enums import (
     ApplicationBatchStatus,
@@ -23,6 +24,9 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
+from calculator.api.v1.serializers import CalculationSerializer, PaySubsidySerializer
+from calculator.models import Calculation
+from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
 from common.utils import (
     date_range_overlap,
@@ -427,16 +431,17 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
         application_batch.applications.set(applications)
 
 
-class ApplicationSerializer(serializers.ModelSerializer):
+class BaseApplicationSerializer(serializers.ModelSerializer):
 
     """
     Fields in the Company model come from YTJ/other source and are not editable by user, and are listed
     in read_only_fields. If sent in the request, these fields are ignored.
+
     """
 
     status = serializers.ChoiceField(
         choices=ApplicationStatus.choices,
-        validators=[ApplicationStatusValidator()],
+        validators=[ApplicantApplicationStatusValidator()],
         help_text="Status of the application, visible to the applicant",
     )
 
@@ -478,20 +483,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
         "Total amount must be less than MAX_AID_AMOUNT",
     )
 
-    batch = ApplicationBatchSerializer(
-        read_only=True, help_text="Application batch of this application, if any"
-    )
-
-    create_application_for_company = serializers.PrimaryKeyRelatedField(
-        write_only=True,
-        required=False,
-        queryset=Company.objects.all(),
-        help_text=(
-            "To be used when a logged-in application handler creates a new application based on a paper application"
-            "received via mail. Ordinary applicants can only create applications for their own company."
-        ),
-    )
-
     class Meta:
         model = Application
         fields = [
@@ -501,7 +492,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "application_number",
             "applicant_terms_approval",
             "approve_terms",
-            "batch",
             "company",
             "company_name",
             "company_form",
@@ -541,7 +531,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "end_date",
             "de_minimis_aid",
             "de_minimis_aid_set",
-            "create_application_for_company",
             "last_modified_at",
             "created_at",
             "attachments",
@@ -1093,7 +1082,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def get_available_benefit_types(self, obj):
         return [
             str(item)
-            for item in ApplicationSerializer._get_available_benefit_types(
+            for item in ApplicantApplicationSerializer._get_available_benefit_types(
                 obj.company,
                 obj.association_has_business_activities,
                 obj.apprenticeship_program,
@@ -1111,11 +1100,14 @@ class ApplicationSerializer(serializers.ModelSerializer):
     ):
         if benefit_type == "":
             return
-        if benefit_type not in ApplicationSerializer._get_available_benefit_types(
-            company,
-            association_has_business_activities,
-            apprenticeship_program,
-            pay_subsidy_granted,
+        if (
+            benefit_type
+            not in ApplicantApplicationSerializer._get_available_benefit_types(
+                company,
+                association_has_business_activities,
+                apprenticeship_program,
+                pay_subsidy_granted,
+            )
         ):
             raise serializers.ValidationError(
                 {"benefit_type": _("This benefit type can not be selected")}
@@ -1180,7 +1172,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def _benefit_type_invalid(self, company, data):
         return data[
             "benefit_type"
-        ] not in ApplicationSerializer._get_available_benefit_types(
+        ] not in ApplicantApplicationSerializer._get_available_benefit_types(
             company,
             data["association_has_business_activities"],
             data["apprenticeship_program"],
@@ -1264,6 +1256,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
             self._validate_attachments(instance)
             self._validate_employee_consent(instance)
             self._update_applicant_terms_approval(instance, approve_terms)
+            if not hasattr(instance, "calculation"):
+                # if the previous status was ADDITIONAL_INFORMATION_NEEDED, then calculation already
+                # exists
+                Calculation.objects.create_for_application(instance)
+
+            call_now_or_later(
+                instance.calculation.calculate,
+                duplicate_check=("calculation.calculate", instance.pk),
+            )
         ApplicationLogEntry.objects.create(
             application=instance,
             from_status=previous_status,
@@ -1348,7 +1349,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             attach.delete()
 
     @transaction.atomic
-    def update(self, instance, validated_data):
+    def _base_update(self, instance, validated_data):
         de_minimis_data = validated_data.pop("de_minimis_aid_set", None)
         employee_data = validated_data.pop("employee", None)
         approve_terms = validated_data.pop("approve_terms", None)
@@ -1362,7 +1363,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
         if instance.status != pre_update_status:
             self.handle_status_transition(instance, pre_update_status, approve_terms)
-
         return application
 
     @transaction.atomic
@@ -1385,16 +1385,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             application=application, defaults=employee_data
         )
         return employee
-
-    def get_company_for_new_application(self, validated_data):
-        """
-        Company field is read_only. When creating a new application, assign company.
-        """
-        if self.logged_in_user_is_admin():
-            # Only handlers can create applications for any company
-            return Company.objects.get(validated_data["create_application_for_company"])
-        else:
-            return self.get_logged_in_user_company()
 
     def get_company(self, validated_data):
         if self.instance:
@@ -1442,3 +1432,164 @@ class ApplicationSerializer(serializers.ModelSerializer):
         if settings.DISABLE_AUTHENTICATION:
             return Company.objects.all().order_by("name").first()
         return get_company_from_request(self.context.get("request"))
+
+
+class ApplicantApplicationSerializer(BaseApplicationSerializer):
+    def get_company_for_new_application(self, validated_data):
+        """
+        Company field is read_only. When creating a new application, assign company.
+        """
+        return self.get_logged_in_user_company()
+
+    @do_delayed_calls_at_end()  # application recalculation
+    def update(self, instance, validated_data):
+        if not ApplicationStatus.is_applicant_editable_status(instance.status):
+            raise BenefitAPIException(
+                _("Application can not be changed in this status")
+            )
+        return self._base_update(instance, validated_data)
+
+
+class HandlerApplicationSerializer(BaseApplicationSerializer):
+    """
+    The following fields are available for logged in handlers only:
+    * calculation
+    * pay_subsidies
+    * batch
+    """
+
+    # more status transitions
+    status = serializers.ChoiceField(
+        choices=ApplicationStatus.choices,
+        validators=[HandlerApplicationStatusValidator()],
+        help_text="Status of the application, visible to the applicant",
+    )
+
+    calculation = CalculationSerializer(
+        help_text="Calculation of this application, available for handlers only",
+        allow_null=True,
+        required=False,
+    )
+
+    pay_subsidies = PaySubsidySerializer(
+        many=True,
+        help_text="PaySubsidy objects, available for handlers only",
+        required=False,
+    )
+
+    batch = ApplicationBatchSerializer(
+        read_only=True, help_text="Application batch of this application, if any"
+    )
+
+    create_application_for_company = serializers.PrimaryKeyRelatedField(
+        write_only=True,
+        required=False,
+        queryset=Company.objects.all(),
+        help_text=(
+            "To be used when a logged-in application handler creates a new application based on a paper application"
+            "received via mail. Ordinary applicants can only create applications for their own company."
+        ),
+    )
+
+    def get_company_for_new_application(self, validated_data):
+        """
+        Company field is read_only. When creating a new application, assign company.
+        """
+        if not validated_data["create_application_for_company"]:
+            raise BenefitAPIException(
+                _("create_application_for_company missing from request")
+            )
+        return Company.objects.get(validated_data["create_application_for_company"])
+
+    class Meta(BaseApplicationSerializer.Meta):
+        fields = BaseApplicationSerializer.Meta.fields + [
+            "calculation",
+            "pay_subsidies",
+            "batch",
+            "create_application_for_company",
+        ]
+
+    @transaction.atomic
+    @do_delayed_calls_at_end()  # application recalculation
+    def update(self, instance, validated_data):
+        if not ApplicationStatus.is_handler_editable_status(instance.status):
+            raise BenefitAPIException(
+                _("Application can not be changed in this status")
+            )
+        calculation_data = validated_data.pop("calculation", None)
+        pay_subsidy_data = validated_data.pop("pay_subsidies", None)
+        application = self._base_update(instance, validated_data)
+        if calculation_data is not None:
+            self._update_calculation(instance, calculation_data)
+        if pay_subsidy_data is not None:
+            self._update_pay_subsidies(instance, pay_subsidy_data)
+        return application
+
+    def _update_calculation(self, application, calculation_data):
+        request = self.context.get("request")
+        if application.status not in [ApplicationStatus.RECEIVED]:
+            # TODO: add ApplicationStatus.HANDLING here
+            return
+        if not request and request.method != "PUT":
+            return
+        if not self.logged_in_user_is_admin():
+            # only admins are allowed to modify calculations
+            return
+        if not hasattr(application, "calculation") and calculation_data is not None:
+            raise serializers.ValidationError(
+                _("The calculation should be created when the application is submitted")
+            )
+        if application.calculation.id != calculation_data["id"]:
+            raise serializers.ValidationError(
+                _("The calculation id does not match existing id")
+            )
+        serializer = CalculationSerializer(
+            application.calculation,
+            data=calculation_data,
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            if hasattr(application, "calculation"):
+                call_now_or_later(
+                    application.calculation.calculate,
+                    duplicate_check=("calculation.calculate", application.pk),
+                )
+        else:
+            raise serializers.ValidationError(
+                format_lazy(
+                    _("Reading calculation data failed: {errors}"),
+                    errors=serializer.errors,
+                )
+            )
+
+    def _update_pay_subsidies(self, application, pay_subsidy_data):
+
+        if application.status != ApplicationStatus.RECEIVED:
+            # pay subsidies are not editable after application is locked,
+            # and draft applications can't have them
+            # TODO: check for ApplicationStatus.HANDLING here
+            return
+
+        serializer = PaySubsidySerializer(
+            application.pay_subsidies.all(), data=pay_subsidy_data, many=True
+        )
+
+        if not serializer.is_valid():
+            raise serializers.ValidationError(
+                format_lazy(
+                    _("Reading pay subsidy data failed: {errors}"),
+                    errors=serializer.errors,
+                )
+            )
+        for idx, pay_subsidy in enumerate(serializer.validated_data):
+            pay_subsidy["application_id"] = application.pk
+            pay_subsidy[
+                "ordering"
+            ] = idx  # use the ordering defined in the JSON sent by the client
+        serializer.save()
+        if hasattr(application, "calculation"):
+            call_now_or_later(
+                application.calculation.calculate,
+                duplicate_check=("calculation.calculate", application.pk),
+            )

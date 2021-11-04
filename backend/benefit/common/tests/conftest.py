@@ -31,6 +31,15 @@ def api_client(bf_user):
 
 
 @pytest.fixture
+def handler_api_client(admin_user):
+    permissions = Permission.objects.all()
+    admin_user.user_permissions.set(permissions)
+    client = APIClient()
+    client.force_authenticate(admin_user)
+    return client
+
+
+@pytest.fixture
 def anonymous_client():
     client = APIClient()
     return client

@@ -196,6 +196,8 @@ class Application(UUIDModel, TimeStampedModel):
 
     pay_subsidy_granted = models.BooleanField(null=True)
 
+    # The PaySubsidy model stores the values entered by handlers for the calculation.
+    # This field is filled by the applicant.
     pay_subsidy_percent = models.IntegerField(
         verbose_name=_("Pay subsidy percent"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,

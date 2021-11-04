@@ -1,4 +1,8 @@
-from applications.api.v1.serializers import ApplicationSerializer, AttachmentSerializer
+from applications.api.v1.serializers import (
+    ApplicantApplicationSerializer,
+    AttachmentSerializer,
+    HandlerApplicationSerializer,
+)
 from applications.enums import ApplicationStatus
 from applications.models import Application
 from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
@@ -11,11 +15,12 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from users.utils import get_company_from_request
 
 
-class ApplicationFilter(filters.FilterSet):
+class BaseApplicationFilter(filters.FilterSet):
 
     status = filters.MultipleChoiceFilter(
         field_name="status",
@@ -27,6 +32,21 @@ class ApplicationFilter(filters.FilterSet):
         ),
     )
 
+
+class ApplicantApplicationFilter(BaseApplicationFilter):
+    class Meta:
+        model = Application
+        fields = {
+            "employee__social_security_number": ["exact"],
+            "company__business_id": ["exact"],
+            "benefit_type": ["exact"],
+            "company_name": ["iexact", "icontains"],
+            "employee__first_name": ["iexact", "icontains"],
+            "employee__last_name": ["iexact", "icontains"],
+        }
+
+
+class HandlerApplicationFilter(BaseApplicationFilter):
     class Meta:
         model = Application
         fields = {
@@ -38,38 +58,27 @@ class ApplicationFilter(filters.FilterSet):
             "company_name": ["iexact", "icontains"],
             "employee__first_name": ["iexact", "icontains"],
             "employee__last_name": ["iexact", "icontains"],
+            "start_date": ["lt", "lte", "gt", "gte", "exact"],
+            "end_date": ["lt", "lte", "gt", "gte", "exact"],
         }
 
 
-@extend_schema(
-    description="API for create/read/update/delete operations on Helsinki benefit applications"
-)
-class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
-    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
+class BaseApplicationViewSet(viewsets.ModelViewSet):
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
         drf_filters.SearchFilter,
     ]
-    filterset_class = ApplicationFilter
     search_fields = ["company_name", "company_contact_person_email"]
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        # FIXME: Remove this when FE implemented authentication
-        if settings.DISABLE_AUTHENTICATION:
-            return qs
         user = self.request.user
-        if user.is_authenticated:
-            if user.is_handler():
-                return qs
-            else:
-                company = get_company_from_request(self.request)
-                if company:
-                    return company.applications.all()
-        return Application.objects.none()
+        # FIXME: Remove DISABLE_AUTHENTICATION line when FE implemented authentication
+        if not settings.DISABLE_AUTHENTICATION:
+            if not user.is_authenticated:
+                return Application.objects.none()
+        qs = Application.objects.all().select_related("company")
+        return qs
 
     @action(
         methods=("POST",),
@@ -82,7 +91,11 @@ class ApplicationViewSet(viewsets.ModelViewSet):
         Upload a single file as attachment
         """
         obj = self.get_object()
-
+        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
+            return Response(
+                {"detail": _("Operation not allowed for this application status.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         # Validate request data
         serializer = AttachmentSerializer(
             data={
@@ -104,10 +117,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     )
     def delete_attachment(self, request, attachment_pk, *args, **kwargs):
         obj = self.get_object()
-        if (
-            obj.status
-            not in AttachmentSerializer.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
-        ):
+        if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
             return Response(
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
@@ -142,4 +152,41 @@ class ApplicationViewSet(viewsets.ModelViewSet):
                 "de_minimis_aid": len(de_minimis_aid_set) > 0,
                 "de_minimis_aid_set": de_minimis_aid_set,
             }
+        )
+
+
+@extend_schema(
+    description="API for create/read/update/delete operations on Helsinki benefit applications for applicants"
+)
+class ApplicantApplicationViewSet(BaseApplicationViewSet):
+    serializer_class = ApplicantApplicationSerializer
+    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
+    filterset_class = ApplicantApplicationFilter
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        # FIXME: Remove this when FE implemented authentication
+        if settings.DISABLE_AUTHENTICATION:
+            return qs
+        company = get_company_from_request(self.request)
+        if company:
+            return company.applications.all()
+        else:
+            return Application.objects.none()
+
+
+@extend_schema(
+    description="API for create/read/update/delete operations on Helsinki benefit applications for application handlers"
+)
+class HandlerApplicationViewSet(BaseApplicationViewSet):
+    serializer_class = HandlerApplicationSerializer
+    permission_classes = [IsAdminUser]
+    filterset_class = HandlerApplicationFilter
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related("batch", "calculation")
+            .prefetch_related("pay_subsidies")
         )
