@@ -1,4 +1,8 @@
 import faker from 'faker';
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import fs from 'fs';
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import path from 'path';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -11,7 +15,7 @@ import {
 import { EMPLOYEE_EXCEPTION_REASON } from '../../constants/employee-constants';
 import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
 import type Application from '../../types/application';
-import Attachment from '../../types/attachment';
+import Attachment, { AttachmentType } from '../../types/attachment';
 import type Company from '../../types/company';
 import ContactPerson from '../../types/contact_person';
 import type Employment from '../../types/employment';
@@ -19,6 +23,13 @@ import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
 import { getFormApplication } from '../../utils/application.utils';
 import { DATE_FORMATS, formatDate } from '../../utils/date.utils';
+
+// eslint-disable-next-line unicorn/prefer-module
+const attachmentPath = path.join(__dirname, '../../../browser-tests/fixtures/');
+// eslint-disable-next-line security/detect-non-literal-fs-filename
+const attachmentFilePaths = fs
+  .readdirSync(attachmentPath)
+  .map((fileName) => attachmentPath + fileName);
 
 const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
   fakeFunc: F,
@@ -55,20 +66,21 @@ export const fakeInvoicer = (): Required<Invoicer> => ({
   invoicer_phone_number: faker.phone.phoneNumber(),
 });
 
-export const fakeAttachment = (): Attachment =>
+export const fakeAttachment = (type?: AttachmentType): Attachment =>
   ({
     id: faker.datatype.uuid(),
     application: faker.datatype.uuid(),
-    attachment_type: faker.random.arrayElement(ATTACHMENT_TYPES),
+    attachment_type: type ?? faker.random.arrayElement(ATTACHMENT_TYPES),
     attachment_file: faker.datatype.string(100),
-    attachment_file_name: faker.system.fileName(),
+    attachment_file_name: faker.random.arrayElement(attachmentFilePaths),
     content_type: faker.random.arrayElement(ATTACHMENT_CONTENT_TYPES),
     summer_voucher: faker.datatype.uuid(),
   } as Attachment);
 
 export const fakeAttachments = (
-  count = faker.datatype.number(10)
-): Attachment[] => generateNodeArray(() => fakeAttachment(), count);
+  type: AttachmentType,
+  count = faker.datatype.number(4) + 1
+): Attachment[] => generateNodeArray(() => fakeAttachment(type), count);
 
 export const fakeEmployment = (): Required<Employment> => ({
   id: faker.datatype.uuid(),
@@ -107,7 +119,10 @@ export const fakeEmployment = (): Required<Employment> => ({
     'maybe',
   ]),
   summer_voucher_serial_number: faker.datatype.string(10),
-  attachments: fakeAttachments(),
+  attachments: [
+    ...fakeAttachments('payslip'),
+    ...fakeAttachments('employment_contract'),
+  ],
   payslip: [],
   employment_contract: [],
 });
@@ -118,12 +133,13 @@ export const fakeEmployments = (
 
 export const fakeApplication = (
   id: string,
+  company?: Company,
   invoicer?: boolean,
   language?: Language
 ): Application =>
   getFormApplication({
     id,
-    company: fakeCompany,
+    company: company ?? fakeCompany,
     status: 'draft',
     summer_vouchers: fakeEmployments(1),
     ...fakeContactPerson(),
