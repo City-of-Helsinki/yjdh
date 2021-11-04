@@ -3,7 +3,8 @@ import { ApplicationListItemData } from 'benefit/handler/types/application';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
-import Table, { Column, COLUMN_WIDTH } from 'shared/components/table/Table';
+import { COLUMN_WIDTH } from 'shared/components/table/constants';
+import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
 
 import { $Empty, $Heading } from './ApplicationList.sc';

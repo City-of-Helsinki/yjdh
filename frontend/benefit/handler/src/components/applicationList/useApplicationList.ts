@@ -1,6 +1,7 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import useApplicationsQuery from 'benefit/handler/hooks/useApplicationsQuery';
 import { ApplicationListItemData } from 'benefit/handler/types/application';
+import isEmpty from 'lodash/isEmpty';
 import { TFunction, useTranslation } from 'next-i18next';
 import isServerSide from 'shared/server/is-server-side';
 import { formatDate } from 'shared/utils/date.utils';
@@ -16,7 +17,7 @@ interface ApplicationListProps {
 
 const getFullName = (firstName: string, lastName: string): string => {
   const name = `${firstName || ''} ${lastName || ''}`;
-  return name === ' ' ? '-' : name;
+  return name === ' ' || isEmpty(name) ? '-' : name;
 };
 
 const translationsBase = 'common:applications.list';
@@ -41,6 +42,13 @@ const useApplicationList = (
         employee?.first_name,
         employee?.last_name
       );
+
+      // todo: refactor when data is available from backend
+      const handlerName = getFullName(
+        employee?.first_name,
+        employee?.last_name
+      );
+
       const submittedAt = submitted_at
         ? formatDate(new Date(submitted_at))
         : '-';
@@ -53,6 +61,7 @@ const useApplicationList = (
         employeeName,
         submittedAt,
         applicationNum,
+        handlerName,
       };
       return [...acc, applicationListItem];
     },

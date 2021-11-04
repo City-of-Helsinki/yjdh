@@ -7,7 +7,6 @@ import {
   actions,
   Cell,
   Column as ColumnType,
-  HeaderGroup,
   HeaderProps,
   Row,
   TableCellProps,
@@ -29,15 +28,14 @@ import {
 } from 'react-table';
 
 import {
-  $Header,
-  $HeaderCell,
-  $RowWrapper,
-  $SortArrow,
-  $SortArrowWrapper,
-  $Table,
-  $TableCell,
-  $TableWrapper,
-} from './Table.sc';
+  COLUMN_WIDTH,
+  EXPANDER,
+  MAIN_HEADER,
+  RADIO_SELECTOR,
+  SELECTOR,
+} from './constants';
+import { $RowWrapper, $Table, $TableCell, $TableWrapper } from './Table.sc';
+import renderTableHead from './utils';
 
 export type Column<D extends Record<string, unknown>> = ColumnType<D> &
   UseFiltersColumnOptions<D> &
@@ -83,23 +81,6 @@ type TableProps<D extends Record<string, unknown>> = {
   minimizeAllText?: string;
   noMatchesText?: string;
 } & TableOptions<D>;
-
-const EXPANDER = 'EXPANDER';
-const MAIN_HEADER = 'MAIN_HEADER';
-const SELECTOR = 'SELECTOR';
-const RADIO_SELECTOR = 'RADIO_SELECTOR';
-
-const BASE_COL_WIDTH = 150;
-
-export enum COLUMN_WIDTH {
-  'XXS' = 0.25 * BASE_COL_WIDTH,
-  'XS' = 0.5 * BASE_COL_WIDTH,
-  'S' = 0.75 * BASE_COL_WIDTH,
-  'M' = BASE_COL_WIDTH,
-  'L' = 1.5 * BASE_COL_WIDTH,
-  'XL' = 2 * BASE_COL_WIDTH,
-  'XXL' = 3 * BASE_COL_WIDTH,
-}
 
 const Table = <D extends { id: string }>({
   columns,
@@ -324,21 +305,6 @@ TableProps<D>): React.ReactElement => {
 
     updateData(data);
   }, [data]);
-
-  const renderTableHead = (headerGroup: HeaderGroup<D>): React.ReactNode => (
-    <$Header {...headerGroup.getHeaderGroupProps()}>
-      {headerGroup.headers.map((column) => (
-        <$HeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
-          {column.render('Header')}
-          {column.canSort && (
-            <$SortArrowWrapper>
-              <$SortArrow size="xs" />
-            </$SortArrowWrapper>
-          )}
-        </$HeaderCell>
-      ))}
-    </$Header>
-  );
 
   const renderTableBody = (row: Row<D>): React.ReactNode => {
     prepareRow(row);
