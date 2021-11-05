@@ -45,4 +45,9 @@ const WizardStep: React.FC<Props> = ({ title, index = 0, lastVisitedStep }) => {
   );
 };
 
+WizardStep.defaultProps = {
+  index: 0,
+  lastVisitedStep: 1,
+};
+
 export default WizardStep;

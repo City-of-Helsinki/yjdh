@@ -33,4 +33,8 @@ const WizardStepper: React.FC<Props> = ({ lastVisitedStep }) => {
   );
 };
 
+WizardStepper.defaultProps = {
+  lastVisitedStep: 1,
+};
+
 export default WizardStepper;
