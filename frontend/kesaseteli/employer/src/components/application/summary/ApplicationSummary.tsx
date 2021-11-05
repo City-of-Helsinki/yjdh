@@ -115,4 +115,10 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
   }
   return <PageLoadingSpinner />;
 };
+
+ApplicationSummary.defaultProps = {
+  header: '',
+  tooltip: '',
+};
+
 export default ApplicationSummary;

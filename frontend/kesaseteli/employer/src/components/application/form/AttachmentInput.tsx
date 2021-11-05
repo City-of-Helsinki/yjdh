@@ -166,4 +166,8 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
   return <PageLoadingSpinner />;
 };
 
+AttachmentInput.defaultProps = {
+  required: false,
+};
+
 export default AttachmentInput;
