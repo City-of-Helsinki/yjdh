@@ -4,10 +4,11 @@ import {
   SelectionGroupProps,
 } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { Controller, RegisterOptions, UseFormRegister } from 'react-hook-form';
+import { Controller, RegisterOptions } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -18,7 +19,7 @@ import { $SelectionGroup } from './SelectionGroup.sc';
 
 type Props<T extends readonly string[]> = {
   validation?: RegisterOptions<Application>;
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  id: ApplicationFieldPath;
   direction?: SelectionGroupProps['direction'];
   values: T;
   showTitle?: boolean;
