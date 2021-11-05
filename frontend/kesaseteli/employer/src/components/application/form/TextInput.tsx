@@ -4,9 +4,10 @@ import {
   TextInput as HdsTextInput,
 } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { RegisterOptions, UseFormRegister } from 'react-hook-form';
+import { RegisterOptions } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -34,7 +35,7 @@ const getComponentType = (
 
 export type TextInputProps = {
   validation?: RegisterOptions<Application>;
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  id: ApplicationFieldPath;
   type?: $TextInputProps['$type'];
   placeholder?: string;
   helperFormat?: string;

@@ -1,9 +1,10 @@
 import { Checkbox as HdsCheckbox, CheckboxProps } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { Controller, RegisterOptions, UseFormRegister } from 'react-hook-form';
+import { Controller, RegisterOptions } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
@@ -12,7 +13,7 @@ import useToggle from 'shared/hooks/useToggle';
 import Application from 'shared/types/application-form-data';
 
 type Props = {
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  id: ApplicationFieldPath;
   validation?: RegisterOptions<Application>;
   onChange?: (value: boolean) => void;
   initialValue?: boolean;
