@@ -1,3 +1,8 @@
+import useLogin from 'benefit/applicant/hooks/useLogin';
+import useLogoutQuery from 'benefit/applicant/hooks/useLogoutQuery';
+import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
+import noop from 'lodash/noop';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import BaseHeader from 'shared/components/header/Header';
 
@@ -10,8 +15,16 @@ const Header: React.FC = () => {
     languageOptions,
     handleLanguageChange,
     handleNavigationItemClick,
-    handleTitleClick,
   } = useHeader();
+  const router = useRouter();
+  const { asPath } = router;
+
+  const login = useLogin();
+  const userQuery = useUserQuery();
+  const logoutQuery = useLogoutQuery();
+
+  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
+  const isLoginPage = asPath?.startsWith('/login');
 
   return (
     <BaseHeader
@@ -21,7 +34,15 @@ const Header: React.FC = () => {
       locale={locale}
       onLanguageChange={handleLanguageChange}
       onNavigationItemClick={handleNavigationItemClick}
-      onTitleClick={handleTitleClick}
+      login={{
+        isAuthenticated: !isLoginPage && userQuery.isSuccess,
+        loginLabel: t('common:header.loginLabel'),
+        logoutLabel: t('common:header.logoutLabel'),
+        onLogin: !isLoading ? login : noop,
+        onLogout: !isLoading ? () => logoutQuery.mutate({}) : noop,
+        userName: userQuery.isSuccess ? userQuery.data.name : undefined,
+        userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
+      }}
     />
   );
 };

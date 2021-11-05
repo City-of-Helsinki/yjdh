@@ -1,131 +1,195 @@
 {
-  "appName": "Kesäseteli SWE",
+  "appName": "Sommarsedeln",
   "header": {
-    "loginLabel": "Logga in",
+    "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
-    "userAriaLabelPrefix": "Användare:"
+    "userAriaLabelPrefix": "Användaren:",
+    "linkSkipToContent": "Gå till innehållet"
   },
   "errorPage": {
-    "title": "Palvelussa on valitettavasti tapahtunut virhe SWE",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen. SWE",
-    "retry": "Lataa sivu uudelleen SWE",
-    "logout": "Kirjaudu ulos  SWE"
+    "title": "Ett oförväntat fel skedde",
+    "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
+    "retry": "Ladda upp sidan på nytt.",
+    "logout": "Logga ut"
   },
   "404Page": {
-    "pageNotFoundLabel": "Sivua ei löytynyt SWE",
-    "pageNotFoundContent": "SWE Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+    "pageNotFoundLabel": "Sidan kunde inte hittas",
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
   },
   "loginPage": {
-    "logoutMessageLabel": "Olet kirjautunut ulos SWE",
-    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään SWE",
-    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään SWE",
-    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista SWE",
-    "infoContent": "SWE Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+    "logoutMessageLabel": "Du har loggat ut",
+    "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
+    "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
+    "infoLabel": "Att använda tjänsten kräver stark autentisering",
+    "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
+    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
   },
   "thankyouPage": {
-    "thankyouMessageLabel": "Hakemus on lähetetty SWE",
-    "thankyouMessageContent": "SWE Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
-    "createNewApplication": "Tee uusi hakemus SWE"
+    "thankyouMessageLabel": "Ansökan är skickad.",
+    "thankyouMessageContent": "Vänta på att ansökan behandlas. Vi tar kontakt när ansökan har behandlats, då får du med samma rätten att fakturera.  Nu kan stänga sidan.",
+    "createNewApplication": "Gör en ny ansökan",
+    "title": "Ansökan {{submitted_at}}"
   },
   "application": {
-    "new": "Uusi hakemus SWE",
-    "common_error": "Tapahtui tuntematon virhe SWE",
-    "loading": "Ladataan hakemusta... SWE",
-    "loadingFinished": "Hakemuksen lataus on valmis SWE",
+    "new": "Ny ansökan",
+    "common_error": "Ett oförväntat fel skedde",
+    "loading": "Ansökan laddas...",
+    "loadingFinished": "Nedladdningen av ansökan är färdig",
+    "wizardStepButton": "Gå till steg",
+    "tooltipShowInfo": "Visa information",
     "step1": {
-      "name": "Työnantaja SWE",
-      "header": "1. Työnantajan tiedot SWE",
-      "tooltip": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. SWE",
+      "name": "Arbetsgivare",
+      "header": "1. Arbetsgivarens uppgifter",
+      "tooltip": "Skriv in dina uppgifter i formuläret. Fortsätt med att klicka på Spara och fortsätt. Du kan återvända för att redigera uppgifterna också i följande skede.",
       "companyInfoGrid": {
-        "title": "Yrityksen tiedot SWE",
+        "title": "Foretag information",
         "header": {
-          "name": "Yritys SWE",
-          "business_id": "Y-tunnus SWE",
-          "industry": "Toimiala SWE",
-          "company_form": "Yritysmuoto SWE",
-          "postcode": "Postiosoite SWE",
-          "city": "Kunta SWE"
+          "name": "Företag",
+          "business_id": "FO-nummer",
+          "industry": "Bransch",
+          "company_form": "Bolagsform",
+          "postcode": "Post nummer",
+          "city": "Kommun"
         }
       }
     },
     "step2": {
-      "name": "Työsuhteet SWE",
-      "header": "2. Selvitys työsuhteesta SWE",
-      "employment": "Työsuhde SWE",
-      "attachments_section": "Pakolliset liitteet SWE",
-      "employment_section": "Työsuhteen kuvaus SWE",
-      "tooltip": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      "add_employment": "Lisää uusi työsuhde SWE",
-      "save_employment": "Tallenna tiedot SWE",
-      "remove_employment": "Poista tiedot SWE"
+      "name": "Arbetsanställning",
+      "header": "2. Utredning om anställningshållande",
+      "employment": "Anställning",
+      "tooltip": "Skriv i formuläret sommararbetarens uppgifter samt Sommarsedelns serienummer. Du kan återvända för att redigera uppgifterna också i följande skede.",
+      "attachments_section": "Obligatoriska bilagor",
+      "employment_section": "Beskrivning av arbetsförhållandet",
+      "employment_description_placeholder": "Skriv här vilka arbetsuppgifter den unga gjorde.",
+      "add_employment": "Lägg till en ny anställning",
+      "save_employment": "Spara informationen",
+      "remove_employment": "Ta bort uppgifterna"
     },
     "step3": {
-      "name": "Lähetys SWE",
-      "header": "3. Tarkistus ja lähettäminen"
+      "name": "Skicka",
+      "header": "3. Kontrollera och skicka",
+      "employerTitle": "Arbetsgivarens uppgifter",
+      "employmentTitle": "Utredning om den unga personens anställningsrhållande",
+      "tooltip": "Här ser du dina uppgifter och bilagor. Kontrollera, att allt stämmer och tryck “skicka ansökan”. Om du vill korrigera något, klicka på ”gå tillbaka”."
     },
     "buttons": {
-      "previous": "Palaa edelliseen SWE",
-      "save_and_continue": "Tallenna ja jatka SWE",
-      "send": "Lähetä hakemus SWE"
+      "previous": "Tillbaka",
+      "next": "Spara och fortsätt",
+      "last": "Skicka ansökan"
     },
     "form": {
       "selectionGroups": {
         "summer_voucher_exception_reason": {
-          "9th_grader": "9. luokkalainen SWE",
-          "born_2004": "Syntynyt vuonna 2004 SWE"
+          "9th_grader": "9 klassist",
+          "born_2004": "Född 2004"
         },
-        "hired_without_voucher_assessment" : {
-          "yes": "Kyllä SWE",
-          "no": "En SWE",
-          "maybe": "Ehkä SWE"
+        "hired_without_voucher_assessment": {
+          "yes": "Jo",
+          "no": "Nej",
+          "maybe": "Kanske"
         }
       },
       "inputs": {
-        "invoicer_name": "Yhteyshenkilön nimi SWE",
-        "invoicer_email": "Yhteyshenkilön sähköposti SWE",
-        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero SWE",
-        "employee_name": "Työntekijän nimi SWE",
-        "employee_ssn": "Henkilötunnus SWE",
-        "summer_voucher_exception_reason": "Luokka tai syntymävuosi SWE",
-        "employee_home_city": "Kotipaikkakunta SWE",
-        "employee_postcode": "Postinumero SWE",
-        "employee_phone_number": "Puhelinnumero SWE",
-        "employment_postcode": "Työn suorituspaikan postinumero SWE",
-        "summer_voucher_serial_number": "Kesäsetelin sarjanumero SWE",
-        "employee_school": "Koulu SWE",
-        "employment_start_date": "Työsuhde alkoi SWE",
-        "employment_end_date": "Työsuhde päättyi SWE",
-        "employment_description": "Kuvaus työtehtävistä SWE",
-        "employment_work_hours": "Tehdyt työtunnit SWE",
-        "employment_salary_paid": "Maksettu palkka SWE",
-        "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä? SWE"
+        "contact_person_name": "Kontakt personens namn",
+        "contact_person_email": "Kontakt personens epost",
+        "street_address": "Arbetsplatsens gatuadress",
+        "contact_person_phone_number": "Telefonnummer",
+        "is_separate_invoicer": "Faktureringen sköts av en annan person",
+        "invoicer_name": "Kontakt person för faktureringen",
+        "invoicer_email": "E-posten för kontaktperson för fakturan",
+        "invoicer_phone_number": "Telefonnummer för kontaktperson för fakturan ",
+        "employee_name": "Arbetstagarens namn",
+        "employee_ssn": "Personnummer",
+        "summer_voucher_exception_reason": "Årsklass eller födelseår",
+        "employee_home_city": "Hemort",
+        "employee_postcode": "Post nummer",
+        "employee_phone_number": "Telefonnummer",
+        "employment_postcode": "Arbetsplatsens postnummer",
+        "summer_voucher_serial_number": "Sommarsedelns serienummer",
+        "employee_school": "Skolans namn",
+        "employment_contract": "Arbetskontrakt",
+        "payslip": "Löneintyg",
+        "employment_start_date": "Anställningen började",
+        "employment_end_date": "Anställningen slutade",
+        "employment_work_hours": "Arbetstimmar",
+        "employment_description": "Beskrivning av arbetsuppgifter",
+        "employment_salary_paid": "Utbetalt lönebelopp (€)",
+        "hired_without_voucher_assessment": "Skulle du ha anställt en ung sommarjobbare utan Sommarsedeln?",
+        "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>."
       },
       "helpers": {
         "date": "Använd ett format D.M.ÅÅÅÅ",
-        "format": "Använd ett format"
+        "format": "Använd ett format",
+        "attachments": "Du kan lägga till upp till 5 bilagor. Tillåtna filformat: pdf, jpg och png. Maximal storlek 10 MB",
+        "employment_contract": "Bifoga här arbetskontraktet för sommarjobbaren du anställt med Sommarjobbsedeln.",
+        "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln."
       },
       "errors": {
-        "required": "Tieto puuttuu tai on virheellinen SWE",
-        "maxLength": "Syöttämäsi arvo on liian pitkä SWE",
-        "pattern": "Syöttämäsi tieto on virheellistä muotoa SWE",
-        "validate": "Syöttämäsi tieto on virheellistä muotoa SWE",
-        "selectionGroups": "Valitse jokin vaihtoehto SWE",
-        "employmentsRequired": "Lisää ainakin yksi työsuhde SWE"
+        "required": "Uppgifter fattas eller är ofullständiga",
+        "maxLength": "Den inmatade texten är för lång",
+        "pattern": "Den inmatade uppgiftern är i fel format",
+        "validate": "Den inmatade uppgiftern är i fel format",
+        "selectionGroups": "Välj något alternativ",
+        "checkboxRequired": "Obligatoriskt val",
+        "employment_contract": "Lägg till åtminstone en fil",
+        "payslip": "Lägg till åtminstone en fil"
       },
       "notification": {
-        "title": "Virheitä kenttien tiedoissa SWE",
-        "description": "Täytä puuttuvat tai virheelliset tiedot SWE"
+        "title": "Fyll i de uppgifter som fattas eller är felaktiga"
       }
     }
   },
   "footer": {
-    "copyrightText": "Copyright teksti SWE",
-    "allRightsReservedText": "Kaikki oikeudet pidätetään"
+    "copyrightText": "Helsingfors stad",
+    "allRightsReservedText": "Med ensamrätt",
+    "accessibilityStatement": "Tillgänglighetsutlåtande",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
+    "information": "Information om servicen",
+    "informationLink": "https://kesaseteli.fi/sv/"
   },
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
-    "en": "In english"
+    "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu SWE"
+  "menuToggleAriaLabel": "Menu",
+  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "error": {
+    "generic": {
+      "label": "Ett okänt fel inträffade.",
+      "text": "Försök igen senare."
+    },
+    "attachments": {
+      "title": "Det skedde ett fel i nedladdningen av filen",
+      "tooBig": "Filen är för stor",
+      "fileType": "Filtypen är inte tillåten"
+    }
+  },
+  "upload": {
+    "isUploading": "Sänder...",
+    "errorTitle": "Uppladdningen av filen misslyckades",
+    "errorMessage": "Något gick fel. Försök igen senare."
+  },
+  "delete": {
+    "errorTitle": "Borttagningen misslyckades",
+    "errorMessage": "Något gick fel. Försök igen senare."
+  },
+  "applications": {
+    "sections": {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Arbetskontrakt",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Löneintyg",
+            "message": ""
+          }
+        },
+        "add": "Bifoga bilaga",
+        "remove": "Ta bort filen"
+      }
+    }
+  }
 }

@@ -81,6 +81,7 @@ class ApplicantConsent(UUIDModel, TimeStampedModel):
     text_sv = models.CharField(
         max_length=256, verbose_name=_("swedish text for the consent checkbox")
     )
+    ordering = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.terms} consent: {self.text_fi}"
@@ -89,6 +90,7 @@ class ApplicantConsent(UUIDModel, TimeStampedModel):
         db_table = "bf_applicationconsents"
         verbose_name = _("application consent")
         verbose_name_plural = _("application consents")
+        ordering = ["ordering"]
 
 
 class AbstractTermsApproval(UUIDModel, TimeStampedModel):

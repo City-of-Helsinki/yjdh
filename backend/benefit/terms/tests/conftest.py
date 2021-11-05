@@ -26,7 +26,7 @@ def applicant_terms():
 @pytest.fixture
 def terms_of_service():
     return TermsFactory(
-        terms_type=TermsType.TERMS_OF_SERVICE, effective_from=date.today()
+        terms_type=TermsType.TERMS_OF_SERVICE, effective_from=date(2021, 1, 1)
     )
 
 

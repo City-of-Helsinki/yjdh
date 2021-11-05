@@ -26,6 +26,14 @@ Allow user to create test database
 
     sudo -u postgres psql -c "ALTER USER helsinkibenefit CREATEDB;"
 
+Load test fixtures
+
+    python manage.py loaddata default_terms.json
+
+This creates terms of service and applicant terms in the database. The attachment PDF files are not actually
+created by loading the fixture. In order to actually download the PDF files, log in via the django admin
+and upload the files manually.
+
 ### Daily running
 
 * Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
@@ -33,7 +41,7 @@ Allow user to create test database
 * Run `python manage.py migrate`
 * Run `python manage.py runserver 0:8000`
 
-The project is now running at [localhost:8000](http://localhost:8000)
+The project is now running at [localhost:8000](https://localhost:8000)
 
 ### Testing and debugging
 
@@ -65,10 +73,11 @@ If MOCK_FLAG is set, additionally DUMMY_COMPANY_FORM can be set to test with dif
 
 ## Documentation
 
-The OpenAPI schema is served from [http://127.0.0.1:8000/openapi/](http://127.0.0.1:8000/openapi/).
+The OpenAPI schema is served from [https://127.0.0.1:8000/openapi/](https://127.0.0.1:8000/openapi/).
 
-Swagger documentation can be found at [http://localhost:8000/api_docs/swagger/](http://localhost:8000/api_docs/swagger/)
-and redoc documentation at [http://localhost:8000/api_docs/redoc/](http://localhost:8000/api_docs/redoc/)
+Swagger documentation can be found at [https://localhost:8000/api_docs/swagger/](https://localhost:8000/api_docs
+/swagger/)
+and redoc documentation at [https://localhost:8000/api_docs/redoc/](https://localhost:8000/api_docs/redoc/)
 
 (Assuming you are running the project locally)
 

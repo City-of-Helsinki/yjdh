@@ -61,7 +61,7 @@ class ApproveTermsSerializer(serializers.ModelSerializer):
     """
     Serializer used for approving the terms.
     * id, approved_at and approved_by fields are not included as they are assigned at the backend
-    * application is not included as this serializer is only used in the context of ApplicationSerializer,
+    * application is not included as this serializer is only used in the context of ApplicantApplicationSerializer,
       and application is known when this serializer is used. Also, this enables use of this serializer
       for TermsType.TERMS_OF_SERVICE approval.
     * selected_applicant_consents is just a list of primary keys instead of the full serialized

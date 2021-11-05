@@ -9,16 +9,18 @@ import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/component
 import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
 import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import ApplicationPage from 'kesaseteli/employer/pages/application';
+import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import React from 'react';
-import errorPageApi from 'shared/__tests__/component-apis/error-page-api';
 import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
-import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
+  afterEach(() => clearLocalStorage('application'));
   it('should not violate accessibility', async () => {
-    const { container } = renderComponent(<ApplicationPage />);
+    const {
+      renderResult: { container },
+    } = renderComponent(<ApplicationPage />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
@@ -28,19 +30,17 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
     const application = fakeApplication('1234');
 
     it('Should redirect when unauthorized', async () => {
-      const queryClient = createReactQueryTestClient();
       expectUnauthorizedReply();
       const spyPush = jest.fn();
-      await renderPage(ApplicationPage, queryClient, { push: spyPush });
+      await renderPage(ApplicationPage, { push: spyPush });
       await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
     });
 
     describe('when authorized', () => {
       it('Should route to index page with default lang when applicaton id and locale is missing', async () => {
-        const queryClient = createReactQueryTestClient();
         expectAuthorizedReply();
         const spyReplace = jest.fn();
-        await renderPage(ApplicationPage, queryClient, {
+        await renderPage(ApplicationPage, {
           replace: spyReplace,
           query: {},
         });
@@ -50,11 +50,10 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       });
 
       it('Should route to index page with locale when applicaton id is missing', async () => {
-        const queryClient = createReactQueryTestClient();
         expectAuthorizedReply();
         const locale: Language = 'en';
         const spyReplace = jest.fn();
-        await renderPage(ApplicationPage, queryClient, {
+        await renderPage(ApplicationPage, {
           replace: spyReplace,
           query: {},
           locale,
@@ -65,109 +64,115 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       });
 
       describe('When loading application from backend returns error page', () => {
-        it('Should show errorPage', async () => {
-          const queryClient = createReactQueryTestClient();
+        it('Should redirect to errorPage', async () => {
           expectAuthorizedReply();
           expectToGetApplicationErrorFromBackend(id);
-          await renderPage(ApplicationPage, queryClient, { query: { id } });
-          await errorPageApi.expectations.displayErrorPage();
+          const spyPush = jest.fn();
+          await renderPage(ApplicationPage, { query: { id }, push: spyPush });
+          await waitFor(() => {
+            expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`);
+          });
         });
       });
 
       describe('when loading application returns data', () => {
         it('shows validation errors and disables continue button when missing values', async () => {
-          const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, queryClient, { query: { id } });
-          const applicationPage = getApplicationPageApi(
-            queryClient,
-            application
-          );
+          await renderPage(ApplicationPage, { query: { id } });
+          const applicationPage = getApplicationPageApi(application);
           const required =
             /(tieto puuttuu tai on virheellinen)|(errors.required)/i;
           await applicationPage.step1.expectations.stepIsLoaded();
-          applicationPage.step1.actions.typeInvoicerName('');
+          applicationPage.step1.actions.typeContactPersonName('');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_name',
+            'contact_person_name',
             required
           );
-          applicationPage.step1.actions.typeInvoicerEmail('');
+          applicationPage.step1.actions.typeContactPersonEmail('');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_email',
+            'contact_person_email',
             required
           );
-          applicationPage.step1.actions.typeInvoicerPhone('');
+          applicationPage.step1.actions.typeStreetAddress('');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_phone_number',
+            'street_address',
+            required
+          );
+          applicationPage.step1.actions.typeContactPersonPhone('');
+          await applicationPage.step1.expectations.inputHasError(
+            'contact_person_phone_number',
             required
           );
         });
 
         it('shows validation errors when invalid values', async () => {
-          const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, queryClient, { query: { id } });
-          const applicationPage = getApplicationPageApi(
-            queryClient,
-            application
-          );
+          await renderPage(ApplicationPage, { query: { id } });
+          const applicationPage = getApplicationPageApi(application);
           await applicationPage.step1.expectations.stepIsLoaded();
-          applicationPage.step1.actions.typeInvoicerName('a'.repeat(257)); // max limit is 256
+          applicationPage.step1.actions.typeContactPersonName('a'.repeat(257)); // max limit is 256
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_name',
+            'contact_person_name',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
-          applicationPage.step1.actions.typeInvoicerEmail('john@doe');
+          applicationPage.step1.actions.typeContactPersonEmail('john@doe');
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_email',
+            'contact_person_email',
             /(syöttämäsi tieto on virheellistä muotoa)|(errors.pattern)/i
           );
-          applicationPage.step1.actions.typeInvoicerPhone('1'.repeat(65)); // max limit is 64
+          applicationPage.step1.actions.typeStreetAddress('s'.repeat(257)); // max limit is 64
           await applicationPage.step1.expectations.inputHasError(
-            'invoicer_phone_number',
+            'street_address',
+            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
+          );
+          applicationPage.step1.actions.typeContactPersonPhone('1'.repeat(65)); // max limit is 64
+          await applicationPage.step1.expectations.inputHasError(
+            'contact_person_phone_number',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
         });
 
-        it('saves application and goes to step 2 when next button is clicked', async () => {
-          const queryClient = createReactQueryTestClient();
+        it('saves application when next button is clicked', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, queryClient, { query: { id } });
-          const applicationPage = getApplicationPageApi(
-            queryClient,
-            application
-          );
+          await renderPage(ApplicationPage, { query: { id } });
+          const applicationPage = getApplicationPageApi(application);
           await applicationPage.step1.expectations.stepIsLoaded();
           applicationPage.step1.expectations.displayCompanyData();
-          applicationPage.step1.expectations.inputValueIsSet('invoicer_name');
-          applicationPage.step1.expectations.inputValueIsSet('invoicer_email');
           applicationPage.step1.expectations.inputValueIsSet(
-            'invoicer_phone_number'
+            'contact_person_name'
           );
-          const invoicer_name = 'John Doe';
-          const invoicer_email = 'john@doe.com';
-          const invoicer_phone_number = '+358503758288';
-          applicationPage.step1.actions.typeInvoicerName(invoicer_name);
-          applicationPage.step1.actions.typeInvoicerEmail(invoicer_email);
-          applicationPage.step1.actions.typeInvoicerPhone(
-            invoicer_phone_number
+          applicationPage.step1.expectations.inputValueIsSet(
+            'contact_person_email'
           );
-          await applicationPage.step1.actions.clickNextButton();
+          applicationPage.step1.expectations.inputValueIsSet(
+            'contact_person_phone_number'
+          );
+          const contact_person_name = 'John Doe';
+          const contact_person_email = 'john@doe.com';
+          const contact_person_phone_number = '+358503758288';
+          const street_address = 'Pohjoisesplanadi 11-13, 00170 Helsinki';
+          applicationPage.step1.actions.typeContactPersonName(
+            contact_person_name
+          );
+          applicationPage.step1.actions.typeContactPersonEmail(
+            contact_person_email
+          );
+          applicationPage.step1.actions.typeStreetAddress(street_address);
+          applicationPage.step1.actions.typeContactPersonPhone(
+            contact_person_phone_number
+          );
+          await applicationPage.step1.actions.clickNextButtonAndExpectToSaveApplication();
           await applicationPage.step2.expectations.stepIsLoaded();
         });
 
         it('can traverse between wizard steps', async () => {
-          const queryClient = createReactQueryTestClient();
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
-          await renderPage(ApplicationPage, queryClient, { query: { id } });
-          const applicationPage = getApplicationPageApi(
-            queryClient,
-            application
-          );
+          await renderPage(ApplicationPage, { query: { id } });
+          const applicationPage = getApplicationPageApi(application);
           await applicationPage.step1.expectations.stepIsLoaded();
           await applicationPage.step1.actions.clickNextButton();
           await applicationPage.step2.expectations.stepIsLoaded();

@@ -5,9 +5,9 @@ import { HeadingProps } from 'shared/components/forms/heading/Heading.sc';
 import { $GridCell, GridCellProps } from './FormSection.sc';
 
 type Props = HeadingProps & GridCellProps;
-const FormSectionHeading: React.FC<Props> = (props: Props) => (
+const FormSectionHeading: React.FC<Props> = ({ as, ...props }: Props) => (
   <$GridCell {...props}>
-    <Heading {...props} />
+    <Heading as={as} {...props} />
   </$GridCell>
 );
 

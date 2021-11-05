@@ -76,6 +76,7 @@ env = environ.Env(
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, True),
+    DB_PREFIX=(str, ""),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -88,6 +89,10 @@ if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
+
+DB_PREFIX = {
+    None: env.str("DB_PREFIX"),
+}
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -175,6 +180,7 @@ CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_COOKIE_SECURE = True
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
@@ -205,7 +211,9 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication"
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
@@ -262,7 +270,7 @@ AUTH_ADFS = {
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
     "CLAIM_MAPPING": {"email": "email"},
-    "USERNAME_CLAIM": "unique_name",
+    "USERNAME_CLAIM": "oid",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,
 }

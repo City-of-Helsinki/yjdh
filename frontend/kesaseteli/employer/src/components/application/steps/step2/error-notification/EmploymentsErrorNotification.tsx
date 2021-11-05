@@ -2,11 +2,8 @@ import { $Notification } from 'kesaseteli/employer/components/application/steps/
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { FieldError, useFormContext } from 'react-hook-form';
-import {
-  $Grid,
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/employer-application';
+import { $Grid } from 'shared/components/forms/section/FormSection.sc';
+import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
 
 import EmployeeErrorNotification from './EmployeeErrorNotification';
@@ -34,34 +31,24 @@ const EmploymentsErrorNotification: React.FC = () => {
         errors: Object.entries(employmentErrors ?? {}).map(
           ([field, error]) => ({
             field: field as keyof Employment,
-            errorType: error?.type || 'required',
+            errorType: ((error as FieldError).type || 'required') as string,
           })
         ),
       }))
     : [];
 
-  const isEmptyList =
-    (errors.summer_vouchers as FieldError | undefined)?.type === 'minLength';
-  const title = isEmptyList
-    ? t(`common:application.form.errors.employmentsRequired`)
-    : t(`common:application.form.notification.title`);
 
   return (
-    <$Notification type="error" label={title}>
-      {!isEmptyList && (
-        <$Grid columns={2}>
-          <$GridCell $colSpan={2}>
-            {t(`common:application.form.notification.description`)}
-          </$GridCell>
-          {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
-            <EmployeeErrorNotification
-              key={getEmploymentId(index)}
-              index={index}
-              errors={employmentErrors}
-            />
-          ))}
-        </$Grid>
-      )}
+    <$Notification type="error" label={t(`common:application.form.notification.title`)}>
+      <$Grid columns={2}>
+        {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
+          <EmployeeErrorNotification
+            key={getEmploymentId(index)}
+            index={index}
+            errors={employmentErrors}
+          />
+        ))}
+      </$Grid>
     </$Notification>
   );
 };

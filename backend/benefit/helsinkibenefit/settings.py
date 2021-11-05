@@ -52,6 +52,10 @@ env = environ.Env(
         str,
         "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
     ),
+    PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY=(
+        str,
+        "d5c8a2743d726a33dbd637fac39d6f0712dcee4af36142fb4fb15afa17b1d9bf",
+    ),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
@@ -84,7 +88,10 @@ env = environ.Env(
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DISABLE_AUTHENTICATION=(bool, False),
     DUMMY_COMPANY_FORM=(str, "OY"),
+    TERMS_OF_SERVICE_SESSION_KEY=(str, "_tos_session"),
     ENABLE_DEBUG_ENV=(bool, False),
+    TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
+    DISABLE_TOS_APPROVAL_CHECK=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -97,6 +104,9 @@ if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
+PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str(
+    "PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY"
+)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 USE_X_FORWARDED_HOST = env.bool("USE_X_FORWARDED_HOST")
@@ -130,6 +140,16 @@ USE_TZ = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
 INSTALLED_APPS = [
+    # shared apps
+    "shared.oidc",
+    "shared.audit_log",
+    # local apps
+    "users.apps.AppConfig",
+    "companies",
+    "applications.apps.AppConfig",
+    "terms.apps.AppConfig",
+    "calculator.apps.AppConfig",
+    # libraries
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -145,14 +165,6 @@ INSTALLED_APPS = [
     "encrypted_fields",
     "mozilla_django_oidc",
     "django_auth_adfs",
-    # shared apps
-    "shared.oidc",
-    "shared.audit_log",
-    # local apps
-    "users.apps.AppConfig",
-    "companies",
-    "applications.apps.AppConfig",
-    "terms.apps.AppConfig",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -209,11 +221,14 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
+    # 'EXCEPTION_HANDLER': 'common.debug_util.rest_framework_debug_exception_handler',
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
-    "DEFAULT_AUTHENTICATION_CLASSES": ["shared.oidc.auth.EAuthRestAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication"
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "common.permissions.BFIsAuthenticated",
     ],
@@ -253,14 +268,16 @@ ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
 SESSION_COOKIE_SECURE = True
 
+TERMS_OF_SERVICE_SESSION_KEY = env.str("TERMS_OF_SERVICE_SESSION_KEY")
+
 AUTHENTICATION_BACKENDS = (
     "shared.oidc.auth.HelsinkiOIDCAuthenticationBackend",
-    # Temporary disable ADFS
-    # "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+    "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
 DISABLE_AUTHENTICATION = env.bool("DISABLE_AUTHENTICATION")
+DISABLE_TOS_APPROVAL_CHECK = env.bool("DISABLE_TOS_APPROVAL_CHECK")
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid profile"
@@ -296,7 +313,7 @@ AUTH_ADFS = {
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
     "CLAIM_MAPPING": {"email": "email"},
-    "USERNAME_CLAIM": "unique_name",
+    "USERNAME_CLAIM": "oid",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,
 }
@@ -320,6 +337,8 @@ MAX_UPLOAD_SIZE = 10485760  # 10MB
 MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
 
 WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
+
+TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

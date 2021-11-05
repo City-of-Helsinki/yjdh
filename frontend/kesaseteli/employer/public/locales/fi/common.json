@@ -1,41 +1,46 @@
 {
   "appName": "Kesäseteli",
   "header": {
-    "loginLabel": "Kirjaudu sisään",
+    "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
-    "userAriaLabelPrefix": "Käyttäjä:"
+    "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Siirry sisältöön"
   },
   "errorPage": {
-    "title": "Palvelussa on valitettavasti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "title": "Tapahtui odottamaton virhe",
+    "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
     "retry": "Lataa sivu uudelleen",
     "logout": "Kirjaudu ulos"
   },
   "404Page": {
     "pageNotFoundLabel": "Sivua ei löytynyt",
-    "pageNotFoundContent": "Magna sint mollit mollit eiusmod reprehenderit nulla fugiat pariatur nisi elit irure. Reprehenderit aute do exercitation nulla duis irure enim. Adipisicing ex dolor do exercitation magna mollit laborum pariatur duis tempor. Non cillum esse qui incididunt nostrud. Deserunt reprehenderit do occaecat magna. Qui pariatur laboris cupidatat amet ea mollit commodo irure cupidatat velit tempor excepteur."
+    "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> etusivun kautta takaisin hakemukseen."
   },
   "loginPage": {
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
-    "infoContent": "Qui consequat qui tempor ut. Sit veniam esse in consectetur eiusmod id aliquip excepteur deserunt enim eiusmod proident amet incididunt. Minim occaecat laborum enim sint in cupidatat. Mollit elit aliqua laboris qui ipsum laboris. Labore incididunt Lorem labore commodo."
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   },
   "thankyouPage": {
-    "thankyouMessageLabel": "Hakemus on lähetetty",
-    "thankyouMessageContent": "Magna consectetur enim occaecat et voluptate sit reprehenderit commodo qui culpa ad officia. Tempor est id minim do reprehenderit et voluptate eiusmod pariatur ex quis. Enim eu cillum id tempor dolor anim incididunt ex magna do. Et proident incididunt excepteur id sint ad enim velit. Anim minim enim et magna veniam. Dolor cupidatat non laboris velit aute veniam.",
-    "createNewApplication": "Tee uusi hakemus"
+    "thankyouMessageLabel": "Hakemus on lähetetty.",
+    "thankyouMessageContent": "Jää odottamaan hakemuksen käsittelyä. Olemme sinuun yhteydessä, kun käsittely on valmis, jolloin saat laskutusluvan. Voit nyt sulkea tämän sivun.",
+    "createNewApplication": "Tee uusi hakemus",
+    "title": "Hakemus {{submitted_at}}"
   },
   "application": {
     "new": "Uusi hakemus",
-    "common_error": "Tapahtui tuntematon virhe",
+    "common_error": "Tapahtui odottamaton virhe",
     "loading": "Ladataan hakemusta...",
     "loadingFinished": "Hakemuksen lataus on valmis",
+    "wizardStepButton": "Siirry hakemuksen vaiheeseen",
+    "tooltipShowInfo": "Näytä info",
     "step1": {
       "name": "Työnantaja",
       "header": "1. Työnantajan tiedot",
-      "tooltip": "FI Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "tooltip": "Kirjoita kaavakkeeseen tietosi. Jatka painamalla Tallenna ja jatka. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
       "companyInfoGrid": {
         "title": "Yrityksen tiedot",
         "header": {
@@ -52,57 +57,72 @@
       "name": "Työsuhteet",
       "header": "2. Selvitys työsuhteesta",
       "employment": "Työsuhde",
-      "tooltip": "FI Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "tooltip": "Kirjoita kaavakkeeseen kesätyöntekijän tiedot sekä Kesäsetelin sarjanumero. Voit palata muokkaamaan tietoja myös seuraavassa vaiheessa.",
       "attachments_section": "Pakolliset liitteet",
       "employment_section": "Työsuhteen kuvaus",
+      "employment_description_placeholder": "Kerro tähän työtehtävistä, joita nuori teki.",
       "add_employment": "Lisää uusi työsuhde",
       "save_employment": "Tallenna tiedot",
       "remove_employment": "Poista tiedot"
     },
     "step3": {
-      "name": "Lähetys",
-      "header": "3. Tarkistus ja lähettäminen"
+      "name": "Lähetä",
+      "header": "3. Tarkistus ja lähettäminen",
+      "employerTitle": "Työnantajan tiedot",
+      "employmentTitle": "Selvitys työsuhteesta",
+      "tooltip": "Tässä näet syöttämäsi tiedot ja liitetiedostot. Tarkista, että kaikki on kohdallaan ja paina “Lähetä hakemus“. Jos haluat korjata jotain, paina “,Palaa edelliseen“."
     },
     "buttons": {
       "previous": "Palaa edelliseen",
-      "save_and_continue": "Tallenna ja jatka",
-      "send": "Lähetä hakemus"
+      "next": "Tallenna ja jatka",
+      "last": "Lähetä hakemus"
     },
     "form": {
       "selectionGroups": {
         "summer_voucher_exception_reason": {
-          "9th_grader": "9. luokkalainen",
+          "9th_grader": "9.-luokkalainen",
           "born_2004": "Syntynyt vuonna 2004"
         },
-        "hired_without_voucher_assessment" : {
+        "hired_without_voucher_assessment": {
           "yes": "Kyllä",
           "no": "En",
           "maybe": "Ehkä"
         }
       },
       "inputs": {
-        "invoicer_name": "Yhteyshenkilön nimi",
-        "invoicer_email": "Yhteyshenkilön sähköposti",
-        "invoicer_phone_number": "Yhteyshenkilön puhelinnumero",
+        "contact_person_name": "Yhteyshenkilön nimi",
+        "contact_person_email": "Yhteyshenkilön sähköposti",
+        "street_address": "Työpaikan lähiosoite",
+        "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
+        "is_separate_invoicer": "Laskutusta hoitaa yrityksessä eri yhteyshenkilö",
+        "invoicer_name": "Laskutuksen yhteyshenkilön nimi",
+        "invoicer_email": "Laskutuksen yhteyshenkilön sähköposti",
+        "invoicer_phone_number": "Laskutuksen yhteyshenkilön puhelinnumero",
         "employee_name": "Työntekijän nimi",
         "employee_ssn": "Henkilötunnus",
-        "summer_voucher_exception_reason": "Luokka tai syntymävuosi",
-        "employee_home_city": "Kotipaikkakunta",
+        "summer_voucher_exception_reason": "Vuosiluokka tai syntymävuosi",
+        "employee_home_city": "Kotipaikka",
         "employee_postcode": "Postinumero",
         "employee_phone_number": "Puhelinnumero",
         "employment_postcode": "Työn suorituspaikan postinumero",
         "summer_voucher_serial_number": "Kesäsetelin sarjanumero",
-        "employee_school": "Koulu",
-        "employment_start_date": "Työsuhde alkoi",
-        "employment_end_date": "Työsuhde päättyi",
+        "employee_school": "Koulun nimi",
+        "employment_contract": "Työsopimus",
+        "payslip": "Palkkatodistus",
+        "employment_start_date": "Työsuhteen alkamispäivä",
+        "employment_end_date": "Työsuhteen päättymispäivä",
         "employment_work_hours": "Tehdyt työtunnit",
         "employment_description": "Kuvaus työtehtävistä",
         "employment_salary_paid": "Maksettu palkka (€)",
-        "hired_without_voucher_assessment": "Olitko palkannut nuoren ilman kesäseteliä?"
+        "hired_without_voucher_assessment": "Olisitko palkannut nuoren ilman kesäseteliä?",
+        "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne."
       },
       "helpers": {
         "date": "Käytä muotoa P.K.VVVV",
-        "format": "Käytä muotoa"
+        "format": "Käytä muotoa",
+        "attachments": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+        "employment_contract": "Liitä tähän Kesäsetelillä palkatun nuoren työsopimus.",
+        "payslip": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus."
       },
       "errors": {
         "required": "Tieto puuttuu tai on virheellinen",
@@ -110,22 +130,66 @@
         "pattern": "Syöttämäsi tieto on virheellistä muotoa",
         "validate": "Syöttämäsi tieto on virheellistä muotoa",
         "selectionGroups": "Valitse jokin vaihtoehto",
-        "employmentsRequired": "Lisää ainakin yksi työsuhde"
+        "checkboxRequired": "Valinta on pakollinen",
+        "employment_contract": "Liitä ainakin yksi tiedosto",
+        "payslip": "Liitä ainakin yksi tiedosto"
       },
       "notification": {
-        "title": "Virheitä kenttien tiedoissa",
-        "description": "Täytä puuttuvat tai virheelliset tiedot"
+        "title": "Täytä puuttuvat tai virheelliset tiedot"
       }
     }
   },
   "footer": {
-    "copyrightText": "Copyright teksti",
-    "allRightsReservedText": "Kaikki oikeudet pidätetään"
+    "copyrightText": "Helsingin kaupunki",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "accessibilityStatement": "Saavutettavuusseloste",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "information": "Tietoa palvelusta",
+    "informationLink": "https://kesaseteli.fi/"
   },
   "languages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
-    "en": "In english"
+    "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu"
+  "menuToggleAriaLabel": "Menu",
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "error": {
+    "generic": {
+      "label": "Tapahtui tuntematon virhe",
+      "text": " Yritä myöhemmin uudelleen"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe",
+      "tooBig": "Tiedosto on liian iso",
+      "fileType": "Tiedoston tyyppi ei ole sallittu."
+    }
+  },
+  "upload": {
+    "isUploading": "Lähetetään...",
+    "errorTitle": "Lähetys epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "delete": {
+    "errorTitle": "Poistaminen epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "applications": {
+    "sections": {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Työsopimus",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Palkkatodistus",
+            "message": ""
+          }
+        },
+        "add": "Liitä tiedosto",
+        "remove": "Poista tiedosto"
+      }
+    }
+  }
 }

@@ -5,4 +5,5 @@ export type CompanyData = {
   name: string;
   postcode: string;
   street_address: string;
+  organization_type: string;
 };

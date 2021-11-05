@@ -1,10 +1,11 @@
+import AttachmentInput from 'kesaseteli/employer/components/application/form/AttachmentInput';
 import DateInput from 'kesaseteli/employer/components/application/form/DateInput';
 import SelectionGroup from 'kesaseteli/employer/components/application/form/SelectionGroup';
 import TextInput, {
   TextInputProps,
 } from 'kesaseteli/employer/components/application/form/TextInput';
 import useAccordionStateLocalStorage from 'kesaseteli/employer/hooks/application/useAccordionStateLocalStorage';
-import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import useToggleSerialNumberInput from 'kesaseteli/employer/hooks/application/useToggleSerialNumberInput';
 import useGetEmploymentErrors from 'kesaseteli/employer/hooks/employments/useGetEmploymentErrors';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -14,9 +15,9 @@ import { CITY_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
 import {
   EMPLOYEE_EXCEPTION_REASON,
   EMPLOYEE_HIRED_WITHOUT_VOUCHER_ASSESSMENT,
-} from 'shared/contants/employee-constants';
+} from 'shared/constants/employee-constants';
 import theme from 'shared/styles/theme';
-import Employment, { EmploymentExceptionReason } from 'shared/types/employment';
+import Employment from 'shared/types/employment';
 import { getDecimalNumberRegex } from 'shared/utils/regex.utils';
 
 import AccordionActionButtons from './AccordionActionButtons';
@@ -61,28 +62,9 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       `summer_vouchers.${index}.${field}`,
     [index]
   );
-  const { getValue: getReason } =
-    useApplicationFormField<EmploymentExceptionReason>(
-      getId('summer_voucher_exception_reason')
-    );
-  const { clearValue: clearSerialNumber } = useApplicationFormField<string>(
-    getId('summer_voucher_serial_number')
-  );
 
-  const [showSerialNumberInput, setShowSerialNumberInput] = React.useState(
-    getReason() !== 'born_2004'
-  );
-
-  const handleReasonChange = React.useCallback(
-    (value: string) => {
-      const isBorn2004 = value === 'born_2004';
-      setShowSerialNumberInput(!isBorn2004);
-      if (isBorn2004) {
-        clearSerialNumber();
-      }
-    },
-    [setShowSerialNumberInput, clearSerialNumber]
-  );
+  const [showSerialNumberInput, toggleShowSerialNumberInput] =
+    useToggleSerialNumberInput(index);
 
   return (
     <$Accordion
@@ -92,7 +74,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
       onToggle={handleToggle}
       headerBackgroundColor={headerBackgroundColor}
     >
-      <$AccordionFormSection columns={2} withoutDivider paddingBottom={false}>
+      <$AccordionFormSection columns={2} withoutDivider>
         <TextInput
           id={getId('employee_name')}
           validation={{ required: true, maxLength: 256 }}
@@ -111,7 +93,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             required: true,
           }}
           values={EMPLOYEE_EXCEPTION_REASON}
-          onChange={handleReasonChange}
+          onChange={toggleShowSerialNumberInput}
           $colSpan={2}
         />
         <FormSectionDivider $colSpan={2} />
@@ -158,6 +140,12 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           size="s"
           $colSpan={2}
         />
+        <AttachmentInput
+          index={index}
+          id={getId('employment_contract')}
+          required
+        />
+        <AttachmentInput index={index} id={getId('payslip')} required />
         <FormSectionDivider $colSpan={2} />
         <FormSectionHeading
           header={t('common:application.step2.employment_section')}
@@ -180,12 +168,15 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             maxLength: 18,
             pattern: getDecimalNumberRegex(2),
           }}
-          helperFormat="####.##"
+          helperFormat="######.##"
         />
         <TextInput
           $rowSpan={3}
           id={getId('employment_description')}
           type="textArea"
+          placeholder={t(
+            'common:application.step2.employment_description_placeholder'
+          )}
         />
         <TextInput
           id={getId('employment_salary_paid')}
@@ -195,7 +186,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
             pattern: getDecimalNumberRegex(2),
           }}
           type="decimal"
-          helperFormat="####.##"
+          helperFormat="######.##"
         />
         <SelectionGroup
           id={getId('hired_without_voucher_assessment')}

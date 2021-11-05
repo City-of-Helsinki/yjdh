@@ -6,7 +6,7 @@ import { NextRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-context';
-import getDefaultReactQueryTestClient from 'shared/__tests__/utils/react-query/get-default-react-query-test-client';
+import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { act, render } from 'shared/__tests__/utils/test-utils';
 import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
 import Content from 'shared/components/content/Content';
@@ -21,14 +21,15 @@ const renderPage =
   (backendUrl = 'http://localhost:8000') =>
   async (
     Page: NextPage,
-    client: QueryClient = getDefaultReactQueryTestClient(),
     router: Partial<NextRouter> = {}
-  ): Promise<void> =>
+  ): Promise<QueryClient> => {
+    const axios = createAxiosTestContext(backendUrl);
+    const queryClient = createReactQueryTestClient(axios, backendUrl);
     // act because of async handlers in react-hook-form and react-query
-    act(async () => {
+    await act(async () => {
       render(
         <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
-          <QueryClientProvider client={client}>
+          <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <ThemeProvider theme={theme}>
                 <GlobalStyling />
@@ -48,5 +49,7 @@ const renderPage =
         router
       );
     });
+    return queryClient;
+  };
 
 export default renderPage;

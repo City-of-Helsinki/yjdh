@@ -13,7 +13,7 @@ from applications.enums import (
 )
 from applications.models import Application, Attachment, SummerVoucher
 from companies.api.v1.serializers import CompanySerializer
-from companies.services import get_or_create_company_from_eauth_profile
+from companies.services import get_or_create_company_using_organization_roles
 
 
 class ApplicationStatusValidator:
@@ -76,18 +76,27 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "id",
             "summer_voucher",
             "attachment_file",
-            "content_type",
             "attachment_type",
+            "attachment_file_name",
+            "content_type",
             "created_at",
         ]
         read_only_fields = ["created_at"]
 
-    MAX_ATTACHMENTS_PER_APPLICATION = 10
+    MAX_ATTACHMENTS_PER_TYPE = 5
 
     ATTACHMENT_MODIFICATION_ALLOWED_STATUSES = (
         ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         ApplicationStatus.DRAFT,
     )
+
+    attachment_file_name = serializers.SerializerMethodField(
+        "get_attachment_file_name",
+        help_text="Name of the uploaded file",
+    )
+
+    def get_attachment_file_name(self, obj):
+        return getattr(obj.attachment_file, "name", "")
 
     def validate(self, data):
         """
@@ -112,8 +121,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
             )
 
         if (
-            len(data["summer_voucher"].attachments.all())
-            >= self.MAX_ATTACHMENTS_PER_APPLICATION
+            data["summer_voucher"]
+            .attachments.filter(attachment_type=data["attachment_type"])
+            .count()
+            >= self.MAX_ATTACHMENTS_PER_TYPE
         ):
             raise serializers.ValidationError(_("Too many attachments"))
 
@@ -226,7 +237,6 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
         "employment_end_date",
         "employment_work_hours",
         "employment_salary_paid",
-        "employment_description",
         "hired_without_voucher_assessment",
     ]
 
@@ -270,6 +280,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         help_text=_("Status of the application, visible to the applicant"),
         required=False,
     )
+    submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
     class Meta:
         model = Application
@@ -288,6 +299,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "user",
             "summer_vouchers",
             "language",
+            "submitted_at",
         ]
         read_only_fields = ["user"]
 
@@ -304,13 +316,21 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context["request"]
         user = request.user
-        company = get_or_create_company_from_eauth_profile(
-            user.oidc_profile.eauthorization_profile, request
-        )
+        company = get_or_create_company_using_organization_roles(request)
         validated_data["company"] = company
         validated_data["user"] = user
 
         return super().create(validated_data)
+
+    def get_submitted_at(self, obj):
+        if (
+            hisory_entry := obj.history.filter(status=ApplicationStatus.SUBMITTED)
+            .order_by("modified_at")
+            .first()
+        ):
+            return hisory_entry.modified_at
+        else:
+            return None
 
     def _update_summer_vouchers(
         self, summer_vouchers_data: list, application: Application
@@ -374,7 +394,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
                         )
                     }
                 )
-
         self._validate_attachments()
 
     def _validate_attachments(self):

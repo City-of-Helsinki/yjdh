@@ -1,12 +1,9 @@
-import datetime
 import re
 
 import pytest
 from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
-
-from shared.oidc.tests.factories import OIDCProfileFactory
 
 
 @pytest.mark.django_db
@@ -15,8 +12,6 @@ from shared.oidc.tests.factories import OIDCProfileFactory
     MOCK_FLAG=False,
 )
 def test_logout_view(requests_mock, user_client, user):
-    OIDCProfileFactory(user=user)
-
     matcher = re.compile(settings.OIDC_OP_LOGOUT_ENDPOINT)
     requests_mock.post(matcher)
 
@@ -33,7 +28,17 @@ def test_logout_view(requests_mock, user_client, user):
     OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/",
     MOCK_FLAG=False,
 )
-def test_logout_view_without_oidc_profile(requests_mock, user_client, user):
+def test_logout_view_without_oidc_info(requests_mock, user_client, user):
+    session = user_client.session
+    session.update(
+        {
+            "oidc_id_token": None,
+            "oidc_access_token": None,
+            "oidc_refresh_token": None,
+        }
+    )
+    session.save()
+
     matcher = re.compile(settings.OIDC_OP_LOGOUT_ENDPOINT)
     requests_mock.post(matcher)
 
@@ -50,11 +55,6 @@ def test_logout_view_without_oidc_profile(requests_mock, user_client, user):
     MOCK_FLAG=False,
 )
 def test_userinfo_view(requests_mock, user_client, user):
-    OIDCProfileFactory(
-        user=user,
-        refresh_token_expires=datetime.datetime.now() - datetime.timedelta(hours=1),
-    )
-
     userinfo = {
         "sub": "82e17287-f34e-4e4b-b3d2-15857b3f952a",
         "national_id_num": "210281-9988",
@@ -64,13 +64,19 @@ def test_userinfo_view(requests_mock, user_client, user):
         "family_name": "Demo",
     }
 
+    parsed_userinfo = {
+        "given_name": userinfo["given_name"],
+        "family_name": userinfo["family_name"],
+        "name": userinfo["name"],
+    }
+
     matcher = re.compile(settings.OIDC_OP_USER_ENDPOINT)
     requests_mock.get(matcher, json=userinfo)
 
     userinfo_url = reverse("oidc_userinfo")
     response = user_client.get(userinfo_url)
 
-    assert response.json() == userinfo
+    assert response.json() == parsed_userinfo
 
 
 @pytest.mark.django_db
@@ -78,7 +84,17 @@ def test_userinfo_view(requests_mock, user_client, user):
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
     MOCK_FLAG=False,
 )
-def test_userinfo_view_without_oidc_profile(user_client):
+def test_userinfo_view_without_oidc_info(user_client):
+    session = user_client.session
+    session.update(
+        {
+            "oidc_id_token": None,
+            "oidc_access_token": None,
+            "oidc_refresh_token": None,
+        }
+    )
+    session.save()
+
     userinfo_url = reverse("oidc_userinfo")
     response = user_client.get(userinfo_url)
 
@@ -91,11 +107,6 @@ def test_userinfo_view_without_oidc_profile(user_client):
     MOCK_FLAG=False,
 )
 def test_userinfo_view_with_userinfo_returning_401(requests_mock, user_client, user):
-    OIDCProfileFactory(
-        user=user,
-        refresh_token_expires=datetime.datetime.now() - datetime.timedelta(hours=1),
-    )
-
     matcher = re.compile(settings.OIDC_OP_USER_ENDPOINT)
     requests_mock.get(matcher, status_code=401)
 

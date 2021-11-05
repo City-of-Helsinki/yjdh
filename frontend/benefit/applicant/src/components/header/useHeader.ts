@@ -15,14 +15,14 @@ type ExtendedComponentProps = {
     e: React.SyntheticEvent<unknown>,
     newLanguage: OptionType<string>
   ) => void;
-  handleNavigationItemClick: (pathname: string) => void;
-  handleTitleClick: () => void;
+  handleNavigationItemClick: (url: string) => void;
 };
 
 const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const locale = useLocale();
   const router = useRouter();
+  const { pathname, asPath, query } = router;
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'supportedLanguages'),
@@ -34,14 +34,15 @@ const useHeader = (): ExtendedComponentProps => {
     newLanguage: OptionType<string>
   ): void => {
     e.preventDefault();
-    void router.push('/', '/', { locale: newLanguage.value });
+
+    void router.push({ pathname, query }, asPath, {
+      locale: newLanguage.value,
+    });
   };
 
-  const handleNavigationItemClick = (pathname: string): void => {
-    void router.push(pathname);
+  const handleNavigationItemClick = (url: string): void => {
+    void router.push(url);
   };
-
-  const handleTitleClick = (): void => handleNavigationItemClick('/');
 
   return {
     t,
@@ -49,7 +50,6 @@ const useHeader = (): ExtendedComponentProps => {
     locale,
     handleLanguageChange,
     handleNavigationItemClick,
-    handleTitleClick,
   };
 };
 

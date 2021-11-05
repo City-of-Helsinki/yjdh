@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 import pytest
-from applications.api.v1.serializers import ApplicationSerializer
+from applications.api.v1.serializers import ApplicantApplicationSerializer
 from applications.enums import ApplicationStatus
 from applications.tests.conftest import *  # noqa
 from applications.tests.test_applications_api import (
@@ -14,7 +14,7 @@ from terms.enums import TermsType
 from terms.tests.factories import ApplicantTermsApprovalFactory, TermsFactory
 
 
-def test_applicant_terms_in_effect(api_client, application):
+def test_applicant_terms_in_effect(api_client, application, accept_tos):
     """
     Test that the API returns the correct Terms and ApplicantConsents in the applicant_terms_in_effect field.
     """
@@ -33,8 +33,6 @@ def test_applicant_terms_in_effect(api_client, application):
         effective_from=date.today() + timedelta(days=1),
         terms_type=TermsType.APPLICANT_TERMS,
     )
-    # ... terms of service
-    TermsFactory(effective_from=date.today(), terms_type=TermsType.TERMS_OF_SERVICE)
 
     response = api_client.get(get_detail_url(application))
     assert response.data["applicant_terms_in_effect"]["id"] == str(current_terms.pk)
@@ -74,7 +72,7 @@ def test_approve_terms_success(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     assert data["applicant_terms_approval_needed"] is True
     data["approve_terms"] = {
@@ -124,7 +122,7 @@ def test_approve_wrong_terms(api_client, request, application, status):
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     assert data["applicant_terms_approval_needed"] is True
     data["approve_terms"] = {
         "terms": old_terms.pk,
@@ -161,7 +159,7 @@ def test_approve_no_terms(api_client, request, application, status):
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     assert data["applicant_terms_approval_needed"] is True
     assert "approve_terms" not in data  # no approve_terms
     data["status"] = ApplicationStatus.RECEIVED
@@ -191,7 +189,7 @@ def test_approve_terms_missing_consent(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["approve_terms"] = {
         "terms": applicant_terms.pk,
         "selected_applicant_consents": [
@@ -227,7 +225,7 @@ def test_approve_terms_too_many_consents(
         request, application
     )  # so that attachment validation passes
     other_terms = TermsFactory(effective_from=None)
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     consents = [obj.pk for obj in applicant_terms.applicant_consents.all()] + [
         obj.pk for obj in other_terms.applicant_consents.all()
     ]
@@ -256,9 +254,6 @@ def test_approve_terms_too_many_consents(
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
         ),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.RECEIVED),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED),
     ],
 )
 def test_approve_terms_ignored_when_not_submitting_application(
@@ -273,7 +268,7 @@ def test_approve_terms_ignored_when_not_submitting_application(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     assert data["applicant_terms_approval_needed"] is True
     data["approve_terms"] = {

@@ -1,23 +1,28 @@
 import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
-import useIsOperationPermitted from 'kesaseteli/employer/hooks/backend/useOperationPermitted';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
-import Application from 'shared/types/employer-application';
+import handleError from 'shared/error-handler/error-handler';
+import useLocale from 'shared/hooks/useLocale';
+import Application from 'shared/types/application';
+import { getFormApplication } from 'shared/utils/application.utils';
 
-const useApplicationQuery = (
-  id?: string
-): UseQueryResult<Application, Error> => {
-  const { axios, handleResponse } = useBackendAPI();
-  const operationPermitted = useIsOperationPermitted();
-  return useQuery<Application, Error>(
-    ['applications', id],
-    () => !id
-        ? Promise.reject(new Error('Missing id'))
-        : handleResponse<Application>(
-            axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)
-          ),
-    { enabled: Boolean(id) && operationPermitted }
-  );
+const useApplicationQuery = <T = Application>(
+  id?: string,
+  select?: (application: Application) => T
+): UseQueryResult<T, Error> => {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const locale = useLocale();
+  return useQuery(`${BackendEndpoint.APPLICATIONS}${String(id)}/`, {
+    enabled: Boolean(id),
+    staleTime: Infinity,
+    select: (application: Application) => {
+      const formApplication = getFormApplication(application);
+      return (select ? select(formApplication) : formApplication) as T;
+    },
+    onError: (error) => handleError(error, t, router, locale),
+  });
 };
 
 export default useApplicationQuery;

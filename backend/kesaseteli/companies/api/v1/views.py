@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
-from companies.services import get_or_create_company_from_eauth_profile
+from companies.services import get_or_create_company_using_organization_roles
 from companies.tests.data.company_data import DUMMY_COMPANY_DATA
 
 
@@ -36,9 +36,7 @@ class GetCompanyView(APIView):
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
-        company = get_or_create_company_from_eauth_profile(
-            request.user.oidc_profile.eauthorization_profile, request
-        )
+        company = get_or_create_company_using_organization_roles(request)
 
         company_data = CompanySerializer(company).data
 

@@ -1,4 +1,5 @@
 import decimal
+import functools
 import itertools
 from datetime import date, timedelta
 
@@ -41,6 +42,28 @@ def pairwise(iterable):
     for unused in b:
         break
     return zip(a, b)
+
+
+def nested_setattr(obj, attr, val):
+    """
+    Support dotted access to nested objects
+    """
+    pre, _, post = attr.rpartition(".")
+    return setattr(nested_getattr(obj, pre) if pre else obj, post, val)
+
+
+def nested_getattr(obj, attr, *args):
+    def _getattr(obj, attr):
+        return getattr(obj, attr, *args)
+
+    return functools.reduce(_getattr, [obj] + attr.split("."))
+
+
+def to_decimal(numeric_value, decimal_places=None):
+    value = decimal.Decimal(numeric_value)
+    if decimal_places:
+        value = value.quantize(decimal.Decimal(".1") ** decimal_places)
+    return value
 
 
 class PhoneNumberField(DefaultPhoneNumberField):

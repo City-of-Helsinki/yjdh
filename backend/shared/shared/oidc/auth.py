@@ -1,16 +1,16 @@
 import logging
 
 import requests
-from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
-from django.db.utils import IntegrityError
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
 from requests.exceptions import HTTPError
-from rest_framework.authentication import SessionAuthentication
 
-from shared.oidc.services import store_token_info_in_oidc_profile
+from shared.oidc.utils import (
+    is_active_oidc_refresh_token,
+    store_token_info_in_oidc_session,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         if payload:
             try:
                 user = self.get_or_create_user(access_token, id_token, payload)
-                store_token_info_in_oidc_profile(user, token_info)
+                store_token_info_in_oidc_session(request, token_info)
                 return user
             except SuspiciousOperation as exc:
                 LOGGER.error("failed to get or create user: %s", exc)
@@ -88,17 +88,19 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
         return None
 
-    def refresh_tokens(self, oidc_profile):
-        """Refreshes the tokens of the OIDCProfile instance of the user and return it."""
+    def refresh_tokens(self, request):
+        """Refreshes the tokens of the oidc session of the user and return it."""
 
-        if not oidc_profile.is_active_refresh_token:
-            raise SuspiciousOperation("Refresh token expired")
+        if not is_active_oidc_refresh_token(request):
+            raise SuspiciousOperation("Refresh token expired or does not exist")
+
+        refresh_token = request.session.get("oidc_refresh_token")
 
         payload = {
             "client_id": self.OIDC_RP_CLIENT_ID,
             "client_secret": self.OIDC_RP_CLIENT_SECRET,
             "grant_type": "refresh_token",
-            "refresh_token": oidc_profile.refresh_token,
+            "refresh_token": refresh_token,
         }
 
         response = requests.post(
@@ -110,59 +112,4 @@ class HelsinkiOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         )
         response.raise_for_status()
 
-        return store_token_info_in_oidc_profile(oidc_profile.user, response.json())
-
-
-class EAuthRestAuthentication(SessionAuthentication):
-    def get_or_create_oidc_profile(self, user):
-        from shared.oidc.models import OIDCProfile
-        from shared.oidc.tests.factories import OIDCProfileFactory
-
-        try:
-            oidc_profile = OIDCProfile.objects.get(user=user)
-        except OIDCProfile.DoesNotExist:
-            oidc_profile = OIDCProfileFactory(user=user)
-        return oidc_profile
-
-    def get_or_create_eauth_profile(self, oidc_profile):
-        from shared.oidc.models import EAuthorizationProfile
-        from shared.oidc.tests.factories import EAuthorizationProfileFactory
-
-        try:
-            eauth_profile = EAuthorizationProfile.objects.get(oidc_profile=oidc_profile)
-        except EAuthorizationProfile.DoesNotExist:
-            eauth_profile = EAuthorizationProfileFactory(oidc_profile=oidc_profile)
-        return eauth_profile
-
-    def authenticate(self, request):
-        user_auth_tuple = super().authenticate(request)
-
-        if not user_auth_tuple:
-            return None
-
-        if getattr(settings, "MOCK_FLAG", None):
-            try:
-                oidc_profile = self.get_or_create_oidc_profile(user_auth_tuple[0])
-            except IntegrityError:
-                # Handle a rare race condition by trying the operation again.
-                oidc_profile = self.get_or_create_oidc_profile(user_auth_tuple[0])
-
-            try:
-                self.get_or_create_eauth_profile(oidc_profile)
-            except IntegrityError:
-                # Handle a rare race condition by trying the operation again.
-                self.get_or_create_eauth_profile(oidc_profile)
-
-            return user_auth_tuple
-
-        user, auth = user_auth_tuple
-
-        if not (
-            hasattr(user, "oidc_profile")
-            and hasattr(user.oidc_profile, "eauthorization_profile")
-            and user.oidc_profile.eauthorization_profile.id_token
-            and user.oidc_profile.eauthorization_profile.access_token
-        ):
-            return None
-
-        return user, auth
+        return store_token_info_in_oidc_session(request, response.json())

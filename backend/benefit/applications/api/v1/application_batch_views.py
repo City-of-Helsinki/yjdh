@@ -2,6 +2,9 @@ from applications.api.v1.serializers import ApplicationBatchSerializer
 from applications.enums import ApplicationBatchStatus
 from applications.models import ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
+from applications.services.talpa_integration import TalpaService
+from common.authentications import RobotBasicAuthentication
+from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
@@ -11,7 +14,7 @@ from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 
 
@@ -40,7 +43,7 @@ class ApplicationBatchFilter(filters.FilterSet):
 class ApplicationBatchViewSet(viewsets.ModelViewSet):
     queryset = ApplicationBatch.objects.all()
     serializer_class = ApplicationBatchSerializer
-    permission_classes = [AllowAny]  # TODO access control
+    permission_classes = [IsAdminUser]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
@@ -87,4 +90,41 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
         response["Content-Disposition"] = "attachment; filename={file_name}.zip".format(
             file_name=file_name
         )
+        return response
+
+    @action(
+        methods=("GET",),
+        detail=False,
+        url_path="talpa_export",
+        authentication_classes=[RobotBasicAuthentication],
+        permission_classes=[AllowAny],
+    )
+    @transaction.atomic
+    def talpa_export_batch(self, request, *args, **kwargs):
+        """
+        Export ApplicationBatch to CSV format for Talpa Robot
+        """
+        approved_batches = ApplicationBatch.objects.filter(
+            status=ApplicationBatchStatus.DECIDED_ACCEPTED
+        )
+        if approved_batches.count() == 0:
+            return Response(
+                {
+                    "detail": _(
+                        "There is no available application to export, please try again later"
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        talpa_service = TalpaService(approved_batches)
+        csv_file = talpa_service.get_talpa_csv_string()
+        file_name = format_lazy(
+            _("TALPA export {date}"),
+            date=timezone.now().strftime("%d-%m-%Y %H.%M.%S"),
+        )
+        response = HttpResponse(csv_file, content_type="text/csv")
+        response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
+            file_name=file_name
+        )
+        approved_batches.all().update(status=ApplicationBatchStatus.SENT_TO_TALPA)
         return response

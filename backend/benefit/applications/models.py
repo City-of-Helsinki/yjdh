@@ -10,6 +10,7 @@ from applications.enums import (
 from common.utils import duration_in_months
 from companies.models import Company
 from django.conf import settings
+from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
@@ -147,6 +148,10 @@ class Application(UUIDModel, TimeStampedModel):
     company_contact_person_phone_number = PhoneNumberField(
         verbose_name=_("company contact person's phone number"),
         blank=True,
+        validators=[
+            MinLengthValidator(limit_value=3),
+            MaxLengthValidator(limit_value=13),
+        ],
     )
     company_contact_person_email = models.EmailField(
         blank=True, verbose_name=_("company contact person's email")
@@ -191,6 +196,8 @@ class Application(UUIDModel, TimeStampedModel):
 
     pay_subsidy_granted = models.BooleanField(null=True)
 
+    # The PaySubsidy model stores the values entered by handlers for the calculation.
+    # This field is filled by the applicant.
     pay_subsidy_percent = models.IntegerField(
         verbose_name=_("Pay subsidy percent"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,
@@ -231,30 +238,6 @@ class Application(UUIDModel, TimeStampedModel):
         verbose_name=_("benefit end date"), null=True, blank=True
     )
 
-    calculated_benefit_amount = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        verbose_name=_("amount of the benefit granted, calculated by the system"),
-        blank=True,
-        null=True,
-    )
-    manual_benefit_amount = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
-        verbose_name=_(
-            "amount of the benefit manually entered by the application handler"
-        ),
-        blank=True,
-        null=True,
-    )
-
-    @property
-    def benefit_amount(self):
-        if self.manual_benefit_amount is not None:
-            return self.manual_benefit_amount
-        else:
-            return self.calculated_benefit_amount
-
     APPLICATION_NUMBER_SEQUENCE_ID = "seq_application_number"
 
     def get_available_benefit_types(self):
@@ -290,6 +273,13 @@ class Application(UUIDModel, TimeStampedModel):
     bases = models.ManyToManyField("ApplicationBasis", related_name="applications")
 
     history = HistoricalRecords(table_name="bf_applications_application_history")
+
+    @property
+    def benefit_amount(self):
+        if hasattr(self, "calculation"):
+            return self.calculation.benefit_amount
+        else:
+            return None
 
     @property
     def ahjo_decision(self):
@@ -506,6 +496,10 @@ class Employee(UUIDModel, TimeStampedModel):
     phone_number = PhoneNumberField(
         verbose_name=_("phone number"),
         blank=True,
+        validators=[
+            MinLengthValidator(limit_value=3),
+            MaxLengthValidator(limit_value=13),
+        ],
     )
     email = models.EmailField(blank=True, verbose_name=_("email"))
 

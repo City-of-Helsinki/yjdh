@@ -1,11 +1,16 @@
-import { DeepMap, FieldError,get, useFormContext } from 'react-hook-form';
-import Application from 'shared/types/employer-application';
+import { DeepMap, FieldError, get, useFormContext } from 'react-hook-form';
+import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
 
-const useGetEmploymentErrors = (index: number): DeepMap<Employment, FieldError>  => {
+const useGetEmploymentErrors = (
+  index: number
+): DeepMap<Employment, FieldError> => {
   const {
     formState: { errors },
   } = useFormContext<Application>();
-  return get(errors, `summer_vouchers.${index}`) as DeepMap<Employment, FieldError>;
-}
+  return get(errors, `summer_vouchers.${index}`) as DeepMap<
+    Employment,
+    FieldError
+  >;
+};
 export default useGetEmploymentErrors;

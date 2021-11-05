@@ -1,25 +1,19 @@
 import TestController from 'testcafe';
 
-import {
-  getErrorMessage,
-  screenContext,
-  withinContext,
-} from '../utils/testcafe.utils';
+import { getErrorMessage, screenContext } from '../utils/testcafe.utils';
 
 export const getSuomiFiAuthenticationComponents = (t: TestController) => {
-  const within = withinContext(t);
   const screen = screenContext(t);
-
-  const withinPage = (): ReturnType<typeof within> =>
-    within(screen.getByRole('main'));
 
   const authenticationSelector = async () => {
     const selectors = {
       authenticationSelector() {
-        return withinPage().getByRole('list');
+        return screen.findByRole('heading', {
+          name: /valitse tunnistustapa/i,
+        });
       },
       testitunnistajaAuthentication() {
-        return withinPage().getByRole('link', {
+        return screen.findByRole('link', {
           name: /testitunnistaja/i,
         });
       },
@@ -28,7 +22,7 @@ export const getSuomiFiAuthenticationComponents = (t: TestController) => {
       async isPresent() {
         await t
           .expect(selectors.authenticationSelector().exists)
-          .ok(await getErrorMessage(t));
+          .ok(await getErrorMessage(t), { timeout: 10000 });
       },
     };
     const actions = {

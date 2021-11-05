@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 const initLocale =
   <P,>(WrappedComponent: React.FC<P>): typeof WrappedComponent =>
@@ -9,7 +10,7 @@ const initLocale =
     const { locale } = router;
     const { i18n } = useTranslation();
     React.useEffect(() => {
-      void i18n.changeLanguage(locale);
+      void i18n.changeLanguage(locale ?? DEFAULT_LANGUAGE);
     }, [i18n, locale]);
     return <WrappedComponent {...props} />;
   };

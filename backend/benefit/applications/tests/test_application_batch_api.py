@@ -1,3 +1,4 @@
+import base64
 import copy
 import uuid
 from datetime import datetime
@@ -8,8 +9,10 @@ import pytz
 from applications.api.v1.serializers import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
-from applications.tests.factories import ApplicationFactory
-from applications.tests.test_applications_api import get_detail_url
+from applications.tests.conftest import *  # noqa
+from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
+from applications.tests.test_applications_api import get_handler_detail_url
+from django.conf import settings
 from rest_framework.reverse import reverse
 
 
@@ -17,33 +20,43 @@ def get_batch_detail_url(application_batch):
     return reverse("v1:applicationbatch-detail", kwargs={"pk": application_batch.id})
 
 
-def test_get_application_batch(api_client, application_batch):
+def test_get_application_batch_unauthenticated(anonymous_client, application_batch):
+    response = anonymous_client.get(get_batch_detail_url(application_batch))
+    assert response.status_code == 403
+
+
+def test_get_application_batch_as_applicant(api_client, application_batch):
     response = api_client.get(get_batch_detail_url(application_batch))
+    assert response.status_code == 403
+
+
+def test_get_application_batch(handler_api_client, application_batch):
+    response = handler_api_client.get(get_batch_detail_url(application_batch))
     assert response.status_code == 200
     assert len(response.data["applications"]) == 2
 
 
-def test_applications_batch_list(api_client, application_batch):
-    response = api_client.get(reverse("v1:applicationbatch-list"))
+def test_applications_batch_list(handler_api_client, application_batch):
+    response = handler_api_client.get(reverse("v1:applicationbatch-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
 
 
-def test_applications_batch_list_with_filter(api_client, application_batch):
+def test_applications_batch_list_with_filter(handler_api_client, application_batch):
     application_batch.status = ApplicationBatchStatus.DRAFT
     application_batch.save()
     url1 = reverse("v1:applicationbatch-list") + "?status=draft"
-    response = api_client.get(url1)
+    response = handler_api_client.get(url1)
     assert len(response.data) == 1
     assert response.status_code == 200
 
     url2 = reverse("v1:applicationbatch-list") + "?status=awaiting_ahjo_decision"
-    response = api_client.get(url2)
+    response = handler_api_client.get(url2)
     assert len(response.data) == 0
     assert response.status_code == 200
 
     url3 = reverse("v1:applicationbatch-list") + "?status=awaiting_ahjo_decision,draft"
-    response = api_client.get(url3)
+    response = handler_api_client.get(url3)
     assert len(response.data) == 1
     assert response.status_code == 200
 
@@ -100,7 +113,7 @@ def test_applications_batch_list_with_filter(api_client, application_batch):
     ],
 )
 def test_get_application_with_ahjo_decision(
-    api_client,
+    handler_api_client,
     application_batch,
     status,
     batch_status,
@@ -119,24 +132,24 @@ def test_get_application_with_ahjo_decision(
     application_batch.applications.all().update(status=status, company=company)
     application_batch.save()
     application = application_batch.applications.all().first()
-    response = api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(application))
     assert response.status_code == 200
     assert response.data["ahjo_decision"] == expected_decision
     assert response.data["batch"]["status"] == batch_status
 
 
-def test_application_post_success(api_client, application_batch):
+def test_application_post_success(handler_api_client, application_batch):
     """
     Create a new application batch
     """
     data = ApplicationBatchSerializer(
-        application_batch, context={"request": api_client}
+        application_batch, context={"request": handler_api_client}
     ).data
     application_batch.delete()
     assert len(ApplicationBatch.objects.all()) == 0
 
     del data["id"]  # id is read-only field and would be ignored
-    response = api_client.post(
+    response = handler_api_client.post(
         reverse("v1:applicationbatch-list"),
         data,
     )
@@ -156,7 +169,9 @@ def test_application_post_success(api_client, application_batch):
     )
 
 
-def test_application_post_success_with_applications(api_client, application_batch):
+def test_application_post_success_with_applications(
+    handler_api_client, application_batch
+):
     """
     Create a new application batch with applications
     """
@@ -170,7 +185,7 @@ def test_application_post_success_with_applications(api_client, application_batc
 
     del data["id"]  # id is read-only field and would be ignored
     data["applications"] = [application1.pk, application2.pk]
-    response = api_client.post(
+    response = handler_api_client.post(
         reverse("v1:applicationbatch-list"),
         data,
     )
@@ -182,7 +197,7 @@ def test_application_post_success_with_applications(api_client, application_batc
     )
 
 
-def test_application_batch_put_edit_fields(api_client, application_batch):
+def test_application_batch_put_edit_fields(handler_api_client, application_batch):
     """
     modify existing application batch
     """
@@ -196,7 +211,7 @@ def test_application_batch_put_edit_fields(api_client, application_batch):
     data["expert_inspector_name"] = "Matti Haavikko"
     data["expert_inspector_email"] = "test@example.com"
 
-    response = api_client.put(
+    response = handler_api_client.put(
         get_batch_detail_url(application_batch),
         data,
     )
@@ -213,7 +228,7 @@ def test_application_batch_put_edit_fields(api_client, application_batch):
     assert application_batch.decision_maker_title == "abcd"
 
 
-def test_application_batch_put_read_only_fields(api_client, application_batch):
+def test_application_batch_put_read_only_fields(handler_api_client, application_batch):
     """
     Read-only fields are ignored when editing a batch
     """
@@ -224,7 +239,7 @@ def test_application_batch_put_read_only_fields(api_client, application_batch):
     data["id"] = str(uuid.uuid4())
     data["created_at"] = "2021-08-19T11:23:56"
 
-    response = api_client.put(
+    response = handler_api_client.put(
         get_batch_detail_url(application_batch),
         data,
     )
@@ -288,7 +303,7 @@ def test_application_batch_put_read_only_fields(api_client, application_batch):
     ],
 )
 def test_application_batch_status_change(
-    api_client, application_batch, from_status, to_status, expected_code
+    handler_api_client, application_batch, from_status, to_status, expected_code
 ):
     """
     modify existing application_batch
@@ -298,7 +313,7 @@ def test_application_batch_status_change(
     data = ApplicationBatchSerializer(application_batch).data
     data["status"] = to_status
 
-    response = api_client.put(
+    response = handler_api_client.put(
         get_batch_detail_url(application_batch),
         data,
     )
@@ -352,7 +367,7 @@ def test_application_batch_status_change(
     ],
 )
 def test_application_batch_add_applications(
-    api_client,
+    handler_api_client,
     application_batch,
     application,
     status,
@@ -372,7 +387,7 @@ def test_application_batch_add_applications(
     original_data = copy.deepcopy(data)
     data["applications"].append(application.pk)
 
-    response = api_client.put(
+    response = handler_api_client.put(
         get_batch_detail_url(application_batch),
         data,
     )
@@ -386,14 +401,14 @@ def test_application_batch_add_applications(
         } == set(original_data["applications"])
 
 
-def test_application_batch_delete_applications(api_client, application_batch):
+def test_application_batch_delete_applications(handler_api_client, application_batch):
     """
     modify existing application batch: add a new application to batch
     """
     data = ApplicationBatchSerializer(application_batch).data
     data["applications"] = []
 
-    response = api_client.put(
+    response = handler_api_client.put(
         get_batch_detail_url(application_batch),
         data,
     )
@@ -405,8 +420,8 @@ def test_application_batch_delete_applications(api_client, application_batch):
     )  # "batch" field is set to NULL when application is removed from batch
 
 
-def test_application_delete(api_client, application_batch):
-    response = api_client.delete(get_batch_detail_url(application_batch))
+def test_application_delete(handler_api_client, application_batch):
+    response = handler_api_client.delete(get_batch_detail_url(application_batch))
     assert len(ApplicationBatch.objects.all()) == 0
     assert (
         len(Application.objects.all()) == 2
@@ -415,13 +430,13 @@ def test_application_delete(api_client, application_batch):
 
 
 @patch("applications.api.v1.application_batch_views.export_application_batch")
-def test_application_batch_export(mock_export, api_client, application_batch):
+def test_application_batch_export(mock_export, handler_api_client, application_batch):
     # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
     mock_export.return_value = {}
     # Export invalid batch
     application_batch.status = ApplicationBatchStatus.SENT_TO_TALPA
     application_batch.save()
-    response = api_client.get(
+    response = handler_api_client.get(
         reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
     )
     assert response.status_code == 400
@@ -429,7 +444,7 @@ def test_application_batch_export(mock_export, api_client, application_batch):
     # Export draft batch then change it status
     application_batch.status = ApplicationBatchStatus.DRAFT
     application_batch.save()
-    response = api_client.get(
+    response = handler_api_client.get(
         reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
     )
     application_batch.refresh_from_db()
@@ -440,8 +455,48 @@ def test_application_batch_export(mock_export, api_client, application_batch):
 
     # Export empty batch
     application_batch.applications.clear()
-    response = api_client.get(
+    response = handler_api_client.get(
         reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
     )
     application_batch.refresh_from_db()
     assert response.status_code == 400
+
+
+@patch("applications.services.talpa_integration.TalpaService")
+def test_application_batches_talpa_export(
+    mock_talpa_service, anonymous_client, application_batch
+):
+    # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
+    mock_talpa_service.get_talpa_csv_string.return_value = ""
+
+    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+    assert response.status_code == 401
+
+    # Add basic auth header
+    credentials = base64.b64encode(settings.TALPA_ROBOT_AUTH_CREDENTIAL.encode("utf-8"))
+    anonymous_client.credentials(
+        HTTP_AUTHORIZATION="Basic {}".format(credentials.decode("utf-8"))
+    )
+
+    # Export invalid batch
+    application_batch.status = ApplicationBatchStatus.DECIDED_REJECTED
+    application_batch.save()
+    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+    assert response.status_code == 400
+    assert "There is no available application to export" in response.data["detail"]
+
+    application_batch.status = ApplicationBatchStatus.DECIDED_ACCEPTED
+    application_batch.save()
+    # Let's create another accepted batch
+    app_batch_2 = ApplicationBatchFactory(
+        status=ApplicationBatchStatus.DECIDED_ACCEPTED
+    )
+    # Export accepted batches then change it status
+    response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+    application_batch.refresh_from_db()
+    app_batch_2.refresh_from_db()
+    assert application_batch.status == ApplicationBatchStatus.SENT_TO_TALPA
+    assert app_batch_2.status == ApplicationBatchStatus.SENT_TO_TALPA
+
+    assert response.headers["Content-Type"] == "text/csv"
+    assert response.status_code == 200

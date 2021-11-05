@@ -7,16 +7,25 @@ from applications.tests.factories import (
     ApplicationFactory,
     DecidedApplicationFactory,
     EmployeeFactory,
+    ReceivedApplicationFactory,
 )
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
 from helsinkibenefit.tests.conftest import *  # noqa
+from terms.tests.conftest import *  # noqa
+from terms.tests.factories import TermsOfServiceApprovalFactory
 
 
 @pytest.fixture
 def anonymous_application():
     with factory.Faker.override_default_locale("fi_FI"):
         return ApplicationFactory()
+
+
+@pytest.fixture
+def received_application():
+    with factory.Faker.override_default_locale("fi_FI"):
+        return ReceivedApplicationFactory()
 
 
 @pytest.fixture
@@ -33,7 +42,7 @@ def application_batch():
 
 @pytest.fixture
 def talpa_service(application_batch):
-    return TalpaService(application_batch)
+    return TalpaService([application_batch])
 
 
 @pytest.fixture
@@ -74,3 +83,19 @@ def association_application(mock_get_organisation_roles_and_create_company):
     application.association_has_business_activities = False
     application.de_minimis_aid_set.all().delete()
     return application
+
+
+@pytest.fixture()
+def accept_tos(
+    bf_user, mock_get_organisation_roles_and_create_company, terms_of_service
+):
+    return TermsOfServiceApprovalFactory(
+        user=bf_user,
+        company=mock_get_organisation_roles_and_create_company,
+        terms=terms_of_service,
+    )
+
+
+@pytest.fixture(autouse=True)
+def auto_accept_tos(autouse_django_db, accept_tos):
+    return accept_tos

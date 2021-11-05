@@ -1,10 +1,11 @@
 import { Button, IconSignin } from 'hds-react';
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 import Container from 'shared/components/container/Container';
-import withoutAuth from 'shared/components/hocs/withoutAuth';
 import Layout from 'shared/components/Layout';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
@@ -19,7 +20,7 @@ const Login: NextPage = () => {
   } = useRouter();
   const login = useLogin();
 
-  const getNotificationLabelKey = (): string => {
+  const notificationLabelKey = React.useMemo((): string => {
     if (logout) {
       return `common:loginPage.logoutMessageLabel`;
     }
@@ -30,15 +31,27 @@ const Login: NextPage = () => {
       return `common:loginPage.sessionExpiredLabel`;
     }
     return `common:loginPage.infoLabel`;
-  };
+  }, [logout, error, sessionExpired]);
 
-  const notificationLabelKey = getNotificationLabelKey();
-  const notificationContent =
-    !logout && !error && !sessionExpired && t(`common:loginPage.infoContent`);
+  const notificationContent = React.useMemo((): string | null => {
+    if (error || logout) {
+      return null;
+    }
+    if (sessionExpired) {
+      return t(`common:loginPage.logoutInfoContent`);
+    }
+    return t(`common:loginPage.infoContent`);
+  }, [logout, error, sessionExpired, t]);
+
   const notificationType = error || sessionExpired ? 'error' : 'info';
 
   return (
     <Container>
+      <Head>
+        <title>
+          {t(notificationLabelKey)} | {t(`common:appName`)}
+        </title>
+      </Head>
       <Layout>
         <$Notification
           label={t(notificationLabelKey)}
@@ -58,4 +71,4 @@ const Login: NextPage = () => {
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
 
-export default withoutAuth(Login);
+export default Login;

@@ -1,75 +1,85 @@
-import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
-import useRemoveAttachmentQuery from 'benefit/applicant/hooks/useRemoveAttachmentQuery';
+import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
-import useUploadAttachmentQuery from 'benefit/applicant/hooks/useUploadAttachmentQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import {
+  getApplicationStepString,
+  getFullName,
+} from 'benefit/applicant/utils/common';
+import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import { useEffect } from 'react';
-import showErrorToast from 'shared/components/toast/show-error-toast';
+import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
-import Attachment from 'shared/types/attachment';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
   t: TFunction;
-  handleNext: () => void;
+  handleSave: () => void;
+  handleSubmit: () => void;
   handleBack: () => void;
-  handleRemoveAttachment: (attachmentId: string) => void;
-  handleUploadAttachment: (attachment: FormData) => void;
+  handleStepChange: (step: number) => void;
   translationsBase: string;
-  attachment: Attachment | undefined;
-  isRemoving: boolean;
-  isUploading: boolean;
+  isSubmit: boolean;
 };
 
 const useApplicationFormStep5 = (
   application: Application
 ): ExtendedComponentProps => {
-  const translationsBase = 'common:applications.sections.credentials.sections';
+  const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
+  const router = useRouter();
 
-  const { mutate: updateApplicationStep4, error: updateApplicationErrorStep5 } =
-    useUpdateApplicationQuery();
+  const { setSubmittedApplication, submittedApplication } =
+    useContext(AppContext);
 
   const {
-    mutate: uploadAttachment,
-    isLoading: isUploading,
-    isError: isUploadingError,
-  } = useUploadAttachmentQuery();
+    mutate: updateApplicationStep5,
+    error: updateApplicationErrorStep5,
+    isSuccess: isApplicationUpdatedStep5,
+  } = useUpdateApplicationQuery();
+
+  const isSubmit = !isEmpty(application?.applicantTermsApproval);
 
   useEffect(() => {
-    if (isUploadingError) {
-      showErrorToast(
-        t(`common:upload.errorTitle`),
-        t(`common:upload.errorMessage`)
-      );
+    if (
+      isApplicationUpdatedStep5 &&
+      application.status === APPLICATION_STATUSES.RECEIVED
+    ) {
+      setSubmittedApplication({
+        applicantName: getFullName(
+          application.employee?.firstName,
+          application.employee?.lastName
+        ),
+        applicationNumber: application.applicationNumber || 0,
+      });
     }
-  }, [isUploadingError, t]);
+  }, [isApplicationUpdatedStep5, application, setSubmittedApplication]);
 
-  const {
-    mutate: removeAttachment,
-    isLoading: isRemoving,
-    isError: isRemovingError,
-  } = useRemoveAttachmentQuery();
+  useEffect(() => {
+    if (submittedApplication) {
+      void router.push(ROUTES.HOME);
+    }
+  }, [router, submittedApplication]);
 
   useEffect(() => {
     // todo:custom error messages
-    if (updateApplicationErrorStep5 || isRemovingError) {
+    if (updateApplicationErrorStep5) {
       hdsToast({
-        autoDismiss: true,
         autoDismissTime: 5000,
         type: 'error',
-        translated: true,
         labelText: t('common:error.generic.label'),
         text: t('common:error.generic.text'),
       });
     }
-  }, [t, updateApplicationErrorStep5, isRemovingError]);
+  }, [t, updateApplicationErrorStep5]);
+
+  const { onBack, onSave } = useFormActions(application, 5);
 
   const handleStepChange = (nextStep: number): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
@@ -79,41 +89,33 @@ const useApplicationFormStep5 = (
       },
       { deep: true }
     );
-    updateApplicationStep4(currentApplicationData);
+    updateApplicationStep5(currentApplicationData);
   };
 
-  const handleNext = (): void => handleStepChange(6);
+  const handleSave = (): void => onSave(application);
 
-  const handleBack = (): void => handleStepChange(4);
-
-  const getEmployeeConsentAttachment = (): Attachment | undefined =>
-    application.attachments?.find(
-      (attachment) =>
-        attachment.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT
+  const handleSubmit = (): void => {
+    const submitFields = isSubmit
+      ? { status: APPLICATION_STATUSES.RECEIVED }
+      : { applicationStep: getApplicationStepString(6) };
+    const currentApplicationData: ApplicationData = snakecaseKeys(
+      {
+        ...application,
+        ...submitFields,
+      },
+      { deep: true }
     );
-
-  const handleRemoveAttachment = (attachmentId: string): void =>
-    removeAttachment({
-      applicationId: application.id || '',
-      attachmentId,
-    });
-
-  const handleUploadAttachment = (attachment: FormData): void =>
-    uploadAttachment({
-      applicationId: application.id || '',
-      data: attachment,
-    });
+    updateApplicationStep5(currentApplicationData);
+  };
 
   return {
     t,
-    handleNext,
-    handleBack,
-    handleUploadAttachment,
-    handleRemoveAttachment,
-    isRemoving,
-    isUploading,
+    handleSave,
+    handleSubmit,
+    handleBack: onBack,
+    handleStepChange,
     translationsBase,
-    attachment: getEmployeeConsentAttachment(),
+    isSubmit,
   };
 };
 

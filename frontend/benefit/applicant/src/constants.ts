@@ -64,9 +64,10 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   ALTERNATIVE_COMPANY_STREET_ADDRESS = 'alternativeCompanyStreetAddress',
   ALTERNATIVE_COMPANY_POSTCODE = 'alternativeCompanyPostcode',
   ALTERNATIVE_COMPANY_CITY = 'alternativeCompanyCity',
+  COMPANY_DEPARTMENT = 'companyDepartment',
   COMPANY_BANK_ACCOUNT_NUMBER = 'companyBankAccountNumber',
-  ORGANIZATION_TYPE = 'organizationType',
   ASSOCIATION_HAS_BUSINESS_ACTIVITIES = 'associationHasBusinessActivities',
+  ASSOCIATION_IMMEDIATE_MANAGER_CHECK = 'associationImmediateManagerCheck',
   COMPANY_CONTACT_PERSON_FIRST_NAME = 'companyContactPersonFirstName',
   COMPANY_CONTACT_PERSON_LAST_NAME = 'companyContactPersonLastName',
   COMPANY_CONTACT_PERSON_PHONE_NUMBER = 'companyContactPersonPhoneNumber',
@@ -150,7 +151,6 @@ export const APPLICATION_INITIAL_VALUES = {
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY]: '',
   [APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE]: '',
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER]: '',
-  [APPLICATION_FIELDS_STEP1_KEYS.ORGANIZATION_TYPE]: null,
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_FIRST_NAME]: '',
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_LAST_NAME]: '',
   [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]: '',
@@ -201,14 +201,6 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MIN = 'common:form.validation.time.min',
   TIME_MAX = 'common:form.validation.time.max',
 }
-
-// 10mb
-export const ATTACHMENT_MAX_SIZE = 10485760;
-export const ATTACHMENT_ALLOWED_TYPES = [
-  'image/png',
-  'image/jpeg',
-  'application/pdf',
-];
 
 // temporary consent file
 export const EMPLOYEE_CONSENT_FILE = 'employee_consent.pdf';

@@ -3,6 +3,14 @@ const { join } = require('path');
 module.exports = {
   extends: ['auto', 'plugin:you-dont-need-lodash-underscore/compatible'],
   rules: {
+    'jsx-a11y/anchor-is-valid': [
+      'error',
+      {
+        components: ['Link'],
+        specialLink: ['hrefLeft', 'hrefRight'],
+        aspects: ['invalidHref', 'preferButton'],
+      },
+    ],
     'no-secrets/no-secrets': [
       'error',
       { ignoreContent: 'https://makasiini.hel.ninja/delivery' },

@@ -1,4 +1,5 @@
 from applications.api.v1 import application_batch_views, views as application_views
+from calculator.api.v1 import views as calculator_views
 from common.debug_util import debug_env
 from companies.api.v1.views import GetCompanyView
 from django.conf import settings
@@ -16,8 +17,18 @@ from terms.api.v1.views import ApproveTermsOfServiceView
 from users.api.v1.views import CurrentUserView
 
 router = routers.DefaultRouter()
-router.register(r"applications", application_views.ApplicationViewSet)
+router.register(
+    r"applications",
+    application_views.ApplicantApplicationViewSet,
+    basename="applicant-application",
+)
+router.register(
+    r"handlerapplications",
+    application_views.HandlerApplicationViewSet,
+    basename="handler-application",
+)
 router.register(r"applicationbatches", application_batch_views.ApplicationBatchViewSet)
+router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,7 +40,7 @@ urlpatterns = [
     ),  # FIXME: Remove this later
     path("v1/users/me/", CurrentUserView.as_view()),
     path("oidc/", include("shared.oidc.urls")),
-    # path("oauth2/", include("shared.azure_adfs.urls")),
+    path("oauth2/", include("shared.azure_adfs.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("openapi/", SpectacularAPIView.as_view(), name="schema"),
     path(

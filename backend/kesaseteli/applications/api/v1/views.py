@@ -1,5 +1,3 @@
-import os
-
 from django.core import exceptions
 from django.http import FileResponse
 from django.utils.text import format_lazy
@@ -17,6 +15,7 @@ from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_VIEW_STATUSES,
     ApplicationPermission,
     get_user_company,
+    StaffPermission,
     SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
@@ -45,7 +44,11 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
             .select_related("company")
             .prefetch_related("summer_vouchers")
         )
+
         user = self.request.user
+        if user.is_anonymous:
+            return queryset.none()
+
         user_company = get_user_company(self.request)
 
         return queryset.filter(
@@ -78,7 +81,7 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
 class SummerVoucherViewSet(AuditLoggingModelViewSet):
     queryset = SummerVoucher.objects.all()
     serializer_class = SummerVoucherSerializer
-    permission_classes = [IsAuthenticated, SummerVoucherPermission]
+    permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]
 
     def get_queryset(self):
         """
@@ -90,7 +93,13 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
             .select_related("application")
             .prefetch_related("attachments")
         )
+
         user = self.request.user
+        if user.is_staff:
+            return queryset
+        elif user.is_anonymous:
+            return queryset.none()
+
         user_company = get_user_company(self.request)
 
         return queryset.filter(
@@ -160,7 +169,7 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
             Read a single attachment as file
             """
             attachment = obj.attachments.filter(pk=attachment_pk).first()
-            if not attachment or not os.path.isfile(attachment.attachment_file.path):
+            if not attachment or not attachment.attachment_file:
                 return Response(
                     {
                         "detail": format_lazy(
@@ -194,6 +203,5 @@ class SummerVoucherViewSet(AuditLoggingModelViewSet):
                 return Response(
                     {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
                 )
-            instance.attachment_file.delete(save=False)
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

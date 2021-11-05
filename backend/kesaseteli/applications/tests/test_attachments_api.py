@@ -127,10 +127,7 @@ def test_attachment_upload_invalid_status(
 
 @pytest.mark.django_db
 def test_too_many_attachments(request, api_client, summer_voucher):
-
-    for idx, _ in enumerate(
-        range(AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION)
-    ):
+    for idx, _ in enumerate(range(AttachmentSerializer.MAX_ATTACHMENTS_PER_TYPE)):
         response = _upload_file(
             request,
             api_client,
@@ -146,7 +143,7 @@ def test_too_many_attachments(request, api_client, summer_voucher):
     assert response.status_code == 400
     assert (
         summer_voucher.attachments.count()
-        == AttachmentSerializer.MAX_ATTACHMENTS_PER_APPLICATION
+        == AttachmentSerializer.MAX_ATTACHMENTS_PER_TYPE
     )
 
 
@@ -165,7 +162,7 @@ def test_get_attachment(request, api_client, summer_voucher, attachment_type):
 
 
 @pytest.mark.django_db
-def test_get_attachment_when_not_saved(api_client, summer_voucher):
+def test_get_attachment_with_invalid_uuid(api_client, summer_voucher):
     attachment_url = reverse(
         "v1:summervoucher-handle-attachment",
         kwargs={"pk": summer_voucher.pk, "attachment_pk": uuid.uuid4()},
@@ -227,6 +224,32 @@ def test_get_attachment_for_submitted_application(
     response = api_client.get(attachment_url)
 
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_get_attachment_for_staff_user(
+    staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    attachment_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment
+    )
+
+    response = staff_client.get(attachment_url)
+
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_get_attachment_for_other_user(
+    api_client2, submitted_summer_voucher, submitted_employment_contract_attachment
+):
+    attachment_url = handle_attachment_url(
+        submitted_summer_voucher, submitted_employment_contract_attachment
+    )
+
+    response = api_client2.get(attachment_url)
+
+    assert response.status_code == 404
 
 
 @pytest.mark.django_db

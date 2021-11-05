@@ -3,7 +3,7 @@ from django.conf import settings
 
 def get_dummy_company_data():
     dummy_data = DUMMY_COMPANY_DATA.copy()
-    if hasattr(settings, "DUMMY_COMPANY_FORM"):
+    if hasattr(settings, "DUMMY_COMPANY_FORM") and settings.DUMMY_COMPANY_FORM:
         dummy_data["company_form"] = settings.DUMMY_COMPANY_FORM
     return dummy_data
 

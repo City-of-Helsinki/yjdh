@@ -34,9 +34,10 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
       .nullable()
       .when(APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED, {
         is: true,
-        then: Yup.mixed()
-          .oneOf([...PAY_SUBSIDY_OPTIONS], t(VALIDATION_MESSAGE_KEYS.INVALID))
-          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+        then: Yup.mixed().oneOf(
+          [null, ...PAY_SUBSIDY_OPTIONS],
+          t(VALIDATION_MESSAGE_KEYS.INVALID)
+        ),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
       .nullable()
