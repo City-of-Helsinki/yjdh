@@ -66,7 +66,7 @@ export const getApplicationPageComponents = (t: TestController) => {
       }),
   };
   const step1 = async () => {
-    const formSelector = screen.getByRole('form', {
+    const formSelector = screen.findByRole('form', {
       name: /työnantajan tiedot/i,
     });
     const withinForm = (): ReturnType<typeof within> => within(formSelector);
@@ -172,7 +172,7 @@ export const getApplicationPageComponents = (t: TestController) => {
   };
   const step2 = async () => {
     /*
-    const formSelector = screen.getByRole('form', {
+    const formSelector = screen.findByRole('form', {
       name: /selvitys työsuhteesta/i,
     });
     const withinForm = (): ReturnType<typeof within> => within(formSelector);

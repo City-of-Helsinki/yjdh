@@ -37,19 +37,44 @@ class StatusTransitionValidator:
         return value
 
 
-class ApplicationStatusValidator(StatusTransitionValidator):
+class BaseApplicationStatusValidator(StatusTransitionValidator):
     initial_status = ApplicationStatus.DRAFT
+    SUBMIT_APPLICATION_STATE_TRANSITIONS = [
+        (
+            ApplicationStatus.DRAFT,
+            ApplicationStatus.RECEIVED,
+        ),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
+    ]
 
+
+class ApplicantApplicationStatusValidator(BaseApplicationStatusValidator):
+    STATUS_TRANSITIONS = {
+        ApplicationStatus.DRAFT: (ApplicationStatus.RECEIVED,),
+        ApplicationStatus.RECEIVED: (),
+        ApplicationStatus.HANDLING: (),
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED: (ApplicationStatus.HANDLING,),
+        ApplicationStatus.CANCELLED: (),
+        ApplicationStatus.ACCEPTED: (),
+        ApplicationStatus.REJECTED: (),
+    }
+
+
+class HandlerApplicationStatusValidator(BaseApplicationStatusValidator):
     STATUS_TRANSITIONS = {
         ApplicationStatus.DRAFT: (ApplicationStatus.RECEIVED,),
         ApplicationStatus.RECEIVED: (
+            ApplicationStatus.HANDLING,
+            ApplicationStatus.CANCELLED,
+        ),
+        ApplicationStatus.HANDLING: (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.CANCELLED,
             ApplicationStatus.ACCEPTED,
             ApplicationStatus.REJECTED,
         ),
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED: (
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             ApplicationStatus.CANCELLED,
         ),
         ApplicationStatus.CANCELLED: (),

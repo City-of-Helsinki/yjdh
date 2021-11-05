@@ -13,8 +13,8 @@
     "test:debug-dom": "cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test:debug-dom --verbose --coverage",
-    "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",
-    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,html:report/index.html testcafe.config.js browser-tests/"
+    "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.dotenv.js browser-tests/",
+    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,custom,html:report/index.html testcafe.dotenv.js browser-tests/"
   },
   "dependencies": {
     "@frontend/shared": "*",

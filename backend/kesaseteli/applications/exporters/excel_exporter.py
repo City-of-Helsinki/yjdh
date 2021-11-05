@@ -12,7 +12,7 @@ from common.utils import getattr_nested
 FIELDS = (
     # Field title, field value, field names in summer voucher model, column width
     (_("Järjestys"), "", [], 15, "white"),
-    (_("Saatu pvm"), "%s", ["application__created_at"], 15, "white"),
+    (_("Saatu pvm"), "%s", ["submitted_at"], 15, "white"),
     (_("Hakemuksen kieli"), "%s", ["application__language"], 15, "white"),
     (_("Setelin numero"), "%s", ["summer_voucher_serial_number"], 30, "white"),
     (

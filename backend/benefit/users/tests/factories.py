@@ -12,3 +12,10 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = User
+
+
+class HandlerFactory(UserFactory):
+    is_staff = True
+
+    class Meta:
+        model = get_user_model()

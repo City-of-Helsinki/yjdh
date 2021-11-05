@@ -8,7 +8,7 @@ from users.utils import get_company_from_request
 
 
 class UserSerializer(serializers.ModelSerializer):
-
+    id = serializers.UUIDField(required=False)
     terms_of_service_approvals = TermsOfServiceApprovalSerializer(
         read_only=True,
         many=True,
@@ -64,6 +64,8 @@ class UserSerializer(serializers.ModelSerializer):
     )
 
     def is_terms_of_service_approval_needed(self, obj):
+        if hasattr(obj, "is_handler") and obj.is_handler():
+            return False
         return TermsOfServiceApproval.terms_approval_needed(
             obj, get_company_from_request(self.context.get("request"))
         )

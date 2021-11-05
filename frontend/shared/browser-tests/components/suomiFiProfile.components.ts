@@ -30,7 +30,7 @@ export const getSuomiFiProfileComponents = (t: TestController) => {
           .nextSibling();
       },
       continueButton() {
-        return withinForm().getByRole('button', {
+        return withinForm().findByRole('button', {
           name: /jatka palveluun/i,
         });
       },
@@ -43,12 +43,10 @@ export const getSuomiFiProfileComponents = (t: TestController) => {
           .ok(await getErrorMessage(t));
       },
       async userDataIsPresent(): Promise<User> {
-        const national_id_num = (await selectors.ssn().textContent).trim();
         const given_name = (await selectors.firstName().textContent).trim();
         const family_name = (await selectors.lastName().textContent).trim();
 
         const userData: User = {
-          national_id_num,
           given_name,
           family_name,
           name: `${given_name} ${family_name}`,
