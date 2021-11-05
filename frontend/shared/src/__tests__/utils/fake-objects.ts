@@ -4,11 +4,20 @@ import faker from 'faker';
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
+import {
+  ATTACHMENT_CONTENT_TYPES,
+  ATTACHMENT_TYPES,
+} from '../../constants/attachment-constants';
+import { EMPLOYEE_EXCEPTION_REASON } from '../../constants/employee-constants';
+import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
+import type Application from '../../types/application';
+import Attachment from '../../types/attachment';
 import type Company from '../../types/company';
-import type Application from '../../types/employer-application';
+import ContactPerson from '../../types/contact_person';
 import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
+import { getFormApplication } from '../../utils/application.utils';
 import { DATE_FORMATS, formatDate } from '../../utils/date.utils';
 
 const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
@@ -17,7 +26,6 @@ const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
 ): T[] => Array.from({ length: count }, (_, i) => fakeFunc(i));
 
 export const fakeUser = (): User => ({
-  national_id_num: '111111-111C',
   given_name: faker.name.findName(),
   family_name: faker.name.findName(),
   name: faker.name.findName(),
@@ -34,18 +42,39 @@ export const fakeCompany: Company = {
   company_form: 'oy',
 };
 
+export const fakeContactPerson = (): ContactPerson => ({
+  contact_person_name: faker.name.findName(),
+  contact_person_email: faker.internet.email(),
+  contact_person_phone_number: faker.phone.phoneNumber(),
+  street_address: faker.address.streetAddress(),
+});
+
 export const fakeInvoicer = (): Required<Invoicer> => ({
   invoicer_name: faker.name.findName(),
   invoicer_email: faker.internet.email(),
   invoicer_phone_number: faker.phone.phoneNumber(),
 });
 
+export const fakeAttachment = (): Attachment =>
+  ({
+    id: faker.datatype.uuid(),
+    application: faker.datatype.uuid(),
+    attachment_type: faker.random.arrayElement(ATTACHMENT_TYPES),
+    attachment_file: faker.datatype.string(100),
+    attachment_file_name: faker.system.fileName(),
+    content_type: faker.random.arrayElement(ATTACHMENT_CONTENT_TYPES),
+    summer_voucher: faker.datatype.uuid(),
+  } as Attachment);
+
+export const fakeAttachments = (
+  count = faker.datatype.number(10)
+): Attachment[] => generateNodeArray(() => fakeAttachment(), count);
+
 export const fakeEmployment = (): Required<Employment> => ({
   id: faker.datatype.uuid(),
-  summer_voucher_exception_reason: faker.random.arrayElement([
-    '9th_grader',
-    'born_2004',
-  ]),
+  summer_voucher_exception_reason: faker.random.arrayElement(
+    EMPLOYEE_EXCEPTION_REASON
+  ),
   employee_name: faker.name.findName(),
   employee_school: faker.commerce.department(),
   employee_ssn: '111111-111C',
@@ -78,21 +107,33 @@ export const fakeEmployment = (): Required<Employment> => ({
     'maybe',
   ]),
   summer_voucher_serial_number: faker.datatype.string(10),
+  attachments: fakeAttachments(),
+  payslip: [],
+  employment_contract: [],
 });
 
 export const fakeEmployments = (
   count = faker.datatype.number(10)
 ): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
 
-export const fakeApplication = (id: string): Application => ({
-  id,
-  company: fakeCompany,
-  status: 'draft',
-  summer_vouchers: fakeEmployments(1),
-  ...fakeInvoicer(),
-});
+export const fakeApplication = (
+  id: string,
+  invoicer?: boolean,
+  language?: Language
+): Application =>
+  getFormApplication({
+    id,
+    company: fakeCompany,
+    status: 'draft',
+    summer_vouchers: fakeEmployments(1),
+    ...fakeContactPerson(),
+    is_separate_invoicer: invoicer || false,
+    submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),
+    ...(invoicer && fakeInvoicer()),
+    language: language ?? DEFAULT_LANGUAGE,
+  });
 
 export const fakeApplications = (
   count = faker.datatype.number(10)
-): Required<Application[]> =>
+): Application[] =>
   generateNodeArray(() => fakeApplication(faker.datatype.uuid()), count);

@@ -13,6 +13,12 @@ if [[ "$APPLY_MIGRATIONS" = "1" ]]; then
     ./manage.py migrate --noinput
 fi
 
+if [[ "$LOAD_FIXTURES" = "1" ]]; then
+    echo "Loading fixtures..."
+    ./manage.py loaddata groups.json
+    ./manage.py loaddata default_terms.json
+fi
+
 # Create admin user. Generate password if there isn't one in the
 # environment variables. Password is not printed to log, but needs to be
 # changed at the pod command line

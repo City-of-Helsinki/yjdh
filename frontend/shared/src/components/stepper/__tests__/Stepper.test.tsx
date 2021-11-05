@@ -7,7 +7,7 @@ import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
 test('test for accessibility violations', async () => {
-  const steps: StepProps[] = [{ title: 'Yritys' }];
+  const steps: StepProps[] = [{ title: 'Työnantaja' }];
 
   const { container } = render(
     <ThemeProvider theme={theme}>
@@ -20,7 +20,7 @@ test('test for accessibility violations', async () => {
 
 test('should show step labels', async () => {
   const steps: StepProps[] = [
-    { title: 'Yritys' },
+    { title: 'Työnantaja' },
     { title: 'Palkattava' },
     { title: 'Liittet' },
     { title: 'Yhteenveto' },
@@ -34,7 +34,7 @@ test('should show step labels', async () => {
     </ThemeProvider>
   );
 
-  expect(screen.queryByText(/yritys/i)).toBeInTheDocument();
+  expect(screen.queryByText(/työnantaja/i)).toBeInTheDocument();
   expect(screen.queryByText(/palkattava/i)).toBeInTheDocument();
   expect(screen.queryByText(/liittet/i)).toBeInTheDocument();
   expect(screen.queryByText(/yhteenveto/i)).toBeInTheDocument();

@@ -1,25 +1,21 @@
 import { DateInput as HdsDateInput } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import {
-  RegisterOptions,
-  useFormContext,
-  UseFormRegister,
-} from 'react-hook-form';
+import { RegisterOptions, UseFormRegister } from 'react-hook-form';
 import {
   $GridCell,
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
 import useLocale from 'shared/hooks/useLocale';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 import {
   convertToBackendDateFormat,
   convertToUIDateFormat,
   isValidDate,
   parseDate,
 } from 'shared/utils/date.utils';
-import { isEmpty } from 'shared/utils/string.utils';
 
 import { $DateInput } from './DateInput.sc';
 
@@ -41,15 +37,18 @@ const DateInput = ({
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
   const locale = useLocale();
-  const { register } = useFormContext<Application>();
+
   const {
-    fieldName,
+    register,
+    defaultLabel,
     getValue,
     getError,
+    getErrorText,
     setError,
     clearErrors,
     setValue,
     clearValue,
+    hasError,
   } = useApplicationFormField<string>(id);
 
   const date = convertToUIDateFormat(getValue());
@@ -60,24 +59,29 @@ const DateInput = ({
   );
 
   const errorType = getError()?.type;
-  const errorText = React.useMemo((): string | undefined => {
-    if (!errorType) {
-      return undefined;
+  const errorMessage = getError()?.message;
+
+  React.useEffect(() => {
+    if (
+      errorType &&
+      ['pattern', 'required'].includes(errorType) &&
+      !errorMessage
+    ) {
+      setError({
+        type: errorType,
+        message: `${t(`common:application.form.errors.${errorType}`)}. ${t(
+          `common:application.form.helpers.date`
+        )}`,
+      });
     }
-    if (['pattern', 'required'].includes(errorType)) {
-      return `${t(`common:application.form.errors.${errorType}`)}. ${t(
-        `common:application.form.helpers.date`
-      )}`;
-    }
-    return t(`common:application.form.errors.${errorType}`);
-  }, [t, errorType]);
+  }, [errorType, errorMessage, setError, t]);
 
   // TODO: This can be removed after backend supports invalid values in draft save
   const handleChange = React.useCallback(
     (dateString: string) => {
       const uiDate = convertToUIDateFormat(dateString);
       if (isEmpty(uiDate)) {
-        setError('pattern');
+        setError({ type: 'pattern' });
         clearValue();
       } else {
         clearErrors();
@@ -101,13 +105,16 @@ const DateInput = ({
         name={id}
         required={Boolean(validation.required)}
         initialMonth={new Date()}
-        value={date}
+        defaultValue={date}
         language={locale}
-        // for some reason date picker causes error "Cannot read property 'createEvent' of null" in tests. It's not needed for tests so it's disabled for them.
+        // for some reason date picker causes error "Warning: An update to ForwardRef inside a test was not wrapped in act" in tests.
+        // Date picker is not needed for tests so it's disabled for them.
         disableDatePicker={process.env.NODE_ENV === 'test'}
         onChange={handleChange}
-        errorText={errorText}
-        label={t(`common:application.form.inputs.${fieldName}`)}
+        errorText={getErrorText()}
+        label={defaultLabel}
+        invalid={hasError()}
+        aria-invalid={hasError()}
       />
     </$GridCell>
   );

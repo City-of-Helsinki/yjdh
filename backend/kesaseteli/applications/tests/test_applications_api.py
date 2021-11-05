@@ -238,7 +238,7 @@ def test_application_delete_not_allowed(api_client, application):
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
-def test_application_create_writes_audit_log(api_client, user_with_profile, company):
+def test_application_create_writes_audit_log(api_client, user, company):
     response = api_client.post(
         reverse("v1:application-list"),
         {},
@@ -250,7 +250,7 @@ def test_application_create_writes_audit_log(api_client, user_with_profile, comp
     assert audit_event["actor"] == {
         "ip_address": "127.0.0.1",
         "role": "USER",
-        "user_id": str(user_with_profile.pk),
+        "user_id": str(user.pk),
         "provider": "",
     }
     assert audit_event["operation"] == "CREATE"
@@ -265,9 +265,7 @@ def test_application_create_writes_audit_log(api_client, user_with_profile, comp
 @override_settings(
     AUDIT_LOG_ORIGIN="TEST_SERVICE",
 )
-def test_application_update_writes_audit_log(
-    api_client, user_with_profile, application
-):
+def test_application_update_writes_audit_log(api_client, user, application):
     application.invoicer_name = "test1"
     application.save()
 
@@ -285,7 +283,7 @@ def test_application_update_writes_audit_log(
     assert audit_event["actor"] == {
         "ip_address": "127.0.0.1",
         "role": "USER",
-        "user_id": str(user_with_profile.pk),
+        "user_id": str(user.pk),
         "provider": "",
     }
     assert audit_event["operation"] == "UPDATE"
@@ -343,11 +341,11 @@ def test_application_create_double(api_client, company):
 
 @pytest.mark.django_db
 def test_applications_list_only_finds_own_application(
-    api_client, application, company, user_with_profile
+    api_client, application, company, user
 ):
     ApplicationFactory()
     ApplicationFactory(company=company)
-    ApplicationFactory(user=user_with_profile)
+    ApplicationFactory(user=user)
 
     assert Application.objects.count() == 4
 
@@ -360,11 +358,11 @@ def test_applications_list_only_finds_own_application(
 
 @pytest.mark.django_db
 def test_application_get_only_finds_own_application(
-    api_client, application, company, user_with_profile
+    api_client, application, company, user
 ):
     app1 = ApplicationFactory()
     app2 = ApplicationFactory(company=company)
-    app3 = ApplicationFactory(user=user_with_profile)
+    app3 = ApplicationFactory(user=user)
 
     assert Application.objects.count() == 4
 

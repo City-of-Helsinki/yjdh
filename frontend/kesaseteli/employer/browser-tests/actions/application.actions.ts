@@ -1,15 +1,15 @@
 import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
-import { fakeInvoicer } from '@frontend/shared/src/__tests__/utils/fake-objects';
-import type Application from '@frontend/shared/src/types/employer-application';
-import type Invoicer from '@frontend/shared/src/types/invoicer';
+import { fakeContactPerson } from '@frontend/shared/src/__tests__/utils/fake-objects';
+import type Application from '@frontend/shared/src/types/application';
+import ContactPerson from '@frontend/shared/src/types/contact_person';
 import TestController from 'testcafe';
 
 import { getApplicationPageComponents } from '../application-page/applicationPage.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
 
-type UserAndApplicationData = { id: Application['id'] } & Invoicer &
+type UserAndApplicationData = { id: Application['id'] } & ContactPerson &
   SuomiFiData;
 
 export const loginAndfillStep1Form = async (
@@ -31,14 +31,17 @@ export const loginAndfillStep1Form = async (
     await companyTable.expectations.isCompanyDataPresent();
   }
   const step1 = await applicationPageComponents.step1();
-  const invoicerFormData = fakeInvoicer();
-  const { invoicer_name, invoicer_email, invoicer_phone_number } =
-    invoicerFormData;
-
-  await step1.actions.fillName(invoicer_name);
-  await step1.actions.fillEmail(invoicer_email);
-  await step1.actions.fillPhone(invoicer_phone_number);
+  const contactPerson = fakeContactPerson();
+  const {
+    contact_person_name,
+    contact_person_email,
+    street_address,
+    contact_person_phone_number,
+  } = contactPerson;
+  await step1.actions.fillContactPersonName(contact_person_name);
+  await step1.actions.fillContactPersonEmail(contact_person_email);
+  await step1.actions.fillStreetAddress(street_address);
+  await step1.actions.fillContactPersonPhone(contact_person_phone_number);
   await step1.actions.clickSaveAndContinueButton();
-
-  return { ...invoicerFormData, ...suomiFiData, id: applicationId };
+  return { ...contactPerson, ...suomiFiData, id: applicationId };
 };

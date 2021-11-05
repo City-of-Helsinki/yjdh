@@ -9,8 +9,8 @@ export type WizardProps = {
 };
 
 export type WizardValues = {
-  nextStep: (stepIndex?: number) => Promise<void>;
-  previousStep: (stepIndex?: number) => void;
+  goToNextStep: (stepIndex?: number) => Promise<void>;
+  goToPreviousStep: (stepIndex?: number) => void;
   handleStep: (handler: Handler) => void;
   isLoading: boolean;
   activeStep: number;

@@ -1,14 +1,16 @@
 import pytest
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.test import RequestFactory
 
 from shared.common.tests.conftest import *  # noqa
-from shared.oidc.tests.factories import EAuthorizationProfileFactory, OIDCProfileFactory
 
 
-@pytest.fixture
-def oidc_profile():
-    return OIDCProfileFactory()
+@pytest.fixture()
+def session_request():
+    factory = RequestFactory()
+    request = factory.get("/")
+    middleware = SessionMiddleware()
+    middleware.process_request(request)
+    request.session.save()
 
-
-@pytest.fixture
-def eauthorization_profile():
-    return EAuthorizationProfileFactory()
+    return request

@@ -14,7 +14,8 @@ describe('ApplicationList', () => {
   const getComponent = (
     props: Partial<ApplicationListProps> = {}
   ): RenderResult =>
-    renderComponent(<ApplicationList {...initialProps} {...props} />);
+    renderComponent(<ApplicationList {...initialProps} {...props} />)
+      .renderResult;
 
   it('should render with no accessibility violations', async () => {
     const { container } = getComponent();

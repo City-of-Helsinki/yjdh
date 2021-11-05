@@ -1,22 +1,44 @@
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import useWizard from 'shared/hooks/useWizard';
 
 import { $StepCircle, $StepContainer, $StepTitle } from './Stepper.sc';
 
-export type StepProps = { title: string; index?: number; activeStep?: number };
+type Props = { title: string; index?: number; lastVisitedStep?: number };
 
-const WizardStep = ({ title, index = 0 }: StepProps): React.ReactElement => {
-  const { activeStep, previousStep } = useWizard();
-  const isActive = index < activeStep + 1;
+const WizardStep: React.FC<Props> = ({ title, index = 0, lastVisitedStep }) => {
+  const { t } = useTranslation();
+  const { activeStep, goToPreviousStep, goToNextStep } = useWizard();
+  const isActive = index < (lastVisitedStep ?? activeStep + 1);
 
   const goToStep = (): void => {
     if (index < activeStep) {
-      previousStep(index);
+      goToPreviousStep(index);
+    } else if (
+      index > activeStep &&
+      lastVisitedStep &&
+      index < lastVisitedStep
+    ) {
+      void goToNextStep(index);
     }
   };
 
   return (
-    <$StepContainer onClick={goToStep} isActive={isActive}>
+    <$StepContainer
+      onClick={goToStep}
+      isActive={isActive}
+      role="button"
+      aria-disabled={!isActive}
+      aria-label={`${t('common:application.wizardStepButton')} ${t(
+        `common:application.step${index + 1}.header`
+      )}`}
+      tabIndex={0}
+      onKeyPress={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          goToStep();
+        }
+      }}
+    >
       <$StepCircle isActive={isActive}>{index + 1}</$StepCircle>
       <$StepTitle isActive={isActive}>{title}</$StepTitle>
     </$StepContainer>

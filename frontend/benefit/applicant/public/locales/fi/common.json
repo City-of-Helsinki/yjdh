@@ -32,7 +32,7 @@
       "rejected": "Hylätty"
     },
     "steps": {
-      "company": "Yritys",
+      "employer": "Työnantaja",
       "hired": "Palkattava",
       "attachments": "Liittet",
       "summary": "Yhteenveto",
@@ -43,16 +43,16 @@
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
       "deleteApplication": "Poista hakemus",
       "continue": "Jatka",
-      "send": "Lähetä",
+      "send": "Lähetä hakemus",
       "back": "Back",
       "edit": "Muokkaa"
     },
     "sections": {
       "company": {
-        "heading1": "Yrityksen tiedot",
+        "heading1": "Työnantajan tiedot",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis-tuet",
+        "heading3": "Työnantajan de minimis-tuet",
         "heading4": "YT-tilanne",
         "businessId": "Y-tunnus: {{ businessId }}",
         "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
@@ -61,7 +61,7 @@
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haettu YTJ:stä",
-            "content": "Yrityksen perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+            "content": "Työnantajan perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -69,12 +69,12 @@
           }
         },
         "tooltips": {
-          "heading3": "Hakijan de minimis-tuet tooltip text",
+          "heading3": "Työnantajan de minimis-tuet tooltip text",
           "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
         },
         "fields": {
           "useAlternativeAddress": {
-            "label": "Yrityksellä on toinen postiosoite"
+            "label": "Työnantajalle on toinen postiosoite"
           },
           "alternativeCompanyStreetAddress": {
             "label": "Osoite",
@@ -87,6 +87,10 @@
           "alternativeCompanyCity": {
             "label": "Postitoimipaikka",
             "placeholder": "Postitoimipaikka"
+          },
+          "companyDepartment": {
+            "label": "Toimipiste tai osasto (valinnainen)",
+            "placeholder": "Toimipiste / osasto"
           },
           "companyBankAccountNumber": {
             "label": "Tilinumero",
@@ -116,8 +120,12 @@
             "yes": "Kyllä",
             "no": "Ei"
           },
+          "associationImmediateManagerCheck": {
+            "label": "Lähiesihenkilö palkattavalle henkilölle",
+            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen. ei palkkatuettu esihenkilö palkattavalle henkilölle."
+          },
           "deMinimisAid": {
-            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
+            "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -135,7 +143,7 @@
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
-            "label": "Onko hakijalla menossa YT-neuvottelut?",
+            "label": "Onko työnantajalla menossa YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -307,6 +315,7 @@
       },
       "credentials": {
         "heading1": "Valtakirja",
+        "heading2": "Suostumus",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",
@@ -322,14 +331,29 @@
         }
       },
       "send": {
-        "heading1": "Otsikko tähän"
+        "heading1": "Ehdot"
       }
     }
   },
   "appName": "Helsinki-benefit FI",
+  "header": {
+    "loginLabel": "Kirjaudu palveluun",
+    "logoutLabel": "Kirjaudu ulos",
+    "userAriaLabelPrefix": "Käyttäjä:"
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
+  },
+  "notifications": {
+    "applicationSubmitted": {
+      "label": "Hakemus lähetty onnistuneesti",
+      "message": "Helsinki-lisä hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen kun hakemus on käsitelty."
+    },
+    "applicationSaved": {
+      "label": "Hakemus tallennettu",
+      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+    }
   },
   "languages": {
     "fi": "Suomi",
@@ -339,7 +363,7 @@
   "supportedLanguages": {
     "fi": "Suomeksi",
     "sv": "På svenska",
-    "en": "In english"
+    "en": "In English"
   },
   "mainIngress": {
     "heading": "Hakemukset",
@@ -397,6 +421,15 @@
     }
   },
   "select": "Valitse",
+  "login": {
+    "login":"Kirjaudu palveluun",
+    "logoutMessageLabel": "Olet kirjautunut ulos",
+    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
+  },
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",
     "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
@@ -422,5 +455,11 @@
   "delete": {
     "errorTitle": "Deleting failed",
     "errorMessage": "Something went wrong. Please try again later."
+  },
+  "pdfViewer": {
+    "previous": "Edellinen",
+    "next": "Seuraava",
+    "page": "Sivu",
+    "terms": "Ehdot.PDF"
   }
 }

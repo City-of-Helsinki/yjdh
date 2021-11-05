@@ -1,6 +1,5 @@
-import { useFormContext } from 'react-hook-form';
+import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import useLocalStorage from 'react-use/lib/useLocalStorage';
-import Application from 'shared/types/employer-application';
 
 type AccordionState = {
   storageValue: boolean;
@@ -11,11 +10,11 @@ type AccordionState = {
 const useAccordionStateLocalStorage = (
   accordionIndex: number
 ): AccordionState => {
-  const { getValues } = useFormContext<Application>();
-  const application = getValues();
-  const employment = application.summer_vouchers[accordionIndex];
-  const [value, setValue, removeFromStorage] = useLocalStorage<boolean>(
-    `application-${application.id}-${employment.id}`,
+  const { applicationId, applicationQuery } = useApplicationApi((application) => application.summer_vouchers[accordionIndex].id)
+  const employerId = applicationQuery.isSuccess ? applicationQuery.data : undefined;
+  const key = ['application',applicationId, employerId].join('-')
+  const [value, setValue, removeFromStorage] = useLocalStorage(
+    key,
     true
   );
   return {

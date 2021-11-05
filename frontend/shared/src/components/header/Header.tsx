@@ -8,6 +8,7 @@ import { useHeader } from './useHeader';
 
 export type HeaderProps = {
   title?: string;
+  skipToContentLabel?: string;
   menuToggleAriaLabel?: string;
   locale: string;
   languages: OptionType<string>[];
@@ -16,7 +17,7 @@ export type HeaderProps = {
     e: React.SyntheticEvent<unknown>,
     language: OptionType<string>
   ) => void;
-  onTitleClick: (callback: () => void) => void;
+  onTitleClick?: (callback: () => void) => void;
   onNavigationItemClick: (pathname: string) => void;
   login?: {
     isAuthenticated: boolean;
@@ -30,6 +31,7 @@ export type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({
+  skipToContentLabel,
   title,
   menuToggleAriaLabel,
   languages,
@@ -50,14 +52,18 @@ const Header: React.FC<HeaderProps> = ({
     handleLogout,
   } = useHeader(locale, onNavigationItemClick, login);
 
+  const handleTitleClick = onTitleClick
+    ? () => onTitleClick(closeMenu)
+    : undefined;
+
   return (
     <Navigation
       menuOpen={menuOpen}
       onMenuToggle={toggleMenu}
       menuToggleAriaLabel={menuToggleAriaLabel || ''}
       skipTo={`#${MAIN_CONTENT_ID}`}
-      skipToContentLabel={MAIN_CONTENT_ID}
-      onTitleClick={() => onTitleClick(closeMenu)}
+      skipToContentLabel={skipToContentLabel}
+      onTitleClick={handleTitleClick}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
     >

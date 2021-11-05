@@ -1,56 +1,83 @@
 import { Button, IconPlus } from 'hds-react';
+import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { GetStaticProps, NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import React from 'react';
 import Container from 'shared/components/container/Container';
+import FormSection from 'shared/components/forms/section/FormSection';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import withAuth from 'shared/components/hocs/withAuth';
 import Layout from 'shared/components/Layout';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import useLocale from 'shared/hooks/useLocale';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 import { $Notification } from '../components/application/login.sc';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { application } = useApplicationApi();
+  const locale = useLocale();
+  const { applicationQuery, applicationId } = useApplicationApi();
 
-  if (!application || application.status === 'draft') {
-    void router.push('/');
-    return null;
+  const createNewApplicationClick = React.useCallback((): void => {
+    void router.push(`${locale}/`);
+  }, [router, locale]);
+
+  if (!applicationId) {
+    void router.push(`${locale}/`);
+    return <PageLoadingSpinner />;
   }
 
-  const createNewApplicationClick = (): void => {
-    void router.push('/');
-  };
-
-  return (
-    <Container>
-      <Layout>
-        <$Notification
-          label={t(`common:thankyouPage.thankyouMessageLabel`)}
-          type="success"
-          size="large"
-        >
-          {t(`common:thankyouPage.thankyouMessageContent`)}
-        </$Notification>
-
-        {/* To be replaced with the application summary component: */}
-        <div>
-          Yhteenveto: <p />
-          {JSON.stringify(application, null, 2)} <p />
-        </div>
-
-        <Button
-          theme="coat"
-          iconLeft={<IconPlus />}
-          onClick={createNewApplicationClick}
-        >
-          {t(`common:thankyouPage.createNewApplication`)}
-        </Button>
-      </Layout>
-    </Container>
-  );
+  if (applicationQuery.isSuccess) {
+    const application = applicationQuery.data;
+    if (application.status === 'draft') {
+      void router.push(`${locale}/application?id=${applicationId}`);
+      return <PageLoadingSpinner />;
+    }
+    return (
+      <Container>
+        <Head>
+          <title>
+            {t(`common:thankyouPage.thankyouMessageLabel`)} |{' '}
+            {t(`common:appName`)}
+          </title>
+        </Head>
+        <Layout>
+          <$Notification
+            label={t(`common:thankyouPage.thankyouMessageLabel`)}
+            type="success"
+            size="large"
+          >
+            {t(`common:thankyouPage.thankyouMessageContent`)}
+          </$Notification>
+          <ApplicationSummary
+            header={t(`common:thankyouPage.title`, {
+              submitted_at: convertToUIDateAndTimeFormat(
+                application.submitted_at
+              ),
+            })}
+          />
+          <FormSection columns={1} withoutDivider>
+            <$GridCell>
+              <Button
+                theme="coat"
+                iconLeft={<IconPlus />}
+                onClick={createNewApplicationClick}
+              >
+                {t(`common:thankyouPage.createNewApplication`)}
+              </Button>
+            </$GridCell>
+          </FormSection>
+        </Layout>
+      </Container>
+    );
+  }
+  return <PageLoadingSpinner />;
 };
 
 export const getStaticProps: GetStaticProps =

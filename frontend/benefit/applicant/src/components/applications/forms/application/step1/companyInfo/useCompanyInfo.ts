@@ -4,7 +4,21 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
 import { FormikProps } from 'formik';
 import { TFunction } from 'next-i18next';
+import React from 'react';
+import { Field } from 'shared/components/forms/fields/types';
 import isServerSide from 'shared/server/is-server-side';
+
+export type CompanyInfoFields = Pick<
+  Record<APPLICATION_FIELDS_STEP1_KEYS, Field>,
+  | APPLICATION_FIELDS_STEP1_KEYS.COMPANY_DEPARTMENT
+  | APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS
+  | APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS
+  | APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE
+  | APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY
+  | APPLICATION_FIELDS_STEP1_KEYS.COMPANY_BANK_ACCOUNT_NUMBER
+  | APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES
+  | APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_IMMEDIATE_MANAGER_CHECK
+>;
 
 interface CompanyInfoProps {
   t: TFunction;
@@ -14,6 +28,7 @@ interface CompanyInfoProps {
     postcode: string;
     city: string;
     businessId: string;
+    organizationType: string;
   };
   error: Error | null;
   isLoading: boolean;
@@ -22,11 +37,14 @@ interface CompanyInfoProps {
 }
 
 const useCompanyInfo = (
-  formik?: FormikProps<Application>
+  fields: CompanyInfoFields,
+  formik: FormikProps<Application>
 ): CompanyInfoProps => {
   const { t } = useTranslation();
-  // TODO: replace the hardcoded company ID when auth is implemented
-  const { isLoading, error, data } = useCompanyQuery('0877830-0');
+
+  const { setFieldValue } = formik;
+
+  const { isLoading, error, data } = useCompanyQuery();
 
   const companyData = {
     name: data?.name ?? '',
@@ -34,6 +52,7 @@ const useCompanyInfo = (
     postcode: data?.postcode ?? '',
     streetAddress: data?.street_address ?? '',
     businessId: data?.business_id ?? '',
+    organizationType: data?.organization_type ?? '',
   };
 
   let formattedData = {
@@ -50,26 +69,21 @@ const useCompanyInfo = (
       postcode: '-',
       city: '',
       businessId: '-',
+      organizationType: data?.organization_type ?? '',
     };
 
-  const clearAlternativeAddressValues = (): void => {
-    void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1_KEYS.USE_ALTERNATIVE_ADDRESS,
-      !formik.values.useAlternativeAddress
-    );
-    void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_STREET_ADDRESS,
-      ''
-    );
-    void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_POSTCODE,
-      ''
-    );
-    void formik?.setFieldValue(
-      APPLICATION_FIELDS_STEP1_KEYS.ALTERNATIVE_COMPANY_CITY,
-      ''
-    );
-  };
+  const clearAlternativeAddressValues = React.useCallback((): void => {
+    void setFieldValue(fields.companyDepartment.name, '');
+    void setFieldValue(fields.alternativeCompanyStreetAddress.name, '');
+    void setFieldValue(fields.alternativeCompanyPostcode.name, '');
+    void setFieldValue(fields.alternativeCompanyCity.name, '');
+  }, [
+    fields.companyDepartment.name,
+    fields.alternativeCompanyStreetAddress.name,
+    fields.alternativeCompanyPostcode.name,
+    fields.alternativeCompanyCity.name,
+    setFieldValue,
+  ]);
 
   return {
     t,

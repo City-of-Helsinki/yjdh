@@ -26,8 +26,6 @@ services:
     volumes:
       - ./backend/benefit:/app
       - ./backend/shared:/shared
-    ports:
-      - "127.0.0.1:8000:8000"
     depends_on:
       - postgres
     container_name: benefit-backend
@@ -43,8 +41,6 @@ services:
       - /app/.next
     env_file:
       - .env.benefit-applicant
-    ports:
-      - "3000:3000"
     container_name: benefit-applicant
 
   handler:
@@ -58,9 +54,23 @@ services:
       - /app/.next
     env_file:
       - .env.benefit-handler
-    ports:
-      - "3100:3100"
     container_name: benefit-handler
+
+  local-proxy:
+    depends_on:
+      - postgres
+      - django
+      - applicant
+      - handler
+    build:
+      context: ./localdevelopment/benefit/nginx
+    container_name: benefit-local-proxy
+    volumes:
+      - ./localdevelopment/benefit/nginx/:/etc/nginx/
+    ports:
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:3000:3000
+      - 127.0.0.1:3100:3100
 
 volumes:
   pgdata:

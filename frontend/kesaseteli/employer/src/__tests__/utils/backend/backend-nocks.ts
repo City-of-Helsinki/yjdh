@@ -5,8 +5,9 @@ import {
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import type Application from 'shared/types/application';
 import type DraftApplication from 'shared/types/draft-application';
-import type Application from 'shared/types/employer-application';
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
@@ -67,7 +68,7 @@ export const expectToGetApplicationErrorFromBackend = (
   return nock(getBackendDomain())
     .get(`${BackendEndpoint.APPLICATIONS}${id}/`)
     .replyWithError(
-      'This is a load application test error. Please ignore this error message.'
+      '500: This is a load application test server error. Please ignore this error message.'
     );
 };
 export const expectToGetApplicationsFromBackend = (
@@ -85,7 +86,7 @@ export const expectToGetApplicationsErrorFromBackend = (
     .get(`${BackendEndpoint.APPLICATIONS}`)
     .times(times)
     .replyWithError(
-      'This is a load applications test error. Please ignore this error message.'
+      '500: This is a load applications test error. Please ignore this error message.'
     );
 };
 export const expectToCreateApplicationToBackend = (
@@ -93,15 +94,17 @@ export const expectToCreateApplicationToBackend = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .post(`${BackendEndpoint.APPLICATIONS}`, {})
+    .post(`${BackendEndpoint.APPLICATIONS}`, {
+      language: applicationToCreate.language,
+    })
     .reply(200, applicationToCreate, { 'Access-Control-Allow-Origin': '*' });
 };
 export const expectToCreateApplicationErrorFromBackend = (): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .post(`${BackendEndpoint.APPLICATIONS}`, {})
+    .post(`${BackendEndpoint.APPLICATIONS}`, { language: DEFAULT_LANGUAGE })
     .replyWithError(
-      'This is a create application test error. Please ignore this error message.'
+      '500: This is a create application test error. Please ignore this error message.'
     );
 };
 export const expectToSaveApplication = (

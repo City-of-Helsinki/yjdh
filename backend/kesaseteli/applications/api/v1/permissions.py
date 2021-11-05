@@ -6,7 +6,7 @@ from rest_framework.permissions import BasePermission
 from applications.enums import ApplicationStatus
 from applications.models import Application
 from companies.models import Company
-from companies.services import get_or_create_company_from_eauth_profile
+from companies.services import get_or_create_company_using_organization_roles
 
 ALLOWED_APPLICATION_VIEW_STATUSES = [
     ApplicationStatus.DRAFT,
@@ -19,13 +19,7 @@ ALLOWED_APPLICATION_UPDATE_STATUSES = [
 
 
 def get_user_company(request: HttpRequest) -> Optional[Company]:
-    user = request.user
-
-    if not getattr(user, "oidc_profile", None):
-        return None
-
-    eauth_profile = user.oidc_profile.eauthorization_profile
-    user_company = get_or_create_company_from_eauth_profile(eauth_profile, request)
+    user_company = get_or_create_company_using_organization_roles(request)
 
     return user_company
 
@@ -35,6 +29,9 @@ def has_application_permission(request: HttpRequest, application: Application) -
     Allow access only for DRAFT status applications of the user & company.
     """
     user = request.user
+
+    if user.is_staff or user.is_superuser:
+        return True
 
     user_company = get_user_company(request)
 
@@ -63,3 +60,12 @@ class SummerVoucherPermission(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return has_application_permission(request, obj.application)
+
+
+class StaffPermission(BasePermission):
+    """
+    Permission check for summer vouchers.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_staff

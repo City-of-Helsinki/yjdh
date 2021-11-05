@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Run audit
-        run: yarn audit
+        run: yarn audit-ci --high
       - name: Yarn audit scan failure slack notification
         uses: rtCamp/action-slack-notify@v2
         env:

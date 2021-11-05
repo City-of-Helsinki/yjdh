@@ -1,71 +1,73 @@
-import { BENEFIT_TYPES } from 'benefit/applicant/constants';
-import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
-import { useTranslation } from 'benefit/applicant/i18n';
-import {
-  Application,
-  ApplicationData,
-} from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
-import { useEffect } from 'react';
-import hdsToast from 'shared/components/toast/Toast';
+import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
+import useFormActions from 'benefit/applicant/hooks/useFormActions';
+import { Application } from 'benefit/applicant/types/application';
+import isEmpty from 'lodash/isEmpty';
 import Attachment from 'shared/types/attachment';
-import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
   benefitType: BENEFIT_TYPES | string | undefined;
   apprenticeshipProgram: boolean;
   showSubsidyMessage: boolean;
   handleNext: () => void;
+  handleSave: () => void;
   handleBack: () => void;
   attachments: Attachment[];
+  hasRequiredAttachments: boolean;
+  paySubsidyGranted: boolean;
 };
 
 const useApplicationFormStep3 = (
   application: Application
 ): ExtendedComponentProps => {
-  const { t } = useTranslation();
+  const { onNext, onSave, onBack } = useFormActions(application, 3);
 
-  const { mutate: updateApplicationStep3, error: updateApplicationErrorStep3 } =
-    useUpdateApplicationQuery();
+  const handleNext = (): void => onNext(application);
+  const handleSave = (): void => onSave(application);
 
-  useEffect(() => {
-    // todo:custom error messages
-    if (updateApplicationErrorStep3) {
-      hdsToast({
-        autoDismiss: true,
-        autoDismissTime: 5000,
-        type: 'error',
-        translated: true,
-        labelText: t('common:error.generic.label'),
-        text: t('common:error.generic.text'),
-      });
+  const isRequiredAttachmentsUploaded = (): boolean => {
+    if (
+      application.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
+      application.benefitType === BENEFIT_TYPES.SALARY
+    ) {
+      const hasWorkContract = !isEmpty(
+        application.attachments?.find(
+          (att) => att.attachmentType === ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT
+        )
+      );
+      let hasPaySubsidyDecision = true;
+      if (application.paySubsidyGranted) {
+        hasPaySubsidyDecision = !isEmpty(
+          application?.attachments?.find(
+            (att) =>
+              att.attachmentType === ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT
+          )
+        );
+      }
+      return hasWorkContract && hasPaySubsidyDecision;
     }
-  }, [t, updateApplicationErrorStep3]);
-
-  const handleStepChange = (nextStep: number): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
-      {
-        ...application,
-        applicationStep: getApplicationStepString(nextStep),
-      },
-      { deep: true }
-    );
-    updateApplicationStep3(currentApplicationData);
+    if (application.benefitType === BENEFIT_TYPES.COMMISSION) {
+      return !isEmpty(
+        application.attachments?.find(
+          (att) => att.attachmentType === ATTACHMENT_TYPES.COMMISSION_CONTRACT
+        )
+      );
+    }
+    // helsinki voucher is not required in any case
+    return false;
   };
-
-  const handleNext = (): void => handleStepChange(4);
-
-  const handleBack = (): void => handleStepChange(2);
 
   return {
     handleNext,
-    handleBack,
+    handleSave,
+    handleBack: onBack,
     benefitType: application?.benefitType,
     apprenticeshipProgram: Boolean(application?.apprenticeshipProgram),
     showSubsidyMessage: Boolean(
       application?.paySubsidyPercent && application?.additionalPaySubsidyPercent
     ),
     attachments: application.attachments || [],
+    hasRequiredAttachments: isRequiredAttachmentsUploaded(),
+    paySubsidyGranted: Boolean(application.paySubsidyGranted),
   };
 };
 

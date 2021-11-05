@@ -2,12 +2,12 @@ import {
   expectToGetApplicationFromBackend,
   expectToSaveApplication,
 } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import { QueryClient } from 'react-query';
+import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
-import Application from 'shared/types/employer-application';
-import Invoicer from 'shared/types/invoicer';
+import Application from 'shared/types/application';
+import ContactPerson from 'shared/types/contact_person';
 
 type StepExpections = {
   stepIsLoaded: () => Promise<void>;
@@ -17,7 +17,8 @@ type StepExpections = {
 
 type StepActions = {
   clickPreviousButton: () => Promise<void>;
-  clickNextButton: () => Promise<void>;
+  clickNextButton: () => Promise<nock.Scope[]>;
+  clickNextButtonAndExpectToSaveApplication: () => Promise<void>;
 };
 
 type Step1Api = {
@@ -27,9 +28,10 @@ type Step1Api = {
     inputHasError: (key: keyof Application, errorText: RegExp) => Promise<void>;
   };
   actions: StepActions & {
-    typeInvoicerName: (name: string) => void;
-    typeInvoicerEmail: (email: string) => void;
-    typeInvoicerPhone: (phoneNumber: string) => void;
+    typeContactPersonName: (name: string) => void;
+    typeContactPersonEmail: (email: string) => void;
+    typeStreetAddress: (streetAddress: string) => void;
+    typeContactPersonPhone: (phoneNumber: string) => void;
   };
 };
 
@@ -61,7 +63,7 @@ const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
 const expectNextButtonIsEnabled = (): void => {
   expect(
     screen.getByRole('button', {
-      name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
+      name: /(tallenna ja jatka)|(application.buttons.next)/i,
     })
   ).toBeEnabled();
 };
@@ -69,15 +71,29 @@ const expectNextButtonIsEnabled = (): void => {
 const expectNextButtonIsDisabled = (): void => {
   expect(
     screen.getByRole('button', {
-      name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
+      name: /(tallenna ja jatka)|(application.buttons.next)/i,
     })
   ).toBeDisabled();
 };
 
-// Note: Needs to be promised event if there is nothing to wait
-// It prevents `Cannot read property 'createEvent' of null` error
-// which happens occasionally. Read more: https://stackoverflow.com/questions/60504720/jest-cannot-read-property-createevent-of-null
+const expectPreviousButtonIsEnabled = (): void => {
+  expect(
+    screen.getByRole('button', {
+      name: /(palaa edelliseen)|(application.buttons.previous)/i,
+    })
+  ).toBeEnabled();
+};
+
+const waitForNextButtonIsEnabled = async (): Promise<void> => {
+  await waitFor(expectNextButtonIsEnabled);
+};
+
+const waitForPreviousButtonIsEnabled = async (): Promise<void> => {
+  await waitFor(expectPreviousButtonIsEnabled);
+};
+
 const clickPreviousButton = async (): Promise<void> => {
+  await waitForPreviousButtonIsEnabled();
   userEvent.click(
     screen.getByRole('button', {
       name: /(palaa edelliseen)|(application.buttons.previous)/i,
@@ -86,13 +102,12 @@ const clickPreviousButton = async (): Promise<void> => {
 };
 
 const getApplicationPageApi = (
-  queryClient: QueryClient,
   initialApplication: Application
 ): ApplicationPageApi => {
   const application = { ...initialApplication };
 
   const typeInput = (
-    key: keyof Invoicer,
+    key: keyof ContactPerson,
     inputLabel: RegExp,
     value: string
   ): void => {
@@ -108,19 +123,28 @@ const getApplicationPageApi = (
     userEvent.click(document.body);
   };
 
-  const clickNextButton = async (): Promise<void> => {
+  const clickNextButton = async (): Promise<nock.Scope[]> => {
+    await waitForBackendRequestsToComplete();
+    await waitForNextButtonIsEnabled();
     const put = expectToSaveApplication(application);
     const get = expectToGetApplicationFromBackend(application);
-    await waitForBackendRequestsToComplete();
     userEvent.click(
       screen.getByRole('button', {
-        name: /(tallenna ja jatka)|(application.buttons.save_and_continue)/i,
+        name: /(tallenna ja jatka)|(application.buttons.next)/i,
       })
     );
-    await waitFor(() => {
-      put.done();
-      get.done();
-    });
+    return [put, get];
+  };
+
+  const clickNextButtonAndExpectToSaveApplication = async (): Promise<void> => {
+    const expectations = await clickNextButton();
+    await Promise.all(
+      expectations.map((expectation) =>
+        waitFor(() => {
+          expectation.done();
+        })
+      )
+    );
   };
 
   return {
@@ -162,7 +186,7 @@ const getApplicationPageApi = (
 
         inputValueIsSet: (key: keyof Application, value?: string): void => {
           const inputValue = value ?? application[key]?.toString();
-          expect(screen.getByTestId(key)).toHaveValue(inputValue);
+          expect(screen.getByTestId(key as string)).toHaveValue(inputValue);
         },
         inputHasError: async (
           key: keyof Application,
@@ -170,7 +194,8 @@ const getApplicationPageApi = (
         ): Promise<void> => {
           await waitFor(() =>
             expect(
-              screen.getByTestId(key)?.parentElement?.nextSibling?.textContent
+              screen.getByTestId(key as string)?.parentElement?.nextSibling
+                ?.textContent
             ).toMatch(errorText)
           );
         },
@@ -178,26 +203,33 @@ const getApplicationPageApi = (
         nextButtonIsEnabled: expectNextButtonIsEnabled,
       },
       actions: {
-        typeInvoicerName: (name: string) =>
+        typeContactPersonName: (name: string) =>
           typeInput(
-            'invoicer_name',
-            /(yhteyshenkilön nimi)|(inputs.invoicer_name)/i,
+            'contact_person_name',
+            /(yhteyshenkilön nimi)|(inputs.contact_person_name)/i,
             name
           ),
-        typeInvoicerEmail: (email: string) =>
+        typeContactPersonEmail: (email: string) =>
           typeInput(
-            'invoicer_email',
-            /(yhteyshenkilön sähköposti)|(inputs.invoicer_email)/i,
+            'contact_person_email',
+            /(yhteyshenkilön sähköposti)|(inputs.contact_person_email)/i,
             email
           ),
-        typeInvoicerPhone: (phoneNumber: string) =>
+        typeStreetAddress: (streetAddress: string) =>
           typeInput(
-            'invoicer_phone_number',
-            /(yhteyshenkilön puhelinnumero)|(inputs.invoicer_phone_number)/i,
+            'street_address',
+            /(työpaikan lähiosoite)|(inputs.street_address)/i,
+            streetAddress
+          ),
+        typeContactPersonPhone: (phoneNumber: string) =>
+          typeInput(
+            'contact_person_phone_number',
+            /(yhteyshenkilön puhelinnumero)|(inputs.contact_person_phone_number)/i,
             phoneNumber
           ),
         clickPreviousButton,
         clickNextButton,
+        clickNextButtonAndExpectToSaveApplication,
       },
     },
     step2: {
@@ -212,6 +244,7 @@ const getApplicationPageApi = (
       actions: {
         clickPreviousButton,
         clickNextButton,
+        clickNextButtonAndExpectToSaveApplication,
       },
     },
     step3: {
@@ -226,6 +259,7 @@ const getApplicationPageApi = (
       actions: {
         clickPreviousButton,
         clickNextButton,
+        clickNextButtonAndExpectToSaveApplication,
       },
     },
   };

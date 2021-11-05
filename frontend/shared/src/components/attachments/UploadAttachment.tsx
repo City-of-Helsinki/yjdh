@@ -7,7 +7,7 @@ export interface UploadAttachmentProps {
   onUpload: (data: FormData) => void;
   isUploading: boolean;
   attachmentType: string;
-  allowedFileTypes: string[];
+  allowedFileTypes: readonly string[];
   maxSize: number;
   uploadText: string;
   loadingText: string;
@@ -17,6 +17,8 @@ export interface UploadAttachmentProps {
   theme: ButtonTheme;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'success' | 'danger';
+  name?: string;
+  buttonRef?: React.Ref<HTMLButtonElement>;
 }
 
 const UploadAttachment: React.FC<UploadAttachmentProps> = ({
@@ -33,6 +35,8 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
   errorFileSizeText,
   errorFileTypeText,
   onUpload,
+  name,
+  buttonRef,
 }) => {
   const { handleUploadClick, handleUpload, uploadRef } = useUploadAttachment(
     attachmentType,
@@ -53,11 +57,13 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
         isLoading={isUploading}
         loadingText={loadingText}
         iconLeft={icon}
+        ref={buttonRef}
       >
         {uploadText}
       </Button>
       <input
         style={{ display: 'none' }}
+        name={name}
         ref={uploadRef}
         onChange={handleUpload}
         id={`upload_attachment_${attachmentType}`}

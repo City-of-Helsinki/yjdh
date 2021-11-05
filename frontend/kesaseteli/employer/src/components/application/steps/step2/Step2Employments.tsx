@@ -1,16 +1,18 @@
 import ApplicationForm from 'kesaseteli/employer/components/application/ApplicationForm';
 import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
 import EmploymentAccordions from 'kesaseteli/employer/components/application/steps/step2/accordions/EmploymentAccordions';
+import useSetCurrentStep from 'kesaseteli/employer/hooks/application/useSetCurrentStep';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 const Step2Employments: React.FC = () => {
   const { t } = useTranslation();
-  const stepTitle = t('common:application.step2.header');
+  const title = t('common:application.step2.header');
+  useSetCurrentStep(2);
   return (
-    <ApplicationForm stepTitle={stepTitle}>
+    <ApplicationForm title={title}>
       <EmploymentAccordions />
-      <ActionButtons onNext="updateApplication" />
+      <ActionButtons />
     </ApplicationForm>
   );
 };

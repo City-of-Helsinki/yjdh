@@ -27,3 +27,8 @@ export const getApplicationStepFromString = (step: string): number => {
 
 export const getApplicationStepString = (step: number): string =>
   `step_${step}`;
+
+export const getFullName = (
+  firstName: string | undefined,
+  lastName: string | undefined
+): string => [firstName, lastName].join(' ').trim();

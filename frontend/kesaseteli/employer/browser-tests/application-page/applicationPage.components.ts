@@ -5,7 +5,7 @@ import {
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import Company from '@frontend/shared/src/types/company';
-import Invoicer from '@frontend/shared/src/types/invoicer';
+import ContactPerson from '@frontend/shared/src/types/contact_person';
 import TestController from 'testcafe';
 
 export const getApplicationPageComponents = (t: TestController) => {
@@ -66,28 +66,33 @@ export const getApplicationPageComponents = (t: TestController) => {
       }),
   };
   const step1 = async () => {
-    const formSelector = screen.getByRole('form', {
+    const formSelector = screen.findByRole('form', {
       name: /työnantajan tiedot/i,
     });
     const withinForm = (): ReturnType<typeof within> => within(formSelector);
 
     const selectors = {
-      invoicerForm() {
+      employerForm() {
         return screen.findByRole('form', {
           name: /työnantajan tiedot/i,
         });
       },
-      invoicerNameInput() {
+      contactPersonNameInput() {
         return withinForm().findByRole('textbox', {
           name: /yhteyshenkilön nimi/i,
         });
       },
-      invoicerEmailInput() {
+      contactPersonEmailInput() {
         return withinForm().findByRole('textbox', {
           name: /yhteyshenkilön sähköposti/i,
         });
       },
-      invoicerPhoneInput() {
+      streetAddessInput() {
+        return withinForm().findByRole('textbox', {
+          name: /työpaikan lähiosoite/i,
+        });
+      },
+      contactPersonPhoneInput() {
         return withinForm().findByRole('textbox', {
           name: /yhteyshenkilön puhelinnumero/i,
         });
@@ -98,47 +103,56 @@ export const getApplicationPageComponents = (t: TestController) => {
     const expectations = {
       async isPresent() {
         await t
-          .expect(selectors.invoicerForm().exists)
+          .expect(selectors.employerForm().exists)
           .ok(await getErrorMessage(t), { timeout: 10000 });
       },
       async isFulFilledWith({
-        invoicer_name,
-        invoicer_email,
-        invoicer_phone_number,
-      }: Invoicer) {
+        contact_person_name,
+        contact_person_email,
+        contact_person_phone_number,
+        street_address,
+      }: ContactPerson) {
         await t
-          .expect(selectors.invoicerForm().exists)
+          .expect(selectors.employerForm().exists)
           .ok(await getErrorMessage(t));
         await t
-          .expect(selectors.invoicerNameInput().value)
-          .eql(invoicer_name, await getErrorMessage(t));
+          .expect(selectors.contactPersonNameInput().value)
+          .eql(contact_person_name, await getErrorMessage(t));
         await t
-          .expect(selectors.invoicerEmailInput().value)
-          .eql(invoicer_email, await getErrorMessage(t));
+          .expect(selectors.contactPersonEmailInput().value)
+          .eql(contact_person_email, await getErrorMessage(t));
         await t
-          .expect(selectors.invoicerPhoneInput().value)
-          .eql(invoicer_phone_number, await getErrorMessage(t));
+          .expect(selectors.streetAddessInput().value)
+          .eql(street_address, await getErrorMessage(t));
+        await t
+          .expect(selectors.contactPersonPhoneInput().value)
+          .eql(contact_person_phone_number, await getErrorMessage(t));
       },
     };
 
     const actions = {
-      async fillName(name: string) {
-        setDataToPrintOnFailure(t, 'invoicer_name', name);
-        const input = selectors.invoicerNameInput();
+      async fillContactPersonName(name: string) {
+        setDataToPrintOnFailure(t, 'contact_person_name', name);
+        const input = selectors.contactPersonNameInput();
         await t
           .click(input)
           // eslint-disable-next-line sonarjs/no-duplicate-string
           .pressKey('ctrl+a delete')
           .typeText(input, name);
       },
-      async fillEmail(email: string) {
-        setDataToPrintOnFailure(t, 'invoicer_email', email);
-        const input = selectors.invoicerEmailInput();
+      async fillContactPersonEmail(email: string) {
+        setDataToPrintOnFailure(t, 'contact_person_email', email);
+        const input = selectors.contactPersonEmailInput();
         await t.click(input).pressKey('ctrl+a delete').typeText(input, email);
       },
-      async fillPhone(phone: string) {
-        setDataToPrintOnFailure(t, 'invoicer_phone_number', phone);
-        const input = selectors.invoicerPhoneInput();
+      async fillStreetAddress(address: string) {
+        setDataToPrintOnFailure(t, 'street_address', address);
+        const input = selectors.streetAddessInput();
+        await t.click(input).pressKey('ctrl+a delete').typeText(input, address);
+      },
+      async fillContactPersonPhone(phone: string) {
+        setDataToPrintOnFailure(t, 'contact_person_phone_number', phone);
+        const input = selectors.contactPersonPhoneInput();
         await t.click(input).pressKey('ctrl+a delete').typeText(input, phone);
       },
       async clickSaveAndContinueButton() {
@@ -158,7 +172,7 @@ export const getApplicationPageComponents = (t: TestController) => {
   };
   const step2 = async () => {
     /*
-    const formSelector = screen.getByRole('form', {
+    const formSelector = screen.findByRole('form', {
       name: /selvitys työsuhteesta/i,
     });
     const withinForm = (): ReturnType<typeof within> => within(formSelector);

@@ -6,21 +6,21 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import Application from 'shared/types/employer-application';
+import Application from 'shared/types/application-form-data';
 
 const EmploymentAccordions: React.FC = () => {
   const { t } = useTranslation();
   const { getValues } = useFormContext<Application>();
 
   const employments = getValues('summer_vouchers') ?? [];
-  const stepTitle = t('common:application.step2.header');
+  const title = t('common:application.step2.header');
 
   useValidateEmploymentsNotEmpty(employments);
 
   return (
     <>
       <FormSection
-        header={stepTitle}
+        header={title}
         tooltip={t('common:application.step2.tooltip')}
         withoutDivider
       />

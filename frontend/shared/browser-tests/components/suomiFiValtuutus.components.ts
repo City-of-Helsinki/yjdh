@@ -26,11 +26,11 @@ export const getSuomiFiValtuutusComponents = (t: TestController) => {
   const screen = screenContext(t);
 
   const withinCompaniesTable = (): ReturnType<typeof within> =>
-    within(screen.getByRole('table'));
+    within(screen.findByRole('table'));
   const withinCompanyRow = (rowNumber: number): ReturnType<typeof within> =>
-    within(screen.getAllByRole('row').nth(rowNumber));
+    within(screen.findAllByRole('row').nth(rowNumber));
   const withinAuthorizeForm = (): ReturnType<typeof within> =>
-    within(screen.getByRole('form'));
+    within(screen.findByRole('form'));
 
   const companiesTable = async () => {
     const selectors = {

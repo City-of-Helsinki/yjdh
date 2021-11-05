@@ -23,12 +23,16 @@ const Wizard: React.FC<WizardProps> = React.memo(
     const goToNextStep = React.useRef((stepIndex?: number) => {
       if (hasNextStep.current || stepIndex) {
         setActiveStep((step) => stepIndex ?? step + 1);
+        // Scroll to top
+        window.scrollTo(0, 0);
       }
     });
 
     const goToPreviousStep = React.useRef((stepIndex?: number) => {
       if (hasPreviousStep.current || stepIndex) {
         setActiveStep((step) => stepIndex ?? step - 1);
+        // Scroll to top
+        window.scrollTo(0, 0);
       }
     });
 
@@ -57,8 +61,8 @@ const Wizard: React.FC<WizardProps> = React.memo(
     const steps = React.Children.toArray(children).length;
     const wizardValue = React.useMemo(
       () => ({
-        nextStep: doNextStep.current,
-        previousStep: goToPreviousStep.current,
+        goToNextStep: doNextStep.current,
+        goToPreviousStep: goToPreviousStep.current,
         handleStep: handleStep.current,
         isLoading,
         activeStep,

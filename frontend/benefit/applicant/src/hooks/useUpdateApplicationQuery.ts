@@ -1,27 +1,27 @@
+import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
 import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
 import { ApplicationData } from 'benefit/applicant/types/application';
-import { ErrorResponse } from 'benefit/applicant/types/common';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+
+import { ErrorData } from '../types/common';
 
 const useUpdateApplicationQuery = (): UseMutationResult<
   ApplicationData,
-  ErrorResponse,
+  AxiosError<ErrorData>,
   ApplicationData
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
-  return useMutation<ApplicationData, ErrorResponse, ApplicationData>(
-    ['application'],
+  return useMutation<ApplicationData, AxiosError<ErrorData>, ApplicationData>(
+    'updateApplication',
     (application: ApplicationData) =>
-      !application?.id
-        ? Promise.reject(new Error('Missing application id'))
-        : handleResponse<ApplicationData>(
-            axios.put(
-              `${BackendEndpoint.APPLICATIONS}${application?.id}/`,
-              application
-            )
-          ),
+      handleResponse<ApplicationData>(
+        axios.put(
+          `${BackendEndpoint.APPLICATIONS}${application?.id ?? ''}/`,
+          application
+        )
+      ),
     {
       onSuccess: () => {
         void queryClient.invalidateQueries('applications');

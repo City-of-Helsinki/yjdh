@@ -14,52 +14,52 @@ const Header: React.FC = () => {
   const locale = useLocale();
   const router = useRouter();
   const { asPath } = router;
-  const getLanguageOptions = (): OptionType<string>[] => {
-    const createOptions = (
-      languages: readonly string[]
-    ): OptionType<string>[] =>
-      languages.map((language) => ({
+
+  const languageOptions = React.useMemo(
+    (): OptionType<string>[] =>
+      SUPPORTED_LANGUAGES.map((language) => ({
         label: t(`common:languages.${language}`),
         value: language,
-      }));
-    return createOptions(SUPPORTED_LANGUAGES);
-  };
+      })),
+    [t]
+  );
 
-  const languageOptions = getLanguageOptions();
+  const handleLanguageChange = React.useCallback(
+    (
+      e: React.SyntheticEvent<unknown>,
+      { value: lang }: OptionType<string>
+    ): void => {
+      e.preventDefault();
+      void router.push(asPath, asPath, {
+        locale: lang,
+      });
+    },
+    [router, asPath]
+  );
 
-  const handleLanguageChange = (
-    e: React.SyntheticEvent<unknown>,
-    { value: lang }: OptionType<string>
-  ): void => {
-    e.preventDefault();
-    void router.push(asPath, asPath, {
-      locale: lang,
-    });
-  };
+  const handleNavigationItemClick = React.useCallback(
+    (newPath: string): void => {
+      void router.push(newPath);
+    },
+    [router]
+  );
 
-  const handleNavigationItemClick = (newPath: string): void => {
-    void router.push(newPath);
-  };
-
-  const handleTitleClick = (): void => handleNavigationItemClick('/');
+  const handleTitleClick = React.useCallback(
+    () => handleNavigationItemClick('/'),
+    [handleNavigationItemClick]
+  );
 
   const login = useLogin();
-  const {
-    data: user,
-    isLoading: isLoadingUser,
-    /*  error: loadingUserError, */
-  } = useUserQuery();
-  const {
-    mutate: onLogout,
-    isLoading: isLoadingLogout,
-    /* error: logoutError, */
-  } = useLogoutQuery();
+  const userQuery = useUserQuery();
+  const logoutQuery = useLogoutQuery();
 
-  const isLoading = isLoadingUser || isLoadingLogout;
+  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
+  const isLoginPage = asPath?.startsWith('/login');
 
   return (
     <BaseHeader
       title={t('common:appName')}
+      skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
       languages={languageOptions}
       locale={locale}
@@ -69,12 +69,12 @@ const Header: React.FC = () => {
       login={
         !isLoading
           ? {
-              isAuthenticated: Boolean(user),
+              isAuthenticated: !isLoginPage && userQuery.isSuccess,
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
               onLogin: login,
-              onLogout: onLogout as () => void,
-              userName: user?.name,
+              onLogout: logoutQuery.mutate as () => void,
+              userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }
           : undefined
