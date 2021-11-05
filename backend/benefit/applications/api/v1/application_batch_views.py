@@ -4,7 +4,7 @@ from applications.models import ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
 from common.authentications import RobotBasicAuthentication
-from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
+from common.permissions import BFIsHandler
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -44,7 +44,7 @@ class ApplicationBatchFilter(filters.FilterSet):
 class ApplicationBatchViewSet(viewsets.ModelViewSet):
     queryset = ApplicationBatch.objects.all()
     serializer_class = ApplicationBatchSerializer
-    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
+    permission_classes = [BFIsHandler]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,

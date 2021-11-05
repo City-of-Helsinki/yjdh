@@ -1,7 +1,7 @@
 from datetime import date
 
 import pytest
-from applications.api.v1.serializers import ApplicationSerializer
+from applications.api.v1.serializers import ApplicantApplicationSerializer
 from applications.enums import BenefitType
 from applications.tests.conftest import *  # noqa
 from applications.tests.test_applications_api import get_detail_url
@@ -32,7 +32,7 @@ def test_application_break_association_business_activities(
     association_application.pay_subsidy_granted = pay_subsidy_granted
     association_application.pay_subsidy_percent = pay_subsidy_percent
     association_application.save()
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
 
     data["association_has_business_activities"] = False
 
@@ -58,7 +58,7 @@ def test_application_break_de_minimis_aid(api_client, association_application):
         amount=1000,
         granted_at=date.today(),
     )
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
 
     data["association_has_business_activities"] = False
 
@@ -84,7 +84,7 @@ def test_application_break_pay_subsidy_no_business_activities(
     association_application.pay_subsidy_percent = 50
     association_application.save()
 
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
 
     data["pay_subsidy_granted"] = False
     data["pay_subsidy_percent"] = None
@@ -118,7 +118,7 @@ def test_application_break_pay_subsidy_with_business_activities(
         amount=1000,
         granted_at=date.today(),
     )
-    data = ApplicationSerializer(association_application).data
+    data = ApplicantApplicationSerializer(association_application).data
 
     data["pay_subsidy_granted"] = False
     data["pay_subsidy_percent"] = None

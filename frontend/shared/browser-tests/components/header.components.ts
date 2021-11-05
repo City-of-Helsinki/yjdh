@@ -85,12 +85,12 @@ export const getHeaderComponents = (t: TestController) => {
         user?: User,
         asLang = DEFAULT_LANGUAGE
       ): SelectorPromise {
-        return withinNavigationActions().getByRole('button', {
+        return withinNavigationActions().findByRole('button', {
           name: translations[asLang].userInfo(user),
         });
       },
       logoutButton(asLang = DEFAULT_LANGUAGE): SelectorPromise {
-        return withinNavigationActions().getByRole('link', {
+        return withinNavigationActions().findByRole('link', {
           name: translations[asLang].logout,
         });
       },

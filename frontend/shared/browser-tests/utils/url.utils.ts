@@ -1,24 +1,10 @@
-import TestController, { ClientFunction } from 'testcafe';
+export const getUrl = (baseUrl = '', path?: string): string =>
+  `${baseUrl}${path?.startsWith('/') ? path : path ? `/${path}` : ''}`;
 
-import { SuomiFiAuthorizationUrls } from './settings';
+export const SuomiFiAuthorizationUrls = [
+  'https://testi.apro.tunnistus.fi/',
+  'https://tunnistus.test.hel.ninja',
+];
 
-const getCurrentUrl = ClientFunction(() => document.location.href);
-
-/* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type */
-export const getUrlUtils = (t: TestController) => {
-  const actions = {};
-  const expectations = {
-    async urlChangedToAuthorizationEndpoint() {
-      const currentUrl = await getCurrentUrl();
-      await t
-        .expect(
-          SuomiFiAuthorizationUrls.some((url) => currentUrl.includes(url))
-        )
-        .eql(true);
-    },
-  };
-  return {
-    actions,
-    expectations,
-  };
-};
+export const getFrontendUrl = (path = ''): string =>
+  getUrl(process.env.FRONTEND_URL, path);

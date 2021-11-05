@@ -1,4 +1,8 @@
+import pytest
+from applications.enums import ApplicationStatus
+from applications.tests.conftest import *  # noqa
 from calculator.models import Calculation, PaySubsidy, PreviousBenefit
+from common.exceptions import BenefitAPIException
 from helsinkibenefit.tests.conftest import *  # noqa
 
 
@@ -23,3 +27,16 @@ def test_benefit_amount(calculation):
     assert calculation.benefit_amount == 100
     calculation.override_benefit_amount = 200
     assert calculation.benefit_amount == 200
+
+
+def test_create_for_application(application):
+    application.status = ApplicationStatus.RECEIVED
+    calculation = Calculation.objects.create_for_application(application)
+    assert calculation.application == application
+    assert calculation.monthly_pay == application.employee.monthly_pay
+
+
+def test_create_for_application_fail(received_application):
+    # calculation already exists
+    with pytest.raises(BenefitAPIException):
+        Calculation.objects.create_for_application(received_application)
