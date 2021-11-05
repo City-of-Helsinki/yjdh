@@ -149,6 +149,7 @@ INSTALLED_APPS = [
     "applications.apps.AppConfig",
     "terms.apps.AppConfig",
     "calculator.apps.AppConfig",
+    "messages",
     # libraries
     "django.contrib.admin",
     "django.contrib.auth",
