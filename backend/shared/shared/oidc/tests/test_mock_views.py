@@ -64,7 +64,6 @@ def test_userinfo_view(user_client, user):
 
     response = response.json()
 
-    assert response["name"] == f"{user.first_name} {user.last_name}"
-    assert response["preferred_username"] == user.username
     assert response["given_name"] == user.first_name
     assert response["family_name"] == user.last_name
+    assert response["name"] == f"{user.first_name} {user.last_name}"

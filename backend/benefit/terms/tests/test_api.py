@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 import pytest
-from applications.api.v1.serializers import ApplicationSerializer
+from applications.api.v1.serializers import ApplicantApplicationSerializer
 from applications.enums import ApplicationStatus
 from applications.tests.conftest import *  # noqa
 from applications.tests.test_applications_api import (
@@ -48,17 +48,23 @@ def test_applicant_terms_in_effect(api_client, application, accept_tos):
 
 
 @pytest.mark.parametrize(
-    "status",
+    "from_status,to_status",
     [
-        ApplicationStatus.DRAFT,
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
     ],
 )
 @pytest.mark.parametrize("previously_approved", [False, True])
 def test_approve_terms_success(
-    api_client, request, application, applicant_terms, status, previously_approved
+    api_client,
+    request,
+    application,
+    applicant_terms,
+    from_status,
+    to_status,
+    previously_approved,
 ):
-    application.status = status
+    application.status = from_status
     application.save()
     if previously_approved:
         # Handle case where user has previously approved terms, but new terms are now in effect.
@@ -72,7 +78,7 @@ def test_approve_terms_success(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     assert data["applicant_terms_approval_needed"] is True
     data["approve_terms"] = {
@@ -81,7 +87,7 @@ def test_approve_terms_success(
             obj.pk for obj in applicant_terms.applicant_consents.all()
         ],
     }
-    data["status"] = ApplicationStatus.RECEIVED
+    data["status"] = to_status
 
     response = api_client.put(
         get_detail_url(application),
@@ -90,7 +96,7 @@ def test_approve_terms_success(
     application.refresh_from_db()
     assert response.status_code == 200
     assert response.data["applicant_terms_approval_needed"] is False
-    assert response.data["status"] == ApplicationStatus.RECEIVED
+    assert response.data["status"] == to_status
     assert response.data["applicant_terms_approval"]["terms"]["id"] == str(
         applicant_terms.pk
     )
@@ -103,26 +109,26 @@ def test_approve_terms_success(
 
 
 @pytest.mark.parametrize(
-    "status",
+    "from_status,to_status",
     [
-        ApplicationStatus.DRAFT,
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
     ],
 )
-def test_approve_wrong_terms(api_client, request, application, status):
+def test_approve_wrong_terms(api_client, request, application, from_status, to_status):
     # current terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
     old_terms = TermsFactory(
         effective_from=date.today() - timedelta(days=1),
         terms_type=TermsType.APPLICANT_TERMS,
     )
-    application.status = status
+    application.status = from_status
     application.save()
     add_attachments_to_application(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     assert data["applicant_terms_approval_needed"] is True
     data["approve_terms"] = {
         "terms": old_terms.pk,
@@ -130,7 +136,7 @@ def test_approve_wrong_terms(api_client, request, application, status):
             obj.pk for obj in old_terms.applicant_consents.all()
         ],
     }
-    data["status"] = ApplicationStatus.RECEIVED
+    data["status"] = to_status
 
     response = api_client.put(
         get_detail_url(application),
@@ -144,25 +150,25 @@ def test_approve_wrong_terms(api_client, request, application, status):
 
 
 @pytest.mark.parametrize(
-    "status",
+    "from_status,to_status",
     [
-        ApplicationStatus.DRAFT,
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
     ],
 )
-def test_approve_no_terms(api_client, request, application, status):
+def test_approve_no_terms(api_client, request, application, from_status, to_status):
     # current terms
     TermsFactory(effective_from=date.today(), terms_type=TermsType.APPLICANT_TERMS)
-    application.status = status
+    application.status = from_status
     application.save()
     add_attachments_to_application(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     assert data["applicant_terms_approval_needed"] is True
     assert "approve_terms" not in data  # no approve_terms
-    data["status"] = ApplicationStatus.RECEIVED
+    data["status"] = to_status
 
     response = api_client.put(
         get_detail_url(application),
@@ -189,7 +195,7 @@ def test_approve_terms_missing_consent(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     data["approve_terms"] = {
         "terms": applicant_terms.pk,
         "selected_applicant_consents": [
@@ -225,7 +231,7 @@ def test_approve_terms_too_many_consents(
         request, application
     )  # so that attachment validation passes
     other_terms = TermsFactory(effective_from=None)
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
     consents = [obj.pk for obj in applicant_terms.applicant_consents.all()] + [
         obj.pk for obj in other_terms.applicant_consents.all()
     ]
@@ -254,9 +260,6 @@ def test_approve_terms_too_many_consents(
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
         ),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.RECEIVED),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED),
     ],
 )
 def test_approve_terms_ignored_when_not_submitting_application(
@@ -271,7 +274,7 @@ def test_approve_terms_ignored_when_not_submitting_application(
         request, application
     )  # so that attachment validation passes
 
-    data = ApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     assert data["applicant_terms_approval_needed"] is True
     data["approve_terms"] = {

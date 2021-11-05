@@ -72,10 +72,10 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
               `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`
             )
           ).toEqual(newApplication);
-          expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/application?id=${newApplication.id}`
-          );
         });
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/application?id=${newApplication.id}`
+        );
       });
       it('Should create a new application and redirect to its page with router locale', async () => {
         const locale: Language = 'en';
@@ -94,10 +94,10 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
               `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`
             )
           ).toEqual(newApplication);
-          expect(spyPush).toHaveBeenCalledWith(
-            `${locale}/application?id=${newApplication.id}`
-          );
         });
+        expect(spyPush).toHaveBeenCalledWith(
+          `${locale}/application?id=${newApplication.id}`
+        );
       });
     });
 

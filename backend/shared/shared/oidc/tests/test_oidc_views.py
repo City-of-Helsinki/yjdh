@@ -64,13 +64,19 @@ def test_userinfo_view(requests_mock, user_client, user):
         "family_name": "Demo",
     }
 
+    parsed_userinfo = {
+        "given_name": userinfo["given_name"],
+        "family_name": userinfo["family_name"],
+        "name": userinfo["name"],
+    }
+
     matcher = re.compile(settings.OIDC_OP_USER_ENDPOINT)
     requests_mock.get(matcher, json=userinfo)
 
     userinfo_url = reverse("oidc_userinfo")
     response = user_client.get(userinfo_url)
 
-    assert response.json() == userinfo
+    assert response.json() == parsed_userinfo
 
 
 @pytest.mark.django_db

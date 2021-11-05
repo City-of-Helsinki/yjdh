@@ -2,7 +2,6 @@ import { DateInput as HdsDateInput } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import isEmpty from 'lodash/isEmpty';
-import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
@@ -79,9 +78,9 @@ const DateInput = ({
   }, [errorType, errorMessage, setError, t]);
 
   // TODO: This can be removed after backend supports invalid values in draft save
-  const handleBlur = React.useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      const uiDate = convertToUIDateFormat(event.target.value);
+  const handleChange = React.useCallback(
+    (dateString: string) => {
+      const uiDate = convertToUIDateFormat(dateString);
       if (isEmpty(uiDate)) {
         setError({ type: 'pattern' });
         clearValue();
@@ -112,8 +111,7 @@ const DateInput = ({
         // for some reason date picker causes error "Warning: An update to ForwardRef inside a test was not wrapped in act" in tests.
         // Date picker is not needed for tests so it's disabled for them.
         disableDatePicker={process.env.NODE_ENV === 'test'}
-        onBlur={handleBlur}
-        onChange={noop}
+        onChange={handleChange}
         errorText={getErrorText()}
         label={defaultLabel}
         invalid={hasError()}

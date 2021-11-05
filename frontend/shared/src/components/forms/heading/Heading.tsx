@@ -1,4 +1,5 @@
 import { LoadingSpinner, Tooltip } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 
 import { $Header, HeadingProps } from './Heading.sc';
@@ -9,12 +10,22 @@ const Heading: React.FC<HeadingProps> = ({
   header,
   loading,
   tooltip,
-}) => (
-  <$Header size={size} as={as}>
-    {header}
-    {tooltip && <Tooltip>{tooltip}</Tooltip>}
-    {loading && <LoadingSpinner small />}
-  </$Header>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <$Header size={size} as={as}>
+      {header}
+      {tooltip && (
+        <Tooltip
+          buttonLabel={t('common:application.tooltipShowInfo')}
+          tooltipLabel={tooltip}
+        >
+          {tooltip}
+        </Tooltip>
+      )}
+      {loading && <LoadingSpinner small />}
+    </$Header>
+  );
+};
 
 export default Heading;
