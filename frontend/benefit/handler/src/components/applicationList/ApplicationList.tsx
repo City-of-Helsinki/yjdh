@@ -30,8 +30,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     getHeader,
   } = useApplicationList(status);
 
-  const rawColumns: ColumnType[] = React.useMemo(
-    () => [
+  const columns: ColumnType[] = React.useMemo(() => {
+    const cols: ColumnType[] = [
       {
         // eslint-disable-next-line react/display-name
         Cell: ({
@@ -69,20 +69,19 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         disableSortBy: true,
         width: COLUMN_WIDTH.M,
       },
-    ],
-    [getHeader]
-  );
+    ];
 
-  if (status.includes(APPLICATION_STATUSES.RECEIVED)) {
-    rawColumns.push({
-      Header: getHeader('handlerName'),
-      accessor: 'handlerName',
-      disableSortBy: true,
-      width: COLUMN_WIDTH.M,
-    });
-  }
+    if (status.includes(APPLICATION_STATUSES.RECEIVED)) {
+      cols.push({
+        Header: getHeader('handlerName'),
+        accessor: 'handlerName',
+        disableSortBy: true,
+        width: COLUMN_WIDTH.M,
+      });
+    }
 
-  const columns: ColumnType[] = rawColumns.filter(Boolean);
+    return cols.filter(Boolean);
+  }, [getHeader, status]);
 
   if (shouldShowSkeleton) {
     return (
