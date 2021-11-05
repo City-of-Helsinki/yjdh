@@ -221,7 +221,6 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    # 'EXCEPTION_HANDLER': 'common.debug_util.rest_framework_debug_exception_handler',
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
