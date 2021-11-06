@@ -4,13 +4,21 @@ from django.utils.translation import gettext_lazy as _
 from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 
-class Message(UUIDModel, TimeStampedModel):
-    MESSAGE_TYPES = (
-        ("note", _("Note")),
-        ("handler_message", _("Handler's message")),
-        ("applicant_message", _("Applicant's message")),
-    )
+class MessageManager(models.Manager):
+    def get_messages_qs(self):
+        return self.get_queryset().exclude(message_type=MessageType.NOTE)
 
+    def get_notes_qs(self):
+        return self.get_queryset().filter(message_type=MessageType.NOTE)
+
+
+class MessageType(models.TextChoices):
+    NOTE = ("note", _("Note"))
+    HANDLER_MESSAGE = ("handler_message", _("Handler's message"))
+    APPLICANT_MESSAGE = ("applicant_message", _("Applicant's message"))
+
+
+class Message(UUIDModel, TimeStampedModel):
     content = models.TextField(verbose_name=_("content"))
     sender = models.ForeignKey(
         "users.User", verbose_name=_("sender"), on_delete=models.CASCADE
@@ -22,8 +30,10 @@ class Message(UUIDModel, TimeStampedModel):
         verbose_name=_("application"),
     )
     message_type = models.CharField(
-        choices=MESSAGE_TYPES, verbose_name=_("message_type"), max_length=32
+        choices=MessageType.choices, verbose_name=_("message_type"), max_length=32
     )
+
+    objects = MessageManager()
 
     class Meta:
         db_table = "bf_message"
