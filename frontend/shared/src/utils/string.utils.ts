@@ -26,3 +26,6 @@ export const getBooleanValueFromString = (value?: string): boolean | null => {
 
 export const isEmpty = (value?: string): boolean =>
   typeof value === 'string' ? value?.trim().length === 0 : Boolean(!value);
+
+export const getNumberValue = (s: string): number =>
+  Number(s?.toString().replace(/,/, '.'));

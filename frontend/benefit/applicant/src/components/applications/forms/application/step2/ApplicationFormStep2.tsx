@@ -9,7 +9,6 @@ import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
   DateInput,
   Notification,
-  NumberInput,
   Select,
   SelectionGroup,
   TextInput,
@@ -505,7 +504,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.workingHours.name}
                 name={fields.employee.workingHours.name}
                 label={fields.employee.workingHours.label}
@@ -513,7 +512,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.workingHours ?? ''}
+                value={
+                  formik.values.employee?.workingHours
+                    ?.toString()
+                    .replace('.', ',') ?? ''
+                }
                 invalid={!!getErrorMessage(fields.employee.workingHours.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.workingHours.name)
@@ -564,7 +567,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             </$GridCell>
 
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.monthlyPay.name}
                 name={fields.employee.monthlyPay.name}
                 label={fields.employee.monthlyPay.label}
@@ -572,7 +575,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.monthlyPay ?? ''}
+                value={
+                  formik.values.employee?.monthlyPay
+                    ?.toString()
+                    .replace('.', ',') ?? ''
+                }
                 invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.monthlyPay.name)
@@ -582,7 +589,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.otherExpenses.name}
                 name={fields.employee.otherExpenses.name}
                 label={fields.employee.otherExpenses.label}
@@ -590,7 +597,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.otherExpenses ?? ''}
+                value={
+                  formik.values.employee?.otherExpenses
+                    ?.toString()
+                    .replace('.', ',') ?? ''
+                }
                 invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.otherExpenses.name)
@@ -600,7 +611,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.vacationMoney.name}
                 name={fields.employee.vacationMoney.name}
                 label={fields.employee.vacationMoney.label}
@@ -608,7 +619,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.vacationMoney ?? ''}
+                value={
+                  formik.values.employee?.vacationMoney
+                    ?.toString()
+                    .replace('.', ',') ?? ''
+                }
                 invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.vacationMoney.name)
@@ -643,7 +658,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.commissionAmount.name}
                 name={fields.employee.commissionAmount.name}
                 label={fields.employee.commissionAmount.label}
@@ -651,7 +666,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={formik.handleChange}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.commissionAmount ?? ''}
+                value={
+                  formik.values.employee?.commissionAmount
+                    ?.toString()
+                    .replace('.', ',') ?? ''
+                }
                 invalid={
                   !!getErrorMessage(fields.employee.commissionAmount.name)
                 }

@@ -77,7 +77,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             placeholder={fields.amount.placeholder}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.amount?.toString()}
+            value={formik.values.amount?.toString().replace('.', ',')}
             invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
             aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
             errorText={getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}

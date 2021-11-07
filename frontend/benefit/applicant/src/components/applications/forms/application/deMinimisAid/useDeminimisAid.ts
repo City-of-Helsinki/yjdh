@@ -63,7 +63,9 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
         ...prevDeMinimisAids,
         {
           [DE_MINIMIS_AID_KEYS.GRANTER]: formik.values.granter,
-          [DE_MINIMIS_AID_KEYS.AMOUNT]: parseFloat(formik.values.amount),
+          [DE_MINIMIS_AID_KEYS.AMOUNT]: parseFloat(
+            formik.values.amount.replace(',', '.')
+          ),
           [DE_MINIMIS_AID_KEYS.GRANTED_AT]: convertToBackendDateFormat(
             formik.values.grantedAt
           ),
