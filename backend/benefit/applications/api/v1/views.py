@@ -5,7 +5,7 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import ApplicationStatus
 from applications.models import Application
-from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
+from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
 from django.utils.translation import gettext_lazy as _
@@ -15,7 +15,6 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from users.utils import get_company_from_request
 
@@ -180,7 +179,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
 )
 class HandlerApplicationViewSet(BaseApplicationViewSet):
     serializer_class = HandlerApplicationSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [BFIsHandler]
     filterset_class = HandlerApplicationFilter
 
     def get_queryset(self):

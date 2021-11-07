@@ -9,7 +9,13 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { appWithTranslation, useTranslation } from 'next-i18next';
 import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryFunctionContext,
+  QueryKey,
+  setLogger,
+} from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
@@ -59,13 +65,15 @@ const queryClient: QueryClient = new QueryClient({
         !/40[134]/.test((error as Error).message),
       staleTime: 30000,
       notifyOnChangeProps: 'tracked',
-      queryFn: async ({ queryKey: [url] }) => {
+      queryFn: async <T,>({
+        queryKey: [url],
+      }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
         // Best practice: https://react-query.tanstack.com/guides/default-query-function
         if (
           typeof url === 'string' &&
           BackendEndPoints.some((endpoint) => url.startsWith(endpoint))
         ) {
-          const { data } = await axios.get(
+          const { data } = await axios.get<T>(
             `${getBackendDomain()}${url.toLowerCase()}`
           );
           return data;
