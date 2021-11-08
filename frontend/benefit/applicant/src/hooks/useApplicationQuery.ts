@@ -18,9 +18,7 @@ const useApplicationQuery = (
           ),
     {
       enabled: Boolean(id),
-      retry: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      staleTime: Infinity,
     }
   );
 };

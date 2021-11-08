@@ -18,8 +18,6 @@ const useApplicationsQuery = (
     },
     {
       retry: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
     }
   );
 };

@@ -14,9 +14,7 @@ const useCompanyQuery = (): UseQueryResult<CompanyData, Error> => {
       return handleResponse(res);
     },
     {
-      retry: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      staleTime: Infinity,
     }
   );
 };
