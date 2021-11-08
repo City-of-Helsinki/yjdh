@@ -1,5 +1,17 @@
 {
   "appName": "Helsinki-benefit handler EN",
+  "header": {
+    "navigation": {
+      "applications": "Hakemukset",
+      "processed": "Käsitellyt",
+      "archive": "Arkisto",
+      "reports": "Raportointi"
+    }
+  },
+  "mainIngress": {
+    "heading": "Hakemukset",
+    "btnText": "Syötä hakemus"
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
@@ -25,6 +37,31 @@
     "generic": {
       "label": "Error occurred",
       "text": "Please try again later."
+    }
+  },
+  "applications": {
+    "list": {
+      "columns": {
+        "companyName": "Hakija",
+        "companyId": "Y-tunnus",
+        "submittedAt": "Saapunut",
+        "applicationNum": "Numero",
+        "employeeName": "Työntekijä",
+        "handlerName": "Käsittelijä"
+      },
+      "messages": {
+        "empty": "Ei eriä tällä hetkellä"
+      },
+      "headings": {
+        "received": "Saapuneet",
+        "handling": "Käsittelyssä"
+      },
+      "errors": {
+        "fetch": {
+          "label": "Error occurred",
+          "text": "Unable to fetch applications with status {{status}}"
+        }
+      }
     }
   }
 }

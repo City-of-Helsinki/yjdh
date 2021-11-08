@@ -37,7 +37,13 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
       }
       return sendApplication(validatedApplication, onAfterLastStep);
     },
-    [isLastStep, updateApplication, goToNextStep, sendApplication, onAfterLastStep]
+    [
+      isLastStep,
+      updateApplication,
+      goToNextStep,
+      sendApplication,
+      onAfterLastStep,
+    ]
   );
 
   const isLoading =
@@ -76,6 +82,10 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
       </$GridCell>
     </$ButtonSection>
   );
+};
+
+ActionButtons.defaultProps = {
+  onAfterLastStep: noop,
 };
 
 export default ActionButtons;
