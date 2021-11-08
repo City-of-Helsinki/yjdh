@@ -22,7 +22,11 @@ import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
 import { getFormApplication } from '../../utils/application.utils';
-import { DATE_FORMATS, formatDate } from '../../utils/date.utils';
+import {
+  convertToBackendDateFormat,
+  DATE_FORMATS,
+  formatDate,
+} from '../../utils/date.utils';
 
 // eslint-disable-next-line unicorn/prefer-module
 const attachmentPath = path.join(__dirname, '../../../browser-tests/fixtures/');
@@ -92,24 +96,10 @@ export const fakeEmployment = (): Required<Employment> => ({
   employee_ssn: '111111-111C',
   employee_phone_number: faker.phone.phoneNumber(),
   employee_home_city: faker.address.cityName(),
-  employee_postcode: faker.datatype.number({
-    min: 0,
-    max: 9999,
-    precision: 1000,
-  }),
-  employment_postcode: faker.datatype.number({
-    min: 0,
-    max: 9999,
-    precision: 1000,
-  }),
-  employment_start_date: formatDate(
-    faker.date.past(),
-    DATE_FORMATS.BACKEND_DATE
-  ),
-  employment_end_date: formatDate(
-    faker.date.future(),
-    DATE_FORMATS.BACKEND_DATE
-  ),
+  employee_postcode: faker.datatype.number(99999),
+  employment_postcode: faker.datatype.number(99999),
+  employment_start_date: convertToBackendDateFormat(faker.date.past()),
+  employment_end_date: convertToBackendDateFormat(faker.date.future()),
   employment_work_hours: faker.datatype.number({ max: 100, precision: 0.1 }),
   employment_salary_paid: faker.datatype.number({ max: 4000, precision: 0.01 }),
   employment_description: faker.lorem.paragraph(1),
@@ -128,7 +118,7 @@ export const fakeEmployment = (): Required<Employment> => ({
 });
 
 export const fakeEmployments = (
-  count = faker.datatype.number(10)
+  count = faker.datatype.number({ min: 2, max: 10 })
 ): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
 
 export const fakeApplication = (
@@ -141,7 +131,8 @@ export const fakeApplication = (
     id,
     company: company ?? fakeCompany,
     status: 'draft',
-    summer_vouchers: fakeEmployments(1),
+
+    summer_vouchers: fakeEmployments(2),
     ...fakeContactPerson(),
     is_separate_invoicer: invoicer || false,
     submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),

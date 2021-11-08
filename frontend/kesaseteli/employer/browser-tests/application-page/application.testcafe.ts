@@ -8,9 +8,12 @@ import TestController from 'testcafe';
 import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getUrlUtils } from '../utils/url.utils';
-import { getApplicationPageComponents } from './applicationPage.components';
+import { getStep1Components } from './step1.components';
+import { getStep2Components } from './step2.components';
+import { getWizardComponents } from './wizard.components';
 
-let applicationPageComponents: ReturnType<typeof getApplicationPageComponents>;
+let step1Components: ReturnType<typeof getStep1Components>;
+let step2Components: ReturnType<typeof getStep2Components>;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
 const url = getFrontendUrl('/');
@@ -22,7 +25,8 @@ fixture('Application')
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
-    applicationPageComponents = getApplicationPageComponents(t);
+    step1Components = getStep1Components(t);
+    step2Components = getStep2Components(t);
     headerComponents = getHeaderComponents(t);
   });
 
@@ -40,9 +44,8 @@ if (isRealIntegrationsEnabled()) {
       'fi',
       applicationId
     );
-    const step1 = await applicationPageComponents.step1();
-    await step1.expectations.isPresent();
-    await step1.expectations.isFulFilledWith(application);
+    const step1Form = await step1Components.form();
+    await step1Form.expectations.isFulFilledWith(application);
   });
 } else {
   test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
@@ -52,12 +55,16 @@ if (isRealIntegrationsEnabled()) {
       'fi',
       applicationId
     );
-    const step2 = await applicationPageComponents.step2();
-    await step2.actions.clickGoToPreviousStepButton();
-    await applicationPageComponents.step1();
+    const wizard = await getWizardComponents(t);
+    await wizard.expectations.isPresent();
+    const step2Accordion = await step2Components.employmentAccordion(0);
+    await step2Accordion.expectations.isPresent();
     await urlUtils.actions.refreshPage();
-    const step1 = await applicationPageComponents.step1();
-    await step1.expectations.isFulFilledWith(step1FormData);
+    await step2Accordion.expectations.isPresent();
+    await wizard.actions.clickGoToPreviousStepButton();
+    const step1Form = await step1Components.form();
+    await step1Form.expectations.isPresent();
+    await step1Form.expectations.isFulFilledWith(step1FormData);
   });
 }
 
