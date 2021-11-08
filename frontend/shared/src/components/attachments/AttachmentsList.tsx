@@ -108,8 +108,8 @@ const AttachmentsList: React.FC<Props> = ({
 };
 
 AttachmentsList.defaultProps = {
-  allowedFileTypes: [],
-  maxSize: undefined,
+  allowedFileTypes: ATTACHMENT_CONTENT_TYPES,
+  maxSize: ATTACHMENT_MAX_SIZE,
   message: '',
   errorMessage: '',
   attachments: [],
