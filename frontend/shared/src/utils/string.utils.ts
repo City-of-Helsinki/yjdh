@@ -29,3 +29,6 @@ export const isEmpty = (value?: string): boolean =>
 
 export const getNumberValue = (s: string): number =>
   Number(s?.toString().replace(/,/, '.'));
+
+export const stringFloatToFixed2 = (value: string): string =>
+  value.includes(',') ? value.slice(0, value.indexOf(',') + 3) : value;

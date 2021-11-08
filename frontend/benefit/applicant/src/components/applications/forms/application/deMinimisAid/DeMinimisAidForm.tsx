@@ -12,6 +12,7 @@ import {
   $GridCell,
   $SubHeader,
 } from 'shared/components/forms/section/FormSection.sc';
+import { stringFloatToFixed2 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import { useDeminimisAid } from './useDeminimisAid';
@@ -76,7 +77,10 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             label={fields.amount.label || ''}
             placeholder={fields.amount.placeholder}
             onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
+            onChange={(e) => formik.setFieldValue(
+                fields.amount.name,
+                stringFloatToFixed2(e.target.value)
+              )}
             value={formik.values.amount?.toString().replace('.', ',')}
             invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}
             aria-invalid={!!getErrorMessage(DE_MINIMIS_AID_KEYS.AMOUNT)}

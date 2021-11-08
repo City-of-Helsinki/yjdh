@@ -27,7 +27,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { phoneToLocal } from 'shared/utils/string.utils';
+import { phoneToLocal,stringFloatToFixed2 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -509,7 +509,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 name={fields.employee.workingHours.name}
                 label={fields.employee.workingHours.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
+                onChange={(e) => formik.setFieldValue(
+                    fields.employee.workingHours.name,
+                    stringFloatToFixed2(e.target.value)
+                  )}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={
@@ -572,7 +575,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 name={fields.employee.monthlyPay.name}
                 label={fields.employee.monthlyPay.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
+                onChange={(e) => formik.setFieldValue(
+                    fields.employee.monthlyPay.name,
+                    stringFloatToFixed2(e.target.value)
+                  )}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={
@@ -594,7 +600,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 name={fields.employee.otherExpenses.name}
                 label={fields.employee.otherExpenses.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
+                onChange={(e) => formik.setFieldValue(
+                    fields.employee.otherExpenses.name,
+                    stringFloatToFixed2(e.target.value)
+                  )}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={
@@ -616,7 +625,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 name={fields.employee.vacationMoney.name}
                 label={fields.employee.vacationMoney.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
+                onChange={(e) => formik.setFieldValue(
+                    fields.employee.vacationMoney.name,
+                    stringFloatToFixed2(e.target.value)
+                  )}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={
