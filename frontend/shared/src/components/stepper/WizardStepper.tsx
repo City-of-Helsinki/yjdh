@@ -5,10 +5,7 @@ import useWizard from 'shared/hooks/useWizard';
 
 import { $Divider, $StepsContainer } from './Stepper.sc';
 
-type Props = {
-  lastVisitedStep?: number;
-};
-const WizardStepper: React.FC<Props> = ({ lastVisitedStep }) => {
+const WizardStepper: React.FC = () => {
   const { steps, activeStep } = useWizard();
   const { t } = useTranslation();
   const stepTitles = React.useMemo(() => {
@@ -21,11 +18,7 @@ const WizardStepper: React.FC<Props> = ({ lastVisitedStep }) => {
     <$StepsContainer>
       {stepTitles.map((step, index, arr) => (
         <React.Fragment key={step.title}>
-          <WizardStep
-            lastVisitedStep={lastVisitedStep}
-            index={index}
-            title={step.title}
-          />
+          <WizardStep index={index} title={step.title} />
           {index < arr.length - 1 && <$Divider isActive={index < activeStep} />}
         </React.Fragment>
       ))}

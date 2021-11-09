@@ -4,28 +4,23 @@ import useWizard from 'shared/hooks/useWizard';
 
 import { $StepCircle, $StepContainer, $StepTitle } from './Stepper.sc';
 
-type Props = { title: string; index?: number; lastVisitedStep?: number };
+type Props = { title: string; index?: number };
 
-const WizardStep: React.FC<Props> = ({ title, index = 0, lastVisitedStep }) => {
+const WizardStep: React.FC<Props> = ({ title, index = 0 }) => {
   const { t } = useTranslation();
-  const { activeStep, goToPreviousStep, goToNextStep } = useWizard();
-  const isActive = index < (lastVisitedStep ?? activeStep + 1);
+  const { activeStep, lastCompletedStep, goToStep } = useWizard();
+  const lastCompleted = lastCompletedStep ?? activeStep - 1;
+  const isActive = index <= lastCompleted + 1;
 
-  const goToStep = (): void => {
-    if (index < activeStep) {
-      goToPreviousStep(index);
-    } else if (
-      index > activeStep &&
-      lastVisitedStep &&
-      index < lastVisitedStep
-    ) {
-      void goToNextStep(index);
+  const goToIndexStep = (): void => {
+    if (index <= lastCompleted + 1) {
+      void goToStep(index);
     }
   };
 
   return (
     <$StepContainer
-      onClick={goToStep}
+      onClick={goToIndexStep}
       isActive={isActive}
       role="button"
       aria-disabled={!isActive}
@@ -35,7 +30,7 @@ const WizardStep: React.FC<Props> = ({ title, index = 0, lastVisitedStep }) => {
       tabIndex={0}
       onKeyPress={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
-          goToStep();
+          goToIndexStep();
         }
       }}
     >
@@ -47,7 +42,6 @@ const WizardStep: React.FC<Props> = ({ title, index = 0, lastVisitedStep }) => {
 
 WizardStep.defaultProps = {
   index: 0,
-  lastVisitedStep: 1,
 };
 
 export default WizardStep;

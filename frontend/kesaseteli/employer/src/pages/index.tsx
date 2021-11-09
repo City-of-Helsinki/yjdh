@@ -1,4 +1,4 @@
-import useLoadDraftOrCreateNewApplication from 'kesaseteli/employer/hooks/application/useLoadDraftOrCreateNewApplication';
+import useLoadDraftOrCreateNewApplicationEffect from 'kesaseteli/employer/hooks/application/useLoadDraftOrCreateNewApplicationEffect';
 import useApplicationsQuery from 'kesaseteli/employer/hooks/backend/useApplicationsQuery';
 import useCreateApplicationQuery from 'kesaseteli/employer/hooks/backend/useCreateApplicationQuery';
 import { GetStaticProps, NextPage } from 'next';
@@ -18,7 +18,10 @@ const EmployerIndex: NextPage = () => {
   );
   const createApplicationQuery = useCreateApplicationQuery();
 
-  useLoadDraftOrCreateNewApplication(applicationsQuery, createApplicationQuery);
+  useLoadDraftOrCreateNewApplicationEffect(
+    applicationsQuery,
+    createApplicationQuery
+  );
 
   return <PageLoadingSpinner />;
 };

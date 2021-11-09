@@ -1,5 +1,4 @@
-import { useTranslation } from 'benefit/applicant/i18n';
-import { TFunction } from 'next-i18next';
+import { TFunction, useTranslation } from 'next-i18next';
 
 type ExtendedComponentProps = {
   t: TFunction;

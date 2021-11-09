@@ -3,7 +3,7 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Application from 'shared/types/application';
 
-const useResetApplicationFormValues = ({
+const useResetApplicationFormValuesEffect = ({
   reset,
 }: UseFormReturn<Application>): void => {
   const { applicationQuery } = useApplicationApi();
@@ -13,4 +13,4 @@ const useResetApplicationFormValues = ({
     }
   }, [reset, applicationQuery.isSuccess, applicationQuery.data]);
 };
-export default useResetApplicationFormValues;
+export default useResetApplicationFormValuesEffect;

@@ -2,7 +2,7 @@ import Step1Employer from 'kesaseteli/employer/components/application/steps/step
 import Step2Employments from 'kesaseteli/employer/components/application/steps/step2/Step2Employments';
 import Step3Summary from 'kesaseteli/employer/components/application/steps/step3/Step3Summary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useStepStorage from 'kesaseteli/employer/hooks/application/useStepStorage';
+import useStepStorage from 'kesaseteli/employer/hooks/wizard/useStepStorage';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -23,7 +23,6 @@ const ApplicationPage: NextPage = () => {
   const { applicationId, applicationQuery } = useApplicationApi();
 
   const [initialStep] = useStepStorage('current');
-  const [lastVisitedStep] = useStepStorage('last-visited');
 
   if (!applicationId) {
     void router.replace(`${locale}/`);
@@ -38,10 +37,7 @@ const ApplicationPage: NextPage = () => {
             {t('common:application.new')} | {t(`common:appName`)}
           </title>
         </Head>
-        <ApplicationWizard
-          initialStep={initialStep}
-          lastVisitedStep={lastVisitedStep}
-        >
+        <ApplicationWizard  initialStep={initialStep}>
           <Step1Employer />
           <Step2Employments />
           <Step3Summary />

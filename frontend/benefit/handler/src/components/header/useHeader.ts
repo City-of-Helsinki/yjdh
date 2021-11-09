@@ -32,7 +32,8 @@ const useHeader = (): ExtendedComponentProps => {
     [t]
   );
 
-  const navigationItems = React.useMemo((): NavigationItem[] => [
+  const navigationItems = React.useMemo(
+    (): NavigationItem[] => [
       { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
       {
         label: t('common:header.navigation.processed'),
@@ -46,7 +47,9 @@ const useHeader = (): ExtendedComponentProps => {
         label: t('common:header.navigation.reports'),
         url: '#3',
       },
-    ], [t]);
+    ],
+    [t]
+  );
 
   const handleLanguageChange = (
     e: React.SyntheticEvent<unknown>,
