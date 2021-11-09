@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@frontend/shared": "*",
-    "@react-pdf/renderer": "^1.6.17",
+    "@react-pdf/renderer": "^2.0.21",
     "@testing-library/react-hooks": "^7.0.2",
     "@types/next": "^9.0.0",
     "@types/react": "^17.0.28",
