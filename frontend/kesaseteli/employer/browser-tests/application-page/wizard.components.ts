@@ -21,15 +21,15 @@ export const getWizardComponents = async (t: TestController) => {
       screen.findByRole('button', {
         name: /^lähetä hakemus/i,
       }),
-    goToStep1: () =>
+    step1Button: () =>
       screen.findByRole('button', {
         name: /^siirry hakemuksen vaiheeseen 1\. työnantajan tiedot/i,
       }),
-    goToStep2: () =>
+    step2Button: () =>
       screen.findByRole('button', {
         name: /^siirry hakemuksen vaiheeseen 2\. selvitys työsuhteesta/i,
       }),
-    goToStep3: () =>
+    step3Button: () =>
       screen.findByRole('button', {
         name: /siirry hakemuksen vaiheeseen 3\. tarkistus ja lähettäminen/i,
       }),
@@ -51,6 +51,15 @@ export const getWizardComponents = async (t: TestController) => {
     },
     clickSendButton() {
       return t.click(selectors.sendButton());
+    },
+    clickGoToStep1Button() {
+      return t.click(selectors.step1Button());
+    },
+    clickGoToStep2Button() {
+      return t.click(selectors.step2Button());
+    },
+    clickGoToStep3Button() {
+      return t.click(selectors.step3Button());
     },
   };
 

@@ -197,8 +197,8 @@ export const getSummaryComponents = async (t: TestController) => {
   };
 
   const expectations = {
-    async isCompanyDataPresent(company: Company) {
-      if (isRealIntegrationsEnabled()) {
+    async isCompanyDataPresent(company?: Company) {
+      if (company && isRealIntegrationsEnabled()) {
         const employerSummaryComponent = await employerSection();
         await employerSummaryComponent.expectations.isCompanyDataPresent(
           company

@@ -135,7 +135,7 @@ export const fakeApplication = (
     company: company ?? fakeCompany,
     status: 'draft',
 
-    summer_vouchers: fakeEmployments(1),
+    summer_vouchers: fakeEmployments(2),
     ...fakeContactPerson(),
     is_separate_invoicer: invoicer || false,
     submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),

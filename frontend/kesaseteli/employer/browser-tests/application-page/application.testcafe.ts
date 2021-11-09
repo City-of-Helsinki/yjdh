@@ -7,6 +7,7 @@ import TestController from 'testcafe';
 
 import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
+import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { getStep1Components } from './step1.components';
 import { getStep2Components } from './step2.components';
@@ -68,6 +69,17 @@ if (isRealIntegrationsEnabled()) {
   });
 }
 
-test('can fill and send application', async (t: TestController) => {
-  await loginAndfillApplication(t);
+test('can fill and send application and create another', async (t: TestController) => {
+  const application = await loginAndfillApplication(t);
+  const thankYouPage = getThankYouPageComponents(t);
+  await thankYouPage.header();
+  const summaryComponent = await thankYouPage.summaryComponent();
+  await summaryComponent.expectations.isCompanyDataPresent(application.company);
+  await summaryComponent.expectations.isFulFilledWith(application);
+  const createNewApplicationButton =
+    await thankYouPage.createNewApplicationButton();
+  await createNewApplicationButton.actions.clickButton();
+  await urlUtils.expectations.urlChangedToApplicationPage();
+  await getWizardComponents(t);
+  await urlUtils.expectations.urlHasNewApplicationId(application.id);
 });

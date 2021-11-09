@@ -2,7 +2,6 @@ import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-a
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { fakeApplication } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import type Application from '@frontend/shared/src/types/application';
-import ContactPerson from '@frontend/shared/src/types/contact_person';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
 import TestController from 'testcafe';
@@ -14,8 +13,7 @@ import { getWizardComponents } from '../application-page/wizard.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
 
-type UserAndApplicationData = { id: Application['id'] } & ContactPerson &
-  SuomiFiData;
+type UserAndApplicationData = Application & SuomiFiData;
 
 export const fillStep1Form = async (
   t: TestController,
@@ -120,6 +118,8 @@ export const loginAndfillApplication = async (
   );
 
   const wizard = await getWizardComponents(t);
+  // if there is existing draft application on step 2 or 3, then move to step 1.
+  await wizard.actions.clickGoToStep1Button();
   if (toStep >= 1) {
     if (isRealIntegrationsEnabled()) {
       const companyTable = await getStep1Components(t).companyTable(
