@@ -54,7 +54,7 @@ const useApplicationFormStep6 = (
 
   const [errorsArray, setErrorsArray] = useState<boolean[]>(getInitialvalues());
 
-  const { onSave, onBack } = useFormActions(application, 6);
+  const { onSave, onBack } = useFormActions(application);
 
   const { setSubmittedApplication, submittedApplication } =
     useContext(AppContext);

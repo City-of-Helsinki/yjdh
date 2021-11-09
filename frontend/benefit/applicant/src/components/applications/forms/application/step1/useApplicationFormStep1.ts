@@ -38,7 +38,7 @@ const useApplicationFormStep1 = (
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-  const { onNext, onSave } = useFormActions(application, 1);
+  const { onNext, onSave } = useFormActions(application);
 
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
