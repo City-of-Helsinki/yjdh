@@ -1,4 +1,5 @@
 import {
+  APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
   BENEFIT_TYPES,
   EMPLOYEE_KEYS,
@@ -57,6 +58,13 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
       .when(APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM, {
         is: true,
         then: Yup.mixed().notOneOf([BENEFIT_TYPES.COMMISSION]),
+      })
+      .when(APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES, {
+        is: false,
+        then: Yup.mixed().notOneOf([
+          BENEFIT_TYPES.COMMISSION,
+          BENEFIT_TYPES.EMPLOYMENT,
+        ]),
       })
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP2_KEYS.START_DATE]: Yup.string()
