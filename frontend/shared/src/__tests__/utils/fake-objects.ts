@@ -95,7 +95,10 @@ export const fakeEmployment = (): Required<Employment> => ({
   employee_school: faker.commerce.department(),
   employee_ssn: '111111-111C',
   employee_phone_number: faker.phone.phoneNumber(),
-  employee_home_city: faker.address.cityName(),
+  // for example dots are not allowed in city name, so let's remove them (St. Louis -> St Louis)
+  employee_home_city: faker.address
+    .cityName()
+    .replace(/[^ A-Za-zÄÅÖäåö-]/g, ''),
   employee_postcode: faker.datatype.number(99999),
   employment_postcode: faker.datatype.number(99999),
   employment_start_date: convertToBackendDateFormat(faker.date.past()),
@@ -108,7 +111,7 @@ export const fakeEmployment = (): Required<Employment> => ({
     'no',
     'maybe',
   ]),
-  summer_voucher_serial_number: faker.datatype.string(10),
+  summer_voucher_serial_number: faker.internet.password(10),
   attachments: [
     ...fakeAttachments('payslip'),
     ...fakeAttachments('employment_contract'),
@@ -132,7 +135,7 @@ export const fakeApplication = (
     company: company ?? fakeCompany,
     status: 'draft',
 
-    summer_vouchers: fakeEmployments(2),
+    summer_vouchers: fakeEmployments(1),
     ...fakeContactPerson(),
     is_separate_invoicer: invoicer || false,
     submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),

@@ -17,9 +17,10 @@ const FormSection: React.FC<FormSectionProps> = ({
   paddingBottom = false,
   role,
   loading,
+  'aria-label': ariaLabel,
   ...rest
 }) => (
-  <$Section paddingBottom={paddingBottom}>
+  <$Section paddingBottom={paddingBottom} aria-label={ariaLabel ?? header}>
     {action && <$Action>{action}</$Action>}
     {header && <Heading header={header} loading={loading} {...rest} />}
     {children && (

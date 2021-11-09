@@ -1,7 +1,6 @@
 import { TextInputProps } from 'kesaseteli/employer/components/application/form/TextInput';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
 import React from 'react';
-import useToggle from 'shared/hooks/useToggle';
 import Employment, { EmploymentExceptionReason } from 'shared/types/employment';
 
 const useToggleSerialNumberInput = (
@@ -17,20 +16,22 @@ const useToggleSerialNumberInput = (
     useApplicationFormField<EmploymentExceptionReason>(
       getId('summer_voucher_exception_reason')
     );
-  const { clearValue: clearSerialNumber } = useApplicationFormField<string>(
-    getId('summer_voucher_serial_number')
-  );
+  const { clearValue: clearSerialNumber, clearErrors: clearSerialNumberError } =
+    useApplicationFormField<string>(getId('summer_voucher_serial_number'));
 
-  const [showInput, toggleShowInput] = useToggle(getReason() === '9th_grader');
+  const [showInput, setShowInput] = React.useState(
+    getReason() === '9th_grader'
+  );
 
   const toggleShowSerialNumberInput = React.useCallback(
     (value: string) => {
-      toggleShowInput();
+      setShowInput(value === '9th_grader');
       if (value === 'born_2004') {
         clearSerialNumber();
+        clearSerialNumberError();
       }
     },
-    [toggleShowInput, clearSerialNumber]
+    [setShowInput, clearSerialNumber, clearSerialNumberError]
   );
 
   return [showInput, toggleShowSerialNumberInput];

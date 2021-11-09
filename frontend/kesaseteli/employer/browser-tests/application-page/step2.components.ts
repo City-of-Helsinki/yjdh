@@ -8,19 +8,14 @@ import {
   EmployeeHiredWithoutVoucherAssessment,
   EmploymentExceptionReason,
 } from '@frontend/shared/src/types/employment';
-import { getLastValue } from '@frontend/shared/src/utils/array.utils';
 import TestController from 'testcafe';
 
+import {
+  getAttachmentFileName,
+  getAttachmentFilePath,
+  getSelectionGroupTranslation,
+} from '../utils/application.utils';
 import { fillInput } from '../utils/input.utils';
-
-const getAttachmentFilePath = (attachment: Attachment): string =>
-  attachment.attachment_file_name ?? attachment.attachmentFileName;
-
-const getAttachmentFileName = (attachment: Attachment): string => {
-  const filePath = getAttachmentFilePath(attachment);
-  const filename = getLastValue(filePath.split('/')) ?? filePath;
-  return filename.replace(`.${getLastValue(filename.split('.')) ?? ''}`, '');
-};
 
 export const getStep2Components = (t: TestController) => {
   const screen = screenContext(t);
@@ -54,9 +49,12 @@ export const getStep2Components = (t: TestController) => {
       gradeOrBirthYearRadioInput(
         type: EmploymentExceptionReason = '9th_grader'
       ) {
-        return withinAccordion().findByTestId(
-          `summer_vouchers.${employeeIndex}.summer_voucher_exception_reason-${type}`
-        );
+        return withinAccordion().findByRole('radio', {
+          name: getSelectionGroupTranslation(
+            'summer_voucher_exception_reason',
+            type
+          ),
+        });
       },
       homeCityInput() {
         return withinAccordion().findByRole('textbox', {
@@ -138,9 +136,12 @@ export const getStep2Components = (t: TestController) => {
       hiredWithoutVoucherAssessmentRadioInput(
         type: EmployeeHiredWithoutVoucherAssessment = 'maybe'
       ) {
-        return withinAccordion().findByTestId(
-          `summer_vouchers.${employeeIndex}.hired_without_voucher_assessment-${type}`
-        );
+        return withinAccordion().findByRole('radio', {
+          name: getSelectionGroupTranslation(
+            'hired_without_voucher_assessment',
+            type
+          ),
+        });
       },
       saveButton() {
         return withinAccordion().findByRole('button', {

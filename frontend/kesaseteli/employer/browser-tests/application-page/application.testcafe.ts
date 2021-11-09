@@ -69,5 +69,5 @@ if (isRealIntegrationsEnabled()) {
 }
 
 test('can fill and send application', async (t: TestController) => {
-  await loginAndfillApplication(t, 2);
+  await loginAndfillApplication(t);
 });
