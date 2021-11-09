@@ -15,6 +15,9 @@ const useApplicationsQuery = (
         `${BackendEndpoint.APPLICATIONS}?status=${status.join()}`
       );
       return handleResponse(res);
+    },
+    {
+      retry: false,
     }
   );
 };
