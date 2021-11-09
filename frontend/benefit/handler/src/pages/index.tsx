@@ -1,12 +1,45 @@
+import ApplicationList from 'benefit/handler/components/applicationList/ApplicationList';
+import MainIngress from 'benefit/handler/components/mainIngress/MainIngress';
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import AppContext from 'benefit/handler/context/AppContext';
+import FrontPageProvider from 'benefit/handler/context/FrontPageProvider';
 import { GetStaticProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
+import { useEffect } from 'react';
+import theme from 'shared/styles/theme';
 
-import FrontPageProvider from '../context/FrontPageProvider';
+const ApplicantIndex: NextPage = () => {
+  const { setIsNavigationVisible, setLayoutBackgroundColor } =
+    React.useContext(AppContext);
 
-const ApplicantIndex: NextPage = () => (
-  <FrontPageProvider>Hanlder frontpage</FrontPageProvider>
-);
+  // configure page specific settings
+  useEffect(() => {
+    setIsNavigationVisible(true);
+    setLayoutBackgroundColor(theme.colors.silverLight);
+    return () => {
+      setIsNavigationVisible(false);
+      setLayoutBackgroundColor(theme.colors.white);
+    };
+  }, [setIsNavigationVisible, setLayoutBackgroundColor]);
+
+  const { t } = useTranslation();
+
+  return (
+    <FrontPageProvider>
+      <MainIngress />
+      <ApplicationList
+        heading={t('common:applications.list.headings.handling')}
+        status={[APPLICATION_STATUSES.HANDLING]}
+      />
+      <ApplicationList
+        heading={t('common:applications.list.headings.received')}
+        status={[APPLICATION_STATUSES.RECEIVED]}
+      />
+    </FrontPageProvider>
+  );
+};
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {

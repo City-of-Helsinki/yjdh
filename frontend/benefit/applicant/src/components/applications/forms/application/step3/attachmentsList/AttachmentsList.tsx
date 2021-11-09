@@ -6,16 +6,16 @@ import Attachment from 'shared/types/attachment';
 
 import { useAttachmentsList } from './useAttachmentsList';
 
-export interface AttachmentsListProps {
+export type AttachmentsListProps = {
   attachmentType: ATTACHMENT_TYPES;
   showMessage?: boolean;
   attachments?: Attachment[];
   required?: boolean;
-}
+};
 
 const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachmentType,
-  showMessage,
+  showMessage = true,
   attachments,
   required,
 }) => {
@@ -48,11 +48,5 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     />
   );
 };
-
-const defaultProps = {
-  showMessage: true,
-};
-
-AttachmentsList.defaultProps = defaultProps;
 
 export default AttachmentsList;

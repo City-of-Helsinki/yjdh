@@ -1,7 +1,12 @@
 import { IconGlobe, IconSignout, LogoLanguage, Navigation } from 'hds-react';
 import React from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
-import { NavigationItem, OptionType } from 'shared/types/common';
+import {
+  NavigationItem,
+  NavigationVariant,
+  OptionType,
+  ThemeOption,
+} from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
 import { useHeader } from './useHeader';
@@ -12,7 +17,9 @@ export type HeaderProps = {
   menuToggleAriaLabel?: string;
   locale: string;
   languages: OptionType<string>[];
+  isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
+  navigationVariant?: NavigationVariant;
   onLanguageChange: (
     e: React.SyntheticEvent<unknown>,
     language: OptionType<string>
@@ -28,6 +35,7 @@ export type HeaderProps = {
     onLogout: () => void;
     userName?: string;
   };
+  theme?: ThemeOption;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -36,11 +44,14 @@ const Header: React.FC<HeaderProps> = ({
   menuToggleAriaLabel,
   languages,
   locale,
+  isNavigationVisible = true,
   navigationItems,
+  navigationVariant,
   onTitleClick,
   onNavigationItemClick,
   onLanguageChange,
   login,
+  theme,
 }) => {
   const {
     logoLang,
@@ -58,6 +69,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <Navigation
+      theme={theme}
       menuOpen={menuOpen}
       onMenuToggle={toggleMenu}
       menuToggleAriaLabel={menuToggleAriaLabel || ''}
@@ -67,8 +79,8 @@ const Header: React.FC<HeaderProps> = ({
       logoLanguage={logoLang as LogoLanguage}
       title={title}
     >
-      {navigationItems && (
-        <Navigation.Row variant="inline">
+      {isNavigationVisible && navigationItems && (
+        <Navigation.Row variant={navigationVariant || 'default'}>
           {navigationItems?.map((item) => (
             <Navigation.Item
               key={item.url}

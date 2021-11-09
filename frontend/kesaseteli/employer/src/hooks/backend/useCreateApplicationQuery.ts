@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import handleError from 'shared/error-handler/error-handler';
 import useLocale from 'shared/hooks/useLocale';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 import Application from 'shared/types/application';
 
 const useCreateApplicationQuery = (): UseMutationResult<
@@ -16,13 +17,15 @@ const useCreateApplicationQuery = (): UseMutationResult<
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const router = useRouter();
-  const language = useLocale();
+  const locale = useLocale();
   return useMutation(
     'createApplication',
-    () =>
-      handleResponse<Application>(
+    () => {
+      const language = (router.defaultLocale ?? DEFAULT_LANGUAGE) as Language;
+      return handleResponse<Application>(
         axios.post(BackendEndpoint.APPLICATIONS, { language })
-      ),
+      );
+    },
     {
       onSuccess: (newApplication) => {
         if (newApplication?.id) {
@@ -37,7 +40,7 @@ const useCreateApplicationQuery = (): UseMutationResult<
           throw new Error('Missing id');
         }
       },
-      onError: (error) => handleError(error, t, router, language),
+      onError: (error) => handleError(error, t, router, locale),
     }
   );
 };

@@ -90,4 +90,8 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   );
 };
 
+ActionButtons.defaultProps = {
+  onAfterLastStep: noop,
+};
+
 export default ActionButtons;

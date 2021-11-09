@@ -20,4 +20,8 @@ const Layout: React.FC<AppProps> = ({ children, headingText }) => (
   </Main>
 );
 
+Layout.defaultProps = {
+  headingText: '',
+};
+
 export default Layout;
