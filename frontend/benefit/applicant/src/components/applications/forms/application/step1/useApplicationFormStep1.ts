@@ -1,4 +1,7 @@
-import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
+import {
+  APPLICATION_FIELDS_STEP1_KEYS,
+  ORGANIZATION_TYPES,
+} from 'benefit/applicant/constants';
 import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import useCompanyQuery from 'benefit/applicant/hooks/useCompanyQuery';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
@@ -23,12 +26,13 @@ type ExtendedComponentProps = {
     Field<APPLICATION_FIELDS_STEP1_KEYS>
   >;
   translationsBase: string;
+  showDeminimisSection: boolean;
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
   handleSave: () => void;
   clearDeminimisAids: () => void;
   formik: FormikProps<Application>;
-  deMinimisAids: DeMinimisAid[];
+  deMinimisAidSet: DeMinimisAid[];
   languageOptions: OptionType[];
   getDefaultSelectValue: (fieldName: keyof Application) => OptionType;
 };
@@ -55,6 +59,8 @@ const useApplicationFormStep1 = (
     enableReinitialize: true,
     onSubmit: onNext,
   });
+
+  const { values, touched, errors, setFieldValue } = formik;
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
     const fieldMasks: Partial<Record<Field['name'], Field['mask']>> = {
@@ -85,12 +91,12 @@ const useApplicationFormStep1 = (
   }, [t, translationsBase]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
-    getErrorText(formik.errors, formik.touched, fieldName, t, isSubmitted);
+    getErrorText(errors, touched, fieldName, t, isSubmitted);
 
   const handleSubmit = (): void => {
     setIsSubmitted(true);
-    void formik.validateForm().then((errors) => {
-      const errorFieldKey = Object.keys(errors)[0];
+    void formik.validateForm().then((errs) => {
+      const errorFieldKey = Object.keys(errs)[0];
 
       if (errorFieldKey) {
         return focusAndScroll(errorFieldKey);
@@ -100,9 +106,16 @@ const useApplicationFormStep1 = (
     });
   };
 
-  const handleSave = (): void => onSave(formik.values);
+  const handleSave = (): void => onSave(values);
 
-  const clearDeminimisAids = (): void => setDeMinimisAids([]);
+  const clearDeminimisAids = React.useCallback((): void => {
+    setDeMinimisAids([]);
+    void setFieldValue(fields.deMinimisAid.name, null);
+  }, [fields.deMinimisAid.name, setDeMinimisAids, setFieldValue]);
+
+  const showDeminimisSection =
+    values.associationHasBusinessActivities === true ||
+    organizationType !== ORGANIZATION_TYPES.ASSOCIATION;
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'languages'),
@@ -122,11 +135,12 @@ const useApplicationFormStep1 = (
     fields,
     translationsBase,
     formik,
+    showDeminimisSection,
     getErrorMessage,
     handleSubmit,
     handleSave,
     clearDeminimisAids,
-    deMinimisAids: application.deMinimisAidSet || [],
+    deMinimisAidSet: application.deMinimisAidSet || [],
     languageOptions,
     getDefaultSelectValue,
   };

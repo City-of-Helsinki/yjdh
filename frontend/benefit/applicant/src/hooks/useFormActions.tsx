@@ -84,16 +84,10 @@ const useFormActions = (application: Application): FormActions => {
       apprenticeshipProgram: currentValues.apprenticeshipProgram || false,
     };
 
-    const deMinimisAidValues = {
-      // update from context
-      deMinimisAidSet: deMinimisAids,
-      deMinimisAid: deMinimisAids?.length !== 0,
-    };
-
     return {
       ...application,
       ...normalizedValues,
-      ...deMinimisAidValues,
+      deMinimisAidSet: deMinimisAids,
     };
   };
 

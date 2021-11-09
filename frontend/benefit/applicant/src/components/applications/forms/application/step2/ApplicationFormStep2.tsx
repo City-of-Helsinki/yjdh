@@ -67,6 +67,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       apprenticeshipProgram: formik.values.apprenticeshipProgram,
       benefitType: formik.values.benefitType,
       paySubsidyGranted: formik.values.paySubsidyGranted,
+      associationHasBusinessActivities:
+        formik.values.associationHasBusinessActivities,
       startDate: formik.values.startDate,
     },
     {
