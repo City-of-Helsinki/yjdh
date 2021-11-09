@@ -11,13 +11,27 @@ export const getWizardComponents = async (t: TestController) => {
       screen.findByRole('heading', {
         name: /uusi hakemus/i,
       }),
-    saveAndContinueButton: () =>
-      screen.findByRole('button', {
-        name: /^tallenna ja jatka/i,
-      }),
     previousStepButton: () =>
       screen.findByRole('button', {
         name: /^palaa edelliseen/i,
+      }),
+    saveAndContinueButton: () =>
+      screen.findByRole('button', { name: /^tallenna ja jatka/i }),
+    sendButton: () =>
+      screen.findByRole('button', {
+        name: /^lähetä hakemus/i,
+      }),
+    goToStep1: () =>
+      screen.findByRole('button', {
+        name: /^siirry hakemuksen vaiheeseen 1\. työnantajan tiedot/i,
+      }),
+    goToStep2: () =>
+      screen.findByRole('button', {
+        name: /^siirry hakemuksen vaiheeseen 2\. selvitys työsuhteesta/i,
+      }),
+    goToStep3: () =>
+      screen.findByRole('button', {
+        name: /siirry hakemuksen vaiheeseen 3\. tarkistus ja lähettäminen/i,
       }),
   };
   const expectations = {
@@ -29,11 +43,14 @@ export const getWizardComponents = async (t: TestController) => {
   };
 
   const actions = {
+    clickGoToPreviousStepButton() {
+      return t.click(selectors.previousStepButton());
+    },
     clickSaveAndContinueButton() {
       return t.click(selectors.saveAndContinueButton());
     },
-    clickGoToPreviousStepButton() {
-      return t.click(selectors.previousStepButton());
+    clickSendButton() {
+      return t.click(selectors.sendButton());
     },
   };
 

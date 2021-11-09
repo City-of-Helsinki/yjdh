@@ -8,6 +8,7 @@ export type HeadingProps = {
   loadingFinishedText?: string;
   tooltip?: string;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div';
+  'data-testid'?: string;
 };
 
 export const $Header = styled.h1<HeadingProps>`

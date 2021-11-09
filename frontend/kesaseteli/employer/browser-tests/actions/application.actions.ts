@@ -9,6 +9,7 @@ import TestController from 'testcafe';
 
 import { getStep1Components } from '../application-page/step1.components';
 import { getStep2Components } from '../application-page/step2.components';
+import { getStep3Components } from '../application-page/step3.components';
 import { getWizardComponents } from '../application-page/wizard.components';
 import { getUrlUtils } from '../utils/url.utils';
 import { doEmployerLogin } from './employer-header.actions';
@@ -68,7 +69,7 @@ export const fillStep2EmployeeForm = async (
     employment.employment_postcode
   );
   await step2Employment.actions.fillSchool(employment.employee_school);
-  if (employment.summer_voucher_exception_reason === 'born_2004') {
+  if (employment.summer_voucher_exception_reason === '9th_grader') {
     await step2Employment.actions.fillSerialNumber(
       employment.summer_voucher_serial_number
     );
@@ -136,7 +137,20 @@ export const loginAndfillApplication = async (
       // eslint-disable-next-line no-await-in-loop
       await fillStep2EmployeeForm(t, employment, i);
     }
+    await wizard.actions.clickSaveAndContinueButton();
   }
-  await wizard.actions.clickSaveAndContinueButton();
+  if (toStep === 3) {
+    const step3 = getStep3Components(t);
+    const employerSummary = await step3.summaryComponent();
+    if (isRealIntegrationsEnabled()) {
+      await employerSummary.expectations.isCompanyDataPresent(
+        application.company
+      );
+    }
+    await employerSummary.expectations.isFulFilledWith(application);
+    const step3Form = await step3.form();
+    await step3Form.actions.toggleAcceptTermsAndConditions();
+    await wizard.actions.clickSendButton();
+  }
   return { ...application, ...suomiFiData };
 };
