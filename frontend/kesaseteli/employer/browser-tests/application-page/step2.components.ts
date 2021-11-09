@@ -1,4 +1,8 @@
 import {
+  clickSelectRadioButton,
+  fillInput,
+} from '@frontend/shared/browser-tests/utils/input.utils';
+import {
   getErrorMessage,
   screenContext,
   withinContext,
@@ -15,7 +19,6 @@ import {
   getAttachmentFilePath,
   getSelectionGroupTranslation,
 } from '../utils/application.utils';
-import { fillInput } from '../utils/input.utils';
 
 export const getStep2Components = (t: TestController) => {
   const screen = screenContext(t);
@@ -175,7 +178,10 @@ export const getStep2Components = (t: TestController) => {
         return fillInput(t, 'employee_ssn', selectors.ssnInput(), ssn);
       },
       selectGradeOrBirthYear(type?: EmploymentExceptionReason) {
-        return t.click(selectors.gradeOrBirthYearRadioInput(type));
+        return clickSelectRadioButton(
+          t,
+          selectors.gradeOrBirthYearRadioInput(type)
+        );
       },
       fillHomeCity(city?: string) {
         return fillInput(
@@ -281,7 +287,10 @@ export const getStep2Components = (t: TestController) => {
       async selectHiredWithoutVoucherAssessment(
         type?: EmployeeHiredWithoutVoucherAssessment
       ) {
-        return t.click(selectors.hiredWithoutVoucherAssessmentRadioInput(type));
+        return clickSelectRadioButton(
+          t,
+          selectors.hiredWithoutVoucherAssessmentRadioInput(type)
+        );
       },
       async clickSaveEmployeeButton() {
         return t.click(selectors.saveButton());

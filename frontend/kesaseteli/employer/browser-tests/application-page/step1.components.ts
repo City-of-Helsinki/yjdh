@@ -1,3 +1,4 @@
+import { fillInput } from '@frontend/shared/browser-tests/utils/input.utils';
 import {
   getErrorMessage,
   screenContext,
@@ -6,8 +7,6 @@ import {
 import Company from '@frontend/shared/src/types/company';
 import ContactPerson from '@frontend/shared/src/types/contact_person';
 import TestController from 'testcafe';
-
-import { fillInput } from '../utils/input.utils';
 
 export const getStep1Components = (t: TestController) => {
   const screen = screenContext(t);

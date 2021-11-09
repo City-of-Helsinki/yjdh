@@ -58,6 +58,12 @@ export const getUrlUtils = (t: TestController) => {
       }
       return applicationId;
     },
+    async urlHasNewApplicationId(previousApplicationId: string) {
+      const newApplicationId = (await getUrlParam('id')) ?? undefined;
+      await t
+        .expect(newApplicationId)
+        .notEql(previousApplicationId, await getErrorMessage(t));
+    },
   };
   return {
     actions,
