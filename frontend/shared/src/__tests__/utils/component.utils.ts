@@ -16,6 +16,8 @@ export const waitForBackendRequestsToComplete = async (): Promise<void> => {
   if (isLoading) {
     await waitFor(expectBackendRequestsToComplete);
   }
-  nock.abortPendingRequests();
+  // eslint-disable-next-line testing-library/prefer-find-by
+  await waitFor(() => expect(nock.isDone()).toBeTruthy());
+
   return Promise.resolve();
 };
