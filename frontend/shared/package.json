@@ -42,6 +42,6 @@
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
-    "react-query": "^3.22.0"
+    "react-query": "^3.32.1"
   }
 }
