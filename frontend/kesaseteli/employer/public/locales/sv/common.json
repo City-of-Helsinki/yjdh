@@ -131,8 +131,7 @@
         "validate": "Den inmatade uppgiftern är i fel format",
         "selectionGroups": "Välj något alternativ",
         "checkboxRequired": "Obligatoriskt val",
-        "employment_contract": "Lägg till åtminstone en fil",
-        "payslip": "Lägg till åtminstone en fil"
+        "attachments": "Lägg till åtminstone en fil"
       },
       "notification": {
         "title": "Fyll i de uppgifter som fattas eller är felaktiga"

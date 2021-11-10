@@ -2,7 +2,7 @@ import ErrorNotificationRow from 'kesaseteli/employer/components/application/for
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { FieldError, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import usePreviousValue from 'shared/hooks/usePreviousValue';
 import Application from 'shared/types/application-form-data';
 
@@ -26,12 +26,11 @@ const EmployerErrorSummary: React.FC = () => {
       autofocus={isJustSubmitted}
     >
       <ul>
-        {Object.entries(formState.errors).map(([key, error]) => (
+        {Object.keys(formState.errors).map((fieldPath) => (
           <ErrorNotificationRow
-            key={key}
-            data-testid={key}
-            fieldPath={key as ApplicationFieldPath}
-            error={error as FieldError}
+            key={fieldPath}
+            data-testid={fieldPath}
+            fieldPath={fieldPath as ApplicationFieldPath}
           />
         ))}
       </ul>
