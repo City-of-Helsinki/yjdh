@@ -3,7 +3,7 @@ import React from 'react';
 import { SubmittedApplication } from '../types/application';
 import AppContext from './AppContext';
 
-const FrontPageProvider = <P,>({
+const AppProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
   const [submittedApplication, setSubmittedApplication] =
@@ -21,4 +21,4 @@ const FrontPageProvider = <P,>({
   );
 };
 
-export default FrontPageProvider;
+export default AppProvider;

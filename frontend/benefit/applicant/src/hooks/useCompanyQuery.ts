@@ -7,10 +7,16 @@ import useBackendAPI from './useBackendAPI';
 const useCompanyQuery = (): UseQueryResult<CompanyData, Error> => {
   const { axios, handleResponse } = useBackendAPI();
 
-  return useQuery<CompanyData, Error>('companyData', async () => {
-    const res = axios.get<CompanyData>(BackendEndpoint.COMPANY);
-    return handleResponse(res);
-  });
+  return useQuery<CompanyData, Error>(
+    'companyData',
+    async () => {
+      const res = axios.get<CompanyData>(BackendEndpoint.COMPANY);
+      return handleResponse(res);
+    },
+    {
+      staleTime: Infinity,
+    }
+  );
 };
 
 export default useCompanyQuery;

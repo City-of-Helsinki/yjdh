@@ -16,7 +16,10 @@ const useApplicationTemplateQuery = (
       );
       return handleResponse(res);
     },
-    { enabled: !id, retry: false }
+    {
+      enabled: !id,
+      staleTime: Infinity,
+    }
   );
 };
 

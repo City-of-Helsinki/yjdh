@@ -8,6 +8,8 @@ const Header: React.FC = () => {
     t,
     locale,
     languageOptions,
+    navigationItems,
+    isNavigationVisible,
     handleLanguageChange,
     handleNavigationItemClick,
     handleTitleClick,
@@ -19,9 +21,12 @@ const Header: React.FC = () => {
       menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
       languages={languageOptions}
       locale={locale}
+      isNavigationVisible={isNavigationVisible}
+      navigationItems={navigationItems}
       onLanguageChange={handleLanguageChange}
       onNavigationItemClick={handleNavigationItemClick}
       onTitleClick={handleTitleClick}
+      theme="dark"
     />
   );
 };

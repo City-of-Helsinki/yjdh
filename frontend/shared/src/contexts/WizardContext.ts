@@ -9,11 +9,14 @@ export type WizardProps = {
 };
 
 export type WizardValues = {
-  goToNextStep: (stepIndex?: number) => Promise<void>;
-  goToPreviousStep: (stepIndex?: number) => void;
+  goToStep: (stepIndex: number) => void;
+  goToNextStep: () => Promise<void>;
+  goToPreviousStep: () => void;
+  clearStepHistory: () => void;
   handleStep: (handler: Handler) => void;
   isLoading: boolean;
   activeStep: number;
+  lastCompletedStep: number;
   isFirstStep: boolean;
   isLastStep: boolean;
   steps: number;

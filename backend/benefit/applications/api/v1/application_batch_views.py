@@ -121,7 +121,7 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
         csv_file = talpa_service.get_talpa_csv_string()
         file_name = format_lazy(
             _("TALPA export {date}"),
-            date=timezone.now().strftime("%d-%m-%Y %H.%M.%S"),
+            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
         response = HttpResponse(csv_file, content_type="text/csv")
         response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(

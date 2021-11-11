@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
+import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/application-form-data';
 
 const EmployerForm: React.FC = () => {
@@ -17,13 +18,15 @@ const EmployerForm: React.FC = () => {
   const { trigger, formState } = useFormContext<Application>();
 
   const [showInvoicer, toggleInvoicer] = useInvoicerToggle();
+  const { clearStepHistory } = useWizard();
 
   const onToggleInvoicer = React.useCallback(() => {
     if (formState.isSubmitted) {
       void trigger();
     }
     toggleInvoicer();
-  }, [formState.isSubmitted, toggleInvoicer, trigger]);
+    clearStepHistory();
+  }, [formState.isSubmitted, toggleInvoicer, trigger, clearStepHistory]);
 
   return (
     <>
