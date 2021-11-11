@@ -32,3 +32,10 @@ export const getNumberValue = (s: string): number =>
 
 export const stringFloatToFixed2 = (value: string): string =>
   value.includes(',') ? value.slice(0, value.indexOf(',') + 3) : value;
+
+export const stringToFloatValue = (value: string): number =>
+  parseFloat(value.replace(',', '.'));
+
+export const formatStringFloatValue = (
+  value: number | string | undefined
+): string => value?.toString().replace('.', ',') || '';

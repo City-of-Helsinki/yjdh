@@ -10,6 +10,7 @@ import {
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { formatStringFloatValue } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import { useDeminimisAidsList } from './useDeminimisAidsList';
@@ -41,10 +42,9 @@ const DeMinimisAidsList: React.FC = () => {
             <$GridCell $colSpan={4}>
               {grant[DE_MINIMIS_AID_KEYS.GRANTER]}
             </$GridCell>
-            <$GridCell $colSpan={2}>{`${
-              grant[DE_MINIMIS_AID_KEYS.AMOUNT]?.toString().replace('.', ',') ??
-              ''
-            } €`}</$GridCell>
+            <$GridCell $colSpan={2}>{`${formatStringFloatValue(
+              grant[DE_MINIMIS_AID_KEYS.AMOUNT]
+            )} €`}</$GridCell>
             <$GridCell $colSpan={2}>
               {convertToUIDateFormat(grant[DE_MINIMIS_AID_KEYS.GRANTED_AT])}
             </$GridCell>
