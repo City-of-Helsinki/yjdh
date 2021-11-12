@@ -7,8 +7,7 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    ['^shared/test/(.*)$']: '<rootDir>/test/$1',
-    [`^shared\/(.*)$`]: '<rootDir>/src/$1',
+    [`^shared/(.*)$`]: '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/utils/setupTests.ts'],
   coveragePathIgnorePatterns: [

@@ -11,12 +11,11 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import withAuth from 'shared/components/hocs/withAuth';
 import Layout from 'shared/components/Layout';
+import Notification from 'shared/components/notification/Notification';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
-
-import { $Notification } from '../components/application/login.sc';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
@@ -48,13 +47,13 @@ const ThankYouPage: NextPage = () => {
           </title>
         </Head>
         <Layout>
-          <$Notification
+          <Notification
             label={t(`common:thankyouPage.thankyouMessageLabel`)}
             type="success"
             size="large"
           >
             {t(`common:thankyouPage.thankyouMessageContent`)}
-          </$Notification>
+          </Notification>
           <ApplicationSummary
             header={t(`common:thankyouPage.title`, {
               submitted_at: convertToUIDateAndTimeFormat(

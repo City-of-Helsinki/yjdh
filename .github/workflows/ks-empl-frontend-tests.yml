@@ -1,4 +1,4 @@
-name: (KS) Frontend Lint, Unit and Component tests
+name: (KS Employer) Frontend Lint, Unit and Component tests
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     paths:
       - 'frontend/shared/**'
       - 'frontend/*'
-      - 'frontend/kesaseteli/**'
-      - '.github/workflows/ks-frontend-tests.yml'
+      - 'frontend/kesaseteli/employer/**'
+      - '.github/workflows/ks-empl-frontend-tests.yml'
   workflow_dispatch:
 defaults:
   run:

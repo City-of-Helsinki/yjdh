@@ -1,7 +1,7 @@
 import {
   BackendEndpoint,
   getBackendDomain,
-} from 'kesaseteli/employer/backend-api/backend-api';
+} from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';

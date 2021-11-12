@@ -1,7 +1,7 @@
 import {
   expectToLogout,
   expectUnauthorizedReply,
-} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { Language } from 'shared/i18n/i18n';
 import User from 'shared/types/user';

@@ -1,4 +1,4 @@
-import { expectToLogout } from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+import { expectToLogout } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import { expectBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 

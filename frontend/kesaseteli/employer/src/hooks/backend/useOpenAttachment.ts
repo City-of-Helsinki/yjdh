@@ -1,6 +1,6 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import * as React from 'react';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import Attachment from 'shared/types/attachment';
 
 const useOpenAttachment = (): ((attachment: Attachment) => Promise<void>) => {

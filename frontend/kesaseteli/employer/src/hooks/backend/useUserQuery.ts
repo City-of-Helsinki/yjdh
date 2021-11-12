@@ -1,5 +1,5 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import {

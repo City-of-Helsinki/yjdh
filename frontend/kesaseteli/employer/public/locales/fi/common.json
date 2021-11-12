@@ -4,7 +4,8 @@
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:",
-    "linkSkipToContent": "Siirry sisältöön"
+    "linkSkipToContent": "Siirry sisältöön",
+    "menuToggleAriaLabel": "Valikko"
   },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
@@ -152,7 +153,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu",
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {

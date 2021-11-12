@@ -1,5 +1,5 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useOperationPermitted from 'kesaseteli/employer/hooks/backend/useOperationPermitted';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';

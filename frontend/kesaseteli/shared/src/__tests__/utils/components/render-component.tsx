@@ -1,4 +1,4 @@
-import { getBackendDomain } from 'kesaseteli/employer/backend-api/backend-api';
+import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import renderComponentF from 'shared/__tests__/utils/render-component/render-component';
 
 const render = renderComponentF(getBackendDomain());

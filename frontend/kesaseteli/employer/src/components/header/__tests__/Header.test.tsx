@@ -1,12 +1,12 @@
+import Header from 'kesaseteli/employer/components/header/Header';
 import {
   expectAuthorizedReply,
   expectUnauthorizedReply,
-} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
-import { getBackendUrl } from 'kesaseteli/employer/backend-api/backend-api';
-import Header from 'kesaseteli/employer/components/header/Header';
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
+import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
-import headerApi from 'shared/__tests__/component-apis/header-api';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
