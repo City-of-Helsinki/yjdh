@@ -1,18 +1,20 @@
-name: Kesäseteli Staging Environment Acceptance tests
+name: Kesäseteli Test Environment Acceptance tests
 on:
   schedule:
-    # At half past every hour from 7-20 (finnish winter time)
-    - cron: "*/30 5-18 * * *"
+    # At every hour from 7-20 (finnish winter time)
+    - cron: "0 5-18 * * *"
+  pull_request:
+    paths:
+      - '.github/workflows/ks-empl-test-env-acceptance-tests.yml'
 env:
-  FRONTEND_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi
-  BRANCH: main
+  FRONTEND_URL: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi
+  BRANCH: develop
 jobs:
   acceptance-tests:
-    if: ${{ false }} # Disabled until staging is not behind vpn anymore
     strategy:
       fail-fast: false
     runs-on: ubuntu-latest
-    name: Acceptance tests for Staging Environment
+    name: Acceptance tests for Test Environment
     defaults:
       run:
         working-directory: ./frontend
@@ -38,7 +40,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
-      - name: Run TestCafe tests for Staging
+      - name: Run TestCafe tests for Testing
         id: testcafe
         run: yarn --cwd kesaseteli/employer browser-test:ci
         env:
@@ -62,10 +64,10 @@ jobs:
           SLACK_TITLE: ${{ github.workflow }} have *FAILED* in ${{env.FRONTEND_URL}}!
           SLACK_CHANNEL: yjdh-alerts
           SLACK_MESSAGE: |
-            *Check the testcafe report here: ${{env.REPORT_URL}}*
-            The latest fetched commit on _${{env.BRANCH}}_-branch was:
-            ```${{ env.COMMIT_INFO }}```
-            *NOTE*: There is a chance that it was not yet deployed!
+              *Check the testcafe report here: ${{env.REPORT_URL}}*
+              The latest fetched commit on _${{env.BRANCH}}_-branch was:
+              ```${{ env.COMMIT_INFO }}```
+              *NOTE*: There is a chance that it was not yet deployed!
         if: always() && steps.testcafe.outcome == 'failure'
       - name: Create zip of screenshots and videos of failed tests to artifact for ${{env.FRONTEND_URL}}
         uses: actions/upload-artifact@v2

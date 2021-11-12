@@ -9,7 +9,6 @@ on:
       - '.github/workflows/ks-pytest.yml'
       - 'backend/shared/**'
 
-
 env:
   DEBUG: 1
 

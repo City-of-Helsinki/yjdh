@@ -4,7 +4,8 @@
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
     "userAriaLabelPrefix": "Användaren:",
-    "linkSkipToContent": "Gå till innehållet"
+    "linkSkipToContent": "Gå till innehållet",
+    "menuToggleAriaLabel": "Menu"
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
@@ -151,7 +152,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu",
   "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
   "error": {
     "generic": {

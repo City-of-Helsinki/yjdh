@@ -7,10 +7,9 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import Layout from 'shared/components/Layout';
+import Notification from 'shared/components/notification/Notification';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-
-import { $Notification } from '../components/application/login.sc';
 
 const Login: NextPage = () => {
   useClearQueryParams();
@@ -53,13 +52,13 @@ const Login: NextPage = () => {
         </title>
       </Head>
       <Layout>
-        <$Notification
+        <Notification
           label={t(notificationLabelKey)}
           type={notificationType}
           size="large"
         >
           {notificationContent}
-        </$Notification>
+        </Notification>
         <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
           {t(`common:header.loginLabel`)}
         </Button>

@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - '**/package.json'
+      -  '.github/workflows/audit.yml'
   workflow_dispatch:
 defaults:
   run:

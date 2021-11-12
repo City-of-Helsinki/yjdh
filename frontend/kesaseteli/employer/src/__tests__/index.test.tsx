@@ -1,4 +1,5 @@
 import { axe } from 'jest-axe';
+import IndexPage from 'kesaseteli/employer/pages';
 import {
   expectAuthorizedReply,
   expectToCreateApplicationErrorFromBackend,
@@ -6,11 +7,10 @@ import {
   expectToGetApplicationsErrorFromBackend,
   expectToGetApplicationsFromBackend,
   expectUnauthorizedReply,
-} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
-import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import IndexPage from 'kesaseteli/employer/pages';
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import renderPage from 'kesaseteli-shared/__tests__/utils/components/render-page';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import {
   fakeApplication,

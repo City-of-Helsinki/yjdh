@@ -12,12 +12,15 @@
   "scripts": {
     "audit": "npx lerna-audit --level=high --groups=dependencies",
     "ks-empl:build": "npx lerna run --scope @frontend/employer --stream build",
+    "ks-youth:build": "npx lerna run --scope @frontend/youth --stream build",
     "bf-applicant:build": "npx lerna run --scope @frontend/applicant --stream build",
     "bf-handler:build": "npx lerna run --scope @frontend/bf-handler --stream build",
     "ks-empl:dev": "npx lerna run --scope @frontend/employer --stream dev",
+    "ks-youth:dev": "npx lerna run --scope @frontend/youth --stream dev",
     "bf-applicant:dev": "npx lerna run --scope @frontend/applicant --stream dev",
     "bf-handler:dev": "npx lerna run --scope @frontend/bf-handler --stream dev",
     "ks-empl:start": "npx lerna run --scope  @frontend/employer --stream start",
+    "ks-youth:start": "npx lerna run --scope  @frontend/youth --stream start",
     "bf-applicant:start": "npx lerna run --scope  @frontend/applicant --stream start",
     "bf-handler:start": "npx lerna run --scope  @frontend/bf-handler --stream start",
     "release": "cross-env HUSKY_BYPASS=true && lerna publish",
@@ -31,7 +34,10 @@
     "bf-handler:test": "yarn --cwd benefit/bf-handler test",
     "ks-empl:test": " yarn --cwd kesaseteli/employer test",
     "ks-empl:browser-test": "yarn --cwd kesaseteli/employer browser-test",
-    "ks-empl:browser-test:ci": "yarn --cwd kesaseteli/employer browser-test:ci"
+    "ks-empl:browser-test:ci": "yarn --cwd kesaseteli/employer browser-test:ci",
+    "ks-youth:test": " yarn --cwd kesaseteli/youth test",
+    "ks-youth:browser-test": "yarn --cwd kesaseteli/youth browser-test",
+    "ks-youth:browser-test:ci": "yarn --cwd kesaseteli/youth browser-test:ci"
   },
   "dependencies": {},
   "devDependencies": {
