@@ -154,6 +154,39 @@ export type ApproveTerms = {
   selectedApplicantConsents: string[];
 };
 
+// handler
+
+export interface RowData {
+  row_type: string;
+  ordering: number;
+  description_fi: string;
+  amount: string;
+}
+
+export interface HandlerDetailsData {
+  id?: string;
+  first_name: string;
+  last_name: string;
+  terms_of_service_approvals: ApplicantTermsApprovalData;
+}
+
+export interface CalculationData {
+  id?: string;
+  monthly_pay: string;
+  vacation_money: string;
+  other_expenses: string;
+  start_date: string;
+  end_date: string;
+  state_aid_max_percentage?: number;
+  granted_as_de_minimis_aid: boolean;
+  target_group_check: boolean;
+  calculated_benefit_amount: string;
+  override_benefit_amount: string;
+  override_benefit_amount_comment?: string;
+  rows: RowData[];
+  handler_details: HandlerDetailsData;
+}
+
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
@@ -204,6 +237,7 @@ export type ApplicationData = {
   applicant_terms_approval_needed?: boolean;
   applicant_terms_in_effect?: ApplicantTermsData;
   approve_terms?: ApproveTermsData;
+  calculation?: CalculationData;
 };
 
 export type ApplicationListItemData = {
@@ -262,6 +296,39 @@ export interface Step2 {
   [APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE]?: Employee;
 }
 
+// handler
+
+export type Row = {
+  rowType: string;
+  ordering: number;
+  descriptionFi: string;
+  amount: string;
+};
+
+export type HandlerDetails = {
+  id?: string;
+  firstName: string;
+  lastName: string;
+  termsOfServiceApprovals: ApplicantTermsApproval;
+};
+
+export type Calculation = {
+  id?: string;
+  monthlyPay: string;
+  vacationMoney: string;
+  otherExpenses: string;
+  startDate: string;
+  endDate: string;
+  stateAidMaxPercentage?: number;
+  grantedAsDeMinimisAid: boolean;
+  targetGroupCheck: boolean;
+  calculatedBenefitAmount: string;
+  overrideBenefitAmount: string;
+  overrideBenefitAmountComment?: string;
+  rows: Row[];
+  handlerDetails: HandlerDetails;
+};
+
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -277,6 +344,7 @@ export type Application = {
   applicantTermsApprovalNeeded?: boolean;
   applicantTermsInEffect?: ApplicantTerms;
   approveTerms?: ApproveTerms;
+  calculation?: Calculation;
 } & Step1 &
   Step2;
 
