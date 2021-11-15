@@ -1,34 +1,34 @@
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
-import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
-import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getFrontendUrl } from 'kesaseteli/employer/utils/url.utils';
-import TestController from 'testcafe';
-
 import {
-  appNameTranslation,
-  doEmployerLogin,
-} from '../actions/employer-header.actions';
+  getHeaderComponents,
+  Translation,
+} from '@frontend/shared/browser-tests/components/header.components';
+import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
+import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+
+import { getFrontendUrl } from '../utils/url.utils';
+import { getIndexPageComponents } from './indexPage.components';
 
 const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
+let indexPageComponents: ReturnType<typeof getIndexPageComponents>;
+
+const appTranslation: Translation = {
+  fi: 'Nuorten kesäseteli',
+  en: 'ENG Nuorten kesäseteli',
+  sv: 'SV Nuorten kesäseteli',
+};
 
 fixture('Frontpage')
   .page(url)
   .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
-    headerComponents = getHeaderComponents(t, appNameTranslation);
+    headerComponents = getHeaderComponents(t, appTranslation);
+    indexPageComponents = getIndexPageComponents(t);
   });
 
-test('user can authenticate and logout', async (t: TestController) => {
-  const suomiFiData = await doEmployerLogin(t);
-  const headerUser = await headerComponents.headerUser();
-  if (isRealIntegrationsEnabled() && suomiFiData?.user) {
-    await headerUser.expectations.userIsLoggedIn(suomiFiData.user);
-  }
-  await headerUser.actions.clicklogoutButton();
-  await headerUser.expectations.userIsLoggedOut();
+test('shows front page', async () => {
+  await indexPageComponents.form();
 });
 
 test('can change to languages', async () => {
