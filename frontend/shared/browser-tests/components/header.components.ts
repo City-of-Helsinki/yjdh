@@ -36,7 +36,7 @@ export type Translation = {
 
 export const getHeaderComponents = (
   t: TestController,
-  appName: Translation
+  appName?: Translation
 ) => {
   const within = withinContext(t);
   const screen = screenContext(t);
@@ -85,6 +85,11 @@ export const getHeaderComponents = (
   const header = async () => {
     const selectors = {
       headerTitle(asLang = DEFAULT_LANGUAGE) {
+        if (!appName) {
+          throw new Error(
+            'Did you forgot to give expected app name translations?'
+          );
+        }
         return withinHeader()
           .findAllByText(new RegExp(`^${appName[asLang]}$`, 'i'), {})
           .nth(0);

@@ -50,6 +50,7 @@ jobs:
           TESTCAFE_SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           TESTCAFE_SLACK_CHANNEL: "#yjdh-alerts"
           TESTCAFE_SLACK_USERNAME: GitHub-Alerts
+          FRONTEND_URL: ${{ env.EMPLOYER_URL }}
       - name: Upload results
         run: |
           zip -r report.zip kesaseteli/employer/report/ > no_output 2>&1

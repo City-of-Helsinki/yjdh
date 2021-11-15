@@ -1,14 +1,20 @@
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
+import {
+  getHeaderComponents,
+  Translation,
+} from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { getFrontendUrl } from 'kesaseteli/employer/utils/url.utils';
 import TestController from 'testcafe';
 
-import {
-  appNameTranslation,
-  doEmployerLogin,
-} from '../actions/employer-header.actions';
+import { doEmployerLogin } from '../actions/employer-header.actions';
+
+const appNameTranslation: Translation = {
+  fi: 'Kesäseteli',
+  en: 'Summer job voucher',
+  sv: 'Sommarsedeln',
+};
 
 const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
