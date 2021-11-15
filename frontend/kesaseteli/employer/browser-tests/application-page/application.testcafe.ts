@@ -2,12 +2,11 @@ import { getHeaderComponents } from '@frontend/shared/browser-tests/components/h
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getFrontendUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import TestController from 'testcafe';
 
 import { loginAndfillStep1Form } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
-import { getUrlUtils } from '../utils/url.utils';
+import { getFrontendUrl, getUrlUtils } from '../utils/url.utils';
 import { getApplicationPageComponents } from './applicationPage.components';
 
 let applicationPageComponents: ReturnType<typeof getApplicationPageComponents>;
