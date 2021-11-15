@@ -24,11 +24,13 @@ export const $ItemWrapper = styled.div`
 `;
 
 export const $ItemHeader = styled.div`
-  font-size: ${(props) => props.theme.fontSize.body.l};
+  font-size: ${(props) => props.theme.fontSize.body.m};
   font-weight: 500;
 `;
 
-export const $ItemValue = styled.div``;
+export const $ItemValue = styled.div`
+  font-size: ${(props) => props.theme.fontSize.body.m};
+`;
 
 export const $HandlerWrapper = styled.div`
   border-radius: 50%;

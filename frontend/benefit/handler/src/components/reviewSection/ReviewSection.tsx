@@ -53,7 +53,16 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
               {...rest}
             />
           )}
-          {children && <$Grid role={role}>{children}</$Grid>}
+          {children && (
+            <$Grid
+              css={`
+                font-size: ${theme.fontSize.body.l};
+              `}
+              role={role}
+            >
+              {children}
+            </$Grid>
+          )}
           {!action && (
             <$Hr
               css={`

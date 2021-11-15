@@ -19,7 +19,7 @@ export const $WrapperInner = styled.div<ReviewSectionWrapperProps>`
 `;
 
 export const $ActionLeft = styled.div`
-  width: 100px;
+  width: 102px;
 `;
 
 export const $CheckIcon = styled(IconCheckCircle)`
@@ -30,5 +30,5 @@ export const $CheckIcon = styled(IconCheckCircle)`
 export const $ActionBottom = styled.div`
   background-color: ${(props) => props.theme.colors.silver};
   padding: ${(props) => props.theme.spacing.s};
-  padding-left: 100px;
+  padding-left: 102px;
 `;
