@@ -5,7 +5,7 @@
     "./"
   ],
   "scripts": {
-    "lint": "eslint --ext js,ts,tsx src browser-tests",
+    "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
     "test:staged": "yarn test --watchAll=false --findRelatedTests",

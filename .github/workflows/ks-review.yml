@@ -156,7 +156,7 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
-          CSRF_TRUSTED_ORIGINS: https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+          CSRF_TRUSTED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
           LOGIN_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
           LOGIN_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
 
@@ -229,6 +229,7 @@ jobs:
         env:
           GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          FRONTEND_URL: ${{ env.ENVIRONMENT_URL }}
       - name: Upload Acceptance Test results for ${{ matrix.service }}
         run: |
           zip -r report.zip ${{matrix.dir}}/report > no_output 2>&1

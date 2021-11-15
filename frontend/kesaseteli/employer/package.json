@@ -6,7 +6,7 @@
     "dev": "node start.js",
     "build": "next build",
     "start": "NODE_ENV=production node start.js",
-    "lint": "eslint --ext js,ts,tsx src",
+    "lint": "eslint --ext js,ts,tsx src browser-tests",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --runInBand --no-cache",
     "test:debug-nock": "cross-env DEBUG=nock.* yarn test",
