@@ -17,8 +17,10 @@ interface ApplicationListProps {
   translationsBase: string;
 }
 
-const getFullName = (firstName: string, lastName: string): string =>
-  [firstName, lastName].join(' ');
+const getFullName = (
+  firstName: string | undefined,
+  lastName: string | undefined
+): string => [firstName, lastName].join(' ');
 
 const translationsBase = 'common:applications.list';
 
@@ -36,6 +38,7 @@ const useApplicationList = (
         company,
         submitted_at,
         application_number: applicationNum,
+        calculation,
       } = application;
 
       return {
@@ -48,7 +51,10 @@ const useApplicationList = (
         applicationNum,
         // refactor when we have handler data
         handlerName:
-          getFullName(employee?.first_name, employee?.last_name) || '-',
+          getFullName(
+            calculation?.handler_details?.first_name,
+            calculation?.handler_details?.last_name
+          ) || '-',
       };
     }
   );
