@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "husky install",
     "clean": "docker-compose -f docker-compose.kesaseteli.yml down; docker-compose -f docker-compose.benefit.yml down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q)",
-    "kesaseteli": "cross-env COMPOSE_HTTP_TIMEOUT=200 & docker-compose -f docker-compose.kesaseteli.yml up"
+    "kesaseteli": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.kesaseteli.yml up"
   },
   "dependencies": {
     "cross-env": "^7.0.3"
