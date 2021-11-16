@@ -11,7 +11,7 @@ const getUrlParam = ClientFunction((param: string) => {
 });
 
 export const getFrontendUrl = (path = ''): string =>
-  getUrl(process.env.EMPLOYER ?? 'https://localhost:3000', path);
+  getUrl(process.env.EMPLOYER_URL ?? 'https://localhost:3000', path);
 
 /* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type */
 export const getUrlUtils = (t: TestController) => {
