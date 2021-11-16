@@ -1,20 +1,23 @@
 import { IconCheckCircle } from 'hds-react';
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
+
+type ColorKeys = keyof DefaultTheme['colors'];
+export type ColorValue = DefaultTheme['colors'][ColorKeys];
 
 export type ReviewSectionWrapperProps = {
   withAction?: boolean;
+  bgColor?: ColorValue;
 };
 
 export const $Wrapper = styled.div<ReviewSectionWrapperProps>`
-  background-color: ${(props) =>
-    props.withAction ? props.theme.colors.silverLight : ''};
+  background-color: ${(props) => (props.bgColor ? props.bgColor : '')};
   display: ${(props) => (props.withAction ? 'flex' : '')};
   flex-direction: ${(props) => (props.withAction ? 'column' : '')};
+  margin-bottom: ${(props) => (props.withAction ? props.theme.spacing.s : '')};
 `;
 
 export const $WrapperInner = styled.div<ReviewSectionWrapperProps>`
-  background-color: ${(props) =>
-    props.withAction ? props.theme.colors.silverLight : ''};
+  background-color: ${(props) => (props.bgColor ? props.bgColor : '')};
   display: ${(props) => (props.withAction ? 'flex' : '')};
 `;
 

@@ -7,7 +7,6 @@ import {
   $Section,
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
-import { useTheme } from 'styled-components';
 
 import {
   $ActionBottom,
@@ -16,10 +15,12 @@ import {
   $Wrapper,
   $WrapperInner,
 } from './ReviewSection.sc';
+import { useReviewSection } from './useReviewSection';
 
 export type ReviewSectionProps = {
   children?: React.ReactNode;
   action?: React.ReactNode;
+  withMargin?: boolean;
   withoutDivider?: boolean;
   header?: string;
 } & HeadingProps &
@@ -29,21 +30,20 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   children,
   header,
   action,
+  withMargin,
   role,
   loading,
   ...rest
 }) => {
-  const theme = useTheme();
+  const { theme, bgColor, withAction } = useReviewSection(action, withMargin);
 
   return (
-    <$Wrapper withAction={Boolean(action)}>
-      <$WrapperInner withAction={Boolean(action)}>
-        {action && (
-          <$ActionLeft>
-            <$CheckIcon size="m" />
-          </$ActionLeft>
+    <$Wrapper withAction={withAction} bgColor={bgColor}>
+      <$WrapperInner withAction={withAction}>
+        {withAction && (
+          <$ActionLeft>{action && <$CheckIcon size="m" />}</$ActionLeft>
         )}
-        <$Section paddingBottom={Boolean(action)}>
+        <$Section paddingBottom={withAction}>
           {header && (
             <Heading
               header={header}
@@ -57,13 +57,14 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
             <$Grid
               css={`
                 font-size: ${theme.fontSize.body.l};
+                padding: ${withMargin ? theme.spacing.m : 0} 0;
               `}
               role={role}
             >
               {children}
             </$Grid>
           )}
-          {!action && (
+          {!withAction && (
             <$Hr
               css={`
                 margin-top: ${theme.spacing.l};

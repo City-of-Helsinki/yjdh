@@ -62,6 +62,9 @@ const ApplicationReview: React.FC = () => {
         >
           <$GridCell $colSpan={12}>Section contents9</$GridCell>
         </ReviewSection>
+        <ReviewSection withMargin>
+          <$GridCell $colSpan={12}>Section contents10</$GridCell>
+        </ReviewSection>
       </Container>
     </>
   );
