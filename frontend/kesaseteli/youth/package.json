@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node start.js",
     "build": "next build",
-    "start": "NODE_ENV=production node start.js",
+    "start": "NODE_ENV=production PORT=3100 node start.js",
     "lint": "eslint --ext js,ts,tsx src browser-tests",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --runInBand --no-cache",
