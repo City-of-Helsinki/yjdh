@@ -33,6 +33,9 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 400Mi
+  K8S_PROBE_INITIAL_DELAY: 480
+  K8S_PROBE_FAILURE_THRESHOLD: 6
+  K8S_PROBE_PERIOD: 20
   EMPLOYER_URL: https://ks-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   HANDLER_URL: https://ks-hndl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://ks-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
