@@ -317,7 +317,7 @@ def test_update_message_unauthorized(
         assert result.status_code == 403
 
 
-def test_update_message(
+def test_update_message_not_allowed(
     api_client,
     handler_api_client,
     mock_get_organisation_roles_and_create_company,
@@ -338,9 +338,7 @@ def test_update_message(
         ),
         SAMPLE_MESSAGE_PAYLOAD,
     )
-    assert result.status_code == 200
-    message.refresh_from_db()
-    assert message.content == SAMPLE_MESSAGE_PAYLOAD["content"]
+    assert result.status_code == 403
 
 
 @pytest.mark.parametrize(
@@ -365,11 +363,10 @@ def test_delete_message_unauthenticated(
 
 
 @pytest.mark.parametrize(
-    "view_name,msg_type",
+    "view_name",
     [
-        ("applicant-message-detail", MessageType.APPLICANT_MESSAGE),
-        ("handler-message-detail", MessageType.HANDLER_MESSAGE),
-        ("handler-note-detail", MessageType.NOTE),
+        ("applicant-message-detail"),
+        ("handler-message-detail"),
     ],
 )
 def test_delete_message_unauthorized(
@@ -378,9 +375,10 @@ def test_delete_message_unauthorized(
     handling_application,
     mock_get_organisation_roles_and_create_company,
     view_name,
-    msg_type,
 ):
-    msg = MessageFactory(application=handling_application, message_type=msg_type)
+    msg = MessageFactory(
+        application=handling_application, message_type=MessageType.APPLICANT_MESSAGE
+    )
     if view_name == "applicant-message-detail":
         result = api_client.delete(
             reverse(
@@ -395,17 +393,12 @@ def test_delete_message_unauthorized(
                 view_name,
                 kwargs={"application_pk": handling_application.pk, "pk": msg.id},
             ),
-            {
-                "content": "Sample content",
-                "message_type": msg_type,
-            },
         )
         assert result.status_code == 403
 
 
 def test_delete_message(
     api_client,
-    handler_api_client,
     mock_get_organisation_roles_and_create_company,
     handling_application,
 ):
