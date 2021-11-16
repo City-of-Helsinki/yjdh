@@ -1,9 +1,9 @@
+import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { Application } from 'benefit/applicant/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
 
@@ -23,7 +23,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
   const { t } = useTranslation();
   return (
     <>
-      <FormSection
+      <SummarySection
         header={t(`${translationsBase}.employee.heading1Short`)}
         action={
           <Button
@@ -58,9 +58,9 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             </$ViewFieldBold>
           </$ViewField>
         </$GridCell>
-      </FormSection>
+      </SummarySection>
 
-      <FormSection
+      <SummarySection
         header={t(`${translationsBase}.employee.heading2`)}
         withoutDivider
       >
@@ -73,7 +73,13 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                 }`
               )}
               {data.apprenticeshipProgram && (
-                <$ViewField>{`, ${data.paySubsidyPercent || ''} %`}</$ViewField>
+                <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
+                  data.additionalPaySubsidyPercent
+                    ? `${t('common:utility.and')} ${
+                        data.additionalPaySubsidyPercent
+                      } %`
+                    : ''
+                }`}</$ViewField>
               )}
             </$ViewFieldBold>
           )}
@@ -91,9 +97,9 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             </$ViewFieldBold>
           </$ViewField>
         </$GridCell>
-      </FormSection>
+      </SummarySection>
 
-      <FormSection
+      <SummarySection
         header={t(`${translationsBase}.employee.heading3Long`)}
         withoutDivider
       >
@@ -122,10 +128,10 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           </$ViewField>
           <$ViewField>{data.endDate ? data.endDate : '-'}</$ViewField>
         </$GridCell>
-      </FormSection>
+      </SummarySection>
       {(data.benefitType === BENEFIT_TYPES.SALARY ||
         data.benefitType === BENEFIT_TYPES.EMPLOYMENT) && (
-        <FormSection
+        <SummarySection
           header={t(`${translationsBase}.employee.heading5Employment`)}
         >
           <$GridCell $colSpan={5}>
@@ -164,7 +170,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
               {data.employee?.collectiveBargainingAgreement}
             </$ViewField>
           </$GridCell>
-        </FormSection>
+        </SummarySection>
       )}
     </>
   );

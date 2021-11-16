@@ -50,10 +50,12 @@
     "sections": {
       "company": {
         "heading1": "Työnantajan tiedot",
+        "heading1Additional": "Postiosoite päätöstä varten",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Työnantajan de minimis-tuet",
+        "heading3": "Hakijan de minimis-tuet",
         "heading4": "YT-tilanne",
+        "heading5": "YT-neuvottelut",
         "businessId": "Y-tunnus: {{ businessId }}",
         "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
         "deMinimisAidsAdd": "Lisää",
@@ -69,7 +71,7 @@
           }
         },
         "tooltips": {
-          "heading3": "Työnantajan de minimis-tuet tooltip text",
+          "heading3": "Hakijan de minimis-tuet tooltip text",
           "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
         },
         "fields": {
@@ -461,5 +463,8 @@
     "next": "Next",
     "page": "Page",
     "terms": "Terms.PDF"
+  },
+  "utility": {
+    "and": "ja"
   }
 }
