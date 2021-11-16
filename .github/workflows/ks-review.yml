@@ -37,6 +37,7 @@ env:
   K8S_PROBE_FAILURE_THRESHOLD: 6
   K8S_PROBE_PERIOD: 20
   EMPLOYER_URL: https://ks-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  YOUTH_URL: https://ks-youth-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   HANDLER_URL: https://ks-hndl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://ks-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   MOCK_FLAG: 1
@@ -233,6 +234,8 @@ jobs:
           GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           FRONTEND_URL: ${{ env.ENVIRONMENT_URL }}
+          EMPLOYER_URL: ${{ env.EMPLOYER_URL }}
+          YOUTH_URL: ${{ env.YOUTH_URL }}
       - name: Upload Acceptance Test results for ${{ matrix.service }}
         run: |
           zip -r report.zip ${{matrix.dir}}/report > no_output 2>&1
