@@ -94,6 +94,9 @@ class AttachmentRequirement(models.TextChoices):
 
 class ApplicationBatchStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
+    AHJO_REPORT_CREATED = "exported_ahjo_report", _(
+        "Ahjo report created, not yet sent to AHJO"
+    )
     AWAITING_AHJO_DECISION = "awaiting_ahjo_decision", _(
         "Sent to Ahjo, decision pending"
     )
