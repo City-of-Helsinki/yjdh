@@ -84,18 +84,20 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             </$ViewFieldBold>
           )}
 
-          <$ViewField>
-            {t(
-              `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-            )}{' '}
-            <$ViewFieldBold>
+          {data.apprenticeshipProgram && (
+            <$ViewField>
               {t(
-                `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                  data.apprenticeshipProgram ? 'yes' : 'no'
-                }`
-              )}
-            </$ViewFieldBold>
-          </$ViewField>
+                `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+              )}{' '}
+              <$ViewFieldBold>
+                {t(
+                  `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                    data.apprenticeshipProgram ? 'yes' : 'no'
+                  }`
+                )}
+              </$ViewFieldBold>
+            </$ViewField>
+          )}
         </$GridCell>
       </SummarySection>
 
@@ -115,7 +117,8 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             </$ViewFieldBold>
           </$ViewField>
         </$GridCell>
-
+      </SummarySection>
+      <SummarySection>
         <$GridCell $colStart={1} $colSpan={2}>
           <$ViewField>
             {t(`${translationsBase}.employee.fields.startDate.label`)}

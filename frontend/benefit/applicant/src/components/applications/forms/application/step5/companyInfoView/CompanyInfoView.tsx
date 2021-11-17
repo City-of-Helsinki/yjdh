@@ -23,7 +23,6 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
   data,
   handleStepChange,
 }) => {
-  // console.log(data);
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
   const theme = useTheme();
@@ -60,18 +59,36 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         </$GridCell>
 
         <$GridCell $colSpan={3}>
-          <$ViewField>
-            {data.alternativeCompanyStreetAddress ||
-              data.company?.streetAddress}
-          </$ViewField>
-          <$ViewField>{`${
-            data.alternativeCompanyPostcode || data.company?.postcode || ''
-          } ${
-            data.alternativeCompanyCity || data.company?.city || ''
+          <$ViewField>{data.company?.streetAddress}</$ViewField>
+          <$ViewField>{`${data.company?.postcode || ''} ${
+            data.company?.city || ''
           }`}</$ViewField>
         </$GridCell>
       </SummarySection>
-      Alternative address and department data?
+      {data.alternativeCompanyStreetAddress && (
+        <SummarySection>
+          <$GridCell
+            $colSpan={12}
+            css={`
+              font-size: ${theme.fontSize.body.m};
+              margin: ${theme.spacing.xs4} 0;
+            `}
+          >
+            <$ViewFieldBold>
+              {t(`${translationsBase}.company.heading1Additional`)}
+            </$ViewFieldBold>
+          </$GridCell>
+          <$GridCell $colSpan={3}>
+            {data.companyDepartment && (
+              <$ViewField>{data.companyDepartment}</$ViewField>
+            )}
+            <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
+            <$ViewField>{`${data.alternativeCompanyPostcode || ''} ${
+              data.alternativeCompanyCity || ''
+            }`}</$ViewField>
+          </$GridCell>
+        </SummarySection>
+      )}
       <SummarySection
         header={t(`${translationsBase}.company.heading2Short`)}
         withoutDivider
@@ -147,7 +164,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         )}
       </SummarySection>
       <SummarySection header={t(`${translationsBase}.company.heading5`)}>
-        <$GridCell $colStart={1} $colSpan={6}>
+        <$GridCell $colStart={1} $colSpan={12}>
           {t(
             `${translationsBase}.company.fields.coOperationNegotiations.label`
           )}{' '}
@@ -158,6 +175,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               }`
             )}
           </$ViewFieldBold>
+          <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
         </$GridCell>
       </SummarySection>
     </>
