@@ -37,7 +37,9 @@
     "ks-empl:browser-test:ci": "yarn --cwd kesaseteli/employer browser-test:ci",
     "ks-youth:test": " yarn --cwd kesaseteli/youth test",
     "ks-youth:browser-test": "yarn --cwd kesaseteli/youth browser-test",
-    "ks-youth:browser-test:ci": "yarn --cwd kesaseteli/youth browser-test:ci"
+    "ks-youth:browser-test:ci": "yarn --cwd kesaseteli/youth browser-test:ci",
+    "shared:test": " yarn --cwd shared test",
+    "ks-shared:test": " yarn --cwd kesaseteli/shared test"
   },
   "devDependencies": {
     "@axe-core/react": "^4.3.1",
