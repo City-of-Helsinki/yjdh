@@ -47,7 +47,7 @@
     "react-input-mask": "^2.0.4",
     "react-loading-skeleton": "^2.2.0",
     "react-pdf": "^5.4.0",
-    "react-query": "^3.32.1",
+    "react-query": "^3.33.0",
     "react-toastify": "^8.0.2",
     "rexreplace": "^7.0.3",
     "snakecase-keys": "^4.0.2",
