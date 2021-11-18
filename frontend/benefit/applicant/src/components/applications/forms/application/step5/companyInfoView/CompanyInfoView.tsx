@@ -83,9 +83,11 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
               <$ViewField>{data.companyDepartment}</$ViewField>
             )}
             <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
-            <$ViewField>{`${data.alternativeCompanyPostcode || ''} ${
-              data.alternativeCompanyCity || ''
-            }`}</$ViewField>
+            <$ViewField>
+              {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
+                .join(' ')
+                .trim()}
+            </$ViewField>
           </$GridCell>
         </SummarySection>
       )}
@@ -96,8 +98,8 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         <$GridCell $colSpan={3}>
           <$ViewField>
             {[
-              data.companyContactPersonFirstName || '',
-              data.companyContactPersonLastName || '',
+              data.companyContactPersonFirstName,
+              data.companyContactPersonLastName,
             ]
               .join(' ')
               .trim()}
