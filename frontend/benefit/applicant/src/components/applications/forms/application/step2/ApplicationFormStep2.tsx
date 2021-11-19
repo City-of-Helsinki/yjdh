@@ -519,8 +519,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     stringFloatToFixed2(e.target.value)
                   )
                 }
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formatStringFloatValue(
                   formik.values.employee?.workingHours
                 )}
@@ -585,8 +583,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     stringFloatToFixed2(e.target.value)
                   )
                 }
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formatStringFloatValue(
                   formik.values.employee?.monthlyPay
                 )}
@@ -610,8 +606,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     stringFloatToFixed2(e.target.value)
                   )
                 }
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formatStringFloatValue(
                   formik.values.employee?.otherExpenses
                 )}
@@ -635,8 +629,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     stringFloatToFixed2(e.target.value)
                   )
                 }
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formatStringFloatValue(
                   formik.values.employee?.vacationMoney
                 )}
@@ -680,8 +672,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 label={fields.employee.commissionAmount.label}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
                 value={formatStringFloatValue(
                   formik.values.employee?.commissionAmount
                 )}
