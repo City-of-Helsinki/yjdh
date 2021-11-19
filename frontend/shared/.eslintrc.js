@@ -1,7 +1,11 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto', 'plugin:you-dont-need-lodash-underscore/compatible'],
+  extends: [
+    'auto',
+    'plugin:you-dont-need-lodash-underscore/compatible',
+    'plugin:react-hook-form/recommended',
+  ],
   rules: {
     'jsx-a11y/anchor-is-valid': [
       'error',
