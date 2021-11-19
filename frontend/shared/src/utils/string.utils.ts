@@ -28,7 +28,7 @@ export const isEmpty = (value?: string): boolean =>
   typeof value === 'string' ? value?.trim().length === 0 : Boolean(!value);
 
 export const getNumberValue = (s: string): number =>
-  Number(s?.toString().replace(/,/, '.'));
+  Number(s.replace(/,/, '.'));
 
 export const stringFloatToFixed2 = (value: string): string =>
   value.includes(',') ? value.slice(0, value.indexOf(',') + 3) : value;
