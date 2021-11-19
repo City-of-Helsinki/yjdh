@@ -1,8 +1,9 @@
+import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
 import {
   DE_MINIMIS_AID_KEYS,
   MAX_DEMINIMIS_AID_TOTAL_AMOUNT,
 } from 'benefit/applicant/constants';
-import { Button, IconMinusCircle, Notification } from 'hds-react';
+import { Button, IconMinusCircle } from 'hds-react';
 import sumBy from 'lodash/sumBy';
 import React from 'react';
 import {
@@ -69,7 +70,7 @@ const DeMinimisAidsList: React.FC = () => {
       {sumBy(grants, (grant) => Number(grant.amount)) >
         MAX_DEMINIMIS_AID_TOTAL_AMOUNT && (
         <$GridCell $colSpan={8} $colStart={3}>
-          <Notification
+          <$Notification
             label={t(
               `${translationsBase}.notifications.deMinimisAidMaxAmount.label`
             )}
@@ -78,7 +79,7 @@ const DeMinimisAidsList: React.FC = () => {
             {t(
               `${translationsBase}.notifications.deMinimisAidMaxAmount.content`
             )}
-          </Notification>
+          </$Notification>
         </$GridCell>
       )}
     </>
