@@ -6218,13 +6218,6 @@ eslint-plugin-promise@^5.1.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-5.1.1.tgz#9674d11c056d1bafac38e4a3a9060be740988d90"
   integrity sha512-XgdcdyNzHfmlQyweOPTxmc7pIsS6dE4MvwhXWMQ2Dxs1XAL2GJDilUsjWen6TWik0aSI+zD/PqocZBblcm9rdA==
 
-eslint-plugin-react-hook-form@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hook-form/-/eslint-plugin-react-hook-form-0.2.1.tgz#272ec11dbd670fb82f383fa5871d23baafadd7bf"
-  integrity sha512-GfuL2u5QV4Et1dx8aJ3OE0JVxow1WkGV0z3UQO02xTKlP/u22Fftxng8KML2+x8rARNm/US6gWVNtB/Y48gDPQ==
-  dependencies:
-    requireindex "~1.1.0"
-
 eslint-plugin-react-hooks@^4.2.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.3.0.tgz#318dbf312e06fab1c835a4abef00121751ac1172"
