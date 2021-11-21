@@ -39,13 +39,21 @@
       "fileType": "Filtypen är inte tillåten"
     }
   },
-  "upload": {
-    "isUploading": "Sänder...",
-    "errorTitle": "Uppladdningen av filen misslyckades",
-    "errorMessage": "Något gick fel. Försök igen senare."
-  },
-  "delete": {
-    "errorTitle": "Borttagningen misslyckades",
-    "errorMessage": "Något gick fel. Försök igen senare."
+  "applicationPage": {
+    "title": "SV Rekisteröidy ja saat henkilö-kohtaisen Kesäsetelin käyttöösi",
+    "paragraph_1": "SV Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "form" : {
+      "title": "SV Setelin tiedot",
+      "info": "SV Täytäthän tiedot samalla tavalla kuin kelakortissasi",
+      "button": "SV Lähetä tiedot",
+      "firstName" : "SV Etunimi",
+      "lastName": "SV Sukunimi",
+      "ssn": "SV Henkilötunnus",
+      "school": "SV Koulu",
+      "email": "SV Sähköpostiosoite",
+      "phone": "SV Puhelinnumero",
+      "termsAndConditions": "SV Hyväksyn käyttöehdot Lorem Ipsum Dolor",
+      "requiredInfo": "SV Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    }
   }
 }

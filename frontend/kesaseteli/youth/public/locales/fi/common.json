@@ -39,13 +39,21 @@
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
   },
-  "upload": {
-    "isUploading": "Lähetetään...",
-    "errorTitle": "Lähetys epäonnistui",
-    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
-  },
-  "delete": {
-    "errorTitle": "Poistaminen epäonnistui",
-    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  "applicationPage": {
+    "title": "Rekisteröidy ja saat henkilö-kohtaisen Kesäsetelin käyttöösi",
+    "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "form" : {
+      "title": "Setelin tiedot",
+      "info": "Täytäthän tiedot samalla tavalla kuin kelakortissasi",
+      "button": "Lähetä tiedot",
+      "firstName" : "Etunimi",
+      "lastName": "Sukunimi",
+      "ssn": "Henkilötunnus",
+      "school": "Koulu",
+      "email": "Sähköpostiosoite",
+      "phone": "Puhelinnumero",
+      "termsAndConditions": "Hyväksyn käyttöehdot Lorem Ipsum Dolor",
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    }
   }
 }
