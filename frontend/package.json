@@ -92,7 +92,6 @@
     "eslint-plugin-optimize-regex": "^1.2.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-hook-form": "^0.2.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-scanjs-rules": "^0.2.1",
     "eslint-plugin-security": "^1.4.0",

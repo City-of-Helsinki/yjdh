@@ -1,11 +1,13 @@
 const { join } = require('path');
 
 module.exports = {
+  parserOptions: {
+    ecmaVersion: 2020,
+  },
   extends: [
     'auto',
     'next/core-web-vitals',
     'plugin:you-dont-need-lodash-underscore/compatible',
-    'plugin:react-hook-form/recommended',
   ],
   rules: {
     'jsx-a11y/anchor-is-valid': [
