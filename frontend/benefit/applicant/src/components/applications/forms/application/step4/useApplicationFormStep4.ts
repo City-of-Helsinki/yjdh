@@ -29,7 +29,7 @@ const useApplicationFormStep4 = (
   const translationsBase = 'common:applications.sections.credentials.sections';
   const { t } = useTranslation();
 
-  const { onNext, onSave, onBack } = useFormActions(application, 4);
+  const { onNext, onSave, onBack } = useFormActions(application);
 
   const {
     mutate: uploadAttachment,

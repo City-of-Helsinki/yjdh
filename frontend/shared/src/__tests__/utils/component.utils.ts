@@ -16,8 +16,11 @@ export const waitForBackendRequestsToComplete = async (): Promise<void> => {
   if (isLoading) {
     await waitFor(expectBackendRequestsToComplete);
   }
-  // eslint-disable-next-line testing-library/prefer-find-by
-  await waitFor(() => expect(nock.isDone()).toBeTruthy());
-
+  if (nock.pendingMocks()) {
+    // eslint-disable-next-line testing-library/prefer-find-by
+    await waitFor(() => {
+      expect(nock.isDone()).toBeTruthy();
+    });
+  }
   return Promise.resolve();
 };

@@ -5,7 +5,7 @@ type InputProps<T, V = string> = {
   registerOptions?: RegisterOptions<T>;
   initialValue?: V;
   onChange?: (value: V) => void;
-  label?: string | React.ReactNode;
+  label?: React.ReactNode;
   errorText?: string;
 };
 

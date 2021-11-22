@@ -29,7 +29,7 @@
     "jsdom": "^16.6.0",
     "lodash": "^4.17.21",
     "next": "^11.1.2",
-    "next-i18next": "^8.8.0",
+    "next-i18next": "^8.10.0",
     "path-browserify": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -44,6 +44,6 @@
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
-    "react-query": "^3.22.0"
+    "react-query": "^3.33.0"
   }
 }

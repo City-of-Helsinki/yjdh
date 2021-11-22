@@ -132,8 +132,7 @@
         "validate": "Syöttämäsi tieto on virheellistä muotoa",
         "selectionGroups": "Valitse jokin vaihtoehto",
         "checkboxRequired": "Valinta on pakollinen",
-        "employment_contract": "Liitä ainakin yksi tiedosto",
-        "payslip": "Liitä ainakin yksi tiedosto"
+        "attachments": "Liitä ainakin yksi tiedosto"
       },
       "notification": {
         "title": "Täytä puuttuvat tai virheelliset tiedot"

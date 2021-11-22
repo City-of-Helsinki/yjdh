@@ -1,9 +1,9 @@
+import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import React from 'react';
-import FormSection from 'shared/components/forms/section/FormSection';
 import { useTheme } from 'styled-components';
 
 import ConsentViewer from '../consentViewer/ConsentViewer';
@@ -34,7 +34,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
 
       <EmployeeView data={data} handleStepChange={handleStepChange} />
 
-      <FormSection
+      <SummarySection
         header={t(`${translationsBase}.attachments.heading1`)}
         action={
           <Button
@@ -94,8 +94,8 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           )}
           attachments={data.attachments || []}
         />
-      </FormSection>
-      <FormSection
+      </SummarySection>
+      <SummarySection
         paddingBottom={isEmpty(data.applicantTermsApproval)}
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
@@ -116,14 +116,14 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           type={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
           attachments={data.attachments || []}
         />
-      </FormSection>
+      </SummarySection>
       {!isEmpty(data.applicantTermsApproval) && (
-        <FormSection
+        <SummarySection
           paddingBottom
           header={t(`${translationsBase}.send.heading1`)}
         >
           <ConsentViewer data={data} />
-        </FormSection>
+        </SummarySection>
       )}
       <StepperActions
         lastStep={isSubmit}
