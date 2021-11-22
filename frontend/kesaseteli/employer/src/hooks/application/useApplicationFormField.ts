@@ -89,13 +89,27 @@ const useApplicationFormField = <V extends Value>(
   );
 
   const getErrorText = React.useCallback((): string | undefined => {
-    const message = getError()?.message as string;
+    const error = getError();
+    if (!error) {
+      return undefined;
+    }
+    const message = error.message as string;
     if (message) {
       return message;
     }
-    const type = getError()?.type as string;
-    return type ? t(`common:application.form.errors.${type}`) : undefined;
-  }, [getError, t]);
+    switch (fieldName) {
+      case 'summer_voucher_exception_reason':
+      case 'hired_without_voucher_assessment':
+        return t(`common:application.form.errors.selectionGroups`);
+
+      case 'employment_contract':
+      case 'payslip':
+        return t(`common:application.form.errors.attachments`);
+
+      default:
+        return t(`common:application.form.errors.${error.type}`);
+    }
+  }, [fieldName, getError, t]);
 
   const clearValue = React.useCallback(() => setValue(id, ''), [setValue, id]);
   const triggerF = React.useCallback(
