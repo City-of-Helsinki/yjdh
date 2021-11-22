@@ -11,10 +11,15 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import InputProps from 'shared/types/input-props';
 
-import { $TextInput, $TextInputProps } from './TextInput.sc';
+import { $TextInput } from './TextInput.sc';
 
-const getComponentType = (
-  type: $TextInputProps['$type']
+export type TextInputProps<T> = InputProps<T> & {
+  type?: 'text' | 'decimal' | 'number' | 'textArea';
+  placeholder?: string;
+} & GridCellProps;
+
+const getComponentType = <T,>(
+  type: TextInputProps<T>['type']
 ): typeof HdsTextInput | typeof HdsNumberInput | typeof HdsTextArea => {
   switch (type) {
     case 'number':
@@ -29,11 +34,6 @@ const getComponentType = (
       return HdsTextInput;
   }
 };
-
-export type TextInputProps<T> = InputProps<T> & {
-  type?: $TextInputProps['$type'];
-  placeholder?: string;
-} & GridCellProps;
 
 const TextInput = <T,>({
   id,
@@ -57,7 +57,6 @@ const TextInput = <T,>({
       <$TextInput
         as={getComponentType(type)}
         {...register(id, registerOptions)}
-        $type={type}
         key={id}
         id={id}
         data-testid={id}
