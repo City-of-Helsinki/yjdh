@@ -62,19 +62,22 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
         Export ApplicationBatch to pdf format
         """
         batch = self.get_object()
-        if batch.status != ApplicationBatchStatus.AWAITING_AHJO_DECISION:
+        if batch.status in (
+            ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
+        ):
             if batch.status == ApplicationBatchStatus.DRAFT:
-                batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
+                batch.status = ApplicationBatchStatus.AHJO_REPORT_CREATED
                 batch.save()
-            else:
-                return Response(
-                    {
-                        "detail": _(
-                            "Application status cannot be exported because of invalid status"
-                        )
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        else:
+            return Response(
+                {
+                    "detail": _(
+                        "Application status cannot be exported because of invalid status"
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if batch.applications.count() <= 0:
             return Response(
@@ -121,7 +124,7 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
         csv_file = talpa_service.get_talpa_csv_string()
         file_name = format_lazy(
             _("TALPA export {date}"),
-            date=timezone.now().strftime("%d-%m-%Y %H.%M.%S"),
+            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
         response = HttpResponse(csv_file, content_type="text/csv")
         response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(

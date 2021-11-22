@@ -74,7 +74,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/benefit/handler/next-i18ne
 
 # Copy public folder with assets package.json and yarn.lock files
 COPY --from=staticbuilder --chown=appuser:appuser app/benefit/handler/public app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/benefit/handler/src/i18n.ts app/benefit/handler/package.json app/benefit/handler/start.js benefit/handler/
+COPY --from=staticbuilder --chown=appuser:appuser app/benefit/handler/package.json app/benefit/handler/start.js benefit/handler/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/

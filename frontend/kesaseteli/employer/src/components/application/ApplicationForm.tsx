@@ -1,5 +1,6 @@
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
-import useResetApplicationFormValues from 'kesaseteli/employer/hooks/application/useResetApplicationFormValues';
+import useResetApplicationFormValuesEffect from 'kesaseteli/employer/hooks/application/useResetApplicationFormValuesEffect';
+import useSaveCurrentStepEffect from 'kesaseteli/employer/hooks/wizard/useSaveCurrentStepEffect';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
@@ -8,9 +9,10 @@ import Application from 'shared/types/application-form-data';
 type Props = {
   title?: string;
   children: React.ReactNode;
+  step: number;
 };
 
-const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
+const ApplicationForm: React.FC<Props> = ({ title, step, children }: Props) => {
   const { applicationQuery } = useApplicationApi();
 
   const methods = useForm<Application>({
@@ -18,7 +20,9 @@ const ApplicationForm: React.FC<Props> = ({ title, children }: Props) => {
     reValidateMode: 'onChange',
     criteriaMode: 'all',
   });
-  useResetApplicationFormValues(methods);
+  useResetApplicationFormValuesEffect(methods);
+
+  useSaveCurrentStepEffect(step);
 
   if (applicationQuery.isSuccess) {
     return (

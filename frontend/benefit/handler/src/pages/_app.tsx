@@ -14,11 +14,11 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
+import HDSToastContainer from 'shared/components/toast/ToastContainer';
 import useLocale from 'shared/hooks/useLocale';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-import HDSToastContainer from 'shared/components/toast/ToastContainer';
 
 const queryClient = new QueryClient();
 

@@ -43,3 +43,7 @@ def handler_api_client(admin_user):
 def anonymous_client():
     client = APIClient()
     return client
+
+
+def get_client_user(api_client):
+    return api_client.handler._force_user

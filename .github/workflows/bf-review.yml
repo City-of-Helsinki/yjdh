@@ -33,6 +33,8 @@ env:
   K8S_REQUEST_RAM: 200Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 400Mi
+  K8S_PROBE_FAILURE_THRESHOLD: 30
+  K8S_PROBE_PERIOD: 20
   NEXT_PUBLIC_BACKEND_URL: https://helsinkibenefit-bf-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   MOCK_FLAG: 1
 jobs:

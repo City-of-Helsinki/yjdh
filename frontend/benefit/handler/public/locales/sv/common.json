@@ -1,5 +1,5 @@
 {
-  "appName": "Helsinki-benefit handler EN",
+  "appName": "Helsinki-lisä käsittelijä",
   "header": {
     "navigation": {
       "applications": "Hakemukset",
@@ -47,7 +47,8 @@
         "submittedAt": "Saapunut",
         "applicationNum": "Numero",
         "employeeName": "Työntekijä",
-        "handlerName": "Käsittelijä"
+        "handlerName": "Käsittelijä",
+        "companyForm": "Yritysmuoto"
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"
@@ -62,6 +63,19 @@
           "text": "Unable to fetch applications with status {{status}}"
         }
       }
+    }
+  },
+  "review": {
+    "headings": {
+      "heading1": "Työnantajan tiedot",
+      "heading2": "Yhteyshenkilö",
+      "heading3": "Hakijan de minimis-tuet",
+      "heading4": "YT-neuvottelut",
+      "heading5": "Palkattava henkilö",
+      "heading6": "Palkkatukipäätös",
+      "heading7": "Haettava tukimuoto ja ajankohta",
+      "heading8": "Työsuhde",
+      "heading9": "Suostumus"
     }
   }
 }

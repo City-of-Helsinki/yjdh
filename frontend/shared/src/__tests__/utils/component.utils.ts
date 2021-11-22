@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 
 export const expectBackendRequestsToComplete = (): void => {
@@ -15,5 +16,8 @@ export const waitForBackendRequestsToComplete = async (): Promise<void> => {
   if (isLoading) {
     await waitFor(expectBackendRequestsToComplete);
   }
+  // eslint-disable-next-line testing-library/prefer-find-by
+  await waitFor(() => expect(nock.isDone()).toBeTruthy());
+
   return Promise.resolve();
 };

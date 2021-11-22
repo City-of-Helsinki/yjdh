@@ -13,10 +13,7 @@ from applications.tests.test_applications_api import (
 )
 from calculator.api.v1.serializers import CalculationSerializer
 from calculator.tests.factories import CalculationFactory, PaySubsidyFactory
-
-
-def _get_user(api_client):
-    return api_client.handler._force_user
+from common.tests.conftest import get_client_user
 
 
 def test_application_retrieve_calculation_as_handler(handler_api_client, application):
@@ -265,7 +262,7 @@ def test_application_edit_pay_subsidy_invalid_values(
 
 
 def test_assign_handler(handler_api_client, received_application):
-    user = _get_user(handler_api_client)
+    user = get_client_user(handler_api_client)
     user.first_name = "adminFirst"
     user.last_name = "adminFirst"
     user.save()
@@ -273,7 +270,7 @@ def test_assign_handler(handler_api_client, received_application):
     assert received_application.calculation
     assert received_application.pay_subsidies.count() == 0
     data["status"] = ApplicationStatus.HANDLING
-    data["calculation"]["handler"] = _get_user(handler_api_client).pk
+    data["calculation"]["handler"] = get_client_user(handler_api_client).pk
     response = handler_api_client.put(
         get_handler_detail_url(received_application),
         data,
@@ -281,15 +278,15 @@ def test_assign_handler(handler_api_client, received_application):
 
     assert response.status_code == 200
     assert response.data["calculation"]["handler_details"]["id"] == str(
-        _get_user(handler_api_client).pk
+        get_client_user(handler_api_client).pk
     )
     assert (
         response.data["calculation"]["handler_details"]["first_name"]
-        == _get_user(handler_api_client).first_name
+        == get_client_user(handler_api_client).first_name
     )
     assert (
         response.data["calculation"]["handler_details"]["last_name"]
-        == _get_user(handler_api_client).last_name
+        == get_client_user(handler_api_client).last_name
     )
 
 
@@ -311,7 +308,7 @@ def test_assign_handler_invalid_status(
     assert received_application.calculation
     assert received_application.pay_subsidies.count() == 0
     data["status"] = ApplicationStatus.HANDLING
-    data["calculation"]["handler"] = _get_user(handler_api_client).pk
+    data["calculation"]["handler"] = get_client_user(handler_api_client).pk
     response = handler_api_client.put(
         get_handler_detail_url(received_application),
         data,

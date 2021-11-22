@@ -42,7 +42,10 @@ const EmploymentsErrorNotification: React.FC = () => {
   }
 
   return (
-    <ErrorSummary label={t(`common:application.form.notification.title`)} autofocus>
+    <ErrorSummary
+      label={t(`common:application.form.notification.title`)}
+      autofocus
+    >
       <$Grid columns={2}>
         {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
           <EmployeeErrorNotification

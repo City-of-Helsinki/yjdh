@@ -25,6 +25,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     isLastStep,
     goToPreviousStep,
     goToNextStep,
+    clearStepHistory,
     isLoading: isWizardLoading,
   } = useWizard();
   const { updateApplication, sendApplication, updateApplicationQuery } =
@@ -44,6 +45,11 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
       sendApplication,
       onAfterLastStep,
     ]
+  );
+
+  const handleInvalid = React.useCallback(
+    () => clearStepHistory(),
+    [clearStepHistory]
   );
 
   const isLoading =
@@ -70,7 +76,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
           theme="coat"
           data-testid="next-button"
           iconRight={<IconArrowRight />}
-          onClick={handleSubmit(handleSuccess)}
+          onClick={handleSubmit(handleSuccess, handleInvalid)}
           loadingText={t(`common:application.loading`)}
           isLoading={isLoading}
           disabled={isLoading}

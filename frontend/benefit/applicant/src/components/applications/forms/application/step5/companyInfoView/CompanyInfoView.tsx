@@ -1,13 +1,18 @@
+import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { Application, DeMinimisAid } from 'benefit/applicant/types/application';
 import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import { $ViewField, $ViewFieldBold } from '../../Application.sc';
+import {
+  $SummaryTableHeader,
+  $SummaryTableValue,
+  $ViewField,
+  $ViewFieldBold,
+} from '../../Application.sc';
 
 export interface CompanyInfoViewProps {
   data: Application;
@@ -23,7 +28,7 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
   const theme = useTheme();
   return (
     <>
-      <FormSection
+      <SummarySection
         header={t(`${translationsBase}.company.heading1`)}
         action={
           <Button
@@ -54,46 +59,47 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         </$GridCell>
 
         <$GridCell $colSpan={3}>
-          <$ViewField>
-            {data.alternativeCompanyStreetAddress ||
-              data.company?.streetAddress}
-          </$ViewField>
-          <$ViewField>{`${
-            data.alternativeCompanyPostcode || data.company?.postcode || ''
-          } ${
-            data.alternativeCompanyCity || data.company?.city || ''
+          <$ViewField>{data.company?.streetAddress}</$ViewField>
+          <$ViewField>{`${data.company?.postcode || ''} ${
+            data.company?.city || ''
           }`}</$ViewField>
         </$GridCell>
-
-        <$GridCell
-          $colStart={1}
-          $colSpan={6}
-          css={`
-            margin-top: ${theme.spacing.s};
-          `}
-        >
-          {t(
-            `${translationsBase}.company.fields.coOperationNegotiations.label`
-          )}{' '}
-          <$ViewFieldBold>
-            {t(
-              `${translationsBase}.company.fields.coOperationNegotiations.${
-                data.coOperationNegotiations ? 'yes' : 'no'
-              }`
+      </SummarySection>
+      {data.alternativeCompanyStreetAddress && (
+        <SummarySection>
+          <$GridCell
+            $colSpan={12}
+            css={`
+              font-size: ${theme.fontSize.body.m};
+              margin: ${theme.spacing.xs4} 0;
+            `}
+          >
+            <$ViewFieldBold>
+              {t(`${translationsBase}.company.heading1Additional`)}
+            </$ViewFieldBold>
+          </$GridCell>
+          <$GridCell $colSpan={3}>
+            {data.companyDepartment && (
+              <$ViewField>{data.companyDepartment}</$ViewField>
             )}
-          </$ViewFieldBold>
-        </$GridCell>
-      </FormSection>
-
-      <FormSection
+            <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
+            <$ViewField>
+              {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
+                .join(' ')
+                .trim()}
+            </$ViewField>
+          </$GridCell>
+        </SummarySection>
+      )}
+      <SummarySection
         header={t(`${translationsBase}.company.heading2Short`)}
         withoutDivider
       >
         <$GridCell $colSpan={3}>
           <$ViewField>
             {[
-              data.companyContactPersonFirstName || '',
-              data.companyContactPersonLastName || '',
+              data.companyContactPersonFirstName,
+              data.companyContactPersonLastName,
             ]
               .join(' ')
               .trim()}
@@ -108,46 +114,49 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
             </$ViewFieldBold>
           </$ViewField>
         </$GridCell>
-      </FormSection>
-
-      <FormSection header={t(`${translationsBase}.company.heading3`)}>
+      </SummarySection>
+      <SummarySection
+        gap={theme.spacing.xs3}
+        header={t(`${translationsBase}.company.heading3`)}
+        withoutDivider
+      >
         {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
           <>
             <$GridCell $colSpan={3}>
-              <$ViewFieldBold>
+              <$SummaryTableHeader>
                 {t(
                   `${translationsBase}.company.fields.deMinimisAidGranter.label`
                 )}
-              </$ViewFieldBold>
+              </$SummaryTableHeader>
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <$ViewFieldBold>
+              <$SummaryTableHeader>
                 {t(
                   `${translationsBase}.company.fields.deMinimisAidAmount.label`
                 )}
-              </$ViewFieldBold>
+              </$SummaryTableHeader>
             </$GridCell>
             <$GridCell>
-              <$ViewFieldBold>
+              <$SummaryTableHeader>
                 {t(
                   `${translationsBase}.company.fields.deMinimisAidGrantedAt.labelShort`
                 )}
-              </$ViewFieldBold>
+              </$SummaryTableHeader>
             </$GridCell>
             {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
               <React.Fragment
                 key={`${aid.granter ?? ''}${aid.grantedAt ?? ''}`}
               >
                 <$GridCell $colStart={1} $colSpan={3}>
-                  <$ViewField>{aid.granter}</$ViewField>
+                  <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
                 </$GridCell>
                 <$GridCell $colSpan={2}>
-                  <$ViewField>{aid.amount}</$ViewField>
+                  <$SummaryTableValue>{aid.amount}</$SummaryTableValue>
                 </$GridCell>
                 <$GridCell>
-                  <$ViewField>
+                  <$SummaryTableValue>
                     {aid.grantedAt ? convertToUIDateFormat(aid.grantedAt) : ''}
-                  </$ViewField>
+                  </$SummaryTableValue>
                 </$GridCell>
               </React.Fragment>
             ))}
@@ -155,7 +164,22 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
         ) : (
           '-'
         )}
-      </FormSection>
+      </SummarySection>
+      <SummarySection header={t(`${translationsBase}.company.heading5`)}>
+        <$GridCell $colStart={1} $colSpan={12}>
+          {t(
+            `${translationsBase}.company.fields.coOperationNegotiations.label`
+          )}{' '}
+          <$ViewFieldBold>
+            {t(
+              `${translationsBase}.company.fields.coOperationNegotiations.${
+                data.coOperationNegotiations ? 'yes' : 'no'
+              }`
+            )}
+          </$ViewFieldBold>
+          <$ViewField>{data.coOperationNegotiationsDescription}</$ViewField>
+        </$GridCell>
+      </SummarySection>
     </>
   );
 };
