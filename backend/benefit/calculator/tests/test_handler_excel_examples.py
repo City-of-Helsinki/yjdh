@@ -8,6 +8,7 @@ from calculator.tests.factories import PaySubsidyFactory
 from common.utils import nested_setattr, to_decimal
 from helsinkibenefit.tests.conftest import *  # noqa
 from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
 
 
 class CaseNotFound(Exception):
@@ -27,7 +28,8 @@ def make_bool_fi(value):
 
 
 MAX_TEST_ROW = 100
-MAX_TEST_COLUMN = 5  # complex cases not tested yet
+FIRST_TEST_COLUMN = 3
+MAX_TEST_COLUMN = 50  # large enough number that all test columns are included
 
 
 class ExpectedResults:
@@ -56,6 +58,8 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         self._setup_expected_results()
         self._setup_db_objects()
         self._load_values_from_excel()
+        if self.expected_results.calculated_benefit_amount is None:
+            raise CaseNotFound
         self._save_initial_state()
 
     def _setup_expected_results(self):
@@ -129,7 +133,9 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 if value is not None:
                     value = to_decimal(value, decimal_places=2)
 
-            print(f"{target}={value} ({type(value)}")
+            print(
+                f"{get_column_letter(self.column_idx)} {target}={value} ({type(value)}"
+            )
             nested_setattr(self, target, value)
 
     def convert_date(self, value):
@@ -146,6 +152,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
     def _save_initial_state(self):
         self.application.save()
         self.application.calculation.save()
+        self.application.company.save()
 
         for pay_subsidy in [
             self.application.pay_subsidy_1,
@@ -165,10 +172,15 @@ class SalaryBenefitExcelTest(ExcelTestCase):
             or self.expected_results.time_range_1.end_date
         )
         self.application.calculation.save()
+        self.application.save()
+
+        self.application.refresh_from_db()  # so that DecimalFields have proper type (not float)
 
     def run_test(self):
         self._setup()
         self.application.calculation.init_calculator()
+        if self.application.TEST_FLAGS == "SKIP":
+            return
         self.application.calculation.calculate()
         self._verify_results()
 
@@ -239,38 +251,38 @@ class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
         )
 
 
-FIRST_TEST_COLUMN = 3
+SHEETS_TO_TEST = [
+    ("Palkan Helsinki-lisä", SalaryBenefitExcelTest),
+    # ("Työllistämisen Helsinki-lisä", EmploymentBenefitExcelTest),
+    # ("Palkkatuettu oppisopimus", ApprenticeshipExcelTest),
+]
 
 
-def test_salary_benefit_cases_from_excel(request, api_client):
-
-    excel_file_name = os.path.join(
-        request.fspath.dirname, "Helsinki-lisä laskurin testitapaukset.xlsx"
-    )
-    wb = load_workbook(filename=excel_file_name, data_only=True)  # do not load formulas
-    salary_benefit_tests = wb["Palkan Helsinki-lisä"]
-    for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
-        try:
-            test = SalaryBenefitExcelTest(salary_benefit_tests, col_idx)
-            # add_attachments_to_application(request, application)
-        except CaseNotFound:  # no tests
-            break
-        else:
-            test.run_test()
-
-
-def test_employee_benefit_cases_from_excel(request, api_client):
+def test_cases_from_excel(request, api_client):
 
     excel_file_name = os.path.join(
         request.fspath.dirname, "Helsinki-lisä laskurin testitapaukset.xlsx"
     )
     wb = load_workbook(filename=excel_file_name, data_only=True)  # do not load formulas
-    salary_benefit_tests = wb["Työllistämisen Helsinki-lisä"]
-    for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
+    for sheet_name, test_handler_class in SHEETS_TO_TEST:
+        test_sheet = wb[sheet_name]
         try:
-            test = EmployeeBenefitExcelTest(salary_benefit_tests, col_idx)
-            # add_attachments_to_application(request, application)
+            for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
+                if test_column := os.getenv("TEST_COLUMN"):
+                    if get_column_letter(col_idx).lower() not in [
+                        v.lower() for v in test_column.split(",")
+                    ]:
+                        continue
+                test = test_handler_class(test_sheet, col_idx)
+                if os.getenv("KEEP_GOING", None) == "1":
+                    try:
+                        test.run_test()
+                    except AssertionError:
+                        import pdb
+
+                        pdb.post_mortem()
+                else:
+                    test.run_test()
         except CaseNotFound:  # no tests
+            assert col_idx > 4  # all sheets should have at least some tests
             break
-        else:
-            test.run_test()

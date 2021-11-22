@@ -5,11 +5,15 @@ import decimal
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from calculator.enums import RowType
 from calculator.models import (  # SalaryBenefitPaySubsidySubTotalRow,
+    DateRangeDescriptionRow,
     DescriptionRow,
     EmployeeBenefitMonthlyRow,
     EmployeeBenefitTotalRow,
+    PaySubsidy,
     PaySubsidyMonthlyRow,
     SalaryBenefitMonthlyRow,
+    SalaryBenefitSubTotalRow,
+    SalaryBenefitSumSubTotalsRow,
     SalaryBenefitTotalRow,
     SalaryCostsRow,
     StateAidMaxMonthlyRow,
@@ -39,8 +43,8 @@ class HelsinkiBenefitCalculator:
     def get_sub_total_ranges(self):
         # return a list of (start_date, end_date, pay_subsidy) that require a separate calculation.
         # date range are inclusive
-        if pay_subsidies := list(
-            self.calculation.application.pay_subsidies.order_by("start_date")
+        if pay_subsidies := PaySubsidy.merge_compatible_subsidies(
+            list(self.calculation.application.pay_subsidies.order_by("start_date"))
         ):
             ranges = []
             if self.calculation.start_date < pay_subsidies[0].start_date:
@@ -112,6 +116,7 @@ class HelsinkiBenefitCalculator:
         self._row_counter += 1
         row.update_row()
         row.save()
+        return row
 
     def create_rows(self):
         pass
@@ -158,24 +163,64 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
         if len(date_ranges) == 1:
             self._create_row(SalaryCostsRow)
             self._create_row(StateAidMaxMonthlyRow)
+
             if date_ranges[0].pay_subsidy:
                 self._create_row(
                     DescriptionRow,
                     description_fi_template="Vähennettävät korvaukset / kk",
                 )
-                self._create_row(
+                pay_subsidy_monthly_eur = self._create_row(
                     PaySubsidyMonthlyRow,
                     pay_subsidy=date_ranges[0].pay_subsidy,
                     max_subsidy=self.get_maximum_monthly_pay_subsidy(),
-                )
+                ).amount
+            else:
+                pay_subsidy_monthly_eur = 0
             self._create_row(
-                SalaryBenefitMonthlyRow, max_benefit=self.SALARY_BENEFIT_MAX
+                SalaryBenefitMonthlyRow,
+                max_benefit=self.SALARY_BENEFIT_MAX,
+                pay_subsidy_monthly_eur=pay_subsidy_monthly_eur,
             )
             self._create_row(SalaryBenefitTotalRow)
         else:
+            self._create_row(SalaryCostsRow)
+            self._create_row(StateAidMaxMonthlyRow)
             for start_date, end_date, pay_subsidy in date_ranges:
-                pass
-            raise Exception("Complex cases TBD")
+                self._create_row(
+                    DateRangeDescriptionRow,
+                    start_date=start_date,
+                    end_date=end_date,
+                    prefix_text="Ajalta",
+                )
+                if pay_subsidy:
+                    self._create_row(
+                        DescriptionRow,
+                        description_fi_template="Vähennettävät korvaukset / kk",
+                    )
+                    pay_subsidy_monthly_eur = self._create_row(
+                        PaySubsidyMonthlyRow,
+                        pay_subsidy=pay_subsidy,
+                        max_subsidy=self.get_maximum_monthly_pay_subsidy(),
+                    ).amount
+                else:
+                    pay_subsidy_monthly_eur = 0
+
+                self._create_row(
+                    SalaryBenefitMonthlyRow,
+                    max_benefit=self.SALARY_BENEFIT_MAX,
+                    pay_subsidy_monthly_eur=pay_subsidy_monthly_eur,
+                )
+                self._create_row(
+                    SalaryBenefitSubTotalRow, start_date=start_date, end_date=end_date
+                )
+
+            self._create_row(
+                DateRangeDescriptionRow,
+                start_date=start_date,
+                end_date=end_date,
+                prefix_text="Koko ajalta",
+            )
+            self._create_row(SalaryBenefitSumSubTotalsRow)
 
 
 class EmployeeBenefitCalculator2021(HelsinkiBenefitCalculator):
