@@ -87,7 +87,10 @@ class ApplicationBatchStatusValidator(StatusTransitionValidator):
     initial_status = ApplicationBatchStatus.DRAFT
 
     STATUS_TRANSITIONS = {
-        ApplicationBatchStatus.DRAFT: (ApplicationBatchStatus.AWAITING_AHJO_DECISION,),
+        ApplicationBatchStatus.DRAFT: (ApplicationBatchStatus.AHJO_REPORT_CREATED,),
+        ApplicationBatchStatus.AHJO_REPORT_CREATED: (
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION
+        ),
         ApplicationBatchStatus.AWAITING_AHJO_DECISION: (
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,
