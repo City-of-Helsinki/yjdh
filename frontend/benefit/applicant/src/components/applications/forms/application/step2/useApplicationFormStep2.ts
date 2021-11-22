@@ -24,7 +24,7 @@ import {
 } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 
-import { getMaxEndDate,getMinEndDate } from './utils/dates';
+import { getMaxEndDate, getMinEndDate } from './utils/dates';
 import { getValidationSchema } from './utils/validation';
 
 type Step2Fields = Record<
@@ -66,7 +66,7 @@ const useApplicationFormStep2 = (
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const { onNext, onSave, onBack } = useFormActions(application, 2);
+  const { onNext, onSave, onBack } = useFormActions(application);
 
   const formik = useFormik<Application>({
     initialValues: {
