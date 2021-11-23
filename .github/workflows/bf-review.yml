@@ -116,6 +116,9 @@ jobs:
         run: |
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+          echo "K8S_SECRET_CSRF_COOKIE_DOMAIN=.test.kuva.hel.ninja" >> $GITHUB_ENV
+          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.FRONTEND_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
       - name: Review-Services
         if: matrix.database
         uses: andersinno/kolga-deploy-service-action@v2
