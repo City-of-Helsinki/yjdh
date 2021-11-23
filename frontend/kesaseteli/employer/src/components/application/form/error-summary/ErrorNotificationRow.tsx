@@ -2,23 +2,26 @@ import useApplicationFormField from 'kesaseteli/employer/hooks/application/useAp
 import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { FieldError } from 'react-hook-form';
 
 type Props = {
   fieldPath: ApplicationFieldPath;
-  error: FieldError;
 };
 
-const ErrorNotificationRow: React.FC<Props> = ({ fieldPath, error }: Props) => {
+const ErrorNotificationRow: React.FC<Props> = ({ fieldPath }: Props) => {
   const { t } = useTranslation();
-  const { fieldName, setFocus } = useApplicationFormField(fieldPath);
+  const { fieldName, setFocus, getErrorText, hasError } =
+    useApplicationFormField(fieldPath);
+
+  if (!hasError()) {
+    return null;
+  }
 
   return (
     <li>
       {t(`common:application.form.inputs.${fieldName}`)}
       {': '}
       <a href={`#${fieldPath}`} onClick={setFocus}>
-        {t(`common:application.form.errors.${error.type}`)}
+        {getErrorText()}
       </a>
     </li>
   );

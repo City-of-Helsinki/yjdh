@@ -7,7 +7,7 @@ import {
   EMPLOYEE_KEYS,
 } from '../constants';
 
-export interface EmployeeData {
+export type EmployeeData = {
   id?: string;
   first_name: string;
   last_name: string;
@@ -25,7 +25,7 @@ export interface EmployeeData {
   commission_amount: string;
   commission_description: string;
   created_at?: string;
-}
+};
 
 export type Employee = {
   id?: string;
@@ -46,7 +46,7 @@ export type Employee = {
   [EMPLOYEE_KEYS.COMMISSION_DESCRIPTION]?: string;
 };
 
-export interface CompanyData {
+export type CompanyData = {
   id?: string;
   name: string;
   business_id: string;
@@ -55,7 +55,7 @@ export interface CompanyData {
   postcode: string;
   city: string;
   bank_account_number: string;
-}
+};
 
 export type Company = {
   id?: string;
@@ -68,17 +68,17 @@ export type Company = {
   bankAccountNumber: string;
 };
 
-export interface BaseData {
+export type BaseData = {
   identifier: string;
-}
+};
 
-export interface DeMinimisAidData {
+export type DeMinimisAidData = {
   id?: string;
   granter: string;
   granted_at: string;
   amount: number;
   ordering?: number;
-}
+};
 
 export type DeMinimisAid = {
   [DE_MINIMIS_AID_KEYS.GRANTER]?: string;
@@ -86,7 +86,7 @@ export type DeMinimisAid = {
   [DE_MINIMIS_AID_KEYS.GRANTED_AT]?: string;
 };
 
-export interface AttachmentData {
+export type AttachmentData = {
   id?: string;
   application: string;
   attachment_type: ATTACHMENT_TYPES;
@@ -94,14 +94,14 @@ export interface AttachmentData {
   attachment_file_name: string;
   content_type: ATTACHMENT_CONTENT_TYPES;
   created_at?: string;
-}
+};
 
-export interface ApplicantConsentData {
+export type ApplicantConsentData = {
   id: string;
   text_fi: string;
   text_en: string;
   text_sv: string;
-}
+};
 
 export type ApplicantConsent = {
   id: string;
@@ -110,7 +110,7 @@ export type ApplicantConsent = {
   textSv: string;
 };
 
-export interface ApplicantTermsData {
+export type ApplicantTermsData = {
   id: string;
   applicant_consents: ApplicantConsentData[];
   effective_from: string;
@@ -118,7 +118,7 @@ export interface ApplicantTermsData {
   terms_pdf_fi: string;
   terms_pdf_sv: string;
   terms_type?: ATTACHMENT_TYPES;
-}
+};
 
 export type ApplicantTerms = {
   applicantConsents: ApplicantConsent[];
@@ -130,12 +130,12 @@ export type ApplicantTerms = {
   termsType: ATTACHMENT_TYPES;
 };
 
-export interface ApplicantTermsApprovalData {
+export type ApplicantTermsApprovalData = {
   id: string;
   approved_at: string;
   approved_by: string;
   terms: ApplicantTermsData[];
-}
+};
 
 export type ApplicantTermsApproval = {
   id: string;
@@ -144,14 +144,47 @@ export type ApplicantTermsApproval = {
   terms?: ApplicantTerms;
 };
 
-export interface ApproveTermsData {
+export type ApproveTermsData = {
   terms: string;
   selected_applicant_consents: string[];
-}
+};
 
 export type ApproveTerms = {
   terms: string;
   selectedApplicantConsents: string[];
+};
+
+// handler
+
+export type RowData = {
+  row_type: string;
+  ordering: number;
+  description_fi: string;
+  amount: string;
+};
+
+export type HandlerDetailsData = {
+  id?: string;
+  first_name: string;
+  last_name: string;
+  terms_of_service_approvals: ApplicantTermsApprovalData;
+};
+
+export type CalculationData = {
+  id?: string;
+  monthly_pay: string;
+  vacation_money: string;
+  other_expenses: string;
+  start_date: string;
+  end_date: string;
+  state_aid_max_percentage?: number;
+  granted_as_de_minimis_aid: boolean;
+  target_group_check: boolean;
+  calculated_benefit_amount: string;
+  override_benefit_amount: string;
+  override_benefit_amount_comment?: string;
+  rows: RowData[];
+  handler_details: HandlerDetailsData;
 };
 
 export type ApplicationData = {
@@ -204,6 +237,7 @@ export type ApplicationData = {
   applicant_terms_approval_needed?: boolean;
   applicant_terms_in_effect?: ApplicantTermsData;
   approve_terms?: ApproveTermsData;
+  calculation?: CalculationData;
 };
 
 export type ApplicationListItemData = {
@@ -262,6 +296,39 @@ export interface Step2 {
   [APPLICATION_FIELDS_STEP2_KEYS.EMPLOYEE]?: Employee;
 }
 
+// handler
+
+export type Row = {
+  rowType: string;
+  ordering: number;
+  descriptionFi: string;
+  amount: string;
+};
+
+export type HandlerDetails = {
+  id?: string;
+  firstName: string;
+  lastName: string;
+  termsOfServiceApprovals: ApplicantTermsApproval;
+};
+
+export type Calculation = {
+  id?: string;
+  monthlyPay: string;
+  vacationMoney: string;
+  otherExpenses: string;
+  startDate: string;
+  endDate: string;
+  stateAidMaxPercentage?: number;
+  grantedAsDeMinimisAid: boolean;
+  targetGroupCheck: boolean;
+  calculatedBenefitAmount: string;
+  overrideBenefitAmount: string;
+  overrideBenefitAmountComment?: string;
+  rows: Row[];
+  handlerDetails: HandlerDetails;
+};
+
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;
@@ -277,6 +344,7 @@ export type Application = {
   applicantTermsApprovalNeeded?: boolean;
   applicantTermsInEffect?: ApplicantTerms;
   approveTerms?: ApproveTerms;
+  calculation?: Calculation;
 } & Step1 &
   Step2;
 

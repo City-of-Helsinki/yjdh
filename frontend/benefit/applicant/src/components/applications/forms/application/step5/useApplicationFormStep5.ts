@@ -79,7 +79,7 @@ const useApplicationFormStep5 = (
     }
   }, [t, updateApplicationErrorStep5]);
 
-  const { onBack, onSave } = useFormActions(application, 5);
+  const { onBack, onSave } = useFormActions(application);
 
   const handleStepChange = (nextStep: number): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(

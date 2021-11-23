@@ -1,5 +1,5 @@
 import factory
-from messages.models import Message
+from messages.models import Message, MessageType
 
 
 class MessageFactory(factory.django.DjangoModelFactory):
@@ -9,7 +9,7 @@ class MessageFactory(factory.django.DjangoModelFactory):
         "applications.tests.factories.HandlingApplicationFactory"
     )
     message_type = factory.Faker(
-        "random_element", elements=[t[0] for t in Message.MESSAGE_TYPES]
+        "random_element", elements=[t[0] for t in MessageType.choices]
     )
 
     class Meta:

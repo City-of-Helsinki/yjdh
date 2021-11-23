@@ -2,36 +2,26 @@ import ErrorNotificationRow from 'kesaseteli/employer/components/application/for
 import useWatchEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useWatchEmployeeDisplayName';
 import { getEmploymentFieldPath } from 'kesaseteli/employer/utils/application-form.utils';
 import React from 'react';
-import { FieldError } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Employment from 'shared/types/employment';
 
 type Props = {
   index: number;
-  errors: Array<{
-    field: keyof Employment;
-    error: FieldError;
-  }>;
+  errorFields: Array<keyof Employment>;
 };
 
 const EmployeeErrorNotification: React.FC<Props> = ({
   index,
-  errors,
+  errorFields,
 }: Props) => {
   const employeeDisplayname = useWatchEmployeeDisplayName(index);
   return (
     <$GridCell key={index}>
       <h4>{employeeDisplayname}</h4>
       <ul>
-        {errors.map(({ field, error }) => {
+        {errorFields.map((field) => {
           const fieldPath = getEmploymentFieldPath(index, field);
-          return (
-            <ErrorNotificationRow
-              key={fieldPath}
-              fieldPath={fieldPath}
-              error={error}
-            />
-          );
+          return <ErrorNotificationRow key={fieldPath} fieldPath={fieldPath} />;
         })}
       </ul>
     </$GridCell>

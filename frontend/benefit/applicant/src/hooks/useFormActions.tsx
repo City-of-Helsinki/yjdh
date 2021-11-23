@@ -9,7 +9,11 @@ import snakecaseKeys from 'snakecase-keys';
 
 import DeMinimisContext from '../context/DeMinimisContext';
 import { Application, ApplicationData, Employee } from '../types/application';
-import { getApplicationStepString, getFullName } from '../utils/common';
+import {
+  getApplicationStepFromString,
+  getApplicationStepString,
+  getFullName,
+} from '../utils/common';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
@@ -19,11 +23,11 @@ interface FormActions {
   onSave: (values: Application) => void;
 }
 
-const useFormActions = (
-  application: Application,
-  currentStep: number
-): FormActions => {
+const useFormActions = (application: Application): FormActions => {
   const router = useRouter();
+  const currentStep = getApplicationStepFromString(
+    application.applicationStep ?? ''
+  );
 
   const {
     mutateAsync: createApplication,
@@ -101,16 +105,10 @@ const useFormActions = (
       apprenticeshipProgram: currentValues.apprenticeshipProgram || false,
     };
 
-    const deMinimisAidValues = {
-      // update from context
-      deMinimisAidSet: deMinimisAids,
-      deMinimisAid: deMinimisAids?.length !== 0,
-    };
-
     return {
       ...application,
       ...normalizedValues,
-      ...deMinimisAidValues,
+      deMinimisAidSet: deMinimisAids,
     };
   };
 

@@ -19,7 +19,7 @@ type ExtendedComponentProps = {
 const useApplicationFormStep3 = (
   application: Application
 ): ExtendedComponentProps => {
-  const { onNext, onSave, onBack } = useFormActions(application, 3);
+  const { onNext, onSave, onBack } = useFormActions(application);
 
   const handleNext = (): void => onNext(application);
   const handleSave = (): void => onSave(application);

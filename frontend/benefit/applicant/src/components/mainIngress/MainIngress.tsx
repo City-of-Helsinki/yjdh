@@ -1,3 +1,4 @@
+import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
 import AppContext from 'benefit/applicant/context/AppContext';
 import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
 import { Button, IconPlus } from 'hds-react';
@@ -11,7 +12,6 @@ import {
   $Description,
   $Heading,
   $Link,
-  $Notification,
   $TextContainer,
 } from './MainIngress.sc';
 import { useMainIngress } from './useMainIngress';

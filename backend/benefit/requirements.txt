@@ -70,13 +70,17 @@ django==3.2.4
     #   django-searchable-encrypted-fields
     #   django-storages
     #   djangorestframework
+    #   drf-nested-routers
     #   drf-spectacular
     #   mozilla-django-oidc
     #   yjdh-backend-shared
 djangorestframework==3.12.4
     # via
     #   -r requirements.in
+    #   drf-nested-routers
     #   drf-spectacular
+drf-nested-routers==0.93.4
+    # via -r requirements.in
 drf-spectacular==0.17.2
     # via -r requirements.in
 elasticsearch==7.14.0

@@ -121,7 +121,12 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID]: Yup.boolean()
       .nullable()
-      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      .when(APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES, {
+        is: true,
+        then: Yup.boolean()
+          .nullable()
+          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      }),
     [APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID_SET]: Yup.array().of(
       getDeminimisValidationSchema(t).nullable()
     ),

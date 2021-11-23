@@ -39,13 +39,13 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { deMinimisAids, setDeMinimisAids } =
     React.useContext(DeMinimisContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [defaultValue, setDefaultValue] = useState(false);
+  const [defaultValue, setDefaultValue] = useState<boolean | null>(null);
 
   // initial data
   useEffect(() => {
     if (!defaultValue) {
       setDeMinimisAids(data);
-      setDefaultValue(true);
+      setDefaultValue(null);
     }
   }, [data, defaultValue, setDefaultValue, setDeMinimisAids]);
 

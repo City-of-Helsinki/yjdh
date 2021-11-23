@@ -1,3 +1,4 @@
+import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
 import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_START_DATE,
@@ -6,13 +7,7 @@ import {
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import {
-  DateInput,
-  Notification,
-  Select,
-  SelectionGroup,
-  TextInput,
-} from 'hds-react';
+import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
@@ -70,6 +65,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
       apprenticeshipProgram: formik.values.apprenticeshipProgram,
       benefitType: formik.values.benefitType,
       paySubsidyGranted: formik.values.paySubsidyGranted,
+      associationHasBusinessActivities:
+        formik.values.associationHasBusinessActivities,
       startDate: formik.values.startDate,
     },
     {
@@ -388,11 +385,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
 
         {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
           <$GridCell $colSpan={6}>
-            <Notification
+            <$Notification
               label={t(`${translationsBase}.notifications.salaryBenefit.label`)}
             >
               {t(`${translationsBase}.notifications.salaryBenefit.content`)}
-            </Notification>
+            </$Notification>
           </$GridCell>
         )}
       </FormSection>
@@ -451,7 +448,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         </$GridCell>
         {formik.values.benefitType && (
           <$GridCell $colStart={7} $colSpan={6}>
-            <Notification
+            <$Notification
               label={t(
                 `${translationsBase}.notifications.${camelCase(
                   formik.values.benefitType
@@ -463,7 +460,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   formik.values.benefitType
                 )}Selected.content`
               )}
-            </Notification>
+            </$Notification>
           </$GridCell>
         )}
       </FormSection>

@@ -155,7 +155,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
         message={message}
         errorMessage={
           hasError()
-            ? `${t(`common:application.form.errors.${attachmentType}`)}`
+            ? `${t(`common:application.form.errors.attachments`)}`
             : undefined
         }
         required={required}

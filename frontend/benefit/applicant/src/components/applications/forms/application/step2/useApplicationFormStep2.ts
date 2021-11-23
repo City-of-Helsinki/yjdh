@@ -66,7 +66,7 @@ const useApplicationFormStep2 = (
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const { onNext, onSave, onBack } = useFormActions(application, 2);
+  const { onNext, onSave, onBack } = useFormActions(application);
 
   const formik = useFormik<Application>({
     initialValues: {
