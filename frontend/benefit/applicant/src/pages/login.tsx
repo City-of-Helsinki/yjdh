@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import Layout from 'shared/components/Layout';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
 
@@ -47,21 +46,19 @@ const Login: NextPage = () => {
 
   return (
     <Container>
-      <Layout>
-        <$Notification
-          type={notificationProps.type}
-          label={notificationProps.label}
-          size="large"
-          css={`
-            margin-bottom: ${theme.spacing.xl};
-          `}
-        >
-          {notificationProps.content}
-        </$Notification>
-        <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
-          {t('common:login.login')}
-        </Button>
-      </Layout>
+      <$Notification
+        type={notificationProps.type}
+        label={notificationProps.label}
+        size="large"
+        css={`
+          margin-bottom: ${theme.spacing.xl};
+        `}
+      >
+        {notificationProps.content}
+      </$Notification>
+      <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
+        {t('common:login.login')}
+      </Button>
     </Container>
   );
 };
