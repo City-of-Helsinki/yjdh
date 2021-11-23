@@ -72,32 +72,28 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
                   data.paySubsidyGranted ? 'yes' : 'no'
                 }`
               )}
-              {data.apprenticeshipProgram && (
-                <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
-                  data.additionalPaySubsidyPercent
-                    ? `${t('common:utility.and')} ${
-                        data.additionalPaySubsidyPercent
-                      } %`
-                    : ''
-                }`}</$ViewField>
-              )}
+              <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
+                data.additionalPaySubsidyPercent
+                  ? `${t('common:utility.and')} ${
+                      data.additionalPaySubsidyPercent
+                    } %`
+                  : ''
+              }`}</$ViewField>
             </$ViewFieldBold>
           )}
 
-          {data.apprenticeshipProgram && (
-            <$ViewField>
+          <$ViewField>
+            {t(
+              `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+            )}{' '}
+            <$ViewFieldBold>
               {t(
-                `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-              )}{' '}
-              <$ViewFieldBold>
-                {t(
-                  `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                    data.apprenticeshipProgram ? 'yes' : 'no'
-                  }`
-                )}
-              </$ViewFieldBold>
-            </$ViewField>
-          )}
+                `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                  data.apprenticeshipProgram ? 'yes' : 'no'
+                }`
+              )}
+            </$ViewFieldBold>
+          </$ViewField>
         </$GridCell>
       </SummarySection>
 

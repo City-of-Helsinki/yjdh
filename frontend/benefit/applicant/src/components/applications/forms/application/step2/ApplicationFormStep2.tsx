@@ -1,3 +1,4 @@
+import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
 import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_START_DATE,
@@ -6,14 +7,7 @@ import {
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
-import {
-  DateInput,
-  Notification,
-  NumberInput,
-  Select,
-  SelectionGroup,
-  TextInput,
-} from 'hds-react';
+import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import React from 'react';
 import FieldLabel from 'shared/components/forms/fields/fieldLabel/FieldLabel';
@@ -28,7 +22,11 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { phoneToLocal } from 'shared/utils/string.utils';
+import {
+  formatStringFloatValue,
+  phoneToLocal,
+  stringFloatToFixed,
+} from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -387,11 +385,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
 
         {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
           <$GridCell $colSpan={6}>
-            <Notification
+            <$Notification
               label={t(`${translationsBase}.notifications.salaryBenefit.label`)}
             >
               {t(`${translationsBase}.notifications.salaryBenefit.content`)}
-            </Notification>
+            </$Notification>
           </$GridCell>
         )}
       </FormSection>
@@ -450,7 +448,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         </$GridCell>
         {formik.values.benefitType && (
           <$GridCell $colStart={7} $colSpan={6}>
-            <Notification
+            <$Notification
               label={t(
                 `${translationsBase}.notifications.${camelCase(
                   formik.values.benefitType
@@ -462,7 +460,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   formik.values.benefitType
                 )}Selected.content`
               )}
-            </Notification>
+            </$Notification>
           </$GridCell>
         )}
       </FormSection>
@@ -507,15 +505,20 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.workingHours.name}
                 name={fields.employee.workingHours.name}
                 label={fields.employee.workingHours.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.workingHours ?? ''}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    fields.employee.workingHours.name,
+                    stringFloatToFixed(e.target.value)
+                  )
+                }
+                value={formatStringFloatValue(
+                  formik.values.employee?.workingHours
+                )}
                 invalid={!!getErrorMessage(fields.employee.workingHours.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.workingHours.name)
@@ -566,15 +569,20 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             </$GridCell>
 
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.monthlyPay.name}
                 name={fields.employee.monthlyPay.name}
                 label={fields.employee.monthlyPay.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.monthlyPay ?? ''}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    fields.employee.monthlyPay.name,
+                    stringFloatToFixed(e.target.value)
+                  )
+                }
+                value={formatStringFloatValue(
+                  formik.values.employee?.monthlyPay
+                )}
                 invalid={!!getErrorMessage(fields.employee.monthlyPay.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.monthlyPay.name)
@@ -584,15 +592,20 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.otherExpenses.name}
                 name={fields.employee.otherExpenses.name}
                 label={fields.employee.otherExpenses.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.otherExpenses ?? ''}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    fields.employee.otherExpenses.name,
+                    stringFloatToFixed(e.target.value)
+                  )
+                }
+                value={formatStringFloatValue(
+                  formik.values.employee?.otherExpenses
+                )}
                 invalid={!!getErrorMessage(fields.employee.otherExpenses.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.otherExpenses.name)
@@ -602,15 +615,20 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.vacationMoney.name}
                 name={fields.employee.vacationMoney.name}
                 label={fields.employee.vacationMoney.label}
                 onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.vacationMoney ?? ''}
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    fields.employee.vacationMoney.name,
+                    stringFloatToFixed(e.target.value)
+                  )
+                }
+                value={formatStringFloatValue(
+                  formik.values.employee?.vacationMoney
+                )}
                 invalid={!!getErrorMessage(fields.employee.vacationMoney.name)}
                 aria-invalid={
                   !!getErrorMessage(fields.employee.vacationMoney.name)
@@ -645,15 +663,15 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               />
             </$GridCell>
             <$GridCell $colSpan={2}>
-              <NumberInput
+              <TextInput
                 id={fields.employee.commissionAmount.name}
                 name={fields.employee.commissionAmount.name}
                 label={fields.employee.commissionAmount.label}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore TODO: remove this ts-ignore when HDS-1013 is resolved
-                value={formik.values.employee?.commissionAmount ?? ''}
+                value={formatStringFloatValue(
+                  formik.values.employee?.commissionAmount
+                )}
                 invalid={
                   !!getErrorMessage(fields.employee.commissionAmount.name)
                 }

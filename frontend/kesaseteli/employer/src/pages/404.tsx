@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import Layout from 'shared/components/Layout';
 import LinkText from 'shared/components/link-text/LinkText';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
@@ -18,20 +17,18 @@ const PageNotFound: NextPage = () => {
           {t(`common:404Page.pageNotFoundLabel`)} | {t(`common:appName`)}
         </title>
       </Head>
-      <Layout>
-        <$Notification
-          label={t(`common:404Page.pageNotFoundLabel`)}
-          type="alert"
-          size="large"
-        >
-          <Trans
-            i18nKey="common:404Page.pageNotFoundContent"
-            components={{
-              lnk: <LinkText href="/">{}</LinkText>,
-            }}
-          />
-        </$Notification>
-      </Layout>
+      <$Notification
+        label={t(`common:404Page.pageNotFoundLabel`)}
+        type="alert"
+        size="large"
+      >
+        <Trans
+          i18nKey="common:404Page.pageNotFoundContent"
+          components={{
+            lnk: <LinkText href="/">{}</LinkText>,
+          }}
+        />
+      </$Notification>
     </Container>
   );
 };
