@@ -4,10 +4,11 @@ import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
+import { getNumberValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import DeMinimisContext from '../context/DeMinimisContext';
-import { Application, ApplicationData } from '../types/application';
+import { Application, ApplicationData, Employee } from '../types/application';
 import {
   getApplicationStepFromString,
   getApplicationStepString,
@@ -73,8 +74,28 @@ const useFormActions = (application: Application): FormActions => {
   const { deMinimisAids } = useContext(DeMinimisContext);
 
   const getModifiedValues = (currentValues: Application): Application => {
+    const employee: Employee | undefined = currentValues?.employee ?? undefined;
+    if (employee) {
+      employee.commissionAmount = employee.commissionAmount
+        ? getNumberValue(employee.commissionAmount.toString())
+        : undefined;
+      employee.workingHours = employee.workingHours
+        ? getNumberValue(employee.workingHours.toString())
+        : undefined;
+      employee.monthlyPay = employee.monthlyPay
+        ? getNumberValue(employee.monthlyPay.toString())
+        : undefined;
+      employee.otherExpenses = employee.otherExpenses
+        ? getNumberValue(employee.otherExpenses.toString())
+        : undefined;
+      employee.vacationMoney = employee.vacationMoney
+        ? getNumberValue(employee.vacationMoney.toString())
+        : undefined;
+    }
+
     const normalizedValues = {
       ...currentValues,
+      ...employee,
       startDate: currentValues.startDate
         ? convertToBackendDateFormat(parseDate(currentValues.startDate))
         : undefined,
