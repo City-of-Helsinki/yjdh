@@ -18,6 +18,7 @@ import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
+import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
@@ -114,6 +115,9 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.EMPLOYEE_COMMISSION_AMOUNT]: Yup.number()
+            .transform((_value, originalValue) =>
+              Number(getNumberValue(originalValue))
+            )
             .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
@@ -123,6 +127,10 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.WORKING_HOURS]: Yup.number()
+            .transform((_value, originalValue) =>
+              Number(getNumberValue(originalValue))
+            )
+            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
             .nullable()
             .min(EMPLOYEE_MIN_WORKING_HOURS, (param) => ({
               min: param.min,
@@ -134,12 +142,18 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             }))
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
+            .transform((_value, originalValue) => getNumberValue(originalValue))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
+            .transform((_value, originalValue) => getNumberValue(originalValue))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
+            .transform((_value, originalValue) => getNumberValue(originalValue))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }),
