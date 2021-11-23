@@ -14,7 +14,7 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import {
   formatStringFloatValue,
-  stringFloatToFixed2,
+  stringFloatToFixed,
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
@@ -83,7 +83,7 @@ const DeMinimisAidForm: React.FC<DeMinimisAidFormProps> = ({ data }) => {
             onChange={(e) =>
               formik.setFieldValue(
                 fields.amount.name,
-                stringFloatToFixed2(e.target.value)
+                stringFloatToFixed(e.target.value)
               )
             }
             value={formatStringFloatValue(formik.values.amount)}

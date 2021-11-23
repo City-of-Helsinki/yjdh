@@ -30,7 +30,7 @@ export const isEmpty = (value?: string): boolean =>
 export const getNumberValue = (s: string): number =>
   Number(s.replace(/,/, '.'));
 
-export const stringFloatToFixed2 = (value: string): string =>
+export const stringFloatToFixed = (value: string): string =>
   value.includes(',') ? value.slice(0, value.indexOf(',') + 3) : value;
 
 export const stringToFloatValue = (value: string): number =>

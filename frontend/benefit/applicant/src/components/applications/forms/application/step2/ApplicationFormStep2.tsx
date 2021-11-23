@@ -30,7 +30,7 @@ import {
 import {
   formatStringFloatValue,
   phoneToLocal,
-  stringFloatToFixed2,
+  stringFloatToFixed,
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
@@ -516,7 +516,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={(e) =>
                   formik.setFieldValue(
                     fields.employee.workingHours.name,
-                    stringFloatToFixed2(e.target.value)
+                    stringFloatToFixed(e.target.value)
                   )
                 }
                 value={formatStringFloatValue(
@@ -580,7 +580,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={(e) =>
                   formik.setFieldValue(
                     fields.employee.monthlyPay.name,
-                    stringFloatToFixed2(e.target.value)
+                    stringFloatToFixed(e.target.value)
                   )
                 }
                 value={formatStringFloatValue(
@@ -603,7 +603,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={(e) =>
                   formik.setFieldValue(
                     fields.employee.otherExpenses.name,
-                    stringFloatToFixed2(e.target.value)
+                    stringFloatToFixed(e.target.value)
                   )
                 }
                 value={formatStringFloatValue(
@@ -626,7 +626,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 onChange={(e) =>
                   formik.setFieldValue(
                     fields.employee.vacationMoney.name,
-                    stringFloatToFixed2(e.target.value)
+                    stringFloatToFixed(e.target.value)
                   )
                 }
                 value={formatStringFloatValue(
