@@ -49,10 +49,13 @@
       "firstName" : "ENG Etunimi",
       "lastName": "ENG Sukunimi",
       "ssn": "ENG Henkilötunnus",
+      "postcode": "ENG Postinumero",
       "school": "ENG Koulu",
       "email": "ENG Sähköpostiosoite",
-      "phone": "ENG Puhelinnumero",
-      "termsAndConditions": "ENG Hyväksyn käyttöehdot Lorem Ipsum Dolor",
+      "phoneNumber": "ENG Puhelinnumero",
+      "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
+      "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+      "sendButton": "ENG Lähetä tiedot",
       "requiredInfo": "ENG Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     }
   }

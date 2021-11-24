@@ -49,10 +49,13 @@
       "firstName" : "Etunimi",
       "lastName": "Sukunimi",
       "ssn": "Henkilötunnus",
+      "postcode": "Postinumero",
       "school": "Koulu",
       "email": "Sähköpostiosoite",
-      "phone": "Puhelinnumero",
-      "termsAndConditions": "Hyväksyn käyttöehdot Lorem Ipsum Dolor",
+      "phoneNumber": "Puhelinnumero",
+      "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
+      "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+      "sendButton": "Lähetä tiedot",
       "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     }
   }
