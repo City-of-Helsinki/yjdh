@@ -1,7 +1,8 @@
-import { RegisterOptions, UseFormRegister } from 'react-hook-form';
+import { RegisterOptions } from 'react-hook-form';
+import Id from 'shared/types/id';
 
 type InputProps<T, V = string> = {
-  id: NonNullable<Parameters<UseFormRegister<T>>[0]>;
+  id: Id<T>;
   registerOptions?: RegisterOptions<T>;
   initialValue?: V;
   onChange?: (value: V) => void;

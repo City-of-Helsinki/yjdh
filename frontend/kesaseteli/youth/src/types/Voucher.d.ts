@@ -6,7 +6,6 @@ type Voucher = {
   school: string;
   phoneNumber: string;
   email: string;
-  termsAndConditions: boolean;
 };
 
 export default Voucher;
