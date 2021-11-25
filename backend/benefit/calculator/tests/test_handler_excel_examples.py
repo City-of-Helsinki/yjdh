@@ -181,10 +181,68 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         )
 
 
+class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
+    def _setup_expected_results(self):
+        # actual expected values loaded from Excel
+        self.expected_results = ExpectedResults(
+            calculated_benefit_amount=sentinel,
+            salary_costs=sentinel,
+            state_aid_max_monthly_eur=sentinel,
+            start_date=sentinel,
+            end_date=sentinel,
+            duration=sentinel,
+            monthly_amount=sentinel,
+            total_amount=sentinel,
+        )
+
+    def _setup_db_objects(self):
+
+        self.application = ApplicationFactory()
+        self.application.status = ApplicationStatus.RECEIVED
+        self.application.save()
+
+        self.application.calculation = Calculation(
+            application=self.application,
+            monthly_pay=self.application.employee.monthly_pay,
+            vacation_money=self.application.employee.vacation_money,
+            other_expenses=self.application.employee.other_expenses,
+            start_date=self.application.start_date,
+            end_date=self.application.end_date,
+            state_aid_max_percentage=STATE_AID_MAX_PERCENTAGE_CHOICES[0][0],
+            calculated_benefit_amount=0,
+            override_benefit_amount=None,
+        )
+
+        self.application.pay_subsidy = PaySubsidyFactory()
+        self.application.pay_subsidy.pay_subsidy_percent = None
+
+    def _save_initial_state(self):
+        self.application.save()
+        self.application.calculation.save()
+
+        self.application.calculation.start_date = self.expected_results.start_date
+        self.application.calculation.end_date = self.expected_results.end_date
+        self.application.calculation.save()
+
+    def run_test(self):
+        self._setup()
+        self.application.calculation.init_calculator()
+        self.application.calculation.calculate()
+        self._verify_results()
+
+    def _verify_results(self):
+        for row in self.application.calculation.rows.all():
+            print(row)
+        assert (
+            self.application.calculation.calculated_benefit_amount
+            == self.expected_results.calculated_benefit_amount
+        )
+
+
 FIRST_TEST_COLUMN = 3
 
 
-def test_cases_from_excel(request, api_client):
+def test_salary_benefit_cases_from_excel(request, api_client):
 
     excel_file_name = os.path.join(
         request.fspath.dirname, "Helsinki-lisä laskurin testitapaukset.xlsx"
@@ -194,6 +252,23 @@ def test_cases_from_excel(request, api_client):
     for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
         try:
             test = SalaryBenefitExcelTest(salary_benefit_tests, col_idx)
+            # add_attachments_to_application(request, application)
+        except CaseNotFound:  # no tests
+            break
+        else:
+            test.run_test()
+
+
+def test_employee_benefit_cases_from_excel(request, api_client):
+
+    excel_file_name = os.path.join(
+        request.fspath.dirname, "Helsinki-lisä laskurin testitapaukset.xlsx"
+    )
+    wb = load_workbook(filename=excel_file_name, data_only=True)  # do not load formulas
+    salary_benefit_tests = wb["Työllistämisen Helsinki-lisä"]
+    for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
+        try:
+            test = EmployeeBenefitExcelTest(salary_benefit_tests, col_idx)
             # add_attachments_to_application(request, application)
         except CaseNotFound:  # no tests
             break

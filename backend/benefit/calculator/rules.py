@@ -6,6 +6,8 @@ from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from calculator.enums import RowType
 from calculator.models import (  # SalaryBenefitPaySubsidySubTotalRow,
     DescriptionRow,
+    EmployeeBenefitMonthlyRow,
+    EmployeeBenefitTotalRow,
     PaySubsidyMonthlyRow,
     SalaryBenefitMonthlyRow,
     SalaryBenefitTotalRow,
@@ -29,6 +31,8 @@ class HelsinkiBenefitCalculator:
         # in future, one might use e.g. application date to determine the correct calculator
         if calculation.application.benefit_type == BenefitType.SALARY_BENEFIT:
             return SalaryBenefitCalculator2021(calculation)
+        elif calculation.application.benefit_type == BenefitType.EMPLOYMENT_BENEFIT:
+            return EmployeeBenefitCalculator2021(calculation)
         else:
             return DummyBenefitCalculator(calculation)
 
@@ -109,6 +113,9 @@ class HelsinkiBenefitCalculator:
         row.update_row()
         row.save()
 
+    def create_rows(self):
+        pass
+
 
 class DummyBenefitCalculator(HelsinkiBenefitCalculator):
     def create_rows(self):
@@ -169,3 +176,15 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
             for start_date, end_date, pay_subsidy in date_ranges:
                 pass
             raise Exception("Complex cases TBD")
+
+
+class EmployeeBenefitCalculator2021(HelsinkiBenefitCalculator):
+    """
+    Calculation of employee benefit, according to rules in effect 2021 (and possibly onwards)
+    """
+
+    EMPLOYEE_BENEFIT_AMOUNT_PER_MONTH = 500
+
+    def create_rows(self):
+        self._create_row(EmployeeBenefitMonthlyRow)
+        self._create_row(EmployeeBenefitTotalRow)

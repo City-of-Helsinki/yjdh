@@ -65,31 +65,32 @@ class GetCompanyView(APIView):
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
-        if not settings.DISABLE_AUTHENTICATION:
-
+        if settings.DISABLE_AUTHENTICATION:
+            company = Company.objects.all().order_by("name").first()
+        else:
             try:
                 organization_roles = get_organization_roles(request)
             except HTTPError:
                 return self.organization_roles_error
 
             business_id = organization_roles.get("identifier")
-        try:
-            # TODO: Switch to another API to be able to collect association data
-            company = get_or_create_company_with_business_id(business_id)
-        except HTTPError:
-            # Since YTJ public API is not 100% reliable, we can use the Company data
-            # saved in our DB as a fallback data, this Company data should be the
-            # data that we got from the latest request to YTJ
             try:
-                company = Company.objects.get(business_id=business_id)
-            except Company.DoesNotExist:
-                # Throw error if API failed or no object found in both places
-                return self.ytj_api_error
-        except ValueError:
-            return Response(
-                "Could not handle the response from YTJ API",
-                status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+                # TODO: Switch to another API to be able to collect association data
+                company = get_or_create_company_with_business_id(business_id)
+            except HTTPError:
+                # Since YTJ public API is not 100% reliable, we can use the Company data
+                # saved in our DB as a fallback data, this Company data should be the
+                # data that we got from the latest request to YTJ
+                try:
+                    company = Company.objects.get(business_id=business_id)
+                except Company.DoesNotExist:
+                    # Throw error if API failed or no object found in both places
+                    return self.ytj_api_error
+            except ValueError:
+                return Response(
+                    "Could not handle the response from YTJ API",
+                    status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
         company_data = CompanySerializer(company).data
 
         return Response(company_data)
