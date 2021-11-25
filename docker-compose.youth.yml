@@ -52,7 +52,7 @@ services:
       - kesaseteli-backend
       - kesaseteli-youth
     build:
-      context: localdevelopment/employer/nginx
+      context: ./localdevelopment/youth/nginx
     container_name: kesaseteli-local-proxy
     volumes:
       - ./localdevelopment/youth/nginx/:/etc/nginx/

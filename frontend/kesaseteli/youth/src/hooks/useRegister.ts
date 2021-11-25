@@ -13,12 +13,12 @@ type InputProps<T> = {
   id: Id<T>;
   errorText?: string;
   label: string;
-  registerOptions: RegisterOptions<T>;
+  registerOptions?: RegisterOptions<T>;
 };
 
 const useRegister = <T = Voucher>(): ((
   id: Id<T>,
-  registerOptions: RegisterOptions<T>
+  registerOptions?: RegisterOptions<T>
 ) => InputProps<T>) => {
   const { t } = useTranslation();
   const { formState } = useFormContext<T>();

@@ -3,7 +3,8 @@ type Voucher = {
   lastName: string;
   ssn: string;
   postcode: string;
-  school: string;
+  school?: string;
+  schoolName?: string;
   phoneNumber: string;
   email: string;
 };

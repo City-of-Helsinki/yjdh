@@ -51,6 +51,10 @@
       "ssn": "SV Henkilötunnus",
       "postcode": "SV Postinumero",
       "school": "SV Koulu",
+      "schoolPlaceholder": "Valitse koulusi listalta",
+      "schoolNotFound": "SV Koulua ei löydy listalta",
+      "schoolName": "SV Koulun nimi",
+      "schoolNamePlaceholder": "SV Esim. Merilahden Peruskoulu",
       "email": "SV Sähköpostiosoite",
       "phoneNumber": "SV Puhelinnumero",
       "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
@@ -58,5 +62,14 @@
       "sendButton": "SV Lähetä tiedot",
       "requiredInfo": "SV Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     }
+  },
+  "errors": {
+    "required": "Uppgifter fattas",
+    "maxLength": "Den inmatade texten är för lång",
+    "pattern": "Den inmatade uppgiftern är i fel format",
+    "validate": "Den inmatade uppgiftern är i fel format"
+  },
+  "assistive": {
+    "toggleMenu": "SV Avaa valikko"
   }
 }

@@ -4,12 +4,15 @@ import School from 'kesaseteli/youth/types/School';
 import Voucher from 'kesaseteli/youth/types/voucher-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import Heading from 'shared/components/forms/heading/Heading';
 import Checkbox from 'shared/components/forms/inputs/Checkbox';
 import Combobox from 'shared/components/forms/inputs/Combobox';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { EMAIL_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
+import { EMAIL_REGEX, NAMES_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
+import useToggle from 'shared/hooks/useToggle';
 
 const schools: School[] = [
   'Aleksis Kiven peruskoulu',
@@ -121,74 +124,130 @@ const VoucherForm: React.FC = () => {
   const { t } = useTranslation();
   const register = useRegister();
 
+  const [showResult, setShowResult] = React.useState(false);
+  const [schoolNotFound, toggleSchoolNotFound] = useToggle(false);
+
+  const { getValues, handleSubmit, clearErrors, setValue } =
+    useFormContext<Voucher>();
+
+  const handleToggleSchoolNotFound = React.useCallback(
+    (notFound?: boolean) => {
+      if (notFound) {
+        clearErrors('school');
+        setValue('school', null);
+      } else {
+        clearErrors('schoolName');
+        setValue('schoolName', null);
+      }
+      toggleSchoolNotFound();
+    },
+    [clearErrors, setValue, toggleSchoolNotFound]
+  );
+
   return (
-    <form>
-      <FormSection header={t('common:applicationPage.form.title')} columns={2}>
-        <TextInput<Voucher>
-          {...register('firstName', { required: true, maxLength: 256 })}
-        />
-        <TextInput<Voucher>
-          {...register('lastName', { required: true, maxLength: 256 })}
-        />
-        <TextInput<Voucher>
-          {...register('ssn', { required: true, maxLength: 32 })}
-        />
-        <TextInput<Voucher>
-          {...register('postcode', {
-            required: true,
-            pattern: POSTAL_CODE_REGEX,
-            maxLength: 256,
-          })}
-          type="number"
-        />
-        <Combobox<Voucher, School>
-          {...register('school', { required: true })}
-          optionLabelField="name"
-          options={schools}
-          $colSpan={2}
-        />
-        <TextInput<Voucher>
-          {...register('email', {
-            maxLength: 254,
-            pattern: EMAIL_REGEX,
-          })}
-        />
-        <TextInput<Voucher>
-          {...register('ssn', { required: true, maxLength: 64 })}
-        />
-        <$GridCell $colSpan={2}>
-          <Checkbox<Voucher>
-            {...register('termsAndConditions', {
+    <>
+      <Heading header={t('common:applicationPage.form.title')} />
+      <p>{t('common:applicationPage.form.info')}</p>
+      <form>
+        <FormSection columns={2}>
+          <TextInput<Voucher>
+            {...register('firstName', {
               required: true,
-              maxLength: 64,
+              pattern: NAMES_REGEX,
+              maxLength: 256,
             })}
-            label={
-              <Trans
-                i18nKey="common:applicationPage.form.termsAndConditions"
-                components={{
-                  a: (
-                    <a
-                      href={t('common:termsAndConditionsLink')}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {}
-                    </a>
-                  ),
-                }}
-              >
-                {'Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.'}
-              </Trans>
-            }
           />
-        </$GridCell>
-        <$GridCell $colSpan={2}>
-          <Button theme="coat">
-            {t(`common:applicationPage.form.sendButton`)}
-          </Button>
-        </$GridCell>
-      </FormSection>
-    </form>
+          <TextInput<Voucher>
+            {...register('lastName', {
+              required: true,
+              pattern: NAMES_REGEX,
+              maxLength: 256,
+            })}
+          />
+          <TextInput<Voucher>
+            {...register('ssn', { required: true, maxLength: 32 })}
+          />
+          <TextInput<Voucher>
+            {...register('postcode', {
+              required: true,
+              pattern: POSTAL_CODE_REGEX,
+              maxLength: 256,
+            })}
+            type="number"
+          />
+          <Combobox<Voucher, School>
+            {...register('school', { required: !schoolNotFound })}
+            optionLabelField="name"
+            options={schools}
+            disabled={schoolNotFound}
+            placeHolder={t('common:applicationPage.form.schoolPlaceHolder')}
+            $colSpan={2}
+          />
+          <$GridCell $colSpan={2}>
+            <Checkbox<Voucher>
+              {...register('schoolNotFound')}
+              onChange={handleToggleSchoolNotFound}
+            />
+          </$GridCell>
+          {schoolNotFound && (
+            <TextInput<Voucher>
+              {...register('schoolName', {
+                required: schoolNotFound,
+                maxLength: 64,
+              })}
+              $colSpan={2}
+              placeholder={t(
+                'common:applicationPage.form.schoolNamePlaceholder'
+              )}
+            />
+          )}
+          <TextInput<Voucher>
+            {...register('phoneNumber', { required: true, maxLength: 64 })}
+          />
+          <TextInput<Voucher>
+            {...register('email', {
+              maxLength: 254,
+              pattern: EMAIL_REGEX,
+              required: true,
+            })}
+          />
+          <$GridCell $colSpan={2}>
+            <Checkbox<Voucher>
+              {...register('termsAndConditions', {
+                required: true,
+              })}
+              label={
+                <Trans
+                  i18nKey="common:applicationPage.form.termsAndConditions"
+                  components={{
+                    a: (
+                      <a
+                        href={t('common:termsAndConditionsLink')}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {}
+                      </a>
+                    ),
+                  }}
+                >
+                  {'Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.'}
+                </Trans>
+              }
+            />
+          </$GridCell>
+          <$GridCell $colSpan={2}>
+            <Button
+              theme="coat"
+              onClick={handleSubmit(() => setShowResult(true))}
+            >
+              {t(`common:applicationPage.form.sendButton`)}
+            </Button>
+          </$GridCell>
+          {showResult && <pre>{JSON.stringify(getValues(), null, 2)}</pre>}
+        </FormSection>
+      </form>
+    </>
   );
 };
 

@@ -1,9 +1,6 @@
 const { join } = require('path');
 
 module.exports = {
-  parserOptions: {
-    ecmaVersion: 2020,
-  },
   extends: [
     'auto',
     'next/core-web-vitals',

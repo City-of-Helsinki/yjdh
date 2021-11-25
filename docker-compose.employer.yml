@@ -68,7 +68,7 @@ services:
       - kesaseteli-employer
       - kesaseteli-youth
     build:
-      context: localdevelopment/employer/nginx
+      context: ./localdevelopment/employer/nginx
     container_name: kesaseteli-local-proxy
     volumes:
       - ./localdevelopment/employer/nginx/:/etc/nginx/

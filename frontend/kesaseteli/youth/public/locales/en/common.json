@@ -51,6 +51,10 @@
       "ssn": "ENG Henkilötunnus",
       "postcode": "ENG Postinumero",
       "school": "ENG Koulu",
+      "schoolPlaceholder": "ENG Valitse koulusi listalta",
+      "schoolNotFound": "ENG Koulua ei löydy listalta",
+      "schoolName": "ENG Koulun nimi",
+      "schoolNamePlaceholder": "ENG Esim. Merilahden Peruskoulu",
       "email": "ENG Sähköpostiosoite",
       "phoneNumber": "ENG Puhelinnumero",
       "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
@@ -58,5 +62,14 @@
       "sendButton": "ENG Lähetä tiedot",
       "requiredInfo": "ENG Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     }
+  },
+  "errors": {
+    "required": "Information is missing or is incorrect",
+    "maxLength": "The information you entered is too long",
+    "pattern": "The information you entered is in an incorrect format",
+    "validate": "The information you entered is in an incorrect format"
+  },
+  "assistive": {
+    "toggleMenu": "ENG Avaa valikko"
   }
 }
