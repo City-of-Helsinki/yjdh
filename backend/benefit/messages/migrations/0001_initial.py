@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
                             ("applicant_message", "Applicant's message"),
                         ],
                         max_length=32,
-                        verbose_name="message_type",
+                        verbose_name="message type",
                     ),
                 ),
                 (

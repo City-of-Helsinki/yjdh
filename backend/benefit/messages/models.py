@@ -30,7 +30,7 @@ class Message(UUIDModel, TimeStampedModel):
         verbose_name=_("application"),
     )
     message_type = models.CharField(
-        choices=MessageType.choices, verbose_name=_("message_type"), max_length=32
+        choices=MessageType.choices, verbose_name=_("message type"), max_length=32
     )
 
     objects = MessageManager()
