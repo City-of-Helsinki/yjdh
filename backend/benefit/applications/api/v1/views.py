@@ -8,10 +8,12 @@ from applications.models import Application
 from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
+from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
+from messages.models import MessageType
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
@@ -162,6 +164,15 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
     permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
     filterset_class = ApplicantApplicationFilter
 
+    def _annotate_unread_messages_count(self, qs):
+        return qs.annotate(
+            unread_messages_count=Count(
+                "messages",
+                filter=Q(messages__seen_by_applicant=False)
+                & ~Q(messages__message_type=MessageType.NOTE),
+            )
+        )
+
     def get_queryset(self):
         qs = super().get_queryset()
         # FIXME: Remove this when FE implemented authentication
@@ -169,7 +180,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             return qs
         company = get_company_from_request(self.request)
         if company:
-            return company.applications.all()
+            return self._annotate_unread_messages_count(company.applications).all()
         else:
             return Application.objects.none()
 
@@ -182,8 +193,17 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
     permission_classes = [BFIsHandler]
     filterset_class = HandlerApplicationFilter
 
+    def _annotate_unread_messages_count(self, qs):
+        return qs.annotate(
+            unread_messages_count=Count(
+                "messages",
+                filter=Q(messages__seen_by_handler=False)
+                & ~Q(messages__message_type=MessageType.NOTE),
+            )
+        )
+
     def get_queryset(self):
-        return (
+        return self._annotate_unread_messages_count(
             super()
             .get_queryset()
             .select_related("batch", "calculation")

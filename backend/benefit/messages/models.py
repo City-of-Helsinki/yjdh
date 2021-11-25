@@ -32,6 +32,12 @@ class Message(UUIDModel, TimeStampedModel):
     message_type = models.CharField(
         choices=MessageType.choices, verbose_name=_("message type"), max_length=32
     )
+    seen_by_applicant = models.BooleanField(
+        default=False, verbose_name=_("read by applicant")
+    )
+    seen_by_handler = models.BooleanField(
+        default=False, verbose_name=_("read by applicant")
+    )
 
     objects = MessageManager()
 
