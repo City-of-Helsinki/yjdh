@@ -3,6 +3,7 @@ import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
+import { getFullName } from 'shared/utils/application.utils';
 import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -12,7 +13,6 @@ import { Application, ApplicationData, Employee } from '../types/application';
 import {
   getApplicationStepFromString,
   getApplicationStepString,
-  getFullName,
 } from '../utils/common';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';

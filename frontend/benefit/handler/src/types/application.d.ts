@@ -238,6 +238,7 @@ export type ApplicationData = {
   applicant_terms_in_effect?: ApplicantTermsData;
   approve_terms?: ApproveTermsData;
   calculation?: CalculationData;
+  submitted_at?: string;
 };
 
 export type ApplicationListItemData = {
@@ -345,6 +346,7 @@ export type Application = {
   applicantTermsInEffect?: ApplicantTerms;
   approveTerms?: ApproveTerms;
   calculation?: Calculation;
+  submittedAt?: string;
 } & Step1 &
   Step2;
 

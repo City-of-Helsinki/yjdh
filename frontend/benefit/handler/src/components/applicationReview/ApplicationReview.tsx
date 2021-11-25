@@ -1,30 +1,28 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import { Button } from 'hds-react';
+import { Button , LoadingSpinner } from 'hds-react';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import ReviewSection from '../reviewSection/ReviewSection';
+import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const shouldShowSkeleton = false;
-  const { t } = useTranslation();
+  const { t, application, isLoading } = useApplicationReview();
 
   const translationBase = 'common:review.headings';
 
-  if (shouldShowSkeleton) {
+  if (isLoading) {
     return (
       <Container>
-        <LoadingSkeleton width="100%" height="50px" />
+        <LoadingSpinner />
       </Container>
     );
   }
 
   return (
     <>
-      <ApplicationHeader />
+      <ApplicationHeader data={application} />
       <Container>
         <ReviewSection header={t(`${translationBase}.heading1`)}>
           <$GridCell $colSpan={12}>Section contents1</$GridCell>
