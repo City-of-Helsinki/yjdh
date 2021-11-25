@@ -1,7 +1,12 @@
 import pytest
 from applications.enums import ApplicationStatus
 from applications.tests.conftest import *  # noqa
-from calculator.models import Calculation, PaySubsidy, PreviousBenefit
+from calculator.models import (
+    Calculation,
+    PaySubsidy,
+    PreviousBenefit,
+    TrainingCompensation,
+)
 from common.exceptions import BenefitAPIException
 from helsinkibenefit.tests.conftest import *  # noqa
 
@@ -15,6 +20,11 @@ def test_calculation_model(calculation):
 def test_pay_subsidy(pay_subsidy):
     assert PaySubsidy.objects.count() == 1
     assert pay_subsidy.application
+
+
+def test_training_compensation(training_compensation):
+    assert TrainingCompensation.objects.count() == 1
+    assert training_compensation.application
 
 
 def test_previous_benefit(previous_benefit):

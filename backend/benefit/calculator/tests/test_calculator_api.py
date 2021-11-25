@@ -20,6 +20,7 @@ def test_application_retrieve_calculation_as_handler(handler_api_client, applica
     response = handler_api_client.get(get_handler_detail_url(application))
     assert "calculation" in response.data
     assert "pay_subsidies" in response.data
+    assert "training_compensations" in response.data
     assert response.status_code == 200
 
 
@@ -27,6 +28,7 @@ def test_application_try_retrieve_calculation_as_applicant(api_client, applicati
     response = api_client.get(get_detail_url(application))
     assert "calculation" not in response.data
     assert "pay_subsidies" not in response.data
+    assert "training_compensations" not in response.data
     assert response.status_code == 200
 
 
@@ -104,6 +106,13 @@ def test_modify_calculation(handler_api_client, received_application):
             "work_time_percent": 100,
         }
     ]
+    data["training_compensations"] = [
+        {
+            "start_date": str(received_application.start_date),
+            "end_date": str(received_application.end_date),
+            "monthly_amount": "50",
+        }
+    ]
     with mock.patch("calculator.models.Calculation.calculate") as calculate_wrap:
         response = handler_api_client.put(
             get_handler_detail_url(received_application),
@@ -123,6 +132,27 @@ def test_modify_calculation(handler_api_client, received_application):
     )
     assert (
         received_application.pay_subsidies.first().end_date
+        == received_application.end_date
+    )
+    assert received_application.pay_subsidies.count() == 1
+    assert received_application.pay_subsidies.first().pay_subsidy_percent == 50
+    assert (
+        received_application.pay_subsidies.first().start_date
+        == received_application.start_date
+    )
+    assert (
+        received_application.pay_subsidies.first().end_date
+        == received_application.end_date
+    )
+
+    assert received_application.training_compensations.count() == 1
+    assert received_application.training_compensations.first().monthly_amount == 50
+    assert (
+        received_application.training_compensations.first().start_date
+        == received_application.start_date
+    )
+    assert (
+        received_application.training_compensations.first().end_date
         == received_application.end_date
     )
 

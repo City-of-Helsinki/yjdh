@@ -354,6 +354,44 @@ class PreviousBenefit(UUIDModel, TimeStampedModel):
         verbose_name_plural = _("Previously granted benefits")
 
 
+class TrainingCompensation(UUIDModel, TimeStampedModel):
+    """
+    Information about pay subsidies, as entered by the handlers in the calculator.
+    """
+
+    application = models.ForeignKey(
+        Application,
+        verbose_name=_("application"),
+        related_name="training_compensations",
+        on_delete=models.CASCADE,
+    )
+    # ordering of the training compensations within application.
+    ordering = models.IntegerField()
+    start_date = models.DateField(verbose_name=_("Pay subsidy start date"))
+    end_date = models.DateField(verbose_name=_("Pay subsidy end date"))
+    monthly_amount = models.DecimalField(  # can be zero
+        verbose_name=_("Monthly amount of compensation"),
+        decimal_places=2,
+        max_digits=7,
+    )
+
+    history = HistoricalRecords(table_name="bf_calculator_trainingcompensation_history")
+
+    @property
+    def duration_in_months(self):
+        # The calculation Excel file used the DAYS360 function, so we're doing the same
+        return duration_in_months(self.start_date, self.end_date)
+
+    def __str__(self):
+        return f"TrainingCompensation {self.start_date} - {self.end_date} of {self.monthly_amount} eur"
+
+    class Meta:
+        db_table = "bf_calculator_trainingcompensation"
+        verbose_name = _("training compensation")
+        verbose_name_plural = _("training compensations")
+        ordering = ["application__created_at", "ordering"]
+
+
 class CalculationRow(UUIDModel, TimeStampedModel):
 
     proxy_row_type = None
@@ -564,15 +602,55 @@ class PaySubsidyMonthlyRow(CalculationRow):
         proxy = True
 
 
+class TrainingCompensationMonthlyRow(CalculationRow):
+    proxy_row_type = RowType.TRAINING_COMPENSATION_MONTHLY_EUR
+    description_fi_template = "Oppisopimuksen koulutuskorvaus"
+
+    def __init__(self, *args, **kwargs):
+        self.training_compensation = kwargs.pop(
+            "training_compensation", None
+        )  # sometimes there's no training benefit
+        super().__init__(*args, **kwargs)
+
+    def calculate_amount(self):
+        return to_decimal(
+            self.training_compensation.monthly_amount
+            if self.training_compensation
+            else 0,
+            2,
+        )
+
+    class Meta:
+        proxy = True
+
+
+class TotalDeductionsMonthlyRow(CalculationRow):
+    proxy_row_type = RowType.DEDUCTIONS_TOTAL_EUR
+    description_fi_template = "Vähennykset yhteensä"
+
+    def __init__(self, *args, **kwargs):
+        self.monthly_deductions = kwargs.pop("monthly_deductions", None)
+        super().__init__(*args, **kwargs)
+
+    def calculate_amount(self):
+        return to_decimal(
+            self.monthly_deductions,
+            2,
+        )
+
+    class Meta:
+        proxy = True
+
+
 class SalaryBenefitMonthlyRow(CalculationRow):
     proxy_row_type = RowType.HELSINKI_BENEFIT_MONTHLY_EUR
     description_fi_template = "Helsinki-lisä / kk (enintään {row.max_benefit} €)"
 
     def __init__(self, *args, **kwargs):
         self.max_benefit = kwargs.pop("max_benefit", None)
-        self.pay_subsidy_monthly_eur = kwargs.pop(
-            "pay_subsidy_monthly_eur", 0
-        )  # sometimes there's no pay subsidy
+        self.monthly_deductions = kwargs.pop(
+            "monthly_deductions", 0
+        )  # sometimes there are no deductions
         super().__init__(*args, **kwargs)
 
     def calculate_amount(self):
@@ -585,7 +663,7 @@ class SalaryBenefitMonthlyRow(CalculationRow):
                     self.calculation.calculator.get_amount(
                         RowType.STATE_AID_MAX_MONTHLY_EUR
                     )
-                    - self.pay_subsidy_monthly_eur,
+                    - self.monthly_deductions,
                 ),
             ),
             0,
@@ -660,7 +738,7 @@ class SalaryBenefitSumSubTotalsRow(CalculationRow):
 
 class EmployeeBenefitMonthlyRow(CalculationRow):
     proxy_row_type = RowType.HELSINKI_BENEFIT_MONTHLY_EUR
-    description_fi_template = "Helsinki-lisä / kk)"
+    description_fi_template = "Helsinki-lisä / kk"
 
     def calculate_amount(self):
         return self.calculation.calculator.EMPLOYEE_BENEFIT_AMOUNT_PER_MONTH

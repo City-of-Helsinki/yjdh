@@ -4,7 +4,7 @@ import os
 from applications.enums import ApplicationStatus, BenefitType
 from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation, STATE_AID_MAX_PERCENTAGE_CHOICES
-from calculator.tests.factories import PaySubsidyFactory
+from calculator.tests.factories import PaySubsidyFactory, TrainingCompensationFactory
 from common.utils import nested_setattr, to_decimal
 from helsinkibenefit.tests.conftest import *  # noqa
 from openpyxl import load_workbook
@@ -43,11 +43,6 @@ class ExcelTestCase:
         self.worksheet = worksheet
         self.column_idx = column_idx
 
-    BENEFIT_TYPE_MAP = {
-        "Palkan Helsinki-lisä": BenefitType.SALARY_BENEFIT,
-        "Työllistämisen Helsinki-lisä": BenefitType.EMPLOYMENT_BENEFIT,
-    }
-
 
 # unique object
 sentinel = object()
@@ -84,6 +79,14 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 monthly_amount=sentinel,
                 total_amount=sentinel,
             ),
+            time_range_3=ExpectedResults(
+                start_date=sentinel,
+                end_date=None,
+                duration=sentinel,
+                pay_subsidy_monthly=sentinel,
+                monthly_amount=sentinel,
+                total_amount=sentinel,
+            ),
         )
 
     def _setup_db_objects(self):
@@ -109,9 +112,15 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         self.application.pay_subsidy_2 = PaySubsidyFactory()
         self.application.pay_subsidy_2.pay_subsidy_percent = None
 
+        self.application.training_compensation_1 = TrainingCompensationFactory()
+        self.application.training_compensation_1.monthly_amount = None
+        self.application.training_compensation_2 = TrainingCompensationFactory()
+        self.application.training_compensation_2.monthly_amount = None
+
     value_conversion_table = {
         "Palkan Helsinki-lisä": BenefitType.SALARY_BENEFIT,
         "Työllistämisen Helsinki-lisä": BenefitType.EMPLOYMENT_BENEFIT,
+        "Palkkatuettu oppisopimus": BenefitType.SALARY_BENEFIT,
         "kyllä": True,
         "ei": False,
     }
@@ -164,13 +173,26 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 pay_subsidy.application = self.application
                 pay_subsidy.save()
 
+        for training_compensation in [
+            self.application.training_compensation_1,
+            self.application.training_compensation_2,
+        ]:
+            if training_compensation.monthly_amount is not None:
+                # only add the pay subsidy to application if the subsidy is defined
+                # in the Excel testcase
+                training_compensation.application = self.application
+                training_compensation.save()
+
         self.application.calculation.start_date = (
             self.expected_results.time_range_1.start_date
         )
+        assert isinstance(self.application.calculation.start_date, datetime.date)
         self.application.calculation.end_date = (
-            self.expected_results.time_range_2.end_date
+            self.expected_results.time_range_3.end_date
+            or self.expected_results.time_range_2.end_date
             or self.expected_results.time_range_1.end_date
         )
+        assert isinstance(self.application.calculation.end_date, datetime.date)
         self.application.calculation.save()
         self.application.save()
 
@@ -254,7 +276,7 @@ class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
 SHEETS_TO_TEST = [
     ("Palkan Helsinki-lisä", SalaryBenefitExcelTest),
     ("Työllistämisen Helsinki-lisä", EmployeeBenefitExcelTest),
-    # ("Palkkatuettu oppisopimus", ApprenticeshipExcelTest),
+    ("Palkkatuettu oppisopimus", SalaryBenefitExcelTest),
 ]
 
 
@@ -265,24 +287,33 @@ def test_cases_from_excel(request, api_client):
     )
     wb = load_workbook(filename=excel_file_name, data_only=True)  # do not load formulas
     for sheet_name, test_handler_class in SHEETS_TO_TEST:
+        if (
+            os.getenv("TEST_SHEET")
+            and os.getenv("TEST_SHEET").lower() != sheet_name.lower()
+        ):
+            continue
         test_sheet = wb[sheet_name]
-        try:
-            for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
-                if test_column := os.getenv("TEST_COLUMN"):
-                    if get_column_letter(col_idx).lower() not in [
-                        v.lower() for v in test_column.split(",")
-                    ]:
-                        continue
-                test = test_handler_class(test_sheet, col_idx)
-                if os.getenv("KEEP_GOING", None) == "1":
-                    try:
-                        test.run_test()
-                    except AssertionError:
-                        import pdb
+        print(f"sheet {sheet_name}")
+        run_sheet(test_handler_class, test_sheet)
 
-                        pdb.post_mortem()
-                else:
+
+def run_sheet(test_handler_class, test_sheet):
+    try:
+        for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
+            if test_column := os.getenv("TEST_COLUMN"):
+                if get_column_letter(col_idx).lower() not in [
+                    v.lower() for v in test_column.split(",")
+                ]:
+                    continue
+            test = test_handler_class(test_sheet, col_idx)
+            if os.getenv("KEEP_GOING", None) == "1":
+                try:
                     test.run_test()
-        except CaseNotFound:  # no tests
-            assert col_idx > 4  # all sheets should have at least some tests
-            break
+                except AssertionError:
+                    import pdb
+
+                    pdb.post_mortem()
+            else:
+                test.run_test()
+    except CaseNotFound:  # no tests
+        assert col_idx > 4  # all sheets should have at least some tests

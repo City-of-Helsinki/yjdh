@@ -207,5 +207,5 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             super()
             .get_queryset()
             .select_related("batch", "calculation")
-            .prefetch_related("pay_subsidies")
+            .prefetch_related("pay_subsidies", "training_compensations")
         )
