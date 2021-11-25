@@ -104,12 +104,12 @@ export const getHeaderComponents = (t: TestController) => {
       async userIsLoggedIn(user: User, asLang = DEFAULT_LANGUAGE) {
         await t
           .expect(selectors.userInfoDropdown(user, asLang).exists)
-          .ok(await getErrorMessage(t));
+          .ok(await getErrorMessage(t), { timeout: 60_000 });
       },
       async userIsLoggedOut(asLang = DEFAULT_LANGUAGE) {
         await t
           .expect(selectors.loginButton(asLang).exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 60_000 });
       },
       async loginButtonIsTranslatedAs(asLang: Language) {
         await t

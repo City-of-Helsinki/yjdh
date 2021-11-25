@@ -7,7 +7,7 @@ import Employment from 'shared/types/employment';
 
 type Props = {
   index: number;
-  fieldName: string;
+  fieldName: keyof Employment;
   children?: React.ReactNode;
   select?: (application: Application) => string;
 };
@@ -18,28 +18,24 @@ const EmploymentFieldSummary: React.FC<Props> = ({
   children,
   select,
 }) => {
-  const label = useGetApplicationFormFieldLabel(fieldName as keyof Employment);
+  const label = useGetApplicationFormFieldLabel(fieldName);
   const { applicationQuery } = useApplicationApi<string>((application) => {
     if (select) {
       return select(application);
     }
-    return (
-      application.summer_vouchers[index][
-        fieldName as keyof Employment
-      ]?.toString() ?? '-'
-    );
+    return application.summer_vouchers[index][fieldName]?.toString() ?? '-';
   });
   const value = applicationQuery.isSuccess ? applicationQuery.data : '-';
   return (
-    <$EmploymentFieldSummary data-testid={`${fieldName}_${index}`}>
+    <$EmploymentFieldSummary data-testid={`${fieldName}-${index}`}>
       {children ?? `${label}: ${value}`}
     </$EmploymentFieldSummary>
   );
 };
 
 EmploymentFieldSummary.defaultProps = {
-  children: null,
-  select: () => '',
+  children: undefined,
+  select: undefined,
 };
 
 export default EmploymentFieldSummary;
