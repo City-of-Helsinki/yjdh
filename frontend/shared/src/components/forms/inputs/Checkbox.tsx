@@ -18,7 +18,7 @@ const Checkbox = <T,>({
   label,
   errorText,
 }: InputProps<T, boolean>): React.ReactElement<T> => {
-  const { control } = useFormContext<T>();
+  const { control, setError, clearErrors } = useFormContext<T>();
   const [selectedValue, toggleSelectedValue] = useToggle(initialValue);
   const required = Boolean(registerOptions.required);
 
@@ -28,10 +28,16 @@ const Checkbox = <T,>({
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
       toggleSelectedValue();
+      const value = Boolean(event.target.checked);
+      if (required && !value) {
+        setError(id, { type: 'required' });
+      } else if (required && value) {
+        clearErrors();
+      }
       field.onChange(event);
-      return onChange(event.target.checked);
+      return onChange(value);
     },
-    [onChange, toggleSelectedValue]
+    [onChange, toggleSelectedValue, clearErrors, id, required, setError]
   );
 
   return (
