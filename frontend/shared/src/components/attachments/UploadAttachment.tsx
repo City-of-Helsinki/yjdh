@@ -9,6 +9,7 @@ export interface UploadAttachmentProps {
   attachmentType: string;
   allowedFileTypes: readonly string[];
   maxSize: number;
+  ariaUploadText?: string;
   uploadText: string;
   loadingText: string;
   errorTitle: string;
@@ -29,6 +30,7 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
   icon,
   variant,
   isUploading,
+  ariaUploadText,
   uploadText,
   loadingText,
   errorTitle,
@@ -59,6 +61,7 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
         loadingText={loadingText}
         iconLeft={icon}
         ref={buttonRef}
+        aria-label={ariaUploadText}
       >
         {uploadText}
       </Button>
@@ -67,6 +70,7 @@ const UploadAttachment: React.FC<UploadAttachmentProps> = ({
         name={name}
         ref={uploadRef}
         onChange={handleUpload}
+        data-testid={name}
         id={`upload_attachment_${attachmentType}`}
         type="file"
       />

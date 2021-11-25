@@ -2,6 +2,7 @@ import TestController from 'testcafe';
 
 import { DEFAULT_LANGUAGE } from '../../src/i18n/i18n';
 import Company from '../../src/types/company';
+import { clickSelectRadioButton } from '../utils/input.utils';
 import {
   getErrorMessage,
   screenContext,
@@ -77,7 +78,10 @@ export const getSuomiFiValtuutusComponents = (t: TestController) => {
           company_form: '',
         };
         setDataToPrintOnFailure(t, 'companyData', companyData);
-        await t.click(selectors.selectCompanyRadioButton(name));
+        await clickSelectRadioButton(
+          t,
+          selectors.selectCompanyRadioButton(name)
+        );
         return companyData;
       },
     };

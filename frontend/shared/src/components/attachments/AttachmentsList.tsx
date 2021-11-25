@@ -55,6 +55,8 @@ const AttachmentsList: React.FC<Props> = ({
     (): Attachment[] => getAttachmentsByType(attachments ?? [], attachmentType),
     [attachmentType, attachments]
   );
+  const uploadText = t(`${translationsBase}.add`);
+
   return (
     <$Container>
       <$Heading>
@@ -87,7 +89,8 @@ const AttachmentsList: React.FC<Props> = ({
         allowedFileTypes={allowedFileTypes}
         maxSize={maxSize}
         icon={<IconPlus />}
-        uploadText={t(`${translationsBase}.add`)}
+        ariaUploadText={`${title} - ${uploadText}`}
+        uploadText={uploadText}
         loadingText={t(`common:upload.isUploading`)}
         errorTitle={t('common:error.attachments.title')}
         errorFileSizeText={t('common:error.attachments.tooBig')}

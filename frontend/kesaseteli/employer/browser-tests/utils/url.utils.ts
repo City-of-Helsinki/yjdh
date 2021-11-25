@@ -51,7 +51,7 @@ export const getUrlUtils = (t: TestController) => {
       await t
         .expect(getCurrentPathname())
         .eql(`/${locale}/application`, await getErrorMessage(t), {
-          timeout: 20000,
+          timeout: 60_000,
         });
       const applicationId = (await getUrlParam('id')) ?? undefined;
       if (expectedApplicationId) {
@@ -60,6 +60,12 @@ export const getUrlUtils = (t: TestController) => {
           .eql(expectedApplicationId, await getErrorMessage(t));
       }
       return applicationId;
+    },
+    async urlHasNewApplicationId(previousApplicationId: string) {
+      const newApplicationId = (await getUrlParam('id')) ?? undefined;
+      await t
+        .expect(newApplicationId)
+        .notEql(previousApplicationId, await getErrorMessage(t));
     },
   };
   return {

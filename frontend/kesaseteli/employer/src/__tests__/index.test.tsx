@@ -79,7 +79,12 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       });
       it('Should create a new application and redirect to its page with router locale', async () => {
         const locale: Language = 'en';
-        const newApplication = fakeApplication('123-foo-bar', false, locale);
+        const newApplication = fakeApplication(
+          '123-foo-bar',
+          undefined,
+          false,
+          locale
+        );
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationToBackend(newApplication);
@@ -103,7 +108,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
 
     describe('when user has previous applications', () => {
       it("Should redirect to latest application page with application's locale", async () => {
-        const application = fakeApplication('my-id', false, 'sv');
+        const application = fakeApplication('my-id', undefined, false, 'sv');
         const applications = [application, ...fakeApplications(4)];
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend(applications);
