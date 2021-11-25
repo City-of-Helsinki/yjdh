@@ -515,3 +515,36 @@ class SalaryBenefitSumSubTotalsRow(CalculationRow):
 
     class Meta:
         proxy = True
+
+
+class EmployeeBenefitMonthlyRow(CalculationRow):
+    proxy_row_type = RowType.HELSINKI_BENEFIT_MONTHLY_EUR
+    description_fi_template = "Helsinki-lisä / kk)"
+
+    def calculate_amount(self):
+        return self.calculation.calculator.EMPLOYEE_BENEFIT_AMOUNT_PER_MONTH
+
+    class Meta:
+        proxy = True
+
+
+class EmployeeBenefitTotalRow(CalculationRow):
+    """
+    SalaryBenefitTotalRow for the simple cases where
+    * there is a single pay subsidy decision for the duration of the benefit
+    * or there is no pay subsidy decision
+    """
+
+    proxy_row_type = RowType.HELSINKI_BENEFIT_TOTAL_EUR
+    description_fi_template = "Helsinki-lisä yhteensä"
+
+    def calculate_amount(self):
+        return (
+            self.calculation.duration_in_months
+            * self.calculation.calculator.get_amount(
+                RowType.HELSINKI_BENEFIT_MONTHLY_EUR
+            )
+        )
+
+    class Meta:
+        proxy = True
