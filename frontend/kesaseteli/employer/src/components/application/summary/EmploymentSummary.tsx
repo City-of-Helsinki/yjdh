@@ -39,7 +39,7 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
           header={`${employee_name ?? ''} ${employee_ssn ?? ''}`}
           size="s"
           as="h3"
-          data-testid={`employee-info-${index}`}
+          data-testid={`employee-heading-${index}`}
         />
         <EmploymentFieldSummary
           fieldName="summer_voucher_exception_reason"
@@ -73,7 +73,7 @@ const EmploymentSummary: React.FC<Props> = ({ index }) => {
           {t(`common:application.form.inputs.payslip`)}:{' '}
           {getAttachmentsSummary(payslip)}
         </EmploymentFieldSummary>
-        <EmploymentFieldSummary fieldName="employment" index={index}>
+        <EmploymentFieldSummary fieldName="employment_start_date" index={index}>
           {t('common:application.step2.employment')}:{' '}
           {convertToUIDateFormat(employment_start_date)} -{' '}
           {convertToUIDateFormat(employment_end_date)}

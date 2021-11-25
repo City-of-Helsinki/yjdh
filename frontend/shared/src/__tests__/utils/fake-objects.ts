@@ -1,4 +1,8 @@
 import faker from 'faker';
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import fs from 'fs';
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import path from 'path';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -11,14 +15,25 @@ import {
 import { EMPLOYEE_EXCEPTION_REASON } from '../../constants/employee-constants';
 import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
 import type Application from '../../types/application';
-import Attachment from '../../types/attachment';
+import Attachment, { AttachmentType } from '../../types/attachment';
 import type Company from '../../types/company';
 import ContactPerson from '../../types/contact_person';
 import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
 import { getFormApplication } from '../../utils/application.utils';
-import { DATE_FORMATS, formatDate } from '../../utils/date.utils';
+import {
+  convertToBackendDateFormat,
+  DATE_FORMATS,
+  formatDate,
+} from '../../utils/date.utils';
+
+// eslint-disable-next-line unicorn/prefer-module
+const attachmentPath = path.join(__dirname, '../../../browser-tests/fixtures/');
+// eslint-disable-next-line security/detect-non-literal-fs-filename
+const attachmentFilePaths = fs
+  .readdirSync(attachmentPath)
+  .map((fileName) => attachmentPath + fileName);
 
 const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
   fakeFunc: F,
@@ -55,20 +70,21 @@ export const fakeInvoicer = (): Required<Invoicer> => ({
   invoicer_phone_number: faker.phone.phoneNumber(),
 });
 
-export const fakeAttachment = (): Attachment =>
+export const fakeAttachment = (type?: AttachmentType): Attachment =>
   ({
     id: faker.datatype.uuid(),
     application: faker.datatype.uuid(),
-    attachment_type: faker.random.arrayElement(ATTACHMENT_TYPES),
+    attachment_type: type ?? faker.random.arrayElement(ATTACHMENT_TYPES),
     attachment_file: faker.datatype.string(100),
-    attachment_file_name: faker.system.fileName(),
+    attachment_file_name: faker.random.arrayElement(attachmentFilePaths),
     content_type: faker.random.arrayElement(ATTACHMENT_CONTENT_TYPES),
     summer_voucher: faker.datatype.uuid(),
   } as Attachment);
 
 export const fakeAttachments = (
-  count = faker.datatype.number(10)
-): Attachment[] => generateNodeArray(() => fakeAttachment(), count);
+  type: AttachmentType,
+  count = faker.datatype.number(4) + 1
+): Attachment[] => generateNodeArray(() => fakeAttachment(type), count);
 
 export const fakeEmployment = (): Required<Employment> => ({
   id: faker.datatype.uuid(),
@@ -79,25 +95,14 @@ export const fakeEmployment = (): Required<Employment> => ({
   employee_school: faker.commerce.department(),
   employee_ssn: '111111-111C',
   employee_phone_number: faker.phone.phoneNumber(),
-  employee_home_city: faker.address.cityName(),
-  employee_postcode: faker.datatype.number({
-    min: 0,
-    max: 9999,
-    precision: 1000,
-  }),
-  employment_postcode: faker.datatype.number({
-    min: 0,
-    max: 9999,
-    precision: 1000,
-  }),
-  employment_start_date: formatDate(
-    faker.date.past(),
-    DATE_FORMATS.BACKEND_DATE
-  ),
-  employment_end_date: formatDate(
-    faker.date.future(),
-    DATE_FORMATS.BACKEND_DATE
-  ),
+  // for example dots are not allowed in city name, so let's remove them (St. Louis -> St Louis)
+  employee_home_city: faker.address
+    .cityName()
+    .replace(/[^ A-Za-zÄÅÖäåö-]/g, ''),
+  employee_postcode: faker.datatype.number(99999),
+  employment_postcode: faker.datatype.number(99999),
+  employment_start_date: convertToBackendDateFormat(faker.date.past()),
+  employment_end_date: convertToBackendDateFormat(faker.date.future()),
   employment_work_hours: faker.datatype.number({ max: 100, precision: 0.1 }),
   employment_salary_paid: faker.datatype.number({ max: 4000, precision: 0.01 }),
   employment_description: faker.lorem.paragraph(1),
@@ -106,26 +111,31 @@ export const fakeEmployment = (): Required<Employment> => ({
     'no',
     'maybe',
   ]),
-  summer_voucher_serial_number: faker.datatype.string(10),
-  attachments: fakeAttachments(),
+  summer_voucher_serial_number: faker.internet.password(10),
+  attachments: [
+    ...fakeAttachments('payslip'),
+    ...fakeAttachments('employment_contract'),
+  ],
   payslip: [],
   employment_contract: [],
 });
 
 export const fakeEmployments = (
-  count = faker.datatype.number(10)
+  count = faker.datatype.number({ min: 2, max: 10 })
 ): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
 
 export const fakeApplication = (
   id: string,
+  company?: Company,
   invoicer?: boolean,
   language?: Language
 ): Application =>
   getFormApplication({
     id,
-    company: fakeCompany,
+    company: company ?? fakeCompany,
     status: 'draft',
-    summer_vouchers: fakeEmployments(1),
+
+    summer_vouchers: fakeEmployments(2),
     ...fakeContactPerson(),
     is_separate_invoicer: invoicer || false,
     submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),

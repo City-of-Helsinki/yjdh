@@ -95,7 +95,7 @@ const useFormActions = (application: Application): FormActions => {
 
     const normalizedValues = {
       ...currentValues,
-      ...employee,
+      employee,
       startDate: currentValues.startDate
         ? convertToBackendDateFormat(parseDate(currentValues.startDate))
         : undefined,

@@ -4,12 +4,16 @@ import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-r
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
-import { loginAndfillStep1Form } from '../actions/application.actions';
+import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
+import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
 import { getFrontendUrl, getUrlUtils } from '../utils/url.utils';
-import { getApplicationPageComponents } from './applicationPage.components';
+import { getStep1Components } from './step1.components';
+import { getStep2Components } from './step2.components';
+import { getWizardComponents } from './wizard.components';
 
-let applicationPageComponents: ReturnType<typeof getApplicationPageComponents>;
+let step1Components: ReturnType<typeof getStep1Components>;
+let step2Components: ReturnType<typeof getStep2Components>;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
 const url = getFrontendUrl('/');
@@ -21,7 +25,8 @@ fixture('Application')
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
-    applicationPageComponents = getApplicationPageComponents(t);
+    step1Components = getStep1Components(t);
+    step2Components = getStep2Components(t);
     headerComponents = getHeaderComponents(t);
   });
 
@@ -30,8 +35,8 @@ if (isRealIntegrationsEnabled()) {
     const {
       user,
       id: applicationId,
-      ...invoicerFormData
-    } = await loginAndfillStep1Form(t);
+      ...application
+    } = await loginAndfillApplication(t, 1);
     const headerUser = await headerComponents.headerUser();
     await headerUser.actions.clicklogoutButton();
     await doEmployerLogin(t, 'fi', user);
@@ -39,22 +44,41 @@ if (isRealIntegrationsEnabled()) {
       'fi',
       applicationId
     );
-    const step1 = await applicationPageComponents.step1();
-    await step1.expectations.isPresent();
-    await step1.expectations.isFulFilledWith(invoicerFormData);
+    const step1Form = await step1Components.form();
+    await step1Form.expectations.isFulFilledWith(application);
   });
 } else {
   test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
-    const invoicerFormData = await loginAndfillStep1Form(t);
+    const { id: applicationId, ...step1FormData } =
+      await loginAndfillApplication(t, 1);
     await urlUtils.expectations.urlChangedToApplicationPage(
       'fi',
-      invoicerFormData.id
+      applicationId
     );
-    const step2 = await applicationPageComponents.step2();
-    await step2.actions.clickGoToPreviousStepButton();
-    await applicationPageComponents.step1();
+    const wizard = await getWizardComponents(t);
+    await wizard.expectations.isPresent();
+    const step2Accordion = await step2Components.employmentAccordion(0);
+    await step2Accordion.expectations.isPresent();
     await urlUtils.actions.refreshPage();
-    const step1 = await applicationPageComponents.step1();
-    await step1.expectations.isFulFilledWith(invoicerFormData);
+    await step2Accordion.expectations.isPresent();
+    await wizard.actions.clickGoToPreviousStepButton();
+    const step1Form = await step1Components.form();
+    await step1Form.expectations.isPresent();
+    await step1Form.expectations.isFulFilledWith(step1FormData);
   });
 }
+
+test('can fill and send application and create another', async (t: TestController) => {
+  const application = await loginAndfillApplication(t);
+  const thankYouPage = getThankYouPageComponents(t);
+  await thankYouPage.header();
+  const summaryComponent = await thankYouPage.summaryComponent();
+  await summaryComponent.expectations.isCompanyDataPresent(application.company);
+  await summaryComponent.expectations.isFulFilledWith(application);
+  const createNewApplicationButton =
+    await thankYouPage.createNewApplicationButton();
+  await createNewApplicationButton.actions.clickButton();
+  await urlUtils.expectations.urlChangedToApplicationPage();
+  await getWizardComponents(t);
+  await urlUtils.expectations.urlHasNewApplicationId(application.id);
+});

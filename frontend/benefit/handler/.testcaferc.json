@@ -4,7 +4,9 @@
     "../../testcafeClientErrorHandler.js"
   ],
   "screenshots": {
-    "takeOnFails": true
+    "path": "report",
+    "takeOnFails": true,
+    "fullPage": true
   },
   "compilerOptions": {
     "typescript": { "configPath": "../../tsconfig.testcafe.json"}
