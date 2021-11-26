@@ -99,7 +99,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
   const list = data?.reduce<ApplicationListItemData[]>((acc, application) => {
     const {
       id = '',
-      status: applStatus,
+      status: appStatus,
       employee,
       last_modified_at,
       created_at,
@@ -107,14 +107,14 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       application_number: applicationNum,
     } = application;
 
-    const statusText = getStatusTranslation(applStatus);
+    const statusText = getStatusTranslation(appStatus);
     const name = getEmployeeFullName(employee?.first_name, employee?.last_name);
 
     const avatar = {
-      color: getAvatarBGColor(applStatus),
+      color: getAvatarBGColor(appStatus),
       initials: getInitials(name),
     };
-    const allowedAction = getAllowedActions(id, applStatus);
+    const allowedAction = getAllowedActions(id, appStatus);
     const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
     const createdAt =
       created_at &&
@@ -122,14 +122,14 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));
     const commonProps = { id, name, avatar, modifiedAt, allowedAction };
-    const draftProps = { createdAt };
+    const draftProps = { createdAt, applicationNum };
     const submittedProps = {
       submittedAt,
       applicationNum,
       statusText,
     };
 
-    if (applStatus === APPLICATION_STATUSES.DRAFT) {
+    if (appStatus === APPLICATION_STATUSES.DRAFT) {
       const newDraftProps = { ...commonProps, ...draftProps };
       return [...acc, newDraftProps];
     }
