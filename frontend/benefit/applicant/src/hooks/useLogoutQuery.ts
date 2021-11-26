@@ -12,8 +12,7 @@ const useLogoutQuery = (): UseMutationResult<unknown, Error> => {
     () => handleResponse(axios.post(BackendEndpoint.LOGOUT)),
     {
       onSuccess: () => {
-        void queryClient.removeQueries('application');
-        void queryClient.removeQueries('applications');
+        void queryClient.clear();
         void router.push('/login?logout=true');
       },
     }

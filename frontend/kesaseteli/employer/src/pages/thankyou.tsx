@@ -7,6 +7,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -21,10 +22,12 @@ const ThankYouPage: NextPage = () => {
   const router = useRouter();
   const locale = useLocale();
   const { applicationQuery, applicationId } = useApplicationApi();
+  const queryClient = useQueryClient();
 
   const createNewApplicationClick = React.useCallback((): void => {
+    queryClient.clear();
     void router.push(`${locale}/`);
-  }, [router, locale]);
+  }, [queryClient, router, locale]);
 
   if (!applicationId) {
     void router.push(`${locale}/`);
@@ -34,7 +37,7 @@ const ThankYouPage: NextPage = () => {
   if (applicationQuery.isSuccess) {
     const application = applicationQuery.data;
     if (application.status === 'draft') {
-      void router.push(`${locale}/application?id=${applicationId}`);
+      void router.replace(`${locale}/application?id=${applicationId}`);
       return <PageLoadingSpinner />;
     }
     return (
