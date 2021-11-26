@@ -1,6 +1,7 @@
 from applications.models import Application
 from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from messages.models import Message
 from messages.permissions import HasMessagePermission
@@ -18,6 +19,11 @@ class ApplicantMessageViewSet(viewsets.ModelViewSet):
         TermsOfServiceAccepted,
         HasMessagePermission,
     ]
+
+    @transaction.atomic
+    def list(self, request, *args, **kwargs):
+        self.get_queryset().update(seen_by_applicant=True)
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         if settings.DISABLE_AUTHENTICATION:
@@ -42,6 +48,11 @@ class HandlerMessageViewSet(ApplicantMessageViewSet):
         except Application.DoesNotExist:
             return Message.objects.none()
         return application.messages.get_messages_qs()
+
+    @transaction.atomic
+    def list(self, request, *args, **kwargs):
+        self.get_queryset().update(seen_by_handler=True)
+        return super(viewsets.ModelViewSet, self).list(request, *args, **kwargs)
 
 
 class HandlerNoteViewSet(HandlerMessageViewSet):

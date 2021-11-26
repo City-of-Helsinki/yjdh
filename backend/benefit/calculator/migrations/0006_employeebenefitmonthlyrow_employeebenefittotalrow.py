@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("calculator", "0004_add_handler"),
+        ("calculator", "0005_pay_subsidy_percent_not_null"),
     ]
 
     operations = [

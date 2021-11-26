@@ -4,6 +4,7 @@ from copy import deepcopy
 import pytest
 from applications.enums import ApplicationStatus
 from applications.tests.factories import HandlingApplicationFactory
+from applications.tests.test_applications_api import get_detail_url
 from common.tests.conftest import get_client_user
 from companies.tests.factories import CompanyFactory
 from messages.models import Message, MessageType
@@ -419,3 +420,84 @@ def test_delete_message(
     )
     assert result.status_code == 204
     assert Message.objects.count() == 0
+
+
+def test_applications_list_with_message_count(
+    api_client, application, handler_api_client
+):
+    msg = MessageFactory(application=application)
+    response = api_client.get(reverse("v1:applicant-application-list"))
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    assert response.data[0]["unread_messages_count"] == 1
+    response = api_client.get(get_detail_url(application))
+    assert "unread_messages_count" in response.data
+    assert response.data["unread_messages_count"] == 1
+
+    response = handler_api_client.get(reverse("v1:applicant-application-list"))
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    assert response.data[0]["unread_messages_count"] == 1
+    response = handler_api_client.get(get_detail_url(application))
+    assert "unread_messages_count" in response.data
+    assert response.data["unread_messages_count"] == 1
+
+    msg.seen_by_applicant = True
+    msg.seen_by_handler = True
+    msg.save()
+
+    response = api_client.get(reverse("v1:applicant-application-list"))
+    assert response.data[0]["unread_messages_count"] == 0
+    response = api_client.get(get_detail_url(application))
+    assert "unread_messages_count" in response.data
+    assert response.data["unread_messages_count"] == 0
+
+    response = handler_api_client.get(reverse("v1:applicant-application-list"))
+    assert response.data[0]["unread_messages_count"] == 0
+    response = handler_api_client.get(get_detail_url(application))
+    assert "unread_messages_count" in response.data
+    assert response.data["unread_messages_count"] == 0
+
+
+@pytest.mark.parametrize(
+    "view_name",
+    [
+        "applicant-message-list",
+        "handler-message-list",
+    ],
+)
+def test_list_messages_read_receipt(
+    api_client,
+    handler_api_client,
+    handling_application,
+    mock_get_organisation_roles_and_create_company,
+    view_name,
+):
+    handling_application.company = mock_get_organisation_roles_and_create_company
+    handling_application.save()
+
+    MessageFactory(
+        application=handling_application, message_type=MessageType.APPLICANT_MESSAGE
+    )
+    MessageFactory(
+        application=handling_application, message_type=MessageType.HANDLER_MESSAGE
+    )
+    assert Message.objects.count() == 2
+    assert Message.objects.filter(seen_by_applicant=True).count() == 0
+    assert Message.objects.filter(seen_by_handler=True).count() == 0
+
+    if view_name == "applicant-message-list":
+        result = api_client.get(
+            reverse(view_name, kwargs={"application_pk": handling_application.pk})
+        )
+        assert result.status_code == 200
+        assert len(result.data) == 2
+        assert Message.objects.filter(seen_by_applicant=True).count() == 2
+        assert Message.objects.filter(seen_by_handler=True).count() == 0
+    else:
+        result = handler_api_client.get(
+            reverse(view_name, kwargs={"application_pk": handling_application.pk})
+        )
+        assert result.status_code == 200
+        assert Message.objects.filter(seen_by_applicant=True).count() == 0
+        assert Message.objects.filter(seen_by_handler=True).count() == 2
