@@ -42,7 +42,13 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
             </$ItemWrapper>
             <$ItemWrapper>
               <$ItemHeader>{t(`${translationBase}.companyForm`)}</$ItemHeader>
-              <$ItemValue>{data.company?.companyForm}</$ItemValue>
+              <$ItemValue>
+                {t(
+                  `common:organizationTypes.${
+                    data.company?.organizationType || ''
+                  }`
+                )}
+              </$ItemValue>
             </$ItemWrapper>
             <$ItemWrapper>
               <$ItemHeader>{t(`${translationBase}.submittedAt`)}</$ItemHeader>

@@ -5,6 +5,8 @@ import {
   APPLICATION_FIELDS_STEP2_KEYS,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
+  ORGANIZATION_TYPES,
+  SUPPORTED_LANGUAGES,
 } from '../constants';
 
 export type EmployeeData = {
@@ -55,6 +57,7 @@ export type CompanyData = {
   postcode: string;
   city: string;
   bank_account_number: string;
+  organization_type: string;
 };
 
 export type Company = {
@@ -66,6 +69,7 @@ export type Company = {
   postcode: string;
   city: string;
   bankAccountNumber: string;
+  organizationType: ORGANIZATION_TYPES;
 };
 
 export type BaseData = {

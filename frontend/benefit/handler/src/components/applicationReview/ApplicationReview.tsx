@@ -1,10 +1,12 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import { Button , LoadingSpinner } from 'hds-react';
+import { Button, LoadingSpinner } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import ReviewSection from '../reviewSection/ReviewSection';
+import CompanyInfoView from './companyInfoView/CompanyInfoView';
+import ContactPersonView from './contactPersonView/ContactPersonView';
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
@@ -24,12 +26,8 @@ const ApplicationReview: React.FC = () => {
     <>
       <ApplicationHeader data={application} />
       <Container>
-        <ReviewSection header={t(`${translationBase}.heading1`)}>
-          <$GridCell $colSpan={12}>Section contents1</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading2`)}>
-          <$GridCell $colSpan={12}>Section contents2</$GridCell>
-        </ReviewSection>
+        <CompanyInfoView data={application} />
+        <ContactPersonView data={application} />
         <ReviewSection header={t(`${translationBase}.heading3`)}>
           <$GridCell $colSpan={12}>Section contents3</$GridCell>
         </ReviewSection>

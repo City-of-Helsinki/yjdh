@@ -10,6 +10,13 @@ export enum ROUTES {
 
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
+  SV = 'sv',
+  EN = 'en',
+}
+
+export enum ORGANIZATION_TYPES {
+  COMPANY = 'company',
+  ASSOCIATION = 'association',
 }
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
@@ -49,6 +56,7 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   DE_MINIMIS_AID_SET = 'deMinimisAidSet',
   CO_OPERATION_NEGOTIATIONS = 'coOperationNegotiations',
   CO_OPERATION_NEGOTIATIONS_DESCRIPTION = 'coOperationNegotiationsDescription',
+  ORGANIZATION_TYPE = 'organizationType',
 }
 
 export enum EMPLOYEE_KEYS {

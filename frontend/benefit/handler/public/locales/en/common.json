@@ -68,6 +68,7 @@
   "review": {
     "headings": {
       "heading1": "Työnantajan tiedot",
+      "heading1Additional": "Postiosoite päätöstä varten",
       "heading2": "Yhteyshenkilö",
       "heading3": "Hakijan de minimis-tuet",
       "heading4": "YT-neuvottelut",
@@ -76,6 +77,15 @@
       "heading7": "Haettava tukimuoto ja ajankohta",
       "heading8": "Työsuhde",
       "heading9": "Suostumus"
+    },
+    "fields": {
+      "businessId": "Y-tunnus",
+      "bankAccountNumber": "Tilinumero",
+      "applicantLanguage": "Asiointikieli"
     }
+  },
+  "organizationTypes": {
+    "company": "Yritys",
+    "association": "Yhteisö"
   }
 }

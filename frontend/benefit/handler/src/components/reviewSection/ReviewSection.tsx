@@ -58,6 +58,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
               css={`
                 font-size: ${theme.fontSize.body.l};
                 padding: ${withMargin ? theme.spacing.m : 0} 0;
+                line-height: ${theme.lineHeight.l};
               `}
               role={role}
             >

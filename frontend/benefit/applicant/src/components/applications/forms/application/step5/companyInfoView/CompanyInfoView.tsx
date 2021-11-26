@@ -4,6 +4,7 @@ import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
@@ -97,12 +98,10 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
       >
         <$GridCell $colSpan={3}>
           <$ViewField>
-            {[
+            {getFullName(
               data.companyContactPersonFirstName,
-              data.companyContactPersonLastName,
-            ]
-              .join(' ')
-              .trim()}
+              data.companyContactPersonLastName
+            )}
           </$ViewField>
           <$ViewField>{data.companyContactPersonPhoneNumber}</$ViewField>
           <$ViewField>{data.companyContactPersonEmail}</$ViewField>
