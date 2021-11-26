@@ -253,7 +253,7 @@ class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
 
 SHEETS_TO_TEST = [
     ("Palkan Helsinki-lisä", SalaryBenefitExcelTest),
-    # ("Työllistämisen Helsinki-lisä", EmploymentBenefitExcelTest),
+    ("Työllistämisen Helsinki-lisä", EmployeeBenefitExcelTest),
     # ("Palkkatuettu oppisopimus", ApprenticeshipExcelTest),
 ]
 
