@@ -61,7 +61,7 @@ def nested_getattr(obj, attr, *args):
 
 def to_decimal(numeric_value, decimal_places=None):
     value = decimal.Decimal(numeric_value)
-    if decimal_places:
+    if decimal_places is not None:
         value = value.quantize(decimal.Decimal(".1") ** decimal_places)
     return value
 
@@ -134,6 +134,9 @@ def days360(start_date, end_date):
     )
 
 
-def duration_in_months(start_date, end_date):
+def duration_in_months(start_date, end_date, decimal_places=None):
     # This is the formula used in the application calculator Excel file 2021-09
-    return decimal.Decimal(days360(start_date, end_date + timedelta(days=1))) / 30
+    return to_decimal(
+        decimal.Decimal(days360(start_date, end_date + timedelta(days=1))) / 30,
+        decimal_places,
+    )
