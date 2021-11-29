@@ -81,6 +81,8 @@
     "fields": {
       "businessId": "Y-tunnus",
       "bankAccountNumber": "Tilinumero",
+      "associationHasBusinessActivities": "Harjoittaako työnantaja elinkeinotoimintaa?",
+      "associationImmediateManagerCheck": "Lähiesihenkilö palkattavalle henkilölle?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
       "deMinimisAidAmount": "Tuen määrä",
@@ -108,6 +110,28 @@
     "employment": "Työllistämisen Helsinki-lisä",
     "salary": "Palkan Helsinki-lisä",
     "commission": "Toimeksiannon Helsinki-lisä"
+  },
+  "attachments": {
+    "heading1": "Liittet",
+    "types": {
+      "employmentContract": {
+        "title": "Työsopimus"
+      },
+      "paySubsidyDecision": {
+        "title": "Palkkatukipäätös"
+      },
+      "commissionContract": {
+        "title": "Toimeksiantosopimus"
+      },
+      "educationContract": {
+        "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
+      },
+      "helsinkiBenefitVoucher": {
+        "title": "Helsinki-lisä seteli"
+      }
+    },
+    "add": "Liitä tiedosto",
+    "remove": "Poista liite"
   },
   "utility": {
     "yes": "Kyllä",

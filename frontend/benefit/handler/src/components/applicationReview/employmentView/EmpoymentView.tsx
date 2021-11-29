@@ -1,10 +1,13 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
+
+import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 
 const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -45,6 +48,11 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         </$ViewField>
         <$ViewField>{data.employee?.collectiveBargainingAgreement}</$ViewField>
       </$GridCell>
+      <AttachmentsListView
+        title={t('common:attachments.types.employmentContract.title')}
+        type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+        attachments={data.attachments || []}
+      />
     </ReviewSection>
   );
 };

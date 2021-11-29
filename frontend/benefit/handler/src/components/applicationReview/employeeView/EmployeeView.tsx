@@ -1,4 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -8,6 +9,8 @@ import {
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
+
+import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 
 const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -28,6 +31,11 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           )}`}</$ViewFieldBold>
         </$ViewField>
       </$GridCell>
+      <AttachmentsListView
+        title={t('common:attachments.types.helsinkiBenefitVoucher.title')}
+        type={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+        attachments={data.attachments || []}
+      />
     </ReviewSection>
   );
 };

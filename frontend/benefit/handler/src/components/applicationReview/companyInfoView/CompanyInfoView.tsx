@@ -1,4 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ORGANIZATION_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -13,7 +14,6 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   const theme = useTheme();
-  // todo: add the association info in the bottom
   return (
     <ReviewSection header={t(`${translationsBase}.headings.heading1`)}>
       <$GridCell $colSpan={3}>
@@ -55,6 +55,32 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
                 .join(' ')
                 .trim()}
+            </$ViewField>
+          </$GridCell>
+        </>
+      )}
+      {data.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
+        <>
+          <$GridCell $colSpan={12}>
+            <$ViewField>
+              {t(`${translationsBase}.fields.associationHasBusinessActivities`)}{' '}
+              <$ViewFieldBold>
+                {t(
+                  `common:utility.${
+                    data.associationHasBusinessActivities ? 'yes' : 'no'
+                  }`
+                )}
+              </$ViewFieldBold>
+            </$ViewField>
+            <$ViewField>
+              {t(`${translationsBase}.fields.associationImmediateManagerCheck`)}{' '}
+              <$ViewFieldBold>
+                {t(
+                  `common:utility.${
+                    data.associationImmediateManagerCheck ? 'yes' : 'no'
+                  }`
+                )}
+              </$ViewFieldBold>
             </$ViewField>
           </$GridCell>
         </>

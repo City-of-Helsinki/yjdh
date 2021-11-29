@@ -7,6 +7,7 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import ReviewSection from '../reviewSection/ReviewSection';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
+import ConsentView from './consentView/ConsentView';
 import ContactPersonView from './contactPersonView/ContactPersonView';
 import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
 import DeminimisView from './deminimisView/DeminimisView';
@@ -40,6 +41,7 @@ const ApplicationReview: React.FC = () => {
         <PaySubsidyView data={application} />
         <BenefitView data={application} />
         <EmploymentView data={application} />
+        <ConsentView data={application} />
         <ReviewSection
           action={
             <div>

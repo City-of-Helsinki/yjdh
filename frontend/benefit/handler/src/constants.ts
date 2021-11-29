@@ -20,6 +20,15 @@ export enum BENEFIT_TYPES {
   COMMISSION = 'commission_benefit',
 }
 
+export enum ATTACHMENT_TYPES {
+  EMPLOYMENT_CONTRACT = 'employment_contract',
+  PAY_SUBSIDY_CONTRACT = 'pay_subsidy_decision',
+  COMMISSION_CONTRACT = 'commission_contract',
+  EDUCATION_CONTRACT = 'education_contract',
+  HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
+  EMPLOYEE_CONSENT = 'employee_consent',
+}
+
 export enum ORGANIZATION_TYPES {
   COMPANY = 'company',
   ASSOCIATION = 'association',

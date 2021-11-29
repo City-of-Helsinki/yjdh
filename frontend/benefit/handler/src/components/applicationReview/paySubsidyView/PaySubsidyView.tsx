@@ -1,4 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -7,6 +8,8 @@ import {
   $ViewFieldBold,
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+
+import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
 
 const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -42,6 +45,11 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$ViewField>
         )}
       </$GridCell>
+      <AttachmentsListView
+        title={t('common:attachments.types.paySubsidyDecision.title')}
+        type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+        attachments={data.attachments || []}
+      />
     </ReviewSection>
   );
 };
