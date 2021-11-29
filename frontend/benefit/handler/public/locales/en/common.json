@@ -88,12 +88,26 @@
       "deMinimisAidTotal": "Yhteensä",
       "coOperationNegotiations": "Onko hakijalla menossa YT-neuvottelut?",
       "isLivingInHelsinki": "Helsinki kotikuntana",
-      "apprenticeshipProgram": "Onko kyseessä oppisopimus?"
+      "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
+      "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
+      "benefitType": "Tukimuoto",
+      "startDate": "Alkaen",
+      "endDate": "Päättyen",
+      "jobTitle": "Tehtävänimike",
+      "workingHours": "Työaika: {{workingHours}} t / viikko",
+      "monthlyPay": "Bruttopalkka {{monthlyPay}} €/kk",
+      "otherExpenses": "Sivukulut {{otherExpenses}} €/kk",
+      "vacationMoney": "Lomaraha {{vacationMoney}} €"
     }
   },
   "organizationTypes": {
     "company": "Yritys",
     "association": "Yhteisö"
+  },
+  "benefitTypes": {
+    "employment": "Työllistämisen Helsinki-lisä",
+    "salary": "Palkan Helsinki-lisä",
+    "commission": "Toimeksiannon Helsinki-lisä"
   },
   "utility": {
     "yes": "Kyllä",

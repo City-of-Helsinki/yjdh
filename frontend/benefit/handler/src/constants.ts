@@ -14,6 +14,12 @@ export enum SUPPORTED_LANGUAGES {
   EN = 'en',
 }
 
+export enum BENEFIT_TYPES {
+  EMPLOYMENT = 'employment_benefit',
+  SALARY = 'salary_benefit',
+  COMMISSION = 'commission_benefit',
+}
+
 export enum ORGANIZATION_TYPES {
   COMPANY = 'company',
   ASSOCIATION = 'association',

@@ -3,6 +3,7 @@ import Attachment from 'shared/types/attachment';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
+  BENEFIT_TYPES,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
@@ -358,3 +359,7 @@ export type SubmittedApplication = {
   applicationNumber: number;
   applicantName: string;
 };
+
+export interface ApplicationReviewViewProps {
+  data: Application;
+}

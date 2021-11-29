@@ -5,11 +5,13 @@ import Container from 'shared/components/container/Container';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import ReviewSection from '../reviewSection/ReviewSection';
+import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ContactPersonView from './contactPersonView/ContactPersonView';
 import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
 import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
+import EmploymentView from './employmentView/EmpoymentView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import { useApplicationReview } from './useApplicationReview';
 
@@ -36,12 +38,8 @@ const ApplicationReview: React.FC = () => {
         <CoOperationNegotiationsView data={application} />
         <EmployeeView data={application} />
         <PaySubsidyView data={application} />
-        <ReviewSection header={t(`${translationBase}.heading7`)}>
-          <$GridCell $colSpan={12}>Section contents7</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading8`)}>
-          <$GridCell $colSpan={12}>Section contents8</$GridCell>
-        </ReviewSection>
+        <BenefitView data={application} />
+        <EmploymentView data={application} />
         <ReviewSection
           action={
             <div>

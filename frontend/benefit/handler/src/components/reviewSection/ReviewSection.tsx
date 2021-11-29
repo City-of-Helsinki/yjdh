@@ -31,6 +31,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   header,
   action,
   withMargin,
+  withoutDivider,
   role,
   loading,
   ...rest
@@ -65,7 +66,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
               {children}
             </$Grid>
           )}
-          {!withAction && (
+          {!withAction && !withoutDivider && (
             <$Hr
               css={`
                 margin-top: ${theme.spacing.l};
