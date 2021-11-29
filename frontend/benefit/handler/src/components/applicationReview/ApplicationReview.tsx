@@ -7,6 +7,10 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import ReviewSection from '../reviewSection/ReviewSection';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ContactPersonView from './contactPersonView/ContactPersonView';
+import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
+import DeminimisView from './deminimisView/DeminimisView';
+import EmployeeView from './employeeView/EmployeeView';
+import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
@@ -28,18 +32,10 @@ const ApplicationReview: React.FC = () => {
       <Container>
         <CompanyInfoView data={application} />
         <ContactPersonView data={application} />
-        <ReviewSection header={t(`${translationBase}.heading3`)}>
-          <$GridCell $colSpan={12}>Section contents3</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading4`)}>
-          <$GridCell $colSpan={12}>Section contents4</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading5`)}>
-          <$GridCell $colSpan={12}>Section contents5</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading5`)}>
-          <$GridCell $colSpan={12}>Section contents6</$GridCell>
-        </ReviewSection>
+        <DeminimisView data={application} />
+        <CoOperationNegotiationsView data={application} />
+        <EmployeeView data={application} />
+        <PaySubsidyView data={application} />
         <ReviewSection header={t(`${translationBase}.heading7`)}>
           <$GridCell $colSpan={12}>Section contents7</$GridCell>
         </ReviewSection>

@@ -81,11 +81,23 @@
     "fields": {
       "businessId": "Y-tunnus",
       "bankAccountNumber": "Tilinumero",
-      "applicantLanguage": "Asiointikieli"
+      "applicantLanguage": "Asiointikieli",
+      "deMinimisAidGranter": "Tuen myöntäjä",
+      "deMinimisAidAmount": "Tuen määrä",
+      "deMinimisAidGrantedAt": "Myönnetty",
+      "deMinimisAidTotal": "Yhteensä",
+      "coOperationNegotiations": "Onko hakijalla menossa YT-neuvottelut?",
+      "isLivingInHelsinki": "Helsinki kotikuntana",
+      "apprenticeshipProgram": "Onko kyseessä oppisopimus?"
     }
   },
   "organizationTypes": {
     "company": "Yritys",
     "association": "Yhteisö"
+  },
+  "utility": {
+    "yes": "Kyllä",
+    "no": "Ei",
+    "and": "ja"
   }
 }

@@ -4,6 +4,10 @@ type ViewFieldProps = {
   isInline?: boolean;
 };
 
+type SummaryTableValueProps = {
+  isBold?: boolean;
+};
+
 export const $ViewField = styled.div<ViewFieldProps>`
   &:not(:last-child) {
     padding-bottom: ${(props) =>
@@ -26,6 +30,7 @@ export const $SummaryTableHeader = styled.div`
   font-weight: 500;
 `;
 
-export const $SummaryTableValue = styled.span`
+export const $SummaryTableValue = styled.span<SummaryTableValueProps>`
   font-size: ${(props) => props.theme.fontSize.body.l};
+  font-weight: ${(props) => (props.isBold ? '600' : '')};
 `;

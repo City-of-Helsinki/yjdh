@@ -38,33 +38,33 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({ data }) => {
             data.company?.city || ''
           }`}</$ViewField>
         </$GridCell>
+        {data.alternativeCompanyStreetAddress && (
+          <>
+            <$GridCell
+              $colSpan={12}
+              css={`
+                font-size: ${theme.fontSize.body.m};
+                margin: ${theme.spacing.xs4} 0;
+              `}
+            >
+              <$ViewFieldBold>
+                {t(`${translationsBase}.headings.heading1Additional`)}
+              </$ViewFieldBold>
+            </$GridCell>
+            <$GridCell $colSpan={3}>
+              {data.companyDepartment && (
+                <$ViewField>{data.companyDepartment}</$ViewField>
+              )}
+              <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
+              <$ViewField>
+                {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
+                  .join(' ')
+                  .trim()}
+              </$ViewField>
+            </$GridCell>
+          </>
+        )}
       </ReviewSection>
-      {data.alternativeCompanyStreetAddress && (
-        <ReviewSection>
-          <$GridCell
-            $colSpan={12}
-            css={`
-              font-size: ${theme.fontSize.body.m};
-              margin: ${theme.spacing.xs4} 0;
-            `}
-          >
-            <$ViewFieldBold>
-              {t(`${translationsBase}.headings.heading1Additional`)}
-            </$ViewFieldBold>
-          </$GridCell>
-          <$GridCell $colSpan={3}>
-            {data.companyDepartment && (
-              <$ViewField>{data.companyDepartment}</$ViewField>
-            )}
-            <$ViewField>{data.alternativeCompanyStreetAddress}</$ViewField>
-            <$ViewField>
-              {[data.alternativeCompanyPostcode, data.alternativeCompanyCity]
-                .join(' ')
-                .trim()}
-            </$ViewField>
-          </$GridCell>
-        </ReviewSection>
-      )}
     </>
   );
 };
