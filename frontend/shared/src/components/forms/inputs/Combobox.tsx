@@ -40,13 +40,13 @@ const Combobox = <T, O extends Option>({
     <$GridCell {...$gridCellProps}>
       <Controller
         name={id}
+        data-testid={id}
         control={control}
         rules={registerOptions}
-        render={({ field }) => (
+        render={({ field: { ref, ...field } }) => (
           <HdsCombobox<O>
             {...field}
             id={id}
-            data-testid={id}
             required={required}
             label={label}
             defaultValue={initialValue}
@@ -60,7 +60,11 @@ const Combobox = <T, O extends Option>({
           />
         )}
       />
-      {errorText && <FieldErrorMessage>{errorText}</FieldErrorMessage>}
+      {errorText && (
+        <FieldErrorMessage data-testid={`${id as string}-error`}>
+          {errorText}
+        </FieldErrorMessage>
+      )}
     </$GridCell>
   );
 };

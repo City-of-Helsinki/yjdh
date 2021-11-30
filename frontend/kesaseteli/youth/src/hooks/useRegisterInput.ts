@@ -1,4 +1,4 @@
-import Voucher from 'kesaseteli/youth/types/voucher-form-data';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -16,7 +16,7 @@ type InputProps<T> = {
   registerOptions?: RegisterOptions<T>;
 };
 
-const useRegister = <T = Voucher>(): ((
+const useRegisterInput = <T = YouthFormData>(): ((
   id: Id<T>,
   registerOptions?: RegisterOptions<T>
 ) => InputProps<T>) => {
@@ -36,11 +36,11 @@ const useRegister = <T = Voucher>(): ((
     (id, registerOptions) => ({
       id,
       errorText: getErrorText(id),
-      label: t(`common:applicationPage.form.${id as string}`),
+      label: t(`common:youthApplication.form.${id as string}`),
       registerOptions,
     }),
     [t, getErrorText]
   );
 };
 
-export default useRegister;
+export default useRegisterInput;

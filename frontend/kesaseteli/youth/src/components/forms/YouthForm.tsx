@@ -1,7 +1,7 @@
 import { Button } from 'hds-react';
-import useRegister from 'kesaseteli/youth/hooks/useRegister';
+import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import School from 'kesaseteli/youth/types/School';
-import Voucher from 'kesaseteli/youth/types/voucher-form-data';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -11,7 +11,7 @@ import Combobox from 'shared/components/forms/inputs/Combobox';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { EMAIL_REGEX, NAMES_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
+import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
 import useToggle from 'shared/hooks/useToggle';
 
 const schools: School[] = [
@@ -120,91 +120,89 @@ const schools: School[] = [
   'Östersundom skola',
 ].map((school) => ({ name: school }));
 
-const VoucherForm: React.FC = () => {
+const YouthForm: React.FC = () => {
   const { t } = useTranslation();
-  const register = useRegister();
+  const register = useRegisterInput();
 
   const [showResult, setShowResult] = React.useState(false);
-  const [schoolNotFound, toggleSchoolNotFound] = useToggle(false);
+  const [schoolIsUnlisted, toggleSchoolIsUnListed] = useToggle(false);
 
   const { getValues, handleSubmit, clearErrors, setValue } =
-    useFormContext<Voucher>();
+    useFormContext<YouthFormData>();
 
-  const handleToggleSchoolNotFound = React.useCallback(
-    (notFound?: boolean) => {
-      if (notFound) {
-        clearErrors('school');
-        setValue('school', null);
-      } else {
-        clearErrors('schoolName');
-        setValue('schoolName', null);
-      }
-      toggleSchoolNotFound();
+  const handleToggleSchoolIsNotListed = React.useCallback(
+    () => {
+      clearErrors('school');
+      setValue('school', null);
+      toggleSchoolIsUnListed();
     },
-    [clearErrors, setValue, toggleSchoolNotFound]
+    [clearErrors, setValue, toggleSchoolIsUnListed]
   );
 
   return (
     <>
-      <Heading header={t('common:applicationPage.form.title')} />
-      <p>{t('common:applicationPage.form.info')}</p>
+      <Heading header={t('common:youthApplication.form.title')} />
+      <p>{t('common:youthApplication.form.info')}</p>
       <form>
         <FormSection columns={2}>
-          <TextInput<Voucher>
-            {...register('firstName', {
+          <TextInput<YouthFormData>
+            {...register('first_name', {
               required: true,
               pattern: NAMES_REGEX,
               maxLength: 256,
             })}
           />
-          <TextInput<Voucher>
-            {...register('lastName', {
+          <TextInput<YouthFormData>
+            {...register('last_name', {
               required: true,
               pattern: NAMES_REGEX,
               maxLength: 256,
             })}
           />
-          <TextInput<Voucher>
-            {...register('ssn', { required: true, maxLength: 32 })}
+          <TextInput<YouthFormData>
+            {...register('social_security_number', { required: true, maxLength: 32 })}
           />
-          <TextInput<Voucher>
+          <TextInput<YouthFormData>
             {...register('postcode', {
               required: true,
               pattern: POSTAL_CODE_REGEX,
-              maxLength: 256,
+              maxLength: 5,
             })}
             type="number"
           />
-          <Combobox<Voucher, School>
-            {...register('school', { required: !schoolNotFound })}
+          <Combobox<YouthFormData, School>
+            {...register('school', { required: !schoolIsUnlisted })}
             optionLabelField="name"
             options={schools}
-            disabled={schoolNotFound}
-            placeHolder={t('common:applicationPage.form.schoolPlaceHolder')}
+            disabled={schoolIsUnlisted}
+            placeholder={t('common:youthApplication.form.schoolPlaceholder')}
             $colSpan={2}
+            label={t('common:youthApplication.form.schoolDropdown')}
           />
           <$GridCell $colSpan={2}>
-            <Checkbox<Voucher>
-              {...register('schoolNotFound')}
-              onChange={handleToggleSchoolNotFound}
+            <Checkbox<YouthFormData>
+              {...register('is_unlisted_school')}
+              onChange={handleToggleSchoolIsNotListed}
             />
           </$GridCell>
-          {schoolNotFound && (
-            <TextInput<Voucher>
-              {...register('schoolName', {
-                required: schoolNotFound,
-                maxLength: 64,
+          {schoolIsUnlisted && (
+            <TextInput<YouthFormData>
+              {...register('school.name', {
+                required: schoolIsUnlisted,
+                maxLength: 256,
+                pattern: NAMES_REGEX,
               })}
               $colSpan={2}
+              label={t('common:youthApplication.form.schoolName')}
               placeholder={t(
-                'common:applicationPage.form.schoolNamePlaceholder'
+                'common:youthApplication.form.schoolNamePlaceholder'
               )}
             />
           )}
-          <TextInput<Voucher>
-            {...register('phoneNumber', { required: true, maxLength: 64 })}
+          <TextInput<YouthFormData>
+            {...register('phone_number', { required: true, maxLength: 64, pattern: PHONE_NUMBER_REGEX })}
           />
-          <TextInput<Voucher>
+          <TextInput<YouthFormData>
             {...register('email', {
               maxLength: 254,
               pattern: EMAIL_REGEX,
@@ -212,13 +210,13 @@ const VoucherForm: React.FC = () => {
             })}
           />
           <$GridCell $colSpan={2}>
-            <Checkbox<Voucher>
+            <Checkbox<YouthFormData>
               {...register('termsAndConditions', {
                 required: true,
               })}
               label={
                 <Trans
-                  i18nKey="common:applicationPage.form.termsAndConditions"
+                  i18nKey="common:youthApplication.form.termsAndConditions"
                   components={{
                     a: (
                       <a
@@ -241,7 +239,7 @@ const VoucherForm: React.FC = () => {
               theme="coat"
               onClick={handleSubmit(() => setShowResult(true))}
             >
-              {t(`common:applicationPage.form.sendButton`)}
+              {t(`common:youthApplication.form.sendButton`)}
             </Button>
           </$GridCell>
           {showResult && <pre>{JSON.stringify(getValues(), null, 2)}</pre>}
@@ -251,4 +249,4 @@ const VoucherForm: React.FC = () => {
   );
 };
 
-export default VoucherForm;
+export default YouthForm;

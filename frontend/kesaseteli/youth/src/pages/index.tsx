@@ -1,5 +1,5 @@
-import VoucherForm from 'kesaseteli/youth/components/forms/VoucherForm';
-import Voucher from 'kesaseteli/youth/types/voucher-form-data';
+import YouthForm from 'kesaseteli/youth/components/forms/YouthForm';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
@@ -12,7 +12,7 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 const YouthIndex: NextPage = () => {
   const { t } = useTranslation();
 
-  const methods = useForm<Voucher>({
+  const methods = useForm<YouthFormData>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
@@ -23,12 +23,12 @@ const YouthIndex: NextPage = () => {
       <Head>
         <title>{t(`common:appName`)}</title>
       </Head>
-      <Heading size="l" header={t('common:applicationPage.title')} as="h2" />
-      <p>{t('common:applicationPage.paragraph_1')}</p>
+      <Heading size="l" header={t('common:youthApplication.title')} as="h2" />
+      <p>{t('common:youthApplication.paragraph_1')}</p>
       <FormProvider {...methods}>
-        <VoucherForm />
+        <YouthForm />
       </FormProvider>
-      <p>{t(`common:applicationPage.form.requiredInfo`)}</p>
+      <p>{t(`common:youthApplication.form.requiredInfo`)}</p>
     </Container>
   );
 };

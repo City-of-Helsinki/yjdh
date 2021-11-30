@@ -3,8 +3,14 @@ import React from 'react';
 
 import { $FieldErrorMessage } from './FieldErrorMessage.sc';
 
-const FieldErrorMessage: React.FC = ({ children }) => (
-  <$FieldErrorMessage>
+type Props = {
+  'data-testid': string;
+};
+const FieldErrorMessage: React.FC<Props> = ({
+  'data-testid': dataTestId,
+  children,
+}) => (
+  <$FieldErrorMessage data-testid={dataTestId}>
     <IconAlertCircleFill size="s" />
     {children}
   </$FieldErrorMessage>

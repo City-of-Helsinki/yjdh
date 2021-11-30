@@ -96,7 +96,11 @@ const AttachmentsList: React.FC<Props> = ({
         errorFileSizeText={t('common:error.attachments.tooBig')}
         errorFileTypeText={t('common:error.attachments.fileType')}
       />
-      {errorMessage && <FieldErrorMessage>{errorMessage}</FieldErrorMessage>}
+      {errorMessage && (
+        <FieldErrorMessage data-testid={`${name ?? 'attachments'}-error`}>
+          {errorMessage}
+        </FieldErrorMessage>
+      )}
     </$Container>
   );
 };

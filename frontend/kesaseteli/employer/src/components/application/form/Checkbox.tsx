@@ -14,7 +14,7 @@ import ApplicationFormData from 'shared/types/application-form-data';
 type Props = {
   id: ApplicationFieldPath;
   validation?: RegisterOptions<ApplicationFormData>;
-  onChange?: (value: boolean) => void;
+  onChange?: (value: boolean | undefined) => void;
   initialValue?: boolean;
   label?: string | React.ReactNode;
 } & GridCellProps;

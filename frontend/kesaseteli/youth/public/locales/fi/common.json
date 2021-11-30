@@ -39,24 +39,24 @@
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
   },
-  "applicationPage": {
+  "youthApplication": {
     "title": "Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
     "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     "form" : {
       "title": "Setelin tiedot",
       "info": "Täytäthän tiedot samalla tavalla kuin kelakortissasi",
       "button": "Lähetä tiedot",
-      "firstName" : "Etunimi",
-      "lastName": "Sukunimi",
-      "ssn": "Henkilötunnus",
+      "first_name" : "Etunimi",
+      "last_name": "Sukunimi",
+      "social_security_number": "Henkilötunnus",
       "postcode": "Postinumero",
-      "school": "Koulu",
+      "schoolDropdown": "Koulu",
       "schoolPlaceholder": "Valitse koulusi listalta",
-      "schoolNotFound": "Koulua ei löydy listalta",
+      "is_unlisted_school": "Koulua ei löydy listalta",
       "schoolName": "Koulun nimi",
       "schoolNamePlaceholder": "Esim. Merilahden Peruskoulu",
       "email": "Sähköpostiosoite",
-      "phoneNumber": "Puhelinnumero",
+      "phone_number": "Puhelinnumero",
       "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
       "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
       "sendButton": "Lähetä tiedot",
