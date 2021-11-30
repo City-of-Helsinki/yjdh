@@ -26,7 +26,7 @@ jobs:
       - run: |
           echo "COMMIT_INFO=$(git log -1 --pretty=format:'%h%x09%an%x09%ad%x09%s')" >> $GITHUB_ENV
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.0
         with:
           node-version: '14'
       - name: Get yarn cache directory path
