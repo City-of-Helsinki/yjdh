@@ -30,6 +30,11 @@ const ApplicationPage: NextPage = () => {
   }
 
   if (applicationQuery.isSuccess) {
+    if (applicationQuery.data.status !== 'draft') {
+      void router.replace(`${locale}/thankyou?id=${applicationId}`);
+      return <PageLoadingSpinner />;
+    }
+
     return (
       <Container>
         <Head>
@@ -37,7 +42,7 @@ const ApplicationPage: NextPage = () => {
             {t('common:application.new')} | {t(`common:appName`)}
           </title>
         </Head>
-        <ApplicationWizard  initialStep={initialStep}>
+        <ApplicationWizard initialStep={initialStep}>
           <Step1Employer />
           <Step2Employments />
           <Step3Summary />

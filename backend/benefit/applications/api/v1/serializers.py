@@ -536,6 +536,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "created_at",
             "attachments",
             "ahjo_decision",
+            "unread_messages_count",
         ]
         read_only_fields = [
             "submitted_at",
@@ -552,6 +553,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "available_benefit_types",
             "last_modified_at",
             "created_at",
+            "unread_messages_count",
         ]
         extra_kwargs = {
             "company_name": {
@@ -692,6 +694,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
     company_contact_person_phone_number = PhoneNumberField(
         allow_blank=True,
         help_text="Company contact person phone number normalized (start with zero, without country code)",
+    )
+    unread_messages_count = serializers.IntegerField(
+        read_only=True, help_text="Count of unread messages"
     )
 
     def get_applicant_terms_approval_needed(self, obj):

@@ -2,10 +2,11 @@ import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/us
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import React from 'react';
-import { UseMutationResult, UseQueryResult } from 'react-query';
+import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 
@@ -45,6 +46,7 @@ const useApplicationApi = <T = Application>(
   select?: (application: Application) => T
 ): ApplicationApi<T> => {
   const applicationId = useApplicationIdQueryParam();
+  const queryClient = useQueryClient();
 
   const applicationQuery = useApplicationQuery<T>(applicationId, select);
   const updateApplicationQuery = useUpdateApplicationQuery(applicationId);
@@ -109,11 +111,12 @@ const useApplicationApi = <T = Application>(
           {
             onSuccess: () => {
               clearLocalStorage(`application-${completeApplication.id}`);
+              void queryClient.invalidateQueries(BackendEndpoint.APPLICATIONS);
               return onSuccess();
             },
           }
         ),
-      [updateApplicationQuery]
+      [queryClient, updateApplicationQuery]
     );
 
   return {
