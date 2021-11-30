@@ -1,5 +1,9 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { ApplicationReviewViewProps,DeMinimisAid  } from 'benefit/handler/types/application';
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import {
+  ApplicationReviewViewProps,
+  DeMinimisAid,
+} from 'benefit/handler/types/application';
 import sumBy from 'lodash/sumBy';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -15,7 +19,10 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
-    <ReviewSection header={t(`${translationsBase}.headings.heading3`)}>
+    <ReviewSection
+      header={t(`${translationsBase}.headings.heading3`)}
+      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <></> : null}
+    >
       {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
         <>
           <$GridCell $colSpan={3}>

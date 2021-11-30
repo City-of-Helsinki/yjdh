@@ -1,5 +1,8 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { ORGANIZATION_TYPES } from 'benefit/handler/constants';
+import {
+  APPLICATION_STATUSES,
+  ORGANIZATION_TYPES,
+} from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -15,7 +18,10 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   return (
-    <ReviewSection header={t(`${translationsBase}.headings.heading1`)}>
+    <ReviewSection
+      header={t(`${translationsBase}.headings.heading1`)}
+      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <></> : null}
+    >
       <$GridCell $colSpan={3}>
         <$ViewField>{data.company?.name}</$ViewField>
         <$ViewField>{`${t(`${translationsBase}.fields.businessId`)}: ${

@@ -66,6 +66,10 @@
     }
   },
   "review": {
+    "actions": {
+      "handle": "Ota käsittelyyn",
+      "close": "Sulje"
+    },
     "headings": {
       "heading1": "Työnantajan tiedot",
       "heading1Additional": "Postiosoite päätöstä varten",

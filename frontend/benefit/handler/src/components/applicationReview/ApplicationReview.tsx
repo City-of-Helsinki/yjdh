@@ -1,10 +1,11 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import { Button, LoadingSpinner } from 'hds-react';
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { LoadingSpinner } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 
-import ReviewSection from '../reviewSection/ReviewSection';
+import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -17,9 +18,7 @@ import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const { t, application, isLoading } = useApplicationReview();
-
-  const translationBase = 'common:review.headings';
+  const { application, isLoading } = useApplicationReview();
 
   if (isLoading) {
     return (
@@ -42,22 +41,15 @@ const ApplicationReview: React.FC = () => {
         <BenefitView data={application} />
         <EmploymentView data={application} />
         <ConsentView data={application} />
-        <ReviewSection
-          action={
-            <div>
-              <Button theme="black" variant="secondary">
-                Some button
-              </Button>
-            </div>
-          }
-          header={t(`${translationBase}.heading9`)}
-        >
-          <$GridCell $colSpan={12}>Section contents9</$GridCell>
-        </ReviewSection>
-        <ReviewSection withMargin>
-          <$GridCell $colSpan={12}>Section contents10</$GridCell>
-        </ReviewSection>
       </Container>
+      <StickyActionBar>
+        {application.status === APPLICATION_STATUSES.RECEIVED && (
+          <ReceivedApplicationActions application={application} />
+        )}
+        {application.status === APPLICATION_STATUSES.HANDLING && (
+          <>handling actions</>
+        )}
+      </StickyActionBar>
     </>
   );
 };

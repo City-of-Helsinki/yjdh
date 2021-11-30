@@ -1,5 +1,8 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
+import {
+  APPLICATION_STATUSES,
+  ATTACHMENT_TYPES,
+} from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -13,7 +16,12 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
-    <ReviewSection header={t(`${translationsBase}.headings.heading8`)}>
+    <ReviewSection
+      header={t(`${translationsBase}.headings.heading8`)}
+      action={
+        data.status !== APPLICATION_STATUSES.RECEIVED ? <>some actions</> : null
+      }
+    >
       <$GridCell $colSpan={5}>
         <$ViewField>
           {`${t(`${translationsBase}.fields.jobTitle`)}: ${

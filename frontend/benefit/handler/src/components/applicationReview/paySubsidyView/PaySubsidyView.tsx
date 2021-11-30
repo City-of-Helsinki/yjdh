@@ -1,5 +1,8 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
+import {
+  APPLICATION_STATUSES,
+  ATTACHMENT_TYPES,
+} from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -15,7 +18,12 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   return (
-    <ReviewSection header={t(`${translationsBase}.headings.heading6`)}>
+    <ReviewSection
+      header={t(`${translationsBase}.headings.heading6`)}
+      action={
+        data.status !== APPLICATION_STATUSES.RECEIVED ? <>some actions</> : null
+      }
+    >
       <$GridCell $colSpan={12}>
         {data.paySubsidyGranted ? (
           <>

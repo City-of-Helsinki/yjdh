@@ -27,6 +27,11 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
     data.employee?.lastName
   );
 
+  const handlerName = getFullName(
+    data.calculation?.handlerDetails?.firstName,
+    data.calculation?.handlerDetails?.lastName
+  );
+
   return (
     <$Wrapper>
       <Container>
@@ -69,7 +74,7 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
           </$Col>
           {data.status === APPLICATION_STATUSES.HANDLING && (
             <$Col>
-              <$HandlerWrapper>{getInitials(employeeName)}</$HandlerWrapper>
+              <$HandlerWrapper>{getInitials(handlerName)}</$HandlerWrapper>
             </$Col>
           )}
         </$InnerWrapper>
