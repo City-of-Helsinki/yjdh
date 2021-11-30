@@ -6,11 +6,9 @@ import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-reque
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import { getFrontendUrl } from '../utils/url.utils';
-import { getIndexPageComponents } from './indexPage.components';
 
 const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
-let indexPageComponents: ReturnType<typeof getIndexPageComponents>;
 
 const appTranslation: Translation = {
   fi: 'Nuorten kesäseteli',
@@ -24,12 +22,7 @@ fixture('Frontpage')
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appTranslation);
-    indexPageComponents = getIndexPageComponents(t);
   });
-
-test('shows front page', async () => {
-  await indexPageComponents.form();
-});
 
 test('can change to languages', async () => {
   const languageDropdown = await headerComponents.languageDropdown();
