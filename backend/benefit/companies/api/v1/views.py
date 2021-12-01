@@ -1,7 +1,7 @@
 from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
-from companies.services import get_or_create_company_with_business_id
+from companies.services import get_or_create_organisation_with_business_id
 from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.db import transaction
@@ -59,9 +59,7 @@ class GetCompanyView(APIView):
         description="Retrieve company information from YTJ/other API",
     )
     @transaction.atomic
-    def get(
-        self, request: HttpRequest, business_id: str = None, format: str = None
-    ) -> Response:
+    def get(self, request: HttpRequest, format: str = None) -> Response:
         if settings.MOCK_FLAG:
             return self.get_mock(request, format)
 
@@ -75,8 +73,7 @@ class GetCompanyView(APIView):
 
             business_id = organization_roles.get("identifier")
             try:
-                # TODO: Switch to another API to be able to collect association data
-                company = get_or_create_company_with_business_id(business_id)
+                company = get_or_create_organisation_with_business_id(business_id)
             except HTTPError:
                 # Since YTJ public API is not 100% reliable, we can use the Company data
                 # saved in our DB as a fallback data, this Company data should be the
@@ -88,7 +85,7 @@ class GetCompanyView(APIView):
                     return self.ytj_api_error
             except ValueError:
                 return Response(
-                    "Could not handle the response from YTJ API",
+                    "Could not handle the response from YTJ or YRTTI API",
                     status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         company_data = CompanySerializer(company).data
