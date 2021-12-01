@@ -65,36 +65,44 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         header={t(`${translationsBase}.employee.heading2`)}
         withoutDivider
       >
-        <$GridCell $colSpan={3}>
-          {data.paySubsidyGranted && (
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.paySubsidyGranted.${
-                  data.paySubsidyGranted ? 'yes' : 'no'
-                }`
-              )}
-              <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
-                data.additionalPaySubsidyPercent
-                  ? `${t('common:utility.and')} ${
-                      data.additionalPaySubsidyPercent
-                    } %`
-                  : ''
-              }`}</$ViewField>
-            </$ViewFieldBold>
+        <$GridCell $colSpan={12}>
+          {data.paySubsidyGranted ? (
+            <>
+              <$ViewFieldBold>
+                {t(
+                  `${translationsBase}.employee.fields.paySubsidyGranted.${
+                    data.paySubsidyGranted ? 'yes' : 'no'
+                  }`
+                )}
+                <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
+                  data.additionalPaySubsidyPercent
+                    ? `${t('common:utility.and')} ${
+                        data.additionalPaySubsidyPercent
+                      } %`
+                    : ''
+                }`}</$ViewField>
+              </$ViewFieldBold>
+              <$ViewField>
+                {t(
+                  `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+                )}{' '}
+                <$ViewFieldBold>
+                  {t(
+                    `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                      data.apprenticeshipProgram ? 'yes' : 'no'
+                    }`
+                  )}
+                </$ViewFieldBold>
+              </$ViewField>
+            </>
+          ) : (
+            <$ViewField>
+              {t(`${translationsBase}.employee.fields.paySubsidyGranted.label`)}{' '}
+              <$ViewFieldBold>
+                {t(`${translationsBase}.employee.fields.paySubsidyGranted.no`)}
+              </$ViewFieldBold>
+            </$ViewField>
           )}
-
-          <$ViewField>
-            {t(
-              `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-            )}{' '}
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                  data.apprenticeshipProgram ? 'yes' : 'no'
-                }`
-              )}
-            </$ViewFieldBold>
-          </$ViewField>
         </$GridCell>
       </SummarySection>
 
