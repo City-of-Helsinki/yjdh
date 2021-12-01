@@ -42,7 +42,9 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     <$Wrapper withAction={withAction} bgColor={bgColor}>
       <$WrapperInner withAction={withAction}>
         {withAction && (
-          <$ActionLeft>{action && <$CheckIcon size="m" />}</$ActionLeft>
+          <$ActionLeft>
+            {action && <$CheckIcon aria-label="application-action" size="m" />}
+          </$ActionLeft>
         )}
         <$Section paddingBottom={withAction}>
           {header && (

@@ -1,6 +1,9 @@
 import { APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
 import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
-import { Application,ApplicationData  } from 'benefit/handler/types/application';
+import {
+  Application,
+  ApplicationData,
+} from 'benefit/handler/types/application';
 import { Button } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -11,7 +14,7 @@ import {
 } from 'shared/components/forms/section/FormSection.sc';
 import snakecaseKeys from 'snakecase-keys';
 
-type Props = {
+export type Props = {
   application: Application;
 };
 
