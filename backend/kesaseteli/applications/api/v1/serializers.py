@@ -11,7 +11,7 @@ from applications.enums import (
     AttachmentType,
     SummerVoucherExceptionReason,
 )
-from applications.models import Application, Attachment, SummerVoucher
+from applications.models import Application, Attachment, SummerVoucher, YouthApplication
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
 
@@ -421,3 +421,26 @@ class ApplicationSerializer(serializers.ModelSerializer):
                         attachment_types=", ".join(required_attachment_types),
                     )
                 )
+
+
+class YouthApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YouthApplication
+        fields = [
+            "id",
+            "created_at",
+            "modified_at",
+            "first_name",
+            "last_name",
+            "social_security_number",
+            "school",
+            "is_unlisted_school",
+            "email",
+            "phone_number",
+            "language",
+            "receipt_confirmed_at",
+        ]
+        read_only_fields = [
+            "id",
+            "created_at",
+        ]
