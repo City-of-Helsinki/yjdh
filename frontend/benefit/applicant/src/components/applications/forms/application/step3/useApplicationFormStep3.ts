@@ -2,7 +2,7 @@ import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { Application } from 'benefit/applicant/types/application';
 import isEmpty from 'lodash/isEmpty';
-import Attachment from 'shared/types/attachment';
+import { BenefitAttachment } from 'shared/types/attachment';
 
 type ExtendedComponentProps = {
   benefitType: BENEFIT_TYPES | string | undefined;
@@ -11,7 +11,7 @@ type ExtendedComponentProps = {
   handleNext: () => void;
   handleSave: () => void;
   handleBack: () => void;
-  attachments: Attachment[];
+  attachments: BenefitAttachment[];
   hasRequiredAttachments: boolean;
   paySubsidyGranted: boolean;
 };
