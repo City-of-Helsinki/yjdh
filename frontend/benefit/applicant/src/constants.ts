@@ -77,7 +77,6 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   DE_MINIMIS_AID_SET = 'deMinimisAidSet',
   CO_OPERATION_NEGOTIATIONS = 'coOperationNegotiations',
   CO_OPERATION_NEGOTIATIONS_DESCRIPTION = 'coOperationNegotiationsDescription',
-  ORGANIZATION_TYPE = 'organizationType',
 }
 
 export enum EMPLOYEE_KEYS {
