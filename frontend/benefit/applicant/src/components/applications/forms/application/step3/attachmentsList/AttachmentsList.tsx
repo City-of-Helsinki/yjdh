@@ -2,14 +2,14 @@ import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
-import Attachment from 'shared/types/attachment';
+import { BenefitAttachment } from 'shared/types/attachment';
 
 import { useAttachmentsList } from './useAttachmentsList';
 
 export type AttachmentsListProps = {
   attachmentType: ATTACHMENT_TYPES;
   showMessage?: boolean;
-  attachments?: Attachment[];
+  attachments?: BenefitAttachment[];
   required?: boolean;
 };
 

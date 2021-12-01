@@ -1,4 +1,4 @@
-import Attachment from '@frontend/shared/src/types/attachment';
+import { KesaseteliAttachment } from '@frontend/shared/src/types/attachment';
 import {
   EmployeeHiredWithoutVoucherAssessment,
   EmploymentExceptionReason,
@@ -18,10 +18,13 @@ export const getSelectionGroupTranslation = (
     `application.form.selectionGroups.${type}.${value}`
   ) as string;
 
-export const getAttachmentFilePath = (attachment: Attachment): string =>
-  attachment.attachment_file_name ?? attachment.attachmentFileName;
+export const getAttachmentFilePath = (
+  attachment: KesaseteliAttachment
+): string => attachment.attachment_file_name;
 
-export const getAttachmentFileName = (attachment: Attachment): string => {
+export const getAttachmentFileName = (
+  attachment: KesaseteliAttachment
+): string => {
   const filePath = getAttachmentFilePath(attachment);
   const filename = getLastValue(filePath.split('/')) ?? filePath;
   return filename.replace(`.${getLastValue(filename.split('.')) ?? ''}`, '');
