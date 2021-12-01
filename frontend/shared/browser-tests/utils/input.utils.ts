@@ -1,11 +1,10 @@
 import TestController, { Selector } from 'testcafe';
 
-import ApplicationFieldName from '../../src/types/application-field-name';
 import { setDataToPrintOnFailure } from './testcafe.utils';
 
-export const fillInput = async (
+export const fillInput = async <T>(
   t: TestController,
-  field: ApplicationFieldName,
+  field: keyof T,
   inputSelector: ReturnType<Selector>,
   value?: string
 ): Promise<void> => {

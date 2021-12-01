@@ -1,14 +1,14 @@
 import { axe } from 'jest-axe';
+import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
+import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
+import ApplicationPage from 'kesaseteli/employer/pages/application';
+import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import {
   expectAuthorizedReply,
   expectToGetApplicationErrorFromBackend,
   expectToGetApplicationFromBackend,
   expectUnauthorizedReply,
-} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
-import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
-import ApplicationPage from 'kesaseteli/employer/pages/application';
-import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { fakeApplication } from 'shared/__tests__/utils/fake-objects';

@@ -11,7 +11,12 @@ import Combobox from 'shared/components/forms/inputs/Combobox';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX, POSTAL_CODE_REGEX } from 'shared/constants';
+import {
+  EMAIL_REGEX,
+  NAMES_REGEX,
+  PHONE_NUMBER_REGEX,
+  POSTAL_CODE_REGEX,
+} from 'shared/constants';
 import useToggle from 'shared/hooks/useToggle';
 
 const schools: School[] = [
@@ -125,25 +130,30 @@ const YouthForm: React.FC = () => {
   const register = useRegisterInput();
 
   const [showResult, setShowResult] = React.useState(false);
-  const [schoolIsUnlisted, toggleSchoolIsUnListed] = useToggle(false);
+  const [schoolIsUnlisted, toggleSchoolIsUnlisted] = useToggle(false);
 
   const { getValues, handleSubmit, clearErrors, setValue } =
     useFormContext<YouthFormData>();
 
-  const handleToggleSchoolIsNotListed = React.useCallback(
-    () => {
-      clearErrors('school');
-      setValue('school', null);
-      toggleSchoolIsUnListed();
+  const handleToggleSchoolUnlisted = React.useCallback(
+    (unlisted?: boolean) => {
+      if (unlisted) {
+        clearErrors('school');
+        setValue('school', null);
+      } else {
+        clearErrors('unlisted_school');
+        setValue('unlisted_school', null);
+      }
+      toggleSchoolIsUnlisted();
     },
-    [clearErrors, setValue, toggleSchoolIsUnListed]
+    [clearErrors, setValue, toggleSchoolIsUnlisted]
   );
 
   return (
     <>
       <Heading header={t('common:youthApplication.form.title')} />
       <p>{t('common:youthApplication.form.info')}</p>
-      <form>
+      <form data-testid="youth-form">
         <FormSection columns={2}>
           <TextInput<YouthFormData>
             {...register('first_name', {
@@ -160,7 +170,10 @@ const YouthForm: React.FC = () => {
             })}
           />
           <TextInput<YouthFormData>
-            {...register('social_security_number', { required: true, maxLength: 32 })}
+            {...register('social_security_number', {
+              required: true,
+              maxLength: 32,
+            })}
           />
           <TextInput<YouthFormData>
             {...register('postcode', {
@@ -182,13 +195,13 @@ const YouthForm: React.FC = () => {
           <$GridCell $colSpan={2}>
             <Checkbox<YouthFormData>
               {...register('is_unlisted_school')}
-              onChange={handleToggleSchoolIsNotListed}
+              onChange={handleToggleSchoolUnlisted}
             />
           </$GridCell>
           {schoolIsUnlisted && (
             <TextInput<YouthFormData>
-              {...register('school.name', {
-                required: schoolIsUnlisted,
+              {...register('unlisted_school', {
+                required: true,
                 maxLength: 256,
                 pattern: NAMES_REGEX,
               })}
@@ -200,7 +213,11 @@ const YouthForm: React.FC = () => {
             />
           )}
           <TextInput<YouthFormData>
-            {...register('phone_number', { required: true, maxLength: 64, pattern: PHONE_NUMBER_REGEX })}
+            {...register('phone_number', {
+              required: true,
+              maxLength: 64,
+              pattern: PHONE_NUMBER_REGEX,
+            })}
           />
           <TextInput<YouthFormData>
             {...register('email', {
@@ -242,7 +259,11 @@ const YouthForm: React.FC = () => {
               {t(`common:youthApplication.form.sendButton`)}
             </Button>
           </$GridCell>
-          {showResult && <pre>{JSON.stringify(getValues(), null, 2)}</pre>}
+          {showResult && (
+            <pre data-testid="result">
+              {JSON.stringify(getValues(), null, 2)}
+            </pre>
+          )}
         </FormSection>
       </form>
     </>
