@@ -6,6 +6,7 @@ import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { formatStringFloatValue } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import {
@@ -150,7 +151,9 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
                   <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
                 </$GridCell>
                 <$GridCell $colSpan={2}>
-                  <$SummaryTableValue>{aid.amount}</$SummaryTableValue>
+                  <$SummaryTableValue>
+                    {formatStringFloatValue(aid.amount)}
+                  </$SummaryTableValue>
                 </$GridCell>
                 <$GridCell>
                   <$SummaryTableValue>

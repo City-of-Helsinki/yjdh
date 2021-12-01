@@ -8,3 +8,7 @@ export const $Wrapper = styled.div`
   width: 100%;
   box-shadow: 0 0 15px 0 rgba(45, 62, 80, 0.12);
 `;
+
+export const $StickyBarSpacing = styled.div`
+  height: 80px;
+`;

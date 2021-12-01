@@ -4,6 +4,7 @@ import { LoadingSpinner } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
+import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
 
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import BenefitView from './benefitView/BenefitView';
@@ -50,6 +51,7 @@ const ApplicationReview: React.FC = () => {
           <>handling actions</>
         )}
       </StickyActionBar>
+      <$StickyBarSpacing />
     </>
   );
 };
