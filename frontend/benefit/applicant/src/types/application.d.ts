@@ -162,7 +162,7 @@ export type ApproveTerms = {
 };
 
 export type ApplicationData = {
-  id: string;
+  id?: string;
   status: APPLICATION_STATUSES; // required
   application_number?: number;
   application_step: string; // required
@@ -281,7 +281,7 @@ export interface Step2 {
 }
 
 export type Application = {
-  id: string;
+  id?: string;
   status?: APPLICATION_STATUSES;
   applicationNumber?: number;
   bases?: string[];
