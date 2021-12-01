@@ -141,14 +141,14 @@ export interface ApplicantTermsApprovalData {
   id: string;
   approved_at: string;
   approved_by: string;
-  terms?: ApplicantTermsData[];
+  terms?: ApplicantTermsData;
 }
 
 export type ApplicantTermsApproval = {
   id: string;
   approvedAt: string;
   approvedBy: string;
-  terms?: ApplicantTerms[];
+  terms?: ApplicantTerms;
 };
 
 export interface ApproveTermsData {
