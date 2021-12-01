@@ -10,7 +10,7 @@ import * as React from 'react';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import Attachment, { AttachmentType } from 'shared/types/attachment';
+import { AttachmentType, KesaseteliAttachment } from 'shared/types/attachment';
 import { validateAttachments } from 'shared/utils/attachment.utils';
 
 type Props = {
@@ -31,7 +31,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     setError,
     watch,
     clearErrors,
-  } = useApplicationFormField<Attachment[]>(id);
+  } = useApplicationFormField<KesaseteliAttachment[]>(id);
   const attachments = watch();
 
   const attachmentType = fieldName as AttachmentType;

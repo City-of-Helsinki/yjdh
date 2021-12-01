@@ -2,22 +2,27 @@ import isEmpty from 'lodash/isEmpty';
 
 import Attachment from '../types/attachment';
 
-export const getAttachmentsByType = (
-  attachments: Attachment[],
+export const getAttachmentsByType = <T extends Attachment>(
+  attachments: T[],
   type: string
-): Attachment[] =>
-  attachments?.filter(
-    (attachment) =>
-      attachment.attachment_type === type || attachment.attachmentType === type
+): T[] =>
+  attachments?.filter((attachment) =>
+    'attachment_type' in attachment
+      ? attachment.attachment_type === type
+      : attachment.attachmentType === type
   ) ?? [];
 
-export const getAttachmentsSummary = (attachments?: Attachment[]): string =>
+export const getAttachmentsSummary = <T extends Attachment>(
+  attachments?: T[]
+): string =>
   attachments
-    ?.map(
-      (attachment) =>
-        attachment.attachment_file_name ?? attachment.attachmentFileName
+    ?.map((attachment) =>
+      'attachment_file_name' in attachment
+        ? attachment.attachment_file_name
+        : attachment.attachmentFileName
     )
     .join(', ') ?? '-';
 
-export const validateAttachments = (attachments?: Attachment[]): boolean =>
-  !isEmpty(attachments);
+export const validateAttachments = <T extends Attachment>(
+  attachments?: T[]
+): boolean => !isEmpty(attachments);

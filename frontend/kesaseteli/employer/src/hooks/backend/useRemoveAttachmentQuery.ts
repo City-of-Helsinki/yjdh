@@ -5,11 +5,11 @@ import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult } from 'react-query';
 import handleError from 'shared/error-handler/error-handler';
 import useLocale from 'shared/hooks/useLocale';
-import Attachment from 'shared/types/attachment';
+import { KesaseteliAttachment } from 'shared/types/attachment';
 
 type RemoveAttachmentData = {
-  summer_voucher: Attachment['summer_voucher'];
-  id: Attachment['id'];
+  summer_voucher: KesaseteliAttachment['summer_voucher'];
+  id: KesaseteliAttachment['id'];
 };
 
 const useRemoveAttachmentQuery = (): UseMutationResult<

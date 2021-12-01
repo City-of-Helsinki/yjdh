@@ -50,12 +50,11 @@ const usePageContent = (): ExtendedComponentProps => {
     }
   }, [router]);
 
-  const application: Application = camelcaseKeys(
-    existingApplication ?? APPLICATION_INITIAL_VALUES,
-    {
-      deep: true,
-    }
-  );
+  const application: Application = existingApplication
+    ? camelcaseKeys(existingApplication, {
+        deep: true,
+      })
+    : APPLICATION_INITIAL_VALUES;
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [
