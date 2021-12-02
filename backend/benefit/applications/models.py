@@ -367,6 +367,7 @@ class ApplicationLogEntry(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_applicationlogentry"
         verbose_name = _("application log entry")
         verbose_name_plural = _("application log entries")
+        ordering = ["application__created_at", "created_at"]
 
 
 class ApplicationBatch(UUIDModel, TimeStampedModel):

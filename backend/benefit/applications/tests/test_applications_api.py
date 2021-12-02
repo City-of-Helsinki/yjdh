@@ -28,6 +28,7 @@ from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
+from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
 from PIL import Image
@@ -1582,4 +1583,36 @@ def test_application_api_before_accept_tos(api_client, application):
     assert (
         str(response.data["detail"])
         == "You have to accept Terms of Service before doing any action"
+    )
+
+
+def test_application_additional_information_needed_by(api_client, handling_application):
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.status_code == 200
+    assert response.data["additional_information_needed_by"] is None
+
+    handling_application.status = ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED
+    handling_application.save()
+    with freeze_time("2021-12-01"):
+        ApplicationLogEntry.objects.create(
+            application=handling_application,
+            from_status=ApplicationStatus.RECEIVED,
+            to_status=ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        )
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.status_code == 200
+    assert response.data["additional_information_needed_by"] == date(2021, 12, 15)
+
+
+def test_application_status_last_changed_at(api_client, handling_application):
+    with freeze_time("2021-12-01"):
+        ApplicationLogEntry.objects.create(
+            application=handling_application,
+            from_status=ApplicationStatus.RECEIVED,
+            to_status=ApplicationStatus.HANDLING,
+        )
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.status_code == 200
+    assert response.data["status_last_changed_at"] == datetime(
+        2021, 12, 1, tzinfo=pytz.UTC
     )

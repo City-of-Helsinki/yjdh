@@ -1,5 +1,5 @@
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import filetype
 from applications.api.v1.status_transition_validator import (
@@ -534,6 +534,8 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "de_minimis_aid_set",
             "last_modified_at",
             "created_at",
+            "additional_information_needed_by",
+            "status_last_changed_at",
             "attachments",
             "ahjo_decision",
             "unread_messages_count",
@@ -553,6 +555,8 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "available_benefit_types",
             "last_modified_at",
             "created_at",
+            "additional_information_needed_by",
+            "status_last_changed_at",
             "unread_messages_count",
         ]
         extra_kwargs = {
@@ -667,6 +671,14 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
+    additional_information_needed_by = serializers.SerializerMethodField(
+        "get_additional_information_needed_by"
+    )
+
+    status_last_changed_at = serializers.SerializerMethodField(
+        "get_status_last_changed_at"
+    )
+
     available_bases = serializers.SerializerMethodField(
         "get_available_bases", help_text="List of available application basis slugs"
     )
@@ -709,6 +721,31 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             # If given the request in context, DRF will output the URL for FileFields
             context = {"request": self.context.get("request")}
             return TermsSerializer(terms, context=context).data
+        else:
+            return None
+
+    def _get_status_change_timestamp(self, obj, to_status=None):
+        change_qs = obj.log_entries.all()
+        if to_status:
+            change_qs = change_qs.filter(to_status=to_status)
+        if log_entry := change_qs.order_by("-created_at").first():
+            return log_entry.created_at
+        else:
+            return None
+
+    ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=14)
+
+    def get_additional_information_needed_by(self, obj):
+        if info_asked_timestamp := self._get_status_change_timestamp(
+            obj, ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED
+        ):
+            return info_asked_timestamp.date() + self.ADDITIONAL_INFORMATION_DEADLINE
+        else:
+            return None
+
+    def get_status_last_changed_at(self, obj):
+        if log_entry := obj.log_entries.all().order_by("-created_at").first():
+            return log_entry.created_at
         else:
             return None
 
