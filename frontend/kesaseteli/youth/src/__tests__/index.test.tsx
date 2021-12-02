@@ -63,7 +63,6 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
 
       indexPageApi.actions.typeInput('first_name', 'a'.repeat(257)); // max limit is 257
       indexPageApi.actions.typeInput('last_name', 'a'.repeat(257)); // max limit is 257
-      indexPageApi.actions.typeInput('social_security_number', '9'.repeat(33)); // max limit is 32
       indexPageApi.actions.typeInput('phone_number', 'a'.repeat(65)); // max limit is 254
       indexPageApi.actions.typeInput('email', 'a'.repeat(255)); // max limit is 254
       await indexPageApi.actions.clickSaveButton({
@@ -76,10 +75,6 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       );
       await indexPageApi.expectations.textInputHasError(
         'last_name',
-        texts.maxLength
-      );
-      await indexPageApi.expectations.textInputHasError(
-        'social_security_number',
         texts.maxLength
       );
       await indexPageApi.expectations.textInputHasError(
@@ -99,6 +94,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
 
       indexPageApi.actions.typeInput('first_name', '!#$%&()*+/:;<=>?@');
       indexPageApi.actions.typeInput('last_name', '~¡¿÷ˆ]+$');
+      indexPageApi.actions.typeInput('social_security_number', '111111-111D');
       indexPageApi.actions.typeInput('phone_number', '+44-20-7011-5555');
       indexPageApi.actions.typeInput('email', 'aaaa@bbb');
       await indexPageApi.actions.clickSaveButton({

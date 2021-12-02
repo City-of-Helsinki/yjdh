@@ -13,7 +13,7 @@ type InputProps<T> = {
   id: Id<T>;
   errorText?: string;
   label: string;
-  registerOptions?: RegisterOptions<T>;
+  registerOptions?: RegisterOptions<T, Id<T>>;
 };
 
 const useRegisterInput = <T = YouthFormData>(): ((

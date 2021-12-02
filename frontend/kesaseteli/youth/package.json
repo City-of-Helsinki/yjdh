@@ -28,6 +28,7 @@
     "babel-plugin-styled-components": "^1.13.2",
     "dotenv": "^9.0.0",
     "esm": "^3.2.25",
+    "finnish-ssn": "^2.0.4",
     "graphql": "^15.5.0",
     "hds-react": "^1.6.0",
     "lodash": "^4.17.21",

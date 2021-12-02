@@ -1,5 +1,6 @@
 import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import faker from 'faker';
+import { FinnishSSN } from 'finnish-ssn';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -118,8 +119,9 @@ export const fakeYouthApplication = (
 ): YouthApplication & { unlisted_school?: string } => ({
   first_name: faker.name.findName(),
   last_name: faker.name.findName(),
-  social_security_number: '111111-111C',
-  postcode: String(faker.datatype.number(99999)),
+  social_security_number: FinnishSSN.createWithAge(
+    faker.datatype.number({ min: 15, max: 16 })
+  ),
   school: faker.random.arrayElement(schools),
   unlisted_school: faker.commerce.department(),
   is_unlisted_school: faker.datatype.boolean(),

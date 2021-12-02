@@ -1,3 +1,4 @@
+import { FinnishSSN } from 'finnish-ssn';
 import { Button } from 'hds-react';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import School from 'kesaseteli/youth/types/School';
@@ -144,6 +145,13 @@ const YouthForm: React.FC = () => {
     [clearErrors, setValue, toggleSchoolIsUnlisted]
   );
 
+  const validateSocialSecurityNumber = React.useCallback((ssn: unknown) => {
+    if (typeof ssn === 'string') {
+      return FinnishSSN.validate(ssn);
+    }
+    return false;
+  }, []);
+
   return (
     <>
       <Heading header={t('common:youthApplication.form.title')} />
@@ -167,7 +175,7 @@ const YouthForm: React.FC = () => {
           <TextInput<YouthFormData>
             {...register('social_security_number', {
               required: true,
-              maxLength: 32,
+              validate: validateSocialSecurityNumber,
             })}
           />
           <Combobox<YouthFormData, School>
