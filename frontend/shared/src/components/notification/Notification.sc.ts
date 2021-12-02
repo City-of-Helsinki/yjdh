@@ -1,10 +1,10 @@
-import { Notification as HDSNotification } from 'hds-react';
+import { Notification } from 'hds-react';
 import styled from 'styled-components';
 
-const Notification = styled(HDSNotification)`
+export const $Notification = styled(Notification)`
   font-size: ${(props) => props.theme.fontSize.body.s};
   line-height: ${(props) => props.theme.lineHeight.xl};
   margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
-export default Notification;
+export default $Notification;

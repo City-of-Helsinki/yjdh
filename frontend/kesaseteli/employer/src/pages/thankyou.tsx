@@ -11,7 +11,7 @@ import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import withAuth from 'shared/components/hocs/withAuth';
-import Notification from 'shared/components/notification/Notification';
+import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useLocale from 'shared/hooks/useLocale';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
@@ -48,13 +48,13 @@ const ThankYouPage: NextPage = () => {
             {t(`common:appName`)}
           </title>
         </Head>
-        <Notification
+        <$Notification
           label={t(`common:thankyouPage.thankyouMessageLabel`)}
           type="success"
           size="large"
         >
           {t(`common:thankyouPage.thankyouMessageContent`)}
-        </Notification>
+        </$Notification>
         <ApplicationSummary
           header={t(`common:thankyouPage.title`, {
             submitted_at: convertToUIDateAndTimeFormat(

@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import Notification from 'shared/components/notification/Notification';
+import { $Notification } from 'shared/components/notification/Notification.sc';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
@@ -50,13 +50,13 @@ const Login: NextPage = () => {
           {t(notificationLabelKey)} | {t(`common:appName`)}
         </title>
       </Head>
-      <Notification
+      <$Notification
         label={t(notificationLabelKey)}
         type={notificationType}
         size="large"
       >
         {notificationContent}
-      </Notification>
+      </$Notification>
       <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
         {t(`common:header.loginLabel`)}
       </Button>
