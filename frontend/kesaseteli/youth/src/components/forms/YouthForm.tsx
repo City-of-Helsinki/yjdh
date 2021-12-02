@@ -11,12 +11,7 @@ import Combobox from 'shared/components/forms/inputs/Combobox';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import {
-  EMAIL_REGEX,
-  NAMES_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX,
-} from 'shared/constants';
+import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 import useToggle from 'shared/hooks/useToggle';
 
 const schools: School[] = [
@@ -127,7 +122,7 @@ const schools: School[] = [
 
 const YouthForm: React.FC = () => {
   const { t } = useTranslation();
-  const register = useRegisterInput();
+  const register = useRegisterInput<YouthFormData>();
 
   const [showResult, setShowResult] = React.useState(false);
   const [schoolIsUnlisted, toggleSchoolIsUnlisted] = useToggle(false);
@@ -174,14 +169,6 @@ const YouthForm: React.FC = () => {
               required: true,
               maxLength: 32,
             })}
-          />
-          <TextInput<YouthFormData>
-            {...register('postcode', {
-              required: true,
-              pattern: POSTAL_CODE_REGEX,
-              maxLength: 5,
-            })}
-            type="number"
           />
           <Combobox<YouthFormData, School>
             {...register('school', { required: !schoolIsUnlisted })}

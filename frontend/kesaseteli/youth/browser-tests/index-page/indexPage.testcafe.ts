@@ -30,7 +30,6 @@ test('can fill up youth application', async (t) => {
     'social_security_number',
     application.social_security_number
   );
-  await indexPageComponents.actions.typeInput('postcode', application.postcode);
   await indexPageComponents.actions.typeAndSelectSchoolFromDropdown(
     application.school
   );

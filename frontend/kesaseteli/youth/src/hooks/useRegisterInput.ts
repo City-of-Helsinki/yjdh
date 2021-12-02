@@ -31,7 +31,6 @@ const useRegisterInput = <T = YouthFormData>(): ((
     },
     [t, formState]
   );
-
   return React.useCallback(
     (id, registerOptions) => ({
       id,
