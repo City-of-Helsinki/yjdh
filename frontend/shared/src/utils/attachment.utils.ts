@@ -1,5 +1,3 @@
-import isEmpty from 'lodash/isEmpty';
-
 import Attachment from '../types/attachment';
 
 export const getAttachmentsByType = <T extends Attachment>(
@@ -22,7 +20,3 @@ export const getAttachmentsSummary = <T extends Attachment>(
         : attachment.attachmentFileName
     )
     .join(', ') ?? '-';
-
-export const validateAttachments = <T extends Attachment>(
-  attachments?: T[]
-): boolean => !isEmpty(attachments);
