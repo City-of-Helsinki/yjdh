@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from encrypted_fields.fields import EncryptedCharField
+from encrypted_fields.fields import EncryptedCharField, SearchField
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 
 from applications.enums import (
@@ -12,7 +12,85 @@ from applications.enums import (
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
+from common.utils import validate_optional_finnish_social_security_number
 from companies.models import Company
+
+
+class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
+    first_name = models.CharField(
+        max_length=128, verbose_name=_("first name"), blank=True
+    )
+    last_name = models.CharField(
+        max_length=128, verbose_name=_("last name"), blank=True
+    )
+    encrypted_social_security_number = EncryptedCharField(
+        max_length=11, verbose_name=_("social security number"), blank=True
+    )
+    social_security_number = SearchField(
+        blank=True,
+        hash_key=settings.SOCIAL_SECURITY_NUMBER_HASH_KEY,
+        encrypted_field_name="encrypted_social_security_number",
+        validators=[validate_optional_finnish_social_security_number],
+    )
+    school = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("school"),
+    )
+    is_unlisted_school = models.BooleanField(blank=True)
+    email = models.EmailField(
+        verbose_name=_("email"),
+        blank=True,
+    )
+    phone_number = models.CharField(
+        max_length=64,
+        verbose_name=_("phone number"),
+        blank=True,
+    )
+    language = models.CharField(
+        choices=APPLICATION_LANGUAGE_CHOICES,
+        default=APPLICATION_LANGUAGE_CHOICES[0][0],  # fi
+        max_length=2,
+    )
+    receipt_confirmed_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("timestamp of receipt confirmation")
+    )
+
+    @property
+    def name(self):
+        return f"{self.first_name.strip()} {self.last_name.strip()}".strip()
+
+    def __str__(self):
+        return f"{self.created_at}: {self.name} ({self.email})"
+
+    class Meta:
+        verbose_name = _("youth application")
+        verbose_name_plural = _("youth applications")
+        ordering = ["-created_at"]
+
+
+class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+    youth_application = models.ForeignKey(
+        YouthApplication,
+        on_delete=models.CASCADE,
+        related_name="youth_summer_vouchers",
+        verbose_name=_("youth application"),
+    )
+    summer_voucher_serial_number = models.CharField(
+        max_length=256, blank=True, verbose_name=_("summer voucher id")
+    )
+    summer_voucher_exception_reason = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("summer voucher exception class"),
+        help_text=_("Special case of admitting the summer voucher."),
+        choices=SummerVoucherExceptionReason.choices,
+    )
+
+    class Meta:
+        verbose_name = _("youth summer voucher")
+        verbose_name_plural = _("youth summer vouchers")
+        ordering = ["-youth_application__created_at"]
 
 
 class Application(HistoricalModel, TimeStampedModel, UUIDModel):
