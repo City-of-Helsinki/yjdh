@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
@@ -22,9 +22,26 @@ from applications.api.v1.serializers import (
     ApplicationSerializer,
     AttachmentSerializer,
     SummerVoucherSerializer,
+    YouthApplicationSerializer,
 )
 from applications.enums import ApplicationStatus
-from applications.models import Application, SummerVoucher
+from applications.models import Application, SummerVoucher, YouthApplication
+from common.utils import DenyAll
+
+
+class YouthApplicationViewSet(AuditLoggingModelViewSet):
+    queryset = YouthApplication.objects.all()
+    serializer_class = YouthApplicationSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "create":
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [DenyAll]
+        return [permission() for permission in permission_classes]
 
 
 class ApplicationViewSet(AuditLoggingModelViewSet):

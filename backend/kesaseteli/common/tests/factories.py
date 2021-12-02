@@ -1,5 +1,6 @@
 import random
 from datetime import date, timedelta
+from typing import List
 
 import factory
 from shared.common.tests.factories import UserFactory
@@ -11,7 +12,7 @@ from applications.enums import (
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
-from applications.models import Application, Attachment, SummerVoucher
+from applications.models import Application, Attachment, SummerVoucher, YouthApplication
 from companies.models import Company
 
 
@@ -94,3 +95,41 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Application
+
+
+def get_listed_test_schools() -> List[str]:
+    # TODO: Move this functionality somewhere else and don't hardcode it
+    return [
+        "Arabian peruskoulu",
+        "Botby grundskola",
+        "Ressu Comprehensive School",
+    ]
+
+
+def get_unlisted_test_schools() -> List[str]:
+    return [
+        "Jokin muu koulu",
+        "Testikoulu",
+    ]
+
+
+def get_all_test_schools() -> List[str]:
+    return get_listed_test_schools() + get_unlisted_test_schools()
+
+
+def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
+    return youth_application.school not in get_listed_test_schools()
+
+
+class YouthApplicationFactory(factory.django.DjangoModelFactory):
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
+    school = factory.Faker("random_element", elements=get_all_test_schools())
+    is_unlisted_school = factory.LazyAttribute(uses_unlisted_test_school)
+    email = factory.Faker("email")
+    phone_number = factory.Faker("phone_number", locale="fi")
+    language = factory.Faker("random_element", elements=["fi", "sv", "en"])
+
+    class Meta:
+        model = YouthApplication
