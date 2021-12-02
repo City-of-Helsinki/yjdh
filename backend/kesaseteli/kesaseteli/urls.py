@@ -11,6 +11,7 @@ from companies.api.v1.views import GetCompanyView
 
 router = routers.DefaultRouter()
 router.register(r"applications", application_views.ApplicationViewSet)
+router.register(r"youthapplications", application_views.YouthApplicationViewSet)
 router.register(r"summervouchers", application_views.SummerVoucherViewSet)
 
 urlpatterns = [
