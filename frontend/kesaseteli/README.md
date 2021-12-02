@@ -1,6 +1,6 @@
 # Voucher UI
 
-User interface for Young people to send voucher applications
+User interface for young people to send summer voucher applications
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
