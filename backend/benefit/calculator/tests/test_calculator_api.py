@@ -264,7 +264,7 @@ def test_application_edit_pay_subsidy_invalid_values(
 def test_assign_handler(handler_api_client, received_application):
     user = get_client_user(handler_api_client)
     user.first_name = "adminFirst"
-    user.last_name = "adminFirst"
+    user.last_name = "adminLast"
     user.save()
     data = HandlerApplicationSerializer(received_application).data
     assert received_application.calculation

@@ -82,6 +82,13 @@ class HandlerApplicationStatusValidator(BaseApplicationStatusValidator):
         ApplicationStatus.REJECTED: (),
     }
 
+    ASSIGN_HANDLER_STATUSES = [
+        ApplicationStatus.HANDLING,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
+        ApplicationStatus.CANCELLED,
+    ]
+
 
 class ApplicationBatchStatusValidator(StatusTransitionValidator):
     initial_status = ApplicationBatchStatus.DRAFT
