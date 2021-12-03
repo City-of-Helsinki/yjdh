@@ -16,21 +16,41 @@ class DenyAll(BasePermission):
         return False
 
 
+def has_whitespace(value):
+    value_without_whitespace = "".join(value.split())
+    return value != value_without_whitespace
+
+
+def is_uppercase(value):
+    """
+    Is the value all uppercase? Returns True also if there are no alphabetic characters.
+    """
+    return value == value.upper()
+
+
 def validate_finnish_social_security_number(value):
     """
-    Raise a ValidationError if the given value is not a Finnish social security number.
+    Raise a ValidationError if the given value is not an uppercase Finnish social
+    security number with no whitespace.
     """
-    if not is_valid_finnish_social_security_number(value):
+    if (
+        not is_valid_finnish_social_security_number(value)
+        or has_whitespace(value)
+        or not is_uppercase(value)
+    ):
         raise ValidationError(
-            _("%(value)s is not a valid Finnish social security number"),
+            _(
+                "%(value)s is not a valid Finnish social security number. "
+                "Make sure to have it in uppercase and without whitespace."
+            ),
             params={"value": value},
         )
 
 
 def validate_optional_finnish_social_security_number(value):
     """
-    Raise a ValidationError if the given value is not None, an empty string or a Finnish
-    social security number.
+    Raise a ValidationError if the given value is not None, an empty string or an
+    uppercase Finnish social security number with no whitespace.
     """
     if value is not None and value != "":
         validate_finnish_social_security_number(value)
