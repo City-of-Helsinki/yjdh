@@ -36,11 +36,15 @@ const useFormActions = (application: Application): FormActions => {
     data: ApplicationData
   ): Promise<void> => {
     const newApplication = await createApplication(data);
-    void router.replace({
-      query: {
-        id: newApplication?.id,
+    void router.replace(
+      {
+        query: {
+          id: newApplication?.id,
+        },
       },
-    });
+      undefined,
+      { shallow: true }
+    );
   };
 
   const applicationId = router.query.id;
