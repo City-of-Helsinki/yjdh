@@ -14,7 +14,7 @@ import BaseApp from 'shared/components/app/BaseApp';
 const App: React.FC<AppProps> = (appProps: AppProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
     <QueryClientProvider client={createQueryClient()}>
-      <BaseApp {...appProps} header={<Header />} footer={<Footer />} />
+      <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
     </QueryClientProvider>
   </BackendAPIProvider>
 );

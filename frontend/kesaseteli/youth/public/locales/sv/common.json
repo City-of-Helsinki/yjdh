@@ -2,7 +2,7 @@
   "appName": "SV Nuorten kesäseteli",
   "header": {
     "linkSkipToContent": "Gå till innehållet",
-    "menuToggleAriaLabel": "Menu"
+    "menuToggleAriaLabel": "Menyn"
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
