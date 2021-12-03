@@ -1,4 +1,3 @@
-import { FinnishSSN } from 'finnish-ssn';
 import { Button } from 'hds-react';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import School from 'kesaseteli/youth/types/School';
@@ -9,6 +8,7 @@ import { useFormContext } from 'react-hook-form';
 import Heading from 'shared/components/forms/heading/Heading';
 import Checkbox from 'shared/components/forms/inputs/Checkbox';
 import Combobox from 'shared/components/forms/inputs/Combobox';
+import SocialSecurityNumberInput from 'shared/components/forms/inputs/SocialSecurityNumberInput';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -145,13 +145,6 @@ const YouthForm: React.FC = () => {
     [clearErrors, setValue, toggleSchoolIsUnlisted]
   );
 
-  const validateSocialSecurityNumber = React.useCallback((ssn: unknown) => {
-    if (typeof ssn === 'string') {
-      return FinnishSSN.validate(ssn);
-    }
-    return false;
-  }, []);
-
   return (
     <>
       <Heading header={t('common:youthApplication.form.title')} />
@@ -172,10 +165,9 @@ const YouthForm: React.FC = () => {
               maxLength: 256,
             })}
           />
-          <TextInput<YouthFormData>
+          <SocialSecurityNumberInput<YouthFormData>
             {...register('social_security_number', {
               required: true,
-              validate: validateSocialSecurityNumber,
             })}
           />
           <Combobox<YouthFormData, School>

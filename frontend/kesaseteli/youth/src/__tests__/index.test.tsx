@@ -172,6 +172,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
 
       indexPageApi.actions.typeInput('first_name', 'Helinä');
       indexPageApi.actions.typeInput('last_name', "O'Hara");
+      indexPageApi.actions.typeInput('social_security_number', '111111-111c');
       await indexPageApi.actions.typeAndSelectSchoolFromDropdown(
         'Iidenkiven P',
         'Hiidenkiven peruskoulu'
@@ -193,6 +194,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
 
       indexPageApi.actions.typeInput('first_name', 'Helinä');
       indexPageApi.actions.typeInput('last_name', "O'Hara");
+      indexPageApi.actions.typeInput('social_security_number', '111111-111c');
       await indexPageApi.actions.toggleCheckbox(/koulua ei löydy listalta/i);
       indexPageApi.actions.typeInput('unlisted_school', 'Erikoiskoulu');
       indexPageApi.actions.typeInput('phone_number', '+358-505-551-4995');
