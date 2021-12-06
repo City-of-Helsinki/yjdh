@@ -16,3 +16,9 @@ class RowType(models.TextChoices):
     HELSINKI_BENEFIT_TOTAL_EUR = "helsinki_benefit_total_eur", _(
         "Helsinki benefit total amount"
     )
+    TRAINING_COMPENSATION_MONTHLY_EUR = "training_compensation_monthly_eur", _(
+        "Training compensation amount monthly"
+    )
+    DEDUCTIONS_TOTAL_EUR = "deductions_total_eur", _(
+        "Total amount of deductions monthly"
+    )
