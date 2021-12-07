@@ -1624,3 +1624,16 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 application.calculation.calculate,
                 duplicate_check=("calculation.calculate", application.pk),
             )
+
+    def handle_status_transition(self, instance, previous_status, approve_terms):
+        # Super need to call first so instance.calculation is always present
+        super().handle_status_transition(instance, previous_status, approve_terms)
+        # Extend from base class function.
+        # Assign current user to the application.calculation.handler
+        # NOTE: This handler might be overridden if there is a handler pk included in the request post data
+        handler = get_request_user_from_context(self)
+        if settings.DISABLE_AUTHENTICATION and isinstance(handler, AnonymousUser):
+            handler = get_user_model().objects.all().order_by("username").first()
+        if instance.status in HandlerApplicationStatusValidator.ASSIGN_HANDLER_STATUSES:
+            instance.calculation.handler = handler
+            instance.calculation.save()
