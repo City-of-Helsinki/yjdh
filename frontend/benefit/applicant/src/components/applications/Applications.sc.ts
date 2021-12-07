@@ -31,7 +31,7 @@ export const $PageHeadingHelperText = styled.div`
   font-size: ${(props) => props.theme.fontSize.heading.xs};
   font-weight: normal;
   margin-top: ${(props) => props.theme.spacing.l};
-  //margin-bottom: ${(props) => props.theme.spacing.m};
+  margin-bottom: ${(props) => props.theme.spacing.m};
 `;
 
 export const $SpinnerContainer = styled.div`
