@@ -1,6 +1,11 @@
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { Application } from 'benefit/handler/types/application';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Container from 'shared/components/container/Container';
+import { getFullName } from 'shared/utils/application.utils';
+import { formatDate } from 'shared/utils/date.utils';
+import { getInitials } from 'shared/utils/string.utils';
 
 import {
   $Col,
@@ -12,9 +17,20 @@ import {
   $Wrapper,
 } from './ApplicationHeader.sc';
 
-const ApplicationHeader: React.FC = () => {
+type ApplicationReviewProps = { data: Application };
+
+const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
   const { t } = useTranslation();
   const translationBase = 'common:applications.list.columns';
+  const employeeName = getFullName(
+    data.employee?.firstName,
+    data.employee?.lastName
+  );
+
+  const handlerName = getFullName(
+    data.calculation?.handlerDetails?.firstName,
+    data.calculation?.handlerDetails?.lastName
+  );
 
   return (
     <$Wrapper>
@@ -23,34 +39,44 @@ const ApplicationHeader: React.FC = () => {
           <$Col>
             <$ItemWrapper>
               <$ItemHeader>{t(`${translationBase}.companyName`)}</$ItemHeader>
-              <$ItemValue>Herkkulautanen Oy</$ItemValue>
+              <$ItemValue>{data.company?.name}</$ItemValue>
             </$ItemWrapper>
             <$ItemWrapper>
               <$ItemHeader>{t(`${translationBase}.companyId`)}</$ItemHeader>
-              <$ItemValue>1234567-1234</$ItemValue>
+              <$ItemValue>{data.company?.businessId}</$ItemValue>
             </$ItemWrapper>
             <$ItemWrapper>
               <$ItemHeader>{t(`${translationBase}.companyForm`)}</$ItemHeader>
-              <$ItemValue>Yritys</$ItemValue>
+              <$ItemValue>
+                {t(
+                  `common:organizationTypes.${
+                    data.company?.organizationType || ''
+                  }`
+                )}
+              </$ItemValue>
             </$ItemWrapper>
             <$ItemWrapper>
               <$ItemHeader>{t(`${translationBase}.submittedAt`)}</$ItemHeader>
-              <$ItemValue>21.06.2021</$ItemValue>
+              <$ItemValue>
+                {data.submittedAt && formatDate(new Date(data.submittedAt))}
+              </$ItemValue>
             </$ItemWrapper>
             <$ItemWrapper>
               <$ItemHeader>
                 {t(`${translationBase}.applicationNum`)}
               </$ItemHeader>
-              <$ItemValue>123456789</$ItemValue>
+              <$ItemValue>{data.applicationNumber}</$ItemValue>
             </$ItemWrapper>
             <$ItemWrapper>
               <$ItemHeader>{t(`${translationBase}.employeeName`)}</$ItemHeader>
-              <$ItemValue>Teemu Rantamäki</$ItemValue>
+              <$ItemValue>{employeeName}</$ItemValue>
             </$ItemWrapper>
           </$Col>
-          <$Col>
-            <$HandlerWrapper>KK</$HandlerWrapper>
-          </$Col>
+          {data.status === APPLICATION_STATUSES.HANDLING && (
+            <$Col>
+              <$HandlerWrapper>{getInitials(handlerName)}</$HandlerWrapper>
+            </$Col>
+          )}
         </$InnerWrapper>
       </Container>
     </$Wrapper>

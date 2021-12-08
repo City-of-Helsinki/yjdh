@@ -1,0 +1,51 @@
+{
+  "appName": "Nuorten kesäseteli",
+  "header": {
+    "linkSkipToContent": "Siirry sisältöön",
+    "menuToggleAriaLabel": "Valikko"
+  },
+  "errorPage": {
+    "title": "Tapahtui odottamaton virhe",
+    "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
+    "retry": "Lataa sivu uudelleen",
+    "logout": "Kirjaudu ulos"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Sivua ei löytynyt",
+    "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> etusivun kautta takaisin hakemukseen."
+  },
+  "footer": {
+    "copyrightText": "Helsingin kaupunki",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "accessibilityStatement": "Saavutettavuusseloste",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "information": "Tietoa palvelusta",
+    "informationLink": "https://kesaseteli.fi/"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "error": {
+    "generic": {
+      "label": "Tapahtui tuntematon virhe",
+      "text": " Yritä myöhemmin uudelleen"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe",
+      "tooBig": "Tiedosto on liian iso",
+      "fileType": "Tiedoston tyyppi ei ole sallittu."
+    }
+  },
+  "upload": {
+    "isUploading": "Lähetetään...",
+    "errorTitle": "Lähetys epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "delete": {
+    "errorTitle": "Poistaminen epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  }
+}

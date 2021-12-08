@@ -1,8 +1,8 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
 import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import React from 'react';

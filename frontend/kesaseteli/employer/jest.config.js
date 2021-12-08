@@ -8,6 +8,7 @@ module.exports = {
   },
   moduleNameMapper: {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
+    [`^kesaseteli-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`^kesaseteli/employer\/(.*)$`]: '<rootDir>src/$1',
   },
   setupFilesAfterEnv: [

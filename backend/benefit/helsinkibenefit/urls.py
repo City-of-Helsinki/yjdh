@@ -59,9 +59,6 @@ urlpatterns = [
     path("v1/", include(handler_app_router.urls)),
     path("v1/terms/approve_terms_of_service/", ApproveTermsOfServiceView.as_view()),
     path("v1/company/", GetCompanyView.as_view()),
-    path(
-        "v1/company/<str:business_id>", GetCompanyView.as_view()
-    ),  # FIXME: Remove this later
     path("v1/users/me/", CurrentUserView.as_view()),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),

@@ -1,4 +1,10 @@
-from calculator.models import Calculation, CalculationRow, PaySubsidy, PreviousBenefit
+from calculator.models import (
+    Calculation,
+    CalculationRow,
+    PaySubsidy,
+    PreviousBenefit,
+    TrainingCompensation,
+)
 from django.contrib import admin
 
 
@@ -39,5 +45,6 @@ class CalculationAdmin(admin.ModelAdmin):
 
 admin.site.register(Calculation, CalculationAdmin)
 admin.site.register(PaySubsidy)
+admin.site.register(TrainingCompensation)
 admin.site.register(PreviousBenefit)
 admin.site.register(CalculationRow)

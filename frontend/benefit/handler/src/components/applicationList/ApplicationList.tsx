@@ -37,10 +37,18 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         Cell: ({
           cell: {
             row: {
-              original: { companyName },
+              original: { id, companyName },
             },
           },
-        }) => <$Link>{companyName}</$Link>,
+        }) => (
+          <$Link
+            href={`/application?id=${id}`}
+            rel="noopener noreferrer"
+            aria-label={companyName}
+          >
+            {companyName}
+          </$Link>
+        ),
         Header: getHeader('companyName'),
         accessor: 'companyName',
         width: COLUMN_WIDTH.L,
@@ -71,7 +79,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       },
     ];
 
-    if (status.includes(APPLICATION_STATUSES.RECEIVED)) {
+    if (status.includes(APPLICATION_STATUSES.HANDLING)) {
       cols.push({
         Header: getHeader('handlerName'),
         accessor: 'handlerName',

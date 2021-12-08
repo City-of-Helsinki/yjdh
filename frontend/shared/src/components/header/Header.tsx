@@ -78,6 +78,7 @@ const Header: React.FC<HeaderProps> = ({
       onTitleClick={handleTitleClick}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
+      titleAriaLabel={title}
     >
       {isNavigationVisible && navigationItems && (
         <Navigation.Row variant={navigationVariant || 'default'}>

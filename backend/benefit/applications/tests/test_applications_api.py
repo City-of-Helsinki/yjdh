@@ -24,7 +24,9 @@ from applications.enums import (
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
+from calculator.models import Calculation
 from common.tests.conftest import *  # noqa
+from common.tests.conftest import get_client_user
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -990,10 +992,13 @@ def test_application_status_change_as_handler(
     """
     application.status = from_status
     application.save()
+    if from_status not in (
+        ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
+    ):
+        Calculation.objects.create_for_application(application)
     data = ApplicantApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
-
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
         add_attachments_to_application(request, application)
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
@@ -1015,6 +1020,75 @@ def test_application_status_change_as_handler(
         assert application.log_entries.all().first().to_status == to_status
     else:
         assert application.log_entries.all().count() == 0
+
+
+@pytest.mark.parametrize(
+    "from_status, to_status, auto_assign",
+    [
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, False),
+        (
+            ApplicationStatus.HANDLING,
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            False,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.HANDLING,
+            True,
+        ),
+        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, True),
+        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, True),
+        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, True),
+    ],
+)
+def test_application_status_change_as_handler_auto_assign_handler(
+    request, handler_api_client, application, from_status, to_status, auto_assign
+):
+    """
+    modify existing application
+    """
+    user = get_client_user(handler_api_client)
+    user.first_name = "adminFirst"
+    user.last_name = "adminLast"
+    user.save()
+    application.status = from_status
+    application.save()
+    if from_status not in (
+        ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
+    ):
+        Calculation.objects.create_for_application(application)
+    data = ApplicantApplicationSerializer(application).data
+    data["status"] = to_status
+    data["bases"] = []  # as of 2021-10, bases are not used when submitting application
+    if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
+        add_attachments_to_application(request, application)
+    if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
+        data["association_has_business_activities"] = False
+        data["association_immediate_manager_check"] = True
+
+    with mock.patch(
+        "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
+    ):
+        # terms approval is tested separately
+        response = handler_api_client.put(
+            get_handler_detail_url(application),
+            data,
+        )
+    assert response.status_code == 200
+    if auto_assign:
+        assert response.data["calculation"]["handler_details"]["id"] == str(
+            get_client_user(handler_api_client).pk
+        )
+        assert (
+            response.data["calculation"]["handler_details"]["first_name"]
+            == get_client_user(handler_api_client).first_name
+        )
+        assert (
+            response.data["calculation"]["handler_details"]["last_name"]
+            == get_client_user(handler_api_client).last_name
+        )
+    else:
+        assert response.data["calculation"]["handler_details"] is None
 
 
 def add_attachments_to_application(request, application):
