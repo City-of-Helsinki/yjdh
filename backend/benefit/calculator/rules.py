@@ -4,7 +4,7 @@ import decimal
 
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from calculator.enums import RowType
-from calculator.models import (  # SalaryBenefitPaySubsidySubTotalRow,
+from calculator.models import (
     DateRangeDescriptionRow,
     DescriptionRow,
     EmployeeBenefitMonthlyRow,
@@ -17,11 +17,15 @@ from calculator.models import (  # SalaryBenefitPaySubsidySubTotalRow,
     SalaryBenefitTotalRow,
     SalaryCostsRow,
     StateAidMaxMonthlyRow,
+    TotalDeductionsMonthlyRow,
+    TrainingCompensationMonthlyRow,
 )
+from common.utils import pairwise
 from django.db import transaction
 
 BenefitSubRange = collections.namedtuple(
-    "BenefitSubRange", ["start_date", "end_date", "pay_subsidy"]
+    "BenefitSubRange",
+    ["start_date", "end_date", "pay_subsidy", "training_compensation"],
 )
 
 
@@ -41,42 +45,51 @@ class HelsinkiBenefitCalculator:
             return DummyBenefitCalculator(calculation)
 
     def get_sub_total_ranges(self):
-        # return a list of (start_date, end_date, pay_subsidy) that require a separate calculation.
+        # return a list of BenefitSubRange(start_date, end_date, pay_subsidy, training_compensation)
+        # that require a separate calculation.
         # date range are inclusive
-        if pay_subsidies := PaySubsidy.merge_compatible_subsidies(
+
+        pay_subsidies = PaySubsidy.merge_compatible_subsidies(
             list(self.calculation.application.pay_subsidies.order_by("start_date"))
-        ):
-            ranges = []
-            if self.calculation.start_date < pay_subsidies[0].start_date:
-                ranges.append(
-                    BenefitSubRange(
-                        self.calculation.start_date,
-                        pay_subsidies[0].start_date - datetime.timedelta(days=1),
-                        None,
-                    )
-                )
-            for pay_subsidy in pay_subsidies:
-                # pay subsidies must not have gaps
-                ranges.append(
-                    BenefitSubRange(
-                        pay_subsidy.start_date, pay_subsidy.end_date, pay_subsidy
-                    )
-                )
-            if self.calculation.end_date > pay_subsidies[-1].end_date:
-                ranges.append(
-                    BenefitSubRange(
-                        pay_subsidies[-1].end_date + datetime.timedelta(days=1),
-                        self.calculation.end_date,
-                        None,
-                    )
-                )
-            return ranges
-        else:
-            return [
+        )
+        training_compensations = list(
+            self.calculation.application.training_compensations.order_by("start_date")
+        )
+
+        change_days = {
+            self.calculation.start_date,
+            self.calculation.end_date + datetime.timedelta(days=1),
+        }
+        for item in pay_subsidies + training_compensations:
+            if item.start_date > self.calculation.start_date:
+                change_days.add(item.start_date)
+            if item.end_date < self.calculation.end_date:
+                # the end_date of PaySubsidy and TrainingCompensation is the last day it is in effect so the
+                # change day is the day after end_date
+                change_days.add(item.end_date + datetime.timedelta(days=1))
+
+        def get_item_in_effect(items, day):
+            for item in items:
+                if item.start_date <= day <= item.end_date:
+                    return item
+            return None
+
+        ranges = []
+        assert len(change_days) >= 2
+        for range_start, range_end in pairwise(sorted(change_days)):
+            pay_subsidy = get_item_in_effect(pay_subsidies, range_start)
+            training_compensation = get_item_in_effect(
+                training_compensations, range_start
+            )
+            ranges.append(
                 BenefitSubRange(
-                    self.calculation.start_date, self.calculation.end_date, None
+                    range_start,
+                    range_end - datetime.timedelta(days=1),  # make the range inclusive
+                    pay_subsidy,
+                    training_compensation,
                 )
-            ]
+            )
+        return ranges
 
     def get_amount(self, row_type, default=None):
         # This function is used by the various CalculationRow to retrieve a previously calculated value
@@ -157,70 +170,77 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
         else:
             return self.ASSOCIATION_PAY_SUBSIDY_MAX
 
+    def create_deduction_rows(self, benefit_sub_range):
+        if benefit_sub_range.pay_subsidy or benefit_sub_range.training_compensation:
+            self._create_row(
+                DescriptionRow,
+                description_fi_template="Vähennettävät korvaukset / kk",
+            )
+        if benefit_sub_range.pay_subsidy:
+            pay_subsidy_monthly_eur = self._create_row(
+                PaySubsidyMonthlyRow,
+                pay_subsidy=benefit_sub_range.pay_subsidy,
+                max_subsidy=self.get_maximum_monthly_pay_subsidy(),
+            ).amount
+        else:
+            pay_subsidy_monthly_eur = 0
+
+        if benefit_sub_range.training_compensation:
+            training_compensation_monthly_eur = self._create_row(
+                TrainingCompensationMonthlyRow,
+                training_compensation=benefit_sub_range.training_compensation,
+            ).amount
+        else:
+            training_compensation_monthly_eur = 0
+
+        monthly_deductions = pay_subsidy_monthly_eur + training_compensation_monthly_eur
+
+        if benefit_sub_range.pay_subsidy and benefit_sub_range.training_compensation:
+            # as per UI design, create the totals row even if the amount of training compensation
+            # is zero, if the TrainingCompensation has been created
+            self._create_row(
+                TotalDeductionsMonthlyRow, monthly_deductions=monthly_deductions
+            )
+
+        return monthly_deductions
+
     def create_rows(self):
         date_ranges = self.get_sub_total_ranges()
         assert date_ranges
-        if len(date_ranges) == 1:
-            self._create_row(SalaryCostsRow)
-            self._create_row(StateAidMaxMonthlyRow)
+        self._create_row(SalaryCostsRow)
+        self._create_row(StateAidMaxMonthlyRow)
 
-            if date_ranges[0].pay_subsidy:
+        for sub_range in date_ranges:
+            if len(date_ranges) > 1:
                 self._create_row(
-                    DescriptionRow,
-                    description_fi_template="Vähennettävät korvaukset / kk",
+                    DateRangeDescriptionRow,
+                    start_date=sub_range.start_date,
+                    end_date=sub_range.end_date,
+                    prefix_text="Ajalta",
                 )
-                pay_subsidy_monthly_eur = self._create_row(
-                    PaySubsidyMonthlyRow,
-                    pay_subsidy=date_ranges[0].pay_subsidy,
-                    max_subsidy=self.get_maximum_monthly_pay_subsidy(),
-                ).amount
-            else:
-                pay_subsidy_monthly_eur = 0
+            monthly_deductions = self.create_deduction_rows(sub_range)
+
             self._create_row(
                 SalaryBenefitMonthlyRow,
                 max_benefit=self.SALARY_BENEFIT_MAX,
-                pay_subsidy_monthly_eur=pay_subsidy_monthly_eur,
+                monthly_deductions=monthly_deductions,
             )
-            self._create_row(SalaryBenefitTotalRow)
-        else:
-            self._create_row(SalaryCostsRow)
-            self._create_row(StateAidMaxMonthlyRow)
-            for start_date, end_date, pay_subsidy in date_ranges:
-                self._create_row(
-                    DateRangeDescriptionRow,
-                    start_date=start_date,
-                    end_date=end_date,
-                    prefix_text="Ajalta",
-                )
-                if pay_subsidy:
-                    self._create_row(
-                        DescriptionRow,
-                        description_fi_template="Vähennettävät korvaukset / kk",
-                    )
-                    pay_subsidy_monthly_eur = self._create_row(
-                        PaySubsidyMonthlyRow,
-                        pay_subsidy=pay_subsidy,
-                        max_subsidy=self.get_maximum_monthly_pay_subsidy(),
-                    ).amount
-                else:
-                    pay_subsidy_monthly_eur = 0
+            self._create_row(
+                SalaryBenefitSubTotalRow,
+                start_date=sub_range.start_date,
+                end_date=sub_range.end_date,
+            )
 
-                self._create_row(
-                    SalaryBenefitMonthlyRow,
-                    max_benefit=self.SALARY_BENEFIT_MAX,
-                    pay_subsidy_monthly_eur=pay_subsidy_monthly_eur,
-                )
-                self._create_row(
-                    SalaryBenefitSubTotalRow, start_date=start_date, end_date=end_date
-                )
-
+        if len(date_ranges) > 1:
             self._create_row(
                 DateRangeDescriptionRow,
-                start_date=start_date,
-                end_date=end_date,
+                start_date=date_ranges[0].start_date,
+                end_date=date_ranges[-1].end_date,
                 prefix_text="Koko ajalta",
             )
             self._create_row(SalaryBenefitSumSubTotalsRow)
+        else:
+            self._create_row(SalaryBenefitTotalRow)
 
 
 class EmployeeBenefitCalculator2021(HelsinkiBenefitCalculator):

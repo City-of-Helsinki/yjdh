@@ -1,5 +1,11 @@
 from applications.enums import ApplicationStatus
-from calculator.models import Calculation, CalculationRow, PaySubsidy, PreviousBenefit
+from calculator.models import (
+    Calculation,
+    CalculationRow,
+    PaySubsidy,
+    PreviousBenefit,
+    TrainingCompensation,
+)
 from dateutil.relativedelta import relativedelta
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -139,30 +145,32 @@ class CalculationSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "calculated_benefit_amount"]
 
 
-class PaySubsidyListSerializer(serializers.ListSerializer):
+class UpdateOrderedListSerializer(serializers.ListSerializer):
     """
+    Handle updates of objects with an ordering field.
+
     https://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-update
     """
 
     def update(self, instance, validated_data):
-        # Current pay_subsidies in the database. Maps for id->instance.
-        pay_subsidy_mapping = {pay_subsidy.id: pay_subsidy for pay_subsidy in instance}
+        # Current instances in the database. Maps for id->instance.
+        obj_mapping = {obj.id: obj for obj in instance}
         # A list of ids of the validated data items. IDs do not exist for new instances.
         incoming_ids = [item["id"] for item in validated_data if item.get("id")]
 
         # Perform deletions before create/update, to avoid conflicting ordering values
-        for pay_subsidy_id, pay_subsidy in pay_subsidy_mapping.items():
-            if pay_subsidy_id not in incoming_ids:
-                pay_subsidy.delete()
+        for obj_id, obj in obj_mapping.items():
+            if obj_id not in incoming_ids:
+                obj.delete()
 
         # Perform creations and updates.
         ret = []
         for data in validated_data:
-            pay_subsidy = pay_subsidy_mapping.get(data.get("id"), None)
-            if pay_subsidy is None:
+            obj = obj_mapping.get(data.get("id"), None)
+            if obj is None:
                 ret.append(self.child.create(data))
             else:
-                ret.append(self.child.update(pay_subsidy, data))
+                ret.append(self.child.update(obj, data))
             # ordering field is not exposed in API, it is added in ApplicantApplicationSerializer
             if ordering := data.get("ordering"):
                 ret[-1].ordering = ordering
@@ -186,7 +194,23 @@ class PaySubsidySerializer(serializers.ModelSerializer):
         ]
         read_only_fields = []
 
-        list_serializer_class = PaySubsidyListSerializer
+        list_serializer_class = UpdateOrderedListSerializer
+
+
+class TrainingCompensationSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(required=False)
+
+    class Meta:
+        model = TrainingCompensation
+        fields = [
+            "id",
+            "start_date",
+            "end_date",
+            "monthly_amount",
+        ]
+        read_only_fields = []
+
+        list_serializer_class = UpdateOrderedListSerializer
 
 
 class PreviousBenefitSerializer(serializers.ModelSerializer):
