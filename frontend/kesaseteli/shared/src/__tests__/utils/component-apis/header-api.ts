@@ -2,7 +2,12 @@ import {
   expectToLogout,
   expectUnauthorizedReply,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
-import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import {
+  screen,
+  userEvent,
+  waitFor,
+  within,
+} from 'shared/__tests__/utils/test-utils';
 import { Language } from 'shared/i18n/i18n';
 import User from 'shared/types/user';
 
@@ -28,6 +33,19 @@ const expectations = {
           name: /(kirjaudu palveluun)|(header.loginlabel)/i,
         })
       ).toHaveLength(2); // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
+    });
+  },
+  errorToastIsShown: async (
+    errorMessage = /tapahtui tuntematon virhe/i
+  ): Promise<void> => {
+    await waitFor(() => {
+      // eslint-disable-next-line unicorn/prefer-query-selector
+      const toast = document.getElementById('HDSToastContainer');
+      if (toast) {
+        expect(
+          within(toast).getByRole('heading', { name: errorMessage })
+        ).toBeInTheDocument();
+      }
     });
   },
 };

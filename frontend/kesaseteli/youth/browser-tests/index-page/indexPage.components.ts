@@ -12,7 +12,7 @@ import YouthFormData from '../../src/types/youth-form-data';
 
 type TextInputName = keyof Omit<
   YouthFormData,
-  'school' | 'is_unlisted_school' | 'termsAndConditions'
+  'selected_school' | 'is_unlisted_school' | 'termsAndConditions'
 >;
 
 export const getIndexPageComponents = async (t: TestController) => {
@@ -88,7 +88,12 @@ export const getIndexPageComponents = async (t: TestController) => {
     },
     async typeAndSelectSchoolFromDropdown(schoolName: string) {
       const dropdown = selectors.schoolDropdown();
-      await fillInput<YouthFormData>(t, 'school', dropdown, schoolName);
+      await fillInput<YouthFormData>(
+        t,
+        'selected_school',
+        dropdown,
+        schoolName
+      );
       await t.click(screen.findByRole('option', { name: schoolName }));
     },
     async toggleUnlistedSchoolCheckbox() {
