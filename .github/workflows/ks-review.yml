@@ -250,7 +250,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: testcafe-results-kesaseteli
+          header: testcafe-results-${{ matrix.service }}
           message: |
             ## TestCafe result is __${{ steps.testcafe.outcome }}__ for ${{ env.ENVIRONMENT_URL }}! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
         if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
@@ -258,7 +258,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: testcafe-results-kesaseteli
+          header: testcafe-results-${{ matrix.service }}
           append: true
           message: |
             **Check the report on: [${{ env.REPORT_URL }}](${{ env.REPORT_URL }})**
