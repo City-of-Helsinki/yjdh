@@ -1,5 +1,4 @@
 import { axe } from 'jest-axe';
-import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
 import IndexPage from 'kesaseteli/employer/pages';
 import {
   expectAuthorizedReply,
@@ -10,6 +9,7 @@ import {
   expectUnauthorizedReply,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import renderPage from 'kesaseteli-shared/__tests__/utils/components/render-page';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import {
