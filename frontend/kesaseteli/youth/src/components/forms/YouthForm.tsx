@@ -155,7 +155,6 @@ const YouthForm: React.FC = () => {
   );
   const handleSaving = React.useCallback(() => {
     createYouthApplicationQuery.mutate(getValues(), {
-      // eslint-disable-next-line lodash/prefer-noop
       onSuccess: (createdApplication) => {
         setResult(createdApplication);
         // TODO: redirect to thank you -page

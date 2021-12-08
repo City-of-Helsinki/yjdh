@@ -1,4 +1,4 @@
-import YouthApplication from 'kesaseteli/youth/types/youth-application';
+import YouthApplication from './youth-application';
 
 type CreatedYouthApplication = YouthApplication & {
   id: string;

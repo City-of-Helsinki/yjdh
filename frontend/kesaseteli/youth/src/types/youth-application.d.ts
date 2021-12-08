@@ -1,4 +1,4 @@
-import { Language } from 'shared/i18n/i18n';
+import { Language } from '@frontend/shared/src/i18n/i18n';
 
 type YouthApplication = {
   first_name: string;

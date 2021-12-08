@@ -1,6 +1,10 @@
-import SelectedSchoolFormData from 'kesaseteli/youth/types/selected-school-form-data';
-import UnlistedSchoolFormData from 'kesaseteli/youth/types/unlisted-school-form-data';
+import School from './School';
+import YouthApplication from './youth-application';
 
-type YouthFormData = SelectedSchoolFormData & UnlistedSchoolFormData;
+type YouthFormData = Omit<YouthApplication, 'school' | 'language'> & {
+  termsAndConditions: boolean;
+  selected_school?: School;
+  unlisted_school?: string;
+};
 
 export default YouthFormData;

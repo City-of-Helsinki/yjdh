@@ -1,13 +1,14 @@
-import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
+import { Language } from '@frontend/shared/src/i18n/i18n';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
-import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
 import YouthApplication from '../../types/youth-application';
+import YouthFormData from '../../types/youth-form-data';
+import { convertFormDataToApplication } from '../../utils/youth-form-data.utils';
 
 const schools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -129,17 +130,5 @@ export const fakeYouthFormData = (): YouthFormData => ({
   termsAndConditions: true,
 });
 
-export const fakeYouthApplication = (
-  language?: Language
-): YouthApplication => ({
-  first_name: faker.name.findName(),
-  last_name: faker.name.findName(),
-  social_security_number: FinnishSSN.createWithAge(
-    faker.datatype.number({ min: 15, max: 16 })
-  ),
-  school: faker.random.arrayElement(schools),
-  is_unlisted_school: faker.datatype.boolean(),
-  phone_number: faker.phone.phoneNumber('+358#########'),
-  email: faker.internet.email(),
-  language: language ?? DEFAULT_LANGUAGE,
-});
+export const fakeYouthApplication = (language?: Language): YouthApplication =>
+  convertFormDataToApplication(fakeYouthFormData(), language);
