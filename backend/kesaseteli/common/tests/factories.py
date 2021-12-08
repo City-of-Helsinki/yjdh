@@ -98,7 +98,6 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
 
 
 def get_listed_test_schools() -> List[str]:
-    # TODO: Move this functionality somewhere else and don't hardcode it
     return [
         "Arabian peruskoulu",
         "Botby grundskola",

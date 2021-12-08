@@ -16,6 +16,27 @@ from common.utils import validate_optional_finnish_social_security_number
 from companies.models import Company
 
 
+class SchoolQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(deleted_at__isnull=True)
+
+
+class School(TimeStampedModel, UUIDModel):
+    name = models.CharField(max_length=256, unique=True, db_index=True)
+    deleted_at = models.DateTimeField(
+        blank=True, null=True, verbose_name=_("time deleted")
+    )
+    objects = SchoolQuerySet.as_manager()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("school")
+        verbose_name_plural = _("schools")
+        ordering = ["name"]
+
+
 class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
         max_length=128, verbose_name=_("first name"), blank=True
