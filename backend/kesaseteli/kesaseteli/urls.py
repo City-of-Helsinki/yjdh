@@ -11,11 +11,13 @@ from companies.api.v1.views import GetCompanyView
 
 router = routers.DefaultRouter()
 router.register(r"applications", application_views.ApplicationViewSet)
+router.register(r"youthapplications", application_views.YouthApplicationViewSet)
 router.register(r"summervouchers", application_views.SummerVoucherViewSet)
 
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
     path("v1/company/", GetCompanyView.as_view()),
+    path("v1/schools/", application_views.SchoolListView.as_view()),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(

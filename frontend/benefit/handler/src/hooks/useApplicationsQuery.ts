@@ -1,9 +1,9 @@
 import { BackendEndpoint } from 'benefit/handler/backend-api/backend-api';
-import useBackendAPI from 'benefit/handler/hooks/useBackendAPI';
 import { ApplicationData } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationsQuery = (
   status: string[]

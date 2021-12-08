@@ -69,6 +69,10 @@ env = environ.Env(
         str,
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
+    SOCIAL_SECURITY_NUMBER_HASH_KEY=(
+        str,
+        "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+    ),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
     ELASTICSEARCH_CLOUD_ID=(str, ""),
     ELASTICSEARCH_API_ID=(str, ""),
@@ -88,6 +92,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
+SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
 
 DB_PREFIX = {

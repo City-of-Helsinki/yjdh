@@ -10,6 +10,7 @@ from common.tests.factories import (
     AttachmentFactory,
     CompanyFactory,
     SummerVoucherFactory,
+    YouthApplicationFactory,
 )
 
 
@@ -97,6 +98,11 @@ def store_company_in_session(client, company):
         }
     )
     s.save()
+
+
+@pytest.fixture
+def youth_application():
+    return YouthApplicationFactory()
 
 
 @pytest.fixture

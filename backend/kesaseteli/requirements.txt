@@ -95,6 +95,8 @@ python-dateutil==2.8.1
     # via
     #   azure-storage-common
     #   faker
+python-stdnum==1.17
+    # via -r requirements.in
 pytz==2021.1
     # via django
 requests==2.25.1

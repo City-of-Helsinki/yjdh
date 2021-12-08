@@ -11,6 +11,7 @@ from calculator.models import (
     PaySubsidy,
     PreviousBenefit,
     STATE_AID_MAX_PERCENTAGE_CHOICES,
+    TrainingCompensation,
 )
 from common.utils import duration_in_months
 from companies.tests.factories import CompanyFactory
@@ -33,6 +34,25 @@ class PaySubsidyFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = PaySubsidy
+
+
+class TrainingCompensationFactory(factory.django.DjangoModelFactory):
+    application = factory.SubFactory(ApplicationFactory)
+    start_date = factory.Faker(
+        "date_between_dates",
+        date_start=date(date.today().year, 1, 1),
+        date_end=date.today() + timedelta(days=100),
+    )
+    end_date = factory.LazyAttribute(
+        lambda o: o.start_date + timedelta(days=random.randint(31, 364))
+    )
+    monthly_amount = factory.Faker(
+        "pydecimal", left_digits=3, right_digits=2, min_value=0
+    )
+    ordering = factory.Sequence(lambda n: n + 1)
+
+    class Meta:
+        model = TrainingCompensation
 
 
 class CalculationRowFactory(factory.django.DjangoModelFactory):

@@ -24,7 +24,11 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
-from calculator.api.v1.serializers import CalculationSerializer, PaySubsidySerializer
+from calculator.api.v1.serializers import (
+    CalculationSerializer,
+    PaySubsidySerializer,
+    TrainingCompensationSerializer,
+)
 from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
@@ -1467,6 +1471,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     The following fields are available for logged in handlers only:
     * calculation
     * pay_subsidies
+    * training compensations
     * batch
     """
 
@@ -1486,6 +1491,12 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     pay_subsidies = PaySubsidySerializer(
         many=True,
         help_text="PaySubsidy objects, available for handlers only",
+        required=False,
+    )
+
+    training_compensations = TrainingCompensationSerializer(
+        many=True,
+        help_text="TrainingCompensation objects, available for handlers only",
         required=False,
     )
 
@@ -1517,6 +1528,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         fields = BaseApplicationSerializer.Meta.fields + [
             "calculation",
             "pay_subsidies",
+            "training_compensations",
             "batch",
             "create_application_for_company",
         ]
@@ -1530,11 +1542,14 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             )
         calculation_data = validated_data.pop("calculation", None)
         pay_subsidy_data = validated_data.pop("pay_subsidies", None)
+        training_compensation_data = validated_data.pop("training_compensations", None)
         application = self._base_update(instance, validated_data)
         if calculation_data is not None:
             self._update_calculation(instance, calculation_data)
         if pay_subsidy_data is not None:
             self._update_pay_subsidies(instance, pay_subsidy_data)
+        if training_compensation_data is not None:
+            self._update_training_compensations(instance, training_compensation_data)
         return application
 
     def _update_calculation(self, application, calculation_data):
@@ -1563,28 +1578,44 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             duplicate_check=("calculation.calculate", application.pk),
         )
 
-    def _update_pay_subsidies(self, application, pay_subsidy_data):
-
-        if application.status != ApplicationStatus.RECEIVED:
-            # pay subsidies are not editable after application is locked,
-            # and draft applications can't have them
-            # TODO: check for ApplicationStatus.HANDLING here
-            return
-
-        serializer = PaySubsidySerializer(
-            application.pay_subsidies.all(), data=pay_subsidy_data, many=True
+    def _update_training_compensations(self, application, training_compensation_data):
+        return self._common_ordered_nested_update(
+            application,
+            TrainingCompensationSerializer(
+                application.training_compensations.all(),
+                data=training_compensation_data,
+                many=True,
+            ),
         )
+
+    def _update_pay_subsidies(self, application, pay_subsidy_data):
+        return self._common_ordered_nested_update(
+            application,
+            PaySubsidySerializer(
+                application.pay_subsidies.all(), data=pay_subsidy_data, many=True
+            ),
+        )
+
+    def _common_ordered_nested_update(self, application, serializer):
+        if application.status not in [
+            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
+        ]:
+            # These objects are not editable after application is locked,
+            # and draft applications can't have them
+            return
 
         if not serializer.is_valid():
             raise serializers.ValidationError(
                 format_lazy(
-                    _("Reading pay subsidy data failed: {errors}"),
+                    _("Reading {localized_model_name} data failed: {errors}"),
                     errors=serializer.errors,
+                    localized_model_name=serializer.instance.model._meta.verbose_name,
                 )
             )
-        for idx, pay_subsidy in enumerate(serializer.validated_data):
-            pay_subsidy["application_id"] = application.pk
-            pay_subsidy[
+        for idx, nested_object in enumerate(serializer.validated_data):
+            nested_object["application_id"] = application.pk
+            nested_object[
                 "ordering"
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
@@ -1593,3 +1624,16 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 application.calculation.calculate,
                 duplicate_check=("calculation.calculate", application.pk),
             )
+
+    def handle_status_transition(self, instance, previous_status, approve_terms):
+        # Super need to call first so instance.calculation is always present
+        super().handle_status_transition(instance, previous_status, approve_terms)
+        # Extend from base class function.
+        # Assign current user to the application.calculation.handler
+        # NOTE: This handler might be overridden if there is a handler pk included in the request post data
+        handler = get_request_user_from_context(self)
+        if settings.DISABLE_AUTHENTICATION and isinstance(handler, AnonymousUser):
+            handler = get_user_model().objects.all().order_by("username").first()
+        if instance.status in HandlerApplicationStatusValidator.ASSIGN_HANDLER_STATUSES:
+            instance.calculation.handler = handler
+            instance.calculation.save()

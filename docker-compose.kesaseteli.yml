@@ -42,13 +42,31 @@ services:
       - /app/.next
     env_file:
       - .env.kesaseteli
+    environment:
+      - PORT=3000
     container_name: kesaseteli-employer
+
+  kesaseteli-youth:
+    build:
+      context: ./frontend
+      dockerfile: kesaseteli/youth/Dockerfile
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.kesaseteli
+    environment:
+      - PORT=3100
+    container_name: kesaseteli-youth
 
   kesaseteli-local-proxy:
     depends_on:
       - postgres
       - kesaseteli-backend
       - kesaseteli-employer
+      - kesaseteli-youth
     build:
       context: ./localdevelopment/kesaseteli/nginx
     container_name: kesaseteli-local-proxy
@@ -57,6 +75,7 @@ services:
     ports:
       - 127.0.0.1:8000:8000
       - 127.0.0.1:3000:3000
+      - 127.0.0.1:3100:3100
 
 volumes:
   pgdata:

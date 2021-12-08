@@ -15,6 +15,7 @@ WORKDIR /app
 # Install dependencies
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser kesaseteli/employer/package.json kesaseteli/employer/package.json
+COPY --chown=appuser:appuser kesaseteli/shared/package.json kesaseteli/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
@@ -79,6 +80,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/public
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/package.json app/kesaseteli/employer/start.js kesaseteli/employer/
 
 # shared data
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/shared/package.json kesaseteli/shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 

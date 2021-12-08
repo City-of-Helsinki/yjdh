@@ -1,12 +1,14 @@
 from django.core import exceptions
+from django.db.models import Func
 from django.http import FileResponse
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
@@ -21,10 +23,46 @@ from applications.api.v1.permissions import (
 from applications.api.v1.serializers import (
     ApplicationSerializer,
     AttachmentSerializer,
+    SchoolSerializer,
     SummerVoucherSerializer,
+    YouthApplicationSerializer,
 )
 from applications.enums import ApplicationStatus
-from applications.models import Application, SummerVoucher
+from applications.models import Application, School, SummerVoucher, YouthApplication
+from common.utils import DenyAll
+
+
+class SchoolListView(ListAPIView):
+    # PostgreSQL specific functionality:
+    # - Custom sorter for name field to ensure finnish language sorting order.
+    # - NOTE: This can be removed if the database is made to use collation fi_FI.UTF8
+    _name_fi = Func(
+        "name",
+        function="fi-FI-x-icu",  # fi_FI.UTF8 would be best but wasn't available
+        template='(%(expressions)s) COLLATE "%(function)s"',
+    )
+
+    queryset = School.objects.active().order_by(_name_fi.asc())
+    serializer_class = SchoolSerializer
+
+    def get_permissions(self):
+        permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class YouthApplicationViewSet(AuditLoggingModelViewSet):
+    queryset = YouthApplication.objects.all()
+    serializer_class = YouthApplicationSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "create":
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [DenyAll]
+        return [permission() for permission in permission_classes]
 
 
 class ApplicationViewSet(AuditLoggingModelViewSet):

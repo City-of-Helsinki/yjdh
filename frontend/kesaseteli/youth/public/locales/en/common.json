@@ -1,0 +1,51 @@
+{
+  "appName": "ENG Nuorten kesäseteli",
+  "header": {
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu"
+  },
+  "errorPage": {
+    "title": "An unexpected error occured",
+    "message": "Something went wrong. Refreshing the page might help.",
+    "retry": "Reload the page again",
+    "logout": "Log out"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Page was not found",
+    "pageNotFoundContent": "Oh no, something went wrong. Try to enter the application <lnk>here</lnk>, through the front page"
+  },
+  "footer": {
+    "copyrightText": "City of Helsinki",
+    "allRightsReservedText": "All rights reserved",
+    "accessibilityStatement": "Accessibility statement",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
+    "information": "Information on the service",
+    "informationLink": "https://kesaseteli.fi/en/"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "error": {
+    "generic": {
+      "label": "An unexpected error occurred",
+      "text": "Try again later."
+    },
+    "attachments": {
+      "title": "An error occured while uploading the file.",
+      "tooBig": "The file is too big.",
+      "fileType": "The file type is not allowed."
+    }
+  },
+  "upload": {
+    "isUploading": "Sending...",
+    "errorTitle": "File upload failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "delete": {
+    "errorTitle": "Deleting the file failed.",
+    "errorMessage": "Something went wrong. Please try again later."
+  }
+}

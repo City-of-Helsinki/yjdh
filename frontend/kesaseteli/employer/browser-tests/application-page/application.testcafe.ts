@@ -2,13 +2,12 @@ import { getHeaderComponents } from '@frontend/shared/browser-tests/components/h
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getFrontendUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import TestController from 'testcafe';
 
 import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
-import { getUrlUtils } from '../utils/url.utils';
+import { getFrontendUrl, getUrlUtils } from '../utils/url.utils';
 import { getStep1Components } from './step1.components';
 import { getStep2Components } from './step2.components';
 import { getWizardComponents } from './wizard.components';
