@@ -31,4 +31,25 @@
 !benefit/handler/src
 !benefit/handler/tsconfig.json
 !benefit/handler/start.js
+!tet/employer/next.config.js
+!tet/employer/next-i18next.config.js
+!tet/employer/package.json
+!tet/employer/public
+!tet/employer/src
+!tet/employer/tsconfig.json
+!tet/employer/start.js
+!tet/youth/next.config.js
+!tet/youth/next-i18next.config.js
+!tet/youth/package.json
+!tet/youth/public
+!tet/youth/src
+!tet/youth/tsconfig.json
+!tet/youth/start.js
+!tet/admin/next.config.js
+!tet/admin/next-i18next.config.js
+!tet/admin/package.json
+!tet/admin/public
+!tet/admin/src
+!tet/admin/tsconfig.json
+!tet/admin/start.js
 

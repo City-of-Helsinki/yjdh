@@ -7,6 +7,7 @@
   "workspaces": [
     "kesaseteli/*",
     "benefit/*",
+    "tet/*",
     "shared"
   ],
   "scripts": {
@@ -31,7 +32,25 @@
     "bf-handler:test": "yarn --cwd benefit/bf-handler test",
     "ks-empl:test": " yarn --cwd kesaseteli/employer test",
     "ks-empl:browser-test": "yarn --cwd kesaseteli/employer browser-test",
-    "ks-empl:browser-test:ci": "yarn --cwd kesaseteli/employer browser-test:ci"
+    "ks-empl:browser-test:ci": "yarn --cwd kesaseteli/employer browser-test:ci",
+    "tet-empl:build": "npx lerna run --scope @frontend/tet-employer --stream build",
+    "tet-empl:dev": "npx lerna run --scope @frontend/tet-employer --stream dev",
+    "tet-empl:start": "npx lerna run --scope  @frontend/tet-employer --stream start",
+    "tet-empl:test": " yarn --cwd tet/employer test",
+    "tet-empl:browser-test": "yarn --cwd tet/employer browser-test",
+    "tet-empl:browser-test:ci": "yarn --cwd tet/employer browser-test:ci",
+    "tet-admin:build": "npx lerna run --scope @frontend/tet-admin --stream build",
+    "tet-admin:dev": "npx lerna run --scope @frontend/tet-admin --stream dev",
+    "tet-admin:start": "npx lerna run --scope  @frontend/tet-admin --stream start",
+    "tet-admin:test": " yarn --cwd tet/admin test",
+    "tet-admin:browser-test": "yarn --cwd tet/admin browser-test",
+    "tet-admin:browser-test:ci": "yarn --cwd tet/admin browser-test:ci",
+    "tet-youth:build": "npx lerna run --scope @frontend/tet-youth --stream build",
+    "tet-youth:dev": "npx lerna run --scope @frontend/tet-youth --stream dev",
+    "tet-youth:start": "npx lerna run --scope  @frontend/tet-youth --stream start",
+    "tet-youth:test": " yarn --cwd tet/youth test",
+    "tet-youth:browser-test": "yarn --cwd tet/youth browser-test",
+    "tet-youth:browser-test:ci": "yarn --cwd tet/youth browser-test:ci"
   },
   "dependencies": {},
   "devDependencies": {

@@ -1,0 +1,95 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:12
+    restart: on-failure
+    environment:
+      POSTGRES_USER: tet
+      POSTGRES_PASSWORD: tet
+      POSTGRES_DB: tet
+    ports:
+      - 5434:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: tet-db
+
+  tet-backend:
+    build:
+      context: ./backend
+      dockerfile: ./docker/tet.Dockerfile
+      target: development
+    env_file:
+      - .env.tet
+    environment:
+      DATABASE_URL: postgres://tet:tet@tet-db/tet
+      DATABASE_HOST: tet-db.helsinki
+    volumes:
+      - ./backend/tet:/app
+      - ./backend/shared:/shared
+      - ./backend/tet/media:/var/media
+    depends_on:
+      - postgres
+    container_name: tet-backend
+
+  tet-employer:
+     build:
+       context: ./frontend
+       dockerfile: tet/employer/Dockerfile
+       target: development
+     volumes:
+       - ./frontend:/app
+       - /app/node_modules
+       - /app/.next
+     env_file:
+       - .env.tet
+     container_name: tet-employer
+
+  tet-youth:
+     build:
+       context: ./frontend
+       dockerfile: tet/youth/Dockerfile
+       target: development
+     volumes:
+       - ./frontend:/app
+       - /app/node_modules
+       - /app/.next
+     env_file:
+       - .env.tet
+     container_name: tet-youth
+
+  tet-admin:
+     build:
+       context: ./frontend
+       dockerfile: tet/admin/Dockerfile
+       target: development
+     volumes:
+       - ./frontend:/app
+       - /app/node_modules
+       - /app/.next
+     env_file:
+       - .env.tet
+     container_name: tet-admin
+
+  tet-local-proxy:
+    depends_on:
+      - postgres
+      - tet-backend
+      - tet-employer
+    build:
+      context: ./localdevelopment/tet/nginx
+    container_name: tet-local-proxy
+    volumes:
+      - ./localdevelopment/tet/nginx/:/etc/nginx/
+    ports:
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:3000:3000
+      - 127.0.0.1:3001:3001
+      - 127.0.0.1:3002:3002
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  default:
+    name: helsinki
