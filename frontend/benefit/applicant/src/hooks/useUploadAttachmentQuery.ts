@@ -1,7 +1,7 @@
 import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
-import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
 import { ErrorResponse } from 'benefit/applicant/types/common';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { UploadAttachmentData } from 'shared/types/attachment';
 
 const useUploadAttachmentQuery = (): UseMutationResult<

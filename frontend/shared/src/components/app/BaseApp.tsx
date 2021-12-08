@@ -1,0 +1,64 @@
+import * as Sentry from '@sentry/browser';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
+import { setLogger } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import Content from 'shared/components/content/Content';
+import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
+import initLocale from 'shared/components/hocs/initLocale';
+import Layout from 'shared/components/layout/Layout';
+import HDSToastContainer from 'shared/components/toast/ToastContainer';
+import GlobalStyling from 'shared/styles/globalStyling';
+import theme from 'shared/styles/theme';
+import { ThemeProvider } from 'styled-components';
+
+type Props = AppProps & {
+  header: React.ReactNode;
+  footer: React.ReactNode;
+};
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
+  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
+});
+
+setLogger({
+  log: (message) => {
+    Sentry.captureMessage(message);
+  },
+  warn: (message) => {
+    Sentry.captureMessage(message);
+  },
+  error: (error) => {
+    Sentry.captureException(error);
+  },
+});
+
+const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <Head>
+          <title>{t('common:appName')}</title>
+        </Head>
+        <GlobalStyling />
+        <Layout>
+          {header}
+          <HDSToastContainer />
+          <Content>
+            <Component {...pageProps} />
+          </Content>
+          {footer}
+        </Layout>
+      </ThemeProvider>
+      <HiddenLoadingIndicator />
+      {process.env.NODE_ENV === 'development' &&
+        process.env.TEST_CAFE !== 'true' && <ReactQueryDevtools />}
+    </>
+  );
+};
+
+export default initLocale(BaseApp);

@@ -4,6 +4,7 @@ import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import User from '../../src/types/user';
 import {
   getErrorMessage,
+  screenContext,
   setDataToPrintOnFailure,
   withinContext,
 } from '../utils/testcafe.utils';
@@ -29,9 +30,19 @@ const translations = {
   },
 };
 
-export const getHeaderComponents = (t: TestController) => {
-  const within = withinContext(t);
+export type Translation = {
+  [key in Language]: string;
+};
 
+export const getHeaderComponents = (
+  t: TestController,
+  appName?: Translation
+) => {
+  const within = withinContext(t);
+  const screen = screenContext(t);
+
+  const withinHeader = (): ReturnType<typeof within> =>
+    within(screen.findByRole('banner'));
   const navigationActions = Selector('div[class*="NavigationActions"]');
   const withinNavigationActions = (): ReturnType<typeof within> =>
     within(navigationActions);
@@ -65,6 +76,38 @@ export const getHeaderComponents = (t: TestController) => {
           .click(selectors.languageSelectorItem(toLang));
       },
     };
+    await expectations.isPresent();
+    return {
+      expectations,
+      actions,
+    };
+  };
+  const header = async () => {
+    const selectors = {
+      headerTitle(asLang = DEFAULT_LANGUAGE) {
+        if (!appName) {
+          throw new Error(
+            'Did you forgot to give expected app name translations?'
+          );
+        }
+        return withinHeader()
+          .findAllByText(new RegExp(`^${appName[asLang]}$`, 'i'), {})
+          .nth(0);
+      },
+    };
+    const expectations = {
+      async isPresent() {
+        await t
+          .expect(selectors.headerTitle().exists)
+          .ok(await getErrorMessage(t));
+      },
+      async titleIsTranslatedAs(asLang: Language) {
+        await t
+          .expect(selectors.headerTitle(asLang).exists)
+          .ok(await getErrorMessage(t));
+      },
+    };
+    const actions = {};
     await expectations.isPresent();
     return {
       expectations,
@@ -134,6 +177,7 @@ export const getHeaderComponents = (t: TestController) => {
     };
   };
   return {
+    header,
     languageDropdown,
     headerUser,
   };

@@ -6,7 +6,6 @@ on:
   pull_request:
     paths:
       - 'frontend/shared/**'
-      - 'frontend/*'
       - '.github/workflows/shared-tests.yml'
   workflow_dispatch:
 defaults:
