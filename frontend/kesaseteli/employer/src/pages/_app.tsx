@@ -16,7 +16,7 @@ const App: React.FC<AppProps> = (appProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
     <QueryClientProvider client={createQueryClient()}>
       <AuthProvider>
-        <BaseApp {...appProps} header={<Header />} footer={<Footer />} />
+        <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
       </AuthProvider>
     </QueryClientProvider>
   </BackendAPIProvider>
