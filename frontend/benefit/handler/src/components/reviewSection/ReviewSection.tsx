@@ -31,6 +31,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   header,
   action,
   withMargin,
+  withoutDivider,
   role,
   loading,
   ...rest
@@ -41,7 +42,9 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
     <$Wrapper withAction={withAction} bgColor={bgColor}>
       <$WrapperInner withAction={withAction}>
         {withAction && (
-          <$ActionLeft>{action && <$CheckIcon size="m" />}</$ActionLeft>
+          <$ActionLeft>
+            {action && <$CheckIcon aria-label="application-action" size="m" />}
+          </$ActionLeft>
         )}
         <$Section paddingBottom={withAction}>
           {header && (
@@ -58,13 +61,14 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
               css={`
                 font-size: ${theme.fontSize.body.l};
                 padding: ${withMargin ? theme.spacing.m : 0} 0;
+                line-height: ${theme.lineHeight.l};
               `}
               role={role}
             >
               {children}
             </$Grid>
           )}
-          {!withAction && (
+          {!withAction && !withoutDivider && (
             <$Hr
               css={`
                 margin-top: ${theme.spacing.l};

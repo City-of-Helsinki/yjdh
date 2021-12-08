@@ -32,6 +32,5 @@ export const $CheckIcon = styled(IconCheckCircle)`
 
 export const $ActionBottom = styled.div`
   background-color: ${(props) => props.theme.colors.silver};
-  padding: ${(props) => props.theme.spacing.s};
   padding-left: 102px;
 `;
