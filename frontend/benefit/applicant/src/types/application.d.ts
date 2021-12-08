@@ -62,6 +62,7 @@ export interface CompanyData {
   postcode: string;
   city: string;
   bank_account_number: string;
+  organization_type: string;
 }
 
 export type Company = {
@@ -73,6 +74,7 @@ export type Company = {
   postcode: string;
   city: string;
   bankAccountNumber: string;
+  organizationType: ORGANIZATION_TYPES;
 };
 
 export interface BaseData {

@@ -7,15 +7,13 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import {
-  getApplicationStepString,
-  getFullName,
-} from 'benefit/applicant/utils/common';
+import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
+import { getFullName } from 'shared/utils/application.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {

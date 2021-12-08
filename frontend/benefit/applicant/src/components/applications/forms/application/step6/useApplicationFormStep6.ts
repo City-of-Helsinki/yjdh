@@ -12,10 +12,10 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import { getFullName } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useContext, useEffect, useState } from 'react';
+import { getFullName } from 'shared/utils/application.utils';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';

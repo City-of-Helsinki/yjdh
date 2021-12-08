@@ -7,18 +7,23 @@ import { useEffect } from 'react';
 import theme from 'shared/styles/theme';
 
 const ApplicantIndex: NextPage = () => {
-  const { setIsNavigationVisible, setLayoutBackgroundColor } =
-    React.useContext(AppContext);
+  const {
+    setIsFooterVisible,
+    setIsNavigationVisible,
+    setLayoutBackgroundColor,
+  } = React.useContext(AppContext);
 
   // configure page specific settings
   useEffect(() => {
     setIsNavigationVisible(false);
+    setIsFooterVisible(false);
     setLayoutBackgroundColor(theme.colors.white);
     return () => {
       setIsNavigationVisible(false);
+      setIsFooterVisible(true);
       setLayoutBackgroundColor(theme.colors.white);
     };
-  }, [setIsNavigationVisible, setLayoutBackgroundColor]);
+  }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 
   return <ApplicationReview />;
 };
