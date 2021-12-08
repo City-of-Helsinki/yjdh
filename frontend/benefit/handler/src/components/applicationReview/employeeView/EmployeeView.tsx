@@ -34,9 +34,9 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField>
           {t(`${translationsBase}.fields.isLivingInHelsinki`)}
           {': '}
-          <$ViewFieldBold>{` ${t(
+          <$ViewFieldBold>{t(
             `common:utility.${data.employee?.isLivingInHelsinki ? 'yes' : 'no'}`
-          )}`}</$ViewFieldBold>
+          )}</$ViewFieldBold>
         </$ViewField>
       </$GridCell>
       <AttachmentsListView
