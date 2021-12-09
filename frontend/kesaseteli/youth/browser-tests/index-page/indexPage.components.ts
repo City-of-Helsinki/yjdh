@@ -29,7 +29,7 @@ export const getIndexPageComponents = async (t: TestController) => {
     textInput(name: TextInputName) {
       return withinForm().findByTestId(name as string);
     },
-    schoolDropdown() {
+    schoolsDropdown() {
       return withinForm().findByRole('combobox', { name: /koulu/i });
     },
     unlistedSchoolCheckbox() {
@@ -71,7 +71,7 @@ export const getIndexPageComponents = async (t: TestController) => {
       );
     },
     async typeAndSelectSchoolFromDropdown(schoolName: string) {
-      const dropdown = selectors.schoolDropdown();
+      const dropdown = selectors.schoolsDropdown();
       await fillInput<YouthFormData>(t, 'selectedSchool', dropdown, schoolName);
       await t.click(screen.findByRole('option', { name: schoolName }));
     },

@@ -1,6 +1,8 @@
 import { axe } from 'jest-axe';
 import {
   expectToCreateYouthApplication,
+  expectToGetSchoolsErrorFromBackend,
+  expectToGetSchoolsFromBackend,
   expectToReplyErrorWhenCreatingYouthApplication,
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getIndexPageApi from 'kesaseteli/youth/__tests__/utils/components/get-index-page-api';
@@ -27,8 +29,25 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     expect(results).toHaveNoViolations();
   });
 
+  it('loads school list from backend', async () => {
+    const loadSchools = expectToGetSchoolsFromBackend();
+    await renderPage(YouthIndex);
+    await waitFor(() => {
+      loadSchools.done();
+    });
+  });
+  it('shows error toast if loading school list from backend fails', async () => {
+    const loadSchools = expectToGetSchoolsErrorFromBackend(404);
+    await renderPage(YouthIndex);
+    await waitFor(() => {
+      loadSchools.done();
+    });
+    await headerApi.expectations.errorToastIsShown();
+  });
+
   describe('validating application', () => {
     it('shows required validation errors', async () => {
+      expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
@@ -46,7 +65,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         'social_security_number',
         texts.required
       );
-      await indexPageApi.expectations.schoolDropdownHasError(texts.required);
+      await indexPageApi.expectations.schoolsDropdownHasError(texts.required);
       await indexPageApi.expectations.textInputHasError(
         'email',
         texts.required
@@ -62,6 +81,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     });
 
     it('shows max length exceeded validation errors', async () => {
+      expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
@@ -91,6 +111,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     });
 
     it('shows invalid format errors', async () => {
+      expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
@@ -121,16 +142,17 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     });
 
     it('shows error messages for unlisted school', async () => {
+      expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
       await indexPageApi.expectations.inputIsNotPresent('unlistedSchool');
       await indexPageApi.actions.clickSaveButton();
-      await indexPageApi.expectations.schoolDropdownHasError(texts.required);
+      await indexPageApi.expectations.schoolsDropdownHasError(texts.required);
 
       await indexPageApi.actions.toggleCheckbox('is_unlisted_school');
-      await indexPageApi.expectations.schoolDropdownIsDisabled();
-      await indexPageApi.expectations.schoolDropdownIsValid();
+      await indexPageApi.expectations.schoolsDropdownIsDisabled();
+      await indexPageApi.expectations.schoolsDropdownIsValid();
       await indexPageApi.expectations.inputIsPresent('unlistedSchool');
       await indexPageApi.actions.clickSaveButton();
       await indexPageApi.expectations.textInputHasError(
@@ -151,26 +173,27 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       );
 
       await indexPageApi.actions.toggleCheckbox('is_unlisted_school');
-      await indexPageApi.expectations.schoolDropdownIsEnabled();
+      await indexPageApi.expectations.schoolsDropdownIsEnabled();
 
       await indexPageApi.actions.clickSaveButton();
-      await indexPageApi.expectations.schoolDropdownHasError(texts.required);
+      await indexPageApi.expectations.schoolsDropdownHasError(texts.required);
       await indexPageApi.expectations.inputIsNotPresent('unlistedSchool');
     });
   });
 
   describe('when valid application', () => {
     it('saves the application with listed school', async () => {
+      expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
-
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
         backendExpectation: expectToCreateYouthApplication,
       });
     });
 
     it('saves the application with unlisted school', async () => {
+      expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
@@ -180,6 +203,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     });
 
     it('saves the application with application language', async () => {
+      expectToGetSchoolsFromBackend();
       const language: Language = 'sv';
       await renderPage(YouthIndex, { locale: language });
       const indexPageApi = getIndexPageApi();
@@ -192,6 +216,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     });
 
     it('shows error toaster when backend gives bad request -error', async () => {
+      expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
@@ -203,6 +228,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     });
 
     it('redirects to error page when backend gives internal server error', async () => {
+      expectToGetSchoolsFromBackend();
       const spyPush = jest.fn();
       await renderPage(YouthIndex, { push: spyPush });
       const indexPageApi = getIndexPageApi();

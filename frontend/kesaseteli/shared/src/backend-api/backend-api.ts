@@ -6,6 +6,7 @@ export const BackendEndpoint = {
   LOGOUT: '/oidc/logout/',
   USER: '/oidc/userinfo/',
   YOUTH_APPLICATIONS: '/v1/youthapplications/',
+  SCHOOLS: '/v1/schools/',
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
