@@ -6,6 +6,7 @@ import {
 } from 'benefit/handler/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
 import isServerSide from 'shared/server/is-server-side';
+import { getFullName } from 'shared/utils/application.utils';
 import { formatDate } from 'shared/utils/date.utils';
 
 interface ApplicationListProps {
@@ -16,11 +17,6 @@ interface ApplicationListProps {
   getHeader: (id: string) => string;
   translationsBase: string;
 }
-
-const getFullName = (
-  firstName: string | undefined,
-  lastName: string | undefined
-): string => [firstName, lastName].join(' ');
 
 const translationsBase = 'common:applications.list';
 

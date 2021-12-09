@@ -5,6 +5,7 @@ import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { formatStringFloatValue } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
 import { $ViewField, $ViewFieldBold } from '../../Application.sc';
@@ -64,36 +65,44 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
         header={t(`${translationsBase}.employee.heading2`)}
         withoutDivider
       >
-        <$GridCell $colSpan={3}>
-          {data.paySubsidyGranted && (
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.paySubsidyGranted.${
-                  data.paySubsidyGranted ? 'yes' : 'no'
-                }`
-              )}
-              <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
-                data.additionalPaySubsidyPercent
-                  ? `${t('common:utility.and')} ${
-                      data.additionalPaySubsidyPercent
-                    } %`
-                  : ''
-              }`}</$ViewField>
-            </$ViewFieldBold>
+        <$GridCell $colSpan={12}>
+          {data.paySubsidyGranted ? (
+            <>
+              <$ViewFieldBold>
+                {t(
+                  `${translationsBase}.employee.fields.paySubsidyGranted.${
+                    data.paySubsidyGranted ? 'yes' : 'no'
+                  }`
+                )}
+                <$ViewField isInline>{`, ${data.paySubsidyPercent || ''} % ${
+                  data.additionalPaySubsidyPercent
+                    ? `${t('common:utility.and')} ${
+                        data.additionalPaySubsidyPercent
+                      } %`
+                    : ''
+                }`}</$ViewField>
+              </$ViewFieldBold>
+              <$ViewField>
+                {t(
+                  `${translationsBase}.employee.fields.apprenticeshipProgram.label`
+                )}{' '}
+                <$ViewFieldBold>
+                  {t(
+                    `${translationsBase}.employee.fields.apprenticeshipProgram.${
+                      data.apprenticeshipProgram ? 'yes' : 'no'
+                    }`
+                  )}
+                </$ViewFieldBold>
+              </$ViewField>
+            </>
+          ) : (
+            <$ViewField>
+              {t(`${translationsBase}.employee.fields.paySubsidyGranted.label`)}{' '}
+              <$ViewFieldBold>
+                {t(`${translationsBase}.employee.fields.paySubsidyGranted.no`)}
+              </$ViewFieldBold>
+            </$ViewField>
           )}
-
-          <$ViewField>
-            {t(
-              `${translationsBase}.employee.fields.apprenticeshipProgram.label`
-            )}{' '}
-            <$ViewFieldBold>
-              {t(
-                `${translationsBase}.employee.fields.apprenticeshipProgram.${
-                  data.apprenticeshipProgram ? 'yes' : 'no'
-                }`
-              )}
-            </$ViewFieldBold>
-          </$ViewField>
         </$GridCell>
       </SummarySection>
 
@@ -141,17 +150,21 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
             </$ViewField>
             <$ViewField>
               {t(`${translationsBase}.employee.fields.workingHours.view`, {
-                workingHours: data.employee?.workingHours,
+                workingHours: formatStringFloatValue(
+                  data.employee?.workingHours
+                ),
               })}
             </$ViewField>
             <$ViewField>
               {t(`${translationsBase}.employee.fields.monthlyPay.view`, {
-                monthlyPay: data.employee?.monthlyPay,
+                monthlyPay: formatStringFloatValue(data.employee?.monthlyPay),
               })}
             </$ViewField>
             <$ViewField>
               {t(`${translationsBase}.employee.fields.otherExpenses.view`, {
-                otherExpenses: data.employee?.otherExpenses,
+                otherExpenses: formatStringFloatValue(
+                  data.employee?.otherExpenses
+                ),
               })}
             </$ViewField>
             <$ViewField
@@ -162,7 +175,9 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
               `}
             >
               {t(`${translationsBase}.employee.fields.vacationMoney.view`, {
-                vacationMoney: data.employee?.vacationMoney,
+                vacationMoney: formatStringFloatValue(
+                  data.employee?.vacationMoney
+                ),
               })}
             </$ViewField>
             <$ViewField>

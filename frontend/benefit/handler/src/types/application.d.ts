@@ -3,8 +3,11 @@ import Attachment from 'shared/types/attachment';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
+  BENEFIT_TYPES,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
+  ORGANIZATION_TYPES,
+  SUPPORTED_LANGUAGES,
 } from '../constants';
 
 export type EmployeeData = {
@@ -55,6 +58,7 @@ export type CompanyData = {
   postcode: string;
   city: string;
   bank_account_number: string;
+  organization_type: string;
 };
 
 export type Company = {
@@ -66,6 +70,7 @@ export type Company = {
   postcode: string;
   city: string;
   bankAccountNumber: string;
+  organizationType: ORGANIZATION_TYPES;
 };
 
 export type BaseData = {
@@ -238,6 +243,7 @@ export type ApplicationData = {
   applicant_terms_in_effect?: ApplicantTermsData;
   approve_terms?: ApproveTermsData;
   calculation?: CalculationData;
+  submitted_at?: string;
 };
 
 export type ApplicationListItemData = {
@@ -345,6 +351,7 @@ export type Application = {
   applicantTermsInEffect?: ApplicantTerms;
   approveTerms?: ApproveTerms;
   calculation?: Calculation;
+  submittedAt?: string;
 } & Step1 &
   Step2;
 
@@ -352,3 +359,7 @@ export type SubmittedApplication = {
   applicationNumber: number;
   applicantName: string;
 };
+
+export interface ApplicationReviewViewProps {
+  data: Application;
+}
