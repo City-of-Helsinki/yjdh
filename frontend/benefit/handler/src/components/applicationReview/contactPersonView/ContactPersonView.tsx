@@ -31,7 +31,9 @@ const ContactPersonView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           {t(`${translationsBase}.fields.applicantLanguage`)}
           {': '}
           <$ViewFieldBold>
-            {data.applicantLanguage ? t(`common:languages.${data.applicantLanguage}`) : ''}
+            {data.applicantLanguage
+              ? t(`common:languages.${data.applicantLanguage}`)
+              : ''}
           </$ViewFieldBold>
         </$ViewField>
       </$GridCell>

@@ -1,7 +1,11 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto', 'plugin:you-dont-need-lodash-underscore/compatible'],
+  extends: [
+    'auto',
+    'plugin:@next/next/recommended',
+    'plugin:you-dont-need-lodash-underscore/compatible',
+  ],
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
