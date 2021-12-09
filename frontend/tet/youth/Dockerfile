@@ -33,7 +33,7 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 # Bake package.json start command into the image
-CMD ["yarn", "tet-youth:dev"]
+CMD ["yarn", "te-yout:dev"]
 
 # ===================================
 FROM appbase as staticbuilder
@@ -102,4 +102,4 @@ EXPOSE 3000
 
 # Start nextjs server
 # https://github.com/lerna/lerna/issues/2428
-CMD ["yarn", "tet-youth:start"]
+CMD ["yarn", "te-yout:start"]

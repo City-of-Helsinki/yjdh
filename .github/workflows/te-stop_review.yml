@@ -7,7 +7,7 @@ on:
       - 'frontend/tet/**'
       - 'frontend/shared/**'
       - 'frontend/*'
-      - '.github/workflows/tet-stop_review.yml'
+      - '.github/workflows/te-stop_review.yml'
   workflow_dispatch:
     inputs:
       head_ref:

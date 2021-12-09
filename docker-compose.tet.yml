@@ -11,9 +11,9 @@ services:
       - 5434:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-    container_name: tet-db
+    container_name: te-db
 
-  tet-backend:
+  te-bknd:
     build:
       context: ./backend
       dockerfile: ./docker/tet.Dockerfile
@@ -21,17 +21,17 @@ services:
     env_file:
       - .env.tet
     environment:
-      DATABASE_URL: postgres://tet:tet@tet-db/tet
-      DATABASE_HOST: tet-db.helsinki
+      DATABASE_URL: postgres://tet:tet@te-db/tet
+      DATABASE_HOST: te-db.helsinki
     volumes:
       - ./backend/tet:/app
       - ./backend/shared:/shared
       - ./backend/tet/media:/var/media
     depends_on:
       - postgres
-    container_name: tet-backend
+    container_name: te-bknd
 
-  tet-employer:
+  te-empl:
      build:
        context: ./frontend
        dockerfile: tet/employer/Dockerfile
@@ -42,9 +42,9 @@ services:
        - /app/.next
      env_file:
        - .env.tet
-     container_name: tet-employer
+     container_name: te-empl
 
-  tet-youth:
+  te-yout:
      build:
        context: ./frontend
        dockerfile: tet/youth/Dockerfile
@@ -55,9 +55,9 @@ services:
        - /app/.next
      env_file:
        - .env.tet
-     container_name: tet-youth
+     container_name: te-yout
 
-  tet-admin:
+  te-admn:
      build:
        context: ./frontend
        dockerfile: tet/admin/Dockerfile
@@ -68,16 +68,16 @@ services:
        - /app/.next
      env_file:
        - .env.tet
-     container_name: tet-admin
+     container_name: te-admn
 
-  tet-local-proxy:
+  te-local-proxy:
     depends_on:
       - postgres
-      - tet-backend
-      - tet-employer
+      - te-bknd
+      - te-empl
     build:
       context: ./localdevelopment/tet/nginx
-    container_name: tet-local-proxy
+    container_name: te-local-proxy
     volumes:
       - ./localdevelopment/tet/nginx/:/etc/nginx/
     ports:

@@ -6,7 +6,7 @@ on:
   pull_request:
     paths:
       - 'backend/tet/**'
-      - '.github/workflows/tet-pytest.yml'
+      - '.github/workflows/te-pytest.yml'
       - 'backend/shared/**'
 
 

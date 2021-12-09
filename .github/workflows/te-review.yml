@@ -6,7 +6,7 @@ on:
       - 'frontend/tet/**'
       - 'frontend/shared/**'
       - 'frontend/*'
-      - '.github/workflows/tet-review.yml'
+      - '.github/workflows/te-review.yml'
   workflow_dispatch:
     inputs:
       build_required:
@@ -35,10 +35,10 @@ env:
   K8S_LIMIT_RAM: 400Mi
   K8S_PROBE_FAILURE_THRESHOLD: 30
   K8S_PROBE_PERIOD: 20
-  EMPLOYER_URL: https://tet-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  YOUTH_URL: https://tet-youth-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  ADMIN_URL: https://tet-admin-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  NEXT_PUBLIC_BACKEND_URL: https://tet-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  EMPLOYER_URL: https://te-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  YOUTH_URL: https://te-yout-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  ADMIN_URL: https://te-admin-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  NEXT_PUBLIC_BACKEND_URL: https://te-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   MOCK_FLAG: 1
   NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
@@ -49,21 +49,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'tet-bknd', 'tet-empl', 'tet-youth', 'tet-admin' ]
+        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admin' ]
         include:
-          - service: tet-bknd
+          - service: te-bknd
             context: ./backend
             dockerfile: ./backend/docker/tet.Dockerfile
             port: 8000
-          - service: tet-empl
+          - service: te-empl
             context: ./frontend
             dockerfile: ./frontend/tet/employer/Dockerfile
             port: 3000
-          - service: tet-youth
+          - service: te-yout
             context: ./frontend
             dockerfile: ./frontend/tet/youth/Dockerfile
             port: 3000
-          - service: tet-admin
+          - service: te-admin
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
             port: 3000
@@ -88,21 +88,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'tet-bknd', 'tet-empl', 'tet-youth', 'tet-admin' ]
+        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admin' ]
         include:
-          - service: tet-bknd
+          - service: te-bknd
             context: ./backend
             dockerfile: ./backend/docker/tet.Dockerfile
             port: 8000
-          - service: tet-empl
+          - service: te-empl
             context: ./frontend
             dockerfile: ./frontend/tet/employer/Dockerfile
             port: 3000
-          - service: tet-youth
+          - service: te-yout
             context: ./frontend
             dockerfile: ./frontend/tet/youth/Dockerfile
             port: 3000
-          - service: tet-admin
+          - service: te-admin
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
             port: 3000
@@ -185,9 +185,9 @@ jobs:
           image_tag:  ${{ github.sha }}
           kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW}}
           target_namespace: ${{ secrets.K8S_NAMESPACE }}
-          name: tet-hourly-cronjob
+          name: te-hourly-cronjob
           single_run: true
-          secret_name: tet-hourly-cronjob-secret
+          secret_name: te-hourly-cronjob-secret
           command: "{/bin/sh}"
           args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs hourly 2>&1}"
 
@@ -195,7 +195,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: deployment-tet-${{ matrix.service }}
+          header: deployment-te-${{ matrix.service }}
           message: |
             **${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
 # TODO Commented out because we're trying to find a more lightweight testing solution
@@ -209,9 +209,9 @@ jobs:
 #    strategy:
 #      fail-fast: false
 #      matrix:
-#        service: [ 'tet-empl' ]
+#        service: [ 'te-empl' ]
 #        include:
-#          - service: tet-empl
+#          - service: te-empl
 #            dir: kesaseteli/employer
 #    steps:
 #      - uses: actions/checkout@v2

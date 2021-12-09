@@ -1,4 +1,4 @@
-name: (TET) Youth Frontend Lint, Unit and Component tests
+name: (TET) Admin Frontend Lint, Unit and Component tests
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
       - 'frontend/shared/**'
       - 'frontend/*'
       - 'frontend/tet/**'
-      - '.github/workflows/tet-youth-frontend-tests.yml'
+      - '.github/workflows/te-admn-frontend-tests.yml'
   workflow_dispatch:
 defaults:
   run:
-    working-directory: ./frontend/tet/youth
+    working-directory: ./frontend/tet/admin
 jobs:
   test:
     name: Test

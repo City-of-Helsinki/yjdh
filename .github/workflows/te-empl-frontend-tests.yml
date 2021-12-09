@@ -8,7 +8,7 @@ on:
       - 'frontend/shared/**'
       - 'frontend/*'
       - 'frontend/tet/**'
-      - '.github/workflows/tet-employer-frontend-tests.yml'
+      - '.github/workflows/te-empl-frontend-tests.yml'
   workflow_dispatch:
 defaults:
   run:

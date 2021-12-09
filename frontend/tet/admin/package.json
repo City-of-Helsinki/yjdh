@@ -1,5 +1,5 @@
 {
-  "name": "@frontend/tet-admin",
+  "name": "@frontend/te-admn",
   "private": true,
   "scripts": {
     "dev": "next dev",
