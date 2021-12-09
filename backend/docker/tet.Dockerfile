@@ -45,7 +45,7 @@ EXPOSE 8000/tcp
 FROM appbase as production
 # ==============================
 
-RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
+RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic --noinput
 
 USER appuser
 EXPOSE 8000/tcp
