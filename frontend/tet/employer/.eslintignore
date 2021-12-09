@@ -4,3 +4,4 @@ next-i18next.config.js
 .eslintrc.js
 jest.config.js
 testcafe.config.js
+pages
