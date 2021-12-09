@@ -136,12 +136,12 @@ const YouthForm: React.FC = () => {
   const handleToggleSchoolUnlisted = React.useCallback(
     (unlisted?: boolean) => {
       if (unlisted) {
-        clearErrors('selected_school');
+        clearErrors('selectedSchool');
         // eslint-disable-next-line unicorn/no-useless-undefined
-        setValue('selected_school', undefined);
+        setValue('selectedSchool', undefined);
       } else {
-        clearErrors('unlisted_school');
-        setValue('unlisted_school', '');
+        clearErrors('unlistedSchool');
+        setValue('unlistedSchool', '');
       }
       toggleSchoolIsUnlisted();
     },
@@ -188,7 +188,7 @@ const YouthForm: React.FC = () => {
             })}
           />
           <Combobox<YouthFormData, School>
-            {...register('selected_school', { required: !schoolIsUnlisted })}
+            {...register('selectedSchool', { required: !schoolIsUnlisted })}
             optionLabelField="name"
             options={schools}
             disabled={schoolIsUnlisted}
@@ -204,7 +204,7 @@ const YouthForm: React.FC = () => {
           </$GridCell>
           {schoolIsUnlisted && (
             <TextInput<YouthFormData>
-              {...register('unlisted_school', {
+              {...register('unlistedSchool', {
                 required: true,
                 maxLength: 256,
                 pattern: NAMES_REGEX,

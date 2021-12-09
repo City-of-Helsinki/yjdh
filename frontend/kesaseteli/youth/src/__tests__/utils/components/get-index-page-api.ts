@@ -51,7 +51,7 @@ const getIndexPageApi = () => {
       schoolDropdownHasError: async (errorText: RegExp): Promise<void> => {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
         expect(input).toBeInvalid();
-        const errorElement = await screen.findByTestId(`selected_school-error`);
+        const errorElement = await screen.findByTestId(`selectedSchool-error`);
         expect(errorElement).toHaveTextContent(errorText);
       },
       schoolDropdownIsValid: async (): Promise<void> => {
@@ -91,7 +91,7 @@ const getIndexPageApi = () => {
         const schoolOption = await screen.findByText(new RegExp(option, 'i'));
         userEvent.click(schoolOption);
         expect(input).toHaveValue(option);
-        youthFormData.selected_school = { name: option ?? value };
+        youthFormData.selectedSchool = { name: option ?? value };
       },
       async toggleCheckbox(
         key: keyof Pick<
@@ -143,7 +143,7 @@ const getIndexPageApi = () => {
         this.typeInput('last_name', "O'Hara");
         this.typeInput('social_security_number', '111111-111c');
         await this.toggleCheckbox('is_unlisted_school');
-        this.typeInput('unlisted_school', 'Erikoiskoulu');
+        this.typeInput('unlistedSchool', 'Erikoiskoulu');
         this.typeInput('phone_number', '+358-505-551-4995');
         this.typeInput('email', 'aaaa@bbb.test.fi');
         await this.toggleCheckbox('termsAndConditions');

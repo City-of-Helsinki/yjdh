@@ -122,8 +122,8 @@ export const fakeYouthFormData = (): YouthFormData => ({
   social_security_number: FinnishSSN.createWithAge(
     faker.datatype.number({ min: 15, max: 16 })
   ),
-  selected_school: { name: faker.random.arrayElement(schools) },
-  unlisted_school: faker.commerce.department(),
+  selectedSchool: { name: faker.random.arrayElement(schools) },
+  unlistedSchool: faker.commerce.department(),
   is_unlisted_school: faker.datatype.boolean(),
   phone_number: faker.phone.phoneNumber('+358#########'),
   email: faker.internet.email(),

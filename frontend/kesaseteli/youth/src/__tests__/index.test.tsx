@@ -124,29 +124,29 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
-      await indexPageApi.expectations.inputIsNotPresent('unlisted_school');
+      await indexPageApi.expectations.inputIsNotPresent('unlistedSchool');
       await indexPageApi.actions.clickSaveButton();
       await indexPageApi.expectations.schoolDropdownHasError(texts.required);
 
       await indexPageApi.actions.toggleCheckbox('is_unlisted_school');
       await indexPageApi.expectations.schoolDropdownIsDisabled();
       await indexPageApi.expectations.schoolDropdownIsValid();
-      await indexPageApi.expectations.inputIsPresent('unlisted_school');
+      await indexPageApi.expectations.inputIsPresent('unlistedSchool');
       await indexPageApi.actions.clickSaveButton();
       await indexPageApi.expectations.textInputHasError(
-        'unlisted_school',
+        'unlistedSchool',
         texts.required
       );
 
-      indexPageApi.actions.typeInput('unlisted_school', 'a'.repeat(257)); // max limit is 257
+      indexPageApi.actions.typeInput('unlistedSchool', 'a'.repeat(257)); // max limit is 257
       await indexPageApi.expectations.textInputHasError(
-        'unlisted_school',
+        'unlistedSchool',
         texts.maxLength
       );
 
-      indexPageApi.actions.typeInput('unlisted_school', '!#$%&()*+/:;<=>?@');
+      indexPageApi.actions.typeInput('unlistedSchool', '!#$%&()*+/:;<=>?@');
       await indexPageApi.expectations.textInputHasError(
-        'unlisted_school',
+        'unlistedSchool',
         texts.wrongFormat
       );
 
@@ -155,7 +155,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
 
       await indexPageApi.actions.clickSaveButton();
       await indexPageApi.expectations.schoolDropdownHasError(texts.required);
-      await indexPageApi.expectations.inputIsNotPresent('unlisted_school');
+      await indexPageApi.expectations.inputIsNotPresent('unlistedSchool');
     });
   });
 

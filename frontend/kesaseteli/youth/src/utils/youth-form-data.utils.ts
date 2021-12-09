@@ -8,15 +8,15 @@ export const convertFormDataToApplication = (
   language?: Language
 ): YouthApplication => {
   const {
-    unlisted_school,
-    selected_school,
+    unlistedSchool,
+    selectedSchool,
     is_unlisted_school,
     termsAndConditions,
     ...formData
   } = youthFormData;
   return {
     ...formData,
-    school: unlisted_school || selected_school?.name,
+    school: unlistedSchool || selectedSchool?.name,
     is_unlisted_school: Boolean(is_unlisted_school),
     language: language ?? DEFAULT_LANGUAGE,
   };

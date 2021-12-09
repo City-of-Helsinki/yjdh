@@ -28,13 +28,13 @@ test('can fill up youth application', async (t) => {
     formData.social_security_number
   );
   await indexPageComponents.actions.typeAndSelectSchoolFromDropdown(
-    formData.selected_school?.name ?? ''
+    formData.selectedSchool?.name ?? ''
   );
   if (formData.is_unlisted_school) {
     await indexPageComponents.actions.toggleUnlistedSchoolCheckbox();
     await indexPageComponents.actions.typeInput(
-      'unlisted_school',
-      formData.unlisted_school
+      'unlistedSchool',
+      formData.unlistedSchool
     );
   }
   await indexPageComponents.actions.typeInput(
