@@ -15,12 +15,14 @@ import {
   getApplicationStepString,
 } from '../utils/common';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
+import useDeleteApplicationQuery from './useDeleteApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface FormActions {
   onNext: (values: Application) => void;
   onBack: () => void;
   onSave: (values: Application) => void;
+  onDelete: (id: string) => void;
 }
 
 const useFormActions = (application: Application): FormActions => {
@@ -31,6 +33,9 @@ const useFormActions = (application: Application): FormActions => {
 
   const { mutateAsync: createApplication, error: createApplicationError } =
     useCreateApplicationQuery();
+
+  const { mutateAsync: deleteApplication, error: deleteApplicationError } =
+    useDeleteApplicationQuery();
 
   const createApplicationAndAppendId = async (
     data: ApplicationData
@@ -55,7 +60,10 @@ const useFormActions = (application: Application): FormActions => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const error = updateApplicationError || createApplicationError;
+    const error =
+      updateApplicationError ||
+      createApplicationError ||
+      deleteApplicationError;
 
     if (error) {
       const errorData = camelcaseKeys(error.response?.data ?? {});
@@ -71,7 +79,12 @@ const useFormActions = (application: Application): FormActions => {
         )),
       });
     }
-  }, [t, updateApplicationError, createApplicationError]);
+  }, [
+    t,
+    updateApplicationError,
+    createApplicationError,
+    deleteApplicationError,
+  ]);
 
   const { deMinimisAids } = useContext(DeMinimisContext);
 
@@ -184,10 +197,29 @@ const useFormActions = (application: Application): FormActions => {
     return undefined;
   };
 
+  const onDelete = async (id: string): Promise<void> => {
+    try {
+      await deleteApplication(id);
+      await router.push('/');
+
+      hdsToast({
+        autoDismissTime: 5000,
+        type: 'success',
+        labelText: t('common:notifications.applicationDeleted.label'),
+        text: t('common:notifications.applicationDeleted.message'),
+      });
+
+      await router.push('/');
+    } catch (error) {
+      // useEffect will catch this error
+    }
+  };
+
   return {
     onNext,
     onBack,
     onSave,
+    onDelete,
   };
 };
 

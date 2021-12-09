@@ -35,6 +35,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
     handleBack,
     handleNext,
     handleSave,
+    handleDelete,
     handleRemoveAttachment,
     handleUploadAttachment,
     translationsBase,
@@ -159,6 +160,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
         handleSubmit={handleNext}
         handleSave={handleSave}
         handleBack={handleBack}
+        handleDelete={handleDelete}
       />
     </>
   );

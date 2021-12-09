@@ -15,6 +15,7 @@ type ExtendedComponentProps = {
   handleNext: () => void;
   handleSave: () => void;
   handleBack: () => void;
+  handleDelete: () => void;
   handleRemoveAttachment: (attachmentId: string) => void;
   handleUploadAttachment: (attachment: FormData) => void;
   translationsBase: string;
@@ -29,7 +30,7 @@ const useApplicationFormStep4 = (
   const translationsBase = 'common:applications.sections.credentials.sections';
   const { t } = useTranslation();
 
-  const { onNext, onSave, onBack } = useFormActions(application);
+  const { onNext, onSave, onBack, onDelete } = useFormActions(application);
 
   const {
     mutate: uploadAttachment,
@@ -66,6 +67,7 @@ const useApplicationFormStep4 = (
 
   const handleNext = (): void => onNext(application);
   const handleSave = (): void => onSave(application);
+  const handleDelete = (): void => onDelete(application.id ?? '');
 
   const getEmployeeConsentAttachment = (): BenefitAttachment | undefined =>
     application.attachments?.find(
@@ -90,6 +92,7 @@ const useApplicationFormStep4 = (
     handleNext,
     handleSave,
     handleBack: onBack,
+    handleDelete,
     handleUploadAttachment,
     handleRemoveAttachment,
     isRemoving,
