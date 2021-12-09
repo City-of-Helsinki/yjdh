@@ -20,7 +20,6 @@
     "@frontend/shared": "*",
     "@frontend/kesaseteli-shared": "*",
     "@sentry/browser": "^6.14.3",
-    "@types/next": "^9.0.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.6",
     "axios": "^0.24.0",
