@@ -1,4 +1,4 @@
-import Attachment from 'shared/types/attachment';
+import { KesaseteliAttachment } from 'shared/types/attachment';
 
 import {
   EMPLOYEE_EXCEPTION_REASON,
@@ -27,9 +27,9 @@ type Employment = {
   employment_salary_paid?: number;
   employment_description?: string;
   hired_without_voucher_assessment?: EmployeeHiredWithoutVoucherAssessment;
-  attachments: Attachment[];
-  employment_contract: Attachment[];
-  payslip: Attachment[];
+  attachments: KesaseteliAttachment[];
+  employment_contract: KesaseteliAttachment[];
+  payslip: KesaseteliAttachment[];
 };
 
 export default Employment;

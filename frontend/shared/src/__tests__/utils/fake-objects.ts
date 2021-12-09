@@ -15,7 +15,7 @@ import {
 import { EMPLOYEE_EXCEPTION_REASON } from '../../constants/employee-constants';
 import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
 import type Application from '../../types/application';
-import Attachment, { AttachmentType } from '../../types/attachment';
+import { AttachmentType, KesaseteliAttachment } from '../../types/attachment';
 import type Company from '../../types/company';
 import ContactPerson from '../../types/contact_person';
 import type Employment from '../../types/employment';
@@ -70,21 +70,23 @@ export const fakeInvoicer = (): Required<Invoicer> => ({
   invoicer_phone_number: faker.phone.phoneNumber(),
 });
 
-export const fakeAttachment = (type?: AttachmentType): Attachment =>
-  ({
-    id: faker.datatype.uuid(),
-    application: faker.datatype.uuid(),
-    attachment_type: type ?? faker.random.arrayElement(ATTACHMENT_TYPES),
-    attachment_file: faker.datatype.string(100),
-    attachment_file_name: faker.random.arrayElement(attachmentFilePaths),
-    content_type: faker.random.arrayElement(ATTACHMENT_CONTENT_TYPES),
-    summer_voucher: faker.datatype.uuid(),
-  } as Attachment);
+export const fakeAttachment = (
+  type?: AttachmentType
+): KesaseteliAttachment => ({
+  id: faker.datatype.uuid(),
+  application: faker.datatype.uuid(),
+  attachment_type: type ?? faker.random.arrayElement(ATTACHMENT_TYPES),
+  attachment_file: faker.datatype.string(100),
+  attachment_file_name: faker.random.arrayElement(attachmentFilePaths),
+  content_type: faker.random.arrayElement(ATTACHMENT_CONTENT_TYPES),
+  summer_voucher: faker.datatype.uuid(),
+});
 
 export const fakeAttachments = (
   type: AttachmentType,
   count = faker.datatype.number(4) + 1
-): Attachment[] => generateNodeArray(() => fakeAttachment(type), count);
+): KesaseteliAttachment[] =>
+  generateNodeArray(() => fakeAttachment(type), count);
 
 export const fakeEmployment = (): Required<Employment> => ({
   id: faker.datatype.uuid(),

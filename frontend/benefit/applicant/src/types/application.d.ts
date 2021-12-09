@@ -1,4 +1,4 @@
-import Attachment from 'shared/types/attachment';
+import { BenefitAttachment } from 'shared/types/attachment';
 import { DefaultTheme } from 'styled-components';
 
 import {
@@ -23,13 +23,13 @@ export interface EmployeeData {
   // email: string; does not exist in UI
   employee_language: SUPPORTED_LANGUAGES;
   job_title: string;
-  monthly_pay: string;
-  vacation_money: string;
-  other_expenses: string;
-  working_hours: string;
+  monthly_pay: number;
+  vacation_money: number;
+  other_expenses: number;
+  working_hours: number;
   collective_bargaining_agreement: string;
   is_living_in_helsinki: boolean;
-  commission_amount: string;
+  commission_amount: number;
   commission_description: string;
   created_at?: string;
 }
@@ -62,7 +62,7 @@ export interface CompanyData {
   postcode: string;
   city: string;
   bank_account_number: string;
-  organization_type: string;
+  organization_type: ORGANIZATION_TYPES;
 }
 
 export type Company = {
@@ -96,7 +96,7 @@ export type DeMinimisAid = {
 };
 
 export interface AttachmentData {
-  id?: string;
+  id: string;
   application: string;
   attachment_type: ATTACHMENT_TYPES;
   attachment_file: string;
@@ -130,20 +130,20 @@ export interface ApplicantTermsData {
 }
 
 export type ApplicantTerms = {
+  id: string;
   applicantConsents: ApplicantConsent[];
   effectiveFrom: string;
-  id: string;
   termsPdfEn: string;
   termsPdfFi: string;
   termsPdfSv: string;
-  termsType: ATTACHMENT_TYPES;
+  termsType?: ATTACHMENT_TYPES;
 };
 
 export interface ApplicantTermsApprovalData {
   id: string;
   approved_at: string;
   approved_by: string;
-  terms: ApplicantTermsData[];
+  terms?: ApplicantTermsData;
 }
 
 export type ApplicantTermsApproval = {
@@ -195,8 +195,8 @@ export type ApplicationData = {
   co_operation_negotiations?: boolean;
   co_operation_negotiations_description?: string;
   pay_subsidy_granted?: boolean;
-  pay_subsidy_percent?: number;
-  additional_pay_subsidy_percent?: number;
+  pay_subsidy_percent?: 30 | 40 | 50 | 100 | null;
+  additional_pay_subsidy_percent?: 30 | 40 | 50 | 100 | null;
   apprenticeship_program?: boolean;
   archived: boolean; // required
   benefit_type?: BENEFIT_TYPES;
@@ -291,7 +291,7 @@ export type Application = {
   archived?: boolean;
   createdAt?: string | null;
   applicationStep?: string | null;
-  attachments?: Attachment[];
+  attachments?: BenefitAttachment[];
   // create_application_for_company ? not present in the UI?
   applicantTermsApproval?: ApplicantTermsApproval;
   applicantTermsApprovalNeeded?: boolean;

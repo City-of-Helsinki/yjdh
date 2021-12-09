@@ -38,6 +38,6 @@ export type KesaseteliAttachment = {
   summer_voucher: string;
 };
 
-type Attachment = BenefitAttachment & KesaseteliAttachment;
+type Attachment = BenefitAttachment | KesaseteliAttachment;
 
 export default Attachment;

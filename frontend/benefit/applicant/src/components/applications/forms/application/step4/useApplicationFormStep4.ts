@@ -8,7 +8,7 @@ import { TFunction } from 'next-i18next';
 import { useEffect } from 'react';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import hdsToast from 'shared/components/toast/Toast';
-import Attachment from 'shared/types/attachment';
+import { BenefitAttachment } from 'shared/types/attachment';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -18,7 +18,7 @@ type ExtendedComponentProps = {
   handleRemoveAttachment: (attachmentId: string) => void;
   handleUploadAttachment: (attachment: FormData) => void;
   translationsBase: string;
-  attachment: Attachment | undefined;
+  attachment: BenefitAttachment | undefined;
   isRemoving: boolean;
   isUploading: boolean;
 };
@@ -67,7 +67,7 @@ const useApplicationFormStep4 = (
   const handleNext = (): void => onNext(application);
   const handleSave = (): void => onSave(application);
 
-  const getEmployeeConsentAttachment = (): Attachment | undefined =>
+  const getEmployeeConsentAttachment = (): BenefitAttachment | undefined =>
     application.attachments?.find(
       (attachment) =>
         attachment.attachmentType === ATTACHMENT_TYPES.EMPLOYEE_CONSENT

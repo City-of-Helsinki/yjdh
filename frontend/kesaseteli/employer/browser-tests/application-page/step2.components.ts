@@ -7,7 +7,7 @@ import {
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import Attachment from '@frontend/shared/src/types/attachment';
+import { KesaseteliAttachment } from '@frontend/shared/src/types/attachment';
 import {
   EmployeeHiredWithoutVoucherAssessment,
   EmploymentExceptionReason,
@@ -97,7 +97,7 @@ export const getStep2Components = (t: TestController) => {
         withinAccordion().findByRole('button', {
           name: /^työsopimus/i,
         }),
-      attachmentLink: (attachment: Attachment) =>
+      attachmentLink: (attachment: KesaseteliAttachment) =>
         withinAccordion()
           .findAllByRole('link', {
             name: new RegExp(getAttachmentFileName(attachment), 'i'),
@@ -158,7 +158,7 @@ export const getStep2Components = (t: TestController) => {
           .expect(accordionSelector(isOpen).exists)
           .ok(await getErrorMessage(t), { timeout: 10000 });
       },
-      async isAttachmentUploaded(attachment: Attachment) {
+      async isAttachmentUploaded(attachment: KesaseteliAttachment) {
         return t
           .expect(selectors.attachmentLink(attachment).exists)
           .ok(await getErrorMessage(t), { timeout: 10000 });
@@ -226,7 +226,7 @@ export const getStep2Components = (t: TestController) => {
           serialNumber
         );
       },
-      async addEmploymentContractAttachment(attachment: Attachment) {
+      async addEmploymentContractAttachment(attachment: KesaseteliAttachment) {
         await t
           .setFilesToUpload(
             selectors.employmentContractAttachmentInput(),
@@ -235,7 +235,7 @@ export const getStep2Components = (t: TestController) => {
           .click(selectors.employmentContractAttachmentButton());
         await expectations.isAttachmentUploaded(attachment);
       },
-      async addPayslipAttachments(attachment: Attachment) {
+      async addPayslipAttachments(attachment: KesaseteliAttachment) {
         await t
           .setFilesToUpload(
             selectors.payslipAttachmentInput(),
