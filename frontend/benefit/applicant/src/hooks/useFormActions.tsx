@@ -29,21 +29,23 @@ const useFormActions = (application: Application): FormActions => {
     application.applicationStep ?? ''
   );
 
-  const {
-    mutateAsync: createApplication,
-    data: newApplication,
-    error: createApplicationError,
-  } = useCreateApplicationQuery();
+  const { mutateAsync: createApplication, error: createApplicationError } =
+    useCreateApplicationQuery();
 
-  useEffect(() => {
-    if (newApplication?.id) {
-      void router.replace({
+  const createApplicationAndAppendId = async (
+    data: ApplicationData
+  ): Promise<void> => {
+    const newApplication = await createApplication(data);
+    void router.replace(
+      {
         query: {
-          id: newApplication.id,
+          id: newApplication?.id,
         },
-      });
-    }
-  }, [newApplication?.id, router]);
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   const applicationId = router.query.id;
 
@@ -129,7 +131,7 @@ const useFormActions = (application: Application): FormActions => {
     try {
       return applicationId
         ? await updateApplication(data)
-        : await createApplication(data);
+        : await createApplicationAndAppendId(data);
     } catch (error) {
       // useEffect will catch this error
     }

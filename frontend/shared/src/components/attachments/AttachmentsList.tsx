@@ -13,17 +13,17 @@ import { getAttachmentsByType } from 'shared/utils/attachment.utils';
 
 import { $Container, $Heading, $Message } from './AttachmentsList.sc';
 
-type Props = {
+type Props<T extends Attachment> = {
   title: string;
   attachmentType: string;
   allowedFileTypes?: readonly string[];
   maxSize?: number;
   message?: string | false;
   errorMessage?: string | false;
-  attachments?: Attachment[];
+  attachments?: T[];
   onUpload: (data: FormData) => void | Promise<void>;
   onRemove: (fileId: string) => void | Promise<void>;
-  onOpen: (attachment: Attachment) => void | Promise<void>;
+  onOpen: (attachment: T) => void | Promise<void>;
   isUploading: boolean;
   isRemoving: boolean;
   required?: boolean;
@@ -31,7 +31,7 @@ type Props = {
   name?: string;
 };
 
-const AttachmentsList: React.FC<Props> = ({
+const AttachmentsList = <T extends Attachment>({
   title,
   attachmentType,
   allowedFileTypes = ATTACHMENT_CONTENT_TYPES,
@@ -47,12 +47,12 @@ const AttachmentsList: React.FC<Props> = ({
   required,
   name,
   buttonRef,
-}) => {
+}: Props<T>): JSX.Element => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
 
   const files = React.useMemo(
-    (): Attachment[] => getAttachmentsByType(attachments ?? [], attachmentType),
+    (): T[] => getAttachmentsByType(attachments ?? [], attachmentType),
     [attachmentType, attachments]
   );
   const uploadText = t(`${translationsBase}.add`);
@@ -68,7 +68,11 @@ const AttachmentsList: React.FC<Props> = ({
             <AttachmentItem
               key={file.id}
               id={file.id}
-              name={file.attachmentFileName ?? file.attachment_file_name}
+              name={
+                'attachmentFileName' in file
+                  ? file.attachmentFileName
+                  : file.attachment_file_name
+              }
               removeText={t(`${translationsBase}.remove`)}
               onClick={() => onOpen(file)}
               onRemove={() => !isRemoving && onRemove(file.id)}
