@@ -10,6 +10,28 @@ export enum ROUTES {
 
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
+  SV = 'sv',
+  EN = 'en',
+}
+
+export enum BENEFIT_TYPES {
+  EMPLOYMENT = 'employment_benefit',
+  SALARY = 'salary_benefit',
+  COMMISSION = 'commission_benefit',
+}
+
+export enum ATTACHMENT_TYPES {
+  EMPLOYMENT_CONTRACT = 'employment_contract',
+  PAY_SUBSIDY_CONTRACT = 'pay_subsidy_decision',
+  COMMISSION_CONTRACT = 'commission_contract',
+  EDUCATION_CONTRACT = 'education_contract',
+  HELSINKI_BENEFIT_VOUCHER = 'helsinki_benefit_voucher',
+  EMPLOYEE_CONSENT = 'employee_consent',
+}
+
+export enum ORGANIZATION_TYPES {
+  COMPANY = 'company',
+  ASSOCIATION = 'association',
 }
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
@@ -49,6 +71,7 @@ export enum APPLICATION_FIELDS_STEP1_KEYS {
   DE_MINIMIS_AID_SET = 'deMinimisAidSet',
   CO_OPERATION_NEGOTIATIONS = 'coOperationNegotiations',
   CO_OPERATION_NEGOTIATIONS_DESCRIPTION = 'coOperationNegotiationsDescription',
+  ORGANIZATION_TYPE = 'organizationType',
 }
 
 export enum EMPLOYEE_KEYS {

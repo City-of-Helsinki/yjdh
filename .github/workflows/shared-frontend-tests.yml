@@ -1,0 +1,52 @@
+name: Shared Lint, Unit and Component tests
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    paths:
+      - 'frontend/*'
+      - 'frontend/shared/**'
+      - '.github/workflows/shared-tests.yml'
+  workflow_dispatch:
+defaults:
+  run:
+    working-directory: ./frontend/shared
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.0
+        with:
+          node-version: '14'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        run: yarn --prefer-offline --frozen-lockfile --check-files
+      - name: Run linter
+        run: yarn lint
+      - name: Run tests
+        run: yarn test:coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2.1.0
+      - name: Shared test failure slack notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_USERNAME: GitHub-Alerts
+          SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
+          SLACK_MESSAGE: "*Shared tests have failed on ${{ github.ref }}!*"
+          SLACK_CHANNEL: yjdh-alerts
+        if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main'))

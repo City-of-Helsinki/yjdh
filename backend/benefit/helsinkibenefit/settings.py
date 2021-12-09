@@ -92,6 +92,13 @@ env = environ.Env(
     ENABLE_DEBUG_ENV=(bool, False),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
     DISABLE_TOS_APPROVAL_CHECK=(bool, False),
+    YRTTI_BASIC_INFO_PATH=(
+        str,
+        "https://ytj-integration-dev.agw.arodevtest.hel.fi/api/BasicInfo",
+    ),
+    YRTTI_AUTH_USERNAME=(str, "sample_username"),
+    YRTTI_AUTH_PASSWORD=(str, "sample_password"),
+    YRTTI_TIMEOUT=(int, 30),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -340,6 +347,11 @@ MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
 WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 
 TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
+
+YRTTI_TIMEOUT = env("YRTTI_TIMEOUT")
+YRTTI_BASIC_INFO_PATH = env("YRTTI_BASIC_INFO_PATH")
+YRTTI_AUTH_USERNAME = env("YRTTI_AUTH_USERNAME")
+YRTTI_AUTH_PASSWORD = env("YRTTI_AUTH_PASSWORD")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

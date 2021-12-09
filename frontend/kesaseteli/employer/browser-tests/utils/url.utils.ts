@@ -1,6 +1,6 @@
 import { getSharedComponents } from '@frontend/shared/browser-tests/shared.components';
 import { getErrorMessage } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getFrontendUrl } from '@frontend/shared/browser-tests/utils/url.utils';
+import { getUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController, { ClientFunction } from 'testcafe';
 
@@ -9,6 +9,9 @@ const getUrlParam = ClientFunction((param: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 });
+
+export const getFrontendUrl = (path = ''): string =>
+  getUrl(process.env.EMPLOYER_URL ?? 'https://localhost:3000', path);
 
 /* eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type */
 export const getUrlUtils = (t: TestController) => {

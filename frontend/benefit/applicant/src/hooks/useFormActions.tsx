@@ -3,6 +3,7 @@ import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
+import { getFullName } from 'shared/utils/application.utils';
 import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -12,7 +13,6 @@ import { Application, ApplicationData, Employee } from '../types/application';
 import {
   getApplicationStepFromString,
   getApplicationStepString,
-  getFullName,
 } from '../utils/common';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
@@ -29,21 +29,23 @@ const useFormActions = (application: Application): FormActions => {
     application.applicationStep ?? ''
   );
 
-  const {
-    mutateAsync: createApplication,
-    data: newApplication,
-    error: createApplicationError,
-  } = useCreateApplicationQuery();
+  const { mutateAsync: createApplication, error: createApplicationError } =
+    useCreateApplicationQuery();
 
-  useEffect(() => {
-    if (newApplication?.id) {
-      void router.replace({
+  const createApplicationAndAppendId = async (
+    data: ApplicationData
+  ): Promise<void> => {
+    const newApplication = await createApplication(data);
+    void router.replace(
+      {
         query: {
-          id: newApplication.id,
+          id: newApplication?.id,
         },
-      });
-    }
-  }, [newApplication?.id, router]);
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   const applicationId = router.query.id;
 
@@ -129,7 +131,7 @@ const useFormActions = (application: Application): FormActions => {
     try {
       return applicationId
         ? await updateApplication(data)
-        : await createApplication(data);
+        : await createApplicationAndAppendId(data);
     } catch (error) {
       // useEffect will catch this error
     }

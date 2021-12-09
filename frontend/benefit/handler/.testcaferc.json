@@ -9,6 +9,9 @@
     "fullPage": true
   },
   "compilerOptions": {
-    "typescript": { "configPath": "../../tsconfig.testcafe.json"}
+    "typescript": { 
+      "configPath": "../../tsconfig.testcafe.json",
+      "customCompilerModulePath": "../typescript"
+    }
   }
 }

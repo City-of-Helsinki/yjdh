@@ -1,71 +1,57 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import { Button } from 'hds-react';
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { LoadingSpinner } from 'hds-react';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
-import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
+import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
 
-import ReviewSection from '../reviewSection/ReviewSection';
+import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
+import BenefitView from './benefitView/BenefitView';
+import CompanyInfoView from './companyInfoView/CompanyInfoView';
+import ConsentView from './consentView/ConsentView';
+import ContactPersonView from './contactPersonView/ContactPersonView';
+import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
+import DeminimisView from './deminimisView/DeminimisView';
+import EmployeeView from './employeeView/EmployeeView';
+import EmploymentView from './employmentView/EmpoymentView';
+import PaySubsidyView from './paySubsidyView/PaySubsidyView';
+import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const shouldShowSkeleton = false;
-  const { t } = useTranslation();
+  const { application, isLoading } = useApplicationReview();
 
-  const translationBase = 'common:review.headings';
-
-  if (shouldShowSkeleton) {
+  if (isLoading) {
     return (
       <Container>
-        <LoadingSkeleton width="100%" height="50px" />
+        <LoadingSpinner />
       </Container>
     );
   }
 
   return (
     <>
-      <ApplicationHeader />
+      <ApplicationHeader data={application} />
       <Container>
-        <ReviewSection header={t(`${translationBase}.heading1`)}>
-          <$GridCell $colSpan={12}>Section contents1</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading2`)}>
-          <$GridCell $colSpan={12}>Section contents2</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading3`)}>
-          <$GridCell $colSpan={12}>Section contents3</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading4`)}>
-          <$GridCell $colSpan={12}>Section contents4</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading5`)}>
-          <$GridCell $colSpan={12}>Section contents5</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading5`)}>
-          <$GridCell $colSpan={12}>Section contents6</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading7`)}>
-          <$GridCell $colSpan={12}>Section contents7</$GridCell>
-        </ReviewSection>
-        <ReviewSection header={t(`${translationBase}.heading8`)}>
-          <$GridCell $colSpan={12}>Section contents8</$GridCell>
-        </ReviewSection>
-        <ReviewSection
-          action={
-            <div>
-              <Button theme="black" variant="secondary">
-                Some button
-              </Button>
-            </div>
-          }
-          header={t(`${translationBase}.heading9`)}
-        >
-          <$GridCell $colSpan={12}>Section contents9</$GridCell>
-        </ReviewSection>
-        <ReviewSection withMargin>
-          <$GridCell $colSpan={12}>Section contents10</$GridCell>
-        </ReviewSection>
+        <CompanyInfoView data={application} />
+        <ContactPersonView data={application} />
+        <DeminimisView data={application} />
+        <CoOperationNegotiationsView data={application} />
+        <EmployeeView data={application} />
+        <PaySubsidyView data={application} />
+        <BenefitView data={application} />
+        <EmploymentView data={application} />
+        <ConsentView data={application} />
       </Container>
+      <StickyActionBar>
+        {application.status === APPLICATION_STATUSES.RECEIVED && (
+          <ReceivedApplicationActions application={application} />
+        )}
+        {application.status === APPLICATION_STATUSES.HANDLING && (
+          <>handling actions</>
+        )}
+      </StickyActionBar>
+      <$StickyBarSpacing />
     </>
   );
 };

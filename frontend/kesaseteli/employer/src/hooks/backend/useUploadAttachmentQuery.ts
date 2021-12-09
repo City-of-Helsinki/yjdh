@@ -1,19 +1,19 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult } from 'react-query';
 import handleError from 'shared/error-handler/error-handler';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
-import Attachment from 'shared/types/attachment';
+import { KesaseteliAttachment } from 'shared/types/attachment';
 
 type UploadAttachmentData = {
-  summer_voucher: Attachment['summer_voucher'];
+  summer_voucher: KesaseteliAttachment['summer_voucher'];
   data: FormData;
 };
 
 const useUploadAttachmentQuery = (): UseMutationResult<
-  Attachment,
+  KesaseteliAttachment,
   Error,
   UploadAttachmentData
 > => {
@@ -26,7 +26,7 @@ const useUploadAttachmentQuery = (): UseMutationResult<
     ({ summer_voucher, data }: UploadAttachmentData) =>
       !summer_voucher
         ? Promise.reject(new Error('Missing summer_voucher id'))
-        : handleResponse<Attachment>(
+        : handleResponse<KesaseteliAttachment>(
             axios.post(
               `${BackendEndpoint.SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}`,
               data,

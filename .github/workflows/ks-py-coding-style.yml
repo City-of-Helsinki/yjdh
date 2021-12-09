@@ -6,9 +6,9 @@ on:
   pull_request:
     paths:
       - 'backend/kesaseteli/**'
+      - '.github/workflows/ks-py-coding-style.yml'
       - '.github/workflows/ks-pytest.yml'
       - 'backend/shared/**'
-
 
 env:
   DEBUG: 1

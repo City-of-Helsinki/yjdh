@@ -4,7 +4,8 @@
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:",
-    "linkSkipToContent": "Skip to content"
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu"
   },
   "errorPage": {
     "title": "An unexpected error occured",
@@ -151,7 +152,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu",
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {

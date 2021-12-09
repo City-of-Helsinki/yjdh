@@ -1,13 +1,16 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import * as React from 'react';
-import Attachment from 'shared/types/attachment';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
+import { KesaseteliAttachment } from 'shared/types/attachment';
 
-const useOpenAttachment = (): ((attachment: Attachment) => Promise<void>) => {
+const useOpenAttachment = (): ((
+  attachment: KesaseteliAttachment
+) => Promise<void>) => {
   const { axios, handleResponse } = useBackendAPI();
 
   return React.useCallback(
-    async ({ id: attachmentId, summer_voucher, content_type }: Attachment) => {
+    async (attachment: KesaseteliAttachment) => {
+      const { id: attachmentId, summer_voucher, content_type } = attachment;
       const data = await handleResponse<Blob>(
         axios.get(
           `${BackendEndpoint.SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}${attachmentId}`,

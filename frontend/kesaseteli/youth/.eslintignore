@@ -1,0 +1,7 @@
+start.js
+next.config.js
+next-i18next.config.js
+.eslintrc.js
+jest.config.js
+testcafe.dotenv.js
+reporter.config.js

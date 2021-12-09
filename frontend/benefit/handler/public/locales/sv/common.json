@@ -66,8 +66,13 @@
     }
   },
   "review": {
+    "actions": {
+      "handle": "Ota käsittelyyn",
+      "close": "Sulje"
+    },
     "headings": {
       "heading1": "Työnantajan tiedot",
+      "heading1Additional": "Postiosoite päätöstä varten",
       "heading2": "Yhteyshenkilö",
       "heading3": "Hakijan de minimis-tuet",
       "heading4": "YT-neuvottelut",
@@ -76,6 +81,65 @@
       "heading7": "Haettava tukimuoto ja ajankohta",
       "heading8": "Työsuhde",
       "heading9": "Suostumus"
+    },
+    "fields": {
+      "businessId": "Y-tunnus",
+      "bankAccountNumber": "Tilinumero",
+      "associationHasBusinessActivities": "Harjoittaako työnantaja elinkeinotoimintaa?",
+      "associationImmediateManagerCheck": "Lähiesihenkilö palkattavalle henkilölle?",
+      "applicantLanguage": "Asiointikieli",
+      "deMinimisAidGranter": "Tuen myöntäjä",
+      "deMinimisAidAmount": "Tuen määrä",
+      "deMinimisAidGrantedAt": "Myönnetty",
+      "deMinimisAidTotal": "Yhteensä",
+      "coOperationNegotiations": "Onko hakijalla menossa YT-neuvottelut?",
+      "isLivingInHelsinki": "Helsinki kotikuntana",
+      "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
+      "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
+      "benefitType": "Tukimuoto",
+      "startDate": "Alkaen",
+      "endDate": "Päättyen",
+      "jobTitle": "Tehtävänimike",
+      "workingHours": "Työaika: {{workingHours}} t / viikko",
+      "monthlyPay": "Bruttopalkka {{monthlyPay}} €/kk",
+      "otherExpenses": "Sivukulut {{otherExpenses}} €/kk",
+      "vacationMoney": "Lomaraha {{vacationMoney}} €"
     }
+  },
+  "organizationTypes": {
+    "company": "Yritys",
+    "association": "Yhteisö"
+  },
+  "benefitTypes": {
+    "employment": "Työllistämisen Helsinki-lisä",
+    "salary": "Palkan Helsinki-lisä",
+    "commission": "Toimeksiannon Helsinki-lisä"
+  },
+  "attachments": {
+    "heading1": "Liittet",
+    "types": {
+      "employmentContract": {
+        "title": "Työsopimus"
+      },
+      "paySubsidyDecision": {
+        "title": "Palkkatukipäätös"
+      },
+      "commissionContract": {
+        "title": "Toimeksiantosopimus"
+      },
+      "educationContract": {
+        "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
+      },
+      "helsinkiBenefitVoucher": {
+        "title": "Helsinki-lisä seteli"
+      }
+    },
+    "add": "Liitä tiedosto",
+    "remove": "Poista liite"
+  },
+  "utility": {
+    "yes": "Kyllä",
+    "no": "Ei",
+    "and": "ja"
   }
 }
