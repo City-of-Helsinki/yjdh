@@ -1,0 +1,62 @@
+name: (TET) Python tests
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    paths:
+      - 'backend/tet/**'
+      - '.github/workflows/tet-pytest.yml'
+      - 'backend/shared/**'
+
+
+env:
+  DEBUG: 1
+
+jobs:
+  pytest:
+    name: Python tests
+    runs-on: ubuntu-latest
+    container: python:3.8-buster
+
+    services:
+      postgres:
+        image: postgres:12
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_USER: tet
+          POSTGRES_PASSWORD: tet
+          POSTGRES_DB: tet
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pip-modules
+        with:
+          path: ~/.pip-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: cd backend/tet && pip install -r requirements.txt -r requirements-dev.txt codecov
+
+      - name: Run tests
+        run: pytest backend/tet/ -ra -vv --doctest-modules --cov=. -n auto --dist loadfile --pyargs shared
+        env:
+          DATABASE_URL: postgres://tet:tet@postgres/tet
+
+      - name: Coverage
+        run: codecov
