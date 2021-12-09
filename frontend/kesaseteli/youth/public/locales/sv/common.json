@@ -2,7 +2,7 @@
   "appName": "SV Nuorten kesäseteli",
   "header": {
     "linkSkipToContent": "Gå till innehållet",
-    "menuToggleAriaLabel": "Menyn"
+    "menuToggleAriaLabel": "Menu"
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
@@ -39,13 +39,37 @@
       "fileType": "Filtypen är inte tillåten"
     }
   },
-  "upload": {
-    "isUploading": "Sänder...",
-    "errorTitle": "Uppladdningen av filen misslyckades",
-    "errorMessage": "Något gick fel. Försök igen senare."
+  "youthApplication": {
+    "title": "SV Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
+    "paragraph_1": "SV Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "form" : {
+      "title": "SV Setelin tiedot",
+      "info": "SV Täytäthän tiedot samalla tavalla kuin kelakortissasi",
+      "button": "SV Lähetä tiedot",
+      "first_name" : "SV Etunimi",
+      "last_name": "SV Sukunimi",
+      "social_security_number": "SV Henkilötunnus",
+      "postcode": "SV Postinumero",
+      "schoolDropdown": "SV Koulu",
+      "schoolPlaceholder": "SV Valitse koulusi listalta",
+      "is_unlisted_school": "SV Koulua ei löydy listalta",
+      "schoolName": "SV Koulun nimi",
+      "schoolNamePlaceholder": "SV Esim. Merilahden Peruskoulu",
+      "email": "SV Sähköpostiosoite",
+      "phone_number": "SV Puhelinnumero",
+      "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
+      "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+      "sendButton": "SV Lähetä tiedot",
+      "requiredInfo": "SV Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    }
   },
-  "delete": {
-    "errorTitle": "Borttagningen misslyckades",
-    "errorMessage": "Något gick fel. Försök igen senare."
+  "errors": {
+    "required": "Uppgifter fattas",
+    "maxLength": "Den inmatade texten är för lång",
+    "pattern": "Den inmatade uppgiftern är i fel format",
+    "validate": "Den inmatade uppgiftern är i fel format"
+  },
+  "assistive": {
+    "toggleMenu": "SV Avaa valikko"
   }
 }

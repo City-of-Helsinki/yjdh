@@ -1,6 +1,3 @@
-import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
-import Footer from 'kesaseteli/employer/components/footer/Footer';
-import Header from 'kesaseteli/employer/components/header/Header';
 import { NextPage } from 'next';
 import { NextRouter } from 'next/router';
 import React from 'react';
@@ -17,33 +14,47 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
+type Props = {
+  backendUrl: string;
+  Header: React.FC;
+  Footer: React.FC;
+  AuthProvider?: React.FC;
+};
+
 const renderPage =
-  (backendUrl = 'http://localhost:8000') =>
+  ({
+    backendUrl = 'http://localhost:8000',
+    Header,
+    Footer,
+    AuthProvider,
+  }: Props) =>
   async (
     Page: NextPage,
     router: Partial<NextRouter> = {}
   ): Promise<QueryClient> => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
+    const children = (
+      <ThemeProvider theme={theme}>
+        <GlobalStyling />
+        <Layout>
+          <Header />
+          <HDSToastContainer />
+          <Content>
+            <Page />
+          </Content>
+          <Footer />
+        </Layout>
+      </ThemeProvider>
+    );
+
     // act because of async handlers in react-hook-form and react-query
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       render(
         <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
           <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <ThemeProvider theme={theme}>
-                <GlobalStyling />
-                <Layout>
-                  <Header />
-                  <HDSToastContainer />
-                  <Content>
-                    <Page />
-                  </Content>
-                  <Footer />
-                </Layout>
-              </ThemeProvider>
-            </AuthProvider>
+            {AuthProvider ? <AuthProvider>{children}</AuthProvider> : children}
             <HiddenLoadingIndicator />
           </QueryClientProvider>
         </BackendAPIContext.Provider>,

@@ -1,7 +1,7 @@
-import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
 import {
   Button,
   IconSignin,
+  Notification,
   NotificationProps as HDSNotificationProps,
 } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
@@ -46,7 +46,7 @@ const Login: NextPage = () => {
 
   return (
     <Container>
-      <$Notification
+      <Notification
         type={notificationProps.type}
         label={notificationProps.label}
         size="large"
@@ -55,7 +55,7 @@ const Login: NextPage = () => {
         `}
       >
         {notificationProps.content}
-      </$Notification>
+      </Notification>
       <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
         {t('common:login.login')}
       </Button>

@@ -14,7 +14,7 @@ import ApplicationFormData from 'shared/types/application-form-data';
 type Props = {
   id: ApplicationFieldPath;
   validation?: RegisterOptions<ApplicationFormData>;
-  onChange?: (value: boolean) => void;
+  onChange?: (value: boolean | undefined) => void;
   initialValue?: boolean;
   label?: string | React.ReactNode;
 } & GridCellProps;
@@ -29,22 +29,9 @@ const Checkbox: React.FC<Props> = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const { hasError, defaultLabel, setError, clearErrors } =
-    useApplicationFormField<boolean>(id);
+  const { hasError, defaultLabel } = useApplicationFormField<boolean>(id);
 
   const required = Boolean(validation.required);
-
-  const handleChange = React.useCallback(
-    async (value: boolean) => {
-      onChange(value);
-      if (required && !value) {
-        setError({ type: 'required' });
-      } else if (required && value) {
-        clearErrors();
-      }
-    },
-    [onChange, required, clearErrors, setError]
-  );
 
   return (
     <$GridCell {...$gridCellProps}>
@@ -56,7 +43,7 @@ const Checkbox: React.FC<Props> = ({
             ? `${t(`common:application.form.errors.checkboxRequired`)}`
             : undefined
         }
-        onChange={handleChange}
+        onChange={onChange}
         registerOptions={validation}
         initialValue={initialValue}
         {...$gridCellProps}

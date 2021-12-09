@@ -5,7 +5,7 @@ import Employment, { EmploymentExceptionReason } from 'shared/types/employment';
 
 const useToggleSerialNumberInput = (
   index: number
-): [boolean, (value: string) => void] => {
+): [boolean, (value?: string) => void] => {
   const getId = React.useCallback(
     (field: keyof Employment): TextInputProps['id'] =>
       `summer_vouchers.${index}.${field}`,
@@ -24,7 +24,7 @@ const useToggleSerialNumberInput = (
   );
 
   const toggleShowSerialNumberInput = React.useCallback(
-    (value: string) => {
+    (value?: string) => {
       setShowInput(value === '9th_grader');
       if (value === 'born_2004') {
         clearSerialNumber();

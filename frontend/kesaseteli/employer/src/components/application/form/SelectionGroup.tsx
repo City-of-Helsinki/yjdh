@@ -18,7 +18,7 @@ type Props<V extends readonly string[]> = {
   direction?: SelectionGroupProps['direction'];
   values: V;
   showTitle?: boolean;
-  onChange?: (value: string) => void;
+  onChange?: (value?: string) => void;
 } & GridCellProps;
 
 const SelectionGroup = <V extends readonly string[]>({
@@ -40,7 +40,7 @@ const SelectionGroup = <V extends readonly string[]>({
   } = useApplicationFormField<string>(id);
 
   const handleChange = React.useCallback(
-    (value: string) => {
+    (value?: string) => {
       onChange(value);
       if (hasError()) {
         clearErrors();
