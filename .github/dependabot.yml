@@ -9,7 +9,7 @@ updates:
     pull-request-branch-name:
       separator: "-"
   - package-ecosystem: "npm"
-    directory: "frontend/"
+    directory: "/"
     schedule:
       interval: "daily"
     pull-request-branch-name:
