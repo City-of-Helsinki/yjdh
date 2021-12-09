@@ -8,6 +8,7 @@ on:
       - 'frontend/shared/**'
       - 'frontend/kesaseteli/shared/**'
       - 'frontend/kesaseteli/youth/**'
+      - 'frontend/*'
       - '.github/workflows/ks-youth-frontend-tests.yml'
   workflow_dispatch:
 defaults:

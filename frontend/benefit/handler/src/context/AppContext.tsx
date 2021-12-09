@@ -4,15 +4,19 @@ import theme from 'shared/styles/theme';
 
 export type AppContextType = {
   isNavigationVisible: boolean;
-  setIsNavigationVisible: (value: boolean) => void;
+  isFooterVisible: boolean;
   layoutBackgroundColor: string;
+  setIsNavigationVisible: (value: boolean) => void;
+  setIsFooterVisible: (value: boolean) => void;
   setLayoutBackgroundColor: (value: string) => void;
 };
 
 const AppContext = React.createContext<AppContextType>({
   isNavigationVisible: false,
+  isFooterVisible: true,
   layoutBackgroundColor: theme.colors.white,
   setIsNavigationVisible: noop,
+  setIsFooterVisible: noop,
   setLayoutBackgroundColor: noop,
 });
 

@@ -3,7 +3,7 @@ const { join } = require('path');
 module.exports = {
   extends: [
     'auto',
-    'next/core-web-vitals',
+    'plugin:@next/next/recommended',
     'plugin:you-dont-need-lodash-underscore/compatible',
   ],
   rules: {

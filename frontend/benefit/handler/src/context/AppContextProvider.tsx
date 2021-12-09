@@ -5,6 +5,7 @@ import AppContext from './AppContext';
 const AppContextProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
+  const [isFooterVisible, setIsFooterVisible] = React.useState<boolean>(false);
   const [isNavigationVisible, setIsNavigationVisible] =
     React.useState<boolean>(false);
   const [layoutBackgroundColor, setLayoutBackgroundColor] =
@@ -14,8 +15,10 @@ const AppContextProvider = <P,>({
     <AppContext.Provider
       value={{
         layoutBackgroundColor,
+        isFooterVisible,
         isNavigationVisible,
         setIsNavigationVisible,
+        setIsFooterVisible,
         setLayoutBackgroundColor,
       }}
     >
