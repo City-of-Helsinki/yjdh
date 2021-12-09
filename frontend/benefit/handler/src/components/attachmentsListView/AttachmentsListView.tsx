@@ -7,10 +7,10 @@ import {
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
-import Attachment from 'shared/types/attachment';
+import { BenefitAttachment } from 'shared/types/attachment';
 
 export interface AttachmentsListViewProps {
-  attachments: Attachment[];
+  attachments: BenefitAttachment[];
   type: ATTACHMENT_TYPES;
   title?: string;
 }
@@ -21,13 +21,13 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   title,
 }) => {
   const attachmentItems = React.useMemo(
-    (): Attachment[] =>
-      attachments?.filter((att: Attachment) => att.attachmentType === type),
+    (): BenefitAttachment[] =>
+      attachments?.filter((att) => att.attachmentType === type),
     [attachments, type]
   );
 
   const handleOpenFile = React.useCallback(
-    (file: Attachment) =>
+    (file: BenefitAttachment) =>
       // eslint-disable-next-line security/detect-non-literal-fs-filename
       window.open(file.attachmentFile, '_blank')?.focus(),
     []
@@ -42,7 +42,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
               {title}
             </$ViewFieldBold>
           )}
-          {attachmentItems.map((attachment: Attachment) => (
+          {attachmentItems.map((attachment) => (
             <$ViewField
               css={{
                 display: 'flex',
