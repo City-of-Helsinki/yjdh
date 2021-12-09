@@ -94,7 +94,7 @@ env = environ.Env(
     DISABLE_TOS_APPROVAL_CHECK=(bool, False),
     YRTTI_BASIC_INFO_PATH=(
         str,
-        "https://ytj-integration-dev.agw.arodevtest.hel.fi/api/BasicInfo",
+        "https://yrtti-integration-dev.agw.arodevtest.hel.fi/api/BasicInfo",
     ),
     YRTTI_AUTH_USERNAME=(str, "sample_username"),
     YRTTI_AUTH_PASSWORD=(str, "sample_password"),
