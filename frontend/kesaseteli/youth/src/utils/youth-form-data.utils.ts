@@ -16,7 +16,7 @@ export const convertFormDataToApplication = (
   } = youthFormData;
   return {
     ...formData,
-    school: unlistedSchool || selectedSchool?.name,
+    school: is_unlisted_school ? unlistedSchool : selectedSchool?.name,
     is_unlisted_school: Boolean(is_unlisted_school),
     language: language ?? DEFAULT_LANGUAGE,
   };
