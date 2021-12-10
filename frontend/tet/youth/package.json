@@ -5,6 +5,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "jest --runInBand --no-cache --passWithNoTests",
+    "test:debug-dom": "cross-env DEBUG_PRINT_LIMIT=1000000 yarn test",
+    "test:coverage": "yarn test:debug-dom --verbose --coverage",
     "lint": "next lint"
   },
   "dependencies": {
