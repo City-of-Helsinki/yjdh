@@ -109,7 +109,10 @@ const useApplicationFormStep1 = (
 
   const handleSave = (): void => onSave(values);
 
-  const handleDelete = values.id ? (): void => onDelete(values.id) : undefined;
+  const applicationId = values?.id;
+  const handleDelete = applicationId
+    ? (): void => onDelete(applicationId)
+    : undefined;
 
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
