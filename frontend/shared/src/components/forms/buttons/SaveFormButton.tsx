@@ -1,11 +1,16 @@
-import { Button, ButtonProps } from 'hds-react';
+import { Button, CommonButtonProps } from 'hds-react';
+import noop from 'lodash/noop';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { SubmitErrorHandler, useFormContext } from 'react-hook-form';
 import { UseMutationResult } from 'react-query';
 
-type Props<FormData, BackendResponseData> = Omit<ButtonProps, 'onClick'> & {
+type Props<FormData, BackendResponseData> = Omit<
+  CommonButtonProps,
+  'onClick'
+> & {
   saveQuery: UseMutationResult<BackendResponseData, Error, FormData>;
   onSuccess: (response: BackendResponseData) => void | Promise<void>;
+  onInvalidForm?: SubmitErrorHandler<FormData>;
 };
 
 const SaveFormButton = <
@@ -14,39 +19,47 @@ const SaveFormButton = <
 >({
   saveQuery,
   onSuccess,
+  onInvalidForm,
   children,
   disabled,
   isLoading,
   theme,
   ...buttonProps
 }: Props<FormData, BackendResponseData>): React.ReactElement => {
-  const { getValues, handleSubmit, formState } = useFormContext<FormData>();
+  const { handleSubmit, formState } = useFormContext<FormData>();
 
   const isSaving = React.useMemo(
     () => saveQuery.isLoading || formState.isSubmitting,
     [saveQuery.isLoading, formState.isSubmitting]
   );
-  const handleSaving = React.useCallback(() => {
-    saveQuery.mutate(getValues(), {
-      onSuccess: (responseData) => {
-        if (onSuccess) {
-          void onSuccess(responseData);
-        }
-      },
-    });
-  }, [saveQuery, getValues, onSuccess]);
+  const handleSaving = React.useCallback(
+    (formData) => {
+      saveQuery.mutate(formData, {
+        onSuccess: (responseData) => {
+          if (onSuccess) {
+            void onSuccess(responseData);
+          }
+        },
+      });
+    },
+    [saveQuery, onSuccess]
+  );
 
   return (
     <Button
       {...buttonProps}
       theme={theme || 'coat'}
-      onClick={handleSubmit(handleSaving)}
+      onClick={handleSubmit(handleSaving, onInvalidForm)}
       disabled={disabled || isSaving}
       isLoading={isLoading || isSaving}
     >
       {children}
     </Button>
   );
+};
+
+SaveFormButton.defaultProps = {
+  onInvalidForm: noop,
 };
 
 export default SaveFormButton;
