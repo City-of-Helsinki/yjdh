@@ -3,18 +3,13 @@ import Heading from 'shared/components/forms/heading/Heading';
 import { HeadingProps } from 'shared/components/forms/heading/Heading.sc';
 import {
   $Grid,
+  $GridCell,
   $Hr,
   $Section,
   GridProps,
 } from 'shared/components/forms/section/FormSection.sc';
 
-import {
-  $ActionBottom,
-  $ActionLeft,
-  $CheckIcon,
-  $Wrapper,
-  $WrapperInner,
-} from './ReviewSection.sc';
+import { $ActionLeft, $CheckIcon } from './ReviewSection.sc';
 import { useReviewSection } from './useReviewSection';
 
 export type ReviewSectionProps = {
@@ -39,14 +34,22 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   const { theme, bgColor, withAction } = useReviewSection(action, withMargin);
 
   return (
-    <$Wrapper withAction={withAction} bgColor={bgColor}>
-      <$WrapperInner withAction={withAction}>
-        {withAction && (
+    <$Grid
+      css={`
+        background-color: ${bgColor};
+        margin-bottom: ${theme.spacing.s};
+        gap: 0;
+      `}
+    >
+      {withAction && (
+        <$GridCell $colSpan={1}>
           <$ActionLeft>
             {action && <$CheckIcon aria-label="application-action" size="m" />}
           </$ActionLeft>
-        )}
-        <$Section paddingBottom={withAction}>
+        </$GridCell>
+      )}
+      <$GridCell $colStart={2} $colSpan={12}>
+        <$Section paddingBottom={withAction && !withMargin}>
           {header && (
             <Heading
               header={header}
@@ -76,9 +79,26 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
             />
           )}
         </$Section>
-      </$WrapperInner>
-      {action && <$ActionBottom>{action}</$ActionBottom>}
-    </$Wrapper>
+      </$GridCell>
+      {action && (
+        <>
+          <$GridCell
+            css={`
+              background-color: ${theme.colors.silver};
+            `}
+          />
+          <$GridCell
+            css={`
+              background-color: ${theme.colors.silver};
+            `}
+            $colSpan={12}
+            $colStart={2}
+          >
+            {action}
+          </$GridCell>
+        </>
+      )}
+    </$Grid>
   );
 };
 
