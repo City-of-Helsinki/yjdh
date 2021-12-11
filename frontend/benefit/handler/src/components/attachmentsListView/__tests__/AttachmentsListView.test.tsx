@@ -3,7 +3,6 @@ import renderComponent from 'benefit/handler/__tests__/utils/render-component';
 import { ATTACHMENT_TYPES } from 'benefit/handler/constants';
 import { axe } from 'jest-axe';
 import React from 'react';
-import Attachment from 'shared/types/attachment';
 
 import AttachmentsListView, {
   AttachmentsListViewProps,
@@ -22,7 +21,7 @@ describe('AttachmentsListView', () => {
         contentType: 'image/png',
         createdAt: '2021-09-09T10:37:13.341633+03:00',
         id: '68034254-0dff-423d-8659-58864a930ae7',
-      } as Attachment,
+      },
     ],
   };
 

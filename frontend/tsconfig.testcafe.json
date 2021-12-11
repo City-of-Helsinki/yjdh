@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
   },
