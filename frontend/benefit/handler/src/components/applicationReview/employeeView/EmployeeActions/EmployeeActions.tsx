@@ -1,72 +1,58 @@
-import { APPLICATION_STATUSES, ROUTES } from 'benefit/handler/constants';
-import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
-import {
-  Application,
-  ApplicationData,
-} from 'benefit/handler/types/application';
+import { ATTACHMENT_TYPES, ROUTES } from 'benefit/handler/constants';
 import { Button, IconPlus } from 'hds-react';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import UploadAttachment from 'shared/components/attachments/UploadAttachment';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import snakecaseKeys from 'snakecase-keys';
+import { ATTACHMENT_MAX_SIZE } from 'shared/constants/attachment-constants';
 import { useTheme } from 'styled-components';
 
-import { $Wrapper } from './EmployeeActions.sc';
+import { $ActionsWrapper } from '../../ApplicationReview.sc';
 
-export type Props = {
-  application: Application;
-};
-
-const EmployeeActions: React.FC<Props> = ({ application }) => {
+const EmployeeActions: React.FC = () => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
   const router = useRouter();
   const theme = useTheme();
 
-  const { mutate: updateApplication } = useUpdateApplicationQuery();
-
   const handleCloseClick = (): void => {
     void router.push(ROUTES.HOME);
   };
 
-  const handleStatusChange = (): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
-      {
-        ...application,
-        status: APPLICATION_STATUSES.HANDLING,
-      },
-      { deep: true }
-    );
-    updateApplication(currentApplicationData);
-  };
-
   return (
-    <$Wrapper>
+    <$ActionsWrapper>
       <$Grid>
         <$GridCell
           $colSpan={3}
           css={`
             margin-bottom: ${theme.spacing.m};
+            background-color: ${theme.colors.white};
+            button {
+              width: 100%;
+            }
           `}
         >
-          <Button
-            css={`
-              width: 100%;
-              background-color: ${theme.colors.white};
-            `}
-            onClick={handleStatusChange}
+          <UploadAttachment
             theme="black"
             variant="secondary"
-            iconLeft={<IconPlus />}
-          >
-            {t(`${translationsBase}.addAttachment`)}
-          </Button>
+            onUpload={noop}
+            isUploading={false}
+            attachmentType={ATTACHMENT_TYPES.HELSINKI_BENEFIT_VOUCHER}
+            allowedFileTypes={['application/pdf']}
+            maxSize={ATTACHMENT_MAX_SIZE}
+            uploadText={t(`${translationsBase}.addAttachment`)}
+            loadingText={t(`common:upload.isUploading`)}
+            errorTitle={t('common:error.attachments.title')}
+            errorFileSizeText={t('common:error.attachments.tooBig')}
+            errorFileTypeText={t('common:error.attachments.fileType')}
+            icon={<IconPlus />}
+          />
         </$GridCell>
         <$GridCell $colSpan={3}>
           <Button
@@ -95,15 +81,15 @@ const EmployeeActions: React.FC<Props> = ({ application }) => {
                 background-color: ${theme.colors.white};
               }
             `}
-            id="id"
-            name="name"
-            label="Kohderyhmätarkistus"
+            id="cb_targetGroupCheck"
+            name="cb_targetGroupCheck"
+            label={t(`${translationsBase}.targetGroupCheck`)}
             checked={false}
             onChange={noop}
           />
         </$GridCell>
       </$Grid>
-    </$Wrapper>
+    </$ActionsWrapper>
   );
 };
 

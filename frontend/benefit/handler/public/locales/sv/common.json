@@ -37,6 +37,11 @@
     "generic": {
       "label": "Error occurred",
       "text": "Please try again later."
+    },
+    "attachments": {
+      "title": "Error occurred",
+      "tooBig": "The attachemnt size is too big.",
+      "fileType": "The attachment file type is not allowed."
     }
   },
   "applications": {
@@ -75,7 +80,8 @@
       "cancel": "Peruuta hakemus",
       "addAttachment": "Liitä uusi tiedosto",
       "addPreviouslyGrantedBenefit": "Lisää aikaisempi lisä",
-      "targetGroupheck": "Kohderyhmätarkistus"
+      "targetGroupCheck": "Kohderyhmätarkistus",
+      "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
@@ -148,5 +154,10 @@
     "yes": "Kyllä",
     "no": "Ei",
     "and": "ja"
+  },
+  "upload": {
+    "isUploading": "Uploading...",
+    "errorTitle": "Uploading failed",
+    "errorMessage": "Something went wrong. Please try again later."
   }
 }

@@ -13,6 +13,7 @@ import {
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
+import PaySubsidyActions from './PaySubsidyActions/PaysubsidyActions';
 
 const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -21,7 +22,9 @@ const PaySubsidyView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       header={t(`${translationsBase}.headings.heading6`)}
       action={
-        data.status !== APPLICATION_STATUSES.RECEIVED ? <>some actions</> : null
+        data.status !== APPLICATION_STATUSES.RECEIVED ? (
+          <PaySubsidyActions />
+        ) : null
       }
     >
       <$GridCell $colSpan={12}>

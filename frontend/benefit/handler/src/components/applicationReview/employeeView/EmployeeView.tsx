@@ -14,7 +14,7 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
-import EmployeeActions from './actions/EmployeeActions';
+import EmployeeActions from './EmployeeActions/EmployeeActions';
 
 const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -24,7 +24,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading5`)}
       action={
         data.status !== APPLICATION_STATUSES.RECEIVED ? (
-          <EmployeeActions application={data} />
+          <EmployeeActions />
         ) : null
       }
     >
