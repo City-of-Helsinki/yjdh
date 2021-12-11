@@ -5,6 +5,10 @@ type CalculatorTableRowProps = {
   isTotal?: boolean;
 };
 
+export const $MainHeader = styled.h1`
+  font-size: ${(props) => props.theme.fontSize.heading.m};
+`;
+
 export const $ActionsWrapper = styled.div`
   margin: ${(props) => props.theme.spacing.s};
   margin-left: 0;

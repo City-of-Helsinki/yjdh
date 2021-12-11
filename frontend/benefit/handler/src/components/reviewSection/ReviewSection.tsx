@@ -60,9 +60,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
             <$Grid
               css={`
                 font-size: ${theme.fontSize.body.l};
-                padding: ${withMargin ? theme.spacing.m : 0}
-                  ${withMargin ? theme.spacing.xl : 0};
-                padding-right: 0;
+                padding: ${withMargin ? theme.spacing.m : 0} 0;
                 line-height: ${theme.lineHeight.l};
               `}
               role={role}

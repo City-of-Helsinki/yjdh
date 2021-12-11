@@ -93,7 +93,8 @@
       "heading6": "Palkkatukipäätös",
       "heading7": "Haettava tukimuoto ja ajankohta",
       "heading8": "Työsuhde",
-      "heading9": "Suostumus"
+      "heading9": "Suostumus",
+      "heading10": "Hakemuksen käsittely"
     },
     "fields": {
       "businessId": "Y-tunnus",
@@ -116,7 +117,11 @@
       "workingHours": "Työaika: {{workingHours}} t / viikko",
       "monthlyPay": "Bruttopalkka {{monthlyPay}} €/kk",
       "otherExpenses": "Sivukulut {{otherExpenses}} €/kk",
-      "vacationMoney": "Lomaraha {{vacationMoney}} €"
+      "vacationMoney": "Lomaraha {{vacationMoney}} €",
+      "noSupport": "Ei puolleta",
+      "support": "Puolletaan",
+      "reason": "Perustelu",
+      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä"
     }
   },
   "calculators": {

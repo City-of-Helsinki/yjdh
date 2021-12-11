@@ -8,6 +8,7 @@ import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActio
 
 import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
+import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -45,7 +46,10 @@ const ApplicationReview: React.FC = () => {
         <EmploymentView data={application} />
         <ConsentView data={application} />
         {application.status === APPLICATION_STATUSES.HANDLING && (
-          <EmploymenAppliedMoreView />
+          <>
+            <EmploymenAppliedMoreView />
+            <ApplicationProcessingView />
+          </>
         )}
       </Container>
       <StickyActionBar>
