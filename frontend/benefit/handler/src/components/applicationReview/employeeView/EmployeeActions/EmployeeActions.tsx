@@ -1,5 +1,5 @@
 import { ATTACHMENT_TYPES, ROUTES } from 'benefit/handler/constants';
-import { Button, IconPlus } from 'hds-react';
+import { Button, IconGlyphEuro, IconPlus } from 'hds-react';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -62,7 +62,7 @@ const EmployeeActions: React.FC = () => {
             onClick={handleCloseClick}
             theme="black"
             variant="secondary"
-            iconLeft={<IconPlus />}
+            iconLeft={<IconGlyphEuro />}
           >
             {t(`${translationsBase}.addPreviouslyGrantedBenefit`)}
           </Button>

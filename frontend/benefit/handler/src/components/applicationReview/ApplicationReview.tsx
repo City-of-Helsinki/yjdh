@@ -15,6 +15,7 @@ import ContactPersonView from './contactPersonView/ContactPersonView';
 import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
 import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
+import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import { useApplicationReview } from './useApplicationReview';
@@ -43,6 +44,9 @@ const ApplicationReview: React.FC = () => {
         <BenefitView data={application} />
         <EmploymentView data={application} />
         <ConsentView data={application} />
+        {application.status === APPLICATION_STATUSES.HANDLING && (
+          <EmploymenAppliedMoreView />
+        )}
       </Container>
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (
