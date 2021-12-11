@@ -59,7 +59,9 @@ def nested_getattr(obj, attr, *args):
     return functools.reduce(_getattr, [obj] + attr.split("."))
 
 
-def to_decimal(numeric_value, decimal_places=None):
+def to_decimal(numeric_value, decimal_places=None, allow_null=True):
+    if numeric_value is None and allow_null:
+        return None
     value = decimal.Decimal(numeric_value)
     if decimal_places is not None:
         value = value.quantize(decimal.Decimal(".1") ** decimal_places)
@@ -140,3 +142,16 @@ def duration_in_months(start_date, end_date, decimal_places=None):
         decimal.Decimal(days360(start_date, end_date + timedelta(days=1))) / 30,
         decimal_places,
     )
+
+
+class DurationMixin:
+    """
+    Mixin class that defines a duration_in_months property.
+    Depends on having start_date and end_date fields available in the object.
+    The duration is calculated according to the DAYS360 Excel function, as that
+    function was used by the application handlers in the application calculation Excel file.
+    """
+
+    @property
+    def duration_in_months(self):
+        return duration_in_months(self.start_date, self.end_date)

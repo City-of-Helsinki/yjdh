@@ -136,7 +136,7 @@ class PreviousBenefitFactory(factory.django.DjangoModelFactory):
         "pydecimal", left_digits=3, right_digits=2, min_value=0
     )
     total_amount = factory.LazyAttribute(
-        lambda o: duration_in_months(o.start_date, o.end_date)
+        lambda o: duration_in_months(o.start_date, o.end_date) * o.monthly_amount
     )
 
     class Meta:
