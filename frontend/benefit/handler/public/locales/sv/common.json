@@ -68,7 +68,14 @@
   "review": {
     "actions": {
       "handle": "Ota käsittelyyn",
-      "close": "Sulje"
+      "close": "Sulje",
+      "done": "Valmis",
+      "saveAndContinue": "Tallenna ja sulje",
+      "handlingPanel": "Käsittelypaneeli",
+      "cancel": "Peruuta hakemus",
+      "addAttachment": "Liitä uusi tiedosto",
+      "addPreviouslyGrantedBenefit": "Lisää aikaisempi lisä",
+      "targetGroupheck": "Kohderyhmätarkistus"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",

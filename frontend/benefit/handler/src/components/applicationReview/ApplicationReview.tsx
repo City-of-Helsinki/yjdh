@@ -6,6 +6,7 @@ import Container from 'shared/components/container/Container';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
 
+import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
@@ -48,7 +49,7 @@ const ApplicationReview: React.FC = () => {
           <ReceivedApplicationActions application={application} />
         )}
         {application.status === APPLICATION_STATUSES.HANDLING && (
-          <>handling actions</>
+          <HandlingApplicationActions application={application} />
         )}
       </StickyActionBar>
       <$StickyBarSpacing />
