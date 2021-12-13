@@ -7,6 +7,7 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
+from calculator.enums import RowType
 from common.utils import duration_in_months
 from companies.models import Company
 from django.conf import settings
@@ -301,6 +302,15 @@ class Application(UUIDModel, TimeStampedModel):
     def duration_in_months(self):
         # The application calculation Excel file used the DAYS360 function, so we're doing the same
         return duration_in_months(self.start_date, self.end_date)
+
+    @property
+    def ahjo_rows(self):
+        rows = self.calculation.rows.filter(
+            row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+        )
+        if rows.count() > 0:
+            return rows
+        return self.calculation.rows.filter(row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR)
 
     def __str__(self):
         return "{}: {} {} {}-{}".format(
