@@ -4,10 +4,10 @@ import isValid from 'date-fns/isValid';
 import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
-import { isString } from 'shared/utils/type-guards';
 
 import { DATE_BACKEND_REGEX, DATE_UI_REGEX } from '../constants';
 import { DEFAULT_LANGUAGE, Language } from '../i18n/i18n';
+import { isString } from './type-guards';
 
 export const DATE_FORMATS = {
   UI_DATE: 'd.M.yyyy',
