@@ -113,7 +113,7 @@
     "nock": "^13.2.1",
     "prettier": "^2.5.1",
     "pretty": "^2.0.0",
-    "react-i18next": "^11.15.0",
+    "react-i18next": "^11.11.0",
     "slack-node": "^0.1.8",
     "testcafe": "^1.17.1",
     "testcafe-reporter-custom": "^1.1.1",
