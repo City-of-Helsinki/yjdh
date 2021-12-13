@@ -81,6 +81,13 @@ env = environ.Env(
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, True),
     DB_PREFIX=(str, ""),
+    EMAIL_USE_TLS=(bool, True),
+    EMAIL_HOST_USER=(str, ""),
+    EMAIL_HOST_PASSWORD=(str, ""),
+    EMAIL_PORT=(int, 587),
+    EMAIL_TIMEOUT=(int, 5),
+    DEFAULT_FROM_EMAIL=(str, "Kesäseteli <kesaseteli@hel.fi>"),
+    YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS=(int, 12),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -179,6 +186,21 @@ TEMPLATES = [
         },
     }
 ]
+
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env.int("EMAIL_PORT")
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT")
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS = env.int(
+    "YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS"
+)
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
