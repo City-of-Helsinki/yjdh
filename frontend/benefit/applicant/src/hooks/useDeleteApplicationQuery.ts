@@ -12,7 +12,7 @@ const useDeleteApplicationQuery = (): UseMutationResult<
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
-  return useMutation<null, AxiosError<ErrorData>, string>(
+  return useMutation(
     'deleteApplication',
     (id: string) =>
       handleResponse<null>(
