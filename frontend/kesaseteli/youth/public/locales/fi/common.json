@@ -41,7 +41,7 @@
   },
   "youthApplication": {
     "title": "Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
-    "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa.",
     "form" : {
       "title": "Setelin tiedot",
       "info": "Täytäthän tiedot samalla tavalla kuin kelakortissasi",
@@ -60,7 +60,7 @@
       "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
       "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
       "sendButton": "Lähetä tiedot",
-      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia."
     }
   },
   "errors": {
