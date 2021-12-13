@@ -61,26 +61,27 @@ const StepperActions: React.FC<StepperActionsProps> = ({
               : t(`${translationsBase}.continue`)}
           </Button>
         </$GridCell>
-        <$GridCell $colSpan={10} $colStart={2} justifySelf="center">
-          <Button
-            theme="black"
-            variant="supplementary"
-            iconLeft={<IconCross />}
-            onClick={() => setIsConfirmationModalOpen(true)}
-            disabled={!handleDelete}
-          >
-            {t(`${translationsBase}.deleteApplication`)}
-          </Button>
-        </$GridCell>
+        {handleDelete && (
+          <$GridCell $colSpan={10} $colStart={2} justifySelf="center">
+            <Button
+              theme="black"
+              variant="supplementary"
+              iconLeft={<IconCross />}
+              onClick={() => setIsConfirmationModalOpen(true)}
+            >
+              {t(`${translationsBase}.deleteApplication`)}
+            </Button>
+          </$GridCell>
+        )}
       </$Grid>
-      {isConfirmationModalOpen && (
+      {isConfirmationModalOpen && handleDelete && (
         <Modal
           id="StepperActions-confirmDeleteApplicationModal"
           isOpen={isConfirmationModalOpen}
           title={t(`${translationsBase}.deleteApplicationConfirm`)}
           submitButtonLabel={t(`${translationsBase}.deleteApplication`)}
           handleToggle={() => setIsConfirmationModalOpen(false)}
-          handleSubmit={() => handleDelete?.()}
+          handleSubmit={handleDelete}
           variant="danger"
         >
           {t(`${translationsBase}.deleteApplicationDescription`)}
