@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
+import { isString } from 'shared/utils/type-guards';
 
 const createReactQueryTestClient = (
   axios: AxiosInstance,
@@ -14,7 +15,7 @@ const createReactQueryTestClient = (
         queryFn: async <T,>({
           queryKey: [url],
         }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
-          if (typeof url === 'string') {
+          if (isString(url)) {
             const { data } = await axios.get<T>(
               `${baseUrl}${url.toLowerCase()}`
             );

@@ -3,6 +3,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import InputProps from 'shared/types/input-props';
+import { isString } from 'shared/utils/type-guards';
 
 import { $TextInput } from './TextInput.sc';
 
@@ -23,7 +24,7 @@ const SocialSecurityNumberInput = <T,>({
 
   const capitalizeAndTrimSocialSecurityNumber = React.useCallback(
     (ssn: unknown) => {
-      if (typeof ssn === 'string') {
+      if (isString(ssn)) {
         return ssn.trim().toUpperCase();
       }
       return ssn;
@@ -34,7 +35,7 @@ const SocialSecurityNumberInput = <T,>({
   const validateSocialSecurityNumber = React.useCallback(
     (ssn: unknown) => {
       const capitalizedSsn = capitalizeAndTrimSocialSecurityNumber(ssn);
-      if (capitalizedSsn && typeof capitalizedSsn === 'string') {
+      if (capitalizedSsn && isString(capitalizedSsn)) {
         return FinnishSSN.validate(capitalizedSsn);
       }
       return false;

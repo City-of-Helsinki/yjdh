@@ -12,7 +12,7 @@ const useApplicationsQuery = (
     ['applicationsList', ...status],
     async () => {
       const res = axios.get<ApplicationData[]>(
-        `${BackendEndpoint.APPLICATIONS}?status=${status.join()}`
+        `${BackendEndpoint.APPLICATIONS}?status=${status.join(',')}`
       );
       return handleResponse(res);
     },

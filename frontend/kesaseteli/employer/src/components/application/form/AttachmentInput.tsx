@@ -142,7 +142,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
 
   const message = `${t(
     `common:application.form.helpers.${attachmentType}`
-  )} ${t(`common:application.form.helpers.attachments`)}`;
+  )} ${t('common:application.form.helpers.attachments')}`;
 
   if (applicationQuery.isSuccess) {
     return (
@@ -162,7 +162,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
         message={message}
         errorMessage={
           hasError()
-            ? `${t(`common:application.form.errors.attachments`)}`
+            ? `${t('common:application.form.errors.attachments')}`
             : undefined
         }
         required={required}

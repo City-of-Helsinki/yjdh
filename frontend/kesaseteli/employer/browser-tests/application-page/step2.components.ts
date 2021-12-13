@@ -156,12 +156,12 @@ export const getStep2Components = (t: TestController) => {
       async isPresent(isOpen = true) {
         return t
           .expect(accordionSelector(isOpen).exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
       },
       async isAttachmentUploaded(attachment: KesaseteliAttachment) {
         return t
           .expect(selectors.attachmentLink(attachment).exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
       },
     };
 
@@ -315,7 +315,7 @@ export const getStep2Components = (t: TestController) => {
       async isPresent() {
         return t
           .expect(selectors.addButton().exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
       },
     };
     const actions = {

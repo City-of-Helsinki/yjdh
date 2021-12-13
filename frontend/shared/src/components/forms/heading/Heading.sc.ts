@@ -13,6 +13,7 @@ export type HeadingProps = {
 
 export const $Header = styled.h1<HeadingProps>`
   ${(props) =>
+    // eslint-disable-next-line unicorn/explicit-length-check
     props.size ? `font-size: ${props.theme.fontSize.heading[props.size]};` : ''}
   display: flex;
   align-items: center;

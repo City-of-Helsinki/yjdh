@@ -4,6 +4,7 @@ import isValid from 'date-fns/isValid';
 import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
+import { isString } from 'shared/utils/type-guards';
 
 import { DATE_BACKEND_REGEX, DATE_UI_REGEX } from '../constants';
 import { DEFAULT_LANGUAGE, Language } from '../i18n/i18n';
@@ -19,10 +20,6 @@ const locales: Record<Language, Locale> = { fi, sv, en };
 
 export const isValidDate = (date?: string | number | Date | null): boolean =>
   date ? isValid(new Date(date)) : false;
-
-// https://stackoverflow.com/questions/643782/how-to-check-whether-an-object-is-a-date
-export const isDateObject = (date?: unknown): boolean =>
-  Object.prototype.toString.call(date) === '[object Date]';
 
 /**
  * Format date string
@@ -58,7 +55,7 @@ const getFormat = (dateAsString: string): string | undefined => {
   return undefined;
 };
 
-export const parseDate = (dateAsString?: string): Date | undefined => {
+export const parseDate = (dateAsString?: string | null): Date | undefined => {
   if (!dateAsString) {
     return undefined;
   }
@@ -78,7 +75,7 @@ export const convertDateFormat = (
   date: string | Date | number | undefined,
   toFormat = DATE_FORMATS.BACKEND_DATE
 ): string => {
-  const parsedDate = typeof date === 'string' ? parseDate(date) : date;
+  const parsedDate = isString(date) ? parseDate(date) : date;
   return formatDate(parsedDate, toFormat);
 };
 

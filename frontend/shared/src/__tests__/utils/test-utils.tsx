@@ -22,6 +22,7 @@ export const enterKeyPressHelper = (): boolean =>
 export const escKeyPressHelper = (): boolean =>
   fireEvent.keyDown(document, { code: 27, key: 'Escape' });
 
+// eslint-disable-next-line react/jsx-no-useless-fragment
 const Wrapper: React.FC = ({ children }) => <>{children}</>;
 
 const customRender: CustomRender = (ui, routerOverride) => {

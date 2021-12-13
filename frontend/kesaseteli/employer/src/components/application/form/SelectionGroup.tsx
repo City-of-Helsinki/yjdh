@@ -63,7 +63,7 @@ const SelectionGroup = <V extends readonly string[]>({
       initialValue={getInitialValue()}
       errorText={
         hasError()
-          ? `${t(`common:application.form.errors.selectionGroups`)}`
+          ? `${t('common:application.form.errors.selectionGroups')}`
           : undefined
       }
       label={
