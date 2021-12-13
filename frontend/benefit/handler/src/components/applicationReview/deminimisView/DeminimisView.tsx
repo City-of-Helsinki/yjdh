@@ -12,7 +12,7 @@ import {
   $SummaryTableValue,
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { convertToUIDateFormat, formatDate } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
@@ -41,7 +41,11 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
             </$SummaryTableHeader>
           </$GridCell>
           {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
-            <React.Fragment key={`${aid.granter ?? ''}${aid.grantedAt ?? ''}`}>
+            <React.Fragment
+              key={`${aid.granter ?? ''}${formatDate(
+                new Date(aid.grantedAt || '')
+              )}`}
+            >
               <$GridCell $colStart={1} $colSpan={3}>
                 <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
               </$GridCell>

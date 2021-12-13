@@ -8,6 +8,7 @@ import {
   $ViewFieldBold,
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { formatDate } from 'shared/utils/date.utils';
 
 const BenefitView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -29,11 +30,15 @@ const BenefitView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       <$GridCell />
       <$GridCell $colStart={1} $colSpan={2}>
         <$ViewField>{t(`${translationsBase}.fields.startDate`)}</$ViewField>
-        <$ViewField>{data.startDate ? data.startDate : '-'}</$ViewField>
+        <$ViewField>
+          {data.startDate ? formatDate(new Date(data.startDate)) : '-'}
+        </$ViewField>
       </$GridCell>
       <$GridCell $colSpan={2}>
         <$ViewField>{t(`${translationsBase}.fields.endDate`)}</$ViewField>
-        <$ViewField>{data.endDate ? data.endDate : '-'}</$ViewField>
+        <$ViewField>
+          {data.endDate ? formatDate(new Date(data.endDate)) : '-'}
+        </$ViewField>
       </$GridCell>
     </ReviewSection>
   );

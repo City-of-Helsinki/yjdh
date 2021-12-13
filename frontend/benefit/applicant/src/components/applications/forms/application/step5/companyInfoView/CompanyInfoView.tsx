@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { convertToUIDateFormat, formatDate } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
@@ -145,7 +145,9 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
             </$GridCell>
             {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
               <React.Fragment
-                key={`${aid.granter ?? ''}${aid.grantedAt ?? ''}`}
+                key={`${aid.granter ?? ''}${formatDate(
+                  new Date(aid.grantedAt || '')
+                )}`}
               >
                 <$GridCell $colStart={1} $colSpan={3}>
                   <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
