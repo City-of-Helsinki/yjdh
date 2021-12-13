@@ -1,4 +1,4 @@
-import { Footer } from 'hds-react';
+import { Footer, IconLinkExternal } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
@@ -8,7 +8,37 @@ const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   return (
     <$FooterWrapper>
-      <Footer title={t('common:appName')} theme="dark">
+      <Footer title={t('common:appName')} theme="light">
+        <Footer.Utilities backToTopLabel={t('common:footer.backToTop')}>
+          <Footer.SoMe />
+          <Footer.Item
+            as="a"
+            rel="noopener noreferrer"
+            target="_blank"
+            href={t('common:footer.contactUsLink')}
+            label={t('common:footer.contactUs')}
+          >
+            <IconLinkExternal />
+          </Footer.Item>
+          <Footer.Item
+            as="a"
+            rel="noopener noreferrer"
+            target="_blank"
+            href={t('common:footer.jobOpeningsLink')}
+            label={t('common:footer.jobOpenings')}
+          >
+            <IconLinkExternal />
+          </Footer.Item>
+          <Footer.Item
+            as="a"
+            rel="noopener noreferrer"
+            target="_blank"
+            href={t('common:footer.registerInformationLink')}
+            label={t('common:footer.registerInformation')}
+          >
+            <IconLinkExternal />
+          </Footer.Item>
+        </Footer.Utilities>
         <Footer.Base
           copyrightHolder={t('common:footer.copyrightText')}
           copyrightText={t('common:footer.allRightsReservedText')}
