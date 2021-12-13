@@ -13,6 +13,10 @@ describe('Modal', () => {
     handleToggle: jest.fn(),
   };
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const getComponent = (props: Partial<ModalProps> = {}): RenderResult =>
     render(<Modal {...initialProps} {...props} />);
 
@@ -21,5 +25,24 @@ describe('Modal', () => {
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
+  });
+
+  it('should call handleSubmit & handleToggle when the submit button is clicked', () => {
+    const { getByTestId } = getComponent();
+    const submitButton = getByTestId('submit');
+
+    submitButton.click();
+
+    expect(initialProps.handleSubmit).toHaveBeenCalledTimes(1);
+    expect(initialProps.handleToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call handleToggle when the cancel button is clicked', () => {
+    const { getByTestId } = getComponent();
+    const cancelButton = getByTestId('cancel');
+
+    cancelButton.click();
+
+    expect(initialProps.handleToggle).toHaveBeenCalledTimes(1);
   });
 });

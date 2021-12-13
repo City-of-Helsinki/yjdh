@@ -51,7 +51,12 @@ const Modal: React.FC<ModalProps> = ({
       {title && <Dialog.Header title={title} id={id} />}
       {children && <Dialog.Content>{children}</Dialog.Content>}
       <Dialog.ActionButtons>
-        <Button theme="black" variant="secondary" onClick={handleToggle}>
+        <Button
+          theme="black"
+          variant="secondary"
+          onClick={handleToggle}
+          data-testid="cancel"
+        >
           {t('common:applications.actions.close')}
         </Button>
         <Button
@@ -59,6 +64,7 @@ const Modal: React.FC<ModalProps> = ({
           variant={variant}
           onClick={onAccept}
           disabled={actionDisabled}
+          data-testid="submit"
         >
           {submitButtonLabel}
         </Button>
