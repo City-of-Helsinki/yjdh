@@ -41,7 +41,11 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
             </$SummaryTableHeader>
           </$GridCell>
           {data.deMinimisAidSet?.map((aid: DeMinimisAid) => (
-            <React.Fragment key={`${aid.granter ?? ''}${aid.grantedAt ?? ''}`}>
+            <React.Fragment
+              key={`${aid.granter ?? ''}${convertToUIDateFormat(
+                aid.grantedAt
+              )}`}
+            >
               <$GridCell $colStart={1} $colSpan={3}>
                 <$SummaryTableValue>{aid.granter}</$SummaryTableValue>
               </$GridCell>
