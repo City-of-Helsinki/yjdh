@@ -76,7 +76,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/next-i18next.
 
 # Copy package.json and yarn.lock files
 COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/public app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/package.json app/tet/employer/start.js tet/employer/
+COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/package.json tet/employer/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
