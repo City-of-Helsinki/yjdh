@@ -15,12 +15,14 @@ import {
   getApplicationStepString,
 } from '../utils/common';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
+import useDeleteApplicationQuery from './useDeleteApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface FormActions {
   onNext: (values: Application) => void;
   onBack: () => void;
   onSave: (values: Application) => void;
+  onDelete: (id: string) => void;
 }
 
 const useFormActions = (application: Application): FormActions => {
@@ -31,6 +33,9 @@ const useFormActions = (application: Application): FormActions => {
 
   const { mutateAsync: createApplication, error: createApplicationError } =
     useCreateApplicationQuery();
+
+  const { mutate: deleteApplication, error: deleteApplicationError } =
+    useDeleteApplicationQuery();
 
   const createApplicationAndAppendId = async (
     data: ApplicationData
@@ -55,7 +60,10 @@ const useFormActions = (application: Application): FormActions => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const error = updateApplicationError || createApplicationError;
+    const error =
+      updateApplicationError ||
+      createApplicationError ||
+      deleteApplicationError;
 
     if (error) {
       const errorData = camelcaseKeys(error.response?.data ?? {});
@@ -71,7 +79,12 @@ const useFormActions = (application: Application): FormActions => {
         )),
       });
     }
-  }, [t, updateApplicationError, createApplicationError]);
+  }, [
+    t,
+    updateApplicationError,
+    createApplicationError,
+    deleteApplicationError,
+  ]);
 
   const { deMinimisAids } = useContext(DeMinimisContext);
 
@@ -184,10 +197,26 @@ const useFormActions = (application: Application): FormActions => {
     return undefined;
   };
 
+  const onDelete = (id: string): void => {
+    deleteApplication(id, {
+      onSuccess: () => {
+        hdsToast({
+          autoDismissTime: 5000,
+          type: 'success',
+          labelText: t('common:notifications.applicationDeleted.label'),
+          text: t('common:notifications.applicationDeleted.message'),
+        });
+
+        return router.push('/');
+      },
+    });
+  };
+
   return {
     onNext,
     onBack,
     onSave,
+    onDelete,
   };
 };
 

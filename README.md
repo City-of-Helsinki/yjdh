@@ -1,19 +1,34 @@
 # YJDH services
 
-## kesaseteli
+## kesaseteli employer
 
-YJDH-Kesäseteli
+YJDH-Kesäseteli service for employers to fulfill employee applications
 
-### kesaseteli Development with Docker
+### kesaseteli-employer Development with Docker
 
-1. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
+1. Run `yarn` to install necessary packages
 
-2. Run `yarn kesaseteli` or, if you want to rebuild, then `yarn kesaseteli --build`
+2. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
 
-The Frontend is now running at [localhost:3000](https://localhost:3000)
-The backend is now running at [localhost:8000](https://localhost:8000)
+3. Run `yarn employer` or, if you want to rebuild, then `yarn employer --build`
+  - The Frontend is now running at [localhost:3000](https://localhost:3000)
+  - The backend is now running at [localhost:8000](https://localhost:8000)
+4. If services fail to get up, `yarn clean` might help.
 
-3. If services fail to get up, `yarn clean` might help.
+## kesaseteli youth
+
+YJDH-Kesäseteli service for young people to send kesäseteli applications
+
+### kesaseteli-youth Development with Docker
+
+1. Run `yarn` to install necessary packages
+
+2. Copy the contents of `.env.kesaseteli.example` to `.env.kesaseteli` and modify it if needed.
+
+3. Run `yarn youth` or, if you want to rebuild, then `yarn youth --build`
+  - The Frontend is now running at [localhost:3100](https://localhost:3000)
+  - The backend is now running at [localhost:8000](https://localhost:8000)
+4. If services fail to get up, `yarn clean` might help.
 
 ## Benefit
 
@@ -21,13 +36,14 @@ YJDH-Benefit
 
 ### Benefit Development with Docker
 
-1. Copy the contents of `.env.benefit-*.example` to `.env.benefit-*` and modify them if needed.
+1. Run `yarn` to install necessary packages
 
-2. Run `docker-compose -f docker-compose.benefit.yml up`
+2. Copy the contents of `.env.benefit-*.example` to `.env.benefit-*` and modify them if needed.
 
-The Applicant Frontend is now running at [localhost:3000](https://localhost:3000)
-The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
-The backend is now running at [localhost:8000](https://localhost:8000)
+3. Run `yarn benefit` or, if you want to rebuild, then `yarn benefit --build`
+  - The Applicant Frontend is now running at [localhost:3000](https://localhost:3000)
+  - The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
+  - The backend is now running at [localhost:8000](https://localhost:8000)
 
 ## Setting up Husky pre-commit hooks:
 

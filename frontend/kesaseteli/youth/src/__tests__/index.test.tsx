@@ -66,8 +66,8 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
-      indexPageApi.actions.typeInput('first_name', 'a'.repeat(257)); // max limit is 257
-      indexPageApi.actions.typeInput('last_name', 'a'.repeat(257)); // max limit is 257
+      indexPageApi.actions.typeInput('first_name', 'a'.repeat(129)); // max limit is 128
+      indexPageApi.actions.typeInput('last_name', 'a'.repeat(129)); // max limit is 128
       indexPageApi.actions.typeInput('phone_number', 'a'.repeat(65)); // max limit is 254
       indexPageApi.actions.typeInput('email', 'a'.repeat(255)); // max limit is 254
       await indexPageApi.actions.clickSaveButton();

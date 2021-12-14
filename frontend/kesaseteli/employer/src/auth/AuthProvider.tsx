@@ -3,7 +3,7 @@ import React from 'react';
 import AuthContext from 'shared/auth/AuthContext';
 
 // check that authentication is still alive in every 5 minutes
-const FIVE_MINUTES = 5 * 60 * 1_000;
+const FIVE_MINUTES = 5 * 60 * 1000;
 
 const AuthProvider = <P,>({
   children,

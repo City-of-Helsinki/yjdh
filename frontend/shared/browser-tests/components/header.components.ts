@@ -70,7 +70,7 @@ export const getHeaderComponents = (
       },
     };
     const actions = {
-      async changeLanguage(fromLang = DEFAULT_LANGUAGE, toLang: Language) {
+      async changeLanguage(fromLang: Language, toLang: Language) {
         await t
           .click(selectors.languageSelector(fromLang))
           .click(selectors.languageSelectorItem(toLang));

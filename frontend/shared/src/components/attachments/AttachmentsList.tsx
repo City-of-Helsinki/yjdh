@@ -80,7 +80,7 @@ const AttachmentsList = <T extends Attachment>({
           ))}
         </>
       ) : (
-        <>{message && <$Message>{message}</$Message>}</>
+        message && <$Message>{message}</$Message>
       )}
       <UploadAttachment
         buttonRef={buttonRef}

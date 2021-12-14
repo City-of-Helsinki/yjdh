@@ -5,6 +5,7 @@ import { Button, IconPen } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
 
@@ -128,13 +129,15 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
           <$ViewField>
             {t(`${translationsBase}.employee.fields.startDate.label`)}
           </$ViewField>
-          <$ViewField>{data.startDate ? data.startDate : '-'}</$ViewField>
+          <$ViewField>
+            {convertToUIDateFormat(data.startDate) || '-'}
+          </$ViewField>
         </$GridCell>
         <$GridCell $colSpan={2}>
           <$ViewField>
             {t(`${translationsBase}.employee.fields.endDate.label`)}
           </$ViewField>
-          <$ViewField>{data.endDate ? data.endDate : '-'}</$ViewField>
+          <$ViewField>{convertToUIDateFormat(data.endDate) || '-'}</$ViewField>
         </$GridCell>
       </SummarySection>
       {(data.benefitType === BENEFIT_TYPES.SALARY ||

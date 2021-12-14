@@ -17,10 +17,17 @@
   "footer": {
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "backToTop": "Takaisin ylös",
+    "registerInformation": "Rekisteriseloste",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen%20kesatyosetelirekisteri.pdf",
+    "jobOpenings": "Avoimet työpaikat",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Ota yhteyttä",
+    "contactUsLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/ota-yhteytta/",
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
     "information": "Tietoa palvelusta",
-    "informationLink": "https://kesaseteli.fi/"
+    "informationLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/"
   },
   "languages": {
     "fi": "Suomeksi",

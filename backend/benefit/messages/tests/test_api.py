@@ -42,17 +42,23 @@ def test_list_message_unauthenticated(
         "handler-note-list",
     ],
 )
-def test_list_message_unauthorized(api_client, handling_application, view_name):
+def test_list_message_unauthorized(
+    api_client, anonymous_handling_application, view_name
+):
     if view_name == "applicant-message-list":
         # Cannot see application they doesn't belong to
         result = api_client.get(
-            reverse(view_name, kwargs={"application_pk": handling_application.pk})
+            reverse(
+                view_name, kwargs={"application_pk": anonymous_handling_application.pk}
+            )
         )
         assert result.status_code == 404
     else:
         # Cannot use handler API endpoints
         result = api_client.get(
-            reverse(view_name, kwargs={"application_pk": handling_application.pk})
+            reverse(
+                view_name, kwargs={"application_pk": anonymous_handling_application.pk}
+            )
         )
         assert result.status_code == 403
 
@@ -265,13 +271,16 @@ def test_create_message(
     ],
 )
 def test_update_message_unauthenticated(
-    anonymous_client, handling_application, view_name
+    anonymous_client, anonymous_handling_application, view_name
 ):
     message = MessageFactory()
     result = anonymous_client.put(
         reverse(
             view_name,
-            kwargs={"application_pk": handling_application.pk, "pk": message.id},
+            kwargs={
+                "application_pk": anonymous_handling_application.pk,
+                "pk": message.id,
+            },
         ),
         SAMPLE_MESSAGE_PAYLOAD,
     )
@@ -303,7 +312,7 @@ def test_update_message_unauthorized(
             ),
             SAMPLE_MESSAGE_PAYLOAD,
         )
-        assert result.status_code == 404
+        assert result.status_code == 403
     else:
         result = handler_api_client.put(
             reverse(
@@ -373,18 +382,22 @@ def test_delete_message_unauthenticated(
 def test_delete_message_unauthorized(
     api_client,
     handler_api_client,
-    handling_application,
+    anonymous_handling_application,
     mock_get_organisation_roles_and_create_company,
     view_name,
 ):
     msg = MessageFactory(
-        application=handling_application, message_type=MessageType.APPLICANT_MESSAGE
+        application=anonymous_handling_application,
+        message_type=MessageType.APPLICANT_MESSAGE,
     )
     if view_name == "applicant-message-detail":
         result = api_client.delete(
             reverse(
                 view_name,
-                kwargs={"application_pk": handling_application.pk, "pk": msg.id},
+                kwargs={
+                    "application_pk": anonymous_handling_application.pk,
+                    "pk": msg.id,
+                },
             )
         )
         assert result.status_code == 404
@@ -392,7 +405,10 @@ def test_delete_message_unauthorized(
         result = handler_api_client.delete(
             reverse(
                 view_name,
-                kwargs={"application_pk": handling_application.pk, "pk": msg.id},
+                kwargs={
+                    "application_pk": anonymous_handling_application.pk,
+                    "pk": msg.id,
+                },
             ),
         )
         assert result.status_code == 403

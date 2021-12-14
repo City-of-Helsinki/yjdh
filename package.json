@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "husky": "^6.0.0"
+    "cross-env": "^7.0.3",
+    "husky": "^7.0.4"
   },
   "scripts": {
     "prepare": "husky install",
@@ -8,8 +9,5 @@
     "benefit": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.benefit.yml up",
     "employer": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.employer.yml up",
     "youth": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.youth.yml up"
-  },
-  "dependencies": {
-    "cross-env": "^7.0.3"
   }
 }

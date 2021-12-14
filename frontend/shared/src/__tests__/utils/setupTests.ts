@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 
 import { toHaveNoViolations } from 'jest-axe';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
+import { isString } from 'shared/utils/type-guards';
 
 jest.setTimeout(JEST_TIMEOUT);
 expect.extend(toHaveNoViolations);
@@ -21,7 +22,7 @@ beforeAll(() => {
 
   const filterErrors = (...args: string[]) => {
     if (
-      typeof args[0] === 'string' &&
+      typeof isString(args[0]) &&
       messagesToIgnore.some((msg) => args[0].includes(msg))
     ) {
       return () => {};

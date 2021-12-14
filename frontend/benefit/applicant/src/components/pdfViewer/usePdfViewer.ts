@@ -18,7 +18,7 @@ const usePdfViewer = (): ExtendedComponentProps => {
   const [pagesCount, setPagesCount] = useState<number>(1);
 
   const handleDocumentLoadSuccess = ({ _pdfInfo }: PDFDocumentProxy): void => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
     setPagesCount(_pdfInfo.numPages);
   };
 

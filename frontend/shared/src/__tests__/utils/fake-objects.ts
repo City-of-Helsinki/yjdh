@@ -101,8 +101,8 @@ export const fakeEmployment = (): Required<Employment> => ({
   employee_home_city: faker.address
     .cityName()
     .replace(/[^ A-Za-zÄÅÖäåö-]/g, ''),
-  employee_postcode: faker.datatype.number(99999),
-  employment_postcode: faker.datatype.number(99999),
+  employee_postcode: faker.datatype.number(99_999),
+  employment_postcode: faker.datatype.number(99_999),
   employment_start_date: convertToBackendDateFormat(faker.date.past()),
   employment_end_date: convertToBackendDateFormat(faker.date.future()),
   employment_work_hours: faker.datatype.number({ max: 100, precision: 0.1 }),

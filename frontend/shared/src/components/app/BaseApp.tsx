@@ -12,6 +12,7 @@ import Layout from 'shared/components/layout/Layout';
 import HDSToastContainer from 'shared/components/toast/ToastContainer';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
+import { isError } from 'shared/utils/type-guards';
 import { ThemeProvider } from 'styled-components';
 
 type Props = AppProps & {
@@ -26,13 +27,17 @@ Sentry.init({
 
 setLogger({
   log: (message) => {
-    Sentry.captureMessage(message);
+    Sentry.captureMessage(String(message), Sentry.Severity.Log);
   },
   warn: (message) => {
-    Sentry.captureMessage(message);
+    Sentry.captureMessage(String(message), Sentry.Severity.Warning);
   },
   error: (error) => {
-    Sentry.captureException(error);
+    if (isError(error)) {
+      Sentry.captureException(error);
+    } else {
+      Sentry.captureMessage(String(error), Sentry.Severity.Log);
+    }
   },
 });
 

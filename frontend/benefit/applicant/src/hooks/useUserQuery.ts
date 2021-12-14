@@ -8,7 +8,7 @@ import useLocale from 'shared/hooks/useLocale';
 import User from 'shared/types/user';
 
 // check that authentication is still alive in every 5 minutes
-const FIVE_MINUTES = 5 * 60 * 1_000;
+const FIVE_MINUTES = 5 * 60 * 1000;
 
 const useUserQuery = <T = User>(
   select?: (user: User) => T
