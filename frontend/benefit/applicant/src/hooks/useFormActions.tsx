@@ -34,7 +34,7 @@ const useFormActions = (application: Application): FormActions => {
   const { mutateAsync: createApplication, error: createApplicationError } =
     useCreateApplicationQuery();
 
-  const { mutateAsync: deleteApplication, error: deleteApplicationError } =
+  const { mutate: deleteApplication, error: deleteApplicationError } =
     useDeleteApplicationQuery();
 
   const createApplicationAndAppendId = async (
@@ -197,22 +197,19 @@ const useFormActions = (application: Application): FormActions => {
     return undefined;
   };
 
-  const onDelete = async (id: string): Promise<void> => {
-    try {
-      await deleteApplication(id);
-      await router.push('/');
+  const onDelete = (id: string): void => {
+    deleteApplication(id, {
+      onSuccess: () => {
+        hdsToast({
+          autoDismissTime: 5000,
+          type: 'success',
+          labelText: t('common:notifications.applicationDeleted.label'),
+          text: t('common:notifications.applicationDeleted.message'),
+        });
 
-      hdsToast({
-        autoDismissTime: 5000,
-        type: 'success',
-        labelText: t('common:notifications.applicationDeleted.label'),
-        text: t('common:notifications.applicationDeleted.message'),
-      });
-
-      await router.push('/');
-    } catch (error) {
-      // useEffect will catch this error
-    }
+        return router.push('/');
+      },
+    });
   };
 
   return {

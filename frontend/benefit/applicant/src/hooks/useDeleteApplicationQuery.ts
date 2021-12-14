@@ -19,9 +19,8 @@ const useDeleteApplicationQuery = (): UseMutationResult<
         axios.delete(`${BackendEndpoint.APPLICATIONS}${id}/`)
       ),
     {
-      onSuccess: () => {
-        queryClient.removeQueries('applications', { exact: true });
-      },
+      onSuccess: () =>
+        queryClient.removeQueries('applications', { exact: true }),
     }
   );
 };
