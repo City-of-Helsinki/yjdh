@@ -9,5 +9,5 @@
     "benefit": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.benefit.yml up",
     "employer": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.employer.yml up",
     "youth": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.youth.yml up"
-  },
+  }
 }
