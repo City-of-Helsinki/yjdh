@@ -9,7 +9,7 @@ const { parsed: env } = require('dotenv').config({
   path: '../../../.env.tet',
 });
 
-const nextConfig = {
+const nextConf = {
   i18n,
   env,
   webpack: (conf) => {
@@ -17,10 +17,10 @@ const nextConfig = {
       fs: false,
       path: require.resolve('path-browserify'),
     };
-    const babelRule = conf.module.rules.find((rule) =>
-      Array.isArray(rule.use)
-        ? rule.use.find((u) => u.loader?.match(/next.*babel.*loader/i))
-        : rule.use?.loader?.match(/next.*babel.*loader/i),
+    const babelRule = conf.module.rules.find((r) =>
+      Array.isArray(r.use)
+        ? r.use.find((u) => u.loader?.match(/next.*babel.*loader/i))
+        : r.use?.loader?.match(/next.*babel.*loader/i),
     );
     if (babelRule) {
       babelRule.include.push(path.resolve('../../'));
@@ -39,4 +39,4 @@ const plugins = [
   [withCustomBabelConfig, { babelConfigFile: path.resolve('../../babel.config.js') }],
 ];
 
-module.exports = withPlugins(plugins, nextConfig);
+module.exports = withPlugins(plugins, nextConf);

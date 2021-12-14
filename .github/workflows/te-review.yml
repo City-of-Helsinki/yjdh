@@ -37,7 +37,7 @@ env:
   K8S_PROBE_PERIOD: 20
   EMPLOYER_URL: https://te-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   YOUTH_URL: https://te-yout-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  ADMIN_URL: https://te-admin-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  ADMIN_URL: https://te-admn-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://te-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   MOCK_FLAG: 1
   NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admin' ]
+        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
         include:
           - service: te-bknd
             context: ./backend
@@ -63,7 +63,7 @@ jobs:
             context: ./frontend
             dockerfile: ./frontend/tet/youth/Dockerfile
             port: 3000
-          - service: te-admin
+          - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
             port: 3000
@@ -88,7 +88,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admin' ]
+        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
         include:
           - service: te-bknd
             context: ./backend
@@ -102,7 +102,7 @@ jobs:
             context: ./frontend
             dockerfile: ./frontend/tet/youth/Dockerfile
             port: 3000
-          - service: te-admin
+          - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
             port: 3000
