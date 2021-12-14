@@ -17,10 +17,17 @@
   "footer": {
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
+    "backToTop": "Tillbaka till toppen",
+    "registerInformation": "SV Rekisteriseloste",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas%20register%20for%20sommarjobbssedlar.pdf",
+    "jobOpenings": "SV Avoimet työpaikat (Vain suomeksi)",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Ta kontakt",
+    "contactUsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/ta-kontakt/",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
     "information": "Information om servicen",
-    "informationLink": "https://kesaseteli.fi/sv/"
+    "informationLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/"
   },
   "languages": {
     "fi": "Suomeksi",

@@ -7,6 +7,7 @@ import {
 import useLocale from 'shared/hooks/useLocale';
 import InputProps from 'shared/types/input-props';
 import { isValidDate, parseDate } from 'shared/utils/date.utils';
+import { isString } from 'shared/utils/type-guards';
 
 import { $DateInput } from './DateInput.sc';
 
@@ -25,7 +26,7 @@ const DateInput = <T,>({
   const { register } = useFormContext<T>();
 
   const validate = React.useCallback(
-    (value) => isValidDate(parseDate(value)),
+    (value) => isString(value) && isValidDate(parseDate(value)),
     []
   );
 

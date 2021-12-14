@@ -38,14 +38,14 @@ const YouthForm: React.FC = () => {
             {...register('first_name', {
               required: true,
               pattern: NAMES_REGEX,
-              maxLength: 256,
+              maxLength: 128,
             })}
           />
           <TextInput<YouthFormData>
             {...register('last_name', {
               required: true,
               pattern: NAMES_REGEX,
-              maxLength: 256,
+              maxLength: 128,
             })}
           />
           <SocialSecurityNumberInput<YouthFormData>

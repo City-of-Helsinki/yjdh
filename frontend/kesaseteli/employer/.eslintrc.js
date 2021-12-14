@@ -21,7 +21,10 @@ module.exports = {
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
     'no-void': 'off',
+    'unicorn/prefer-export-from': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'react/function-component-definition': 'off',
+    'sonarjs/no-nested-template-literals': 'off',
   },
   overrides: [
     {

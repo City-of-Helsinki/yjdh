@@ -4,6 +4,7 @@ import {
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
+import { isString } from 'shared/utils/type-guards';
 
 const createAxios = (): AxiosInstance =>
   Axios.create({
@@ -24,14 +25,14 @@ const createQueryClient = (): QueryClient =>
           process.env.NODE_ENV === 'production' &&
           failureCount < 3 &&
           !/40[134]/.test((error as Error).message),
-        staleTime: 30000,
+        staleTime: 30_000,
         notifyOnChangeProps: 'tracked',
         queryFn: async <T>({
           queryKey: [url],
         }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
           // Best practice: https://react-query.tanstack.com/guides/default-query-function
           if (
-            typeof url === 'string' &&
+            isString(url) &&
             BackendEndPoints.some((endpoint) => url.startsWith(endpoint))
           ) {
             const { data } = await createAxios().get<T>(

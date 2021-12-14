@@ -14,11 +14,8 @@ import ApplicationFieldName from 'shared/types/application-field-name';
 import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
 import { getLastValue } from 'shared/utils/array.utils';
-import {
-  convertToUIDateFormat,
-  isDateObject,
-  parseDate,
-} from 'shared/utils/date.utils';
+import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
+import { isDateObject } from 'shared/utils/type-guards';
 
 type Value =
   | Application[keyof Application]

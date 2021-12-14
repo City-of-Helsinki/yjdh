@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 const useWatchEmployeeDisplayName = (index: number): string => {
   const { t } = useTranslation();
-  const defaultHeading = `${t(`common:application.step2.employment`)} #${
+  const defaultHeading = `${t('common:application.step2.employment')} #${
     index + 1
   }`;
   const { watch: watchEmployeeName } = useApplicationFormField<string>(

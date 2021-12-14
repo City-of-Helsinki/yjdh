@@ -1,4 +1,4 @@
-import Attachment from 'shared/types/attachment';
+import { BenefitAttachment } from 'shared/types/attachment';
 
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
@@ -344,7 +344,7 @@ export type Application = {
   archived?: boolean;
   createdAt?: string | null;
   applicationStep?: string | null;
-  attachments?: Attachment[];
+  attachments?: BenefitAttachment[];
   // create_application_for_company ? not present in the UI?
   applicantTermsApproval?: ApplicantTermsApproval;
   applicantTermsApprovalNeeded?: boolean;

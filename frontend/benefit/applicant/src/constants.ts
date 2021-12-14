@@ -5,7 +5,7 @@ export enum ROUTES {
   APPLICATION_FORM = '/application',
 }
 
-export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200000;
+export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;
 
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',

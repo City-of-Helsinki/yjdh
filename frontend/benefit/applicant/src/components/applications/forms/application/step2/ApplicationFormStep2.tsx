@@ -47,6 +47,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
     handleSubmit,
     handleSave,
     handleBack,
+    handleDelete,
     getErrorMessage,
     getSelectValue,
     fields,
@@ -243,6 +244,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 }
                 options={subsidyOptions}
                 id={fields.paySubsidyPercent.name}
+                name={fields.paySubsidyPercent.name}
                 placeholder={selectLabel}
                 invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
                 aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
@@ -253,6 +255,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                     white-space: pre;
                   }
                 `}
+                data-testid={fields.paySubsidyPercent.name}
               />
             </$GridCell>
             <$GridCell $colSpan={2} $colStart={4}>
@@ -691,6 +694,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         handleSubmit={handleSubmit}
         handleSave={handleSave}
         handleBack={handleBack}
+        handleDelete={handleDelete}
       />
     </form>
   );
