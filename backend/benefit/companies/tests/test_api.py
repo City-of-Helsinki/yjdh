@@ -5,7 +5,6 @@ from applications.tests.conftest import *  # noqa
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from companies.tests.data.company_data import (
-    DUMMY_YRTTI_RESPONSE,
     DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE,
     DUMMY_YTJ_RESPONSE,
     get_dummy_company_data,
@@ -99,13 +98,13 @@ def test_get_company_from_yrtti(
     )
     matcher = re.compile(settings.YTJ_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=404)
-    matcher = re.compile(settings.YRTTI_BASIC_INFO_PATH)
-    requests_mock.post(matcher, json=DUMMY_YRTTI_RESPONSE)
+    matcher = re.compile(settings.YTJ_INFO_PATH)
+    requests_mock.post(matcher, json=DUMMY_YTJ_RESPONSE)
     response = api_client.get(get_company_api_url())
     assert response.status_code == 200
 
     company = Company.objects.get(
-        business_id=DUMMY_YRTTI_RESPONSE["BasicInfoResponse"]["BusinessId"]
+        business_id=DUMMY_YTJ_RESPONSE["BasicInfoResponse"]["BusinessId"]
     )
     company_data = CompanySerializer(company).data
     assert response.data == company_data
@@ -113,12 +112,12 @@ def test_get_company_from_yrtti(
 
 @pytest.mark.django_db
 @override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj_and_yrtti_results_in_error(
+def test_get_company_from_ytj_and_YTJ_results_in_error(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
     matcher = re.compile(settings.YTJ_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=404)
-    matcher = re.compile(settings.YRTTI_BASIC_INFO_PATH)
+    matcher = re.compile(settings.YTJ_INFO_PATH)
     requests_mock.post(matcher, text="Error", status_code=404)
     # Delete company so that API cannot return object from DB
     mock_get_organisation_roles_and_create_company.delete()
@@ -128,7 +127,7 @@ def test_get_company_from_ytj_and_yrtti_results_in_error(
 
 @pytest.mark.django_db
 @override_settings(MOCK_FLAG=False)
-def test_get_company_from_ytj_and_yrtti_with_fallback_data(
+def test_get_company_from_ytj_and_YTJ_with_fallback_data(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
     set_up_ytj_mock_requests(
@@ -143,7 +142,7 @@ def test_get_company_from_ytj_and_yrtti_with_fallback_data(
     # Now assuming request to YTJ & YRTTI doesn't return any data
     matcher = re.compile(settings.YTJ_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=404)
-    matcher = re.compile(settings.YRTTI_BASIC_INFO_PATH)
+    matcher = re.compile(settings.YTJ_INFO_PATH)
     requests_mock.post(matcher, text="Error", status_code=404)
 
     response = api_client.get(get_company_api_url())

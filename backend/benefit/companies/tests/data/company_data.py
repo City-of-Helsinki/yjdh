@@ -722,7 +722,7 @@ DUMMY_ASSOCIATION_DATA = {
 }
 
 
-DUMMY_YRTTI_RESPONSE = {
+DUMMY_YTJ_RESPONSE = {
     "BasicInfoResponse": {
         "AssociationNameInfo": [
             {
