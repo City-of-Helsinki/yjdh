@@ -1,6 +1,6 @@
-const { CLIEngine } = require('eslint');
+const { ESLint } = require('eslint');
 
-const cli = new CLIEngine({});
+const eslint = new ESLint({});
 
 /**
  * ESLint throws out warning:
@@ -15,7 +15,7 @@ module.exports = {
     'prettier --write',
     (changedFiles) =>
       'eslint --fix --max-warnings=0 ' +
-      changedFiles.filter((file) => !cli.isPathIgnored(file)).join(' '),
+      changedFiles.filter((file) => !eslint.isPathIgnored(file)).join(' '),
     'yarn test:staged',
   ],
 };

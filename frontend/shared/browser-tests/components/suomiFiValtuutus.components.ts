@@ -60,7 +60,7 @@ export const getSuomiFiValtuutusComponents = (t: TestController) => {
       async isPresent() {
         await t
           .expect(selectors.companiesTable().exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
       },
     };
     const actions = {

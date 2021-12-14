@@ -23,6 +23,7 @@ import {
   parseDate,
 } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
+import { isString } from 'shared/utils/type-guards';
 
 import { getMaxEndDate, getMinEndDate } from './utils/dates';
 import { getValidationSchema } from './utils/validation';
@@ -107,7 +108,7 @@ const useApplicationFormStep2 = (
           Record<EMPLOYEE_KEYS, Field<EmployeeFieldName>>
         ]
     )[] = Object.values(APPLICATION_FIELDS_STEP2).map((field) => {
-      if (typeof field === 'string') {
+      if (isString(field)) {
         return [
           field,
           {

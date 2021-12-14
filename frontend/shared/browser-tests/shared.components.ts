@@ -13,10 +13,10 @@ export const getSharedComponents = (t: TestController) => {
       },
     };
     const expectations = {
-      async isNotPresent({ timeout } = { timeout: 10000 }) {
+      async isNotPresent({ timeout }: { timeout?: number } = {}) {
         await t
           .expect(selectors.spinner().exists)
-          .notOk(await getErrorMessage(t), { timeout });
+          .notOk(await getErrorMessage(t), { timeout: timeout ?? 10_000 });
       },
     };
     return {

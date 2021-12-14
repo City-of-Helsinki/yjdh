@@ -51,34 +51,32 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           </Button>
         }
       >
-        <>
-          {(data.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
-            data.benefitType === BENEFIT_TYPES.SALARY) && (
-            <>
-              <AttachmentsListView
-                type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
-                title={t(
-                  `${translationsBase}.attachments.types.employmentContract.title`
-                )}
-                attachments={data.attachments || []}
-              />
-              <AttachmentsListView
-                type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-                title={t(
-                  `${translationsBase}.attachments.types.paySubsidyDecision.title`
-                )}
-                attachments={data.attachments || []}
-              />
-              <AttachmentsListView
-                type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
-                title={t(
-                  `${translationsBase}.attachments.types.educationContract.title`
-                )}
-                attachments={data.attachments || []}
-              />
-            </>
-          )}
-        </>
+        {(data.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
+          data.benefitType === BENEFIT_TYPES.SALARY) && (
+          <>
+            <AttachmentsListView
+              type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+              title={t(
+                `${translationsBase}.attachments.types.employmentContract.title`
+              )}
+              attachments={data.attachments || []}
+            />
+            <AttachmentsListView
+              type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+              title={t(
+                `${translationsBase}.attachments.types.paySubsidyDecision.title`
+              )}
+              attachments={data.attachments || []}
+            />
+            <AttachmentsListView
+              type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+              title={t(
+                `${translationsBase}.attachments.types.educationContract.title`
+              )}
+              attachments={data.attachments || []}
+            />
+          </>
+        )}
         {data.benefitType === BENEFIT_TYPES.COMMISSION && (
           <AttachmentsListView
             type={ATTACHMENT_TYPES.COMMISSION_CONTRACT}

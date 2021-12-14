@@ -38,7 +38,7 @@ export const getWizardComponents = async (t: TestController) => {
     async isPresent() {
       await t
         .expect(selectors.header().exists)
-        .ok(await getErrorMessage(t), { timeout: 10000 });
+        .ok(await getErrorMessage(t), { timeout: 10_000 });
     },
   };
 

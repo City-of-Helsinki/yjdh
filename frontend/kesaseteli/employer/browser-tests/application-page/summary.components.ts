@@ -60,7 +60,7 @@ export const getSummaryComponents = async (t: TestController) => {
       async isPresent() {
         return t
           .expect(selectors.section().exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
       },
       async isCompanyDataPresent(company: Company) {
         const expectCompanyFieldHasValue = async (
@@ -121,7 +121,7 @@ export const getSummaryComponents = async (t: TestController) => {
       async isPresent() {
         return t
           .expect(selectors.employmentHeading().exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
       },
       async isFulFilledWith(employment: Employment) {
         const expectEmploymentFieldhasValue = async (

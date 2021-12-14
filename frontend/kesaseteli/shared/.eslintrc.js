@@ -14,7 +14,9 @@ module.exports = {
     ],
     'no-void': 'off',
     'unicorn/no-array-reduce': 'off',
+    'unicorn/prefer-export-from': 'off',
     'lodash/prefer-noop': 'off',
+    'react/function-component-definition': 'off',
   },
   overrides: [
     {

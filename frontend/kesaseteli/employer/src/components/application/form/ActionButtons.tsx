@@ -32,7 +32,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     useApplicationApi();
 
   const handleSuccess = React.useCallback(
-    (validatedApplication) => {
+    (validatedApplication: Application) => {
       if (!isLastStep) {
         return updateApplication(validatedApplication, () => goToNextStep());
       }

@@ -40,7 +40,7 @@ const Checkbox: React.FC<Props> = ({
         label={label ?? defaultLabel}
         errorText={
           hasError() && required
-            ? `${t(`common:application.form.errors.checkboxRequired`)}`
+            ? `${t('common:application.form.errors.checkboxRequired')}`
             : undefined
         }
         onChange={onChange}

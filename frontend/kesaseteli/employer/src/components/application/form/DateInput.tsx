@@ -56,7 +56,7 @@ const DateInput = ({
       setError({
         type: errorType,
         message: `${t(`common:application.form.errors.${errorType}`)}. ${t(
-          `common:application.form.helpers.date`
+          'common:application.form.helpers.date'
         )}`,
       });
     }
