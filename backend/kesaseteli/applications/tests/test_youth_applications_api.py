@@ -1,8 +1,21 @@
+import factory.random
 import pytest
 from rest_framework import status
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import YouthApplicationSerializer
+from common.tests.factories import YouthApplicationFactory
+
+
+def get_required_fields():
+    return [
+        "first_name",
+        "last_name",
+        "social_security_number",
+        "school",
+        "is_unlisted_school",
+        "phone_number",
+    ]
 
 
 def get_activation_url(pk):
@@ -113,6 +126,17 @@ def test_youth_application_post_valid_social_security_number(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("random_seed", list(range(10)))
+def test_youth_application_post_valid_random_data(api_client, random_seed):
+    factory.random.reseed_random(random_seed)
+    youth_application = YouthApplicationFactory()
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
 def test_youth_application_post_invalid_language(api_client, youth_application):
     data = YouthApplicationSerializer(youth_application).data
     data["language"] = "asd"
@@ -120,6 +144,38 @@ def test_youth_application_post_invalid_language(api_client, youth_application):
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "language" in response.data
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("missing_field", get_required_fields())
+def test_youth_application_post_missing_required_field(
+    api_client,
+    youth_application,
+    missing_field,
+):
+    data = YouthApplicationSerializer(youth_application).data
+    del data[missing_field]
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "field,value",
+    [(field, value) for field in get_required_fields() for value in [None, "", " "]],
+)
+def test_youth_application_post_empty_required_field(
+    api_client,
+    youth_application,
+    field,
+    value,
+):
+    data = YouthApplicationSerializer(youth_application).data
+    data[field] = value
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db

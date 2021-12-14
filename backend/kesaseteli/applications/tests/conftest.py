@@ -1,9 +1,15 @@
 import os
 
+import factory.random
 import pytest
 from django.conf import settings
 
 from common.tests.conftest import *  # noqa
+
+
+@pytest.fixture(autouse=True)
+def setup_test_environment(settings):
+    factory.random.reseed_random("888")
 
 
 @pytest.fixture

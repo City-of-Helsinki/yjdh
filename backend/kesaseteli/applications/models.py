@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
+from shared.common.validators import validate_name, validate_phone_number
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 
 from applications.enums import (
@@ -17,13 +18,25 @@ from applications.enums import (
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
-from common.utils import validate_optional_finnish_social_security_number
+from common.utils import validate_finnish_social_security_number
 from companies.models import Company
+
+
+def validate_school(name) -> None:
+    """
+    Raise a ValidationError if the given school is not a listed school and does not
+    validate as a name according to validate_name.
+    """
+    if not School.objects.filter(name=name).exists():
+        validate_name(name)
 
 
 class SchoolQuerySet(models.QuerySet):
     def active(self):
         return self.filter(deleted_at__isnull=True)
+
+    def deleted(self):
+        return self.filter(deleted_at__isnull=False)
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -44,34 +57,37 @@ class School(TimeStampedModel, UUIDModel):
 
 class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
-        max_length=128, verbose_name=_("first name"), blank=True
+        max_length=128,
+        verbose_name=_("first name"),
+        validators=[validate_name],
     )
     last_name = models.CharField(
-        max_length=128, verbose_name=_("last name"), blank=True
+        max_length=128,
+        verbose_name=_("last name"),
+        validators=[validate_name],
     )
     encrypted_social_security_number = EncryptedCharField(
-        max_length=11, verbose_name=_("social security number"), blank=True
+        max_length=11,
+        verbose_name=_("social security number"),
     )
     social_security_number = SearchField(
-        blank=True,
         hash_key=settings.SOCIAL_SECURITY_NUMBER_HASH_KEY,
         encrypted_field_name="encrypted_social_security_number",
-        validators=[validate_optional_finnish_social_security_number],
+        validators=[validate_finnish_social_security_number],
     )
     school = models.CharField(
         max_length=256,
-        blank=True,
         verbose_name=_("school"),
+        validators=[validate_school],
     )
-    is_unlisted_school = models.BooleanField(blank=True)
+    is_unlisted_school = models.BooleanField()
     email = models.EmailField(
         verbose_name=_("email"),
-        blank=True,
     )
     phone_number = models.CharField(
         max_length=64,
         verbose_name=_("phone number"),
-        blank=True,
+        validators=[validate_phone_number],
     )
     language = models.CharField(
         choices=APPLICATION_LANGUAGE_CHOICES,
