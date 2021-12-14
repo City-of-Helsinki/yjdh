@@ -17,10 +17,17 @@
   "footer": {
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "backToTop": "Takaisin ylös",
+    "registerInformation": "Rekisteriseloste",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen%20kesatyosetelirekisteri.pdf",
+    "jobOpenings": "Avoimet työpaikat",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Ota yhteyttä",
+    "contactUsLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/ota-yhteytta/",
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
     "information": "Tietoa palvelusta",
-    "informationLink": "https://kesaseteli.fi/"
+    "informationLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -39,13 +46,37 @@
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
   },
-  "upload": {
-    "isUploading": "Lähetetään...",
-    "errorTitle": "Lähetys epäonnistui",
-    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  "youthApplication": {
+    "title": "Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
+    "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "form" : {
+      "title": "Setelin tiedot",
+      "info": "Täytäthän tiedot samalla tavalla kuin kelakortissasi",
+      "button": "Lähetä tiedot",
+      "first_name" : "Etunimi",
+      "last_name": "Sukunimi",
+      "social_security_number": "Henkilötunnus",
+      "postcode": "Postinumero",
+      "schoolDropdown": "Koulu",
+      "schoolPlaceholder": "Valitse koulusi listalta",
+      "is_unlisted_school": "Koulua ei löydy listalta",
+      "schoolName": "Koulun nimi",
+      "schoolNamePlaceholder": "Esim. Merilahden Peruskoulu",
+      "email": "Sähköpostiosoite",
+      "phone_number": "Puhelinnumero",
+      "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
+      "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+      "sendButton": "Lähetä tiedot",
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    }
   },
-  "delete": {
-    "errorTitle": "Poistaminen epäonnistui",
-    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  "errors": {
+    "required": "Tieto puuttuu",
+    "maxLength": "Syöttämäsi tieto on liian pitkä",
+    "pattern": "Syöttämäsi tieto on virheellistä muotoa",
+    "validate": "Syöttämäsi tieto on virheellistä muotoa"
+  },
+  "assistive": {
+    "toggleMenu": "Avaa valikko"
   }
 }

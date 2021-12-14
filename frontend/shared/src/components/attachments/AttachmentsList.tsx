@@ -1,8 +1,9 @@
-import { IconAlertCircleFill, IconPlus } from 'hds-react';
+import { IconPlus } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
+import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
 import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_MAX_SIZE,
@@ -10,12 +11,7 @@ import {
 import Attachment from 'shared/types/attachment';
 import { getAttachmentsByType } from 'shared/utils/attachment.utils';
 
-import {
-  $Container,
-  $ErrorMessage,
-  $Heading,
-  $Message,
-} from './AttachmentsList.sc';
+import { $Container, $Heading, $Message } from './AttachmentsList.sc';
 
 type Props<T extends Attachment> = {
   title: string;
@@ -105,10 +101,9 @@ const AttachmentsList = <T extends Attachment>({
         errorFileTypeText={t('common:error.attachments.fileType')}
       />
       {errorMessage && (
-        <$ErrorMessage>
-          <IconAlertCircleFill size="s" />
+        <FieldErrorMessage data-testid={`${name ?? 'attachments'}-error`}>
           {errorMessage}
-        </$ErrorMessage>
+        </FieldErrorMessage>
       )}
     </$Container>
   );

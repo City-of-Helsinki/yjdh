@@ -15,7 +15,7 @@
   "dependencies": {
     "@frontend/shared": "*",
     "axios": "^0.24.0",
-    "react-query": "^3.33.4",
+    "react-query": "^3.34.0",
     "typescript": "^4.4.3"
   },
   "devDependencies": {

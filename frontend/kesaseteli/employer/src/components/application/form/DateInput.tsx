@@ -64,7 +64,7 @@ const DateInput = ({
 
   // TODO: This can be removed after backend supports invalid values in draft save
   const handleChange = React.useCallback(
-    (dateString: string) => {
+    (dateString?: string) => {
       const uiDate = convertToUIDateFormat(dateString);
       if (isEmpty(uiDate)) {
         setError({ type: 'pattern' });

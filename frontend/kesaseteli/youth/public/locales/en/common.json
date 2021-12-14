@@ -17,10 +17,17 @@
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
+    "backToTop": "Back to top",
+    "registerInformation": "ENG Rekisteriseloste ",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth%20services%20summer%20job%20voucher%20data%20file.pdf",
+    "jobOpenings": "ENG Avoimet työpaikat (Only in finnish)",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Contact us",
+    "contactUsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/contact-us/",
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
     "information": "Information on the service",
-    "informationLink": "https://kesaseteli.fi/en/"
+    "informationLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -39,13 +46,37 @@
       "fileType": "The file type is not allowed."
     }
   },
-  "upload": {
-    "isUploading": "Sending...",
-    "errorTitle": "File upload failed",
-    "errorMessage": "Something went wrong. Please try again later."
+  "youthApplication": {
+    "title": "ENG Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
+    "paragraph_1": "ENG Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "form" : {
+      "title": "ENG Setelin tiedot",
+      "info": "ENG Täytäthän tiedot samalla tavalla kuin kelakortissasi",
+      "button": "ENG Lähetä tiedot",
+      "first_name" : "ENG Etunimi",
+      "last_name": "ENG Sukunimi",
+      "social_security_number": "ENG Henkilötunnus",
+      "postcode": "ENG Postinumero",
+      "schoolDropdown": "ENG Koulu",
+      "schoolPlaceholder": "ENG Valitse koulusi listalta",
+      "is_unlisted_school": "ENG Koulua ei löydy listalta",
+      "schoolName": "ENG Koulun nimi",
+      "schoolNamePlaceholder": "ENG Esim. Merilahden Peruskoulu",
+      "email": "ENG Sähköpostiosoite",
+      "phone_number": "ENG Puhelinnumero",
+      "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
+      "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+      "sendButton": "ENG Lähetä tiedot",
+      "requiredInfo": "ENG Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    }
   },
-  "delete": {
-    "errorTitle": "Deleting the file failed.",
-    "errorMessage": "Something went wrong. Please try again later."
+  "errors": {
+    "required": "Information is missing or is incorrect",
+    "maxLength": "The information you entered is too long",
+    "pattern": "The information you entered is in an incorrect format",
+    "validate": "The information you entered is in an incorrect format"
+  },
+  "assistive": {
+    "toggleMenu": "ENG Avaa valikko"
   }
 }

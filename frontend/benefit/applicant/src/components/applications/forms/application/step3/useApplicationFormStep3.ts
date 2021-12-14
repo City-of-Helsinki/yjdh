@@ -11,6 +11,7 @@ type ExtendedComponentProps = {
   handleNext: () => void;
   handleSave: () => void;
   handleBack: () => void;
+  handleDelete: () => void;
   attachments: BenefitAttachment[];
   hasRequiredAttachments: boolean;
   paySubsidyGranted: boolean;
@@ -19,10 +20,11 @@ type ExtendedComponentProps = {
 const useApplicationFormStep3 = (
   application: Application
 ): ExtendedComponentProps => {
-  const { onNext, onSave, onBack } = useFormActions(application);
+  const { onNext, onSave, onBack, onDelete } = useFormActions(application);
 
   const handleNext = (): void => onNext(application);
   const handleSave = (): void => onSave(application);
+  const handleDelete = (): void => onDelete(application.id ?? '');
 
   const isRequiredAttachmentsUploaded = (): boolean => {
     if (
@@ -60,6 +62,7 @@ const useApplicationFormStep3 = (
     handleNext,
     handleSave,
     handleBack: onBack,
+    handleDelete,
     benefitType: application?.benefitType,
     apprenticeshipProgram: Boolean(application?.apprenticeshipProgram),
     showSubsidyMessage: Boolean(

@@ -30,6 +30,7 @@ type ExtendedComponentProps = {
   getErrorMessage: (fieldName: string) => string | undefined;
   handleSubmit: () => void;
   handleSave: () => void;
+  handleDelete?: () => void;
   clearDeminimisAids: () => void;
   formik: FormikProps<Application>;
   deMinimisAidSet: DeMinimisAid[];
@@ -42,7 +43,7 @@ const useApplicationFormStep1 = (
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
   const { setDeMinimisAids } = React.useContext(DeMinimisContext);
-  const { onNext, onSave } = useFormActions(application);
+  const { onNext, onSave, onDelete } = useFormActions(application);
 
   const translationsBase = 'common:applications.sections.company';
   // todo: check the isSubmitted logic, when its set to false and how affects the validation message
@@ -108,6 +109,11 @@ const useApplicationFormStep1 = (
 
   const handleSave = (): void => onSave(values);
 
+  const applicationId = values?.id;
+  const handleDelete = applicationId
+    ? (): void => onDelete(applicationId)
+    : undefined;
+
   const clearDeminimisAids = React.useCallback((): void => {
     setDeMinimisAids([]);
     void setFieldValue(fields.deMinimisAid.name, null);
@@ -139,6 +145,7 @@ const useApplicationFormStep1 = (
     getErrorMessage,
     handleSubmit,
     handleSave,
+    handleDelete,
     clearDeminimisAids,
     deMinimisAidSet: application.deMinimisAidSet || [],
     languageOptions,
