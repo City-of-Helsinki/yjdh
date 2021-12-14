@@ -54,8 +54,9 @@ export const getIndexPageComponents = async (t: TestController) => {
       await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
     },
     async isFormFulfilledWith(youthFormData: YouthFormData) {
+      const textContent = await selectors.result().textContent;
       const sentApplication = JSON.parse(
-        (await selectors.result().textContent).trim()
+        textContent.trim()
       ) as YouthApplication;
       const expectedApplication = convertFormDataToApplication(youthFormData);
       await t.expect(sentApplication).contains(expectedApplication);
