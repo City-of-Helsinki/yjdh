@@ -25,6 +25,7 @@ type ExtendedComponentProps = {
   handleBack: () => void;
   handleSubmit: () => void;
   handleSave: () => void;
+  handleDelete: () => void;
   handleClick: (consentIndex: number) => void;
   getErrorText: (consentIndex: number) => string;
   translationsBase: string;
@@ -54,7 +55,7 @@ const useApplicationFormStep6 = (
 
   const [errorsArray, setErrorsArray] = useState<boolean[]>(getInitialvalues());
 
-  const { onSave, onBack } = useFormActions(application);
+  const { onSave, onBack, onDelete } = useFormActions(application);
 
   const { setSubmittedApplication, submittedApplication } =
     useContext(AppContext);
@@ -125,12 +126,14 @@ const useApplicationFormStep6 = (
   };
 
   const handleSave = (): void => onSave(application);
+  const handleDelete = (): void => onDelete(application.id ?? '');
 
   return {
     t,
     handleBack: onBack,
     handleSubmit,
     handleSave,
+    handleDelete,
     handleClick,
     getErrorText,
     translationsBase,

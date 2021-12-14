@@ -21,6 +21,7 @@ type ExtendedComponentProps = {
   handleSave: () => void;
   handleSubmit: () => void;
   handleBack: () => void;
+  handleDelete: () => void;
   handleStepChange: (step: number) => void;
   translationsBase: string;
   isSubmit: boolean;
@@ -77,7 +78,7 @@ const useApplicationFormStep5 = (
     }
   }, [t, updateApplicationErrorStep5]);
 
-  const { onBack, onSave } = useFormActions(application);
+  const { onBack, onSave, onDelete } = useFormActions(application);
 
   const handleStepChange = (nextStep: number): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
@@ -91,6 +92,7 @@ const useApplicationFormStep5 = (
   };
 
   const handleSave = (): void => onSave(application);
+  const handleDelete = (): void => onDelete(application.id ?? '');
 
   const handleSubmit = (): void => {
     const submitFields = isSubmit
@@ -111,6 +113,7 @@ const useApplicationFormStep5 = (
     handleSave,
     handleSubmit,
     handleBack: onBack,
+    handleDelete,
     handleStepChange,
     translationsBase,
     isSubmit,
