@@ -8,7 +8,7 @@ const FooterSection: React.FC = () => {
   const { t } = useTranslation();
   return (
     <$FooterWrapper>
-      <Footer title={t('common:appName')} theme="light">
+      <Footer title={t('common:appName')} theme="dark">
         <Footer.Utilities backToTopLabel={t('common:footer.backToTop')}>
           <Footer.SoMe />
           <Footer.Item
@@ -20,29 +20,18 @@ const FooterSection: React.FC = () => {
           >
             <IconLinkExternal />
           </Footer.Item>
-          <Footer.Item
-            as="a"
-            rel="noopener noreferrer"
-            target="_blank"
-            href={t('common:footer.jobOpeningsLink')}
-            label={t('common:footer.jobOpenings')}
-          >
-            <IconLinkExternal />
-          </Footer.Item>
+        </Footer.Utilities>
+        <Footer.Base
+          copyrightHolder={t('common:footer.copyrightText')}
+          copyrightText={t('common:footer.allRightsReservedText')}
+        >
           <Footer.Item
             as="a"
             rel="noopener noreferrer"
             target="_blank"
             href={t('common:footer.registerInformationLink')}
             label={t('common:footer.registerInformation')}
-          >
-            <IconLinkExternal />
-          </Footer.Item>
-        </Footer.Utilities>
-        <Footer.Base
-          copyrightHolder={t('common:footer.copyrightText')}
-          copyrightText={t('common:footer.allRightsReservedText')}
-        >
+          />
           <Footer.Item
             as="a"
             rel="noopener noreferrer"
