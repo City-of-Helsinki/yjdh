@@ -1,8 +1,11 @@
 import { Button, CommonButtonProps } from 'hds-react';
-import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import noop from 'lodash/noop';
 import React from 'react';
-import { SubmitErrorHandler, useFormContext } from 'react-hook-form';
+import {
+  SubmitErrorHandler,
+  SubmitHandler,
+  useFormContext,
+} from 'react-hook-form';
 import { UseMutationResult } from 'react-query';
 
 type Props<FormData, BackendResponseData> = Omit<
@@ -33,9 +36,9 @@ const SaveFormButton = <
     () => saveQuery.isLoading || formState.isSubmitting,
     [saveQuery.isLoading, formState.isSubmitting]
   );
-  const handleSaving = React.useCallback(
-    (formData: YouthFormData) => {
-      saveQuery.mutate(formData, {
+  const handleSaving: SubmitHandler<FormData> = React.useCallback(
+    (formData) => {
+      saveQuery.mutate(formData as FormData, {
         onSuccess: (responseData) => {
           if (onSuccess) {
             void onSuccess(responseData);

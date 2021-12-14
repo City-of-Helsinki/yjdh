@@ -22,7 +22,8 @@ beforeAll(() => {
 
   const filterErrors = (...args: string[]) => {
     if (
-      typeof isString(args[0]) &&
+      args.length > 0 &&
+      isString(args[0]) &&
       messagesToIgnore.some((msg) => args[0].includes(msg))
     ) {
       return () => {};

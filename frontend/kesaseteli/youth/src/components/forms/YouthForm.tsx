@@ -1,7 +1,7 @@
 import SchoolSelection from 'kesaseteli/youth/components/forms/SchoolSelection';
 import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
-import YouthApplication from 'kesaseteli/youth/types/youth-application';
+import CreatedYouthApplication from 'kesaseteli/youth/types/created-youth-application';
 import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -18,10 +18,12 @@ const YouthForm: React.FC = () => {
   const { t } = useTranslation();
   const register = useRegisterInput<YouthFormData>();
 
-  const [result, setResult] = React.useState<YouthApplication | null>(null);
+  const [result, setResult] = React.useState<CreatedYouthApplication | null>(
+    null
+  );
 
   const handleSaveSuccess = React.useCallback(
-    (createdApplication) => {
+    (createdApplication: CreatedYouthApplication) => {
       setResult(createdApplication);
       // TODO: redirect to thank you -page
     },

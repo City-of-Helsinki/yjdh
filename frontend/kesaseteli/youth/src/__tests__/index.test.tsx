@@ -22,6 +22,7 @@ const texts = {
 
 describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
   it('should not violate accessibility', async () => {
+    expectToGetSchoolsFromBackend();
     const {
       renderResult: { container },
     } = renderComponent(<YouthIndex />);
