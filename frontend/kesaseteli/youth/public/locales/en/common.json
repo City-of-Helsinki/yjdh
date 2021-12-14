@@ -17,10 +17,17 @@
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
+    "backToTop": "Back to top",
+    "registerInformation": "ENG Rekisteriseloste ",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth%20services%20summer%20job%20voucher%20data%20file.pdf",
+    "jobOpenings": "ENG Avoimet työpaikat (Only in finnish)",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Contact us",
+    "contactUsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/contact-us/",
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
     "information": "Information on the service",
-    "informationLink": "https://kesaseteli.fi/en/"
+    "informationLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/"
   },
   "languages": {
     "fi": "Suomeksi",
