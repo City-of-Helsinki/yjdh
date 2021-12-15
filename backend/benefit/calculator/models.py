@@ -426,6 +426,8 @@ class CalculationRow(UUIDModel, TimeStampedModel):
     amount = models.DecimalField(
         max_digits=7, decimal_places=2, verbose_name=_("row amount")
     )
+    start_date = models.DateField(blank=True, null=True, verbose_name=_("Start date"))
+    end_date = models.DateField(blank=True, null=True, verbose_name=_("End date"))
 
     history = HistoricalRecords(table_name="bf_calculator_calculationrow_history")
 
@@ -451,6 +453,10 @@ class CalculationRow(UUIDModel, TimeStampedModel):
             return self.description_fi_template.format(row=self)
         else:
             return self.description_fi
+
+    @property
+    def duration_in_months(self):
+        return duration_in_months(self.start_date, self.end_date)
 
     class Meta:
         db_table = "bf_calculator_calculationrow"
@@ -701,8 +707,6 @@ class SalaryBenefitSubTotalRow(CalculationRow):
     description_fi_template = "Yhteensä ajanjaksolta"
 
     def __init__(self, *args, **kwargs):
-        self.start_date = kwargs.pop("start_date", None)
-        self.end_date = kwargs.pop("end_date", None)
         super().__init__(*args, **kwargs)
 
     def calculate_amount(self):
