@@ -18,7 +18,7 @@ import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
 import { getInitials } from 'shared/utils/string.utils';
 import { DefaultTheme } from 'styled-components';
 
-const translationListBase = 'common:applications.list.submitted';
+const translationListBase = 'common:applications.list';
 const translationStatusBase = 'common:applications.statuses';
 
 interface ApplicationListProps {
@@ -35,7 +35,7 @@ const getAvatarBGColor = (
       return 'black40';
 
     case APPLICATION_STATUSES.INFO_REQUIRED:
-      return 'alertDark';
+      return 'alert';
 
     case APPLICATION_STATUSES.RECEIVED:
       return 'info';
@@ -80,7 +80,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       case APPLICATION_STATUSES.DRAFT:
       case APPLICATION_STATUSES.INFO_REQUIRED:
         return {
-          label: t(`${translationListBase}.edit`),
+          label: t(`${translationListBase}.common.edit`),
           handleAction: (): void => {
             void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
           },
@@ -89,7 +89,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
 
       default:
         return {
-          label: t(`${translationListBase}.check`),
+          label: t(`${translationListBase}.common.check`),
           // implement the action
           handleAction: noop,
         };
@@ -121,17 +121,36 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       formatDate(new Date(created_at), DATE_FORMATS.DATE_AND_TIME);
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));
-    const commonProps = { id, name, avatar, modifiedAt, allowedAction };
+    //todo: fix the value when available in backend
+    const editEndDate = createdAt;
+
+    const commonProps = {
+      id,
+      name,
+      avatar,
+      modifiedAt,
+      allowedAction,
+      status: appStatus,
+    };
     const draftProps = { createdAt, applicationNum };
     const submittedProps = {
       submittedAt,
       applicationNum,
       statusText,
     };
+    const infoNeededProps = {
+      submittedAt,
+      applicationNum,
+      editEndDate,
+    };
 
     if (appStatus === APPLICATION_STATUSES.DRAFT) {
       const newDraftProps = { ...commonProps, ...draftProps };
       return [...acc, newDraftProps];
+    }
+    if (appStatus === APPLICATION_STATUSES.INFO_REQUIRED) {
+      const newInfoNeededProps = { ...commonProps, ...infoNeededProps };
+      return [...acc, newInfoNeededProps];
     }
     const newSubmittedProps = { ...commonProps, ...submittedProps };
     return [...acc, newSubmittedProps];
