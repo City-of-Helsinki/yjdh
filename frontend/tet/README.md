@@ -5,5 +5,4 @@
 Some corners were cut to get initial working pipelines for the projects,
 make sure to fix these in `admin`, `employer` and `youth`:
 
-* remove `pages` from `.eslintignore`
 * remove `--pass-with-no-tests` from `yarn test`

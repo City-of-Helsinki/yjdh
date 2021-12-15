@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
+from django.views.decorators.http import require_GET
 
 urlpatterns = [
     path("oidc/", include("shared.oidc.urls")),
@@ -24,10 +25,12 @@ urlpatterns = [
 ]
 
 
+@require_GET
 def healthz_handler(*args, **kwargs):
     return HttpResponse(status=200)
 
 
+@require_GET
 def readiness_handler(*args, **kwargs):
     return HttpResponse(status=200)
 
