@@ -78,5 +78,11 @@
   },
   "assistive": {
     "toggleMenu": "ENG Avaa valikko"
+  },
+  "thankyouPage" : {
+    "title": "Thank You!",
+    "notificationTitle": "SV Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
+    "notificationMessage": "SV Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
+    "goToFrontendPage": "SV Kesäseteli etusivulle"
   }
 }
