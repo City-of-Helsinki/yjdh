@@ -1,5 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { DateInput } from 'hds-react';
+import { DateInput, IconArrowUndo } from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -70,7 +70,8 @@ const EmploymentAppliedMoreView: React.FC = () => {
           </$GridCell>
           <$GridCell $colStart={11} $colSpan={2}>
             <$ResetDatesWrapper>
-              <$ResetLink aria-label={t(`${translationsBase}.reset`)}>
+              <IconArrowUndo />
+              <$ResetLink aria-label={t(`${translationsBase}.reset`)} href="#">
                 {t(`${translationsBase}.reset`)}
               </$ResetLink>
             </$ResetDatesWrapper>

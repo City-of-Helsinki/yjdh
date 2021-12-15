@@ -1,3 +1,4 @@
+import { Link } from 'hds-react';
 import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import styled from 'styled-components';
 
@@ -28,18 +29,23 @@ export const $CalculatorHr = styled($Hr)`
 export const $ResetDatesWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
   height: 100%;
+  color: ${(props) => props.theme.colors.black50};
 `;
 
-export const $ResetLink = styled.a`
-  width: 100%;
+export const $ResetLink = styled(Link)`
   display: inline-block;
   text-align: end;
   vertical-align: middle;
   text-decoration: none;
-  color: ${(props) => props.theme.colors.black50};
   font-size: ${(props) => props.theme.fontSize.body.m};
+  padding-left: ${(props) => props.theme.spacing.xs2};
+  cursor: pointer;
+  color: ${(props) => props.theme.colors.black50};
+  &:visited {
+    color: ${(props) => props.theme.colors.black50};
+  }
 `;
 
 export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
