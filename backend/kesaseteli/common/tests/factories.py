@@ -1,8 +1,10 @@
 import random
-from datetime import date, timedelta
-from typing import List
+from datetime import date, datetime, timedelta
+from typing import List, Optional
 
 import factory
+import factory.fuzzy
+import pytz
 from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
@@ -120,7 +122,15 @@ def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
     return youth_application.school not in get_listed_test_schools()
 
 
-class YouthApplicationFactory(factory.django.DjangoModelFactory):
+def copy_created_at(youth_application: YouthApplication) -> Optional[datetime]:
+    return youth_application.created_at
+
+
+class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
+    created_at = factory.fuzzy.FuzzyDateTime(
+        start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
+    )
+    modified_at = factory.LazyAttribute(copy_created_at)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
@@ -129,6 +139,27 @@ class YouthApplicationFactory(factory.django.DjangoModelFactory):
     email = factory.Faker("email")
     phone_number = factory.Faker("phone_number", locale="fi")
     language = factory.Faker("random_element", elements=["fi", "sv", "en"])
+    _is_active = None
 
     class Meta:
         model = YouthApplication
+        exclude = ["_is_active"]
+
+
+class YouthApplicationFactory(BaseYouthApplicationFactory):
+    _is_active = factory.Faker("boolean")
+    receipt_confirmed_at = factory.Maybe(
+        "_is_active",
+        factory.LazyAttribute(copy_created_at),
+        None,
+    )
+
+
+class ActiveYouthApplicationFactory(BaseYouthApplicationFactory):
+    _is_active = True
+    receipt_confirmed_at = factory.LazyAttribute(copy_created_at)
+
+
+class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
+    _is_active = False
+    receipt_confirmed_at = None

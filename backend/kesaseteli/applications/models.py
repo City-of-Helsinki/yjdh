@@ -1,5 +1,10 @@
+from datetime import timedelta
+
 from django.conf import settings
-from django.db import models
+from django.core.mail import send_mail
+from django.db import models, transaction
+from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
@@ -76,6 +81,54 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     receipt_confirmed_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("timestamp of receipt confirmation")
     )
+
+    def _activation_link(self, request):
+        return request.build_absolute_uri(
+            reverse("v1:youthapplication-activate", kwargs={"pk": self.id})
+        )
+
+    @property
+    def has_activation_link_expired(self) -> bool:
+        hours_elapsed = (timezone.now() - self.created_at) / timedelta(hours=1)
+        expiration_hours = settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS
+        return hours_elapsed >= expiration_hours
+
+    def _activation_email_subject(self, request):
+        return _("Vahvista sähköpostiosoitteesi")
+
+    def _activation_email_message(self, request):
+        activation_link = self._activation_link(request)
+        return _(
+            "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
+            "%(activation_link)s"
+        ) % {"activation_link": activation_link}
+
+    def send_activation_email(self, request):
+        send_mail(
+            subject=self._activation_email_subject(request),
+            message=self._activation_email_message(request),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.email],
+            fail_silently=False,
+        )
+
+    @property
+    def is_active(self) -> bool:
+        return self.receipt_confirmed_at is not None
+
+    @property
+    def can_activate(self) -> bool:
+        return not self.is_active and not self.has_activation_link_expired
+
+    @transaction.atomic
+    def activate(self) -> bool:
+        """
+        Activate this youth application. Return self.is_active after this call.
+        """
+        if self.can_activate:
+            self.receipt_confirmed_at = timezone.now()
+            self.save()
+        return self.is_active
 
     @property
     def name(self):

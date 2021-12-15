@@ -11,3 +11,13 @@ def excel_root():
     if not os.path.exists(settings.EXCEL_ROOT):
         os.makedirs(settings.EXCEL_ROOT)
     return settings.EXCEL_ROOT
+
+
+@pytest.fixture
+def make_youth_application_activation_link_expired(settings):
+    settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS = 0
+
+
+@pytest.fixture
+def make_youth_application_activation_link_unexpired(settings):
+    settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS = 24 * 365 * 100

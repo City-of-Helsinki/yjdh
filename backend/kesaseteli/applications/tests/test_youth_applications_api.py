@@ -5,11 +5,85 @@ from rest_framework.reverse import reverse
 from applications.api.v1.serializers import YouthApplicationSerializer
 
 
+def get_activation_url(pk):
+    return reverse("v1:youthapplication-activate", kwargs={"pk": pk})
+
+
 @pytest.mark.django_db
 def test_youth_applications_list(api_client):
     response = api_client.get(reverse("v1:youthapplication-list"))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_youth_applications_activate_invalid_pk(api_client):
+    response = api_client.get(get_activation_url(pk="invalid value"))
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_youth_applications_activate_unexpired_inactive(
+    api_client,
+    inactive_youth_application,
+    make_youth_application_activation_link_unexpired,
+):
+    assert not inactive_youth_application.is_active
+    assert not inactive_youth_application.has_activation_link_expired
+
+    response = api_client.get(get_activation_url(inactive_youth_application.pk))
+
+    assert response.status_code == status.HTTP_200_OK
+    inactive_youth_application.refresh_from_db()
+    assert inactive_youth_application.is_active
+
+
+@pytest.mark.django_db
+def test_youth_applications_activate_unexpired_active(
+    api_client,
+    active_youth_application,
+    make_youth_application_activation_link_unexpired,
+):
+    assert active_youth_application.is_active
+    assert not active_youth_application.has_activation_link_expired
+
+    response = api_client.get(get_activation_url(active_youth_application.pk))
+
+    assert response.status_code == status.HTTP_200_OK
+    active_youth_application.refresh_from_db()
+    assert active_youth_application.is_active
+
+
+@pytest.mark.django_db
+def test_youth_applications_activate_expired_inactive(
+    api_client,
+    inactive_youth_application,
+    make_youth_application_activation_link_expired,
+):
+    assert not inactive_youth_application.is_active
+    assert inactive_youth_application.has_activation_link_expired
+
+    response = api_client.get(get_activation_url(inactive_youth_application.pk))
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    inactive_youth_application.refresh_from_db()
+    assert not inactive_youth_application.is_active
+
+
+@pytest.mark.django_db
+def test_youth_applications_activate_expired_active(
+    api_client,
+    active_youth_application,
+    make_youth_application_activation_link_expired,
+):
+    assert active_youth_application.is_active
+    assert active_youth_application.has_activation_link_expired
+
+    response = api_client.get(get_activation_url(active_youth_application.pk))
+
+    assert response.status_code == status.HTTP_200_OK
+    active_youth_application.refresh_from_db()
+    assert active_youth_application.is_active
 
 
 @pytest.mark.django_db
