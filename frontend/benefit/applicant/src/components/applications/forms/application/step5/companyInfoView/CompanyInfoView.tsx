@@ -166,7 +166,12 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
             ))}
           </>
         ) : (
-          '-'
+          <$GridCell $colSpan={12}>
+            <$ViewField>
+              {t(`${translationsBase}.company.deMinimisAidsNo`)}{' '}
+              <$ViewFieldBold>{t('common:utility.no')}</$ViewFieldBold>
+            </$ViewField>
+          </$GridCell>
         )}
       </SummarySection>
       <SummarySection header={t(`${translationsBase}.company.heading5`)}>
