@@ -16,6 +16,14 @@
         "status": "Tila",
         "edit": "Muokkaa",
         "check": "Tarkastele"
+      },
+      "moreInfo": {
+        "heading": "Lisätietoa tarvitaan",
+        "employee": "Työllistetty",
+        "sent": "Lähetetty",
+        "applicationNumber": "Hakemusnumero",
+        "edit": "Muokkaa",
+        "editEndDate": "Muokkaa viimeistään"
       }
     },
     "pageHeaders": {

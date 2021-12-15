@@ -15,18 +15,16 @@ const ApplicantIndex: NextPage = () => {
     <FrontPageProvider>
       <MainIngress />
       <ApplicationsList
+        heading={t('common:applications.list.moreInfo.heading')}
+        status={['additional_information_needed']}
+      />
+      <ApplicationsList
         heading={t('common:applications.list.drafts.heading')}
         status={['draft']}
       />
       <ApplicationsList
         heading={t('common:applications.list.submitted.heading')}
-        status={[
-          'received',
-          'additional_information_needed',
-          'cancelled',
-          'accepted',
-          'rejected',
-        ]}
+        status={['received', 'cancelled', 'accepted', 'rejected']}
       />
     </FrontPageProvider>
   );
