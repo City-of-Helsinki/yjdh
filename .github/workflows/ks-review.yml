@@ -134,6 +134,7 @@ jobs:
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.EMPLOYER_URL }}/login?logout=true" >> $GITHUB_ENV
 
       - name: Review-Services
         if: matrix.database
@@ -167,6 +168,7 @@ jobs:
           CSRF_TRUSTED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
           LOGIN_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
           LOGIN_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
+          LOGOUT_REDIRECT_URL: ${{ env.EMPLOYER_URL }}/login?logout=true
 
       - name: Deploy Cronjobs
         if: matrix.database

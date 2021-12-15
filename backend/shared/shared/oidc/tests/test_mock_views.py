@@ -5,6 +5,7 @@ from django.urls import path, reverse
 
 from shared.oidc.views.mock_views import (
     MockAuthenticationRequestView,
+    MockLogoutCallbackView,
     MockLogoutView,
     MockUserInfoView,
 )
@@ -19,6 +20,11 @@ urlpatterns = [
         "oidc/logout/",
         MockLogoutView.as_view(),
         name="oidc_logout",
+    ),
+    path(
+        "oidc/logout_callback/",
+        MockLogoutCallbackView.as_view(),
+        name="oidc_logout_callback",
     ),
     path(
         "oidc/userinfo/",
@@ -46,14 +52,27 @@ def test_login_view(client):
 @override_settings(
     MOCK_FLAG=True,
     ROOT_URLCONF=__name__,
+    LOGOUT_REDIRECT_URL="http://example.com/logged_out/?status=logout",
 )
 def test_logout_view(user_client, user):
     logout_url = reverse("oidc_logout")
-    response = user_client.post(logout_url)
-
-    assert response.status_code == 200
-    assert response.content == b"OK"
+    response = user_client.get(logout_url)
+    assert response.status_code == 302
+    assert response.headers["Location"] == settings.LOGOUT_REDIRECT_URL
     assert "_auth_user_id" not in user_client.session  # User not authenticated
+
+
+@pytest.mark.django_db
+@override_settings(
+    MOCK_FLAG=True,
+    ROOT_URLCONF=__name__,
+    LOGOUT_REDIRECT_URL="http://example.com/logged_out/?status=logout",
+)
+def test_logout_callback_view(user_client, user):
+    logout_url = reverse("oidc_logout_callback")
+    response = user_client.get(logout_url)
+    assert response.status_code == 302
+    assert response.headers["Location"] == settings.LOGOUT_REDIRECT_URL
 
 
 @pytest.mark.django_db
