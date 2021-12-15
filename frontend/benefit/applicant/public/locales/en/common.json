@@ -60,6 +60,7 @@
         "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
         "deMinimisAidsAdd": "Lisää",
         "deMinimisAidsRemove": "Poista",
+        "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
         "notifications": {
           "companyInformation": {
             "label": "Tiedot haettu YTJ:stä",
@@ -465,6 +466,8 @@
     "terms": "Terms.PDF"
   },
   "utility": {
-    "and": "ja"
+    "and": "ja",
+    "yes": "Kyllä",
+    "no": "Ei"
   }
 }

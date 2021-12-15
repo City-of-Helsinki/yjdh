@@ -6,7 +6,9 @@ import Container from 'shared/components/container/Container';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
 
+import HandlingApplicationActions from './actions/handlingApplicationActions/HandlingApplicationActions';
 import ReceivedApplicationActions from './actions/receivedApplicationActions/ReceivedApplicationActions';
+import ApplicationProcessingView from './applicationProcessingView/AplicationProcessingView';
 import BenefitView from './benefitView/BenefitView';
 import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import ConsentView from './consentView/ConsentView';
@@ -14,6 +16,7 @@ import ContactPersonView from './contactPersonView/ContactPersonView';
 import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
 import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
+import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import { useApplicationReview } from './useApplicationReview';
@@ -42,13 +45,19 @@ const ApplicationReview: React.FC = () => {
         <BenefitView data={application} />
         <EmploymentView data={application} />
         <ConsentView data={application} />
+        {application.status === APPLICATION_STATUSES.HANDLING && (
+          <>
+            <EmploymenAppliedMoreView />
+            <ApplicationProcessingView />
+          </>
+        )}
       </Container>
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (
           <ReceivedApplicationActions application={application} />
         )}
         {application.status === APPLICATION_STATUSES.HANDLING && (
-          <>handling actions</>
+          <HandlingApplicationActions application={application} />
         )}
       </StickyActionBar>
       <$StickyBarSpacing />

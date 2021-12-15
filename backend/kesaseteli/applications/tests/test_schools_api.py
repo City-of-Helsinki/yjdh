@@ -53,4 +53,4 @@ def test_schools_list_returns_unique_elements_collection(api_client):
 @pytest.mark.django_db
 def test_schools_list_returns_sorted_collection(api_client):
     response = api_client.get(get_schools_api_url())
-    assert sorted(response.json()) == response.json()
+    assert sorted(response.json(), key=str.casefold) == response.json()

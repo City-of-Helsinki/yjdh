@@ -19,7 +19,7 @@ const BenefitView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
       header={t(`${translationsBase}.headings.heading7`)}
       action={data.status !== APPLICATION_STATUSES.RECEIVED ? <></> : null}
     >
-      <$GridCell $colSpan={5}>
+      <$GridCell $colSpan={6}>
         <$ViewField>
           {`${t(`${translationsBase}.fields.benefitType`)}: `}
           <$ViewFieldBold>

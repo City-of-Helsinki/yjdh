@@ -4,7 +4,7 @@ from datetime import date
 from unittest.mock import patch
 
 import pytest
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, BenefitType
 from applications.services.ahjo_integration import (
     export_application_batch,
     generate_composed_files,
@@ -12,6 +12,8 @@ from applications.services.ahjo_integration import (
     generate_single_declined_file,
 )
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
+from calculator.models import Calculation
+from calculator.tests.factories import PaySubsidyFactory
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 
@@ -166,4 +168,56 @@ def test_export_application_batch(application_batch):
             status=ApplicationStatus.CANCELLED
         ).count()
         + 3
+    )
+
+
+@patch("applications.services.ahjo_integration.pdfkit.from_string")
+def test_multiple_benefit_per_application(mock_pdf_convert):
+    mock_pdf_convert.return_value = {}
+    # Test case data and expected results collected from
+    # calculator/tests/Helsinki-lisä laskurin testitapaukset.xlsx/ Sheet Palkan Helsinki-lisä / Column E
+    application = ApplicationFactory(
+        association_has_business_activities=True,
+        company__company_form="ry",
+        start_date=date(2021, 7, 10),
+        end_date=date(2021, 11, 10),
+        status=ApplicationStatus.RECEIVED,
+        benefit_type=BenefitType.SALARY_BENEFIT,
+    )
+
+    application.calculation = Calculation(
+        application=application,
+        monthly_pay=3200,
+        vacation_money=0,
+        other_expenses=200,
+        start_date=application.start_date,
+        end_date=application.end_date,
+        state_aid_max_percentage=50,
+        calculated_benefit_amount=0,
+        override_benefit_amount=None,
+    )
+    pay_subsidy = PaySubsidyFactory(
+        pay_subsidy_percent=40, start_date=date(2021, 7, 10), end_date=date(2021, 9, 10)
+    )
+    application.pay_subsidies.add(pay_subsidy)
+    application.save()
+    application.calculation.save()
+    application.refresh_from_db()
+    application.calculation.init_calculator()
+    application.calculation.calculate()
+    _, _, html = generate_single_approved_file(application.company, [application])
+    assert (
+        html.count(application.ahjo_application_number) == 2
+    )  # Make sure there are two rows in the report
+    _assert_html_content(
+        html,
+        (
+            application.ahjo_application_number,
+            application.employee.first_name,
+            application.employee.last_name,
+            "691",
+            "340",
+            "1600",
+            "800",
+        ),
     )

@@ -37,6 +37,11 @@
     "generic": {
       "label": "Error occurred",
       "text": "Please try again later."
+    },
+    "attachments": {
+      "title": "Error occurred",
+      "tooBig": "The attachemnt size is too big.",
+      "fileType": "The attachment file type is not allowed."
     }
   },
   "applications": {
@@ -68,7 +73,15 @@
   "review": {
     "actions": {
       "handle": "Ota käsittelyyn",
-      "close": "Sulje"
+      "close": "Sulje",
+      "done": "Valmis",
+      "saveAndContinue": "Tallenna ja sulje",
+      "handlingPanel": "Käsittelypaneeli",
+      "cancel": "Peruuta hakemus",
+      "addAttachment": "Liitä uusi tiedosto",
+      "addPreviouslyGrantedBenefit": "Lisää aikaisempi lisä",
+      "targetGroupCheck": "Kohderyhmätarkistus",
+      "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
@@ -80,7 +93,8 @@
       "heading6": "Palkkatukipäätös",
       "heading7": "Haettava tukimuoto ja ajankohta",
       "heading8": "Työsuhde",
-      "heading9": "Suostumus"
+      "heading9": "Suostumus",
+      "heading10": "Hakemuksen käsittely"
     },
     "fields": {
       "businessId": "Y-tunnus",
@@ -92,6 +106,7 @@
       "deMinimisAidAmount": "Tuen määrä",
       "deMinimisAidGrantedAt": "Myönnetty",
       "deMinimisAidTotal": "Yhteensä",
+      "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
       "coOperationNegotiations": "Onko hakijalla menossa YT-neuvottelut?",
       "isLivingInHelsinki": "Helsinki kotikuntana",
       "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
@@ -103,7 +118,22 @@
       "workingHours": "Työaika: {{workingHours}} t / viikko",
       "monthlyPay": "Bruttopalkka {{monthlyPay}} €/kk",
       "otherExpenses": "Sivukulut {{otherExpenses}} €/kk",
-      "vacationMoney": "Lomaraha {{vacationMoney}} €"
+      "vacationMoney": "Lomaraha {{vacationMoney}} €",
+      "noSupport": "Ei puolleta",
+      "support": "Puolletaan",
+      "reason": "Perustelu",
+      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä"
+    }
+  },
+  "calculators": {
+    "employment": {
+      "header": "Työllistämisen Helsinki-lisää haettu ajalle",
+      "startEndDates": "{{startDate}} - {{endDate}} ({{period}} kk)",
+      "grantedPeriod": "Helsinki-lisää myönnetään ajalle ({{period}} kk)",
+      "reset": "Palauta arvot",
+      "tableRowHeader": "Helsinki-lisä / kk",
+      "tableRowValue": "{{amount}} €",
+      "tableTotalHeader": "Helsinki-lisä yhteensä"
     }
   },
   "organizationTypes": {
@@ -141,5 +171,10 @@
     "yes": "Kyllä",
     "no": "Ei",
     "and": "ja"
+  },
+  "upload": {
+    "isUploading": "Uploading...",
+    "errorTitle": "Uploading failed",
+    "errorMessage": "Something went wrong. Please try again later."
   }
 }

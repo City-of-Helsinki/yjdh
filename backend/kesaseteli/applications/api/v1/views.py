@@ -1,6 +1,6 @@
 from django.core import exceptions
 from django.db.models import Func
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -54,11 +54,43 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
 
+    @action(methods=["get"], detail=True)
+    def activate(self, request, pk=None) -> HttpResponse:
+        try:
+            youth_application = YouthApplication.objects.get(pk=pk)
+        except (exceptions.ValidationError, YouthApplication.DoesNotExist):
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+        if youth_application.is_active:
+            return HttpResponse(
+                status=status.HTTP_200_OK, content="Youth application already active"
+            )
+        elif youth_application.has_activation_link_expired:
+            return HttpResponse(
+                status=status.HTTP_401_UNAUTHORIZED,
+                content="Activation link has expired",
+            )
+        elif youth_application.activate():
+            return HttpResponse(
+                status=status.HTTP_200_OK, content="Youth application activated"
+            )
+
+        return HttpResponse(
+            status=status.HTTP_401_UNAUTHORIZED,
+            content="Unable to activate youth application",
+        )
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        youth_application = YouthApplication.objects.get(id=response.data["id"])
+        youth_application.send_activation_email(request)
+        return response
+
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "create":
+        if self.action in ["activate", "create"]:
             permission_classes = [AllowAny]
         else:
             permission_classes = [DenyAll]
