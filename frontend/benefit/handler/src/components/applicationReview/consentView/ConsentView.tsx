@@ -9,6 +9,8 @@ import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
+import ConsentActions from './consentActions/ConsentActions';
+
 const ConsentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
@@ -16,7 +18,9 @@ const ConsentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       header={t(`${translationsBase}.headings.heading9`)}
       action={
-        data.status !== APPLICATION_STATUSES.RECEIVED ? <>some actions</> : null
+        data.status !== APPLICATION_STATUSES.RECEIVED ? (
+          <ConsentActions />
+        ) : null
       }
     >
       <$GridCell $colSpan={12}>

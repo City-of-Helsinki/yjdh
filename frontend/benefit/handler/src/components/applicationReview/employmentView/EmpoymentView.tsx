@@ -11,6 +11,7 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import AttachmentsListView from '../../attachmentsListView/AttachmentsListView';
+import EmploymentActions from './employmentActions/EmploymentActions';
 
 const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
@@ -19,7 +20,9 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
     <ReviewSection
       header={t(`${translationsBase}.headings.heading8`)}
       action={
-        data.status !== APPLICATION_STATUSES.RECEIVED ? <>some actions</> : null
+        data.status !== APPLICATION_STATUSES.RECEIVED ? (
+          <EmploymentActions />
+        ) : null
       }
     >
       <$GridCell $colSpan={5}>
