@@ -20,7 +20,7 @@ def get_or_create_company_using_company_data(company_data: dict) -> Company:
 
 def get_or_create_organisation_with_business_id(business_id: str) -> Company:
     """
-    Create a company instance using the Palveluvayla integration.
+    Create a company instance using the Palveluväylä integration.
     """
     sb_client = ServiceBusClient()
 
