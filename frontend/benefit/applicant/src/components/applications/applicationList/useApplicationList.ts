@@ -121,7 +121,6 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       formatDate(new Date(created_at), DATE_FORMATS.DATE_AND_TIME);
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));
-    //todo: fix the value when available in backend
     const editEndDate = createdAt;
 
     const commonProps = {
