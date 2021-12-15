@@ -93,18 +93,22 @@ jobs:
           - service: te-bknd
             context: ./backend
             dockerfile: ./backend/docker/tet.Dockerfile
+            database: true
             port: 8000
           - service: te-empl
             context: ./frontend
             dockerfile: ./frontend/tet/employer/Dockerfile
+            database: false
             port: 3000
           - service: te-yout
             context: ./frontend
             dockerfile: ./frontend/tet/youth/Dockerfile
+            database: false
             port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
+            database: false
             port: 3000
     runs-on: ubuntu-latest
     needs: build
