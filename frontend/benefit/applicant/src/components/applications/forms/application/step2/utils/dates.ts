@@ -15,7 +15,7 @@ export const getMinEndDate = (
   switch (benefitType) {
     case BENEFIT_TYPES.EMPLOYMENT:
     case BENEFIT_TYPES.SALARY:
-      return addMonths(subDays(parsedStartDate, 1), 1);
+      return subDays(addMonths(parsedStartDate, 1), 1);
 
     case BENEFIT_TYPES.COMMISSION:
     default:
@@ -32,7 +32,7 @@ export const getMaxEndDate = (
   switch (benefitType) {
     case BENEFIT_TYPES.EMPLOYMENT:
     case BENEFIT_TYPES.SALARY:
-      return addMonths(subDays(parsedStartDate, 1), 12);
+      return subDays(addMonths(parsedStartDate, 12), 1);
 
     case BENEFIT_TYPES.COMMISSION:
     default:

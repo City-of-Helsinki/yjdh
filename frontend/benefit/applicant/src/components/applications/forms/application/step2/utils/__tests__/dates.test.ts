@@ -1,6 +1,6 @@
 import { BENEFIT_TYPES } from 'benefit/applicant/constants';
 
-import { getMaxEndDate,getMinEndDate } from '../dates';
+import { getMaxEndDate, getMinEndDate } from '../dates';
 
 describe('dates', () => {
   const undefinedBenefit = undefined;
