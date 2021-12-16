@@ -42,10 +42,13 @@
     "actions": {
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
       "deleteApplication": "Poista hakemus",
+      "deleteApplicationConfirm": "Haluatko varmasti poistaa?",
+      "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
       "continue": "Jatka",
       "send": "Send application",
       "back": "Back",
-      "edit": "Muokkaa"
+      "edit": "Muokkaa",
+      "close": "Sulje"
     },
     "sections": {
       "company": {
@@ -356,6 +359,10 @@
     "applicationSaved": {
       "label": "Hakemus tallennettu",
       "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+    },
+    "applicationDeleted": {
+      "label": "Hakemus poistettu",
+      "message": "Helsinki-lisä hakemus on poistettu."
     }
   },
   "languages": {
