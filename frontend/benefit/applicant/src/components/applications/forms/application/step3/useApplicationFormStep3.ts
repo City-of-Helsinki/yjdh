@@ -45,7 +45,17 @@ const useApplicationFormStep3 = (
           )
         );
       }
-      return hasWorkContract && hasPaySubsidyDecision;
+      let hasApprenticeshipProgram = true;
+      if (application.apprenticeshipProgram) {
+        hasApprenticeshipProgram = !isEmpty(
+          application?.attachments?.find(
+            (att) => att.attachmentType === ATTACHMENT_TYPES.EDUCATION_CONTRACT
+          )
+        );
+      }
+      return (
+        hasWorkContract && hasPaySubsidyDecision && hasApprenticeshipProgram
+      );
     }
     if (application.benefitType === BENEFIT_TYPES.COMMISSION) {
       return !isEmpty(
