@@ -156,7 +156,7 @@ export const getStep2Components = (t: TestController) => {
       async isPresent(isOpen = true) {
         await t
           .expect(formSelector().exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
         await t
           .expect(accordionSelector(isOpen).exists)
           .ok(await getErrorMessage(t), { timeout: 10_000 });
