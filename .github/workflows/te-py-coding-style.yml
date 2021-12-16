@@ -1,0 +1,62 @@
+name: (TET) Python coding style
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    paths:
+      - 'backend/tet/**'
+      - '.github/workflows/te-pytest.yml'
+      - '.github/workflows/te-py-coding-style.yml'
+      - 'backend/shared/**'
+
+
+env:
+  DEBUG: 1
+
+jobs:
+  py-coding-style:
+    name: Python coding style
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pip-modules
+        with:
+          path: ~/.pip-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: cd backend/tet && pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: (TET) Formatting
+        run: cd backend/tet && black --check .
+
+      - name: (TET) Linting
+        run: cd backend/tet && flake8
+
+      - name: (TET) Import sorting
+        run: cd backend/tet && isort -c .
+
+      - name: (Shared) Formatting
+        run: cd backend/shared && black --check .
+
+      - name: (Shared) Linting
+        run: cd backend/shared && flake8
+
+      - name: (Shared) Import sorting
+        run: cd backend/shared && isort -c .
