@@ -228,11 +228,13 @@ export interface ApplicationListItemData {
     initials: string;
     color: keyof DefaultTheme['colors'];
   };
+  status?: APPLICATION_STATUSES;
   statusText?: string;
   createdAt?: string;
   modifiedAt?: string;
   submittedAt?: string;
   applicationNum?: number;
+  editEndDate?: string;
   allowedAction: ApplicationAllowedAction;
 }
 
