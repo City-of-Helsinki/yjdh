@@ -92,13 +92,13 @@ env = environ.Env(
     ENABLE_DEBUG_ENV=(bool, False),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
     DISABLE_TOS_APPROVAL_CHECK=(bool, False),
-    YRTTI_BASIC_INFO_PATH=(
+    SERVICE_BUS_INFO_PATH=(
         str,
-        "https://yrtti-integration-dev.agw.arodevtest.hel.fi/api/BasicInfo",
+        "https://ytj-integration-dev.agw.arodevtest.hel.fi/api/GetCompany",
     ),
-    YRTTI_AUTH_USERNAME=(str, "sample_username"),
-    YRTTI_AUTH_PASSWORD=(str, "sample_password"),
-    YRTTI_TIMEOUT=(int, 30),
+    SERVICE_BUS_AUTH_USERNAME=(str, "sample_username"),
+    SERVICE_BUS_AUTH_PASSWORD=(str, "sample_password"),
+    SERVICE_BUS_TIMEOUT=(int, 30),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -348,10 +348,10 @@ WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 
 TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
 
-YRTTI_TIMEOUT = env("YRTTI_TIMEOUT")
-YRTTI_BASIC_INFO_PATH = env("YRTTI_BASIC_INFO_PATH")
-YRTTI_AUTH_USERNAME = env("YRTTI_AUTH_USERNAME")
-YRTTI_AUTH_PASSWORD = env("YRTTI_AUTH_PASSWORD")
+SERVICE_BUS_TIMEOUT = env("SERVICE_BUS_TIMEOUT")
+SERVICE_BUS_INFO_PATH = env("SERVICE_BUS_INFO_PATH")
+SERVICE_BUS_AUTH_USERNAME = env("SERVICE_BUS_AUTH_USERNAME")
+SERVICE_BUS_AUTH_PASSWORD = env("SERVICE_BUS_AUTH_PASSWORD")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
