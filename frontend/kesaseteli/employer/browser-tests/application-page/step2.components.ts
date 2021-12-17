@@ -32,7 +32,7 @@ export const getStep2Components = (t: TestController) => {
 
   const employmentAccordion = async (employeeIndex = 0) => {
     const accordionSelector = (isOpen = true) =>
-      withinForm().findByTestId(
+      screen.findByTestId(
         `accordion-${employeeIndex}-${isOpen ? 'open' : 'closed'}`
       );
     const withinAccordion = (isOpen = true): ReturnType<typeof within> =>
