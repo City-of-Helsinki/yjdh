@@ -1,0 +1,284 @@
+name: (TET) Build & Review & Acceptance tests
+on:
+  pull_request:
+    paths:
+      - 'backend/tet/**'
+      - 'frontend/tet/**'
+      - 'frontend/shared/**'
+      - 'frontend/*'
+      - '.github/workflows/te-review.yml'
+  workflow_dispatch:
+    inputs:
+      build_required:
+        description: "Build images (true/false)"
+        required: true
+        default: "false"
+      pr_number:
+        description: "Pull request number (if redeploy without build) or own number for environment"
+        required: true
+
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  CONTAINER_REGISTRY_USER: ${{ secrets.GHCR_CONTAINER_REGISTRY_USER }}
+  CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GHCR_TOKEN }}
+  CONTAINER_REGISTRY_REPO: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+  REPO_NAME: ${{ github.event.repository.name }}
+  KUBECONFIG_RAW: ${{ secrets.KUBECONFIG_RAW }}
+  BUILD_ARTIFACT_FOLDER: 'build_artifacts'
+  SERVICE_ARTIFACT_FOLDER: 'service_artifacts'
+  BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STAGING }}
+  DATABASE_USER: user
+  DATABASE_PASSWORD: testing-password
+  K8S_REQUEST_CPU: 50m
+  K8S_REQUEST_RAM: 200Mi
+  K8S_LIMIT_CPU: 500m
+  K8S_LIMIT_RAM: 400Mi
+  K8S_PROBE_FAILURE_THRESHOLD: 30
+  K8S_PROBE_PERIOD: 20
+  EMPLOYER_URL: https://te-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  YOUTH_URL: https://te-yout-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  ADMIN_URL: https://te-admn-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  NEXT_PUBLIC_BACKEND_URL: https://te-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  MOCK_FLAG: 1
+  NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+  NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
+  CORS_ALLOW_ALL_ORIGINS: 1
+jobs:
+  build:
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
+        include:
+          - service: te-bknd
+            context: ./backend
+            dockerfile: ./backend/docker/tet.Dockerfile
+            port: 8000
+          - service: te-empl
+            context: ./frontend
+            dockerfile: ./frontend/tet/employer/Dockerfile
+            port: 3000
+          - service: te-yout
+            context: ./frontend
+            dockerfile: ./frontend/tet/youth/Dockerfile
+            port: 3000
+          - service: te-admn
+            context: ./frontend
+            dockerfile: ./frontend/tet/admin/Dockerfile
+            port: 3000
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build ${{ matrix.service }}
+        if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
+        uses: andersinno/kolga-build-action@v2
+        env:
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
+          DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
+          DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
+          DOCKER_IMAGE_NAME: ${{ matrix.service }}
+          SERVICE_PORT: ${{ matrix.port }}
+          BUILDKIT_CACHE_DISABLE: true
+  review:
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
+        include:
+          - service: te-bknd
+            context: ./backend
+            dockerfile: ./backend/docker/tet.Dockerfile
+            database: true
+            port: 8000
+          - service: te-empl
+            context: ./frontend
+            dockerfile: ./frontend/tet/employer/Dockerfile
+            database: false
+            port: 3000
+          - service: te-yout
+            context: ./frontend
+            dockerfile: ./frontend/tet/youth/Dockerfile
+            database: false
+            port: 3000
+          - service: te-admn
+            context: ./frontend
+            dockerfile: ./frontend/tet/admin/Dockerfile
+            database: false
+            port: 3000
+    runs-on: ubuntu-latest
+    needs: build
+    name: Review
+    steps:
+      - uses: actions/checkout@v2
+      - uses: andersinno/kolga-setup-action@v2
+        with:
+          pr_number: ${{ github.event.inputs.pr_number }}
+
+      - name: Backend variables
+        if: matrix.database
+        env:
+          SECRET_KEY: ${{ secrets.K8S_SECRET_SECRET_KEY_REVIEW }}
+          K8S_SECRET_ENCRYPTION_KEY: ${{ secrets.K8S_SECRET_ENCRYPTION_KEY_REVIEW }}
+          K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY: ${{ secrets.K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY_REVIEW }}
+        run: |
+          echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
+          echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
+          echo "K8S_SECRET_CSRF_COOKIE_DOMAIN=.test.kuva.hel.ninja" >> $GITHUB_ENV
+          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.EMPLOYER_URL }}, ${{ env.YOUTH_URL }}, ${{ env.ADMIN_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
+          echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL=${{ env.ADMIN_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL_FAILURE=${{ env.ADMIN_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_EAUTH_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_EAUTH_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
+
+      - name: Review-Services
+        if: matrix.database
+        uses: City-of-Helsinki/review-services-action@main
+        with:
+          database: ${{ env.K8S_NAMESPACE }}
+          namespace: ${{ env.K8S_NAMESPACE }}
+          action: create
+          db_user: ${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}
+          db_password: ${{ secrets.K8S_SECRET_DATABASE_ADMIN_PASSWORD_REVIEW}}
+          db_host: ${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}
+          db_port: ${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}
+          kubeconfig: ${{ secrets.KUBECONFIG_RAW }}
+
+      - name: Database variables
+        if: matrix.database
+        run: |
+          echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_DB=${{ env.K8S_NAMESPACE }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_USERNAME_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_PASSWORD_REVIEW }}" >> $GITHUB_ENV
+
+      - name: Service with ingress
+        run: |
+          echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+
+      - name: Deploy
+        uses: andersinno/kolga-deploy-action@v2
+        env:
+          DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
+          DOCKER_BUILD_CONTEXT: ./${{ matrix.context }}
+          DOCKER_IMAGE_NAME: ${{ matrix.service }}
+          PROJECT_NAME: ${{ github.event.repository.name }}-${{ matrix.service }}
+          K8S_SECRET_VERSION: ${{ github.sha }}
+          VAULT_JWT_PRIVATE_KEY: ${{ secrets.VAULT_ACCESS_PRIVATE_KEY_REVIEW }}
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          VAULT_KV_VERSION: "2"
+          VAULT_JWT_AUTH_PATH: ${{ github.event.repository.name }}-${{ matrix.service }}-review
+          VAULT_KV_SECRET_MOUNT_POINT: review
+          SERVICE_PORT: ${{ matrix.port }}
+          K8S_SECRET_ALLOWED_HOSTS: "*"
+          APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
+          CORS_ALLOWED_ORIGINS: ${{ env.EMPLOYER_URL }},${{ env.YOUTH_URL }},${{ env.ADMIN_URL }}
+          CSRF_TRUSTED_ORIGINS: ${{ env.EMPLOYER_URL }},${{ env.YOUTH_URL }},${{ env.ADMIN_URL }}
+          AD_LOGIN_REDIRECT_URL: ${{ env.ADMIN_URL }}
+          AD_LOGIN_REDIRECT_URL_FAILURE: ${{ env.ADMIN_URL }}/login?error=true
+          EAUTH_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
+          EAUTH_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
+
+      - name: Deploy Cronjobs
+        if: matrix.database
+        uses: City-of-Helsinki/setup-cronjob-action@main
+        with:
+          image_repository: ghcr.io/city-of-helsinki/${{ github.event.repository.name }}
+          image_tag:  ${{ github.sha }}
+          kubeconfig_raw: ${{ secrets.KUBECONFIG_RAW}}
+          target_namespace: ${{ secrets.K8S_NAMESPACE }}
+          name: te-hourly-cronjob
+          single_run: true
+          secret_name: te-hourly-cronjob-secret
+          command: "{/bin/sh}"
+          args: "{-c,cd /app && /usr/bin/timeout --kill-after=20m 19m python manage.py runjobs hourly 2>&1}"
+
+      - name: Create PR comment for ${{ matrix.service }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: deployment-te-${{ matrix.service }}
+          message: |
+            **${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
+# TODO Commented out because we're trying to find a more lightweight testing solution
+#  acceptance-tests:
+#    name: KS Acceptance tests
+#    runs-on: ubuntu-latest
+#    needs: Review
+#    defaults:
+#      run:
+#        working-directory: ./frontend
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        service: [ 'te-empl' ]
+#        include:
+#          - service: te-empl
+#            dir: kesaseteli/employer
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Setup kubectl
+#        run: |
+#          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
+#          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
+#        shell: bash
+#      - name: Setup Node.js environment
+#        uses: actions/setup-node@v2.5.0
+#        with:
+#          node-version: '14'
+#      - name: Get yarn cache directory path
+#        id: yarn-cache-dir-path
+#        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+#      - uses: actions/cache@v2
+#        id: yarn-cache
+#        with:
+#          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+#          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-yarn-
+#      - name: Install dependencies
+#        run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
+#      - name: Service with ingress
+#        run: |
+#          echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+#      - name: Run Acceptance Tests for ${{ matrix.service }}
+#        id: testcafe
+#        run: yarn --cwd ${{matrix.dir}} browser-test:ci
+#        env:
+#          GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
+#          GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#      - name: Upload Acceptance Test results for ${{ matrix.service }}
+#        run: |
+#          zip -r report.zip ${{matrix.dir}}/report > no_output 2>&1
+#          curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
+#          echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
+#        if: always() && steps.testcafe.outcome == 'failure'
+#      - name: Create/update PR comment for Acceptance Test results
+#        uses: marocchino/sticky-pull-request-comment@v2
+#        with:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          header: testcafe-results-kesaseteli
+#          message: |
+#            ## TestCafe result is __${{ steps.testcafe.outcome }}__ for ${{ env.ENVIRONMENT_URL }}! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
+#        if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
+#      - name: Create/update PR comment for Acceptance Test results
+#        uses: marocchino/sticky-pull-request-comment@v2
+#        with:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          header: testcafe-results-kesaseteli
+#          append: true
+#          message: |
+#            **Check the report on: [${{ env.REPORT_URL }}](${{ env.REPORT_URL }})**
+#        if: always() && steps.testcafe.outcome == 'failure'
+#      - name: Upload screenshots and videos of failed tests to artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: report
+#          path: ./frontend/${{matrix.dir}}/report
+#        if: always() && steps.testcafe.outcome == 'failure'
