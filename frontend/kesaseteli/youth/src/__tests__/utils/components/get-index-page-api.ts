@@ -26,11 +26,11 @@ const getIndexPageApi = () => {
       inputIsNotPresent: async (key: keyof YouthFormData): Promise<void> => {
         expect(screen.queryByTestId(key)).not.toBeInTheDocument();
       },
-      schoolDropdownIsDisabled: async (): Promise<void> => {
+      schoolsDropdownIsDisabled: async (): Promise<void> => {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
         expect(input).toBeDisabled();
       },
-      schoolDropdownIsEnabled: async (): Promise<void> => {
+      schoolsDropdownIsEnabled: async (): Promise<void> => {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
         expect(input).toBeEnabled();
       },
@@ -48,13 +48,13 @@ const getIndexPageApi = () => {
         const input = await screen.findByTestId(key);
         expect(input).toBeValid();
       },
-      schoolDropdownHasError: async (errorText: RegExp): Promise<void> => {
+      schoolsDropdownHasError: async (errorText: RegExp): Promise<void> => {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
         expect(input).toBeInvalid();
         const errorElement = await screen.findByTestId(`selectedSchool-error`);
         expect(errorElement).toHaveTextContent(errorText);
       },
-      schoolDropdownIsValid: async (): Promise<void> => {
+      schoolsDropdownIsValid: async (): Promise<void> => {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
         expect(input).toBeValid();
       },
@@ -85,6 +85,12 @@ const getIndexPageApi = () => {
         expectedOption?: string
       ) {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
+        await waitFor(
+          () => {
+            expect(input).toBeEnabled();
+          },
+          { timeout: 10_000 }
+        );
         userEvent.clear(input);
         userEvent.type(input, value);
         const option = expectedOption ?? value;

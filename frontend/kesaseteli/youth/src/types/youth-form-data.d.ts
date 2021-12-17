@@ -3,7 +3,7 @@ import YouthApplication from './youth-application';
 
 type YouthFormData = Omit<YouthApplication, 'school' | 'language'> & {
   termsAndConditions: boolean;
-  selectedSchool?: School;
+  selectedSchool?: School | null;
   unlistedSchool?: string;
 };
 
