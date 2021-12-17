@@ -12,7 +12,7 @@ import {
   VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { Step2 } from 'benefit/applicant/types/application';
-import isThisYear from 'date-fns/isThisYear';
+import isAfter from 'date-fns/isAfter';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
@@ -76,7 +76,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
         }),
         test: (value = '') => {
           const date = parseDate(value);
-          return date ? isThisYear(date) : false;
+          return date ? isAfter(date, startOfYear(new Date())) : false;
         },
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(

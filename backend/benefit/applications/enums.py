@@ -70,7 +70,13 @@ class OrganizationType(models.TextChoices):
     @classmethod
     def resolve_organization_type(cls, company_form):
         # TODO: actual implementation when integration to YTJ/palveluväylä/PRH is implemented
-        if company_form.lower() in ["oy", "oyj", "tmi"]:
+        if company_form.lower() in [
+            "oy",
+            "oyj",
+            "tmi",
+            "osakeyhtiö",
+            "ysityinen elinkeinonharjoittaja",
+        ]:
             return OrganizationType.COMPANY
         else:
             return OrganizationType.ASSOCIATION

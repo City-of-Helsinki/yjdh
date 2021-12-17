@@ -2,20 +2,24 @@
   "applications": {
     "list": {
       "drafts": {
-        "created": "Luotu",
-        "heading": "Luonnokset",
-        "employee": "Työllistetty",
-        "saved": "Tallennettu",
-        "edit": "Muokkaa"
+        "heading": "Luonnokset"
       },
       "submitted": {
-        "heading": "Lähetetyt",
+        "heading": "Lähetetyt"
+      },
+      "moreInfo": {
+        "heading": "Lisätietoa tarvitaan"
+      },
+      "common": {
+        "created": "Luotu",
         "employee": "Työllistetty",
+        "saved": "Tallennettu",
+        "edit": "Muokkaa",
         "sent": "Lähetetty",
         "applicationNumber": "Hakemusnumero",
         "status": "Tila",
-        "edit": "Muokkaa",
-        "check": "Tarkastele"
+        "check": "Tarkastele",
+        "editEndDate": "Muokkaa viimeistään"
       }
     },
     "pageHeaders": {
@@ -42,10 +46,13 @@
     "actions": {
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
       "deleteApplication": "Poista hakemus",
+      "deleteApplicationConfirm": "Haluatko varmasti poistaa?",
+      "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
       "continue": "Jatka",
       "send": "Send application",
       "back": "Back",
-      "edit": "Muokkaa"
+      "edit": "Muokkaa",
+      "close": "Sulje"
     },
     "sections": {
       "company": {
@@ -356,6 +363,10 @@
     "applicationSaved": {
       "label": "Hakemus tallennettu",
       "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+    },
+    "applicationDeleted": {
+      "label": "Hakemus poistettu",
+      "message": "Helsinki-lisä hakemus on poistettu."
     }
   },
   "languages": {

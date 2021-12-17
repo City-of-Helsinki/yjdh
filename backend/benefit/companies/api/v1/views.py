@@ -83,9 +83,9 @@ class GetCompanyView(APIView):
                 except Company.DoesNotExist:
                     # Throw error if API failed or no object found in both places
                     return self.ytj_api_error
-            except ValueError:
+            except (ValueError, KeyError):
                 return Response(
-                    "Could not handle the response from YTJ or YRTTI API",
+                    "Could not handle the response from Palveluväylä API",
                     status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         company_data = CompanySerializer(company).data

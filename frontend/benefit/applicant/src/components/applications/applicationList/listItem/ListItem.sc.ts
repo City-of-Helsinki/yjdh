@@ -4,6 +4,11 @@ interface AvatarProps {
   $backgroundColor: keyof DefaultTheme['colors'];
 }
 
+export const $ListItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const $ListItem = styled.li`
   display: flex;
   background-color: ${(props) => props.theme.colors.white};
@@ -52,10 +57,33 @@ export const $DataValue = styled.div`
   font-weight: 600;
 `;
 
+export const $DataValueAlert = styled($DataValue)`
+  background-color: ${(props) => props.theme.colors.alert};
+  padding: ${(props) => props.theme.spacing.xs2};
+`;
+
 export const $ItemActions = styled.div`
   display: grid;
   justify-content: stretch;
   align-items: center;
   width: 160px;
   min-width: 160px;
+`;
+
+export const $ItemInfo = styled.div`
+  display: grid;
+  grid-template-columns: 60px 3fr;
+  grid-gap: ${(props) => props.theme.spacing.m};
+  background-color: ${(props) => props.theme.colors.coatOfArms};
+  padding: ${(props) => props.theme.spacing.xs2};
+  color: ${(props) => props.theme.colors.white};
+`;
+
+export const $ItemInfoInner = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const $ItemInfoText = styled.div`
+  padding: 0 ${(props) => props.theme.spacing.xs2};
 `;

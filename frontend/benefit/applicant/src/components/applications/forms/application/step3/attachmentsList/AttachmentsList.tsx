@@ -37,6 +37,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     <AttachmentsListBase
       title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
       attachmentType={attachmentType}
+      name={attachmentType}
       message={showMessage && message}
       attachments={attachments}
       onUpload={handleUpload}
