@@ -1,6 +1,8 @@
 import { Button } from 'hds-react';
+import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import School from 'kesaseteli/youth/types/School';
+import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -125,25 +127,40 @@ const YouthForm: React.FC = () => {
   const { t } = useTranslation();
   const register = useRegisterInput<YouthFormData>();
 
-  const [showResult, setShowResult] = React.useState(false);
+  const [result, setResult] = React.useState<YouthApplication | null>(null);
   const [schoolIsUnlisted, toggleSchoolIsUnlisted] = useToggle(false);
 
-  const { getValues, handleSubmit, clearErrors, setValue } =
+  const { getValues, handleSubmit, clearErrors, setValue, formState } =
     useFormContext<YouthFormData>();
 
   const handleToggleSchoolUnlisted = React.useCallback(
     (unlisted?: boolean) => {
       if (unlisted) {
-        clearErrors('school');
-        setValue('school', null);
+        clearErrors('selectedSchool');
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        setValue('selectedSchool', undefined);
       } else {
-        clearErrors('unlisted_school');
-        setValue('unlisted_school', null);
+        clearErrors('unlistedSchool');
+        setValue('unlistedSchool', '');
       }
       toggleSchoolIsUnlisted();
     },
     [clearErrors, setValue, toggleSchoolIsUnlisted]
   );
+
+  const createYouthApplicationQuery = useCreateYouthApplicationQuery();
+  const isSaving = React.useMemo(
+    () => createYouthApplicationQuery.isLoading || formState.isSubmitting,
+    [createYouthApplicationQuery.isLoading, formState.isSubmitting]
+  );
+  const handleSaving = React.useCallback(() => {
+    createYouthApplicationQuery.mutate(getValues(), {
+      onSuccess: (createdApplication) => {
+        setResult(createdApplication);
+        // TODO: redirect to thank you -page
+      },
+    });
+  }, [createYouthApplicationQuery, getValues, setResult]);
 
   return (
     <>
@@ -171,7 +188,7 @@ const YouthForm: React.FC = () => {
             })}
           />
           <Combobox<YouthFormData, School>
-            {...register('school', { required: !schoolIsUnlisted })}
+            {...register('selectedSchool', { required: !schoolIsUnlisted })}
             optionLabelField="name"
             options={schools}
             disabled={schoolIsUnlisted}
@@ -187,7 +204,7 @@ const YouthForm: React.FC = () => {
           </$GridCell>
           {schoolIsUnlisted && (
             <TextInput<YouthFormData>
-              {...register('unlisted_school', {
+              {...register('unlistedSchool', {
                 required: true,
                 maxLength: 256,
                 pattern: NAMES_REGEX,
@@ -241,15 +258,15 @@ const YouthForm: React.FC = () => {
           <$GridCell $colSpan={2}>
             <Button
               theme="coat"
-              onClick={handleSubmit(() => setShowResult(true))}
+              onClick={handleSubmit(handleSaving)}
+              disabled={isSaving}
+              isLoading={isSaving}
             >
               {t(`common:youthApplication.form.sendButton`)}
             </Button>
           </$GridCell>
-          {showResult && (
-            <pre data-testid="result">
-              {JSON.stringify(getValues(), null, 2)}
-            </pre>
+          {result && (
+            <pre data-testid="result">{JSON.stringify(result, null, 2)}</pre>
           )}
         </FormSection>
       </form>

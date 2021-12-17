@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
+import { Language } from '@frontend/shared/src/i18n/i18n';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
 
@@ -7,6 +7,8 @@ import { FinnishSSN } from 'finnish-ssn';
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
 import YouthApplication from '../../types/youth-application';
+import YouthFormData from '../../types/youth-form-data';
+import { convertFormDataToApplication } from '../../utils/youth-form-data.utils';
 
 const schools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -114,18 +116,19 @@ const schools: string[] = [
   'Östersundom skola',
 ];
 
-export const fakeYouthApplication = (
-  language?: Language
-): YouthApplication & { unlisted_school?: string } => ({
+export const fakeYouthFormData = (): YouthFormData => ({
   first_name: faker.name.findName(),
   last_name: faker.name.findName(),
   social_security_number: FinnishSSN.createWithAge(
     faker.datatype.number({ min: 15, max: 16 })
   ),
-  school: faker.random.arrayElement(schools),
-  unlisted_school: faker.commerce.department(),
+  selectedSchool: { name: faker.random.arrayElement(schools) },
+  unlistedSchool: faker.commerce.department(),
   is_unlisted_school: faker.datatype.boolean(),
   phone_number: faker.phone.phoneNumber('+358#########'),
   email: faker.internet.email(),
-  language: language ?? DEFAULT_LANGUAGE,
+  termsAndConditions: true,
 });
+
+export const fakeYouthApplication = (language?: Language): YouthApplication =>
+  convertFormDataToApplication(fakeYouthFormData(), language);

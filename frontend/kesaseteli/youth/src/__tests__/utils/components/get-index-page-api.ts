@@ -1,6 +1,14 @@
+import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
+import { convertFormDataToApplication } from 'kesaseteli/youth/utils/youth-form-data.utils';
 import nock from 'nock';
-import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+
+type SaveParams = {
+  backendExpectation?: (application: YouthApplication) => nock.Scope;
+  language?: Language;
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 const getIndexPageApi = () => {
@@ -43,7 +51,7 @@ const getIndexPageApi = () => {
       schoolDropdownHasError: async (errorText: RegExp): Promise<void> => {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
         expect(input).toBeInvalid();
-        const errorElement = await screen.findByTestId(`school-error`);
+        const errorElement = await screen.findByTestId(`selectedSchool-error`);
         expect(errorElement).toHaveTextContent(errorText);
       },
       schoolDropdownIsValid: async (): Promise<void> => {
@@ -59,19 +67,23 @@ const getIndexPageApi = () => {
       },
     },
     actions: {
-      typeInput: (key: keyof YouthFormData, value: string) => {
+      typeInput(key: keyof YouthFormData, value: string) {
         const input = screen.getByTestId(key);
         userEvent.clear(input);
         if (value?.length > 0) {
           userEvent.type(input, value);
         }
-        (youthFormData[key] as string) = value;
+        if (key === 'social_security_number') {
+          youthFormData.social_security_number = value?.toUpperCase();
+        } else {
+          (youthFormData[key] as string) = value;
+        }
         userEvent.click(document.body);
       },
-      typeAndSelectSchoolFromDropdown: async (
+      async typeAndSelectSchoolFromDropdown(
         value: string,
         expectedOption?: string
-      ) => {
+      ) {
         const input = await screen.findByRole('combobox', { name: /koulu/i });
         userEvent.clear(input);
         userEvent.type(input, value);
@@ -79,35 +91,63 @@ const getIndexPageApi = () => {
         const schoolOption = await screen.findByText(new RegExp(option, 'i'));
         userEvent.click(schoolOption);
         expect(input).toHaveValue(option);
-        youthFormData.school = { name: option ?? value };
+        youthFormData.selectedSchool = { name: option ?? value };
       },
-      toggleCheckbox: async (name: RegExp) => {
-        const checkbox = screen.getByRole('checkbox', { name });
+      async toggleCheckbox(
+        key: keyof Pick<
+          YouthFormData,
+          'termsAndConditions' | 'is_unlisted_school'
+        >
+      ) {
+        const checkbox = screen.getByTestId(key);
         userEvent.click(checkbox);
+        youthFormData[key] = Boolean(checkbox.getAttribute('value'));
       },
-      clickSaveButton: async ({
-        expectToPassValidation = true,
-      }: {
-        expectToPassValidation: boolean;
-      }) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        let save: nock.Scope;
-        if (expectToPassValidation) {
-          // TODO: add this when backend call is implemented
-          // save = expectToSaveYouthApplication(youthFormData);
+      async clickSaveButton({ language, backendExpectation }: SaveParams = {}) {
+        let response: nock.Scope;
+        if (backendExpectation) {
+          const application = {
+            ...convertFormDataToApplication(
+              youthFormData as YouthFormData,
+              language ?? DEFAULT_LANGUAGE
+            ),
+          };
+          response = backendExpectation(application);
         }
         const button = await screen.findByRole('button', {
           name: /lähetä tiedot/i,
         });
         userEvent.click(button);
-        /*
-          TODO: add when backend call is implemented
-          if (expectToPassValidation) {
-            await waitFor(() => {
-              save.done();
-            })
-          }
-           */
+
+        if (backendExpectation) {
+          await waitFor(() => {
+            response.done();
+          });
+        }
+      },
+      async fillTheFormWithListedSchoolAndSave(saveParams: SaveParams) {
+        this.typeInput('first_name', 'Helinä');
+        this.typeInput('last_name', "O'Hara");
+        this.typeInput('social_security_number', '111111-111c');
+        await this.typeAndSelectSchoolFromDropdown(
+          'Iidenkiven P',
+          'Hiidenkiven peruskoulu'
+        );
+        this.typeInput('phone_number', '+358-505-551-4995');
+        this.typeInput('email', 'aaaa@bbb.test.fi');
+        await this.toggleCheckbox('termsAndConditions');
+        await this.clickSaveButton(saveParams);
+      },
+      async fillTheFormWithUnlistedSchoolAndSave(saveParams: SaveParams) {
+        this.typeInput('first_name', 'Helinä');
+        this.typeInput('last_name', "O'Hara");
+        this.typeInput('social_security_number', '111111-111c');
+        await this.toggleCheckbox('is_unlisted_school');
+        this.typeInput('unlistedSchool', 'Erikoiskoulu');
+        this.typeInput('phone_number', '+358-505-551-4995');
+        this.typeInput('email', 'aaaa@bbb.test.fi');
+        await this.toggleCheckbox('termsAndConditions');
+        await this.clickSaveButton(saveParams);
       },
     },
   };

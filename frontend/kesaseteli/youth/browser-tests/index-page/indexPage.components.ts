@@ -4,15 +4,15 @@ import {
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
 import YouthApplication from '../../src/types/youth-application';
 import YouthFormData from '../../src/types/youth-form-data';
+import { convertFormDataToApplication } from '../../src/utils/youth-form-data.utils';
 
 type TextInputName = keyof Omit<
   YouthFormData,
-  'school' | 'is_unlisted_school' | 'termsAndConditions'
+  'selectedSchool' | 'is_unlisted_school' | 'termsAndConditions'
 >;
 
 export const getIndexPageComponents = async (t: TestController) => {
@@ -53,28 +53,13 @@ export const getIndexPageComponents = async (t: TestController) => {
     async isPresent() {
       await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
     },
-    async isApplicationFulfilledWith(
-      application: YouthApplication & { unlisted_school?: string }
-    ) {
-      if (!application.is_unlisted_school) {
-        // eslint-disable-next-line no-param-reassign
-        delete application.unlisted_school;
-      }
-      const sentApplicationJson = await selectors.result().textContent;
-      const sentApplication = JSON.parse(sentApplicationJson) as YouthFormData;
-      await t
-        .expect({
-          ...sentApplication,
-          is_unlisted_school: Boolean(sentApplication.is_unlisted_school),
-          language: DEFAULT_LANGUAGE,
-        } as unknown)
-        .eql({
-          ...application,
-          termsAndConditions: true,
-          school: application.is_unlisted_school
-            ? null
-            : { name: application.school },
-        });
+    async isFormFulfilledWith(youthFormData: YouthFormData) {
+      const textContent = await selectors.result().textContent;
+      const sentApplication = JSON.parse(
+        textContent.trim()
+      ) as YouthApplication;
+      const expectedApplication = convertFormDataToApplication(youthFormData);
+      await t.expect(sentApplication).contains(expectedApplication);
     },
   };
   const actions = {
@@ -88,7 +73,7 @@ export const getIndexPageComponents = async (t: TestController) => {
     },
     async typeAndSelectSchoolFromDropdown(schoolName: string) {
       const dropdown = selectors.schoolDropdown();
-      await fillInput<YouthFormData>(t, 'school', dropdown, schoolName);
+      await fillInput<YouthFormData>(t, 'selectedSchool', dropdown, schoolName);
       await t.click(screen.findByRole('option', { name: schoolName }));
     },
     async toggleUnlistedSchoolCheckbox() {
