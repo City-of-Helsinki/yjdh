@@ -12,8 +12,6 @@ test.skip('test for accessibility violations', async () => {
       locale="fi"
       languages={[{ label: 'Fi', value: 'fi' }]}
       onLanguageChange={() => null}
-      onTitleClick={() => null}
-      onNavigationItemClick={() => null}
       menuToggleAriaLabel="menu"
     />
   );

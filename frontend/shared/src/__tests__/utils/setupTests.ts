@@ -14,10 +14,11 @@ let consoleErrorSpy: jest.SpyInstance;
 beforeAll(() => {
   const messagesToIgnore = [
     'Warning: You seem to have overlapping act() calls, this is not supported',
-    'Warning: An update to %s inside a test was not wrapped in act(...)',
+    'When testing, code that causes React state updates should be wrapped into act(...)',
     'Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component',
     'Using ReactElement as a label is against good usability and accessibility practices. Please prefer plain strings.',
     'react-i18next:: You will need to pass in an i18next instance by using initReactI18next',
+    'downshift: A component has changed the uncontrolled prop',
   ];
 
   const filterErrors = (...args: string[]) => {

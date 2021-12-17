@@ -1,10 +1,6 @@
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult } from 'react-query';
-import handleError from 'shared/error-handler/error-handler';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useLocale from 'shared/hooks/useLocale';
 import { KesaseteliAttachment } from 'shared/types/attachment';
 
 type RemoveAttachmentData = {
@@ -14,13 +10,10 @@ type RemoveAttachmentData = {
 
 const useRemoveAttachmentQuery = (): UseMutationResult<
   RemoveAttachmentData,
-  Error,
+  unknown,
   RemoveAttachmentData
 > => {
   const { axios, handleResponse } = useBackendAPI();
-  const { t } = useTranslation();
-  const router = useRouter();
-  const locale = useLocale();
   return useMutation(
     BackendEndpoint.ATTACHMENTS,
     ({ id, summer_voucher }: RemoveAttachmentData) =>
@@ -30,10 +23,7 @@ const useRemoveAttachmentQuery = (): UseMutationResult<
             axios.delete(
               `${BackendEndpoint.SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}${id}/`
             )
-          ),
-    {
-      onError: (error) => handleError(error, t, router, locale),
-    }
+          )
   );
 };
 

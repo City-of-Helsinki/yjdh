@@ -2,7 +2,6 @@ import { Button } from 'hds-react';
 import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import School from 'kesaseteli/youth/types/School';
-import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -15,6 +14,8 @@ import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useGoToPage from 'shared/hooks/useGoToPage';
 import useToggle from 'shared/hooks/useToggle';
 
 const schools: School[] = [
@@ -127,7 +128,6 @@ const YouthForm: React.FC = () => {
   const { t } = useTranslation();
   const register = useRegisterInput<YouthFormData>();
 
-  const [result, setResult] = React.useState<YouthApplication | null>(null);
   const [schoolIsUnlisted, toggleSchoolIsUnlisted] = useToggle(false);
 
   const { getValues, handleSubmit, clearErrors, setValue, formState } =
@@ -153,14 +153,17 @@ const YouthForm: React.FC = () => {
     () => createYouthApplicationQuery.isLoading || formState.isSubmitting,
     [createYouthApplicationQuery.isLoading, formState.isSubmitting]
   );
+  const goToPage = useGoToPage();
+  const onError = useErrorHandler(false);
+
   const handleSaving = React.useCallback(() => {
     createYouthApplicationQuery.mutate(getValues(), {
-      onSuccess: (createdApplication) => {
-        setResult(createdApplication);
-        // TODO: redirect to thank you -page
+      onSuccess: () => {
+        goToPage('/thankyou');
       },
+      onError,
     });
-  }, [createYouthApplicationQuery, getValues, setResult]);
+  }, [createYouthApplicationQuery, getValues, onError]);
 
   return (
     <>
@@ -265,9 +268,6 @@ const YouthForm: React.FC = () => {
               {t(`common:youthApplication.form.sendButton`)}
             </Button>
           </$GridCell>
-          {result && (
-            <pre data-testid="result">{JSON.stringify(result, null, 2)}</pre>
-          )}
         </FormSection>
       </form>
     </>

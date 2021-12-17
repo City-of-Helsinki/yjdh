@@ -11,8 +11,6 @@ const Header: React.FC = () => {
     navigationItems,
     isNavigationVisible,
     handleLanguageChange,
-    handleNavigationItemClick,
-    handleTitleClick,
   } = useHeader();
 
   return (
@@ -24,8 +22,6 @@ const Header: React.FC = () => {
       isNavigationVisible={isNavigationVisible}
       navigationItems={navigationItems}
       onLanguageChange={handleLanguageChange}
-      onNavigationItemClick={handleNavigationItemClick}
-      onTitleClick={handleTitleClick}
       theme="dark"
     />
   );

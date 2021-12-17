@@ -3,7 +3,6 @@ import ApplicationSummary from 'kesaseteli/employer/components/application/summa
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useQueryClient } from 'react-query';
@@ -13,32 +12,32 @@ import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import withAuth from 'shared/components/hocs/withAuth';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import useLocale from 'shared/hooks/useLocale';
+import useGoToPage from 'shared/hooks/useGoToPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const locale = useLocale();
   const { applicationQuery, applicationId } = useApplicationApi();
   const queryClient = useQueryClient();
+  const goToPage = useGoToPage();
 
   const createNewApplicationClick = React.useCallback((): void => {
     queryClient.clear();
-    void router.push(`${locale}/`);
-  }, [queryClient, router, locale]);
+    void goToPage('/');
+  }, [queryClient, goToPage]);
 
   if (!applicationId) {
-    void router.push(`${locale}/`);
-    return <PageLoadingSpinner />;
+    void goToPage('/');
+    return null;
   }
 
   if (applicationQuery.isSuccess) {
     const application = applicationQuery.data;
     if (application.status === 'draft') {
-      void router.replace(`${locale}/application?id=${applicationId}`);
-      return <PageLoadingSpinner />;
+      void goToPage(`/application?id=${applicationId}`, {
+        operation: 'replace',
+      });
     }
     return (
       <Container>

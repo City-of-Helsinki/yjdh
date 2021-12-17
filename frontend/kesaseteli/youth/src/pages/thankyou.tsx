@@ -19,6 +19,9 @@ const ThankYouPage: NextPage = () => {
     []
   );
 
+  const goToPage = useGoToPage();
+  const goToHomePage = React.useCallback(() => goToPage('/'), [goToPage]);
+
   return (
     <Container>
       <Head>
@@ -38,7 +41,7 @@ const ThankYouPage: NextPage = () => {
           <Button
             theme="coat"
             iconRight={<IconArrowRight />}
-            onClick={useGoToPage('/')}
+            onClick={goToHomePage}
           >
             {t(`common:thankyouPage.goToFrontendPage`)}
           </Button>

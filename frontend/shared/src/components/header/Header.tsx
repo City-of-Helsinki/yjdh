@@ -1,6 +1,7 @@
 import { IconGlobe, IconSignout, LogoLanguage, Navigation } from 'hds-react';
 import React from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
+import useGoToPage from 'shared/hooks/useGoToPage';
 import {
   NavigationItem,
   NavigationVariant,
@@ -24,8 +25,6 @@ export type HeaderProps = {
     e: React.SyntheticEvent<unknown>,
     language: OptionType<string>
   ) => void;
-  onTitleClick?: (callback: () => void) => void;
-  onNavigationItemClick: (pathname: string) => void;
   login?: {
     isAuthenticated: boolean;
     loginLabel: string;
@@ -47,8 +46,6 @@ const Header: React.FC<HeaderProps> = ({
   isNavigationVisible = true,
   navigationItems,
   navigationVariant,
-  onTitleClick,
-  onNavigationItemClick,
   onLanguageChange,
   login,
   theme,
@@ -58,14 +55,21 @@ const Header: React.FC<HeaderProps> = ({
     menuOpen,
     toggleMenu,
     closeMenu,
-    handleNavigationItemClick,
     handleLogin,
     handleLogout,
-  } = useHeader(locale, onNavigationItemClick, login);
+  } = useHeader(locale, login);
 
-  const handleTitleClick = onTitleClick
-    ? () => onTitleClick(closeMenu)
-    : undefined;
+  const goToPage = useGoToPage();
+
+  const handleClickLink = React.useCallback(
+    (url = '/') =>
+      (event?: Event | MouseEvent) => {
+        event?.preventDefault();
+        closeMenu();
+        goToPage(url);
+      },
+    [closeMenu, goToPage]
+  );
 
   return (
     <Navigation
@@ -75,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({
       menuToggleAriaLabel={menuToggleAriaLabel || ''}
       skipTo={`#${MAIN_CONTENT_ID}`}
       skipToContentLabel={skipToContentLabel}
-      onTitleClick={handleTitleClick}
+      onTitleClick={handleClickLink()}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
       titleAriaLabel={title}
@@ -88,7 +92,7 @@ const Header: React.FC<HeaderProps> = ({
               active={isTabActive(item.url)}
               href={item.url}
               label={item.label}
-              onClick={handleNavigationItemClick(item.url)}
+              onClick={() => handleClickLink(item.url)}
               icon={item.icon}
             />
           ))}
