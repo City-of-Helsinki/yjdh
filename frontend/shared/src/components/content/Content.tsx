@@ -6,7 +6,9 @@ import { $Content } from './Content.sc';
 type ContentProps = { children: React.ReactNode };
 
 const Content: React.FC<ContentProps> = ({ children }) => (
-  <$Content id={MAIN_CONTENT_ID}>{children}</$Content>
+  <$Content id={MAIN_CONTENT_ID} data-test-id={MAIN_CONTENT_ID}>
+    {children}
+  </$Content>
 );
 
 export default Content;
