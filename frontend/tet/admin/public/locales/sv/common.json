@@ -1,5 +1,5 @@
 {
-  "appName": "TET-paikat",
+  "appName": "SV TET-paikat",
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
@@ -27,9 +27,9 @@
   },
   "application": {
     "jobPostings": {
-      "title": "TET-paikkailmoitukset",
-      "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
-      "addNewPosting": "Lisää uusi harjoittelupaikka"
+      "title": "SV TET-paikkailmoitukset",
+      "noPostingsFound": "SV Sinulla ei ole vielä yhtään TET-paikkaa.",
+      "addNewPosting": "SV Lisää uusi harjoittelupaikka"
     }
   },
   "footer": {
@@ -37,8 +37,10 @@
     "allRightsReservedText": "Med ensamrätt",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
-    "information": "Information om servicen",
-    "informationLink": "https://kesaseteli.fi/sv/"
+    "privacyPolicy": "SV Rekisteriseloste",
+    "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
+    "feedback": "SV Anna palautetta",
+    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
   },
   "languages": {
     "fi": "Suomeksi",

@@ -27,9 +27,9 @@
   },
   "application": {
     "jobPostings": {
-      "title": "TET Job Postings",
-      "noPostingsFound": "You have no job postings.",
-      "addNewPosting": "Add new job posting"
+      "title": "ENG TET-paikkailmoitukset",
+      "noPostingsFound": "ENG Sinulla ei ole vielä yhtään TET-paikkaa.",
+      "addNewPosting": "ENG Lisää uusi harjoittelupaikka"
     }
   },
   "footer": {
@@ -37,8 +37,10 @@
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
-    "information": "Information on the service",
-    "informationLink": "https://kesaseteli.fi/en/"
+    "privacyPolicy": "Privacy policy",
+    "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
+    "feedback": "ENG Anna palautetta",
+    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
   },
   "languages": {
     "fi": "Suomeksi",

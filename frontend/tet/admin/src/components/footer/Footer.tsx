@@ -16,15 +16,22 @@ const FooterSection: React.FC = () => {
           as="a"
           rel="noopener noreferrer"
           target="_blank"
-          href={t('common:footer.informationLink')}
-          label={t('common:footer.information')}
+          href={t('common:footer.accessibilityStatementLink')}
+          label={t('common:footer.accessibilityStatement')}
         />
         <Footer.Item
           as="a"
           rel="noopener noreferrer"
           target="_blank"
-          href={t('common:footer.accessibilityStatementLink')}
-          label={t('common:footer.accessibilityStatement')}
+          href={t('common:footer.privacyPolicyLink')}
+          label={t('common:footer.privacyPolicy')}
+        />
+        <Footer.Item
+          as="a"
+          rel="noopener noreferrer"
+          target="_blank"
+          href={t('common:footer.feedbackLink')}
+          label={t('common:footer.feedback')}
         />
       </Footer.Base>
     </Footer>

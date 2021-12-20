@@ -37,8 +37,10 @@
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
-    "information": "Tietoa palvelusta",
-    "informationLink": "https://kesaseteli.fi/"
+    "privacyPolicy": "Rekisteriseloste",
+    "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
+    "feedback": "Anna palautetta",
+    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute"
   },
   "languages": {
     "fi": "Suomeksi",
