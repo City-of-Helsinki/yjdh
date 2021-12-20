@@ -124,7 +124,8 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä"
+      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
+      "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
     }
   },
   "calculators": {
