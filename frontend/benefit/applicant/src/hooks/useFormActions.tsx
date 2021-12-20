@@ -120,10 +120,15 @@ const useFormActions = (application: Application): FormActions => {
       apprenticeshipProgram: currentValues.apprenticeshipProgram || false,
     };
 
+    const deMinimisAidSet =
+      deMinimisAids.length > 0
+        ? deMinimisAids
+        : currentValues.deMinimisAidSet ?? [];
+
     return {
       ...application,
       ...normalizedValues,
-      deMinimisAidSet: deMinimisAids,
+      deMinimisAidSet,
     };
   };
 

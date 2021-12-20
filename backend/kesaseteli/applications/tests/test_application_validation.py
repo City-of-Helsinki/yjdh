@@ -1,11 +1,51 @@
 import pytest
+from django.core.exceptions import ValidationError
 
 from applications.api.v1.serializers import (
     ApplicationSerializer,
     SummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus, AttachmentType
+from applications.models import School, validate_school
 from applications.tests.test_applications_api import get_detail_url
+
+
+@pytest.mark.django_db
+def test_validate_school_with_all_active_schools():
+    for school in School.objects.active():
+        validate_school(school.name)
+
+
+@pytest.mark.django_db
+def test_validate_school_with_all_deleted_schools():
+    for school in School.objects.deleted():
+        validate_school(school.name)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "name",
+    [
+        "Jokin muu koulu",
+        "Testikoulu",
+    ],
+)
+def test_validate_school_with_valid_unlisted_school(name):
+    validate_school(name)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "name",
+    [
+        "Testikoulu 1",  # Number is not allowed after the first character
+        "Testikoulu: Arabian yläaste",  # Colon is not allowed
+        "Yläaste (Arabia)",  # Parentheses are not allowed
+    ],
+)
+def test_validate_school_with_invalid_unlisted_school(name):
+    with pytest.raises(ValidationError):
+        validate_school(name)
 
 
 @pytest.mark.django_db
