@@ -4,6 +4,7 @@ import {
 } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import isRealIntegrationsEnabled from 'shared/utils/is-real-integrations-enabled';
 
 import { getFrontendUrl } from '../utils/url.utils';
 
@@ -16,13 +17,16 @@ const appTranslation: Translation = {
   sv: 'SV Nuorten kesäseteli',
 };
 
-fixture('Frontpage')
+const setup = fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appTranslation);
   });
+
+if (!isRealIntegrationsEnabled()) {
+  setup.requestHooks(new HttpRequestHook(url));
+}
 
 test('can change to languages', async () => {
   const languageDropdown = await headerComponents.languageDropdown();

@@ -19,13 +19,16 @@ const appNameTranslation: Translation = {
 const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
 
-fixture('Frontpage')
+const setup = fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appNameTranslation);
   });
+
+if (!isRealIntegrationsEnabled()) {
+  setup.requestHooks(new HttpRequestHook(url));
+}
 
 test('user can authenticate and logout', async (t: TestController) => {
   const suomiFiData = await doEmployerLogin(t);

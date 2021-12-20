@@ -19,9 +19,8 @@ let urlUtils: ReturnType<typeof getUrlUtils>;
 const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
 
-fixture('Application')
+const setup = fixture('Application')
   .page(url)
-  .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
@@ -48,6 +47,8 @@ if (isRealIntegrationsEnabled()) {
     await step1Form.expectations.isFulFilledWith(application);
   });
 } else {
+  setup.requestHooks(new HttpRequestHook(url));
+
   test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
     const { id: applicationId, ...step1FormData } =
       await loginAndfillApplication(t, 1);

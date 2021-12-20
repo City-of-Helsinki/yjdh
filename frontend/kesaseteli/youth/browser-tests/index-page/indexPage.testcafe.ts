@@ -4,15 +4,19 @@ import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/
 import { fakeYouthFormData } from '../../src/__tests__/utils/fake-objects';
 import { getFrontendUrl } from '../utils/url.utils';
 import { getIndexPageComponents } from './indexPage.components';
+import isRealIntegrationsEnabled from 'shared/utils/is-real-integrations-enabled';
 
 const url = getFrontendUrl('/');
 
-fixture('Frontpage')
+const setup = fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
   });
+
+if (!isRealIntegrationsEnabled()) {
+  setup.requestHooks(new HttpRequestHook(url));
+}
 
 test('can fill up youth application', async (t) => {
   const indexPageComponents = await getIndexPageComponents(t);
