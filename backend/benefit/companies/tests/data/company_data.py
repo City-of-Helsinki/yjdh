@@ -721,7 +721,65 @@ DUMMY_ASSOCIATION_DATA = {
     "city": "Vaasa",
 }
 
-
+DUMMY_YRTTI_RESPONSE = {
+    "BasicInfoResponse": {
+        "AssociationNameInfo": [
+            {
+                "AssociationNameType": "P",
+                "AssociationName": "SIPOON NUORISOMUSIIKINYHDISTYS SUSIMUSA ry",
+                "AssociationNameLanguage": "FI",
+                "AssociationIndustry": None,
+                "AssociationNameStatus": "R",
+                "AssociationNameStartDate": "2007-02-27T00:00:00.000+00:00",
+            },
+            {
+                "AssociationNameType": "P",
+                "AssociationName": "SIPOON NUORISOMUSIIKINYHDISTYS SYSIMUSA ry",
+                "AssociationNameLanguage": "FI",
+                "AssociationIndustry": None,
+                "AssociationNameStatus": "VE",
+                "AssociationNameStartDate": None,
+            },
+        ],
+        "BusinessId": "2686723-5",
+        "RegistrationNumber": "195.883",
+        "Domicile": "753",
+        "DomicileStartDate": "2007-02-27T00:00:00.000+00:00",
+        "AssociationRegistrationLanguage": "FI",
+        "Address": [
+            {
+                "AddressTypeCode": "YRPO",
+                "FormattedAddressFI": "Lamberg Matti Olavi\nKatajakalliontie 16\n01120 Västerskog\nSuomi",
+                "FormattedAddressEN": "Lamberg Matti Olavi\nKatajakalliontie 16\n01120 Västerskog\nFinland",
+                "FormattedAddressSE": "Lamberg Matti Olavi\nKatajakalliontie 16\n01120 Västerskog\nFinland",
+                "CoAddress": None,
+                "StreetName": "Lamberg Matti Olavi\nKatajakalliontie 16",
+                "HouseNumber": None,
+                "Stair": None,
+                "FlatNumber": None,
+                "FlatDivisionLetter": None,
+                "PoBoxPrefix": None,
+                "PoBox": None,
+                "PostCode": "01120",
+                "City": "Västerskog",
+                "CountryCode": "FI",
+                "AddressAbroad": None,
+            }
+        ],
+        "ContactInfo": None,
+        "RegistryDate": "2007-02-27T00:00:00.000+00:00",
+        "LastRegistrationPeriod": "2007-02-27T00:00:00.000+00:00",
+        "AssociationStatus": "R",
+        "AssociationStatusDate": "2007-02-27T00:00:00.000+00:00",
+        "AssociationSpecialCondition": None,
+        "AssociationSpecialConditionDate": None,
+        "EndRegistrationReason": None,
+        "PurposeClassMain": "400",
+        "PurposeClassSecondary": "400",
+    },
+    "faultCode": None,
+    "faultString": None,
+}
 DUMMY_SERVICE_BUS_RESPONSE = {
     "GetCompanyResult": {
         "Company": {
