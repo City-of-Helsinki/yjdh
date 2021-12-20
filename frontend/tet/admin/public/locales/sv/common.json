@@ -1,0 +1,87 @@
+{
+  "appName": "TET-paikat",
+  "header": {
+    "loginLabel": "Logga in i tjänsten",
+    "logoutLabel": "Logga ut",
+    "userAriaLabelPrefix": "Användaren:",
+    "linkSkipToContent": "Gå till innehållet",
+    "menuToggleAriaLabel": "Menyn"
+  },
+  "errorPage": {
+    "title": "Ett oförväntat fel skedde",
+    "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
+    "retry": "Ladda upp sidan på nytt.",
+    "logout": "Logga ut"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Sidan kunde inte hittas",
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
+  },
+  "loginPage": {
+    "logoutMessageLabel": "Du har loggat ut",
+    "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
+    "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
+    "infoLabel": "Att använda tjänsten kräver stark autentisering",
+    "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
+    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
+  },
+  "application": {
+    "jobPostings": {
+      "title": "TET-paikkailmoitukset",
+      "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
+      "addNewPosting": "Lisää uusi harjoittelupaikka"
+    }
+  },
+  "footer": {
+    "copyrightText": "Helsingfors stad",
+    "allRightsReservedText": "Med ensamrätt",
+    "accessibilityStatement": "Tillgänglighetsutlåtande",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
+    "information": "Information om servicen",
+    "informationLink": "https://kesaseteli.fi/sv/"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "error": {
+    "generic": {
+      "label": "Ett okänt fel inträffade.",
+      "text": "Försök igen senare."
+    },
+    "attachments": {
+      "title": "Det skedde ett fel i nedladdningen av filen",
+      "tooBig": "Filen är för stor",
+      "fileType": "Filtypen är inte tillåten"
+    }
+  },
+  "upload": {
+    "isUploading": "Sänder...",
+    "errorTitle": "Uppladdningen av filen misslyckades",
+    "errorMessage": "Något gick fel. Försök igen senare."
+  },
+  "delete": {
+    "errorTitle": "Borttagningen misslyckades",
+    "errorMessage": "Något gick fel. Försök igen senare."
+  },
+  "applications": {
+    "sections": {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Arbetskontrakt",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Löneintyg",
+            "message": ""
+          }
+        },
+        "add": "Bifoga bilaga",
+        "remove": "Ta bort filen"
+      }
+    }
+  }
+}

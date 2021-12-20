@@ -1,11 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: [
-    'auto',
-    'plugin:@next/next/recommended',
-    'plugin:you-dont-need-lodash-underscore/compatible',
-  ],
+  extends: ['auto', 'plugin:@next/next/recommended', 'plugin:you-dont-need-lodash-underscore/compatible'],
   rules: {
     'jsx-a11y/anchor-is-valid': [
       'error',
@@ -21,7 +17,10 @@ module.exports = {
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
     'no-void': 'off',
+    'unicorn/prefer-export-from': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'react/function-component-definition': 'off',
+    'sonarjs/no-nested-template-literals': 'off',
   },
   overrides: [
     {
