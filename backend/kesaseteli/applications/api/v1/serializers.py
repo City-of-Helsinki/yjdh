@@ -440,6 +440,17 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class YouthApplicationSerializer(serializers.ModelSerializer):
+    def validate_social_security_number(self, value):
+        if value is None or str(value).strip() == "":
+            raise serializers.ValidationError(_("Social security number must be set"))
+        return value
+
+    def validate(self, data):
+        data = super().validate(data)
+        if "social_security_number" not in data:
+            raise serializers.ValidationError(_("Social security number must be set"))
+        return data
+
     class Meta:
         model = YouthApplication
         fields = [
