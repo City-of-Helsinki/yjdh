@@ -14,19 +14,22 @@ const translations = {
     login: 'Kirjaudu palveluun',
     logout: 'Kirjaudu ulos',
     language: 'Suomeksi',
-    userInfo: (user?: User) => new RegExp(`Käyttäjä: ${user?.name ?? ''}`),
+    userInfo: (user?: User) =>
+      new RegExp(`Käyttäjä: ${user?.name ?? 'Mika Hietanen'}`),
   },
   sv: {
     login: 'Logga in i tjänsten',
     logout: 'Logga ut',
     language: 'På svenska',
-    userInfo: (user?: User) => new RegExp(`Användare: ${user?.name ?? ''}`),
+    userInfo: (user?: User) =>
+      new RegExp(`Användare: ${user?.name ?? 'Mika Hietanen'}`),
   },
   en: {
     login: 'Sign in to the service',
     logout: 'Log out',
     language: 'In English',
-    userInfo: (user?: User) => new RegExp(`User: ${user?.name ?? ''}`),
+    userInfo: (user?: User) =>
+      new RegExp(`User: ${user?.name ?? 'Mika Hietanen'}`),
   },
 };
 

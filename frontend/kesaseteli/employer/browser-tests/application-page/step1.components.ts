@@ -14,7 +14,7 @@ export const getStep1Components = (t: TestController) => {
   const companyTable = async (company: Company) => {
     const selectors = {
       companyTable() {
-        return screen.findAllByRole('grid', { name: /yrityksen tiedot/i });
+        return screen.findAllByRole('region', { name: /yrityksen tiedot/i });
       },
     };
     const expectations = {
