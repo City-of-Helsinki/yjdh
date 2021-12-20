@@ -30,12 +30,8 @@ if (!isRealIntegrationsEnabled()) {
   setup.requestHooks(new HttpRequestHook(url));
 }
 
-test('user can authenticate and logout', async (t: TestController) => {
-  const suomiFiData = await doEmployerLogin(t);
+test('user can authenticate and logout', async () => {
   const headerUser = await headerComponents.headerUser();
-  if (isRealIntegrationsEnabled() && suomiFiData?.user) {
-    await headerUser.expectations.userIsLoggedIn(suomiFiData.user);
-  }
   await headerUser.actions.clicklogoutButton();
   await headerUser.expectations.userIsLoggedOut();
 });
