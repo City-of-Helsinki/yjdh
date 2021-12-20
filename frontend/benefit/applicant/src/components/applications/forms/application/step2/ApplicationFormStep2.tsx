@@ -386,7 +386,8 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </SelectionGroup>
         </$GridCell>
 
-        {formik.values.benefitType === BENEFIT_TYPES.SALARY && (
+        {formik.values.benefitType === BENEFIT_TYPES.SALARY 
+          && formik.values.apprenticeshipProgram === true && (
           <$GridCell $colSpan={6}>
             <$Notification
               label={t(`${translationsBase}.notifications.salaryBenefit.label`)}
@@ -401,11 +402,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         <$GridCell $colSpan={8}>
           {!formik.values.benefitType
             ? t(`${translationsBase}.messages.selectBenefitType`)
-            : t(
-                `${translationsBase}.messages.${camelCase(
-                  formik.values.benefitType
-                )}Selected`
-              )}
+            : formik.values.benefitType === BENEFIT_TYPES.SALARY 
+              && formik.values.apprenticeshipProgram === false
+            ? ''
+            : t(`${translationsBase}.messages.${camelCase(formik.values.benefitType)}Selected`
+          )}
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={2}>
           <DateInput
