@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import React from 'react';
+import useIsRouting from 'shared/hooks/useIsRouting';
 import useLocale from 'shared/hooks/useLocale';
 import GoToPageFunction from 'shared/types/go-to-page-function';
-import useIsRouting from 'shared/hooks/useIsRouting';
 
 const useGoToPage = (): GoToPageFunction => {
   const router = useRouter();

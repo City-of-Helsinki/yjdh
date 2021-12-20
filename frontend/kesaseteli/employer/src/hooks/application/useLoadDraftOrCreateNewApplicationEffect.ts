@@ -34,7 +34,12 @@ const useLoadDraftOrCreateNewApplicationEffect = (
         createApplicationQuery.mutate(undefined, { onError });
       }
     }
-  }, [draftApplicationQuery, createApplicationQuery, goToApplicationPage]);
+  }, [
+    draftApplicationQuery,
+    createApplicationQuery,
+    goToApplicationPage,
+    onError,
+  ]);
 };
 
 export default useLoadDraftOrCreateNewApplicationEffect;

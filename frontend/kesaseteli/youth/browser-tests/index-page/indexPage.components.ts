@@ -6,9 +6,7 @@ import {
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
-import YouthApplication from '../../src/types/youth-application';
 import YouthFormData from '../../src/types/youth-form-data';
-import { convertFormDataToApplication } from '../../src/utils/youth-form-data.utils';
 
 type TextInputName = keyof Omit<
   YouthFormData,

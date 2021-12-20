@@ -1,7 +1,5 @@
 import nock from 'nock';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
-import { NextRouter } from 'next/router';
-import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 export const expectBackendRequestsToComplete = (): void => {
   expect(

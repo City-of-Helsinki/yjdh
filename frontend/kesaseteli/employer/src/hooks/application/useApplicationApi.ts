@@ -7,9 +7,9 @@ import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import React from 'react';
 import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
-import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 export type ApplicationApi<T> = {
   applicationId?: string;

@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({
       (event?: Event | MouseEvent) => {
         event?.preventDefault();
         closeMenu();
-        goToPage(url);
+        goToPage(url as string);
       },
     [closeMenu, goToPage]
   );
