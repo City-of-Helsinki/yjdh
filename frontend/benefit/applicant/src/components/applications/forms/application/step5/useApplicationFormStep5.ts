@@ -7,7 +7,7 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import { getApplicationStepString } from 'benefit/applicant/utils/common';
+import { getApplicationStepString } from 'benefit/common/utils/application';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';

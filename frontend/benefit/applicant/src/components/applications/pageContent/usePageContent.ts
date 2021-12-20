@@ -5,7 +5,7 @@ import {
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
-import { getApplicationStepFromString } from 'benefit/applicant/utils/common';
+import { getApplicationStepFromString } from 'benefit/common/utils/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';

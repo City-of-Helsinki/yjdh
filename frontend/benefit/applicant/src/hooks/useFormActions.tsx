@@ -13,7 +13,7 @@ import { Application, ApplicationData, Employee } from '../types/application';
 import {
   getApplicationStepFromString,
   getApplicationStepString,
-} from '../utils/common';
+} from 'benefit/common/utils/application';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useDeleteApplicationQuery from './useDeleteApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
