@@ -105,6 +105,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       created_at,
       submitted_at,
       application_number: applicationNum,
+      additional_information_needed_by,
     } = application;
 
     const statusText = getStatusTranslation(appStatus);
@@ -121,7 +122,12 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       formatDate(new Date(created_at), DATE_FORMATS.DATE_AND_TIME);
     const modifiedAt =
       last_modified_at && formatDate(new Date(last_modified_at));
-    const editEndDate = createdAt;
+    const editEndDate =
+      additional_information_needed_by &&
+      formatDate(
+        new Date(additional_information_needed_by),
+        DATE_FORMATS.DATE_AND_TIME
+      );
 
     const commonProps = {
       id,
