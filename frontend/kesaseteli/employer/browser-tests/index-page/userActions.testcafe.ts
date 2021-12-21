@@ -6,6 +6,7 @@ import {
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
+import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const appNameTranslation: Translation = {
@@ -25,7 +26,8 @@ fixture('Frontpage')
     headerComponents = getHeaderComponents(t, appNameTranslation);
   });
 
-test('user can authenticate and logout', async () => {
+test('user can authenticate and logout', async (t) => {
+  await doEmployerLogin(t, 'fi');
   const headerUser = await headerComponents.headerUser();
   await headerUser.actions.clicklogoutButton();
   await headerUser.expectations.userIsLoggedOut();
