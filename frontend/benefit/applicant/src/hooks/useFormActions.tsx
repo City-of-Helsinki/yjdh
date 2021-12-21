@@ -1,4 +1,8 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import {
+  getApplicationStepFromString,
+  getApplicationStepString,
+} from 'benefit/common/utils/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
@@ -10,10 +14,6 @@ import snakecaseKeys from 'snakecase-keys';
 
 import DeMinimisContext from '../context/DeMinimisContext';
 import { Application, ApplicationData, Employee } from '../types/application';
-import {
-  getApplicationStepFromString,
-  getApplicationStepString,
-} from 'benefit/common/utils/application';
 import useCreateApplicationQuery from './useCreateApplicationQuery';
 import useDeleteApplicationQuery from './useDeleteApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
