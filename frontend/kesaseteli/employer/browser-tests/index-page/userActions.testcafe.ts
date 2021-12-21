@@ -1,10 +1,11 @@
+import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import {
   getHeaderComponents,
   Translation,
 } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
-import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+
 import { getFrontendUrl } from '../utils/url.utils';
 
 const appNameTranslation: Translation = {
@@ -16,16 +17,13 @@ const appNameTranslation: Translation = {
 const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
 
-const setup = fixture('Frontpage')
+fixture('Frontpage')
   .page(url)
+  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appNameTranslation);
   });
-
-if (!isRealIntegrationsEnabled()) {
-  setup.requestHooks(new HttpRequestHook(url));
-}
 
 test('user can authenticate and logout', async () => {
   const headerUser = await headerComponents.headerUser();

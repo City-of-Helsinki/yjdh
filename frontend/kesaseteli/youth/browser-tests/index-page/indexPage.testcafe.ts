@@ -1,22 +1,20 @@
+import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import { fakeYouthFormData } from '../../src/__tests__/utils/fake-objects';
 import { getFrontendUrl } from '../utils/url.utils';
 import { getIndexPageComponents } from './indexPage.components';
-import isRealIntegrationsEnabled from 'shared/utils/is-real-integrations-enabled';
 
 const url = getFrontendUrl('/');
+const host = getBackendDomain();
 
-const setup = fixture('Frontpage')
+fixture('Frontpage')
   .page(url)
+  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
   });
-
-if (!isRealIntegrationsEnabled()) {
-  setup.requestHooks(new HttpRequestHook(url));
-}
 
 test('can fill up youth application', async (t) => {
   const indexPageComponents = await getIndexPageComponents(t);

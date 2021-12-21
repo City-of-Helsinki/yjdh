@@ -1,3 +1,4 @@
+import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
@@ -19,8 +20,9 @@ let urlUtils: ReturnType<typeof getUrlUtils>;
 const url = getFrontendUrl('/');
 let headerComponents: ReturnType<typeof getHeaderComponents>;
 
-const setup = fixture('Application')
+fixture('Application')
   .page(url)
+  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
@@ -47,8 +49,6 @@ if (isRealIntegrationsEnabled()) {
     await step1Form.expectations.isFulFilledWith(application);
   });
 } else {
-  setup.requestHooks(new HttpRequestHook(url));
-
   test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
     const { id: applicationId, ...step1FormData } =
       await loginAndfillApplication(t, 1);

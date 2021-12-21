@@ -167,8 +167,11 @@ export const getStep1Components = (t: TestController) => {
           address
         );
       },
-      toggleSeparateInvoicerCheckbox() {
-        return t.click(selectors.separateInvoicerCheckbox());
+      async selectSeparateInvoicerCheckbox(expectedValue = true) {
+        const currentValue = await selectors.separateInvoicerCheckbox().checked;
+        if (currentValue !== expectedValue) {
+          await t.click(selectors.separateInvoicerCheckbox());
+        }
       },
       fillInvoicerName(name?: string) {
         return fillInput(

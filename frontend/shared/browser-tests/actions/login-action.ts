@@ -58,7 +58,7 @@ const doSuomiFiLogin = async (
   }
   await profileForm.actions.clickContinueButton();
   const companiesTable = await suomiFiValtuutusComponents.companiesTable();
-  const company = await companiesTable.actions.selectCompanyRadioButton(1);
+  const company = await companiesTable.actions.selectCompanyRadioButton(2);
   const authorizeForm = await suomiFiValtuutusComponents.authorizeForm();
   await authorizeForm.actions.clickSubmitButton(lang);
   return { user, company };
