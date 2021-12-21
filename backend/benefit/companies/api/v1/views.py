@@ -1,3 +1,5 @@
+import logging
+
 from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
@@ -13,6 +15,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from shared.oidc.utils import get_organization_roles
+
+LOGGER = logging.getLogger(__name__)
 
 
 class GetCompanyView(APIView):
@@ -83,9 +87,14 @@ class GetCompanyView(APIView):
                 except Company.DoesNotExist:
                     # Throw error if API failed or no object found in both places
                     return self.ytj_api_error
-            except (ValueError, KeyError):
+            except (ValueError, KeyError) as err:
+                LOGGER.debug(
+                    "Could not handle the response from Palveluväylä and YRTTI API, error: {}".format(
+                        err
+                    )
+                )
                 return Response(
-                    "Could not handle the response from Palveluväylä API",
+                    "Could not handle the response from Palveluväylä and YRTTI API",
                     status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         company_data = CompanySerializer(company).data
