@@ -6,4 +6,5 @@ export const getApplicationStepFromString = (step: string): number => {
   }
 };
 
-export const getApplicationStepString = (step: number): string => `step_${step}`;
+export const getApplicationStepString = (step: number): string =>
+  `step_${step}`;

@@ -5,7 +5,7 @@ import {
 import snakecaseKeys from 'snakecase-keys';
 import { APPLICATION_STATUSES } from '../constants';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
-import { getApplicationStepString } from 'benefit/common/utils/application';
+import { getApplicationStepString } from 'benefit/handler/utils/common';
 
 type ExtendedComponentProps = {
   updateStatus: (newStatus: APPLICATION_STATUSES) => void;

@@ -2,7 +2,7 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import {
   getApplicationStepFromString,
   getApplicationStepString,
-} from 'benefit/common/utils/application';
+} from 'benefit/applicant/utils/common';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
