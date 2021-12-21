@@ -2,6 +2,7 @@ import TestController, { Selector } from 'testcafe';
 
 import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import User from '../../src/types/user';
+import isRealIntegrationsEnabled from '../utils/is-real-integrations-enabled';
 import {
   getErrorMessage,
   screenContext,
@@ -15,21 +16,34 @@ const translations = {
     logout: 'Kirjaudu ulos',
     language: 'Suomeksi',
     userInfo: (user?: User) =>
-      new RegExp(`Käyttäjä: ${user?.name ?? 'Mika Hietanen'}`),
+      new RegExp(
+        `Käyttäjä: ${
+          // eslint-disable-next-line sonarjs/no-duplicate-string
+          isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
+        }`
+      ),
   },
   sv: {
     login: 'Logga in i tjänsten',
     logout: 'Logga ut',
     language: 'På svenska',
     userInfo: (user?: User) =>
-      new RegExp(`Användare: ${user?.name ?? 'Mika Hietanen'}`),
+      new RegExp(
+        `Användare: ${
+          isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
+        }`
+      ),
   },
   en: {
     login: 'Sign in to the service',
     logout: 'Log out',
     language: 'In English',
     userInfo: (user?: User) =>
-      new RegExp(`User: ${user?.name ?? 'Mika Hietanen'}`),
+      new RegExp(
+        `User: ${
+          isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
+        }`
+      ),
   },
 };
 

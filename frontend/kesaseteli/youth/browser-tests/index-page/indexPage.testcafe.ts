@@ -7,7 +7,6 @@ import { getFrontendUrl } from '../utils/url.utils';
 import { getIndexPageComponents } from './indexPage.components';
 
 const url = getFrontendUrl('/');
-const host = getBackendDomain();
 
 fixture('Frontpage')
   .page(url)
