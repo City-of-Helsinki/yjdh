@@ -81,11 +81,12 @@ env = environ.Env(
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, True),
     DB_PREFIX=(str, ""),
-    EMAIL_USE_TLS=(bool, True),
+    EMAIL_USE_TLS=(bool, False),
+    EMAIL_HOST=(str, "ema.platta-net.hel.fi"),
     EMAIL_HOST_USER=(str, ""),
     EMAIL_HOST_PASSWORD=(str, ""),
-    EMAIL_PORT=(int, 587),
-    EMAIL_TIMEOUT=(int, 5),
+    EMAIL_PORT=(int, 25),
+    EMAIL_TIMEOUT=(int, 15),
     DEFAULT_FROM_EMAIL=(str, "Kesäseteli <kesaseteli@hel.fi>"),
     YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS=(int, 12),
 )
@@ -193,6 +194,7 @@ else:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_HOST = env.str("EMAIL_HOST")
 EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = env.int("EMAIL_PORT")
