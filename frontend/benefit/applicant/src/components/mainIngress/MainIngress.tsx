@@ -40,6 +40,7 @@ const MainIngress: React.FC = () => {
           </$Description>
           <$ActionContainer>
             <Button
+              data-testid="newApplicationButton"
               iconLeft={<IconPlus />}
               onClick={handleNewApplicationClick}
               theme="coat"
