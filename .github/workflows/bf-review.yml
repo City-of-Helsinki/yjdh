@@ -222,6 +222,12 @@ jobs:
         run: yarn --cwd ${{ matrix.dir }} browser-test:ci
         env:
           APPLICANT_URL: ${{ env.ENVIRONMENT_URL }}
+      - name: Upload screenshots and videos of failed tests to artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: report
+          path: ./frontend/${{matrix.dir}}/report
+        if: always() && steps.testcafe.outcome == 'failure'
 #      # Temporary commented out because these tasks block the review pipeline
 #      - name: Deploy Quarter Hourly Cronjobs
 #        uses: City-of-Helsinki/setup-cronjob-action@main
