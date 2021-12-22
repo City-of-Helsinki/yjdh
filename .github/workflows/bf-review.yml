@@ -96,7 +96,6 @@ jobs:
             port: 8000
           - service: bf-appl
             context: frontend
-            dir: benefit/applicant
             dockerfile: ./frontend/benefit/applicant/Dockerfile
             database: false
             port: 3000
@@ -189,6 +188,9 @@ jobs:
       fail-fast: false
       matrix:
         service: ["bf-appl"]
+        include:
+          - service: bf-appl
+            dir: benefit/applicant
     steps:
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
