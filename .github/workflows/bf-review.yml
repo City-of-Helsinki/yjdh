@@ -96,6 +96,7 @@ jobs:
             port: 8000
           - service: bf-appl
             context: frontend
+            dir: benefit/applicant
             dockerfile: ./frontend/benefit/applicant/Dockerfile
             database: false
             port: 3000
@@ -179,8 +180,7 @@ jobs:
             **Helsinkibenefit-${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
-        working-directory: ./frontend/benefit/applicant
-        run: yarn browser-test:ci
+        run: yarn --cwd ${{ matrix.dir }} browser-test:ci
         env:
           APPLICANT_URL: ${{ env.ENVIRONMENT_URL }}
 #      # Temporary commented out because these tasks block the review pipeline
