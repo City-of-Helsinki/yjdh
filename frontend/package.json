@@ -36,6 +36,8 @@
     "test:coverage": "npx lerna run test:coverage --stream --concurrency 1",
     "bf-applicant:test": "yarn --cwd benefit/applicant test",
     "bf-handler:test": "yarn --cwd benefit/bf-handler test",
+    "bf-applicant:browser-test": "yarn --cwd benefit/applicant browser-test",
+    "bf-applicant:browser-test:ci": "yarn --cwd benefit/applicant browser-test:ci",
     "ks-empl:test": " yarn --cwd kesaseteli/employer test",
     "ks-empl:browser-test": "yarn --cwd kesaseteli/employer browser-test",
     "ks-empl:browser-test:ci": "yarn --cwd kesaseteli/employer browser-test:ci",
