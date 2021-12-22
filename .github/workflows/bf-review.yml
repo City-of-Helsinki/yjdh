@@ -177,7 +177,11 @@ jobs:
           header: deployment-helsinkibenefit-${{ matrix.service }}
           message: |
             **Helsinkibenefit-${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
-
+      - name: Run Acceptance Tests for ${{ matrix.service }}
+        id: testcafe
+        run: yarn --cwd ${{matrix.dir}} browser-test:ci
+        env:
+          APPLICANT_URL: ${{ env.ENVIRONMENT_URL }}
 #      # Temporary commented out because these tasks block the review pipeline
 #      - name: Deploy Quarter Hourly Cronjobs
 #        uses: City-of-Helsinki/setup-cronjob-action@main
