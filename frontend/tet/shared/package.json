@@ -1,0 +1,27 @@
+{
+  "name": "@frontend/tet-shared",
+  "version": "1.0.0",
+  "files": [
+    "./"
+  ],
+  "scripts": {
+    "lint": "eslint --ext js,ts,tsx src",
+    "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
+    "test": "jest --passWithNoTests",
+    "test:staged": "yarn test --watchAll=false --findRelatedTests",
+    "test:coverage": "yarn test --verbose --coverage"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@frontend/shared": "*",
+    "axios": "^0.24.0",
+    "next": "^11.1.3",
+    "next-i18next": "^10.0.1",
+    "react": "^17.0.2",
+    "react-query": "^3.34.0",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "eslint-config-adjunct": "^4.11.1"
+  }
+}

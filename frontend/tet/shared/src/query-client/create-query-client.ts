@@ -3,7 +3,7 @@
 // import Axios, { AxiosInstance } from 'axios';
 import // BackendEndPoints,
 // getBackendDomain,
-'tet/admin/backend-api/backend-api';
+'tet-shared/backend-api/backend-api';
 import {
   QueryClient,
   // QueryFunctionContext,

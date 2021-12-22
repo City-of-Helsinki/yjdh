@@ -1,4 +1,4 @@
-import { BackendEndpoint, getBackendUrl } from 'tet/admin/backend-api/backend-api';
+import { BackendEndpoint, getBackendUrl } from 'tet-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';
