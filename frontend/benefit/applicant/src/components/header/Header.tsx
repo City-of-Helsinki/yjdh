@@ -1,5 +1,5 @@
 import useLogin from 'benefit/applicant/hooks/useLogin';
-import useLogoutQuery from 'benefit/applicant/hooks/useLogoutQuery';
+import useLogout from 'benefit/applicant/hooks/useLogout';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
@@ -20,10 +20,8 @@ const Header: React.FC = () => {
   const { asPath } = router;
 
   const login = useLogin();
+  const logout = useLogout();
   const userQuery = useUserQuery();
-  const logoutQuery = useLogoutQuery();
-
-  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
   const isLoginPage = asPath?.startsWith('/login');
 
   return (
@@ -38,8 +36,8 @@ const Header: React.FC = () => {
         isAuthenticated: !isLoginPage && userQuery.isSuccess,
         loginLabel: t('common:header.loginLabel'),
         logoutLabel: t('common:header.logoutLabel'),
-        onLogin: !isLoading ? login : noop,
-        onLogout: !isLoading ? () => logoutQuery.mutate({}) : noop,
+        onLogin: !userQuery.isLoading ? login : noop,
+        onLogout: !userQuery.isLoading ? logout : noop,
         userName: userQuery.isSuccess ? userQuery.data.name : undefined,
         userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
       }}
