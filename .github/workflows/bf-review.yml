@@ -179,7 +179,8 @@ jobs:
             **Helsinkibenefit-${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
-        run: yarn bf-applicant:browser-test:ci
+        working-directory: ./frontend/benefit/applicant
+        run: yarn browser-test:ci
         env:
           APPLICANT_URL: ${{ env.ENVIRONMENT_URL }}
 #      # Temporary commented out because these tasks block the review pipeline
