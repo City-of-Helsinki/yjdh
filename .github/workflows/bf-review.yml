@@ -192,6 +192,31 @@ jobs:
           - service: bf-appl
             dir: benefit/applicant
     steps:
+      - uses: actions/checkout@v2
+      - name: Setup kubectl
+        run: |
+          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
+          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
+        shell: bash
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.0
+        with:
+          node-version: "14"
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
+      - name: Service with ingress
+        run: |
+          echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
         run: yarn --cwd ${{ matrix.dir }} browser-test:ci
