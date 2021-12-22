@@ -14,7 +14,12 @@ import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
-import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  convertToUIDateFormat,
+  DATE_FORMATS,
+  formatDate,
+} from 'shared/utils/date.utils';
 import { getInitials } from 'shared/utils/string.utils';
 import { DefaultTheme } from 'styled-components';
 
@@ -116,19 +121,15 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       initials: getInitials(name),
     };
     const allowedAction = getAllowedActions(id, appStatus);
-    const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
-    const createdAt =
-      created_at &&
-      formatDate(new Date(created_at), DATE_FORMATS.DATE_AND_TIME);
+    const submittedAt = submitted_at
+      ? convertToUIDateFormat(submitted_at)
+      : '-';
+    const createdAt = created_at && convertToUIDateAndTimeFormat(created_at);
     const modifiedAt =
-      last_modified_at && formatDate(new Date(last_modified_at));
+      last_modified_at && convertToUIDateFormat(last_modified_at);
     const editEndDate =
       additional_information_needed_by &&
-      formatDate(
-        new Date(additional_information_needed_by),
-        DATE_FORMATS.DATE_AND_TIME
-      );
-
+      convertToUIDateAndTimeFormat(additional_information_needed_by);
     const commonProps = {
       id,
       name,
