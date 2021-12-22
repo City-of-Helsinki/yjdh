@@ -17,8 +17,6 @@ import isServerSide from 'shared/server/is-server-side';
 import {
   convertToUIDateAndTimeFormat,
   convertToUIDateFormat,
-  DATE_FORMATS,
-  formatDate,
 } from 'shared/utils/date.utils';
 import { getInitials } from 'shared/utils/string.utils';
 import { DefaultTheme } from 'styled-components';
