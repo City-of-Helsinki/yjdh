@@ -166,6 +166,7 @@ export type ApproveTerms = {
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
+  additional_information_needed_by?: string;
   application_number?: number;
   application_step: string; // required
   employee: EmployeeData; // required
@@ -287,6 +288,7 @@ export interface Step2 {
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;
+  additionalInformationNeededBy?: string;
   applicationNumber?: number;
   bases?: string[];
   company?: Company;
