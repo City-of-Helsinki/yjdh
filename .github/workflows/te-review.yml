@@ -49,20 +49,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
+#        Disable te-empl and te-yout due to YJDH-370
+#        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
+        service: [ 'te-bknd', 'te-admn' ]
         include:
           - service: te-bknd
             context: ./backend
             dockerfile: ./backend/docker/tet.Dockerfile
             port: 8000
-          - service: te-empl
-            context: ./frontend
-            dockerfile: ./frontend/tet/employer/Dockerfile
-            port: 3000
-          - service: te-yout
-            context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
-            port: 3000
+#          - service: te-empl
+#            context: ./frontend
+#            dockerfile: ./frontend/tet/employer/Dockerfile
+#            port: 3000
+#          - service: te-yout
+#            context: ./frontend
+#            dockerfile: ./frontend/tet/youth/Dockerfile
+#            port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
@@ -88,23 +90,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
+#        Disable te-empl and te-yout due to YJDH-370
+#        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
+        service: [ 'te-bknd', 'te-admn' ]
         include:
           - service: te-bknd
             context: ./backend
             dockerfile: ./backend/docker/tet.Dockerfile
             database: true
             port: 8000
-          - service: te-empl
-            context: ./frontend
-            dockerfile: ./frontend/tet/employer/Dockerfile
-            database: false
-            port: 3000
-          - service: te-yout
-            context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
-            database: false
-            port: 3000
+#          - service: te-empl
+#            context: ./frontend
+#            dockerfile: ./frontend/tet/employer/Dockerfile
+#            database: false
+#            port: 3000
+#          - service: te-yout
+#            context: ./frontend
+#            dockerfile: ./frontend/tet/youth/Dockerfile
+#            database: false
+#            port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
