@@ -15,7 +15,7 @@ test('Oppisopimus', async (t) => {
 
   await applicationsList.createNewApplication();
 
-  await t.expect(Selector('h1').withText('Uusi hakemus').exists).ok();
+  await t.expect(step1.newApplicationHeading.exists).ok();
 
   await step1.fillEmployerInfo('6051437344779954');
   await step1.fillContactPerson(
