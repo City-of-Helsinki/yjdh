@@ -71,3 +71,7 @@
 !tet/admin/tsconfig.json
 !tet/admin/start.js
 
+!tet/shared/src
+!tet/shared/package.json
+!tet/shared/tsconfig.json
+
