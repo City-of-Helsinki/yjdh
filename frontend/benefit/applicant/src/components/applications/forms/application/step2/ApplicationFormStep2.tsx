@@ -7,6 +7,7 @@ import {
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { hasCommissionOption } from 'benefit/applicant/utils/featureFlags';
 import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import React from 'react';
@@ -84,7 +85,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   useAlertBeforeLeaving(formik.dirty);
 
   const selectLabel = t('common:select');
-  const hasCommissionOption = false;
 
   return (
     <form onSubmit={handleSubmit} noValidate>
