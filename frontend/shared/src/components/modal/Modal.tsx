@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
           theme="black"
           variant="secondary"
           onClick={handleToggle}
-          data-testid="cancel"
+          data-testid="modalCancel"
         >
           {t('common:applications.actions.close')}
         </Button>
@@ -64,7 +64,7 @@ const Modal: React.FC<ModalProps> = ({
           variant={variant}
           onClick={onAccept}
           disabled={actionDisabled}
-          data-testid="submit"
+          data-testid="modalSubmit"
         >
           {submitButtonLabel}
         </Button>
