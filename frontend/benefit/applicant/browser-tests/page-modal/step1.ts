@@ -1,6 +1,8 @@
 import { t, Selector } from 'testcafe';
 
 class Step1 {
+  newApplicationHeading = Selector('h1').withText('Uusi hakemus');
+
   bankAccountNumber = Selector('input').withAttribute(
     'name',
     'companyBankAccountNumber'
