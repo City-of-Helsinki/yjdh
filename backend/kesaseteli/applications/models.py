@@ -8,7 +8,11 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
-from shared.common.validators import validate_name, validate_phone_number
+from shared.common.validators import (
+    validate_name,
+    validate_optional_json,
+    validate_phone_number,
+)
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 
 from applications.enums import (
@@ -43,7 +47,7 @@ class School(TimeStampedModel, UUIDModel):
         ordering = ["name"]
 
 
-class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
+class YouthApplication(TimeStampedModel, UUIDModel):
     first_name = models.CharField(
         max_length=128,
         verbose_name=_("first name"),
@@ -84,6 +88,13 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     )
     receipt_confirmed_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("timestamp of receipt confirmation")
+    )
+    encrypted_vtj_json = EncryptedCharField(
+        null=True,
+        blank=True,
+        max_length=1024 * 1024,
+        verbose_name=_("vtj json"),
+        validators=[validate_optional_json],
     )
 
     def _activation_link(self, request):
