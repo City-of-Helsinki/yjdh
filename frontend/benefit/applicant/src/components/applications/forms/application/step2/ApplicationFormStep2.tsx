@@ -28,6 +28,7 @@ import {
   stringFloatToFixed,
 } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
+
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep2 } from './useApplicationFormStep2';
 
