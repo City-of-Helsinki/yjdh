@@ -7,6 +7,7 @@ import {
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { hasCommissionOption } from 'benefit/applicant/utils/featureFlags';
 import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import React from 'react';
@@ -371,18 +372,20 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
               disabled={formik.values.paySubsidyGranted !== true}
             />
-            <$RadioButton
-              id={`${fields.benefitType.name}Commission`}
-              name={fields.benefitType.name}
-              value={BENEFIT_TYPES.COMMISSION}
-              label={t(
-                `${translationsBase}.fields.${fields.benefitType.name}.commission`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              checked={formik.values.benefitType === BENEFIT_TYPES.COMMISSION}
-              disabled={formik.values.apprenticeshipProgram === true}
-            />
+            {hasCommissionOption && (
+              <$RadioButton
+                id={`${fields.benefitType.name}Commission`}
+                name={fields.benefitType.name}
+                value={BENEFIT_TYPES.COMMISSION}
+                label={t(
+                  `${translationsBase}.fields.${fields.benefitType.name}.commission`
+                )}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                checked={formik.values.benefitType === BENEFIT_TYPES.COMMISSION}
+                disabled={formik.values.apprenticeshipProgram === true}
+              />
+            )}
           </SelectionGroup>
         </$GridCell>
 
