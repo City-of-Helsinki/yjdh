@@ -7,7 +7,7 @@ import {
 import { TFunction, useTranslation } from 'next-i18next';
 import isServerSide from 'shared/server/is-server-side';
 import { getFullName } from 'shared/utils/application.utils';
-import { formatDate } from 'shared/utils/date.utils';
+import { convertToUIDateFormat, formatDate } from 'shared/utils/date.utils';
 
 interface ApplicationListProps {
   t: TFunction;
@@ -35,6 +35,7 @@ const useApplicationList = (
         submitted_at,
         application_number: applicationNum,
         calculation,
+        additional_information_needed_by,
       } = application;
 
       return {
@@ -43,7 +44,10 @@ const useApplicationList = (
         companyId: company ? company.business_id : '-',
         employeeName:
           getFullName(employee?.first_name, employee?.last_name) || '-',
-        submittedAt: submitted_at ? formatDate(new Date(submitted_at)) : '-',
+        submittedAt: submitted_at ? convertToUIDateFormat(submitted_at) : '-',
+        additionalInformationNeededBy: additional_information_needed_by
+          ? convertToUIDateFormat(additional_information_needed_by)
+          : '-',
         applicationNum,
         // refactor when we have handler data
         handlerName:
