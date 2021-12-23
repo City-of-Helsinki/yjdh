@@ -15,7 +15,6 @@ import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { getFullName } from 'shared/utils/application.utils';
 import snakecaseKeys from 'snakecase-keys';
-import application from 'benefit/applicant/pages/application';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -45,8 +44,6 @@ const useApplicationFormStep5 = (
   } = useUpdateApplicationQuery();
 
   const isSubmit = !isEmpty(application?.applicantTermsApproval);
-
-  console.log(application);
 
   useEffect(() => {
     if (
