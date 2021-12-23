@@ -15,6 +15,7 @@ import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { getFullName } from 'shared/utils/application.utils';
 import snakecaseKeys from 'snakecase-keys';
+import application from 'benefit/applicant/pages/application';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -45,10 +46,13 @@ const useApplicationFormStep5 = (
 
   const isSubmit = !isEmpty(application?.applicantTermsApproval);
 
+  console.log(application);
+
   useEffect(() => {
     if (
       isApplicationUpdatedStep5 &&
-      application.status === APPLICATION_STATUSES.RECEIVED
+      (application.status === APPLICATION_STATUSES.RECEIVED ||
+        application.status === APPLICATION_STATUSES.HANDLING)
     ) {
       setSubmittedApplication({
         applicantName: getFullName(
@@ -96,7 +100,12 @@ const useApplicationFormStep5 = (
 
   const handleSubmit = (): void => {
     const submitFields = isSubmit
-      ? { status: APPLICATION_STATUSES.RECEIVED }
+      ? {
+          status:
+            application.status === APPLICATION_STATUSES.DRAFT
+              ? APPLICATION_STATUSES.RECEIVED
+              : APPLICATION_STATUSES.HANDLING,
+        }
       : { applicationStep: getApplicationStepString(6) };
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {

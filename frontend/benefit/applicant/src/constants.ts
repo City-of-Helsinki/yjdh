@@ -37,6 +37,7 @@ export enum APPLICATION_STATUSES {
   RECEIVED = 'received',
   APPROVED = 'approved',
   REJECTED = 'rejected',
+  HANDLING = 'handling',
 }
 
 export enum ORGANIZATION_TYPES {
