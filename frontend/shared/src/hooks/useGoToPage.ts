@@ -19,8 +19,7 @@ const useGoToPage = (): GoToPageFunction => {
       if (options) {
         const { operation, asPath, ...routerOptions } = options;
         const op = operation ?? 'push';
-        const as = asPath ?? path;
-        void router[op](path, as, routerOptions);
+        void router[op](path, asPath ?? path, routerOptions);
       } else {
         void router.push(path);
       }

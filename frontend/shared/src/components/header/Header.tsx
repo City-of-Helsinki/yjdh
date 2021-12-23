@@ -79,7 +79,6 @@ const Header: React.FC<HeaderProps> = ({
       menuToggleAriaLabel={menuToggleAriaLabel || ''}
       skipTo={`#${MAIN_CONTENT_ID}`}
       skipToContentLabel={skipToContentLabel}
-      onTitleClick={handleClickLink()}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
       titleAriaLabel={title}
