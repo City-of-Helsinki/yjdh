@@ -41,7 +41,7 @@ env:
   NEXT_PUBLIC_BACKEND_URL: https://helsinkibenefit-bf-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_MOCK_FLAG: 1
   MOCK_FLAG: 1
-  # DISABLE_AUTHENTICATION: 1
+  DISABLE_AUTHENTICATION: 1
 jobs:
   build:
     # No building for dependabot PRs
