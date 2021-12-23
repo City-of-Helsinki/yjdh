@@ -33,7 +33,9 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       expectUnauthorizedReply();
       const spyPush = jest.fn();
       await renderPage(ApplicationPage, { push: spyPush });
-      await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
+      await waitFor(() =>
+        expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
+      );
     });
 
     describe('when authorized', () => {
@@ -45,7 +47,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           query: {},
         });
         await waitFor(() =>
-          expect(spyReplace).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`)
+          expect(spyReplace).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/`,
+            `${DEFAULT_LANGUAGE}/`,
+            {}
+          )
         );
       });
 
@@ -59,7 +65,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           locale,
         });
         await waitFor(() =>
-          expect(spyReplace).toHaveBeenCalledWith(`${locale}/`)
+          expect(spyReplace).toHaveBeenCalledWith(
+            `${locale}/`,
+            `${locale}/`,
+            {}
+          )
         );
       });
 

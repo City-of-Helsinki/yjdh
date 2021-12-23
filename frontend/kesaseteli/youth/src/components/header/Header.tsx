@@ -34,17 +34,6 @@ const Header: React.FC = () => {
     [router, asPath]
   );
 
-  const handleNavigationItemClick = React.useCallback(
-    (newPath: string): void => {
-      void router.push(newPath);
-    },
-    [router]
-  );
-
-  const handleTitleClick = React.useCallback(
-    () => handleNavigationItemClick('/'),
-    [handleNavigationItemClick]
-  );
   return (
     <BaseHeader
       title={t('common:appName')}
@@ -53,8 +42,6 @@ const Header: React.FC = () => {
       languages={languageOptions}
       locale={locale}
       onLanguageChange={handleLanguageChange}
-      onNavigationItemClick={handleNavigationItemClick}
-      onTitleClick={handleTitleClick}
     />
   );
 };

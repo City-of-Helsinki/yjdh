@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router';
 import React from 'react';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useAuth from 'shared/hooks/useAuth';
+import useGoToPage from 'shared/hooks/useGoToPage';
 import isServerSide from 'shared/server/is-server-side';
 
 /**
@@ -17,13 +17,13 @@ const withAuth = <P,>(
   redirectLocation = '/login'
 ): typeof WrappedComponent =>
   function Wrapped(props: P) {
-    const router = useRouter();
     const { isLoading, isAuthenticated } = useAuth();
+    const goToPage = useGoToPage();
     if (isLoading) {
       return <PageLoadingSpinner />;
     }
     if (!isServerSide() && !isAuthenticated) {
-      void router.push(redirectLocation);
+      void goToPage(redirectLocation);
       return <PageLoadingSpinner />;
     }
     return <WrappedComponent {...props} />;

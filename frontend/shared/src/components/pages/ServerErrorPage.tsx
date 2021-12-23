@@ -1,10 +1,9 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import ErrorPage from 'shared/components/pages/ErrorPage';
-import useLocale from 'shared/hooks/useLocale';
+import useGoToPage from 'shared/hooks/useGoToPage';
 
 export type Props = {
   logout?: () => void;
@@ -12,11 +11,6 @@ export type Props = {
 
 const ServerErrorPage: React.FC<Props> = ({ logout }) => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const locale = useLocale();
-  const redirect = React.useCallback((): void => {
-    void router.push(`/${locale}/`);
-  }, [router, locale]);
   return (
     <Container>
       <Head>
@@ -27,7 +21,7 @@ const ServerErrorPage: React.FC<Props> = ({ logout }) => {
       <ErrorPage
         title={t('common:errorPage.title')}
         message={t('common:errorPage.message')}
-        retry={redirect}
+        retry={useGoToPage()}
         logout={logout}
       />
     </Container>

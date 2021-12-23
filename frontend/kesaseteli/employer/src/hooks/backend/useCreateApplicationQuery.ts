@@ -1,23 +1,19 @@
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
-import handleError from 'shared/error-handler/error-handler';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useLocale from 'shared/hooks/useLocale';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 import Application from 'shared/types/application';
 
 const useCreateApplicationQuery = (): UseMutationResult<
   Application,
-  Error,
+  unknown,
   void
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
   const router = useRouter();
-  const locale = useLocale();
+
   return useMutation(
     'createApplication',
     () => {
@@ -40,7 +36,6 @@ const useCreateApplicationQuery = (): UseMutationResult<
           throw new Error('Missing id');
         }
       },
-      onError: (error) => handleError(error, t, router, locale),
     }
   );
 };
