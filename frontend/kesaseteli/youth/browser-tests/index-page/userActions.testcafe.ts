@@ -1,3 +1,4 @@
+import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import {
   getHeaderComponents,
   Translation,
@@ -8,6 +9,7 @@ import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
+
 let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 const appTranslation: Translation = {
@@ -18,7 +20,7 @@ const appTranslation: Translation = {
 
 fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url))
+  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appTranslation);

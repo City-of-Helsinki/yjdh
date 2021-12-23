@@ -1,3 +1,4 @@
+import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
@@ -9,7 +10,7 @@ const url = getFrontendUrl('/');
 
 fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url))
+  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
   });

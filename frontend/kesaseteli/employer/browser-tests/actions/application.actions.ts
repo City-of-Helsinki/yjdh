@@ -35,19 +35,28 @@ export const fillStep1Form = async (
   await step1Form.actions.fillContactPersonPhone(contact_person_phone_number);
   await step1Form.actions.fillStreetAddress(street_address);
   if (is_separate_invoicer) {
-    await step1Form.actions.toggleSeparateInvoicerCheckbox();
+    await step1Form.actions.selectSeparateInvoicerCheckbox();
     await step1Form.actions.fillInvoicerName(invoicer_name);
     await step1Form.actions.fillInvoicerEmail(invoicer_email);
     await step1Form.actions.fillInvoicerPhone(invoicer_phone_number);
   }
 };
 
+export const removeStep2ExistingForms = async (
+  t: TestController
+): Promise<void> => {
+  const step2 = getStep2Components(t);
+  const form = await step2.form();
+  await form.actions.openAllClosedAccordions();
+  await form.actions.removeAllAccordions();
+};
 export const fillStep2EmployeeForm = async (
   t: TestController,
   employment: Employment,
   index = 0
 ): Promise<void> => {
   const step2 = getStep2Components(t);
+
   const addButton = await step2.addEmploymentButton();
   if (index > 0) {
     await addButton.actions.click();
@@ -72,6 +81,7 @@ export const fillStep2EmployeeForm = async (
       employment.summer_voucher_serial_number
     );
   }
+  await step2Employment.actions.removeExistingAttachments();
   await Promise.all(
     employment.employment_contract.map(async (attachment) =>
       step2Employment.actions.addEmploymentContractAttachment(attachment)
@@ -131,6 +141,7 @@ export const loginAndfillApplication = async (
     await wizard.actions.clickSaveAndContinueButton();
   }
   if (toStep >= 2) {
+    await removeStep2ExistingForms(t);
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < application.summer_vouchers.length; i++) {
       const employment = application.summer_vouchers[i];

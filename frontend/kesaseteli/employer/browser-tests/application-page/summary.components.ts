@@ -69,7 +69,7 @@ export const getSummaryComponents = async (t: TestController) => {
         ) =>
           expectElementHasValue(
             selectors.employerField(field),
-            value ?? String(company[field])
+            value || String(company[field]) || '-'
           );
         const header = selectors.companyHeading();
         await expectElementHasValue(header, company.name);
