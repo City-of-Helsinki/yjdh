@@ -216,12 +216,20 @@ jobs:
         run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
       - name: Service with ingress
         run: |
-          echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT_URL=https://helsinkibenefit-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
         run: yarn --cwd ${{ matrix.dir }} browser-test:ci
         env:
           APPLICANT_URL: ${{ env.ENVIRONMENT_URL }}
+      - name: Create/update PR comment for Acceptance Test results
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: testcafe-results-${{ matrix.service }}
+          message: |
+            ## TestCafe result is __${{ steps.testcafe.outcome }}__ for ${{ env.ENVIRONMENT_URL }}! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
+        if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
       - name: Upload screenshots and videos of failed tests to artifact
         uses: actions/upload-artifact@v2
         with:
