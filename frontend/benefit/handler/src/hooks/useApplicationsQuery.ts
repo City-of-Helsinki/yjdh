@@ -1,4 +1,4 @@
-import { BackendEndpoint } from 'benefit/handler/backend-api/backend-api';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationData } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
@@ -24,7 +24,7 @@ const useApplicationsQuery = (
     ['applicationsList', ...status],
     async () => {
       const res = axios.get<ApplicationData[]>(
-        `${BackendEndpoint.APPLICATIONS}?status=${status.join()}`
+        `${BackendEndpoint.HANDLER_APPLICATIONS}?status=${status.join()}`
       );
       return handleResponse(res);
     },

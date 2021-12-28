@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { BackendEndpoint } from 'benefit/handler/backend-api/backend-api';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationData } from 'benefit/handler/types/application';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
@@ -18,7 +18,7 @@ const useUpdateApplicationQuery = (): UseMutationResult<
     (application: ApplicationData) =>
       handleResponse<ApplicationData>(
         axios.put(
-          `${BackendEndpoint.APPLICATIONS}${application?.id ?? ''}/`,
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${application?.id ?? ''}/`,
           application
         )
       ),

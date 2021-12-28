@@ -1,4 +1,4 @@
-import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ErrorResponse } from 'benefit/applicant/types/common';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';

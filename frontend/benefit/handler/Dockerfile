@@ -15,6 +15,7 @@ WORKDIR /app
 # Install dependencies
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser benefit/handler/package.json benefit/handler/package.json
+COPY --chown=appuser:appuser benefit/shared/package.json benefit/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
@@ -77,6 +78,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/benefit/handler/public app
 COPY --from=staticbuilder --chown=appuser:appuser app/benefit/handler/package.json app/benefit/handler/start.js benefit/handler/
 
 # shared data
+COPY --from=staticbuilder --chown=appuser:appuser app/benefit/shared/package.json benefit/shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 

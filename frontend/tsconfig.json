@@ -21,6 +21,7 @@
       "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
       "benefit/applicant/*": ["benefit/applicant/src/*"],
       "benefit/handler/*": ["benefit/handler/src/*"],
+      "benefit-shared/*": ["benefit/shared/src/*"],
       "tet/admin/*": ["tet/admin/src/*"],
       "tet/employer/*": ["tet/employer/src/*"],
       "tet/youth/*": ["tet/youth/src/*"],

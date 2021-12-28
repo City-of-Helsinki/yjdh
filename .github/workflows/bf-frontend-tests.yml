@@ -3,10 +3,11 @@ name: (BF) Lint, Unit and Component tests
 on:
   pull_request:
     paths:
-    - 'frontend/benefit/**'
-    - 'frontend/shared/**'
-    - 'frontend/*'
-    - '.github/workflows/bf-frontend-tests.yml'
+      - "frontend/benefit/**"
+      - "frontend/shared/**"
+      - "frontend/kesaseteli/shared/**"
+      - "frontend/*"
+      - ".github/workflows/bf-frontend-tests.yml"
   push:
     branches: [develop, main]
   workflow_dispatch:
@@ -22,7 +23,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.0
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -49,7 +50,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.0
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"

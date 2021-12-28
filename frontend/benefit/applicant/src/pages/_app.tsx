@@ -4,7 +4,7 @@ import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import {
   getBackendDomain,
   getHeaders,
-} from 'benefit/applicant/backend-api/backend-api';
+} from 'benefit-shared/backend-api/backend-api';
 import Footer from 'benefit/applicant/components/footer/Footer';
 import Header from 'benefit/applicant/components/header/Header';
 import AppContextProvider from 'benefit/applicant/context/AppContextProvider';

@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {
   getBackendDomain,
   getHeaders,
-} from 'benefit/handler/backend-api/backend-api';
+} from 'benefit-shared/backend-api/backend-api';
 import Footer from 'benefit/handler/components/footer/Footer';
 import Header from 'benefit/handler/components/header/Header';
 import Layout from 'benefit/handler/components/layout/Layout';
