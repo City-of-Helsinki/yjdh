@@ -27,9 +27,9 @@ def test_schools_list_returns_non_empty(api_client):
 
 
 @pytest.mark.django_db
-def test_schools_list_returns_active_school_count(api_client):
+def test_schools_list_returns_school_count(api_client):
     response = api_client.get(get_schools_api_url())
-    assert len(response.json()) == len(School.objects.active())
+    assert len(response.json()) == School.objects.count()
 
 
 @pytest.mark.django_db

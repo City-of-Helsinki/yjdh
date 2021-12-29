@@ -42,7 +42,7 @@ class SchoolListView(ListAPIView):
         template='(%(expressions)s) COLLATE "%(function)s"',
     )
 
-    queryset = School.objects.active().order_by(_name_fi.asc())
+    queryset = School.objects.order_by(_name_fi.asc())
     serializer_class = SchoolSerializer
 
     def get_permissions(self):
