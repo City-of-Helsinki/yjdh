@@ -107,10 +107,15 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         )
 
     @property
+    def seconds_elapsed(self) -> int:
+        return int((timezone.now() - self.created_at) / timedelta(seconds=1))
+
+    @property
     def has_activation_link_expired(self) -> bool:
-        hours_elapsed = (timezone.now() - self.created_at) / timedelta(hours=1)
-        expiration_hours = settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS
-        return hours_elapsed >= expiration_hours
+        return (
+            self.seconds_elapsed
+            >= settings.NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS
+        )
 
     def _activation_email_subject(self, request):
         return _("Vahvista sähköpostiosoitteesi")
