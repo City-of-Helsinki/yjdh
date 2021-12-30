@@ -12,7 +12,7 @@ from applications.enums import (
     SummerVoucherExceptionReason,
 )
 from applications.models import (
-    Application,
+    EmployerApplication,
     Attachment,
     School,
     SummerVoucher,
@@ -60,7 +60,7 @@ class ApplicationStatusValidator:
                 raise serializers.ValidationError(
                     format_lazy(
                         _(
-                            "Application state transition not allowed: {status} to {value}"
+                            "EmployerApplication state transition not allowed: {status} to {value}"
                         ),
                         status=application.status,
                         value=value,
@@ -289,7 +289,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
     class Meta:
-        model = Application
+        model = EmployerApplication
         fields = [
             "id",
             "status",
@@ -339,7 +339,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             return None
 
     def _update_summer_vouchers(
-        self, summer_vouchers_data: list, application: Application
+        self, summer_vouchers_data: list, application: EmployerApplication
     ) -> None:
         serializer = SummerVoucherSerializer(
             application.summer_vouchers.all(), data=summer_vouchers_data, many=True

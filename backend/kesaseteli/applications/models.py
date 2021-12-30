@@ -188,7 +188,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["-youth_application__created_at"]
 
 
-class Application(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
@@ -259,7 +259,7 @@ class Application(HistoricalModel, TimeStampedModel, UUIDModel):
 
 class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     application = models.ForeignKey(
-        Application,
+        EmployerApplication,
         on_delete=models.CASCADE,
         related_name="summer_vouchers",
         verbose_name=_("application"),

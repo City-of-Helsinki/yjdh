@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from rest_framework.permissions import BasePermission
 
 from applications.enums import ApplicationStatus
-from applications.models import Application
+from applications.models import EmployerApplication
 from companies.models import Company
 from companies.services import get_or_create_company_using_organization_roles
 
@@ -24,7 +24,7 @@ def get_user_company(request: HttpRequest) -> Optional[Company]:
     return user_company
 
 
-def has_application_permission(request: HttpRequest, application: Application) -> bool:
+def has_application_permission(request: HttpRequest, application: EmployerApplication) -> bool:
     """
     Allow access only for DRAFT status applications of the user & company.
     """

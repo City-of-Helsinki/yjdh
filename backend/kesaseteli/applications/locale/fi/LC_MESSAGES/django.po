@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 #: applications/api/v1/serializers.py:53
 #, python-brace-format
-msgid "Application state transition not allowed: {status} to {value}"
+msgid "EmployerApplication state transition not allowed: {status} to {value}"
 msgstr ""
 
 #: applications/api/v1/serializers.py:62

@@ -8,7 +8,7 @@ from applications.api.v1.serializers import (
     SummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus
-from applications.models import Application
+from applications.models import EmployerApplication
 from common.tests.factories import ApplicationFactory, SummerVoucherFactory
 
 
@@ -198,13 +198,13 @@ def test_application_create(api_client, company):
     )
 
     assert response.status_code == 201
-    assert Application.objects.count() == 1
+    assert EmployerApplication.objects.count() == 1
     assert response.data["company"]["name"] == company.name
     assert response.data["company"]["business_id"] == company.business_id
 
     for field in [
         field
-        for field in Application._meta.fields
+        for field in EmployerApplication._meta.fields
         if field.name not in ["created_at", "modified_at"]
     ]:
         assert field.name in response.data
@@ -221,7 +221,7 @@ def test_application_create_mock(api_client, company):
     assert response.status_code == 201
     for field in [
         field
-        for field in Application._meta.fields
+        for field in EmployerApplication._meta.fields
         if field.name not in ["created_at", "modified_at"]
     ]:
         assert field.name in response.data
@@ -256,7 +256,7 @@ def test_application_create_writes_audit_log(api_client, user, company):
     assert audit_event["operation"] == "CREATE"
     assert audit_event["target"] == {
         "id": response.data["id"],
-        "type": "Application",
+        "type": "EmployerApplication",
     }
     assert audit_event["status"] == "SUCCESS"
 
@@ -289,7 +289,7 @@ def test_application_update_writes_audit_log(api_client, user, application):
     assert audit_event["operation"] == "UPDATE"
     assert audit_event["target"] == {
         "id": response.data["id"],
-        "type": "Application",
+        "type": "EmployerApplication",
         "changes": ["invoicer_name changed from test1 to test2"],
     }
     assert audit_event["status"] == "SUCCESS"
@@ -317,7 +317,7 @@ def test_application_create_writes_audit_log_if_not_authenticated(
         "provider": "",
     }
     assert audit_event["operation"] == "CREATE"
-    assert audit_event["target"]["type"] == "Application"
+    assert audit_event["target"]["type"] == "EmployerApplication"
     assert audit_event["status"] == "FORBIDDEN"
 
 
@@ -347,7 +347,7 @@ def test_applications_list_only_finds_own_application(
     ApplicationFactory(company=company)
     ApplicationFactory(user=user)
 
-    assert Application.objects.count() == 4
+    assert EmployerApplication.objects.count() == 4
 
     response = api_client.get(reverse("v1:application-list"))
 
@@ -364,7 +364,7 @@ def test_application_get_only_finds_own_application(
     app2 = ApplicationFactory(company=company)
     app3 = ApplicationFactory(user=user)
 
-    assert Application.objects.count() == 4
+    assert EmployerApplication.objects.count() == 4
 
     applications_404 = [app1, app2, app3]
     for app in applications_404:

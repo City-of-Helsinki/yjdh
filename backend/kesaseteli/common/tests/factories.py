@@ -15,7 +15,7 @@ from applications.enums import (
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
-from applications.models import Application, Attachment, SummerVoucher, YouthApplication
+from applications.models import EmployerApplication, Attachment, SummerVoucher, YouthApplication
 from companies.models import Company
 
 
@@ -97,7 +97,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     invoicer_phone_number = factory.Faker("phone_number")
 
     class Meta:
-        model = Application
+        model = EmployerApplication
 
 
 def get_listed_test_schools() -> List[str]:
