@@ -7,6 +7,7 @@ on:
     paths:
       - 'frontend/shared/**'
       - 'frontend/*'
+      - 'frontend/tet/shared/**'
       - 'frontend/tet/**'
       - '.github/workflows/te-admn-frontend-tests.yml'
   workflow_dispatch:
