@@ -192,13 +192,13 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        related_name="applications",
+        related_name="employer_applications",
         verbose_name=_("company"),
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="applications",
+        related_name="employer_applications",
         verbose_name=_("user"),
     )
     status = models.CharField(
