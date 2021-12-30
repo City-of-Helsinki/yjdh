@@ -1,5 +1,5 @@
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
-import { BackendEndpoint } from 'tet-shared/backend-api/backend-api';
+import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
