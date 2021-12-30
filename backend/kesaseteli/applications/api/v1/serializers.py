@@ -162,7 +162,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         return mime_type == "application/pdf"
 
 
-class SummerVoucherListSerializer(serializers.ListSerializer):
+class EmployerSummerVoucherListSerializer(serializers.ListSerializer):
     """
     https://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-update
     """
@@ -190,7 +190,7 @@ class SummerVoucherListSerializer(serializers.ListSerializer):
         return ret
 
 
-class SummerVoucherSerializer(serializers.ModelSerializer):
+class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False)
     attachments = AttachmentSerializer(
         read_only=True,
@@ -223,7 +223,7 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "ordering",
         ]
-        list_serializer_class = SummerVoucherListSerializer
+        list_serializer_class = EmployerSummerVoucherListSerializer
 
     def validate(self, data):
         data = super().validate(data)
@@ -275,9 +275,9 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
                 )
 
 
-class ApplicationSerializer(serializers.ModelSerializer):
+class EmployerApplicationSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
-    summer_vouchers = SummerVoucherSerializer(
+    summer_vouchers = EmployerSummerVoucherSerializer(
         many=True, required=False, allow_null=True
     )
     status = serializers.ChoiceField(
@@ -341,7 +341,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def _update_summer_vouchers(
         self, summer_vouchers_data: list, application: EmployerApplication
     ) -> None:
-        serializer = SummerVoucherSerializer(
+        serializer = EmployerSummerVoucherSerializer(
             application.summer_vouchers.all(), data=summer_vouchers_data, many=True
         )
 

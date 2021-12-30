@@ -4,8 +4,8 @@ from rest_framework.reverse import reverse
 from shared.audit_log.models import AuditLogEntry
 
 from applications.api.v1.serializers import (
-    ApplicationSerializer,
-    SummerVoucherSerializer,
+    EmployerApplicationSerializer,
+    EmployerSummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus
 from applications.models import EmployerApplication
@@ -36,7 +36,7 @@ def test_application_single_read(api_client, application):
 
 @pytest.mark.django_db
 def test_application_put(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["invoicer_name"] = "test"
     response = api_client.put(
         get_detail_url(application),
@@ -49,7 +49,7 @@ def test_application_put(api_client, application):
 
 @pytest.mark.django_db
 def test_application_put_invalid_data(api_client, application):
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["language"] = "asd"
     response = api_client.put(
         get_detail_url(application),
@@ -79,9 +79,9 @@ def test_application_patch(api_client, application):
 def test_add_summer_voucher(api_client, application, summer_voucher):
     original_summer_voucher_count = application.summer_vouchers.count()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
 
-    summer_voucher_data = SummerVoucherSerializer(summer_voucher).data
+    summer_voucher_data = EmployerSummerVoucherSerializer(summer_voucher).data
     summer_voucher_data.pop("id")
     data["summer_vouchers"].append(summer_voucher_data)
 
@@ -105,7 +105,7 @@ def test_add_summer_voucher(api_client, application, summer_voucher):
 def test_add_empty_summer_voucher(api_client, application):
     original_summer_voucher_count = application.summer_vouchers.count()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
 
     data["summer_vouchers"].append({})
 
@@ -123,7 +123,7 @@ def test_add_empty_summer_voucher(api_client, application):
 
 @pytest.mark.django_db
 def test_update_summer_voucher(api_client, application, summer_voucher):
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     summer_voucher_id = summer_voucher.id
     data["summer_vouchers"][0]["summer_voucher_serial_number"] = "test"
 
@@ -142,7 +142,7 @@ def test_update_summer_voucher(api_client, application, summer_voucher):
 def test_update_summer_voucher_with_invalid_data(
     api_client, application, summer_voucher
 ):
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["summer_vouchers"][0]["summer_voucher_exception_reason"] = "test"
 
     response = api_client.put(
@@ -160,7 +160,7 @@ def test_remove_single_summer_voucher(api_client, application, summer_voucher):
     application.refresh_from_db()
     original_summer_voucher_count = application.summer_vouchers.count()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["summer_vouchers"].pop()
     existing_summer_voucher = data["summer_vouchers"][0]
 
@@ -180,7 +180,7 @@ def test_remove_single_summer_voucher(api_client, application, summer_voucher):
 @pytest.mark.django_db
 def test_remove_all_summer_vouchers(api_client, application):
     SummerVoucherFactory.create_batch(size=3, application=application)
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data.pop("summer_vouchers")
     response = api_client.put(
         get_detail_url(application),
@@ -273,7 +273,7 @@ def test_application_update_writes_audit_log(api_client, user, application):
     application.invoicer_name = "test1"
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["invoicer_name"] = "test2"
     response = api_client.put(
         get_detail_url(application),
@@ -382,7 +382,7 @@ def test_application_get_only_finds_own_application(
 
 @pytest.mark.django_db
 def test_application_update_submitted_application(api_client, submitted_application):
-    data = ApplicationSerializer(submitted_application).data
+    data = EmployerApplicationSerializer(submitted_application).data
     data["invoicer_name"] = "test"
     response = api_client.put(
         get_detail_url(submitted_application),

@@ -2,8 +2,8 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from applications.api.v1.serializers import (
-    ApplicationSerializer,
-    SummerVoucherSerializer,
+    EmployerApplicationSerializer,
+    EmployerSummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus, AttachmentType
 from applications.models import School, validate_school
@@ -81,7 +81,7 @@ def test_application_status_change(
     application.status = from_status
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(
@@ -101,7 +101,7 @@ def test_application_status_change(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "missing_field",
-    ApplicationSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS,
+    EmployerApplicationSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS,
 )
 def test_application_status_change_with_missing_data(
     api_client,
@@ -117,7 +117,7 @@ def test_application_status_change_with_missing_data(
     application.status = from_status
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
     data.pop(missing_field)
 
@@ -136,7 +136,7 @@ def test_application_status_change_with_missing_data(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "missing_field",
-    SummerVoucherSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS,
+    EmployerSummerVoucherSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS,
 )
 def test_application_status_change_with_missing_summer_voucher_data(
     api_client,
@@ -155,7 +155,7 @@ def test_application_status_change_with_missing_summer_voucher_data(
     application.status = from_status
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
     data["summer_vouchers"][0].pop(missing_field)
 
@@ -199,7 +199,7 @@ def test_application_status_change_with_missing_attachments(
         attachment.attachment_file.delete(save=False)
         attachment.delete()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(
@@ -236,7 +236,7 @@ def test_separate_invoicer_fields_not_required_if_condition_false(
     application.invoicer_phone_number = ""
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(
@@ -271,7 +271,7 @@ def test_separate_invoicer_fields_required_if_condition_true(
     setattr(application, missing_field, "")
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(

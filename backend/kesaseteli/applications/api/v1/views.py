@@ -21,10 +21,10 @@ from applications.api.v1.permissions import (
     SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
-    ApplicationSerializer,
     AttachmentSerializer,
+    EmployerApplicationSerializer,
+    EmployerSummerVoucherSerializer,
     SchoolSerializer,
-    SummerVoucherSerializer,
     YouthApplicationSerializer,
 )
 from applications.enums import ApplicationStatus
@@ -104,7 +104,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
 class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     queryset = EmployerApplication.objects.all()
-    serializer_class = ApplicationSerializer
+    serializer_class = EmployerApplicationSerializer
     permission_classes = [IsAuthenticated, ApplicationPermission]
 
     def get_queryset(self):
@@ -155,7 +155,7 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
 
 class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
     queryset = EmployerSummerVoucher.objects.all()
-    serializer_class = SummerVoucherSerializer
+    serializer_class = EmployerSummerVoucherSerializer
     permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]
 
     def get_queryset(self):
