@@ -8,20 +8,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('companies', '0005_remove_company_eauth_profile'),
+        ("companies", "0005_remove_company_eauth_profile"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('applications', '0017_rename_application_to_employer_application'),
+        ("applications", "0017_rename_application_to_employer_application"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='employerapplication',
-            name='company',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='employer_applications', to='companies.company', verbose_name='company'),
+            model_name="employerapplication",
+            name="company",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="employer_applications",
+                to="companies.company",
+                verbose_name="company",
+            ),
         ),
         migrations.AlterField(
-            model_name='employerapplication',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='employer_applications', to=settings.AUTH_USER_MODEL, verbose_name='user'),
+            model_name="employerapplication",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="employer_applications",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="user",
+            ),
         ),
     ]

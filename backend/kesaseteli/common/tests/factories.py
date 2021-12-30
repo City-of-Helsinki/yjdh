@@ -15,7 +15,12 @@ from applications.enums import (
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
-from applications.models import EmployerApplication, Attachment, EmployerSummerVoucher, YouthApplication
+from applications.models import (
+    Attachment,
+    EmployerApplication,
+    EmployerSummerVoucher,
+    YouthApplication,
+)
 from companies.models import Company
 
 

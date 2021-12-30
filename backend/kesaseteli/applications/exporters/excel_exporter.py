@@ -162,7 +162,9 @@ def set_header_and_formatting(wb, ws, column, field, header_format):
     ws.set_column(column, column, field[3], cell_format)
 
 
-def get_attachment_uri(summer_voucher: EmployerSummerVoucher, field: tuple, value, request):
+def get_attachment_uri(
+    summer_voucher: EmployerSummerVoucher, field: tuple, value, request
+):
     field_name = field[0]
     attachment_number = int(field_name.split(" ")[-1])
     attachment_type = field_name.split(" ")[1]
@@ -221,7 +223,9 @@ def write_data_row(ws, row_number, summer_voucher, request):
         ws.write(row_number, column_number, cell_value)
 
 
-def populate_workbook(wb: Workbook, summer_vouchers: QuerySet[EmployerSummerVoucher], request):
+def populate_workbook(
+    wb: Workbook, summer_vouchers: QuerySet[EmployerSummerVoucher], request
+):
     """
     Fill the workbook with information from the summer vouchers queryset. Field names and values are
     fetched from the FIELDS tuple.

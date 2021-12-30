@@ -14,7 +14,9 @@ from applications.enums import ApplicationStatus, AttachmentType
 from applications.models import Attachment, EmployerSummerVoucher
 
 
-def handle_attachment_url(summer_voucher: EmployerSummerVoucher, attachment_pk: uuid.UUID):
+def handle_attachment_url(
+    summer_voucher: EmployerSummerVoucher, attachment_pk: uuid.UUID
+):
     return reverse(
         "v1:employersummervoucher-handle-attachment",
         kwargs={"pk": summer_voucher.pk, "attachment_pk": attachment_pk},
@@ -65,7 +67,9 @@ def test_attachment_upload(request, api_client, summer_voucher, extension):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
-def test_invalid_attachment_upload(api_client, summer_voucher: EmployerSummerVoucher, extension):
+def test_invalid_attachment_upload(
+    api_client, summer_voucher: EmployerSummerVoucher, extension
+):
     tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
     tmp_file.write(b"invalid data " * 100)
     tmp_file.seek(0)
@@ -167,7 +171,9 @@ def test_get_attachment(request, api_client, summer_voucher, attachment_type):
 
 
 @pytest.mark.django_db
-def test_get_attachment_with_invalid_uuid(api_client, summer_voucher: EmployerSummerVoucher):
+def test_get_attachment_with_invalid_uuid(
+    api_client, summer_voucher: EmployerSummerVoucher
+):
     attachment_url = handle_attachment_url(summer_voucher, attachment_pk=uuid.uuid4())
     response = api_client.get(attachment_url)
 
@@ -189,8 +195,12 @@ def test_delete_attachment(request, api_client, summer_voucher, attachment_type)
 
 
 @pytest.mark.django_db
-def test_delete_attachment_when_not_saved(api_client, summer_voucher: EmployerSummerVoucher):
-    employment_contract_url = handle_attachment_url(summer_voucher, attachment_pk=uuid.uuid4())
+def test_delete_attachment_when_not_saved(
+    api_client, summer_voucher: EmployerSummerVoucher
+):
+    employment_contract_url = handle_attachment_url(
+        summer_voucher, attachment_pk=uuid.uuid4()
+    )
     response = api_client.delete(employment_contract_url)
 
     assert response.status_code == 404

@@ -72,6 +72,8 @@ def test_excel_export_bytes(
     factory = RequestFactory()
     request = factory.get("/")
 
-    value = export_applications_as_xlsx_output(EmployerSummerVoucher.objects.all(), request)
+    value = export_applications_as_xlsx_output(
+        EmployerSummerVoucher.objects.all(), request
+    )
 
     assert type(value) == bytes

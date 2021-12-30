@@ -10,7 +10,7 @@ from applications.jobs.monthly.clean_old_applications import (
 from applications.jobs.monthly.clean_old_attachments import (
     Job as CleanOldAttachmentsJob,
 )
-from applications.models import EmployerApplication, Attachment
+from applications.models import Attachment, EmployerApplication
 
 
 @pytest.mark.django_db

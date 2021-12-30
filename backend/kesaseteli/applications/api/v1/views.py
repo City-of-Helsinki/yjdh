@@ -28,7 +28,12 @@ from applications.api.v1.serializers import (
     YouthApplicationSerializer,
 )
 from applications.enums import ApplicationStatus
-from applications.models import EmployerApplication, School, EmployerSummerVoucher, YouthApplication
+from applications.models import (
+    EmployerApplication,
+    EmployerSummerVoucher,
+    School,
+    YouthApplication,
+)
 from common.utils import DenyAll
 
 

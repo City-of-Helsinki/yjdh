@@ -24,7 +24,9 @@ def get_user_company(request: HttpRequest) -> Optional[Company]:
     return user_company
 
 
-def has_application_permission(request: HttpRequest, application: EmployerApplication) -> bool:
+def has_application_permission(
+    request: HttpRequest, application: EmployerApplication
+) -> bool:
     """
     Allow access only for DRAFT status applications of the user & company.
     """

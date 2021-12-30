@@ -67,7 +67,9 @@ class ApplicationExcelDownloadView(TemplateView):
             id=OuterRef("id"), application__status=ApplicationStatus.SUBMITTED
         ).order_by("modified_at")
         queryset = (
-            EmployerSummerVoucher.objects.select_related("application", "application__company")
+            EmployerSummerVoucher.objects.select_related(
+                "application", "application__company"
+            )
             .filter(is_exported=False, application__status=ApplicationStatus.SUBMITTED)
             .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
             .order_by("-submitted_at")
@@ -91,7 +93,9 @@ class ApplicationExcelDownloadView(TemplateView):
             id=OuterRef("id"), application__status=ApplicationStatus.SUBMITTED
         ).order_by("modified_at")
         queryset = (
-            EmployerSummerVoucher.objects.select_related("application", "application__company")
+            EmployerSummerVoucher.objects.select_related(
+                "application", "application__company"
+            )
             .filter(
                 application__created_at__gte=start_of_year,
             )

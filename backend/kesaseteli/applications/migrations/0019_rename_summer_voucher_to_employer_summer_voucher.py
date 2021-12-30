@@ -8,16 +8,16 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('applications', '0018_use_employer_applications_related_name'),
+        ("applications", "0018_use_employer_applications_related_name"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='SummerVoucher',
-            new_name='EmployerSummerVoucher',
+            old_name="SummerVoucher",
+            new_name="EmployerSummerVoucher",
         ),
         migrations.RenameModel(
-            old_name='HistoricalSummerVoucher',
-            new_name='HistoricalEmployerSummerVoucher',
+            old_name="HistoricalSummerVoucher",
+            new_name="HistoricalEmployerSummerVoucher",
         ),
     ]

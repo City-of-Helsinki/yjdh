@@ -12,10 +12,10 @@ from applications.enums import (
     SummerVoucherExceptionReason,
 )
 from applications.models import (
-    EmployerApplication,
     Attachment,
-    School,
+    EmployerApplication,
     EmployerSummerVoucher,
+    School,
     YouthApplication,
 )
 from companies.api.v1.serializers import CompanySerializer
