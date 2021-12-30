@@ -42,6 +42,7 @@ env:
   NEXT_PUBLIC_MOCK_FLAG: 1
   MOCK_FLAG: 1
   DISABLE_AUTHENTICATION: 1
+  CORS_ALLOW_ALL_ORIGINS: 1
 jobs:
   build:
     # No building for dependabot PRs
