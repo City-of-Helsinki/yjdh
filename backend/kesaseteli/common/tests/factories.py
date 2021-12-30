@@ -124,8 +124,8 @@ def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
 
 
 def get_test_phone_number() -> str:
-    # NAMES_REGEX didn't accept phone numbers starting with (+358) but did with +358
-    # so removing the parentheses to make the generated phone numbers fit it
+    # PHONE_NUMBER_REGEX didn't accept phone numbers starting with (+358) but did with
+    # +358 so removing the parentheses to make the generated phone numbers fit it
     return Faker(locale="fi").phone_number().replace("(+358)", "+358")
 
 
