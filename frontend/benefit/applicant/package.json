@@ -12,7 +12,7 @@
     "test:staged": "yarn test --watchAll=false --findRelatedTests",
     "test:coverage": "yarn test --verbose --coverage",
     "browser-test": "testcafe \"chrome --window-size='1249,720'\" testcafe.config.js browser-tests/",
-    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,html:report/index.html testcafe.config.js browser-tests/"
+    "browser-test:ci": "testcafe \"chrome:headless --disable-gpu --window-size='1249,720'\" --ignore-certificate-errors-spki-list=\"8sg/cl7YabrOFqSqH+Bu0e+P27Av33gWgi8Lq28DW1I=,gJt+wt/T3afCRkxtMMSjXcl/99sgzWc2kk1c1PC9tG0=,zrQI2/1q8i2SRPmMZ1sMntIkG+lMW0legPFokDo3nrY=\"' --screenshots takeOnFails=true,path=report,fullPage=true --video report --reporter spec,html:report/index.html testcafe.config.js browser-tests/"
   },
   "dependencies": {
     "@frontend/shared": "*",
