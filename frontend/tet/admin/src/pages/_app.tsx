@@ -4,7 +4,7 @@
 import Footer from 'tet/admin/components/footer/Footer';
 import Header from 'tet/admin/components/header/Header';
 // import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
-import createQueryClient from 'tet-shared/query-client/create-query-client';
+import createQueryClient from 'tet/admin/query-client/create-query-client';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';

@@ -1,4 +1,4 @@
-import renderComponent from 'tet-shared/__tests__/utils/components/render-component';
+import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import IndexPage from 'tet/admin/pages';
 import { axe } from 'jest-axe';
 import React from 'react';
