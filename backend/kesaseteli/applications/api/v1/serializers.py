@@ -15,7 +15,7 @@ from applications.models import (
     EmployerApplication,
     Attachment,
     School,
-    SummerVoucher,
+    EmployerSummerVoucher,
     YouthApplication,
 )
 from companies.api.v1.serializers import CompanySerializer
@@ -199,7 +199,7 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = SummerVoucher
+        model = EmployerSummerVoucher
         fields = [
             "id",
             "summer_voucher_serial_number",

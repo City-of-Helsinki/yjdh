@@ -13,7 +13,7 @@ from applications.exporters.excel_exporter import (
     export_applications_as_xlsx_output,
     get_xlsx_filename,
 )
-from applications.models import SummerVoucher
+from applications.models import EmployerSummerVoucher
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -63,11 +63,11 @@ class ApplicationExcelDownloadView(TemplateView):
         Export unhandled applications and redirect back to the excel download page.
         The user will see a new xlsx file generated in the generated files list.
         """
-        newest_submitted = SummerVoucher.history.filter(
+        newest_submitted = EmployerSummerVoucher.history.filter(
             id=OuterRef("id"), application__status=ApplicationStatus.SUBMITTED
         ).order_by("modified_at")
         queryset = (
-            SummerVoucher.objects.select_related("application", "application__company")
+            EmployerSummerVoucher.objects.select_related("application", "application__company")
             .filter(is_exported=False, application__status=ApplicationStatus.SUBMITTED)
             .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
             .order_by("-submitted_at")
@@ -87,11 +87,11 @@ class ApplicationExcelDownloadView(TemplateView):
         file will not be saved on disk and will not be shown on the xlsx files list.
         """
         start_of_year = date(date.today().year, 1, 1)
-        newest_submitted = SummerVoucher.history.filter(
+        newest_submitted = EmployerSummerVoucher.history.filter(
             id=OuterRef("id"), application__status=ApplicationStatus.SUBMITTED
         ).order_by("modified_at")
         queryset = (
-            SummerVoucher.objects.select_related("application", "application__company")
+            EmployerSummerVoucher.objects.select_related("application", "application__company")
             .filter(
                 application__created_at__gte=start_of_year,
             )

@@ -15,7 +15,7 @@ from applications.enums import (
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
-from applications.models import EmployerApplication, Attachment, SummerVoucher, YouthApplication
+from applications.models import EmployerApplication, Attachment, EmployerSummerVoucher, YouthApplication
 from companies.models import Company
 
 
@@ -79,7 +79,7 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
     )
 
     class Meta:
-        model = SummerVoucher
+        model = EmployerSummerVoucher
 
 
 class ApplicationFactory(factory.django.DjangoModelFactory):

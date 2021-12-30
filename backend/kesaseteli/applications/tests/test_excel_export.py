@@ -4,7 +4,7 @@ from django.test import RequestFactory
 
 from applications.enums import ApplicationStatus
 from applications.exporters.excel_exporter import export_applications_as_xlsx_output
-from applications.models import SummerVoucher
+from applications.models import EmployerSummerVoucher
 
 
 def excel_download_url():
@@ -72,6 +72,6 @@ def test_excel_export_bytes(
     factory = RequestFactory()
     request = factory.get("/")
 
-    value = export_applications_as_xlsx_output(SummerVoucher.objects.all(), request)
+    value = export_applications_as_xlsx_output(EmployerSummerVoucher.objects.all(), request)
 
     assert type(value) == bytes

@@ -257,7 +257,7 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["-created_at"]
 
 
-class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     application = models.ForeignKey(
         EmployerApplication,
         on_delete=models.CASCADE,
@@ -365,7 +365,7 @@ class Attachment(UUIDModel, TimeStampedModel):
     """
 
     summer_voucher = models.ForeignKey(
-        SummerVoucher,
+        EmployerSummerVoucher,
         verbose_name=_("summer voucher"),
         related_name="attachments",
         on_delete=models.CASCADE,
