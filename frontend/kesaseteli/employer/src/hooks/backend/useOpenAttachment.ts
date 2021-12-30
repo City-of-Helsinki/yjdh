@@ -13,7 +13,7 @@ const useOpenAttachment = (): ((
       const { id: attachmentId, summer_voucher, content_type } = attachment;
       const data = await handleResponse<Blob>(
         axios.get(
-          `${BackendEndpoint.SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}${attachmentId}`,
+          `${BackendEndpoint.EMPLOYER_SUMMER_VOUCHERS}${summer_voucher}${BackendEndpoint.ATTACHMENTS}${attachmentId}`,
           { responseType: 'blob' }
         )
       );

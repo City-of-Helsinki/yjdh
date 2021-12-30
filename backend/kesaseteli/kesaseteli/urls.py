@@ -10,9 +10,9 @@ from applications.views import ApplicationExcelDownloadView
 from companies.api.v1.views import GetCompanyView
 
 router = routers.DefaultRouter()
-router.register(r"applications", application_views.ApplicationViewSet)
+router.register(r"employerapplications", application_views.EmployerApplicationViewSet)
 router.register(r"youthapplications", application_views.YouthApplicationViewSet)
-router.register(r"summervouchers", application_views.SummerVoucherViewSet)
+router.register(r"employersummervouchers", application_views.EmployerSummerVoucherViewSet)
 
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),

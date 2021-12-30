@@ -12,13 +12,17 @@ from applications.models import EmployerApplication
 from common.tests.factories import ApplicationFactory, SummerVoucherFactory
 
 
-def get_detail_url(application):
-    return reverse("v1:application-detail", kwargs={"pk": application.id})
+def get_list_url():
+    return reverse("v1:employerapplication-list")
+
+
+def get_detail_url(application: EmployerApplication):
+    return reverse("v1:employerapplication-detail", kwargs={"pk": application.id})
 
 
 @pytest.mark.django_db
 def test_applications_list(api_client, company):
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(get_list_url())
 
     assert response.status_code == 200
 
@@ -193,7 +197,7 @@ def test_remove_all_summer_vouchers(api_client, application):
 @pytest.mark.django_db
 def test_application_create(api_client, company):
     response = api_client.post(
-        reverse("v1:application-list"),
+        get_list_url(),
         {},
     )
 
@@ -214,7 +218,7 @@ def test_application_create(api_client, company):
 @override_settings(MOCK_FLAG=True)
 def test_application_create_mock(api_client, company):
     response = api_client.post(
-        reverse("v1:application-list"),
+        get_list_url(),
         {},
     )
 
@@ -240,7 +244,7 @@ def test_application_delete_not_allowed(api_client, application):
 )
 def test_application_create_writes_audit_log(api_client, user, company):
     response = api_client.post(
-        reverse("v1:application-list"),
+        get_list_url(),
         {},
     )
 
@@ -303,7 +307,7 @@ def test_application_create_writes_audit_log_if_not_authenticated(
     unauthenticated_api_client,
 ):
     response = unauthenticated_api_client.post(
-        reverse("v1:application-list"),
+        get_list_url(),
         {},
     )
 
@@ -324,14 +328,14 @@ def test_application_create_writes_audit_log_if_not_authenticated(
 @pytest.mark.django_db
 def test_application_create_double(api_client, company):
     response = api_client.post(
-        reverse("v1:application-list"),
+        get_list_url(),
         {},
     )
 
     assert response.status_code == 201
 
     response = api_client.post(
-        reverse("v1:application-list"),
+        get_list_url(),
         {},
     )
 
@@ -349,7 +353,7 @@ def test_applications_list_only_finds_own_application(
 
     assert EmployerApplication.objects.count() == 4
 
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(get_list_url())
 
     assert response.status_code == 200
     assert len(response.data) == 1
@@ -391,7 +395,7 @@ def test_application_update_submitted_application(api_client, submitted_applicat
 
 @pytest.mark.django_db
 def test_applications_view_permissions(api_client, application, submitted_application):
-    response = api_client.get(reverse("v1:application-list"))
+    response = api_client.get(get_list_url())
 
     assert response.status_code == 200
     assert any(x["id"] == str(application.id) for x in response.data)

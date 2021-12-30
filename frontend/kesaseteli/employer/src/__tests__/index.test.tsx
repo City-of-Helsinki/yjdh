@@ -71,7 +71,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         await waitFor(() => {
           expect(
             queryClient.getQueryData(
-              `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`
+              `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication?.id}/`
             )
           ).toEqual(newApplication);
         });
@@ -98,7 +98,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         await waitFor(() => {
           expect(
             queryClient.getQueryData(
-              `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`
+              `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication?.id}/`
             )
           ).toEqual(newApplication);
         });

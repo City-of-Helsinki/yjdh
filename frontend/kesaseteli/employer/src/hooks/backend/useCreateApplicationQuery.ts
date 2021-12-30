@@ -19,19 +19,22 @@ const useCreateApplicationQuery = (): UseMutationResult<
     () => {
       const language = (router.defaultLocale ?? DEFAULT_LANGUAGE) as Language;
       return handleResponse<Application>(
-        axios.post(BackendEndpoint.APPLICATIONS, { language })
+        axios.post(BackendEndpoint.EMPLOYER_APPLICATIONS, { language })
       );
     },
     {
       onSuccess: (newApplication) => {
         if (newApplication?.id) {
           queryClient.setQueryData(
-            `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`,
+            `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication?.id}/`,
             newApplication
           );
-          void queryClient.invalidateQueries(BackendEndpoint.APPLICATIONS, {
-            exact: true,
-          });
+          void queryClient.invalidateQueries(
+            BackendEndpoint.EMPLOYER_APPLICATIONS,
+            {
+              exact: true,
+            }
+          );
         } else {
           throw new Error('Missing id');
         }

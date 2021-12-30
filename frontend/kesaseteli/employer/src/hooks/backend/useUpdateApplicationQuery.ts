@@ -14,12 +14,12 @@ const useUpdateApplicationQuery = (
   const queryClient = useQueryClient();
   const language = useLocale();
   return useMutation(
-    `${BackendEndpoint.APPLICATIONS}${String(id)}/`,
+    `${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`,
     (application: DraftApplication) =>
       !id
         ? Promise.reject(new Error('Missing id'))
         : handleResponse<Application>(
-            axios.put(`${BackendEndpoint.APPLICATIONS}${id}/`, {
+            axios.put(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${id}/`, {
               ...application,
               language,
             })
@@ -28,7 +28,7 @@ const useUpdateApplicationQuery = (
       onSuccess: (application) => {
         onSuccess(application);
         void queryClient.invalidateQueries(
-          `${BackendEndpoint.APPLICATIONS}${String(id)}/`
+          `${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`
         );
       },
     }

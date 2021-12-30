@@ -97,7 +97,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class ApplicationViewSet(AuditLoggingModelViewSet):
+class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     queryset = EmployerApplication.objects.all()
     serializer_class = ApplicationSerializer
     permission_classes = [IsAuthenticated, ApplicationPermission]
@@ -148,7 +148,7 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SummerVoucherViewSet(AuditLoggingModelViewSet):
+class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
     queryset = EmployerSummerVoucher.objects.all()
     serializer_class = SummerVoucherSerializer
     permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]

@@ -183,7 +183,7 @@ def get_attachment_uri(summer_voucher: EmployerSummerVoucher, field: tuple, valu
         return ""
 
     path = reverse(
-        "v1:summervoucher-handle-attachment",
+        "v1:employersummervoucher-handle-attachment",
         kwargs={"pk": summer_voucher.id, "attachment_pk": attachment.id},
     )
     return request.build_absolute_uri(path)
