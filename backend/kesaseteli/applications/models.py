@@ -114,7 +114,7 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     def has_activation_link_expired(self) -> bool:
         return (
             self.seconds_elapsed
-            >= settings.NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS
+            >= settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
         )
 
     def _activation_email_subject(self, request):

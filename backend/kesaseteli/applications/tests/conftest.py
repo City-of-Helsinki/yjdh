@@ -22,11 +22,11 @@ def excel_root():
 
 @pytest.fixture
 def make_youth_application_activation_link_expired(settings):
-    settings.NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS = 0
+    settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = 0
 
 
 @pytest.fixture
 def make_youth_application_activation_link_unexpired(settings):
-    settings.NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS = int(
+    settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = int(
         timedelta(days=365 * 100).total_seconds()
     )
