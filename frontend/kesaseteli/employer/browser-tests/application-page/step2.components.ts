@@ -30,29 +30,79 @@ export const getStep2Components = (t: TestController) => {
     });
   const withinForm = (): ReturnType<typeof within> => within(formSelector());
 
+  const accordionSelector = (isOpen = true, index = 0) =>
+    screen.findByTestId(`accordion-${index}-${isOpen ? 'open' : 'closed'}`);
+  const withinAccordion = (
+    isOpen = true,
+    index = 0
+  ): ReturnType<typeof within> => within(accordionSelector(isOpen, index));
+
+  const form = async () => {
+    const selectors = {
+      title() {
+        return formSelector();
+      },
+    };
+    const expectations = {
+      async isPresent() {
+        await t
+          .expect(selectors.title().exists)
+          .ok(await getErrorMessage(t), { timeout: 10_000 });
+      },
+    };
+    const actions = {
+      async openAllClosedAccordions() {
+        /* eslint-disable no-await-in-loop */
+        for (;;) {
+          const closedAccordion = accordionSelector(false);
+          if (await closedAccordion.exists) {
+            await t.click(closedAccordion);
+          } else {
+            break;
+          }
+        }
+        /* eslint-enable no-await-in-loop */
+      },
+      async removeAllAccordions() {
+        /* eslint-disable no-await-in-loop */
+        for (;;) {
+          const removeButtons = within(formSelector()).findAllByRole('button', {
+            name: /poista tiedot/i,
+          });
+          if (await removeButtons.exists) {
+            await t.click(removeButtons.nth(0));
+          } else {
+            break;
+          }
+        }
+        /* eslint-enable no-await-in-loop */
+      },
+    };
+    await expectations.isPresent();
+    return {
+      expectations,
+      actions,
+    };
+  };
+
   const employmentAccordion = async (employeeIndex = 0) => {
-    const accordionSelector = (isOpen = true) =>
-      screen.findByTestId(
-        `accordion-${employeeIndex}-${isOpen ? 'open' : 'closed'}`
-      );
-    const withinAccordion = (isOpen = true): ReturnType<typeof within> =>
-      within(accordionSelector(isOpen));
+    const withinThisAccordion = () => withinAccordion(true, employeeIndex);
 
     const selectors = {
       employeeNameInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^työntekijän nimi/i,
         });
       },
       ssnInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^henkilötunnus/i,
         });
       },
       gradeOrBirthYearRadioInput(
         type: EmploymentExceptionReason = '9th_grader'
       ) {
-        return withinAccordion().findByRole('radio', {
+        return withinThisAccordion().findByRole('radio', {
           name: getSelectionGroupTranslation(
             'summer_voucher_exception_reason',
             type
@@ -60,94 +110,99 @@ export const getStep2Components = (t: TestController) => {
         });
       },
       homeCityInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^kotipaikka/i,
         });
       },
       postcodeInput() {
-        return withinAccordion().findByRole('spinbutton', {
+        return withinThisAccordion().findByRole('spinbutton', {
           name: /^postinumero/i,
         });
       },
       phoneNumberInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^puhelinnumero/i,
         });
       },
       employmentPostcodeInput() {
-        return withinAccordion().findByRole('spinbutton', {
+        return withinThisAccordion().findByRole('spinbutton', {
           name: /^työn suorituspaikan postinumero/i,
         });
       },
       schoolInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^koulun nimi/i,
         });
       },
       serialNumberInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^kesäsetelin sarjanumero/i,
         });
       },
       employmentContractAttachmentInput: () =>
-        withinAccordion().findByTestId(
+        withinThisAccordion().findByTestId(
           `summer_vouchers.${employeeIndex}.employment_contract`
         ),
       employmentContractAttachmentButton: () =>
-        withinAccordion().findByRole('button', {
+        withinThisAccordion().findByRole('button', {
           name: /^työsopimus/i,
         }),
       attachmentLink: (attachment: KesaseteliAttachment) =>
-        withinAccordion()
+        withinThisAccordion()
           .findAllByRole('link', {
             name: new RegExp(getAttachmentFileName(attachment), 'i'),
           })
           .nth(0),
       payslipAttachmentInput: () =>
-        withinAccordion().findByTestId(
+        withinThisAccordion().findByTestId(
           `summer_vouchers.${employeeIndex}.payslip`
         ),
       payslipAttachmentButton: () =>
-        withinAccordion().findByRole('button', {
+        withinThisAccordion().findByRole('button', {
           name: /^palkkatodistus/i,
         }),
       startDateInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^työsuhteen alkamispäivä/i,
         });
       },
       endDateInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^työsuhteen päättymispäivä/i,
         });
       },
       workHoursInput() {
-        return withinAccordion().findByRole('spinbutton', {
+        return withinThisAccordion().findByRole('spinbutton', {
           name: /^tehdyt työtunnit/i,
         });
       },
       descriptionInput() {
-        return withinAccordion().findByRole('textbox', {
+        return withinThisAccordion().findByRole('textbox', {
           name: /^kuvaus työtehtävistä/i,
         });
       },
       salaryInput() {
-        return withinAccordion().findByRole('spinbutton', {
+        return withinThisAccordion().findByRole('spinbutton', {
           name: /^maksettu palkka/i,
         });
       },
       hiredWithoutVoucherAssessmentRadioInput(
         type: EmployeeHiredWithoutVoucherAssessment = 'maybe'
       ) {
-        return withinAccordion().findByRole('radio', {
+        return withinThisAccordion().findByRole('radio', {
           name: getSelectionGroupTranslation(
             'hired_without_voucher_assessment',
             type
           ),
         });
       },
+      removeAttachmentButtons() {
+        return withinThisAccordion().findAllByRole('link', {
+          name: /poista tiedosto/i,
+        });
+      },
       saveButton() {
-        return withinAccordion().findByRole('button', {
+        return withinThisAccordion().findByRole('button', {
           name: /^tallenna tiedot/i,
         });
       },
@@ -158,7 +213,7 @@ export const getStep2Components = (t: TestController) => {
           .expect(formSelector().exists)
           .ok(await getErrorMessage(t), { timeout: 10_000 });
         await t
-          .expect(accordionSelector(isOpen).exists)
+          .expect(accordionSelector(isOpen, employeeIndex).exists)
           .ok(await getErrorMessage(t), { timeout: 10_000 });
       },
       async isAttachmentUploaded(attachment: KesaseteliAttachment) {
@@ -295,6 +350,19 @@ export const getStep2Components = (t: TestController) => {
           selectors.hiredWithoutVoucherAssessmentRadioInput(type)
         );
       },
+      async removeExistingAttachments() {
+        /* eslint-disable no-await-in-loop */
+        for (;;) {
+          const removeAttachmentButtons = selectors.removeAttachmentButtons();
+
+          if (await removeAttachmentButtons.exists) {
+            await t.click(removeAttachmentButtons.nth(0));
+          } else {
+            break;
+          }
+        }
+        /* eslint-enable no-await-in-loop */
+      },
       async clickSaveEmployeeButton() {
         return t.click(selectors.saveButton());
       },
@@ -335,6 +403,7 @@ export const getStep2Components = (t: TestController) => {
   };
 
   return {
+    form,
     employmentAccordion,
     addEmploymentButton,
   };

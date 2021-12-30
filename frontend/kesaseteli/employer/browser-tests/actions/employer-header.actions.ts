@@ -15,9 +15,5 @@ export const doEmployerLogin = async (
   const headerUser = await getHeaderComponents(t).headerUser();
   await headerUser.expectations.userIsLoggedOut();
   await headerUser.actions.clickloginButton();
-  const suomifiData = await doLogin(t, lang, cachedUser);
-  if (suomifiData.user) {
-    await headerUser.expectations.userIsLoggedIn(suomifiData.user);
-  }
-  return suomifiData;
+  return doLogin(t, lang, cachedUser);
 };

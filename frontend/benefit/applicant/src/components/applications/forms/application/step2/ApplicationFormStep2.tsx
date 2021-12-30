@@ -371,18 +371,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
               disabled={formik.values.paySubsidyGranted !== true}
             />
-            <$RadioButton
-              id={`${fields.benefitType.name}Commission`}
-              name={fields.benefitType.name}
-              value={BENEFIT_TYPES.COMMISSION}
-              label={t(
-                `${translationsBase}.fields.${fields.benefitType.name}.commission`
-              )}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              checked={formik.values.benefitType === BENEFIT_TYPES.COMMISSION}
-              disabled={formik.values.apprenticeshipProgram === true}
-            />
           </SelectionGroup>
         </$GridCell>
 

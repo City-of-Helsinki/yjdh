@@ -14,7 +14,7 @@ export const getStep1Components = (t: TestController) => {
   const companyTable = async (company: Company) => {
     const selectors = {
       companyTable() {
-        return screen.findAllByRole('grid', { name: /yrityksen tiedot/i });
+        return screen.findAllByRole('region', { name: /yrityksen tiedot/i });
       },
     };
     const expectations = {
@@ -167,8 +167,11 @@ export const getStep1Components = (t: TestController) => {
           address
         );
       },
-      toggleSeparateInvoicerCheckbox() {
-        return t.click(selectors.separateInvoicerCheckbox());
+      async selectSeparateInvoicerCheckbox(expectedValue = true) {
+        const currentValue = await selectors.separateInvoicerCheckbox().checked;
+        if (currentValue !== expectedValue) {
+          await t.click(selectors.separateInvoicerCheckbox());
+        }
       },
       fillInvoicerName(name?: string) {
         return fillInput(

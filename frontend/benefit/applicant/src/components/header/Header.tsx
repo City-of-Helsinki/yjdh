@@ -9,13 +9,7 @@ import BaseHeader from 'shared/components/header/Header';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
-  const {
-    t,
-    locale,
-    languageOptions,
-    handleLanguageChange,
-    handleNavigationItemClick,
-  } = useHeader();
+  const { t, locale, languageOptions, handleLanguageChange } = useHeader();
   const router = useRouter();
   const { asPath } = router;
 
@@ -33,7 +27,6 @@ const Header: React.FC = () => {
       languages={languageOptions}
       locale={locale}
       onLanguageChange={handleLanguageChange}
-      onNavigationItemClick={handleNavigationItemClick}
       login={{
         isAuthenticated: !isLoginPage && userQuery.isSuccess,
         loginLabel: t('common:header.loginLabel'),

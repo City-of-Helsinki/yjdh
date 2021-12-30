@@ -6,9 +6,7 @@ import {
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
-import YouthApplication from '../../src/types/youth-application';
 import YouthFormData from '../../src/types/youth-form-data';
-import { convertFormDataToApplication } from '../../src/utils/youth-form-data.utils';
 
 type TextInputName = keyof Omit<
   YouthFormData,
@@ -50,16 +48,8 @@ export const getIndexPageComponents = async (t: TestController) => {
     },
   };
   const expectations = {
-    async isPresent() {
+    async isLoaded() {
       await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
-    },
-    async isFormFulfilledWith(youthFormData: YouthFormData) {
-      const textContent = await selectors.result().textContent;
-      const sentApplication = JSON.parse(
-        textContent.trim()
-      ) as YouthApplication;
-      const expectedApplication = convertFormDataToApplication(youthFormData);
-      await t.expect(sentApplication).contains(expectedApplication);
     },
   };
   const actions = {
@@ -86,7 +76,7 @@ export const getIndexPageComponents = async (t: TestController) => {
       await t.click(selectors.sendButton());
     },
   };
-  await expectations.isPresent();
+  await expectations.isLoaded();
   return {
     selectors,
     expectations,

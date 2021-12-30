@@ -9,7 +9,9 @@ import Content from 'shared/components/content/Content';
 import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
 import initLocale from 'shared/components/hocs/initLocale';
 import Layout from 'shared/components/layout/Layout';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import HDSToastContainer from 'shared/components/toast/ToastContainer';
+import useIsRouting from 'shared/hooks/useIsRouting';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { isError } from 'shared/utils/type-guards';
@@ -43,6 +45,8 @@ setLogger({
 
 const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
   const { t } = useTranslation();
+  const isRouting = useIsRouting();
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -54,7 +58,7 @@ const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
           {header}
           <HDSToastContainer />
           <Content>
-            <Component {...pageProps} />
+            {isRouting ? <PageLoadingSpinner /> : <Component {...pageProps} />}
           </Content>
           {footer}
         </Layout>

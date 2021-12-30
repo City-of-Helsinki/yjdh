@@ -203,10 +203,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       });
     });
 
-    it('saves the application with application language', async () => {
+    it('saves the application with application language and redirects to thank you page', async () => {
       expectToGetSchoolsFromBackend();
       const language: Language = 'sv';
-      await renderPage(YouthIndex, { locale: language });
+      const spyPush = jest.fn();
+      await renderPage(YouthIndex, { locale: language, push: spyPush });
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
@@ -214,6 +215,9 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         language,
         backendExpectation: expectToCreateYouthApplication,
       });
+      await waitFor(() =>
+        expect(spyPush).toHaveBeenCalledWith(`${language}/thankyou`)
+      );
     });
 
     it('shows error toaster when backend gives bad request -error', async () => {
