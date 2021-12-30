@@ -5,6 +5,7 @@ from typing import List, Optional
 import factory
 import factory.fuzzy
 import pytz
+from faker import Faker
 from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
@@ -122,6 +123,12 @@ def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
     return youth_application.school not in get_listed_test_schools()
 
 
+def get_test_phone_number() -> str:
+    # NAMES_REGEX didn't accept phone numbers starting with (+358) but did with +358
+    # so removing the parentheses to make the generated phone numbers fit it
+    return Faker(locale="fi").phone_number().replace("(+358)", "+358")
+
+
 def copy_created_at(youth_application: YouthApplication) -> Optional[datetime]:
     return youth_application.created_at
 
@@ -137,7 +144,7 @@ class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     school = factory.Faker("random_element", elements=get_all_test_schools())
     is_unlisted_school = factory.LazyAttribute(uses_unlisted_test_school)
     email = factory.Faker("email")
-    phone_number = factory.Faker("phone_number", locale="fi")
+    phone_number = factory.LazyFunction(get_test_phone_number)
     language = factory.Faker("random_element", elements=["fi", "sv", "en"])
     _is_active = None
 

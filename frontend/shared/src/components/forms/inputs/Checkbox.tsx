@@ -43,12 +43,12 @@ const Checkbox = <T,>({
   return (
     <Controller
       name={id}
-      data-testid={id}
       control={control}
       rules={registerOptions}
       render={({ field }) => (
         <HdsCheckbox
           {...field}
+          data-testid={id}
           id={id}
           required={required}
           errorText={errorText}

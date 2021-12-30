@@ -18,6 +18,7 @@ COMPANY_ROLE_JSON = [
     }
 ]
 
+
 ASSOCIATION_ROLE_JSON = [
     {
         "name": DUMMY_ASSOCIATION_DATA["name"],

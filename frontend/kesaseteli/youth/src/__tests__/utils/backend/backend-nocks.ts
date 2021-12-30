@@ -1,3 +1,5 @@
+import faker from 'faker';
+import { fakeSchools } from 'kesaseteli/youth/__tests__/utils/fake-objects';
 import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import {
   BackendEndpoint,
@@ -29,9 +31,42 @@ afterEach(async () => {
 });
 nock.disableNetConnect();
 
-export const expectToSaveYouthApplication = (
-  application: Partial<YouthApplication>
+export const expectToGetSchoolsFromBackend = (): nock.Scope =>
+  nock(getBackendDomain())
+    .get(BackendEndpoint.SCHOOLS)
+    .reply(200, fakeSchools, { 'Access-Control-Allow-Origin': '*' });
+
+export const expectToGetSchoolsErrorFromBackend = (
+  errorCode: 400 | 404 | 500
+): nock.Scope => {
+  consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+  return nock(getBackendDomain())
+    .get(BackendEndpoint.SCHOOLS)
+    .reply(
+      errorCode,
+      'This is a school list backend test error. Please ignore this error message.'
+    );
+};
+
+export const expectToCreateYouthApplication = (
+  application: YouthApplication
 ): nock.Scope =>
   nock(getBackendDomain())
-    .put(`${BackendEndpoint.YOUTH_APPLICATIONS}/`, application)
-    .reply(200, application, { 'Access-Control-Allow-Origin': '*' });
+    .post(BackendEndpoint.YOUTH_APPLICATIONS, application)
+    .reply(
+      200,
+      { ...application, id: faker.datatype.uuid() },
+      { 'Access-Control-Allow-Origin': '*' }
+    );
+
+export const expectToReplyErrorWhenCreatingYouthApplication =
+  (errorCode: 400 | 404 | 500) =>
+  (application: YouthApplication): nock.Scope => {
+    consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    return nock(getBackendDomain())
+      .post(BackendEndpoint.YOUTH_APPLICATIONS, application)
+      .reply(
+        errorCode,
+        'This is a create youth application backend test error. Please ignore this error message.'
+      );
+  };

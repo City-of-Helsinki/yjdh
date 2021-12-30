@@ -59,6 +59,7 @@ const NotificationWrapper = ({
       closeButtonLabelText={t('common:toast.closeToast') ?? ''}
       label={labelText}
       onClose={() => toast.dismiss(toastId)}
+      data-testid={toastId}
     >
       {body}
     </$Notification>

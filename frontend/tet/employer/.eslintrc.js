@@ -1,11 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: [
-    'auto',
-    'plugin:@next/next/recommended',
-    'plugin:you-dont-need-lodash-underscore/compatible',
-  ],
+  extends: ['auto', 'plugin:@next/next/recommended', 'plugin:you-dont-need-lodash-underscore/compatible'],
   rules: {
     'jsx-a11y/anchor-is-valid': [
       'error',

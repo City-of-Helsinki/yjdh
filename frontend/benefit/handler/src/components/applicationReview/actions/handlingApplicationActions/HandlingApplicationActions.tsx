@@ -1,4 +1,5 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
 import useUpdateApplicationQuery from 'benefit/handler/hooks/useUpdateApplicationQuery';
 import {
   Application,
@@ -9,6 +10,7 @@ import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import snakecaseKeys from 'snakecase-keys';
+import EditAction from '../editAction/EditAction';
 
 import { $Column, $Wrapper } from './HandlingApplicationActions.sc';
 
@@ -19,24 +21,15 @@ export type Props = {
 const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
-
-  const { mutate: updateApplication } = useUpdateApplicationQuery();
-
-  const handleDone = (): void => {
-    const currentApplicationData: ApplicationData = snakecaseKeys(
-      {
-        ...application,
-        status: APPLICATION_STATUSES.HANDLING,
-      },
-      { deep: true }
-    );
-    updateApplication(currentApplicationData);
-  };
+  const { updateStatus } = useApplicationActions(application);
 
   return (
     <$Wrapper>
       <$Column>
-        <Button onClick={handleDone} theme="coat">
+        <Button
+          onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
+          theme="coat"
+        >
           {t(`${translationsBase}.done`)}
         </Button>
         <Button onClick={noop} theme="black" variant="secondary">
@@ -50,6 +43,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
         >
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
+        <EditAction application={application} />
       </$Column>
       <$Column>
         <Button
