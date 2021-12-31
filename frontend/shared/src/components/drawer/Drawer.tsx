@@ -39,7 +39,9 @@ const Drawer: React.FC<DrawerProps> = ({
             onClick={handleClose}
             aria-label={closeBtnAriaLabel}
             iconLeft={<IconCross />}
-          />
+          >
+            {null}
+          </Button>
         </$CloseBtnWrapper>
         <$Title>{title}</$Title>
       </$Top>
