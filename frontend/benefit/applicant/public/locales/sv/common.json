@@ -349,7 +349,11 @@
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
-    "userAriaLabelPrefix": "Användaren:"
+    "userAriaLabelPrefix": "Användaren:",
+    "messages": "SV: Viestit",
+    "drawer": {
+      "title": "SV: Hakemuksen viestit"
+    }
   },
   "footer": {
     "copyrightText": "Copyright text",
