@@ -24,11 +24,11 @@ def get_user_company(request: HttpRequest) -> Optional[Company]:
     return user_company
 
 
-def has_application_permission(
-    request: HttpRequest, application: EmployerApplication
+def has_employer_application_permission(
+    request: HttpRequest, employer_application: EmployerApplication
 ) -> bool:
     """
-    Allow access only for DRAFT status applications of the user & company.
+    Allow access only for DRAFT status employer applications of the user & company.
     """
     user = request.user
 
@@ -38,35 +38,35 @@ def has_application_permission(
     user_company = get_user_company(request)
 
     if (
-        application.company == user_company
-        and application.user == user
-        and application.status in ALLOWED_APPLICATION_VIEW_STATUSES
+        employer_application.company == user_company
+        and employer_application.user == user
+        and employer_application.status in ALLOWED_APPLICATION_VIEW_STATUSES
     ):
         return True
     return False
 
 
-class ApplicationPermission(BasePermission):
+class EmployerApplicationPermission(BasePermission):
     """
-    Permission check for applications.
-    """
-
-    def has_object_permission(self, request, view, obj):
-        return has_application_permission(request, obj)
-
-
-class SummerVoucherPermission(BasePermission):
-    """
-    Permission check for summer vouchers.
+    Permission check for employer applications.
     """
 
     def has_object_permission(self, request, view, obj):
-        return has_application_permission(request, obj.application)
+        return has_employer_application_permission(request, obj)
+
+
+class EmployerSummerVoucherPermission(BasePermission):
+    """
+    Permission check for employer summer vouchers.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return has_employer_application_permission(request, obj.application)
 
 
 class StaffPermission(BasePermission):
     """
-    Permission check for summer vouchers.
+    Permission check that allows only staff users.
     """
 
     def has_object_permission(self, request, view, obj):

@@ -15,10 +15,10 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
-    ApplicationPermission,
+    EmployerApplicationPermission,
+    EmployerSummerVoucherPermission,
     get_user_company,
     StaffPermission,
-    SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
     AttachmentSerializer,
@@ -105,7 +105,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     queryset = EmployerApplication.objects.all()
     serializer_class = EmployerApplicationSerializer
-    permission_classes = [IsAuthenticated, ApplicationPermission]
+    permission_classes = [IsAuthenticated, EmployerApplicationPermission]
 
     def get_queryset(self):
         """
@@ -156,7 +156,10 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
 class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
     queryset = EmployerSummerVoucher.objects.all()
     serializer_class = EmployerSummerVoucherSerializer
-    permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]
+    permission_classes = [
+        IsAuthenticated,
+        StaffPermission | EmployerSummerVoucherPermission,
+    ]
 
     def get_queryset(self):
         """
