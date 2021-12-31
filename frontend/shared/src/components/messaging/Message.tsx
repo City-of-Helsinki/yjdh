@@ -1,5 +1,6 @@
 import React from 'react';
-import { $Message, $Meta, $Sender, $Date } from './Messaging.sc';
+
+import { $Date, $Message, $Meta, $Sender } from './Messaging.sc';
 
 export interface MessageProps {
   sender: string;
@@ -7,16 +8,14 @@ export interface MessageProps {
   text: string;
 }
 
-const Message = ({ sender, date, text }: MessageProps) => {
-  return (
-    <div>
-      <$Meta>
-        <$Sender>{sender}</$Sender>
-        <$Date>{date}</$Date>
-      </$Meta>
-      <$Message>{text}</$Message>
-    </div>
-  );
-};
+const Message: React.FC<MessageProps> = ({ sender, date, text }) => (
+  <div>
+    <$Meta>
+      <$Sender>{sender}</$Sender>
+      <$Date>{date}</$Date>
+    </$Meta>
+    <$Message>{text}</$Message>
+  </div>
+);
 
 export default Message;

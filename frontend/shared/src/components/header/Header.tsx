@@ -102,7 +102,10 @@ const Header: React.FC<HeaderProps> = ({
 
       <Navigation.Actions>
         {customItems?.map((item, index) => (
-          <Navigation.Item key={index}>{item}</Navigation.Item>
+          // eslint-disable-next-line react/no-array-index-key
+          <Navigation.Item key={`custom-nav-item-${index}`}>
+            {item}
+          </Navigation.Item>
         ))}
         {login && (
           <Navigation.User

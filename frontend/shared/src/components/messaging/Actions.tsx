@@ -1,13 +1,10 @@
 import { Button, IconLock, TextArea } from 'hds-react';
 import React from 'react';
 import { useTheme } from 'styled-components';
+
 import { $Actions, $FormActions } from './Messaging.sc';
 
-export interface ActionsProps {
-  // handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-}
-
-const Action = ({}: ActionsProps) => {
+const Action: React.FC = () => {
   const theme = useTheme();
 
   return (

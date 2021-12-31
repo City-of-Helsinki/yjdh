@@ -1,12 +1,13 @@
 import { Button, IconCross } from 'hds-react';
 import React from 'react';
+
 import {
-  $Drawer,
-  $Title,
   $Body,
   $Bottom,
-  $Top,
   $CloseBtnWrapper,
+  $Drawer,
+  $Title,
+  $Top,
 } from './Drawer.sc';
 
 export type DrawerProps = {
@@ -38,9 +39,7 @@ const Drawer: React.FC<DrawerProps> = ({
             onClick={handleClose}
             aria-label={closeBtnAriaLabel}
             iconLeft={<IconCross />}
-          >
-            {''}
-          </Button>
+          />
         </$CloseBtnWrapper>
         <$Title>{title}</$Title>
       </$Top>

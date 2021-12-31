@@ -1,33 +1,34 @@
-import { Button, TextArea } from 'hds-react';
 import React from 'react';
-import Message from './Message';
-import Actions from './Actions';
 
-interface Message {
+import Actions from './Actions';
+import Message from './Message';
+
+interface MessageData {
   sender: string;
   date: string;
   text: string;
 }
 
 export interface MessagesFormProps {
-  messages: Message[];
+  messages: MessageData[];
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
-const MessagesForm = ({ messages, handleSubmit }: MessagesFormProps) => {
-  return (
-    <form onSubmit={handleSubmit}>
-      {messages.map((message) => (
-        <Message
-          key={message.sender}
-          sender={message.sender}
-          date={message.date}
-          text={message.text}
-        />
-      ))}
-      <Actions />
-    </form>
-  );
-};
+const MessagesForm: React.FC<MessagesFormProps> = ({
+  messages,
+  handleSubmit,
+}) => (
+  <form onSubmit={handleSubmit}>
+    {messages.map((message) => (
+      <Message
+        key={message.sender}
+        sender={message.sender}
+        date={message.date}
+        text={message.text}
+      />
+    ))}
+    <Actions />
+  </form>
+);
 
 export default MessagesForm;
