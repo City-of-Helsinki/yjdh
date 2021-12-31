@@ -1,7 +1,5 @@
-## DEBUGGING
 
 ## Environments
-
 Production environment:
 [TODO: Add url when deployed]
 Project is automatically deployed to production when adding new relase tag, e.g. release-v0.1.0, to repo
