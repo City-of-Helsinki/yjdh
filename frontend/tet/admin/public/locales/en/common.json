@@ -32,6 +32,20 @@
       "addNewPosting": "ENG Lisää uusi harjoittelupaikka"
     }
   },
+  "editor": {
+    "newTitle": "ENG Uusi TET-paikka",
+    "editTitle": "ENG Muokkaa TET-paikkaa",
+    "employerInfo": {
+      "header": "ENG Työpaikan tiedot",
+      "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
+      "departmentLabel": "ENG Toimipiste tai osasto"
+    },
+    "posting": {
+      "header": "ENG Työharjoittelupaikan tiedot",
+      "title": "ENG Tehtävänimike",
+      "description": "ENG Vapaa kuvaus työharjoittelupaikasta / -tehtävästä"
+    }
+  },
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",

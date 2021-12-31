@@ -32,6 +32,20 @@
       "addNewPosting": "SV Lisää uusi harjoittelupaikka"
     }
   },
+  "editor": {
+    "newTitle": "SV Uusi TET-paikka",
+    "editTitle": "SV Muokkaa TET-paikkaa",
+    "employerInfo": {
+      "header": "SV Työpaikan tiedot",
+      "addressNeededLabel": "SV Työharjoittelu suoritetaan eri osoitteessa",
+      "departmentLabel": "SV Toimipiste tai osasto"
+    },
+    "posting": {
+      "header": "SV Työharjoittelupaikan tiedot",
+      "title": "SV Tehtävänimike",
+      "description": "SV Vapaa kuvaus työharjoittelupaikasta / -tehtävästä"
+    }
+  },
   "footer": {
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
