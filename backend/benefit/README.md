@@ -1,18 +1,17 @@
-## DEBUGGING
-
 ## Development without Docker
 
 Prerequisites:
 
-- PostgreSQL 12
-- Python 3.8
+* PostgreSQL 12
+* Python 3.8
+
 
 ### Installing Python requirements
 
-- Run `pip install -r requirements.txt`
-- Run `pip install -r requirements-dev.txt` (development requirements)
-- If you are not using Docker image, in order to export application batch as PDF (via `pdfkit`), it's required to install
-  `wkhtmltopdf`. Run: `sudo apt-get install wkhtmltopdf`
+* Run `pip install -r requirements.txt`
+* Run `pip install -r requirements-dev.txt` (development requirements)
+* If you are not using Docker image, in order to export application batch as PDF (via `pdfkit`), it's required to install
+ `wkhtmltopdf`. Run: `sudo apt-get install wkhtmltopdf`
 
 ### Database
 
@@ -60,22 +59,24 @@ If NEXT_PUBLIC_MOCK_FLAG is set, additionally DUMMY_COMPANY_FORM can be set to t
 
 1. Install `pip-tools`:
 
-   - `pip install pip-tools`
+    * `pip install pip-tools`
 
 2. Add new packages to `requirements.in` or `requirements-dev.in`
 
 3. Update `.txt` file for the changed requirements file:
 
-   - `pip-compile requirements.in`
-   - `pip-compile requirements-dev.in`
+    * `pip-compile requirements.in`
+    * `pip-compile requirements-dev.in`
 
 4. If you want to update dependencies to their newest versions, run:
 
-   - `pip-compile --upgrade requirements.in`
+    * `pip-compile --upgrade requirements.in`
 
 5. To install Python requirements run:
 
-   - `pip-sync requirements.txt requirements-dev.txt`
+    * `pip-sync requirements.txt requirements-dev.txt`
+   
+
 
 ## Documentation
 
@@ -136,8 +137,8 @@ black config, without any modifications.
 
 Basic `black` commands:
 
-- To let `black` do its magic: `black .`
-- To see which files `black` would change: `black --check .`
+* To let `black` do its magic: `black .`
+* To see which files `black` would change: `black --check .`
 
 ## Storages
 
