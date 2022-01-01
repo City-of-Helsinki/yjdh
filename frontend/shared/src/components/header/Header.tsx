@@ -20,6 +20,7 @@ export type HeaderProps = {
   languages: OptionType<string>[];
   isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
+  customItems?: React.ReactNode[];
   navigationVariant?: NavigationVariant;
   onLanguageChange: (
     e: React.SyntheticEvent<unknown>,
@@ -46,6 +47,7 @@ const Header: React.FC<HeaderProps> = ({
   isNavigationVisible = true,
   navigationItems,
   navigationVariant,
+  customItems,
   onLanguageChange,
   login,
   theme,
@@ -99,6 +101,12 @@ const Header: React.FC<HeaderProps> = ({
       )}
 
       <Navigation.Actions>
+        {customItems?.map((item, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Navigation.Item key={`custom-nav-item-${index}`}>
+            {item}
+          </Navigation.Item>
+        ))}
         {login && (
           <Navigation.User
             authenticated={login.isAuthenticated}

@@ -349,7 +349,11 @@
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
-    "userAriaLabelPrefix": "Käyttäjä:"
+    "userAriaLabelPrefix": "Käyttäjä:",
+    "messages": "Viestit",
+    "drawer": {
+      "title": "Hakemuksen viestit"
+    }
   },
   "footer": {
     "copyrightText": "Copyright text",
@@ -479,6 +483,7 @@
   "utility": {
     "and": "ja",
     "yes": "Kyllä",
-    "no": "Ei"
+    "no": "Ei",
+    "close": "Sulje"
   }
 }
