@@ -349,7 +349,11 @@
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
-    "userAriaLabelPrefix": "User:"
+    "userAriaLabelPrefix": "User:",
+    "messages": "Messages",
+    "drawer": {
+      "title": "EN: Hakemuksen viestit"
+    }
   },
   "footer": {
     "copyrightText": "Copyright text",
@@ -479,6 +483,7 @@
   "utility": {
     "and": "ja",
     "yes": "Kyllä",
-    "no": "Ei"
+    "no": "Ei",
+    "close": "Sulje"
   }
 }
