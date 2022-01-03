@@ -6,6 +6,10 @@
       "processed": "Käsitellyt",
       "archive": "Arkisto",
       "reports": "Raportointi"
+    },
+    "messages": "Viestit",
+    "drawer": {
+      "title": "Hakemuksen viestit"
     }
   },
   "mainIngress": {

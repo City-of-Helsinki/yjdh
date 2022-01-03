@@ -20,6 +20,7 @@ export const $Message = styled.div`
   background: ${({ theme }) => theme.colors.black5};
   border-radius: 10px;
   max-width: 18em;
+  margin-bottom: ${({ theme }) => theme.spacing.s};
 `;
 
 export const $Actions = styled.div`
