@@ -1,5 +1,4 @@
 from django.core import exceptions
-from django.db.models import Func
 from django.http import FileResponse, HttpResponse
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -33,16 +32,7 @@ from common.utils import DenyAll
 
 
 class SchoolListView(ListAPIView):
-    # PostgreSQL specific functionality:
-    # - Custom sorter for name field to ensure finnish language sorting order.
-    # - NOTE: This can be removed if the database is made to use collation fi_FI.UTF8
-    _name_fi = Func(
-        "name",
-        function="fi-FI-x-icu",  # fi_FI.UTF8 would be best but wasn't available
-        template='(%(expressions)s) COLLATE "%(function)s"',
-    )
-
-    queryset = School.objects.order_by(_name_fi.asc())
+    queryset = School.objects.all()
     serializer_class = SchoolSerializer
 
     def get_permissions(self):
