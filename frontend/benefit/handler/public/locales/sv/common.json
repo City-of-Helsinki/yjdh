@@ -8,9 +8,20 @@
       "reports": "Raportointi"
     },
     "messages": "Viestit",
+    "notes": "Muistiinpanot",
     "drawer": {
       "title": "Hakemuksen viestit"
     }
+  },
+  "messenger": {
+    "titles": {
+      "applicantMessage": "Hakija",
+      "handlerMessage": "Käsittelijä",
+      "note": ""
+    },
+    "showEveryone": "Nämä viestit näkyvät hakijalle",
+    "compose": "Kirjoita viesti",
+    "send": "Lähetä"
   },
   "mainIngress": {
     "heading": "Hakemukset",

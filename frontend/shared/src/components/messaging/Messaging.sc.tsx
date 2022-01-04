@@ -1,6 +1,17 @@
 import styled from 'styled-components';
 
+interface MessageProps {
+  isPrimary?: boolean;
+}
+
+export const $MessagesList = styled.div`
+  height: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+`;
+
 export const $Meta = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   margin-bottom: ${({ theme }) => theme.spacing.s};
@@ -15,11 +26,19 @@ export const $Date = styled.span`
   color: ${({ theme }) => theme.colors.black50};
 `;
 
-export const $Message = styled.div`
-  padding: ${({ theme }) => theme.spacing.s};
-  background: ${({ theme }) => theme.colors.black5};
+export const $MessageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+export const $Message = styled.div<MessageProps>`
+  padding: ${({ theme }) => theme.spacing.xs};
+  background: ${(props) =>
+    props.isPrimary
+      ? props.theme.colors.coatOfArmsLight
+      : props.theme.colors.black5};
   border-radius: 10px;
-  max-width: 18em;
   margin-bottom: ${({ theme }) => theme.spacing.s};
 `;
 
