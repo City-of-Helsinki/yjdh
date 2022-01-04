@@ -1,18 +1,13 @@
-import { MESSAGE_TYPES } from 'benefit-shared/constants';
 import { $TabList } from 'benefit-shared/tabs/Tabs.sc';
-import AppContext from 'benefit/handler/context/AppContext';
 import { Tab, TabPanel, Tabs } from 'hds-react';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import Drawer from 'shared/components/drawer/Drawer';
 import Actions from 'shared/components/messaging/Actions';
-import Message from 'shared/components/messaging/Message';
-import { $MessagesList } from 'shared/components/messaging/Messaging.sc';
-import camelCase from 'lodash/camelCase';
+import Messages from './Messages';
+import { useMessenger } from './useMessenger';
 
 const Messenger: React.FC = () => {
-  const { t } = useTranslation();
-  const { isMessagesDrawerVisible, messages } = React.useContext(AppContext);
+  const { t, isMessagesDrawerVisible, messages, notes } = useMessenger();
 
   return (
     <Drawer isOpen={isMessagesDrawerVisible}>
@@ -28,23 +23,7 @@ const Messenger: React.FC = () => {
             flex-grow: 1;
           `}
         >
-          <$MessagesList>
-            {messages
-              .filter((m) => m.messageType !== MESSAGE_TYPES.NOTE)
-              .map((message) => (
-                <Message
-                  key={message.id}
-                  sender={t(
-                    `common:messenger.titles.${camelCase(message.messageType)}`
-                  )}
-                  date={message.modifiedAt}
-                  text={message.content}
-                  isPrimary={
-                    message.messageType === MESSAGE_TYPES.HANDLER_MESSAGE
-                  }
-                />
-              ))}
-          </$MessagesList>
+          <Messages data={messages} />
           <Actions />
         </TabPanel>
         <TabPanel
@@ -55,19 +34,7 @@ const Messenger: React.FC = () => {
           `}
         >
           <Actions />
-          <$MessagesList>
-            {messages
-              .filter((m) => m.messageType === MESSAGE_TYPES.NOTE)
-              .map((message) => (
-                <Message
-                  key={message.id}
-                  sender={'SenderName'}
-                  date={message.modifiedAt}
-                  text={message.content}
-                  isPrimary={message.messageType === MESSAGE_TYPES.NOTE}
-                />
-              ))}
-          </$MessagesList>
+          <Messages data={notes} />
         </TabPanel>
       </Tabs>
     </Drawer>
