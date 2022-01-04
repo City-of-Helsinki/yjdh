@@ -125,7 +125,7 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
             message=self._activation_email_message(request),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.email],
-            fail_silently=False,
+            fail_silently=True,
         )
 
     @property
