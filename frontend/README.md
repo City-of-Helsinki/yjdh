@@ -80,7 +80,7 @@ In every pull-request, changed service are deployed to unique url, depending on 
 eg. `https://ks-empl-540.test.kuva.hel.ninja` where `540` is pr number and `ks-empl` name of the service
 
 However due to certificate errors, environment does not work with default browser settings: 
-You'll get CORS errors and frontend wont communicate with backend. 
+You'll get CORS errors and the frontend won't communicate with the backend. 
 
 To fix this, you need to start the chrome browser with special flag which list hashes of 
 certificates which are ignored:
