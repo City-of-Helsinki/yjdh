@@ -34,15 +34,6 @@ const Header: React.FC = () => {
     [router, asPath],
   );
 
-  const handleNavigationItemClick = React.useCallback(
-    (newPath: string): void => {
-      void router.push(newPath);
-    },
-    [router],
-  );
-
-  const handleTitleClick = React.useCallback(() => handleNavigationItemClick('/'), [handleNavigationItemClick]);
-
   const login = useLogin();
   // const userQuery = useUserQuery();
   const logoutQuery = useLogoutQuery();
@@ -59,8 +50,6 @@ const Header: React.FC = () => {
       languages={languageOptions}
       locale={locale}
       onLanguageChange={handleLanguageChange}
-      onNavigationItemClick={handleNavigationItemClick}
-      onTitleClick={handleTitleClick}
       login={
         !isLoading
           ? {
