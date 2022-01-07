@@ -82,8 +82,14 @@
   },
   "thankyouPage" : {
     "title": "Thank You!",
-    "notificationTitle": "SV Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "SV Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
-    "goToFrontendPage": "SV Kesäseteli etusivulle"
+    "notificationTitle": "ENG Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
+    "notificationMessage": "ENG Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
+    "goToFrontendPage": "ENG Kesäseteli etusivulle"
+  },
+  "activatedPage" : {
+    "title": "ENG Kesäsetelisi on nyt aktivoitu",
+    "notificationTitle": "ENG Vahvistus onnistui",
+    "notificationMessage": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "paragraph_1": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
   }
 }
