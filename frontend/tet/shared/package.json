@@ -8,8 +8,8 @@
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage"
+    "test:staged": "yarn test --watchAll=false --findRelatedTests --pass-with-no-tests",
+    "test:coverage": "yarn test --verbose --coverage --pass-with-no-tests"
   },
   "license": "MIT",
   "dependencies": {
