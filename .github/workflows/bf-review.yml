@@ -171,6 +171,8 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
+          CORS_ALLOWED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
+          CSRF_TRUSTED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
       - name: Create PR comment for helsinkibenefit-V${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
