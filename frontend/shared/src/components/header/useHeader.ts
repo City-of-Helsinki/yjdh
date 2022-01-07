@@ -6,11 +6,6 @@ type ExtendedComponentProps = {
   logoLang: string;
   toggleMenu: () => void;
   closeMenu: () => void;
-  handleNavigationItemClick: (
-    pathname: string
-  ) => (
-    event?: React.MouseEvent<HTMLAnchorElement, MouseEvent> | undefined
-  ) => void;
   handleLogin: (
     event?: React.MouseEvent<HTMLAnchorElement, MouseEvent> | undefined
   ) => void;
@@ -21,24 +16,12 @@ type ExtendedComponentProps = {
 
 const useHeader = (
   locale: HeaderProps['locale'],
-  onNavigationItemClick: HeaderProps['onNavigationItemClick'],
   login: HeaderProps['login']
 ): ExtendedComponentProps => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = (): void => setMenuOpen(!menuOpen);
   const closeMenu = (): void => setMenuOpen(false);
-
-  const handleNavigationItemClick = (pathname: string) => (
-    event?: React.MouseEvent<HTMLAnchorElement>
-  ) => {
-    if (event) {
-      event.preventDefault();
-    }
-    if (onNavigationItemClick) {
-      onNavigationItemClick(pathname);
-    }
-  };
 
   const handleLogin = (event?: React.MouseEvent<HTMLAnchorElement>): void => {
     if (event) {
@@ -65,7 +48,6 @@ const useHeader = (
     logoLang,
     toggleMenu,
     closeMenu,
-    handleNavigationItemClick,
     handleLogin,
     handleLogout,
   };

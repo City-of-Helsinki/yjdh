@@ -32,7 +32,9 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
     await renderPage(IndexPage, { push: spyPush });
-    await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
+    await waitFor(() =>
+      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
+    );
   });
 
   describe('when authorized', () => {

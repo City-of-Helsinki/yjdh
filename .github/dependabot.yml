@@ -14,6 +14,72 @@ updates:
       interval: "daily"
     pull-request-branch-name:
       separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/shared"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/benefit/applicant"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/benefit/handler"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/benefit/handler"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/kesaseteli/shared"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/kesaseteli/employer"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/kesaseteli/youth"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/tet/admin"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/tet/employer"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
+    directory: "frontend/tet/youth"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
   - package-ecosystem: "pip"
     directory: "backend/"
     schedule:

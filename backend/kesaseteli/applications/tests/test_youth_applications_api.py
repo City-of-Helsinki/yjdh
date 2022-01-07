@@ -1,5 +1,6 @@
 import factory.random
 import pytest
+from django.test import override_settings
 from rest_framework import status
 from rest_framework.reverse import reverse
 
@@ -133,6 +134,40 @@ def test_youth_application_post_valid_random_data(api_client, random_seed):
     data = YouthApplicationSerializer(youth_application).data
     response = api_client.post(reverse("v1:youthapplication-list"), data)
 
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+@override_settings(
+    EMAIL_USE_TLS=False,
+    EMAIL_HOST="ema.platta-net.hel.fi",
+    EMAIL_HOST_USER="",
+    EMAIL_HOST_PASSWORD="",
+    EMAIL_PORT=25,
+    EMAIL_TIMEOUT=15,
+    DEFAULT_FROM_EMAIL="Kesäseteli <kesaseteli@hel.fi>",
+)
+@pytest.mark.parametrize(
+    "email_backend_override",
+    [
+        None,  # No override
+        "django.core.mail.backends.console.EmailBackend",
+        "django.core.mail.backends.smtp.EmailBackend",
+    ],
+)
+def test_youth_application_post_valid_data_with_email_backends(
+    api_client,
+    youth_application,
+    settings,
+    email_backend_override,
+):
+    # Use an email address which uses a reserved domain name (See RFC 2606)
+    # so even if it'd be sent to an SMTP server it wouldn't go anywhere
+    youth_application.email = "test@example.com"
+    if email_backend_override is not None:
+        settings.EMAIL_BACKEND = email_backend_override
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
     assert response.status_code == status.HTTP_201_CREATED
 
 

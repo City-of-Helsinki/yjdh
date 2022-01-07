@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from django.conf import settings
@@ -20,6 +21,8 @@ from applications.enums import (
 )
 from common.utils import validate_finnish_social_security_number
 from companies.models import Company
+
+LOGGER = logging.getLogger(__name__)
 
 
 def validate_school(name) -> None:
@@ -120,13 +123,15 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         ) % {"activation_link": activation_link}
 
     def send_activation_email(self, request):
-        send_mail(
+        sent_email_count = send_mail(
             subject=self._activation_email_subject(request),
             message=self._activation_email_message(request),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.email],
-            fail_silently=False,
+            fail_silently=True,
         )
+        if sent_email_count == 0:
+            LOGGER.error("Unable to send youth application's activation email")
 
     @property
     def is_active(self) -> bool:

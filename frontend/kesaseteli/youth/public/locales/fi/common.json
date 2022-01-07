@@ -79,5 +79,11 @@
   },
   "assistive": {
     "toggleMenu": "Avaa valikko"
+  },
+  "thankyouPage" : {
+    "title": "Kiitos",
+    "notificationTitle": "Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
+    "notificationMessage": "Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
+    "goToFrontendPage": "Kesäseteli etusivulle"
   }
 }

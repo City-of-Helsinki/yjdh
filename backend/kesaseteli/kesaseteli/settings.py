@@ -188,11 +188,6 @@ TEMPLATES = [
     }
 ]
 
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
 EMAIL_HOST = env.str("EMAIL_HOST")
 EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
@@ -254,6 +249,11 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
 MOCK_FLAG = env.bool("MOCK_FLAG")
+
+if MOCK_FLAG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # Authentication
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")

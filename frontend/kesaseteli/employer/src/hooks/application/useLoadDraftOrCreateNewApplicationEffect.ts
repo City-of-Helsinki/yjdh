@@ -1,16 +1,17 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { UseMutationResult, UseQueryResult } from 'react-query';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
 import Application from 'shared/types/application';
 
 const useLoadDraftOrCreateNewApplicationEffect = (
-  draftApplicationQuery: UseQueryResult<Application | undefined, Error>,
-  createApplicationQuery: UseMutationResult<Application, Error, void>
+  draftApplicationQuery: UseQueryResult<Application | undefined>,
+  createApplicationQuery: UseMutationResult<Application, unknown, void>
 ): void => {
   const router = useRouter();
   const language = useLocale();
-
+  const onError = useErrorHandler();
   const goToApplicationPage = React.useCallback(
     (application: Application) => {
       const locale = application.language ?? language;
@@ -30,10 +31,15 @@ const useLoadDraftOrCreateNewApplicationEffect = (
           goToApplicationPage(newApplication);
         }
       } else if (createApplicationQuery.isIdle) {
-        createApplicationQuery.mutate();
+        createApplicationQuery.mutate(undefined, { onError });
       }
     }
-  }, [draftApplicationQuery, createApplicationQuery, goToApplicationPage]);
+  }, [
+    draftApplicationQuery,
+    createApplicationQuery,
+    goToApplicationPage,
+    onError,
+  ]);
 };
 
 export default useLoadDraftOrCreateNewApplicationEffect;

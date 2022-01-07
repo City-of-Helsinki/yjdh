@@ -7,12 +7,13 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { UseMutationResult } from 'react-query';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 type Props<FormData, BackendResponseData> = Omit<
   CommonButtonProps,
   'onClick'
 > & {
-  saveQuery: UseMutationResult<BackendResponseData, Error, FormData>;
+  saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;
   onSuccess: (response: BackendResponseData) => void | Promise<void>;
   onInvalidForm?: SubmitErrorHandler<FormData>;
 };
@@ -32,6 +33,8 @@ const SaveFormButton = <
 }: Props<FormData, BackendResponseData>): React.ReactElement => {
   const { handleSubmit, formState } = useFormContext<FormData>();
 
+  const onError = useErrorHandler(false);
+
   const isSaving = React.useMemo(
     () => saveQuery.isLoading || formState.isSubmitting,
     [saveQuery.isLoading, formState.isSubmitting]
@@ -44,9 +47,10 @@ const SaveFormButton = <
             void onSuccess(responseData);
           }
         },
+        onError,
       });
     },
-    [saveQuery, onSuccess]
+    [saveQuery, onSuccess, onError]
   );
 
   return (

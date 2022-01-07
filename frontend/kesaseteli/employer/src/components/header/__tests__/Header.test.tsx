@@ -37,7 +37,9 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     await waitFor(() =>
       expect(queryClient.getQueryData('user')).toBeUndefined()
     );
-    expect(spyRouterPush).toHaveBeenCalledWith('/login?logout=true');
+    expect(spyRouterPush).toHaveBeenCalledWith(
+      `${DEFAULT_LANGUAGE}/login?logout=true`
+    );
   });
 
   it('can change supported language', async () => {

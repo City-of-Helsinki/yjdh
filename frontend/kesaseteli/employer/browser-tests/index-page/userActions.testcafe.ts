@@ -1,11 +1,10 @@
+import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import {
   getHeaderComponents,
   Translation,
 } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
-import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import TestController from 'testcafe';
 
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getFrontendUrl } from '../utils/url.utils';
@@ -21,18 +20,15 @@ let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url))
+  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appNameTranslation);
   });
 
-test('user can authenticate and logout', async (t: TestController) => {
-  const suomiFiData = await doEmployerLogin(t);
+test('user can authenticate and logout', async (t) => {
+  await doEmployerLogin(t, 'fi');
   const headerUser = await headerComponents.headerUser();
-  if (isRealIntegrationsEnabled() && suomiFiData?.user) {
-    await headerUser.expectations.userIsLoggedIn(suomiFiData.user);
-  }
   await headerUser.actions.clicklogoutButton();
   await headerUser.expectations.userIsLoggedOut();
 });

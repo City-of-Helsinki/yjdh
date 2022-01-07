@@ -41,6 +41,7 @@ FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS
 ARG MOCK_FLAG
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT
