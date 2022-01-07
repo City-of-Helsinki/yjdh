@@ -45,20 +45,6 @@ YJDH-Benefit
   - The Handler Frontend is now running at [localhost:3100](https://localhost:3100)
   - The backend is now running at [localhost:8000](https://localhost:8000)
 
-## TET Admin
-
-YJDH-TET-Admin is a UI for Helsinki city employees to add TET job postings.
-
-### tet-admin development with Docker
-
-1. Run `yarn` to install necessary packages
-
-2. Copy the contents of `.env.tet.example` to `.env.tet` and modify it if needed.
-
-3. Run `yarn tet-admin` or, if you want to rebuild, then `yarn tet-admin --build`
-  - The Frontend is now running at [localhost:3002](https://localhost:3002)
-  - The backend is now running at [localhost:8000](https://localhost:8000)
-
 ## Setting up Husky pre-commit hooks:
 
 1. Run `yarn install` and `yarn prepare` on project root
