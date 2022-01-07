@@ -6,9 +6,9 @@ on:
   pull_request:
     paths:
       - 'frontend/shared/**'
-      - 'frontend/*'
       - 'frontend/tet/shared/**'
       - 'frontend/tet/**'
+      - 'frontend/*'
       - '.github/workflows/te-admn-frontend-tests.yml'
   workflow_dispatch:
 defaults:
