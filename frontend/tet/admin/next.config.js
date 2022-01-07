@@ -27,8 +27,8 @@ const nextConfig = {
     }
     config.plugins.push(new webpack.IgnorePlugin(/\/(__tests__|test)\//));
     config.module.rules.push({
-      loader: 'ignore-loader',
       test: /\.test.tsx$/,
+      loader: 'ignore-loader',
     });
     return config;
   },
