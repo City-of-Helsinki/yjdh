@@ -6,7 +6,6 @@ on:
   pull_request:
     paths:
       - 'frontend/shared/**'
-      - 'frontend/tet/shared/**'
       - 'frontend/tet/admin/**'
       - 'frontend/*'
       - '.github/workflows/te-admn-frontend-tests.yml'

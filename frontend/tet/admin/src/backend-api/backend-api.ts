@@ -1,4 +1,5 @@
 export const BackendEndpoint = {
+  TET_POSTINGS: '/tet/postings',
   LOGIN: '/oidc/authenticate/', // TODO /oauth2/
   LOGOUT: '/oidc/logout/', // TODO /oauth2/
   USER: '/oidc/userinfo/', // TODO /oauth2/

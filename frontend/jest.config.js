@@ -12,7 +12,6 @@ module.exports = {
     [`^tet/admin\/(.*)$`]: '<rootDir>/tet/admin/src/$1',
     [`^tet/employer\/(.*)$`]: '<rootDir>/tet/employer/src/$1',
     [`^tet/youth\/(.*)$`]: '<rootDir>/tet/youth/src/$1',
-    [`^tet/shared\/(.*)$`]: '<rootDir>/tet/shared/src/$1',
   },
   setupFilesAfterEnv: [
     '<rootDir>/shared/src/__tests_/utils/setupTests.ts',
@@ -34,8 +33,6 @@ module.exports = {
     '<rootDir>/tet/admin/src/pages/',
     '<rootDir>/tet/employer/src/pages/',
     '<rootDir>/tet/youth/src/pages/',
-    '<rootDir>/tet/shared/src/__tests__/utils/',
-
   ],
   collectCoverageFrom: ['./**/*.{ts,tsx,js,jsx}'],
   testPathIgnorePatterns: ['__tests__/utils', 'component-apis'],

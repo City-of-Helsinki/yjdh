@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { $Heading, $HeadingContainer } from './JobPostings.sc';
 import { useQuery } from 'react-query';
-import { BackendEndpoint } from 'tet-shared/backend-api/backend-api';
+import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { useRouter } from 'next/router';
 
