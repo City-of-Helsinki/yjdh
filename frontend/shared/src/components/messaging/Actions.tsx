@@ -1,36 +1,55 @@
-import { Button, IconLock, TextArea } from 'hds-react';
+import { Button, TextArea } from 'hds-react';
 import React from 'react';
 import { useTheme } from 'styled-components';
-
 import { $Actions, $FormActions } from './Messaging.sc';
 
-type ActionProps = {
+interface ActionProps {
   customItems?: React.ReactNode;
-};
+  placeholder?: string;
+  sendText: string;
+  errorText: string;
+  maxLength?: number;
+}
 
-/**
- * 
- * <span>
-          <IconLock />
-          Viestit ovat salattuja
-        </span>
- */
-
-const Actions: React.FC<ActionProps> = ({ customItems }) => {
+const Actions: React.FC<ActionProps> = ({
+  customItems,
+  placeholder,
+  sendText,
+  errorText,
+  maxLength = 2,
+}) => {
   const theme = useTheme();
-  console.log(customItems);
+  const componentId = 'MessagesForm_Message';
+  const [messageValue, setMessageValue] = React.useState<string>('');
+  const isValid = messageValue.length <= maxLength;
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
+    setMessageValue(event.target.value);
+
   return (
     <$Actions>
       <TextArea
-        id="MessagesForm_Message"
+        id={componentId}
         css={`
           margin-bottom: ${theme.spacing.s};
         `}
+        name={componentId}
+        placeholder={placeholder}
+        onChange={handleChange}
+        value={messageValue}
+        invalid={!isValid}
+        aria-invalid={!isValid}
+        errorText={isValid ? '' : errorText}
       />
       <$FormActions>
         {customItems}
-        <Button type="submit" theme="coat" size="small" disabled>
-          Lähetä
+        <Button
+          type="submit"
+          theme="coat"
+          size="small"
+          disabled={!messageValue || !isValid}
+        >
+          {sendText}
         </Button>
       </$FormActions>
     </$Actions>

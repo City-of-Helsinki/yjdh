@@ -29,7 +29,12 @@ const Messenger: React.FC<ComponentProps> = ({ isOpen, customItems }) => {
           `}
         >
           <Messages data={messages} />
-          <Actions customItems={customItems} />
+          <Actions
+            customItems={customItems}
+            sendText={t('common:messenger.send')}
+            errorText={t('common:form.validation.string.max')}
+            placeholder={t('common:messenger.compose')}
+          />
         </TabPanel>
         <TabPanel
           css={`
@@ -38,7 +43,11 @@ const Messenger: React.FC<ComponentProps> = ({ isOpen, customItems }) => {
             flex-grow: 1;
           `}
         >
-          <Actions />
+          <Actions
+            sendText={t('common:messenger.send')}
+            errorText={t('common:form.validation.string.max')}
+            placeholder={t('common:messenger.composeNote')}
+          />
           <Messages data={notes} />
         </TabPanel>
       </Tabs>

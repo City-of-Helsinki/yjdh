@@ -21,7 +21,9 @@
     },
     "showEveryone": "Nämä viestit näkyvät hakijalle",
     "compose": "Kirjoita viesti",
-    "send": "Lähetä"
+    "composeNote": "Kirjoita sisäinen muistiinpano",
+    "send": "Lähetä",
+    "save": "Tallenna"
   },
   "mainIngress": {
     "heading": "Hakemukset",
@@ -194,5 +196,45 @@
     "isUploading": "Uploading...",
     "errorTitle": "Uploading failed",
     "errorMessage": "Something went wrong. Please try again later."
+  },
+  "form": {
+    "validation": {
+      "required": "This field is required",
+      "invalid": "Invalid value",
+      "number": {
+        "max": "Maximum value is {{max}}",
+        "min": "Value must be at least {{min}}"
+      },
+      "string": {
+        "max": "This field can be up to {{max}} characters long",
+        "min": "This field must be at least {{min}} characters long",
+        "url": "This field must be a valid URL",
+        "date": "This field must be a valid date",
+        "time": "Time must be given in the following format hh:mm",
+        "positiveNumber": "This field must be a valid number"
+      },
+      "date": {
+        "mustNotInThePast": "This date must not be in the past",
+        "min": "This date must be earliest {{min}}",
+        "max": "This date must be latest {{max}}",
+        "format": "This date is incorrect"
+      },
+      "time": {
+        "min": "This time must be earliest {{min}}",
+        "max": "This time must be latest {{max}}"
+      },
+      "phone": {
+        "invalid": "The value must be a telephone number"
+      },
+      "email": {
+        "invalid": "This field must be a valid email"
+      },
+      "iban": {
+        "invalid": "Invalid IBAN value"
+      },
+      "ssn": {
+        "invalid": "Invalid SSN value"
+      }
+    }
   }
 }

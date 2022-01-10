@@ -5,6 +5,7 @@ import { MESSAGE_TYPES } from 'benefit-shared/constants';
 import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
 import { useRouter } from 'next/router';
 import camelcaseKeys from 'camelcase-keys';
+import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -18,9 +19,11 @@ const useMessenger = (): ExtendedComponentProps => {
   const applicationId = router.query.id ?? '';
   const { data } = useMessagesQuery(applicationId.toString());
 
-  const msgs = data?.map(
-    (message: MessageData): Message => camelcaseKeys(message)
-  );
+  const msgs = data?.map((message: MessageData): Message => {
+    message.created_at = convertToUIDateAndTimeFormat(message.created_at);
+    message.modified_at = convertToUIDateAndTimeFormat(message.modified_at);
+    return camelcaseKeys(message);
+  });
 
   const messages = React.useMemo(
     (): Message[] =>
