@@ -2,41 +2,68 @@ import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
 import { Message, MessageData } from 'benefit-shared/types/application';
 import { MESSAGE_TYPES } from 'benefit-shared/constants';
+import useNotesQuery from 'benefit/handler/hooks/useNotesQuery';
 import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
 import { useRouter } from 'next/router';
 import camelcaseKeys from 'camelcase-keys';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
+import useCreateNoteQuery from 'benefit/handler/hooks/useCreateNoteQuery';
 
 type ExtendedComponentProps = {
   t: TFunction;
   messages: Message[];
   notes: Message[];
+  handleSendMessage: (message: string) => void;
+  handleCreateNote: (note: string) => void;
 };
 
 const useMessenger = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const applicationId = router.query.id ?? '';
-  const { data } = useMessagesQuery(applicationId.toString());
+  const { data: messagesData } = useMessagesQuery(applicationId.toString());
+  const { data: notesData } = useNotesQuery(applicationId.toString());
 
-  const msgs = data?.map((message: MessageData): Message => {
-    message.created_at = convertToUIDateAndTimeFormat(message.created_at);
-    message.modified_at = convertToUIDateAndTimeFormat(message.modified_at);
-    return camelcaseKeys(message);
-  });
+  const { mutateAsync: createMessage } = useCreateMessageQuery(
+    applicationId.toString()
+  );
+  const { mutateAsync: createNote } = useCreateNoteQuery(
+    applicationId.toString()
+  );
+
+  const mapMessages = (data: MessageData[] | undefined): Message[] =>
+    data?.map((message: MessageData): Message => {
+      return camelcaseKeys({
+        ...message,
+        createdAt: convertToUIDateAndTimeFormat(message.created_at),
+        modifiedAt: convertToUIDateAndTimeFormat(message.modified_at),
+      });
+    }) || [];
 
   const messages = React.useMemo(
-    (): Message[] =>
-      msgs?.filter((m) => m.messageType !== MESSAGE_TYPES.NOTE) || [],
-    [msgs]
+    (): Message[] => mapMessages(messagesData),
+    [messagesData]
   );
 
   const notes = React.useMemo(
-    (): Message[] =>
-      msgs?.filter((m) => m.messageType === MESSAGE_TYPES.NOTE) || [],
-    [msgs]
+    (): Message[] => mapMessages(notesData),
+    [notesData]
   );
-  return { t, messages, notes };
+
+  const handleSendMessage = (message: string): void =>
+    void createMessage({
+      message_type: MESSAGE_TYPES.HANDLER_MESSAGE,
+      content: message,
+    });
+
+  const handleCreateNote = (note: string): void =>
+    void createNote({
+      message_type: MESSAGE_TYPES.NOTE,
+      content: note,
+    });
+
+  return { t, messages, notes, handleSendMessage, handleCreateNote };
 };
 
 export { useMessenger };

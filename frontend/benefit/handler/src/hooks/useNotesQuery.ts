@@ -5,7 +5,7 @@ import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-const useMessagesQuery = (
+const useNotesQuery = (
   applicationId: string
 ): UseQueryResult<MessageData[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
@@ -19,10 +19,10 @@ const useMessagesQuery = (
   };
 
   return useQuery<MessageData[], Error>(
-    ['messages'],
+    ['notes'],
     async () => {
       const res = axios.get<MessageData[]>(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/messages`
+        `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/notes`
       );
       return handleResponse(res);
     },
@@ -32,4 +32,4 @@ const useMessagesQuery = (
   );
 };
 
-export default useMessagesQuery;
+export default useNotesQuery;

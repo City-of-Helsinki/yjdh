@@ -44,6 +44,17 @@ export const $Message = styled.div<MessageProps>`
 
 export const $Actions = styled.div``;
 
+export const $Notification = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  padding: ${({ theme }) => theme.spacing.xs2};
+  margin: ${({ theme }) => theme.spacing.xs} 0;
+  font-size: ${({ theme }) => theme.fontSize.body.s};
+  background-color: ${(props) => props.theme.colors.alert};
+`;
+
 export const $FormActions = styled.div`
   display: flex;
   justify-content: space-between;

@@ -20,7 +20,7 @@ const Messages: React.FC<ComponentProps> = ({ data }) => {
           sender={t(
             `common:messenger.titles.${camelCase(message.messageType)}`
           )}
-          date={message.modifiedAt}
+          date={message.modifiedAt || ''}
           text={message.content}
           isPrimary={message.messageType === MESSAGE_TYPES.HANDLER_MESSAGE}
         />

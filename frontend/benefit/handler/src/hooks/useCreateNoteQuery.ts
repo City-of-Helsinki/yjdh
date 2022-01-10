@@ -8,7 +8,7 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import { ErrorData } from '../types/common';
 
-const useCreateMessageQuery = (
+const useCreateNoteQuery = (
   applicationId: string
 ): UseMutationResult<MessageData, AxiosError<ErrorData>, MessageData> => {
   const { axios, handleResponse } = useBackendAPI();
@@ -27,17 +27,17 @@ const useCreateMessageQuery = (
     async (message: MessageData) =>
       handleResponse<MessageData>(
         axios.post(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/messages/`,
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/notes/`,
           message
         )
       ),
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries('messages');
+        void queryClient.invalidateQueries('notes');
       },
       onError: () => handleError(),
     }
   );
 };
 
-export default useCreateMessageQuery;
+export default useCreateNoteQuery;

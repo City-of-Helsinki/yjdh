@@ -19,7 +19,20 @@
       "handlerMessage": "Käsittelijä",
       "note": ""
     },
+    "list": {
+      "errors": {
+        "create": {
+          "label": "The error occurred",
+          "text": "The error occurred when trying create the message. Please try again later."
+        },
+        "fetch": {
+          "label": "The error occurred",
+          "text": "The error occurred when trying fetch messages. Please try again later."
+        }
+      }
+    },
     "showEveryone": "Nämä viestit näkyvät hakijalle",
+    "showToHanlderOnly": "Näkyy vain käsittelijöille",
     "compose": "Kirjoita viesti",
     "composeNote": "Kirjoita sisäinen muistiinpano",
     "send": "Lähetä",
