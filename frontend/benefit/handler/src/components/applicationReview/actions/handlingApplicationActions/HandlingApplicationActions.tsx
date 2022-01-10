@@ -7,6 +7,7 @@ import { Button, IconPen, IconTrash } from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+
 import EditAction from '../editAction/EditAction';
 import {
   $Column,

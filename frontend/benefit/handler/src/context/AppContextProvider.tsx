@@ -12,29 +12,6 @@ const AppContextProvider = <P,>({
     React.useState<boolean>(false);
   const [layoutBackgroundColor, setLayoutBackgroundColor] =
     React.useState<string>('');
-  const [messages, setMessages] = React.useState<Message[]>([
-    {
-      id: '12345',
-      messageType: MESSAGE_TYPES.HANDLER_MESSAGE,
-      modifiedAt: '13.05.2021 • 08:47',
-      createdAt: '13.05.2021 • 08:47',
-      content: 'This is hanlders message.',
-    },
-    {
-      id: '123456',
-      messageType: MESSAGE_TYPES.APPLICANT_MESSAGE,
-      modifiedAt: '13.05.2021 • 08:47',
-      createdAt: '13.05.2021 • 08:47',
-      content: 'This is applicants message.',
-    },
-    {
-      id: '1234567',
-      messageType: MESSAGE_TYPES.NOTE,
-      modifiedAt: '13.05.2021 • 08:47',
-      createdAt: '13.05.2021 • 08:47',
-      content: 'This is note.',
-    },
-  ]);
 
   return (
     <AppContext.Provider
@@ -42,11 +19,9 @@ const AppContextProvider = <P,>({
         layoutBackgroundColor,
         isFooterVisible,
         isNavigationVisible,
-        messages,
         setIsNavigationVisible,
         setIsFooterVisible,
         setLayoutBackgroundColor,
-        setMessages,
       }}
     >
       {children}

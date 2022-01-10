@@ -1,5 +1,5 @@
-import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { ApplicationData } from 'benefit/handler/types/application';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 

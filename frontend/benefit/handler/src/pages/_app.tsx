@@ -1,13 +1,13 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import {
-  getBackendDomain,
-  getHeaders,
-} from 'benefit-shared/backend-api/backend-api';
 import Footer from 'benefit/handler/components/footer/Footer';
 import Header from 'benefit/handler/components/header/Header';
 import Layout from 'benefit/handler/components/layout/Layout';
 import AppContextProvider from 'benefit/handler/context/AppContextProvider';
+import {
+  getBackendDomain,
+  getHeaders,
+} from 'benefit-shared/backend-api/backend-api';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
