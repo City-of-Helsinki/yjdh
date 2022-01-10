@@ -96,5 +96,10 @@
   "alreadyActivatedPage" : {
     "title": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
     "notificationMessage": "Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+  },
+  "expiredPage" : {
+    "title": "Hups! Vahvistuslinkki on vanhentunut.",
+    "notificationMessage": "Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
+    "goToFrontendPage": "Rekisteröidy ja lataa kesäseteli"
   }
 }

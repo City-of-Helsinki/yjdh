@@ -96,5 +96,10 @@
   "alreadyActivatedPage" : {
     "title": "ENG Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
     "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+  },
+  "expiredPage" : {
+    "title": "ENG Hups! Vahvistuslinkki on vanhentunut.",
+    "notificationMessage": "ENG Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
+    "goToFrontendPage": "ENG Rekisteröidy ja lataa kesäseteli"
   }
 }

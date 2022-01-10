@@ -11,9 +11,14 @@ import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
 type Props = {
   title: string;
   message: string;
+  goToFrontPageText?: string;
 };
 
-const ActivationErrorPage: React.FC<Props> = ({ title, message }) => {
+const ActivationErrorPage: React.FC<Props> = ({
+  title,
+  message,
+  goToFrontPageText,
+}) => {
   const { t } = useTranslation();
   return (
     <Container>
@@ -33,12 +38,17 @@ const ActivationErrorPage: React.FC<Props> = ({ title, message }) => {
             iconLeft={<IconArrowRight />}
             onClick={useGoToFrontPage()}
           >
-            {t(`common:activationErrorPage.goToFrontendPage`)}
+            {goToFrontPageText ||
+              t(`common:activationErrorPage.goToFrontendPage`)}
           </Button>
         </$GridCell>
       </FormSection>
     </Container>
   );
+};
+
+ActivationErrorPage.defaultProps = {
+  goToFrontPageText: undefined,
 };
 
 export default ActivationErrorPage;
