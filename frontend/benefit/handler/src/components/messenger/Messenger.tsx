@@ -1,4 +1,4 @@
-import { $TabList } from 'benefit-shared/tabs/Tabs.sc';
+import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
 import { Tab, TabPanel, Tabs } from 'hds-react';
 import * as React from 'react';
 import Drawer from 'shared/components/drawer/Drawer';
