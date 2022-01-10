@@ -1,20 +1,12 @@
 import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-const getEmailInUseApi = () => ({
+const getAlreadyActivatedPageApi = () => ({
   expectations: {
     pageIsLoaded() {
       return screen.findByRole('heading', {
-        name: /hups! sähköposti on jo käytössä./i,
+        name: /hups! antamallasi tiedoilla on jo myönnetty kesäseteli./i,
       });
-    },
-    async notificationMessageIsPresent(hours: number) {
-      return screen.findByText(
-        new RegExp(
-          `Jos kyeessä on virhe, odota ${hours} tuntia ja yritä uudelleen.`,
-          'i'
-        )
-      );
     },
   },
   actions: {
@@ -27,4 +19,4 @@ const getEmailInUseApi = () => ({
   },
 });
 
-export default getEmailInUseApi;
+export default getAlreadyActivatedPageApi;

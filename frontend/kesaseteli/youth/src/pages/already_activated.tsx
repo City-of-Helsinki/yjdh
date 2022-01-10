@@ -1,18 +1,15 @@
 import ActivationErrorPage from 'kesaseteli/youth/components/activation-error-page/ActivationErrorPage';
-import useActivationLinkExpirationHours from 'kesaseteli/youth/hooks/useActivationLinkExpirationHours';
 import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
-const EmailInUsePage: React.FC = () => {
+const AlreadyActivatedPage: React.FC = () => {
   const { t } = useTranslation();
   return (
     <ActivationErrorPage
-      title={t(`common:emailInUsePage.title`)}
-      message={t(`common:emailInUsePage.notificationMessage`, {
-        expirationHours: useActivationLinkExpirationHours(),
-      })}
+      title={t(`common:alreadyActivatedPage.title`)}
+      message={t(`common:alreadyActivatedPage.notificationMessage`)}
     />
   );
 };
@@ -20,4 +17,4 @@ const EmailInUsePage: React.FC = () => {
 export const getStaticProps: GetStaticProps =
   getServerSideTranslations('common');
 
-export default EmailInUsePage;
+export default AlreadyActivatedPage;

@@ -90,13 +90,11 @@
     "goToFrontendPage": "Tarkista tiedot ja lähetä uudelleen"
   },
   "emailInUsePage" : {
-    "title": "Sähköposti on jo käytössä!",
-    "notificationTitle": "Hups! Sähköposti on jo käytössä!",
+    "title": "Hups! Sähköposti on jo käytössä.",
     "notificationMessage": "Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
   },
   "alreadyActivatedPage" : {
-    "title": "On jo myönnetty",
-    "notificationTitle": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
+    "title": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
     "notificationMessage": "Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
   }
 }
