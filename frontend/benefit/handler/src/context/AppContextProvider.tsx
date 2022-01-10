@@ -1,7 +1,4 @@
-import { MESSAGE_TYPES } from 'benefit-shared/constants';
-import { Message } from 'benefit-shared/types/application';
 import React from 'react';
-
 import AppContext from './AppContext';
 
 const AppContextProvider = <P,>({

@@ -1,4 +1,3 @@
-import { Message } from 'benefit-shared/types/application';
 import noop from 'lodash/noop';
 import React from 'react';
 import theme from 'shared/styles/theme';

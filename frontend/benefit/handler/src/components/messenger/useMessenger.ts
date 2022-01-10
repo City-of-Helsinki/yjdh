@@ -1,14 +1,13 @@
+import { MESSAGE_TYPES } from 'benefit-shared/constants';
+import { Message } from 'benefit-shared/types/application';
 import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
 import useCreateNoteQuery from 'benefit/handler/hooks/useCreateNoteQuery';
 import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
 import useNotesQuery from 'benefit/handler/hooks/useNotesQuery';
-import { MESSAGE_TYPES } from 'benefit-shared/constants';
-import { Message, MessageData } from 'benefit-shared/types/application';
-import camelcaseKeys from 'camelcase-keys';
-import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import React from 'react';
-import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import { mapMessages } from './utility';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -31,16 +30,6 @@ const useMessenger = (): ExtendedComponentProps => {
   const { mutateAsync: createNote } = useCreateNoteQuery(
     applicationId.toString()
   );
-
-  const mapMessages = (data: MessageData[] | undefined): Message[] =>
-    data?.map(
-      (message: MessageData): Message =>
-        camelcaseKeys({
-          ...message,
-          createdAt: convertToUIDateAndTimeFormat(message.created_at),
-          modifiedAt: convertToUIDateAndTimeFormat(message.modified_at),
-        })
-    ) || [];
 
   const messages = React.useMemo(
     (): Message[] => mapMessages(messagesData),

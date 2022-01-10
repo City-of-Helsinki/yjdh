@@ -66,4 +66,9 @@ const Messenger: React.FC<ComponentProps> = ({
   );
 };
 
+Messenger.defaultProps = {
+  customItemsMessages: [],
+  customItemsNotes: [],
+};
+
 export default Messenger;
