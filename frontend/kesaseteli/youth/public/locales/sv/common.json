@@ -85,5 +85,17 @@
     "notificationTitle": "SV Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
     "notificationMessage": "SV Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
     "goToFrontendPage": "SV Kesäseteli etusivulle"
+  },
+  "emailInUsePage" : {
+    "title": "SV Sähköposti on jo käytössä!",
+    "notificationTitle": "SV Hups! Sähköposti on jo käytössä!",
+    "notificationMessage": "SV Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen.",
+    "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
+  },
+  "alreadyActivatedPage" : {
+    "title": "SV On jo myönnetty",
+    "notificationTitle": "SV Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
+    "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella.",
+    "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
   }
 }

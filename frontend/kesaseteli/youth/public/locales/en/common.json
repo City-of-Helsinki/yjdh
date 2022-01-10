@@ -82,8 +82,21 @@
   },
   "thankyouPage" : {
     "title": "Thank You!",
-    "notificationTitle": "SV Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "SV Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
-    "goToFrontendPage": "SV Kesäseteli etusivulle"
+    "notificationTitle": "ENG Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
+    "notificationMessage": "ENG Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
+    "goToFrontendPage": "ENG Kesäseteli etusivulle"
+  },
+  "activationErrorPage" : {
+    "goToFrontendPage": "ENG Tarkista tiedot ja lähetä uudelleen"
+  },
+  "emailInUsePage" : {
+    "title": "ENG Sähköposti on jo käytössä!",
+    "notificationTitle": "ENG Hups! Sähköposti on jo käytössä!",
+    "notificationMessage": "ENG Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+  },
+  "alreadyActivatedPage" : {
+    "title": "ENG On jo myönnetty",
+    "notificationTitle": "ENG Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
+    "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
   }
 }
