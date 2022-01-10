@@ -13,5 +13,5 @@ module.exports = {
   setupFilesAfterEnv: [
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
   ],
-  coveragePathIgnorePatterns: [],
+  coveragePathIgnorePatterns: ['<rootDir>/benefit/shared/src/pages/'],
 };
