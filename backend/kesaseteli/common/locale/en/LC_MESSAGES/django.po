@@ -17,12 +17,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgid "Finnish"
-msgstr ""
-
-msgid "English"
-msgstr ""
-
-msgid "Swedish"
+#, python-format
+msgid ""
+"%(value)s is not a valid Finnish social security number. Make sure to have "
+"it in uppercase and without whitespace."
 msgstr ""

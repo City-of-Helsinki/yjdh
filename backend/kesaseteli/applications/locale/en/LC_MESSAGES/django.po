@@ -17,7 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
 #, python-brace-format
 msgid "Application state transition not allowed: {status} to {value}"
 msgstr ""
@@ -95,19 +94,19 @@ msgid "payslip"
 msgstr ""
 
 msgid "9th grader"
-msgstr "yhdeksäsluokkalainen"
+msgstr ""
 
 msgid "born 2004"
-msgstr "syntynyt 2004"
+msgstr ""
 
 msgid "yes"
-msgstr "kyllä"
+msgstr ""
 
 msgid "no"
-msgstr "ei"
+msgstr ""
 
 msgid "maybe"
-msgstr "ehkä"
+msgstr ""
 
 msgid "Järjestys"
 msgstr ""

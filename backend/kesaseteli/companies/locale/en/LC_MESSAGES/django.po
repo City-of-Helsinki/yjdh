@@ -17,12 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgid "Finnish"
+msgid "name"
 msgstr ""
 
-msgid "English"
+msgid "business id"
 msgstr ""
 
-msgid "Swedish"
+msgid "company form"
+msgstr ""
+
+msgid "industry"
+msgstr ""
+
+msgid "street address"
+msgstr ""
+
+msgid "postcode"
+msgstr ""
+
+msgid "city"
+msgstr ""
+
+msgid "ytj json"
 msgstr ""
