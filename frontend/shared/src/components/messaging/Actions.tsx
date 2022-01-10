@@ -33,34 +33,36 @@ const Actions: React.FC<ActionProps> = ({
   const handleSend = () => onSend(messageValue);
 
   return (
-    <$Actions>
+    <>
       {notification && <$Notification>{notification}</$Notification>}
-      <TextArea
-        id={componentId}
-        css={`
-          margin-bottom: ${theme.spacing.s};
-        `}
-        name={componentId}
-        placeholder={placeholder}
-        onChange={handleChange}
-        value={messageValue}
-        invalid={!isValid}
-        aria-invalid={!isValid}
-        errorText={isValid ? '' : errorText}
-      />
-      <$FormActions>
-        {customItems}
-        <Button
-          type="submit"
-          theme="coat"
-          size="small"
-          disabled={!messageValue || !isValid}
-          onClick={handleSend}
-        >
-          {sendText}
-        </Button>
-      </$FormActions>
-    </$Actions>
+      <$Actions>
+        <TextArea
+          id={componentId}
+          css={`
+            margin-bottom: ${theme.spacing.s};
+          `}
+          name={componentId}
+          placeholder={placeholder}
+          onChange={handleChange}
+          value={messageValue}
+          invalid={!isValid}
+          aria-invalid={!isValid}
+          errorText={isValid ? '' : errorText}
+        />
+        <$FormActions>
+          {customItems}
+          <Button
+            type="submit"
+            theme="coat"
+            size="small"
+            disabled={!messageValue || !isValid}
+            onClick={handleSend}
+          >
+            {sendText}
+          </Button>
+        </$FormActions>
+      </$Actions>
+    </>
   );
 };
 

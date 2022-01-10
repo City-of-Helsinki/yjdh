@@ -1,7 +1,9 @@
 import React from 'react';
+import { MessageVariant } from 'shared/types/messages';
 
 import {
   $Date,
+  $Hr,
   $Message,
   $MessageContainer,
   $Meta,
@@ -13,15 +15,25 @@ export interface MessageProps {
   date: string;
   text: string;
   isPrimary?: boolean;
+  variant: MessageVariant;
 }
 
-const Message: React.FC<MessageProps> = ({ sender, date, text, isPrimary }) => (
+const Message: React.FC<MessageProps> = ({
+  sender,
+  date,
+  text,
+  isPrimary,
+  variant,
+}) => (
   <$MessageContainer>
     <$Meta>
       <$Sender>{sender}</$Sender>
       <$Date>{date}</$Date>
     </$Meta>
-    <$Message isPrimary={isPrimary}>{text}</$Message>
+    <$Message isPrimary={isPrimary} variant={variant}>
+      {text}
+    </$Message>
+    {variant === 'note' && <$Hr />}
   </$MessageContainer>
 );
 

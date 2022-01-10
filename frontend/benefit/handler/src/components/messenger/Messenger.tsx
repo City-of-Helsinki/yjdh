@@ -34,7 +34,7 @@ const Messenger: React.FC<ComponentProps> = ({
             flex-grow: 1;
           `}
         >
-          <Messages data={messages} />
+          <Messages data={messages} variant="message" />
           <Actions
             customItems={customItemsMessages}
             sendText={t('common:messenger.send')}
@@ -58,7 +58,7 @@ const Messenger: React.FC<ComponentProps> = ({
             placeholder={t('common:messenger.composeNote')}
             onSend={handleCreateNote}
           />
-          <Messages data={notes} />
+          <Messages data={notes} variant="note" />
         </TabPanel>
       </Tabs>
     </Drawer>
