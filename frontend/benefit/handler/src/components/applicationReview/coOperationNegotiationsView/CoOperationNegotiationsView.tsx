@@ -17,7 +17,7 @@ const CoOperationNegotiationsView: React.FC<ApplicationReviewViewProps> = ({
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading4`)}
-      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <></> : null}
+      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
     >
       <$GridCell $colSpan={12}>
         <$ViewField>

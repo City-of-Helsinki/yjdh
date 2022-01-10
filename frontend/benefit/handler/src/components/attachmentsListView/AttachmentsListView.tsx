@@ -32,7 +32,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
       window.open(file.attachmentFile, '_blank')?.focus(),
     []
   );
-  if (attachmentItems.length === 0) return <></>;
+  if (attachmentItems.length === 0) return null;
   return (
     <>
       {attachmentItems.length > 0 && (

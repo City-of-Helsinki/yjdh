@@ -1,12 +1,13 @@
-import { MESSAGE_TYPES } from 'benefit-shared/constants';
-import { Message } from 'benefit-shared/types/application';
 import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
 import useCreateNoteQuery from 'benefit/handler/hooks/useCreateNoteQuery';
 import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
 import useNotesQuery from 'benefit/handler/hooks/useNotesQuery';
-import { TFunction, useTranslation } from 'next-i18next';
+import { MESSAGE_TYPES } from 'benefit-shared/constants';
+import { Message } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
+import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
+
 import { mapMessages } from './utility';
 
 type ExtendedComponentProps = {

@@ -1,6 +1,7 @@
 import { Button, TextArea } from 'hds-react';
 import React from 'react';
 import { useTheme } from 'styled-components';
+
 import { $Actions, $FormActions, $Notification } from './Messaging.sc';
 
 interface ActionProps {
@@ -27,10 +28,10 @@ const Actions: React.FC<ActionProps> = ({
   const [messageValue, setMessageValue] = React.useState<string>('');
   const isValid = messageValue.length <= maxLength;
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void =>
     setMessageValue(event.target.value);
 
-  const handleSend = () => onSend(messageValue);
+  const handleSend = (): void => onSend(messageValue);
 
   return (
     <>
@@ -64,6 +65,13 @@ const Actions: React.FC<ActionProps> = ({
       </$Actions>
     </>
   );
+};
+
+Actions.defaultProps = {
+  customItems: [],
+  placeholder: '',
+  notification: '',
+  maxLength: 1024,
 };
 
 export default Actions;

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { TabList, TabPanel } from 'hds-react';
+import styled from 'styled-components';
 
 export const $TabList = styled(TabList)`
   --tab-color: ${(props) => props.theme.colors.black};
