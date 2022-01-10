@@ -36,7 +36,6 @@ export const $CloseBtnWrapper = styled.div`
 export const $Body = styled.div`
   display: flex;
   flex-grow: 1;
-  //padding: ${({ theme }) => theme.spacing.s};
   overflow-y: scroll;
   & > div {
     width: 100%;
