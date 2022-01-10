@@ -1,14 +1,14 @@
-import { TFunction, useTranslation } from 'next-i18next';
-import React from 'react';
-import { Message, MessageData } from 'benefit-shared/types/application';
 import { MESSAGE_TYPES } from 'benefit-shared/constants';
-import useNotesQuery from 'benefit/handler/hooks/useNotesQuery';
-import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
-import { useRouter } from 'next/router';
-import camelcaseKeys from 'camelcase-keys';
-import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import { Message, MessageData } from 'benefit-shared/types/application';
 import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
 import useCreateNoteQuery from 'benefit/handler/hooks/useCreateNoteQuery';
+import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
+import useNotesQuery from 'benefit/handler/hooks/useNotesQuery';
+import camelcaseKeys from 'camelcase-keys';
+import { TFunction, useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 type ExtendedComponentProps = {
   t: TFunction;

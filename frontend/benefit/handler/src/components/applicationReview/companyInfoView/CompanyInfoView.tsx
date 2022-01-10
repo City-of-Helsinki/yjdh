@@ -66,30 +66,28 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         </>
       )}
       {data.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
-        <>
-          <$GridCell $colSpan={12}>
-            <$ViewField>
-              {t(`${translationsBase}.fields.associationHasBusinessActivities`)}{' '}
-              <$ViewFieldBold>
-                {t(
-                  `common:utility.${
-                    data.associationHasBusinessActivities ? 'yes' : 'no'
-                  }`
-                )}
-              </$ViewFieldBold>
-            </$ViewField>
-            <$ViewField>
-              {t(`${translationsBase}.fields.associationImmediateManagerCheck`)}{' '}
-              <$ViewFieldBold>
-                {t(
-                  `common:utility.${
-                    data.associationImmediateManagerCheck ? 'yes' : 'no'
-                  }`
-                )}
-              </$ViewFieldBold>
-            </$ViewField>
-          </$GridCell>
-        </>
+        <$GridCell $colSpan={12}>
+          <$ViewField>
+            {t(`${translationsBase}.fields.associationHasBusinessActivities`)}{' '}
+            <$ViewFieldBold>
+              {t(
+                `common:utility.${
+                  data.associationHasBusinessActivities ? 'yes' : 'no'
+                }`
+              )}
+            </$ViewFieldBold>
+          </$ViewField>
+          <$ViewField>
+            {t(`${translationsBase}.fields.associationImmediateManagerCheck`)}{' '}
+            <$ViewFieldBold>
+              {t(
+                `common:utility.${
+                  data.associationImmediateManagerCheck ? 'yes' : 'no'
+                }`
+              )}
+            </$ViewFieldBold>
+          </$ViewField>
+        </$GridCell>
       )}
     </ReviewSection>
   );

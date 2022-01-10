@@ -1,5 +1,5 @@
 import { Link } from 'hds-react';
-import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';
+import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import styled from 'styled-components';
 
 type CalculatorTableRowProps = {

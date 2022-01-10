@@ -29,49 +29,47 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
     setIsMessagesDrawerVisible(!isMessagesDrawerVisible);
 
   return (
-    <>
-      <$Wrapper>
-        <$Column>
-          <Button
-            onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
-            theme="coat"
-          >
-            {t(`${translationsBase}.done`)}
-          </Button>
-          <Button onClick={noop} theme="black" variant="secondary">
-            {t(`${translationsBase}.saveAndContinue`)}
-          </Button>
-          <Button
-            onClick={handlePanel}
-            theme="black"
-            variant="secondary"
-            iconLeft={<IconPen />}
-          >
-            {t(`${translationsBase}.handlingPanel`)}
-          </Button>
-        </$Column>
-        <$Column>
-          <Button
-            onClick={noop}
-            theme="black"
-            variant="supplementary"
-            iconLeft={<IconTrash />}
-          >
-            {t(`${translationsBase}.cancel`)}
-          </Button>
-        </$Column>
-        <Messenger
-          isOpen={isMessagesDrawerVisible}
-          customItemsMessages={<EditAction application={application} />}
-          customItemsNotes={
-            <$CustomNotesActions>
-              <IconLock />
-              <p>{t('common:messenger.showToHanlderOnly')}</p>
-            </$CustomNotesActions>
-          }
-        />
-      </$Wrapper>
-    </>
+    <$Wrapper>
+      <$Column>
+        <Button
+          onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
+          theme="coat"
+        >
+          {t(`${translationsBase}.done`)}
+        </Button>
+        <Button onClick={noop} theme="black" variant="secondary">
+          {t(`${translationsBase}.saveAndContinue`)}
+        </Button>
+        <Button
+          onClick={handlePanel}
+          theme="black"
+          variant="secondary"
+          iconLeft={<IconPen />}
+        >
+          {t(`${translationsBase}.handlingPanel`)}
+        </Button>
+      </$Column>
+      <$Column>
+        <Button
+          onClick={noop}
+          theme="black"
+          variant="supplementary"
+          iconLeft={<IconTrash />}
+        >
+          {t(`${translationsBase}.cancel`)}
+        </Button>
+      </$Column>
+      <Messenger
+        isOpen={isMessagesDrawerVisible}
+        customItemsMessages={<EditAction application={application} />}
+        customItemsNotes={
+          <$CustomNotesActions>
+            <IconLock />
+            <p>{t('common:messenger.showToHanlderOnly')}</p>
+          </$CustomNotesActions>
+        }
+      />
+    </$Wrapper>
   );
 };
 
