@@ -26,6 +26,7 @@ const useApplicationActions = (
       { deep: true }
     );
     updateApplication(currentApplicationData);
+    window.scrollTo(0, 0);
   };
 
   return {

@@ -4,9 +4,21 @@ import { useTheme } from 'styled-components';
 
 import { $Actions, $FormActions } from './Messaging.sc';
 
-const Action: React.FC = () => {
-  const theme = useTheme();
+type ActionProps = {
+  customItems?: React.ReactNode;
+};
 
+/**
+ * 
+ * <span>
+          <IconLock />
+          Viestit ovat salattuja
+        </span>
+ */
+
+const Actions: React.FC<ActionProps> = ({ customItems }) => {
+  const theme = useTheme();
+  console.log(customItems);
   return (
     <$Actions>
       <TextArea
@@ -16,10 +28,7 @@ const Action: React.FC = () => {
         `}
       />
       <$FormActions>
-        <span>
-          <IconLock />
-          Viestit ovat salattuja
-        </span>
+        {customItems}
         <Button type="submit" theme="coat" size="small" disabled>
           Lähetä
         </Button>
@@ -28,4 +37,4 @@ const Action: React.FC = () => {
   );
 };
 
-export default Action;
+export default Actions;

@@ -21,10 +21,10 @@ const useMessagesQuery = (
   };
 
   return useQuery<MessageData[], Error>(
-    ['messagesList'],
+    ['messages'],
     async () => {
       const res = axios.get<MessageData[]>(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}/${applicationId}/messages`
+        `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/messages`
       );
       return handleResponse(res);
     },

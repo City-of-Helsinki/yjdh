@@ -42,12 +42,10 @@ export const $Message = styled.div<MessageProps>`
   margin-bottom: ${({ theme }) => theme.spacing.s};
 `;
 
-export const $Actions = styled.div`
-  /* background-color: ${({ theme }) => theme.colors.black5}; */
-`;
+export const $Actions = styled.div``;
 
 export const $FormActions = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 `;

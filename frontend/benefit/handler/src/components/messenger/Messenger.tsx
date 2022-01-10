@@ -6,11 +6,16 @@ import Actions from 'shared/components/messaging/Actions';
 import Messages from './Messages';
 import { useMessenger } from './useMessenger';
 
-const Messenger: React.FC = () => {
-  const { t, isMessagesDrawerVisible, messages, notes } = useMessenger();
+interface ComponentProps {
+  isOpen: boolean;
+  customItems?: React.ReactNode;
+}
+
+const Messenger: React.FC<ComponentProps> = ({ isOpen, customItems }) => {
+  const { t, messages, notes } = useMessenger();
 
   return (
-    <Drawer isOpen={isMessagesDrawerVisible}>
+    <Drawer isOpen={isOpen}>
       <Tabs>
         <$TabList>
           <Tab>{t('common:header.messages')}</Tab>
@@ -24,7 +29,7 @@ const Messenger: React.FC = () => {
           `}
         >
           <Messages data={messages} />
-          <Actions />
+          <Actions customItems={customItems} />
         </TabPanel>
         <TabPanel
           css={`

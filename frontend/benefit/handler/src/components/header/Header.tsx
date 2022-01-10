@@ -1,6 +1,5 @@
 import * as React from 'react';
 import BaseHeader from 'shared/components/header/Header';
-import Messenger from '../messenger/Messenger';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
@@ -25,7 +24,6 @@ const Header: React.FC = () => {
         onLanguageChange={handleLanguageChange}
         theme="dark"
       />
-      <Messenger />
     </>
   );
 };

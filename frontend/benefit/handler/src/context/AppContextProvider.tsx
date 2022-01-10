@@ -12,8 +12,6 @@ const AppContextProvider = <P,>({
     React.useState<boolean>(false);
   const [layoutBackgroundColor, setLayoutBackgroundColor] =
     React.useState<string>('');
-  const [isMessagesDrawerVisible, setIsMessagesDrawerVisible] =
-    React.useState<boolean>(true);
   const [messages, setMessages] = React.useState<Message[]>([
     {
       id: '12345',
@@ -44,12 +42,10 @@ const AppContextProvider = <P,>({
         layoutBackgroundColor,
         isFooterVisible,
         isNavigationVisible,
-        isMessagesDrawerVisible,
         messages,
         setIsNavigationVisible,
         setIsFooterVisible,
         setLayoutBackgroundColor,
-        setIsMessagesDrawerVisible,
         setMessages,
       }}
     >
