@@ -5,8 +5,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models, transaction
 from django.urls import reverse
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils import timezone, translation
+from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from shared.common.validators import validate_name, validate_phone_number
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
@@ -112,20 +112,26 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         expiration_hours = settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS
         return hours_elapsed >= expiration_hours
 
-    def _activation_email_subject(self, request):
-        return _("Vahvista sähköpostiosoitteesi")
+    @staticmethod
+    def _activation_email_subject(language):
+        with translation.override(language):
+            return gettext("Vahvista sähköpostiosoitteesi")
 
-    def _activation_email_message(self, request):
+    @staticmethod
+    def _activation_email_message(language, activation_link):
+        with translation.override(language):
+            return gettext(
+                "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
+                "%(activation_link)s"
+            ) % {"activation_link": activation_link}
+
+    def send_activation_email(self, request, language):
         activation_link = self._activation_link(request)
-        return _(
-            "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
-            "%(activation_link)s"
-        ) % {"activation_link": activation_link}
-
-    def send_activation_email(self, request):
         sent_email_count = send_mail(
-            subject=self._activation_email_subject(request),
-            message=self._activation_email_message(request),
+            subject=YouthApplication._activation_email_subject(language),
+            message=YouthApplication._activation_email_message(
+                language, activation_link
+            ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.email],
             fail_silently=True,

@@ -3,12 +3,14 @@ import os
 import factory.random
 import pytest
 from django.conf import settings
+from langdetect import DetectorFactory
 
 from common.tests.conftest import *  # noqa
 
 
 @pytest.fixture(autouse=True)
 def setup_test_environment(settings):
+    DetectorFactory.seed = 0
     factory.random.reseed_random("888")
 
 

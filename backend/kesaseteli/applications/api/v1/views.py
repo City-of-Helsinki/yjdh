@@ -83,7 +83,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         youth_application = YouthApplication.objects.get(id=response.data["id"])
-        youth_application.send_activation_email(request)
+        youth_application.send_activation_email(request, youth_application.language)
         return response
 
     def get_permissions(self):
