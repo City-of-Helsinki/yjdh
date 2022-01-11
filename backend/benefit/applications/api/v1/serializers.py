@@ -901,17 +901,19 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                 {"de_minimis_aid_set": _("Total amount of de minimis aid too large")}
             )
 
+    def _validate_date_range_on_submit(self, start_date, end_date):
+        if start_date < date(date.today().year, 1, 1):
+            raise serializers.ValidationError(
+                {"start_date": _("start_date must not be in a past year")}
+            )
+        if end_date < date(date.today().year, 1, 1):
+            raise serializers.ValidationError(
+                {"end_date": _("end_date must not be in a past year")}
+            )
+
     def _validate_date_range(self, start_date, end_date, benefit_type):
         # keeping all start/end date validation together
-        if start_date and start_date < date(date.today().year, 1, 1):
-            raise serializers.ValidationError(
-                {"start_date": _("start_date must be within the current year")}
-            )
         if end_date:
-            if end_date < date(date.today().year, 1, 1):
-                raise serializers.ValidationError(
-                    {"end_date": _("end_date must be within the current year")}
-                )
             if start_date:
                 if end_date < start_date:
                     raise serializers.ValidationError(
@@ -1313,6 +1315,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                 # if the previous status was ADDITIONAL_INFORMATION_NEEDED, then calculation already
                 # exists
                 Calculation.objects.create_for_application(instance)
+
+            if previous_status == ApplicationStatus.DRAFT:
+                # Do not validate if previous_status is ADDITIONAL_INFORMATION_NEEDED, as the validation
+                # rule only applies to the first application submission.
+                self._validate_date_range_on_submit(
+                    instance.start_date, instance.end_date
+                )
 
             call_now_or_later(
                 instance.calculation.calculate,
