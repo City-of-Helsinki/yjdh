@@ -5,14 +5,14 @@ const getAlreadyActivatedPageApi = () => ({
   expectations: {
     pageIsLoaded() {
       return screen.findByRole('heading', {
-        name: /hups! antamallasi tiedoilla on jo myönnetty kesäseteli./i,
+        name: /hups! vahvistuslinkki on jo aktivoitu/i,
       });
     },
   },
   actions: {
     async clickGoToFrontPageButton() {
       const button = await screen.findByRole('button', {
-        name: /tarkista tiedot ja lähetä uudelleen/i,
+        name: /rekisteröidy ja lähetä kesäseteli uudelleen/i,
       });
       userEvent.click(button);
     },

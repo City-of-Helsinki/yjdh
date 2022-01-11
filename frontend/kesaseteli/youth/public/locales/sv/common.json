@@ -100,10 +100,11 @@
   "expiredPage" : {
     "title": "SV Hups! Vahvistuslinkki on vanhentunut.",
     "notificationMessage": "SV Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
-    "goToFrontendPage": "SV Rekisteröidy ja lataa kesäseteli"
+    "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
   },
   "alreadyActivatedPage" : {
     "title": "SV Hups! Vahvistuslinkki on jo aktivoitu.",
-    "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiisi."
+    "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiisi.",
+    "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
   }
 }

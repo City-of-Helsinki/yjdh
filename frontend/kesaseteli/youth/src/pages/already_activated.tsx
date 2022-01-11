@@ -10,6 +10,7 @@ const AlreadyActivatedPage: React.FC = () => {
     <ActivationErrorPage
       title={t(`common:alreadyActivatedPage.title`)}
       message={t(`common:alreadyActivatedPage.notificationMessage`)}
+      goToFrontPageText={t('common:alreadyActivatedPage.goToFrontendPage')}
     />
   );
 };

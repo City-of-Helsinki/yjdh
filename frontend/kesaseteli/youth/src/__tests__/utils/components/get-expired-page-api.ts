@@ -20,7 +20,7 @@ const getExpiredPageApi = () => ({
   actions: {
     async clickGoToFrontPageButton() {
       const button = await screen.findByRole('button', {
-        name: /rekisteröidy ja lataa kesäseteli/i,
+        name: /rekisteröidy ja lähetä kesäseteli uudelleen/i,
       });
       userEvent.click(button);
     },

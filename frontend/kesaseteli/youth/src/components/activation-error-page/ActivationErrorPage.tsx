@@ -20,6 +20,7 @@ const ActivationErrorPage: React.FC<Props> = ({
   goToFrontPageText,
 }) => {
   const { t } = useTranslation();
+  const goToFrontPage = useGoToFrontPage();
   return (
     <Container>
       <Head>
@@ -37,7 +38,7 @@ const ActivationErrorPage: React.FC<Props> = ({
               theme="coat"
               variant="secondary"
               iconLeft={<IconArrowRight />}
-              onClick={useGoToFrontPage()}
+              onClick={goToFrontPage}
             >
               {goToFrontPageText}
             </Button>
