@@ -3,8 +3,11 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { TextInput, TextArea } from 'hds-react';
+import { TextArea, NumberInput } from 'hds-react';
 import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
+import DateInput from 'shared/components/forms/inputs/DateInput';
+import TetPosting from 'tet/admin/types/tetposting';
+import TextInput from 'shared/components/forms/inputs/TextInput';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
@@ -19,22 +22,45 @@ const PostingDetails: React.FC = () => {
           row-gap: ${theme.spacing.xl};
         `}
       >
-        <$GridCell as={$Grid} $colSpan={12}>
-          <$GridCell $colSpan={6}>
-            <TextInput
-              id="company-address-department"
-              label={t('common:editor.posting.title')}
-              placeholder={t('common:editor.posting.title')}
-            />
-          </$GridCell>
-          <$GridCell $colSpan={6}>
-            <TextArea
-              id="textarea"
-              label={t('common:editor.posting.description')}
-              helperText="Assistive text"
-              required
-            />
-          </$GridCell>
+        <$GridCell $colSpan={4}>
+          <TextInput<TetPosting>
+            id="title"
+            label={t('common:editor.posting.title')}
+            placeholder={t('common:editor.posting.title')}
+            registerOptions={{
+              required: true,
+            }}
+          />
+        </$GridCell>
+        <$GridCell $colSpan={8}>
+          <DateInput<TetPosting> id="start_date" label="Alkaen" />
+          -
+          <DateInput<TetPosting>
+            id="end_date"
+            label="Päättyen"
+            registerOptions={{
+              required: false,
+            }}
+          />
+        </$GridCell>
+      </$GridCell>
+      <$GridCell $colSpan={12}>
+        <$CompanyInfoRow>Työaika on aina sama 30h per viikko.</$CompanyInfoRow>
+      </$GridCell>
+      <$GridCell $colSpan={2}>
+        <NumberInput
+          id="job-count-selector"
+          helperText="Assistive text"
+          label="Työharjoittelupaikkoja"
+          minusStepButtonAriaLabel="Decrease by one"
+          plusStepButtonAriaLabel="Increase by one"
+          step={1}
+          defaultValue={3}
+        />
+      </$GridCell>
+      <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell $colSpan={6}>
+          <TextArea id="textarea" label={t('common:editor.posting.description')} helperText="Assistive text" required />
         </$GridCell>
       </$GridCell>
     </FormSection>

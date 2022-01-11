@@ -35,6 +35,8 @@
   "editor": {
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
+    "saveDraft": "Tallenna julkaisematta",
+    "notificationTitle": "Täytä puuttuvat tai virheelliset tiedot",
     "employerInfo": {
       "header": "Työpaikan tiedot",
       "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",

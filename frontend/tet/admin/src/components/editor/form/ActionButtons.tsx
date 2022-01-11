@@ -6,6 +6,7 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import TetPosting from 'tet/admin/types/tetposting';
 
 const ActionButtons: React.FC = () => {
+  const { t } = useTranslation();
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -16,8 +17,8 @@ const ActionButtons: React.FC = () => {
   };
   return (
     <FormSection>
-      <Button type="submit" onClick={handleSubmit(handleSuccess)}>
-        Tallenna
+      <Button type="submit" disabled={isSubmitting} onClick={handleSubmit(handleSuccess)}>
+        {t('common:editor.saveDraft')}
       </Button>
     </FormSection>
   );
