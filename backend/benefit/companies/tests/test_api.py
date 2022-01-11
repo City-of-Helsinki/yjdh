@@ -40,7 +40,7 @@ def test_get_company_unauthenticated(anonymous_client):
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=True)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 def test_get_mock_company(api_client, mock_get_organisation_roles_and_create_company):
     response = api_client.get(get_company_api_url())
 
@@ -50,7 +50,7 @@ def test_get_mock_company(api_client, mock_get_organisation_roles_and_create_com
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=True)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 def test_get_mock_company_results_in_error(
     api_client, mock_get_organisation_roles_and_create_company
 ):
@@ -64,7 +64,7 @@ def test_get_mock_company_results_in_error(
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_company_from_service_bus_invalid_response(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
@@ -82,7 +82,7 @@ def test_get_company_from_service_bus_invalid_response(
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_organisation_from_service_bus(
     api_client,
     bf_user,
@@ -104,7 +104,7 @@ def test_get_organisation_from_service_bus(
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_company_from_yrtti(
     api_client,
     bf_user,
@@ -132,7 +132,7 @@ def test_get_company_from_yrtti(
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_company_from_service_bus_and_yrtti_results_in_error(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
@@ -147,7 +147,7 @@ def test_get_company_from_service_bus_and_yrtti_results_in_error(
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):

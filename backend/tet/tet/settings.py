@@ -47,7 +47,7 @@ django_env = environ.Env(
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
-    MOCK_FLAG=(bool, False),
+    NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 3600 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
@@ -219,7 +219,7 @@ REST_FRAMEWORK = {
 }
 
 # Mock flag for testing purposes
-MOCK_FLAG = django_env.bool("MOCK_FLAG")
+NEXT_PUBLIC_MOCK_FLAG = django_env.bool("NEXT_PUBLIC_MOCK_FLAG")
 
 # Auth
 SESSION_COOKIE_AGE = django_env.int("SESSION_COOKIE_AGE")

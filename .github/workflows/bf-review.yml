@@ -36,7 +36,7 @@ env:
   K8S_PROBE_FAILURE_THRESHOLD: 30
   K8S_PROBE_PERIOD: 20
   NEXT_PUBLIC_BACKEND_URL: https://helsinkibenefit-bf-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  MOCK_FLAG: 1
+  NEXT_PUBLIC_MOCK_FLAG: 1
 jobs:
   build:
     # No building for dependabot PRs
@@ -65,7 +65,7 @@ jobs:
         uses: andersinno/kolga-build-action@v2
         env:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
-          DOCKER_BUILD_ARG_MOCK_FLAG: ${{ env.MOCK_FLAG }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}

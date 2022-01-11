@@ -10,7 +10,7 @@ from shared.azure_adfs.auth import HelsinkiAdfsAuthCodeBackend, provider_config
 
 
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_get_member_objects(requests_mock):
     """
@@ -39,7 +39,7 @@ def test_get_member_objects(requests_mock):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_update_user_groups_from_graph_api(requests_mock, user):
     """
@@ -70,7 +70,7 @@ def test_update_user_groups_from_graph_api(requests_mock, user):
 
 
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_get_graph_api_access_token(requests_mock):
     """
@@ -102,7 +102,7 @@ def test_get_graph_api_access_token(requests_mock):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_authenticate(user):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
@@ -122,7 +122,7 @@ def test_authenticate(user):
 
 
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_authenticate_no_authorization_code():
     auth_backend = HelsinkiAdfsAuthCodeBackend()
@@ -133,7 +133,7 @@ def test_authenticate_no_authorization_code():
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL="http://example.com")
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL="http://example.com")
 def test_adfs_callback(client, user):
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
@@ -154,7 +154,7 @@ def test_adfs_callback(client, user):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL_FAILURE="http://example.com"
+    NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL_FAILURE="http://example.com"
 )
 def test_adfs_callback_no_code(client):
     callback_url = reverse("callback")

@@ -15,7 +15,7 @@ from shared.oidc.views.hki_views import (
 
 urlpatterns = []
 
-if settings.MOCK_FLAG:
+if settings.NEXT_PUBLIC_MOCK_FLAG:
     from shared.oidc.views.mock_views import (
         MockAuthenticationRequestView,
         MockLogoutView,

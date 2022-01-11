@@ -33,7 +33,7 @@ class GetCompanyView(APIView):
 
     @transaction.atomic
     def get(self, request: HttpRequest, format: str = None) -> Response:
-        if settings.MOCK_FLAG:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return self.get_mock(request, format)
 
         company = get_or_create_company_using_organization_roles(request)
