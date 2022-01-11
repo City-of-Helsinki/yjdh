@@ -4,6 +4,7 @@ import PostingDetails from 'tet/admin/components/editor/postingDetails/PostingDe
 import { FormProvider, useForm } from 'react-hook-form';
 import TetPosting from 'tet/admin/types/tetposting';
 import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
+import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
 
 // add new posting / edit existing
 const Editor: React.FC = () => {
@@ -17,6 +18,7 @@ const Editor: React.FC = () => {
     <FormProvider {...methods}>
       <form aria-label="add/modify tet posting">
         <p>* pakollinen tieto</p>
+        <EditorErrorNotification />
         <CompanyInfo />
         <PostingDetails />
         <ActionButtons />
