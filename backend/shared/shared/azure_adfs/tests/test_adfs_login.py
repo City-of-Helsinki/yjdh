@@ -133,7 +133,9 @@ def test_authenticate_no_authorization_code():
 
 
 @pytest.mark.django_db
-@override_settings(NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL="http://example.com")
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL="http://example.com"
+)
 def test_adfs_callback(client, user):
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
