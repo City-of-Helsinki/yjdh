@@ -690,6 +690,11 @@ def test_application_delete(api_client, application):
         ("2021-02-01", "2021-02-28", 200),  # exactly one month
         ("2021-02-01", "2022-01-31", 200),  # exactly 12 months
         ("2021-02-01", "2022-02-01", 400),  # too long
+        (
+            "2020-02-01",
+            "2020-12-31",
+            200,
+        ),  # past year is allowed, as the application is not submitted
     ],
 )
 def test_application_date_range(
@@ -714,6 +719,52 @@ def test_application_date_range(
     if status_code == 200:
         assert response.data["start_date"] == start_date
         assert response.data["end_date"] == end_date
+
+
+@pytest.mark.parametrize(
+    "start_date,end_date,status_code",
+    [
+        (
+            "2020-12-21",
+            "2021-02-27",
+            400,
+        ),  # start_date in past (relative to freeze_time date)
+        (
+            "2021-01-01",
+            "2021-02-28",
+            200,
+        ),  # start_date in current year (relative to freeze_time date)
+        (
+            "2022-12-31",
+            "2023-01-31",
+            200,
+        ),  # start_date in next year (relative to freeze_time date)
+    ],
+)
+def test_application_date_range_on_submit(
+    request, api_client, application, start_date, end_date, status_code
+):
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["start_date"] = start_date
+    data["end_date"] = end_date
+    data["pay_subsidy_granted"] = True
+    data["pay_subsidy_percent"] = 50
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    assert response.data["start_date"] == start_date
+    assert response.data["end_date"] == end_date
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == status_code
 
 
 @pytest.mark.parametrize(
