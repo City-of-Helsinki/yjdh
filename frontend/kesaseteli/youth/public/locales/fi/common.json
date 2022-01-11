@@ -93,7 +93,7 @@
     "title": "Hups! Sähköposti on jo käytössä.",
     "notificationMessage": "Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
   },
-  "alreadyActivatedPage" : {
+  "alreadyAssignedPage" : {
     "title": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
     "notificationMessage": "Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
   },
@@ -101,5 +101,9 @@
     "title": "Hups! Vahvistuslinkki on vanhentunut.",
     "notificationMessage": "Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
     "goToFrontendPage": "Rekisteröidy ja lataa kesäseteli"
+  },
+  "alreadyActivatedPage" : {
+    "title": "Hups! Vahvistuslinkki on jo aktivoitu.",
+    "notificationMessage": "Kesäseteli on lähetetty sähköpostiisi."
   }
 }

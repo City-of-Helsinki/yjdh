@@ -30,19 +30,20 @@ const ActivationErrorPage: React.FC<Props> = ({
       <$Notification label={title} type="error" size="large">
         {message}
       </$Notification>
-      <FormSection columns={1} withoutDivider>
-        <$GridCell>
-          <Button
-            theme="coat"
-            variant="secondary"
-            iconLeft={<IconArrowRight />}
-            onClick={useGoToFrontPage()}
-          >
-            {goToFrontPageText ||
-              t(`common:activationErrorPage.goToFrontendPage`)}
-          </Button>
-        </$GridCell>
-      </FormSection>
+      {goToFrontPageText && (
+        <FormSection columns={1} withoutDivider>
+          <$GridCell>
+            <Button
+              theme="coat"
+              variant="secondary"
+              iconLeft={<IconArrowRight />}
+              onClick={useGoToFrontPage()}
+            >
+              {goToFrontPageText}
+            </Button>
+          </$GridCell>
+        </FormSection>
+      )}
     </Container>
   );
 };
