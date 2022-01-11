@@ -23,6 +23,7 @@ env = environ.Env(
     STATIC_ROOT=(environ.Path(), default_var_root("static")),
     MEDIA_URL=(str, "/media/"),
     STATIC_URL=(str, "/static/"),
+    YOUTH_URL=(str, "https://localhost:3100"),
     ALLOWED_HOSTS=(list, ["*"]),
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
@@ -128,6 +129,7 @@ MEDIA_ROOT = env("MEDIA_ROOT")
 STATIC_ROOT = env("STATIC_ROOT")
 MEDIA_URL = env.str("MEDIA_URL")
 STATIC_URL = env.str("STATIC_URL")
+YOUTH_URL = env.str("YOUTH_URL")
 
 ROOT_URLCONF = "kesaseteli.urls"
 WSGI_APPLICATION = "kesaseteli.wsgi.application"

@@ -1,6 +1,6 @@
 from django.core import exceptions
 from django.db.models import Func
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -68,18 +68,11 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
         if youth_application.is_active:
-            return HttpResponse(
-                status=status.HTTP_200_OK, content="Youth application already active"
-            )
+            return HttpResponseRedirect(youth_application.already_activated_page_url())
         elif youth_application.has_activation_link_expired:
-            return HttpResponse(
-                status=status.HTTP_401_UNAUTHORIZED,
-                content="Activation link has expired",
-            )
+            return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
-            return HttpResponse(
-                status=status.HTTP_200_OK, content="Youth application activated"
-            )
+            return HttpResponseRedirect(youth_application.activated_page_url())
 
         return HttpResponse(
             status=status.HTTP_401_UNAUTHORIZED,
