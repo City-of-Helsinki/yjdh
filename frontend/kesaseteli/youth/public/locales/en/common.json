@@ -97,6 +97,12 @@
     "title": "ENG Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
     "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
   },
+  "activatedPage" : {
+    "title": "ENG Kesäsetelisi on nyt aktivoitu",
+    "notificationTitle": "ENG Vahvistus onnistui",
+    "notificationMessage": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "paragraph_1": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  },
   "expiredPage" : {
     "title": "ENG Hups! Vahvistuslinkki on vanhentunut.",
     "notificationMessage": "ENG Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",

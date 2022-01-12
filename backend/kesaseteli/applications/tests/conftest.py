@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 import factory.random
 import pytest
@@ -21,9 +22,11 @@ def excel_root():
 
 @pytest.fixture
 def make_youth_application_activation_link_expired(settings):
-    settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS = 0
+    settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = 0
 
 
 @pytest.fixture
 def make_youth_application_activation_link_unexpired(settings):
-    settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS = 24 * 365 * 100
+    settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = int(
+        timedelta(days=365 * 100).total_seconds()
+    )

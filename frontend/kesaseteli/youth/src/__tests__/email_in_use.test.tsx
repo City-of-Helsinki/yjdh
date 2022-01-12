@@ -43,8 +43,7 @@ describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
     it('shows different activation link expiration time', async () => {
       process.env = {
         ...originalEnv,
-        NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS:
-          String(3600 * 2),
+        NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: String(3600 * 2),
       };
       await renderPage(EmailInUsePage);
       const emailInUseApi = getEmailInUseApi();

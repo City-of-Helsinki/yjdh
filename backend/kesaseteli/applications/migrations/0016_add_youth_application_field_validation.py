@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
             name="school",
             field=models.CharField(
                 max_length=256,
-                validators=[applications.models.validate_school],
+                validators=[applications.models.validate_name],
                 verbose_name="school",
             ),
         ),
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
             name="school",
             field=models.CharField(
                 max_length=256,
-                validators=[applications.models.validate_school],
+                validators=[applications.models.validate_name],
                 verbose_name="school",
             ),
         ),

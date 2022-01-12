@@ -75,6 +75,8 @@ services:
       - postgres
       - te-bknd
       - te-empl
+      - te-admn
+      - te-yout
     build:
       context: ./localdevelopment/tet/nginx
     container_name: te-local-proxy

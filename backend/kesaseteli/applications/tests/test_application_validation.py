@@ -6,20 +6,14 @@ from applications.api.v1.serializers import (
     SummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus, AttachmentType
-from applications.models import School, validate_school
+from applications.models import School, validate_name
 from applications.tests.test_applications_api import get_detail_url
 
 
 @pytest.mark.django_db
-def test_validate_school_with_all_active_schools():
-    for school in School.objects.active():
-        validate_school(school.name)
-
-
-@pytest.mark.django_db
-def test_validate_school_with_all_deleted_schools():
-    for school in School.objects.deleted():
-        validate_school(school.name)
+def test_validate_name_with_all_listed_schools():
+    for school in School.objects.all():
+        validate_name(school.name)
 
 
 @pytest.mark.django_db
@@ -30,8 +24,8 @@ def test_validate_school_with_all_deleted_schools():
         "Testikoulu",
     ],
 )
-def test_validate_school_with_valid_unlisted_school(name):
-    validate_school(name)
+def test_validate_name_with_valid_unlisted_school(name):
+    validate_name(name)
 
 
 @pytest.mark.django_db
@@ -43,9 +37,9 @@ def test_validate_school_with_valid_unlisted_school(name):
         "Yläaste (Arabia)",  # Parentheses are not allowed
     ],
 )
-def test_validate_school_with_invalid_unlisted_school(name):
+def test_validate_name_with_invalid_unlisted_school(name):
     with pytest.raises(ValidationError):
-        validate_school(name)
+        validate_name(name)
 
 
 @pytest.mark.django_db
