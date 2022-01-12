@@ -43,8 +43,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
     it('shows different activation link expiration time', async () => {
       process.env = {
         ...originalEnv,
-        NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS:
-          '7200',
+        NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: '7200',
       };
       await renderPage(ThankYouPage);
       const thankYouPageApi = getThankYouPageApi();
