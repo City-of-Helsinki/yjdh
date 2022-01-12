@@ -15,20 +15,25 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
-    ApplicationPermission,
+    EmployerApplicationPermission,
+    EmployerSummerVoucherPermission,
     get_user_company,
     StaffPermission,
-    SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
-    ApplicationSerializer,
     AttachmentSerializer,
+    EmployerApplicationSerializer,
+    EmployerSummerVoucherSerializer,
     SchoolSerializer,
-    SummerVoucherSerializer,
     YouthApplicationSerializer,
 )
 from applications.enums import ApplicationStatus
-from applications.models import Application, School, SummerVoucher, YouthApplication
+from applications.models import (
+    EmployerApplication,
+    EmployerSummerVoucher,
+    School,
+    YouthApplication,
+)
 from common.utils import DenyAll
 
 
@@ -97,10 +102,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class ApplicationViewSet(AuditLoggingModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
-    permission_classes = [IsAuthenticated, ApplicationPermission]
+class EmployerApplicationViewSet(AuditLoggingModelViewSet):
+    queryset = EmployerApplication.objects.all()
+    serializer_class = EmployerApplicationSerializer
+    permission_classes = [IsAuthenticated, EmployerApplicationPermission]
 
     def get_queryset(self):
         """
@@ -148,10 +153,13 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SummerVoucherViewSet(AuditLoggingModelViewSet):
-    queryset = SummerVoucher.objects.all()
-    serializer_class = SummerVoucherSerializer
-    permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]
+class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
+    queryset = EmployerSummerVoucher.objects.all()
+    serializer_class = EmployerSummerVoucherSerializer
+    permission_classes = [
+        IsAuthenticated,
+        StaffPermission | EmployerSummerVoucherPermission,
+    ]
 
     def get_queryset(self):
         """

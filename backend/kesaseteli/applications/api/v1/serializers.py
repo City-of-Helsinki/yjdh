@@ -12,10 +12,10 @@ from applications.enums import (
     SummerVoucherExceptionReason,
 )
 from applications.models import (
-    Application,
     Attachment,
+    EmployerApplication,
+    EmployerSummerVoucher,
     School,
-    SummerVoucher,
     YouthApplication,
 )
 from companies.api.v1.serializers import CompanySerializer
@@ -60,7 +60,7 @@ class ApplicationStatusValidator:
                 raise serializers.ValidationError(
                     format_lazy(
                         _(
-                            "Application state transition not allowed: {status} to {value}"
+                            "EmployerApplication state transition not allowed: {status} to {value}"
                         ),
                         status=application.status,
                         value=value,
@@ -162,7 +162,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         return mime_type == "application/pdf"
 
 
-class SummerVoucherListSerializer(serializers.ListSerializer):
+class EmployerSummerVoucherListSerializer(serializers.ListSerializer):
     """
     https://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-update
     """
@@ -190,7 +190,7 @@ class SummerVoucherListSerializer(serializers.ListSerializer):
         return ret
 
 
-class SummerVoucherSerializer(serializers.ModelSerializer):
+class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False)
     attachments = AttachmentSerializer(
         read_only=True,
@@ -199,7 +199,7 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = SummerVoucher
+        model = EmployerSummerVoucher
         fields = [
             "id",
             "summer_voucher_serial_number",
@@ -223,7 +223,7 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "ordering",
         ]
-        list_serializer_class = SummerVoucherListSerializer
+        list_serializer_class = EmployerSummerVoucherListSerializer
 
     def validate(self, data):
         data = super().validate(data)
@@ -275,9 +275,9 @@ class SummerVoucherSerializer(serializers.ModelSerializer):
                 )
 
 
-class ApplicationSerializer(serializers.ModelSerializer):
+class EmployerApplicationSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
-    summer_vouchers = SummerVoucherSerializer(
+    summer_vouchers = EmployerSummerVoucherSerializer(
         many=True, required=False, allow_null=True
     )
     status = serializers.ChoiceField(
@@ -289,7 +289,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     submitted_at = serializers.SerializerMethodField("get_submitted_at")
 
     class Meta:
-        model = Application
+        model = EmployerApplication
         fields = [
             "id",
             "status",
@@ -339,9 +339,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
             return None
 
     def _update_summer_vouchers(
-        self, summer_vouchers_data: list, application: Application
+        self, summer_vouchers_data: list, application: EmployerApplication
     ) -> None:
-        serializer = SummerVoucherSerializer(
+        serializer = EmployerSummerVoucherSerializer(
             application.summer_vouchers.all(), data=summer_vouchers_data, many=True
         )
 

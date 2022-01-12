@@ -178,17 +178,17 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["-youth_application__created_at"]
 
 
-class Application(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        related_name="applications",
+        related_name="employer_applications",
         verbose_name=_("company"),
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="applications",
+        related_name="employer_applications",
         verbose_name=_("user"),
     )
     status = models.CharField(
@@ -247,9 +247,9 @@ class Application(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["-created_at"]
 
 
-class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     application = models.ForeignKey(
-        Application,
+        EmployerApplication,
         on_delete=models.CASCADE,
         related_name="summer_vouchers",
         verbose_name=_("application"),
@@ -355,7 +355,7 @@ class Attachment(UUIDModel, TimeStampedModel):
     """
 
     summer_voucher = models.ForeignKey(
-        SummerVoucher,
+        EmployerSummerVoucher,
         verbose_name=_("summer voucher"),
         related_name="attachments",
         on_delete=models.CASCADE,

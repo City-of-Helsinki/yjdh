@@ -11,13 +11,22 @@ from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import AttachmentSerializer
 from applications.enums import ApplicationStatus, AttachmentType
-from applications.models import Attachment
+from applications.models import Attachment, EmployerSummerVoucher
 
 
-def handle_attachment_url(summer_voucher, attachment):
+def handle_attachment_url(
+    summer_voucher: EmployerSummerVoucher, attachment_pk: uuid.UUID
+):
     return reverse(
-        "v1:summervoucher-handle-attachment",
-        kwargs={"pk": summer_voucher.pk, "attachment_pk": attachment.pk},
+        "v1:employersummervoucher-handle-attachment",
+        kwargs={"pk": summer_voucher.pk, "attachment_pk": attachment_pk},
+    )
+
+
+def post_attachment_url(summer_voucher: EmployerSummerVoucher):
+    return reverse(
+        "v1:employersummervoucher-post-attachment",
+        kwargs={"pk": summer_voucher.pk},
     )
 
 
@@ -31,9 +40,7 @@ def _upload_file(
         "rb",
     ) as valid_file:
         return api_client.post(
-            reverse(
-                "v1:summervoucher-post-attachment", kwargs={"pk": summer_voucher.pk}
-            ),
+            post_attachment_url(summer_voucher),
             {
                 "attachment_file": valid_file,
                 "attachment_type": str(attachment_type),
@@ -60,13 +67,15 @@ def test_attachment_upload(request, api_client, summer_voucher, extension):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("extension", ["pdf", "png", "jpg"])
-def test_invalid_attachment_upload(api_client, summer_voucher, extension):
+def test_invalid_attachment_upload(
+    api_client, summer_voucher: EmployerSummerVoucher, extension
+):
     tmp_file = tempfile.NamedTemporaryFile(suffix=f".{extension}")
     tmp_file.write(b"invalid data " * 100)
     tmp_file.seek(0)
 
     response = api_client.post(
-        reverse("v1:summervoucher-post-attachment", kwargs={"pk": summer_voucher.pk}),
+        post_attachment_url(summer_voucher),
         {
             "attachment_file": tmp_file,
             "attachment_type": "employment_contract",
@@ -80,7 +89,7 @@ def test_invalid_attachment_upload(api_client, summer_voucher, extension):
 
 
 @pytest.mark.django_db
-def test_attachment_upload_too_big(api_client, summer_voucher):
+def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVoucher):
     image = Image.new("RGB", (100, 100))
     tmp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
     tmp_file.seek(settings.MAX_UPLOAD_SIZE + 1)
@@ -88,7 +97,7 @@ def test_attachment_upload_too_big(api_client, summer_voucher):
     tmp_file.seek(0)
 
     response = api_client.post(
-        reverse("v1:summervoucher-post-attachment", kwargs={"pk": summer_voucher.pk}),
+        post_attachment_url(summer_voucher),
         {
             "attachment_file": tmp_file,
             "attachment_type": "employment_contract",
@@ -154,7 +163,7 @@ def test_too_many_attachments(request, api_client, summer_voucher):
 def test_get_attachment(request, api_client, summer_voucher, attachment_type):
     _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
     attachment = Attachment.objects.first()
-    attachment_url = handle_attachment_url(summer_voucher, attachment)
+    attachment_url = handle_attachment_url(summer_voucher, attachment.pk)
 
     response = api_client.get(attachment_url)
 
@@ -162,11 +171,10 @@ def test_get_attachment(request, api_client, summer_voucher, attachment_type):
 
 
 @pytest.mark.django_db
-def test_get_attachment_with_invalid_uuid(api_client, summer_voucher):
-    attachment_url = reverse(
-        "v1:summervoucher-handle-attachment",
-        kwargs={"pk": summer_voucher.pk, "attachment_pk": uuid.uuid4()},
-    )
+def test_get_attachment_with_invalid_uuid(
+    api_client, summer_voucher: EmployerSummerVoucher
+):
+    attachment_url = handle_attachment_url(summer_voucher, attachment_pk=uuid.uuid4())
     response = api_client.get(attachment_url)
 
     assert response.status_code == 404
@@ -179,7 +187,7 @@ def test_get_attachment_with_invalid_uuid(api_client, summer_voucher):
 def test_delete_attachment(request, api_client, summer_voucher, attachment_type):
     _upload_file(request, api_client, summer_voucher, "pdf", attachment_type)
     attachment = Attachment.objects.first()
-    attachment_delete_url = handle_attachment_url(summer_voucher, attachment)
+    attachment_delete_url = handle_attachment_url(summer_voucher, attachment.pk)
 
     response = api_client.delete(attachment_delete_url)
 
@@ -187,10 +195,11 @@ def test_delete_attachment(request, api_client, summer_voucher, attachment_type)
 
 
 @pytest.mark.django_db
-def test_delete_attachment_when_not_saved(api_client, summer_voucher):
-    employment_contract_url = reverse(
-        "v1:summervoucher-handle-attachment",
-        kwargs={"pk": summer_voucher.pk, "attachment_pk": uuid.uuid4()},
+def test_delete_attachment_when_not_saved(
+    api_client, summer_voucher: EmployerSummerVoucher
+):
+    employment_contract_url = handle_attachment_url(
+        summer_voucher, attachment_pk=uuid.uuid4()
     )
     response = api_client.delete(employment_contract_url)
 
@@ -202,7 +211,7 @@ def test_delete_attachment_for_submitted_application(
     api_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
     attachment_delete_url = handle_attachment_url(
-        submitted_summer_voucher, submitted_employment_contract_attachment
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
 
     response = api_client.delete(attachment_delete_url)
@@ -218,7 +227,7 @@ def test_get_attachment_for_submitted_application(
     api_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
     attachment_url = handle_attachment_url(
-        submitted_summer_voucher, submitted_employment_contract_attachment
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
 
     response = api_client.get(attachment_url)
@@ -231,7 +240,7 @@ def test_get_attachment_for_staff_user(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
     attachment_url = handle_attachment_url(
-        submitted_summer_voucher, submitted_employment_contract_attachment
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
 
     response = staff_client.get(attachment_url)
@@ -244,7 +253,7 @@ def test_get_attachment_for_other_user(
     api_client2, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
     attachment_url = handle_attachment_url(
-        submitted_summer_voucher, submitted_employment_contract_attachment
+        submitted_summer_voucher, submitted_employment_contract_attachment.pk
     )
 
     response = api_client2.get(attachment_url)

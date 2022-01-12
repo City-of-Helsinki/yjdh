@@ -8,7 +8,7 @@ const useApplicationQuery = <T = Application>(
   id?: string,
   select?: (application: Application) => T
 ): UseQueryResult<T> =>
-  useQuery(`${BackendEndpoint.APPLICATIONS}${String(id)}/`, {
+  useQuery(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${String(id)}/`, {
     enabled: Boolean(id),
     staleTime: Infinity,
     select: (application: Application) => {

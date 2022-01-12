@@ -1,6 +1,6 @@
 export const BackendEndpoint = {
-  APPLICATIONS: '/v1/applications/',
-  SUMMER_VOUCHERS: '/v1/summervouchers/',
+  EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
+  EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
   ATTACHMENTS: '/attachments/',
   LOGIN: '/oidc/authenticate/',
   LOGOUT: '/oidc/logout/',

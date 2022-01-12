@@ -58,7 +58,7 @@ export const expectToGetApplicationFromBackend = (
   application: Application
 ): nock.Scope =>
   nock(getBackendDomain())
-    .get(`${BackendEndpoint.APPLICATIONS}${application.id}/`)
+    .get(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${application.id}/`)
     .reply(200, application, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectToGetApplicationErrorFromBackend = (
@@ -66,7 +66,7 @@ export const expectToGetApplicationErrorFromBackend = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .get(`${BackendEndpoint.APPLICATIONS}${id}/`)
+    .get(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${id}/`)
     .replyWithError(
       '500: This is a load application test server error. Please ignore this error message.'
     );
@@ -75,7 +75,7 @@ export const expectToGetApplicationsFromBackend = (
   applications: Application[]
 ): nock.Scope =>
   nock(getBackendDomain())
-    .get(`${BackendEndpoint.APPLICATIONS}`)
+    .get(`${BackendEndpoint.EMPLOYER_APPLICATIONS}`)
     .reply(200, applications, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectToGetApplicationsErrorFromBackend = (
@@ -83,7 +83,7 @@ export const expectToGetApplicationsErrorFromBackend = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .get(`${BackendEndpoint.APPLICATIONS}`)
+    .get(`${BackendEndpoint.EMPLOYER_APPLICATIONS}`)
     .times(times)
     .replyWithError(
       '500: This is a load applications test error. Please ignore this error message.'
@@ -94,7 +94,7 @@ export const expectToCreateApplicationToBackend = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .post(`${BackendEndpoint.APPLICATIONS}`, {
+    .post(`${BackendEndpoint.EMPLOYER_APPLICATIONS}`, {
       language: applicationToCreate.language,
     })
     .reply(200, applicationToCreate, { 'Access-Control-Allow-Origin': '*' });
@@ -102,7 +102,9 @@ export const expectToCreateApplicationToBackend = (
 export const expectToCreateApplicationErrorFromBackend = (): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .post(`${BackendEndpoint.APPLICATIONS}`, { language: DEFAULT_LANGUAGE })
+    .post(`${BackendEndpoint.EMPLOYER_APPLICATIONS}`, {
+      language: DEFAULT_LANGUAGE,
+    })
     .replyWithError(
       '500: This is a create application test error. Please ignore this error message.'
     );
@@ -111,7 +113,7 @@ export const expectToSaveApplication = (
   applicationToSave: Application
 ): nock.Scope =>
   nock(getBackendDomain())
-    .put(`${BackendEndpoint.APPLICATIONS}${applicationToSave.id}/`, {
+    .put(`${BackendEndpoint.EMPLOYER_APPLICATIONS}${applicationToSave.id}/`, {
       ...applicationToSave,
       status: 'draft',
     } as DraftApplication)

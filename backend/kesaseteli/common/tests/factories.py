@@ -15,7 +15,12 @@ from applications.enums import (
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
-from applications.models import Application, Attachment, SummerVoucher, YouthApplication
+from applications.models import (
+    Attachment,
+    EmployerApplication,
+    EmployerSummerVoucher,
+    YouthApplication,
+)
 from companies.models import Company
 
 
@@ -79,7 +84,7 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
     )
 
     class Meta:
-        model = SummerVoucher
+        model = EmployerSummerVoucher
 
 
 class ApplicationFactory(factory.django.DjangoModelFactory):
@@ -97,7 +102,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     invoicer_phone_number = factory.Faker("phone_number")
 
     class Meta:
-        model = Application
+        model = EmployerApplication
 
 
 def get_listed_test_schools() -> List[str]:
@@ -124,8 +129,8 @@ def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
 
 
 def get_test_phone_number() -> str:
-    # NAMES_REGEX didn't accept phone numbers starting with (+358) but did with +358
-    # so removing the parentheses to make the generated phone numbers fit it
+    # PHONE_NUMBER_REGEX didn't accept phone numbers starting with (+358) but did with
+    # +358 so removing the parentheses to make the generated phone numbers fit it
     return Faker(locale="fi").phone_number().replace("(+358)", "+358")
 
 
