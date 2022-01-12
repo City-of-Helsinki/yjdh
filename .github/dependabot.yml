@@ -39,12 +39,6 @@ updates:
     pull-request-branch-name:
       separator: "-"
   - package-ecosystem: "npm"
-    directory: "frontend/benefit/handler"
-    schedule:
-      interval: "daily"
-    pull-request-branch-name:
-      separator: "-"
-  - package-ecosystem: "npm"
     directory: "frontend/kesaseteli/shared"
     schedule:
       interval: "daily"
