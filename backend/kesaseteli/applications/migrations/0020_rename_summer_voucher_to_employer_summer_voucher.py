@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("applications", "0018_use_employer_applications_related_name"),
+        ("applications", "0019_use_employer_applications_related_name"),
     ]
 
     operations = [
