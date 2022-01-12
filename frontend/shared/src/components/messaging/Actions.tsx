@@ -31,7 +31,10 @@ const Actions: React.FC<ActionProps> = ({
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void =>
     setMessageValue(event.target.value);
 
-  const handleSend = (): void => onSend(messageValue);
+  const handleSend = (): void => {
+    onSend(messageValue);
+    setMessageValue('');
+  };
 
   return (
     <>

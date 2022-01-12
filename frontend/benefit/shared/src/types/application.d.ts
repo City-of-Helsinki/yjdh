@@ -6,6 +6,7 @@ export type MessageData = {
   modified_at?: string;
   content: string;
   message_type: MESSAGE_TYPES;
+  sender?: string;
 };
 
 export type Message = {
@@ -14,4 +15,5 @@ export type Message = {
   modifiedAt?: string;
   content: string;
   messageType: MESSAGE_TYPES;
+  sender?: string;
 };

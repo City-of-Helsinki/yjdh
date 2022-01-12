@@ -54,7 +54,13 @@ const useMessenger = (): ExtendedComponentProps => {
       content: note,
     });
 
-  return { t, messages, notes, handleSendMessage, handleCreateNote };
+  return {
+    t,
+    messages,
+    notes,
+    handleSendMessage,
+    handleCreateNote,
+  };
 };
 
 export { useMessenger };

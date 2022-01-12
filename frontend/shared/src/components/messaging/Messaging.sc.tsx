@@ -52,6 +52,7 @@ export const $Message = styled.div<MessageProps>`
   background: ${(props) => props.variant === 'note' && 'none'};
   border-radius: ${(props) => props.variant !== 'note' && '10px'};
   margin-top: ${(props) => props.variant !== 'note' && props.theme.spacing.s};
+  color: ${(props) => props.theme.colors.black90};
 `;
 
 export const $Actions = styled.div`
