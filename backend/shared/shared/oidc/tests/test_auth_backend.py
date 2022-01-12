@@ -47,7 +47,7 @@ def check_user_info(user, claims):
 @override_settings(
     AUTHENTICATION_BACKENDS=("django.contrib.auth.backends.ModelBackend",),
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_authenticate(requests_mock):
     auth_backend = HelsinkiOIDCAuthenticationBackend()
@@ -144,7 +144,7 @@ def test_store_token_info_in_session(session_request):
 @pytest.mark.django_db
 @override_settings(
     OIDC_OP_TOKEN_ENDPOINT="http://example.com/token/",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_refresh_token(session_request, requests_mock):
     store_tokens_in_session(session_request)

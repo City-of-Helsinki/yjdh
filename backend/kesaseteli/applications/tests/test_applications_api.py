@@ -211,7 +211,7 @@ def test_application_create(api_client, company):
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=True)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 def test_application_create_mock(api_client, company):
     response = api_client.post(
         reverse("v1:application-list"),

@@ -32,7 +32,7 @@ def set_up_mock_requests(
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=True)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 def test_get_mock_company(api_client):
     response = api_client.get(get_company_api_url())
 
@@ -42,7 +42,7 @@ def test_get_mock_company(api_client):
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=True)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 def test_get_mock_company_not_found_from_ytj(api_client):
     api_client.credentials(HTTP_SESSION_ID="-1")
     response = api_client.get(get_company_api_url())
@@ -61,7 +61,7 @@ def test_get_mock_company_not_found_from_ytj(api_client):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
     EAUTHORIZATIONS_BASE_URL="http://example.com",
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
@@ -85,7 +85,7 @@ def test_get_company_organization_roles_error(api_client, requests_mock, user):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
 def test_get_company_from_ytj(api_client, requests_mock):
@@ -126,7 +126,7 @@ def test_get_company_from_ytj(api_client, requests_mock):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
 def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
@@ -159,7 +159,7 @@ def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
     YTJ_BASE_URL="http://example.com",
 )
 def test_get_company_from_ytj_invalid_response(api_client, requests_mock, user):

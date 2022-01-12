@@ -40,7 +40,7 @@ FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
-ARG MOCK_FLAG
+ARG NEXT_PUBLIC_MOCK_FLAG
 
 # Use non-root user
 USER appuser

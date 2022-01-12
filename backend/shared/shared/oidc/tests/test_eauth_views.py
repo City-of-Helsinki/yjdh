@@ -16,7 +16,7 @@ from shared.oidc.utils import get_checksum_header, get_organization_roles
 @override_settings(
     EAUTHORIZATIONS_CLIENT_ID="ed4b7ae7",
     EAUTHORIZATIONS_CLIENT_SECRET="3ba56df8-88b8-4805-9b04-2f8e7a61",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_get_checksum_header():
     """
@@ -48,7 +48,7 @@ def test_get_checksum_header():
     LOGIN_REDIRECT_URL="http://example.com/success",
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_get_organization_roles(session_request, requests_mock):
     organization_roles_json = [
@@ -75,7 +75,7 @@ def test_get_organization_roles(session_request, requests_mock):
     EAUTHORIZATIONS_BASE_URL="http://example.com",
     EAUTHORIZATIONS_CLIENT_ID="test",
     EAUTHORIZATIONS_CLIENT_SECRET="test",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_eauth_authentication_init_view(requests_mock, user_client, user):
     register_user_info = {
@@ -107,7 +107,7 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
     EAUTHORIZATIONS_CLIENT_ID="ed4b7ae7",
     EAUTHORIZATIONS_BASE_URL="http://example.com",
     LOGIN_REDIRECT_URL="http://example.com/success",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_eauth_callback_view(requests_mock, user_client, user):
     token_info = {
