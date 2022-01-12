@@ -25,29 +25,14 @@ from companies.models import Company
 LOGGER = logging.getLogger(__name__)
 
 
-def validate_school(name) -> None:
-    """
-    Raise a ValidationError if the given school is not a listed school and does not
-    validate as a name according to validate_name.
-    """
-    if not School.objects.filter(name=name).exists():
-        validate_name(name)
-
-
-class SchoolQuerySet(models.QuerySet):
-    def active(self):
-        return self.filter(deleted_at__isnull=True)
-
-    def deleted(self):
-        return self.filter(deleted_at__isnull=False)
-
-
 class School(TimeStampedModel, UUIDModel):
-    name = models.CharField(max_length=256, unique=True, db_index=True)
-    deleted_at = models.DateTimeField(
-        blank=True, null=True, verbose_name=_("time deleted")
+    """
+    List of active schools.
+    """
+
+    name = models.CharField(
+        max_length=256, unique=True, db_index=True, validators=[validate_name]
     )
-    objects = SchoolQuerySet.as_manager()
 
     def __str__(self):
         return self.name
@@ -81,7 +66,7 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     school = models.CharField(
         max_length=256,
         verbose_name=_("school"),
-        validators=[validate_school],
+        validators=[validate_name],
     )
     is_unlisted_school = models.BooleanField()
     email = models.EmailField(
