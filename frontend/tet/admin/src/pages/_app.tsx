@@ -1,6 +1,6 @@
 // import 'react-toastify/dist/ReactToastify.css';
 
-// import AuthProvider from 'kesaseteli/employer/auth/AuthProvider';
+// import AuthProvider from 'tet/admin/auth/AuthProvider';
 import Footer from 'tet/admin/components/footer/Footer';
 import Header from 'tet/admin/components/header/Header';
 import { getBackendDomain } from 'tet/admin/backend-api/backend-api';

@@ -13,7 +13,11 @@ const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorDa
   return useMutation<TetPosting, AxiosError<ErrorData>, TetPosting>(
     'upsert',
     (validatedPosting: TetPosting) =>
-      handleResponse<TetPosting>(axios.post(BackendEndpoint.TET_POSTINGS, validatedPosting)),
+      handleResponse<TetPosting>(
+        validatedPosting.id
+          ? axios.put(`${BackendEndpoint.TET_POSTINGS}/${validatedPosting.id}`, validatedPosting)
+          : axios.post(BackendEndpoint.TET_POSTINGS, validatedPosting),
+      ),
     {
       onSuccess: () => {
         void queryClient.removeQueries();
