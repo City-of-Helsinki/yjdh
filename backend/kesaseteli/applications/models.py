@@ -5,8 +5,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models, transaction
 from django.urls import reverse
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils import timezone, translation
+from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from shared.common.validators import validate_name, validate_phone_number
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
@@ -25,29 +25,14 @@ from companies.models import Company
 LOGGER = logging.getLogger(__name__)
 
 
-def validate_school(name) -> None:
-    """
-    Raise a ValidationError if the given school is not a listed school and does not
-    validate as a name according to validate_name.
-    """
-    if not School.objects.filter(name=name).exists():
-        validate_name(name)
-
-
-class SchoolQuerySet(models.QuerySet):
-    def active(self):
-        return self.filter(deleted_at__isnull=True)
-
-    def deleted(self):
-        return self.filter(deleted_at__isnull=False)
-
-
 class School(TimeStampedModel, UUIDModel):
-    name = models.CharField(max_length=256, unique=True, db_index=True)
-    deleted_at = models.DateTimeField(
-        blank=True, null=True, verbose_name=_("time deleted")
+    """
+    List of active schools.
+    """
+
+    name = models.CharField(
+        max_length=256, unique=True, db_index=True, validators=[validate_name]
     )
-    objects = SchoolQuerySet.as_manager()
 
     def __str__(self):
         return self.name
@@ -81,7 +66,7 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     school = models.CharField(
         max_length=256,
         verbose_name=_("school"),
-        validators=[validate_school],
+        validators=[validate_name],
     )
     is_unlisted_school = models.BooleanField()
     email = models.EmailField(
@@ -107,25 +92,36 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         )
 
     @property
+    def seconds_elapsed(self) -> int:
+        return int((timezone.now() - self.created_at) / timedelta(seconds=1))
+
+    @property
     def has_activation_link_expired(self) -> bool:
-        hours_elapsed = (timezone.now() - self.created_at) / timedelta(hours=1)
-        expiration_hours = settings.YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_HOURS
-        return hours_elapsed >= expiration_hours
+        return (
+            self.seconds_elapsed
+            >= settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
+        )
 
-    def _activation_email_subject(self, request):
-        return _("Vahvista sähköpostiosoitteesi")
+    @staticmethod
+    def _activation_email_subject(language):
+        with translation.override(language):
+            return gettext("Vahvista sähköpostiosoitteesi")
 
-    def _activation_email_message(self, request):
+    @staticmethod
+    def _activation_email_message(language, activation_link):
+        with translation.override(language):
+            return gettext(
+                "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
+                "%(activation_link)s"
+            ) % {"activation_link": activation_link}
+
+    def send_activation_email(self, request, language):
         activation_link = self._activation_link(request)
-        return _(
-            "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
-            "%(activation_link)s"
-        ) % {"activation_link": activation_link}
-
-    def send_activation_email(self, request):
         sent_email_count = send_mail(
-            subject=self._activation_email_subject(request),
-            message=self._activation_email_message(request),
+            subject=YouthApplication._activation_email_subject(language),
+            message=YouthApplication._activation_email_message(
+                language, activation_link
+            ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.email],
             fail_silently=True,
@@ -188,17 +184,17 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["-youth_application__created_at"]
 
 
-class Application(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        related_name="applications",
+        related_name="employer_applications",
         verbose_name=_("company"),
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="applications",
+        related_name="employer_applications",
         verbose_name=_("user"),
     )
     status = models.CharField(
@@ -257,9 +253,9 @@ class Application(HistoricalModel, TimeStampedModel, UUIDModel):
         ordering = ["-created_at"]
 
 
-class SummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
+class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     application = models.ForeignKey(
-        Application,
+        EmployerApplication,
         on_delete=models.CASCADE,
         related_name="summer_vouchers",
         verbose_name=_("application"),
@@ -365,7 +361,7 @@ class Attachment(UUIDModel, TimeStampedModel):
     """
 
     summer_voucher = models.ForeignKey(
-        SummerVoucher,
+        EmployerSummerVoucher,
         verbose_name=_("summer voucher"),
         related_name="attachments",
         on_delete=models.CASCADE,

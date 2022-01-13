@@ -30,7 +30,7 @@ urlpatterns = [
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=True,
+    NEXT_PUBLIC_MOCK_FLAG=True,
     LOGIN_REDIRECT_URL="http://example.com/login/",
     ROOT_URLCONF=__name__,
 )
@@ -44,7 +44,7 @@ def test_login_view(client):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=True,
+    NEXT_PUBLIC_MOCK_FLAG=True,
     ROOT_URLCONF=__name__,
 )
 def test_logout_view(user_client, user):
@@ -57,7 +57,7 @@ def test_logout_view(user_client, user):
 
 
 @pytest.mark.django_db
-@override_settings(MOCK_FLAG=True, ROOT_URLCONF=__name__)
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True, ROOT_URLCONF=__name__)
 def test_userinfo_view(user_client, user):
     logout_url = reverse("oidc_userinfo")
     response = user_client.get(logout_url)

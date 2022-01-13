@@ -9,6 +9,7 @@ from common.exceptions import BenefitAPIException
 from common.utils import (
     date_range_overlap,
     duration_in_months,
+    DurationMixin,
     nested_getattr,
     to_decimal,
 )
@@ -37,7 +38,7 @@ class CalculationManager(models.Manager):
         return calculation
 
 
-class Calculation(UUIDModel, TimeStampedModel):
+class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Data model for Helsinki benefit calculations
 
@@ -154,11 +155,6 @@ class Calculation(UUIDModel, TimeStampedModel):
         PaySubsidy.reset_pay_subsidies(self.application)
 
     @property
-    def duration_in_months(self):
-        # The calculation Excel file used the DAYS360 function, so we're doing the same
-        return duration_in_months(self.start_date, self.end_date)
-
-    @property
     def duration_in_months_rounded(self):
         # The handler's Excel file uses the number of months rounded to two decimals
         # in all calculations
@@ -192,7 +188,7 @@ class Calculation(UUIDModel, TimeStampedModel):
         ordering = ("created_at",)
 
 
-class PaySubsidy(UUIDModel, TimeStampedModel):
+class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Information about pay subsidies, as entered by the handlers in the calculator.
     """
@@ -294,11 +290,6 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
                     ordering=ordering,
                 )
 
-    @property
-    def duration_in_months(self):
-        # The calculation Excel file used the DAYS360 function, so we're doing the same
-        return duration_in_months(self.start_date, self.end_date)
-
     def __str__(self):
         return f"PaySubsidy {self.start_date} - {self.end_date} of {self.pay_subsidy_percent}%"
 
@@ -309,7 +300,7 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
         ordering = ["application__created_at", "ordering"]
 
 
-class PreviousBenefit(UUIDModel, TimeStampedModel):
+class PreviousBenefit(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Used to record benefits that have been granted before the Helsinki benefit system
     was taken to use. Up to two years of info is needed for the calculations.
@@ -354,7 +345,7 @@ class PreviousBenefit(UUIDModel, TimeStampedModel):
         verbose_name_plural = _("Previously granted benefits")
 
 
-class TrainingCompensation(UUIDModel, TimeStampedModel):
+class TrainingCompensation(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Information about pay subsidies, as entered by the handlers in the calculator.
     """
@@ -377,11 +368,6 @@ class TrainingCompensation(UUIDModel, TimeStampedModel):
 
     history = HistoricalRecords(table_name="bf_calculator_trainingcompensation_history")
 
-    @property
-    def duration_in_months(self):
-        # The calculation Excel file used the DAYS360 function, so we're doing the same
-        return duration_in_months(self.start_date, self.end_date)
-
     def __str__(self):
         return f"TrainingCompensation {self.start_date} - {self.end_date} of {self.monthly_amount} eur"
 
@@ -392,7 +378,7 @@ class TrainingCompensation(UUIDModel, TimeStampedModel):
         ordering = ["application__created_at", "ordering"]
 
 
-class CalculationRow(UUIDModel, TimeStampedModel):
+class CalculationRow(UUIDModel, TimeStampedModel, DurationMixin):
 
     proxy_row_type = None
 
@@ -453,10 +439,6 @@ class CalculationRow(UUIDModel, TimeStampedModel):
             return self.description_fi_template.format(row=self)
         else:
             return self.description_fi
-
-    @property
-    def duration_in_months(self):
-        return duration_in_months(self.start_date, self.end_date)
 
     class Meta:
         db_table = "bf_calculator_calculationrow"

@@ -9,7 +9,7 @@ from django.urls import reverse
 @pytest.mark.django_db
 @override_settings(
     OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_logout_view(requests_mock, user_client, user):
     matcher = re.compile(settings.OIDC_OP_LOGOUT_ENDPOINT)
@@ -26,7 +26,7 @@ def test_logout_view(requests_mock, user_client, user):
 @pytest.mark.django_db
 @override_settings(
     OIDC_OP_LOGOUT_ENDPOINT="http://example.com/logout/",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_logout_view_without_oidc_info(requests_mock, user_client, user):
     session = user_client.session
@@ -52,7 +52,7 @@ def test_logout_view_without_oidc_info(requests_mock, user_client, user):
 @pytest.mark.django_db
 @override_settings(
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_userinfo_view(requests_mock, user_client, user):
     userinfo = {
@@ -82,7 +82,7 @@ def test_userinfo_view(requests_mock, user_client, user):
 @pytest.mark.django_db
 @override_settings(
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_userinfo_view_without_oidc_info(user_client):
     session = user_client.session
@@ -104,7 +104,7 @@ def test_userinfo_view_without_oidc_info(user_client):
 @pytest.mark.django_db
 @override_settings(
     OIDC_OP_USER_ENDPOINT="http://example.com/userinfo/",
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_userinfo_view_with_userinfo_returning_401(requests_mock, user_client, user):
     matcher = re.compile(settings.OIDC_OP_USER_ENDPOINT)

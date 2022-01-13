@@ -1,5 +1,5 @@
 import { Button, IconArrowRight } from 'hds-react';
-import getActivationLinkExpirationSeconds from 'kesaseteli/youth/utils/get-activation-link-expiration-seconds';
+import useActivationLinkExpirationHours from 'kesaseteli/youth/hooks/useActivationLinkExpirationHours';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
@@ -8,19 +8,11 @@ import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { $Notification } from 'shared/components/notification/Notification.sc';
-import useGoToPage from 'shared/hooks/useGoToPage';
+import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
-
-  const expirationHours = React.useMemo(
-    () => Math.round(getActivationLinkExpirationSeconds() / 3600),
-    []
-  );
-
-  const goToPage = useGoToPage();
-  const goToHomePage = React.useCallback(() => goToPage('/'), [goToPage]);
 
   return (
     <Container>
@@ -34,14 +26,16 @@ const ThankYouPage: NextPage = () => {
         type="success"
         size="large"
       >
-        {t(`common:thankyouPage.notificationMessage`, { expirationHours })}
+        {t(`common:thankyouPage.notificationMessage`, {
+          expirationHours: useActivationLinkExpirationHours(),
+        })}
       </$Notification>
       <FormSection columns={1} withoutDivider>
         <$GridCell>
           <Button
             theme="coat"
             iconRight={<IconArrowRight />}
-            onClick={goToHomePage}
+            onClick={useGoToFrontPage()}
           >
             {t(`common:thankyouPage.goToFrontendPage`)}
           </Button>

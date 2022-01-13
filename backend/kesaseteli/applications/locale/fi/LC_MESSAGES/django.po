@@ -3,433 +3,450 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-03 13:53+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2022-01-10 09:10+0000\n"
+"PO-Revision-Date: 2022-01-10 08:48+0200\n"
+"Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
+"Language-Team: \n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: applications/api/v1/serializers.py:53
+"X-Generator: Poedit 3.0.1\n"
+
 #, python-brace-format
-msgid "Application state transition not allowed: {status} to {value}"
+msgid "EmployerApplication state transition not allowed: {status} to {value}"
 msgstr ""
 
-#: applications/api/v1/serializers.py:62
 msgid "Initial status of application must be draft"
 msgstr ""
 
-#: applications/api/v1/serializers.py:99
 msgid "Can not add attachment to an application in this state"
 msgstr ""
 
-#: applications/api/v1/serializers.py:105
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
 msgstr ""
 
-#: applications/api/v1/serializers.py:114
 msgid "Too many attachments"
 msgstr ""
 
-#: applications/api/v1/serializers.py:118
 msgid "Not a valid pdf file"
 msgstr ""
 
-#: applications/api/v1/serializers.py:122
 msgid "Not a valid image file"
 msgstr ""
 
-#: applications/api/v1/serializers.py:215
-#: applications/api/v1/serializers.py:332
 msgid "This field is required before submitting the application"
 msgstr ""
 
-#: applications/api/v1/serializers.py:229
 msgid "Status of the application, visible to the applicant"
 msgstr ""
 
-#: applications/api/v1/serializers.py:281
 #, python-brace-format
 msgid "Reading summer voucher data failed: {errors}"
 msgstr ""
 
-#: applications/api/v1/serializers.py:349
 msgid "Attachments missing from summer voucher"
 msgstr ""
 
-#: applications/api/v1/serializers.py:360
 #, python-brace-format
 msgid "Attachments missing with types: {attachment_types}"
 msgstr ""
 
-#: applications/api/v1/views.py:152 applications/api/v1/views.py:175
+msgid "Social security number must be set"
+msgstr ""
+
 msgid "File not found."
 msgstr ""
 
-#: applications/api/v1/views.py:168
 msgid "Operation not allowed for this application status."
 msgstr ""
 
-#: applications/enums.py:19
 msgid "Draft"
 msgstr ""
 
-#: applications/enums.py:20
 msgid "Submitted"
 msgstr ""
 
-#: applications/enums.py:22
 msgid "Additional information requested"
 msgstr ""
 
-#: applications/enums.py:25
 msgid "Additional information provided"
 msgstr ""
 
-#: applications/enums.py:27
 msgid "Accepted"
 msgstr ""
 
-#: applications/enums.py:28
 msgid "Rejected"
 msgstr ""
 
-#: applications/enums.py:29
 msgid "Deleted by customer"
 msgstr ""
 
-#: applications/enums.py:33
 msgid "employment contract"
 msgstr ""
 
-#: applications/enums.py:34
 msgid "payslip"
 msgstr ""
 
-#: applications/enums.py:40
 msgid "9th grader"
 msgstr "yhdeksäsluokkalainen"
 
-#: applications/enums.py:41
 msgid "born 2004"
 msgstr "syntynyt 2004"
 
-#: applications/enums.py:45
 msgid "yes"
 msgstr "kyllä"
 
-#: applications/enums.py:46
 msgid "no"
 msgstr "ei"
 
-#: applications/enums.py:47
 msgid "maybe"
 msgstr "ehkä"
 
-#: applications/exporters/excel_exporter.py:15
 msgid "Järjestys"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:16
 msgid "Saatu pvm"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:17
+msgid "Hakemuksen kieli"
+msgstr ""
+
 msgid "Setelin numero"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:18
+msgid "Erikoistapaus (esim yhdeksäsluokkalainen)"
+msgstr ""
+
 msgid "Nuoren nimi"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:19
 msgid "Henkilötunnus"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:20
 msgid "Koulu"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:21
 msgid "Kotipostinumero"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:22
 msgid "Puhelin"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:23
+msgid "Kotikaupunki"
+msgstr ""
+
 msgid "Työnantaja muoto"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:24
 msgid "Työnantaja"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:25
 msgid "Y-tunnus"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:26
-msgid "Yhdyshenkilö"
+msgid "Työnantajan lähiosoite"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:27
-msgid "Yhdyshenkilön Sähköposti"
-msgstr ""
-
-#: applications/exporters/excel_exporter.py:29
-msgid "Yhdyshenkilön Puhelin"
-msgstr ""
-
-#: applications/exporters/excel_exporter.py:34
-msgid "Lähiosoite"
-msgstr ""
-
-#: applications/exporters/excel_exporter.py:35
 msgid "Työnantajan postinumero"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:36
-msgid "Kunta"
+msgid "Työnantajan kunta"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:37
+msgid "Yhdyshenkilö"
+msgstr ""
+
+msgid "Yhdyshenkilön sähköposti"
+msgstr ""
+
+msgid "Yhdyshenkilön Puhelin"
+msgstr ""
+
+msgid "Erillinen laskuttaja"
+msgstr ""
+
+msgid "Laskuttajan nimi"
+msgstr ""
+
+msgid "Laskuttajan sähköposti"
+msgstr ""
+
+msgid "Laskuttajan Puhelin"
+msgstr ""
+
 msgid "Yrityksen toimiala"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:39
-msgid "Työsuhteen kesto"
+msgid "Työn suorituspaikan postinumero"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:44
+msgid "Työsuhteen aloituspäivämäärä"
+msgstr ""
+
+msgid "Työsuhteen päättymispäivämäärä"
+msgstr ""
+
 msgid "Työtunnit"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:45
 msgid "Maksettu palkka"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:46
 msgid "Muut edut"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:47
 msgid "Raporttiin luokittelu"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:48
 msgid "Työtehtävät"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:50
 msgid "Olisitko palkannut?"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:55
 msgid "Työnantajan kokemus"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:56
 msgid "Muuta"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:99
-msgid "Setelit"
+msgid "Liite: Työsopimus 1"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:120
+msgid "Liite: Työsopimus 2"
+msgstr ""
+
+msgid "Liite: Työsopimus 3"
+msgstr ""
+
+msgid "Liite: Työsopimus 4"
+msgstr ""
+
+msgid "Liite: Työsopimus 5"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 1"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 2"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 3"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 4"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 5"
+msgstr ""
+
 msgid "Kyllä"
 msgstr ""
 
-#: applications/exporters/excel_exporter.py:120
 msgid "Ei"
 msgstr ""
 
-#: applications/models.py:23
-msgid "company"
+msgid "Setelit"
 msgstr ""
 
-#: applications/models.py:29
-msgid "user"
+msgid "time deleted"
 msgstr ""
 
-#: applications/models.py:33
-msgid "status"
+msgid "school"
 msgstr ""
 
-#: applications/models.py:40
-msgid "invoicer work address"
+msgid "schools"
 msgstr ""
 
-#: applications/models.py:47
-msgid "contact person name"
+msgid "first name"
 msgstr ""
 
-#: applications/models.py:50
-msgid "contact person email"
+msgid "last name"
 msgstr ""
 
-#: applications/models.py:55
-msgid "contact person phone number"
+msgid "social security number"
 msgstr ""
 
-#: applications/models.py:61
-msgid "is separate invoicer"
+msgid "email"
 msgstr ""
 
-#: applications/models.py:62
-msgid "invoicing is not handled by the contact person"
+msgid "phone number"
 msgstr ""
 
-#: applications/models.py:67
-msgid "invoicer name"
+msgid "timestamp of receipt confirmation"
 msgstr ""
 
-#: applications/models.py:69
-msgid "invoicer email"
+msgid "Vahvista sähköpostiosoitteesi"
 msgstr ""
 
-#: applications/models.py:73
-msgid "invoicer phone number"
+#, python-format
+msgid ""
+"Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
+"%(activation_link)s"
 msgstr ""
 
-#: applications/models.py:82 applications/models.py:92
-msgid "application"
+msgid "youth application"
 msgstr ""
 
-#: applications/models.py:83
-msgid "applications"
+msgid "youth applications"
 msgstr ""
 
-#: applications/models.py:95
 msgid "summer voucher id"
 msgstr ""
 
-#: applications/models.py:100
 msgid "summer voucher exception class"
 msgstr ""
 
-#: applications/models.py:101
 msgid "Special case of admitting the summer voucher."
 msgstr ""
 
-#: applications/models.py:108
+msgid "youth summer voucher"
+msgstr ""
+
+msgid "youth summer vouchers"
+msgstr ""
+
+msgid "company"
+msgstr ""
+
+msgid "user"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "invoicer work address"
+msgstr ""
+
+msgid "contact person name"
+msgstr ""
+
+msgid "contact person email"
+msgstr ""
+
+msgid "contact person phone number"
+msgstr ""
+
+msgid "is separate invoicer"
+msgstr ""
+
+msgid "invoicing is not handled by the contact person"
+msgstr ""
+
+msgid "invoicer name"
+msgstr ""
+
+msgid "invoicer email"
+msgstr ""
+
+msgid "invoicer phone number"
+msgstr ""
+
+msgid "application"
+msgstr ""
+
+msgid "applications"
+msgstr ""
+
 msgid "employee name"
 msgstr ""
 
-#: applications/models.py:113
 msgid "employee school"
 msgstr ""
 
-#: applications/models.py:118
 msgid "employee social security number"
 msgstr ""
 
-#: applications/models.py:123
 msgid "employee phone number"
 msgstr ""
 
-#: applications/models.py:128
 msgid "employee home city"
 msgstr ""
 
-#: applications/models.py:133
 msgid "employee postcode"
 msgstr ""
 
-#: applications/models.py:139
 msgid "employment postcode"
 msgstr ""
 
-#: applications/models.py:142
 msgid "employment start date"
 msgstr ""
 
-#: applications/models.py:145
 msgid "employment end date"
 msgstr ""
 
-#: applications/models.py:148
 msgid "employment work hours"
 msgstr ""
 
-#: applications/models.py:155
 msgid "employment salary paid"
 msgstr ""
 
-#: applications/models.py:162
 msgid "employment description"
 msgstr ""
 
-#: applications/models.py:166
 msgid "hired without voucher assessment"
 msgstr ""
 
-#: applications/models.py:170
 msgid "Whether the employee would have been hired without a summer voucher."
 msgstr ""
 
-#: applications/models.py:178 applications/models.py:190
+msgid "is exported"
+msgstr ""
+
+msgid "Has been exported to Excel"
+msgstr ""
+
 msgid "summer voucher"
 msgstr ""
 
-#: applications/models.py:179
 msgid "summer vouchers"
 msgstr ""
 
-#: applications/models.py:196
 msgid "attachment type in business rules"
 msgstr ""
 
-#: applications/models.py:202
 msgid "technical content type of the attachment"
 msgstr ""
 
-#: applications/models.py:204
 msgid "application attachment content"
 msgstr ""
 
-#: applications/models.py:207
 msgid "attachment"
 msgstr ""
 
-#: applications/models.py:208
 msgid "attachments"
 msgstr ""
 
-#: applications/templates/application_excel_download.html:14
 msgid "Kirjaudu ulos"
 msgstr ""
 
-#: applications/templates/application_excel_download.html:19
 msgid ""
-"Lataa luotuja Excel tiedostoja tai luo uusi tiedosto kaikista järjestelmän "
-"käsittelemättömistä hakemuksista. Kun hakemus lisätään excel tiedostoon, se "
-"merkataan järjestelmässä \"käsitellyiksi\" eikä sitä tuoda enää seuraavaan "
-"exceliin."
+"Luo uusi excel tiedosto kaikista järjestelmän käsittelemättömistä "
+"hakemuksista. Kun hakemus lisätään käsittelemättömien hakemusten excel "
+"tiedostoon, se merkataan järjestelmässä \"käsitellyiksi\" eikä sitä tuoda "
+"enää seuraavaan käsittelemättömien hakemusten exceliin."
 msgstr ""
 
-#: applications/templates/application_excel_download.html:23
-msgid "Luo uusi Excel tiedosto käsittelemättömistä hakemuksista"
+msgid "Lataa Excel tiedosto käsittelemättömistä hakemuksista"
 msgstr ""
 
-#: applications/templates/application_excel_download.html:24
+msgid ""
+"Luo uusi excel tiedosto kaikista järjestelmän tämän vuoden hakemuksista. "
+"Tiedosto sisältää myös kaikki käsitellyt hakemukset."
+msgstr ""
+
 msgid "Lataa Excel tiedosto kaikista tämän vuoden hakemuksista"
 msgstr ""
 
-#: applications/templates/application_excel_download.html:27
-msgid "Lataa luotuja excel tiedostoja:"
+msgid "Ei uusia käsittelemättömiä hakemuksia."
 msgstr ""
 
-#: applications/views.py:54
-msgid "Tiedostoa ei löydy."
+msgid "Hakemuksia ei löytynyt."
 msgstr ""

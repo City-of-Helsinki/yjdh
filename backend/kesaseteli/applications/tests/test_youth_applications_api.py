@@ -1,11 +1,15 @@
 import factory.random
+import langdetect
 import pytest
+from django.core import mail
 from django.test import override_settings
 from rest_framework import status
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import YouthApplicationSerializer
 from common.tests.factories import YouthApplicationFactory
+
+SUPPORTED_LANGUAGE_CODES = ("fi", "sv", "en")
 
 
 def get_required_fields():
@@ -19,13 +23,17 @@ def get_required_fields():
     ]
 
 
+def get_list_url():
+    return reverse("v1:youthapplication-list")
+
+
 def get_activation_url(pk):
     return reverse("v1:youthapplication-activate", kwargs={"pk": pk})
 
 
 @pytest.mark.django_db
 def test_youth_applications_list(api_client):
-    response = api_client.get(reverse("v1:youthapplication-list"))
+    response = api_client.get(get_list_url())
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -120,7 +128,7 @@ def test_youth_application_post_valid_social_security_number(
 ):
     data = YouthApplicationSerializer(youth_application).data
     data["social_security_number"] = test_value
-    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_201_CREATED
     assert "social_security_number" in response.data
@@ -132,7 +140,7 @@ def test_youth_application_post_valid_random_data(api_client, random_seed):
     factory.random.reseed_random(random_seed)
     youth_application = YouthApplicationFactory()
     data = YouthApplicationSerializer(youth_application).data
-    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_201_CREATED
 
@@ -172,10 +180,59 @@ def test_youth_application_post_valid_data_with_email_backends(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("language", SUPPORTED_LANGUAGE_CODES)
+def test_youth_application_post_valid_language(
+    api_client,
+    youth_application,
+    language,
+):
+    youth_application.language = language
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+@override_settings(
+    MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+@pytest.mark.parametrize("language", SUPPORTED_LANGUAGE_CODES)
+def test_youth_application_activation_email_language(
+    api_client,
+    youth_application,
+    language,
+):
+    youth_application.language = language
+    data = YouthApplicationSerializer(youth_application).data
+    api_client.post(reverse("v1:youthapplication-list"), data)
+    assert len(mail.outbox) > 0
+    activation_email = mail.outbox[-1]
+    assert len(activation_email.subject.strip()) > 0
+    assert len(activation_email.body.strip()) > 0
+    detected_email_subject_language = langdetect.detect(activation_email.subject)
+    detected_email_body_language = langdetect.detect(activation_email.body)
+    assert (
+        detected_email_subject_language == language
+    ), "Email subject '{}' used language {} instead of expected {}".format(
+        activation_email.subject,
+        detected_email_subject_language,
+        language,
+    )
+    assert (
+        detected_email_body_language == language
+    ), "Email body '{}' used language {} instead of expected {}".format(
+        activation_email.body,
+        detected_email_body_language,
+        language,
+    )
+
+
+@pytest.mark.django_db
 def test_youth_application_post_invalid_language(api_client, youth_application):
     data = YouthApplicationSerializer(youth_application).data
     data["language"] = "asd"
-    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "language" in response.data
@@ -190,7 +247,7 @@ def test_youth_application_post_missing_required_field(
 ):
     data = YouthApplicationSerializer(youth_application).data
     del data[missing_field]
-    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -208,7 +265,7 @@ def test_youth_application_post_empty_required_field(
 ):
     data = YouthApplicationSerializer(youth_application).data
     data[field] = value
-    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -241,7 +298,7 @@ def test_youth_application_post_invalid_social_security_number(
 ):
     data = YouthApplicationSerializer(youth_application).data
     data["social_security_number"] = test_value
-    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "social_security_number" in response.data

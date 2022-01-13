@@ -31,13 +31,13 @@ Manual logging can also be done using the log function `shared.audit_log.audit_l
 ```
 from django.contrib.auth import get_user_model
 
-from applications.models import Application
+from applications.models import EmployerApplication
 from shared.audit_log import audit_logging
 from shared.audit_log.enums import Operation
 
 User = get_user_model()
 
-application = Application.objects.last()
+application = EmployerApplication.objects.last()
 user = User.objects.last()
 
 send_application(application)

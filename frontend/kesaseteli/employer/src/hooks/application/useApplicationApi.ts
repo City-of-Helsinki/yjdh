@@ -116,7 +116,9 @@ const useApplicationApi = <T = Application>(
           {
             onSuccess: () => {
               clearLocalStorage(`application-${completeApplication.id}`);
-              void queryClient.invalidateQueries(BackendEndpoint.APPLICATIONS);
+              void queryClient.invalidateQueries(
+                BackendEndpoint.EMPLOYER_APPLICATIONS
+              );
               return onSuccess();
             },
             onError,

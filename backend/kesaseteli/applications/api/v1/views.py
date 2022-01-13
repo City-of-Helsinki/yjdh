@@ -1,5 +1,4 @@
 from django.core import exceptions
-from django.db.models import Func
 from django.http import FileResponse, HttpResponse
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -15,34 +14,30 @@ from shared.audit_log.viewsets import AuditLoggingModelViewSet
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
-    ApplicationPermission,
+    EmployerApplicationPermission,
+    EmployerSummerVoucherPermission,
     get_user_company,
     StaffPermission,
-    SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
-    ApplicationSerializer,
     AttachmentSerializer,
+    EmployerApplicationSerializer,
+    EmployerSummerVoucherSerializer,
     SchoolSerializer,
-    SummerVoucherSerializer,
     YouthApplicationSerializer,
 )
 from applications.enums import ApplicationStatus
-from applications.models import Application, School, SummerVoucher, YouthApplication
+from applications.models import (
+    EmployerApplication,
+    EmployerSummerVoucher,
+    School,
+    YouthApplication,
+)
 from common.utils import DenyAll
 
 
 class SchoolListView(ListAPIView):
-    # PostgreSQL specific functionality:
-    # - Custom sorter for name field to ensure finnish language sorting order.
-    # - NOTE: This can be removed if the database is made to use collation fi_FI.UTF8
-    _name_fi = Func(
-        "name",
-        function="fi-FI-x-icu",  # fi_FI.UTF8 would be best but wasn't available
-        template='(%(expressions)s) COLLATE "%(function)s"',
-    )
-
-    queryset = School.objects.active().order_by(_name_fi.asc())
+    queryset = School.objects.all()
     serializer_class = SchoolSerializer
 
     def get_permissions(self):
@@ -83,7 +78,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         youth_application = YouthApplication.objects.get(id=response.data["id"])
-        youth_application.send_activation_email(request)
+        youth_application.send_activation_email(request, youth_application.language)
         return response
 
     def get_permissions(self):
@@ -97,10 +92,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-class ApplicationViewSet(AuditLoggingModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
-    permission_classes = [IsAuthenticated, ApplicationPermission]
+class EmployerApplicationViewSet(AuditLoggingModelViewSet):
+    queryset = EmployerApplication.objects.all()
+    serializer_class = EmployerApplicationSerializer
+    permission_classes = [IsAuthenticated, EmployerApplicationPermission]
 
     def get_queryset(self):
         """
@@ -148,10 +143,13 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SummerVoucherViewSet(AuditLoggingModelViewSet):
-    queryset = SummerVoucher.objects.all()
-    serializer_class = SummerVoucherSerializer
-    permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]
+class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
+    queryset = EmployerSummerVoucher.objects.all()
+    serializer_class = EmployerSummerVoucherSerializer
+    permission_classes = [
+        IsAuthenticated,
+        StaffPermission | EmployerSummerVoucherPermission,
+    ]
 
     def get_queryset(self):
         """

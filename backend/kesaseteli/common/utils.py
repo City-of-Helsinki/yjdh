@@ -59,7 +59,7 @@ def validate_optional_finnish_social_security_number(value):
 def getattr_nested(obj, attrs: list):
     """
     Example:
-        obj: Application
+        obj: EmployerApplication
         attrs: ["company", "business_id"]
         returns obj.company.business_id if company exists, else returns ""
     """

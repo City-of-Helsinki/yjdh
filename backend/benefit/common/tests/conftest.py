@@ -1,3 +1,5 @@
+import random
+
 import factory.random
 import pytest
 from django.contrib.auth.models import Permission
@@ -11,6 +13,7 @@ from shared.common.tests.conftest import store_tokens_in_session
 @pytest.fixture(autouse=True)
 def setup_test_environment(settings):
     factory.random.reseed_random("777")
+    random.seed(777)
     with freeze_time("2021-06-04"):
         yield
 

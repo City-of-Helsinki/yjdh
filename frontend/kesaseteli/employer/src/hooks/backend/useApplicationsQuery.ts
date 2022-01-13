@@ -8,7 +8,7 @@ const useApplicationsQuery = <T = Application[]>(
   enabled: boolean,
   select?: (applications: Application[]) => T
 ): UseQueryResult<T> =>
-  useQuery(BackendEndpoint.APPLICATIONS, {
+  useQuery(BackendEndpoint.EMPLOYER_APPLICATIONS, {
     enabled: useOperationPermitted() && enabled,
     select: select
       ? (applications: Application[]) => select(applications)

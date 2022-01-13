@@ -66,7 +66,8 @@ const useApplicationFormStep6 = (
   useEffect(() => {
     if (
       isApplicationUpdated &&
-      application.status === APPLICATION_STATUSES.RECEIVED
+      (application.status === APPLICATION_STATUSES.RECEIVED ||
+        application.status === APPLICATION_STATUSES.HANDLING)
     ) {
       setSubmittedApplication({
         applicantName: getFullName(
@@ -117,7 +118,10 @@ const useApplicationFormStep6 = (
                 (consent) => consent.id
               ),
           },
-          status: APPLICATION_STATUSES.RECEIVED,
+          status:
+            application.status === APPLICATION_STATUSES.DRAFT
+              ? APPLICATION_STATUSES.RECEIVED
+              : APPLICATION_STATUSES.HANDLING,
         },
         { deep: true }
       );
