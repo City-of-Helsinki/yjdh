@@ -1,37 +1,37 @@
 import { axe } from 'jest-axe';
-import getThankYouPageApi from 'kesaseteli/youth/__tests__/utils/components/get-thankyou-page-api';
+import getEmailInUseApi from 'kesaseteli/youth/__tests__/utils/components/get-email-in-use-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
-import ThankYouPage from 'kesaseteli/youth/pages/thankyou';
+import EmailInUsePage from 'kesaseteli/youth/pages/email_in_use';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
-describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
+describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
   it('should not violate accessibility', async () => {
     const {
       renderResult: { container },
-    } = renderComponent(<ThankYouPage />);
+    } = renderComponent(<EmailInUsePage />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
-  it('redirects to main page when clicking go to main page -button', async () => {
+  it('redirects to main page when clicking the button', async () => {
     const spyPush = jest.fn();
-    await renderPage(ThankYouPage, { push: spyPush });
-    const thankYouPageApi = getThankYouPageApi();
-    await thankYouPageApi.expectations.pageIsLoaded();
-    await thankYouPageApi.actions.clickGoToFrontPageButton();
+    await renderPage(EmailInUsePage, { push: spyPush });
+    const emailInUseApi = getEmailInUseApi();
+    await emailInUseApi.expectations.pageIsLoaded();
+    await emailInUseApi.actions.clickGoToFrontPageButton();
     await waitFor(() =>
       expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`)
     );
   });
 
   it('shows default activation link expiration time (12 hours)', async () => {
-    await renderPage(ThankYouPage);
-    const thankYouPageApi = getThankYouPageApi();
+    await renderPage(EmailInUsePage);
+    const thankYouPageApi = getEmailInUseApi();
     await thankYouPageApi.expectations.pageIsLoaded();
-    await thankYouPageApi.expectations.activationInfoTextIsPresent(12);
+    await thankYouPageApi.expectations.notificationMessageIsPresent(12);
   });
 
   describe('When different activation link expiration time', () => {
@@ -45,10 +45,10 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
         ...originalEnv,
         NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: String(3600 * 2),
       };
-      await renderPage(ThankYouPage);
-      const thankYouPageApi = getThankYouPageApi();
-      await thankYouPageApi.expectations.pageIsLoaded();
-      await thankYouPageApi.expectations.activationInfoTextIsPresent(2);
+      await renderPage(EmailInUsePage);
+      const emailInUseApi = getEmailInUseApi();
+      await emailInUseApi.expectations.pageIsLoaded();
+      await emailInUseApi.expectations.notificationMessageIsPresent(2);
     });
     afterEach(() => {
       process.env = originalEnv;

@@ -86,10 +86,31 @@
     "notificationMessage": "SV Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
     "goToFrontendPage": "SV Kesäseteli etusivulle"
   },
+  "activationErrorPage" : {
+    "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
+  },
+  "emailInUsePage" : {
+    "title": "SV Hups! Sähköposti on jo käytössä.",
+    "notificationMessage": "SV Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+  },
+  "alreadyAssignedPage" : {
+    "title": "SV Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
+    "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+  },
   "activatedPage" : {
     "title": "SV Kesäsetelisi on nyt aktivoitu",
     "notificationTitle": "SV Vahvistus onnistui",
     "notificationMessage": "SV Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     "paragraph_1": "SV Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  },
+  "expiredPage" : {
+    "title": "SV Hups! Vahvistuslinkki on vanhentunut.",
+    "notificationMessage": "SV Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
+    "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
+  },
+  "alreadyActivatedPage" : {
+    "title": "SV Hups! Vahvistuslinkki on jo aktivoitu.",
+    "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiisi.",
+    "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
   }
 }
