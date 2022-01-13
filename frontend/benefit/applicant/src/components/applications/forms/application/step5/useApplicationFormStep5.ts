@@ -48,7 +48,8 @@ const useApplicationFormStep5 = (
   useEffect(() => {
     if (
       isApplicationUpdatedStep5 &&
-      application.status === APPLICATION_STATUSES.RECEIVED
+      (application.status === APPLICATION_STATUSES.RECEIVED ||
+        application.status === APPLICATION_STATUSES.HANDLING)
     ) {
       setSubmittedApplication({
         applicantName: getFullName(
@@ -96,7 +97,12 @@ const useApplicationFormStep5 = (
 
   const handleSubmit = (): void => {
     const submitFields = isSubmit
-      ? { status: APPLICATION_STATUSES.RECEIVED }
+      ? {
+          status:
+            application.status === APPLICATION_STATUSES.DRAFT
+              ? APPLICATION_STATUSES.RECEIVED
+              : APPLICATION_STATUSES.HANDLING,
+        }
       : { applicationStep: getApplicationStepString(6) };
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
