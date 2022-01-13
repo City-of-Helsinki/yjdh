@@ -121,11 +121,26 @@ jobs:
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
       - name: Review-Services
         if: matrix.database
-        uses: andersinno/kolga-deploy-service-action@v2
+        uses: City-of-Helsinki/review-services-action@main
         with:
-          projects: ${{ github.event.repository.name }}-${{ matrix.service }}
-        env:
-          POSTGRES_IMAGE: "docker.io/andersinnovations/postgis:11-bitnami"
+          database: ${{ env.K8S_NAMESPACE }}
+          namespace: ${{ env.K8S_NAMESPACE }}
+          action: create
+          db_user: ${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}
+          db_password: ${{ secrets.K8S_SECRET_DATABASE_ADMIN_PASSWORD_REVIEW}}
+          db_host: ${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}
+          db_port: ${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}
+          kubeconfig: ${{ secrets.KUBECONFIG_RAW }}
+
+      - name: Database variables
+        if: matrix.database
+        run: |
+          echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_DB=${{ env.K8S_NAMESPACE }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_ADMIN_PASSWORD_REVIEW }}" >> $GITHUB_ENV
+
       - name: Service with ingress
         run: |
           echo "ENVIRONMENT_URL=https://helsinkibenefit-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
