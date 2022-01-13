@@ -36,6 +36,9 @@
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
     "saveDraft": "Tallenna julkaisematta",
+    "deletePosting": "Poista ilmoitus",
+    "preview": "Siirry esikatseluun",
+    "publish": "Julkaise",
     "notificationTitle": "Täytä puuttuvat tai virheelliset tiedot",
     "employerInfo": {
       "header": "Työpaikan tiedot",

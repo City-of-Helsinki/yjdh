@@ -4,22 +4,39 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
 import TetPosting from 'tet/admin/types/tetposting';
+import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 const ActionButtons: React.FC = () => {
   const { t } = useTranslation();
   const {
-    handleSubmit,
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
 
-  const handleSuccess = (validatedPosting: TetPosting): void => {
-    console.log(validatedPosting);
-  };
   return (
-    <FormSection>
-      <Button type="submit" disabled={isSubmitting} onClick={handleSubmit(handleSuccess)}>
-        {t('common:editor.saveDraft')}
-      </Button>
+    <FormSection withoutDivider>
+      <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell $colSpan={3}>
+          <Button type="submit" disabled={isSubmitting}>
+            {t('common:editor.saveDraft')}
+          </Button>
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <Button disabled={isSubmitting} onClick={() => alert('Not implemented')}>
+            {t('common:editor.deletePosting')}
+          </Button>
+        </$GridCell>
+        <$GridCell $colSpan={2}>{null}</$GridCell>
+        <$GridCell $colSpan={3}>
+          <Button disabled={isSubmitting} onClick={() => alert('Not implemented')}>
+            {t('common:editor.preview')}
+          </Button>
+        </$GridCell>
+        <$GridCell $colSpan={2}>
+          <Button disabled={isSubmitting} onClick={() => alert('Not implemented')}>
+            {t('common:editor.publish')}
+          </Button>
+        </$GridCell>
+      </$GridCell>
     </FormSection>
   );
 };

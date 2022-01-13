@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import TetPosting from 'tet/admin/types/tetposting';
 import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
+import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 
 // add new posting / edit existing
 const Editor: React.FC = () => {
@@ -14,9 +15,17 @@ const Editor: React.FC = () => {
     criteriaMode: 'all',
   });
 
+  const upsertTetPosting = useUpsertTetPosting();
+
+  const handleSuccess = (validatedPosting: TetPosting): void => {
+    const verb = validatedPosting.id ? 'PUT' : 'POST';
+    console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
+    upsertTetPosting.mutate(validatedPosting);
+  };
+
   return (
     <FormProvider {...methods}>
-      <form aria-label="add/modify tet posting">
+      <form aria-label="add/modify tet posting" onSubmit={methods.handleSubmit(handleSuccess)}>
         <p>* pakollinen tieto</p>
         <EditorErrorNotification />
         <CompanyInfo />

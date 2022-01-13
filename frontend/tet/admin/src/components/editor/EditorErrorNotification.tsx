@@ -7,10 +7,12 @@ import TetPosting from 'tet/admin/types/tetposting';
 const EditorErrorNotification: React.FC = () => {
   const { t } = useTranslation();
   const {
-    getValues,
     formState: { isValid, errors, isSubmitted },
   } = useFormContext<TetPosting>();
-  if (isValid || !isSubmitted) {
+
+  const noTetErrors = Object.keys(errors).length === 0;
+
+  if (isValid || !isSubmitted || noTetErrors) {
     return null;
   }
 

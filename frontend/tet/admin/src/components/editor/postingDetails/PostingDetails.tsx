@@ -22,7 +22,7 @@ const PostingDetails: React.FC = () => {
           row-gap: ${theme.spacing.xl};
         `}
       >
-        <$GridCell $colSpan={4}>
+        <$GridCell $colSpan={6}>
           <TextInput<TetPosting>
             id="title"
             label={t('common:editor.posting.title')}
@@ -32,9 +32,10 @@ const PostingDetails: React.FC = () => {
             }}
           />
         </$GridCell>
-        <$GridCell $colSpan={8}>
-          <DateInput<TetPosting> id="start_date" label="Alkaen" />
-          -
+        <$GridCell $colSpan={3}>
+          <DateInput<TetPosting> id="start_date" label="Alkaen *" />
+        </$GridCell>
+        <$GridCell $colSpan={3}>
           <DateInput<TetPosting>
             id="end_date"
             label="Päättyen"
@@ -60,7 +61,7 @@ const PostingDetails: React.FC = () => {
       </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={6}>
-          <TextArea id="textarea" label={t('common:editor.posting.description')} helperText="Assistive text" required />
+          <TextInput<TetPosting> type="textArea" id="description" label={t('common:editor.posting.description')} />
         </$GridCell>
       </$GridCell>
     </FormSection>
