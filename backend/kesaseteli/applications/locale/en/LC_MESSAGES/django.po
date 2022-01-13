@@ -11,7 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2022-01-10 08:48+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
-"Language: fi\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 3.0.1\n"
 
 #, python-brace-format
-msgid "EmployerApplication state transition not allowed: {status} to {value}"
+msgid "Application state transition not allowed: {status} to {value}"
 msgstr ""
 
 msgid "Initial status of application must be draft"
@@ -95,19 +95,19 @@ msgid "payslip"
 msgstr ""
 
 msgid "9th grader"
-msgstr "yhdeksäsluokkalainen"
+msgstr ""
 
 msgid "born 2004"
-msgstr "syntynyt 2004"
+msgstr ""
 
 msgid "yes"
-msgstr "kyllä"
+msgstr ""
 
 msgid "no"
-msgstr "ei"
+msgstr ""
 
 msgid "maybe"
-msgstr "ehkä"
+msgstr ""
 
 msgid "Järjestys"
 msgstr ""
@@ -284,13 +284,15 @@ msgid "timestamp of receipt confirmation"
 msgstr ""
 
 msgid "Vahvista sähköpostiosoitteesi"
-msgstr ""
+msgstr "Confirm your email address"
 
 #, python-format
 msgid ""
 "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
 "%(activation_link)s"
 msgstr ""
+"Confirm your email address by clicking the following link:\n"
+"%(activation_link)s"
 
 msgid "youth application"
 msgstr ""

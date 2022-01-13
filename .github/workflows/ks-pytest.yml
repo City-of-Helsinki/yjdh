@@ -49,8 +49,16 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      - name: Install gettext dependency
+        run: |
+          apt-get update
+          apt-get install -y gettext
+
       - name: Install dependencies
         run: cd backend/kesaseteli && pip install -r requirements.txt -r requirements-dev.txt codecov
+
+      - name: Compile messages
+        run: cd backend/kesaseteli && python manage.py compilemessages
 
       - name: Run tests
         run: pytest backend/kesaseteli/ -ra -vv --doctest-modules --cov=. -n auto --dist loadfile --pyargs shared
