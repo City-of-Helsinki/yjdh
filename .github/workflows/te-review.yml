@@ -144,7 +144,7 @@ jobs:
         if: matrix.database
         uses: City-of-Helsinki/review-services-action@main
         with:
-          database: ${{ env.K8S_NAMESPACE }}
+          database: ${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}
           namespace: ${{ env.K8S_NAMESPACE }}
           action: create
           db_user: ${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}
