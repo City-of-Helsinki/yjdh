@@ -1,6 +1,7 @@
 import collections
 import datetime
 import decimal
+import logging
 
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from calculator.enums import RowType
@@ -24,6 +25,7 @@ from calculator.models import (
 from common.utils import pairwise
 from django.db import transaction
 
+LOGGER = logging.getLogger(__name__)
 BenefitSubRange = collections.namedtuple(
     "BenefitSubRange",
     ["start_date", "end_date", "pay_subsidy", "training_compensation"],
@@ -51,7 +53,10 @@ class HelsinkiBenefitCalculator:
         # return a list of BenefitSubRange(start_date, end_date, pay_subsidy, training_compensation)
         # that require a separate calculation.
         # date range are inclusive
-
+        if self.calculation.start_date is None or self.calculation.end_date is None:
+            raise ValueError(
+                "Cannot get sub total range of calculation start_date or end_date"
+            )
         pay_subsidies = PaySubsidy.merge_compatible_subsidies(
             list(self.calculation.application.pay_subsidies.order_by("start_date"))
         )
@@ -116,6 +121,12 @@ class HelsinkiBenefitCalculator:
 
     @transaction.atomic
     def calculate(self):
+        if self.calculation.start_date is None or self.calculation.end_date is None:
+            # If calculation start and end date is missing, do not calculate
+            LOGGER.warning(
+                "Calculation start date and end date is not set, calculation won't be saved"
+            )
+            return
         if self.calculation.application.status in self.CALCULATION_ALLOWED_STATUSES:
             self.calculation.rows.all().delete()
             self.create_rows()

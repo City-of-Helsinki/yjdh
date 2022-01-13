@@ -82,8 +82,8 @@ def test_application_create_calculation_on_submit(
     assert response.data["calculation"]["monthly_pay"] == str(
         application.employee.monthly_pay
     )
-    assert response.data["calculation"]["start_date"] == str(application.start_date)
-    assert len(response.data["calculation"]["rows"]) > 1
+    assert response.data["calculation"]["start_date"] is None
+    assert len(response.data["calculation"]["rows"]) == 0
     assert response.status_code == 200
 
 

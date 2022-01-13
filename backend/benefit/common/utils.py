@@ -82,6 +82,8 @@ def date_range_overlap(start_1, end_1, start_2, end_2):
     """
     Based on: https://stackoverflow.com/questions/9044084/efficient-date-range-overlap-calculation-in-python
     """
+    if None in [start_1, end_1, start_2, end_2]:
+        raise ValueError("Cannot check date range overlap if start or end date is None")
     latest_start = max(start_1, start_2)
     earliest_end = min(end_1, end_2)
     delta = (earliest_end - latest_start).days + 1
@@ -140,6 +142,8 @@ def days360(start_date, end_date):
 
 
 def duration_in_months(start_date, end_date, decimal_places=None):
+    if start_date is None or end_date is None:
+        return to_decimal(0, decimal_places)
     # This is the formula used in the application calculator Excel file 2021-09
     return to_decimal(
         decimal.Decimal(days360(start_date, end_date + timedelta(days=1))) / 30,

@@ -162,6 +162,8 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         )
         self.calculation.calculate()
         self.status = previous_status
+        self.calculation.start_date = self.start_date
+        self.calculation.end_date = self.end_date
         self.calculation.handler = HandlerFactory()
         self.calculation.save()
         self.save()
