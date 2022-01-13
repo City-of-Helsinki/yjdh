@@ -35,7 +35,10 @@ const ApplicantIndex: NextPage = () => {
       <MainIngress />
       <ApplicationList
         heading={t('common:applications.list.headings.handling')}
-        status={[APPLICATION_STATUSES.HANDLING]}
+        status={[
+          APPLICATION_STATUSES.HANDLING,
+          APPLICATION_STATUSES.INFO_REQUIRED,
+        ]}
       />
       <ApplicationList
         heading={t('common:applications.list.headings.received')}
