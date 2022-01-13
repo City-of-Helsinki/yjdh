@@ -21,7 +21,7 @@ const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorDa
     {
       onSuccess: () => {
         void queryClient.removeQueries();
-        void goToPage('/application');
+        void goToPage('/');
       },
     },
   );
