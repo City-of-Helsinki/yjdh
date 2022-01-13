@@ -1,4 +1,4 @@
-name: (BF Handler) Lint, Unit and Component tests
+name: (BF-Handler) Lint, Unit and Component tests
 
 on:
   pull_request:
