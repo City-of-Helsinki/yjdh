@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("companies", "0005_remove_company_eauth_profile"),
-        ("applications", "0016_add_youth_application_field_validation"),
+        ("applications", "0017_refactor_school"),
     ]
 
     operations = [

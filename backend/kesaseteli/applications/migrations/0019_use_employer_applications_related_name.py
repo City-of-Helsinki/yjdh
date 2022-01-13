@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("companies", "0005_remove_company_eauth_profile"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("applications", "0017_rename_application_to_employer_application"),
+        ("applications", "0018_rename_application_to_employer_application"),
     ]
 
     operations = [
