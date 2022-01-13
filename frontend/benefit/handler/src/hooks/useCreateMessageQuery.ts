@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import { MESSAGE_URLS } from 'benefit-shared/constants';
 import { MessageData } from 'benefit-shared/types/application';
 import { useTranslation } from 'react-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
@@ -9,7 +10,8 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { ErrorData } from '../types/common';
 
 const useCreateMessageQuery = (
-  applicationId: string
+  applicationId: string,
+  messageType: MESSAGE_URLS
 ): UseMutationResult<MessageData, AxiosError<ErrorData>, MessageData> => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
@@ -23,17 +25,17 @@ const useCreateMessageQuery = (
   };
 
   return useMutation<MessageData, AxiosError<ErrorData>, MessageData>(
-    ['createMessage', applicationId],
-    async (message: MessageData) =>
+    ['createMessage', applicationId, messageType],
+    (message: MessageData) =>
       handleResponse<MessageData>(
         axios.post(
-          `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/messages/`,
+          `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/${messageType}/`,
           message
         )
       ),
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries('messages');
+        void queryClient.invalidateQueries(messageType);
       },
       onError: () => handleError(),
     }

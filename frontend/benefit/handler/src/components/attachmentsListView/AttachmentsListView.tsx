@@ -34,7 +34,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
   );
   if (attachmentItems.length === 0) return null;
   return (
-    <>
+    <div>
       {attachmentItems.length > 0 && (
         <$GridCell $colStart={1} $colSpan={6}>
           {title && (
@@ -68,7 +68,7 @@ const AttachmentsListView: React.FC<AttachmentsListViewProps> = ({
           ))}
         </$GridCell>
       )}
-    </>
+    </div>
   );
 };
 

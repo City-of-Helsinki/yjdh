@@ -1,6 +1,6 @@
-import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
 import { Tab, TabPanel, Tabs } from 'hds-react';
 import * as React from 'react';
+import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
 import Drawer from 'shared/components/drawer/Drawer';
 import Actions from 'shared/components/messaging/Actions';
 

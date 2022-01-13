@@ -1,14 +1,11 @@
 import useCreateMessageQuery from 'benefit/handler/hooks/useCreateMessageQuery';
-import useCreateNoteQuery from 'benefit/handler/hooks/useCreateNoteQuery';
 import useMessagesQuery from 'benefit/handler/hooks/useMessagesQuery';
-import useNotesQuery from 'benefit/handler/hooks/useNotesQuery';
-import { MESSAGE_TYPES } from 'benefit-shared/constants';
+import { mapMessages } from 'benefit/handler/utils/common';
+import { MESSAGE_TYPES, MESSAGE_URLS } from 'benefit-shared/constants';
 import { Message } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
 import React from 'react';
-
-import { mapMessages } from './utility';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -22,14 +19,22 @@ const useMessenger = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const applicationId = router.query.id ?? '';
-  const { data: messagesData } = useMessagesQuery(applicationId.toString());
-  const { data: notesData } = useNotesQuery(applicationId.toString());
-
-  const { mutateAsync: createMessage } = useCreateMessageQuery(
-    applicationId.toString()
+  const { data: messagesData } = useMessagesQuery(
+    applicationId.toString(),
+    MESSAGE_URLS.MESSAGES
   );
-  const { mutateAsync: createNote } = useCreateNoteQuery(
-    applicationId.toString()
+  const { data: notesData } = useMessagesQuery(
+    applicationId.toString(),
+    MESSAGE_URLS.NOTES
+  );
+
+  const { mutate: createMessage } = useCreateMessageQuery(
+    applicationId.toString(),
+    MESSAGE_URLS.NOTES
+  );
+  const { mutateAsync: createNote } = useCreateMessageQuery(
+    applicationId.toString(),
+    MESSAGE_URLS.NOTES
   );
 
   const messages = React.useMemo(

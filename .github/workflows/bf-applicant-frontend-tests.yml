@@ -1,13 +1,13 @@
-name: (BF) Lint, Unit and Component tests
+name: (BF Applicant) Lint, Unit and Component tests
 
 on:
   pull_request:
     paths:
-      - "frontend/benefit/**"
       - "frontend/shared/**"
-      - "frontend/kesaseteli/shared/**"
+      - "frontend/benefit/shared/**"
+      - "frontend/benefit/applicant/**"
       - "frontend/*"
-      - ".github/workflows/bf-frontend-tests.yml"
+      - ".github/workflows/bf-applicant-frontend-tests.yml"
   push:
     branches: [develop, main]
   workflow_dispatch:

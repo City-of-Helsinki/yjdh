@@ -19,7 +19,7 @@ const Messages: React.FC<ComponentProps> = ({ data, variant, withScroll }) => {
 
   React.useEffect(() => {
     scrollMessagesRef?.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [data]);
+  }, [data, scrollMessagesRef]);
 
   return (
     <$MessagesList variant={variant}>
@@ -38,10 +38,14 @@ const Messages: React.FC<ComponentProps> = ({ data, variant, withScroll }) => {
             variant={variant}
           />
         ))}
-        {withScroll && <div ref={scrollMessagesRef}></div>}
+        {withScroll && <div ref={scrollMessagesRef} />}
       </>
     </$MessagesList>
   );
+};
+
+Messages.defaultProps = {
+  withScroll: false,
 };
 
 export default Messages;
