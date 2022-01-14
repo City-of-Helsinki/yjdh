@@ -185,7 +185,10 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
         else:
             pay_subsidy_monthly_eur = 0
 
-        if benefit_sub_range.training_compensation:
+        if (
+            benefit_sub_range.training_compensation
+            and benefit_sub_range.training_compensation.monthly_amount > 0
+        ):
             training_compensation_monthly_eur = self._create_row(
                 TrainingCompensationMonthlyRow,
                 training_compensation=benefit_sub_range.training_compensation,
@@ -195,7 +198,11 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
 
         monthly_deductions = pay_subsidy_monthly_eur + training_compensation_monthly_eur
 
-        if benefit_sub_range.pay_subsidy and benefit_sub_range.training_compensation:
+        if (
+            benefit_sub_range.pay_subsidy
+            and benefit_sub_range.training_compensation
+            and benefit_sub_range.training_compensation.monthly_amount > 0
+        ):
             # as per UI design, create the totals row even if the amount of training compensation
             # is zero, if the TrainingCompensation has been created
             self._create_row(

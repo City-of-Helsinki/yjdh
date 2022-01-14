@@ -41,7 +41,7 @@ env = environ.Env(
     CSRF_TRUSTED_ORIGINS=(list, []),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
-    MOCK_FLAG=(bool, False),
+    NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     # Random 32 bytes AES key, for testing purpose only, DO NOT use the same value in staging/production
     # Always override this value from env variables
     ENCRYPTION_KEY=(
@@ -275,7 +275,7 @@ YTJ_BASE_URL = env.str("YTJ_BASE_URL")
 YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
-MOCK_FLAG = env.bool("MOCK_FLAG")
+NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
 DUMMY_COMPANY_FORM = env.str("DUMMY_COMPANY_FORM")
 ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 

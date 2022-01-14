@@ -23,7 +23,7 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
+from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
@@ -690,6 +690,11 @@ def test_application_delete(api_client, application):
         ("2021-02-01", "2021-02-28", 200),  # exactly one month
         ("2021-02-01", "2022-01-31", 200),  # exactly 12 months
         ("2021-02-01", "2022-02-01", 400),  # too long
+        (
+            "2020-02-01",
+            "2020-12-31",
+            200,
+        ),  # past year is allowed, as the application is not submitted
     ],
 )
 def test_application_date_range(
@@ -717,168 +722,34 @@ def test_application_date_range(
 
 
 @pytest.mark.parametrize(
-    "previous_benefits, benefit_type, expected_result",
+    "start_date,end_date,status_code",
     [
         (
-            [
-                (
-                    "2020-01-01",
-                    "2020-12-31",
-                )
-            ],
-            BenefitType.SALARY_BENEFIT,
+            "2020-12-21",
+            "2021-02-27",
             400,
-        ),  # 12 months of benefit used, 24 months not elapsed
+        ),  # start_date in past (relative to freeze_time date)
         (
-            [
-                (
-                    "2020-01-01",
-                    "2020-12-31",
-                )
-            ],
-            BenefitType.EMPLOYMENT_BENEFIT,
-            400,
-        ),  # same as above, benefit_type does not matter
-        (
-            [
-                (
-                    "2019-01-01",
-                    "2019-12-31",
-                )
-            ],
-            BenefitType.EMPLOYMENT_BENEFIT,
-            400,
-        ),  # 12 months of benefit used, 24 months not elapsed
-        (
-            [
-                (
-                    "2018-01-01",
-                    "2018-12-31",
-                )
-            ],
-            BenefitType.EMPLOYMENT_BENEFIT,
+            "2021-01-01",
+            "2021-02-28",
             200,
-        ),  # 24 months is elapsed
+        ),  # start_date in current year (relative to freeze_time date)
         (
-            [
-                (
-                    "2020-01-01",
-                    "2020-06-30",
-                )
-            ],
-            BenefitType.SALARY_BENEFIT,
+            "2022-12-31",
+            "2023-01-31",
             200,
-        ),  # only 6 months of benefit used
-        (
-            [
-                (
-                    "2020-01-01",
-                    "2020-07-01",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),
-        # 6 months + 1 day of benefit used, one day too much for a new 6-month benefit
-        (
-            [
-                (
-                    "2019-07-01",
-                    "2019-12-31",
-                ),
-                (
-                    "2020-07-01",
-                    "2020-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),  # 24 months not elapsed
-        (
-            [
-                (
-                    "2019-01-01",
-                    "2019-06-30",
-                ),
-                (
-                    "2020-07-01",
-                    "2020-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),  # 24 months not elapsed
-        (
-            [
-                (
-                    "2018-01-01",
-                    "2018-06-30",
-                ),
-                (
-                    "2018-07-01",
-                    "2018-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            200,
-        ),  # 24 months elapsed
-        (
-            [
-                (
-                    "2017-07-01",
-                    "2018-06-30",
-                ),
-                (
-                    "2020-07-01",
-                    "2020-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            200,
-        ),
-        # 24-month gap in past benefits so the benefit from 2017-2018 is not included and application is valid
-        (
-            [
-                (
-                    "2018-01-01",
-                    "2018-03-31",
-                ),
-                (
-                    "2019-01-01",
-                    "2019-03-31",
-                ),
-                (
-                    "2020-01-01",
-                    "2020-03-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),
-        # several previously granted benefits that don't have a 24-month gap
+        ),  # start_date in next year (relative to freeze_time date)
     ],
 )
-def test_application_with_previously_granted_benefits(
-    api_client, application, previous_benefits, benefit_type, expected_result
+def test_application_date_range_on_submit(
+    request, api_client, application, start_date, end_date, status_code
 ):
-    for previous_start_date, previous_end_date in previous_benefits:
-        # previous, already granted benefits for the same employee+company
-        decided_application = DecidedApplicationFactory()
-        decided_application.benefit_type = BenefitType.SALARY_BENEFIT
-        decided_application.start_date = previous_start_date
-        decided_application.end_date = previous_end_date
-        decided_application.company = application.company
-        decided_application.save()
-        decided_application.employee.social_security_number = (
-            application.employee.social_security_number
-        )
-        decided_application.employee.save()
+    add_attachments_to_application(request, application)
 
     data = ApplicantApplicationSerializer(application).data
 
-    data["benefit_type"] = benefit_type
-    data["start_date"] = date(2021, 7, 1)
-    data["end_date"] = date(2021, 12, 31)
+    data["start_date"] = start_date
+    data["end_date"] = end_date
     data["pay_subsidy_granted"] = True
     data["pay_subsidy_percent"] = 50
 
@@ -886,12 +757,14 @@ def test_application_with_previously_granted_benefits(
         get_detail_url(application),
         data,
     )
-    assert response.status_code == expected_result
-    if expected_result == 200:
-        assert response.data["start_date"] == "2021-07-01"
-        assert response.data["end_date"] == "2021-12-31"
-    else:
-        assert response.data.keys() == {"start_date"}
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    assert response.data["start_date"] == start_date
+    assert response.data["end_date"] == end_date
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == status_code
 
 
 @pytest.mark.parametrize(

@@ -8,7 +8,7 @@ from applications.enums import (
     OrganizationType,
 )
 from calculator.enums import RowType
-from common.utils import duration_in_months
+from common.utils import DurationMixin
 from companies.models import Company
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
@@ -62,7 +62,7 @@ def address_property(field_suffix):
     return _address_property_getter
 
 
-class Application(UUIDModel, TimeStampedModel):
+class Application(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Data model for Helsinki benefit applications
 
@@ -73,6 +73,8 @@ class Application(UUIDModel, TimeStampedModel):
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
+
+    BENEFIT_MAX_MONTHS = 12
 
     company = models.ForeignKey(
         Company,
@@ -297,11 +299,6 @@ class Application(UUIDModel, TimeStampedModel):
         ):
             return "R{}".format(self.application_number)
         return "Y{}".format(self.application_number)
-
-    @property
-    def duration_in_months(self):
-        # The application calculation Excel file used the DAYS360 function, so we're doing the same
-        return duration_in_months(self.start_date, self.end_date)
 
     @property
     def ahjo_rows(self):

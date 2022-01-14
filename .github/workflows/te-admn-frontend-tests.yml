@@ -6,8 +6,8 @@ on:
   pull_request:
     paths:
       - 'frontend/shared/**'
+      - 'frontend/tet/admin/**'
       - 'frontend/*'
-      - 'frontend/tet/**'
       - '.github/workflows/te-admn-frontend-tests.yml'
   workflow_dispatch:
 defaults:
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: '14'
       - name: Get yarn cache directory path
@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: '14'
       - name: Get yarn cache directory path

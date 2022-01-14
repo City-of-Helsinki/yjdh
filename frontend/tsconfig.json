@@ -25,7 +25,6 @@
       "tet/admin/*": ["tet/admin/src/*"],
       "tet/employer/*": ["tet/employer/src/*"],
       "tet/youth/*": ["tet/youth/src/*"],
-      "tet-shared/*": ["tet/shared/src/*"],
       "shared/*": ["shared/src/*", "shared/browser-tests/*"]
     }
   },

@@ -96,7 +96,7 @@ def get_or_create_company_using_organization_roles(request: HttpRequest) -> Comp
     (no company found with the provided business id or the request limit of YTJ API has been met), the company is
     created only with the name and business id.
     """
-    if settings.MOCK_FLAG:
+    if settings.NEXT_PUBLIC_MOCK_FLAG:
         return handle_mock_company(request)
 
     try:

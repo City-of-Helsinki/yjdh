@@ -195,7 +195,7 @@ export type CalculationData = {
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
-  additional_informationn_needed_by?: string;
+  additional_information_needed_by?: string;
   application_number?: number;
   application_step: string; // required
   employee: EmployeeData; // required
@@ -255,6 +255,7 @@ export type ApplicationListItemData = {
   applicationNum?: number;
   employeeName?: string;
   handlerName?: string;
+  additionalInformationNeededBy?: string;
 };
 
 export interface Step1 {

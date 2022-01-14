@@ -83,7 +83,9 @@
         "applicationNum": "Numero",
         "employeeName": "Työntekijä",
         "handlerName": "Käsittelijä",
-        "companyForm": "Yritysmuoto"
+        "companyForm": "Yritysmuoto",
+        "additionalInformationNeededBy": "",
+        "additionalInformationNeededByVal": "Muokattava {{date}}"
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"

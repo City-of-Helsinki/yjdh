@@ -39,7 +39,7 @@ env:
   YOUTH_URL: https://te-yout-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   ADMIN_URL: https://te-admn-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://te-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  MOCK_FLAG: 1
+  NEXT_PUBLIC_MOCK_FLAG: 1
   NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
   CORS_ALLOW_ALL_ORIGINS: 1

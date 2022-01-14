@@ -2,24 +2,18 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from applications.api.v1.serializers import (
-    ApplicationSerializer,
-    SummerVoucherSerializer,
+    EmployerApplicationSerializer,
+    EmployerSummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus, AttachmentType
-from applications.models import School, validate_school
+from applications.models import School, validate_name
 from applications.tests.test_applications_api import get_detail_url
 
 
 @pytest.mark.django_db
-def test_validate_school_with_all_active_schools():
-    for school in School.objects.active():
-        validate_school(school.name)
-
-
-@pytest.mark.django_db
-def test_validate_school_with_all_deleted_schools():
-    for school in School.objects.deleted():
-        validate_school(school.name)
+def test_validate_name_with_all_listed_schools():
+    for school in School.objects.all():
+        validate_name(school.name)
 
 
 @pytest.mark.django_db
@@ -30,8 +24,8 @@ def test_validate_school_with_all_deleted_schools():
         "Testikoulu",
     ],
 )
-def test_validate_school_with_valid_unlisted_school(name):
-    validate_school(name)
+def test_validate_name_with_valid_unlisted_school(name):
+    validate_name(name)
 
 
 @pytest.mark.django_db
@@ -43,9 +37,9 @@ def test_validate_school_with_valid_unlisted_school(name):
         "Yläaste (Arabia)",  # Parentheses are not allowed
     ],
 )
-def test_validate_school_with_invalid_unlisted_school(name):
+def test_validate_name_with_invalid_unlisted_school(name):
     with pytest.raises(ValidationError):
-        validate_school(name)
+        validate_name(name)
 
 
 @pytest.mark.django_db
@@ -81,7 +75,7 @@ def test_application_status_change(
     application.status = from_status
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(
@@ -101,7 +95,7 @@ def test_application_status_change(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "missing_field",
-    ApplicationSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS,
+    EmployerApplicationSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS,
 )
 def test_application_status_change_with_missing_data(
     api_client,
@@ -117,7 +111,7 @@ def test_application_status_change_with_missing_data(
     application.status = from_status
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
     data.pop(missing_field)
 
@@ -136,7 +130,7 @@ def test_application_status_change_with_missing_data(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "missing_field",
-    SummerVoucherSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS,
+    EmployerSummerVoucherSerializer.REQUIRED_FIELDS_FOR_SUBMITTED_SUMMER_VOUCHERS,
 )
 def test_application_status_change_with_missing_summer_voucher_data(
     api_client,
@@ -155,7 +149,7 @@ def test_application_status_change_with_missing_summer_voucher_data(
     application.status = from_status
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
     data["summer_vouchers"][0].pop(missing_field)
 
@@ -199,7 +193,7 @@ def test_application_status_change_with_missing_attachments(
         attachment.attachment_file.delete(save=False)
         attachment.delete()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(
@@ -236,7 +230,7 @@ def test_separate_invoicer_fields_not_required_if_condition_false(
     application.invoicer_phone_number = ""
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(
@@ -271,7 +265,7 @@ def test_separate_invoicer_fields_required_if_condition_true(
     setattr(application, missing_field, "")
     application.save()
 
-    data = ApplicationSerializer(application).data
+    data = EmployerApplicationSerializer(application).data
     data["status"] = to_status
 
     response = api_client.put(

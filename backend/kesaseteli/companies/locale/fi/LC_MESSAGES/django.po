@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-03 13:53+0300\n"
+"POT-Creation-Date: 2022-01-10 06:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,38 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: companies/models.py:7
+
 msgid "name"
 msgstr ""
 
-#: companies/models.py:8
 msgid "business id"
 msgstr ""
 
-#: companies/models.py:10
 msgid "company form"
 msgstr ""
 
-#: companies/models.py:12
 msgid "industry"
 msgstr ""
 
-#: companies/models.py:15
 msgid "street address"
 msgstr ""
 
-#: companies/models.py:17
 msgid "postcode"
 msgstr ""
 
-#: companies/models.py:18
 msgid "city"
 msgstr ""
 
-#: companies/models.py:20
 msgid "ytj json"
-msgstr ""
-
-#: companies/models.py:26
-msgid "eauthorization profile"
 msgstr ""

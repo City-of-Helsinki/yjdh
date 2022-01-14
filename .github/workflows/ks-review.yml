@@ -39,10 +39,10 @@ env:
   YOUTH_URL: https://ks-youth-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   HANDLER_URL: https://ks-hndl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://ks-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
-  MOCK_FLAG: 1
+  NEXT_PUBLIC_MOCK_FLAG: 1
   NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
-  NEXT_PUBLIC_YOUTH_APPLICATION_ACTIVATION_LINK_EXPIRATION_SECONDS: 43200 # 12 hours in seconds
+  NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 43200 # 12 hours in seconds
   CORS_ALLOW_ALL_ORIGINS: 1
 jobs:
   build:
@@ -214,7 +214,7 @@ jobs:
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
         shell: bash
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: '14'
       - name: Get yarn cache directory path

@@ -10,6 +10,9 @@ module.exports = {
     [`^benefit-shared\/(.*)$`]: '<rootDir>/benefit/shared/src/$1',
     [`^benefit/applicant\/(.*)$`]: '<rootDir>/benefit/applicant/src/$1',
     [`^benefit/handler\/(.*)$`]: '<rootDir>/benefit/handler/src/$1',
+    [`^tet/admin\/(.*)$`]: '<rootDir>/tet/admin/src/$1',
+    [`^tet/employer\/(.*)$`]: '<rootDir>/tet/employer/src/$1',
+    [`^tet/youth\/(.*)$`]: '<rootDir>/tet/youth/src/$1',
   },
   setupFilesAfterEnv: [
     '<rootDir>/shared/src/__tests_/utils/setupTests.ts',
@@ -17,6 +20,7 @@ module.exports = {
     '<rootDir>benefit/handler/test/i18n/i18n-test.ts',
     '<rootDir>kesaseteli/employer/src/__tests__/utils/i18n/i18n-test.ts',
     '<rootDir>kesaseteli/youth/src/__tests__/utils/i18n/i18n-test.ts',
+    '<rootDir>tet/admin/src/__tests__/utils/init-18n.ts',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/kesaseteli/employer/src/pages/',
@@ -28,6 +32,9 @@ module.exports = {
     '<rootDir>/shared/src/server/next-server.js',
     '<rootDir>/shared/src/__tests__/component-apis/',
     '<rootDir>/shared/src/__tests__/utils/',
+    '<rootDir>/tet/admin/src/pages/',
+    '<rootDir>/tet/employer/src/pages/',
+    '<rootDir>/tet/youth/src/pages/',
   ],
   collectCoverageFrom: ['./**/*.{ts,tsx,js,jsx}'],
   testPathIgnorePatterns: ['__tests__/utils', 'component-apis'],

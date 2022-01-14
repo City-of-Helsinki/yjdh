@@ -6,6 +6,8 @@ import Container from 'shared/components/container/Container';
 import { COLUMN_WIDTH } from 'shared/components/table/constants';
 import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { $DataValueAlert } from '../applicationReview/ApplicationReview.sc';
 
 import { $Empty, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
@@ -83,6 +85,36 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
       cols.push({
         Header: getHeader('handlerName'),
         accessor: 'handlerName',
+        disableSortBy: true,
+        width: COLUMN_WIDTH.M,
+      });
+    }
+
+    if (status.includes(APPLICATION_STATUSES.INFO_REQUIRED)) {
+      cols.push({
+        // eslint-disable-next-line react/display-name
+        Cell: ({
+          cell: {
+            row: {
+              original: { additionalInformationNeededBy },
+            },
+          },
+        }) => (
+          <$DataValueAlert
+            css={`
+              font-weight: 400;
+            `}
+          >
+            {t(
+              `common:applications.list.columns.additionalInformationNeededByVal`,
+              {
+                date: convertToUIDateFormat(additionalInformationNeededBy),
+              }
+            )}
+          </$DataValueAlert>
+        ),
+        Header: getHeader('additionalInformationNeededBy'),
+        accessor: 'additionalInformationNeededBy',
         disableSortBy: true,
         width: COLUMN_WIDTH.M,
       });
