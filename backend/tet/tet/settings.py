@@ -136,6 +136,7 @@ INSTALLED_APPS = [
     "shared.audit_log",
     "shared.oidc",
     # local apps
+    "postings",
 ]
 
 if ENABLE_ADMIN:
