@@ -133,7 +133,7 @@
     "prettier": "^2.5.1",
     "pretty": "^2.0.0",
     "react-i18next": "^11.11.0",
-    "slack-node": "^0.1.8",
+    "slack-node": "^0.2.0",
     "testcafe": "^1.18.1",
     "testcafe-reporter-custom": "^1.1.1",
     "testcafe-reporter-html": "^1.4.6",
@@ -141,5 +141,8 @@
     "typescript": "^4.5.3"
   },
   "resolutions": {
+    "follow-redirects": "1.14.7",
+    "node-gyp": "^8.4.1",
+    "requestretry": "6.0.0"
   }
 }
