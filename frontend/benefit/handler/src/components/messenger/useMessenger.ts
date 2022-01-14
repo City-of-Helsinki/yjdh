@@ -42,7 +42,7 @@ const useMessenger = (): ExtendedComponentProps => {
     });
 
   const handleCreateNote = (note: string): void =>
-    void createNote({
+    createNote({
       message_type: MESSAGE_TYPES.NOTE,
       content: note,
     });

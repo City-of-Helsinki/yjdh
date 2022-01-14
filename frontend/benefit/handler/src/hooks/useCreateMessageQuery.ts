@@ -35,7 +35,7 @@ const useCreateMessageQuery = (
       ),
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries(messageType);
+        void queryClient.invalidateQueries('messages');
       },
       onError: () => handleError(),
     }
