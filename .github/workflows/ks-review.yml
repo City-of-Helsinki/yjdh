@@ -134,8 +134,8 @@ jobs:
           echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_URL=postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@${{ env.ENVIRONMENT_SLUG }}-review-postgresql:5432/appdb" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_ADMIN_PASSWORD_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_USERNAME_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_PASSWORD_REVIEW }}" >> $GITHUB_ENV
 
       - name: Review-Services
         if: matrix.database
