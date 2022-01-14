@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@frontend/shared": "*",
+    "@frontend/benefit-shared": "*",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.6",
     "axios": "^0.24.0",

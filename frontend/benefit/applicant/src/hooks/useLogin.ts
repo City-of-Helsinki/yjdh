@@ -1,7 +1,7 @@
 import {
   BackendEndpoint,
   getBackendUrl,
-} from 'benefit/applicant/backend-api/backend-api';
+} from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import React from 'react';
 

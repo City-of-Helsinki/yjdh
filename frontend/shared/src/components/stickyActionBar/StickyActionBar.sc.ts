@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const $Wrapper = styled.div`
   position: fixed;
-  z-index: 10;
+  z-index: 101;
   background-color: ${(props) => props.theme.colors.white};
   bottom: 0;
   width: 100%;

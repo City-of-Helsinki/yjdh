@@ -1,4 +1,4 @@
-import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';

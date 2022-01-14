@@ -40,6 +40,7 @@ const Header: React.FC = () => {
       sender={message.sender}
       date={message.date}
       text={message.text}
+      variant="message"
     />
   ));
 
@@ -82,9 +83,7 @@ const Header: React.FC = () => {
         <Drawer
           isOpen={isDrawerOpen}
           title={t('common:header.drawer.title')}
-          footer={<Actions />}
-          closeBtnAriaLabel={t('common:utility.close')}
-          handleClose={() => setIsDrawerOpen(false)}
+          footer={<Actions sendText="Send" errorText="Error" onSend={noop} />}
         >
           {messagesElements}
         </Drawer>
