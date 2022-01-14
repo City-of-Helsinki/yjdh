@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('postings', '0001_initial'),
+        ("postings", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='tetpostingtemp',
-            name='data',
-            field=models.JSONField(verbose_name='posting data'),
+            model_name="tetpostingtemp",
+            name="data",
+            field=models.JSONField(verbose_name="posting data"),
         ),
     ]

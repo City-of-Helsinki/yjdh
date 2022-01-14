@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.urls import include, path
 from django.views.decorators.http import require_GET
 
 urlpatterns = [
+    path("v1/postings/", include("postings.urls")),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path("admin/", admin.site.urls),
@@ -36,11 +37,3 @@ def readiness_handler(*args, **kwargs):
 
 
 urlpatterns += [path("healthz", healthz_handler), path("readiness", readiness_handler)]
-
-
-@require_GET
-def postings_stub(*args, **kwargs):
-    return JsonResponse([], safe=False)
-
-
-urlpatterns += [path("tet/postings", postings_stub)]

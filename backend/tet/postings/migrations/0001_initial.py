@@ -8,16 +8,28 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='TetPostingTemp',
+            name="TetPostingTemp",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('owner', models.CharField(max_length=100)),
-                ('data', django.contrib.postgres.fields.jsonb.JSONField(verbose_name='posting data')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("owner", models.CharField(max_length=100)),
+                (
+                    "data",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        verbose_name="posting data"
+                    ),
+                ),
             ],
         ),
     ]
