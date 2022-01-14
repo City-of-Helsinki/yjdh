@@ -96,16 +96,6 @@ jobs:
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
 
-      - name: Database variables
-        if: matrix.database
-        run: |
-          echo "K8S_SECRET_DATABASE_DB=appdb" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_HOST=${{ env.ENVIRONMENT_SLUG }}-review-postgresql" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_PASSWORD=${{ env.DATABASE_PASSWORD }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_PORT=5432" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_USERNAME=${{ env.DATABASE_USER }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_URL=postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@${{ env.ENVIRONMENT_SLUG }}-review-postgresql:5432/appdb" >> $GITHUB_ENV
-
       - name: Backend variables
         if: matrix.database
         env:
@@ -119,6 +109,13 @@ jobs:
           echo "K8S_SECRET_CSRF_COOKIE_DOMAIN=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.FRONTEND_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_URL=postgresql://${{ env.DATABASE_USER }}:${{ env.DATABASE_PASSWORD }}@${{ env.ENVIRONMENT_SLUG }}-review-postgresql:5432/appdb" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_ADMIN_PASSWORD_REVIEW }}" >> $GITHUB_ENV
+
       - name: Review-Services
         if: matrix.database
         uses: City-of-Helsinki/review-services-action@main
@@ -131,15 +128,6 @@ jobs:
           db_host: ${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}
           db_port: ${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}
           kubeconfig: ${{ secrets.KUBECONFIG_RAW }}
-
-      - name: Database variables
-        if: matrix.database
-        run: |
-          echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_ADMIN_PASSWORD_REVIEW }}" >> $GITHUB_ENV
 
       - name: Service with ingress
         run: |
