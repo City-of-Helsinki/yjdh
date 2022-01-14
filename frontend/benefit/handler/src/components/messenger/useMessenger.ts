@@ -30,13 +30,13 @@ const useMessenger = (): ExtendedComponentProps => {
     applicationId.toString(),
     MESSAGE_URLS.NOTES
   );
-  const { mutateAsync: createNote } = useCreateMessageQuery(
+  const { mutate: createNote } = useCreateMessageQuery(
     applicationId.toString(),
     MESSAGE_URLS.NOTES
   );
 
   const handleSendMessage = (message: string): void =>
-    void createMessage({
+    createMessage({
       message_type: MESSAGE_TYPES.HANDLER_MESSAGE,
       content: message,
     });

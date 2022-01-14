@@ -24,7 +24,7 @@ const useCreateMessageQuery = (
     );
   };
 
-  return useMutation<MessageData, AxiosError<ErrorData>, MessageData>(
+  return useMutation(
     ['createMessage', applicationId, messageType],
     (message: MessageData) =>
       handleResponse<MessageData>(
