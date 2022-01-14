@@ -7,8 +7,8 @@ import { COLUMN_WIDTH } from 'shared/components/table/constants';
 import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { $DataValueAlert } from '../applicationReview/ApplicationReview.sc';
 
+import { $DataValueAlert } from '../applicationReview/ApplicationReview.sc';
 import { $Empty, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
@@ -32,7 +32,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     getHeader,
   } = useApplicationList(status);
 
-  console.log(123);
   const columns: ColumnType[] = React.useMemo(() => {
     const cols: ColumnType[] = [
       {
@@ -122,7 +121,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     }
 
     return cols.filter(Boolean);
-  }, [getHeader, status]);
+  }, [t, getHeader, status]);
 
   if (shouldShowSkeleton) {
     return (
