@@ -1,14 +1,14 @@
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import useGoToPage from 'shared/hooks/useGoToPage';
 import TetPosting from 'tet/admin/types/tetposting';
 import { AxiosError } from 'axios';
 import { ErrorData } from 'benefit/applicant/types/common';
+import { useRouter } from 'next/router';
 
 const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorData>, TetPosting> => {
   const { axios, handleResponse } = useBackendAPI();
-  const goToPage = useGoToPage();
+  const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation<TetPosting, AxiosError<ErrorData>, TetPosting>(
     'upsert',
@@ -21,7 +21,7 @@ const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorDa
     {
       onSuccess: () => {
         void queryClient.removeQueries();
-        void goToPage('/');
+        void router.push('/');
       },
     },
   );
