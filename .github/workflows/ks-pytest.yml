@@ -20,10 +20,7 @@ jobs:
 
     services:
       postgres:
-        build:
-          context: ../../backend
-          dockerfile: ./docker/kesaseteli.Dockerfile
-          target: finnish_postgres
+        image: postgres:12
         ports:
           - 5432:5432
         options: >-
@@ -35,8 +32,6 @@ jobs:
           POSTGRES_USER: kesaseteli
           POSTGRES_PASSWORD: kesaseteli
           POSTGRES_DB: kesaseteli
-          LC_COLLATE: 'fi_FI.UTF-8'
-          LC_CTYPE: 'fi_FI.UTF-8'
 
     steps:
       - name: Check out repository
