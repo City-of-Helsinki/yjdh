@@ -7,8 +7,25 @@ import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 
+const initialValuesForNew: TetPosting = {
+  title: '',
+  description: '',
+  spots: 3,
+  start_date: '',
+  end_date: '',
+};
+
+type EditorProps = {
+  // eslint-disable-next-line react/require-default-props
+  initialValue?: TetPosting;
+};
+
+export type EditorSectionProps = {
+  initialValue: TetPosting;
+};
+
 // add new posting / edit existing
-const Editor: React.FC = () => {
+const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const methods = useForm<TetPosting>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -16,6 +33,8 @@ const Editor: React.FC = () => {
   });
 
   const upsertTetPosting = useUpsertTetPosting();
+
+  const posting = initialValue || initialValuesForNew;
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
     const verb = validatedPosting.id ? 'PUT' : 'POST';
@@ -29,7 +48,7 @@ const Editor: React.FC = () => {
         <p>* pakollinen tieto</p>
         <EditorErrorNotification />
         <CompanyInfo />
-        <PostingDetails />
+        <PostingDetails initialValue={posting} />
         <ActionButtons />
       </form>
     </FormProvider>

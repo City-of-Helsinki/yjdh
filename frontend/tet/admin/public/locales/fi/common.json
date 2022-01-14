@@ -48,7 +48,9 @@
     "posting": {
       "header": "Työharjoittelupaikan tiedot",
       "title": "Tehtävänimike",
-      "description": "Vapaa kuvaus työharjoittelupaikasta / -tehtävästä"
+      "description": "Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
+      "workHoursNotice": "Työaika on aina sama 30h per viikko.",
+      "spotsLabel": "Työharjoittelupaikkoja"
     }
   },
   "footer": {
