@@ -1,15 +1,16 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { MESSAGE_URLS } from 'benefit-shared/constants';
-import { MessageData } from 'benefit-shared/types/application';
+import { Message, MessageData } from 'benefit-shared/types/application';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
+import { mapMessages } from '../utils/common';
 
 const useMessagesQuery = (
   applicationId: string,
   messageType: MESSAGE_URLS
-): UseQueryResult<MessageData[], Error> => {
+): UseQueryResult<Message[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
 
@@ -20,7 +21,7 @@ const useMessagesQuery = (
     );
   };
 
-  return useQuery<MessageData[], Error>(
+  return useQuery(
     ['messages', applicationId, messageType],
     async () => {
       const res = axios.get<MessageData[]>(
@@ -29,6 +30,7 @@ const useMessagesQuery = (
       return handleResponse(res);
     },
     {
+      select: (data: MessageData[]) => mapMessages(data),
       onError: () => handleError(),
     }
   );
