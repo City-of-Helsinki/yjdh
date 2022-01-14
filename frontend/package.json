@@ -142,7 +142,6 @@
   },
   "resolutions": {
     "follow-redirects": "1.14.7",
-    "node-gyp": "^8.4.1",
-    "requestretry": "6.0.0"
+    "node-gyp": "^8.4.1"
   }
 }
