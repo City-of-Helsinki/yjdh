@@ -32,6 +32,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     getHeader,
   } = useApplicationList(status);
 
+  console.log(123);
   const columns: ColumnType[] = React.useMemo(() => {
     const cols: ColumnType[] = [
       {
