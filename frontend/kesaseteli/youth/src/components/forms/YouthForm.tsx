@@ -1,6 +1,7 @@
 import SchoolSelection from 'kesaseteli/youth/components/forms/SchoolSelection';
 import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
+import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -12,6 +13,7 @@ import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
+import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 import useGoToPage from 'shared/hooks/useGoToPage';
 
 const YouthForm: React.FC = () => {
@@ -19,9 +21,16 @@ const YouthForm: React.FC = () => {
   const register = useRegisterInput<YouthFormData>();
 
   const goToPage = useGoToPage();
-  const handleSaveSuccess = React.useCallback(() => {
-    goToPage('/thankyou');
-  }, [goToPage]);
+  const handleSaveSuccess = React.useCallback(
+    (application: YouthApplication) => {
+      const url =
+        isRealIntegrationsEnabled() || !application.id
+          ? '/thankyou'
+          : `/thankyou?id=${application.id}`;
+      goToPage(url);
+    },
+    [goToPage]
+  );
 
   return (
     <>
