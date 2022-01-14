@@ -134,10 +134,10 @@
     "pretty": "^2.0.0",
     "react-i18next": "^11.11.0",
     "slack-node": "^0.1.8",
-    "testcafe": "^1.17.1",
+    "testcafe": "^1.18.1",
     "testcafe-reporter-custom": "^1.1.1",
     "testcafe-reporter-html": "^1.4.6",
-    "ts-jest": "^27.1.1",
+    "ts-jest": "^27.1.2",
     "typescript": "^4.5.3"
   },
   "resolutions": {
