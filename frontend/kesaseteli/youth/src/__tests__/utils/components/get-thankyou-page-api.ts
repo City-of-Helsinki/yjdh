@@ -16,6 +16,15 @@ const getThankYouPageApi = () => ({
         )
       );
     },
+    async activationLinkIsPresent(url: string) {
+      const link = await screen.findByRole('link', { name: 'AKTIVOI' });
+      expect(link).toHaveAttribute('href', url);
+    },
+    async activationLinkIsNotPresent() {
+      return expect(
+        screen.queryByRole('link', { name: 'AKTIVOI' })
+      ).not.toBeInTheDocument();
+    },
   },
   actions: {
     async clickGoToFrontPageButton() {

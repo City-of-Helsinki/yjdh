@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import NotificationPage from 'shared/components/pages/NotificationPage';
-import LinkText from 'shared/components/link-text/LinkText';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { getFirstValue } from 'shared/utils/array.utils';
@@ -26,14 +25,14 @@ const ThankYouPage: NextPage = () => {
       goToFrontPageText={t('common:thankyouPage.goToFrontendPage')}
     >
       {showActivationLink && (
-        <LinkText
+        <a
           data-testid="activate"
           href={`${getBackendUrl(
             '/v1/youthapplications/'
           )}${applicationId}/activate`}
         >
           AKTIVOI
-        </LinkText>
+        </a>
       )}
     </NotificationPage>
   );
