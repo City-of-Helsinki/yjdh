@@ -7,9 +7,10 @@ import { fakeYouthFormData } from '../../src/__tests__/utils/fake-objects';
 import getActivationLinkExpirationSeconds from '../../src/utils/get-activation-link-expiration-seconds';
 import sendYouthApplication from '../actions/send-youth-application';
 import { getActivatedPageComponents } from '../notification-page/activatedPage.components';
+import { getAlreadyActivatedPageComponents } from '../notification-page/alreadyActivatedPage.components';
 import { getExpiredPageComponents } from '../notification-page/expiredPage.components';
 import { getThankYouPageComponents } from '../thank-you-page/thankYouPage.components';
-import { getFrontendUrl } from '../utils/url.utils';
+import { clickBrowserBackButton, getFrontendUrl } from '../utils/url.utils';
 import { getIndexPageComponents } from './indexPage.components';
 
 const url = getFrontendUrl('/');
@@ -32,15 +33,22 @@ test('can send application and return to front page', async (t) => {
 });
 
 if (!isRealIntegrationsEnabled()) {
-  test('can send application and activate kesäseteli voucher', async (t) => {
+  test('can send application and activate kesäseteli voucher, and reactivating goes to already activated -page', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
     await sendYouthApplication(t, formData);
-    const thankYouPage = await getThankYouPageComponents(t);
+    let thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
     const activatedPage = await getActivatedPageComponents(t);
     await activatedPage.expectations.isLoaded();
+
+    // reactivating fails
+    await clickBrowserBackButton();
+    thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.actions.clickActivationLink();
+    const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);
+    await alreadyActivatedPage.expectations.isLoaded();
   });
   test('shows expiration page if kesäseteli is activated too late', async (t) => {
     const indexPage = await getIndexPageComponents(t);
