@@ -6,8 +6,10 @@ import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integr
 import { fakeYouthFormData } from '../../src/__tests__/utils/fake-objects';
 import getActivationLinkExpirationSeconds from '../../src/utils/get-activation-link-expiration-seconds';
 import sendYouthApplication from '../actions/send-youth-application';
+import { getActivatedPageComponents } from '../notification-page/activatedPage.components';
+import { getExpiredPageComponents } from '../notification-page/expiredPage.components';
 import { getThankYouPageComponents } from '../thank-you-page/thankYouPage.components';
-import { getFrontendUrl, getUrlUtils } from '../utils/url.utils';
+import { getFrontendUrl } from '../utils/url.utils';
 import { getIndexPageComponents } from './indexPage.components';
 
 const url = getFrontendUrl('/');
@@ -30,16 +32,17 @@ test('can send application and return to front page', async (t) => {
 });
 
 if (!isRealIntegrationsEnabled()) {
-  test('can send application and activate', async (t) => {
+  test('can send application and activate kesäseteli voucher', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
-    await getUrlUtils(t).expectations.urlChangedToActivatedPage();
+    const activatedPage = await getActivatedPageComponents(t);
+    await activatedPage.expectations.isLoaded();
   });
-  test('shows expiration page if activated too late', async (t) => {
+  test('shows expiration page if kesäseteli is activated too late', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -48,6 +51,7 @@ if (!isRealIntegrationsEnabled()) {
 
     await t.wait((getActivationLinkExpirationSeconds() + 1) * 1000);
     await thankYouPage.actions.clickActivationLink();
-    await getUrlUtils(t).expectations.urlChangedToExpirationPage();
+    const expiredPage = await getExpiredPageComponents(t);
+    await expiredPage.expectations.isLoaded();
   });
 }

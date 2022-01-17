@@ -4,6 +4,8 @@ import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import FormSection from 'shared/components/forms/section/FormSection';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import NotificationPage from 'shared/components/pages/NotificationPage';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
@@ -25,14 +27,18 @@ const ThankYouPage: NextPage = () => {
       goToFrontPageText={t('common:thankyouPage.goToFrontendPage')}
     >
       {showActivationLink && (
-        <a
-          data-testid="activate"
-          href={`${getBackendUrl(
-            '/v1/youthapplications/'
-          )}${applicationId}/activate`}
-        >
-          AKTIVOI
-        </a>
+        <FormSection columns={1} paddingBottom withoutDivider>
+          <$GridCell>
+            <a
+              data-testid="activate"
+              href={`${getBackendUrl(
+                '/v1/youthapplications/'
+              )}${applicationId}/activate`}
+            >
+              AKTIVOI
+            </a>
+          </$GridCell>
+        </FormSection>
       )}
     </NotificationPage>
   );
