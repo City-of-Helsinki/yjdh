@@ -1,5 +1,6 @@
 import re
 from datetime import date, datetime, timedelta
+from typing import Dict, List
 
 import filetype
 from applications.api.v1.status_transition_validator import (
@@ -7,7 +8,7 @@ from applications.api.v1.status_transition_validator import (
     ApplicationBatchStatusValidator,
     HandlerApplicationStatusValidator,
 )
-from applications.benefit_aggregation import get_past_benefit_info
+from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
     ApplicationBatchStatus,
     ApplicationStatus,
@@ -500,7 +501,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
-            "past_benefit_info",
+            "former_benefit_info",
             "available_benefit_types",
             "official_company_street_address",
             "official_company_city",
@@ -538,6 +539,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "attachments",
             "ahjo_decision",
             "unread_messages_count",
+            "warnings",
         ]
         read_only_fields = [
             "submitted_at",
@@ -546,7 +548,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
-            "past_benefit_info",
+            "former_benefit_info",
             "company_name",
             "company_form",
             "official_company_street_address",
@@ -558,6 +560,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "additional_information_needed_by",
             "status_last_changed_at",
             "unread_messages_count",
+            "warnings",
         ]
         extra_kwargs = {
             "company_name": {
@@ -671,10 +674,12 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
-    past_benefit_info = serializers.SerializerMethodField(
-        "get_past_benefit_info",
+    former_benefit_info = serializers.SerializerMethodField(
+        "get_former_benefit_info",
         help_text="Aggregated information about previously granted benefits for the same employee and company",
     )
+
+    warnings = serializers.SerializerMethodField("get_warnings")
 
     additional_information_needed_by = serializers.SerializerMethodField(
         "get_additional_information_needed_by"
@@ -729,6 +734,44 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         else:
             return None
 
+    def get_warnings(self, obj) -> Dict[str, List[str]]:
+        """
+        Return the warnings related to this application. The data format is same as for error responses:
+        the return value is a dict, where the key is a string that specifies a field name or other identifier,
+        and the value is a list of human-readable strings.
+
+        For warnings related to former benefits, the key used is "former_benefits"
+
+        More fields may be added in the future. The format of the data is:
+            {
+                "some_field_name_or_key": [
+                    "warning string",
+                    "other warning string",
+                ],
+                "other_field_name_or_key": [
+                    "warning string",
+                ],
+            }
+        """
+        warnings = {}
+        if all(
+            [
+                obj.start_date,
+                obj.end_date,
+                obj.employee.social_security_number,
+            ]
+        ):
+            if former_benefit_warnings := get_former_benefit_info(
+                obj,
+                obj.company,
+                obj.employee.social_security_number,
+                obj.start_date,
+                obj.end_date,
+                obj.apprenticeship_program,
+            ).warnings:
+                warnings["former_benefits"] = former_benefit_warnings
+        return warnings
+
     def _get_status_change_timestamp(self, obj, to_status=None):
         change_qs = obj.log_entries.all()
         if to_status:
@@ -754,8 +797,8 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         else:
             return None
 
-    def get_past_benefit_info(self, obj):
-        aggregated_info = get_past_benefit_info(
+    def get_former_benefit_info(self, obj):
+        aggregated_info = get_former_benefit_info(
             obj,
             obj.company,
             obj.employee.social_security_number,
@@ -961,35 +1004,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError(
                         {"end_date": _("maximum duration of the benefit is 12 months")}
                     )
-
-    def _validate_previous_benefits(
-        self,
-        company,
-        social_security_number,
-        start_date,
-        end_date,
-        status,
-        apprenticeship_program,
-    ):
-        if not all([start_date, end_date, social_security_number]):
-            return
-        if status in [ApplicationStatus.CANCELLED, ApplicationStatus.REJECTED]:
-            # it must be possible to cancel/reject applications with this error, or they
-            # might be impossible for admins to get rid of. For example, if there are two
-            # simultaneously submitted applications for the same employee and one of them is accepted, that might
-            # make the other application invalid.
-            return
-
-        if validation_errors := get_past_benefit_info(
-            self.instance,
-            company,
-            social_security_number,
-            start_date,
-            end_date,
-            apprenticeship_program,
-        ).validation_errors:
-            error_text = ", ".join(str(v) for v in validation_errors)
-            raise serializers.ValidationError({"start_date": error_text})
 
     def _validate_co_operation_negotiations(
         self, co_operation_negotiations, co_operation_negotiations_description
@@ -1222,14 +1236,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         self._handle_breaking_changes(company, data)
         self._validate_date_range(
             data.get("start_date"), data.get("end_date"), data.get("benefit_type")
-        )
-        self._validate_previous_benefits(
-            company,
-            data.get("employee", {}).get("social_security_number"),
-            data.get("start_date"),
-            data.get("end_date"),
-            data.get("status"),
-            data.get("apprenticeship_program"),
         )
         self._validate_co_operation_negotiations(
             data.get("co_operation_negotiations"),
