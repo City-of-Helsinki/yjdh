@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta
+from urllib.parse import quote, urljoin
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -96,6 +97,20 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         verbose_name=_("vtj json"),
         validators=[validate_optional_json],
     )
+
+    def _localized_frontend_page_url(self, page_name):
+        return urljoin(
+            settings.YOUTH_URL, f"/{quote(self.language)}/{quote(page_name)}"
+        )
+
+    def activated_page_url(self):
+        return self._localized_frontend_page_url("activated")
+
+    def expired_page_url(self):
+        return self._localized_frontend_page_url("expired")
+
+    def already_activated_page_url(self):
+        return self._localized_frontend_page_url("already_activated")
 
     def _activation_link(self, request):
         return request.build_absolute_uri(
