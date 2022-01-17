@@ -25,7 +25,7 @@
     "axios": "^0.24.0",
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-styled-components": "^2.0.2",
-    "dotenv": "^11.0.0",
+    "dotenv": "^14.1.0",
     "esm": "^3.2.25",
     "graphql": "^16.2.0",
     "hds-react": "^1.6.0",
