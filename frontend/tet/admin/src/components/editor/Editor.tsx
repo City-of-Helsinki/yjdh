@@ -6,6 +6,7 @@ import TetPosting from 'tet/admin/types/tetposting';
 import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
+import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 
 const initialValuesForNew: TetPosting = {
   title: '',
@@ -45,6 +46,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   return (
     <FormProvider {...methods}>
       <form aria-label="add/modify tet posting" onSubmit={methods.handleSubmit(handleSuccess)}>
+        <HiddenIdInput id="id" initialValue={posting.id} />
         <p>* pakollinen tieto</p>
         <EditorErrorNotification />
         <CompanyInfo />
