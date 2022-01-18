@@ -10,12 +10,27 @@ import NotificationPage from 'shared/components/pages/NotificationPage';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { getFirstValue } from 'shared/utils/array.utils';
+import getActivationLinkExpirationSeconds from 'kesaseteli/youth/utils/get-activation-link-expiration-seconds';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const applicationId = getFirstValue(router.query?.id);
   const showActivationLink = !isRealIntegrationsEnabled() && applicationId;
+  const [seconds, setSeconds] = React.useState(
+    getActivationLinkExpirationSeconds()
+  );
+  React.useEffect(() => {
+    const myInterval = setInterval(() => {
+      setSeconds(seconds > 0 ? seconds - 1 : 0);
+      if (seconds === 0) {
+        clearInterval(myInterval);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(myInterval);
+    };
+  }, [seconds, setSeconds]);
 
   return (
     <NotificationPage
@@ -36,7 +51,8 @@ const ThankYouPage: NextPage = () => {
               )}${applicationId}/activate`}
             >
               AKTIVOI
-            </a>
+            </a>{' '}
+            (aikaa jäljellä: {seconds} sekuntia)
           </$GridCell>
         </FormSection>
       )}
