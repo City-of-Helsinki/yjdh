@@ -1,3 +1,6 @@
+import json
+
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 # These regular expressions should function similarly as the regular expressions in the
@@ -39,3 +42,22 @@ def validate_name(name) -> None:
     Raise ValidationError if the given value doesn't pass NAMES_REGEX_VALIDATOR.
     """
     NAMES_REGEX_VALIDATOR(name)
+
+
+def validate_json(value) -> None:
+    """
+    Raise ValidationError if the given value can not be interpreted as valid JSON.
+    """
+    try:
+        json.loads(value)
+    except (json.decoder.JSONDecodeError, TypeError):
+        raise ValidationError("Given value is not JSON")
+
+
+def validate_optional_json(value) -> None:
+    """
+    Raise a ValidationError if the given value is not None, an empty string or can not
+    be interpreted as valid JSON.
+    """
+    if value is not None and value != "":
+        validate_json(value)

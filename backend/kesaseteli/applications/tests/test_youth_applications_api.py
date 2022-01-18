@@ -7,9 +7,8 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import YouthApplicationSerializer
+from applications.enums import get_supported_languages
 from common.tests.factories import YouthApplicationFactory
-
-SUPPORTED_LANGUAGE_CODES = ("fi", "sv", "en")
 
 
 def get_required_fields():
@@ -45,65 +44,101 @@ def test_youth_applications_activate_invalid_pk(api_client):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_unexpired_inactive(
     api_client,
     inactive_youth_application,
     make_youth_application_activation_link_unexpired,
+    language,
 ):
+    inactive_youth_application.language = language
+    inactive_youth_application.save(update_fields=["language"])
+
+    inactive_youth_application.refresh_from_db()
     assert not inactive_youth_application.is_active
     assert not inactive_youth_application.has_activation_link_expired
+    assert inactive_youth_application.language == language
 
     response = api_client.get(get_activation_url(inactive_youth_application.pk))
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == inactive_youth_application.activated_page_url()
+
     inactive_youth_application.refresh_from_db()
     assert inactive_youth_application.is_active
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_unexpired_active(
     api_client,
     active_youth_application,
     make_youth_application_activation_link_unexpired,
+    language,
 ):
+    active_youth_application.language = language
+    active_youth_application.save(update_fields=["language"])
+
+    active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
     assert not active_youth_application.has_activation_link_expired
+    assert active_youth_application.language == language
 
     response = api_client.get(get_activation_url(active_youth_application.pk))
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == active_youth_application.already_activated_page_url()
+
     active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_expired_inactive(
     api_client,
     inactive_youth_application,
     make_youth_application_activation_link_expired,
+    language,
 ):
+    inactive_youth_application.language = language
+    inactive_youth_application.save(update_fields=["language"])
+
+    inactive_youth_application.refresh_from_db()
     assert not inactive_youth_application.is_active
     assert inactive_youth_application.has_activation_link_expired
+    assert inactive_youth_application.language == language
 
     response = api_client.get(get_activation_url(inactive_youth_application.pk))
 
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == inactive_youth_application.expired_page_url()
+
     inactive_youth_application.refresh_from_db()
     assert not inactive_youth_application.is_active
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_expired_active(
     api_client,
     active_youth_application,
     make_youth_application_activation_link_expired,
+    language,
 ):
+    active_youth_application.language = language
+    active_youth_application.save(update_fields=["language"])
+
+    active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
     assert active_youth_application.has_activation_link_expired
+    assert active_youth_application.language == language
 
     response = api_client.get(get_activation_url(active_youth_application.pk))
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == active_youth_application.already_activated_page_url()
+
     active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
 
@@ -180,7 +215,7 @@ def test_youth_application_post_valid_data_with_email_backends(
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("language", SUPPORTED_LANGUAGE_CODES)
+@pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_application_post_valid_language(
     api_client,
     youth_application,
@@ -197,7 +232,7 @@ def test_youth_application_post_valid_language(
     MOCK_FLAG=True,
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
 )
-@pytest.mark.parametrize("language", SUPPORTED_LANGUAGE_CODES)
+@pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_application_activation_email_language(
     api_client,
     youth_application,

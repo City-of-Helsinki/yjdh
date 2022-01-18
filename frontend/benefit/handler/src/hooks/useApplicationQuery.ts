@@ -1,5 +1,5 @@
-import { BackendEndpoint } from 'benefit/handler/backend-api/backend-api';
 import { ApplicationData } from 'benefit/handler/types/application';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
@@ -14,7 +14,7 @@ const useApplicationQuery = (
       !id
         ? Promise.reject(new Error('Missing application id'))
         : handleResponse<ApplicationData>(
-            axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)
+            axios.get(`${BackendEndpoint.HANDLER_APPLICATIONS}${id}/`)
           ),
     {
       enabled: Boolean(id),

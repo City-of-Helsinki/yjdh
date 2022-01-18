@@ -6,7 +6,7 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
 )
 from applications.enums import ApplicationStatus, AttachmentType
-from applications.models import School, validate_name
+from applications.models import School, validate_name, YouthApplication
 from applications.tests.test_applications_api import get_detail_url
 
 
@@ -26,6 +26,45 @@ def test_validate_name_with_all_listed_schools():
 )
 def test_validate_name_with_valid_unlisted_school(name):
     validate_name(name)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "value,expect_error",
+    [
+        # Valid JSON values
+        ("{}", False),
+        ("[1, 2, 3, null, false, true, 3.14]", False),
+        ('{"a": 1, "b": 2}', False),
+        ('{"a": 7, "b": {"c": {"d": [true, false, null, 3, "e"]}}, "x": 1.618}', False),
+        # Invalid JSON values
+        ("[1,2,]", True),
+        ("[1,2],", True),
+        ("{a}", True),
+        ("{{}}", True),
+        ('{"a": 1, "b":}', True),
+        # Valid because explicitly allowed
+        (None, False),
+        ("", False),
+    ],
+)
+def test_validate_youth_application_vtj_json(
+    active_youth_application,
+    value,
+    expect_error,
+):
+    active_youth_application.encrypted_vtj_json = value
+
+    def clean_encrypted_vtj_json_field():
+        active_youth_application.clean_fields(
+            exclude=list(set(YouthApplication._meta.fields) - {"encrypted_vtj_json"})
+        )
+
+    if expect_error:
+        with pytest.raises(ValidationError):
+            clean_encrypted_vtj_json_field()
+    else:
+        clean_encrypted_vtj_json_field()
 
 
 @pytest.mark.django_db

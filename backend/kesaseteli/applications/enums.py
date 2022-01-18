@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -13,6 +15,15 @@ APPLICATION_LANGUAGE_CHOICES = (
     ("sv", "svenska"),
     ("en", "english"),
 )
+
+
+def get_supported_languages() -> Tuple[str]:
+    """
+    Get tuple of supported languages
+
+    :return: Tuple of the supported languages' codes, e.g. ('fi', 'sv', 'en')
+    """
+    return list(zip(*APPLICATION_LANGUAGE_CHOICES))[0]
 
 
 class ApplicationStatus(models.TextChoices):

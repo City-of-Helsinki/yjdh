@@ -12,6 +12,7 @@ from applications.enums import (
     ApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
@@ -150,7 +151,7 @@ class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     is_unlisted_school = factory.LazyAttribute(uses_unlisted_test_school)
     email = factory.Faker("email")
     phone_number = factory.LazyFunction(get_test_phone_number)
-    language = factory.Faker("random_element", elements=["fi", "sv", "en"])
+    language = factory.Faker("random_element", elements=get_supported_languages())
     _is_active = None
 
     class Meta:

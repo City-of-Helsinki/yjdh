@@ -21,6 +21,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
           onClick={() => updateStatus(APPLICATION_STATUSES.INFO_REQUIRED)}
           theme="black"
           variant="secondary"
+          size="small"
           iconLeft={<IconPen />}
         >
           {t(`${translationsBase}.handlingToInfoRequired`)}
@@ -31,6 +32,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
           onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
           theme="black"
           variant="secondary"
+          size="small"
           iconLeft={<IconLock />}
         >
           {t(`${translationsBase}.infoRequiredToHandling`)}

@@ -1,32 +1,24 @@
+import useActivationLinkExpirationHours from 'kesaseteli/youth/hooks/useActivationLinkExpirationHours';
 import { GetStaticProps, NextPage } from 'next';
-import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import Container from 'shared/components/container/Container';
 import Heading from 'shared/components/forms/heading/Heading';
-import { $Notification } from 'shared/components/notification/Notification.sc';
+import NotificationPage from 'shared/components/pages/NotificationPage';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 const ActivatedPage: NextPage = () => {
   const { t } = useTranslation();
-
   return (
-    <Container>
-      <Head>
-        <title>
-          {t(`common:activatedPage.title`)} | {t(`common:appName`)}
-        </title>
-      </Head>
-      <$Notification
-        label={t(`common:activatedPage.notificationTitle`)}
-        type="success"
-        size="large"
-      >
-        {t('common:activatedPage.notificationMessage')}
-      </$Notification>
+    <NotificationPage
+      type="success"
+      title={t(`common:activatedPage.notificationTitle`)}
+      message={t(`common:activatedPage.notificationMessage`, {
+        expirationHours: useActivationLinkExpirationHours(),
+      })}
+    >
       <Heading size="l" header={t('common:activatedPage.title')} as="h2" />
       <p>{t('common:activatedPage.paragraph_1')}</p>
-    </Container>
+    </NotificationPage>
   );
 };
 

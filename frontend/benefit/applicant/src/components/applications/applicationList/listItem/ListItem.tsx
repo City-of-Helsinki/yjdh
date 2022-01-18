@@ -2,7 +2,7 @@ import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ApplicationListItemData } from 'benefit/applicant/types/application';
 import { Loading } from 'benefit/applicant/types/common';
-import { Button, IconSpeechbubbleText } from 'hds-react';
+import { Button, IconSpeechbubbleText, StatusLabel } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -12,7 +12,6 @@ import {
   $DataColumn,
   $DataHeader,
   $DataValue,
-  $DataValueAlert,
   $ItemActions,
   $ItemContent,
   $ItemInfo,
@@ -101,7 +100,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
               <$DataHeader>
                 {t(`${translationBase}.common.editEndDate`)}
               </$DataHeader>
-              <$DataValueAlert>{editEndDate}</$DataValueAlert>
+              <StatusLabel type="alert">{editEndDate}</StatusLabel>
             </$DataColumn>
           )}
         </$ItemContent>

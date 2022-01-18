@@ -1,4 +1,4 @@
-import { getBackendDomain } from 'benefit/handler/backend-api/backend-api';
+import { getBackendDomain } from 'benefit-shared/backend-api/backend-api';
 import renderComponentF from 'shared/__tests__/utils/render-component/render-component';
 
 const render = renderComponentF(getBackendDomain());

@@ -3,8 +3,7 @@ services:
   postgres:
     build:
       context: ./backend
-      dockerfile: ./docker/kesaseteli.Dockerfile
-      target: finnish_postgres
+      dockerfile: ./docker/finnish_postgres.Dockerfile
     restart: on-failure
     environment:
       POSTGRES_USER: kesaseteli

@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
-import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
 import { ApplicationData } from 'benefit/applicant/types/application';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
