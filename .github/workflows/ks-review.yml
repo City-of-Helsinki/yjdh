@@ -138,6 +138,8 @@ jobs:
           echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
           echo "K8S_SECRET_YOUTH_URL=${{ env.YOUTH_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}" >> $GITHUB_ENV
 
       - name: Review-Services
         if: matrix.database

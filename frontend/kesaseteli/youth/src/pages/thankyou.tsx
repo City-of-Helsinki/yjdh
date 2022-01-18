@@ -1,4 +1,5 @@
 import useActivationLinkExpirationHours from 'kesaseteli/youth/hooks/useActivationLinkExpirationHours';
+import getActivationLinkExpirationSeconds from 'kesaseteli/youth/utils/get-activation-link-expiration-seconds';
 import { getBackendUrl } from 'kesaseteli-shared/backend-api/backend-api';
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -10,7 +11,6 @@ import NotificationPage from 'shared/components/pages/NotificationPage';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { getFirstValue } from 'shared/utils/array.utils';
-import getActivationLinkExpirationSeconds from 'kesaseteli/youth/utils/get-activation-link-expiration-seconds';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
