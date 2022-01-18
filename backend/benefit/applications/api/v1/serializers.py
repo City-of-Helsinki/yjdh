@@ -48,6 +48,8 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from rest_framework import serializers
+from rest_framework.fields import FileField
+from rest_framework.reverse import reverse
 from terms.api.v1.serializers import (
     ApplicantTermsApprovalSerializer,
     ApproveTermsSerializer,
@@ -75,9 +77,38 @@ class ApplicationBasisSerializer(serializers.ModelSerializer):
         }
 
 
+class AttachmentField(FileField):
+    def to_representation(self, value):
+        if not value:
+            return None
+
+        url_pattern_name = "v1:applicant-application-download-attachment"
+        request = self.context.get("request")
+        if (
+            request
+            and (user := get_request_user_from_context(self))
+            and user.is_handler()
+        ):
+            url_pattern_name = "v1:handler-application-download-attachment"
+
+        path = reverse(
+            url_pattern_name,
+            kwargs={
+                "pk": value.instance.application.pk,
+                "attachment_pk": value.instance.pk,
+            },
+        )
+        if request is not None:
+            return request.build_absolute_uri(path)
+        return path
+
+
 class AttachmentSerializer(serializers.ModelSerializer):
     # this limit is a security feature, not a business rule
+
     MAX_ATTACHMENTS_PER_APPLICATION = 20
+
+    attachment_file = AttachmentField()
 
     class Meta:
         model = Attachment
@@ -107,18 +138,9 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Validation includes:
-        * validate that adding attachments is allowed in this application status
-        * rudimentary validation of file content to guard against accidentally uploading
+        rudimentary validation of file content to guard against accidentally uploading
         invalid files.
         """
-        if (
-            data["application"].status
-            not in self.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
-        ):
-            raise serializers.ValidationError(
-                _("Can not add attachment to an application in this state")
-            )
 
         if data["attachment_file"].size > MAX_UPLOAD_SIZE:
             raise serializers.ValidationError(
