@@ -1,5 +1,6 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { ApplicationListItemData } from 'benefit/handler/types/application';
+import { StatusLabel } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
@@ -8,7 +9,6 @@ import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 
-import { $DataValueAlert } from '../applicationReview/ApplicationReview.sc';
 import { $Empty, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
@@ -96,22 +96,22 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         Cell: ({
           cell: {
             row: {
-              original: { additionalInformationNeededBy },
+              original: { additionalInformationNeededBy, status: itemStatus },
             },
           },
         }) => (
-          <$DataValueAlert
-            css={`
-              font-weight: 400;
-            `}
-          >
-            {t(
-              `common:applications.list.columns.additionalInformationNeededByVal`,
-              {
-                date: convertToUIDateFormat(additionalInformationNeededBy),
-              }
-            )}
-          </$DataValueAlert>
+          <div>
+            {itemStatus === APPLICATION_STATUSES.INFO_REQUIRED ? (
+              <StatusLabel type="alert">
+                {t(
+                  `common:applications.list.columns.additionalInformationNeededByVal`,
+                  {
+                    date: convertToUIDateFormat(additionalInformationNeededBy),
+                  }
+                )}
+              </StatusLabel>
+            ) : null}
+          </div>
         ),
         Header: getHeader('additionalInformationNeededBy'),
         accessor: 'additionalInformationNeededBy',

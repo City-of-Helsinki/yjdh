@@ -57,11 +57,6 @@ export const $DataValue = styled.div`
   font-weight: 600;
 `;
 
-export const $DataValueAlert = styled($DataValue)`
-  background-color: ${(props) => props.theme.colors.alert};
-  padding: ${(props) => props.theme.spacing.xs2};
-`;
-
 export const $ItemActions = styled.div`
   display: grid;
   justify-content: stretch;
