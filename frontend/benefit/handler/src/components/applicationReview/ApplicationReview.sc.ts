@@ -56,11 +56,3 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
 `;
-
-export const $DataValueAlert = styled.span`
-  display: inline-block;
-  font-weight: 500;
-  background-color: ${(props) => props.theme.colors.alert};
-  padding: ${(props) => props.theme.spacing.xs2};
-  margin: ${(props) => props.theme.spacing.s} 0;
-`;
