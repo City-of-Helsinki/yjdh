@@ -1,8 +1,8 @@
 import TestController, { Selector } from 'testcafe';
 
+import isRealIntegrationsEnabled from '../../src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import User from '../../src/types/user';
-import isRealIntegrationsEnabled from '../utils/is-real-integrations-enabled';
 import {
   getErrorMessage,
   screenContext,
@@ -88,9 +88,11 @@ export const getHeaderComponents = (
     };
     const actions = {
       async changeLanguage(fromLang: Language, toLang: Language) {
-        await t
-          .click(selectors.languageSelector(fromLang))
-          .click(selectors.languageSelectorItem(toLang));
+        if (fromLang !== toLang) {
+          await t
+            .click(selectors.languageSelector(fromLang))
+            .click(selectors.languageSelectorItem(toLang));
+        }
       },
     };
     await expectations.isPresent();

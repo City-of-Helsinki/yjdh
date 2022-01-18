@@ -1,6 +1,6 @@
 import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
-import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import { fakeApplication } from '@frontend/shared/src/__tests__/utils/fake-objects';
+import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import type Application from '@frontend/shared/src/types/application';
 import Employment from '@frontend/shared/src/types/employment';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';

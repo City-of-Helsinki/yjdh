@@ -4,22 +4,23 @@ import {
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
-export const getThankYouPageComponents = async (t: TestController) => {
+export const getNotificationPageComponents = async (
+  t: TestController,
+  {
+    headerText,
+    buttonText,
+  }: { headerText: string | RegExp; buttonText?: string }
+) => {
   const screen = screenContext(t);
   const selectors = {
     header() {
       return screen.findByRole('heading', {
-        name: /hienoa! olet lähettänyt tietosi kesäsetelijärjestelmään/i,
+        name: headerText,
       });
     },
     goToFrontPageButton() {
       return screen.findByRole('button', {
-        name: /kesäseteli etusivulle/i,
-      });
-    },
-    activationLink() {
-      return screen.findByRole('link', {
-        name: /aktivoi/i,
+        name: buttonText ?? 'Kesäseteli etusivulle',
       });
     },
   };
@@ -33,9 +34,6 @@ export const getThankYouPageComponents = async (t: TestController) => {
   const actions = {
     async clickGoToFrontPageButton() {
       await t.click(selectors.goToFrontPageButton());
-    },
-    async clickActivationLink() {
-      await t.click(selectors.activationLink());
     },
   };
   await expectations.isLoaded();

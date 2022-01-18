@@ -4,6 +4,7 @@ import {
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
 import YouthFormData from '../../src/types/youth-form-data';
@@ -13,7 +14,35 @@ type TextInputName = keyof Omit<
   'selectedSchool' | 'is_unlisted_school' | 'termsAndConditions'
 >;
 
-export const getIndexPageComponents = async (t: TestController) => {
+const translations = {
+  fi: {
+    title: /rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
+    schoolsDropdown: /koulu/i,
+    unlistedSchoolCheckbox: /koulua ei löydy listalta/i,
+    termsAndConditionsCheckbox:
+      /olen lukenut palvelun käyttöehdot ja hyväksyn ne/i,
+    sendButton: /lähetä tiedot/i,
+  },
+  sv: {
+    title: /sv rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
+    schoolsDropdown: /sv koulu/i,
+    unlistedSchoolCheckbox: /sv koulua ei löydy listalta/i,
+    termsAndConditionsCheckbox: /jag har läst och godkänner villkoren/i,
+    sendButton: /sv lähetä tiedot/i,
+  },
+  en: {
+    title: /eng rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
+    schoolsDropdown: /eng koulu/i,
+    unlistedSchoolCheckbox: /eng koulua ei löydy listalta/i,
+    termsAndConditionsCheckbox: /i have read and accept the terms of use/i,
+    sendButton: /eng lähetä tiedot/i,
+  },
+};
+
+export const getIndexPageComponents = async (
+  t: TestController,
+  lang?: Language
+) => {
   const screen = screenContext(t);
   const within = withinContext(t);
   const withinForm = (): ReturnType<typeof within> =>
@@ -21,27 +50,31 @@ export const getIndexPageComponents = async (t: TestController) => {
   const selectors = {
     title() {
       return screen.findByRole('heading', {
-        name: /rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
+        name: translations[lang ?? DEFAULT_LANGUAGE].title,
       });
     },
     textInput(name: TextInputName) {
       return withinForm().findByTestId(name as string);
     },
     schoolsDropdown() {
-      return withinForm().findByRole('combobox', { name: /koulu/i });
+      return withinForm().findByRole('combobox', {
+        name: translations[lang ?? DEFAULT_LANGUAGE].schoolsDropdown,
+      });
     },
     unlistedSchoolCheckbox() {
       return withinForm().findByRole('checkbox', {
-        name: /koulua ei löydy listalta/i,
+        name: translations[lang ?? DEFAULT_LANGUAGE].unlistedSchoolCheckbox,
       });
     },
     termsAndConditionsCheckbox() {
       return withinForm().findByRole('checkbox', {
-        name: /olen lukenut palvelun käyttöehdot ja hyväksyn ne/i,
+        name: translations[lang ?? DEFAULT_LANGUAGE].termsAndConditionsCheckbox,
       });
     },
     sendButton() {
-      return withinForm().findByRole('button', { name: /lähetä tiedot/i });
+      return withinForm().findByRole('button', {
+        name: translations[lang ?? DEFAULT_LANGUAGE].sendButton,
+      });
     },
     result() {
       return withinForm().findByTestId('result');
