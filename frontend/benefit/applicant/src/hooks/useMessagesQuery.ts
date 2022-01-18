@@ -25,7 +25,7 @@ const useMessagesQuery = (
     ['messages', applicationId, messageType],
     async () => {
       const res = axios.get<MessageData[]>(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}${applicationId}/${messageType}`
+        `${BackendEndpoint.APPLICATIONS}${applicationId}/${messageType}`
       );
       return handleResponse(res);
     },
