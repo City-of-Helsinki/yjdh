@@ -1,7 +1,9 @@
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
+import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
+import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 
 import { fakeYouthFormData } from '../../src/__tests__/utils/fake-objects';
 import getActivationLinkExpirationSeconds from '../../src/utils/get-activation-link-expiration-seconds';
@@ -50,13 +52,26 @@ if (!isRealIntegrationsEnabled()) {
     const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);
     await alreadyActivatedPage.expectations.isLoaded();
   });
+
+  test('activation remembers the selected language', async (t) => {
+    const languageDropdown = await getHeaderComponents(t).languageDropdown();
+    await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData, 'sv');
+    const thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t, 'sv');
+    await activatedPage.expectations.isLoaded();
+  });
+
   test('shows expiration page if kesäseteli is activated too late', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
-
     await t.wait((getActivationLinkExpirationSeconds() + 1) * 1000);
     await thankYouPage.actions.clickActivationLink();
     const expiredPage = await getExpiredPageComponents(t);

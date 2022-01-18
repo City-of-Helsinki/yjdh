@@ -1,3 +1,4 @@
+import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
 import YouthFormData from '../../src/types/youth-form-data';
@@ -6,9 +7,10 @@ import { getThankYouPageComponents } from '../thank-you-page/thankYouPage.compon
 
 const sendYouthApplication = async (
   t: TestController,
-  formData: YouthFormData
+  formData: YouthFormData,
+  language?: Language
 ): Promise<void> => {
-  const indexPage = await getIndexPageComponents(t);
+  const indexPage = await getIndexPageComponents(t, language);
   await indexPage.expectations.isLoaded();
   await indexPage.actions.typeInput('first_name', formData.first_name);
   await indexPage.actions.typeInput('last_name', formData.last_name);

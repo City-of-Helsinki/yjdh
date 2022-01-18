@@ -88,9 +88,11 @@ export const getHeaderComponents = (
     };
     const actions = {
       async changeLanguage(fromLang: Language, toLang: Language) {
-        await t
-          .click(selectors.languageSelector(fromLang))
-          .click(selectors.languageSelectorItem(toLang));
+        if (fromLang !== toLang) {
+          await t
+            .click(selectors.languageSelector(fromLang))
+            .click(selectors.languageSelectorItem(toLang));
+        }
       },
     };
     await expectations.isPresent();
