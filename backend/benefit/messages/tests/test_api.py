@@ -192,7 +192,9 @@ def test_create_applicant_message_invalid(
         msg,
     )
     assert result.status_code == 400
-    assert "handling" in str(result.data["non_field_errors"])
+    assert "application is not in the correct status" in str(
+        result.data["non_field_errors"]
+    )
 
     application.status = ApplicationStatus.HANDLING
     application.save()
@@ -222,6 +224,29 @@ def test_create_handler_message_invalid(handler_api_client, handling_application
     )
 
 
+def test_handler_must_message_first(
+    api_client,
+    handler_api_client,
+    handling_application,
+    mock_get_organisation_roles_and_create_company,
+):
+    msg = deepcopy(SAMPLE_MESSAGE_PAYLOAD)
+    msg["message_type"] = MessageType.APPLICANT_MESSAGE
+    handling_application.company = mock_get_organisation_roles_and_create_company
+    handling_application.save()
+    result = api_client.post(
+        reverse(
+            "applicant-message-list", kwargs={"application_pk": handling_application.pk}
+        ),
+        msg,
+    )
+    assert result.status_code == 400
+    assert (
+        "Applicant can send messages only after handler has sent a message first"
+        in result.data["non_field_errors"][0]
+    )
+
+
 @pytest.mark.parametrize(
     "view_name,msg_type",
     [
@@ -242,6 +267,9 @@ def test_create_message(
     msg["message_type"] = msg_type
     if view_name == "applicant-message-list":
         user = get_client_user(api_client)
+        MessageFactory(
+            application=handling_application, message_type=MessageType.HANDLER_MESSAGE
+        )
         handling_application.company = mock_get_organisation_roles_and_create_company
         handling_application.save()
         result = api_client.post(
@@ -257,9 +285,10 @@ def test_create_message(
         )
 
     assert result.status_code == 201
-    assert Message.objects.count() == 1
-    assert Message.objects.first().application.id == handling_application.id
-    assert Message.objects.first().sender.id == user.id
+    message_qs = Message.objects.filter(message_type=msg_type)
+    assert message_qs.count() == 1
+    assert message_qs.first().application.id == handling_application.id
+    assert message_qs.first().sender.id == user.id
 
 
 @pytest.mark.parametrize(
