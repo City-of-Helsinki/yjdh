@@ -36,7 +36,7 @@ class MockCreateOrReadView(View):
         else:
             return HttpResponse("Unauthorized", status=401)
 
-class EditOrDeleteView(View):
+class MockEditOrDeleteView(View):
     http_method_names = ["put", "delete"]
 
     def put(self, request, id):
