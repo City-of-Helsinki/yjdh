@@ -1,4 +1,5 @@
 import { Tab, TabPanel, Tabs } from 'hds-react';
+import noop from 'lodash/noop';
 import * as React from 'react';
 import { $TabList } from 'shared/components/benefit/tabs/Tabs.sc';
 import Drawer from 'shared/components/drawer/Drawer';
@@ -21,7 +22,11 @@ const Messenger: React.FC<ComponentProps> = ({
   const { t, messages, handleSendMessage } = useMessenger();
 
   return (
-    <Drawer isOpen={isOpen} closeText="Sulje" onClose={onClose}>
+    <Drawer
+      isOpen={isOpen}
+      closeText={t('common:messenger.close')}
+      onClose={onClose}
+    >
       <Tabs>
         <$TabList position="start">
           <Tab>{t('common:messenger.messages')}</Tab>
@@ -49,6 +54,7 @@ const Messenger: React.FC<ComponentProps> = ({
 
 Messenger.defaultProps = {
   customItemsMessages: [],
+  onClose: noop,
 };
 
 export default Messenger;

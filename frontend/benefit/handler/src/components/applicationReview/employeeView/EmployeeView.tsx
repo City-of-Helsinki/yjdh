@@ -28,7 +28,7 @@ const EmployeeView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         ) : null
       }
     >
-      <$GridCell $colSpan={3}>
+      <$GridCell $colSpan={12}>
         <$ViewField>
           {getFullName(data.employee?.firstName, data.employee?.lastName)}
         </$ViewField>

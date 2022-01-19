@@ -31,7 +31,7 @@ const Header: React.FC = () => {
   const handlePanel = (): void =>
     setIsMessagesDrawerVisible(!isMessagesDrawerVisible);
 
-  const closePanel = () => setIsMessagesDrawerVisible(false);
+  const closePanel = (): void => setIsMessagesDrawerVisible(false);
 
   const isAuthenticated = !isLoginPage && userQuery.isSuccess;
 

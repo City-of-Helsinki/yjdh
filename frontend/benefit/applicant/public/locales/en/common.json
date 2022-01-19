@@ -508,6 +508,7 @@
     "compose": "Kirjoita viesti",
     "send": "Lähetä",
     "isSecure": "Viestit ovat salattuja",
-    "noMessages": "Ei viestejä"
+    "noMessages": "Ei viestejä",
+    "close": "Sulje"
   }
 }

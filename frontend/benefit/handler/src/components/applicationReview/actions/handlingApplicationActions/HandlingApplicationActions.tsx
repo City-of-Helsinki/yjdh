@@ -29,6 +29,8 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
   const handlePanel = (): void =>
     setIsMessagesDrawerVisible(!isMessagesDrawerVisible);
 
+  const handleClosePanel = (): void => setIsMessagesDrawerVisible(false);
+
   return (
     <$Wrapper>
       <$Column>
@@ -62,6 +64,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
       </$Column>
       <Messenger
         isOpen={isMessagesDrawerVisible}
+        onClose={handleClosePanel}
         customItemsMessages={<EditAction application={application} />}
         customItemsNotes={
           <$CustomNotesActions>
