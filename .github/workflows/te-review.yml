@@ -134,7 +134,7 @@ jobs:
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_COOKIE_DOMAIN=.test.kuva.hel.ninja" >> $GITHUB_ENV
-          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.EMPLOYER_URL }}, ${{ env.YOUTH_URL }}, ${{ env.ADMIN_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.EMPLOYER_URL }},${{ env.YOUTH_URL }},${{ env.ADMIN_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL=${{ env.ADMIN_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL_FAILURE=${{ env.ADMIN_URL }}/login?error=true" >> $GITHUB_ENV
@@ -185,12 +185,13 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
-          CORS_ALLOWED_ORIGINS: ${{ env.EMPLOYER_URL }},${{ env.YOUTH_URL }},${{ env.ADMIN_URL }}
-          CSRF_TRUSTED_ORIGINS: ${{ env.EMPLOYER_URL }},${{ env.YOUTH_URL }},${{ env.ADMIN_URL }}
+          CORS_ALLOWED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
+          CSRF_TRUSTED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
           AD_LOGIN_REDIRECT_URL: ${{ env.ADMIN_URL }}
           AD_LOGIN_REDIRECT_URL_FAILURE: ${{ env.ADMIN_URL }}/login?error=true
           EAUTH_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
           EAUTH_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
+
 
       - name: Deploy Cronjobs
         if: matrix.database
