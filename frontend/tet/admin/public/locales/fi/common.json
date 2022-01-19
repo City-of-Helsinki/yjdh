@@ -50,6 +50,8 @@
       "title": "Tehtävänimike",
       "description": "Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
       "workHoursNotice": "Työaika on aina sama 30h per viikko.",
+      "startDateLabel": "Alkaen",
+      "endDateLabel": "Päättyen",
       "spotsLabel": "Työharjoittelupaikkoja"
     }
   },

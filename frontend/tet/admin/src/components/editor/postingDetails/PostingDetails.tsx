@@ -35,12 +35,16 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          <DateInput<TetPosting> id="start_date" label="Alkaen *" initialValue={initialValue.start_date} />
+          <DateInput<TetPosting>
+            id="start_date"
+            label={t('common:editor.posting.startDateLabel')}
+            initialValue={initialValue.start_date}
+          />
         </$GridCell>
         <$GridCell $colSpan={3}>
           <DateInput<TetPosting>
             id="end_date"
-            label="Päättyen"
+            label={t('common:editor.posting.endDateLabel')}
             initialValue={initialValue.end_date}
             registerOptions={{
               required: false,
