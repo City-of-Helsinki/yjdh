@@ -15,7 +15,7 @@ const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorDa
     (validatedPosting: TetPosting) =>
       handleResponse<TetPosting>(
         validatedPosting.id
-          ? axios.put(`${BackendEndpoint.TET_POSTINGS}/${validatedPosting.id}`, validatedPosting)
+          ? axios.put(`${BackendEndpoint.TET_POSTINGS}${validatedPosting.id}`, validatedPosting)
           : axios.post(BackendEndpoint.TET_POSTINGS, validatedPosting),
       ),
     {
