@@ -74,11 +74,9 @@
     "@testing-library/testcafe": "^4.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/faker": "^5.5.9",
-    "@types/jest": "^27.0.3",
+    "@types/jest": "^27.4.0",
     "@types/jest-axe": "^3.5.3",
     "@types/pretty": "^2.0.1",
-    "@types/react": "^17.0.37",
-    "@types/react-dom": "^17.0.11",
     "@types/slack-node": "^0.1.4",
     "@types/styled-components": "^5.1.17",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
@@ -119,7 +117,7 @@
     "eslint-plugin-sonarjs": "^0.11.0",
     "eslint-plugin-switch-case": "^1.1.2",
     "eslint-plugin-testing-library": "^5.0.1",
-    "eslint-plugin-unicorn": "^39.0.0",
+    "eslint-plugin-unicorn": "^40.1.0",
     "eslint-plugin-you-dont-need-lodash-underscore": "^6.12.0",
     "faker": "^5.5.3",
     "husky": "^7.0.4",
@@ -138,7 +136,7 @@
     "testcafe-reporter-custom": "^1.1.1",
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^27.1.3",
-    "typescript": "^4.5.3"
+    "typescript": "^4.4.3"
   },
   "resolutions": {
     "follow-redirects": "1.14.7",
