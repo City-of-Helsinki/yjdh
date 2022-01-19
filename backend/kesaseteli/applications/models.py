@@ -5,10 +5,12 @@ from urllib.parse import quote, urljoin
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models, transaction
+from django.db.models import DurationField, ExpressionWrapper, F, Q
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
+from shared.common.utils import MatchesAnyOfQuerySet
 from shared.common.validators import (
     validate_name,
     validate_optional_json,
@@ -46,6 +48,69 @@ class School(TimeStampedModel, UUIDModel):
         verbose_name = _("school")
         verbose_name_plural = _("schools")
         ordering = ["name"]
+
+
+class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
+    def _annotate_existence_duration(self):
+        """
+        Annotate queryset with existence_duration with value timezone.now() - created_at
+
+        :return: The source queryset with annotated existence_duration DurationField
+                 with value timezone.now() - created_at.
+        """
+        return self.annotate(
+            existence_duration=ExpressionWrapper(
+                timezone.now() - F("created_at"), output_field=DurationField()
+            )
+        )
+
+    def _active_q_filter(self) -> Q:
+        """
+        Return Q filter for active youth applications
+        """
+        return Q(receipt_confirmed_at__isnull=False)
+
+    def _unexpired_q_filter(self) -> Q:
+        """
+        Return Q filter for unexpired youth applications.
+
+        NOTE: Needs existence_duration field, so use with _annotate_existence_duration.
+        """
+        return Q(existence_duration__lt=YouthApplication.expiration_duration())
+
+    def matches_email_or_social_security_number(self, email, social_security_number):
+        """
+        Return youth applications that match given email or social security number
+        """
+        return self.matches_any_of(
+            email=email, social_security_number=social_security_number
+        )
+
+    def expired(self):
+        """
+        Return youth applications that are expired
+        """
+        return self._annotate_existence_duration().filter(~self._unexpired_q_filter())
+
+    def unexpired(self):
+        """
+        Return youth applications that are unexpired
+        """
+        return self._annotate_existence_duration().filter(self._unexpired_q_filter())
+
+    def unexpired_or_active(self):
+        """
+        Return youth applications that are unexpired or active
+        """
+        return self._annotate_existence_duration().filter(
+            self._unexpired_q_filter() | self._active_q_filter()
+        )
+
+    def active(self):
+        """
+        Return active youth applications
+        """
+        return self.filter(self._active_q_filter())
 
 
 class YouthApplication(TimeStampedModel, UUIDModel):
@@ -97,6 +162,7 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         verbose_name=_("vtj json"),
         validators=[validate_optional_json],
     )
+    objects = YouthApplicationQuerySet.as_manager()
 
     def _localized_frontend_page_url(self, page_name):
         return urljoin(
@@ -115,6 +181,12 @@ class YouthApplication(TimeStampedModel, UUIDModel):
     def _activation_link(self, request):
         return request.build_absolute_uri(
             reverse("v1:youthapplication-activate", kwargs={"pk": self.id})
+        )
+
+    @staticmethod
+    def expiration_duration() -> timedelta:
+        return timedelta(
+            seconds=settings.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
         )
 
     @property
@@ -172,6 +244,35 @@ class YouthApplication(TimeStampedModel, UUIDModel):
             self.receipt_confirmed_at = timezone.now()
             self.save()
         return self.is_active
+
+    @classmethod
+    def is_email_or_social_security_number_active(
+        cls, email, social_security_number
+    ) -> bool:
+        """
+        Is there an active youth application created that uses the same email or social
+        security number as this youth application?
+
+        :return: True if this youth application's email or social security number are
+                 used by at least one active youth application, otherwise False.
+        """
+        return (
+            cls.objects.matches_email_or_social_security_number(
+                email, social_security_number
+            )
+            .active()
+            .exists()
+        )
+
+    @classmethod
+    def is_email_used(cls, email) -> bool:
+        """
+        Is this youth application's email used by unexpired or active youth application?
+
+        :return: True if this youth application's email is used by at least one
+                 unexpired or active youth application, otherwise False.
+        """
+        return cls.objects.filter(email=email).unexpired_or_active().exists()
 
     @property
     def name(self):
