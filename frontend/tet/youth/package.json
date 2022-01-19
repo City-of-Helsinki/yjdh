@@ -26,6 +26,8 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.12",
-    "eslint-config-adjunct": "^4.11.1"
+    "@types/react": "^17.0.37",
+    "eslint-config-adjunct": "^4.11.1",
+    "typescript": "^4.5.2"
   }
 }
