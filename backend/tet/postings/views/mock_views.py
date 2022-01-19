@@ -36,6 +36,7 @@ class MockCreateOrReadView(View):
         else:
             return HttpResponse("Unauthorized", status=401)
 
+
 class MockEditOrDeleteView(View):
     http_method_names = ["put", "delete"]
 

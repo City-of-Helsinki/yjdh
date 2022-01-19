@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.urls import path
+
 from postings.views.linkedevents_views import CreateOrReadView, EditOrDeleteView
 
 urlpatterns = []
