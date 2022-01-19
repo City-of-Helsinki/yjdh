@@ -21,9 +21,9 @@
     "logoutMessageLabel": "Olet kirjautunut ulos",
     "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
-    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "infoLabel": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
+    "infoContent": "TET-paikkailmoituksen tekemistä..."
   },
   "application": {
     "jobPostings": {
@@ -35,6 +35,11 @@
   "editor": {
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
+    "saveDraft": "Tallenna julkaisematta",
+    "deletePosting": "Poista ilmoitus",
+    "preview": "Siirry esikatseluun",
+    "publish": "Julkaise",
+    "notificationTitle": "Täytä puuttuvat tai virheelliset tiedot",
     "employerInfo": {
       "header": "Työpaikan tiedot",
       "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",
@@ -43,7 +48,11 @@
     "posting": {
       "header": "Työharjoittelupaikan tiedot",
       "title": "Tehtävänimike",
-      "description": "Vapaa kuvaus työharjoittelupaikasta / -tehtävästä"
+      "description": "Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
+      "workHoursNotice": "Työaika on aina sama 30h per viikko.",
+      "startDateLabel": "Alkaen",
+      "endDateLabel": "Päättyen",
+      "spotsLabel": "Työharjoittelupaikkoja"
     }
   },
   "footer": {

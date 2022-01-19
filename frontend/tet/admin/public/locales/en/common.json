@@ -35,6 +35,11 @@
   "editor": {
     "newTitle": "ENG Uusi TET-paikka",
     "editTitle": "ENG Muokkaa TET-paikkaa",
+    "saveDraft": "ENG Tallenna julkaisematta",
+    "deletePosting": "ENG Poista ilmoitus",
+    "preview": "ENG Siirry esikatseluun",
+    "publish": "ENG Julkaise",
+    "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
     "employerInfo": {
       "header": "ENG Työpaikan tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
@@ -43,7 +48,11 @@
     "posting": {
       "header": "ENG Työharjoittelupaikan tiedot",
       "title": "ENG Tehtävänimike",
-      "description": "ENG Vapaa kuvaus työharjoittelupaikasta / -tehtävästä"
+      "description": "ENG Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
+      "workHoursNotice": "ENG Työaika on aina sama 30h per viikko.",
+      "startDateLabel": "ENG Alkaen",
+      "endDateLabel": "ENG Päättyen",
+      "spotsLabel": "ENG Työharjoittelupaikkoja"
     }
   },
   "footer": {
