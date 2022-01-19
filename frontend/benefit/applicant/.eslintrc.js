@@ -55,7 +55,7 @@ module.exports = {
       },
     },
     {
-      files: ['*.validation.ts'],
+      files: ['validation.ts'],
       rules: {
         'unicorn/no-thenable': 'off',
       },
