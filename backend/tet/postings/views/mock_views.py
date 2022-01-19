@@ -10,11 +10,8 @@ class MockCreateOrReadView(View):
     http_method_names = ["get", "post"]
 
     def get(self, request):
-        if request.user.is_authenticated:
-            postings = TetPostingTemp.objects.all()
-            return JsonResponse([json.loads(p.data) for p in postings], safe=False)
-        else:
-            return HttpResponse("Unauthorized", status=401)
+        postings = TetPostingTemp.objects.all()
+        return JsonResponse([json.loads(p.data) for p in postings], safe=False)
 
     def post(self, request):
         if request.user.is_authenticated:
