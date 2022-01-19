@@ -35,3 +35,30 @@ class MockCreateOrReadView(View):
             return JsonResponse(data)
         else:
             return HttpResponse("Unauthorized", status=401)
+
+class EditOrDeleteView(View):
+    http_method_names = ["put", "delete"]
+
+    def put(self, request, id):
+        if request.user.is_authenticated:
+            p = TetPostingTemp.objects.get(pk=id)
+            if not p:
+                return HttpResponse("Not found", status=404)
+            body = request.body.decode("utf-8")
+            data = json.loads(body)
+            p.data = json.dumps(data)
+            p.save()
+
+            return HttpResponse()
+        else:
+            return HttpResponse("Unauthorized", status=401)
+
+    def delete(self, request, id):
+        if request.user.is_authenticated:
+            p = TetPostingTemp.objects.get(pk=id)
+            if not p:
+                return HttpResponse("Not found", status=404)
+            p.delete()
+            return HttpResponse()
+        else:
+            return HttpResponse("Unauthorized", status=401)
