@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta
+from urllib.parse import quote, urljoin
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -8,7 +9,11 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
-from shared.common.validators import validate_name, validate_phone_number
+from shared.common.validators import (
+    validate_name,
+    validate_optional_json,
+    validate_phone_number,
+)
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 
 from applications.enums import (
@@ -43,7 +48,7 @@ class School(TimeStampedModel, UUIDModel):
         ordering = ["name"]
 
 
-class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
+class YouthApplication(TimeStampedModel, UUIDModel):
     first_name = models.CharField(
         max_length=128,
         verbose_name=_("first name"),
@@ -85,6 +90,27 @@ class YouthApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     receipt_confirmed_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("timestamp of receipt confirmation")
     )
+    encrypted_vtj_json = EncryptedCharField(
+        null=True,
+        blank=True,
+        max_length=1024 * 1024,
+        verbose_name=_("vtj json"),
+        validators=[validate_optional_json],
+    )
+
+    def _localized_frontend_page_url(self, page_name):
+        return urljoin(
+            settings.YOUTH_URL, f"/{quote(self.language)}/{quote(page_name)}"
+        )
+
+    def activated_page_url(self):
+        return self._localized_frontend_page_url("activated")
+
+    def expired_page_url(self):
+        return self._localized_frontend_page_url("expired")
+
+    def already_activated_page_url(self):
+        return self._localized_frontend_page_url("already_activated")
 
     def _activation_link(self, request):
         return request.build_absolute_uri(

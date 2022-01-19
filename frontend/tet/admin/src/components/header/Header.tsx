@@ -1,6 +1,6 @@
 import useLogin from 'tet/admin/hooks/backend/useLogin';
 import useLogoutQuery from 'tet/admin/hooks/backend/useLogoutQuery';
-// import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
+import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -35,12 +35,11 @@ const Header: React.FC = () => {
   );
 
   const login = useLogin();
-  // const userQuery = useUserQuery();
+  const userQuery = useUserQuery();
   const logoutQuery = useLogoutQuery();
-  //
-  const isLoading = false;
-  // const isLoading = userQuery.isLoading || logoutQuery.isLoading;
-  // const isLoginPage = asPath?.startsWith('/login');
+
+  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
+  const isLoginPage = asPath?.startsWith('/login');
 
   return (
     <BaseHeader
@@ -53,12 +52,12 @@ const Header: React.FC = () => {
       login={
         !isLoading
           ? {
-              isAuthenticated: false, // !isLoginPage && userQuery.isSuccess,
+              isAuthenticated: !isLoginPage && userQuery.isSuccess,
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
               onLogin: login,
               onLogout: logoutQuery.mutate as () => void,
-              userName: 'testuser', // userQuery.isSuccess ? userQuery.data.name : undefined,
+              userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }
           : undefined

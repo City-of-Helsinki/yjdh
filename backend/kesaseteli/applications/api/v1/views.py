@@ -1,5 +1,6 @@
 from django.core import exceptions
-from django.http import FileResponse, HttpResponse
+from django.db.models import Func
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -37,7 +38,17 @@ from common.utils import DenyAll
 
 
 class SchoolListView(ListAPIView):
-    queryset = School.objects.all()
+    # PostgreSQL specific functionality:
+    # - Custom sorter for name field to ensure finnish language sorting order.
+    # - NOTE: This can be removed if the database is made to use collation fi_FI.UTF8
+    # TODO: Remove this after fixing related GitHub workflows to use Finnish PostgreSQL
+    _name_fi = Func(
+        "name",
+        function="fi-FI-x-icu",  # fi_FI.UTF8 would be best but wasn't available
+        template='(%(expressions)s) COLLATE "%(function)s"',
+    )
+
+    queryset = School.objects.order_by(_name_fi.asc())
     serializer_class = SchoolSerializer
 
     def get_permissions(self):
@@ -57,18 +68,11 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
         if youth_application.is_active:
-            return HttpResponse(
-                status=status.HTTP_200_OK, content="Youth application already active"
-            )
+            return HttpResponseRedirect(youth_application.already_activated_page_url())
         elif youth_application.has_activation_link_expired:
-            return HttpResponse(
-                status=status.HTTP_401_UNAUTHORIZED,
-                content="Activation link has expired",
-            )
+            return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
-            return HttpResponse(
-                status=status.HTTP_200_OK, content="Youth application activated"
-            )
+            return HttpResponseRedirect(youth_application.activated_page_url())
 
         return HttpResponse(
             status=status.HTTP_401_UNAUTHORIZED,

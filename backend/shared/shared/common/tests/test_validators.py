@@ -1,7 +1,53 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from shared.common.validators import validate_name, validate_phone_number
+from shared.common.validators import (
+    validate_json,
+    validate_name,
+    validate_optional_json,
+    validate_phone_number,
+)
+
+
+def get_valid_json_test_values():
+    return [
+        "8",
+        "3.14",
+        '"a"',
+        "{}",
+        "false",
+        "true",
+        "null",
+        '["a", "b"]',
+        "[1, 2, 3]",
+        '[false, 1, null, true, "a", {}, {"b": 3}]',
+        '{"a": 123}',
+        '{"a": 7, "b": {"c": {"d": [true, false, null, 123, "e"]}}, "test": 1.618}',
+    ]
+
+
+def get_invalid_json_test_values():
+    return [
+        " ",
+        "3,14",
+        "False",
+        "FALSE",
+        "True",
+        "TRUE",
+        "None",
+        "NONE",
+        "Null",
+        "NULL",
+        "a",
+        "{a}",
+        '{"a"}',
+        "{'a': 123}",
+        "{{}}",
+    ]
+
+
+def get_empty_test_values():
+    return [None, ""]
 
 
 # Based on frontend/shared/src/__tests__/constants.test.ts
@@ -71,3 +117,29 @@ def test_validate_name_with_valid_input(value):
 def test_validate_name_with_invalid_input(value):
     with pytest.raises(ValidationError):
         validate_name(value)
+
+
+@pytest.mark.parametrize("value", get_valid_json_test_values())
+def test_validate_json_with_valid_input(value):
+    validate_json(value)
+
+
+@pytest.mark.parametrize(
+    "value", get_invalid_json_test_values() + get_empty_test_values()
+)
+def test_validate_json_with_invalid_input(value):
+    with pytest.raises(ValidationError):
+        validate_json(value)
+
+
+@pytest.mark.parametrize(
+    "value", get_valid_json_test_values() + get_empty_test_values()
+)
+def test_validate_optional_json_with_valid_input(value):
+    validate_optional_json(value)
+
+
+@pytest.mark.parametrize("value", get_invalid_json_test_values())
+def test_validate_optional_json_with_invalid_input(value):
+    with pytest.raises(ValidationError):
+        validate_optional_json(value)

@@ -1,9 +1,9 @@
-import isRealIntegrationsEnabled from '@frontend/shared/browser-tests/utils/is-real-integrations-enabled';
 import {
   getErrorMessage,
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import Application from '@frontend/shared/src/types/application';
 import Company from '@frontend/shared/src/types/company';
 import ContactPerson from '@frontend/shared/src/types/contact_person';

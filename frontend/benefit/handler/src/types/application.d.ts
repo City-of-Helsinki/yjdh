@@ -3,6 +3,7 @@ import { BenefitAttachment } from 'shared/types/attachment';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
+  APPLICATION_STATUSES,
   BENEFIT_TYPES,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
@@ -249,6 +250,7 @@ export type ApplicationData = {
 
 export type ApplicationListItemData = {
   id: string;
+  status: APPLICATION_STATUSES;
   companyName?: string;
   companyId?: string;
   submittedAt?: string;

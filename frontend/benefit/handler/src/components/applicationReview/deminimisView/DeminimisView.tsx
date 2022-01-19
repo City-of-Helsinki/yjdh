@@ -23,7 +23,7 @@ const DeminimisView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading3`)}
-      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <></> : null}
+      action={data.status !== APPLICATION_STATUSES.RECEIVED ? <span /> : null}
     >
       {data.deMinimisAidSet && data.deMinimisAidSet?.length > 0 ? (
         <>

@@ -36,10 +36,12 @@ const useApplicationList = (
         application_number: applicationNum,
         calculation,
         additional_information_needed_by,
+        status: applicationStatus,
       } = application;
 
       return {
         id,
+        status: applicationStatus,
         companyName: company ? company.name : '-',
         companyId: company ? company.business_id : '-',
         employeeName:

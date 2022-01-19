@@ -8,6 +8,7 @@ module.exports = {
   },
   moduleNameMapper: {
     [`^shared\/(.*)$`]: '<rootDir>/../../shared/src/$1',
+    [`^benefit-shared\/(.*)$`]: '<rootDir>../shared/src/$1',
     [`benefit/applicant\/(.*)$`]: '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: [

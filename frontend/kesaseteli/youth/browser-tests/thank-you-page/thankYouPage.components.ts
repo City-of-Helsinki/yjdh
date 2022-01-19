@@ -17,6 +17,11 @@ export const getThankYouPageComponents = async (t: TestController) => {
         name: /kesäseteli etusivulle/i,
       });
     },
+    activationLink() {
+      return screen.findByRole('link', {
+        name: /aktivoi/i,
+      });
+    },
   };
   const expectations = {
     async isLoaded() {
@@ -28,6 +33,9 @@ export const getThankYouPageComponents = async (t: TestController) => {
   const actions = {
     async clickGoToFrontPageButton() {
       await t.click(selectors.goToFrontPageButton());
+    },
+    async clickActivationLink() {
+      await t.click(selectors.activationLink());
     },
   };
   await expectations.isLoaded();

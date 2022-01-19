@@ -42,7 +42,7 @@ env:
   NEXT_PUBLIC_MOCK_FLAG: 1
   NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
-  NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 43200 # 12 hours in seconds
+  NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 15
   CORS_ALLOW_ALL_ORIGINS: 1
 jobs:
   build:
@@ -76,6 +76,8 @@ jobs:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
+          DOCKER_BUILD_ARG_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: ${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
@@ -135,6 +137,9 @@ jobs:
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_YOUTH_URL=${{ env.YOUTH_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}" >> $GITHUB_ENV
 
       - name: Review-Services
         if: matrix.database
@@ -166,6 +171,7 @@ jobs:
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
           CORS_ALLOWED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
           CSRF_TRUSTED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
+          YOUTH_URL: ${{ env.YOUTH_URL }}
           LOGIN_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
           LOGIN_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
 
@@ -241,6 +247,10 @@ jobs:
           FRONTEND_URL: ${{ env.ENVIRONMENT_URL }}
           EMPLOYER_URL: ${{ env.EMPLOYER_URL }}
           YOUTH_URL: ${{ env.YOUTH_URL }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
+          NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
+          NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: ${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}
+
       - name: Upload Acceptance Test results for ${{ matrix.service }}
         run: |
           zip -r report.zip ${{matrix.dir}}/report > no_output 2>&1

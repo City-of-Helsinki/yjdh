@@ -1,6 +1,7 @@
 import { Language } from '@frontend/shared/src/i18n/i18n';
 
 type YouthApplication = {
+  id?: string;
   first_name: string;
   last_name: string;
   social_security_number: string;

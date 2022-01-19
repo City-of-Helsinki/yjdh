@@ -25,7 +25,12 @@ const CompanyInfo: React.FC = () => {
           <$CompanyInfoRow>Helsingin kaupunki</$CompanyInfoRow>
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <Checkbox id="company-address-checkbox" label={t('common:editor.employerInfo.addressNeededLabel')} />
+          <Checkbox
+            id="company-address-checkbox"
+            label={t('common:editor.employerInfo.addressNeededLabel')}
+            checked
+            disabled
+          />
         </$GridCell>
         <$GridCell as={$Grid} $colSpan={12}>
           <$GridCell $colSpan={6}>

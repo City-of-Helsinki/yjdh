@@ -1,5 +1,5 @@
 import { Link } from 'hds-react';
-import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';
+import { $Hr } from 'shared/components/forms/section/FormSection.sc';
 import styled from 'styled-components';
 
 type CalculatorTableRowProps = {
@@ -55,12 +55,4 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   padding: ${({ theme: { spacing } }) => `${spacing.xs3} ${spacing.xs}`};
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
-`;
-
-export const $DataValueAlert = styled.span`
-  display: inline-block;
-  font-weight: 500;
-  background-color: ${(props) => props.theme.colors.alert};
-  padding: ${(props) => props.theme.spacing.xs2};
-  margin: ${(props) => props.theme.spacing.s} 0;
 `;

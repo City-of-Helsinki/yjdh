@@ -14,9 +14,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 @dataclass
-class PastBenefitInfo:
-    validation_errors: List[str] = field(default_factory=list)
-    validation_messages: List[str] = field(default_factory=list)
+class FormerBenefitInfo:
+    warnings: List[str] = field(default_factory=list)
     months_used: Optional[
         Decimal
     ] = None  # None is used if employee info is not entered yet
@@ -27,7 +26,7 @@ class PastBenefitInfo:
 BENEFIT_WAITING_PERIOD_MONTHS = 24
 
 
-def get_past_benefit_info(
+def get_former_benefit_info(
     application,
     company,
     social_security_number,
@@ -41,43 +40,43 @@ def get_past_benefit_info(
     # The Application parameter is only used to ensure that the application being validated isn't validated
     # against itself.
 
-    past_benefit_info = PastBenefitInfo()
+    former_benefit_info = FormerBenefitInfo()
 
     if not social_security_number or not end_date:
         # the employee info hasn't been entered yet
-        return past_benefit_info
+        return former_benefit_info
 
     recent_benefits = _get_benefits_relevant_for_validation(
         _get_past_benefits(application, company, social_security_number, end_date),
         start_date,
     )
 
-    past_benefit_info.validation_errors.extend(
-        _get_benefit_overlap_errors(recent_benefits, start_date, end_date)
+    former_benefit_info.warnings.extend(
+        _get_benefit_overlap_warnings(recent_benefits, start_date, end_date)
     )
 
-    past_benefit_info.months_used = sum(
+    former_benefit_info.months_used = sum(
         benefit.duration_in_months for benefit in recent_benefits
     )
     if apprenticeship_program:
         # Kanslia Helsinki-lisä Teams discussion 2021-12-09: there's no upper limit defined for
         # sequentially granted apprenticeship benefits
-        past_benefit_info.months_remaining = None
+        former_benefit_info.months_remaining = None
     else:
-        past_benefit_info.months_remaining = max(
-            Decimal(0), Application.BENEFIT_MAX_MONTHS - past_benefit_info.months_used
+        former_benefit_info.months_remaining = max(
+            Decimal(0), Application.BENEFIT_MAX_MONTHS - former_benefit_info.months_used
         )
 
     if (
         not apprenticeship_program
         and duration_in_months(start_date, end_date)
-        > past_benefit_info.months_remaining
+        > former_benefit_info.months_remaining
     ):
         # granting this benefit would exceed the limit
-        past_benefit_info.validation_errors.append(
+        former_benefit_info.warnings.append(
             _("Benefit can not be granted before 24-month waiting period expires")
         )
-    return past_benefit_info
+    return former_benefit_info
 
 
 def _get_past_benefits(
@@ -155,13 +154,13 @@ def _get_benefits_relevant_for_validation(past_benefits, start_date):
     return applicable_benefits
 
 
-def _get_benefit_overlap_errors(past_benefits, start_date, end_date):
-    errors = []
+def _get_benefit_overlap_warnings(past_benefits, start_date, end_date):
+    warnings = []
     for benefit in past_benefits:
         if date_range_overlap(
             start_date, end_date, benefit.start_date, benefit.end_date
         ):
-            errors.append(
+            warnings.append(
                 format_lazy(
                     _(
                         "There's already an accepted application or previous benefit with overlapping date "
@@ -171,4 +170,4 @@ def _get_benefit_overlap_errors(past_benefits, start_date, end_date):
                     end_date=benefit.end_date,
                 )
             )
-    return errors
+    return warnings
