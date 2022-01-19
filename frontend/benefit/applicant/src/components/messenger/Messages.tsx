@@ -1,10 +1,14 @@
 import { MESSAGE_TYPES } from 'benefit-shared/constants';
 import { Message } from 'benefit-shared/types/application';
+import { IconSpeechbubble } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import MessageComponent from 'shared/components/messaging/Message';
-import { $MessagesList } from 'shared/components/messaging/Messaging.sc';
+import {
+  $Empty,
+  $MessagesList,
+} from 'shared/components/messaging/Messaging.sc';
 import { MessageVariant } from 'shared/types/messages';
 
 interface ComponentProps {
@@ -37,6 +41,12 @@ const Messages: React.FC<ComponentProps> = ({ data, variant, withScroll }) => {
           variant={variant}
         />
       ))}
+      {data.length === 0 && (
+        <$Empty>
+          <IconSpeechbubble />
+          <p>{t('common:messenger.noMessages')}</p>
+        </$Empty>
+      )}
       {withScroll && <div ref={scrollMessagesRef} />}
     </$MessagesList>
   );

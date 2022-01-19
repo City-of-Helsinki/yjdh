@@ -506,6 +506,8 @@
       }
     },
     "compose": "Kirjoita viesti",
-    "send": "Lähetä"
+    "send": "Lähetä",
+    "isSecure": "Viestit ovat salattuja",
+    "noMessages": "Ei viestejä"
   }
 }

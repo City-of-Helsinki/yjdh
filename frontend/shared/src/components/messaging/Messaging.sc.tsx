@@ -11,6 +11,8 @@ interface MessageListProps {
 }
 
 export const $MessagesList = styled.div<MessageListProps>`
+  display: flex;
+  flex-direction: column;
   height: 0;
   flex-grow: 1;
   overflow-y: auto;
@@ -82,4 +84,22 @@ export const $Hr = styled.hr`
   border-top: 1px solid ${(props) => props.theme.colors.black20};
   margin: 0;
   width: 100%;
+`;
+
+export const $Empty = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  color: ${(props) => props.theme.colors.black20};
+  p {
+    color: ${(props) => props.theme.colors.black50};
+    font-size: ${({ theme }) => theme.fontSize.body.l};
+    margin-top: ${({ theme }) => theme.spacing.xs2};
+  }
+  svg {
+    width: ${({ theme }) => theme.spacing.xl5};
+    height: ${({ theme }) => theme.spacing.xl5};
+  }
 `;

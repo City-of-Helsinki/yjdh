@@ -9,19 +9,21 @@ import { useMessenger } from './useMessenger';
 
 interface ComponentProps {
   isOpen: boolean;
+  onClose?: () => void;
   customItemsMessages?: React.ReactNode;
 }
 
 const Messenger: React.FC<ComponentProps> = ({
   isOpen,
+  onClose,
   customItemsMessages,
 }) => {
   const { t, messages, handleSendMessage } = useMessenger();
 
   return (
-    <Drawer isOpen={isOpen}>
+    <Drawer isOpen={isOpen} closeText="Sulje" onClose={onClose}>
       <Tabs>
-        <$TabList>
+        <$TabList position="start">
           <Tab>{t('common:messenger.messages')}</Tab>
         </$TabList>
         <TabPanel

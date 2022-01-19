@@ -3,6 +3,7 @@ export const IS_CLIENT = typeof window !== 'undefined';
 export enum ROUTES {
   HOME = '/',
   APPLICATION_FORM = '/application',
+  LOGIN = '/login',
 }
 
 export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;
