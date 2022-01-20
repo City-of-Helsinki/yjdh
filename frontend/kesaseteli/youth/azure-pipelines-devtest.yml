@@ -6,6 +6,7 @@ trigger:
     - develop
   paths:
     include:
+    - frontend/tet
     - frontend/kesaseteli/youth
     exclude:
     - README.md
