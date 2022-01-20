@@ -43,9 +43,10 @@ const Combobox = <T, O extends Option>({
         data-testid={id}
         control={control}
         rules={registerOptions}
-        render={({ field: { ref, ...field } }) => (
+        render={({ field: { ref, value, ...field } }) => (
           <HdsCombobox<O>
             {...field}
+            value={value as O}
             id={id}
             required={required}
             label={label}
