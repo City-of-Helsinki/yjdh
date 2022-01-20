@@ -7,7 +7,7 @@ trigger:
   paths:
     include:
     - frontend/tet
-    - frontend/kesaseteli/youth
+#    - frontend/kesaseteli/youth
     exclude:
     - README.md
 
