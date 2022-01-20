@@ -20,11 +20,11 @@ const Checkbox = <T,>({
 }: InputProps<T, boolean>): React.ReactElement<T> => {
   const { control, setError, clearErrors } = useFormContext<T>();
   const [selectedValue, toggleSelectedValue] = useToggle(initialValue);
-  const required = Boolean(registerOptions.required);
+  const required = Boolean(registerOptions?.required);
 
   const handleChange = React.useCallback(
     (
-      field: ControllerRenderProps<T, Path<T>>,
+      field: Omit<ControllerRenderProps<T, Path<T>>, 'value'>,
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
       toggleSelectedValue();
@@ -45,9 +45,10 @@ const Checkbox = <T,>({
       name={id}
       control={control}
       rules={registerOptions}
-      render={({ field }) => (
+      render={({ field: { value, ...field } }) => (
         <HdsCheckbox
           {...field}
+          value={String(value)}
           data-testid={id}
           id={id}
           required={required}

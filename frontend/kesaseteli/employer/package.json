@@ -20,12 +20,10 @@
     "@frontend/shared": "*",
     "@frontend/kesaseteli-shared": "*",
     "@sentry/browser": "^6.16.1",
-    "@types/react": "^17.0.37",
-    "@types/react-dom": "^17.0.6",
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-styled-components": "^2.0.2",
-    "dotenv": "^14.1.0",
+    "dotenv": "^14.2.0",
     "esm": "^3.2.25",
     "graphql": "^16.2.0",
     "hds-react": "^1.6.0",
@@ -42,13 +40,13 @@
     "react-loading-skeleton": "^3.0.2",
     "react-query": "^3.34.0",
     "react-toastify": "^8.0.3",
-    "react-use": "^17.3.1",
+    "react-use": "^17.3.2",
     "rexreplace": "^7.0.3",
     "styled-components": "^5.3.1",
-    "ts-node": "^10.0.0",
-    "typescript": "^4.4.3"
+    "ts-node": "^10.0.0"
   },
   "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1"
+    "eslint-config-adjunct": "^4.11.1",
+    "typescript": "^4.5.4"
   }
 }

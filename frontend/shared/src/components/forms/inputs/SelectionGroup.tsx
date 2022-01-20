@@ -48,7 +48,7 @@ const SelectionGroup = <T,>({
         name={id}
         rules={registerOptions}
         control={control}
-        render={({ field: { ref, ...fieldProps } }) => (
+        render={({ field: { ref, value, ...fieldProps } }) => (
           <$SelectionGroup
             {...fieldProps}
             id={id}
@@ -59,15 +59,15 @@ const SelectionGroup = <T,>({
             errorText={errorText}
             label={label}
           >
-            {values.map((value) => (
+            {values.map((val) => (
               <RadioButton
-                key={`${idString}-${value}`}
-                id={`${idString}-${value}`}
-                data-testid={`${idString}-${value}`}
-                label={getValueText(value)}
-                value={value}
+                key={`${idString}-${val}`}
+                id={`${idString}-${val}`}
+                data-testid={`${idString}-${val}`}
+                label={getValueText(val)}
+                value={val}
                 onChange={handleChange}
-                checked={value === selectedValue}
+                checked={val === selectedValue}
               />
             ))}
           </$SelectionGroup>
