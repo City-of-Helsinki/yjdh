@@ -38,6 +38,8 @@ env:
   K8S_PROBE_FAILURE_THRESHOLD: 30
   K8S_PROBE_PERIOD: 20
   HELM_BUFFER_TIME: 300
+  APPLICANT_URL: https://helsinkibenefit-bf-appl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
+  HANDLER_URL: https://helsinkibenefit-bf-hndl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://helsinkibenefit-bf-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_MOCK_FLAG: 1
   MOCK_FLAG: 1
@@ -130,8 +132,14 @@ jobs:
           echo "K8S_SECRET_ADMIN_USER_PASSWORD=${{ secrets.K8S_SECRET_ADMIN_USER_PASSWORD_REVIEW }}" >> $GITHUB_ENV
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_COOKIE_DOMAIN=.test.kuva.hel.ninja" >> $GITHUB_ENV
-          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.FRONTEND_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.APPLICANT_URL }},${{ env.HANDLER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.APPLICANT_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.APPLICANT_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_APPLICANT_URL=${{ env.APPLICANT_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_HANDLER_URL=${{ env.HANDLER_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DISABLE_AUTHENTICATION=${{ env.DISABLE_AUTHENTICATION }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
