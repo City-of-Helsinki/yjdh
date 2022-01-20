@@ -22,6 +22,12 @@ class MessageSerializer(serializers.ModelSerializer):
             "message_type",
         ]
 
+    # An applicant is only allowed to send a message if application is in one of these statuses
+    APPLICANT_MESSAGE_ALLOWED_STATUSES = [
+        ApplicationStatus.HANDLING,
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+    ]
+
     def validate(self, data):
         request = self.context.get("request")
         user = get_request_user_from_context(self)
@@ -36,17 +42,27 @@ class MessageSerializer(serializers.ModelSerializer):
             company = get_company_from_request(request)
             if company != application.company:
                 raise PermissionDenied(_("You are not allowed to do this action"))
-            if application.status != ApplicationStatus.HANDLING:
+
+            if application.status not in self.APPLICANT_MESSAGE_ALLOWED_STATUSES:
                 raise serializers.ValidationError(
                     _(
                         "Cannot do this action because "
-                        "application is not in handling status"
+                        "application is not in the correct status"
                     )
                 )
             if data["message_type"] != MessageType.APPLICANT_MESSAGE:
                 raise serializers.ValidationError(
                     _("Applicant is not allowed to do this action")
                 )
+            if not application.messages.filter(
+                message_type=MessageType.HANDLER_MESSAGE
+            ):
+                raise serializers.ValidationError(
+                    _(
+                        "Applicant can send messages only after handler has sent a message first"
+                    )
+                )
+
         elif data["message_type"] == MessageType.APPLICANT_MESSAGE:
             raise serializers.ValidationError(
                 _("Handler is not allowed to do this action")
