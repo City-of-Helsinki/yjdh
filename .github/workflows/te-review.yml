@@ -139,12 +139,18 @@ jobs:
           echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL_FAILURE=${{ env.ADMIN_URL }}/login?error=true" >> $GITHUB_ENV
           echo "K8S_SECRET_EAUTH_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_EAUTH_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_USERNAME_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_PASSWORD_REVIEW }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DATABASE_URL=postgresql://${{ secrets.K8S_SECRET_DATABASE_USERNAME_REVIEW }}:${{ secrets.K8S_SECRET_DATABASE_PASSWORD_REVIEW }}@${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW}}:${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}/${{ env.K8S_NAMESPACE }}" >> $GITHUB_ENV
 
       - name: Review-Services
         if: matrix.database
         uses: City-of-Helsinki/review-services-action@main
         with:
-          database: ${{ env.K8S_NAMESPACE }}
+          database: ${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}
           namespace: ${{ env.K8S_NAMESPACE }}
           action: create
           db_user: ${{ secrets.K8S_SECRET_DATABASE_ADMIN_USERNAME_REVIEW }}
@@ -152,15 +158,6 @@ jobs:
           db_host: ${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}
           db_port: ${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}
           kubeconfig: ${{ secrets.KUBECONFIG_RAW }}
-
-      - name: Database variables
-        if: matrix.database
-        run: |
-          echo "K8S_SECRET_DATABASE_HOST=${{ secrets.K8S_SECRET_DATABASE_HOST_REVIEW }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_PORT=${{ secrets.K8S_SECRET_DATABASE_PORT_REVIEW }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_DB=${{ env.K8S_NAMESPACE }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_USERNAME=${{ secrets.K8S_SECRET_DATABASE_USERNAME_REVIEW }}" >> $GITHUB_ENV
-          echo "K8S_SECRET_DATABASE_PASSWORD=${{ secrets.K8S_SECRET_DATABASE_PASSWORD_REVIEW }}" >> $GITHUB_ENV
 
       - name: Service with ingress
         run: |
