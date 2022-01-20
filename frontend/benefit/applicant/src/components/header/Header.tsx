@@ -7,6 +7,7 @@ import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import BaseHeader from 'shared/components/header/Header';
+import useToggle from 'shared/hooks/useToggle';
 
 import Messenger from '../messenger/Messenger';
 import { $CustomMessagesActions } from './Header.sc';
@@ -25,13 +26,8 @@ const Header: React.FC = () => {
   const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
   const isApplicationPage = asPath?.startsWith(ROUTES.APPLICATION_FORM);
 
-  const [isMessagesDrawerVisible, setIsMessagesDrawerVisible] =
-    React.useState<boolean>(false);
-
-  const handlePanel = (): void =>
-    setIsMessagesDrawerVisible(!isMessagesDrawerVisible);
-
-  const closePanel = (): void => setIsMessagesDrawerVisible(false);
+  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
+    useToggle(false);
 
   const isAuthenticated = !isLoginPage && userQuery.isSuccess;
 
@@ -60,7 +56,7 @@ const Header: React.FC = () => {
                   size="small"
                   iconLeft={<IconSpeechbubbleText />}
                   theme="coat"
-                  onClick={handlePanel}
+                  onClick={toggleMessagesDrawerVisiblity}
                 >
                   {t('common:header.messages')}
                 </Button>,
@@ -71,7 +67,7 @@ const Header: React.FC = () => {
       {isAuthenticated && isApplicationPage && (
         <Messenger
           isOpen={isMessagesDrawerVisible}
-          onClose={closePanel}
+          onClose={toggleMessagesDrawerVisiblity}
           customItemsMessages={
             <$CustomMessagesActions>
               <IconLock />

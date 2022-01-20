@@ -32,6 +32,7 @@ const useMessagesQuery = (
     {
       select: (data: MessageData[]) => mapMessages(data),
       onError: () => handleError(),
+      refetchInterval: 30_000,
     }
   );
 };

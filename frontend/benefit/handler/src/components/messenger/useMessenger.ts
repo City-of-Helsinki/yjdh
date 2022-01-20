@@ -4,8 +4,6 @@ import { MESSAGE_TYPES, MESSAGE_URLS } from 'benefit-shared/constants';
 import { Message } from 'benefit-shared/types/application';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
-import React from 'react';
-import usePolling from 'shared/hooks/usePolling';
 
 type ExtendedComponentProps = {
   t: TFunction;
@@ -19,11 +17,11 @@ const useMessenger = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const applicationId = router.query.id ?? '';
-  const { data: messages, refetch: refetchMessages } = useMessagesQuery(
+  const { data: messages } = useMessagesQuery(
     applicationId.toString(),
     MESSAGE_URLS.MESSAGES
   );
-  const { data: notes, refetch: refetchNotes } = useMessagesQuery(
+  const { data: notes } = useMessagesQuery(
     applicationId.toString(),
     MESSAGE_URLS.NOTES
   );
@@ -36,14 +34,6 @@ const useMessenger = (): ExtendedComponentProps => {
     applicationId.toString(),
     MESSAGE_URLS.NOTES
   );
-
-  const doPolling = React.useCallback((): void => {
-    void refetchMessages();
-    void refetchNotes();
-  }, [refetchMessages, refetchNotes]);
-
-  // refetch messages and notes every 30 seconds
-  usePolling(doPolling, 30_000);
 
   const handleSendMessage = (message: string): void =>
     createMessage({

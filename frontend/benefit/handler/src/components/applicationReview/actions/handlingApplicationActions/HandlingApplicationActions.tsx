@@ -7,6 +7,7 @@ import { Button, IconPen, IconTrash } from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
+import useToggle from 'shared/hooks/useToggle';
 
 import EditAction from '../editAction/EditAction';
 import {
@@ -23,13 +24,8 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
   const { updateStatus } = useApplicationActions(application);
-  const [isMessagesDrawerVisible, setIsMessagesDrawerVisible] =
-    React.useState<boolean>(false);
-
-  const handlePanel = (): void =>
-    setIsMessagesDrawerVisible(!isMessagesDrawerVisible);
-
-  const handleClosePanel = (): void => setIsMessagesDrawerVisible(false);
+  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
+    useToggle(false);
 
   return (
     <$Wrapper>
@@ -44,7 +40,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
           {t(`${translationsBase}.saveAndContinue`)}
         </Button>
         <Button
-          onClick={handlePanel}
+          onClick={toggleMessagesDrawerVisiblity}
           theme="black"
           variant="secondary"
           iconLeft={<IconPen />}
@@ -64,7 +60,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
       </$Column>
       <Messenger
         isOpen={isMessagesDrawerVisible}
-        onClose={handleClosePanel}
+        onClose={toggleMessagesDrawerVisiblity}
         customItemsMessages={<EditAction application={application} />}
         customItemsNotes={
           <$CustomNotesActions>
