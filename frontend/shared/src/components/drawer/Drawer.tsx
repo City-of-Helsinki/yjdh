@@ -1,14 +1,24 @@
+import { IconCross } from 'hds-react';
 import React from 'react';
 
-import { $Body, $Bottom, $Drawer, $Title, $Top } from './Drawer.sc';
+import { $Body, $Bottom, $Close, $Drawer, $Title, $Top } from './Drawer.sc';
 
 export type DrawerProps = {
   title?: string;
+  closeText?: string;
   footer?: React.ReactNode;
   isOpen: boolean;
+  onClose?: () => void;
 };
 
-const Drawer: React.FC<DrawerProps> = ({ title, isOpen, children, footer }) => {
+const Drawer: React.FC<DrawerProps> = ({
+  title,
+  isOpen,
+  children,
+  footer,
+  closeText,
+  onClose,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -17,6 +27,12 @@ const Drawer: React.FC<DrawerProps> = ({ title, isOpen, children, footer }) => {
         <$Top>
           <$Title>{title}</$Title>
         </$Top>
+      )}
+      {onClose && (
+        <$Close onClick={onClose}>
+          <IconCross />
+          <p>{closeText}</p>
+        </$Close>
       )}
       {children && <$Body>{children}</$Body>}
       {footer && <$Bottom>{footer}</$Bottom>}

@@ -12,28 +12,24 @@ interface ComponentProps {
   isOpen: boolean;
   onClose?: () => void;
   customItemsMessages?: React.ReactNode;
-  customItemsNotes?: React.ReactNode;
 }
 
 const Messenger: React.FC<ComponentProps> = ({
   isOpen,
-  customItemsMessages,
-  customItemsNotes,
   onClose,
+  customItemsMessages,
 }) => {
-  const { t, messages, notes, handleSendMessage, handleCreateNote } =
-    useMessenger();
+  const { t, messages, handleSendMessage } = useMessenger();
 
   return (
     <Drawer
       isOpen={isOpen}
-      onClose={onClose}
       closeText={t('common:messenger.close')}
+      onClose={onClose}
     >
       <Tabs>
-        <$TabList>
-          <Tab>{t('common:header.messages')}</Tab>
-          <Tab>{t('common:header.notes')}</Tab>
+        <$TabList position="start">
+          <Tab>{t('common:messenger.messages')}</Tab>
         </$TabList>
         <TabPanel
           css={`
@@ -49,24 +45,7 @@ const Messenger: React.FC<ComponentProps> = ({
             errorText={t('common:form.validation.string.max', { max: 1024 })}
             placeholder={t('common:messenger.compose')}
             onSend={handleSendMessage}
-            notification={t('common:messenger.showEveryone')}
           />
-        </TabPanel>
-        <TabPanel
-          css={`
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-          `}
-        >
-          <Actions
-            customItems={customItemsNotes}
-            sendText={t('common:messenger.save')}
-            errorText={t('common:form.validation.string.max', { max: 1024 })}
-            placeholder={t('common:messenger.composeNote')}
-            onSend={handleCreateNote}
-          />
-          <Messages data={notes?.reverse()} variant="note" />
         </TabPanel>
       </Tabs>
     </Drawer>
@@ -75,8 +54,7 @@ const Messenger: React.FC<ComponentProps> = ({
 
 Messenger.defaultProps = {
   customItemsMessages: [],
-  customItemsNotes: [],
-  onClose: () => noop,
+  onClose: noop,
 };
 
 export default Messenger;
