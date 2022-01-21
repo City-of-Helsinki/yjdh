@@ -2,10 +2,9 @@ import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ApplicationListItemData } from 'benefit/applicant/types/application';
 import { Loading } from 'benefit/applicant/types/common';
-import { Button, IconSpeechbubbleText, StatusLabel } from 'hds-react';
+import { Button, StatusLabel } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import {
   $Avatar,
@@ -14,9 +13,6 @@ import {
   $DataValue,
   $ItemActions,
   $ItemContent,
-  $ItemInfo,
-  $ItemInfoInner,
-  $ItemInfoText,
   $ListItem,
   $ListItemWrapper,
 } from './ListItem.sc';
@@ -100,7 +96,15 @@ const ListItem: React.FC<ListItemProps> = (props) => {
               <$DataHeader>
                 {t(`${translationBase}.common.editEndDate`)}
               </$DataHeader>
-              <StatusLabel type="alert">{editEndDate}</StatusLabel>
+              <StatusLabel
+                css={`
+                  font-weight: 600;
+                  text-align: center;
+                `}
+                type="alert"
+              >
+                {editEndDate}
+              </StatusLabel>
             </$DataColumn>
           )}
         </$ItemContent>
@@ -122,16 +126,6 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           </Button>
         </$ItemActions>
       </$ListItem>
-      {status === APPLICATION_STATUSES.INFO_REQUIRED && (
-        <$ItemInfo>
-          <$GridCell $colStart={2}>
-            <$ItemInfoInner>
-              <IconSpeechbubbleText />
-              <$ItemInfoText>1 uusi viesti</$ItemInfoText>
-            </$ItemInfoInner>
-          </$GridCell>
-        </$ItemInfo>
-      )}
     </$ListItemWrapper>
   );
 };

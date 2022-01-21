@@ -28,6 +28,7 @@ interface ApplicationListProps {
   list: ApplicationListItemData[];
   shouldShowSkeleton: boolean;
   shouldHideList: boolean;
+  newMessagesCount: number;
 }
 
 const getAvatarBGColor = (
@@ -109,6 +110,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       submitted_at,
       application_number: applicationNum,
       additional_information_needed_by,
+      unread_messages_count,
     } = application;
 
     const statusText = getStatusTranslation(appStatus);
@@ -127,7 +129,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       last_modified_at && convertToUIDateFormat(last_modified_at);
     const editEndDate =
       additional_information_needed_by &&
-      convertToUIDateAndTimeFormat(additional_information_needed_by);
+      convertToUIDateFormat(additional_information_needed_by);
     const commonProps = {
       id,
       name,
@@ -135,6 +137,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       modifiedAt,
       allowedAction,
       status: appStatus,
+      unreadMessagesCount: unread_messages_count ?? 0,
     };
     const draftProps = { createdAt, applicationNum };
     const submittedProps = {
@@ -169,6 +172,10 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     list: list || [],
     shouldShowSkeleton,
     shouldHideList,
+    newMessagesCount:
+      list?.filter(
+        (application) => Number(application?.unreadMessagesCount) > 0
+      ).length ?? 0,
   };
 };
 

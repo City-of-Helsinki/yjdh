@@ -1,9 +1,18 @@
+import { IconSpeechbubbleText } from 'hds-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import theme from 'shared/styles/theme';
 
-import { $Heading, $ListWrapper } from './ApplicationList.sc';
+import {
+  $Heading,
+  $ListInfo,
+  $ListInfoInner,
+  $ListInfoText,
+  $ListWrapper,
+} from './ApplicationList.sc';
 import ListItem from './listItem/ListItem';
 import useApplicationList from './useApplicationList';
 
@@ -16,9 +25,9 @@ const ApplicationsList: React.FC<ApplicationListProps> = ({
   heading,
   status,
 }) => {
-  const { list, shouldShowSkeleton, shouldHideList } = useApplicationList(
-    status
-  );
+  const { t } = useTranslation();
+  const { list, shouldShowSkeleton, shouldHideList, newMessagesCount } =
+    useApplicationList(status);
 
   const items = shouldShowSkeleton ? (
     <ListItem isLoading />
@@ -34,6 +43,22 @@ const ApplicationsList: React.FC<ApplicationListProps> = ({
         {shouldShowSkeleton ? <LoadingSkeleton width="20%" /> : heading}
       </$Heading>
       <$ListWrapper>{items}</$ListWrapper>
+      {newMessagesCount > 0 && (
+        <$ListInfo>
+          <$GridCell $colStart={2}>
+            <$ListInfoInner>
+              <IconSpeechbubbleText />
+              <$ListInfoText>
+                {`${newMessagesCount} ${t(
+                  `common:applications.list.common.newMessages${
+                    newMessagesCount > 1 ? 'Mult' : ''
+                  }`
+                )}`}
+              </$ListInfoText>
+            </$ListInfoInner>
+          </$GridCell>
+        </$ListInfo>
+      )}
     </Container>
   );
 };

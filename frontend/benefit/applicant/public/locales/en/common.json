@@ -19,7 +19,9 @@
         "applicationNumber": "Hakemusnumero",
         "status": "Tila",
         "check": "Tarkastele",
-        "editEndDate": "Muokkaa viimeistään"
+        "editEndDate": "Muokkaa viimeistään",
+        "newMessages": "uusi viesti",
+        "newMessagesMult": "uutta viestiä"
       }
     },
     "pageHeaders": {

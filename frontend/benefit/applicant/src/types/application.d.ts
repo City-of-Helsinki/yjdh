@@ -214,6 +214,7 @@ export type ApplicationData = {
   applicant_terms_approval_needed?: boolean;
   applicant_terms_in_effect?: ApplicantTermsData;
   approve_terms?: ApproveTermsData;
+  unread_messages_count?: number;
 };
 
 interface ApplicationAllowedAction {
@@ -237,6 +238,7 @@ export interface ApplicationListItemData {
   applicationNum?: number;
   editEndDate?: string;
   allowedAction: ApplicationAllowedAction;
+  unreadMessagesCount?: number;
 }
 
 export interface Step1 {
@@ -301,6 +303,7 @@ export type Application = {
   applicantTermsApprovalNeeded?: boolean;
   applicantTermsInEffect?: ApplicantTerms;
   approveTerms?: ApproveTerms;
+  unreadMessagesCount?: number;
 } & Step1 &
   Step2;
 
