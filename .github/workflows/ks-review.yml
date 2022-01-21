@@ -65,7 +65,7 @@ jobs:
           - service: ks-hdlr
             context: ./frontend
             dockerfile: ./frontend/kesaseteli/handler/Dockerfile
-            port: 3100
+            port: 3200
     runs-on: ubuntu-latest
     name: Build
     steps:
