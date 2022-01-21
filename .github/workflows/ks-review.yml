@@ -1,4 +1,4 @@
-name: (KS EMPLOYER) Build & Review & Acceptance tests
+name: (KESÄSETELI) Build & Review & Acceptance tests
 on:
   pull_request:
     paths:
@@ -48,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'ks-bknd', 'ks-empl', 'ks-youth' ]
+        service: [ 'ks-bknd', 'ks-empl', 'ks-youth', 'ks-hdlr' ]
         include:
           - service: ks-bknd
             context: ./backend
@@ -61,6 +61,10 @@ jobs:
           - service: ks-youth
             context: ./frontend
             dockerfile: ./frontend/kesaseteli/youth/Dockerfile
+            port: 3100
+          - service: ks-hdlr
+            context: ./frontend
+            dockerfile: ./frontend/kesaseteli/handler/Dockerfile
             port: 3100
     runs-on: ubuntu-latest
     name: Build
@@ -85,7 +89,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'ks-bknd', 'ks-empl', 'ks-youth' ]
+        service: [ 'ks-bknd', 'ks-empl', 'ks-youth', 'ks-hdlr' ]
         include:
           - service: ks-bknd
             context: ./backend
@@ -100,6 +104,11 @@ jobs:
           - service: ks-youth
             context: frontend
             dockerfile: ./frontend/kesaseteli/youth/Dockerfile
+            database: false
+            port: 3100
+          - service: ks-hdlr
+            context: frontend
+            dockerfile: ./frontend/kesaseteli/handler/Dockerfile
             database: false
             port: 3100
     runs-on: ubuntu-latest
@@ -121,11 +130,12 @@ jobs:
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
           echo "K8S_SECRET_SECRET_KEY=$SECRET_KEY" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_COOKIE_DOMAIN=.test.kuva.hel.ninja" >> $GITHUB_ENV
-          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.EMPLOYER_URL }},${{ env.YOUTH_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_CORS_ALLOWED_ORIGINS=${{ env.EMPLOYER_URL }},${{ env.YOUTH_URL }},${{ env.HANDLER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
           echo "K8S_SECRET_YOUTH_URL=${{ env.YOUTH_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_HANDLER_URL=${{ env.HANDLER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
@@ -168,11 +178,6 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
-          CORS_ALLOWED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
-          CSRF_TRUSTED_ORIGINS: ${{ env.ENVIRONMENT_URL }}
-          YOUTH_URL: ${{ env.YOUTH_URL }}
-          LOGIN_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
-          LOGIN_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
 
       - name: Deploy Cronjobs
         if: matrix.database
@@ -246,6 +251,7 @@ jobs:
           FRONTEND_URL: ${{ env.ENVIRONMENT_URL }}
           EMPLOYER_URL: ${{ env.EMPLOYER_URL }}
           YOUTH_URL: ${{ env.YOUTH_URL }}
+          HANDLER_URL: ${{ env.HANDLER_URL }}
           NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
           NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: ${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}

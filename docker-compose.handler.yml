@@ -1,7 +1,9 @@
 version: "3.8"
 services:
   postgres:
-    image: postgres:12
+    build:
+      context: ./backend
+      dockerfile: ./docker/finnish_postgres.Dockerfile
     restart: on-failure
     environment:
       POSTGRES_USER: kesaseteli
@@ -33,10 +35,10 @@ services:
       - postgres
     container_name: kesaseteli-backend
 
-  kesaseteli-employer:
+  kesaseteli-handler:
     build:
       context: ./frontend
-      dockerfile: kesaseteli/employer/Dockerfile
+      dockerfile: kesaseteli/handler/Dockerfile
       target: development
     volumes:
       - ./frontend:/app
@@ -45,22 +47,22 @@ services:
     env_file:
       - .env.kesaseteli
     environment:
-      - PORT=3000
-    container_name: kesaseteli-employer
+      - PORT=3200
+    container_name: kesaseteli-handler
 
   kesaseteli-local-proxy:
     depends_on:
       - postgres
       - kesaseteli-backend
-      - kesaseteli-employer
+      - kesaseteli-handler
     build:
-      context: ./localdevelopment/employer/nginx
+      context: ./localdevelopment/handler/nginx
     container_name: kesaseteli-local-proxy
     volumes:
-      - ./localdevelopment/employer/nginx/:/etc/nginx/
+      - ./localdevelopment/handler/nginx/:/etc/nginx/
     ports:
       - 127.0.0.1:8000:8000
-      - 127.0.0.1:3000:3000
+      - 127.0.0.1:3200:3200
 
 volumes:
   pgdata:

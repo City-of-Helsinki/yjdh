@@ -1,0 +1,95 @@
+{
+  "appName": "EN Kesäsetelin käsittelijäliittymä",
+  "header": {
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu"
+  },
+  "errorPage": {
+    "title": "An unexpected error occured",
+    "message": "Something went wrong. Refreshing the page might help.",
+    "retry": "Reload the page again",
+    "logout": "Log out"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Page was not found",
+    "pageNotFoundContent": "Oh no, something went wrong. Try to enter the application <lnk>here</lnk>, through the front page"
+  },
+  "footer": {
+    "copyrightText": "City of Helsinki",
+    "allRightsReservedText": "All rights reserved",
+    "backToTop": "Back to top",
+    "registerInformation": "ENG Rekisteriseloste ",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth%20services%20summer%20job%20voucher%20data%20file.pdf",
+    "jobOpenings": "ENG Avoimet työpaikat (Only in finnish)",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Contact us",
+    "contactUsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/contact-us/",
+    "accessibilityStatement": "Accessibility statement",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
+    "information": "Information on the service",
+    "informationLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "error": {
+    "generic": {
+      "label": "An unexpected error occurred",
+      "text": "Try again later."
+    },
+    "attachments": {
+      "title": "An error occured while uploading the file.",
+      "tooBig": "The file is too big.",
+      "fileType": "The file type is not allowed."
+    }
+  },
+  "handlerApplication": {
+    "title": "ENG Käsittelijän käyttöliittymä",
+    "paragraph_1": "ENG Hello Käsittelijä!"
+  },
+  "errors": {
+    "required": "Information is missing or is incorrect",
+    "maxLength": "The information you entered is too long",
+    "pattern": "The information you entered is in an incorrect format",
+    "validate": "The information you entered is in an incorrect format"
+  },
+  "assistive": {
+    "toggleMenu": "ENG Avaa valikko"
+  },
+  "thankyouPage" : {
+    "title": "Thank You!",
+    "notificationTitle": "ENG Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
+    "notificationMessage": "ENG Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
+    "goToFrontendPage": "ENG Kesäseteli etusivulle"
+  },
+  "activationErrorPage" : {
+    "goToFrontendPage": "ENG Tarkista tiedot ja lähetä uudelleen"
+  },
+  "emailInUsePage" : {
+    "title": "ENG Hups! Sähköposti on jo käytössä.",
+    "notificationMessage": "ENG Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+  },
+  "alreadyAssignedPage" : {
+    "title": "ENG Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
+    "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+  },
+  "activatedPage" : {
+    "title": "ENG Kesäsetelisi on nyt aktivoitu",
+    "notificationTitle": "ENG Vahvistus onnistui",
+    "notificationMessage": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "paragraph_1": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  },
+  "expiredPage" : {
+    "title": "ENG Hups! Vahvistuslinkki on vanhentunut.",
+    "notificationMessage": "ENG Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
+    "goToFrontendPage": "ENG Rekisteröidy ja lähetä kesäseteli uudelleen"
+  },
+  "alreadyActivatedPage" : {
+    "title": "ENG Hups! Vahvistuslinkki on jo aktivoitu.",
+    "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiisi.",
+    "goToFrontendPage": "ENG Rekisteröidy ja lähetä kesäseteli uudelleen"
+  }
+}
