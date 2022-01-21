@@ -52,7 +52,15 @@
       "workHoursNotice": "SV Työaika on aina sama 30h per viikko.",
       "startDateLabel": "SV Alkaen",
       "endDateLabel": "SV Päättyen",
-      "spotsLabel": "SV Työharjoittelupaikkoja"
+      "spotsLabel": "SV Työharjoittelupaikkoja",
+			"contactFirstName": "SV Etunimi",
+			"contactLastName": "SV Sukunimi",
+			"contactPhone": "SV Puhelin",
+			"contactEmail": "SV Sähköposti",
+			"contactLanguage": "SV Asiointikieli",
+			"contactLanguageFi": "SV Suomi",
+			"contactLanguageSv": "SV Ruotsi",
+			"contactLanguageEn": "SV Englanti"
     }
   },
   "footer": {

@@ -1,6 +1,7 @@
 import React from 'react';
 import CompanyInfo from 'tet/admin/components/editor/companyInfo/CompanyInfo';
 import PostingDetails from 'tet/admin/components/editor/postingDetails/PostingDetails';
+import ContactPerson from 'tet/admin/components/editor/contactPerson/ContactPerson';
 import { FormProvider, useForm } from 'react-hook-form';
 import TetPosting from 'tet/admin/types/tetposting';
 import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
@@ -12,6 +13,11 @@ const initialValuesForNew: TetPosting = {
   title: '',
   description: '',
   spots: 3,
+  contact_first_name: '',
+  contact_last_name: '',
+  contact_email: '',
+  contact_phone: '',
+  contact_language: 'fi',
   start_date: '',
   end_date: '',
 };
@@ -38,9 +44,10 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const posting = initialValue || initialValuesForNew;
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
+    console.log(validatedPosting);
     const verb = validatedPosting.id ? 'PUT' : 'POST';
     console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
-    upsertTetPosting.mutate(validatedPosting);
+    //upsertTetPosting.mutate(validatedPosting);
   };
 
   return (
@@ -50,6 +57,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
         <p>* pakollinen tieto</p>
         <EditorErrorNotification />
         <CompanyInfo />
+        <ContactPerson initialValue={posting} />
         <PostingDetails initialValue={posting} />
         <ActionButtons />
       </form>

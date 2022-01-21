@@ -1,0 +1,42 @@
+import React from 'react';
+import TetPosting from 'tet/admin/types/tetposting';
+import { useFormContext, Controller } from 'react-hook-form';
+import { Select as HdsSelect } from 'hds-react';
+import Id from 'shared/types/id';
+import { RegisterOptions } from 'react-hook-form';
+
+type OptionType = {
+  value: string;
+  label: string;
+};
+
+type Props = {
+  id: Id<TetPosting>;
+  options: OptionType[];
+  initialValue: string;
+  label: string;
+  registerOptions: RegisterOptions;
+};
+
+const Dropdown: React.FC<Props> = ({ id, options, initialValue, label, registerOptions }) => {
+  const { control } = useFormContext<TetPosting>();
+  console.log(options);
+
+  return (
+    <Controller
+      name={id}
+      render={({ field: { onChange, value } }) => (
+        <HdsSelect
+          options={options}
+          label={label}
+          optionLabelField="label"
+          onChange={(val: OptionType) => onChange(val.value)}
+        />
+      )}
+      control={control}
+      rules={registerOptions}
+    ></Controller>
+  );
+};
+
+export default Dropdown;
