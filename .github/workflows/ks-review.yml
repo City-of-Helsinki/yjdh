@@ -210,12 +210,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [ 'ks-empl', 'ks-youth' ]
+        service: [ 'ks-empl', 'ks-youth', 'ks-handler' ]
         include:
           - service: ks-empl
             dir: kesaseteli/employer
           - service: ks-youth
             dir: kesaseteli/youth
+          - service: ks-handler
+            dir: kesaseteli/handler
     steps:
       - uses: actions/checkout@v2
       - name: Setup kubectl
