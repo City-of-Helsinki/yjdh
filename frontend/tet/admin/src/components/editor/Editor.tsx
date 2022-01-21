@@ -37,6 +37,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
+    defaultValues: { contact_language: 'fi' }, //Could be used for all
   });
 
   const upsertTetPosting = useUpsertTetPosting();
@@ -44,10 +45,9 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const posting = initialValue || initialValuesForNew;
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
-    console.log(validatedPosting);
     const verb = validatedPosting.id ? 'PUT' : 'POST';
     console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
-    //upsertTetPosting.mutate(validatedPosting);
+    upsertTetPosting.mutate(validatedPosting);
   };
 
   return (

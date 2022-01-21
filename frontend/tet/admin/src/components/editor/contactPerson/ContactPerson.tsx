@@ -9,6 +9,7 @@ import TextInput from 'shared/components/forms/inputs/TextInput';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import PhoneInput from 'tet/admin/components/editor/PhoneInput';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
+import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 
 const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const { t } = useTranslation();
@@ -18,7 +19,7 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
     { value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
     { value: 'en', label: t('common:editor.posting.contactLanguageEn') },
   ];
-  console.log(initialValue, 'editorProps');
+
   return (
     <FormSection header={t('common:editor.posting.header')}>
       <$GridCell
@@ -36,6 +37,8 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
             placeholder={t('common:editor.posting.contactFirstName')}
             registerOptions={{
               required: true,
+              pattern: NAMES_REGEX,
+              maxLength: 128,
             }}
           />
         </$GridCell>
@@ -47,6 +50,8 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
             placeholder={t('common:editor.posting.contactLastName')}
             registerOptions={{
               required: true,
+              pattern: NAMES_REGEX,
+              maxLength: 128,
             }}
           />
         </$GridCell>
@@ -58,6 +63,8 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
             placeholder={t('common:editor.posting.contactPhone')}
             registerOptions={{
               required: true,
+              maxLength: 64,
+              pattern: PHONE_NUMBER_REGEX,
             }}
           />
         </$GridCell>
@@ -68,6 +75,8 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
             label={t('common:editor.posting.contactEmail')}
             placeholder={t('common:editor.posting.contactEmail')}
             registerOptions={{
+              maxLength: 254,
+              pattern: EMAIL_REGEX,
               required: true,
             }}
           />
@@ -84,7 +93,7 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
           <Dropdown
             id="contact_language"
             options={languageOptions}
-            initialValue={initialValue.contact_language}
+            initialValue={languageOptions[0]}
             label={t('common:editor.posting.contactLanguage')}
             registerOptions={{
               required: true,
