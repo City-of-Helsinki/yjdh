@@ -1,9 +1,8 @@
 import React from 'react';
 import TetPosting from 'tet/admin/types/tetposting';
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { Select as HdsSelect } from 'hds-react';
 import Id from 'shared/types/id';
-import { RegisterOptions } from 'react-hook-form';
 
 type OptionType = {
   value: string;

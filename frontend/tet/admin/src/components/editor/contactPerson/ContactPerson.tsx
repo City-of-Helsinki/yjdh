@@ -3,7 +3,6 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
 import TetPosting from 'tet/admin/types/tetposting';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
@@ -11,7 +10,7 @@ import PhoneInput from 'tet/admin/components/editor/PhoneInput';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 
-const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
+const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const languageOptions = [
@@ -105,4 +104,4 @@ const PostingDetails: React.FC<EditorSectionProps> = ({ initialValue }) => {
   );
 };
 
-export default PostingDetails;
+export default ContactPerson;
