@@ -24,8 +24,9 @@ module.exports = {
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/kesaseteli/employer/src/pages/',
-    '<rootDir>kesaseteli/shared/src/__tests__/utils/',
-    '<rootDir>/youth/employer/src/pages/',
+    '<rootDir>/kesaseteli/shared/src/__tests__/utils/',
+    '<rootDir>/kesaseteli/youth/src/pages/',
+    '<rootDir>/kesaseteli/handler/src/pages/',
     '<rootDir>/benefit/applicant/src/pages/',
     '<rootDir>/benefit/handler/src/pages/',
     '<rootDir>/benefit/shared/src/__tests__/utils/',

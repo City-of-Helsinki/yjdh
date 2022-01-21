@@ -57,6 +57,12 @@ updates:
     pull-request-branch-name:
       separator: "-"
   - package-ecosystem: "npm"
+    directory: "frontend/kesaseteli/handler"
+    schedule:
+      interval: "daily"
+    pull-request-branch-name:
+      separator: "-"
+  - package-ecosystem: "npm"
     directory: "frontend/tet/admin"
     schedule:
       interval: "daily"

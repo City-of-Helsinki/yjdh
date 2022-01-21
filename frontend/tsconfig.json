@@ -17,6 +17,7 @@
     "baseUrl": "./",
     "paths": {
       "kesaseteli/employer/*": ["kesaseteli/employer/src/*", "kesaseteli/employer/browser-tests/*"],
+      "kesaseteli/handler/*": ["kesaseteli/handler/src/*", "kesaseteli/handler/browser-tests/*"],
       "kesaseteli/youth/*": ["kesaseteli/youth/src/*", "kesaseteli/youth/browser-tests/*"],
       "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
       "benefit/applicant/*": ["benefit/applicant/src/*"],
