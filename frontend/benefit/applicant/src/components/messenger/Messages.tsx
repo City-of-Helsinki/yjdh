@@ -37,7 +37,7 @@ const Messages: React.FC<ComponentProps> = ({ data, variant, withScroll }) => {
           }
           date={message.modifiedAt || ''}
           text={message.content}
-          isPrimary={message.messageType === MESSAGE_TYPES.HANDLER_MESSAGE}
+          isPrimary={message.messageType === MESSAGE_TYPES.APPLICANT_MESSAGE}
           variant={variant}
         />
       ))}

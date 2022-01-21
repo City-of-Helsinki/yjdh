@@ -25,7 +25,7 @@ const EmploymentView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         ) : null
       }
     >
-      <$GridCell $colSpan={5}>
+      <$GridCell $colSpan={12}>
         <$ViewField>
           {`${t(`${translationsBase}.fields.jobTitle`)}: ${
             data.employee?.jobTitle || '-'

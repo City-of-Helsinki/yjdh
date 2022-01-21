@@ -1,13 +1,17 @@
 import { TabList, TabPanel } from 'hds-react';
 import styled from 'styled-components';
 
-export const $TabList = styled(TabList)`
+type TabListProps = {
+  position?: 'center' | 'start';
+};
+
+export const $TabList = styled(TabList)<TabListProps>`
   --tab-color: ${(props) => props.theme.colors.black};
   --tab-active-border-color: ${(props) => props.theme.colors.black};
   & > div > ul {
     width: 100% !important;
     display: flex;
-    justify-content: center;
+    justify-content: ${(props) => props.position ?? 'center'};
     li {
       width: 50%;
     }

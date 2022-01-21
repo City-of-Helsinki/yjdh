@@ -1,15 +1,16 @@
+import { ROUTES } from 'benefit/applicant/constants';
 import useLogin from 'benefit/applicant/hooks/useLogin';
 import useLogoutQuery from 'benefit/applicant/hooks/useLogoutQuery';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
-import { Button, IconSpeechbubbleText } from 'hds-react';
+import { Button, IconLock, IconSpeechbubbleText } from 'hds-react';
 import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Drawer from 'shared/components/drawer/Drawer';
 import BaseHeader from 'shared/components/header/Header';
-import Actions from 'shared/components/messaging/Actions';
-import Message from 'shared/components/messaging/Message';
+import useToggle from 'shared/hooks/useToggle';
 
+import Messenger from '../messenger/Messenger';
+import { $CustomMessagesActions } from './Header.sc';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
@@ -22,27 +23,11 @@ const Header: React.FC = () => {
   const logoutQuery = useLogoutQuery();
 
   const isLoading = userQuery.isLoading || logoutQuery.isLoading;
-  const isLoginPage = asPath?.startsWith('/login');
+  const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
+  const isApplicationPage = asPath?.startsWith(ROUTES.APPLICATION_FORM);
 
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-
-  const messages = [
-    {
-      sender: 'Käsittelijä',
-      date: '13.05.2021 • 08:47',
-      text: 'Huomasimme, että tilinumeronne on eri kuin viimeksi. Tarkistatteko sen, kiitos.',
-    },
-  ];
-
-  const messagesElements = messages.map((message) => (
-    <Message
-      key={message.sender}
-      sender={message.sender}
-      date={message.date}
-      text={message.text}
-      variant="message"
-    />
-  ));
+  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
+    useToggle(false);
 
   const isAuthenticated = !isLoginPage && userQuery.isSuccess;
 
@@ -64,14 +49,14 @@ const Header: React.FC = () => {
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}
         customItems={
-          isAuthenticated
+          isAuthenticated && isApplicationPage
             ? [
                 <Button
                   variant="supplementary"
                   size="small"
                   iconLeft={<IconSpeechbubbleText />}
                   theme="coat"
-                  onClick={() => setIsDrawerOpen((prev) => !prev)}
+                  onClick={toggleMessagesDrawerVisiblity}
                 >
                   {t('common:header.messages')}
                 </Button>,
@@ -79,14 +64,17 @@ const Header: React.FC = () => {
             : undefined
         }
       />
-      {isAuthenticated && (
-        <Drawer
-          isOpen={isDrawerOpen}
-          title={t('common:header.drawer.title')}
-          footer={<Actions sendText="Send" errorText="Error" onSend={noop} />}
-        >
-          {messagesElements}
-        </Drawer>
+      {isAuthenticated && isApplicationPage && (
+        <Messenger
+          isOpen={isMessagesDrawerVisible}
+          onClose={toggleMessagesDrawerVisiblity}
+          customItemsMessages={
+            <$CustomMessagesActions>
+              <IconLock />
+              <p>{t('common:messenger.isSecure')}</p>
+            </$CustomMessagesActions>
+          }
+        />
       )}
     </>
   );

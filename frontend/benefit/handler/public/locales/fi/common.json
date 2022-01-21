@@ -36,7 +36,9 @@
     "compose": "Kirjoita viesti",
     "composeNote": "Kirjoita sisäinen muistiinpano",
     "send": "Lähetä",
-    "save": "Tallenna"
+    "save": "Tallenna",
+    "close": "Sulje",
+    "noMessages": "Ei viestejä"
   },
   "mainIngress": {
     "heading": "Hakemukset",

@@ -22,5 +22,4 @@ export const waitForBackendRequestsToComplete = async (): Promise<void> => {
       expect(nock.isDone()).toBeTruthy();
     });
   }
-  return Promise.resolve();
 };

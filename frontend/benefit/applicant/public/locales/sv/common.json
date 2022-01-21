@@ -484,5 +484,30 @@
     "and": "ja",
     "yes": "Kyllä",
     "no": "Ei"
+  },
+  "messenger": {
+    "messages": "Hakemuksen viestit",
+    "titles": {
+      "applicantMessage": "Hakija",
+      "handlerMessage": "Käsittelijä",
+      "note": ""
+    },
+    "list": {
+      "errors": {
+        "create": {
+          "label": "The error occurred",
+          "text": "The error occurred when trying create the message. Please try again later."
+        },
+        "fetch": {
+          "label": "The error occurred",
+          "text": "The error occurred when trying fetch messages. Please try again later."
+        }
+      }
+    },
+    "compose": "Kirjoita viesti",
+    "send": "Lähetä",
+    "isSecure": "Viestit ovat salattuja",
+    "noMessages": "Ei viestejä",
+    "close": "Sulje"
   }
 }

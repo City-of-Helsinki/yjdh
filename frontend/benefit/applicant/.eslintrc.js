@@ -54,5 +54,11 @@ module.exports = {
         'security/detect-non-literal-fs-filename': 'off',
       },
     },
+    {
+      files: ['validation.ts'],
+      rules: {
+        'unicorn/no-thenable': 'off',
+      },
+    },
   ],
 };

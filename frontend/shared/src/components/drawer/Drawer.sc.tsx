@@ -14,6 +14,18 @@ export const $Drawer = styled.aside`
   flex-direction: column;
 `;
 
+export const $Close = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  background-color: ${({ theme }) => theme.colors.white};
+  padding: 0 ${({ theme }) => theme.spacing.s};
+  right: 400px;
+  box-shadow: -2px 0px 10px 0px rgb(0 0 0 / 10%);
+  cursor: pointer;
+`;
+
 export const $Top = styled.div`
   margin: ${({ theme }) => theme.spacing.l} 0 ${({ theme }) => theme.spacing.l};
 `;
