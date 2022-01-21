@@ -110,7 +110,7 @@ jobs:
             context: frontend
             dockerfile: ./frontend/kesaseteli/handler/Dockerfile
             database: false
-            port: 3100
+            port: 3200
     runs-on: ubuntu-latest
     needs: build
     name: Review
