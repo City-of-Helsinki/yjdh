@@ -8,10 +8,11 @@ from applications.enums import BenefitType
 from applications.models import Application
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import DecidedApplicationFactory
-from applications.tests.test_applications_api import get_detail_url
+from applications.tests.test_applications_api import get_handler_detail_url
 from calculator.models import PreviousBenefit
 from calculator.tests.factories import PreviousBenefitFactory
 from common.tests.conftest import *  # noqa
+from common.utils import duration_in_months, to_decimal
 from companies.tests.conftest import *  # noqa
 from django.utils import translation
 from helsinkibenefit.tests.conftest import *  # noqa
@@ -309,8 +310,8 @@ NO_WARNINGS = None
     ],
 )
 def test_application_with_previously_accepted_applications_and_previous_benefits(
-    api_client,
-    application,
+    handler_api_client,
+    handling_application,
     previous_benefits,
     benefit_type,
     apprenticeship_program,
@@ -334,29 +335,34 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
             )
             decided_application.start_date = date.fromisoformat(previous_start_date)
             decided_application.end_date = date.fromisoformat(previous_end_date)
-            decided_application.company = application.company
+            decided_application.company = handling_application.company
             decided_application.save()
             decided_application.employee.social_security_number = (
-                application.employee.social_security_number
+                handling_application.employee.social_security_number
             )
             decided_application.employee.save()
         elif class_name == PreviousBenefit:
             # entries manually entered by application handlers
             PreviousBenefitFactory(
-                company=application.company,
-                social_security_number=application.employee.social_security_number,
+                company=handling_application.company,
+                social_security_number=handling_application.employee.social_security_number,
                 start_date=date.fromisoformat(previous_start_date),
                 end_date=date.fromisoformat(previous_end_date),
             )
         else:
             assert False, "unexpected"
 
-    application.apprenticeship_program = apprenticeship_program
-    application.start_date = date(2021, 1, 1)
-    application.start_date = date(2021, 6, 30)
-    application.save()
+    handling_application.apprenticeship_program = apprenticeship_program
+    handling_application.start_date = date(2021, 1, 1)
+    handling_application.calculation.start_date = date(2021, 1, 1)
+    handling_application.start_date = date(2021, 6, 30)
+    handling_application.calculation.start_date = date(2021, 6, 30)
+    handling_application.save()
+    handling_application.calculation.save()
 
-    response_before_update = api_client.get(get_detail_url(application))
+    response_before_update = handler_api_client.get(
+        get_handler_detail_url(handling_application)
+    )
     assert (
         response_before_update.data["former_benefit_info"]["months_used"] == months_used
     )
@@ -364,8 +370,24 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
         response_before_update.data["former_benefit_info"]["months_remaining"]
         == months_remaining
     )
+    if months_remaining is None or months_remaining == 0:
+        assert (
+            response_before_update.data["former_benefit_info"]["last_possible_end_date"]
+            is None
+        )
+    else:
+        duration = duration_in_months(
+            handling_application.start_date,
+            response_before_update.data["former_benefit_info"][
+                "last_possible_end_date"
+            ],
+        )
+        assert (
+            to_decimal(duration, 2)
+            == response_before_update.data["former_benefit_info"]["months_remaining"]
+        )
 
-    data = ApplicantApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(handling_application).data
 
     data["benefit_type"] = benefit_type
     data["start_date"] = date(2021, 7, 1)
@@ -374,8 +396,8 @@ def test_application_with_previously_accepted_applications_and_previous_benefits
     data["pay_subsidy_percent"] = 50
 
     with translation.override("en"):
-        response = api_client.put(
-            get_detail_url(application),
+        response = handler_api_client.put(
+            get_handler_detail_url(handling_application),
             data,
         )
         assert response.status_code == 200

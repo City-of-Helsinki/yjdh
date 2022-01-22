@@ -34,7 +34,13 @@ from calculator.api.v1.serializers import (
 from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
-from common.utils import PhoneNumberField, to_decimal, update_object, xgroup
+from common.utils import (
+    get_date_range_end_with_days360,
+    PhoneNumberField,
+    to_decimal,
+    update_object,
+    xgroup,
+)
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
@@ -817,14 +823,26 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             return None
 
     def get_former_benefit_info(self, obj):
+
+        if not hasattr(obj, "calculation"):
+            return {}
+
+        # use start_date and end_date from calculation, if defined
         aggregated_info = get_former_benefit_info(
             obj,
             obj.company,
             obj.employee.social_security_number,
-            obj.start_date,
-            obj.end_date,
+            obj.calculation.start_date or obj.start_date,
+            obj.calculation.end_date or obj.end_date,
             obj.apprenticeship_program,
         )
+        if aggregated_info.months_remaining is None:
+            last_possible_end_date = None
+        else:
+            last_possible_end_date = get_date_range_end_with_days360(
+                obj.start_date, aggregated_info.months_remaining
+            )
+
         return {
             "months_used": to_decimal(
                 aggregated_info.months_used, decimal_places=2, allow_null=True
@@ -832,6 +850,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "months_remaining": to_decimal(
                 aggregated_info.months_remaining, decimal_places=2, allow_null=True
             ),
+            "last_possible_end_date": last_possible_end_date,
         }
 
     def get_submitted_at(self, obj):
