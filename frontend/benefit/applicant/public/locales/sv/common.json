@@ -20,8 +20,8 @@
         "status": "Tila",
         "check": "Tarkastele",
         "editEndDate": "Muokkaa viimeistään",
-        "newMessages": "uusi viesti",
-        "newMessagesMult": "uutta viestiä"
+        "newMessages_one": "{{count}} uusi viesti",
+        "newMessages_other": "{{count}} uutta viestiä"
       }
     },
     "pageHeaders": {

@@ -49,11 +49,9 @@ const ApplicationsList: React.FC<ApplicationListProps> = ({
             <$ListInfoInner>
               <IconSpeechbubbleText />
               <$ListInfoText>
-                {`${newMessagesCount} ${t(
-                  `common:applications.list.common.newMessages${
-                    newMessagesCount > 1 ? 'Mult' : ''
-                  }`
-                )}`}
+                {t('common:applications.list.common.newMessages', {
+                  count: newMessagesCount,
+                })}
               </$ListInfoText>
             </$ListInfoInner>
           </$GridCell>
