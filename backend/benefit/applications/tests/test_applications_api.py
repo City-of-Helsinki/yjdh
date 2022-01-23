@@ -1244,13 +1244,10 @@ def test_pdf_attachment_upload_and_download_as_applicant(
     assert attachment.attachment_file.name.endswith(".pdf")
     response = api_client.get(get_detail_url(application))
     assert len(response.data["attachments"]) == 1
-    assert response.data["attachments"][0]["attachment_file"].startswith(
-        "http://testserver/"
-    )
+    assert response.data["attachments"][0]["attachment_file"].startswith("http://")
     assert (
         "handlerapplications" not in response.data["attachments"][0]["attachment_file"]
     )
-    # url_path = urlparse(response.data['attachments'][0]['attachment_file']).path
     file_dl = api_client.get(response.data["attachments"][0]["attachment_file"])
     assert file_dl.status_code == 200
     bytes = file_dl.getvalue()

@@ -84,11 +84,7 @@ class AttachmentField(FileField):
 
         url_pattern_name = "v1:applicant-application-download-attachment"
         request = self.context.get("request")
-        if (
-            request
-            and (user := get_request_user_from_context(self))
-            and user.is_handler()
-        ):
+        if request and get_request_user_from_context(self).is_handler():
             url_pattern_name = "v1:handler-application-download-attachment"
 
         path = reverse(
@@ -138,7 +134,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        rudimentary validation of file content to guard against accidentally uploading
+        Rudimentary validation of file content to guard against accidentally uploading
         invalid files.
         """
 
