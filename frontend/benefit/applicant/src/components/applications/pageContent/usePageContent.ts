@@ -1,7 +1,9 @@
 import {
   APPLICATION_INITIAL_VALUES,
+  APPLICATION_STATUSES,
   DEFAULT_APPLICATION_STEP,
 } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
@@ -26,6 +28,8 @@ const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
   const { t } = useTranslation();
+  const { setHasMessenger } = React.useContext(AppContext);
+
   const [isLoading, setIsLoading] = useState(true);
   // query param used in edit mode. id from context used for updating newly created application
   const {
@@ -55,6 +59,13 @@ const usePageContent = (): ExtendedComponentProps => {
         deep: true,
       })
     : APPLICATION_INITIAL_VALUES;
+
+  useEffect(() => {
+    if (application?.status === APPLICATION_STATUSES.INFO_REQUIRED) {
+      setHasMessenger(true);
+    }
+    return () => setHasMessenger(false);
+  }, [application, setHasMessenger]);
 
   const steps = React.useMemo((): StepProps[] => {
     const applicationSteps: string[] = [

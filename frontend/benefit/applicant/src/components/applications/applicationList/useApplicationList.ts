@@ -28,7 +28,6 @@ interface ApplicationListProps {
   list: ApplicationListItemData[];
   shouldShowSkeleton: boolean;
   shouldHideList: boolean;
-  newMessagesCount: number;
 }
 
 const getAvatarBGColor = (
@@ -172,10 +171,6 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
     list: list || [],
     shouldShowSkeleton,
     shouldHideList,
-    newMessagesCount:
-      list?.filter(
-        (application) => Number(application?.unreadMessagesCount) > 0
-      ).length ?? 0,
   };
 };
 
