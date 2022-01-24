@@ -50,7 +50,7 @@ const Header: React.FC = () => {
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}
         customItems={
-          isAuthenticated && isApplicationPage
+          isAuthenticated && hasMessenger
             ? [
                 <Button
                   variant="supplementary"
@@ -65,7 +65,7 @@ const Header: React.FC = () => {
             : undefined
         }
       />
-      {hasMessenger && (
+      {isAuthenticated && hasMessenger && (
         <Messenger
           isOpen={isMessagesDrawerVisible}
           onClose={toggleMessagesDrawerVisiblity}
