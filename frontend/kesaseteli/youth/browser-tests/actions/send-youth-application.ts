@@ -21,6 +21,7 @@ const sendYouthApplication = async (
   await indexPage.actions.typeAndSelectSchoolFromDropdown(
     formData.selectedSchool?.name ?? ''
   );
+  await indexPage.actions.typeInput('postcode', formData.postcode);
   if (formData.is_unlisted_school) {
     await indexPage.actions.toggleUnlistedSchoolCheckbox();
     await indexPage.actions.typeInput(
