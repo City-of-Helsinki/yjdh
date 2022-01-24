@@ -1,3 +1,4 @@
+import AppContext from 'benefit/applicant/context/AppContext';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
@@ -11,6 +12,7 @@ type ExtendedComponentProps = {
   languageOptions: OptionType<string>[];
   locale: string;
   navigationItems?: NavigationItem[];
+  hasMessenger: boolean;
   handleLanguageChange: (
     e: React.SyntheticEvent<unknown>,
     newLanguage: OptionType<string>
@@ -23,6 +25,7 @@ const useHeader = (): ExtendedComponentProps => {
   const locale = useLocale();
   const router = useRouter();
   const { pathname, asPath, query } = router;
+  const { hasMessenger } = React.useContext(AppContext);
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] => getLanguageOptions(t, 'supportedLanguages'),
@@ -50,6 +53,7 @@ const useHeader = (): ExtendedComponentProps => {
     locale,
     handleLanguageChange,
     handleNavigationItemClick,
+    hasMessenger,
   };
 };
 

@@ -14,7 +14,8 @@ import { $CustomMessagesActions } from './Header.sc';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
-  const { t, locale, languageOptions, handleLanguageChange } = useHeader();
+  const { t, locale, languageOptions, hasMessenger, handleLanguageChange } =
+    useHeader();
   const router = useRouter();
   const { asPath } = router;
 
@@ -64,7 +65,7 @@ const Header: React.FC = () => {
             : undefined
         }
       />
-      {isAuthenticated && isApplicationPage && (
+      {hasMessenger && (
         <Messenger
           isOpen={isMessagesDrawerVisible}
           onClose={toggleMessagesDrawerVisiblity}

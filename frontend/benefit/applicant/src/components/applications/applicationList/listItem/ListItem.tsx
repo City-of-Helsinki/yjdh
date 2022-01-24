@@ -2,9 +2,10 @@ import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { ApplicationListItemData } from 'benefit/applicant/types/application';
 import { Loading } from 'benefit/applicant/types/common';
-import { Button, StatusLabel } from 'hds-react';
+import { Button, IconSpeechbubbleText, StatusLabel } from 'hds-react';
 import React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 
 import {
   $Avatar,
@@ -13,6 +14,9 @@ import {
   $DataValue,
   $ItemActions,
   $ItemContent,
+  $ListInfo,
+  $ListInfoInner,
+  $ListInfoText,
   $ListItem,
   $ListItemWrapper,
 } from './ListItem.sc';
@@ -50,6 +54,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     allowedAction,
     editEndDate,
     status,
+    unreadMessagesCount,
   } = props;
 
   const ActionIcon = allowedAction.Icon;
@@ -126,6 +131,20 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           </Button>
         </$ItemActions>
       </$ListItem>
+      {Number(unreadMessagesCount) > 0 && (
+        <$ListInfo>
+          <$GridCell $colStart={2}>
+            <$ListInfoInner>
+              <IconSpeechbubbleText />
+              <$ListInfoText>
+                {t('common:applications.list.common.newMessages', {
+                  count: unreadMessagesCount,
+                })}
+              </$ListInfoText>
+            </$ListInfoInner>
+          </$GridCell>
+        </$ListInfo>
+      )}
     </$ListItemWrapper>
   );
 };
