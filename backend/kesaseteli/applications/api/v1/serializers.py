@@ -464,6 +464,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "is_unlisted_school",
             "email",
             "phone_number",
+            "postcode",
             "language",
             "receipt_confirmed_at",
         ]

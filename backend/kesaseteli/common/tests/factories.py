@@ -151,6 +151,7 @@ class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     is_unlisted_school = factory.LazyAttribute(uses_unlisted_test_school)
     email = factory.Faker("email")
     phone_number = factory.LazyFunction(get_test_phone_number)
+    postcode = factory.Faker("postcode", locale="fi")
     language = factory.Faker("random_element", elements=get_supported_languages())
     _is_active = None
 
