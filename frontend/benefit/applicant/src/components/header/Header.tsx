@@ -25,7 +25,6 @@ const Header: React.FC = () => {
 
   const isLoading = userQuery.isLoading || logoutQuery.isLoading;
   const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
-  const isApplicationPage = asPath?.startsWith(ROUTES.APPLICATION_FORM);
 
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
     useToggle(false);
