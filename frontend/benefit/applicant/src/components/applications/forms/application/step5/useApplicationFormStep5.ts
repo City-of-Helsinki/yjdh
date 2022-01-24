@@ -8,7 +8,6 @@ import {
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
-import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useContext, useEffect } from 'react';
@@ -43,7 +42,7 @@ const useApplicationFormStep5 = (
     isSuccess: isApplicationUpdatedStep5,
   } = useUpdateApplicationQuery();
 
-  const isSubmit = !isEmpty(application?.applicantTermsApproval);
+  const isSubmit = !application?.applicantTermsApprovalNeeded;
 
   useEffect(() => {
     if (
