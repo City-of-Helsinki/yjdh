@@ -1,6 +1,6 @@
 import React from 'react';
 import TetPosting from 'tet/admin/types/tetposting';
-import { useFormContext, RegisterOptions } from 'react-hook-form';
+import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { PhoneInput as HdsPhoneInput } from 'hds-react';
 import Id from 'shared/types/id';
 
@@ -14,16 +14,26 @@ type Props = {
 };
 
 const PhoneInput: React.FC<Props> = ({ id, initialValue, label, placeholder, registerOptions }) => {
-  const { register } = useFormContext<TetPosting>();
+  const { register, control } = useFormContext<TetPosting>();
   return (
-    <HdsPhoneInput
-      {...(register(id), { registerOptions })}
-      id={id}
-      label={label}
-      defaultValue={initialValue}
-      placeholder={placeholder}
-      required={Boolean(registerOptions.required)}
-    />
+    <Controller
+      name={id}
+      render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
+        <HdsPhoneInput
+          id={id}
+          label={label}
+          defaultValue={initialValue}
+          placeholder={placeholder}
+          onChange={onChange}
+          value={String(value)}
+          required={Boolean(registerOptions.required)}
+          invalid={invalid}
+          errorText={error && error.message ? error.message : ''}
+        />
+      )}
+      control={control}
+      rules={registerOptions}
+    ></Controller>
   );
 };
 

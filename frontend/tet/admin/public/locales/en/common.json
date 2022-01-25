@@ -60,7 +60,13 @@
 			"contactLanguage": "ENG Asiointikieli",
 			"contactLanguageFi": "ENG Suomi",
 			"contactLanguageSv": "ENG Ruotsi",
-			"contactLanguageEn": "ENG Englanti"
+			"contactLanguageEn": "ENG Englanti",
+			"validation": {
+				"required": "ENG Tieto vaaditaan",
+				"email": "ENG Syötä sähköposti oikeassa muodossa",
+				"max": "ENG Maksimimerkkimäärä ylittyy",
+				"phone": "ENG Syötä oikeassa muodossa"
+			}
     }
   },
   "footer": {

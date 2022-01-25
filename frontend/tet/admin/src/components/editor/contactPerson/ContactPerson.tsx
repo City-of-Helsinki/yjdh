@@ -19,6 +19,9 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
     { value: 'en', label: t('common:editor.posting.contactLanguageEn') },
   ];
 
+  const requiredMessage = t('common.editor.posting.validation.required');
+  const maxMessage = t('common.editor.posting.validation.max');
+
   return (
     <FormSection header={t('common:editor.posting.header')}>
       <$GridCell
@@ -61,7 +64,10 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
             label={t('common:editor.posting.contactPhone')}
             placeholder={t('common:editor.posting.contactPhone')}
             registerOptions={{
-              required: true,
+              required: {
+                value: true,
+                message: 'puhelin vaaditaan',
+              },
               maxLength: 64,
               pattern: PHONE_NUMBER_REGEX,
             }}
@@ -74,9 +80,18 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
             label={t('common:editor.posting.contactEmail')}
             placeholder={t('common:editor.posting.contactEmail')}
             registerOptions={{
-              maxLength: 254,
-              pattern: EMAIL_REGEX,
-              required: true,
+              maxLength: {
+                value: 254,
+                message: maxMessage,
+              },
+              pattern: {
+                value: EMAIL_REGEX,
+                message: t('common:editor.posting.validation.email'),
+              },
+              required: {
+                value: true,
+                message: requiredMessage,
+              },
             }}
           />
         </$GridCell>
