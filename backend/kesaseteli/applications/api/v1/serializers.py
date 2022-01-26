@@ -442,13 +442,14 @@ class SchoolSerializer(serializers.ModelSerializer):
 class YouthApplicationSerializer(serializers.ModelSerializer):
     def validate_social_security_number(self, value):
         if value is None or str(value).strip() == "":
-            raise serializers.ValidationError(_("Social security number must be set"))
+            raise serializers.ValidationError(
+                {"social_security_number": _("Social security number must be set")}
+            )
         return value
 
     def validate(self, data):
         data = super().validate(data)
-        if "social_security_number" not in data:
-            raise serializers.ValidationError(_("Social security number must be set"))
+        self.validate_social_security_number(data.get("social_security_number", None))
         return data
 
     class Meta:

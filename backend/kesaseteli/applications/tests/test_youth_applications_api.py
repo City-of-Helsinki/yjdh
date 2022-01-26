@@ -1,14 +1,24 @@
+from datetime import timedelta
+from typing import Optional
+
 import factory.random
 import langdetect
 import pytest
 from django.core import mail
 from django.test import override_settings
+from django.utils import timezone
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import YouthApplicationSerializer
-from applications.enums import get_supported_languages
-from common.tests.factories import YouthApplicationFactory
+from applications.enums import get_supported_languages, YouthApplicationRejectedReason
+from applications.models import YouthApplication
+from common.tests.factories import (
+    ActiveYouthApplicationFactory,
+    InactiveYouthApplicationFactory,
+    YouthApplicationFactory,
+)
 
 
 def get_required_fields():
@@ -47,14 +57,13 @@ def test_youth_applications_activate_invalid_pk(api_client):
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_unexpired_inactive(
     api_client,
-    inactive_youth_application,
     make_youth_application_activation_link_unexpired,
     language,
 ):
+    inactive_youth_application = InactiveYouthApplicationFactory.build()
     inactive_youth_application.language = language
-    inactive_youth_application.save(update_fields=["language"])
+    inactive_youth_application.save()
 
-    inactive_youth_application.refresh_from_db()
     assert not inactive_youth_application.is_active
     assert not inactive_youth_application.has_activation_link_expired
     assert inactive_youth_application.language == language
@@ -72,14 +81,13 @@ def test_youth_applications_activate_unexpired_inactive(
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_unexpired_active(
     api_client,
-    active_youth_application,
     make_youth_application_activation_link_unexpired,
     language,
 ):
+    active_youth_application = ActiveYouthApplicationFactory.build()
     active_youth_application.language = language
-    active_youth_application.save(update_fields=["language"])
+    active_youth_application.save()
 
-    active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
     assert not active_youth_application.has_activation_link_expired
     assert active_youth_application.language == language
@@ -97,14 +105,13 @@ def test_youth_applications_activate_unexpired_active(
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_expired_inactive(
     api_client,
-    inactive_youth_application,
     make_youth_application_activation_link_expired,
     language,
 ):
+    inactive_youth_application = InactiveYouthApplicationFactory.build()
     inactive_youth_application.language = language
-    inactive_youth_application.save(update_fields=["language"])
+    inactive_youth_application.save()
 
-    inactive_youth_application.refresh_from_db()
     assert not inactive_youth_application.is_active
     assert inactive_youth_application.has_activation_link_expired
     assert inactive_youth_application.language == language
@@ -122,14 +129,13 @@ def test_youth_applications_activate_expired_inactive(
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_applications_activate_expired_active(
     api_client,
-    active_youth_application,
     make_youth_application_activation_link_expired,
     language,
 ):
+    active_youth_application = ActiveYouthApplicationFactory.build()
     active_youth_application.language = language
-    active_youth_application.save(update_fields=["language"])
+    active_youth_application.save()
 
-    active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
     assert active_youth_application.has_activation_link_expired
     assert active_youth_application.language == language
@@ -158,9 +164,8 @@ def test_youth_applications_activate_expired_active(
         "   111111-111C  ",
     ],
 )
-def test_youth_application_post_valid_social_security_number(
-    api_client, youth_application, test_value
-):
+def test_youth_application_post_valid_social_security_number(api_client, test_value):
+    youth_application = YouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     data["social_security_number"] = test_value
     response = api_client.post(get_list_url(), data)
@@ -173,7 +178,7 @@ def test_youth_application_post_valid_social_security_number(
 @pytest.mark.parametrize("random_seed", list(range(10)))
 def test_youth_application_post_valid_random_data(api_client, random_seed):
     factory.random.reseed_random(random_seed)
-    youth_application = YouthApplicationFactory()
+    youth_application = YouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     response = api_client.post(get_list_url(), data)
 
@@ -200,10 +205,10 @@ def test_youth_application_post_valid_random_data(api_client, random_seed):
 )
 def test_youth_application_post_valid_data_with_email_backends(
     api_client,
-    youth_application,
     settings,
     email_backend_override,
 ):
+    youth_application = YouthApplicationFactory.build()
     # Use an email address which uses a reserved domain name (See RFC 2606)
     # so even if it'd be sent to an SMTP server it wouldn't go anywhere
     youth_application.email = "test@example.com"
@@ -218,9 +223,9 @@ def test_youth_application_post_valid_data_with_email_backends(
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_application_post_valid_language(
     api_client,
-    youth_application,
     language,
 ):
+    youth_application = YouthApplicationFactory.build()
     youth_application.language = language
     data = YouthApplicationSerializer(youth_application).data
     response = api_client.post(reverse("v1:youthapplication-list"), data)
@@ -235,9 +240,9 @@ def test_youth_application_post_valid_language(
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_application_activation_email_language(
     api_client,
-    youth_application,
     language,
 ):
+    youth_application = YouthApplicationFactory.build()
     youth_application.language = language
     data = YouthApplicationSerializer(youth_application).data
     api_client.post(reverse("v1:youthapplication-list"), data)
@@ -264,7 +269,8 @@ def test_youth_application_activation_email_language(
 
 
 @pytest.mark.django_db
-def test_youth_application_post_invalid_language(api_client, youth_application):
+def test_youth_application_post_invalid_language(api_client):
+    youth_application = YouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     data["language"] = "asd"
     response = api_client.post(get_list_url(), data)
@@ -277,14 +283,15 @@ def test_youth_application_post_invalid_language(api_client, youth_application):
 @pytest.mark.parametrize("missing_field", get_required_fields())
 def test_youth_application_post_missing_required_field(
     api_client,
-    youth_application,
     missing_field,
 ):
+    youth_application = YouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     del data[missing_field]
     response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert missing_field in response.data
 
 
 @pytest.mark.django_db
@@ -294,15 +301,16 @@ def test_youth_application_post_missing_required_field(
 )
 def test_youth_application_post_empty_required_field(
     api_client,
-    youth_application,
     field,
     value,
 ):
+    youth_application = YouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     data[field] = value
     response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert field in response.data
 
 
 @pytest.mark.django_db
@@ -328,12 +336,102 @@ def test_youth_application_post_empty_required_field(
         "111111 -111x",  # Invalid checksum, inner whitespace, not uppercase
     ],
 )
-def test_youth_application_post_invalid_social_security_number(
-    api_client, youth_application, test_value
-):
+def test_youth_application_post_invalid_social_security_number(api_client, test_value):
+    youth_application = YouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     data["social_security_number"] = test_value
     response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "social_security_number" in response.data
+
+
+def get_expected_reason(
+    same_email,
+    same_social_security_number,
+    is_existing_active,
+    is_existing_expired,
+) -> Optional[YouthApplicationRejectedReason]:
+    if (same_email or same_social_security_number) and is_existing_active:
+        return YouthApplicationRejectedReason.ALREADY_ASSIGNED
+    elif same_email and (is_existing_active or not is_existing_expired):
+        return YouthApplicationRejectedReason.EMAIL_IN_USE
+    else:
+        return None
+
+
+@freeze_time("2022-02-02")
+@override_settings(NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=60 * 60 * 12)  # 12h
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "same_email,"
+    "same_social_security_number,"
+    "is_existing_active,"
+    "is_existing_expired,"
+    "expected_reason",
+    [
+        (
+            same_email,
+            same_social_security_number,
+            is_existing_active,
+            is_existing_expired,
+            get_expected_reason(
+                same_email,
+                same_social_security_number,
+                is_existing_active,
+                is_existing_expired,
+            ),
+        )
+        for same_email in [False, True]
+        for same_social_security_number in [False, True]
+        for is_existing_active in [False, True]
+        for is_existing_expired in [False, True]
+    ],
+)
+def test_youth_application_post_error_codes(
+    api_client,
+    same_email,
+    same_social_security_number,
+    is_existing_active,
+    is_existing_expired,
+    expected_reason,
+):
+    now = timezone.now()
+
+    # Create the existing youth application
+    existing_app = YouthApplicationFactory.create()
+    existing_app.receipt_confirmed_at = now if is_existing_active else None
+    if is_existing_expired:
+        # Make the saved youth application expired
+        existing_app.created_at = (
+            now - YouthApplication.expiration_duration() - timedelta(hours=1)
+        )
+    else:
+        existing_app.created_at = now
+    existing_app.save()
+    existing_app.refresh_from_db()
+
+    # Create the new unsaved youth application
+    new_app = YouthApplicationFactory.build()
+    if same_email:
+        new_app.email = existing_app.email
+    if same_social_security_number:
+        new_app.social_security_number = existing_app.social_security_number
+
+    # Check that the test objects are set up correctly
+    assert is_existing_expired == existing_app.has_activation_link_expired
+    assert is_existing_active == existing_app.is_active
+    assert same_email == (new_app.email == existing_app.email)
+    assert same_social_security_number == (
+        new_app.social_security_number == existing_app.social_security_number
+    )
+
+    data = YouthApplicationSerializer(new_app).data
+    response = api_client.post(get_list_url(), data)
+
+    if expected_reason is None:
+        assert response.status_code == status.HTTP_201_CREATED
+    else:
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.headers.get("Content-Type") == "application/json"
+        assert response.json() == expected_reason.json()
