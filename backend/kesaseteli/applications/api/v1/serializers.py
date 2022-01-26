@@ -1,3 +1,5 @@
+import json
+
 import filetype
 from django.conf import settings
 from django.db import transaction
@@ -468,8 +470,24 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "postcode",
             "language",
             "receipt_confirmed_at",
+            "encrypted_vtj_json",
         ]
         read_only_fields = [
             "id",
             "created_at",
+            "encrypted_vtj_json",
         ]
+
+    encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")
+
+    def get_encrypted_vtj_json(self, obj):
+        """
+        Return encrypted_vtj_json as JSON object, converting None & empty string to {}.
+
+        The reason for this function is that encrypted_vtj_json field is
+        EncryptedCharField, not JSONField.
+        """
+        if obj.encrypted_vtj_json in [None, ""]:
+            return {}
+        else:
+            return json.loads(obj.encrypted_vtj_json)

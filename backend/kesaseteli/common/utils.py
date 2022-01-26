@@ -3,17 +3,7 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
-from rest_framework.permissions import BasePermission
 from stdnum.fi.hetu import is_valid as is_valid_finnish_social_security_number
-
-
-class DenyAll(BasePermission):
-    """
-    Deny all access (the opposite of AllowAny).
-    """
-
-    def has_permission(self, request, view):
-        return False
 
 
 def has_whitespace(value):

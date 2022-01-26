@@ -34,7 +34,7 @@ from applications.models import (
     School,
     YouthApplication,
 )
-from common.utils import DenyAll
+from common.permissions import DenyAll, IsHandler
 
 
 class SchoolListView(ListAPIView):
@@ -118,6 +118,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         """
         if self.action in ["activate", "create"]:
             permission_classes = [AllowAny]
+        elif self.action in ["retrieve"]:
+            permission_classes = [IsHandler]
         else:
             permission_classes = [DenyAll]
         return [permission() for permission in permission_classes]

@@ -1,5 +1,6 @@
+import json
 from datetime import timedelta
-from typing import Optional
+from typing import List, Optional
 
 import factory.random
 import langdetect
@@ -22,15 +23,24 @@ from common.tests.factories import (
 )
 
 
-def get_required_fields():
+def get_required_fields() -> List[str]:
     return [
         "first_name",
         "last_name",
         "social_security_number",
         "school",
         "is_unlisted_school",
+        "email",
         "phone_number",
         "postcode",
+    ]
+
+
+def get_handler_fields() -> List[str]:
+    return get_required_fields() + [
+        "language",
+        "receipt_confirmed_at",
+        "encrypted_vtj_json",
     ]
 
 
@@ -42,11 +52,58 @@ def get_activation_url(pk):
     return reverse("v1:youthapplication-activate", kwargs={"pk": pk})
 
 
+def get_detail_url(pk):
+    return reverse("v1:youthapplication-detail", kwargs={"pk": pk})
+
+
+def get_test_vtj_json() -> dict:
+    return {"first_name": "Maija", "last_name": "Meikäläinen"}
+
+
 @pytest.mark.django_db
 def test_youth_applications_list(api_client):
     response = api_client.get(get_list_url())
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_youth_applications_detail_valid_pk(api_client, youth_application):
+    response = api_client.get(get_detail_url(pk=youth_application.pk))
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_youth_applications_detail_invalid_pk(api_client):
+    response = api_client.get(get_detail_url(pk="invalid value"))
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("field", get_handler_fields())
+def test_youth_applications_detail_response_field(api_client, youth_application, field):
+    response = api_client.get(get_detail_url(pk=youth_application.pk))
+    assert field in response.data
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "input_encrypted_vtj_json,expected_output_encrypted_vtj_json",
+    [
+        (None, {}),
+        ("", {}),
+        (json.dumps(get_test_vtj_json()), get_test_vtj_json()),
+    ],
+)
+def test_youth_applications_detail_encrypted_vtj_json(
+    api_client,
+    input_encrypted_vtj_json,
+    expected_output_encrypted_vtj_json,
+):
+    app = YouthApplicationFactory.create(encrypted_vtj_json=input_encrypted_vtj_json)
+    response = api_client.get(get_detail_url(pk=app.pk))
+    output_encrypted_vtj_json = response.data["encrypted_vtj_json"]
+    assert output_encrypted_vtj_json == expected_output_encrypted_vtj_json
 
 
 @pytest.mark.django_db
