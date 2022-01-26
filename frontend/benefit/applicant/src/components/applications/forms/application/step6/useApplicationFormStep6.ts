@@ -81,14 +81,9 @@ const useApplicationFormStep6 = (
 
   useEffect(() => {
     if (submittedApplication) {
-      if (application.applicationNumber === submittedApplication.applicationNumber) {
-        void router.push(ROUTES.HOME);  
-      }
-      else {
-        setSubmittedApplication(null)
-      }
+      void router.push(ROUTES.HOME);
     }
-  }, [router, application, setSubmittedApplication, submittedApplication]);
+  }, [router, submittedApplication]);
 
   const handleClick = (consentIndex: number): void => {
     const newValue = !checkedArray[consentIndex];
