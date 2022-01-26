@@ -35,7 +35,8 @@
       "additionalInformationNeeded": "Lisätietoja tarvitaan",
       "received": "Vastaanotettu",
       "approved": "Hyväksytty",
-      "rejected": "Hylätty"
+      "rejected": "Hylätty",
+      "handling": "Käsittelyssä"
     },
     "steps": {
       "company": "Työnantaja",
