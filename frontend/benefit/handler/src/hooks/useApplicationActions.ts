@@ -10,12 +10,14 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 type ExtendedComponentProps = {
   updateStatus: (newStatus: APPLICATION_STATUSES) => void;
+  isUpdatingApplication: boolean;
 };
 
 const useApplicationActions = (
   application: Application
 ): ExtendedComponentProps => {
-  const { mutate: updateApplication } = useUpdateApplicationQuery();
+  const { mutate: updateApplication, isLoading: isUpdatingApplication } =
+    useUpdateApplicationQuery();
 
   const updateStatus = (status: APPLICATION_STATUSES): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
@@ -32,6 +34,7 @@ const useApplicationActions = (
 
   return {
     updateStatus,
+    isUpdatingApplication,
   };
 };
 
