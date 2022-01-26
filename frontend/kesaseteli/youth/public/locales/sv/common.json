@@ -73,6 +73,7 @@
   },
   "errors": {
     "required": "Uppgifter fattas",
+    "minLength": "SVE Syöttämäsi tieto on liian lyhyt",
     "maxLength": "Den inmatade texten är för lång",
     "pattern": "Den inmatade uppgiftern är i fel format",
     "validate": "Den inmatade uppgiftern är i fel format"

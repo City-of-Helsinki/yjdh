@@ -135,6 +135,7 @@ const getIndexPageApi = () => {
         this.typeInput('first_name', 'Helinä');
         this.typeInput('last_name', "O'Hara");
         this.typeInput('social_security_number', '111111-111c');
+        this.typeInput('postcode', '00100');
         await this.typeAndSelectSchoolFromDropdown(
           'Iidenkiven P',
           'Hiidenkiven peruskoulu'
@@ -148,6 +149,7 @@ const getIndexPageApi = () => {
         this.typeInput('first_name', 'Helinä');
         this.typeInput('last_name', "O'Hara");
         this.typeInput('social_security_number', '111111-111c');
+        this.typeInput('postcode', '00100');
         await this.toggleCheckbox('is_unlisted_school');
         this.typeInput('unlistedSchool', 'Erikoiskoulu');
         this.typeInput('phone_number', '+358-505-551-4995');

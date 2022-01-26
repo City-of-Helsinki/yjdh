@@ -10,6 +10,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
+from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import get_supported_languages, YouthApplicationRejectedReason
@@ -29,6 +30,7 @@ def get_required_fields():
         "school",
         "is_unlisted_school",
         "phone_number",
+        "postcode",
     ]
 
 
@@ -277,6 +279,18 @@ def test_youth_application_post_invalid_language(api_client):
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "language" in response.data
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("postcode", get_invalid_postcode_values())
+def test_youth_application_post_invalid_postcode(api_client, postcode):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    data["postcode"] = "postcode"
+    response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "postcode" in response.data
 
 
 @pytest.mark.django_db

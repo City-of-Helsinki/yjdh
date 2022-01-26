@@ -12,7 +12,12 @@ import SocialSecurityNumberInput from 'shared/components/forms/inputs/SocialSecu
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
+import {
+  EMAIL_REGEX,
+  NAMES_REGEX,
+  PHONE_NUMBER_REGEX,
+  POSTAL_CODE_REGEX,
+} from 'shared/constants';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
 import useGoToPage from 'shared/hooks/useGoToPage';
 
@@ -55,6 +60,14 @@ const YouthForm: React.FC = () => {
           <SocialSecurityNumberInput<YouthFormData>
             {...register('social_security_number', {
               required: true,
+            })}
+          />
+          <TextInput<YouthFormData>
+            {...register('postcode', {
+              required: true,
+              pattern: POSTAL_CODE_REGEX,
+              minLength: 5,
+              maxLength: 5,
             })}
           />
           <SchoolSelection />

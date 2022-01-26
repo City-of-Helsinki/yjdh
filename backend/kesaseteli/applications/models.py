@@ -15,6 +15,7 @@ from shared.common.validators import (
     validate_name,
     validate_optional_json,
     validate_phone_number,
+    validate_postcode,
 )
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 
@@ -146,6 +147,11 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         max_length=64,
         verbose_name=_("phone number"),
         validators=[validate_phone_number],
+    )
+    postcode = models.CharField(
+        max_length=5,
+        verbose_name=_("postcode"),
+        validators=[validate_postcode],
     )
     language = models.CharField(
         choices=APPLICATION_LANGUAGE_CHOICES,
