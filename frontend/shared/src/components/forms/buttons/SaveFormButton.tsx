@@ -11,10 +11,11 @@ import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 type Props<FormData, BackendResponseData> = Omit<
   CommonButtonProps,
-  'onClick'
+  'onClick' | 'onError'
 > & {
   saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;
   onSuccess: (response: BackendResponseData) => void | Promise<void>;
+  onError?: (error: Error | unknown) => void;
   onInvalidForm?: SubmitErrorHandler<FormData>;
 };
 
@@ -24,6 +25,7 @@ const SaveFormButton = <
 >({
   saveQuery,
   onSuccess,
+  onError,
   onInvalidForm,
   children,
   disabled,
@@ -33,7 +35,7 @@ const SaveFormButton = <
 }: Props<FormData, BackendResponseData>): React.ReactElement => {
   const { handleSubmit, formState } = useFormContext<FormData>();
 
-  const onError = useErrorHandler(false);
+  const onDefaultError = useErrorHandler(false);
 
   const isSaving = React.useMemo(
     () => saveQuery.isLoading || formState.isSubmitting,
@@ -47,7 +49,7 @@ const SaveFormButton = <
             void onSuccess(responseData);
           }
         },
-        onError,
+        onError: onError ?? onDefaultError,
       });
     },
     [saveQuery, onSuccess, onError]
@@ -68,6 +70,7 @@ const SaveFormButton = <
 
 SaveFormButton.defaultProps = {
   onInvalidForm: noop,
+  onError: undefined,
 };
 
 export default SaveFormButton;
