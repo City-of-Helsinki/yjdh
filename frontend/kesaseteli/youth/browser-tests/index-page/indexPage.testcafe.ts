@@ -11,7 +11,7 @@ import sendYouthApplication from '../actions/send-youth-application';
 import { getActivatedPageComponents } from '../notification-page/activatedPage.components';
 import { getAlreadyActivatedPageComponents } from '../notification-page/alreadyActivatedPage.components';
 import { getAlreadyAssignedPageComponents } from '../notification-page/alreadyAssignedPage.components';
-import { getEmailInUsePaegComponents } from '../notification-page/emailInUsePage.components';
+import { getEmailInUsePageComponents } from '../notification-page/emailInUsePage.components';
 import { getExpiredPageComponents } from '../notification-page/expiredPage.components';
 import { getThankYouPageComponents } from '../thank-you-page/thankYouPage.components';
 import {
@@ -50,7 +50,7 @@ test('sending two applications with same email redirects latter to email_in_use 
   await indexPage.expectations.isLoaded();
   const secondFormData = { ...fakeYouthFormData(), email: formData.email };
   await sendYouthApplication(t, secondFormData);
-  const emailInUsePage = await getEmailInUsePaegComponents(t);
+  const emailInUsePage = await getEmailInUsePageComponents(t);
   await emailInUsePage.expectations.isLoaded();
 });
 

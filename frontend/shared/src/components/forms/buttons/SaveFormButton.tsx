@@ -52,7 +52,7 @@ const SaveFormButton = <
         onError: onError ?? onDefaultError,
       });
     },
-    [saveQuery, onSuccess, onError]
+    [saveQuery, onError, onDefaultError, onSuccess]
   );
 
   return (
