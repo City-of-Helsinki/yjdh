@@ -12,7 +12,8 @@ export type Props = {
 const EditAction: React.FC<Props> = ({ application }) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
-  const { updateStatus } = useApplicationActions(application);
+  const { updateStatus, isUpdatingApplication } =
+    useApplicationActions(application);
 
   return (
     <>
@@ -23,6 +24,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
           variant="secondary"
           size="small"
           iconLeft={<IconPen />}
+          isLoading={isUpdatingApplication}
         >
           {t(`${translationsBase}.handlingToInfoRequired`)}
         </Button>
@@ -34,6 +36,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
           variant="secondary"
           size="small"
           iconLeft={<IconLock />}
+          isLoading={isUpdatingApplication}
         >
           {t(`${translationsBase}.infoRequiredToHandling`)}
         </Button>
