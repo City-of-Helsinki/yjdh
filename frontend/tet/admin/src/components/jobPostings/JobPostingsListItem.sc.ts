@@ -2,32 +2,48 @@ import styled from 'styled-components';
 
 export const $PostingCard = styled.div`
   display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
   font-size: ${(props) => props.theme.fontSize.heading.xl};
   margin-bottom: ${(props) => props.theme.spacing.xs};
+
+  @media (min-width: ${(props) => props.theme.breakpoints.s}) {
+    flex-flow: row nowrap;
+    align-items: stretch;
+  }
 `;
 
 export const $ImageContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
+  width: 100%;
+  height: 250px;
   align-items: center;
-  width: 195px;
-  height: 130px;
   background-color: ${(props) => props.theme.colors.black10};
+
+  @media (min-width: ${(props) => props.theme.breakpoints.s}) {
+    width: 195px;
+    height: 130px;
+  }
 `;
 
 export const $PostingCardBody = styled.div`
-  padding: ${(props) => props.theme.spacing.s};
-  display: flex;
-  width: 100%;
-  flex-direction: column;
+  padding: ${(props) => props.theme.spacing.xs};
+  display: inline-flex;
+  flex-flow: column nowrap;
   justify-content: space-between;
-  flex-grow: 1;
+  flex: 1;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.s}) {
+    width: 100%;
+  }
 `;
 
 export const $PostingHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
 `;
 
 export const $PostingFooter = styled.div`
@@ -57,5 +73,7 @@ export const $PostingTitle = styled.h4`
 `;
 
 export const $MenuContainer = styled.div`
+  display: inline-flex;
   position: relative;
+  align-self: flex-start;
 `;
