@@ -47,6 +47,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
+from messages.automatic_messages import send_application_reopened_message
 from rest_framework import serializers
 from rest_framework.fields import FileField
 from rest_framework.reverse import reverse
@@ -1320,6 +1321,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             from_status=previous_status,
             to_status=instance.status,
         )
+        if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
+            # Create an automatic message for the applicant
+            send_application_reopened_message(
+                get_request_user_from_context(self),
+                instance,
+                self.get_additional_information_needed_by(instance),
+            )
 
     def _validate_employee_consent(self, instance):
         consent_count = instance.attachments.filter(

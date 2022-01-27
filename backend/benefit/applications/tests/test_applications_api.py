@@ -865,6 +865,7 @@ def test_application_status_change_as_handler(
     modify existing application
     """
     application.status = from_status
+    application.applicant_language = "en"
     application.save()
     if from_status not in (
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
@@ -892,6 +893,14 @@ def test_application_status_change_as_handler(
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+
+        if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
+            assert application.messages.count() == 1
+            assert (
+                "Please make the requested changes by 18.06.2021"
+                in application.messages.first().content
+            )
+
     else:
         assert application.log_entries.all().count() == 0
 
