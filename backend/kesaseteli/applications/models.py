@@ -5,7 +5,7 @@ from urllib.parse import quote, urljoin
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models, transaction
-from django.db.models import DurationField, ExpressionWrapper, F, Q
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
@@ -52,19 +52,6 @@ class School(TimeStampedModel, UUIDModel):
 
 
 class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
-    def _annotate_existence_duration(self):
-        """
-        Annotate queryset with existence_duration with value timezone.now() - created_at
-
-        :return: The source queryset with annotated existence_duration DurationField
-                 with value timezone.now() - created_at.
-        """
-        return self.annotate(
-            existence_duration=ExpressionWrapper(
-                timezone.now() - F("created_at"), output_field=DurationField()
-            )
-        )
-
     def _active_q_filter(self) -> Q:
         """
         Return Q filter for active youth applications
@@ -74,10 +61,8 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
     def _unexpired_q_filter(self) -> Q:
         """
         Return Q filter for unexpired youth applications.
-
-        NOTE: Needs existence_duration field, so use with _annotate_existence_duration.
         """
-        return Q(existence_duration__lt=YouthApplication.expiration_duration())
+        return Q(created_at__gt=timezone.now() - YouthApplication.expiration_duration())
 
     def matches_email_or_social_security_number(self, email, social_security_number):
         """
@@ -91,21 +76,19 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         """
         Return youth applications that are expired
         """
-        return self._annotate_existence_duration().filter(~self._unexpired_q_filter())
+        return self.filter(~self._unexpired_q_filter())
 
     def unexpired(self):
         """
         Return youth applications that are unexpired
         """
-        return self._annotate_existence_duration().filter(self._unexpired_q_filter())
+        return self.filter(self._unexpired_q_filter())
 
     def unexpired_or_active(self):
         """
         Return youth applications that are unexpired or active
         """
-        return self._annotate_existence_duration().filter(
-            self._unexpired_q_filter() | self._active_q_filter()
-        )
+        return self.filter(self._unexpired_q_filter() | self._active_q_filter())
 
     def active(self):
         """
@@ -290,6 +273,12 @@ class YouthApplication(TimeStampedModel, UUIDModel):
     class Meta:
         verbose_name = _("youth application")
         verbose_name_plural = _("youth applications")
+        indexes = [
+            models.Index(fields=["created_at"]),
+            models.Index(fields=["email"]),
+            models.Index(fields=["receipt_confirmed_at"]),
+            models.Index(fields=["social_security_number"]),
+        ]
         ordering = ["-created_at"]
 
 
