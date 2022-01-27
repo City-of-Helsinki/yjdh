@@ -24,7 +24,7 @@ const ApplicantIndex: NextPage = () => {
       />
       <ApplicationsList
         heading={t('common:applications.list.submitted.heading')}
-        status={['received', 'cancelled', 'accepted', 'rejected']}
+        status={['received', 'handling', 'cancelled', 'accepted', 'rejected']}
       />
     </FrontPageProvider>
   );
