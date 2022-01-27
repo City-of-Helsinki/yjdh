@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import CREATION_ERROR_CODES from 'kesaseteli/youth/components/constants/creation-error-codes';
+import CREATION_ERROR_TYPES from 'kesaseteli/youth/components/constants/creation-error-types';
 import YouthApplicationCreationError from 'kesaseteli/youth/types/youth-application-creation-error';
 
 export const isYouthApplicationCreationError = (
@@ -7,5 +7,5 @@ export const isYouthApplicationCreationError = (
 ): error is YouthApplicationCreationError =>
   Axios.isAxiosError(error) &&
   Boolean(
-    error.response && CREATION_ERROR_CODES.includes(error.response.data.code)
+    error.response && CREATION_ERROR_TYPES.includes(error.response.data.code)
   );
