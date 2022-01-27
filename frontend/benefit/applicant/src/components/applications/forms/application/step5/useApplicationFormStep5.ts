@@ -62,14 +62,9 @@ const useApplicationFormStep5 = (
 
   useEffect(() => {
     if (submittedApplication) {
-      if (application.applicationNumber === submittedApplication.applicationNumber) {
-        void router.push(ROUTES.HOME);  
-      }
-      else {
-        setSubmittedApplication(null)
-      }
+      void router.push(ROUTES.HOME);
     }
-  }, [router, application, setSubmittedApplication, submittedApplication]);
+  }, [router, submittedApplication]);
 
   useEffect(() => {
     // todo:custom error messages
