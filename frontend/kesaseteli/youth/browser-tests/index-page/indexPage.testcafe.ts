@@ -10,9 +10,15 @@ import getActivationLinkExpirationSeconds from '../../src/utils/get-activation-l
 import sendYouthApplication from '../actions/send-youth-application';
 import { getActivatedPageComponents } from '../notification-page/activatedPage.components';
 import { getAlreadyActivatedPageComponents } from '../notification-page/alreadyActivatedPage.components';
+import { getAlreadyAssignedPageComponents } from '../notification-page/alreadyAssignedPage.components';
+import { getEmailInUsePaegComponents } from '../notification-page/emailInUsePage.components';
 import { getExpiredPageComponents } from '../notification-page/expiredPage.components';
 import { getThankYouPageComponents } from '../thank-you-page/thankYouPage.components';
-import { clickBrowserBackButton, getFrontendUrl } from '../utils/url.utils';
+import {
+  clickBrowserBackButton,
+  getFrontendUrl,
+  goToFrontPage,
+} from '../utils/url.utils';
 import { getIndexPageComponents } from './indexPage.components';
 
 const url = getFrontendUrl('/');
@@ -34,8 +40,35 @@ test('can send application and return to front page', async (t) => {
   await indexPage.expectations.isLoaded();
 });
 
+test.skip('sending two applications with same email redirects latter to email_in_use page', async (t) => {
+  const indexPage = await getIndexPageComponents(t);
+  await indexPage.expectations.isLoaded();
+  const formData = fakeYouthFormData();
+  await sendYouthApplication(t, formData);
+  const thankYouPage = await getThankYouPageComponents(t);
+  await thankYouPage.actions.clickGoToFrontPageButton();
+  await indexPage.expectations.isLoaded();
+  const secondFormData = { ...fakeYouthFormData(), email: formData.email };
+  await sendYouthApplication(t, secondFormData);
+  const emailInUsePage = await getEmailInUsePaegComponents(t);
+  await emailInUsePage.expectations.isLoaded();
+});
+
 if (!isRealIntegrationsEnabled()) {
-  test('can send application and activate kesäseteli voucher, and reactivating goes to already activated -page', async (t) => {
+  test('activation remembers the selected language', async (t) => {
+    const languageDropdown = await getHeaderComponents(t).languageDropdown();
+    await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData, 'sv');
+    const thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t, 'sv');
+    await activatedPage.expectations.isLoaded();
+  });
+
+  test('activating application twice redirects to already activated -page', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -53,20 +86,7 @@ if (!isRealIntegrationsEnabled()) {
     await alreadyActivatedPage.expectations.isLoaded();
   });
 
-  test('activation remembers the selected language', async (t) => {
-    const languageDropdown = await getHeaderComponents(t).languageDropdown();
-    await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
-    const indexPage = await getIndexPageComponents(t);
-    await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
-    await sendYouthApplication(t, formData, 'sv');
-    const thankYouPage = await getThankYouPageComponents(t);
-    await thankYouPage.actions.clickActivationLink();
-    const activatedPage = await getActivatedPageComponents(t, 'sv');
-    await activatedPage.expectations.isLoaded();
-  });
-
-  test('shows expiration page if kesäseteli is activated too late', async (t) => {
+  test.only('shows expiration page if kesäseteli is activated too late', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -76,5 +96,38 @@ if (!isRealIntegrationsEnabled()) {
     await thankYouPage.actions.clickActivationLink();
     const expiredPage = await getExpiredPageComponents(t);
     await expiredPage.expectations.isLoaded();
+  });
+
+  test('sending application with already activated email redirects to already assigned -page', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.actions.clickActivationLink();
+    await getActivatedPageComponents(t);
+    await goToFrontPage(t);
+    const secondFormData = { ...fakeYouthFormData(), email: formData.email };
+    await sendYouthApplication(t, secondFormData);
+    const alreadyAssignedPage = await getAlreadyAssignedPageComponents(t);
+    await alreadyAssignedPage.expectations.isLoaded();
+  });
+
+  test('sending application with already activated ssn redirects to already assigned -page', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.actions.clickActivationLink();
+    await getActivatedPageComponents(t);
+    await goToFrontPage(t);
+    const secondFormData = {
+      ...fakeYouthFormData(),
+      social_security_number: formData.social_security_number,
+    };
+    await sendYouthApplication(t, secondFormData);
+    const alreadyAssignedPage = await getAlreadyAssignedPageComponents(t);
+    await alreadyAssignedPage.expectations.isLoaded();
   });
 }
