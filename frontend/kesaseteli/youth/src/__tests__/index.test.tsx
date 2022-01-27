@@ -7,13 +7,13 @@ import {
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getIndexPageApi from 'kesaseteli/youth/__tests__/utils/components/get-index-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
+import CREATION_ERROR_TYPES from 'kesaseteli/youth/components/constants/creation-error-types';
 import YouthIndex from 'kesaseteli/youth/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
-import CREATION_ERROR_TYPES from 'kesaseteli/youth/components/constants/creation-error-types';
 
 const texts = {
   required: /tieto puuttuu/i,

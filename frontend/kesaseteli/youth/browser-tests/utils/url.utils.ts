@@ -7,7 +7,7 @@ export const getFrontendUrl = (path = ''): string =>
   getUrl(process.env.YOUTH_URL ?? 'https://localhost:3100', path);
 
 export const goToFrontPage = async (t: TestController): Promise<void> => {
-  t.navigateTo(getFrontendUrl());
+  await t.navigateTo(getFrontendUrl());
 };
 
 export const clickBrowserBackButton = async (): Promise<void> => {

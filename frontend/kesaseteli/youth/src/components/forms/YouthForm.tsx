@@ -3,6 +3,7 @@ import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCr
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
+import { isYouthApplicationCreationError } from 'kesaseteli/youth/utils/type-guards';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
@@ -23,7 +24,6 @@ import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useGoToPage from 'shared/hooks/useGoToPage';
 import useLocale from 'shared/hooks/useLocale';
-import { isYouthApplicationCreationError } from 'kesaseteli/youth/utils/type-guards';
 import { assertUnreachable } from 'shared/utils/typescript.utils';
 
 const YouthForm: React.FC = () => {

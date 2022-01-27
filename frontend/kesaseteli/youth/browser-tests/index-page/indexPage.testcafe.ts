@@ -40,7 +40,7 @@ test('can send application and return to front page', async (t) => {
   await indexPage.expectations.isLoaded();
 });
 
-test.skip('sending two applications with same email redirects latter to email_in_use page', async (t) => {
+test('sending two applications with same email redirects latter to email_in_use page', async (t) => {
   const indexPage = await getIndexPageComponents(t);
   await indexPage.expectations.isLoaded();
   const formData = fakeYouthFormData();
@@ -86,7 +86,7 @@ if (!isRealIntegrationsEnabled()) {
     await alreadyActivatedPage.expectations.isLoaded();
   });
 
-  test.only('shows expiration page if kesäseteli is activated too late', async (t) => {
+  test('shows expiration page if kesäseteli is activated too late', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
