@@ -176,6 +176,7 @@
         "heading5Employment": "Työsuhde",
         "heading5Assignment": "Toimeksianto",
         "heading5EmploymentSub1": "Palkkauskustannukset",
+        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana ",
         "tooltips": {
           "heading5Employment": "Työsuhde tooltip text",
           "heading5EmploymentSub1": "Työsuhde sub header tooltip message 1",
@@ -264,12 +265,12 @@
             "placeholder": "Työehtosopimus"
           },
           "monthlyPay": {
-            "label": "Bruttopalkka €/kk",
+            "label": "Bruttopalkka",
             "placeholder": "Palkka",
             "view": "Bruttopalkka {{monthlyPay}} €/kk"
           },
           "otherExpenses": {
-            "label": "Sivukulut €/kk",
+            "label": "Sivukulut",
             "placeholder": "Sivukulut",
             "view": "Sivukulut {{otherExpenses}} €/kk"
           },
