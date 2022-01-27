@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "node start.js",
+    "dev": "PORT=3100 node start.js",
     "build": "next build",
-    "start": "NODE_ENV=production node start.js",
+    "start": "NODE_ENV=production PORT=3100 node start.js",
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
