@@ -8,7 +8,8 @@ trigger:
     - main
   paths:
     include:
-    - frontend/kesaseteli
+    - frontend/kesaseteli/**
+    - frontend/*
     exclude:
     - README.md
 
