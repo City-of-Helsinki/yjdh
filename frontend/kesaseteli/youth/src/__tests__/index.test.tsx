@@ -7,6 +7,7 @@ import {
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getIndexPageApi from 'kesaseteli/youth/__tests__/utils/components/get-index-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
+import CREATION_ERROR_TYPES from 'kesaseteli/youth/components/constants/creation-error-types';
 import YouthIndex from 'kesaseteli/youth/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
@@ -249,7 +250,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       );
     });
 
-    it('shows error toaster when backend gives bad request -error', async () => {
+    it('shows error toaster when backend gives unknown  bad request -error', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
@@ -275,5 +276,27 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
       );
     });
+
+    for (const errorType of CREATION_ERROR_TYPES) {
+      it(`redirects to ${errorType} error page when backend returns respective bad request type`, async () => {
+        expectToGetSchoolsFromBackend();
+        const spyPush = jest.fn();
+        await renderPage(YouthIndex, { push: spyPush });
+        const indexPageApi = getIndexPageApi();
+        await indexPageApi.expectations.pageIsLoaded();
+
+        await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
+          backendExpectation: expectToReplyErrorWhenCreatingYouthApplication(
+            400,
+            errorType
+          ),
+        });
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/${errorType}`
+          )
+        );
+      });
+    }
   });
 });
