@@ -66,7 +66,7 @@ def postings_stub(request, *args, **kwargs):
                 posting_object(dict(id="23", date_published="2022-01-20")),
             ],
             "draft": [
-                posting_object(dict(id="31")),
+                posting_object(dict(id="31", end_date="2022-02-05", spots=1)),
                 posting_object(dict(id="32")),
                 posting_object(dict(id="33")),
             ],
