@@ -29,7 +29,19 @@
     "jobPostings": {
       "title": "SV TET-paikkailmoitukset",
       "noPostingsFound": "SV Sinulla ei ole vielä yhtään TET-paikkaa.",
-      "addNewPosting": "SV Lisää uusi harjoittelupaikka"
+      "addNewPosting": "SV Lisää uusi harjoittelupaikka",
+			"publishedPostings": "SV Työharjoittelupaikat",
+			"draftPostings": "SV Keskeneräiset ilmoitukset",
+			"openSpots": "SV TET-paikkaa",
+			"published": "SV Julkaistu",
+			"notPublished": "SV Ei julkaistu",
+			"total": "SV kpl",
+			"menu": {
+				"publishNow": "SV Julkaise nyt",
+				"edit": "SV Muokkaa",
+				"copy": "SV Tee kopio",
+				"delete": "SV Poista"
+			}
     }
   },
   "editor": {

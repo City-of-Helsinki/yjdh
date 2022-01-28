@@ -12,6 +12,7 @@ import {
   $MenuContainer,
 } from 'tet/admin/components/jobPostings/JobPostingsListItem.sc';
 import { IconMenuDots, IconCalendar, IconGroup, IconEye, IconPhoto } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import JobPostingsListItemMenu from 'tet/admin/components/jobPostings/JobPostingsListItemMenu';
 type JobPostingsListItemProps = {
   posting: TetPosting;
@@ -20,6 +21,17 @@ type JobPostingsListItemProps = {
 const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) => {
   //const startingDate = DateTime.fromISO(posting.start_date).toFormat('dd.mm.yyyy');
   const [showMenu, setShowMenu] = React.useState(false);
+  const { t } = useTranslation();
+
+  const getFormattedDate = (date: string | undefined): string => {
+    if (date) {
+      const newDate = new Date(date);
+      return `${newDate.getDate()}.${newDate.getMonth() + 1}.${newDate.getFullYear()}`;
+    } else return '';
+  };
+
+  const startDate = getFormattedDate(posting.start_date);
+  const endDate = getFormattedDate(posting.end_date);
 
   return (
     <>
@@ -43,24 +55,34 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
                 `}
                 onClick={() => setShowMenu(true)}
               />
-              <JobPostingsListItemMenu show={showMenu} onClickOutside={() => setShowMenu(false)} />
+              {posting.id && (
+                <JobPostingsListItemMenu
+                  postingId={posting.id}
+                  show={showMenu}
+                  onClickOutside={() => setShowMenu(false)}
+                />
+              )}
             </$MenuContainer>
           </$PostingHeader>
           <$PostingFooter>
             <div>
               <IconCalendar />
-              <$PostingFooterInfo>6.6.2022</$PostingFooterInfo>
+              <$PostingFooterInfo>
+                {startDate}-{endDate}
+              </$PostingFooterInfo>
             </div>
             <div>
               <IconGroup />
-              <$PostingFooterInfo>{posting.spots} TET-paikkaa</$PostingFooterInfo>
+              <$PostingFooterInfo>
+                {posting.spots} {t('common:application.jobPostings.openSpots')}
+              </$PostingFooterInfo>
             </div>
             <div>
               <IconEye />
               {posting.date_published ? (
-                <$PostingFooterInfo>Julkaistu</$PostingFooterInfo>
+                <$PostingFooterInfo>{t('common:application.jobPostings.published')}</$PostingFooterInfo>
               ) : (
-                <$PostingFooterInfo>Ei julkaistu</$PostingFooterInfo>
+                <$PostingFooterInfo>{t('common:application.jobPostings.notPublished')}</$PostingFooterInfo>
               )}
             </div>
           </$PostingFooter>

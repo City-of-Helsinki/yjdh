@@ -1,15 +1,20 @@
 import * as React from 'react';
 import { IconPen, IconEye, IconPlusCircle, IconCrossCircle } from 'hds-react';
 import { $Menu, $MenuItem } from 'tet/admin/components/jobPostings/JobPostingsListItemMenu.sc';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 type JobPostingsListItemMenuProps = {
+  postingId: string;
   onClickOutside: () => void;
   show: boolean;
 };
 
 const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) => {
+  const { t } = useTranslation();
   const ref = React.useRef<HTMLDivElement>(null);
-  const { onClickOutside } = props;
+  const router = useRouter();
+  const { postingId, onClickOutside, show } = props;
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
@@ -24,26 +29,34 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
     };
   }, [onClickOutside]);
 
-  if (!props.show) return null;
+  const editPostingHandler = (): void => {
+    router.push(`/edit/${postingId}`);
+  };
+
+  const deletePostingHandler = (): void => {
+    //TODO
+  };
+
+  if (!show) return null;
 
   return (
     <$Menu ref={ref}>
       <ul>
         <$MenuItem>
           <IconEye />
-          <span>Julkaise nyt</span>
+          <span>{t('common:application.jobPostings.menu.publishNow')}</span>
         </$MenuItem>
-        <$MenuItem>
+        <$MenuItem onClick={editPostingHandler}>
           <IconPen />
-          <span>Muokkaa</span>
+          <span>{t('common:application.jobPostings.menu.edit')}</span>
         </$MenuItem>
         <$MenuItem>
           <IconPlusCircle />
-          <span>Tee kopio</span>
+          <span>{t('common:application.jobPostings.menu.copy')}</span>
         </$MenuItem>
-        <$MenuItem>
+        <$MenuItem onClick={deletePostingHandler}>
           <IconCrossCircle color={'#b01038'} />
-          <span>Poista</span>
+          <span>{t('common:application.jobPostings.menu.delete')}</span>
         </$MenuItem>
       </ul>
     </$Menu>

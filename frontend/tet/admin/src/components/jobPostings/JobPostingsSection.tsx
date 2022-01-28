@@ -11,12 +11,14 @@ type JobPostingsSectionProps = {
 };
 
 const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postingsTotal, postings }) => {
-  console.log(postings, 'postings');
+  const { t } = useTranslation();
   return (
     <>
       <$HeadingContainer>
         <$Title>{title}</$Title>
-        <$Total>{postingsTotal} kpl</$Total>
+        <$Total>
+          {postingsTotal} {t('common:application.jobPostings.total')}
+        </$Total>
       </$HeadingContainer>
       {postings.map((posting) => (
         <JobPostingsListItem posting={posting} />

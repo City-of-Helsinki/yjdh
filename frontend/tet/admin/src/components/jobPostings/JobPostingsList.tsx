@@ -9,15 +9,16 @@ type JobPostingsListProps = {
 };
 
 const JobPostingsList: React.FC<JobPostingsListProps> = ({ draft, published }) => {
+  const { t } = useTranslation();
   return (
     <>
       <JobPostingsSection
-        title="Työharjoittelupaikat"
+        title={t('common:application.jobPostings.publishedPostings')}
         postingsTotal={published.length}
         postings={published}
       ></JobPostingsSection>
       <JobPostingsSection
-        title="Keskeneräiset ilmoitukset"
+        title={t('common:application.jobPostings.draftPostings')}
         postingsTotal={draft.length}
         postings={draft}
       ></JobPostingsSection>

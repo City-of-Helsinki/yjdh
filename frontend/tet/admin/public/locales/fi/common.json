@@ -29,7 +29,19 @@
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
-      "addNewPosting": "Lisää uusi harjoittelupaikka"
+      "addNewPosting": "Lisää uusi harjoittelupaikka",
+			"publishedPostings": "Työharjoittelupaikat",
+			"draftPostings": "Keskeneräiset ilmoitukset",
+			"openSpots": "TET-paikkaa",
+			"published": "Julkaistu",
+			"notPublished": "Ei julkaistu",
+			"total": "kpl",
+			"menu": {
+				"publishNow": "Julkaise nyt",
+				"edit": "Muokkaa",
+				"copy": "Tee kopio",
+				"delete": "Poista"
+			}
     }
   },
   "editor": {
