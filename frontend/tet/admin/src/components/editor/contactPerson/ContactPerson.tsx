@@ -9,10 +9,11 @@ import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import PhoneInput from 'tet/admin/components/editor/PhoneInput';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
-import { required } from 'tet/admin/validation-rules/ValidationRules';
+import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 
 const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const { t } = useTranslation();
+  const { required, maxLength, email } = useValidationRules();
   const theme = useTheme();
   const languageOptions = [
     { value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
@@ -20,6 +21,7 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
     { value: 'en', label: t('common:editor.posting.contactLanguageEn') },
   ];
 
+  console.log(required);
   return (
     <FormSection header={t('common:editor.posting.header')}>
       <$GridCell
@@ -73,20 +75,7 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
             id="contact_email"
             label={t('common:editor.posting.contactEmail')}
             placeholder={t('common:editor.posting.contactEmail')}
-            registerOptions={{
-              maxLength: {
-                value: 254,
-                message: 'test',
-              },
-              pattern: {
-                value: EMAIL_REGEX,
-                message: t('common:editor.posting.validation.email'),
-              },
-              required: {
-                value: true,
-                message: 'test',
-              },
-            }}
+            registerOptions={email}
           />
         </$GridCell>
       </$GridCell>
