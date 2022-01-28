@@ -86,7 +86,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
             ) : (
               <div>
                 <IconEyeCrossed />
-                <$PostingFooterInfo>{t('common:application.jobPostings.published')}</$PostingFooterInfo>
+                <$PostingFooterInfo>{t('common:application.jobPostings.notPublished')}</$PostingFooterInfo>
               </div>
             )}
           </$PostingFooter>
