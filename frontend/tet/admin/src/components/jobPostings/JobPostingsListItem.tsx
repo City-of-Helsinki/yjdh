@@ -10,8 +10,9 @@ import {
   $PostingFooter,
   $PostingFooterInfo,
   $MenuContainer,
+  $PostingDates,
 } from 'tet/admin/components/jobPostings/JobPostingsListItem.sc';
-import { IconMenuDots, IconCalendar, IconGroup, IconEye, IconPhoto } from 'hds-react';
+import { IconMenuDots, IconCalendar, IconGroup, IconEye, IconEyeCrossed, IconPhoto } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import JobPostingsListItemMenu from 'tet/admin/components/jobPostings/JobPostingsListItemMenu';
 type JobPostingsListItemProps = {
@@ -65,26 +66,29 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
             </$MenuContainer>
           </$PostingHeader>
           <$PostingFooter>
-            <div>
+            <$PostingDates>
               <IconCalendar />
               <$PostingFooterInfo>
                 {startDate}-{endDate}
               </$PostingFooterInfo>
-            </div>
+            </$PostingDates>
             <div>
               <IconGroup />
               <$PostingFooterInfo>
                 {posting.spots} {t('common:application.jobPostings.openSpots')}
               </$PostingFooterInfo>
             </div>
-            <div>
-              <IconEye />
-              {posting.date_published ? (
+            {posting.date_published ? (
+              <div>
+                <IconEye />
                 <$PostingFooterInfo>{t('common:application.jobPostings.published')}</$PostingFooterInfo>
-              ) : (
-                <$PostingFooterInfo>{t('common:application.jobPostings.notPublished')}</$PostingFooterInfo>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div>
+                <IconEyeCrossed />
+                <$PostingFooterInfo>{t('common:application.jobPostings.published')}</$PostingFooterInfo>
+              </div>
+            )}
           </$PostingFooter>
         </$PostingCardBody>
       </$PostingCard>

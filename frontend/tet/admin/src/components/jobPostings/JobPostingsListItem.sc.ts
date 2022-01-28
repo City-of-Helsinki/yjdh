@@ -72,6 +72,10 @@ export const $PostingTitle = styled.h4`
   font-size: ${(props) => props.theme.fontSize.heading.s};
 `;
 
+export const $PostingDates = styled.div`
+  width: 180px;
+`;
+
 export const $MenuContainer = styled.div`
   display: inline-flex;
   position: relative;
