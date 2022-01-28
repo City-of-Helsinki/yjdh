@@ -4,11 +4,12 @@ import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
 import TetPosting from 'tet/admin/types/tetposting';
-import TextInput from 'shared/components/forms/inputs/TextInput';
+import TextInput from 'tet/admin/components/editor/TextInput';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import PhoneInput from 'tet/admin/components/editor/PhoneInput';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
+import { required } from 'tet/admin/validation-rules/ValidationRules';
 
 const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const { t } = useTranslation();
@@ -18,9 +19,6 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
     { value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
     { value: 'en', label: t('common:editor.posting.contactLanguageEn') },
   ];
-
-  const requiredMessage = t('common.editor.posting.validation.required');
-  const maxMessage = t('common.editor.posting.validation.max');
 
   return (
     <FormSection header={t('common:editor.posting.header')}>
@@ -32,26 +30,24 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
         `}
       >
         <$GridCell $colSpan={3}>
-          <TextInput<TetPosting>
+          <TextInput
             id="contact_first_name"
-            initialValue={initialValue.contact_first_name}
             label={t('common:editor.posting.contactFirstName')}
             placeholder={t('common:editor.posting.contactFirstName')}
             registerOptions={{
-              required: true,
+              required: required,
               pattern: NAMES_REGEX,
               maxLength: 128,
             }}
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          <TextInput<TetPosting>
+          <TextInput
             id="contact_last_name"
-            initialValue={initialValue.contact_last_name}
             label={t('common:editor.posting.contactLastName')}
             placeholder={t('common:editor.posting.contactLastName')}
             registerOptions={{
-              required: true,
+              required: required,
               pattern: NAMES_REGEX,
               maxLength: 128,
             }}
@@ -60,13 +56,12 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
         <$GridCell $colSpan={2}>
           <PhoneInput
             id="contact_phone"
-            initialValue={initialValue.contact_phone}
             label={t('common:editor.posting.contactPhone')}
             placeholder={t('common:editor.posting.contactPhone')}
             registerOptions={{
               required: {
                 value: true,
-                message: 'puhelin vaaditaan',
+                message: t('common:editor.posting.validation.required'),
               },
               maxLength: 64,
               pattern: PHONE_NUMBER_REGEX,
@@ -74,15 +69,14 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
-          <TextInput<TetPosting>
+          <TextInput
             id="contact_email"
-            initialValue={initialValue.contact_email}
             label={t('common:editor.posting.contactEmail')}
             placeholder={t('common:editor.posting.contactEmail')}
             registerOptions={{
               maxLength: {
                 value: 254,
-                message: maxMessage,
+                message: 'test',
               },
               pattern: {
                 value: EMAIL_REGEX,
@@ -90,7 +84,7 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
               },
               required: {
                 value: true,
-                message: requiredMessage,
+                message: 'test',
               },
             }}
           />
