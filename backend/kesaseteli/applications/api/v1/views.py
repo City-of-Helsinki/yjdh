@@ -1,3 +1,6 @@
+import logging
+
+from django.conf import settings
 from django.core import exceptions
 from django.db.models import Func
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
@@ -36,6 +39,8 @@ from applications.models import (
 )
 from common.permissions import DenyAll, IsHandler
 
+LOGGER = logging.getLogger(__name__)
+
 
 class SchoolListView(ListAPIView):
     # PostgreSQL specific functionality:
@@ -61,6 +66,16 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     serializer_class = YouthApplicationSerializer
 
     @action(methods=["get"], detail=True)
+    def process(self, request, pk=None) -> HttpResponse:
+        try:
+            YouthApplication.objects.get(pk=pk)
+        except (exceptions.ValidationError, YouthApplication.DoesNotExist):
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+        # TODO: Implement
+        return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    @action(methods=["get"], detail=True)
     def activate(self, request, pk=None) -> HttpResponse:
         try:
             youth_application = YouthApplication.objects.get(pk=pk)
@@ -72,6 +87,12 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
+            if settings.DISABLE_VTJ:
+                LOGGER.info(
+                    f"Activated youth application {youth_application.pk}: "
+                    "VTJ is disabled, sending application to be processed by a handler"
+                )
+                youth_application.send_processing_email_to_handler(request)
             return HttpResponseRedirect(youth_application.activated_page_url())
 
         return HttpResponse(
@@ -118,7 +139,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         """
         if self.action in ["activate", "create"]:
             permission_classes = [AllowAny]
-        elif self.action in ["retrieve"]:
+        elif self.action in ["process", "retrieve"]:
             permission_classes = [IsHandler]
         else:
             permission_classes = [DenyAll]

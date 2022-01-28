@@ -56,8 +56,30 @@ def get_detail_url(pk):
     return reverse("v1:youthapplication-detail", kwargs={"pk": pk})
 
 
+def get_processing_url(pk):
+    return reverse("v1:youthapplication-process", kwargs={"pk": pk})
+
+
 def get_test_vtj_json() -> dict:
     return {"first_name": "Maija", "last_name": "Meikäläinen"}
+
+
+def assert_email_subject_language(email_subject, expected_language):
+    detected_language = langdetect.detect(email_subject)
+    assert (
+        detected_language == expected_language
+    ), "Email subject '{}' used language {} instead of expected {}".format(
+        email_subject, detected_language, expected_language
+    )
+
+
+def assert_email_body_language(email_body, expected_language):
+    detected_language = langdetect.detect(email_body)
+    assert (
+        detected_language == expected_language
+    ), "Email body '{}' used language {} instead of expected {}".format(
+        email_body, detected_language, expected_language
+    )
 
 
 @pytest.mark.django_db
@@ -65,6 +87,18 @@ def test_youth_applications_list(api_client):
     response = api_client.get(get_list_url())
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_youth_applications_process_valid_pk(api_client, youth_application):
+    response = api_client.get(get_processing_url(pk=youth_application.pk))
+    assert response.status_code == status.HTTP_501_NOT_IMPLEMENTED
+
+
+@pytest.mark.django_db
+def test_youth_applications_process_invalid_pk(api_client):
+    response = api_client.get(get_processing_url(pk="invalid value"))
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.django_db
@@ -307,24 +341,48 @@ def test_youth_application_activation_email_language(
     api_client.post(reverse("v1:youthapplication-list"), data)
     assert len(mail.outbox) > 0
     activation_email = mail.outbox[-1]
-    assert len(activation_email.subject.strip()) > 0
-    assert len(activation_email.body.strip()) > 0
-    detected_email_subject_language = langdetect.detect(activation_email.subject)
-    detected_email_body_language = langdetect.detect(activation_email.body)
-    assert (
-        detected_email_subject_language == language
-    ), "Email subject '{}' used language {} instead of expected {}".format(
-        activation_email.subject,
-        detected_email_subject_language,
-        language,
+    assert_email_subject_language(activation_email.subject, language)
+    assert_email_body_language(activation_email.body, language)
+
+
+@pytest.mark.django_db
+@override_settings(
+    DISABLE_VTJ=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+def test_youth_application_processing_email_sending_without_vtj(
+    api_client,
+    inactive_youth_application,
+    make_youth_application_activation_link_unexpired,
+):
+    start_mail_count = len(mail.outbox)
+    api_client.get(get_activation_url(inactive_youth_application.pk))
+    assert len(mail.outbox) == start_mail_count + 1
+
+
+@pytest.mark.django_db
+@override_settings(
+    DISABLE_VTJ=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+@pytest.mark.parametrize(
+    "youth_application_language,expected_email_language",
+    [(language, "fi") for language in get_supported_languages()],
+)
+def test_youth_application_processing_email_language(
+    api_client,
+    make_youth_application_activation_link_unexpired,
+    youth_application_language,
+    expected_email_language,
+):
+    inactive_youth_application = InactiveYouthApplicationFactory(
+        language=youth_application_language
     )
-    assert (
-        detected_email_body_language == language
-    ), "Email body '{}' used language {} instead of expected {}".format(
-        activation_email.body,
-        detected_email_body_language,
-        language,
-    )
+    api_client.get(get_activation_url(inactive_youth_application.pk))
+    assert len(mail.outbox) > 0
+    processing_email = mail.outbox[-1]
+    assert_email_subject_language(processing_email.subject, expected_email_language)
+    assert_email_body_language(processing_email.body, expected_email_language)
 
 
 @pytest.mark.django_db
