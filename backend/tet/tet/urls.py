@@ -74,7 +74,7 @@ def postings_stub(request, *args, **kwargs):
     )
 
 
-# @require_GET
+@require_GET
 def postings_ended_stub(request, *args, **kwargs):
     page = request.GET.get("page")
     if page == "2":
