@@ -23,7 +23,7 @@ const JobPostings: React.FC = () => {
   console.dir(data);
 
   const content =
-    data?.draft && data?.published ? (
+    data?.draft?.length || data?.published?.length ? (
       <JobPostingsList draft={data.draft} published={data.published} />
     ) : (
       <>
