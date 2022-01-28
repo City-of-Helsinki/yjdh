@@ -153,9 +153,7 @@ def test_youth_applications_activate_unexpired_inactive(
     make_youth_application_activation_link_unexpired,
     language,
 ):
-    inactive_youth_application = InactiveYouthApplicationFactory.build()
-    inactive_youth_application.language = language
-    inactive_youth_application.save()
+    inactive_youth_application = InactiveYouthApplicationFactory(language=language)
 
     assert not inactive_youth_application.is_active
     assert not inactive_youth_application.has_activation_link_expired
@@ -177,9 +175,7 @@ def test_youth_applications_activate_unexpired_active(
     make_youth_application_activation_link_unexpired,
     language,
 ):
-    active_youth_application = ActiveYouthApplicationFactory.build()
-    active_youth_application.language = language
-    active_youth_application.save()
+    active_youth_application = ActiveYouthApplicationFactory(language=language)
 
     assert active_youth_application.is_active
     assert not active_youth_application.has_activation_link_expired
@@ -201,9 +197,7 @@ def test_youth_applications_activate_expired_inactive(
     make_youth_application_activation_link_expired,
     language,
 ):
-    inactive_youth_application = InactiveYouthApplicationFactory.build()
-    inactive_youth_application.language = language
-    inactive_youth_application.save()
+    inactive_youth_application = InactiveYouthApplicationFactory(language=language)
 
     assert not inactive_youth_application.is_active
     assert inactive_youth_application.has_activation_link_expired
@@ -225,9 +219,7 @@ def test_youth_applications_activate_expired_active(
     make_youth_application_activation_link_expired,
     language,
 ):
-    active_youth_application = ActiveYouthApplicationFactory.build()
-    active_youth_application.language = language
-    active_youth_application.save()
+    active_youth_application = ActiveYouthApplicationFactory(language=language)
 
     assert active_youth_application.is_active
     assert active_youth_application.has_activation_link_expired
@@ -301,10 +293,9 @@ def test_youth_application_post_valid_data_with_email_backends(
     settings,
     email_backend_override,
 ):
-    youth_application = YouthApplicationFactory.build()
     # Use an email address which uses a reserved domain name (See RFC 2606)
     # so even if it'd be sent to an SMTP server it wouldn't go anywhere
-    youth_application.email = "test@example.com"
+    youth_application = YouthApplicationFactory.build(email="test@example.com")
     if email_backend_override is not None:
         settings.EMAIL_BACKEND = email_backend_override
     data = YouthApplicationSerializer(youth_application).data
@@ -318,25 +309,17 @@ def test_youth_application_post_valid_language(
     api_client,
     language,
 ):
-    youth_application = YouthApplicationFactory.build()
-    youth_application.language = language
+    youth_application = YouthApplicationFactory.build(language=language)
     data = YouthApplicationSerializer(youth_application).data
     response = api_client.post(reverse("v1:youthapplication-list"), data)
     assert response.status_code == status.HTTP_201_CREATED
 
 
 @pytest.mark.django_db
-@override_settings(
-    MOCK_FLAG=True,
-    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
-)
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 @pytest.mark.parametrize("language", get_supported_languages())
-def test_youth_application_activation_email_language(
-    api_client,
-    language,
-):
-    youth_application = YouthApplicationFactory.build()
-    youth_application.language = language
+def test_youth_application_activation_email_language(api_client, language):
+    youth_application = YouthApplicationFactory.build(language=language)
     data = YouthApplicationSerializer(youth_application).data
     api_client.post(reverse("v1:youthapplication-list"), data)
     assert len(mail.outbox) > 0
