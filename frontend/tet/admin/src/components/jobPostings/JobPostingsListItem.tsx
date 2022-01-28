@@ -75,7 +75,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
             <div>
               <IconGroup />
               <$PostingFooterInfo>
-                {posting.spots} {t('common:application.jobPostings.openSpots')}
+                {t('common:application.jobPostings.openSpots', { count: posting.spots })}
               </$PostingFooterInfo>
             </div>
             {posting.date_published ? (
