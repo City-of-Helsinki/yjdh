@@ -36,7 +36,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         </$CalculatorText>
       </$GridCell>
 
-      <$GridCell $rowStart={2} $colSpan={4}>
+      <$GridCell $rowStart={2} $colSpan={3}>
         <$ViewField>
           {t(`${translationsBase}.startEndDates`, {
             startDate: '10.09.2021',
@@ -109,41 +109,37 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         />
       </$GridCell>
 
-      <$GridCell $colSpan={2}>
-        <$GridCell>
-          <Select
-            defaultValue=""
-            helper=""
-            optionLabelField="label"
-            label={t(`${translationsBase}.maximumAid`)}
-            onChange={() => {}}
-            options={[]}
-            id=""
-            placeholder={t('common:select')}
-            invalid={false}
-            aria-invalid={false}
-          />
-        </$GridCell>
+      <$GridCell $colStart={1}>
+        <Select
+          defaultValue=""
+          helper=""
+          optionLabelField="label"
+          label={t(`${translationsBase}.maximumAid`)}
+          onChange={() => {}}
+          options={[]}
+          id=""
+          placeholder={t('common:select')}
+          invalid={false}
+          aria-invalid={false}
+        />
       </$GridCell>
 
-      <$GridCell $colStart={1} $colSpan={2}>
-        <$GridCell>
-          <Select
-            defaultValue=""
-            helper=""
-            optionLabelField="label"
-            label={t(`${translationsBase}.salarySubsidyPercentage`)}
-            onChange={() => {}}
-            options={[]}
-            id=""
-            placeholder={t('common:select')}
-            invalid={false}
-            aria-invalid={false}
-          />
-        </$GridCell>
+      <$GridCell $colStart={1}>
+        <Select
+          defaultValue=""
+          helper=""
+          optionLabelField="label"
+          label={t(`${translationsBase}.salarySubsidyPercentage`)}
+          onChange={() => {}}
+          options={[]}
+          id=""
+          placeholder={t('common:select')}
+          invalid={false}
+          aria-invalid={false}
+        />
       </$GridCell>
 
-      <$GridCell $colStart={4} $colSpan={5}>
+      <$GridCell $colStart={3} $colSpan={5}>
         <$CalculatorText
           css={`
             margin: 0 0 ${theme.spacing.xs3} 0;
@@ -177,7 +173,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         </div>
       </$GridCell>
 
-      <$GridCell $colSpan={5}>
+      <$GridCell $colStart={1} $colSpan={5}>
         <$CalculatorText
           css={`
             font-weight: 500;
@@ -210,15 +206,6 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         </div>
       </$GridCell>
 
-      <$GridCell $colStart={10} $colSpan={2}>
-        <$ResetDatesWrapper>
-          <IconArrowUndo />
-          <$ResetLink aria-label={t(`${translationsBase}.reset`)} href="#">
-            {t(`${translationsBase}.reset`)}
-          </$ResetLink>
-        </$ResetDatesWrapper>
-      </$GridCell>
-
       <$GridCell $colStart={1}>
         <Button onClick={() => {}} theme="coat">
           {t(`${translationsBase}.calculate`)}
@@ -237,10 +224,10 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           </$ViewField>
         </$CalculatorTableRow>
         <$CalculatorTableRow isTotal>
-          <$ViewFieldBold>{t(`${translationsBase}.maximumAid`)}</$ViewFieldBold>
-          <$ViewFieldBold>
+          <$ViewField>{t(`${translationsBase}.maximumAid`)}</$ViewField>
+          <$ViewField>
             {t(`${translationsBase}.tableRowValue`, { amount: 1015 })}
-          </$ViewFieldBold>
+          </$ViewField>
         </$CalculatorTableRow>
       </$GridCell>
 
@@ -254,12 +241,10 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           </$ViewField>
         </$CalculatorTableRow>
         <$CalculatorTableRow isTotal>
-          <$ViewFieldBold>
-            {t(`${translationsBase}.salarySupport`)}
-          </$ViewFieldBold>
-          <$ViewFieldBold>
+          <$ViewField>{t(`${translationsBase}.salarySupport`)}</$ViewField>
+          <$ViewField>
             {t(`${translationsBase}.tableRowValue`, { amount: 1015 })}
-          </$ViewFieldBold>
+          </$ViewField>
         </$CalculatorTableRow>
       </$GridCell>
 
