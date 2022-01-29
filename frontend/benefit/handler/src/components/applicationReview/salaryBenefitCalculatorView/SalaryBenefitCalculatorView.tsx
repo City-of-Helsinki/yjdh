@@ -1,5 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { Button, DateInput, IconArrowUndo, Select, TextInput } from 'hds-react';
+import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -15,8 +15,6 @@ import {
   $CalculatorHr,
   $CalculatorTableRow,
   $CalculatorText,
-  $ResetDatesWrapper,
-  $ResetLink,
 } from '../ApplicationReview.sc';
 
 const SalaryBenefitCalculatorView: React.FC = () => {
@@ -51,8 +49,8 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           id=""
           name=""
           label={t(`${translationsBase}.monthlyPay`)}
-          onBlur={() => {}}
-          onChange={(e) => {}}
+          onBlur={undefined}
+          onChange={undefined}
           value=""
           invalid={false}
           aria-invalid={false}
@@ -65,8 +63,8 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           id=""
           name=""
           label={t(`${translationsBase}.otherExpenses`)}
-          onBlur={() => {}}
-          onChange={(e) => {}}
+          onBlur={undefined}
+          onChange={undefined}
           value=""
           invalid={false}
           aria-invalid={false}
@@ -79,8 +77,8 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           id=""
           name=""
           label={t(`${translationsBase}.vacationMoney`)}
-          onBlur={() => {}}
-          onChange={(e) => {}}
+          onBlur={undefined}
+          onChange={undefined}
           value=""
           invalid={false}
           aria-invalid={false}
@@ -115,7 +113,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           helper=""
           optionLabelField="label"
           label={t(`${translationsBase}.maximumAid`)}
-          onChange={() => {}}
+          onChange={undefined}
           options={[]}
           id=""
           placeholder={t('common:select')}
@@ -130,7 +128,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           helper=""
           optionLabelField="label"
           label={t(`${translationsBase}.salarySubsidyPercentage`)}
-          onChange={() => {}}
+          onChange={undefined}
           options={[]}
           id=""
           placeholder={t('common:select')}
@@ -207,7 +205,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
       </$GridCell>
 
       <$GridCell $colStart={1}>
-        <Button onClick={() => {}} theme="coat">
+        <Button onClick={undefined} theme="coat">
           {t(`${translationsBase}.calculate`)}
         </Button>
       </$GridCell>
