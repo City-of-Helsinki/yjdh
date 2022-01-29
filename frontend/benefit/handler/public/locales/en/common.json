@@ -190,7 +190,7 @@
       "tableRowHeader": "Helsinki-lisä / kk (enintään {{amount}} €)",
       "tableRowValue": "{{amount}} €",
       "tableTotalHeader": "Helsinki-lisä yhteensä",
-      "manualInput": "Manuaalinen syöttö"
+      "manualInput": "Manuaalinen laskelma"
     }
   },
   "organizationTypes": {

@@ -29,6 +29,7 @@ export type GridCellProps = {
   $colSpan?: number;
   $rowSpan?: number;
   $colStart?: number;
+  $rowStart?: number;
   alignSelf?: 'start' | 'end' | 'center' | 'stretch';
   justifySelf?: 'start' | 'end' | 'center' | 'stretch';
 };
@@ -86,7 +87,8 @@ export const $GridCell = styled.div<GridCellProps>`
   position: relative;
   grid-column: ${(props) => props.$colStart ?? 'auto'} / span
     ${(props) => props.$colSpan ?? 1};
-  grid-row: auto / span ${(props) => props.$rowSpan ?? 1};
+  grid-row: ${(props) => props.$rowStart ?? 'auto'} / span
+    ${(props) => props.$rowSpan ?? 1};
   align-self: ${(props) => props.alignSelf ?? 'initial'};
   justify-self: ${(props) => props.justifySelf ?? 'initial'};
 `;
