@@ -1,3 +1,4 @@
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
@@ -9,7 +10,6 @@ import {
   MAX_SHORT_STRING_LENGTH,
   MIN_PHONE_NUMBER_LENGTH,
   PAY_SUBSIDY_OPTIONS,
-  VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { Step2 } from 'benefit/applicant/types/application';
 import isAfter from 'date-fns/isAfter';

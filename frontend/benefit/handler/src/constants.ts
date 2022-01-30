@@ -106,3 +106,8 @@ export enum DE_MINIMIS_AID_KEYS {
   AMOUNT = 'amount',
   GRANTED_AT = 'grantedAt',
 }
+
+export enum CALCULATION_EMPLOYMENT_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+}

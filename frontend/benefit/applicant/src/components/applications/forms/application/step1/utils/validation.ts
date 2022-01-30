@@ -1,3 +1,4 @@
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   MAX_LONG_STRING_LENGTH,
@@ -6,7 +7,6 @@ import {
   MIN_PHONE_NUMBER_LENGTH,
   ORGANIZATION_TYPES,
   SUPPORTED_LANGUAGES,
-  VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { Step1 } from 'benefit/applicant/types/application';
 import { TFunction } from 'next-i18next';

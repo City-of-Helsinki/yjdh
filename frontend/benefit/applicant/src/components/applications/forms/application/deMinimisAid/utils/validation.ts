@@ -1,7 +1,7 @@
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import {
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   DE_MINIMIS_AID_KEYS,
-  VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
 import isFuture from 'date-fns/isFuture';
