@@ -65,7 +65,8 @@
 				"required": "Tieto vaaditaan",
 				"email": "Syötä sähköposti oikeassa muodossa",
 				"max": "Maksimimerkkimäärä ylittyy",
-				"phone": "Syötä oikeassa muodossa"
+				"phone": "Syötä oikeassa muodossa",
+				"name": "Syötä nimi sallitussa muodossa"
 			}
     }
   },

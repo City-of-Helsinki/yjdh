@@ -8,12 +8,11 @@ import TextInput from 'tet/admin/components/editor/TextInput';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import PhoneInput from 'tet/admin/components/editor/PhoneInput';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
-import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 
 const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const { t } = useTranslation();
-  const { required, maxLength, email } = useValidationRules();
+  const { required, name, email, phone } = useValidationRules();
   const theme = useTheme();
   const languageOptions = [
     { value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
@@ -36,11 +35,7 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
             id="contact_first_name"
             label={t('common:editor.posting.contactFirstName')}
             placeholder={t('common:editor.posting.contactFirstName')}
-            registerOptions={{
-              required: required,
-              pattern: NAMES_REGEX,
-              maxLength: 128,
-            }}
+            registerOptions={name}
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
@@ -48,11 +43,7 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
             id="contact_last_name"
             label={t('common:editor.posting.contactLastName')}
             placeholder={t('common:editor.posting.contactLastName')}
-            registerOptions={{
-              required: required,
-              pattern: NAMES_REGEX,
-              maxLength: 128,
-            }}
+            registerOptions={name}
           />
         </$GridCell>
         <$GridCell $colSpan={2}>
@@ -60,14 +51,7 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
             id="contact_phone"
             label={t('common:editor.posting.contactPhone')}
             placeholder={t('common:editor.posting.contactPhone')}
-            registerOptions={{
-              required: {
-                value: true,
-                message: t('common:editor.posting.validation.required'),
-              },
-              maxLength: 64,
-              pattern: PHONE_NUMBER_REGEX,
-            }}
+            registerOptions={phone}
           />
         </$GridCell>
         <$GridCell $colSpan={4}>
@@ -93,7 +77,7 @@ const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
             initialValue={languageOptions[0]}
             label={t('common:editor.posting.contactLanguage')}
             registerOptions={{
-              required: true,
+              required: required,
             }}
           />
         </$GridCell>

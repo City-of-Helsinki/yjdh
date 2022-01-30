@@ -65,7 +65,8 @@
 				"required": "SV Tieto vaaditaan",
 				"email": "SV Syötä sähköposti oikeassa muodossa",
 				"max": "SV Maksimimerkkimäärä ylittyy",
-				"phone": "SV Syötä oikeassa muodossa"
+				"phone": "SV Syötä oikeassa muodossa",
+				"name": "SV Syötä nimi sallitussa muodossa"
 			}
     }
   },

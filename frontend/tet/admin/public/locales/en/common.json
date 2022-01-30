@@ -65,7 +65,8 @@
 				"required": "ENG Tieto vaaditaan",
 				"email": "ENG Syötä sähköposti oikeassa muodossa",
 				"max": "ENG Maksimimerkkimäärä ylittyy",
-				"phone": "ENG Syötä oikeassa muodossa"
+				"phone": "ENG Syötä oikeassa muodossa",
+				"name": "ENG Syötä nimi sallitussa muodossa"
 			}
     }
   },

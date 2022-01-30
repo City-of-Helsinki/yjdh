@@ -4,7 +4,8 @@ import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
 const useValidationRules = () => {
   const { t } = useTranslation();
   const maxMessage = t('common:editor.posting.validation.max');
-  const requiredMessage = t('common:editor.posting.validation.max');
+  const requiredMessage = t('common:editor.posting.validation.required');
+  const correctName = t('common:editor.posting.validation.name');
 
   return {
     required: {
@@ -14,10 +15,38 @@ const useValidationRules = () => {
     maxLength: {
       message: t('common:editor.posting.validation.max'),
     },
+    name: {
+      required: {
+        value: true,
+        message: requiredMessage,
+      },
+      pattern: {
+        value: NAMES_REGEX,
+        message: correctName,
+      },
+      maxLength: {
+        value: 128,
+        message: `${maxMessage} [128]`,
+      },
+    },
+    phone: {
+      maxLength: {
+        value: 64,
+        message: `${maxMessage} [64]`,
+      },
+      pattern: {
+        value: PHONE_NUMBER_REGEX,
+        message: t('common:editor.posting.validation.phone'),
+      },
+      required: {
+        value: true,
+        message: requiredMessage,
+      },
+    },
     email: {
       maxLength: {
         value: 254,
-        message: maxMessage,
+        message: `${maxMessage} [254]`,
       },
       pattern: {
         value: EMAIL_REGEX,
