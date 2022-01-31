@@ -170,7 +170,15 @@
       "reset": "Palauta arvot",
       "tableRowHeader": "Helsinki-lisä / kk",
       "tableRowValue": "{{amount}} €",
-      "tableTotalHeader": "Helsinki-lisä yhteensä"
+      "tableTotalHeader": "Helsinki-lisä yhteensä",
+      "calculate": "Laske",
+      "fields": {
+        "startDate": {
+          "label": "Alkaen",
+          "placeholder": "Alkaen"
+        },
+        "endDate": { "label": "Päättyen", "placeholder": "Päättyen" }
+      }
     }
   },
   "organizationTypes": {
