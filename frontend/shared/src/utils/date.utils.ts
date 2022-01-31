@@ -1,10 +1,10 @@
+import differenceInDays from 'date-fns/differenceInDays';
 import formatDateStr from 'date-fns/format';
 import isFutureFn from 'date-fns/isFuture';
 import isValid from 'date-fns/isValid';
 import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
-import differenceInDays from 'date-fns/differenceInDays';
 
 import { DATE_BACKEND_REGEX, DATE_UI_REGEX } from '../constants';
 import { DEFAULT_LANGUAGE, Language } from '../i18n/i18n';
