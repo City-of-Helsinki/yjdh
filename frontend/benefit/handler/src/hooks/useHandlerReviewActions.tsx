@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
+
 import {
   Application,
   ApplicationData,
@@ -27,12 +28,11 @@ const useHandlerReviewActions = (
   const { t } = useTranslation();
 
   useEffect(() => {
-    setIsError(Boolean(updateApplication));
+    setIsError(Boolean(updateApplicationError));
     if (updateApplicationError) {
       const errorData = camelcaseKeys(
         updateApplicationError.response?.data ?? {}
       );
-      Object.entries(errorData).map(([_, value]) => console.log(value));
       hdsToast({
         autoDismissTime: 0,
         type: 'error',
@@ -41,7 +41,7 @@ const useHandlerReviewActions = (
           errorData[Object.keys(errorData)[0] as keyof unknown] as Calculation
         ).map(([key, value]) => (
           <a key={key} href={`#${key}`}>
-            {`${key}: ${value}`}
+            {`${key}: ${String(value)}`}
           </a>
         )),
       });
@@ -73,8 +73,8 @@ const useHandlerReviewActions = (
   ): Promise<ApplicationData | void> => {
     try {
       await updateApplication(getDataEmployment(calculator));
-    } catch (e) {
-      //useEffect will catch this error
+    } catch (error) {
+      // useEffect will catch this error
     }
 
     return undefined;

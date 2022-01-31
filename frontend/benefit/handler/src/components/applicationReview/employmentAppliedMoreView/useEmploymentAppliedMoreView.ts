@@ -6,7 +6,7 @@ import {
 } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
 import { FormikProps, useFormik } from 'formik';
-import { fromPairs } from 'lodash';
+import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,7 @@ import { Language } from 'shared/i18n/i18n';
 import { formatDate, parseDate } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
+
 import { getValidationSchema } from './utils/validation';
 
 type ExtendedComponentProps = {
@@ -84,7 +85,7 @@ const useEmploymentAppliedMoreView = (
   const handleSubmit = (): void => {
     setIsSubmitted(true);
     void formik.validateForm().then((errs) => {
-      let fieldName = Object.keys(errs)[0];
+      const fieldName = Object.keys(errs)[0];
       if (!fieldName) {
         return formik.submitForm();
       }

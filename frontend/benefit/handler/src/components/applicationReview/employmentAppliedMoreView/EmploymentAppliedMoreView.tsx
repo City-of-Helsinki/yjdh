@@ -1,13 +1,14 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput } from 'hds-react';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+
 import {
   $CalculatorHr,
   $CalculatorTableRow,
