@@ -26,13 +26,14 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     formik,
     fields,
     language,
+    grantedPeriod,
     getErrorMessage,
     handleSubmit,
   } = useEmploymentAppliedMoreView(data);
   return (
     <form onSubmit={handleSubmit} noValidate>
       <ReviewSection withMargin>
-        <$GridCell $colSpan={3}>
+        <$GridCell $colSpan={6}>
           <$CalculatorText>{t(`${translationsBase}.header`)}</$CalculatorText>
           <$ViewField>
             {formik.values.startDate && formik.values.endDate && (
@@ -40,7 +41,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
                 {t(`${translationsBase}.startEndDates`, {
                   startDate: formik.values.startDate,
                   endDate: formik.values.endDate,
-                  period: '2,03',
+                  period: grantedPeriod,
                 })}
               </>
             )}
@@ -54,7 +55,9 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
               font-weight: 500;
             `}
           >
-            {t(`${translationsBase}.grantedPeriod`, { period: '2,03' })}
+            {t(`${translationsBase}.grantedPeriod`, {
+              period: grantedPeriod,
+            })}
           </$CalculatorText>
           <$Grid>
             <$GridCell $colStart={1} $colSpan={3}>
@@ -64,9 +67,9 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
                 placeholder={fields.startDate.placeholder}
                 language={language}
                 onBlur={formik.handleBlur}
-                onChange={(value) =>
-                  formik.setFieldValue(fields.startDate.name, value)
-                }
+                onChange={(value) => {
+                  formik.setFieldValue(fields.startDate.name, value);
+                }}
                 value={formik.values.startDate ?? ''}
                 invalid={!!getErrorMessage(fields.startDate.name)}
                 aria-invalid={!!getErrorMessage(fields.startDate.name)}
@@ -80,9 +83,9 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
                 placeholder={fields.endDate.placeholder}
                 language={language}
                 onBlur={formik.handleBlur}
-                onChange={(value) =>
-                  formik.setFieldValue(fields.endDate.name, value)
-                }
+                onChange={(value) => {
+                  formik.setFieldValue(fields.endDate.name, value);
+                }}
                 value={formik.values.endDate ?? ''}
                 invalid={!!getErrorMessage(fields.endDate.name)}
                 aria-invalid={!!getErrorMessage(fields.endDate.name)}

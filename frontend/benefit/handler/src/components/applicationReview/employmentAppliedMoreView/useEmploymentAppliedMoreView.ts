@@ -8,12 +8,12 @@ import { getErrorText } from 'benefit/handler/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
 import { TFunction } from 'next-i18next';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field } from 'shared/components/forms/fields/types';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
-import { formatDate, parseDate } from 'shared/utils/date.utils';
+import { diffDays, formatDate, parseDate } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
 
@@ -28,6 +28,7 @@ type ExtendedComponentProps = {
     [key in CALCULATION_EMPLOYMENT_KEYS]: Field<CALCULATION_EMPLOYMENT_KEYS>;
   };
   language: Language;
+  grantedPeriod: number;
   handleSubmit: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
 };
@@ -58,8 +59,15 @@ const useEmploymentAppliedMoreView = (
     enableReinitialize: true,
     onSubmit: onCalculateEmployment,
   });
-  const { errors, touched } = formik;
+  const { errors, touched, setFieldValue, values } = formik;
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+  const { startDate, endDate } = values;
+
+  const grantedPeriod = React.useMemo(
+    () => diffDays(parseDate(endDate) || 0, parseDate(startDate) || 0),
+    [endDate, startDate]
+  );
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
     const pairs = Object.values(CALCULATION_EMPLOYMENT_KEYS).map<
@@ -78,6 +86,12 @@ const useEmploymentAppliedMoreView = (
       Field<CALCULATION_EMPLOYMENT_KEYS>
     >;
   }, [t, translationsBase]);
+
+  useEffect(() => {
+    if (grantedPeriod < 0) {
+      void setFieldValue(fields.endDate.name, startDate);
+    }
+  }, [grantedPeriod, startDate, fields.endDate.name, setFieldValue]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
@@ -100,6 +114,7 @@ const useEmploymentAppliedMoreView = (
     theme,
     fields,
     language,
+    grantedPeriod,
     getErrorMessage,
     handleSubmit,
   };
