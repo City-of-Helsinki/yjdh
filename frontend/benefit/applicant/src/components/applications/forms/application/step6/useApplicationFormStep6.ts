@@ -1,8 +1,4 @@
-import {
-  APPLICATION_STATUSES,
-  ROUTES,
-  VALIDATION_MESSAGE_KEYS,
-} from 'benefit/applicant/constants';
+import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
 import AppContext from 'benefit/applicant/context/AppContext';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
@@ -19,6 +15,7 @@ import { getFullName } from 'shared/utils/application.utils';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 
 type ExtendedComponentProps = {
   t: TFunction;

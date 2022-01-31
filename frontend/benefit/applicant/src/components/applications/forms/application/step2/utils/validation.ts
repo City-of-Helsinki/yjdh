@@ -1,4 +1,3 @@
-import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   APPLICATION_FIELDS_STEP2_KEYS,
@@ -12,6 +11,7 @@ import {
   PAY_SUBSIDY_OPTIONS,
 } from 'benefit/applicant/constants';
 import { Step2 } from 'benefit/applicant/types/application';
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import isAfter from 'date-fns/isAfter';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
