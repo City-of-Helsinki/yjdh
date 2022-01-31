@@ -56,3 +56,14 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
 `;
+
+export const $DateTimeDuration = styled.div`
+  display: flex;
+  align-items: center;
+  .DateTimeDurationItem {
+    margin-right: ${(props) => `${props.theme.spacing.xs3}`};
+  }
+  label {
+    font-weight: 500;
+  }
+`;
