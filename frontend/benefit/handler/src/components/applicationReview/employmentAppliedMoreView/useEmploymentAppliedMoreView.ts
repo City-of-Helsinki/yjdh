@@ -68,7 +68,7 @@ const useEmploymentAppliedMoreView = (
   const { startDate, endDate } = values;
 
   const grantedPeriod = React.useMemo(
-    () => diffMonths(parseDate(endDate) || 0, parseDate(startDate) || 0),
+    () => diffMonths(parseDate(endDate), parseDate(startDate)),
     [endDate, startDate]
   );
 
