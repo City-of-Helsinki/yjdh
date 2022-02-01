@@ -1,3 +1,4 @@
+import differenceInDays from 'date-fns/differenceInDays';
 import formatDateStr from 'date-fns/format';
 import isFutureFn from 'date-fns/isFuture';
 import isValid from 'date-fns/isValid';
@@ -90,3 +91,21 @@ export const convertToBackendDateFormat = (
 export const convertToUIDateAndTimeFormat = (
   date: string | Date | number | undefined
 ): string => convertDateFormat(date, DATE_FORMATS.DATE_AND_TIME);
+
+/**
+ * Calculates the different in months between 2 dates with two decimals accuracy
+ * Based on excelDays360
+ * @param dateLeft
+ * Date1
+ * @param dateRight
+ * Date2
+ * @returns
+ * Number of months
+ */
+export const diffMonths = (
+  dateLeft: Date | number = 0,
+  dateRight: Date | number = 0
+): number => {
+  if (dateLeft === 0 || dateRight === 0) return 0;
+  return Number((differenceInDays(dateLeft, dateRight) / 30).toFixed(2));
+};

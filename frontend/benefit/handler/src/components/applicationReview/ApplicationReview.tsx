@@ -18,7 +18,7 @@ import ContactPersonView from './contactPersonView/ContactPersonView';
 import CoOperationNegotiationsView from './coOperationNegotiationsView/CoOperationNegotiationsView';
 import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
-import EmploymentAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
+import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
@@ -65,8 +65,8 @@ const ApplicationReview: React.FC = () => {
         <ConsentView data={application} />
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
-            <EmploymentAppliedMoreView />
             <SalaryBenefitCalculatorView />
+            <EmploymenAppliedMoreView data={application} />
             <ApplicationProcessingView />
           </>
         )}

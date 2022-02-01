@@ -301,7 +301,9 @@ def test_log_user_with_backend(user, fixed_datetime):
 
 
 @pytest.mark.django_db
-@override_settings(ENABLE_SEND_AUDIT_LOG=True)
+@override_settings(
+    ENABLE_SEND_AUDIT_LOG=True,
+)
 def test_send_audit_log_missing_configuration(user, fixed_datetime):
     audit_logging.log(
         user,
@@ -324,10 +326,10 @@ def test_send_audit_log_missing_configuration(user, fixed_datetime):
 )
 @pytest.mark.django_db
 @override_settings(
-    ELASTICSEARCH_CLOUD_ID="example:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRjZWM2ZjI2MWE3NGJmMjRjZTMz"
-    "YmI4ODExYjg0Mjk0ZiRjNmMyY2E2ZDA0MjI0OWFmMGNjN2Q3YTllOTYyNTc0Mw==",
-    ELASTICSEARCH_API_ID="ELASTICSEARCH_API_ID",
-    ELASTICSEARCH_API_KEY="ELASTICSEARCH_API_KEY",
+    ELASTICSEARCH_HOST="example.com",
+    ELASTICSEARCH_PORT="1234",
+    ELASTICSEARCH_USERNAME="e_user",
+    ELASTICSEARCH_PASSWORD="e_password",
     ENABLE_SEND_AUDIT_LOG=True,
 )
 def test_send_audit_log_success(user, fixed_datetime, result_value, expected_status):

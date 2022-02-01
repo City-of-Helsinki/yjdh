@@ -113,7 +113,7 @@ const useFormActions = (application: Application): FormActions => {
       endDate: currentValues.endDate
         ? convertToBackendDateFormat(parseDate(currentValues.endDate))
         : undefined,
-      apprenticeshipProgram: currentValues.apprenticeshipProgram || false,
+      apprenticeshipProgram: currentValues.apprenticeshipProgram,
     };
 
     const deMinimisAidSet =

@@ -3,7 +3,6 @@ import TestController from 'testcafe';
 
 import YouthFormData from '../../src/types/youth-form-data';
 import { getIndexPageComponents } from '../index-page/indexPage.components';
-import { getThankYouPageComponents } from '../thank-you-page/thankYouPage.components';
 
 const sendYouthApplication = async (
   t: TestController,
@@ -33,8 +32,6 @@ const sendYouthApplication = async (
   await indexPage.actions.typeInput('email', formData.email);
   await indexPage.actions.toggleAcceptTermsAndConditions();
   await indexPage.actions.clickSendButton();
-  const thankYouPage = await getThankYouPageComponents(t);
-  await thankYouPage.expectations.isLoaded();
 };
 
 export default sendYouthApplication;
