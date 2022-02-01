@@ -60,10 +60,4 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
 export const $DateTimeDuration = styled.div`
   display: flex;
   align-items: center;
-  .DateTimeDurationItem {
-    margin-right: ${(props) => `${props.theme.spacing.xs3}`};
-  }
-  label {
-    font-weight: 500;
-  }
 `;

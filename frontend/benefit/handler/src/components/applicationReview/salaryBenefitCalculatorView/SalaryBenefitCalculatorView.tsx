@@ -35,7 +35,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         </$CalculatorText>
       </$GridCell>
 
-      <$GridCell $rowStart={2} $colSpan={3} style={{ alignSelf: 'center' }}>
+      <$GridCell $colStart={1} $colSpan={3} style={{ alignSelf: 'center' }}>
         <$ViewField>
           {t(`${translationsBase}.startEndDates`, {
             startDate: '10.09.2021',
@@ -45,7 +45,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         </$ViewField>
       </$GridCell>
 
-      <$GridCell $rowStart={2} $colSpan={2}>
+      <$GridCell $colStart={4} $colSpan={2}>
         <TextInput
           id=""
           name=""
@@ -59,7 +59,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         />
       </$GridCell>
 
-      <$GridCell $rowStart={2} $colSpan={2}>
+      <$GridCell $colStart={6} $colSpan={2}>
         <TextInput
           id=""
           name=""
@@ -73,7 +73,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         />
       </$GridCell>
 
-      <$GridCell $rowStart={2} $colSpan={2}>
+      <$GridCell $colStart={8} $colSpan={2}>
         <TextInput
           id=""
           name=""
@@ -138,7 +138,7 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         />
       </$GridCell>
 
-      <$GridCell $colStart={3} $colSpan={5}>
+      <$GridCell $colStart={3} $colSpan={6}>
         <$CalculatorText
           css={`
             margin: 0 0 ${theme.spacing.xs3} 0;
@@ -156,9 +156,10 @@ const SalaryBenefitCalculatorView: React.FC = () => {
             onChange={noop}
             value=""
             required
-            className="DateTimeDurationItem"
           />
-          <label className="DateTimeDurationItem">-</label>
+          <div style={{ padding: `0 ${theme.spacing.s}`, fontWeight: 500 }}>
+            -
+          </div>
           <DateInput
             id="date2"
             name="date2"
@@ -166,7 +167,6 @@ const SalaryBenefitCalculatorView: React.FC = () => {
             onChange={noop}
             value=""
             required
-            className="DateTimeDurationItem"
           />
         </$DateTimeDuration>
       </$GridCell>
@@ -180,6 +180,9 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         >
           {t(`${translationsBase}.grantedPeriod`, { period: '2,03' })}
         </$CalculatorText>
+      </$GridCell>
+
+      <$GridCell $colStart={1} $colSpan={2}>
         <$DateTimeDuration>
           <DateInput
             id="date1"
@@ -188,19 +191,24 @@ const SalaryBenefitCalculatorView: React.FC = () => {
             onChange={noop}
             value=""
             required
-            className="DateTimeDurationItem"
           />
-          <label className="DateTimeDurationItem">-</label>
-          <DateInput
-            id="date2"
-            name="date2"
-            placeholder="15.02.2021"
-            onChange={noop}
-            value=""
-            required
-            className="DateTimeDurationItem"
-          />
+
+          <div style={{ paddingLeft: `${theme.spacing.s}`, fontWeight: 500 }}>
+            -
+          </div>
         </$DateTimeDuration>
+      </$GridCell>
+
+      <$GridCell $colStart={3} $colSpan={3}>
+        <DateInput
+          id="date2"
+          name="date2"
+          placeholder="15.02.2021"
+          onChange={noop}
+          value=""
+          required
+          style={{ paddingRight: `${theme.spacing.xs}` }}
+        />
       </$GridCell>
 
       <$GridCell $colStart={1}>
