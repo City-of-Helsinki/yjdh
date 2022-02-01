@@ -20,15 +20,14 @@ interface HandlerReviewActions {
 const useHandlerReviewActions = (
   application: Application
 ): HandlerReviewActions => {
-  const { mutate: updateApplication, error: updateApplicationError } =
-    useUpdateApplicationQuery();
+  const updateApplicationQuery = useUpdateApplicationQuery();
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (updateApplicationError) {
+    if (updateApplicationQuery.isError) {
       const errorData = camelcaseKeys(
-        updateApplicationError.response?.data ?? {}
+        updateApplicationQuery.error?.response?.data ?? {}
       );
       hdsToast({
         autoDismissTime: 0,
@@ -43,7 +42,7 @@ const useHandlerReviewActions = (
         )),
       });
     }
-  }, [t, updateApplicationError]);
+  }, [t, updateApplicationQuery]);
 
   const getDataEmployment = (values: CalculationCommon): ApplicationData => {
     const startDate = values.startDate
@@ -69,7 +68,7 @@ const useHandlerReviewActions = (
     calculator: CalculationCommon
   ): Promise<ApplicationData | void> => {
     try {
-      await updateApplication(getDataEmployment(calculator));
+      void updateApplicationQuery.mutate(getDataEmployment(calculator));
     } catch (error) {
       // useEffect will catch this error
     }

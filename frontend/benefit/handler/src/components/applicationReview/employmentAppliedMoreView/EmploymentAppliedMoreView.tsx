@@ -8,6 +8,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
   $CalculatorHr,
@@ -41,7 +42,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
                 {t(`${translationsBase}.startEndDates`, {
                   startDate: formik.values.startDate,
                   endDate: formik.values.endDate,
-                  period: grantedPeriod,
+                  period: formatStringFloatValue(grantedPeriod),
                 })}
               </>
             )}
@@ -56,7 +57,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             `}
           >
             {t(`${translationsBase}.grantedPeriod`, {
-              period: grantedPeriod,
+              period: formatStringFloatValue(grantedPeriod),
             })}
           </$CalculatorText>
           <$Grid>
