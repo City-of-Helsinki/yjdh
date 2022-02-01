@@ -5,6 +5,7 @@ import {
   APPLICATION_FIELDS_STEP2_KEYS,
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
+  CALCULATION_EMPLOYMENT_KEYS,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
@@ -322,22 +323,25 @@ export type HandlerDetails = {
   termsOfServiceApprovals: ApplicantTermsApproval;
 };
 
+export interface CalculationCommon {
+  [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: string;
+  [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: string;
+}
+
 export type Calculation = {
   id?: string;
   monthlyPay: string;
   vacationMoney: string;
   otherExpenses: string;
-  startDate: string;
-  endDate: string;
   stateAidMaxPercentage?: number;
-  grantedAsDeMinimisAid: boolean;
-  targetGroupCheck: boolean;
+  grantedAsDeMinimisAid?: boolean;
+  targetGroupCheck?: boolean;
   calculatedBenefitAmount: string;
   overrideBenefitAmount: string;
   overrideBenefitAmountComment?: string;
   rows: Row[];
   handlerDetails: HandlerDetails;
-};
+} & CalculationCommon;
 
 export type Application = {
   id?: string;
