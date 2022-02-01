@@ -1,6 +1,6 @@
 import { useTranslation } from 'benefit/applicant/i18n';
 import camelcaseKeys from 'camelcase-keys';
-import React, { useEffect } from 'react';
+import React from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -24,26 +24,6 @@ const useHandlerReviewActions = (
 
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (updateApplicationQuery.isError) {
-      const errorData = camelcaseKeys(
-        updateApplicationQuery.error?.response?.data ?? {}
-      );
-      hdsToast({
-        autoDismissTime: 0,
-        type: 'error',
-        labelText: t('common:error.generic.label'),
-        text: Object.entries(
-          errorData[Object.keys(errorData)[0] as keyof unknown] as Calculation
-        ).map(([key, value]) => (
-          <a key={key} href={`#${key}`}>
-            {`${key}: ${String(value)}`}
-          </a>
-        )),
-      });
-    }
-  }, [t, updateApplicationQuery]);
-
   const getDataEmployment = (values: CalculationCommon): ApplicationData => {
     const startDate = values.startDate
       ? convertToBackendDateFormat(values.startDate)
@@ -64,16 +44,26 @@ const useHandlerReviewActions = (
     );
   };
 
-  const onCalculateEmployment = async (
-    calculator: CalculationCommon
-  ): Promise<ApplicationData | void> => {
-    try {
-      void updateApplicationQuery.mutate(getDataEmployment(calculator));
-    } catch (error) {
-      // useEffect will catch this error
-    }
-
-    return undefined;
+  const onCalculateEmployment = (calculator: CalculationCommon): void => {
+    void updateApplicationQuery.mutate(getDataEmployment(calculator), {
+      onError: () => {
+        const errorData = camelcaseKeys(
+          updateApplicationQuery.error?.response?.data ?? {}
+        );
+        hdsToast({
+          autoDismissTime: 0,
+          type: 'error',
+          labelText: t('common:error.generic.label'),
+          text: Object.entries(
+            errorData[Object.keys(errorData)[0] as keyof unknown] as Calculation
+          ).map(([key, value]) => (
+            <a key={key} href={`#${key}`}>
+              {`${key}: ${String(value)}`}
+            </a>
+          )),
+        });
+      },
+    });
   };
 
   return {
