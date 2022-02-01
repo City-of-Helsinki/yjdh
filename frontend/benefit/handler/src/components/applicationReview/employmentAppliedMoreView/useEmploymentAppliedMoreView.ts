@@ -13,7 +13,11 @@ import { useTranslation } from 'react-i18next';
 import { Field } from 'shared/components/forms/fields/types';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
-import { diffDays, formatDate, parseDate } from 'shared/utils/date.utils';
+import {
+  convertToBackendDateFormat,
+  diffMonths,
+  parseDate,
+} from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
 
@@ -45,13 +49,12 @@ const useEmploymentAppliedMoreView = (
 
   const formik = useFormik({
     initialValues: {
-      [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: application?.calculation
-        ?.startDate
-        ? formatDate(parseDate(application?.calculation?.startDate))
-        : '',
-      [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: application?.calculation?.endDate
-        ? formatDate(parseDate(application?.calculation?.endDate))
-        : '',
+      [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: convertToBackendDateFormat(
+        application?.calculation?.startDate
+      ),
+      [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: convertToBackendDateFormat(
+        application?.calculation?.endDate
+      ),
     },
     validationSchema: getValidationSchema(t),
     validateOnChange: true,
@@ -65,7 +68,7 @@ const useEmploymentAppliedMoreView = (
   const { startDate, endDate } = values;
 
   const grantedPeriod = React.useMemo(
-    () => diffDays(parseDate(endDate) || 0, parseDate(startDate) || 0),
+    () => diffMonths(parseDate(endDate) || 0, parseDate(startDate) || 0),
     [endDate, startDate]
   );
 

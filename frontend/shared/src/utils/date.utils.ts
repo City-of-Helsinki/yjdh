@@ -92,7 +92,7 @@ export const convertToUIDateAndTimeFormat = (
   date: string | Date | number | undefined
 ): string => convertDateFormat(date, DATE_FORMATS.DATE_AND_TIME);
 
-export const diffDays = (
+export const diffMonths = (
   dateLeft: Date | number,
   dateRight: Date | number
 ): number => {

@@ -1,8 +1,8 @@
 import { useTranslation } from 'benefit/applicant/i18n';
 import camelcaseKeys from 'camelcase-keys';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
-import { convertToBackendDateFormat, parseDate } from 'shared/utils/date.utils';
+import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import {
@@ -15,20 +15,17 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface HandlerReviewActions {
   onCalculateEmployment: (calculator: CalculationCommon) => void;
-  isError: boolean;
 }
 
 const useHandlerReviewActions = (
   application: Application
 ): HandlerReviewActions => {
-  const { mutateAsync: updateApplication, error: updateApplicationError } =
+  const { mutate: updateApplication, error: updateApplicationError } =
     useUpdateApplicationQuery();
-  const [isError, setIsError] = useState<boolean>(false);
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    setIsError(Boolean(updateApplicationError));
     if (updateApplicationError) {
       const errorData = camelcaseKeys(
         updateApplicationError.response?.data ?? {}
@@ -50,10 +47,10 @@ const useHandlerReviewActions = (
 
   const getDataEmployment = (values: CalculationCommon): ApplicationData => {
     const startDate = values.startDate
-      ? convertToBackendDateFormat(parseDate(values.startDate))
+      ? convertToBackendDateFormat(values.startDate)
       : undefined;
     const endDate = values.endDate
-      ? convertToBackendDateFormat(parseDate(values.endDate))
+      ? convertToBackendDateFormat(values.endDate)
       : undefined;
     return snakecaseKeys(
       {
@@ -82,7 +79,6 @@ const useHandlerReviewActions = (
 
   return {
     onCalculateEmployment,
-    isError,
   };
 };
 
