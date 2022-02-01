@@ -103,8 +103,8 @@ export const convertToUIDateAndTimeFormat = (
  * Number of months
  */
 export const diffMonths = (
-  dateLeft: Date | number,
-  dateRight: Date | number
+  dateLeft: Date | number = 0,
+  dateRight: Date | number = 0
 ): number => {
   if (dateLeft === 0 || dateRight === 0) return 0;
   return Number((differenceInDays(dateLeft, dateRight) / 30).toFixed(2));
