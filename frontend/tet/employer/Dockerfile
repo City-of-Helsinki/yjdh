@@ -88,14 +88,6 @@ RUN yarn install --production --frozen-lockfile --check-files
 # install lerna
 RUN yarn add -W lerna
 
-USER root
-# Use non-root user and add it to the root group (0)
-RUN usermod -a -G 0 appuser
-# Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
-# https://docs.openshift.com/enterprise/3.2/creating_images/guidelines.html
-RUN chgrp -R 0 . \
-  && chmod -R g+rwX .
-USER appuser
 
 # Expose port
 EXPOSE 3000
