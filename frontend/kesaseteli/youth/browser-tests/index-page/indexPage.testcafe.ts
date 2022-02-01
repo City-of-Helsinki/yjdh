@@ -2,6 +2,7 @@ import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/ba
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { getCurrentUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 
@@ -129,5 +130,28 @@ if (!isRealIntegrationsEnabled()) {
     await sendYouthApplication(t, secondFormData);
     const alreadyAssignedPage = await getAlreadyAssignedPageComponents(t);
     await alreadyAssignedPage.expectations.isLoaded();
+  });
+
+  test('when activating two applications with same ssn, latter activation should redirect to already activated -page', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    await getThankYouPageComponents(t);
+    const firstThankYouPageUrl = await getCurrentUrl();
+    await goToFrontPage(t);
+    const secondFormData = {
+      ...fakeYouthFormData(),
+      social_security_number: formData.social_security_number,
+    };
+    await sendYouthApplication(t, secondFormData);
+    let thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.actions.clickActivationLink();
+    await getActivatedPageComponents(t);
+    await t.navigateTo(firstThankYouPageUrl);
+    thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.actions.clickActivationLink();
+    const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);
+    await alreadyActivatedPage.expectations.isLoaded();
   });
 }

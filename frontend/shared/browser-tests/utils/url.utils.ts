@@ -1,3 +1,14 @@
+import { ClientFunction } from 'testcafe';
+
+export const getCurrentUrl = ClientFunction(() => document.location.href);
+export const getCurrentPathname = ClientFunction(
+  () => document.location.pathname
+);
+export const getUrlParam = ClientFunction((param: string) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+});
+
 export const getUrl = (baseUrl = '', path?: string): string =>
   `${baseUrl}${path?.startsWith('/') ? path : path ? `/${path}` : ''}`;
 
