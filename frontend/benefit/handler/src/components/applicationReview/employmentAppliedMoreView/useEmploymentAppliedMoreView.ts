@@ -14,7 +14,7 @@ import { Field } from 'shared/components/forms/fields/types';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
 import {
-  convertToBackendDateFormat,
+  convertToUIDateFormat,
   diffMonths,
   parseDate,
 } from 'shared/utils/date.utils';
@@ -49,10 +49,10 @@ const useEmploymentAppliedMoreView = (
 
   const formik = useFormik({
     initialValues: {
-      [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: convertToBackendDateFormat(
+      [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: convertToUIDateFormat(
         application?.calculation?.startDate
       ),
-      [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: convertToBackendDateFormat(
+      [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: convertToUIDateFormat(
         application?.calculation?.endDate
       ),
     },
