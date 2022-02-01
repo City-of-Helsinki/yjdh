@@ -30,9 +30,6 @@ if [[ "$CREATE_SUPERUSER" = "1" ]]; then
     fi
 fi
 
-# Compile messages to make translations work
-python ./manage.py compilemessages
-
 # Start server
 if [[ ! -z "$@" ]]; then
     "$@"
