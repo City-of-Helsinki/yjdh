@@ -25,6 +25,9 @@
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": "TET-paikkailmoituksen tekemistä..."
   },
+	"dialog": {
+		"cancel": "Peruuta"
+	},
   "application": {
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
@@ -101,6 +104,7 @@
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
   "delete": {
+		"confirmation": "Haluatko varmasti poistaa TET-paikan {{posting}}?",
     "errorTitle": "Poistaminen epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },

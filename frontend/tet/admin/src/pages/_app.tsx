@@ -11,11 +11,19 @@ import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
+import { DialogContextProvider } from 'tet/admin/store/DialogContext';
+import Portal from 'tet/admin/components/base/Portal';
+import ConfirmDialog from 'tet/admin/components/base/ConfirmDialog';
 
 const App: React.FC<AppProps> = (appProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
     <QueryClientProvider client={createQueryClient()}>
-      <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+      <DialogContextProvider>
+        <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+        <Portal>
+          <ConfirmDialog></ConfirmDialog>
+        </Portal>
+      </DialogContextProvider>
     </QueryClientProvider>
   </BackendAPIProvider>
 );

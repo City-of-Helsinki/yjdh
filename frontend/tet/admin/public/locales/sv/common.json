@@ -25,6 +25,9 @@
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
   },
+	"dialog": {
+		"cancel": "SV Peruuta"
+	},
   "application": {
     "jobPostings": {
       "title": "SV TET-paikkailmoitukset",
@@ -101,6 +104,7 @@
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "delete": {
+		"confirmation": "SV Haluatko varmasti poistaa TET-paikan {{posting}}?",
     "errorTitle": "Borttagningen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
