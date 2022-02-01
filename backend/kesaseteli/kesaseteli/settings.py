@@ -90,10 +90,12 @@ env = environ.Env(
     EMAIL_PORT=(int, 25),
     EMAIL_TIMEOUT=(int, 15),
     DEFAULT_FROM_EMAIL=(str, "Kesäseteli <kesaseteli@hel.fi>"),
+    HANDLER_EMAIL=(str, "Kesäseteli <kesaseteli@hel.fi>"),
     NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=(
         int,
         12 * 60 * 60,
     ),
+    DISABLE_VTJ=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -107,6 +109,7 @@ if DEBUG and not SECRET_KEY:
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
+DISABLE_VTJ = env.bool("DISABLE_VTJ")
 
 DB_PREFIX = {
     None: env.str("DB_PREFIX"),
@@ -201,6 +204,7 @@ EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = env.int("EMAIL_PORT")
 EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT")
 DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+HANDLER_EMAIL = env.str("HANDLER_EMAIL")
 NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = env.int(
     "NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS"
 )
