@@ -21,6 +21,7 @@ import EmployeeView from './employeeView/EmployeeView';
 import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
+import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
@@ -64,6 +65,7 @@ const ApplicationReview: React.FC = () => {
         <ConsentView data={application} />
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
+            <SalaryBenefitCalculatorView />
             <EmploymenAppliedMoreView data={application} />
             <ApplicationProcessingView />
           </>
