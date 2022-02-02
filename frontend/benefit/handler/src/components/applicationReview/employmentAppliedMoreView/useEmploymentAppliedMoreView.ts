@@ -4,6 +4,7 @@ import {
   Application,
   CalculationCommon,
 } from 'benefit/handler/types/application';
+import { ErrorData } from 'benefit/handler/types/common';
 import { getErrorText } from 'benefit/handler/utils/forms';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
@@ -33,6 +34,7 @@ type ExtendedComponentProps = {
   };
   language: Language;
   grantedPeriod: number;
+  calculationsErrors: ErrorData | undefined | null;
   handleSubmit: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
 };
@@ -45,7 +47,8 @@ const useEmploymentAppliedMoreView = (
   const translationsBase = 'common:calculators.employment';
   const { t } = useTranslation();
 
-  const { onCalculateEmployment } = useHandlerReviewActions(application);
+  const { onCalculateEmployment, calculationsErrors } =
+    useHandlerReviewActions(application);
 
   const formik = useFormik({
     initialValues: {
@@ -79,8 +82,8 @@ const useEmploymentAppliedMoreView = (
       fieldName,
       {
         name: fieldName,
-        label: t(`${translationsBase}.fields.${fieldName}.label`),
-        placeholder: t(`${translationsBase}.fields.${fieldName}.placeholder`),
+        label: t(`common:calculators.fields.${fieldName}.label`),
+        placeholder: t(`common:calculators.fields.${fieldName}.placeholder`),
       },
     ]);
 
@@ -88,7 +91,7 @@ const useEmploymentAppliedMoreView = (
       CALCULATION_EMPLOYMENT_KEYS,
       Field<CALCULATION_EMPLOYMENT_KEYS>
     >;
-  }, [t, translationsBase]);
+  }, [t]);
 
   useEffect(() => {
     if (grantedPeriod < 0) {
@@ -118,6 +121,7 @@ const useEmploymentAppliedMoreView = (
     fields,
     language,
     grantedPeriod,
+    calculationsErrors,
     getErrorMessage,
     handleSubmit,
   };

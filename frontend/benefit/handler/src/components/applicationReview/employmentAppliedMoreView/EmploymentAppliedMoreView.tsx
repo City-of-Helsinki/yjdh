@@ -15,6 +15,7 @@ import {
   $CalculatorTableRow,
   $CalculatorText,
 } from '../ApplicationReview.sc';
+import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
 import { useEmploymentAppliedMoreView } from './useEmploymentAppliedMoreView';
 
 const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
@@ -28,6 +29,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     fields,
     language,
     grantedPeriod,
+    calculationsErrors,
     getErrorMessage,
     handleSubmit,
   } = useEmploymentAppliedMoreView(data);
@@ -109,6 +111,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
         </$GridCell>
         <$GridCell $colSpan={11}>
           <$CalculatorHr />
+          <CalculatorErrors data={calculationsErrors} />
           {data?.calculation?.rows &&
             data?.calculation?.rows.map((row, i, { length }) => {
               const isTotal = length - 1 === i;
