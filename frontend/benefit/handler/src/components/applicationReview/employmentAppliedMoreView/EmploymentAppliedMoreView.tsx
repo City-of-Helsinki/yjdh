@@ -1,8 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import {
-  ApplicationReviewViewProps,
-  Calculation,
-} from 'benefit/handler/types/application';
+import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
@@ -11,7 +8,6 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
-import { $Notification } from 'shared/components/notification/Notification.sc';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
@@ -19,6 +15,7 @@ import {
   $CalculatorTableRow,
   $CalculatorText,
 } from '../ApplicationReview.sc';
+import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
 import { useEmploymentAppliedMoreView } from './useEmploymentAppliedMoreView';
 
 const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
@@ -114,27 +111,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
         </$GridCell>
         <$GridCell $colSpan={11}>
           <$CalculatorHr />
-          {calculationsErrors && (
-            <$Notification
-              label={t('common:calculators.notifications.error.title')}
-              type="error"
-            >
-              <>
-                <div>{t('common:calculators.notifications.error.message')}</div>
-                <ul>
-                  {Object.entries(
-                    calculationsErrors[
-                      Object.keys(calculationsErrors)[0] as keyof unknown
-                    ] as Calculation
-                  ).map(([key, value]) => (
-                    <li key={key}>{`${t(
-                      `common:calculators.fields.${camelCase(key)}.label`
-                    )}: ${String(value)}`}</li>
-                  ))}
-                </ul>
-              </>
-            </$Notification>
-          )}
+          <CalculatorErrors data={calculationsErrors} />
           {data?.calculation?.rows &&
             data?.calculation?.rows.map((row, i, { length }) => {
               const isTotal = length - 1 === i;
