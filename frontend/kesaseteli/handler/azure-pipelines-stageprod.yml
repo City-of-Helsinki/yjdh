@@ -4,11 +4,11 @@ trigger:
   branches:
     include:
     - main
-#    - release/*
-#    - refs/tags/*
   paths:
     include:
-    - frontend/benefit/**
+    - frontend/kesaseteli/handler/**
+    - frontend/kesaseteli/shared/**
+    - frontend/shared/**
     - frontend/*
     exclude:
     - README.md
@@ -37,15 +37,15 @@ pool: Default
 resources:
   repositories:
   # Azure DevOps repository
-  - repository: yjdh-helsinkilisa-pipelines
+  - repository: yjdh-kesaseteli-pipelines
     type: git
     # Azure DevOps project/repository
-    name: yjdh-helsinkilisa/yjdh-helsinkilisa-pipelines
+    name: yjdh/yjdh-kesaseteli-pipelines
 
 extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
   # Django example: azure-pipelines-PROJECTNAME-api-release.yml
   # Drupal example: azure-pipelines-drupal-release.yml
-  template: azure-pipelines-yjdh-helsinkilisa-ui-release.yml@yjdh-helsinkilisa-pipelines
+  template: azure-pipelines-kesaseteli-handler-ui-stageprod.yml@yjdh-kesaseteli-pipelines
   #parameters:
     #imagetag: ${{ parameters.imagetag }}

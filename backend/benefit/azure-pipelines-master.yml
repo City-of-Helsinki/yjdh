@@ -6,7 +6,8 @@ trigger:
     - develop
   paths:
     include:
-    - backend/benefit
+    - backend/benefit/**
+    - backend/shared/**
     exclude:
     - README.md
 
