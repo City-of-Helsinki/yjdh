@@ -3,6 +3,7 @@ import functools
 import itertools
 from datetime import date, timedelta
 
+from dateutil.relativedelta import relativedelta
 from phonenumber_field.serializerfields import (
     PhoneNumberField as DefaultPhoneNumberField,
 )
@@ -146,7 +147,7 @@ def duration_in_months(start_date, end_date, decimal_places=None):
 
 class DurationMixin:
     """
-    Mixin class that defines a duration_in_months property.
+    Mixin class that defines properties for duration_in_months and duration_in_months_rounded.
     Depends on having start_date and end_date fields available in the object.
     The duration is calculated according to the DAYS360 Excel function, as that
     function was used by the application handlers in the application calculation Excel file.
@@ -155,3 +156,78 @@ class DurationMixin:
     @property
     def duration_in_months(self):
         return duration_in_months(self.start_date, self.end_date)
+
+    @property
+    def duration_in_months_rounded(self):
+        # The handler's Excel file uses the number of months rounded to two decimals
+        # in many calculations
+        return duration_in_months(self.start_date, self.end_date, decimal_places=2)
+
+
+# defensive programming to avoid infinite loops
+DATE_RANGE_MAX_ITERATIONS = 7
+
+
+def get_date_range_end_with_days360(start_date, n_months):
+    """
+    Given a start date and a duration in months, return the end_date for a date range that most closely
+    matches the given duration.
+    :param start_date: a datetime.date object
+    :param n_months: a Decimal amount, representing a number of months, as calculated by duration_in_months
+
+    If the date range length would be zero days, return None.
+
+    Notes:
+
+    duration_in_months is implemented with the days360 function.
+    The days360 function has some properties that introduce complexities to the calculation.
+    for example:
+    * days360(datetime.date(2022,2,1), datetime.date(2022,2,28)) == 27
+    * days360(datetime.date(2022,2,1), datetime.date(2022,3,1)) == 30
+    the effect is that the actual calendar duration of days doesn't increase in a perfectly linear way
+    with the duration_in_months, and sometimes two different date ranges evaluate to the same duration:
+    1. duration_in_months(datetime.date(2022, 2, 1), datetime.date(2022, 2, 28)) == Decimal('1')
+    2. duration_in_months(datetime.date(2022, 2, 1), datetime.date(2022, 2, 27)) == Decimal('0.9')
+    3. duration_in_months(datetime.date(2022, 2, 1), datetime.date(2022, 2, 26)) ==
+       Decimal('0.8666666666666666666666666667')
+    4. duration_in_months(datetime.date(2022,1,1), datetime.date(2022,1,30)) ==
+       duration_in_months(datetime.date(2022,1,1), datetime.date(2022,1,29))
+
+    In case 4, when two date ranges have the same duration_in_months, we want to return the
+    longest possible duration. This will resolve the ambiguity in the applicant's favor, as
+    this function is used to calculate the last valid end_date for the benefit.
+    """
+    assert n_months >= 0
+
+    # Using the usual calendar definition of months, so initially the start_date might be off by a few days
+    full_months = int(n_months)
+    # Make the initial guess work for February cases, too
+    fractional_days = int(to_decimal((n_months - full_months) * 28, decimal_places=0))
+    end_date = (
+        start_date
+        + relativedelta(months=full_months)
+        + relativedelta(days=fractional_days - 3)
+    )
+    for _ in range(DATE_RANGE_MAX_ITERATIONS):
+        # calculate how much we are off from the duration that was requested, and see if the
+        # next day would be closer to the goal
+        difference = abs(duration_in_months(start_date, end_date) - n_months)
+        next_day_difference = abs(
+            duration_in_months(start_date, end_date + relativedelta(days=1)) - n_months
+        )
+        if difference < next_day_difference:
+            # [end_date, start_date] is the date range that most closely matches n_months.
+            # in case difference == next_day_difference, we'll advance to the next day, in order to
+            # make the resulting date range as long as possible.
+            break
+        else:
+            end_date += relativedelta(days=1)
+    else:
+        assert False, "This should be unreachable"
+
+    if end_date < start_date:
+        # We can't have date ranges where duration is less than one day, as the range is inclusive
+        # (for benefit calculation this is OK, as a benefit with a zero duration doesn't exist)
+        return None
+
+    return end_date

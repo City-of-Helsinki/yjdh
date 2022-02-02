@@ -14,14 +14,30 @@ from applications.tests.test_applications_api import (
 from calculator.api.v1.serializers import CalculationSerializer
 from calculator.tests.factories import CalculationFactory, PaySubsidyFactory
 from common.tests.conftest import get_client_user
+from common.utils import duration_in_months, to_decimal
 
 
-def test_application_retrieve_calculation_as_handler(handler_api_client, application):
-    response = handler_api_client.get(get_handler_detail_url(application))
+def test_application_retrieve_calculation_as_handler(
+    handler_api_client, handling_application
+):
+    pay_subsidy = PaySubsidyFactory(application=handling_application)
+    response = handler_api_client.get(get_handler_detail_url(handling_application))
+    assert response.status_code == 200
     assert "calculation" in response.data
     assert "pay_subsidies" in response.data
     assert "training_compensations" in response.data
-    assert response.status_code == 200
+    assert decimal.Decimal(
+        response.data["calculation"]["duration_in_months_rounded"]
+    ) == to_decimal(
+        duration_in_months(
+            handling_application.calculation.start_date,
+            handling_application.calculation.end_date,
+        ),
+        2,
+    )
+    assert decimal.Decimal(
+        response.data["pay_subsidies"][0]["duration_in_months_rounded"]
+    ) == to_decimal(duration_in_months(pay_subsidy.start_date, pay_subsidy.end_date), 2)
 
 
 def test_application_try_retrieve_calculation_as_applicant(api_client, application):
@@ -224,7 +240,9 @@ def test_application_replace_pay_subsidy(handler_api_client, received_applicatio
     assert response.status_code == 200
     received_application.refresh_from_db()
     new_data = HandlerApplicationSerializer(received_application).data
-    del new_data["pay_subsidies"][0]["id"]
+    del new_data["pay_subsidies"][0]["id"]  # id is expected to change
+    # on-the-fly generated field that was not present in the PUT request
+    del new_data["pay_subsidies"][0]["duration_in_months_rounded"]
     assert new_data["pay_subsidies"] == data["pay_subsidies"]
 
 

@@ -141,8 +141,13 @@ class CalculationSerializer(serializers.ModelSerializer):
             "rows",
             "handler_details",
             "handler",
+            "duration_in_months_rounded",
         ]
-        read_only_fields = ["id", "calculated_benefit_amount"]
+        read_only_fields = [
+            "id",
+            "calculated_benefit_amount",
+            "duration_in_months_rounded",
+        ]
 
 
 class UpdateOrderedListSerializer(serializers.ListSerializer):
@@ -191,8 +196,11 @@ class PaySubsidySerializer(serializers.ModelSerializer):
             "pay_subsidy_percent",
             "work_time_percent",
             "disability_or_illness",
+            "duration_in_months_rounded",
         ]
-        read_only_fields = []
+        read_only_fields = [
+            "duration_in_months_rounded",
+        ]
 
         list_serializer_class = UpdateOrderedListSerializer
 
