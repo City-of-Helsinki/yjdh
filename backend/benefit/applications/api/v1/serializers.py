@@ -1072,7 +1072,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         "company_contact_person_last_name",
         "co_operation_negotiations",
         "pay_subsidy_granted",
-        "apprenticeship_program",
         "de_minimis_aid",
         "benefit_type",
         "start_date",
@@ -1096,6 +1095,11 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
             # at submit time, only True is allowed.
             required_fields.append("association_immediate_manager_check")
+
+        # if pay_subsidy_granted is selected, then the applicant needs to also select if
+        # it's an apprenticeship_program or not
+        if data["pay_subsidy_granted"]:
+            required_fields.append("apprenticeship_program")
 
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:

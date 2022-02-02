@@ -768,6 +768,44 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
+    "pay_subsidy_granted,apprenticeship_program,expected_result",
+    [
+        (True, True, 200),
+        (True, False, 200),
+        (True, None, 400),
+        (False, None, 200),
+    ],
+)
+def test_apprenticeship_program_validation_on_submit(
+    request,
+    api_client,
+    application,
+    pay_subsidy_granted,
+    apprenticeship_program,
+    expected_result,
+):
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["pay_subsidy_granted"] = pay_subsidy_granted
+    data["pay_subsidy_percent"] = "50" if pay_subsidy_granted else None
+    data["additional_pay_subsidy_percent"] = None
+    data["apprenticeship_program"] = apprenticeship_program
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
