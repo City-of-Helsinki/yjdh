@@ -8,12 +8,13 @@ import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
+import { DevTool } from '@hookform/devtools';
 
 const initialValuesForNew: TetPosting = {
   title: '',
   description: '',
   spots: 3,
-  contact_first_name: '',
+  contact_first_name: 'test',
   contact_last_name: '',
   contact_email: '',
   contact_phone: '',
@@ -33,7 +34,7 @@ export type EditorSectionProps = {
 
 // add new posting / edit existing
 const Editor: React.FC<EditorProps> = ({ initialValue }) => {
-  const methods = useForm<TetPosting>({
+  const { methods, control } = useForm<TetPosting>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
@@ -51,17 +52,20 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   };
 
   return (
-    <FormProvider {...methods}>
-      <form aria-label="add/modify tet posting" onSubmit={methods.handleSubmit(handleSuccess)}>
-        <HiddenIdInput id="id" initialValue={posting.id} />
-        <p>* pakollinen tieto</p>
-        <EditorErrorNotification />
-        <CompanyInfo />
-        <ContactPerson initialValue={posting} />
-        <PostingDetails initialValue={posting} />
-        <ActionButtons />
-      </form>
-    </FormProvider>
+    <>
+      <FormProvider {...methods}>
+        <form aria-label="add/modify tet posting" onSubmit={methods.handleSubmit(handleSuccess)}>
+          <HiddenIdInput id="id" initialValue={posting.id} />
+          <p>* pakollinen tieto</p>
+          <EditorErrorNotification />
+          <CompanyInfo />
+          <ContactPerson initialValue={posting} />
+          <PostingDetails initialValue={posting} />
+          <ActionButtons />
+        </form>
+      </FormProvider>
+      <DevTool control={control} />
+    </>
   );
 };
 
