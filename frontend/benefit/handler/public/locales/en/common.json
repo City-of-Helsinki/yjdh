@@ -163,6 +163,19 @@
     }
   },
   "calculators": {
+    "fields": {
+      "startDate": {
+        "label": "Alkaen",
+        "placeholder": "Alkaen"
+      },
+      "endDate": { "label": "Päättyen", "placeholder": "Päättyen" }
+    },
+    "notifications": {
+      "error": {
+        "title": "Laskurissa on virheitä",
+        "message": "Ole hyvä ja tarkista laskelman tiedot ja yritä laskea uudestaan:"
+      }
+    },
     "employment": {
       "header": "Työllistämisen Helsinki-lisää haettu ajalle",
       "startEndDates": "{{startDate}} - {{endDate}} ({{period}} kk)",
@@ -171,14 +184,7 @@
       "tableRowHeader": "Helsinki-lisä / kk",
       "tableRowValue": "{{amount}} €",
       "tableTotalHeader": "Helsinki-lisä yhteensä",
-      "calculate": "Laske",
-      "fields": {
-        "startDate": {
-          "label": "Alkaen",
-          "placeholder": "Alkaen"
-        },
-        "endDate": { "label": "Päättyen", "placeholder": "Päättyen" }
-      }
+      "calculate": "Laske"
     },
     "salary": {
       "header": "Palkan Helsinki-lisää haettu ajalle",
