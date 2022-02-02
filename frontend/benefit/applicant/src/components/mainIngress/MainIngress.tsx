@@ -29,7 +29,7 @@ const MainIngress: React.FC = () => {
       label={t('common:notifications.applicationSubmitted.label')}
       type="success"
       dismissible
-      closeButtonLabelText={t('common:utility.close')}
+      closeButtonLabelText={t('common:utility.close') ?? ''}
       onClose={handleCloseNotification}
     >
       {t('common:notifications.applicationSubmitted.message', {
