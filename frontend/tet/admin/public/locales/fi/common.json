@@ -104,7 +104,9 @@
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
   "delete": {
+		"deletePosting": "Poista TET-paikka",
 		"confirmation": "Haluatko varmasti poistaa TET-paikan {{posting}}?",
+		"successTitle": "TETP-paikka poistettiin", 
     "errorTitle": "Poistaminen epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },

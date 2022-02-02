@@ -104,7 +104,9 @@
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "delete": {
+		"deletePosting": "SV Poista TET-paikka",
 		"confirmation": "SV Haluatko varmasti poistaa TET-paikan {{posting}}?",
+		"successTitle": "SV TETP-paikka poistettiin", 
     "errorTitle": "Borttagningen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },

@@ -1,4 +1,4 @@
-// import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 // import AuthProvider from 'tet/admin/auth/AuthProvider';
 import Footer from 'tet/admin/components/footer/Footer';

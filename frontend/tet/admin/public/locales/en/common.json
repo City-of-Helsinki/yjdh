@@ -104,7 +104,9 @@
     "errorMessage": "Something went wrong. Please try again later."
   },
   "delete": {
+		"deletePosting": "ENG Poista TET-paikka",
 		"confirmation": "ENG Haluatko varmasti poistaa TET-paikan {{posting}}?",
+		"successTitle": "ENG TETP-paikka poistettiin", 
     "errorTitle": "Deleting the file failed.",
     "errorMessage": "Something went wrong. Please try again later."
   },

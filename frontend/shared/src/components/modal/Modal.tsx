@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 export type ModalProps = {
   id: string;
   submitButtonLabel: string;
+  cancelButtonLabel: string;
   actionDisabled?: boolean;
   title?: string;
   className?: string;
@@ -24,6 +25,7 @@ const Modal: React.FC<ModalProps> = ({
   isOpen,
   scrollable,
   submitButtonLabel,
+  cancelButtonLabel,
   variant,
   handleToggle,
   handleSubmit,
@@ -57,7 +59,7 @@ const Modal: React.FC<ModalProps> = ({
           onClick={handleToggle}
           data-testid="cancel"
         >
-          {t('common:applications.actions.close')}
+          {cancelButtonLabel}
         </Button>
         <Button
           theme="coat"
