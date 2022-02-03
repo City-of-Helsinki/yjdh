@@ -8,8 +8,8 @@ on:
       - '.github/workflows/ks-test-env-acceptance-tests.yml'
 env:
   EMPLOYER_URL: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi
-  YOUTH_URL: https://yjdh-youth-ui-test.agw.arodevtest.hel.fi
-  HANDLER_URL: https://yjdh-handler-ui-test.agw.arodevtest.hel.fi
+  YOUTH_URL: https://kesaseteli-youth-ui-test.agw.arodevtest.hel.fi
+  HANDLER_URL: https://kesaseteli-handler-ui-test.agw.arodevtest.hel.fi/
   BRANCH: develop
 
 jobs:
