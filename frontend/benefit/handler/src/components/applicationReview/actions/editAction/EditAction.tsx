@@ -17,7 +17,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
   const [isUpdatingApplication, setIsUpdatingApplication] =
     React.useState(false);
 
-  const updateApplicationStatus = (status: APPLICATION_STATUSES) => {
+  const updateApplicationStatus = (status: APPLICATION_STATUSES): void => {
     setIsUpdatingApplication(true);
     updateStatus(status);
   };
