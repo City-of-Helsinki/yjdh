@@ -1,4 +1,5 @@
-import { RequestHook } from 'testcafe';
+import { RequestHook, RequestLogger } from 'testcafe';
+import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 
 // Based on this idea
 // https://stackoverflow.com/questions/61116376/set-referrer-for-firefox-on-test-cafe
@@ -8,19 +9,25 @@ type Event = {
 export class HttpRequestHook extends RequestHook {
   private referer: string;
 
-  private host: string;
-
-  constructor(referer: string, host: string) {
-    super();
+  constructor(referer: string, url: string) {
+    super(
+      { url, method: 'post' },
+      {
+        logResponseHeaders: true,
+        logResponseBody: true,
+      }
+    );
     this.referer = referer;
-    this.host = host;
   }
 
   async onRequest(event: Event): Promise<void> {
     // eslint-disable-next-line no-param-reassign
     event.requestOptions.headers.Referer = this.referer;
+    console.error('onRequest!', event.requestOptions.headers);
+    return super.onRequest(event);
   }
 
-  // eslint-disable-next-line class-methods-use-this,@typescript-eslint/no-empty-function
-  async onResponse(): Promise<void> {}
+  async onResponse(): Promise<void> {
+    return super.onResponse();
+  }
 }
