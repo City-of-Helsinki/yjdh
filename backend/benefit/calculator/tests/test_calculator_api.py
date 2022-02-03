@@ -399,3 +399,14 @@ def test_unassign_handler_invalid_status(
         data,
     )
     assert response.status_code == 400
+
+
+def test_application_calculation_rows_id_exists(
+    handler_api_client, handling_application
+):
+    handling_application.calculation.init_calculator()
+    handling_application.calculation.calculate()
+    response = handler_api_client.get(get_handler_detail_url(handling_application))
+    assert response.status_code == 200
+    assert len(response.data["calculation"]["rows"]) > 1
+    assert "id" in response.data["calculation"]["rows"][0].keys()
