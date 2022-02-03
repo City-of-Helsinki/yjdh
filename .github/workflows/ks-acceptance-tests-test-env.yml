@@ -5,7 +5,7 @@ on:
     - cron: "0 5-18 * * *"
   pull_request:
     paths:
-      - '.github/workflows/ks-test-env-acceptance-tests.yml'
+      - '.github/workflows/ks-acceptance-tests-test-env.yml'
 env:
   EMPLOYER_URL: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi
   YOUTH_URL: https://kesaseteli-youth-ui-test.agw.arodevtest.hel.fi

@@ -7,6 +7,8 @@ on:
       - "frontend/shared/**"
       - "frontend/*"
       - ".github/workflows/bf-review.yml"
+      - '!frontend/**/__tests__'
+      - '!**/README.md'
   workflow_dispatch:
     inputs:
       build_required:
