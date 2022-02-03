@@ -12635,9 +12635,9 @@ testcafe-legacy-api@5.1.2:
     testcafe-hammerhead ">=19.4.0"
 
 testcafe-reporter-custom@^1.1.1:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/testcafe-reporter-custom/-/testcafe-reporter-custom-1.2.0.tgz#4d58976d681c690e188a6ab1162182b9d22f3a73"
-  integrity sha512-VKePqgTXAFycPyuDvLGXkYfzEikjBhUb7QXuY11XH3ve06+CoZt1WzU9A3gYZnM4CHhiCgzRLob+aWNoPc+UDQ==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/testcafe-reporter-custom/-/testcafe-reporter-custom-1.2.1.tgz#790e7676650026ac5df49baada8e6fd35ad2e163"
+  integrity sha512-P85P5+xKRjm96kiZddCl2EjVk7LVgyTfAr2KSIIK0pAdj4W5Wcx69RmiM07KTihpEFQqz0jmcc7/gTk9VWLpgQ==
 
 testcafe-reporter-dashboard@0.2.5:
   version "0.2.5"
