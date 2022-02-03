@@ -7,6 +7,7 @@ import {
   Application,
   ApplicationData,
   CalculationCommon,
+  SalaryCalculation,
 } from '../types/application';
 import { ErrorData } from '../types/common';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
@@ -14,6 +15,7 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 interface HandlerReviewActions {
   onCalculateEmployment: (calculator: CalculationCommon) => void;
   calculationsErrors: ErrorData | undefined | null;
+  calculateSalaryBenefit: (values: SalaryCalculation) => void;
 }
 
 const useHandlerReviewActions = (
@@ -44,6 +46,35 @@ const useHandlerReviewActions = (
     );
   };
 
+  const getSalaryBenefitData = (values: SalaryCalculation): ApplicationData => {
+    const startDate = values.startDate
+      ? convertToBackendDateFormat(values.startDate)
+      : undefined;
+    const endDate = values.endDate
+      ? convertToBackendDateFormat(values.endDate)
+      : undefined;
+    console.log('aasdsadsa');
+    console.log(values);
+    const { monthlyPay, vacationMoney, stateAidMaxPercentage, otherExpenses } =
+      values;
+
+    return snakecaseKeys(
+      {
+        ...application,
+        calculation: {
+          ...application.calculation,
+          startDate,
+          endDate,
+          monthlyPay,
+          vacationMoney,
+          stateAidMaxPercentage,
+          otherExpenses,
+        },
+      },
+      { deep: true }
+    );
+  };
+
   useEffect(() => {
     if (updateApplicationQuery.error) {
       setCalculationErrors(
@@ -58,9 +89,14 @@ const useHandlerReviewActions = (
     void updateApplicationQuery.mutate(getDataEmployment(calculator));
   };
 
+  const calculateSalaryBenefit = (values: SalaryCalculation): void => {
+    void updateApplicationQuery.mutate(getSalaryBenefitData(values));
+  };
+
   return {
     onCalculateEmployment,
     calculationsErrors,
+    calculateSalaryBenefit,
   };
 };
 

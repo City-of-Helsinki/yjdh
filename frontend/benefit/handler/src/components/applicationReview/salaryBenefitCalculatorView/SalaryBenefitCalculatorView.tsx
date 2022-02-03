@@ -1,15 +1,20 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import {
+  CALCULATION_SUMMARY_ROW_TYPES,
+  CALCULATION_TOTAL_ROW_TYPE,
+} from 'benefit/handler/constants';
+import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
-import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import {
   $ViewField,
   $ViewFieldBold,
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
+import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { useTheme } from 'styled-components';
+import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
   $CalculatorHr,
@@ -17,11 +22,26 @@ import {
   $CalculatorText,
   $DateTimeDuration,
 } from '../ApplicationReview.sc';
+import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
 
-const SalaryBenefitCalculatorView: React.FC = () => {
-  const translationsBase = 'common:calculators.salary';
-  const { t } = useTranslation();
-  const theme = useTheme();
+const SalaryBenefitCalculatorView: React.FC<
+  SalaryBenefitCalculatorViewProps
+> = ({ application }) => {
+  const {
+    t,
+    translationsBase,
+    theme,
+    formik,
+    fields,
+    language,
+    grantedPeriod,
+    calculationsErrors,
+    getErrorMessage,
+    handleSubmit,
+    stateAidMaxPercentageOptions,
+    getStateAidMaxPercentageSelectValue,
+  } = useSalaryBenefitCalculatorData(application);
+
   return (
     <ReviewSection withMargin>
       <$GridCell $colSpan={5}>
@@ -35,15 +55,17 @@ const SalaryBenefitCalculatorView: React.FC = () => {
         </$CalculatorText>
       </$GridCell>
 
-      <$GridCell $colStart={1} $colSpan={3} style={{ alignSelf: 'center' }}>
-        <$ViewField>
-          {t(`${translationsBase}.startEndDates`, {
-            startDate: '10.09.2021',
-            endDate: '10.11.2021',
-            period: '2,03',
-          })}
-        </$ViewField>
-      </$GridCell>
+      {formik.values.startDate && formik.values.endDate && (
+        <$GridCell $colStart={1} $colSpan={3} style={{ alignSelf: 'center' }}>
+          <$ViewField>
+            {t(`${translationsBase}.startEndDates`, {
+              startDate: formik.values.startDate,
+              endDate: formik.values.endDate,
+              period: formatStringFloatValue(grantedPeriod),
+            })}
+          </$ViewField>
+        </$GridCell>
+      )}
 
       <$GridCell $colStart={4} $colSpan={2}>
         <TextInput
@@ -51,8 +73,10 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           name=""
           label={t(`${translationsBase}.monthlyPay`)}
           onBlur={undefined}
-          onChange={undefined}
-          value=""
+          onChange={(e) =>
+            formik.setFieldValue(fields.monthlyPay.name, e.target.value)
+          }
+          value={formik.values.monthlyPay}
           invalid={false}
           aria-invalid={false}
           errorText=""
@@ -65,8 +89,10 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           name=""
           label={t(`${translationsBase}.otherExpenses`)}
           onBlur={undefined}
-          onChange={undefined}
-          value=""
+          onChange={(e) =>
+            formik.setFieldValue(fields.otherExpenses.name, e.target.value)
+          }
+          value={formik.values.otherExpenses}
           invalid={false}
           aria-invalid={false}
           errorText=""
@@ -79,8 +105,10 @@ const SalaryBenefitCalculatorView: React.FC = () => {
           name=""
           label={t(`${translationsBase}.vacationMoney`)}
           onBlur={undefined}
-          onChange={undefined}
-          value=""
+          onChange={(e) =>
+            formik.setFieldValue(fields.vacationMoney.name, e.target.value)
+          }
+          value={formik.values.vacationMoney}
           invalid={false}
           aria-invalid={false}
           errorText=""
@@ -110,12 +138,17 @@ const SalaryBenefitCalculatorView: React.FC = () => {
 
       <$GridCell $colStart={1}>
         <Select
-          defaultValue=""
+          value={getStateAidMaxPercentageSelectValue()}
           helper=""
           optionLabelField="label"
           label={t(`${translationsBase}.maximumAid`)}
-          onChange={undefined}
-          options={[]}
+          onChange={(stateAidMaxPercentage: Option) =>
+            formik.setFieldValue(
+              fields.stateAidMaxPercentage.name,
+              stateAidMaxPercentage.value
+            )
+          }
+          options={stateAidMaxPercentageOptions}
           id=""
           placeholder={t('common:select')}
           invalid={false}
@@ -155,7 +188,6 @@ const SalaryBenefitCalculatorView: React.FC = () => {
             placeholder="10.02.2021"
             onChange={noop}
             value=""
-            required
           />
           <div style={{ padding: `0 ${theme.spacing.s}`, fontWeight: 500 }}>
             -
@@ -166,7 +198,6 @@ const SalaryBenefitCalculatorView: React.FC = () => {
             placeholder="15.02.2021"
             onChange={noop}
             value=""
-            required
           />
         </$DateTimeDuration>
       </$GridCell>
@@ -178,19 +209,26 @@ const SalaryBenefitCalculatorView: React.FC = () => {
             margin: 0 0 ${theme.spacing.xs3} 0;
           `}
         >
-          {t(`${translationsBase}.grantedPeriod`, { period: '2,03' })}
+          {t(`${translationsBase}.grantedPeriod`, {
+            period: formatStringFloatValue(grantedPeriod),
+          })}
         </$CalculatorText>
       </$GridCell>
 
       <$GridCell $colStart={1} $colSpan={2}>
         <$DateTimeDuration>
           <DateInput
-            id="date1"
-            name="date1"
-            placeholder="10.02.2021"
-            onChange={noop}
-            value=""
-            required
+            id={fields.startDate.name}
+            name={fields.startDate.name}
+            placeholder={fields.startDate.placeholder}
+            language={language}
+            onChange={(value) => {
+              formik.setFieldValue(fields.startDate.name, value);
+            }}
+            value={formik.values.startDate ?? ''}
+            invalid={!!getErrorMessage(fields.startDate.name)}
+            aria-invalid={!!getErrorMessage(fields.startDate.name)}
+            errorText={getErrorMessage(fields.startDate.name)}
           />
 
           <div style={{ paddingLeft: `${theme.spacing.s}`, fontWeight: 500 }}>
@@ -201,19 +239,24 @@ const SalaryBenefitCalculatorView: React.FC = () => {
 
       <$GridCell $colStart={3} $colSpan={3}>
         <DateInput
-          id="date2"
-          name="date2"
-          placeholder="15.02.2021"
-          onChange={noop}
-          value=""
-          required
+          id={fields.endDate.name}
+          name={fields.endDate.name}
+          placeholder={fields.endDate.placeholder}
+          language={language}
+          onChange={(value) => {
+            formik.setFieldValue(fields.endDate.name, value);
+          }}
+          value={formik.values.endDate ?? ''}
+          invalid={!!getErrorMessage(fields.endDate.name)}
+          aria-invalid={!!getErrorMessage(fields.endDate.name)}
+          errorText={getErrorMessage(fields.endDate.name)}
           style={{ paddingRight: `${theme.spacing.xs}` }}
         />
       </$GridCell>
 
       <$GridCell $colStart={1}>
         <Button
-          onClick={undefined}
+          onClick={handleSubmit}
           theme="coat"
           style={{ marginTop: 'var(--spacing-xs)' }}
         >
@@ -226,52 +269,23 @@ const SalaryBenefitCalculatorView: React.FC = () => {
       </$GridCell>
 
       <$GridCell $colSpan={7}>
-        <$CalculatorTableRow>
-          <$ViewField>{t(`${translationsBase}.salaryCosts`)}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.tableRowValue`, { amount: 500 })}
-          </$ViewField>
-        </$CalculatorTableRow>
-        <$CalculatorTableRow isTotal>
-          <$ViewField>{t(`${translationsBase}.maximumAid`)}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.tableRowValue`, { amount: 1015 })}
-          </$ViewField>
-        </$CalculatorTableRow>
-      </$GridCell>
-
-      <$GridCell $colStart={1} $colSpan={7}>
-        <$CalculatorTableRow>
-          <$ViewField>
-            {t(`${translationsBase}.deductibleAllowances`)}
-          </$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.tableRowValue`, { amount: 500 })}
-          </$ViewField>
-        </$CalculatorTableRow>
-        <$CalculatorTableRow isTotal>
-          <$ViewField>{t(`${translationsBase}.salarySupport`)}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.tableRowValue`, { amount: 1015 })}
-          </$ViewField>
-        </$CalculatorTableRow>
-      </$GridCell>
-
-      <$GridCell $colStart={1} $colSpan={7}>
-        <$CalculatorTableRow>
-          <$ViewField>{t(`${translationsBase}.tableRowHeader`)}</$ViewField>
-          <$ViewField>
-            {t(`${translationsBase}.tableRowValue`, { amount: 500 })}
-          </$ViewField>
-        </$CalculatorTableRow>
-        <$CalculatorTableRow isTotal>
-          <$ViewFieldBold>
-            {t(`${translationsBase}.tableTotalHeader`)}
-          </$ViewFieldBold>
-          <$ViewFieldBold>
-            {t(`${translationsBase}.tableRowValue`, { amount: 1015 })}
-          </$ViewFieldBold>
-        </$CalculatorTableRow>
+        {application?.calculation?.rows &&
+          application?.calculation?.rows.map((row) => {
+            const isSummaryRowType = CALCULATION_SUMMARY_ROW_TYPES.includes(
+              row.rowType
+            );
+            const isTotalRowType = CALCULATION_TOTAL_ROW_TYPE === row.rowType;
+            return (
+              <div key={row.rowType}>
+                <$CalculatorTableRow isTotal={isSummaryRowType}>
+                  <$ViewField isBold={isTotalRowType}>
+                    {row.descriptionFi}
+                  </$ViewField>
+                  <$ViewField isBold={isTotalRowType}>{row.amount}</$ViewField>
+                </$CalculatorTableRow>
+              </div>
+            );
+          })}
       </$GridCell>
     </ReviewSection>
   );
