@@ -324,8 +324,8 @@ export type HandlerDetails = {
 };
 
 export interface CalculationCommon {
-  [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: string;
-  [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: string;
+  [CALCULATION_EMPLOYMENT_KEYS.START_DATE]?: string;
+  [CALCULATION_EMPLOYMENT_KEYS.END_DATE]?: string;
 }
 
 export type Calculation = {
@@ -341,6 +341,13 @@ export type Calculation = {
   overrideBenefitAmountComment?: string;
   rows: Row[];
   handlerDetails: HandlerDetails;
+} & CalculationCommon;
+
+export type SalaryCalculation = {
+  monthlyPay?: string;
+  vacationMoney?: string;
+  otherExpenses?: string;
+  stateAidMaxPercentage?: number;
 } & CalculationCommon;
 
 export type Application = {
@@ -371,4 +378,8 @@ export type SubmittedApplication = {
 
 export interface ApplicationReviewViewProps {
   data: Application;
+}
+
+export interface SalaryBenefitCalculatorViewProps {
+  application: Application;
 }

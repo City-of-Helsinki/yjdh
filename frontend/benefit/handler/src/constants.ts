@@ -111,3 +111,22 @@ export enum CALCULATION_EMPLOYMENT_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',
 }
+
+export enum CALCULATION_SALARY_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+  MONTHLY_PAY = 'monthlyPay',
+  OTHER_EXPENSES = 'otherExpenses',
+  VACATION_MONEY = 'vacationMoney',
+  STATE_AID_MAX_PERCENTAGE = 'stateAidMaxPercentage',
+}
+
+export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];
+
+export const CALCULATION_SUMMARY_ROW_TYPES = [
+  'state_aid_max_monthly_eur',
+  'pay_subsidy_monthly_eur',
+  'helsinki_benefit_total_eur',
+];
+
+export const CALCULATION_TOTAL_ROW_TYPE = 'helsinki_benefit_total_eur';
