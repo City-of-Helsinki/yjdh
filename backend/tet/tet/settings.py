@@ -84,6 +84,8 @@ django_env = environ.Env(
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, True),
     DB_PREFIX=(str, ""),
+    LINKEDEVENTS_URL=(str, ""),
+    LINKEDEVENTS_API_KEY=(str, ""),
 )
 
 if os.path.exists(env_file):
@@ -137,6 +139,7 @@ INSTALLED_APPS = [
     "shared.audit_log",
     "shared.oidc",
     # local apps
+    "events",
 ]
 
 if ENABLE_ADMIN:
@@ -253,6 +256,9 @@ EAUTHORIZATIONS_BASE_URL = django_env.str("EAUTHORIZATIONS_BASE_URL")
 EAUTHORIZATIONS_CLIENT_ID = django_env.str("EAUTHORIZATIONS_CLIENT_ID")
 EAUTHORIZATIONS_CLIENT_SECRET = django_env.str("EAUTHORIZATIONS_CLIENT_SECRET")
 EAUTHORIZATIONS_API_OAUTH_SECRET = django_env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
+
+LINKEDEVENTS_URL = django_env.str("LINKEDEVENTS_URL")
+LINKEDEVENTS_API_KEY = django_env.str("LINKEDEVENTS_API_KEY")
 
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
