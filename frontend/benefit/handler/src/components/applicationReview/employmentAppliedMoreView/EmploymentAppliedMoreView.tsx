@@ -62,42 +62,49 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
               period: formatStringFloatValue(grantedPeriod),
             })}
           </$CalculatorText>
-          <$Grid>
-            <$GridCell $colStart={1} $colSpan={3}>
-              <DateInput
-                id={fields.startDate.name}
-                name={fields.startDate.name}
-                placeholder={fields.startDate.placeholder}
-                language={language}
-                onBlur={formik.handleBlur}
-                onChange={(value) => {
-                  formik.setFieldValue(fields.startDate.name, value);
-                }}
-                value={formik.values.startDate ?? ''}
-                invalid={!!getErrorMessage(fields.startDate.name)}
-                aria-invalid={!!getErrorMessage(fields.startDate.name)}
-                errorText={getErrorMessage(fields.startDate.name)}
-              />
-            </$GridCell>
-            <$GridCell $colSpan={3}>
-              <DateInput
-                id={fields.endDate.name}
-                name={fields.endDate.name}
-                placeholder={fields.endDate.placeholder}
-                language={language}
-                onBlur={formik.handleBlur}
-                onChange={(value) => {
-                  formik.setFieldValue(fields.endDate.name, value);
-                }}
-                value={formik.values.endDate ?? ''}
-                invalid={!!getErrorMessage(fields.endDate.name)}
-                aria-invalid={!!getErrorMessage(fields.endDate.name)}
-                errorText={getErrorMessage(fields.endDate.name)}
-                required
-              />
-            </$GridCell>
-          </$Grid>
         </$GridCell>
+
+        <$GridCell
+          $colStart={1}
+          $colSpan={5}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <DateInput
+            id={fields.startDate.name}
+            name={fields.startDate.name}
+            placeholder={fields.startDate.placeholder}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) => {
+              formik.setFieldValue(fields.startDate.name, value);
+            }}
+            value={formik.values.startDate ?? ''}
+            invalid={!!getErrorMessage(fields.startDate.name)}
+            aria-invalid={!!getErrorMessage(fields.startDate.name)}
+            errorText={getErrorMessage(fields.startDate.name)}
+          />
+
+          <div style={{ padding: `0 ${theme.spacing.s}`, fontWeight: 500 }}>
+            -
+          </div>
+
+          <DateInput
+            id={fields.endDate.name}
+            name={fields.endDate.name}
+            placeholder={fields.endDate.placeholder}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) => {
+              formik.setFieldValue(fields.endDate.name, value);
+            }}
+            value={formik.values.endDate ?? ''}
+            invalid={!!getErrorMessage(fields.endDate.name)}
+            aria-invalid={!!getErrorMessage(fields.endDate.name)}
+            errorText={getErrorMessage(fields.endDate.name)}
+            required
+          />
+        </$GridCell>
+
         <$GridCell
           css={`
             margin-top: ${theme.spacing.m};
