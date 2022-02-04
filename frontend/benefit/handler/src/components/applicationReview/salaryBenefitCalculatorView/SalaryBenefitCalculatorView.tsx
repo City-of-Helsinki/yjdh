@@ -9,7 +9,7 @@ import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
-import { DateFieldsSeparator } from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
+import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';

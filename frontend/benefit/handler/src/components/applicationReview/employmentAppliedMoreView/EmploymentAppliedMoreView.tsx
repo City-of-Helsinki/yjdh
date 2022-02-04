@@ -4,7 +4,7 @@ import { Button, DateInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
-import { DateFieldsSeparator } from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
+import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
 import {
   $Grid,
   $GridCell,
