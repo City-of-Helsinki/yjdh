@@ -310,10 +310,21 @@ export interface Step2 {
 // handler
 
 export type Row = {
+  id: string;
   rowType: string;
   ordering: number;
   descriptionFi: string;
   amount: string;
+};
+
+export type PaySubsidy = {
+  id?: string;
+  startDate: string;
+  endDate: string;
+  paySubsidyPercent: number;
+  workTimePercent?: number;
+  disabilityOrIllness?: boolean;
+  durationInMonthsRounded: string;
 };
 
 export type HandlerDetails = {
@@ -348,6 +359,9 @@ export type SalaryCalculation = {
   vacationMoney?: string;
   otherExpenses?: string;
   stateAidMaxPercentage?: number;
+  paySubsidyStartDate: string;
+  paySubsidyEndDate: string;
+  paySubsidyPercent: number;
 } & CalculationCommon;
 
 export type Application = {
@@ -371,6 +385,10 @@ export type Application = {
 } & Step1 &
   Step2;
 
+export type HandlerApplication = {
+  paySubsidies: PaySubsidy[];
+} & Application;
+
 export type SubmittedApplication = {
   applicationNumber: number;
   applicantName: string;
@@ -381,5 +399,5 @@ export interface ApplicationReviewViewProps {
 }
 
 export interface SalaryBenefitCalculatorViewProps {
-  application: Application;
+  application: HandlerApplication;
 }

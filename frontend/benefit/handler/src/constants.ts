@@ -119,6 +119,9 @@ export enum CALCULATION_SALARY_KEYS {
   OTHER_EXPENSES = 'otherExpenses',
   VACATION_MONEY = 'vacationMoney',
   STATE_AID_MAX_PERCENTAGE = 'stateAidMaxPercentage',
+  PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
+  PAY_SUBSIDY_START_DATE = 'paySubsidyStartDate',
+  PAY_SUBSIDY_END_DATE = 'paySubsidyEndDate',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];
@@ -128,5 +131,7 @@ export const CALCULATION_SUMMARY_ROW_TYPES = [
   'pay_subsidy_monthly_eur',
   'helsinki_benefit_total_eur',
 ];
+
+export const CALCULATION_DESCRIPTION_ROW_TYPES = ['description'];
 
 export const CALCULATION_TOTAL_ROW_TYPE = 'helsinki_benefit_total_eur';

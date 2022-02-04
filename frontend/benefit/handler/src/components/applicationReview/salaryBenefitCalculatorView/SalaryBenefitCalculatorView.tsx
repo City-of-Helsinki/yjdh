@@ -2,15 +2,13 @@ import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSectio
 import {
   CALCULATION_SUMMARY_ROW_TYPES,
   CALCULATION_TOTAL_ROW_TYPE,
+  CALCULATION_DESCRIPTION_ROW_TYPES,
 } from 'benefit/handler/constants';
 import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';
-import {
-  $ViewField,
-  $ViewFieldBold,
-} from 'shared/components/benefit/summaryView/SummaryView.sc';
+import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -35,11 +33,13 @@ const SalaryBenefitCalculatorView: React.FC<
     fields,
     language,
     grantedPeriod,
-    calculationsErrors,
+    paySubsidyPeriod,
     getErrorMessage,
     handleSubmit,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,
+    paySubsidyPercentageOptions,
+    getPaySubsidyPercentageSelectValue,
   } = useSalaryBenefitCalculatorData(application);
 
   return (
@@ -149,7 +149,7 @@ const SalaryBenefitCalculatorView: React.FC<
             )
           }
           options={stateAidMaxPercentageOptions}
-          id=""
+          id="stateAidMaxPercentage"
           placeholder={t('common:select')}
           invalid={false}
           aria-invalid={false}
@@ -158,13 +158,18 @@ const SalaryBenefitCalculatorView: React.FC<
 
       <$GridCell $colStart={1}>
         <Select
-          defaultValue=""
+          value={getPaySubsidyPercentageSelectValue()}
           helper=""
           optionLabelField="label"
           label={t(`${translationsBase}.salarySubsidyPercentage`)}
-          onChange={undefined}
-          options={[]}
-          id=""
+          onChange={(paySubsidyPercent: Option) =>
+            formik.setFieldValue(
+              fields.paySubsidyPercent.name,
+              paySubsidyPercent.value
+            )
+          }
+          options={paySubsidyPercentageOptions}
+          id="paySubsidyPercent"
           placeholder={t('common:select')}
           invalid={false}
           aria-invalid={false}
@@ -178,26 +183,32 @@ const SalaryBenefitCalculatorView: React.FC<
             font-weight: 500;
           `}
         >
-          {t(`${translationsBase}.salarySupportPeriod`, { period: '2,03' })}
+          {t(`${translationsBase}.salarySupportPeriod`, {
+            period: formatStringFloatValue(paySubsidyPeriod),
+          })}
         </$CalculatorText>
 
         <$DateTimeDuration>
           <DateInput
-            id="date1"
-            name="date1"
-            placeholder="10.02.2021"
-            onChange={noop}
-            value=""
+            id={fields.paySubsidyStartDate.name}
+            name={fields.paySubsidyStartDate.name}
+            placeholder={fields.paySubsidyStartDate.placeholder}
+            onChange={(value) => {
+              formik.setFieldValue(fields.paySubsidyStartDate.name, value);
+            }}
+            value={formik.values.paySubsidyStartDate}
           />
           <div style={{ padding: `0 ${theme.spacing.s}`, fontWeight: 500 }}>
             -
           </div>
           <DateInput
-            id="date2"
-            name="date2"
-            placeholder="15.02.2021"
-            onChange={noop}
-            value=""
+            id={fields.paySubsidyEndDate.name}
+            name={fields.paySubsidyEndDate.name}
+            placeholder={fields.paySubsidyEndDate.placeholder}
+            onChange={(value) => {
+              formik.setFieldValue(fields.paySubsidyEndDate.name, value);
+            }}
+            value={formik.values.paySubsidyEndDate}
           />
         </$DateTimeDuration>
       </$GridCell>
@@ -276,12 +287,16 @@ const SalaryBenefitCalculatorView: React.FC<
             );
             const isTotalRowType = CALCULATION_TOTAL_ROW_TYPE === row.rowType;
             return (
-              <div key={row.rowType}>
+              <div key={row.id}>
                 <$CalculatorTableRow isTotal={isSummaryRowType}>
                   <$ViewField isBold={isTotalRowType}>
                     {row.descriptionFi}
                   </$ViewField>
-                  <$ViewField isBold={isTotalRowType}>{row.amount}</$ViewField>
+                  {!CALCULATION_DESCRIPTION_ROW_TYPES.includes(row.rowType) && (
+                    <$ViewField isBold={isTotalRowType}>
+                      {row.amount}
+                    </$ViewField>
+                  )}
                 </$CalculatorTableRow>
               </div>
             );

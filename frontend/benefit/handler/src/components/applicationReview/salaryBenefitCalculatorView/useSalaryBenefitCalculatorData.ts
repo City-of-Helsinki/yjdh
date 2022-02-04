@@ -2,9 +2,10 @@ import {
   CALCULATION_SALARY_KEYS,
   STATE_AID_MAX_PERCENTAGE_OPTIONS,
 } from 'benefit/handler/constants';
+import { PAY_SUBSIDY_OPTIONS } from 'benefit/applicant/constants';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import {
-  Application,
+  HandlerApplication,
   SalaryCalculation,
 } from 'benefit/handler/types/application';
 import { ErrorData } from 'benefit/handler/types/common';
@@ -37,15 +38,18 @@ type ExtendedComponentProps = {
   };
   language: Language;
   grantedPeriod: number;
+  paySubsidyPeriod: number;
   calculationsErrors: ErrorData | undefined | null;
   handleSubmit: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
   stateAidMaxPercentageOptions: OptionType[];
   getStateAidMaxPercentageSelectValue: () => OptionType | undefined;
+  paySubsidyPercentageOptions: OptionType[];
+  getPaySubsidyPercentageSelectValue: () => OptionType | undefined;
 };
 
 const useSalaryBenefitCalculatorData = (
-  application: Application
+  application: HandlerApplication
 ): ExtendedComponentProps => {
   const language = useLocale();
   const theme = useTheme();
@@ -71,6 +75,14 @@ const useSalaryBenefitCalculatorData = (
         application?.calculation?.stateAidMaxPercentage,
       [CALCULATION_SALARY_KEYS.VACATION_MONEY]:
         application?.calculation?.vacationMoney,
+      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_PERCENT]:
+        application?.paySubsidies[0].paySubsidyPercent,
+      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_START_DATE]: convertToUIDateFormat(
+        application?.paySubsidies[0].startDate
+      ),
+      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_END_DATE]: convertToUIDateFormat(
+        application?.paySubsidies[0].endDate
+      ),
     },
     validationSchema: getValidationSchema(t),
     validateOnChange: true,
@@ -81,11 +93,17 @@ const useSalaryBenefitCalculatorData = (
   const { errors, touched, setFieldValue, values } = formik;
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const { startDate, endDate } = values;
+  const { startDate, endDate, paySubsidyStartDate, paySubsidyEndDate } = values;
 
   const grantedPeriod = React.useMemo(
     () => diffMonths(parseDate(endDate), parseDate(startDate)),
     [endDate, startDate]
+  );
+
+  const paySubsidyPeriod = React.useMemo(
+    () =>
+      diffMonths(parseDate(paySubsidyEndDate), parseDate(paySubsidyStartDate)),
+    [paySubsidyStartDate, paySubsidyEndDate]
   );
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
@@ -115,9 +133,23 @@ const useSalaryBenefitCalculatorData = (
     []
   );
 
+  const paySubsidyPercentageOptions = React.useMemo(
+    (): OptionType[] =>
+      PAY_SUBSIDY_OPTIONS.map((option) => ({
+        label: `${option}%`,
+        value: option,
+      })),
+    []
+  );
+
   const getStateAidMaxPercentageSelectValue = (): OptionType | undefined =>
     stateAidMaxPercentageOptions.find(
       (o) => o.value?.toString() === values?.stateAidMaxPercentage?.toString()
+    );
+
+  const getPaySubsidyPercentageSelectValue = (): OptionType | undefined =>
+    paySubsidyPercentageOptions.find(
+      (o) => o.value?.toString() === values?.paySubsidyPercent?.toString()
     );
 
   useEffect(() => {
@@ -125,6 +157,17 @@ const useSalaryBenefitCalculatorData = (
       void setFieldValue(fields.endDate.name, startDate);
     }
   }, [grantedPeriod, startDate, fields.endDate.name, setFieldValue]);
+
+  useEffect(() => {
+    if (paySubsidyPeriod < 0) {
+      void setFieldValue(fields.paySubsidyEndDate.name, paySubsidyStartDate);
+    }
+  }, [
+    paySubsidyPeriod,
+    paySubsidyStartDate,
+    fields.paySubsidyEndDate.name,
+    setFieldValue,
+  ]);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
@@ -148,11 +191,14 @@ const useSalaryBenefitCalculatorData = (
     fields,
     language,
     grantedPeriod,
+    paySubsidyPeriod,
     calculationsErrors,
     getErrorMessage,
     handleSubmit,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,
+    paySubsidyPercentageOptions,
+    getPaySubsidyPercentageSelectValue,
   };
 };
 
