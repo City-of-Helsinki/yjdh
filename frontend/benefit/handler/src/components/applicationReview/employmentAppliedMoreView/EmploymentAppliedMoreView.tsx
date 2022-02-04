@@ -101,7 +101,6 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             invalid={!!getErrorMessage(fields.endDate.name)}
             aria-invalid={!!getErrorMessage(fields.endDate.name)}
             errorText={getErrorMessage(fields.endDate.name)}
-            required
           />
         </$GridCell>
 
