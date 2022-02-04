@@ -1,4 +1,5 @@
 import json
+import uuid
 from datetime import timedelta
 from typing import List, Optional
 
@@ -11,16 +12,22 @@ from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
+from shared.common.tests.conftest import staff_client, superuser_client
 from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import get_supported_languages, YouthApplicationRejectedReason
 from applications.models import YouthApplication
+from common.tests.conftest import api_client
 from common.tests.factories import (
     ActiveYouthApplicationFactory,
     InactiveYouthApplicationFactory,
     YouthApplicationFactory,
 )
+
+
+def get_random_pk() -> uuid.UUID:
+    return uuid.uuid4()
 
 
 def get_required_fields() -> List[str]:
@@ -90,30 +97,93 @@ def test_youth_applications_list(api_client):
 
 
 @pytest.mark.django_db
-def test_youth_applications_process_valid_pk(api_client, youth_application):
-    response = api_client.get(get_processing_url(pk=youth_application.pk))
-    assert response.status_code == status.HTTP_501_NOT_IMPLEMENTED
+@pytest.mark.parametrize(
+    "mock_flag,client_fixture_name,expected_status_code",
+    [
+        (
+            mock_flag,
+            client_fixture_function.__name__,
+            status.HTTP_501_NOT_IMPLEMENTED if mock_flag else status.HTTP_403_FORBIDDEN,
+        )
+        for mock_flag in [False, True]
+        for client_fixture_function in [api_client, staff_client, superuser_client]
+    ],
+)
+def test_youth_applications_process_valid_pk(
+    request,
+    youth_application,
+    settings,
+    mock_flag,
+    client_fixture_name,
+    expected_status_code,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    response = client_fixture.get(get_processing_url(pk=youth_application.pk))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
-def test_youth_applications_process_invalid_pk(api_client):
-    response = api_client.get(get_processing_url(pk="invalid value"))
-    assert response.status_code == status.HTTP_404_NOT_FOUND
+@pytest.mark.parametrize(
+    "mock_flag,expected_status_code",
+    [
+        (False, status.HTTP_403_FORBIDDEN),
+        (True, status.HTTP_404_NOT_FOUND),
+    ],
+)
+def test_youth_applications_process_unused_pk(
+    api_client, settings, mock_flag, expected_status_code
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    response = api_client.get(get_processing_url(pk=get_random_pk()))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
-def test_youth_applications_detail_valid_pk(api_client, youth_application):
-    response = api_client.get(get_detail_url(pk=youth_application.pk))
-    assert response.status_code == status.HTTP_200_OK
+@pytest.mark.parametrize(
+    "mock_flag,client_fixture_name,expected_status_code",
+    [
+        (
+            mock_flag,
+            client_fixture_function.__name__,
+            status.HTTP_200_OK if mock_flag else status.HTTP_403_FORBIDDEN,
+        )
+        for mock_flag in [False, True]
+        for client_fixture_function in [api_client, staff_client, superuser_client]
+    ],
+)
+def test_youth_applications_detail_valid_pk(
+    request,
+    youth_application,
+    settings,
+    mock_flag,
+    client_fixture_name,
+    expected_status_code,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    response = client_fixture.get(get_detail_url(pk=youth_application.pk))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
-def test_youth_applications_detail_invalid_pk(api_client):
-    response = api_client.get(get_detail_url(pk="invalid value"))
-    assert response.status_code == status.HTTP_404_NOT_FOUND
+@pytest.mark.parametrize(
+    "mock_flag,expected_status_code",
+    [
+        (False, status.HTTP_403_FORBIDDEN),
+        (True, status.HTTP_404_NOT_FOUND),
+    ],
+)
+def test_youth_applications_detail_unused_pk(
+    api_client, settings, mock_flag, expected_status_code
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    response = api_client.get(get_detail_url(pk=get_random_pk()))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize("field", get_handler_fields())
 def test_youth_applications_detail_response_field(api_client, youth_application, field):
     response = api_client.get(get_detail_url(pk=youth_application.pk))
@@ -121,6 +191,7 @@ def test_youth_applications_detail_response_field(api_client, youth_application,
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize(
     "input_encrypted_vtj_json,expected_output_encrypted_vtj_json",
     [
@@ -141,8 +212,8 @@ def test_youth_applications_detail_encrypted_vtj_json(
 
 
 @pytest.mark.django_db
-def test_youth_applications_activate_invalid_pk(api_client):
-    response = api_client.get(get_activation_url(pk="invalid value"))
+def test_youth_applications_activate_unused_pk(api_client):
+    response = api_client.get(get_activation_url(pk=get_random_pk()))
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 

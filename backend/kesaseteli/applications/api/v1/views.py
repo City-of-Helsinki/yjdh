@@ -68,10 +68,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
     @action(methods=["get"], detail=True)
     def process(self, request, pk=None) -> HttpResponse:
-        try:
-            YouthApplication.objects.get(pk=pk)
-        except (exceptions.ValidationError, YouthApplication.DoesNotExist):
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        youth_application: YouthApplication = self.get_object()  # noqa: F841
 
         # TODO: Implement
         return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
@@ -79,10 +76,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @transaction.atomic
     @action(methods=["get"], detail=True)
     def activate(self, request, pk=None) -> HttpResponse:
-        try:
-            youth_application = YouthApplication.objects.select_for_update().get(pk=pk)
-        except (exceptions.ValidationError, YouthApplication.DoesNotExist):
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        youth_application: YouthApplication = self.get_object()
 
         # Lock same person's applications to prevent activation of more than one of them
         same_persons_apps = YouthApplication.objects.select_for_update().filter(
