@@ -1,11 +1,19 @@
-from rest_framework.viewsets import ViewSet
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
 from events.api.v1.serializers import TetUpsertEventSerializer
-from events.services import list_job_postings_for_user, add_tet_event, get_tet_event, delete_event, update_tet_event
+from events.services import (
+    add_tet_event,
+    delete_event,
+    get_tet_event,
+    list_job_postings_for_user,
+    update_tet_event,
+)
 
 # TODO do we need AuditLoggingViewSet from shared?
+
+
 class JobPostingsViewSet(ViewSet):
     """CRUD operations for TET job postings"""
 
@@ -27,9 +35,7 @@ class JobPostingsViewSet(ViewSet):
         serializer = TetUpsertEventSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         event = add_tet_event(serializer.data, request.user)
-        return Response(
-            event, status=status.HTTP_201_CREATED
-        )
+        return Response(event, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None):
         serializer = TetUpsertEventSerializer(data=request.data)

@@ -1,6 +1,9 @@
 from events.linkedevents import LinkedEventsClient
-from events.transformations import enrich_create_event, enrich_update_event, reduce_get_event
-
+from events.transformations import (
+    enrich_create_event,
+    enrich_update_event,
+    reduce_get_event,
+)
 
 client = LinkedEventsClient()
 
@@ -49,4 +52,3 @@ def delete_event(id, user):
 
 def search_job_postings(q):
     pass
-

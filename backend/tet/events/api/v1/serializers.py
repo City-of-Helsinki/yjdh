@@ -1,11 +1,12 @@
 from rest_framework.serializers import (
-    Serializer,
-    DictField,
-    ListField,
-    URLField,
     CharField,
+    DictField,
     EmailField,
+    ListField,
+    Serializer,
+    URLField,
 )
+
 
 class CustomDataSerializer(Serializer):
     spots = CharField(max_length=3)
@@ -21,9 +22,7 @@ class TetUpsertEventSerializer(Serializer):
     name = DictField(child=CharField(max_length=200))
     description = DictField(child=CharField(max_length=2000))
     location = DictField(child=URLField())
-    keywords = ListField(
-        child=DictField(child=URLField()), min_length=1, max_length=30
-    )
+    keywords = ListField(child=DictField(child=URLField()), min_length=1, max_length=30)
     start_time = CharField(max_length=30)
     end_time = CharField(max_length=30, allow_null=True)
     date_published = CharField(max_length=30, allow_null=True)
