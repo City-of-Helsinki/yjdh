@@ -1,6 +1,5 @@
-import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
+import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import TestController from 'testcafe';
@@ -22,7 +21,7 @@ let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 fixture('Application')
   .page(url)
-  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);

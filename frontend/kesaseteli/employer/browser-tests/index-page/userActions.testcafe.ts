@@ -1,9 +1,8 @@
-import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
+import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import {
   getHeaderComponents,
   Translation,
 } from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import { doEmployerLogin } from '../actions/employer-header.actions';
@@ -20,7 +19,7 @@ let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appNameTranslation);
