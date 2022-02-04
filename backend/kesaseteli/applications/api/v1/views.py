@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.core import exceptions
+from django.db import transaction
 from django.db.models import Func
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils.text import format_lazy
@@ -75,14 +76,21 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         # TODO: Implement
         return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
 
+    @transaction.atomic
     @action(methods=["get"], detail=True)
     def activate(self, request, pk=None) -> HttpResponse:
         try:
-            youth_application = YouthApplication.objects.get(pk=pk)
+            youth_application = YouthApplication.objects.select_for_update().get(pk=pk)
         except (exceptions.ValidationError, YouthApplication.DoesNotExist):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
-        if youth_application.is_active:
+        # Lock same person's applications to prevent activation of more than one of them
+        same_persons_apps = YouthApplication.objects.select_for_update().filter(
+            social_security_number=youth_application.social_security_number
+        )
+        list(same_persons_apps)  # Force evaluation of queryset to lock its rows
+
+        if same_persons_apps.active().exists():
             return HttpResponseRedirect(youth_application.already_activated_page_url())
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())

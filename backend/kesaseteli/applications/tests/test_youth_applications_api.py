@@ -235,6 +235,39 @@ def test_youth_applications_activate_expired_active(
 
 
 @pytest.mark.django_db
+def test_youth_applications_dual_activate_unexpired_inactive(
+    api_client,
+    make_youth_application_activation_link_unexpired,
+):
+    app_1 = InactiveYouthApplicationFactory()
+    app_2 = InactiveYouthApplicationFactory(
+        social_security_number=app_1.social_security_number
+    )
+
+    # Make sure the source objects are set up correctly
+    assert not app_1.is_active
+    assert not app_1.has_activation_link_expired
+    assert not app_2.is_active
+    assert not app_2.has_activation_link_expired
+    assert app_1.social_security_number == app_2.social_security_number
+    assert app_1.email != app_2.email
+
+    response_1 = api_client.get(get_activation_url(app_1.pk))
+    response_2 = api_client.get(get_activation_url(app_2.pk))
+
+    app_1.refresh_from_db()
+    app_2.refresh_from_db()
+
+    assert app_1.is_active
+    assert response_1.status_code == status.HTTP_302_FOUND
+    assert response_1.url == app_1.activated_page_url()
+
+    assert not app_2.is_active
+    assert response_2.status_code == status.HTTP_302_FOUND
+    assert response_2.url == app_2.already_activated_page_url()
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "test_value",
     [
