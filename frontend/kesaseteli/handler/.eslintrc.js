@@ -25,6 +25,7 @@ module.exports = {
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
     'react/function-component-definition': 'off',
     'sonarjs/no-nested-template-literals': 'off',
+    'unicorn/prefer-node-protocol': 'off',
   },
   overrides: [
     {
