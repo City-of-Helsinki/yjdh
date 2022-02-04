@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from events.api.v1.serializers import TetUpsertEventSerializer
-from events.services import list_job_postings_for_user, add_tet_event
+from events.services import list_job_postings_for_user, add_tet_event, get_tet_event, delete_event, update_tet_event
 
 # TODO do we need AuditLoggingViewSet from shared?
 class JobPostingsViewSet(ViewSet):
@@ -17,6 +17,12 @@ class JobPostingsViewSet(ViewSet):
         # serializer = TetPostingSerializer(queryset, many=True)
         # return serializer.data)
 
+    def retrieve(self, request, pk=None):
+        if pk is not None:
+            return Response(get_tet_event(pk, request.user))
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
     def create(self, request):
         serializer = TetUpsertEventSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -25,3 +31,18 @@ class JobPostingsViewSet(ViewSet):
             event, status=status.HTTP_201_CREATED
         )
 
+    def update(self, request, pk=None):
+        serializer = TetUpsertEventSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        updated_event = update_tet_event(pk, serializer.data, request.user)
+        if pk is not None:
+            return Response(updated_event)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def destroy(self, request, pk=None):
+        if pk is not None:
+            response_status = delete_event(pk, request.user)
+            return Response(status=response_status)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)

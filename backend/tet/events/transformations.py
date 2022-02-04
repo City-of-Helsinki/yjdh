@@ -30,30 +30,12 @@ CREATE_EVENT_BASE_DATA = {
 }
 
 
-
-def _new_from(object, keys):
+def _new_from(obj, keys):
     new = {}
     for key in keys:
-        new[key] = object[key]
+        new[key] = obj[key]
     return new
 
-def event_to_job_posting(event):
-    """Transform event into job posting
-
-
-    """
-
-    # These fields always exist in an event
-    # posting = dict(
-    #     id=event['id'],
-    #     name=_get_localized(event['name']),
-    #     start_time=event['start_time'],
-    #     end_time=event['end_time'],
-    #     location=_get_id(event['location'])
-    #
-    #
-    # )
-    # return posting
 
 def enrich_create_event(event, publisher, email):
     event.update(EVENT_BASE_DATA)
@@ -66,11 +48,16 @@ def enrich_create_event(event, publisher, email):
     return event
 
 
-def enrich_update_event(event):
-    pass
-
+def enrich_update_event(event, email):
+    event.update(EVENT_BASE_DATA)
+    event['short_description'] = event['description']  # TODO substring
+    event['custom_data']['editor_email'] = email
+    # TODO check that update doesn't delete any fields
+    return event
 
 def reduce_get_event(event):
     tetevent =  _new_from(event, ('id', 'name', 'description', 'location', 'keywords', 'date_published', 'start_time', 'end_time', 'custom_data'))
-    del tetevent["custom_data"]["editor_email"]
+    # TODO why is it None?
+    if tetevent["custom_data"] is not None and "editor_email" in tetevent["custom_data"]:
+        del tetevent["custom_data"]["editor_email"]
     return tetevent
