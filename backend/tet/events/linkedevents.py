@@ -1,8 +1,12 @@
+import logging
+
 import requests
 from django.conf import settings
 from urllib.parse import urljoin
 from datetime import date
 import json
+
+LOGGER = logging.getLogger(__name__)
 
 TEST_EVENT = json.loads("""        {
             "id": "tet:af7jcccbra",
@@ -144,3 +148,10 @@ class LinkedEventsClient:
     def get_event(self, eventid, user):
         # TODO check that user is allowed to access the event
         return None
+
+    def create_event(self, event):
+        r = requests.post(urljoin(settings.LINKEDEVENTS_URL, 'event/'), headers=self._headers(), data=json.dumps(event))
+        LOGGER.error(r.text)
+        r.raise_for_status()
+        return r.json()
+
