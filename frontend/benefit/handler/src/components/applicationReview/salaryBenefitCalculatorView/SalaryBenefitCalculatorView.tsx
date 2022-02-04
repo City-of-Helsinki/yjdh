@@ -69,49 +69,49 @@ const SalaryBenefitCalculatorView: React.FC<
 
       <$GridCell $colStart={4} $colSpan={2}>
         <TextInput
-          id=""
-          name=""
-          label={t(`${translationsBase}.monthlyPay`)}
+          id={fields.monthlyPay.name}
+          name={fields.monthlyPay.name}
+          label={fields.monthlyPay.label}
           onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.monthlyPay.name, e.target.value)
           }
           value={formik.values.monthlyPay}
-          invalid={false}
-          aria-invalid={false}
-          errorText=""
+          invalid={!!getErrorMessage(fields.monthlyPay.name)}
+          aria-invalid={!!getErrorMessage(fields.monthlyPay.name)}
+          errorText={getErrorMessage(fields.monthlyPay.name)}
         />
       </$GridCell>
 
       <$GridCell $colStart={6} $colSpan={2}>
         <TextInput
-          id=""
-          name=""
-          label={t(`${translationsBase}.otherExpenses`)}
+          id={fields.otherExpenses.name}
+          name={fields.otherExpenses.name}
+          label={fields.monthlyPay.label}
           onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.otherExpenses.name, e.target.value)
           }
           value={formik.values.otherExpenses}
-          invalid={false}
-          aria-invalid={false}
-          errorText=""
+          invalid={!!getErrorMessage(fields.otherExpenses.name)}
+          aria-invalid={!!getErrorMessage(fields.otherExpenses.name)}
+          errorText={getErrorMessage(fields.otherExpenses.name)}
         />
       </$GridCell>
 
       <$GridCell $colStart={8} $colSpan={2}>
         <TextInput
-          id=""
-          name=""
-          label={t(`${translationsBase}.vacationMoney`)}
+          id={fields.vacationMoney.name}
+          name={fields.vacationMoney.name}
+          label={fields.vacationMoney.label}
           onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.vacationMoney.name, e.target.value)
           }
           value={formik.values.vacationMoney}
-          invalid={false}
-          aria-invalid={false}
-          errorText=""
+          invalid={!!getErrorMessage(fields.vacationMoney.name)}
+          aria-invalid={!!getErrorMessage(fields.vacationMoney.name)}
+          errorText={getErrorMessage(fields.vacationMoney.name)}
         />
       </$GridCell>
 
@@ -141,7 +141,7 @@ const SalaryBenefitCalculatorView: React.FC<
           value={getStateAidMaxPercentageSelectValue()}
           helper=""
           optionLabelField="label"
-          label={t(`${translationsBase}.maximumAid`)}
+          label={fields.stateAidMaxPercentage.label}
           onChange={(stateAidMaxPercentage: Option) =>
             formik.setFieldValue(
               fields.stateAidMaxPercentage.name,
@@ -149,10 +149,11 @@ const SalaryBenefitCalculatorView: React.FC<
             )
           }
           options={stateAidMaxPercentageOptions}
-          id="stateAidMaxPercentage"
+          id={fields.stateAidMaxPercentage.name}
           placeholder={t('common:select')}
-          invalid={false}
-          aria-invalid={false}
+          invalid={!!getErrorMessage(fields.stateAidMaxPercentage.name)}
+          aria-invalid={!!getErrorMessage(fields.stateAidMaxPercentage.name)}
+          error={getErrorMessage(fields.stateAidMaxPercentage.name)}
         />
       </$GridCell>
 
@@ -161,7 +162,7 @@ const SalaryBenefitCalculatorView: React.FC<
           value={getPaySubsidyPercentageSelectValue()}
           helper=""
           optionLabelField="label"
-          label={t(`${translationsBase}.salarySubsidyPercentage`)}
+          label={fields.paySubsidyPercent.label}
           onChange={(paySubsidyPercent: Option) =>
             formik.setFieldValue(
               fields.paySubsidyPercent.name,
@@ -169,10 +170,11 @@ const SalaryBenefitCalculatorView: React.FC<
             )
           }
           options={paySubsidyPercentageOptions}
-          id="paySubsidyPercent"
+          id={fields.paySubsidyPercent.name}
           placeholder={t('common:select')}
-          invalid={false}
-          aria-invalid={false}
+          invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
+          aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
+          error={getErrorMessage(fields.paySubsidyPercent.name)}
         />
       </$GridCell>
 
@@ -286,13 +288,15 @@ const SalaryBenefitCalculatorView: React.FC<
               row.rowType
             );
             const isTotalRowType = CALCULATION_TOTAL_ROW_TYPE === row.rowType;
+            const isDescriptionRowType =
+              CALCULATION_DESCRIPTION_ROW_TYPES.includes(row.rowType);
             return (
               <div key={row.id}>
                 <$CalculatorTableRow isTotal={isSummaryRowType}>
-                  <$ViewField isBold={isTotalRowType}>
+                  <$ViewField isBold={isTotalRowType || isDescriptionRowType}>
                     {row.descriptionFi}
                   </$ViewField>
-                  {!CALCULATION_DESCRIPTION_ROW_TYPES.includes(row.rowType) && (
+                  {!isDescriptionRowType && (
                     <$ViewField isBold={isTotalRowType}>
                       {row.amount}
                     </$ViewField>
