@@ -243,9 +243,7 @@ const SalaryBenefitCalculatorView: React.FC<
             errorText={getErrorMessage(fields.startDate.name)}
           />
 
-          <div style={{ paddingLeft: `${theme.spacing.s}`, fontWeight: 500 }}>
-            -
-          </div>
+          <DateFieldsSeparator />
         </$DateTimeDuration>
       </$GridCell>
 
