@@ -2,13 +2,12 @@ from django.contrib import admin
 from django.http import HttpResponse, JsonResponse
 from django.urls import include, path
 from django.views.decorators.http import require_GET
-
 from rest_framework import routers
 
 from events.api.v1 import views as event_views
 
 router = routers.DefaultRouter()
-router.register(r"events", event_views.JobPostingsViewSet, basename='jobpostings')
+router.register(r"events", event_views.JobPostingsViewSet, basename="jobpostings")
 
 urlpatterns = [
     path("v1/", include((router.urls, "v1"), namespace="v1")),
@@ -18,6 +17,7 @@ urlpatterns = [
 ]
 
 # urlpatterns += router.urls
+
 
 @require_GET
 def healthz_handler(*args, **kwargs):
