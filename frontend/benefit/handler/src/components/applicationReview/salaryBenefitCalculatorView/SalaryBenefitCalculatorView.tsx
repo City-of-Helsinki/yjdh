@@ -24,7 +24,7 @@ import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData
 
 const SalaryBenefitCalculatorView: React.FC<
   SalaryBenefitCalculatorViewProps
-> = ({ application }) => {
+> = ({ data }) => {
   const {
     t,
     translationsBase,
@@ -40,7 +40,7 @@ const SalaryBenefitCalculatorView: React.FC<
     getStateAidMaxPercentageSelectValue,
     paySubsidyPercentageOptions,
     getPaySubsidyPercentageSelectValue,
-  } = useSalaryBenefitCalculatorData(application);
+  } = useSalaryBenefitCalculatorData(data);
 
   return (
     <ReviewSection withMargin>
@@ -282,8 +282,8 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colSpan={7}>
-        {application?.calculation?.rows &&
-          application?.calculation?.rows.map((row) => {
+        {data?.calculation?.rows &&
+          data?.calculation?.rows.map((row) => {
             const isSummaryRowType = CALCULATION_SUMMARY_ROW_TYPES.includes(
               row.rowType
             );

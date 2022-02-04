@@ -5,7 +5,7 @@ import {
 import { PAY_SUBSIDY_OPTIONS } from 'benefit/applicant/constants';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import {
-  HandlerApplication,
+  Application,
   SalaryCalculation,
 } from 'benefit/handler/types/application';
 import { ErrorData } from 'benefit/handler/types/common';
@@ -49,7 +49,7 @@ type ExtendedComponentProps = {
 };
 
 const useSalaryBenefitCalculatorData = (
-  application: HandlerApplication
+  application: Application
 ): ExtendedComponentProps => {
   const language = useLocale();
   const theme = useTheme();
@@ -75,13 +75,14 @@ const useSalaryBenefitCalculatorData = (
         application?.calculation?.stateAidMaxPercentage,
       [CALCULATION_SALARY_KEYS.VACATION_MONEY]:
         application?.calculation?.vacationMoney,
-      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_PERCENT]:
-        application?.paySubsidies[0].paySubsidyPercent,
+      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_PERCENT]: application?.paySubsidies
+        ? application?.paySubsidies[0].paySubsidyPercent
+        : 0,
       [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_START_DATE]: convertToUIDateFormat(
-        application?.paySubsidies[0].startDate
+        application?.paySubsidies ? application?.paySubsidies[0].startDate : ''
       ),
       [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_END_DATE]: convertToUIDateFormat(
-        application?.paySubsidies[0].endDate
+        application?.paySubsidies ? application?.paySubsidies[0].endDate : ''
       ),
     },
     validationSchema: getValidationSchema(t),

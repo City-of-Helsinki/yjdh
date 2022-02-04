@@ -65,7 +65,7 @@ const ApplicationReview: React.FC = () => {
         <ConsentView data={application} />
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
-            <SalaryBenefitCalculatorView application={application} />
+            <SalaryBenefitCalculatorView data={application} />
             <EmploymenAppliedMoreView data={application} />
             <ApplicationProcessingView />
           </>

@@ -382,12 +382,9 @@ export type Application = {
   approveTerms?: ApproveTerms;
   calculation?: Calculation;
   submittedAt?: string;
+  paySubsidies?: PaySubsidy[];
 } & Step1 &
   Step2;
-
-export type HandlerApplication = {
-  paySubsidies: PaySubsidy[];
-} & Application;
 
 export type SubmittedApplication = {
   applicationNumber: number;
@@ -399,5 +396,5 @@ export interface ApplicationReviewViewProps {
 }
 
 export interface SalaryBenefitCalculatorViewProps {
-  application: HandlerApplication;
+  data: Application;
 }

@@ -6,7 +6,7 @@ import snakecaseKeys from 'snakecase-keys';
 import {
   ApplicationData,
   CalculationCommon,
-  HandlerApplication,
+  Application,
   PaySubsidy,
   SalaryCalculation,
 } from '../types/application';
@@ -20,7 +20,7 @@ interface HandlerReviewActions {
 }
 
 const useHandlerReviewActions = (
-  application: HandlerApplication
+  application: Application
 ): HandlerReviewActions => {
   const updateApplicationQuery = useUpdateApplicationQuery();
   const [calculationsErrors, setCalculationErrors] = useState<
