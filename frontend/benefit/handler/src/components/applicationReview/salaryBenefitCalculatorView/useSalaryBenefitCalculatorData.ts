@@ -1,8 +1,8 @@
+import { PAY_SUBSIDY_OPTIONS } from 'benefit/applicant/constants';
 import {
   CALCULATION_SALARY_KEYS,
   STATE_AID_MAX_PERCENTAGE_OPTIONS,
 } from 'benefit/handler/constants';
-import { PAY_SUBSIDY_OPTIONS } from 'benefit/applicant/constants';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import {
   Application,
@@ -26,6 +26,7 @@ import {
 } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
 import { DefaultTheme, useTheme } from 'styled-components';
+
 import { getValidationSchema } from '../employmentAppliedMoreView/utils/validation';
 
 type ExtendedComponentProps = {
@@ -59,7 +60,7 @@ const useSalaryBenefitCalculatorData = (
   const { calculateSalaryBenefit, calculationsErrors } =
     useHandlerReviewActions(application);
 
-  const formik = useFormik({
+  const formik = useFormik<SalaryCalculation>({
     initialValues: {
       [CALCULATION_SALARY_KEYS.START_DATE]: convertToUIDateFormat(
         application?.calculation?.startDate
@@ -85,7 +86,7 @@ const useSalaryBenefitCalculatorData = (
         application?.paySubsidies ? application?.paySubsidies[0].endDate : ''
       ),
     },
-    validationSchema: getValidationSchema(t),
+    validationSchema: getValidationSchema(),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
@@ -143,15 +144,19 @@ const useSalaryBenefitCalculatorData = (
     []
   );
 
-  const getStateAidMaxPercentageSelectValue = (): OptionType | undefined =>
-    stateAidMaxPercentageOptions.find(
-      (o) => o.value?.toString() === values?.stateAidMaxPercentage?.toString()
+  const getStateAidMaxPercentageSelectValue = (): OptionType | undefined => {
+    const { stateAidMaxPercentage } = values;
+    return stateAidMaxPercentageOptions.find(
+      (o) => o.value?.toString() === stateAidMaxPercentage?.toString()
     );
+  };
 
-  const getPaySubsidyPercentageSelectValue = (): OptionType | undefined =>
-    paySubsidyPercentageOptions.find(
-      (o) => o.value?.toString() === values?.paySubsidyPercent?.toString()
+  const getPaySubsidyPercentageSelectValue = (): OptionType | undefined => {
+    const { paySubsidyPercent } = values;
+    return paySubsidyPercentageOptions.find(
+      (o) => o.value?.toString() === paySubsidyPercent?.toString()
     );
+  };
 
   useEffect(() => {
     if (grantedPeriod < 0) {

@@ -4,6 +4,7 @@ import { Button, DateInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
+import { DateFieldsSeparator } from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
 import {
   $Grid,
   $GridCell,
@@ -84,9 +85,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             errorText={getErrorMessage(fields.startDate.name)}
           />
 
-          <div style={{ padding: `0 ${theme.spacing.s}`, fontWeight: 500 }}>
-            -
-          </div>
+          <DateFieldsSeparator />
 
           <DateInput
             id={fields.endDate.name}

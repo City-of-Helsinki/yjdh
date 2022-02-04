@@ -1,14 +1,15 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import {
+  CALCULATION_DESCRIPTION_ROW_TYPES,
   CALCULATION_SUMMARY_ROW_TYPES,
   CALCULATION_TOTAL_ROW_TYPE,
-  CALCULATION_DESCRIPTION_ROW_TYPES,
 } from 'benefit/handler/constants';
 import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
+import { DateFieldsSeparator } from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -200,9 +201,7 @@ const SalaryBenefitCalculatorView: React.FC<
             }}
             value={formik.values.paySubsidyStartDate}
           />
-          <div style={{ padding: `0 ${theme.spacing.s}`, fontWeight: 500 }}>
-            -
-          </div>
+          <DateFieldsSeparator />
           <DateInput
             id={fields.paySubsidyEndDate.name}
             name={fields.paySubsidyEndDate.name}

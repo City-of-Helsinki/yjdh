@@ -50,7 +50,7 @@ const useEmploymentAppliedMoreView = (
   const { onCalculateEmployment, calculationsErrors } =
     useHandlerReviewActions(application);
 
-  const formik = useFormik({
+  const formik = useFormik<CalculationCommon>({
     initialValues: {
       [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: convertToUIDateFormat(
         application?.calculation?.startDate
@@ -59,7 +59,7 @@ const useEmploymentAppliedMoreView = (
         application?.calculation?.endDate
       ),
     },
-    validationSchema: getValidationSchema(t),
+    validationSchema: getValidationSchema(),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,

@@ -4,9 +4,9 @@ import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import {
+  Application,
   ApplicationData,
   CalculationCommon,
-  Application,
   PaySubsidy,
   SalaryCalculation,
 } from '../types/application';
@@ -82,7 +82,7 @@ const useHandlerReviewActions = (
           stateAidMaxPercentage,
           otherExpenses,
         },
-        paySubsidies: application.paySubsidies.map(
+        paySubsidies: application.paySubsidies?.map(
           (item: PaySubsidy, index: number) => {
             if (index === 0)
               return {

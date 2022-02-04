@@ -194,6 +194,16 @@ export type CalculationData = {
   handler_details: HandlerDetailsData;
 };
 
+export type PaySubsidyData = {
+  id?: string;
+  start_date: string;
+  end_date: string;
+  pay_subsidy_percent: number;
+  work_time_percent?: number;
+  disability_or_illness?: boolean;
+  duration_in_months_rounded: string;
+};
+
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
@@ -247,6 +257,7 @@ export type ApplicationData = {
   approve_terms?: ApproveTermsData;
   calculation?: CalculationData;
   submitted_at?: string;
+  pay_subsidies?: PaySubsidyData[];
 };
 
 export type ApplicationListItemData = {
