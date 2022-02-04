@@ -26,7 +26,7 @@ jobs:
             port: 3000
           - service: ks-youth
             context: kesaseteli/youth
-            url: https://yjdh-youth-ui-test.agw.arodevtest.hel.fi
+            url: https://kesaseteli-youth-ui-test.agw.arodevtest.hel.fi
     runs-on: ubuntu-latest
     name: Acceptance tests for Test Environment
     defaults:
