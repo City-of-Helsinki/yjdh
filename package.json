@@ -10,6 +10,7 @@
     "employer": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.employer.yml up",
     "handler": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.handler.yml up",
     "youth": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.youth.yml up",
-    "tet-admin": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.tet-admin.yml up"
+    "tet-admin": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.tet-admin.yml up",
+    "tet-youth": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.tet-youth.yml up"
   }
 }
