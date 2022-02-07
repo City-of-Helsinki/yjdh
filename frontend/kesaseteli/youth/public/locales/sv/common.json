@@ -47,28 +47,28 @@
     }
   },
   "youthApplication": {
-    "title": "SV Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
-    "paragraph_1": "SV Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "title": "Registrera dig och få din personlig Sommarsedel",
+    "paragraph_1": "Det är roligt och enkelt att tjäna egna pengar!\nSommarsedeln är personlig och värd 325 euro för arbetsgivaren.",
     "form" : {
-      "title": "SV Setelin tiedot",
-      "info": "SV Täytäthän tiedot samalla tavalla kuin kelakortissasi",
+      "title": "Information om Sommarsedeln",
+      "info": "Fyll i uppgifterna på samma sätt som på ditt FPA-kort",
       "button": "SV Lähetä tiedot",
-      "first_name" : "SV Etunimi",
-      "last_name": "SV Sukunimi",
-      "social_security_number": "SV Henkilötunnus",
-      "postcode": "SV Postinumero",
-      "schoolsDropdown": "SV Koulu",
+      "first_name" : "Förnamn",
+      "last_name": "Efternamn",
+      "social_security_number": "Personbeteckning",
+      "postcode": "Post nummer",
+      "schoolsDropdown": "Skola",
       "schoolsLoading": "SV Ladataan vaihtoehtoja...",
       "schoolsPlaceholder": "SV Valitse koulusi listalta",
-      "is_unlisted_school": "SV Koulua ei löydy listalta",
+      "is_unlisted_school": "Skolan finns inte i listan",
       "schoolName": "SV Koulun nimi",
       "schoolNamePlaceholder": "SV Esim. Merilahden Peruskoulu",
-      "email": "SV Sähköpostiosoite",
-      "phone_number": "SV Puhelinnumero",
+      "email": "E-postadress",
+      "phone_number": "Telefonnummer",
       "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
-      "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
-      "sendButton": "SV Lähetä tiedot",
-      "requiredInfo": "SV Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/",
+      "sendButton": "Skicka informationen",
+      "requiredInfo": "Alla fält som är märkta med * är obligatoriska"
     }
   },
   "errors": {
@@ -84,29 +84,28 @@
   "thankyouPage" : {
     "title": "SV Kiitos!",
     "notificationTitle": "SV Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "SV Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
-    "goToFrontendPage": "SV Kesäseteli etusivulle"
+    "notificationMessage": "Fint! Du fick en aktiveringslänk för Sommarsedeln per e-post. Den måste aktiveras inom {{ expirationHours }} timmar.",
+    "goToFrontendPage": "Gå till Sommarsedelns förstasida"
   },
   "activationErrorPage" : {
     "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
   },
   "emailInUsePage" : {
-    "title": "SV Hups! Sähköposti on jo käytössä.",
-    "notificationMessage": "SV Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+    "title": "Hoppsan! E-postadressen används redan.",
+    "notificationMessage": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen."
   },
   "alreadyAssignedPage" : {
-    "title": "SV Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
-    "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+    "title": "Hoppsan! En Sommarsedel har redan beviljats med den information som du har lämnat.",
+    "notificationMessage": " Aktiveringslänken för Sommarsedeln har skickats till den e-postadress som du uppgav på registreringssidan."
   },
   "activatedPage" : {
-    "title": "SV Kesäsetelisi on nyt aktivoitu",
-    "notificationTitle": "SV Vahvistus onnistui",
-    "notificationMessage": "SV Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    "paragraph_1": "SV Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "title": "Din Sommarsedel är nu aktiverad!",
+    "notificationTitle": "Bekräftelsen lyckades",
+    "notificationMessage": "Fint! Du har skickat din information till Sommarsedelns eletroniska systemet. Efter att din ansökan har granskats får du Sommarsedlen och bruksanvisningar till din e-post."
   },
   "expiredPage" : {
-    "title": "SV Hups! Vahvistuslinkki on vanhentunut.",
-    "notificationMessage": "SV Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
+    "title": "Hoppsan! Bekräftelselänken har gått ut.",
+    "notificationMessage": " Det har tyvärr gått mer än {{ expirationHours }} timmar sedan registreringsbekräftelsen. Fyll i registreringsblanketten igen.",
     "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
   },
   "alreadyActivatedPage" : {
