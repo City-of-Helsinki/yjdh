@@ -6,7 +6,8 @@ trigger:
     - develop
   paths:
     include:
-    - frontend/tet/admin
+    - frontend/tet/admin/**
+    - frontend/*
     exclude:
     - README.md
 

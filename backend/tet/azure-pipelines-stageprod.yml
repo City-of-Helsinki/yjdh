@@ -6,7 +6,8 @@ trigger:
     - main
   paths:
     include:
-    - backend/tet
+    - backend/tet/**
+    - backend/shared/**
     exclude:
     - README.md
 
