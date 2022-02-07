@@ -39,6 +39,7 @@ type ExtendedComponentProps = {
   };
   language: Language;
   grantedPeriod: number;
+  appliedPeriod: number;
   paySubsidyPeriod: number;
   calculationsErrors: ErrorData | undefined | null;
   handleSubmit: () => void;
@@ -99,6 +100,15 @@ const useSalaryBenefitCalculatorData = (
 
   const grantedPeriod = React.useMemo(
     () => diffMonths(parseDate(endDate), parseDate(startDate)),
+    [endDate, startDate]
+  );
+
+  const appliedPeriod = React.useMemo(
+    () =>
+      diffMonths(
+        parseDate(application.endDate),
+        parseDate(application.startDate)
+      ),
     [endDate, startDate]
   );
 
@@ -197,6 +207,7 @@ const useSalaryBenefitCalculatorData = (
     fields,
     language,
     grantedPeriod,
+    appliedPeriod,
     paySubsidyPeriod,
     calculationsErrors,
     getErrorMessage,

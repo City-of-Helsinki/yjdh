@@ -34,6 +34,7 @@ type ExtendedComponentProps = {
   };
   language: Language;
   grantedPeriod: number;
+  appliedPeriod: number;
   calculationsErrors: ErrorData | undefined | null;
   handleSubmit: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
@@ -72,6 +73,15 @@ const useEmploymentAppliedMoreView = (
 
   const grantedPeriod = React.useMemo(
     () => diffMonths(parseDate(endDate), parseDate(startDate)),
+    [endDate, startDate]
+  );
+
+  const appliedPeriod = React.useMemo(
+    () =>
+      diffMonths(
+        parseDate(application.endDate),
+        parseDate(application.startDate)
+      ),
     [endDate, startDate]
   );
 
@@ -121,6 +131,7 @@ const useEmploymentAppliedMoreView = (
     fields,
     language,
     grantedPeriod,
+    appliedPeriod,
     calculationsErrors,
     getErrorMessage,
     handleSubmit,

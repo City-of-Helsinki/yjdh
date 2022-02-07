@@ -30,6 +30,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     fields,
     language,
     grantedPeriod,
+    appliedPeriod,
     calculationsErrors,
     getErrorMessage,
     handleSubmit,
@@ -40,12 +41,12 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
         <$GridCell $colSpan={6}>
           <$CalculatorText>{t(`${translationsBase}.header`)}</$CalculatorText>
           <$ViewField>
-            {formik.values.startDate && formik.values.endDate && (
+            {data.startDate && data.endDate && (
               <>
                 {t(`${translationsBase}.startEndDates`, {
-                  startDate: formik.values.startDate,
-                  endDate: formik.values.endDate,
-                  period: formatStringFloatValue(grantedPeriod),
+                  startDate: data.startDate,
+                  endDate: data.endDate,
+                  period: formatStringFloatValue(appliedPeriod),
                 })}
               </>
             )}

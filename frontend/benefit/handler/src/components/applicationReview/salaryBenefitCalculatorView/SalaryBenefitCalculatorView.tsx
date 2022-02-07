@@ -34,6 +34,7 @@ const SalaryBenefitCalculatorView: React.FC<
     fields,
     language,
     grantedPeriod,
+    appliedPeriod,
     paySubsidyPeriod,
     getErrorMessage,
     handleSubmit,
@@ -56,13 +57,13 @@ const SalaryBenefitCalculatorView: React.FC<
         </$CalculatorText>
       </$GridCell>
 
-      {formik.values.startDate && formik.values.endDate && (
+      {data.startDate && data.endDate && (
         <$GridCell $colStart={1} $colSpan={3} style={{ alignSelf: 'center' }}>
           <$ViewField>
             {t(`${translationsBase}.startEndDates`, {
-              startDate: formik.values.startDate,
-              endDate: formik.values.endDate,
-              period: formatStringFloatValue(grantedPeriod),
+              startDate: data.startDate,
+              endDate: data.endDate,
+              period: formatStringFloatValue(appliedPeriod),
             })}
           </$ViewField>
         </$GridCell>
