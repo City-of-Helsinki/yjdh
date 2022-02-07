@@ -1601,7 +1601,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     @transaction.atomic
     @do_delayed_calls_at_end()  # application recalculation
     def update(self, instance, validated_data):
-        if not ApplicationStatus.is_handler_editable_status(instance.status):
+        if not ApplicationStatus.is_handler_editable_status(
+            instance.status, validated_data["status"]
+        ):
             raise BenefitAPIException(
                 _("Application can not be changed in this status")
             )
