@@ -293,7 +293,12 @@ const SalaryBenefitCalculatorView: React.FC<
               CALCULATION_DESCRIPTION_ROW_TYPES.includes(row.rowType);
             return (
               <div key={row.id}>
-                <$CalculatorTableRow isTotal={isSummaryRowType}>
+                <$CalculatorTableRow
+                  isTotal={isSummaryRowType}
+                  style={{
+                    marginBottom: isSummaryRowType ? `${theme.spacing.m}` : '0',
+                  }}
+                >
                   <$ViewField isBold={isTotalRowType || isDescriptionRowType}>
                     {row.descriptionFi}
                   </$ViewField>
