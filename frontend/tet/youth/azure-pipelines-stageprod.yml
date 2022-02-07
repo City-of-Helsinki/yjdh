@@ -5,6 +5,8 @@ trigger:
     include:
     - main
   paths:
+    include:
+    - frontend/tet/youth
     exclude:
     - README.md
 

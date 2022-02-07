@@ -5,6 +5,8 @@ trigger:
     include:
     - develop
   paths:
+    include:
+    - frontend/tet/employer
     exclude:
     - README.md
 
