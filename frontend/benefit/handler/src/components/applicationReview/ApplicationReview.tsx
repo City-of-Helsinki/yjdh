@@ -2,6 +2,7 @@ import ApplicationHeader from 'benefit/handler/components/applicationHeader/Appl
 import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit/handler/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
+import { ReactElement } from 'react';
 import Container from 'shared/components/container/Container';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
@@ -28,14 +29,16 @@ const ApplicationReview: React.FC = () => {
   const { application, isLoading, t } = useApplicationReview();
   const theme = useTheme();
 
-  const CalculatorView = () => {
+  const CalculatorView = (): ReactElement | null => {
     switch (application.benefitType) {
       case BENEFIT_TYPES.EMPLOYMENT:
         return <EmploymenAppliedMoreView data={application} />;
+
       case BENEFIT_TYPES.SALARY:
         return <SalaryBenefitCalculatorView data={application} />;
+
       default:
-        return <></>;
+        return null;
     }
   };
 

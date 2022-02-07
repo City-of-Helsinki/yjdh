@@ -109,7 +109,7 @@ const useSalaryBenefitCalculatorData = (
         parseDate(application.endDate),
         parseDate(application.startDate)
       ),
-    [endDate, startDate]
+    [application.endDate, application.startDate]
   );
 
   const paySubsidyPeriod = React.useMemo(

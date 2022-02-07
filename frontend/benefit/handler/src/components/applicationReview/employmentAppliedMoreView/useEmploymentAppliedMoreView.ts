@@ -82,7 +82,7 @@ const useEmploymentAppliedMoreView = (
         parseDate(application.endDate),
         parseDate(application.startDate)
       ),
-    [endDate, startDate]
+    [application.endDate, application.startDate]
   );
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
