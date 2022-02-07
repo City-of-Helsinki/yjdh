@@ -1,7 +1,8 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit/handler/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
+import { ReactElement } from 'react';
 import Container from 'shared/components/container/Container';
 import StickyActionBar from 'shared/components/stickyActionBar/StickyActionBar';
 import { $StickyBarSpacing } from 'shared/components/stickyActionBar/StickyActionBar.sc';
@@ -27,6 +28,19 @@ import { useApplicationReview } from './useApplicationReview';
 const ApplicationReview: React.FC = () => {
   const { application, isLoading, t } = useApplicationReview();
   const theme = useTheme();
+
+  const CalculatorView = (): ReactElement | null => {
+    switch (application.benefitType) {
+      case BENEFIT_TYPES.EMPLOYMENT:
+        return <EmploymenAppliedMoreView data={application} />;
+
+      case BENEFIT_TYPES.SALARY:
+        return <SalaryBenefitCalculatorView data={application} />;
+
+      default:
+        return null;
+    }
+  };
 
   if (isLoading) {
     return (
@@ -65,8 +79,7 @@ const ApplicationReview: React.FC = () => {
         <ConsentView data={application} />
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
-            <SalaryBenefitCalculatorView />
-            <EmploymenAppliedMoreView data={application} />
+            <CalculatorView />
             <ApplicationProcessingView />
           </>
         )}

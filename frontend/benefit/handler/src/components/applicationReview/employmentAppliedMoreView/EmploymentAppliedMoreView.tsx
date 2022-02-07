@@ -4,6 +4,7 @@ import { Button, DateInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
+import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
 import {
   $Grid,
   $GridCell,
@@ -29,6 +30,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     fields,
     language,
     grantedPeriod,
+    appliedPeriod,
     calculationsErrors,
     getErrorMessage,
     handleSubmit,
@@ -39,12 +41,12 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
         <$GridCell $colSpan={6}>
           <$CalculatorText>{t(`${translationsBase}.header`)}</$CalculatorText>
           <$ViewField>
-            {formik.values.startDate && formik.values.endDate && (
+            {data.startDate && data.endDate && (
               <>
                 {t(`${translationsBase}.startEndDates`, {
-                  startDate: formik.values.startDate,
-                  endDate: formik.values.endDate,
-                  period: formatStringFloatValue(grantedPeriod),
+                  startDate: data.startDate,
+                  endDate: data.endDate,
+                  period: formatStringFloatValue(appliedPeriod),
                 })}
               </>
             )}
@@ -62,42 +64,46 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
               period: formatStringFloatValue(grantedPeriod),
             })}
           </$CalculatorText>
-          <$Grid>
-            <$GridCell $colStart={1} $colSpan={3}>
-              <DateInput
-                id={fields.startDate.name}
-                name={fields.startDate.name}
-                placeholder={fields.startDate.placeholder}
-                language={language}
-                onBlur={formik.handleBlur}
-                onChange={(value) => {
-                  formik.setFieldValue(fields.startDate.name, value);
-                }}
-                value={formik.values.startDate ?? ''}
-                invalid={!!getErrorMessage(fields.startDate.name)}
-                aria-invalid={!!getErrorMessage(fields.startDate.name)}
-                errorText={getErrorMessage(fields.startDate.name)}
-              />
-            </$GridCell>
-            <$GridCell $colSpan={3}>
-              <DateInput
-                id={fields.endDate.name}
-                name={fields.endDate.name}
-                placeholder={fields.endDate.placeholder}
-                language={language}
-                onBlur={formik.handleBlur}
-                onChange={(value) => {
-                  formik.setFieldValue(fields.endDate.name, value);
-                }}
-                value={formik.values.endDate ?? ''}
-                invalid={!!getErrorMessage(fields.endDate.name)}
-                aria-invalid={!!getErrorMessage(fields.endDate.name)}
-                errorText={getErrorMessage(fields.endDate.name)}
-                required
-              />
-            </$GridCell>
-          </$Grid>
         </$GridCell>
+
+        <$GridCell
+          $colStart={1}
+          $colSpan={5}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <DateInput
+            id={fields.startDate.name}
+            name={fields.startDate.name}
+            placeholder={fields.startDate.placeholder}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) => {
+              formik.setFieldValue(fields.startDate.name, value);
+            }}
+            value={formik.values.startDate ?? ''}
+            invalid={!!getErrorMessage(fields.startDate.name)}
+            aria-invalid={!!getErrorMessage(fields.startDate.name)}
+            errorText={getErrorMessage(fields.startDate.name)}
+          />
+
+          <DateFieldsSeparator />
+
+          <DateInput
+            id={fields.endDate.name}
+            name={fields.endDate.name}
+            placeholder={fields.endDate.placeholder}
+            language={language}
+            onBlur={formik.handleBlur}
+            onChange={(value) => {
+              formik.setFieldValue(fields.endDate.name, value);
+            }}
+            value={formik.values.endDate ?? ''}
+            invalid={!!getErrorMessage(fields.endDate.name)}
+            aria-invalid={!!getErrorMessage(fields.endDate.name)}
+            errorText={getErrorMessage(fields.endDate.name)}
+          />
+        </$GridCell>
+
         <$GridCell
           css={`
             margin-top: ${theme.spacing.m};

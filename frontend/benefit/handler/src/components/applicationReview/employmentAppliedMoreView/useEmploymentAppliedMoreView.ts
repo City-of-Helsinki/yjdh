@@ -34,6 +34,7 @@ type ExtendedComponentProps = {
   };
   language: Language;
   grantedPeriod: number;
+  appliedPeriod: number;
   calculationsErrors: ErrorData | undefined | null;
   handleSubmit: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
@@ -50,7 +51,7 @@ const useEmploymentAppliedMoreView = (
   const { onCalculateEmployment, calculationsErrors } =
     useHandlerReviewActions(application);
 
-  const formik = useFormik({
+  const formik = useFormik<CalculationCommon>({
     initialValues: {
       [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: convertToUIDateFormat(
         application?.calculation?.startDate
@@ -59,7 +60,7 @@ const useEmploymentAppliedMoreView = (
         application?.calculation?.endDate
       ),
     },
-    validationSchema: getValidationSchema(t),
+    validationSchema: getValidationSchema(),
     validateOnChange: true,
     validateOnBlur: true,
     enableReinitialize: true,
@@ -73,6 +74,15 @@ const useEmploymentAppliedMoreView = (
   const grantedPeriod = React.useMemo(
     () => diffMonths(parseDate(endDate), parseDate(startDate)),
     [endDate, startDate]
+  );
+
+  const appliedPeriod = React.useMemo(
+    () =>
+      diffMonths(
+        parseDate(application.endDate),
+        parseDate(application.startDate)
+      ),
+    [application.endDate, application.startDate]
   );
 
   const fields: ExtendedComponentProps['fields'] = React.useMemo(() => {
@@ -121,6 +131,7 @@ const useEmploymentAppliedMoreView = (
     fields,
     language,
     grantedPeriod,
+    appliedPeriod,
     calculationsErrors,
     getErrorMessage,
     handleSubmit,
