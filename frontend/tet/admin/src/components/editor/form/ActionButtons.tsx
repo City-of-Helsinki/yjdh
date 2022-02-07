@@ -8,7 +8,7 @@ import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc
 import { useTheme } from 'styled-components';
 import { IconCross, IconEye, IconUpload } from 'hds-react';
 
-const ActionButtons: React.FC = () => {
+const ActionButtons: React.FC = ({ onSubmit }) => {
   const { t } = useTranslation();
   const {
     formState: { isSubmitting },
@@ -19,7 +19,7 @@ const ActionButtons: React.FC = () => {
     <FormSection withoutDivider>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={3}>
-          <Button color={theme.colors.black90} type="submit" disabled={isSubmitting}>
+          <Button onClick={onSubmit} color={theme.colors.black90} disabled={isSubmitting}>
             {t('common:editor.saveDraft')}
           </Button>
         </$GridCell>

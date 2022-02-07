@@ -43,3 +43,13 @@ export const getWorkKeyWords = async (search) => {
     throw err;
   }
 };
+
+export const getAddressList = async (search) => {
+  console.log(search);
+  try {
+    const result = await linkedEvents.get(`/v1/place?show_all_places=true&text=${search}&nocache=true`);
+    return result.data;
+  } catch (err) {
+    throw err;
+  }
+};

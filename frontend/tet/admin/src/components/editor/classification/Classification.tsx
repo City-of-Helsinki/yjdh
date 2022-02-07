@@ -12,11 +12,14 @@ import { useQuery, useQueries } from 'react-query';
 import { OptionType } from 'tet/admin/types/classification';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import Combobox from 'tet/admin/components/editor/Combobox';
+import { useFormContext } from 'react-hook-form';
+import TetPosting from 'tet/admin/types/tetposting';
 
 const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [search, setSearch] = React.useState('');
+  const { setValue } = useFormContext<TetPosting>();
 
   const results = useQueries([
     { queryKey: 'workMethods', queryFn: getWorkMethods },
@@ -24,10 +27,9 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
   ]);
 
   const keywordsResults = useQuery(['keywords', search], () => getWorkKeyWords(search));
-  console.log(keywordsResults);
 
   const keywords = !keywordsResults.isLoading
-    ? keywordsResults.data.data.map((keyword) => ({ label: keyword.name.fi, value: keyword.id }))
+    ? keywordsResults.data.data.map((keyword) => ({ label: keyword.name.fi, value: keyword['@id'] }))
     : [];
 
   const [workMethods, workFeatures] = results;
@@ -44,6 +46,10 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
     return options;
   };
 
+  const keywordsChangeHandler = (val) => {
+    setValue('keywords', [...val]);
+  };
+
   return (
     <FormSection header={'Luokittelut'}>
       <$GridCell
@@ -54,7 +60,7 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
         `}
       >
         <$GridCell $colSpan={4}>
-          <SelectionGroup label={t('common:editor.classification.workMethod')}>
+          <SelectionGroup label={t('common:editor.classification.workMethod')} errorText={'Valitse yksi'}>
             {workMethods.data.data.map((workMethod) => (
               <Checkbox
                 id={workMethod.id}
@@ -75,10 +81,11 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
           <Combobox
             id={'keywords'}
             multiselect={true}
-            required
+            required={false}
             label={t('common:editor.classification.keywords')}
             placeholder={t('common:editor.classification.search')}
             options={keywords}
+            onChange={keywordsChangeHandler}
             optionLabelField={'label'}
             filter={filterHandler}
           ></Combobox>

@@ -20,6 +20,7 @@ type Props = {
   optionLabelField: string;
   disabled: boolean;
   required: boolean;
+  onChange: (val) => void;
 };
 
 const Combobox: React.FC<Props> = ({
@@ -32,17 +33,21 @@ const Combobox: React.FC<Props> = ({
   optionLabelField,
   options,
   placeholder,
+  onChange,
   disabled = false,
   required = false,
 }) => {
-  const { control } = useFormContext<TetPosting>();
+  const { control, setValue, getValues } = useFormContext<TetPosting>();
+  const test = (val) => {
+    setValue('keywords', [...val]);
+  };
   return (
     <Controller
       name={id}
       data-testid={id}
       control={control}
       rules={validation}
-      render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
+      render={({ field: { ref, value, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
         <HdsCombobox
           {...field}
           value={value}
@@ -53,7 +58,7 @@ const Combobox: React.FC<Props> = ({
           placeholder={placeholder}
           optionLabelField={optionLabelField as string}
           options={options}
-          onChange={(val: OptionType) => onChange(val.value)}
+          onChange={onChange}
           disabled={disabled}
           errorText={error && error.message ? error.message : ''}
           invalid={invalid}

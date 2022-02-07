@@ -9,6 +9,7 @@ import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNoti
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
+import { DevTool } from '@hookform/devtools';
 
 const initialValuesForNew: TetPosting = {
   title: '',
@@ -52,6 +53,13 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     const verb = validatedPosting.id ? 'PUT' : 'POST';
     console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
     upsertTetPosting.mutate(validatedPosting);
+  };
+
+  const submitHandler = (e) => {
+    console.log('jotain');
+    e.preventDefault();
+    console.log(methods.getValues());
+    methods.handleSubmit(handleSuccess);
   };
 
   return (
