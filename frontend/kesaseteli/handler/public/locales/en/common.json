@@ -70,7 +70,7 @@
   },
   "emailInUsePage" : {
     "title": "ENG Hups! Sähköposti on jo käytössä.",
-    "notificationMessage": "ENG Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+    "notificationMessage": "ENG Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
   },
   "alreadyAssignedPage" : {
     "title": "ENG Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",

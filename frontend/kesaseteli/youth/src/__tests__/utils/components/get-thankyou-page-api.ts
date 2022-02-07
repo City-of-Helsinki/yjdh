@@ -11,7 +11,7 @@ const getThankYouPageApi = () => ({
     async activationInfoTextIsPresent(hours: number) {
       return screen.findByText(
         new RegExp(
-          `huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida ${hours} tunnin kuluessa`,
+          `Hienoa! Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida ${hours} tunnin kuluessa.`,
           'i'
         )
       );
@@ -29,7 +29,7 @@ const getThankYouPageApi = () => ({
   actions: {
     async clickGoToFrontPageButton() {
       const button = await screen.findByRole('button', {
-        name: /kesäseteli etusivulle/i,
+        name: /siirry kesäsetelin etusivulle/i,
       });
       userEvent.click(button);
     },

@@ -15,7 +15,7 @@ export const getThankYouPageComponents = async (t: TestController) => {
     },
     goToFrontPageButton() {
       return screen.findByRole('button', {
-        name: /kesäseteli etusivulle/i,
+        name: /siirry kesäsetelin etusivulle/i,
       });
     },
     activationLink() {
