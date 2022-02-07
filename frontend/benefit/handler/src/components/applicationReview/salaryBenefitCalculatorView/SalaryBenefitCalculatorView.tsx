@@ -21,6 +21,7 @@ import {
   $CalculatorText,
   $DateTimeDuration,
 } from '../ApplicationReview.sc';
+import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
 import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
 
 const SalaryBenefitCalculatorView: React.FC<
@@ -42,6 +43,7 @@ const SalaryBenefitCalculatorView: React.FC<
     getStateAidMaxPercentageSelectValue,
     paySubsidyPercentageOptions,
     getPaySubsidyPercentageSelectValue,
+    calculationsErrors,
   } = useSalaryBenefitCalculatorData(data);
 
   return (
@@ -277,6 +279,7 @@ const SalaryBenefitCalculatorView: React.FC<
 
       <$GridCell $colStart={1} $colSpan={11}>
         <$CalculatorHr />
+        <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
 
       <$GridCell $colSpan={7}>
