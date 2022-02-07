@@ -82,6 +82,14 @@
 				"name": "Syötä nimi sallitussa muodossa"
 			}
     }
+    },
+		"classification": {
+			"classifications": "Luokittelut",
+			"workMethod": "Työtapa",
+			"workFeature": "Työn ominaisuudet",
+			"keywords": "Avainsanat",
+			"search": "Hae"
+		}
   },
   "footer": {
     "copyrightText": "Helsingin kaupunki",

@@ -8,6 +8,7 @@ import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
+import Classification from 'tet/admin/components/editor/classification/Classification';
 
 const initialValuesForNew: TetPosting = {
   title: '',
@@ -22,6 +23,7 @@ const initialValuesForNew: TetPosting = {
   end_date: '',
   date_published: '',
   org_name: '',
+  keywords: [],
 };
 
 type EditorProps = {

@@ -12,6 +12,7 @@ type TetPosting = {
   contact_language: string;
   contact_phone: string;
   date_published?: string;
+  keywords: string[];
 };
 
 export type TetPostings = {

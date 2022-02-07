@@ -82,6 +82,14 @@
 				"name": "ENG Syötä nimi sallitussa muodossa"
 			}
     }
+    },
+		"classification": {
+			"classifications": "ENG Luokittelut",
+			"workMethod": "ENG Työtapa",
+			"workFeature": "ENG Työn ominaisuudet",
+			"keywords": "ENG Avainsanat",
+			"search": "ENG Hae"
+		}
   },
   "footer": {
     "copyrightText": "City of Helsinki",
