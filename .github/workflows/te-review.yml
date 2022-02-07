@@ -35,6 +35,7 @@ env:
   K8S_LIMIT_RAM: 428Mi
   K8S_PROBE_FAILURE_THRESHOLD: 30
   K8S_PROBE_PERIOD: 20
+  HELM_BUFFER_TIME: 300
   EMPLOYER_URL: https://te-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   YOUTH_URL: https://te-yout-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   ADMIN_URL: https://te-admn-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
