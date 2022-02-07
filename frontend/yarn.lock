@@ -1103,10 +1103,10 @@
     resolve-global "1.0.0"
     yargs "^17.0.0"
 
-"@commitlint/config-conventional@^15.0.0":
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-15.0.0.tgz#3bf1adf319e3b431de12ba82dc399524038b2d8f"
-  integrity sha512-eZBRL8Lk3hMNHp1wUMYj0qrZQEsST1ai7KHR8J1IDD9aHgT7L2giciibuQ+Og7vxVhR5WtYDvh9xirXFVPaSkQ==
+"@commitlint/config-conventional@^16.0.0":
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-16.0.0.tgz#f42d9e1959416b5e691c8b5248fc2402adb1fc03"
+  integrity sha512-mN7J8KlKFn0kROd+q9PB01sfDx/8K/R25yITspL1No8PB4oj9M1p77xWjP80hPydqZG9OvQq+anXK3ZWeR7s3g==
   dependencies:
     conventional-changelog-conventionalcommits "^4.3.1"
 
@@ -3160,6 +3160,15 @@
   version "17.0.38"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.38.tgz#f24249fefd89357d5fa71f739a686b8d7c7202bd"
   integrity sha512-SI92X1IA+FMnP3qM5m4QReluXzhcmovhZnLNm3pyeQlooi02qI7sLiepEYqT678uNiyc25XfCqxREFpy3W7YhQ==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^17.0.39":
+  version "17.0.39"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.39.tgz#d0f4cde092502a6db00a1cded6e6bf2abb7633ce"
+  integrity sha512-UVavlfAxDd/AgAacMa60Azl7ygyQNRwC/DsHZmKgNvPmRR5p70AJ5Q9EAmL2NWOJmeV+vVUI4IAP7GZrN8h8Ug==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -5584,10 +5593,10 @@ dot-prop@^6.0.1:
   dependencies:
     is-obj "^2.0.0"
 
-dotenv@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-15.0.0.tgz#2a585639429bf2c2c62f387f0fffde9c75aafde0"
-  integrity sha512-/l1sXXm79ry34KwwS0y4oVZjB468iw/6u9g1W26dtexKcIJAnVL2pMF+hxQwzZ7LutxOwEgtym9eIxvX33CMKg==
+dotenv@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.0.tgz#c619001253be89ebb638d027b609c75c26e47411"
+  integrity sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==
 
 downshift@6.0.6:
   version "6.0.6"
@@ -7214,12 +7223,39 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
+hds-core@1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-1.10.0.tgz#59bde627c8e4204a50bd8bd2b7310aa28e15e3d4"
+  integrity sha512-+yewnAIgtnR6DeGns/OzmMMsKC8eArzVt+ZJYZpG/NKWC1nYq/UUhqOc9iJoOTO5RxeBL+VHGX4de00ILvkEHw==
+
 hds-core@1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-1.9.0.tgz#1fb81dfb36d42ca92e7338078911e1b48e6099f0"
   integrity sha512-YHI7Oa3J8u91r/T6/LlIf+cJ+QR8uRo9+H05tiWw9zHZw8P7hYuaGAA3C8hpjhxPgmZj9XG3To+19xTg4yA/xg==
 
-hds-react@^1.6.0, hds-react@^1.8.0:
+hds-react@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-1.10.0.tgz#21437edc9359c6f27976c828319ea3c27dd14009"
+  integrity sha512-SaIZpJ2lQHwrt4uT02Inx+PPghSGGnvjLPMpn3iTiznHQ7JewFcmiYNrCwj7pD62M2l1TrA+nQbmksPq58+dbg==
+  dependencies:
+    "@babel/runtime" "7.11.2"
+    "@juggle/resize-observer" "3.2.0"
+    "@popperjs/core" "2.5.3"
+    "@react-aria/visually-hidden" "3.2.0"
+    date-fns "2.16.1"
+    downshift "6.0.6"
+    hds-core "1.10.0"
+    lodash.isequal "4.5.0"
+    lodash.isfunction "3.0.9"
+    lodash.uniqueid "4.0.1"
+    lodash.xor "^4.5.0"
+    react-merge-refs "1.1.0"
+    react-popper "2.2.3"
+    react-spring "9.3.0"
+    react-use-measure "2.0.1"
+    react-virtual "2.2.7"
+
+hds-react@^1.8.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-1.9.0.tgz#36e72b65311dbfa521aa69f548bc5783c3c68ede"
   integrity sha512-Nun3wfKB8el+nHOjqqOiPjo/BjzAK2XlLvVi/TxHVsqHxRsqxbPBzZK66eVg8szCKnIz86Y/IIbOvAaUdkGEdA==
@@ -11142,10 +11178,10 @@ react-table@^7.7.0:
   resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
   integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
 
-react-toastify@^8.0.2, react-toastify@^8.0.3:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-8.1.0.tgz#acaca4e8c4415c8474562dd84a14e6f390ed7f17"
-  integrity sha512-M+Q3rTmEw/53Csr7NsV/YnldJe4c7uERcY7Tma9mvLU98QT2VhIkKwjBzzxZkJRk/oBKyUAtkyMjMgO00hx6gQ==
+react-toastify@^8.1.1:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-8.1.1.tgz#79fada2487bcd2ca9b5910015f8d6f78cc65c984"
+  integrity sha512-KQa+j+JHjy69xpPYheaWUq3SjVw1sV2D7/QsXW6Tpo2x9HhUCvASezAMYDmLhfAYoSnaXUVnTNFAgZQA75SExQ==
   dependencies:
     clsx "^1.1.1"
 
