@@ -155,13 +155,21 @@ class DurationMixin:
 
     @property
     def duration_in_months(self):
-        return duration_in_months(self.start_date, self.end_date)
+        return self._get_duration_in_months()
 
     @property
     def duration_in_months_rounded(self):
         # The handler's Excel file uses the number of months rounded to two decimals
         # in many calculations
-        return duration_in_months(self.start_date, self.end_date, decimal_places=2)
+        return self._get_duration_in_months(decimal_places=2)
+
+    def _get_duration_in_months(self, decimal_places=None):
+        if self.start_date and self.end_date:
+            return duration_in_months(
+                self.start_date, self.end_date, decimal_places=decimal_places
+            )
+        else:
+            return None
 
 
 # defensive programming to avoid infinite loops

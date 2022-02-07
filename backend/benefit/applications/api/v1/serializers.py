@@ -565,6 +565,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "ahjo_decision",
             "unread_messages_count",
             "warnings",
+            "duration_in_months_rounded",
         ]
         read_only_fields = [
             "submitted_at",
@@ -586,6 +587,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "status_last_changed_at",
             "unread_messages_count",
             "warnings",
+            "duration_in_months_rounded",
         ]
         extra_kwargs = {
             "company_name": {

@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from datetime import date, datetime
+from decimal import Decimal
 from unittest import mock
 
 import pytest
@@ -27,6 +28,7 @@ from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
+from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -133,6 +135,9 @@ def test_application_single_read_as_applicant(api_client, application):
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
     assert "batch" not in response.data
+    assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
+        application.start_date, application.end_date, decimal_places=2
+    )
     assert response.status_code == 200
 
 
