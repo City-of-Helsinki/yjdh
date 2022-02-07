@@ -28,6 +28,17 @@ const ApplicationReview: React.FC = () => {
   const { application, isLoading, t } = useApplicationReview();
   const theme = useTheme();
 
+  const CalculatorView = () => {
+    switch (application.benefitType) {
+      case BENEFIT_TYPES.EMPLOYMENT:
+        return <EmploymenAppliedMoreView data={application} />;
+      case BENEFIT_TYPES.SALARY:
+        return <SalaryBenefitCalculatorView data={application} />;
+      default:
+        return <></>;
+    }
+  };
+
   if (isLoading) {
     return (
       <Container>
@@ -65,14 +76,7 @@ const ApplicationReview: React.FC = () => {
         <ConsentView data={application} />
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
-            {application.benefitType === BENEFIT_TYPES.EMPLOYMENT ? (
-              <EmploymenAppliedMoreView data={application} />
-            ) : (
-              application.benefitType === BENEFIT_TYPES.SALARY && (
-                <SalaryBenefitCalculatorView data={application} />
-              )
-            )}
-
+            <CalculatorView />
             <ApplicationProcessingView />
           </>
         )}
