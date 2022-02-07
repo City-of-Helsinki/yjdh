@@ -292,9 +292,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "commission_amount",
             "commission_description",
             "created_at",
+            "birthday",
         ]
         read_only_fields = [
             "ordering",
+            "birthday",
         ]
 
     def validate_social_security_number(self, value):
@@ -564,6 +566,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "attachments",
             "ahjo_decision",
             "unread_messages_count",
+            "log_entry_comment",
             "warnings",
             "duration_in_months_rounded",
         ]
@@ -748,6 +751,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         read_only=True, help_text="Count of unread messages"
     )
 
+    log_entry_comment = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        write_only=True,
+        help_text="If application status is changed in the request, set the comment field in the ApplicationLogEntry",
+    )
+
     def get_applicant_terms_approval_needed(self, obj):
         return ApplicantTermsApproval.terms_approval_needed(obj)
 
@@ -856,14 +866,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         }
 
     def get_submitted_at(self, obj):
-        if (
-            log_entry := obj.log_entries.filter(to_status=ApplicationStatus.RECEIVED)
-            .order_by("-created_at")
-            .first()
-        ):
-            return log_entry.created_at
-        else:
-            return None
+        return obj.get_log_entry_field(ApplicationStatus.RECEIVED, "created_at")
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
@@ -1314,7 +1317,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         self._validate_non_draft_required_fields(data)
         return data
 
-    def handle_status_transition(self, instance, previous_status, approve_terms):
+    def handle_status_transition(
+        self, instance, previous_status, approve_terms, log_entry_comment
+    ):
         if (
             (
                 previous_status,
@@ -1347,6 +1352,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             application=instance,
             from_status=previous_status,
             to_status=instance.status,
+            comment=log_entry_comment or "",
         )
         if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             # Create an automatic message for the applicant
@@ -1447,7 +1453,12 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             self._update_or_create_employee(application, employee_data)
 
         if instance.status != pre_update_status:
-            self.handle_status_transition(instance, pre_update_status, approve_terms)
+            self.handle_status_transition(
+                instance,
+                pre_update_status,
+                approve_terms,
+                validated_data.get("log_entry_comment"),
+            )
         return application
 
     @transaction.atomic
@@ -1542,6 +1553,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     * pay_subsidies
     * training compensations
     * batch
+    * latest_decision_comment
     """
 
     # more status transitions
@@ -1600,6 +1612,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "training_compensations",
             "batch",
             "create_application_for_company",
+            "latest_decision_comment",
+        ]
+        read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
+            "latest_decision_comment"
         ]
 
     @transaction.atomic
@@ -1695,9 +1711,13 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 duplicate_check=("calculation.calculate", application.pk),
             )
 
-    def handle_status_transition(self, instance, previous_status, approve_terms):
+    def handle_status_transition(
+        self, instance, previous_status, approve_terms, log_entry_comment
+    ):
         # Super need to call first so instance.calculation is always present
-        super().handle_status_transition(instance, previous_status, approve_terms)
+        super().handle_status_transition(
+            instance, previous_status, approve_terms, log_entry_comment
+        )
         # Extend from base class function.
         # Assign current user to the application.calculation.handler
         # NOTE: This handler might be overridden if there is a handler pk included in the request post data

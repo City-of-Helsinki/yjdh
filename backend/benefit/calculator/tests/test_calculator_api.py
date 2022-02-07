@@ -20,7 +20,7 @@ from common.utils import duration_in_months, to_decimal
 def test_application_retrieve_calculation_as_handler(
     handler_api_client, handling_application
 ):
-    pay_subsidy = PaySubsidyFactory(application=handling_application)
+    pay_subsidy = handling_application.pay_subsidies.first()
     response = handler_api_client.get(get_handler_detail_url(handling_application))
     assert response.status_code == 200
     assert "calculation" in response.data
@@ -187,7 +187,7 @@ def test_modify_calculation_invalid_status(
     handling_application.status = status
     data = HandlerApplicationSerializer(handling_application).data
     assert handling_application.calculation
-    assert handling_application.pay_subsidies.count() == 0
+    handling_application.pay_subsidies.all().delete()
     assert handling_application.calculation.handler is not None
     data["calculation"]["handler"] = None
     data["pay_subsidies"] = [
@@ -379,7 +379,6 @@ def test_assign_handler_invalid_status(
 def test_unassign_handler_valid_status(handler_api_client, handling_application):
     data = HandlerApplicationSerializer(handling_application).data
     assert handling_application.calculation
-    assert handling_application.pay_subsidies.count() == 0
     data["calculation"]["handler"] = None
     response = handler_api_client.put(
         get_handler_detail_url(handling_application),
@@ -404,7 +403,6 @@ def test_unassign_handler_invalid_status(
     handling_application.save()
     data = HandlerApplicationSerializer(handling_application).data
     assert handling_application.calculation
-    assert handling_application.pay_subsidies.count() == 0
     data["calculation"]["handler"] = None
     response = handler_api_client.put(
         get_handler_detail_url(handling_application),
