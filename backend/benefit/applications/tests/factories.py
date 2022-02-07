@@ -74,9 +74,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
         "random_element", elements=[v[0] for v in APPLICATION_LANGUAGE_CHOICES]
     )
     co_operation_negotiations = factory.Faker("boolean")
-    co_operation_negotiations_description = factory.LazyAttribute(
-        lambda o: factory.Faker("sentence") if o.co_operation_negotiations else ""
-    )
+    co_operation_negotiations_description = factory.Maybe('co_operation_negotiations', factory.Faker('paragraph'), "")
     pay_subsidy_granted = False
     pay_subsidy_percent = None
 
@@ -130,8 +128,8 @@ class ReceivedApplicationFactory(ApplicationFactory):
     @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
         self.calculation = Calculation.objects.create_for_application(self)
-        self.calculation.calculated_benefit_amount = decimal.Decimal("321.00")
-        self.calculation.save()
+        self.calculation.init_calculator()
+        self.calculation.calculate()
 
 
 class HandlingApplicationFactory(ReceivedApplicationFactory):
@@ -139,10 +137,17 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
 
     @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
+        from calculator.tests.factories import PaySubsidyFactory # avoid circular import
+        previous_status = self.status
+        self.status = ApplicationStatus.HANDLING # so that recalculation succeeds
         self.calculation = Calculation.objects.create_for_application(self)
-        self.calculation.calculated_benefit_amount = decimal.Decimal("123.00")
-        self.calculation.handler = HandlerFactory()
-        self.calculation.save()
+        PaySubsidyFactory(application=self,
+                          start_date=self.calculation.start_date,
+                          end_date=self.calculation.end_date)
+        self.calculation.init_calculator()
+        self.calculation.calculate()
+        self.status = previous_status
+        assert len(self.ahjo_rows) == 1
 
 
 class DecidedApplicationFactory(HandlingApplicationFactory):
@@ -168,7 +173,7 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     working_hours = factory.Faker("random_int", min=18, max=40)
     is_living_in_helsinki = factory.Faker("boolean")
 
-    collective_bargaining_agreement = factory.Faker("words")
+    collective_bargaining_agreement = factory.Faker("word")
 
     class Meta:
         model = Employee

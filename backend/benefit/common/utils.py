@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from phonenumber_field.serializerfields import (
     PhoneNumberField as DefaultPhoneNumberField,
 )
-
+from rest_framework.serializers import CharField
 
 def update_object(obj, data):
     if not data:
@@ -75,6 +75,12 @@ class PhoneNumberField(DefaultPhoneNumberField):
             return ""
         return "0{}".format(value.national_number)
 
+class RedactedField(CharField):
+    """
+    A field that always returns None
+    """
+    def to_representation(self, value):
+        return ""
 
 def date_range_overlap(start_1, end_1, start_2, end_2):
     """

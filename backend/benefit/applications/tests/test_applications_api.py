@@ -872,7 +872,7 @@ def test_application_status_change_as_applicant(
     else:
         assert application.log_entries.all().count() == 0
 
-
+NO_FIELD = object()
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
@@ -896,8 +896,11 @@ def test_application_status_change_as_applicant(
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
+@pytest.mark.parametrize(
+    "log_entry_comment", [NO_FIELD, None, "", "lorem ipsum"]
+)
 def test_application_status_change_as_handler(
-    request, handler_api_client, application, from_status, to_status, expected_code
+    request, handler_api_client, application, from_status, to_status, expected_code, log_entry_comment
 ):
     """
     modify existing application
@@ -911,6 +914,9 @@ def test_application_status_change_as_handler(
         Calculation.objects.create_for_application(application)
     data = ApplicantApplicationSerializer(application).data
     data["status"] = to_status
+    if log_entry_comment is not NO_FIELD:
+        # the field is write-only
+        data["log_entry_comment"] = log_entry_comment
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
         add_attachments_to_application(request, application)
@@ -927,10 +933,16 @@ def test_application_status_change_as_handler(
             data,
         )
     assert response.status_code == expected_code
+
+    expected_log_entry_comment = ""
+    if isinstance(log_entry_comment, str):
+        expected_log_entry_comment = log_entry_comment
+
     if expected_code == 200:
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+        assert application.log_entries.all().first().comment == expected_log_entry_comment
 
         if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             assert application.messages.count() == 1
@@ -939,6 +951,10 @@ def test_application_status_change_as_handler(
                 in application.messages.first().content
             )
 
+        if to_status == ApplicationStatus.CANCELLED:
+            assert response.data["cancellation_reason"] == expected_log_entry_comment
+        else:
+            assert response.data["cancellation_reason"] is None
     else:
         assert application.log_entries.all().count() == 0
 

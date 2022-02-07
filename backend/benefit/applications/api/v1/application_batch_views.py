@@ -121,7 +121,7 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         talpa_service = TalpaService(approved_batches)
-        csv_file = talpa_service.get_talpa_csv_string()
+        csv_file = talpa_service.get_csv_string()
         file_name = format_lazy(
             _("TALPA export {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
