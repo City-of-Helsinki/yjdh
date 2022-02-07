@@ -1,5 +1,5 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit/handler/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -65,8 +65,14 @@ const ApplicationReview: React.FC = () => {
         <ConsentView data={application} />
         {application.status === APPLICATION_STATUSES.HANDLING && (
           <>
-            <SalaryBenefitCalculatorView data={application} />
-            <EmploymenAppliedMoreView data={application} />
+            {application.benefitType === BENEFIT_TYPES.EMPLOYMENT ? (
+              <EmploymenAppliedMoreView data={application} />
+            ) : (
+              application.benefitType === BENEFIT_TYPES.SALARY && (
+                <SalaryBenefitCalculatorView data={application} />
+              )
+            )}
+
             <ApplicationProcessingView />
           </>
         )}
