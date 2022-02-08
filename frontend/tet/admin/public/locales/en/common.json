@@ -65,7 +65,22 @@
       "workHoursNotice": "ENG Työaika on aina sama 30h per viikko.",
       "startDateLabel": "ENG Alkaen",
       "endDateLabel": "ENG Päättyen",
-      "spotsLabel": "ENG Työharjoittelupaikkoja"
+      "spotsLabel": "ENG Työharjoittelupaikkoja",
+			"contactFirstName": "ENG Etunimi",
+			"contactLastName": "ENG Sukunimi",
+			"contactPhone": "ENG Puhelin",
+			"contactEmail": "ENG Sähköposti",
+			"contactLanguage": "ENG Asiointikieli",
+			"contactLanguageFi": "ENG Suomi",
+			"contactLanguageSv": "ENG Ruotsi",
+			"contactLanguageEn": "ENG Englanti",
+			"validation": {
+				"required": "ENG Tieto vaaditaan",
+				"email": "ENG Syötä sähköposti oikeassa muodossa",
+				"max": "ENG Maksimimerkkimäärä ylittyy",
+				"phone": "ENG Syötä oikeassa muodossa",
+				"name": "ENG Syötä nimi sallitussa muodossa"
+			}
     }
   },
   "footer": {
