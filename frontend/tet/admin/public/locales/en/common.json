@@ -56,7 +56,9 @@
     "employerInfo": {
       "header": "ENG Työpaikan tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "ENG Toimipiste tai osasto"
+      "departmentLabel": "ENG Toimipiste tai osasto",
+			"address": "ENG Osoite",
+			"streetAddress": "ENG Katuosoite"
     },
     "posting": {
       "header": "ENG Työharjoittelupaikan tiedot",

@@ -56,7 +56,9 @@
     "employerInfo": {
       "header": "SV Työpaikan tiedot",
       "addressNeededLabel": "SV Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "SV Toimipiste tai osasto"
+      "departmentLabel": "SV Toimipiste tai osasto",
+			"address": "SV Osoite",
+			"streetAddress": "SV Katuosoite"
     },
     "posting": {
       "header": "SV Työharjoittelupaikan tiedot",

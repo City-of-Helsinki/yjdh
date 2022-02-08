@@ -38,9 +38,6 @@ const Combobox: React.FC<Props> = ({
   required = false,
 }) => {
   const { control, setValue, getValues } = useFormContext<TetPosting>();
-  const test = (val) => {
-    setValue('keywords', [...val]);
-  };
   return (
     <Controller
       name={id}

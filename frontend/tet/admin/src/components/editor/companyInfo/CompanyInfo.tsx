@@ -9,23 +9,34 @@ import { Checkbox, TextInput } from 'hds-react';
 import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import { useQuery } from 'react-query';
-import { getAddressList } from 'tet/admin/backend-api/linked-events-api';
-import { address } from 'faker';
+import { getWorkKeyWords } from 'tet/admin/backend-api/linked-events-api';
+import { useFormContext } from 'react-hook-form';
+import TetPosting from 'tet/admin/types/tetposting';
+import debounce from 'lodash/debounce';
 
 const CompanyInfo: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const { setValue } = useFormContext<TetPosting>();
   const [addressSearch, setAddressSearch] = React.useState('');
 
-  const addressResults = useQuery(['addressList', addressSearch], () => getAddressList(addressSearch));
+  const keywordsResults = useQuery(['keywords', addressSearch], () => getWorkKeyWords(addressSearch));
 
-  //const addressList = !addressResults.isLoading
-  //? addressResults.data.data.map((keyword) => ({ label: keyword.name.fi, value: keyword['@id'] }))
-  //: [];
+  const keywords = !keywordsResults.isLoading
+    ? keywordsResults.data.data.map((keyword) => ({ label: keyword.name.fi, value: keyword['@id'] }))
+    : [];
+
+  const filterSetter = React.useCallback(
+    debounce((search) => setAddressSearch(search), 500),
+    [],
+  );
 
   const addressFilterHandler = (options: OptionType[], search: string): OptionType[] => {
-    setAddressSearch(search);
+    filterSetter(search);
     return options;
+  };
+  const addressChangeHandler = (val) => {
+    setValue('address', val);
   };
 
   return (
@@ -58,13 +69,13 @@ const CompanyInfo: React.FC = () => {
           </$GridCell>
           <$GridCell $colSpan={6}>
             <Combobox
-              id={'location'}
+              id={'address'}
               multiselect={false}
-              required={true}
-              label={'Osoite'}
-              placeholder={'Katuosoite'}
-              options={[]}
-              onChange={() => {}}
+              required={false}
+              label={t('common:editor.classification.keywords')}
+              placeholder={t('common:editor.classification.search')}
+              options={keywords}
+              onChange={addressChangeHandler}
               optionLabelField={'label'}
               filter={addressFilterHandler}
             ></Combobox>

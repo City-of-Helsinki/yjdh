@@ -35,7 +35,7 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required }) 
       name={fieldId}
       control={control}
       render={({ field: { ref, value, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
-        <HdsSelectionGroup label={label} errorText={error?.message ? error.message : ''} required={required}>
+        <HdsSelectionGroup label={label} errorText={error && error.message ? error.message : ''} required={required}>
           {options.map((option) => (
             <Checkbox
               id={option.value}

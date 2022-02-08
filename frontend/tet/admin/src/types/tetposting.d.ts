@@ -3,6 +3,7 @@ type TetPosting = {
   title: string;
   description: string;
   org_name: string;
+  address: string;
   spots: number;
   start_date: string;
   end_date?: string;

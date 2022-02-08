@@ -14,6 +14,7 @@ import { DevTool } from '@hookform/devtools';
 const initialValuesForNew: TetPosting = {
   title: '',
   description: '',
+  address: '',
   spots: 3,
   contact_first_name: 'test',
   contact_last_name: '',
