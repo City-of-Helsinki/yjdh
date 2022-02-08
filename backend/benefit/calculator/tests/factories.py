@@ -28,7 +28,7 @@ class PaySubsidyFactory(factory.django.DjangoModelFactory):
         lambda o: o.start_date + timedelta(days=random.randint(31, 364))
     )
     pay_subsidy_percent = 50
-    work_time_percent = 100
+    work_time_percent = decimal.Decimal(100)
     ordering = factory.Sequence(lambda n: n + 1)
     disability_or_illness = False
 
