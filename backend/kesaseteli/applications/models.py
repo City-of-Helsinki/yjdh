@@ -239,8 +239,17 @@ class YouthApplication(TimeStampedModel, UUIDModel):
             }
 
     @staticmethod
-    def _send_mail(subject, message, from_email, recipient_list, error_message):
-        # TODO: Handle errors properly, currently they are logged and ignored
+    def _send_mail(subject, message, from_email, recipient_list, error_message) -> bool:
+        """
+        Send email with given parameters and log given error message in case of failure.
+
+        :param subject: Email subject
+        :param message: Email body
+        :param from_email: Email address of the email's sender
+        :param recipient_list: List of email recipients
+        :param error_message: Error message to be logged in case of failure
+        :return: True if email was sent, otherwise False.
+        """
         sent_email_count = send_mail(
             subject=subject,
             message=message,
@@ -250,8 +259,16 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         )
         if sent_email_count == 0:
             LOGGER.error(error_message)
+        return sent_email_count > 0
 
-    def send_activation_email(self, request, language):
+    def send_activation_email(self, request, language) -> bool:
+        """
+        Send youth application's activation email with given language to the applicant.
+
+        :param request: Request used for generating the activation link
+        :param language: The activation email language to be used
+        :return: True if email was sent, otherwise False.
+        """
         return YouthApplication._send_mail(
             subject=YouthApplication._activation_email_subject(language),
             message=YouthApplication._activation_email_message(
@@ -263,7 +280,13 @@ class YouthApplication(TimeStampedModel, UUIDModel):
             error_message=_("Unable to send youth application's activation email"),
         )
 
-    def send_processing_email_to_handler(self, request):
+    def send_processing_email_to_handler(self, request) -> bool:
+        """
+        Send youth application's manual processing email to the handler.
+
+        :param request: Request used for generating the processing link
+        :return: True if email was sent, otherwise False.
+        """
         return YouthApplication._send_mail(
             subject=self._processing_email_subject(),
             message=self._processing_email_message(self._processing_link(request)),

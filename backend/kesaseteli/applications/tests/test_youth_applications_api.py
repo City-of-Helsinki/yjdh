@@ -2,6 +2,7 @@ import json
 import uuid
 from datetime import timedelta
 from typing import List, Optional
+from urllib.parse import urlparse
 
 import factory.random
 import langdetect
@@ -377,19 +378,13 @@ def test_youth_application_post_valid_random_data(api_client, random_seed):
 @pytest.mark.django_db
 @override_settings(
     EMAIL_USE_TLS=False,
-    EMAIL_HOST="ema.platta-net.hel.fi",
-    EMAIL_HOST_USER="",
-    EMAIL_HOST_PASSWORD="",
-    EMAIL_PORT=25,
-    EMAIL_TIMEOUT=15,
-    DEFAULT_FROM_EMAIL="Kesäseteli <kesaseteli@hel.fi>",
+    EMAIL_HOST="",  # Use inexistent email host to ensure emails will never go anywhere
 )
 @pytest.mark.parametrize(
     "email_backend_override",
     [
         None,  # No override
         "django.core.mail.backends.console.EmailBackend",
-        "django.core.mail.backends.smtp.EmailBackend",
     ],
 )
 def test_youth_application_post_valid_data_with_email_backends(
@@ -403,8 +398,35 @@ def test_youth_application_post_valid_data_with_email_backends(
     if email_backend_override is not None:
         settings.EMAIL_BACKEND = email_backend_override
     data = YouthApplicationSerializer(youth_application).data
+    start_app_count = YouthApplication.objects.count()
     response = api_client.post(reverse("v1:youthapplication-list"), data)
+    end_app_count = YouthApplication.objects.count()
     assert response.status_code == status.HTTP_201_CREATED
+    assert end_app_count == start_app_count + 1
+
+
+@pytest.mark.django_db
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend",
+    EMAIL_HOST="",  # Use inexistent email host to ensure emails will never go anywhere
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_application_post_valid_data_with_invalid_smtp_server(
+    api_client,
+    settings,
+    language,
+):
+    # Use an email address which uses a reserved domain name (See RFC 2606)
+    # so even if it'd be sent to an SMTP server it wouldn't go anywhere
+    youth_application = YouthApplicationFactory.build(
+        email="test@example.com", language=language
+    )
+    data = YouthApplicationSerializer(youth_application).data
+    start_app_count = YouthApplication.objects.count()
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    end_app_count = YouthApplication.objects.count()
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert end_app_count == start_app_count
 
 
 @pytest.mark.django_db
@@ -430,6 +452,24 @@ def test_youth_application_activation_email_language(api_client, language):
     activation_email = mail.outbox[-1]
     assert_email_subject_language(activation_email.subject, language)
     assert_email_body_language(activation_email.body, language)
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_youth_application_activation_email_link_path(api_client):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    assert len(mail.outbox) > 0
+    activation_email = mail.outbox[-1]
+    assert "id" in response.data
+    assert response.data["id"]
+    assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
+    # Check that the activation URL path
+    # i.e. without the hostname and port is found in the email body
+    activation_url = get_activation_url(pk=response.data["id"])
+    activation_url_with_path_only = urlparse(activation_url).path
+    assert activation_url_with_path_only in activation_email.body
 
 
 @pytest.mark.django_db
