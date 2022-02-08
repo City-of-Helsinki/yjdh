@@ -1,16 +1,24 @@
-import json
 import logging
 from urllib.parse import urljoin
 
 import requests
 from django.conf import settings
+from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
+
+from events.exceptions import LinkedEventsException
 
 LOGGER = logging.getLogger(__name__)
 
 
 class LinkedEventsClient:
     def __init__(self):
-        if not all([settings.LINKEDEVENTS_URL, settings.LINKEDEVENTS_API_KEY]):
+        if not all(
+            [
+                settings.LINKEDEVENTS_URL,
+                settings.LINKEDEVENTS_API_KEY,
+                settings.LINKEDEVENTS_TIMEOUT,
+            ]
+        ):
             raise ValueError("LinkedEvents client settings not configured.")
 
     def _headers(self):
@@ -20,16 +28,59 @@ class LinkedEventsClient:
             "apikey": settings.LINKEDEVENTS_API_KEY,
         }
 
-    def _eventurl(self, eventid=None):
-        baseurl = settings.LINKEDEVENTS_URL if settings.LINKEDEVENTS_URL.endswith("/") else settings.LINKEDEVENTS_URL + "/"
-        eventurl = baseurl + "event/"
-        if eventid is not None:
-            return eventurl + eventid + "/"
+    def _api_call(
+        self, requests_method, resource, resource_id=None, params=None, json=None
+    ):
+        url = (
+            settings.LINKEDEVENTS_URL
+            if settings.LINKEDEVENTS_URL.endswith("/")
+            else settings.LINKEDEVENTS_URL + "/"
+        )
+        url += resource + "/"
+        if resource_id is not None:
+            url += resource_id + "/"
+
+        try:
+            r = requests_method(
+                url,
+                json=json,
+                params=params,
+                headers=self._headers(),
+                timeout=settings.LINKEDEVENTS_TIMEOUT,
+            )
+            r.raise_for_status()
+        # TODO add logging for errors
+        except ConnectionError:
+            raise LinkedEventsException(
+                code=503, detail="Error connecting to Linked Events (ConnectionError)."
+            )
+        except Timeout:
+            raise LinkedEventsException(
+                code=503, detail="Timeout exceeded when connecting to Linked Events."
+            )
+        except HTTPError as e:
+            if e.response.status_code >= 500:
+                # This is probably an HTML response instead of a JSON response,
+                # thus we don't try to get the response body
+                # TODO in some cases it would be helpful to inspect this body to find
+                # where the error originates (a forgotten slash has been seen while testing)
+                raise LinkedEventsException(
+                    code=503, detail="Server error from Linked Events."
+                )
+            elif e.response.status_code == 401 or e.response.status_code == 403:
+                raise LinkedEventsException(
+                    code=500,
+                    detail="Linked Events API key misconfiguration in backend.",
+                )
+            else:
+                raise LinkedEventsException(
+                    code=e.response.status_code, response_data=e.response.json()
+                )
+        except RequestException:
+            raise LinkedEventsException(code=503)
         else:
-            return eventurl
+            return r.json()
 
-
-    # TODO how to handle event status and paging?
     def list_ongoing_events_authenticated(self):
         events = []
         nexturl = None
@@ -50,6 +101,7 @@ class LinkedEventsClient:
                     params=params,
                 )
 
+            # TODO this doesn't use error handling from _api_call
             r.raise_for_status()
             data = r.json()
             events += data["data"]
@@ -60,29 +112,27 @@ class LinkedEventsClient:
 
         return events
 
-    def get_event(self, id):
+    def get_event(self, event_id):
         params = {
             "data_source": "tet",
             "nocache": True,
         }
-        r = requests.get(
-            urljoin(settings.LINKEDEVENTS_URL, "event/" + id),
-            headers=self._headers(),
+        return self._api_call(
+            requests_method=requests.get,
+            resource="event",
+            resource_id=event_id,
             params=params,
         )
-        r.raise_for_status()  # TODO return 404
-        return r.json()
 
     def create_event(self, event):
-        r = requests.post(
-            urljoin(settings.LINKEDEVENTS_URL, "event/"),
-            headers=self._headers(),
-            data=json.dumps(event),
+        return self._api_call(
+            requests_method=requests.post,
+            resource="event",
+            json=event,
         )
-        r.raise_for_status()
-        return r.json()
 
     def delete_event(self, id):
+        # TODO this doesn't use error handling from _api_call
         params = {
             "data_source": "tet",
             "nocache": True,
@@ -95,10 +145,9 @@ class LinkedEventsClient:
         return r.status_code
 
     def update_event(self, eventid, event):
-        r = requests.put(
-            self._eventurl(eventid),
-            headers=self._headers(),
-            data=json.dumps(event),
+        return self._api_call(
+            requests_method=requests.put,
+            resource="event",
+            resource_id=eventid,
+            json=event,
         )
-        r.raise_for_status()
-        return r.json()

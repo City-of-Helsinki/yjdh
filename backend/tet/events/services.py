@@ -1,7 +1,6 @@
-from requests.exceptions import RequestException, HTTPError
-from rest_framework.exceptions import NotFound, ValidationError, APIException
+from requests.exceptions import RequestException
+from rest_framework.exceptions import NotFound, ValidationError
 
-from events.exceptions import LinkedEventsException
 from events.linkedevents import LinkedEventsClient
 from events.transformations import (
     enrich_create_event,
@@ -13,10 +12,6 @@ from events.transformations import (
 # our server won't start. This is intended, because the server is unusable
 # without a properly configured LinkedEventsClient.
 client = LinkedEventsClient()
-
-
-def _call_api_and_handle_errors(method, *args, **kwargs):
-    pass
 
 
 def list_job_postings_for_user(user):
@@ -40,6 +35,7 @@ def get_tet_event(id, user):
     except RequestException:
         raise NotFound(detail="Could not find the requested event.")
 
+    # TODO check that user has rights to access event
     return reduce_get_event(event)
 
 
@@ -60,11 +56,7 @@ def publish_job_posting(user, posting):
 def update_tet_event(pk, validated_data, user):
     # TODO check that user has rights to perform this
     event = enrich_update_event(validated_data, user.email)
-    try:
-        updated_event = client.update_event(pk, event)
-    except HTTPError as e:
-        # TODO 401, 403 should raise a 503
-        raise LinkedEventsException(code=e.response.status_code, response_data=e.response.json())
+    updated_event = client.update_event(pk, event)
 
     return reduce_get_event(updated_event)
 

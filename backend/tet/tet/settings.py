@@ -86,6 +86,7 @@ django_env = environ.Env(
     DB_PREFIX=(str, ""),
     LINKEDEVENTS_URL=(str, ""),
     LINKEDEVENTS_API_KEY=(str, ""),
+    LINKEDEVENTS_TIMEOUT=(int, 20),
 )
 
 if os.path.exists(env_file):
@@ -221,7 +222,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    'EXCEPTION_HANDLER': 'events.exceptions.base_exception_handler',
+    "EXCEPTION_HANDLER": "events.exceptions.base_exception_handler",
 }
 
 # Mock flag for testing purposes
@@ -260,6 +261,7 @@ EAUTHORIZATIONS_API_OAUTH_SECRET = django_env.str("EAUTHORIZATIONS_API_OAUTH_SEC
 
 LINKEDEVENTS_URL = django_env.str("LINKEDEVENTS_URL")
 LINKEDEVENTS_API_KEY = django_env.str("LINKEDEVENTS_API_KEY")
+LINKEDEVENTS_TIMEOUT = django_env.str("LINKEDEVENTS_TIMEOUT")
 
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
