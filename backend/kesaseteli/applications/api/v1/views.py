@@ -5,6 +5,7 @@ from django.core import exceptions
 from django.db import transaction
 from django.db.models import Func
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -106,6 +107,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def error_response(cls, reason: YouthApplicationRejectedReason):
         return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=reason.json())
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         # This function is based on CreateModelMixin class's create function.
         serializer = self.get_serializer(data=request.data)
@@ -127,7 +129,17 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
         # Send the localized activation email
         youth_application = serializer.instance
-        youth_application.send_activation_email(request, youth_application.language)
+        was_email_sent = youth_application.send_activation_email(
+            request, youth_application.language
+        )
+
+        if not was_email_sent:
+            transaction.set_rollback(True)
+            with translation.override(youth_application.language):
+                return HttpResponse(
+                    _("Failed to send activation email"),
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
         # Return success creating the object
         headers = self.get_success_headers(serializer.data)
