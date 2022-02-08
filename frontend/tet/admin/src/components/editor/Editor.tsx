@@ -21,11 +21,6 @@ const initialValuesForNew: TetPosting = {
   contact_language: 'fi',
   start_date: '',
   end_date: '',
-  contact_email: '',
-  contact_first_name: '',
-  contact_last_name: '',
-  contact_language: '',
-  contact_phone: '',
   date_published: '',
   org_name: '',
 };
