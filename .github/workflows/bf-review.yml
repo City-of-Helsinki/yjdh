@@ -60,6 +60,9 @@ jobs:
             context: ./frontend
             dockerfile: ./frontend/benefit/handler/Dockerfile
             port: 3100
+    concurrency:
+      group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     name: Build
     steps:
@@ -97,6 +100,9 @@ jobs:
             dockerfile: ./frontend/benefit/handler/Dockerfile
             database: false
             port: 3100
+    concurrency:
+      group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     needs: build
     name: Review
@@ -113,7 +119,6 @@ jobs:
           K8S_SECRET_ENCRYPTION_KEY: ${{ secrets.K8S_SECRET_ENCRYPTION_KEY_REVIEW }}
           K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY: ${{ secrets.K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY_REVIEW }}
           K8S_SECRET_PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY: ${{ secrets.K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY_REVIEW }}
-
         run: |
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
           echo "K8S_SECRET_CREATE_SUPERUSER=${{ secrets.K8S_SECRET_CREATE_SUPERUSER_REVIEW }}" >> $GITHUB_ENV
