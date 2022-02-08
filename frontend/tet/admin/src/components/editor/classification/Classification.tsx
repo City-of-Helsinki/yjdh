@@ -29,7 +29,7 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const keywordsResults = useQuery(['keywords', search], () => getWorkKeyWords(search));
 
   const keywords = !keywordsResults.isLoading
-    ? keywordsResults.data.data.map((keyword) => ({ label: keyword.name.fi, value: keyword['@id'] }))
+    ? keywordsResults.data?.data.map((keyword) => ({ label: keyword.name.fi, value: keyword['@id'] }))
     : [];
 
   const [workMethods, workFeatures] = results;
@@ -55,10 +55,6 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
 
   const workMethodsList = getValueLabelList(workMethods.data.data);
   const workFeaturesList = getValueLabelList(workFeatures.data.data);
-
-  const keywordsChangeHandler = (val) => {
-    setValue('keywords', [...val]);
-  };
 
   return (
     <FormSection header={'Luokittelut'}>
@@ -93,7 +89,6 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
             label={t('common:editor.classification.keywords')}
             placeholder={t('common:editor.classification.search')}
             options={keywords}
-            onChange={keywordsChangeHandler}
             optionLabelField={'label'}
             filter={filterHandler}
           ></Combobox>

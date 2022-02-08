@@ -20,7 +20,6 @@ type Props = {
   optionLabelField: string;
   disabled: boolean;
   required: boolean;
-  onChange: (val) => void;
 };
 
 const Combobox: React.FC<Props> = ({
@@ -33,7 +32,6 @@ const Combobox: React.FC<Props> = ({
   optionLabelField,
   options,
   placeholder,
-  onChange,
   disabled = false,
   required = false,
 }) => {
@@ -44,7 +42,7 @@ const Combobox: React.FC<Props> = ({
       data-testid={id}
       control={control}
       rules={validation}
-      render={({ field: { ref, value, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
+      render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
         <HdsCombobox
           {...field}
           value={value}
@@ -57,7 +55,7 @@ const Combobox: React.FC<Props> = ({
           options={options}
           onChange={onChange}
           disabled={disabled}
-          errorText={error && error.message ? error.message : ''}
+          error={error && error.message ? error.message : ''}
           invalid={invalid}
           aria-invalid={error && error.message ? error.message : ''}
           filter={filter}

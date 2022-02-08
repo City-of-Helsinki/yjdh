@@ -59,9 +59,10 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     upsertTetPosting.mutate(validatedPosting);
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     const chosenWorkMethods = methods.getValues('work_methods');
+    console.log(chosenWorkMethods, 'workmethods');
     if (!chosenWorkMethods.length) {
       methods.setError('work_methods', {
         type: 'manual',
@@ -69,8 +70,11 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
       });
     } else {
       methods.clearErrors('work_methods');
+      methods.handleSubmit(handleSuccess)();
     }
-    methods.handleSubmit(handleSuccess)();
+
+    const validationResults = await methods.trigger();
+    console.log('validation', validationResults);
   };
 
   return (

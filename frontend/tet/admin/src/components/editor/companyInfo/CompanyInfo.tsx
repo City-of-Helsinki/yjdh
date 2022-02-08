@@ -9,7 +9,7 @@ import { Checkbox, TextInput } from 'hds-react';
 import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import { useQuery } from 'react-query';
-import { getWorkKeyWords } from 'tet/admin/backend-api/linked-events-api';
+import { getAddressList } from 'tet/admin/backend-api/linked-events-api';
 import { useFormContext } from 'react-hook-form';
 import TetPosting from 'tet/admin/types/tetposting';
 import debounce from 'lodash/debounce';
@@ -20,10 +20,15 @@ const CompanyInfo: React.FC = () => {
   const { setValue } = useFormContext<TetPosting>();
   const [addressSearch, setAddressSearch] = React.useState('');
 
-  const keywordsResults = useQuery(['keywords', addressSearch], () => getWorkKeyWords(addressSearch));
+  const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
 
   const keywords = !keywordsResults.isLoading
-    ? keywordsResults.data.data.map((keyword) => ({ label: keyword.name.fi, value: keyword['@id'] }))
+    ? keywordsResults.data?.data.map((keyword) => ({
+        label: `${keyword.name.fi}, ${keyword.street_address?.fi ? keyword.street_address.fi : ''}, ${
+          keyword.postal_code ? keyword.postal_code : ''
+        }`,
+        value: keyword['@id'],
+      }))
     : [];
 
   const filterSetter = React.useCallback(
@@ -34,9 +39,6 @@ const CompanyInfo: React.FC = () => {
   const addressFilterHandler = (options: OptionType[], search: string): OptionType[] => {
     filterSetter(search);
     return options;
-  };
-  const addressChangeHandler = (val) => {
-    setValue('address', val);
   };
 
   return (
@@ -71,13 +73,13 @@ const CompanyInfo: React.FC = () => {
             <Combobox
               id={'address'}
               multiselect={false}
-              required={false}
-              label={t('common:editor.classification.keywords')}
-              placeholder={t('common:editor.classification.search')}
+              required={true}
+              label={t('common:editor.employerInfo.address')}
+              placeholder={t('common:editor.employerInfo.streetAddress')}
               options={keywords}
-              onChange={addressChangeHandler}
               optionLabelField={'label'}
               filter={addressFilterHandler}
+              validation={{ required: { value: true, message: 'Vaaditaan' } }}
             ></Combobox>
           </$GridCell>
         </$GridCell>
