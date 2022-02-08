@@ -2,7 +2,7 @@
   "appName": "Sommarsedel för unga",
   "header": {
     "linkSkipToContent": "Gå till innehållet",
-    "menuToggleAriaLabel": "Menu"
+    "menuToggleAriaLabel": "Menyn"
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
@@ -18,9 +18,9 @@
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
     "backToTop": "Tillbaka till toppen",
-    "registerInformation": "Registerbeskrivning",
+    "registerInformation": "Dataskyddspolicy",
     "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas%20register%20for%20sommarjobbssedlar.pdf",
-    "jobOpenings": "Öppna jobb (Endast på finska)",
+    "jobOpenings": "Öppna arbetsplatser (Endast på finska)",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Ta kontakt",
     "contactUsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/ta-kontakt/",
@@ -59,7 +59,7 @@
       "postcode": "Post nummer",
       "schoolsDropdown": "Skola",
       "schoolsLoading": "Laddar upp alternativ...",
-      "schoolsPlaceholder": "SV Valitse koulusi listalta",
+      "schoolsPlaceholder": "Välj din skola från listan",
       "is_unlisted_school": "Skolan finns inte i listan",
       "schoolName": "Skolans namn",
       "schoolNamePlaceholder": "Te.x. Grundskolan Norsen",
@@ -73,13 +73,13 @@
   },
   "errors": {
     "required": "Uppgifter fattas",
-    "minLength": "SVE Syöttämäsi tieto on liian lyhyt",
+    "minLength": "Den inmatade texten är för kort",
     "maxLength": "Den inmatade texten är för lång",
     "pattern": "Den inmatade uppgiftern är i fel format",
     "validate": "Den inmatade uppgiftern är i fel format"
   },
   "assistive": {
-    "toggleMenu": "SV Avaa valikko"
+    "toggleMenu": "Öppna menyn"
   },
   "thankyouPage" : {
     "title": "Tack!",
@@ -88,7 +88,7 @@
     "goToFrontendPage": "Gå till Sommarsedelns förstasida"
   },
   "activationErrorPage" : {
-    "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
+    "goToFrontendPage": "Kolla din information och skicka på nytt"
   },
   "emailInUsePage" : {
     "title": "Hoppsan! E-postadressen används redan.",
@@ -106,11 +106,11 @@
   "expiredPage" : {
     "title": "Hoppsan! Bekräftelselänken har gått ut.",
     "notificationMessage": " Det har tyvärr gått mer än {{ expirationHours }} timmar sedan registreringsbekräftelsen. Fyll i registreringsblanketten igen.",
-    "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
+    "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
   },
   "alreadyActivatedPage" : {
     "title": "Hoppsan! Bekräftelselänken är redan aktiverad.",
-    "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiisi.",
-    "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
+    "notificationMessage": "Sommarsedeln har skickats till din epost.",
+    "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
   }
 }
