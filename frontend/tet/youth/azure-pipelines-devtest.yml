@@ -9,6 +9,8 @@ trigger:
     - frontend/tet/youth/**
     - frontend/*
     exclude:
+    - frontend/**/browser-tests 
+    - frontend/**/__tests__ 
     - README.md
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is 
