@@ -20,6 +20,15 @@ class LinkedEventsClient:
             "apikey": settings.LINKEDEVENTS_API_KEY,
         }
 
+    def _eventurl(self, eventid=None):
+        baseurl = settings.LINKEDEVENTS_URL if settings.LINKEDEVENTS_URL.endswith("/") else settings.LINKEDEVENTS_URL + "/"
+        eventurl = baseurl + "event/"
+        if eventid is not None:
+            return eventurl + eventid + "/"
+        else:
+            return eventurl
+
+
     # TODO how to handle event status and paging?
     def list_ongoing_events_authenticated(self):
         events = []
@@ -85,9 +94,9 @@ class LinkedEventsClient:
         )
         return r.status_code
 
-    def update_event(self, id, event):
+    def update_event(self, eventid, event):
         r = requests.put(
-            urljoin(settings.LINKEDEVENTS_URL, "event/" + id),
+            self._eventurl(eventid),
             headers=self._headers(),
             data=json.dumps(event),
         )

@@ -221,6 +221,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    'EXCEPTION_HANDLER': 'events.exceptions.base_exception_handler',
 }
 
 # Mock flag for testing purposes
