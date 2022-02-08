@@ -11,7 +11,7 @@ const getThankYouPageApi = () => ({
     async activationInfoTextIsPresent(hours: number) {
       return screen.findByText(
         new RegExp(
-          `Hienoa! Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida ${hours} tunnin kuluessa.`,
+          `Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida ${hours} tunnin kuluessa.`,
           'i'
         )
       );
