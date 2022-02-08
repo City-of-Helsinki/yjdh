@@ -9,6 +9,7 @@ from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAcc
 from django.conf import settings
 from django.core import exceptions
 from django.db.models import Count, Q
+from django.http import FileResponse
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
@@ -89,7 +90,8 @@ class BaseApplicationViewSet(viewsets.ModelViewSet):
     )
     def post_attachment(self, request, *args, **kwargs):
         """
-        Upload a single file as attachment
+        Upload a single file as attachment.
+        Validate that adding attachments is allowed in this application status
         """
         obj = self.get_object()
         if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
@@ -110,6 +112,17 @@ class BaseApplicationViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def _get_attachment(self, attachment_pk):
+        try:
+            return self.get_object().attachments.get(id=attachment_pk)
+        except exceptions.ObjectDoesNotExist:
+            return None
+
+    def _attachment_not_found(self):
+        return Response(
+            {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
+        )
+
     @action(
         methods=("DELETE",),
         detail=True,
@@ -123,14 +136,27 @@ class BaseApplicationViewSet(viewsets.ModelViewSet):
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        try:
-            instance = obj.attachments.get(id=attachment_pk)
-        except exceptions.ObjectDoesNotExist:
-            return Response(
-                {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
-            )
-        instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if instance := self._get_attachment(attachment_pk):
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return self._attachment_not_found()
+
+    @action(
+        methods=("GET",),
+        detail=True,
+        url_path="attachments/(?P<attachment_pk>[^/.]+)/download",
+    )
+    def download_attachment(self, request, attachment_pk, *args, **kwargs):
+        """
+        Download a single attachment
+        """
+        if (
+            attachment := self._get_attachment(attachment_pk)
+        ) and attachment.attachment_file:
+            return FileResponse(attachment.attachment_file)
+        else:
+            return self._attachment_not_found()
 
     @extend_schema(
         description="Get a partial application object (not saved in database), with various fields pre-filled"

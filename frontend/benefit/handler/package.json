@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "node start.js",
+    "dev": "PORT=3100 node start.js",
     "build": "next build",
-    "start": "NODE_ENV=production node start.js",
+    "start": "NODE_ENV=production PORT=3100 node start.js",
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
@@ -21,7 +21,7 @@
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-styled-components": "^2.0.2",
     "camelcase-keys": "^7.0.0",
-    "dotenv": "^14.2.0",
+    "dotenv": "^15.0.0",
     "esm": "^3.2.25",
     "formik": "^2.2.9",
     "graphql": "^16.2.0",
@@ -50,6 +50,6 @@
     "@types/react-dom": "^17.0.6",
     "@types/uuid": "^8.3.1",
     "eslint-config-adjunct": "^4.11.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   }
 }

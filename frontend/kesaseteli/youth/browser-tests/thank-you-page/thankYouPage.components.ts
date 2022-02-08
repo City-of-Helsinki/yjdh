@@ -1,6 +1,7 @@
 import {
   getErrorMessage,
   screenContext,
+  setDataToPrintOnFailure,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -35,6 +36,9 @@ export const getThankYouPageComponents = async (t: TestController) => {
       await t.click(selectors.goToFrontPageButton());
     },
     async clickActivationLink() {
+      const href = await selectors.activationLink().getAttribute('href');
+      setDataToPrintOnFailure(t, 'activationLink', href);
+      console.log('Clicking activation link', href);
       await t.click(selectors.activationLink());
     },
   };

@@ -7,6 +7,7 @@ import {
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getIndexPageApi from 'kesaseteli/youth/__tests__/utils/components/get-index-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
+import CREATION_ERROR_TYPES from 'kesaseteli/youth/components/constants/creation-error-types';
 import YouthIndex from 'kesaseteli/youth/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
@@ -16,6 +17,7 @@ import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 const texts = {
   required: /tieto puuttuu/i,
+  minLength: /syöttämäsi tieto on liian lyhyt/i,
   maxLength: /syöttämäsi tieto on liian pitkä/i,
   wrongFormat: /syöttämäsi tieto on virheellistä muotoa/i,
 };
@@ -81,6 +83,20 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       );
     });
 
+    it('shows min length too short validation errors', async () => {
+      expectToGetSchoolsFromBackend();
+      await renderPage(YouthIndex);
+      const indexPageApi = getIndexPageApi();
+      await indexPageApi.expectations.pageIsLoaded();
+      indexPageApi.actions.typeInput('postcode', '0123'); // min limit is 5
+      await indexPageApi.actions.clickSaveButton();
+
+      await indexPageApi.expectations.textInputHasError(
+        'postcode',
+        texts.minLength
+      );
+    });
+
     it('shows max length exceeded validation errors', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
@@ -89,6 +105,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
 
       indexPageApi.actions.typeInput('first_name', 'a'.repeat(129)); // max limit is 128
       indexPageApi.actions.typeInput('last_name', 'a'.repeat(129)); // max limit is 128
+      indexPageApi.actions.typeInput('postcode', '123456'); // max limit is 5
       indexPageApi.actions.typeInput('phone_number', 'a'.repeat(65)); // max limit is 254
       indexPageApi.actions.typeInput('email', 'a'.repeat(255)); // max limit is 254
       await indexPageApi.actions.clickSaveButton();
@@ -99,6 +116,10 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       );
       await indexPageApi.expectations.textInputHasError(
         'last_name',
+        texts.maxLength
+      );
+      await indexPageApi.expectations.textInputHasError(
+        'postcode',
         texts.maxLength
       );
       await indexPageApi.expectations.textInputHasError(
@@ -120,6 +141,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       indexPageApi.actions.typeInput('first_name', '!#$%&()*+/:;<=>?@');
       indexPageApi.actions.typeInput('last_name', '~¡¿÷ˆ]+$');
       indexPageApi.actions.typeInput('social_security_number', '111111-111D');
+      indexPageApi.actions.typeInput('postcode', 'abcde');
       indexPageApi.actions.typeInput('phone_number', '+44-20-7011-5555');
       indexPageApi.actions.typeInput('email', 'aaaa@bbb');
       await indexPageApi.actions.clickSaveButton();
@@ -130,6 +152,14 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       );
       await indexPageApi.expectations.textInputHasError(
         'last_name',
+        texts.wrongFormat
+      );
+      await indexPageApi.expectations.textInputHasError(
+        'postcode',
+        texts.wrongFormat
+      );
+      await indexPageApi.expectations.textInputHasError(
+        'social_security_number',
         texts.wrongFormat
       );
       await indexPageApi.expectations.textInputHasError(
@@ -220,7 +250,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       );
     });
 
-    it('shows error toaster when backend gives bad request -error', async () => {
+    it('shows error toaster when backend gives unknown  bad request -error', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
@@ -246,5 +276,27 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
       );
     });
+
+    for (const errorType of CREATION_ERROR_TYPES) {
+      it(`redirects to ${errorType} error page when backend returns respective bad request type`, async () => {
+        expectToGetSchoolsFromBackend();
+        const spyPush = jest.fn();
+        await renderPage(YouthIndex, { push: spyPush });
+        const indexPageApi = getIndexPageApi();
+        await indexPageApi.expectations.pageIsLoaded();
+
+        await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
+          backendExpectation: expectToReplyErrorWhenCreatingYouthApplication(
+            400,
+            errorType
+          ),
+        });
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/${errorType}`
+          )
+        );
+      });
+    }
   });
 });

@@ -14,7 +14,8 @@ import { $CustomMessagesActions } from './Header.sc';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
-  const { t, locale, languageOptions, handleLanguageChange } = useHeader();
+  const { t, locale, languageOptions, hasMessenger, handleLanguageChange } =
+    useHeader();
   const router = useRouter();
   const { asPath } = router;
 
@@ -24,7 +25,6 @@ const Header: React.FC = () => {
 
   const isLoading = userQuery.isLoading || logoutQuery.isLoading;
   const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
-  const isApplicationPage = asPath?.startsWith(ROUTES.APPLICATION_FORM);
 
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
     useToggle(false);
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}
         customItems={
-          isAuthenticated && isApplicationPage
+          isAuthenticated && hasMessenger
             ? [
                 <Button
                   variant="supplementary"
@@ -64,7 +64,7 @@ const Header: React.FC = () => {
             : undefined
         }
       />
-      {isAuthenticated && isApplicationPage && (
+      {isAuthenticated && hasMessenger && (
         <Messenger
           isOpen={isMessagesDrawerVisible}
           onClose={toggleMessagesDrawerVisiblity}

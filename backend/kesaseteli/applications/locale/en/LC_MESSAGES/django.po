@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-10 09:10+0000\n"
+"POT-Creation-Date: 2022-02-01 11:37+0200\n"
 "PO-Revision-Date: 2022-01-10 08:48+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 3.0.1\n"
 
 #, python-brace-format
-msgid "Application state transition not allowed: {status} to {value}"
+msgid "EmployerApplication state transition not allowed: {status} to {value}"
 msgstr ""
 
 msgid "Initial status of application must be draft"
@@ -107,6 +107,12 @@ msgid "no"
 msgstr ""
 
 msgid "maybe"
+msgstr ""
+
+msgid "Email in use"
+msgstr ""
+
+msgid "Already assigned"
 msgstr ""
 
 msgid "Järjestys"
@@ -256,9 +262,6 @@ msgstr ""
 msgid "Setelit"
 msgstr ""
 
-msgid "time deleted"
-msgstr ""
-
 msgid "school"
 msgstr ""
 
@@ -280,7 +283,13 @@ msgstr ""
 msgid "phone number"
 msgstr ""
 
+msgid "postcode"
+msgstr ""
+
 msgid "timestamp of receipt confirmation"
+msgstr ""
+
+msgid "vtj json"
 msgstr ""
 
 msgid "Vahvista sähköpostiosoitteesi"
@@ -293,6 +302,29 @@ msgid ""
 msgstr ""
 "Confirm your email address by clicking the following link:\n"
 "%(activation_link)s"
+
+#, python-format
+msgid "Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Seuraava henkilö on pyytänyt Kesäseteliä:\n"
+"\n"
+"%(first_name)s %(last_name)s\n"
+"Postinumero: %(postcode)s\n"
+"Koulu: %(school)s\n"
+"Puhelinnumero: %(phone_number)s\n"
+"Sähköposti: %(email)s\n"
+"\n"
+"%(processing_link)s"
+msgstr ""
+
+msgid "Unable to send youth application's activation email"
+msgstr ""
+
+msgid "Unable to send youth application's processing email to handler"
+msgstr ""
 
 msgid "youth application"
 msgstr ""

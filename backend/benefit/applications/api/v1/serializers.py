@@ -34,7 +34,13 @@ from calculator.api.v1.serializers import (
 from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
-from common.utils import PhoneNumberField, to_decimal, update_object, xgroup
+from common.utils import (
+    get_date_range_end_with_days360,
+    PhoneNumberField,
+    to_decimal,
+    update_object,
+    xgroup,
+)
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
@@ -47,7 +53,10 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
+from messages.automatic_messages import send_application_reopened_message
 from rest_framework import serializers
+from rest_framework.fields import FileField
+from rest_framework.reverse import reverse
 from terms.api.v1.serializers import (
     ApplicantTermsApprovalSerializer,
     ApproveTermsSerializer,
@@ -75,9 +84,34 @@ class ApplicationBasisSerializer(serializers.ModelSerializer):
         }
 
 
+class AttachmentField(FileField):
+    def to_representation(self, value):
+        if not value:
+            return None
+
+        url_pattern_name = "v1:applicant-application-download-attachment"
+        request = self.context.get("request")
+        if request and get_request_user_from_context(self).is_handler():
+            url_pattern_name = "v1:handler-application-download-attachment"
+
+        path = reverse(
+            url_pattern_name,
+            kwargs={
+                "pk": value.instance.application.pk,
+                "attachment_pk": value.instance.pk,
+            },
+        )
+        if request is not None:
+            return request.build_absolute_uri(path)
+        return path
+
+
 class AttachmentSerializer(serializers.ModelSerializer):
     # this limit is a security feature, not a business rule
+
     MAX_ATTACHMENTS_PER_APPLICATION = 20
+
+    attachment_file = AttachmentField()
 
     class Meta:
         model = Attachment
@@ -107,18 +141,9 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Validation includes:
-        * validate that adding attachments is allowed in this application status
-        * rudimentary validation of file content to guard against accidentally uploading
+        Rudimentary validation of file content to guard against accidentally uploading
         invalid files.
         """
-        if (
-            data["application"].status
-            not in self.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
-        ):
-            raise serializers.ValidationError(
-                _("Can not add attachment to an application in this state")
-            )
 
         if data["attachment_file"].size > MAX_UPLOAD_SIZE:
             raise serializers.ValidationError(
@@ -798,14 +823,26 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             return None
 
     def get_former_benefit_info(self, obj):
+
+        if not hasattr(obj, "calculation"):
+            return {}
+
+        # use start_date and end_date from calculation, if defined
         aggregated_info = get_former_benefit_info(
             obj,
             obj.company,
             obj.employee.social_security_number,
-            obj.start_date,
-            obj.end_date,
+            obj.calculation.start_date or obj.start_date,
+            obj.calculation.end_date or obj.end_date,
             obj.apprenticeship_program,
         )
+        if aggregated_info.months_remaining is None:
+            last_possible_end_date = None
+        else:
+            last_possible_end_date = get_date_range_end_with_days360(
+                obj.start_date, aggregated_info.months_remaining
+            )
+
         return {
             "months_used": to_decimal(
                 aggregated_info.months_used, decimal_places=2, allow_null=True
@@ -813,6 +850,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "months_remaining": to_decimal(
                 aggregated_info.months_remaining, decimal_places=2, allow_null=True
             ),
+            "last_possible_end_date": last_possible_end_date,
         }
 
     def get_submitted_at(self, obj):
@@ -1053,7 +1091,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         "company_contact_person_last_name",
         "co_operation_negotiations",
         "pay_subsidy_granted",
-        "apprenticeship_program",
         "de_minimis_aid",
         "benefit_type",
         "start_date",
@@ -1077,6 +1114,11 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
             # at submit time, only True is allowed.
             required_fields.append("association_immediate_manager_check")
+
+        # if pay_subsidy_granted is selected, then the applicant needs to also select if
+        # it's an apprenticeship_program or not
+        if data["pay_subsidy_granted"]:
+            required_fields.append("apprenticeship_program")
 
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:
@@ -1302,6 +1344,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             from_status=previous_status,
             to_status=instance.status,
         )
+        if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
+            # Create an automatic message for the applicant
+            send_application_reopened_message(
+                get_request_user_from_context(self),
+                instance,
+                self.get_additional_information_needed_by(instance),
+            )
 
     def _validate_employee_consent(self, instance):
         consent_count = instance.attachments.filter(

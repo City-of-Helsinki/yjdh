@@ -8,7 +8,8 @@ trigger:
 #    - refs/tags/*
   paths:
     include:
-    - frontend/benefit
+    - frontend/benefit/**
+    - frontend/*
     exclude:
     - README.md
 

@@ -30,6 +30,7 @@ module.exports = {
     'react/function-component-definition': 'off',
     'chai-friendly/no-unused-expressions': 'off',
     'sonarjs/no-nested-template-literals': 'off',
+    'unicorn/prefer-node-protocol': 'off',
   },
   overrides: [
     {

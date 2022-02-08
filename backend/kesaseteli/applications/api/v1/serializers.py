@@ -1,3 +1,5 @@
+import json
+
 import filetype
 from django.conf import settings
 from django.db import transaction
@@ -442,13 +444,14 @@ class SchoolSerializer(serializers.ModelSerializer):
 class YouthApplicationSerializer(serializers.ModelSerializer):
     def validate_social_security_number(self, value):
         if value is None or str(value).strip() == "":
-            raise serializers.ValidationError(_("Social security number must be set"))
+            raise serializers.ValidationError(
+                {"social_security_number": _("Social security number must be set")}
+            )
         return value
 
     def validate(self, data):
         data = super().validate(data)
-        if "social_security_number" not in data:
-            raise serializers.ValidationError(_("Social security number must be set"))
+        self.validate_social_security_number(data.get("social_security_number", None))
         return data
 
     class Meta:
@@ -464,10 +467,27 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "is_unlisted_school",
             "email",
             "phone_number",
+            "postcode",
             "language",
             "receipt_confirmed_at",
+            "encrypted_vtj_json",
         ]
         read_only_fields = [
             "id",
             "created_at",
+            "encrypted_vtj_json",
         ]
+
+    encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")
+
+    def get_encrypted_vtj_json(self, obj):
+        """
+        Return encrypted_vtj_json as JSON object, converting None & empty string to {}.
+
+        The reason for this function is that encrypted_vtj_json field is
+        EncryptedCharField, not JSONField.
+        """
+        if obj.encrypted_vtj_json in [None, ""]:
+            return {}
+        else:
+            return json.loads(obj.encrypted_vtj_json)

@@ -1,6 +1,7 @@
 import faker from 'faker';
 import { fakeSchools } from 'kesaseteli/youth/__tests__/utils/fake-objects';
 import YouthApplication from 'kesaseteli/youth/types/youth-application';
+import { ErrorType } from 'kesaseteli/youth/types/youth-application-creation-error';
 import {
   BackendEndpoint,
   getBackendDomain,
@@ -60,13 +61,15 @@ export const expectToCreateYouthApplication = (
     );
 
 export const expectToReplyErrorWhenCreatingYouthApplication =
-  (errorCode: 400 | 404 | 500) =>
+  (errorCode: 400 | 404 | 500, errorType?: ErrorType) =>
   (application: YouthApplication): nock.Scope => {
     consoleSpy = jest.spyOn(console, 'error').mockImplementation();
     return nock(getBackendDomain())
       .post(BackendEndpoint.YOUTH_APPLICATIONS, application)
       .reply(
         errorCode,
-        'This is a create youth application backend test error. Please ignore this error message.'
+        errorType
+          ? () => ({ code: errorType })
+          : 'This is a create youth application backend test error. Please ignore this error message.'
       );
   };

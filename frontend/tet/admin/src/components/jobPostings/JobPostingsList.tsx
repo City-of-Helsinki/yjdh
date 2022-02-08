@@ -1,28 +1,27 @@
 import * as React from 'react';
 import TetPosting from 'tet/admin/types/tetposting';
-import { Button } from 'hds-react';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import JobPostingsSection from 'tet/admin/components/jobPostings/JobPostingsSection';
 
 type JobPostingsListProps = {
-  postings: TetPosting[];
+  draft: TetPosting[];
+  published: TetPosting[];
 };
 
-const JobPostingsList: React.FC<JobPostingsListProps> = ({ postings }) => {
+const JobPostingsList: React.FC<JobPostingsListProps> = ({ draft, published }) => {
   const { t } = useTranslation();
-  const router = useRouter();
-
   return (
     <>
-      <Button onClick={() => router.push('/new')}>{t('common:application.jobPostings.addNewPosting')}</Button>
-      <ul>
-        {postings.map((posting) => (
-          <li key={posting.id}>
-            {posting.title} - {posting.description}{' '}
-            <span onClick={() => router.push(`/edit/${posting.id!}`)}>EDIT</span>
-          </li>
-        ))}
-      </ul>
+      <JobPostingsSection
+        title={t('common:application.jobPostings.publishedPostings')}
+        postingsTotal={published.length}
+        postings={published}
+      ></JobPostingsSection>
+      <JobPostingsSection
+        title={t('common:application.jobPostings.draftPostings')}
+        postingsTotal={draft.length}
+        postings={draft}
+      ></JobPostingsSection>
     </>
   );
 };

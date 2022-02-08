@@ -6,7 +6,10 @@ trigger:
     - develop
   paths:
     include:
-    - frontend/benefit/handler
+    - frontend/benefit/handler/**
+    - frontend/benefit/shared/**
+    - frontend/shared/**
+    - frontend/*
     exclude:
     - README.md
 

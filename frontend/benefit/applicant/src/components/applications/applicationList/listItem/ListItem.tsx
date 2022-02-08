@@ -14,9 +14,9 @@ import {
   $DataValue,
   $ItemActions,
   $ItemContent,
-  $ItemInfo,
-  $ItemInfoInner,
-  $ItemInfoText,
+  $ListInfo,
+  $ListInfoInner,
+  $ListInfoText,
   $ListItem,
   $ListItemWrapper,
 } from './ListItem.sc';
@@ -54,6 +54,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     allowedAction,
     editEndDate,
     status,
+    unreadMessagesCount,
   } = props;
 
   const ActionIcon = allowedAction.Icon;
@@ -100,7 +101,15 @@ const ListItem: React.FC<ListItemProps> = (props) => {
               <$DataHeader>
                 {t(`${translationBase}.common.editEndDate`)}
               </$DataHeader>
-              <StatusLabel type="alert">{editEndDate}</StatusLabel>
+              <StatusLabel
+                css={`
+                  font-weight: 600;
+                  text-align: center;
+                `}
+                type="alert"
+              >
+                {editEndDate}
+              </StatusLabel>
             </$DataColumn>
           )}
         </$ItemContent>
@@ -122,15 +131,19 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           </Button>
         </$ItemActions>
       </$ListItem>
-      {status === APPLICATION_STATUSES.INFO_REQUIRED && (
-        <$ItemInfo>
+      {Number(unreadMessagesCount) > 0 && (
+        <$ListInfo>
           <$GridCell $colStart={2}>
-            <$ItemInfoInner>
+            <$ListInfoInner>
               <IconSpeechbubbleText />
-              <$ItemInfoText>1 uusi viesti</$ItemInfoText>
-            </$ItemInfoInner>
+              <$ListInfoText>
+                {t('common:applications.list.common.newMessages', {
+                  count: unreadMessagesCount,
+                })}
+              </$ListInfoText>
+            </$ListInfoInner>
           </$GridCell>
-        </$ItemInfo>
+        </$ListInfo>
       )}
     </$ListItemWrapper>
   );

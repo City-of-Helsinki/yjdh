@@ -1,6 +1,4 @@
 import { $Notification } from 'benefit/applicant/components/Notification/Notification.sc';
-import AppContext from 'benefit/applicant/context/AppContext';
-import FrontPageContext from 'benefit/applicant/context/FrontPageContext';
 import { Button, IconPlus } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -17,22 +15,26 @@ import {
 import { useMainIngress } from './useMainIngress';
 
 const MainIngress: React.FC = () => {
-  const { handleNewApplicationClick, handleMoreInfoClick, t } =
-    useMainIngress();
-  const { errors } = React.useContext(FrontPageContext);
-  const { submittedApplication, setSubmittedApplication } =
-    React.useContext(AppContext);
+  const {
+    errors,
+    application,
+    handleNewApplicationClick,
+    handleMoreInfoClick,
+    t,
+    handleCloseNotification,
+  } = useMainIngress();
 
-  const successNotification = submittedApplication ? (
+  const successNotification = application ? (
     <$Notification
       label={t('common:notifications.applicationSubmitted.label')}
       type="success"
       dismissible
-      onClose={() => setSubmittedApplication(null)}
+      closeButtonLabelText={t('common:utility.close') ?? ''}
+      onClose={handleCloseNotification}
     >
       {t('common:notifications.applicationSubmitted.message', {
-        applicationNumber: submittedApplication?.applicationNumber,
-        applicantName: submittedApplication?.applicantName,
+        applicationNumber: application?.applicationNumber,
+        applicantName: application?.applicantName,
       })}
     </$Notification>
   ) : null;

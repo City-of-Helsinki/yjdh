@@ -9,9 +9,10 @@
     "fullPage": true
   },
   "compilerOptions": {
-    "typescript": { 
+    "typescript": {
       "configPath": "../../tsconfig.testcafe.json",
       "customCompilerModulePath": "../typescript"
     }
-  }
+  },
+  "pageRequestTimeout": 20000
 }

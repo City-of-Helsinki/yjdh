@@ -1,14 +1,12 @@
 import { getSharedComponents } from '@frontend/shared/browser-tests/shared.components';
 import { getErrorMessage } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getUrl } from '@frontend/shared/browser-tests/utils/url.utils';
+import {
+  getCurrentPathname,
+  getUrl,
+  getUrlParam,
+} from '@frontend/shared/browser-tests/utils/url.utils';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController, { ClientFunction } from 'testcafe';
-
-const getCurrentPathname = ClientFunction(() => document.location.pathname);
-const getUrlParam = ClientFunction((param: string) => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param);
-});
 
 export const getFrontendUrl = (path = ''): string =>
   getUrl(process.env.EMPLOYER_URL ?? 'https://localhost:3000', path);

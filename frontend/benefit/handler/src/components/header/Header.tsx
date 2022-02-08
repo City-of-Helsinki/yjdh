@@ -1,3 +1,4 @@
+import { ROUTES } from 'benefit/handler/constants';
 import * as React from 'react';
 import BaseHeader from 'shared/components/header/Header';
 
@@ -16,6 +17,7 @@ const Header: React.FC = () => {
   return (
     <BaseHeader
       title={t('common:appName')}
+      titleUrl={ROUTES.HOME}
       menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
       languages={languageOptions}
       locale={locale}

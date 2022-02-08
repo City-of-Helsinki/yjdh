@@ -244,7 +244,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 }
                 options={subsidyOptions}
                 id={fields.paySubsidyPercent.name}
-                name={fields.paySubsidyPercent.name}
                 placeholder={selectLabel}
                 invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
                 aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
@@ -374,27 +373,32 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </SelectionGroup>
         </$GridCell>
 
-        {formik.values.benefitType === BENEFIT_TYPES.SALARY 
-          && formik.values.apprenticeshipProgram === true && (
-          <$GridCell $colSpan={6}>
-            <$Notification
-              label={t(`${translationsBase}.notifications.salaryBenefit.label`)}
-            >
-              {t(`${translationsBase}.notifications.salaryBenefit.content`)}
-            </$Notification>
-          </$GridCell>
-        )}
+        {formik.values.benefitType === BENEFIT_TYPES.SALARY &&
+          formik.values.apprenticeshipProgram === true && (
+            <$GridCell $colSpan={6}>
+              <$Notification
+                label={t(
+                  `${translationsBase}.notifications.salaryBenefit.label`
+                )}
+              >
+                {t(`${translationsBase}.notifications.salaryBenefit.content`)}
+              </$Notification>
+            </$GridCell>
+          )}
       </FormSection>
 
       <FormSection header={t(`${translationsBase}.heading4`)}>
         <$GridCell $colSpan={8}>
           {!formik.values.benefitType
             ? t(`${translationsBase}.messages.selectBenefitType`)
-            : formik.values.benefitType === BENEFIT_TYPES.SALARY 
-              && formik.values.apprenticeshipProgram === false
+            : formik.values.benefitType === BENEFIT_TYPES.SALARY &&
+              formik.values.apprenticeshipProgram === false
             ? ''
-            : t(`${translationsBase}.messages.${camelCase(formik.values.benefitType)}Selected`
-          )}
+            : t(
+                `${translationsBase}.messages.${camelCase(
+                  formik.values.benefitType
+                )}Selected`
+              )}
         </$GridCell>
         <$GridCell $colStart={1} $colSpan={2}>
           <DateInput
@@ -558,6 +562,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                   `${translationsBase}.tooltips.heading5EmploymentSub1`
                 )}
               />
+            </$GridCell>
+
+            <$GridCell $colSpan={12}>
+              {t(`${translationsBase}.salaryExpensesExplanation`)}
             </$GridCell>
 
             <$GridCell $colSpan={2}>

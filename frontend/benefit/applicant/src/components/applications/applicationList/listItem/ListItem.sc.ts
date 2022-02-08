@@ -65,20 +65,21 @@ export const $ItemActions = styled.div`
   min-width: 160px;
 `;
 
-export const $ItemInfo = styled.div`
+export const $ListInfo = styled.div`
   display: grid;
   grid-template-columns: 60px 3fr;
   grid-gap: ${(props) => props.theme.spacing.m};
   background-color: ${(props) => props.theme.colors.coatOfArms};
   padding: ${(props) => props.theme.spacing.xs2};
   color: ${(props) => props.theme.colors.white};
+  margin-bottom: ${(props) => props.theme.spacing.l};
 `;
 
-export const $ItemInfoInner = styled.div`
+export const $ListInfoInner = styled.div`
   display: flex;
   align-items: center;
 `;
 
-export const $ItemInfoText = styled.div`
+export const $ListInfoText = styled.div`
   padding: 0 ${(props) => props.theme.spacing.xs2};
 `;
