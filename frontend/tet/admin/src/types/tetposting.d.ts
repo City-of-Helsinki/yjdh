@@ -13,6 +13,8 @@ type TetPosting = {
   contact_phone: string;
   date_published?: string;
   keywords: string[];
+  work_methods: string[];
+  work_features: string[];
 };
 
 export type TetPostings = {

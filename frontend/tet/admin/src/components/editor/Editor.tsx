@@ -24,6 +24,8 @@ const initialValuesForNew: TetPosting = {
   end_date: '',
   date_published: '',
   org_name: '',
+  work_methods: [],
+  work_features: [],
   keywords: [],
 };
 
@@ -42,7 +44,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
-    defaultValues: { contact_language: 'fi' }, //Could be used for all
+    defaultValues: { contact_language: 'fi', work_methods: [], work_features: [] },
   });
 
   const upsertTetPosting = useUpsertTetPosting();
@@ -50,16 +52,24 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const posting = initialValue || initialValuesForNew;
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
+    console.log('test_success');
     const verb = validatedPosting.id ? 'PUT' : 'POST';
     console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
     upsertTetPosting.mutate(validatedPosting);
   };
 
   const submitHandler = (e) => {
-    console.log('jotain');
     e.preventDefault();
-    console.log(methods.getValues());
-    methods.handleSubmit(handleSuccess);
+    const chosenWorkMethods = methods.getValues('work_methods');
+    if (!chosenWorkMethods.length) {
+      methods.setError('work_methods', {
+        type: 'manual',
+        message: 'Valitse yksi',
+      });
+    } else {
+      methods.clearErrors('work_methods');
+    }
+    methods.handleSubmit(handleSuccess)();
   };
 
   return (

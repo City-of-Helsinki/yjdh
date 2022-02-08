@@ -3,9 +3,8 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { SelectionGroup } from 'hds-react';
+//import { SelectionGroup } from 'hds-react';
 import Checkbox from 'shared/components/forms/inputs/Checkbox';
-//import { Combobox } from 'hds-react';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import { getWorkMethods, getWorkFeatures, getWorkKeyWords } from 'tet/admin/backend-api/linked-events-api';
 import { useQuery, useQueries } from 'react-query';
@@ -14,6 +13,7 @@ import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import { useFormContext } from 'react-hook-form';
 import TetPosting from 'tet/admin/types/tetposting';
+import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
 
 const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
   const { t } = useTranslation();
@@ -46,6 +46,16 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
     return options;
   };
 
+  const getValueLabelList = (list) => {
+    return list.map((item) => ({
+      label: item.name.fi,
+      value: item.id,
+    }));
+  };
+
+  const workMethodsList = getValueLabelList(workMethods.data.data);
+  const workFeaturesList = getValueLabelList(workFeatures.data.data);
+
   const keywordsChangeHandler = (val) => {
     setValue('keywords', [...val]);
   };
@@ -60,22 +70,20 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
         `}
       >
         <$GridCell $colSpan={4}>
-          <SelectionGroup label={t('common:editor.classification.workMethod')} errorText={'Valitse yksi'}>
-            {workMethods.data.data.map((workMethod) => (
-              <Checkbox
-                id={workMethod.id}
-                label={workMethod.name.fi}
-                onChange={() => handleWorkMethodChange(workMethod.name.fi)}
-              />
-            ))}
-          </SelectionGroup>
+          <SelectionGroup
+            required={true}
+            fieldId="work_methods"
+            label="Työtavat"
+            options={workMethodsList}
+          ></SelectionGroup>
         </$GridCell>
         <$GridCell $colSpan={4}>
-          <SelectionGroup label={t('common:editor.classification.workFeature')}>
-            {workFeatures.data.data.map((workFeature) => (
-              <Checkbox id={workFeature.id} label={workFeature.name.fi} />
-            ))}
-          </SelectionGroup>
+          <SelectionGroup
+            required={false}
+            fieldId="work_features"
+            label="Työn ominaisuudet"
+            options={workFeaturesList}
+          ></SelectionGroup>
         </$GridCell>
         <$GridCell $colSpan={4}>
           <Combobox
@@ -89,20 +97,6 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
             optionLabelField={'label'}
             filter={filterHandler}
           ></Combobox>
-          {/*
-          <Combobox
-            multiselect={true}
-            required
-            label={t('common:editor.classification.keywords')}
-            placeholder={t('common:editor.classification.search')}
-            options={keywords}
-            clearButtonAriaLabel="Clear all selections"
-            selectedItemRemoveButtonAriaLabel="Remove ${value}"
-            toggleButtonAriaLabel="Toggle menu"
-            optionLabelField={'label'}
-            filter={filterHandler}
-          ></Combobox>
-			*/}
         </$GridCell>
       </$GridCell>
     </FormSection>
