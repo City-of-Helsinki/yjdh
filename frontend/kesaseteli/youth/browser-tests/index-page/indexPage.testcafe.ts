@@ -59,11 +59,11 @@ if (!isRealIntegrationsEnabled()) {
   test('activation remembers the selected language', async (t) => {
     const languageDropdown = await getHeaderComponents(t).languageDropdown();
     await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
-    const indexPage = await getIndexPageComponents(t);
+    const indexPage = await getIndexPageComponents(t, 'sv');
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
     await sendYouthApplication(t, formData, 'sv');
-    const thankYouPage = await getThankYouPageComponents(t);
+    const thankYouPage = await getThankYouPageComponents(t, 'sv');
     await thankYouPage.actions.clickActivationLink();
     const activatedPage = await getActivatedPageComponents(t, 'sv');
     await activatedPage.expectations.isLoaded();
