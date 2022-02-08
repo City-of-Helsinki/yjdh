@@ -768,6 +768,54 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
+    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    [
+        ("ry", None, [], False, 200),
+        ("ry", False, [], False, 200),
+        ("ry", None, [], True, 200),
+        ("ry", False, [], True, 200),
+        ("oy", None, [], None, 400),
+        ("oy", False, [], None, 200),
+    ],
+)
+def test_submit_application_without_de_minimis_aid(
+    request,
+    api_client,
+    application,
+    company_form,
+    de_minimis_aid,
+    de_minimis_aid_set,
+    association_has_business_activities,
+    expected_result,
+):
+    application.company.company_form = company_form
+    application.company.save()
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["benefit_type"] = BenefitType.SALARY_BENEFIT
+    data["de_minimis_aid"] = de_minimis_aid
+    data["de_minimis_aid_set"] = de_minimis_aid_set
+    data["pay_subsidy_percent"] = "50"
+    data["pay_subsidy_granted"] = True
+    data["association_has_business_activities"] = association_has_business_activities
+    if company_form == "ry":
+        data["association_immediate_manager_check"] = True
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
     "pay_subsidy_granted,apprenticeship_program,expected_result",
     [
         (True, True, 200),
