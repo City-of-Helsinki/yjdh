@@ -84,7 +84,7 @@
   "thankyouPage" : {
     "title": "Kiitos",
     "notificationTitle": "Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "Hienoa! Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa.",
+    "notificationMessage": "Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa.",
     "goToFrontendPage": "Siirry kesäsetelin etusivulle"
   },
   "activationErrorPage" : {

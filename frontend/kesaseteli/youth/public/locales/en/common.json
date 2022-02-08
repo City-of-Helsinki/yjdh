@@ -1,5 +1,5 @@
 {
-  "appName": "ENG Nuorten kesäseteli",
+  "appName": "Summer Job Voucher for youth",
   "header": {
     "linkSkipToContent": "Skip to content",
     "menuToggleAriaLabel": "Menu"
@@ -18,9 +18,9 @@
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
     "backToTop": "Back to top",
-    "registerInformation": "ENG Rekisteriseloste ",
+    "registerInformation": "Description of file",
     "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth%20services%20summer%20job%20voucher%20data%20file.pdf",
-    "jobOpenings": "ENG Avoimet työpaikat (Only in finnish)",
+    "jobOpenings": "Open Jobs (Only in finnish)",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Contact us",
     "contactUsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/contact-us/",
@@ -52,17 +52,17 @@
     "form" : {
       "title": "Summer Job Voucher information",
       "info": "Please fill in the information as it appears on your Kela card",
-      "button": "ENG Lähetä tiedot",
+      "button": "Submit information",
       "first_name" : "First name",
       "last_name": "Last name",
       "social_security_number": "Personal identity code",
       "postcode": "Postal code",
       "schoolsDropdown": "School",
-      "schoolsLoading": "ENG Ladataan vaihtoehtoja...",
-      "schoolsPlaceholder": "ENG Valitse koulusi listalta",
+      "schoolsLoading": "Loading up options ...",
+      "schoolsPlaceholder": "Name of the school ",
       "is_unlisted_school": "School not found on the list",
       "schoolName": "ENG Koulun nimi",
-      "schoolNamePlaceholder": "ENG Esim. Merilahden Peruskoulu",
+      "schoolNamePlaceholder": "E.g. International School of Helsinki",
       "email": "Email address",
       "phone_number": "Phone number",
       "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
@@ -83,8 +83,8 @@
   },
   "thankyouPage" : {
     "title": "Thank You!",
-    "notificationTitle": "ENG Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "Great! You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
+    "notificationTitle": "Excellent! You sent your information to the Summer Job Vouchers´ digital system.",
+    "notificationMessage": "You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
     "goToFrontendPage": "Go to the Summer Job Voucher front page"
   },
   "activationErrorPage" : {
@@ -109,7 +109,7 @@
     "goToFrontendPage": "ENG Rekisteröidy ja lähetä kesäseteli uudelleen"
   },
   "alreadyActivatedPage" : {
-    "title": "ENG Hups! Vahvistuslinkki on jo aktivoitu.",
+    "title": "Oops! The confirmation link is already activated.",
     "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiisi.",
     "goToFrontendPage": "ENG Rekisteröidy ja lähetä kesäseteli uudelleen"
   }

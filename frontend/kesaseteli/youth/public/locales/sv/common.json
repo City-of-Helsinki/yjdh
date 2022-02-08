@@ -1,5 +1,5 @@
 {
-  "appName": "SV Nuorten kesäseteli",
+  "appName": "Sommarsedel för unga",
   "header": {
     "linkSkipToContent": "Gå till innehållet",
     "menuToggleAriaLabel": "Menu"
@@ -18,9 +18,9 @@
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
     "backToTop": "Tillbaka till toppen",
-    "registerInformation": "SV Rekisteriseloste",
+    "registerInformation": "Registerbeskrivning",
     "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas%20register%20for%20sommarjobbssedlar.pdf",
-    "jobOpenings": "SV Avoimet työpaikat (Vain suomeksi)",
+    "jobOpenings": "Öppna jobb (Endast på finska)",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Ta kontakt",
     "contactUsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/ta-kontakt/",
@@ -52,17 +52,17 @@
     "form" : {
       "title": "Information om Sommarsedeln",
       "info": "Fyll i uppgifterna på samma sätt som på ditt FPA-kort",
-      "button": "SV Lähetä tiedot",
+      "button": "Skicka informationen",
       "first_name" : "Förnamn",
       "last_name": "Efternamn",
       "social_security_number": "Personbeteckning",
       "postcode": "Post nummer",
       "schoolsDropdown": "Skola",
-      "schoolsLoading": "SV Ladataan vaihtoehtoja...",
+      "schoolsLoading": "Laddar upp alternativ...",
       "schoolsPlaceholder": "SV Valitse koulusi listalta",
       "is_unlisted_school": "Skolan finns inte i listan",
-      "schoolName": "SV Koulun nimi",
-      "schoolNamePlaceholder": "SV Esim. Merilahden Peruskoulu",
+      "schoolName": "Skolans namn",
+      "schoolNamePlaceholder": "Te.x. Grundskolan Norsen",
       "email": "E-postadress",
       "phone_number": "Telefonnummer",
       "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
@@ -82,9 +82,9 @@
     "toggleMenu": "SV Avaa valikko"
   },
   "thankyouPage" : {
-    "title": "SV Kiitos!",
-    "notificationTitle": "SV Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "Fint! Du fick en aktiveringslänk för Sommarsedeln per e-post. Den måste aktiveras inom {{ expirationHours }} timmar.",
+    "title": "Tack!",
+    "notificationTitle": "Fint! Du har skickat dina uppgifter till Sommarsedelns digitala system.",
+    "notificationMessage": "Du fick en aktiveringslänk för Sommarsedeln per e-post. Den måste aktiveras inom {{ expirationHours }} timmar.",
     "goToFrontendPage": "Gå till Sommarsedelns förstasida"
   },
   "activationErrorPage" : {
@@ -109,7 +109,7 @@
     "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
   },
   "alreadyActivatedPage" : {
-    "title": "SV Hups! Vahvistuslinkki on jo aktivoitu.",
+    "title": "Hoppsan! Bekräftelselänken är redan aktiverad.",
     "notificationMessage": "SV Kesäseteli on lähetetty sähköpostiisi.",
     "goToFrontendPage": "SV Rekisteröidy ja lähetä kesäseteli uudelleen"
   }
