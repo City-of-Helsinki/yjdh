@@ -9,6 +9,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
@@ -44,8 +45,8 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             {data.startDate && data.endDate && (
               <>
                 {t(`${translationsBase}.startEndDates`, {
-                  startDate: data.startDate,
-                  endDate: data.endDate,
+                  startDate: convertToUIDateFormat(data.startDate),
+                  endDate: convertToUIDateFormat(data.endDate),
                   period: formatStringFloatValue(appliedPeriod),
                 })}
               </>
@@ -130,7 +131,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
                       </$ViewField>
                       <$ViewField isBold={isTotal}>
                         {t(`${translationsBase}.tableRowValue`, {
-                          amount: row.amount,
+                          amount: formatStringFloatValue(row.amount),
                         })}
                       </$ViewField>
                     </$CalculatorTableRow>

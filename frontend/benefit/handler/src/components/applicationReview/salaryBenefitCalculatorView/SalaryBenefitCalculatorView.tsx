@@ -13,6 +13,7 @@ import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSepara
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
@@ -63,8 +64,8 @@ const SalaryBenefitCalculatorView: React.FC<
         <$GridCell $colStart={1} $colSpan={3} style={{ alignSelf: 'center' }}>
           <$ViewField>
             {t(`${translationsBase}.startEndDates`, {
-              startDate: data.startDate,
-              endDate: data.endDate,
+              startDate: convertToUIDateFormat(data.startDate),
+              endDate: convertToUIDateFormat(data.endDate),
               period: formatStringFloatValue(appliedPeriod),
             })}
           </$ViewField>
@@ -299,7 +300,9 @@ const SalaryBenefitCalculatorView: React.FC<
                   </$ViewField>
                   {!isDescriptionRowType && (
                     <$ViewField isBold={isTotalRowType}>
-                      {row.amount}
+                      {t(`${translationsBase}.tableRowValue`, {
+                        amount: formatStringFloatValue(row.amount),
+                      })}
                     </$ViewField>
                   )}
                 </$CalculatorTableRow>
