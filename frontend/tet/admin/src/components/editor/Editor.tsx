@@ -8,7 +8,6 @@ import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
-import { DevTool } from '@hookform/devtools';
 
 const initialValuesForNew: TetPosting = {
   title: '',
@@ -36,7 +35,7 @@ export type EditorSectionProps = {
 
 // add new posting / edit existing
 const Editor: React.FC<EditorProps> = ({ initialValue }) => {
-  const { methods, control } = useForm<TetPosting>({
+  const methods = useForm<TetPosting>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
@@ -66,7 +65,6 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
           <ActionButtons />
         </form>
       </FormProvider>
-      <DevTool control={control} />
     </>
   );
 };
