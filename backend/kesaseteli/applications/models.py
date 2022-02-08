@@ -197,14 +197,16 @@ class YouthApplication(TimeStampedModel, UUIDModel):
     @staticmethod
     def _activation_email_subject(language):
         with translation.override(language):
-            return gettext("Vahvista sähköpostiosoitteesi")
+            return gettext("Aktivoi Kesäseteli")
 
     @staticmethod
     def _activation_email_message(language, activation_link):
         with translation.override(language):
             return gettext(
-                "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
-                "%(activation_link)s"
+                "Aktivoi Kesäsetelisi vahvistamalla sähköpostiosoitteesi "
+                "klikkaamalla alla olevaa linkkiä:\n\n"
+                "%(activation_link)s\n\n"
+                "Ystävällisin terveisin, Kesäseteli-tiimi"
             ) % {"activation_link": activation_link}
 
     def _processing_email_subject(self):
