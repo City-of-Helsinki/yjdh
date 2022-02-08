@@ -73,6 +73,7 @@
   },
   "errors": {
     "required": "Information is missing or is incorrect",
+    "minLength": "ENG Syöttämäsi tieto on liian lyhyt",
     "maxLength": "The information you entered is too long",
     "pattern": "The information you entered is in an incorrect format",
     "validate": "The information you entered is in an incorrect format"

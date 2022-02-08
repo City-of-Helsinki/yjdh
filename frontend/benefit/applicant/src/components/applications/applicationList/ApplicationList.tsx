@@ -16,9 +16,8 @@ const ApplicationsList: React.FC<ApplicationListProps> = ({
   heading,
   status,
 }) => {
-  const { list, shouldShowSkeleton, shouldHideList } = useApplicationList(
-    status
-  );
+  const { list, shouldShowSkeleton, shouldHideList } =
+    useApplicationList(status);
 
   const items = shouldShowSkeleton ? (
     <ListItem isLoading />

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 type ViewFieldProps = {
   isInline?: boolean;
+  isBold?: boolean;
 };
 
 type SummaryTableValueProps = {
@@ -14,7 +15,7 @@ export const $ViewField = styled.div<ViewFieldProps>`
       props.children ? props.theme.spacing.xs4 : 0};
   }
   display: ${(props) => (props.isInline ? 'inline' : 'block')};
-  font-weight: 400;
+  font-weight: ${(props) => (props.isBold ? 500 : 400)};
 `;
 
 export const $ViewFieldBold = styled.span`

@@ -3,6 +3,8 @@ import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCr
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
+import { isYouthApplicationCreationError } from 'kesaseteli/youth/utils/type-guards';
+import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import SaveFormButton from 'shared/components/forms/buttons/SaveFormButton';
@@ -12,13 +14,24 @@ import SocialSecurityNumberInput from 'shared/components/forms/inputs/SocialSecu
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
+import {
+  EMAIL_REGEX,
+  NAMES_REGEX,
+  PHONE_NUMBER_REGEX,
+  POSTAL_CODE_REGEX,
+} from 'shared/constants';
 import isRealIntegrationsEnabled from 'shared/flags/is-real-integrations-enabled';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useGoToPage from 'shared/hooks/useGoToPage';
+import useLocale from 'shared/hooks/useLocale';
+import { assertUnreachable } from 'shared/utils/typescript.utils';
 
 const YouthForm: React.FC = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const locale = useLocale();
   const register = useRegisterInput<YouthFormData>();
+  const handleDefaultError = useErrorHandler(false);
 
   const goToPage = useGoToPage();
   const handleSaveSuccess = React.useCallback(
@@ -30,6 +43,26 @@ const YouthForm: React.FC = () => {
       goToPage(url);
     },
     [goToPage]
+  );
+
+  const handleErrorResponse = React.useCallback(
+    (error: Error | unknown) => {
+      if (isYouthApplicationCreationError(error)) {
+        const errorCode = error.response.data.code;
+        switch (errorCode) {
+          case 'already_assigned':
+          case 'email_in_use':
+            void router.push(`${locale}/${encodeURIComponent(errorCode)}`);
+            return;
+
+          default:
+            assertUnreachable(errorCode);
+        }
+      } else {
+        handleDefaultError(error);
+      }
+    },
+    [handleDefaultError, locale, router]
   );
 
   return (
@@ -55,6 +88,14 @@ const YouthForm: React.FC = () => {
           <SocialSecurityNumberInput<YouthFormData>
             {...register('social_security_number', {
               required: true,
+            })}
+          />
+          <TextInput<YouthFormData>
+            {...register('postcode', {
+              required: true,
+              pattern: POSTAL_CODE_REGEX,
+              minLength: 5,
+              maxLength: 5,
             })}
           />
           <SchoolSelection />
@@ -101,6 +142,7 @@ const YouthForm: React.FC = () => {
             <SaveFormButton
               saveQuery={useCreateYouthApplicationQuery()}
               onSuccess={handleSaveSuccess}
+              onError={handleErrorResponse}
             >
               {t(`common:youthApplication.form.sendButton`)}
             </SaveFormButton>

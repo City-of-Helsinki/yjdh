@@ -73,6 +73,7 @@
   },
   "errors": {
     "required": "Tieto puuttuu",
+    "minLength": "Syöttämäsi tieto on liian lyhyt",
     "maxLength": "Syöttämäsi tieto on liian pitkä",
     "pattern": "Syöttämäsi tieto on virheellistä muotoa",
     "validate": "Syöttämäsi tieto on virheellistä muotoa"

@@ -8,5 +8,6 @@
   },
   "compilerOptions": {
     "typescript": { "configPath": "../../tsconfig.testcafe.json"}
-  }
+  },
+  "pageRequestTimeout": 20000
 }

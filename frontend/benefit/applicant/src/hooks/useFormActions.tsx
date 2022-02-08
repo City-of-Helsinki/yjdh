@@ -41,15 +41,11 @@ const useFormActions = (application: Application): FormActions => {
     data: ApplicationData
   ): Promise<void> => {
     const newApplication = await createApplication(data);
-    void router.replace(
-      {
-        query: {
-          id: newApplication?.id,
-        },
+    void router.replace({
+      query: {
+        id: newApplication?.id,
       },
-      undefined,
-      { shallow: true }
-    );
+    });
   };
 
   const applicationId = router.query.id;
@@ -117,7 +113,7 @@ const useFormActions = (application: Application): FormActions => {
       endDate: currentValues.endDate
         ? convertToBackendDateFormat(parseDate(currentValues.endDate))
         : undefined,
-      apprenticeshipProgram: currentValues.apprenticeshipProgram || false,
+      apprenticeshipProgram: currentValues.apprenticeshipProgram,
     };
 
     const deMinimisAidSet =

@@ -768,6 +768,44 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
+    "pay_subsidy_granted,apprenticeship_program,expected_result",
+    [
+        (True, True, 200),
+        (True, False, 200),
+        (True, None, 400),
+        (False, None, 200),
+    ],
+)
+def test_apprenticeship_program_validation_on_submit(
+    request,
+    api_client,
+    application,
+    pay_subsidy_granted,
+    apprenticeship_program,
+    expected_result,
+):
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["pay_subsidy_granted"] = pay_subsidy_granted
+    data["pay_subsidy_percent"] = "50" if pay_subsidy_granted else None
+    data["additional_pay_subsidy_percent"] = None
+    data["apprenticeship_program"] = apprenticeship_program
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
@@ -865,6 +903,7 @@ def test_application_status_change_as_handler(
     modify existing application
     """
     application.status = from_status
+    application.applicant_language = "en"
     application.save()
     if from_status not in (
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
@@ -892,6 +931,14 @@ def test_application_status_change_as_handler(
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+
+        if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
+            assert application.messages.count() == 1
+            assert (
+                "Please make the requested changes by 18.06.2021"
+                in application.messages.first().content
+            )
+
     else:
         assert application.log_entries.all().count() == 0
 
@@ -1121,12 +1168,16 @@ def _pdf_file_path(request):
 
 
 def _upload_pdf(
-    request, api_client, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
+    request,
+    api_client,
+    application,
+    attachment_type=AttachmentType.EMPLOYMENT_CONTRACT,
+    urlpattern_name="v1:applicant-application-post-attachment",
 ):
     with open(os.path.join(_pdf_file_path(request)), "rb") as valid_pdf_file:
         return api_client.post(
             reverse(
-                "v1:applicant-application-post-attachment",
+                urlpattern_name,
                 kwargs={"pk": application.pk},
             ),
             {
@@ -1216,21 +1267,102 @@ def test_attachment_delete(request, api_client, application, status, expected_co
 
 
 @pytest.mark.parametrize(
-    "status",
+    "status,upload_result",
     [
-        ApplicationStatus.DRAFT,
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        (ApplicationStatus.DRAFT, 201),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
+        (ApplicationStatus.HANDLING, 403),
+        (ApplicationStatus.ACCEPTED, 403),
+        (ApplicationStatus.REJECTED, 403),
     ],
 )
-def test_pdf_attachment_upload(request, api_client, application, status):
+def test_pdf_attachment_upload_and_download_as_applicant(
+    request, api_client, application, status, upload_result
+):
     application.status = status
     application.save()
     response = _upload_pdf(request, api_client, application)
-    assert response.status_code == 201
+    assert response.status_code == upload_result
+    if upload_result != 201:
+        return
     assert len(application.attachments.all()) == 1
     attachment = application.attachments.all().first()
     assert attachment.attachment_type == AttachmentType.EMPLOYMENT_CONTRACT
     assert attachment.attachment_file.name.endswith(".pdf")
+    response = api_client.get(get_detail_url(application))
+    assert len(response.data["attachments"]) == 1
+    assert response.data["attachments"][0]["attachment_file"].startswith("http://")
+    assert (
+        "handlerapplications" not in response.data["attachments"][0]["attachment_file"]
+    )
+    file_dl = api_client.get(response.data["attachments"][0]["attachment_file"])
+    assert file_dl.status_code == 200
+    bytes = file_dl.getvalue()
+    assert bytes[:4].decode("utf-8") == "%PDF"
+
+
+@pytest.mark.parametrize(
+    "status,upload_result",
+    [
+        (ApplicationStatus.DRAFT, 201),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
+        (ApplicationStatus.HANDLING, 201),
+        (ApplicationStatus.ACCEPTED, 403),
+        (ApplicationStatus.REJECTED, 403),
+    ],
+)
+def test_pdf_attachment_upload_and_download_as_handler(
+    request, handler_api_client, application, status, upload_result
+):
+    application.status = status
+    application.save()
+    response = _upload_pdf(
+        request,
+        handler_api_client,
+        application,
+        urlpattern_name="v1:handler-application-post-attachment",
+    )
+    assert response.status_code == upload_result
+    if upload_result != 201:
+        return
+    response = handler_api_client.get(get_detail_url(application))
+    assert len(response.data["attachments"]) == 1
+    assert response.data["attachments"][0]["attachment_file"]
+    # the URL must point to the handler API
+    assert "handlerapplications" in response.data["attachments"][0]["attachment_file"]
+    file_dl = handler_api_client.get(response.data["attachments"][0]["attachment_file"])
+    assert file_dl.status_code == 200
+
+
+@pytest.mark.django_db
+def test_attachment_download_unauthenticated(request, anonymous_client, application):
+    attachment = _add_pdf_attachment(request, application)
+    response = anonymous_client.get(
+        reverse(
+            "v1:applicant-application-download-attachment",
+            kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_attachment_download_unauthorized(
+    request,
+    api_client,
+    anonymous_application,
+    mock_get_organisation_roles_and_create_company,
+):
+    attachment = _add_pdf_attachment(request, anonymous_application)
+    response = api_client.get(
+        reverse(
+            "v1:applicant-application-download-attachment",
+            kwargs={"pk": anonymous_application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 404
 
 
 @pytest.mark.parametrize(

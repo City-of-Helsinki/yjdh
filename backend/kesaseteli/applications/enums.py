@@ -56,3 +56,14 @@ class HiredWithoutVoucherAssessment(models.TextChoices):
     YES = "yes", _("yes")
     NO = "no", _("no")
     MAYBE = "maybe", _("maybe")
+
+
+class YouthApplicationRejectedReason(models.TextChoices):
+    EMAIL_IN_USE = "email_in_use", _("Email in use")
+    ALREADY_ASSIGNED = "already_assigned", _("Already assigned")
+
+    def json(self):
+        return {
+            "code": str(self.value),
+            "message": str(self.label),
+        }

@@ -109,6 +109,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       submitted_at,
       application_number: applicationNum,
       additional_information_needed_by,
+      unread_messages_count,
     } = application;
 
     const statusText = getStatusTranslation(appStatus);
@@ -127,7 +128,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       last_modified_at && convertToUIDateFormat(last_modified_at);
     const editEndDate =
       additional_information_needed_by &&
-      convertToUIDateAndTimeFormat(additional_information_needed_by);
+      convertToUIDateFormat(additional_information_needed_by);
     const commonProps = {
       id,
       name,
@@ -135,6 +136,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       modifiedAt,
       allowedAction,
       status: appStatus,
+      unreadMessagesCount: unread_messages_count ?? 0,
     };
     const draftProps = { createdAt, applicationNum };
     const submittedProps = {

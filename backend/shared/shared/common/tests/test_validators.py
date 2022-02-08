@@ -6,7 +6,46 @@ from shared.common.validators import (
     validate_name,
     validate_optional_json,
     validate_phone_number,
+    validate_postcode,
 )
+
+
+def get_invalid_postcode_values():
+    return [
+        None,
+        "",
+        " ",
+        " " * 2,
+        " " * 3,
+        " " * 4,
+        " " * 5,
+        " " * 6,
+        " " * 7,
+        " " * 8,
+        " " * 9,
+        "0",
+        "0" * 2,
+        "0" * 3,
+        "0" * 4,
+        # "00000" is omitted because it is a valid Finnish postcode
+        "0" * 6,
+        "0" * 7,
+        "0" * 8,
+        "0" * 9,
+        "123456789",
+        " 1234",
+        "1234 ",
+        "12 34",
+        "5",
+        "33",
+        "70",
+        "427",
+        "812",
+        "3812",
+        "5233",
+        "213306",
+        "879361",
+    ]
 
 
 def get_valid_json_test_values():
@@ -117,6 +156,33 @@ def test_validate_name_with_valid_input(value):
 def test_validate_name_with_invalid_input(value):
     with pytest.raises(ValidationError):
         validate_name(value)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "00000",
+        "11470",
+        "23407",
+        "25584",
+        "43853",
+        "45948",
+        "57694",
+        "61764",
+        "83746",
+        "85415",
+        "96121",
+        "99999",
+    ],
+)
+def test_validate_postcode_with_valid_input(value):
+    validate_postcode(value)
+
+
+@pytest.mark.parametrize("value", get_invalid_postcode_values())
+def test_validate_postcode_with_invalid_input(value):
+    with pytest.raises(ValidationError):
+        validate_postcode(value)
 
 
 @pytest.mark.parametrize("value", get_valid_json_test_values())

@@ -22,6 +22,14 @@
 !kesaseteli/employer/tsconfig.json
 !kesaseteli/employer/start.js
 
+!kesaseteli/handler/next.config.js
+!kesaseteli/handler/next-i18next.config.js
+!kesaseteli/handler/public
+!kesaseteli/handler/src
+!kesaseteli/handler/package.json
+!kesaseteli/handler/tsconfig.json
+!kesaseteli/handler/start.js
+
 !kesaseteli/youth/next.config.js
 !kesaseteli/youth/next-i18next.config.js
 !kesaseteli/youth/public

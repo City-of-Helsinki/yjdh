@@ -1,6 +1,10 @@
+import logging
+
+from django.conf import settings
 from django.core import exceptions
+from django.db import transaction
 from django.db.models import Func
-from django.http import FileResponse, HttpResponse, HttpResponseRedirect
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -27,14 +31,16 @@ from applications.api.v1.serializers import (
     SchoolSerializer,
     YouthApplicationSerializer,
 )
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, YouthApplicationRejectedReason
 from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
     YouthApplication,
 )
-from common.utils import DenyAll
+from common.permissions import DenyAll, IsHandler
+
+LOGGER = logging.getLogger(__name__)
 
 
 class SchoolListView(ListAPIView):
@@ -61,17 +67,34 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     serializer_class = YouthApplicationSerializer
 
     @action(methods=["get"], detail=True)
-    def activate(self, request, pk=None) -> HttpResponse:
-        try:
-            youth_application = YouthApplication.objects.get(pk=pk)
-        except (exceptions.ValidationError, YouthApplication.DoesNotExist):
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+    def process(self, request, pk=None) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object()  # noqa: F841
 
-        if youth_application.is_active:
+        # TODO: Implement
+        return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    @transaction.atomic
+    @action(methods=["get"], detail=True)
+    def activate(self, request, pk=None) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object()
+
+        # Lock same person's applications to prevent activation of more than one of them
+        same_persons_apps = YouthApplication.objects.select_for_update().filter(
+            social_security_number=youth_application.social_security_number
+        )
+        list(same_persons_apps)  # Force evaluation of queryset to lock its rows
+
+        if same_persons_apps.active().exists():
             return HttpResponseRedirect(youth_application.already_activated_page_url())
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
+            if settings.DISABLE_VTJ:
+                LOGGER.info(
+                    f"Activated youth application {youth_application.pk}: "
+                    "VTJ is disabled, sending application to be processed by a handler"
+                )
+                youth_application.send_processing_email_to_handler(request)
             return HttpResponseRedirect(youth_application.activated_page_url())
 
         return HttpResponse(
@@ -79,11 +102,38 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             content="Unable to activate youth application",
         )
 
+    @classmethod
+    def error_response(cls, reason: YouthApplicationRejectedReason):
+        return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=reason.json())
+
     def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        youth_application = YouthApplication.objects.get(id=response.data["id"])
+        # This function is based on CreateModelMixin class's create function.
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Data is valid but let's check other criteria before creating the object
+        email = serializer.validated_data["email"]
+        social_security_number = serializer.validated_data["social_security_number"]
+
+        if YouthApplication.is_email_or_social_security_number_active(
+            email, social_security_number
+        ):
+            return self.error_response(YouthApplicationRejectedReason.ALREADY_ASSIGNED)
+        elif YouthApplication.is_email_used(email):
+            return self.error_response(YouthApplicationRejectedReason.EMAIL_IN_USE)
+
+        # Data was valid and other criteria passed too, so let's create the object
+        self.perform_create(serializer)
+
+        # Send the localized activation email
+        youth_application = serializer.instance
         youth_application.send_activation_email(request, youth_application.language)
-        return response
+
+        # Return success creating the object
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     def get_permissions(self):
         """
@@ -91,6 +141,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         """
         if self.action in ["activate", "create"]:
             permission_classes = [AllowAny]
+        elif self.action in ["process", "retrieve"]:
+            permission_classes = [IsHandler]
         else:
             permission_classes = [DenyAll]
         return [permission() for permission in permission_classes]

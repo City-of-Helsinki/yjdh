@@ -1,8 +1,4 @@
-import {
-  APPLICATION_STATUSES,
-  ROUTES,
-  VALIDATION_MESSAGE_KEYS,
-} from 'benefit/applicant/constants';
+import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
 import AppContext from 'benefit/applicant/context/AppContext';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
@@ -12,6 +8,7 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useContext, useEffect, useState } from 'react';

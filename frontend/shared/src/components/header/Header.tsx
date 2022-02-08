@@ -14,6 +14,7 @@ import { useHeader } from './useHeader';
 
 export type HeaderProps = {
   title?: string;
+  titleUrl?: string;
   skipToContentLabel?: string;
   menuToggleAriaLabel?: string;
   locale: string;
@@ -41,6 +42,7 @@ export type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({
   skipToContentLabel,
   title,
+  titleUrl,
   menuToggleAriaLabel,
   languages,
   locale,
@@ -83,6 +85,7 @@ const Header: React.FC<HeaderProps> = ({
       skipToContentLabel={skipToContentLabel}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
+      titleUrl={titleUrl}
       titleAriaLabel={title}
     >
       {isNavigationVisible && navigationItems && (

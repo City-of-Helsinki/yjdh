@@ -154,12 +154,6 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
             setattr(self, target_field_name, value)
         PaySubsidy.reset_pay_subsidies(self.application)
 
-    @property
-    def duration_in_months_rounded(self):
-        # The handler's Excel file uses the number of months rounded to two decimals
-        # in all calculations
-        return duration_in_months(self.start_date, self.end_date, decimal_places=2)
-
     calculator = None
 
     def init_calculator(self):
