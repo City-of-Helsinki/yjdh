@@ -3,7 +3,9 @@ import {
   CALCULATION_DESCRIPTION_ROW_TYPES,
   CALCULATION_SUMMARY_ROW_TYPES,
   CALCULATION_TOTAL_ROW_TYPE,
+  CALCULATION_TYPES,
 } from 'benefit/handler/constants';
+import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
 import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
@@ -29,23 +31,24 @@ const SalaryBenefitCalculatorView: React.FC<
   SalaryBenefitCalculatorViewProps
 > = ({ data }) => {
   const {
-    t,
-    translationsBase,
-    theme,
     formik,
     fields,
-    language,
-    grantedPeriod,
-    appliedPeriod,
+    calculationsErrors,
     paySubsidyPeriod,
-    getErrorMessage,
-    handleSubmit,
+    grantedPeriod,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,
     paySubsidyPercentageOptions,
     getPaySubsidyPercentageSelectValue,
-    calculationsErrors,
   } = useSalaryBenefitCalculatorData(data);
+  const {
+    t,
+    translationsBase,
+    theme,
+    language,
+    getErrorMessage,
+    handleSubmit,
+  } = useCalculatorData(CALCULATION_TYPES.SALARY, formik);
 
   return (
     <ReviewSection withMargin>
@@ -66,7 +69,7 @@ const SalaryBenefitCalculatorView: React.FC<
             {t(`${translationsBase}.startEndDates`, {
               startDate: convertToUIDateFormat(data.startDate),
               endDate: convertToUIDateFormat(data.endDate),
-              period: formatStringFloatValue(appliedPeriod),
+              period: formatStringFloatValue(data.durationInMonthsRounded),
             })}
           </$ViewField>
         </$GridCell>
