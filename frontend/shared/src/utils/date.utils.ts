@@ -166,6 +166,7 @@ export const diffMonths = (
   method = 'EU'
 ): number => {
   if (!endDate || !startDate) return 0;
-  endDate.setDate(endDate.getDate() + 1);
-  return Number((days360(startDate, endDate, method) / 30).toFixed(2));
+  const correctEndDate = new Date(endDate);
+  correctEndDate.setDate(correctEndDate.getDate() + 1);
+  return Number((days360(startDate, correctEndDate, method) / 30).toFixed(2));
 };
