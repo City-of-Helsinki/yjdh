@@ -123,7 +123,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             data?.calculation?.rows.map((row, i, { length }) => {
               const isTotal = length - 1 === i;
               return (
-                <$Grid key={camelCase(row.descriptionFi)}>
+                <$Grid key={row.id}>
                   <$GridCell $colSpan={6}>
                     <$CalculatorTableRow isTotal={isTotal}>
                       <$ViewField isBold={isTotal}>
