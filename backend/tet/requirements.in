@@ -17,4 +17,4 @@ python-stdnum
 requests
 sentry-sdk
 xlsxwriter
--e file:../shared
+-e file:backend/shared
