@@ -1,7 +1,6 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput } from 'hds-react';
-import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
@@ -123,7 +122,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             data?.calculation?.rows.map((row, i, { length }) => {
               const isTotal = length - 1 === i;
               return (
-                <$Grid key={camelCase(row.descriptionFi)}>
+                <$Grid key={row.id}>
                   <$GridCell $colSpan={6}>
                     <$CalculatorTableRow isTotal={isTotal}>
                       <$ViewField isBold={isTotal}>
