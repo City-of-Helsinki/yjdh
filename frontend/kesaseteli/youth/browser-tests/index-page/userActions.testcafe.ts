@@ -14,8 +14,8 @@ let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 const appTranslation: Translation = {
   fi: 'Nuorten kesäseteli',
-  en: 'ENG Nuorten kesäseteli',
-  sv: 'SV Nuorten kesäseteli',
+  en: 'Summer Job Voucher for youth',
+  sv: 'Sommarsedel för unga',
 };
 
 fixture('Frontpage')
