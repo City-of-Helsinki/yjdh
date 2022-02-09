@@ -34,8 +34,7 @@ export const getWorkFeatures = async () => {
   }
 };
 
-export const getWorkKeyWords = async (search) => {
-  console.log(search);
+export const getWorkKeyWords = async (search: string) => {
   try {
     const result = await apiHelsinki.get(`/v1/keyword/?free_text=${search}`);
     return result.data;
@@ -44,7 +43,7 @@ export const getWorkKeyWords = async (search) => {
   }
 };
 
-export const getAddressList = async (search) => {
+export const getAddressList = async (search: string) => {
   try {
     const result = await linkedEvents.get(`/v1/place?show_all_places=true&text=${search}&nocache=true`);
     return result.data;
