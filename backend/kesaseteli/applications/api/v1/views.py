@@ -51,7 +51,7 @@ class SchoolListView(ListAPIView):
 
     # PostgreSQL specific functionality:
     # - Custom sorter for name field to ensure finnish language sorting order.
-    # - NOTE: This can be removed if the database is made to use collation fi_FI.UTF8
+    # - NOTE: This can be removed if the database is made to use collation fi_FI.utf8
     # TODO: Remove this after fixing related GitHub workflows to use Finnish PostgreSQL
     def get_sorter(self, field_name, collation):
         if collation is None:
@@ -65,7 +65,7 @@ class SchoolListView(ListAPIView):
 
     def get_collations(self):
         return [
-            "fi_FI.UTF8",  # PostgreSQL UTF-8 version
+            "fi_FI.utf8",  # PostgreSQL UTF-8 version
             "Finnish_Swedish_CI_AS_UTF8",  # Azure's UTF-8 version
             "fi-FI-x-icu",  # PostgreSQL fallback
             None,  # No collation override
@@ -80,16 +80,16 @@ class SchoolListView(ListAPIView):
     def preferred_sorter(self):
         for sorter in self.get_sorters():
             # Try out different order by functions until a functional one is found
-            with transaction.atomic():
-                try:
+            try:
+                # Use transaction to avoid django.db.utils.InternalError:
+                # "current transaction is aborted, commands ignored until end of
+                # transaction block"
+                with transaction.atomic():
                     # Force evaluation of queryset to test sorting function
                     list(School.objects.order_by(sorter.asc()))
-                    return sorter
-                except ProgrammingError:  # Collation for encoding does not exist
-                    # Roll back the transaction to avoid django.db.utils.InternalError
-                    # "current transaction is aborted, commands ignored until end of
-                    # transaction block"
-                    transaction.set_rollback(True)
+                return sorter
+            except ProgrammingError:  # Collation for encoding does not exist
+                pass
         raise ProgrammingError("Unable to determine working collation for school list")
 
     def get_queryset(self):
