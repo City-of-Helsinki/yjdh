@@ -1,30 +1,29 @@
 import React from 'react';
 import TetPosting from 'tet/admin/types/tetposting';
 import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
-import { TextInput as HdsTextInput } from 'hds-react';
+import { TextArea as HdsTextArea } from 'hds-react';
 import Id from 'shared/types/id';
 
 // TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
   id: Id<TetPosting>;
   label: string;
-  placeholder: string;
   registerOptions: RegisterOptions;
+  required: boolean;
 };
 
-const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions }) => {
+const TextArea: React.FC<Props> = ({ id, label, registerOptions, required = false }) => {
   const { control } = useFormContext<TetPosting>();
   return (
     <Controller
       name={id}
       render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
-        <HdsTextInput
+        <HdsTextArea
           id={id}
           label={label}
-          placeholder={placeholder}
           onChange={onChange}
           value={value ? String(value) : ''}
-          required={Boolean(registerOptions.required)}
+          required={required}
           invalid={invalid}
           errorText={error ? error.message : ''}
         />
@@ -35,4 +34,4 @@ const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions })
   );
 };
 
-export default TextInput;
+export default TextArea;

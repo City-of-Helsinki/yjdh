@@ -3,7 +3,7 @@ type TetPosting = {
   title: string;
   description: string;
   org_name: string;
-  address: string;
+  location: string;
   spots: number;
   start_date: string;
   end_date?: string;
@@ -14,8 +14,8 @@ type TetPosting = {
   contact_phone: string;
   date_published?: string;
   keywords: string[];
-  work_methods: string[];
-  work_features: string[];
+  keywords_working_methods: string[];
+  keywords_attributes: string[];
 };
 
 export type TetPostings = {

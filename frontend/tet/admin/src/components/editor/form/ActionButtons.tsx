@@ -8,7 +8,11 @@ import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc
 import { useTheme } from 'styled-components';
 import { IconCross, IconEye, IconUpload } from 'hds-react';
 
-const ActionButtons: React.FC = ({ onSubmit }) => {
+type Props = {
+  onSubmit: () => void;
+};
+
+const ActionButtons: React.FC<Props> = ({ onSubmit }) => {
   const { t } = useTranslation();
   const {
     formState: { isSubmitting },

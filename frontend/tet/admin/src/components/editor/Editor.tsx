@@ -14,7 +14,7 @@ import { DevTool } from '@hookform/devtools';
 const initialValuesForNew: TetPosting = {
   title: '',
   description: '',
-  address: '',
+  location: '',
   spots: 3,
   contact_first_name: 'test',
   contact_last_name: '',
@@ -25,8 +25,8 @@ const initialValuesForNew: TetPosting = {
   end_date: '',
   date_published: '',
   org_name: '',
-  work_methods: [],
-  work_features: [],
+  keywords_working_methods: [],
+  keywords_attributes: [],
   keywords: [],
 };
 
@@ -42,10 +42,9 @@ export type EditorSectionProps = {
 // add new posting / edit existing
 const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const methods = useForm<TetPosting>({
-    mode: 'onBlur',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
-    defaultValues: { contact_language: 'fi', work_methods: [], work_features: [] },
+    defaultValues: { contact_language: 'fi', keywords_working_methods: [], keywords_attributes: [], spots: 1 },
   });
 
   const upsertTetPosting = useUpsertTetPosting();
@@ -53,43 +52,42 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const posting = initialValue || initialValuesForNew;
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
-    console.log('test_success');
-    const verb = validatedPosting.id ? 'PUT' : 'POST';
-    console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
+    //console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
     upsertTetPosting.mutate(validatedPosting);
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    const chosenWorkMethods = methods.getValues('work_methods');
-    console.log(chosenWorkMethods, 'workmethods');
+  const submitHandler = async () => {
+    const chosenWorkMethods = methods.getValues('keywords_working_methods');
+    const validationResults = await methods.trigger();
+
     if (!chosenWorkMethods.length) {
-      methods.setError('work_methods', {
+      methods.setError('keywords_working_methods', {
         type: 'manual',
         message: 'Valitse yksi',
       });
     } else {
-      methods.clearErrors('work_methods');
-      methods.handleSubmit(handleSuccess)();
+      methods.clearErrors('keywords_working_methods');
+      if (validationResults) {
+        methods.handleSubmit(handleSuccess)();
+      }
     }
-
-    const validationResults = await methods.trigger();
-    console.log('validation', validationResults);
   };
 
   return (
     <>
       <FormProvider {...methods}>
-        <form aria-label="add/modify tet posting" onSubmit={methods.handleSubmit(handleSuccess)}>
+        <form aria-label="add/modify tet posting">
           <HiddenIdInput id="id" initialValue={posting.id} />
           <p>* pakollinen tieto</p>
           <EditorErrorNotification />
           <CompanyInfo />
           <ContactPerson initialValue={posting} />
           <PostingDetails initialValue={posting} />
-          <ActionButtons />
+          <Classification initialValue={posting} />
+          <ActionButtons onSubmit={submitHandler} />
         </form>
       </FormProvider>
+      <DevTool control={methods.control} />
     </>
   );
 };

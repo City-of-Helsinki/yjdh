@@ -83,7 +83,6 @@
 				"phone": "ENG Syötä oikeassa muodossa",
 				"name": "ENG Syötä nimi sallitussa muodossa"
 			}
-    }
     },
 		"classification": {
 			"classifications": "ENG Luokittelut",
@@ -91,7 +90,7 @@
 			"workFeature": "ENG Työn ominaisuudet",
 			"keywords": "ENG Avainsanat",
 			"search": "ENG Hae"
-		}
+  	}
   },
   "footer": {
     "copyrightText": "City of Helsinki",

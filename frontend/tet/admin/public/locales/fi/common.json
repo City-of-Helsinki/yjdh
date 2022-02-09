@@ -83,7 +83,6 @@
 				"phone": "Syötä oikeassa muodossa",
 				"name": "Syötä nimi sallitussa muodossa"
 			}
-    }
     },
 		"classification": {
 			"classifications": "Luokittelut",
@@ -91,7 +90,7 @@
 			"workFeature": "Työn ominaisuudet",
 			"keywords": "Avainsanat",
 			"search": "Hae"
-		}
+  	}
   },
   "footer": {
     "copyrightText": "Helsingin kaupunki",

@@ -83,7 +83,6 @@
 				"phone": "SV Syötä oikeassa muodossa",
 				"name": "SV Syötä nimi sallitussa muodossa"
 			}
-    }
     },
 		"classification": {
 			"classifications": "SV Luokittelut",
@@ -91,7 +90,7 @@
 			"workFeature": "SV Työn ominaisuudet",
 			"keywords": "SV Avainsanat",
 			"search": "SV Hae"
-		}
+  	}
   },
   "footer": {
     "copyrightText": "Helsingfors stad",

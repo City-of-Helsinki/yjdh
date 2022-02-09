@@ -6,20 +6,18 @@ import Id from 'shared/types/id';
 import { OptionType } from 'tet/admin/types/classification';
 import { RegisterOptions } from 'react-hook-form';
 
-type FilterFunction<OptionType> = (options: OptionType[], search: string) => OptionType[];
-
 type Props = {
   id: Id<TetPosting>;
   initialValue?: number;
   label: string;
   options: OptionType[];
   placeholder: string;
-  multiselect: boolean;
+  multiselect?: boolean;
   validation?: RegisterOptions<TetPosting>;
   filter?: any;
   optionLabelField: string;
-  disabled: boolean;
-  required: boolean;
+  disabled?: boolean;
+  required?: boolean;
 };
 
 const Combobox: React.FC<Props> = ({
@@ -28,14 +26,13 @@ const Combobox: React.FC<Props> = ({
   filter,
   validation = {},
   label,
-  initialValue,
   optionLabelField,
   options,
   placeholder,
   disabled = false,
   required = false,
 }) => {
-  const { control, setValue, getValues } = useFormContext<TetPosting>();
+  const { control } = useFormContext<TetPosting>();
   return (
     <Controller
       name={id}

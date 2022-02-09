@@ -4,22 +4,17 @@ import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
 //import { SelectionGroup } from 'hds-react';
-import Checkbox from 'shared/components/forms/inputs/Checkbox';
-import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import { getWorkMethods, getWorkFeatures, getWorkKeyWords } from 'tet/admin/backend-api/linked-events-api';
 import { useQuery, useQueries } from 'react-query';
 import { OptionType } from 'tet/admin/types/classification';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import Combobox from 'tet/admin/components/editor/Combobox';
-import { useFormContext } from 'react-hook-form';
-import TetPosting from 'tet/admin/types/tetposting';
 import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
 
-const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
+const Classification: React.FC<EditorSectionProps> = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [search, setSearch] = React.useState('');
-  const { setValue } = useFormContext<TetPosting>();
 
   const results = useQueries([
     { queryKey: 'workMethods', queryFn: getWorkMethods },
@@ -28,8 +23,9 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
 
   const keywordsResults = useQuery(['keywords', search], () => getWorkKeyWords(search));
 
+  //TODO Replace 'any' typings
   const keywords = !keywordsResults.isLoading
-    ? keywordsResults.data?.data.map((keyword) => ({ label: keyword.name.fi, value: keyword['@id'] }))
+    ? keywordsResults.data?.data.map((keyword: any) => ({ label: keyword.name.fi, value: keyword['@id'] }))
     : [];
 
   const [workMethods, workFeatures] = results;
@@ -38,16 +34,14 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
     return <div>Lataa</div>;
   }
 
-  const handleWorkMethodChange = (checkedMethod) => {
-    console.log(checkedMethod);
-  };
   const filterHandler = (options: OptionType[], search: string): OptionType[] => {
     setSearch(search);
     return options;
   };
 
-  const getValueLabelList = (list) => {
-    return list.map((item) => ({
+  //TODO replace 'any' typings
+  const getValueLabelList = (list: any) => {
+    return list.map((item: any) => ({
       label: item.name.fi,
       value: item.id,
     }));
@@ -68,7 +62,7 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
         <$GridCell $colSpan={4}>
           <SelectionGroup
             required={true}
-            fieldId="work_methods"
+            fieldId="keywords_working_methods"
             label="Työtavat"
             options={workMethodsList}
           ></SelectionGroup>
@@ -76,7 +70,7 @@ const Classification: React.FC<EditorSectionProps> = ({ initialValue }) => {
         <$GridCell $colSpan={4}>
           <SelectionGroup
             required={false}
-            fieldId="work_features"
+            fieldId="keywords_attributes"
             label="Työn ominaisuudet"
             options={workFeaturesList}
           ></SelectionGroup>

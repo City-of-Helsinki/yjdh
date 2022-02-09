@@ -5,25 +5,27 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { Checkbox, TextInput } from 'hds-react';
+import { Checkbox } from 'hds-react';
 import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import { useQuery } from 'react-query';
 import { getAddressList } from 'tet/admin/backend-api/linked-events-api';
-import { useFormContext } from 'react-hook-form';
-import TetPosting from 'tet/admin/types/tetposting';
 import debounce from 'lodash/debounce';
+import TextInput from 'tet/admin/components/editor/TextInput';
+import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
+import { OptionType } from 'tet/admin/types/classification';
 
 const CompanyInfo: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { setValue } = useFormContext<TetPosting>();
   const [addressSearch, setAddressSearch] = React.useState('');
+  const { name } = useValidationRules();
 
   const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
 
+  //TODO Replace 'any' type
   const keywords = !keywordsResults.isLoading
-    ? keywordsResults.data?.data.map((keyword) => ({
+    ? keywordsResults.data?.data.map((keyword: any) => ({
         label: `${keyword.name.fi}, ${keyword.street_address?.fi ? keyword.street_address.fi : ''}, ${
           keyword.postal_code ? keyword.postal_code : ''
         }`,
@@ -64,14 +66,15 @@ const CompanyInfo: React.FC = () => {
         <$GridCell as={$Grid} $colSpan={12}>
           <$GridCell $colSpan={6}>
             <TextInput
-              id="company-address-department"
+              id="org_name"
               label={t('common:editor.employerInfo.departmentLabel')}
               placeholder={t('common:editor.employerInfo.departmentLabel')}
+              registerOptions={name}
             />
           </$GridCell>
           <$GridCell $colSpan={6}>
             <Combobox
-              id={'address'}
+              id={'location'}
               multiselect={false}
               required={true}
               label={t('common:editor.employerInfo.address')}
