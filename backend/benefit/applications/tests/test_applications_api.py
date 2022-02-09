@@ -943,9 +943,12 @@ def test_application_status_change_as_applicant(
         (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.HANDLING, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
