@@ -61,7 +61,7 @@ def reduce_get_event(event):
             "custom_data",
         ),
     )
-    # TODO why is it None?
+
     if (
         tetevent["custom_data"] is not None
         and "editor_email" in tetevent["custom_data"]

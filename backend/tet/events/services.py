@@ -1,5 +1,5 @@
-from requests.exceptions import RequestException
-from rest_framework.exceptions import NotFound, ValidationError
+import logging
+from datetime import date
 
 from events.linkedevents import LinkedEventsClient
 from events.transformations import (
@@ -8,10 +8,52 @@ from events.transformations import (
     reduce_get_event,
 )
 
+LOGGER = logging.getLogger(__name__)
+
+
 # If LinkedEventsClient is not properly configured, this will raise a ValueError
 # our server won't start. This is intended, because the server is unusable
 # without a properly configured LinkedEventsClient.
 client = LinkedEventsClient()
+
+
+# All users are city employees (AD login) in MVP phase
+def is_city_employee(user):
+    return True
+
+
+# TODO return 403 instead of warning
+def get_event_and_raise_for_unauthorized(user, event_id):
+    event = client.get_event(event_id)
+    if is_city_employee(user):
+        if event["custom_data"] is None:
+            LOGGER.warning(
+                f"Any city employee could update event {event['id']} because it has no custom_data"
+            )
+        else:
+            if "editor_email" in event["custom_data"]:
+                if event["custom_data"]["editor_email"] != user.email:
+                    # TODO raise
+                    LOGGER.warning(
+                        f"User {user.email} unauthorized access to event {event['id']}"
+                    )
+            else:
+                LOGGER.warning(
+                    f"Any city employee could update event {event['id']} because editor_email is not set in custom_data"
+                )
+
+    else:
+        LOGGER.warning(
+            "Authorization not implemented for company users (suomi.fi login)"
+        )
+    return event
+
+
+def get_publisher(user):
+    # In MVP phase just returning ahjo:00001 (Helsingin kaupunki) for all
+    # We can also get industry (toimiala) from ADFS Graph API (needs translation to ahjo scheme)
+    # For company users it is still undecided how we store the company business id (Y-tunnus) in an event
+    return "ahjo:00001"
 
 
 def list_job_postings_for_user(user):
@@ -29,41 +71,37 @@ def list_ended_job_postings_for_user(user):
     return []
 
 
-def get_tet_event(id, user):
-    try:
-        event = client.get_event(id)
-    except RequestException:
-        raise NotFound(detail="Could not find the requested event.")
-
-    # TODO check that user has rights to access event
+def get_tet_event(event_id, user):
+    event = get_event_and_raise_for_unauthorized(user, event_id)
     return reduce_get_event(event)
 
 
 def add_tet_event(validated_data, user):
-    event = enrich_create_event(validated_data, "ahjo:00001", user.email)
-    try:
-        created_event = client.create_event(event)
-    except RequestException as e:
-        e.response
-        raise ValidationError()
+    event = enrich_create_event(validated_data, get_publisher(user), user.email)
+    created_event = client.create_event(event)
     return reduce_get_event(created_event)
 
 
-def publish_job_posting(user, posting):
-    pass
-
-
-def update_tet_event(pk, validated_data, user):
-    # TODO check that user has rights to perform this
-    event = enrich_update_event(validated_data, user.email)
-    updated_event = client.update_event(pk, event)
+def publish_job_posting(event_id, user):
+    event = get_event_and_raise_for_unauthorized(user, event_id)
+    # TODO do we also need to set event status?
+    event["date_published"] = date.today().isoformat()
+    updated_event = client.update_event(event_id, event)
 
     return reduce_get_event(updated_event)
 
 
-def delete_event(id, user):
-    # TODO check that user has rights to perform this
-    return client.delete_event(id)
+def update_tet_event(event_id, validated_data, user):
+    get_event_and_raise_for_unauthorized(user, event_id)
+    event = enrich_update_event(validated_data, user.email)
+    updated_event = client.update_event(event_id, event)
+
+    return reduce_get_event(updated_event)
+
+
+def delete_event(event_id, user):
+    get_event_and_raise_for_unauthorized(user, event_id)
+    return client.delete_event(event_id)
 
 
 def search_job_postings(q):
