@@ -203,7 +203,9 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("Pay subsidy percent"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,
     )
-    work_time_percent = models.IntegerField(
+    work_time_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
         verbose_name=_("Work time percent"),
         default=100,
         null=True,

@@ -189,6 +189,13 @@ class UpdateOrderedListSerializer(serializers.ListSerializer):
 class PaySubsidySerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False)
 
+    work_time_percent = serializers.DecimalField(
+        max_digits=PaySubsidy.work_time_percent.field.max_digits,
+        decimal_places=PaySubsidy.work_time_percent.field.decimal_places,
+        min_value=1,
+        max_value=PaySubsidy.DEFAULT_WORK_TIME_PERCENT,
+    )
+
     class Meta:
         model = PaySubsidy
         fields = [

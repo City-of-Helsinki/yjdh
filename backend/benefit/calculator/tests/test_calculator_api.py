@@ -119,7 +119,7 @@ def test_modify_calculation(handler_api_client, received_application):
             "start_date": str(received_application.start_date),
             "end_date": str(received_application.end_date),
             "pay_subsidy_percent": 50,
-            "work_time_percent": 100,
+            "work_time_percent": "100.00",
         }
     ]
     data["training_compensations"] = [
@@ -194,7 +194,7 @@ def test_modify_calculation_invalid_status(
             "start_date": str(handling_application.start_date),
             "end_date": str(handling_application.end_date),
             "pay_subsidy_percent": 50,
-            "work_time_percent": 100,
+            "work_time_percent": "100.00",
         }
     ]
     with mock.patch("calculator.models.Calculation.calculate") as calculate_wrap:
@@ -229,7 +229,7 @@ def test_application_replace_pay_subsidy(handler_api_client, received_applicatio
             "start_date": str(received_application.start_date),
             "end_date": str(received_application.end_date),
             "pay_subsidy_percent": 50,
-            "work_time_percent": 100,
+            "work_time_percent": "100.00",
             "disability_or_illness": True,
         }
     ]
@@ -295,7 +295,13 @@ def test_application_edit_pay_subsidy_invalid_values(
             "end_date": str(received_application.end_date),
             "pay_subsidy_percent": 150,
             "work_time_percent": -10,
-        }
+        },
+        {
+            "start_date": str(received_application.start_date),
+            "end_date": str(received_application.end_date),
+            "pay_subsidy_percent": 100,
+            "work_time_percent": "101.50",
+        },
     ]
 
     response = handler_api_client.put(
