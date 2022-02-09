@@ -155,6 +155,11 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         )  # so that recalculation succeeds even in subclasses
         self.calculation = Calculation.objects.create_for_application(self)
         self.save()
+        self.calculation.start_date = self.start_date
+        self.calculation.end_date = self.end_date
+        self.calculation.state_aid_max_percentage = 50
+        self.calculation.handler = HandlerFactory()
+        self.calculation.save()
         PaySubsidyFactory(
             application=self,
             start_date=self.calculation.start_date,
@@ -162,10 +167,6 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         )
         self.calculation.calculate()
         self.status = previous_status
-        self.calculation.start_date = self.start_date
-        self.calculation.end_date = self.end_date
-        self.calculation.handler = HandlerFactory()
-        self.calculation.save()
         self.save()
         assert len(self.ahjo_rows) == 1
 

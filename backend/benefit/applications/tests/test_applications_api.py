@@ -27,6 +27,7 @@ from applications.models import Application, ApplicationLogEntry, Attachment, Em
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation
+from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
@@ -1027,6 +1028,7 @@ def test_application_status_change_as_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
+        fill_empty_calculation_fields(application)
     application.refresh_from_db()
     data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
@@ -1118,6 +1120,7 @@ def test_application_status_change_as_handler_auto_assign_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
+        fill_empty_calculation_fields(application)
     data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application

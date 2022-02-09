@@ -119,21 +119,32 @@ class HelsinkiBenefitCalculator:
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
     ]
 
+    def can_calculate(self):
+        if not all(
+            [
+                self.calculation.start_date,
+                self.calculation.end_date,
+                self.calculation.state_aid_max_percentage,
+            ]
+        ):
+            return False
+        for pay_subsidy in self.calculation.application.pay_subsidies.all():
+            if not all([pay_subsidy.start_date, pay_subsidy.end_date]):
+                return False
+        return True
+
     @transaction.atomic
     def calculate(self):
-        if self.calculation.start_date is None or self.calculation.end_date is None:
-            # If calculation start and end date is missing, do not calculate
-            LOGGER.warning(
-                "Calculation start date and end date is not set, calculation won't be saved"
-            )
-            return
         if self.calculation.application.status in self.CALCULATION_ALLOWED_STATUSES:
             self.calculation.rows.all().delete()
-            self.create_rows()
-            # the total benefit amount is stored in Calculation model, for easier processing.
-            self.calculation.calculated_benefit_amount = self.get_amount(
-                RowType.HELSINKI_BENEFIT_TOTAL_EUR
-            )
+            if self.can_calculate():
+                self.create_rows()
+                # the total benefit amount is stored in Calculation model, for easier processing.
+                self.calculation.calculated_benefit_amount = self.get_amount(
+                    RowType.HELSINKI_BENEFIT_TOTAL_EUR
+                )
+            else:
+                self.calculation.calculated_benefit_amount = None
             self.calculation.save()
 
     def _create_row(self, row_class, **kwargs):

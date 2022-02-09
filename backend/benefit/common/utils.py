@@ -142,8 +142,6 @@ def days360(start_date, end_date):
 
 
 def duration_in_months(start_date, end_date, decimal_places=None):
-    if start_date is None or end_date is None:
-        return to_decimal(0, decimal_places)
     # This is the formula used in the application calculator Excel file 2021-09
     return to_decimal(
         decimal.Decimal(days360(start_date, end_date + timedelta(days=1))) / 30,

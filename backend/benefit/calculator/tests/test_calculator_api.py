@@ -51,6 +51,8 @@ def test_application_try_retrieve_calculation_as_applicant(api_client, applicati
 def test_application_create_calculation_on_submit(
     request, handler_api_client, application
 ):
+    # also test that calculation rows are not created yet,
+    # as all fields are not filled yet.
     application.status = ApplicationStatus.DRAFT
     application.pay_subsidy_percent = 50
     application.pay_subsidy_granted = True
@@ -104,72 +106,72 @@ def test_application_can_not_create_calculation_through_api(
     assert not hasattr(application, "calculation")
 
 
-def test_modify_calculation(handler_api_client, received_application):
+def test_modify_calculation(handler_api_client, handling_application):
     """
     modify existing calculation
     """
-    data = HandlerApplicationSerializer(received_application).data
-    assert received_application.calculation
-    assert received_application.pay_subsidies.count() == 0
+    data = HandlerApplicationSerializer(handling_application).data
+    assert handling_application.calculation
+    handling_application.pay_subsidies.all().delete()
     data["calculation"]["monthly_pay"] = "1234.56"
     # also modify pay_subsidies. Although multiple objects are modified, calculate() should only
     # be called once.
     data["pay_subsidies"] = [
         {
-            "start_date": str(received_application.start_date),
-            "end_date": str(received_application.end_date),
+            "start_date": str(handling_application.start_date),
+            "end_date": str(handling_application.end_date),
             "pay_subsidy_percent": 50,
             "work_time_percent": "100.00",
         }
     ]
     data["training_compensations"] = [
         {
-            "start_date": str(received_application.start_date),
-            "end_date": str(received_application.end_date),
+            "start_date": str(handling_application.start_date),
+            "end_date": str(handling_application.end_date),
             "monthly_amount": "50",
         }
     ]
     with mock.patch("calculator.models.Calculation.calculate") as calculate_wrap:
         response = handler_api_client.put(
-            get_handler_detail_url(received_application),
+            get_handler_detail_url(handling_application),
             data,
         )
         calculate_wrap.assert_called_once()
 
     assert response.status_code == 200
     assert response.data["calculation"]["monthly_pay"] == "1234.56"
-    received_application.refresh_from_db()
-    assert received_application.calculation.monthly_pay == decimal.Decimal("1234.56")
-    assert received_application.pay_subsidies.count() == 1
-    assert received_application.pay_subsidies.first().pay_subsidy_percent == 50
+    handling_application.refresh_from_db()
+    assert handling_application.calculation.monthly_pay == decimal.Decimal("1234.56")
+    assert handling_application.pay_subsidies.count() == 1
+    assert handling_application.pay_subsidies.first().pay_subsidy_percent == 50
     assert (
-        received_application.pay_subsidies.first().start_date
-        == received_application.start_date
+        handling_application.pay_subsidies.first().start_date
+        == handling_application.start_date
     )
     assert (
-        received_application.pay_subsidies.first().end_date
-        == received_application.end_date
+        handling_application.pay_subsidies.first().end_date
+        == handling_application.end_date
     )
-    assert received_application.pay_subsidies.count() == 1
-    assert received_application.pay_subsidies.first().pay_subsidy_percent == 50
+    assert handling_application.pay_subsidies.count() == 1
+    assert handling_application.pay_subsidies.first().pay_subsidy_percent == 50
     assert (
-        received_application.pay_subsidies.first().start_date
-        == received_application.start_date
+        handling_application.pay_subsidies.first().start_date
+        == handling_application.start_date
     )
     assert (
-        received_application.pay_subsidies.first().end_date
-        == received_application.end_date
+        handling_application.pay_subsidies.first().end_date
+        == handling_application.end_date
     )
 
-    assert received_application.training_compensations.count() == 1
-    assert received_application.training_compensations.first().monthly_amount == 50
+    assert handling_application.training_compensations.count() == 1
+    assert handling_application.training_compensations.first().monthly_amount == 50
     assert (
-        received_application.training_compensations.first().start_date
-        == received_application.start_date
+        handling_application.training_compensations.first().start_date
+        == handling_application.start_date
     )
     assert (
-        received_application.training_compensations.first().end_date
-        == received_application.end_date
+        handling_application.training_compensations.first().end_date
+        == handling_application.end_date
     )
 
 
@@ -227,35 +229,36 @@ def test_can_not_delete_calculation(handler_api_client, received_application):
     assert received_application.calculation
 
 
-def test_application_replace_pay_subsidy(handler_api_client, received_application):
-    data = HandlerApplicationSerializer(received_application).data
+def test_application_replace_pay_subsidy(handler_api_client, handling_application):
+    data = HandlerApplicationSerializer(handling_application).data
 
     data["pay_subsidies"] = [
         {
-            "start_date": str(received_application.start_date),
-            "end_date": str(received_application.end_date),
+            "start_date": str(handling_application.start_date),
+            "end_date": str(handling_application.end_date),
             "pay_subsidy_percent": 50,
             "work_time_percent": "100.00",
             "disability_or_illness": True,
         }
     ]
     response = handler_api_client.put(
-        get_handler_detail_url(received_application),
+        get_handler_detail_url(handling_application),
         data,
     )
     assert response.status_code == 200
-    received_application.refresh_from_db()
-    new_data = HandlerApplicationSerializer(received_application).data
+    handling_application.refresh_from_db()
+    new_data = HandlerApplicationSerializer(handling_application).data
     del new_data["pay_subsidies"][0]["id"]  # id is expected to change
     # on-the-fly generated field that was not present in the PUT request
     del new_data["pay_subsidies"][0]["duration_in_months_rounded"]
     assert new_data["pay_subsidies"] == data["pay_subsidies"]
 
 
-def test_application_edit_pay_subsidy(handler_api_client, received_application):
-    PaySubsidyFactory(application=received_application)
-    PaySubsidyFactory(application=received_application)
-    data = HandlerApplicationSerializer(received_application).data
+def test_application_edit_pay_subsidy(handler_api_client, handling_application):
+    handling_application.pay_subsidies.all().delete()
+    PaySubsidyFactory(application=handling_application)
+    PaySubsidyFactory(application=handling_application)
+    data = HandlerApplicationSerializer(handling_application).data
 
     # edit fields
     data["pay_subsidies"][0]["start_date"] = "2021-06-01"
@@ -266,7 +269,7 @@ def test_application_edit_pay_subsidy(handler_api_client, received_application):
         data["pay_subsidies"][0],
     )
     response = handler_api_client.put(
-        get_handler_detail_url(received_application),
+        get_handler_detail_url(handling_application),
         data,
     )
     assert response.status_code == 200
@@ -275,13 +278,13 @@ def test_application_edit_pay_subsidy(handler_api_client, received_application):
     assert response.data["pay_subsidies"][1]["pay_subsidy_percent"] == 40
 
 
-def test_application_delete_pay_subsidy(handler_api_client, received_application):
-    data = HandlerApplicationSerializer(received_application).data
+def test_application_delete_pay_subsidy(handler_api_client, handling_application):
+    data = HandlerApplicationSerializer(handling_application).data
 
     data["pay_subsidies"] = []
 
     response = handler_api_client.put(
-        get_handler_detail_url(received_application),
+        get_handler_detail_url(handling_application),
         data,
     )
     assert response.status_code == 200
@@ -289,35 +292,35 @@ def test_application_delete_pay_subsidy(handler_api_client, received_application
 
 
 def test_application_edit_pay_subsidy_invalid_values(
-    handler_api_client, received_application
+    handler_api_client, handling_application
 ):
-    data = HandlerApplicationSerializer(received_application).data
+    data = HandlerApplicationSerializer(handling_application).data
 
     previous_data = copy.deepcopy(data["pay_subsidies"])
 
     data["pay_subsidies"] = [
         {
-            "start_date": str(received_application.start_date),
-            "end_date": str(received_application.end_date),
+            "start_date": str(handling_application.start_date),
+            "end_date": str(handling_application.end_date),
             "pay_subsidy_percent": 150,
             "work_time_percent": -10,
         },
         {
-            "start_date": str(received_application.start_date),
-            "end_date": str(received_application.end_date),
+            "start_date": str(handling_application.start_date),
+            "end_date": str(handling_application.end_date),
             "pay_subsidy_percent": 100,
             "work_time_percent": "101.50",
         },
     ]
 
     response = handler_api_client.put(
-        get_handler_detail_url(received_application),
+        get_handler_detail_url(handling_application),
         data,
     )
     assert response.status_code == 400
 
-    received_application.refresh_from_db()
-    data_after = HandlerApplicationSerializer(received_application).data
+    handling_application.refresh_from_db()
+    data_after = HandlerApplicationSerializer(handling_application).data
     assert previous_data == data_after["pay_subsidies"]
 
 
@@ -328,7 +331,6 @@ def test_assign_handler(handler_api_client, received_application):
     user.save()
     data = HandlerApplicationSerializer(received_application).data
     assert received_application.calculation
-    assert received_application.pay_subsidies.count() == 0
     data["status"] = ApplicationStatus.HANDLING
     data["calculation"]["handler"] = get_client_user(handler_api_client).pk
     response = handler_api_client.put(
@@ -366,7 +368,6 @@ def test_assign_handler_invalid_status(
     received_application.save()
     data = HandlerApplicationSerializer(received_application).data
     assert received_application.calculation
-    assert received_application.pay_subsidies.count() == 0
     data["status"] = ApplicationStatus.HANDLING
     data["calculation"]["handler"] = get_client_user(handler_api_client).pk
     response = handler_api_client.put(
