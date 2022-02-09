@@ -1,9 +1,11 @@
 import logging
+from functools import cached_property
 
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
-from django.db.models import Func
+from django.db.models import F, Func
+from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils import translation
 from django.utils.text import format_lazy
@@ -45,18 +47,53 @@ LOGGER = logging.getLogger(__name__)
 
 
 class SchoolListView(ListAPIView):
+    serializer_class = SchoolSerializer
+
     # PostgreSQL specific functionality:
     # - Custom sorter for name field to ensure finnish language sorting order.
     # - NOTE: This can be removed if the database is made to use collation fi_FI.UTF8
     # TODO: Remove this after fixing related GitHub workflows to use Finnish PostgreSQL
-    _name_fi = Func(
-        "name",
-        function="fi-FI-x-icu",  # fi_FI.UTF8 would be best but wasn't available
-        template='(%(expressions)s) COLLATE "%(function)s"',
-    )
+    def get_sorter(self, field_name, collation):
+        if collation is None:
+            return F(field_name)
+        else:
+            return Func(
+                field_name,
+                function=collation,
+                template='(%(expressions)s) COLLATE "%(function)s"',
+            )
 
-    queryset = School.objects.order_by(_name_fi.asc())
-    serializer_class = SchoolSerializer
+    def get_collations(self):
+        return [
+            "fi_FI.UTF8",  # PostgreSQL UTF-8 version
+            "Finnish_Swedish_CI_AS_UTF8",  # Azure's UTF-8 version
+            "fi-FI-x-icu",  # PostgreSQL fallback
+            None,  # No collation override
+        ]
+
+    def get_sorters(self):
+        return [
+            self.get_sorter("name", collation) for collation in self.get_collations()
+        ]
+
+    @cached_property
+    def preferred_sorter(self):
+        for sorter in self.get_sorters():
+            # Try out different order by functions until a functional one is found
+            with transaction.atomic():
+                try:
+                    # Force evaluation of queryset to test sorting function
+                    list(School.objects.order_by(sorter.asc()))
+                    return sorter
+                except ProgrammingError:  # Collation for encoding does not exist
+                    # Roll back the transaction to avoid django.db.utils.InternalError
+                    # "current transaction is aborted, commands ignored until end of
+                    # transaction block"
+                    transaction.set_rollback(True)
+        raise ProgrammingError("Unable to determine working collation for school list")
+
+    def get_queryset(self):
+        return School.objects.order_by(self.preferred_sorter.asc())
 
     def get_permissions(self):
         permission_classes = [AllowAny]
