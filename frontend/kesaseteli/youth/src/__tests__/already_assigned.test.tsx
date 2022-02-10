@@ -15,15 +15,4 @@ describe('frontend/kesaseteli/youth/src/pages/already_assigned.tsx', () => {
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
-
-  it('redirects to main page when clicking the button', async () => {
-    const spyPush = jest.fn();
-    await renderPage(AlreadyAssignedPage, { push: spyPush });
-    const alreadyAssignedPageApi = getAlreadyAssignedPageApi();
-    await alreadyAssignedPageApi.expectations.pageIsLoaded();
-    await alreadyAssignedPageApi.actions.clickGoToFrontPageButton();
-    await waitFor(() =>
-      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`)
-    );
-  });
 });

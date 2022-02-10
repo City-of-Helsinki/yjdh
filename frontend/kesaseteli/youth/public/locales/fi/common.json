@@ -95,8 +95,7 @@
     "notificationMessage": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
   },
   "alreadyAssignedPage" : {
-    "title": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
-    "notificationMessage": "Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+    "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä."
   },
   "activatedPage" : {
     "title": "Kesäsetelisi on nyt aktivoitu!",

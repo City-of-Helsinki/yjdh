@@ -95,8 +95,7 @@
     "notificationMessage": " If you made a mistake, please wait {{ expirationHours }} hours and try again."
   },
   "alreadyAssignedPage" : {
-    "title": "Oops! A Summer Job Voucher has already been issued with the information you provided.",
-    "notificationMessage": "The activation link for the Summer Job Voucher has been sent to the email address you provided on the registration page."
+    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
   },
   "activatedPage" : {
     "title": "Your Summer Job Voucher has been activated!",

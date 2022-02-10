@@ -95,8 +95,7 @@
     "notificationMessage": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen."
   },
   "alreadyAssignedPage" : {
-    "title": "Hoppsan! En Sommarsedel har redan beviljats med den information som du har lämnat.",
-    "notificationMessage": " Aktiveringslänken för Sommarsedeln har skickats till den e-postadress som du uppgav på registreringssidan."
+    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
   },
   "activatedPage" : {
     "title": "Din Sommarsedel är nu aktiverad!",

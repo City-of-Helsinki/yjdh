@@ -5,16 +5,8 @@ const getAlreadyAssignedPageApi = () => ({
   expectations: {
     pageIsLoaded() {
       return screen.findByRole('heading', {
-        name: /hups! antamallasi tiedoilla on jo myönnetty kesäseteli./i,
+        name: /hups! olet jo aikaisemmin lähettänyt kesäsetelihakemuksen ja se on nyt käsittelyssä./i,
       });
-    },
-  },
-  actions: {
-    async clickGoToFrontPageButton() {
-      const button = await screen.findByRole('button', {
-        name: /tarkista tiedot ja lähetä uudelleen/i,
-      });
-      userEvent.click(button);
     },
   },
 });
