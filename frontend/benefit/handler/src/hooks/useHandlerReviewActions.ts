@@ -6,17 +6,16 @@ import snakecaseKeys from 'snakecase-keys';
 import {
   Application,
   ApplicationData,
-  CalculationCommon,
+  CalculationFormProps,
   PaySubsidy,
-  SalaryCalculation,
 } from '../types/application';
 import { ErrorData } from '../types/common';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface HandlerReviewActions {
-  onCalculateEmployment: (calculator: CalculationCommon) => void;
+  onCalculateEmployment: (calculator: CalculationFormProps) => void;
   calculationsErrors: ErrorData | undefined | null;
-  calculateSalaryBenefit: (values: SalaryCalculation) => void;
+  calculateSalaryBenefit: (values: CalculationFormProps) => void;
 }
 
 const useHandlerReviewActions = (
@@ -27,7 +26,7 @@ const useHandlerReviewActions = (
     ErrorData | undefined | null
   >();
 
-  const getDataEmployment = (values: CalculationCommon): ApplicationData => {
+  const getDataEmployment = (values: CalculationFormProps): ApplicationData => {
     const startDate = values.startDate
       ? convertToBackendDateFormat(values.startDate)
       : undefined;
@@ -47,7 +46,9 @@ const useHandlerReviewActions = (
     );
   };
 
-  const getSalaryBenefitData = (values: SalaryCalculation): ApplicationData => {
+  const getSalaryBenefitData = (
+    values: CalculationFormProps
+  ): ApplicationData => {
     const startDate = values.startDate
       ? convertToBackendDateFormat(values.startDate)
       : undefined;
@@ -109,11 +110,11 @@ const useHandlerReviewActions = (
     }
   }, [updateApplicationQuery.error, setCalculationErrors]);
 
-  const onCalculateEmployment = (calculator: CalculationCommon): void => {
+  const onCalculateEmployment = (calculator: CalculationFormProps): void => {
     void updateApplicationQuery.mutate(getDataEmployment(calculator));
   };
 
-  const calculateSalaryBenefit = (values: SalaryCalculation): void => {
+  const calculateSalaryBenefit = (values: CalculationFormProps): void => {
     void updateApplicationQuery.mutate(getSalaryBenefitData(values));
   };
 
