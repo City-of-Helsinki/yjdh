@@ -65,6 +65,7 @@ NotificationPage.defaultProps = {
   size: 'large',
   goToFrontPageText: undefined,
   children: null,
+  message: undefined,
 };
 
 export default NotificationPage;
