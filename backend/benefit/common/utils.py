@@ -65,7 +65,9 @@ def to_decimal(numeric_value, decimal_places=None, allow_null=True):
         return None
     value = decimal.Decimal(numeric_value)
     if decimal_places is not None:
-        value = value.quantize(decimal.Decimal(".1") ** decimal_places)
+        value = value.quantize(
+            decimal.Decimal(".1") ** decimal_places, rounding=decimal.ROUND_HALF_UP
+        )
     return value
 
 
