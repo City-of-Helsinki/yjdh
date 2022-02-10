@@ -40,13 +40,6 @@ def test_previous_benefit(previous_benefit):
     assert previous_benefit.company
 
 
-def test_benefit_amount(calculation):
-    calculation.calculated_benefit_amount = 100
-    assert calculation.benefit_amount == 100
-    calculation.override_benefit_amount = 200
-    assert calculation.benefit_amount == 200
-
-
 def test_create_for_application(application):
     application.status = ApplicationStatus.RECEIVED
     calculation = Calculation.objects.create_for_application(application)
