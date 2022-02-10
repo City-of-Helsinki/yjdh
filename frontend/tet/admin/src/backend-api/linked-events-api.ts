@@ -25,7 +25,7 @@ type Place = {
 
 const linkedEvents = Axios.create({
   baseURL: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev',
-  timeout: 1000,
+  timeout: 3000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,7 +33,7 @@ const linkedEvents = Axios.create({
 
 const apiHelsinki = Axios.create({
   baseURL: ' https://api.hel.fi/linkedevents',
-  timeout: 1000,
+  timeout: 3000,
   headers: {
     'Content-Type': 'application/json',
   },

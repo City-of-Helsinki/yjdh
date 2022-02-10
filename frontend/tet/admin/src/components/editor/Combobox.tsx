@@ -48,7 +48,7 @@ const Combobox = <O extends Option>({
           {...field}
           value={value}
           id={id}
-          multiselect={multiselect}
+          multiselect={multiselect || undefined}
           required={required}
           label={label}
           placeholder={placeholder}
