@@ -54,11 +54,12 @@ class CalculationSerializer(serializers.ModelSerializer):
         help_text="Set the handler of this Calculation (write-only)",
     )
 
-    override_benefit_amount = serializers.DecimalField(
+    override_monthly_benefit_amount = serializers.DecimalField(
         allow_null=True,
-        max_digits=Calculation.override_benefit_amount.field.max_digits,
-        decimal_places=Calculation.override_benefit_amount.field.decimal_places,
+        max_digits=Calculation.override_monthly_benefit_amount.field.max_digits,
+        decimal_places=Calculation.override_monthly_benefit_amount.field.decimal_places,
         min_value=0,
+        help_text="manually override the monthly benefit amount",
     )
 
     CALCULATION_MAX_MONTHS = 24
@@ -68,22 +69,28 @@ class CalculationSerializer(serializers.ModelSerializer):
         if start_date + relativedelta(months=self.CALCULATION_MAX_MONTHS) <= end_date:
             raise serializers.ValidationError({"end_date": _("Date range too large")})
 
-    def _validate_override_benefit_amount_comment(
-        self, override_benefit_amount, override_benefit_amount_comment
+    def _validate_override_monthly_benefit_amount_comment(
+        self, override_monthly_benefit_amount, override_monthly_benefit_amount_comment
     ):
-        if not override_benefit_amount and override_benefit_amount_comment:
+        if (
+            not override_monthly_benefit_amount
+            and override_monthly_benefit_amount_comment
+        ):
             raise serializers.ValidationError(
                 {
-                    "override_benefit_amount_comment": _(
-                        "This calculation can not have a override_benefit_amount_comment"
+                    "override_monthly_benefit_amount_comment": _(
+                        "This calculation can not have a override_monthly_benefit_amount_comment"
                     )
                 }
             )
-        elif override_benefit_amount and not override_benefit_amount_comment:
+        elif (
+            override_monthly_benefit_amount
+            and not override_monthly_benefit_amount_comment
+        ):
             raise serializers.ValidationError(
                 {
-                    "override_benefit_amount_comment": _(
-                        "This calculation needs override_benefit_amount_comment"
+                    "override_monthly_benefit_amount_comment": _(
+                        "This calculation needs override_monthly_benefit_amount_comment"
                     )
                 }
             )
@@ -119,9 +126,9 @@ class CalculationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         self._validate_date_range(data.get("start_date"), data.get("end_date"))
-        self._validate_override_benefit_amount_comment(
-            data.get("override_benefit_amount"),
-            data.get("override_benefit_amount_comment"),
+        self._validate_override_monthly_benefit_amount_comment(
+            data.get("override_monthly_benefit_amount"),
+            data.get("override_monthly_benefit_amount_comment"),
         )
         return data
 
@@ -138,8 +145,8 @@ class CalculationSerializer(serializers.ModelSerializer):
             "granted_as_de_minimis_aid",
             "target_group_check",
             "calculated_benefit_amount",
-            "override_benefit_amount",
-            "override_benefit_amount_comment",
+            "override_monthly_benefit_amount",
+            "override_monthly_benefit_amount_comment",
             "rows",
             "handler_details",
             "handler",

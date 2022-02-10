@@ -20,10 +20,10 @@
                 <td>{{ app.company.business_id }}</td>
                 <td>{{ app.start_date.strftime("%d.%m.%Y") }} - {{ app.end_date.strftime("%d.%m.%Y")}}</td>
                 <td>{{ app.get_benefit_type_display() }}</td>
-                <td class="text-right">{{ "%.0f €" | format(app.benefit_amount/(app.calculation.duration_in_months |
+                <td class="text-right">{{ "%.0f €" | format(app.calculated_benefit_amount/(app.calculation.duration_in_months |
                         round(2)))}}
                 </td>
-                <td class="text-right"><b>{{ "%.0f €" | format(app.benefit_amount)}}</b></td>
+                <td class="text-right"><b>{{ "%.0f €" | format(app.calculated_benefit_amount)}}</b></td>
             </tr>
             {% else %}
                 {% for ahjo_row in app.ahjo_rows %}
@@ -42,7 +42,7 @@
         {% endfor %}
         <tr>
             <td colspan="8" class="footer text-right"> Kaikki yhteensä <b>{{ "%.0f €" | format(apps | sum
-                    (attribute='benefit_amount'))}}</b></td>
+                    (attribute='calculated_benefit_amount'))}}</b></td>
         </tr>
 </table>
     <p style="color: #999898; padding: 0px 50px; text-align: center">Työllistettyjen nimet poistettu. JulkL 24§ 1 mom
