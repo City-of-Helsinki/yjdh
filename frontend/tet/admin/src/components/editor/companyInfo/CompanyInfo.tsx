@@ -23,9 +23,8 @@ const CompanyInfo: React.FC = () => {
 
   const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
 
-  //TODO Replace 'any' type
-  const keywords = !keywordsResults.isLoading
-    ? keywordsResults.data?.data.map((keyword: any) => ({
+  const keywords = keywordsResults.data
+    ? keywordsResults.data.map((keyword) => ({
         label: `${keyword.name.fi}, ${keyword.street_address?.fi ? keyword.street_address.fi : ''}, ${
           keyword.postal_code ? keyword.postal_code : ''
         }`,

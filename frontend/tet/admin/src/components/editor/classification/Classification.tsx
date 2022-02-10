@@ -4,12 +4,14 @@ import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
 //import { SelectionGroup } from 'hds-react';
-import { getWorkMethods, getWorkFeatures, getWorkKeyWords } from 'tet/admin/backend-api/linked-events-api';
+import { getWorkMethods, getWorkFeatures, getWorkKeywords } from 'tet/admin/backend-api/linked-events-api';
 import { useQuery, useQueries } from 'react-query';
 import { OptionType } from 'tet/admin/types/classification';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
+
+export type FilterFunction = (options: OptionType[], search: string) => OptionType[];
 
 const Classification: React.FC<EditorSectionProps> = () => {
   const { t } = useTranslation();
@@ -21,12 +23,9 @@ const Classification: React.FC<EditorSectionProps> = () => {
     { queryKey: 'workFeatures', queryFn: getWorkFeatures },
   ]);
 
-  const keywordsResults = useQuery(['keywords', search], () => getWorkKeyWords(search));
+  const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search));
 
-  //TODO Replace 'any' typings
-  const keywords = !keywordsResults.isLoading
-    ? keywordsResults.data?.data.map((keyword: any) => ({ label: keyword.name.fi, value: keyword['@id'] }))
-    : [];
+  const keywords = !keywordsResults.isLoading && keywordsResults.data ? keywordsResults.data : [];
 
   const [workMethods, workFeatures] = results;
 
@@ -34,21 +33,13 @@ const Classification: React.FC<EditorSectionProps> = () => {
     return <div>Lataa</div>;
   }
 
-  const filterHandler = (options: OptionType[], search: string): OptionType[] => {
+  const filterHandler: FilterFunction = (options, search) => {
     setSearch(search);
     return options;
   };
 
-  //TODO replace 'any' typings
-  const getValueLabelList = (list: any) => {
-    return list.map((item: any) => ({
-      label: item.name.fi,
-      value: item.id,
-    }));
-  };
-
-  const workMethodsList = getValueLabelList(workMethods.data.data);
-  const workFeaturesList = getValueLabelList(workFeatures.data.data);
+  const workMethodsList = workMethods.data;
+  const workFeaturesList = workFeatures.data;
 
   return (
     <FormSection header={'Luokittelut'}>
@@ -78,14 +69,14 @@ const Classification: React.FC<EditorSectionProps> = () => {
         <$GridCell $colSpan={4}>
           <Combobox
             id={'keywords'}
-            multiselect={true}
+            multiselect
             required={false}
             label={t('common:editor.classification.keywords')}
             placeholder={t('common:editor.classification.search')}
             options={keywords}
             optionLabelField={'label'}
             filter={filterHandler}
-          ></Combobox>
+          />
         </$GridCell>
       </$GridCell>
     </FormSection>

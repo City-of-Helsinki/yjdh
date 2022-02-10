@@ -3,24 +3,27 @@ import TetPosting from 'tet/admin/types/tetposting';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Combobox as HdsCombobox } from 'hds-react';
 import Id from 'shared/types/id';
-import { OptionType } from 'tet/admin/types/classification';
 import { RegisterOptions } from 'react-hook-form';
 
-type Props = {
+type Props<O extends Option> = {
   id: Id<TetPosting>;
-  initialValue?: number;
-  label: string;
-  options: OptionType[];
+  initialValue?: O;
+  label: React.ReactNode;
+  options: O[];
   placeholder: string;
   multiselect?: boolean;
   validation?: RegisterOptions<TetPosting>;
-  filter?: any;
-  optionLabelField: string;
-  disabled?: boolean;
-  required?: boolean;
+  filter: (options: O[], search: string) => O[];
+  optionLabelField: keyof O;
+  disabled: boolean;
+  required: boolean;
 };
 
-const Combobox: React.FC<Props> = ({
+export type Option = {
+  name: string;
+};
+
+const Combobox = <O extends Option>({
   id,
   multiselect = false,
   filter,
@@ -31,8 +34,9 @@ const Combobox: React.FC<Props> = ({
   placeholder,
   disabled = false,
   required = false,
-}) => {
+}: Props<O>): React.ReactElement<TetPosting> => {
   const { control } = useFormContext<TetPosting>();
+
   return (
     <Controller
       name={id}
@@ -40,7 +44,7 @@ const Combobox: React.FC<Props> = ({
       control={control}
       rules={validation}
       render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
-        <HdsCombobox
+        <HdsCombobox<O>
           {...field}
           value={value}
           id={id}
@@ -53,9 +57,12 @@ const Combobox: React.FC<Props> = ({
           onChange={onChange}
           disabled={disabled}
           error={error && error.message ? error.message : ''}
-          invalid={invalid}
-          aria-invalid={error && error.message ? error.message : ''}
+          invalid={Boolean(invalid)}
+          aria-invalid={Boolean(error)}
           filter={filter}
+          toggleButtonAriaLabel="test"
+          clearButtonAriaLabel="test"
+          selectedItemRemoveButtonAriaLabel="test"
         />
       )}
     />
