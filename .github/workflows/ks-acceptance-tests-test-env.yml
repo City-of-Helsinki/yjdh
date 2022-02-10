@@ -1,21 +1,34 @@
-name: Kesäseteli Staging Environment Acceptance tests
+name: Kesäseteli Test Environment Acceptance tests
 on:
   schedule:
-    # At half past every hour from 7-20 (finnish winter time)
-    - cron: "*/30 5-18 * * *"
+    # At every hour from 7-20 (finnish winter time)
+    - cron: "0 5-18 * * *"
   pull_request:
     paths:
-      - '.github/workflows/ks-empl-staging-env-acceptance-tests.yml'
+      - '.github/workflows/ks-acceptance-tests-test-env.yml'
 env:
-  EMPLOYER_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi
-  BRANCH: main
+  EMPLOYER_URL: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi
+  YOUTH_URL: https://kesaseteli-youth-ui-test.agw.arodevtest.hel.fi
+  HANDLER_URL: https://kesaseteli-handler-ui-test.agw.arodevtest.hel.fi
+  NEXT_PUBLIC_BACKEND_URL: https://yjdh-kesaseteli-api-test.agw.arodevtest.hel.fi
+  BRANCH: develop
+
 jobs:
   acceptance-tests:
-    if: ${{ false }} # Disabled until staging is not behind vpn anymore
     strategy:
       fail-fast: false
+      matrix:
+        service: [ 'ks-empl', 'ks-youth']
+        include:
+          - service: ks-empl
+            context: kesaseteli/employer
+            url: https://yjdh-kesaseteli-ui-test.agw.arodevtest.hel.fi
+            port: 3000
+          - service: ks-youth
+            context: kesaseteli/youth
+            url: https://kesaseteli-youth-ui-test.agw.arodevtest.hel.fi
     runs-on: ubuntu-latest
-    name: Acceptance tests for Staging Environment
+    name: Acceptance tests for Test Environment
     defaults:
       run:
         working-directory: ./frontend
@@ -41,19 +54,23 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
-      - name: Run TestCafe tests for Staging
+      - name: Run TestCafe tests for Testing
         id: testcafe
-        run: yarn --cwd kesaseteli/employer browser-test:ci
+        run: yarn --cwd ${{ matrix.context }} browser-test:ci
         env:
           GITHUB_WORKFLOW_NAME: ${{  github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           TESTCAFE_SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           TESTCAFE_SLACK_CHANNEL: "#yjdh-alerts"
           TESTCAFE_SLACK_USERNAME: GitHub-Alerts
-          FRONTEND_URL: ${{ env.EMPLOYER_URL }}
+          FRONTEND_URL: ${{ matrix.url }}
+          EMPLOYER_URL: ${{ env.EMPLOYER_URL }}
+          YOUTH_URL: ${{ env.YOUTH_URL }}
+          HANDLER_URL: ${{ env.HANDLER_URL }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
       - name: Upload results
         run: |
-          zip -r report.zip kesaseteli/employer/report/ > no_output 2>&1
+          zip -r report.zip ${{ matrix.context }}/report/ > no_output 2>&1
           curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{secrets.NETLIFY_AUTH_TOKEN}}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
           echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
         if: always() && steps.testcafe.outcome == 'failure'
@@ -63,7 +80,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
           SLACK_USERNAME: GitHub-Alerts
-          SLACK_TITLE: ${{ github.workflow }} have *FAILED* in ${{env.EMPLOYER_URL}}!
+          SLACK_TITLE: ${{ github.workflow }} have *FAILED* in ${{ matrix.url }}!
           SLACK_CHANNEL: yjdh-alerts
           SLACK_MESSAGE: |
             *Check the testcafe report here: ${{env.REPORT_URL}}*
@@ -71,9 +88,9 @@ jobs:
             ```${{ env.COMMIT_INFO }}```
             *NOTE*: There is a chance that it was not yet deployed!
         if: always() && steps.testcafe.outcome == 'failure'
-      - name: Create zip of screenshots and videos of failed tests to artifact for ${{env.EMPLOYER_URL}}
+      - name: Create zip of screenshots and videos of failed tests to artifact for ${{ matrix.url }}
         uses: actions/upload-artifact@v2
         with:
           name: report
-          path: ./frontend/kesaseteli/employer/report
+          path: ./frontend/${{ matrix.context }}/report
         if: always() && steps.testcafe.outcome == 'failure'
