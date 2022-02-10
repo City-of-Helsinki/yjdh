@@ -14,6 +14,7 @@ import HDSToastContainer from 'shared/components/toast/ToastContainer';
 import useIsRouting from 'shared/hooks/useIsRouting';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
+import maskObject from 'shared/utils/mask-object';
 import { isError } from 'shared/utils/type-guards';
 import { ThemeProvider } from 'styled-components';
 
@@ -25,6 +26,9 @@ type Props = AppProps & {
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
   environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
+  beforeSend(event: Sentry.Event) {
+    return maskObject(event);
+  },
 });
 
 setLogger({

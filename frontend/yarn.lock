@@ -9940,6 +9940,11 @@ neo-async@^2.6.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+nested-mask-attributes@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/nested-mask-attributes/-/nested-mask-attributes-1.1.1.tgz#b68b625f96936d7d35d93f1355722b9eccdb2511"
+  integrity sha512-V435auAd6KUHQEWs8CCtgb6UDuWpouvJvuzRRGbDG6FMGQrqEQu7BelObUmqqaW1wCB93E+8ZKkaU2IhnyIpSA==
+
 newtype-ts@^0.3.4:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/newtype-ts/-/newtype-ts-0.3.5.tgz#5c113d34a04938d9e90061437638260ea965c490"
