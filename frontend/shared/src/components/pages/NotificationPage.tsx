@@ -17,7 +17,7 @@ type Props = {
   type: NotificationType;
   size?: NotificationSizeInline;
   title: string;
-  message: React.ReactNode;
+  message?: React.ReactNode;
   goToFrontPageText?: string;
   children?: React.ReactNode;
 };

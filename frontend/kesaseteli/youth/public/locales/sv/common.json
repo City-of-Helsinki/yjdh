@@ -109,8 +109,6 @@
     "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
   },
   "alreadyActivatedPage" : {
-    "title": "Hoppsan! Bekräftelselänken är redan aktiverad.",
-    "notificationMessage": "Sommarsedeln har skickats till din epost.",
-    "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
+    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
   }
 }

@@ -109,8 +109,6 @@
     "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
   },
   "alreadyActivatedPage" : {
-    "title": "Oops! The confirmation link is already activated.",
-    "notificationMessage": "The Summer Job Voucher has been sent to your email.",
-    "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
+    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
   }
 }

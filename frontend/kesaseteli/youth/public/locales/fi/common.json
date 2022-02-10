@@ -109,8 +109,6 @@
     "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
   },
   "alreadyActivatedPage" : {
-    "title": "Hups! Vahvistuslinkki on jo aktivoitu.",
-    "notificationMessage": "Kesäseteli on lähetetty sähköpostiisi.",
-    "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
+    "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä."
   }
 }
