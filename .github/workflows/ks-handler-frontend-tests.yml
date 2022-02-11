@@ -10,6 +10,8 @@ on:
       - 'frontend/kesaseteli/handler/**'
       - 'frontend/*'
       - '.github/workflows/ks-handler-frontend-tests.yml'
+      - "!**/browser-tests/**"
+      - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:

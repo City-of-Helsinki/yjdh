@@ -5,13 +5,13 @@ import { getNotificationPageComponents } from './notificationPage.components';
 
 const translations = {
   fi: {
-    headerText: /kesäsetelisi on nyt aktivoitu/i,
+    headerText: /vahvistus onnistui/i,
   },
   sv: {
-    headerText: /sv kesäsetelisi on nyt aktivoitu/i,
+    headerText: /bekräftelsen lyckades/i,
   },
   en: {
-    headerText: /eng kesäsetelisi on nyt aktivoitu/i,
+    headerText: /confirmation succeeded/i,
   },
 };
 

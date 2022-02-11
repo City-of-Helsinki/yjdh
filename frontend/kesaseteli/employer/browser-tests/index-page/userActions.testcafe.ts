@@ -1,3 +1,4 @@
+import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import {
   getHeaderComponents,
@@ -20,11 +21,15 @@ let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appNameTranslation);
-  });
+  })
+  .afterEach(async () =>
+    // eslint-disable-next-line no-console
+    console.log(requestLogger.requests)
+  );
 
 test('user can authenticate and logout', async (t) => {
   await doEmployerLogin(t, 'fi');

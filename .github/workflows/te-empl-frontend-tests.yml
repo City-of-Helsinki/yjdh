@@ -9,6 +9,8 @@ on:
       - 'frontend/*'
       - 'frontend/tet/**'
       - '.github/workflows/te-empl-frontend-tests.yml'
+      - "!**/browser-tests/**"
+      - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:

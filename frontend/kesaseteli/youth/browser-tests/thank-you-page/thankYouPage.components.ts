@@ -3,19 +3,40 @@ import {
   screenContext,
   setDataToPrintOnFailure,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
-export const getThankYouPageComponents = async (t: TestController) => {
+const translations = {
+  fi: {
+    headerText: /hienoa! olet lähettänyt tietosi kesäsetelijärjestelmään/i,
+    buttonText: /siirry kesäsetelin etusivulle/i,
+  },
+  sv: {
+    headerText:
+      /fint! du har skickat dina uppgifter till sommarsedelns digitala system./i,
+    buttonText: /gå till sommarsedelns förstasida/i,
+  },
+  en: {
+    headerText:
+      /excellent! you sent your information to the summer job vouchers´ digital system./i,
+    buttonText: /go to the summer job voucher front page/i,
+  },
+};
+
+export const getThankYouPageComponents = async (
+  t: TestController,
+  lang?: Language
+) => {
   const screen = screenContext(t);
   const selectors = {
     header() {
       return screen.findByRole('heading', {
-        name: /hienoa! olet lähettänyt tietosi kesäsetelijärjestelmään/i,
+        name: translations[lang ?? DEFAULT_LANGUAGE].headerText,
       });
     },
     goToFrontPageButton() {
       return screen.findByRole('button', {
-        name: /kesäseteli etusivulle/i,
+        name: translations[lang ?? DEFAULT_LANGUAGE].buttonText,
       });
     },
     activationLink() {
@@ -38,6 +59,7 @@ export const getThankYouPageComponents = async (t: TestController) => {
     async clickActivationLink() {
       const href = await selectors.activationLink().getAttribute('href');
       setDataToPrintOnFailure(t, 'activationLink', href);
+      // eslint-disable-next-line no-console
       console.log('Clicking activation link', href);
       await t.click(selectors.activationLink());
     },

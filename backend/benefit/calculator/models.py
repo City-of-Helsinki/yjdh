@@ -102,11 +102,11 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         blank=True,
         null=True,
     )
-    override_benefit_amount = models.DecimalField(
+    override_monthly_benefit_amount = models.DecimalField(
         max_digits=7,
         decimal_places=2,
         verbose_name=_(
-            "amount of the benefit manually entered by the application handler"
+            "monthly amount of the benefit manually entered by the application handler"
         ),
         blank=True,
         null=True,
@@ -115,14 +115,7 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
 
     target_group_check = models.BooleanField(default=False)
 
-    @property
-    def benefit_amount(self):
-        if self.override_benefit_amount is not None:
-            return self.override_benefit_amount
-        else:
-            return self.calculated_benefit_amount
-
-    override_benefit_amount_comment = models.CharField(
+    override_monthly_benefit_amount_comment = models.CharField(
         max_length=256,
         verbose_name=_("reason for overriding the calculated benefit amount"),
         blank=True,
@@ -203,7 +196,9 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
         verbose_name=_("Pay subsidy percent"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,
     )
-    work_time_percent = models.IntegerField(
+    work_time_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
         verbose_name=_("Work time percent"),
         default=100,
         null=True,
@@ -743,6 +738,31 @@ class EmployeeBenefitTotalRow(CalculationRow):
             * self.calculation.calculator.get_amount(
                 RowType.HELSINKI_BENEFIT_MONTHLY_EUR
             )
+        )
+
+    class Meta:
+        proxy = True
+
+
+class ManualOverrideTotalRow(CalculationRow):
+    """
+    SalaryBenefitTotalRow for the simple cases where
+    * there is a single pay subsidy decision for the duration of the benefit
+    * or there is no pay subsidy decision
+    """
+
+    proxy_row_type = RowType.HELSINKI_BENEFIT_TOTAL_EUR
+    description_fi_template = "Helsinki-lisä yhteensä"
+
+    @property
+    def monthly_amount(self):
+        return self.calculation.override_monthly_benefit_amount
+
+    def calculate_amount(self):
+        return to_decimal(
+            self.calculation.duration_in_months
+            * self.calculation.override_monthly_benefit_amount,
+            0,
         )
 
     class Meta:

@@ -1,6 +1,5 @@
-import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
+import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { getCurrentUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
@@ -26,10 +25,14 @@ const url = getFrontendUrl('/');
 
 fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
-  });
+  })
+  .afterEach(async () =>
+    // eslint-disable-next-line no-console
+    console.log(requestLogger.requests)
+  );
 
 test('can send application and return to front page', async (t) => {
   const indexPage = await getIndexPageComponents(t);
@@ -59,11 +62,11 @@ if (!isRealIntegrationsEnabled()) {
   test('activation remembers the selected language', async (t) => {
     const languageDropdown = await getHeaderComponents(t).languageDropdown();
     await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
-    const indexPage = await getIndexPageComponents(t);
+    const indexPage = await getIndexPageComponents(t, 'sv');
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
     await sendYouthApplication(t, formData, 'sv');
-    const thankYouPage = await getThankYouPageComponents(t);
+    const thankYouPage = await getThankYouPageComponents(t, 'sv');
     await thankYouPage.actions.clickActivationLink();
     const activatedPage = await getActivatedPageComponents(t, 'sv');
     await activatedPage.expectations.isLoaded();

@@ -1,7 +1,8 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { CALCULATION_TYPES } from 'benefit/handler/constants';
+import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput } from 'hds-react';
-import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
@@ -23,19 +24,17 @@ import { useEmploymentAppliedMoreView } from './useEmploymentAppliedMoreView';
 const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
   data,
 }) => {
+  const { formik, fields, calculationsErrors, grantedPeriod } =
+    useEmploymentAppliedMoreView(data);
   const {
     t,
     translationsBase,
     theme,
-    formik,
-    fields,
     language,
-    grantedPeriod,
-    appliedPeriod,
-    calculationsErrors,
     getErrorMessage,
     handleSubmit,
-  } = useEmploymentAppliedMoreView(data);
+  } = useCalculatorData(CALCULATION_TYPES.EMPLOYMENT, formik);
+
   return (
     <form onSubmit={handleSubmit} noValidate>
       <ReviewSection withMargin>
@@ -47,7 +46,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
                 {t(`${translationsBase}.startEndDates`, {
                   startDate: convertToUIDateFormat(data.startDate),
                   endDate: convertToUIDateFormat(data.endDate),
-                  period: formatStringFloatValue(appliedPeriod),
+                  period: formatStringFloatValue(data.durationInMonthsRounded),
                 })}
               </>
             )}
@@ -123,7 +122,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             data?.calculation?.rows.map((row, i, { length }) => {
               const isTotal = length - 1 === i;
               return (
-                <$Grid key={camelCase(row.descriptionFi)}>
+                <$Grid key={row.id}>
                   <$GridCell $colSpan={6}>
                     <$CalculatorTableRow isTotal={isTotal}>
                       <$ViewField isBold={isTotal}>
