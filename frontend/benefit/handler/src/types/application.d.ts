@@ -376,6 +376,7 @@ export type CalculationFormProps = {
   paySubsidyStartDate?: string;
   paySubsidyEndDate?: string;
   paySubsidyPercent?: number;
+  paySubsidies?: PaySubsidy[];
 } & CalculationCommon;
 
 export type Application = {

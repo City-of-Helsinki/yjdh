@@ -122,6 +122,7 @@ export enum CALCULATION_SALARY_KEYS {
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   PAY_SUBSIDY_START_DATE = 'paySubsidyStartDate',
   PAY_SUBSIDY_END_DATE = 'paySubsidyEndDate',
+  PAY_SUBSIDIES = 'paySubsidies',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];
