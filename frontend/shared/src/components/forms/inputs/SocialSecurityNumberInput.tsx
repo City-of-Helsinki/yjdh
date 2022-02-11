@@ -6,6 +6,7 @@ import InputProps from 'shared/types/input-props';
 import { isString } from 'shared/utils/type-guards';
 
 import { $TextInput } from './TextInput.sc';
+import { FINNISH_SSN_REGEX } from 'shared/constants';
 
 type Props<T> = Omit<InputProps<T>, 'onChange'> & {
   placeholder?: string;
@@ -35,7 +36,11 @@ const SocialSecurityNumberInput = <T,>({
   const validateSocialSecurityNumber = React.useCallback(
     (ssn: unknown) => {
       const capitalizedSsn = capitalizeAndTrimSocialSecurityNumber(ssn);
-      if (capitalizedSsn && isString(capitalizedSsn)) {
+      if (
+        capitalizedSsn &&
+        isString(capitalizedSsn) &&
+        FINNISH_SSN_REGEX.test(capitalizedSsn)
+      ) {
         return FinnishSSN.validate(capitalizedSsn);
       }
       return false;
