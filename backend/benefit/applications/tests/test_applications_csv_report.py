@@ -1,15 +1,211 @@
+from datetime import datetime
 from decimal import Decimal
 
-from applications.enums import ApplicationStatus, BenefitType
+from applications.enums import AhjoDecision, ApplicationStatus, BenefitType
+from applications.models import ApplicationBatch
 from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
-from applications.tests.factories import DeMinimisAidFactory
+from applications.tests.factories import DecidedApplicationFactory, DeMinimisAidFactory
 from calculator.tests.factories import PaySubsidyFactory
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
 from dateutil.relativedelta import relativedelta
 from helsinkibenefit.tests.conftest import *  # noqa
+from rest_framework.reverse import reverse
 from terms.tests.conftest import *  # noqa
+
+
+def _get_csv(handler_api_client, url, expected_application_numbers, expect_empty=False):
+    response = handler_api_client.get(url)
+    assert response.status_code == 200
+    csv_lines = split_lines_at_semicolon(response.content.decode("utf-8"))
+    if expect_empty:
+        assert len(csv_lines) == 2
+        assert csv_lines[1][0] == '"Ei löytynyt ehdot täyttäviä hakemuksia"'
+    else:
+        assert csv_lines[0][0] == '"Hakemusnumero"'
+        assert len(csv_lines) == len(expected_application_numbers) + 1
+        for line, expected_application_number in zip(
+            csv_lines[1:], expected_application_numbers
+        ):
+            assert int(line[0]) == expected_application_number
+    return csv_lines
+
+
+def _create_applications_for_csv_export():
+    application1 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
+    application1.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
+        created_at=datetime(2022, 1, 1)
+    )
+    application2 = DecidedApplicationFactory(status=ApplicationStatus.ACCEPTED)
+    application2.log_entries.filter(to_status=ApplicationStatus.ACCEPTED).update(
+        created_at=datetime(2022, 2, 1)
+    )
+    application3 = DecidedApplicationFactory(status=ApplicationStatus.REJECTED)
+    application3.log_entries.filter(to_status=ApplicationStatus.REJECTED).update(
+        created_at=datetime(2022, 3, 1)
+    )
+    application4 = DecidedApplicationFactory(
+        status=ApplicationStatus.CANCELLED
+    )  # should be excluded
+    application4.log_entries.filter(to_status=ApplicationStatus.CANCELLED).update(
+        created_at=datetime(2022, 2, 1)
+    )
+    return (application1, application2, application3, application4)
+
+
+def test_applications_csv_export_new_applications(handler_api_client):
+    (
+        application1,
+        application2,
+        application3,
+        application4,
+    ) = _create_applications_for_csv_export()
+    ApplicationBatch.objects.all().delete()
+
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list") + "export_new_rejected_applications/",
+        [application3.application_number],
+    )
+    assert ApplicationBatch.objects.all().count() == 1
+    assert ApplicationBatch.objects.all().first().applications.count() == 1
+    assert (
+        ApplicationBatch.objects.filter(
+            proposal_for_decision=AhjoDecision.DECIDED_REJECTED
+        )
+        .first()
+        .applications.first()
+        == application3
+    )
+
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list") + "export_new_accepted_applications/",
+        [application1.application_number, application2.application_number],
+    )
+    assert ApplicationBatch.objects.all().count() == 2
+    assert set(
+        [
+            a.pk
+            for a in ApplicationBatch.objects.filter(
+                proposal_for_decision=AhjoDecision.DECIDED_ACCEPTED
+            )
+            .first()
+            .applications.all()
+        ]
+    ) == {application1.pk, application2.pk}
+
+    # re-running the request results in an empty response and doesn't create new batches
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list") + "export_new_rejected_applications/",
+        [],
+        expect_empty=True,
+    )
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list") + "export_new_accepted_applications/",
+        [],
+        expect_empty=True,
+    )
+    assert ApplicationBatch.objects.all().count() == 2
+
+
+def test_applications_csv_export_with_date_range(handler_api_client):
+    (
+        application1,
+        application2,
+        application3,
+        application4,
+    ) = _create_applications_for_csv_export()
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list") + "export_csv/",
+        [
+            application1.application_number,
+            application2.application_number,
+            application3.application_number,
+            application4.application_number,
+        ],
+    )
+
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list") + "export_csv/?status=accepted,rejected",
+        [
+            application1.application_number,
+            application2.application_number,
+            application3.application_number,
+        ],
+    )
+
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2022-01-02",
+        [application2.application_number, application3.application_number],
+    )
+
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2021-12-31&date_handled_before=2022-03-02",
+        [
+            application1.application_number,
+            application2.application_number,
+            application3.application_number,
+        ],
+    )
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2022-01-01&date_handled_before=2022-03-01",
+        [
+            application1.application_number,
+            application2.application_number,
+            application3.application_number,
+        ],
+    )
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2022-01-02&date_handled_before=2022-02-28",
+        [application2.application_number],
+    )
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2022-02-02&date_handled_before=2022-02-28",
+        [],
+        expect_empty=True,
+    )
+
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2022-02-01",
+        [application2.application_number, application3.application_number],
+    )
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_before=2022-02-28",
+        [application1.application_number, application2.application_number],
+    )
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2022-02-01&status=rejected",
+        [application3.application_number],
+    )
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list")
+        + "export_csv/?date_handled_after=2022-02-01&status=cancelled",
+        [],
+        expect_empty=True,
+    )
 
 
 def test_applications_csv_output(applications_csv_service):

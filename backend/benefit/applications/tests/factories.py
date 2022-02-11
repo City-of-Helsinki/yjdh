@@ -137,6 +137,13 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
     status = ApplicationStatus.HANDLING
 
     @factory.post_generation
+    def handling_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.RECEIVED,
+            to_status=ApplicationStatus.HANDLING,
+        )
+
+    @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
         from calculator.tests.factories import (  # avoid circular import
             PaySubsidyFactory,
@@ -163,6 +170,13 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
 
 class DecidedApplicationFactory(HandlingApplicationFactory):
     status = ApplicationStatus.ACCEPTED
+
+    @factory.post_generation
+    def handling_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.HANDLING,
+            to_status=self.status,
+        )
 
 
 class EmployeeFactory(factory.django.DjangoModelFactory):
