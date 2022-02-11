@@ -4,16 +4,18 @@ import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { PhoneInput as HdsPhoneInput } from 'hds-react';
 import Id from 'shared/types/id';
 
+type PhoneType = Pick<TetPosting, 'contact_phone'>;
+
 // TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
-  id: Id<TetPosting>;
+  id: Id<PhoneType>;
   label: string;
   placeholder: string;
   registerOptions: RegisterOptions;
 };
 
 const PhoneInput: React.FC<Props> = ({ id, label, placeholder, registerOptions }) => {
-  const { control } = useFormContext<TetPosting>();
+  const { control } = useFormContext<PhoneType>();
   return (
     <Controller
       name={id}
@@ -31,7 +33,7 @@ const PhoneInput: React.FC<Props> = ({ id, label, placeholder, registerOptions }
       )}
       control={control}
       rules={registerOptions}
-    ></Controller>
+    />
   );
 };
 

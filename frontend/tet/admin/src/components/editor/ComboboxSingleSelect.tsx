@@ -6,17 +6,16 @@ import Id from 'shared/types/id';
 import { RegisterOptions, NestedValue } from 'react-hook-form';
 
 type ComboboxFields<O extends Option> = {
-  keywords: NestedValue<O[]>;
+  location: NestedValue<O>;
 };
 
-type Props<O extends Option> = {
-  id: Id<ComboboxFields<O>>;
+type Props<T, O extends Option> = {
+  id: Id<T>;
   initialValue?: O;
   label: React.ReactNode;
   options: O[];
   placeholder: string;
-  multiselect?: boolean;
-  validation?: RegisterOptions<ComboboxFields<O>>;
+  validation?: RegisterOptions<T>;
   filter: any;
   optionLabelField: keyof O;
   disabled?: boolean;
@@ -27,11 +26,9 @@ export type Option = {
   name: string;
 };
 
-const Combobox = <O extends Option>({
+const ComboboxSingleSelect = <T, O extends Option>({
   id,
-  multiselect = false,
   filter,
-  initialValue,
   validation = {},
   label,
   optionLabelField,
@@ -39,8 +36,8 @@ const Combobox = <O extends Option>({
   placeholder,
   disabled = false,
   required = false,
-}: Props<O>): React.ReactElement<ComboboxFields<O>> => {
-  const { control } = useFormContext<ComboboxFields<O>>();
+}: Props<T, O>): React.ReactElement<T> => {
+  const { control } = useFormContext<T>();
 
   return (
     <Controller
@@ -51,9 +48,8 @@ const Combobox = <O extends Option>({
       render={({ field: { ref, value, onChange, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
         <HdsCombobox<O>
           {...field}
-          value={value as O[]}
+          value={value as O}
           id={id}
-          multiselect
           required={required}
           label={label}
           placeholder={placeholder}
@@ -74,4 +70,4 @@ const Combobox = <O extends Option>({
   );
 };
 
-export default Combobox;
+export default ComboboxSingleSelect;

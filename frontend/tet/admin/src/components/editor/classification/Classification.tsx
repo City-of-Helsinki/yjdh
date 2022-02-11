@@ -10,6 +10,7 @@ import { OptionType } from 'tet/admin/types/classification';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
+import TetPosting from 'tet/admin/types/tetposting';
 
 export type FilterFunction = (options: OptionType[], search: string) => OptionType[];
 
@@ -38,8 +39,8 @@ const Classification: React.FC<EditorSectionProps> = () => {
     return options;
   };
 
-  const workMethodsList = workMethods.data;
-  const workFeaturesList = workFeatures.data;
+  const workMethodsList = workMethods.data || [];
+  const workFeaturesList = workFeatures.data || [];
 
   return (
     <FormSection header={'Luokittelut'}>
@@ -67,7 +68,7 @@ const Classification: React.FC<EditorSectionProps> = () => {
           ></SelectionGroup>
         </$GridCell>
         <$GridCell $colSpan={4}>
-          <Combobox
+          <Combobox<OptionType>
             id={'keywords'}
             multiselect
             required={false}

@@ -14,6 +14,8 @@ import debounce from 'lodash/debounce';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import { OptionType } from 'tet/admin/types/classification';
+import ComboboxSingleSelect from 'tet/admin/components/editor/ComboboxSingleSelect';
+import TetPosting from 'tet/admin/types/tetposting';
 
 const CompanyInfo: React.FC = () => {
   const { t } = useTranslation();
@@ -23,13 +25,16 @@ const CompanyInfo: React.FC = () => {
 
   const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
 
-  const keywords = keywordsResults.data
-    ? keywordsResults.data.map((keyword) => ({
-        label: `${keyword.name.fi}, ${keyword.street_address?.fi ? keyword.street_address.fi : ''}, ${
-          keyword.postal_code ? keyword.postal_code : ''
-        }`,
-        value: keyword['@id'],
-      }))
+  const keywords: OptionType[] = keywordsResults.data
+    ? keywordsResults.data.map(
+        (keyword) =>
+          ({
+            label: `${keyword.name.fi}, ${keyword.street_address?.fi ? keyword.street_address.fi : ''}, ${
+              keyword.postal_code ? keyword.postal_code : ''
+            }`,
+            value: keyword['@id'],
+          } as OptionType),
+      )
     : [];
 
   const filterSetter = React.useCallback(
@@ -72,9 +77,8 @@ const CompanyInfo: React.FC = () => {
             />
           </$GridCell>
           <$GridCell $colSpan={6}>
-            <Combobox
-              id={'location'}
-              multiselect={false}
+            <ComboboxSingleSelect<TetPosting, OptionType>
+              id="location"
               required={true}
               label={t('common:editor.employerInfo.address')}
               placeholder={t('common:editor.employerInfo.streetAddress')}
@@ -82,7 +86,7 @@ const CompanyInfo: React.FC = () => {
               optionLabelField={'label'}
               filter={addressFilterHandler}
               validation={{ required: { value: true, message: 'Vaaditaan' } }}
-            ></Combobox>
+            ></ComboboxSingleSelect>
           </$GridCell>
         </$GridCell>
       </$GridCell>

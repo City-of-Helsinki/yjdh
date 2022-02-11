@@ -4,9 +4,11 @@ import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import Id from 'shared/types/id';
 import TetPosting from 'tet/admin/types/tetposting';
 
+type SpotsType = Pick<TetPosting, 'spots'>;
+
 // TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
-  id: Id<TetPosting>;
+  id: Id<SpotsType>;
   label: string;
   registerOptions: RegisterOptions;
   required: boolean;
@@ -15,7 +17,7 @@ type Props = {
 const asNumber = (value?: string | number | undefined): number | undefined => Number(value) || undefined;
 
 const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = false }) => {
-  const { control } = useFormContext<TetPosting>();
+  const { control } = useFormContext<SpotsType>();
   return (
     <Controller
       name={id}
@@ -33,7 +35,7 @@ const NumberInput: React.FC<Props> = ({ id, registerOptions, label, required = f
       )}
       control={control}
       rules={registerOptions}
-    ></Controller>
+    />
   );
 };
 
