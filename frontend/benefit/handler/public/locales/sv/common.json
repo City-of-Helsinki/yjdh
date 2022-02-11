@@ -188,6 +188,10 @@
       "paySubsidyPercent": {
         "label": "Palkkatukiprosentti",
         "placeholder": "Palkkatukiprosentti"
+      },
+      "paySubsidyWorkTimePercent": {
+        "label": "Työaika %",
+        "placeholder": "Työaika %"
       }
     },
     "notifications": {

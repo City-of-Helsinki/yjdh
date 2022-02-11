@@ -102,7 +102,7 @@ const SalaryBenefitCalculatorView: React.FC<
         <TextInput
           id={fields.otherExpenses.name}
           name={fields.otherExpenses.name}
-          label={fields.monthlyPay.label}
+          label={fields.otherExpenses.label}
           onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.otherExpenses.name, e.target.value)
@@ -204,7 +204,46 @@ const SalaryBenefitCalculatorView: React.FC<
             />
           </$GridCell>
 
-          <$GridCell $colStart={3} $colSpan={6}>
+          {item.paySubsidyPercent === 100 && (
+            <$GridCell $colStart={3} $colSpan={2}>
+              <TextInput
+                id={fields.paySubsidyWorkTimePercent.name}
+                name={fields.paySubsidyWorkTimePercent.name}
+                label={fields.paySubsidyWorkTimePercent.label}
+                onBlur={undefined}
+                onChange={(e) => {
+                  formik.setFieldValue(
+                    fields.paySubsidies.name,
+                    formik.values.paySubsidies?.map(
+                      (paySubsidyItem, paySubsidyItemIndex) => {
+                        if (paySubsidyItemIndex === index)
+                          return {
+                            ...paySubsidyItem,
+                            workTimePercent: e.target.value,
+                          };
+                        return paySubsidyItem;
+                      }
+                    )
+                  );
+                }}
+                value={formatStringFloatValue(item.workTimePercent)}
+                invalid={
+                  !!getErrorMessage(fields.paySubsidyWorkTimePercent.name)
+                }
+                aria-invalid={
+                  !!getErrorMessage(fields.paySubsidyWorkTimePercent.name)
+                }
+                errorText={getErrorMessage(
+                  fields.paySubsidyWorkTimePercent.name
+                )}
+              />
+            </$GridCell>
+          )}
+
+          <$GridCell
+            $colStart={item.paySubsidyPercent === 100 ? 6 : 3}
+            $colSpan={6}
+          >
             <$CalculatorText
               css={`
                 margin: 0 0 ${theme.spacing.xs3} 0;
