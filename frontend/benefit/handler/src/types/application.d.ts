@@ -373,9 +373,6 @@ export type CalculationFormProps = {
   vacationMoney?: string;
   otherExpenses?: string;
   stateAidMaxPercentage?: number;
-  paySubsidyStartDate?: string;
-  paySubsidyEndDate?: string;
-  paySubsidyPercent?: number;
   paySubsidies?: PaySubsidy[];
 } & CalculationCommon;
 
