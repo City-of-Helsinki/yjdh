@@ -8,10 +8,8 @@ const createAxios = (): AxiosInstance =>
     baseURL: linkedEventsUrl,
     headers: {
       'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
-    withCredentials: true,
-    xsrfCookieName: 'csrftoken',
-    xsrfHeaderName: 'X-CSRFToken',
   });
 
 const createQueryClient = (): QueryClient =>
@@ -25,7 +23,11 @@ const createQueryClient = (): QueryClient =>
         queryFn: async <T>({ queryKey: [url] }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
           // Best practice: https://react-query.tanstack.com/guides/default-query-function
           if (isString(url) && BackendEndPoints.some((endpoint) => url.startsWith(endpoint))) {
-            const { data } = await createAxios().get<T>(`${linkedEventsUrl}${url.toLowerCase()}`);
+            const { data } = await createAxios().get<T>(`${linkedEventsUrl}${url.toLowerCase()}`, {
+              params: {
+                data_source: 'tet',
+              },
+            });
             return data;
           }
           throw new Error(`Invalid QueryKey: '${String(url)}'`);
