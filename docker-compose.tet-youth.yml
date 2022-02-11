@@ -50,12 +50,12 @@ services:
     depends_on:
       - postgres
       - te-bknd
-      - te-admn
+      - te-yout
     build:
-      context: ./localdevelopment/tet-admin/nginx
+      context: ./localdevelopment/tet-youth/nginx
     container_name: te-local-proxy
     volumes:
-      - ./localdevelopment/tet-admin/nginx/:/etc/nginx/
+      - ./localdevelopment/tet-youth/nginx/:/etc/nginx/
     ports:
       - 127.0.0.1:8000:8000
       - 127.0.0.1:3001:3001

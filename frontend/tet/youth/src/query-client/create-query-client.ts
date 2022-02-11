@@ -1,11 +1,11 @@
 import Axios, { AxiosInstance } from 'axios';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
 import { isString } from 'shared/utils/type-guards';
-import { getBackendDomain, BackendEndPoints } from 'tet/admin/backend-api/backend-api';
+import { linkedEventsUrl, BackendEndPoints } from 'tet/youth/backend-api/backend-api';
 
 const createAxios = (): AxiosInstance =>
   Axios.create({
-    baseURL: getBackendDomain(),
+    baseURL: linkedEventsUrl,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -25,7 +25,7 @@ const createQueryClient = (): QueryClient =>
         queryFn: async <T>({ queryKey: [url] }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
           // Best practice: https://react-query.tanstack.com/guides/default-query-function
           if (isString(url) && BackendEndPoints.some((endpoint) => url.startsWith(endpoint))) {
-            const { data } = await createAxios().get<T>(`${getBackendDomain()}${url.toLowerCase()}`);
+            const { data } = await createAxios().get<T>(`${linkedEventsUrl}${url.toLowerCase()}`);
             return data;
           }
           throw new Error(`Invalid QueryKey: '${String(url)}'`);
