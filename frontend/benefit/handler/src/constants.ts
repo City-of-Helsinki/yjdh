@@ -122,6 +122,7 @@ export enum CALCULATION_SALARY_KEYS {
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   PAY_SUBSIDY_START_DATE = 'paySubsidyStartDate',
   PAY_SUBSIDY_END_DATE = 'paySubsidyEndDate',
+  // eslint-disable-next-line no-secrets/no-secrets
   PAY_SUBSIDY_WORK_TIME_PERCENT = 'paySubsidyWorkTimePercent',
   PAY_SUBSIDIES = 'paySubsidies',
 }
