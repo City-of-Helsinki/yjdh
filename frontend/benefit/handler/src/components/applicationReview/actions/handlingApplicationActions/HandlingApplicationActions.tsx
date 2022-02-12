@@ -1,12 +1,8 @@
 import Messenger from 'benefit/handler/components/messenger/Messenger';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
-import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
 import { Application } from 'benefit/handler/types/application';
 import { Button, IconLock, IconPen, IconTrash } from 'hds-react';
 import noop from 'lodash/noop';
-import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import useToggle from 'shared/hooks/useToggle';
 
 import EditAction from '../editAction/EditAction';
 import {
@@ -14,28 +10,29 @@ import {
   $CustomNotesActions,
   $Wrapper,
 } from './HandlingApplicationActions.sc';
+import { useHandlingApplicationActions } from './useHandlingApplicationActions';
 
 export type Props = {
   application: Application;
 };
 
 const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
-  const translationsBase = 'common:review.actions';
-  const { t } = useTranslation();
-  const { updateStatus } = useApplicationActions(application);
-  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
-    useToggle(false);
-
+  const {
+    t,
+    onDone,
+    onSaveAndClose,
+    toggleMessagesDrawerVisiblity,
+    isMessagesDrawerVisible,
+    translationsBase,
+    isDisabledDoneButton,
+  } = useHandlingApplicationActions(application);
   return (
     <$Wrapper>
       <$Column>
-        <Button
-          onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
-          theme="coat"
-        >
+        <Button onClick={onDone} theme="coat" disabled={isDisabledDoneButton}>
           {t(`${translationsBase}.done`)}
         </Button>
-        <Button onClick={noop} theme="black" variant="secondary">
+        <Button onClick={onSaveAndClose} theme="black" variant="secondary">
           {t(`${translationsBase}.saveAndContinue`)}
         </Button>
         <Button

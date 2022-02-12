@@ -13,6 +13,24 @@
       "title": "Hakemuksen viestit"
     }
   },
+  "notifications": {
+    "accepted": {
+      "title": "Application was successfully accepted",
+      "message": "Application was successfully accepted"
+    },
+    "rejected": {
+      "title": "Application was successfully rejected",
+      "message": "Application was successfully rejected"
+    },
+    "cancelled": {
+      "title": "Application was successfully cencelled",
+      "message": "Application was successfully cencelled"
+    },
+    "error": {
+      "title": "Error occurred",
+      "message": "Error occurred"
+    }
+  },
   "messenger": {
     "titles": {
       "applicantMessage": "Hakija",
@@ -117,7 +135,13 @@
       "targetGroupCheck": "Kohderyhmätarkistus",
       "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia",
       "handlingToInfoRequired": "Avaa muokattavaksi",
-      "infoRequiredToHandling": "Lukitse hakemus"
+      "infoRequiredToHandling": "Lukitse hakemus",
+      "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija katsotaan kuuluvan kohderyhmään",
+      "reasonCancelPlaceholder": "Kirjoita syy",
+      "reasonCancelTitle": "Kirjoita syy",
+      "reasonCancelDescription": "Hakemus peruututan lopullisesti ja siirretään arkistoon eikä sitä voida enää palauttaa käsittelyyn",
+      "reasonCancelLabel": "Syy peruutuksen",
+      "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
@@ -158,7 +182,6 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
     }
   },
@@ -261,7 +284,9 @@
   "utility": {
     "yes": "Kyllä",
     "no": "Ei",
-    "and": "ja"
+    "and": "ja",
+    "home": "Palaa etusivulle",
+    "check": "Tarkastele"
   },
   "upload": {
     "isUploading": "Uploading...",

@@ -1,8 +1,11 @@
 import camelcaseKeys from 'camelcase-keys';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
 
+import { APPLICATION_STATUSES, ROUTES } from '../constants';
+import AppContext from '../context/AppContext';
 import {
   Application,
   ApplicationData,
@@ -10,10 +13,14 @@ import {
   PaySubsidy,
 } from '../types/application';
 import { ErrorData } from '../types/common';
+import { useApplicationActions } from './useApplicationActions';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface HandlerReviewActions {
   onCalculateEmployment: (calculator: CalculationFormProps) => void;
+  onSaveAndClose: () => void;
+  onDone: () => void;
+  onCancel: (comment: string) => void;
   calculationsErrors: ErrorData | undefined | null;
   calculateSalaryBenefit: (values: CalculationFormProps) => void;
 }
@@ -25,6 +32,12 @@ const useHandlerReviewActions = (
   const [calculationsErrors, setCalculationErrors] = useState<
     ErrorData | undefined | null
   >();
+
+  const router = useRouter();
+
+  const { handledApplication } = React.useContext(AppContext);
+
+  const { updateStatus } = useApplicationActions(application);
 
   const getDataEmployment = (values: CalculationFormProps): ApplicationData => {
     const startDate = values.startDate
@@ -118,10 +131,30 @@ const useHandlerReviewActions = (
     void updateApplicationQuery.mutate(getSalaryBenefitData(values));
   };
 
+  const onSaveAndClose = (): void => {
+    void router.push(ROUTES.HOME);
+  };
+
+  // ACCEPTED or REJECTED
+  const onDone = (): void => {
+    if (handledApplication?.status) {
+      updateStatus(
+        handledApplication.status,
+        handledApplication.logEntryComment
+      );
+    }
+  };
+
+  const onCancel = (comment: string): void =>
+    updateStatus(APPLICATION_STATUSES.CANCELLED, comment);
+
   return {
     onCalculateEmployment,
-    calculationsErrors,
+    onSaveAndClose,
+    onDone,
+    onCancel,
     calculateSalaryBenefit,
+    calculationsErrors,
   };
 };
 

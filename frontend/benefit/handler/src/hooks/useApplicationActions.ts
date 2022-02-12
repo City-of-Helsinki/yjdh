@@ -9,32 +9,38 @@ import { APPLICATION_STATUSES } from '../constants';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 type ExtendedComponentProps = {
-  updateStatus: (newStatus: APPLICATION_STATUSES) => void;
+  updateStatus: (
+    newStatus: APPLICATION_STATUSES,
+    logEntryComment?: string
+  ) => void;
   isUpdatingApplication: boolean;
 };
 
 const useApplicationActions = (
   application: Application
 ): ExtendedComponentProps => {
-  const { mutate: updateApplication, isLoading: isUpdatingApplication } =
-    useUpdateApplicationQuery();
+  const updateApplicationQuery = useUpdateApplicationQuery();
 
-  const updateStatus = (status: APPLICATION_STATUSES): void => {
+  const updateStatus = (
+    status: APPLICATION_STATUSES,
+    logEntryComment?: string
+  ): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,
         status,
+        logEntryComment,
         applicationStep: getApplicationStepString(1),
       },
       { deep: true }
     );
-    updateApplication(currentApplicationData);
+    updateApplicationQuery.mutate(currentApplicationData);
     window.scrollTo(0, 0);
   };
 
   return {
     updateStatus,
-    isUpdatingApplication,
+    isUpdatingApplication: updateApplicationQuery.isLoading,
   };
 };
 
