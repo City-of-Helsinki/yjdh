@@ -12,7 +12,7 @@ type ExtendedComponentProps = {
   onSaveAndClose: () => void;
   onCommentsChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   toggleMessagesDrawerVisiblity: () => void;
-  //handleDelete: () => void;
+  // handleDelete: () => void;
   setIsConfirmationModalOpen: Dispatch<SetStateAction<boolean>>;
   translationsBase: string;
   isDisabledDoneButton: boolean;
@@ -47,7 +47,7 @@ const useHandlingApplicationActions = (
     [handledApplication]
   );
 
-  //const handleDelete = (): void => {};
+  // const handleDelete = (): void => {};
 
   const onCommentsChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -59,7 +59,7 @@ const useHandlingApplicationActions = (
     onSaveAndClose,
     onCommentsChange,
     toggleMessagesDrawerVisiblity,
-    //handleDelete,
+    // handleDelete,
     setIsConfirmationModalOpen,
     isMessagesDrawerVisible,
     translationsBase,

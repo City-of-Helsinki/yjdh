@@ -35,7 +35,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
     onSaveAndClose,
     onCommentsChange,
     toggleMessagesDrawerVisiblity,
-    //handleDelete,
+    // handleDelete,
     setIsConfirmationModalOpen,
     isMessagesDrawerVisible,
     translationsBase,
