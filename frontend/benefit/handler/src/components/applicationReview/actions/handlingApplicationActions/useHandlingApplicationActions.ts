@@ -3,17 +3,22 @@ import AppContext from 'benefit/handler/context/AppContext';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import { Application } from 'benefit/handler/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import useToggle from 'shared/hooks/useToggle';
 
 type ExtendedComponentProps = {
   t: TFunction;
   onDone: () => void;
   onSaveAndClose: () => void;
+  onCommentsChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   toggleMessagesDrawerVisiblity: () => void;
+  //handleDelete: () => void;
+  setIsConfirmationModalOpen: Dispatch<SetStateAction<boolean>>;
   translationsBase: string;
   isDisabledDoneButton: boolean;
   isMessagesDrawerVisible: boolean;
+  isConfirmationModalOpen: boolean;
+  cancelComments: string;
 };
 
 const useHandlingApplicationActions = (
@@ -26,6 +31,11 @@ const useHandlingApplicationActions = (
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
     useToggle(false);
 
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
+    useState<boolean>(false);
+
+  const [cancelComments, setCancelComments] = useState<string>('');
+
   const isDisabledDoneButton = React.useMemo(
     (): boolean =>
       !handledApplication ||
@@ -37,14 +47,25 @@ const useHandlingApplicationActions = (
     [handledApplication]
   );
 
+  //const handleDelete = (): void => {};
+
+  const onCommentsChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ): void => setCancelComments(event.target.value);
+
   return {
     t,
     onDone,
     onSaveAndClose,
+    onCommentsChange,
     toggleMessagesDrawerVisiblity,
+    //handleDelete,
+    setIsConfirmationModalOpen,
     isMessagesDrawerVisible,
     translationsBase,
     isDisabledDoneButton,
+    isConfirmationModalOpen,
+    cancelComments,
   };
 };
 

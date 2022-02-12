@@ -120,6 +120,9 @@
           "text": "Unable to fetch applications with status {{status}}"
         }
       }
+    },
+    "actions": {
+      "close": "Sulje"
     }
   },
   "review": {
@@ -139,9 +142,11 @@
       "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija katsotaan kuuluvan kohderyhmään",
       "reasonCancelPlaceholder": "Kirjoita syy",
       "reasonCancelTitle": "Kirjoita syy",
-      "reasonCancelDescription": "Hakemus peruututan lopullisesti ja siirretään arkistoon eikä sitä voida enää palauttaa käsittelyyn",
+      "reasonCancelDialogTitle": "Haluatko varmasti peruuttaa?",
+      "reasonCancelDialogDescription": "Hakemus peruututan lopullisesti ja siirretään arkistoon eikä sitä voida enää palauttaa käsittelyyn",
       "reasonCancelLabel": "Syy peruutuksen",
-      "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä"
+      "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
+      "reasonCancelConfirm": "Peruuta hakemus"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",

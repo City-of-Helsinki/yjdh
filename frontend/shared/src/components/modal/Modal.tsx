@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 export type ModalProps = {
   id: string;
   submitButtonLabel: string;
+  submitButtonIcon?: React.ReactNode;
+  headerIcon?: React.ReactNode;
   actionDisabled?: boolean;
   title?: string;
   className?: string;
@@ -24,6 +26,8 @@ const Modal: React.FC<ModalProps> = ({
   isOpen,
   scrollable,
   submitButtonLabel,
+  submitButtonIcon,
+  headerIcon,
   variant,
   handleToggle,
   handleSubmit,
@@ -48,7 +52,7 @@ const Modal: React.FC<ModalProps> = ({
       scrollable={scrollable}
       variant={variant}
     >
-      {title && <Dialog.Header title={title} id={id} />}
+      {title && <Dialog.Header title={title} id={id} iconLeft={headerIcon} />}
       {children && <Dialog.Content>{children}</Dialog.Content>}
       <Dialog.ActionButtons>
         <Button
@@ -65,6 +69,7 @@ const Modal: React.FC<ModalProps> = ({
           onClick={onAccept}
           disabled={actionDisabled}
           data-testid="submit"
+          iconLeft={submitButtonIcon}
         >
           {submitButtonLabel}
         </Button>
