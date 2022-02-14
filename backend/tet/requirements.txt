@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
--e file:backend/shared
+-e file:../shared
     # via -r requirements.in
 asgiref==3.3.4
     # via django
