@@ -53,6 +53,8 @@
     "preview": "Siirry esikatseluun",
     "publish": "Julkaise",
     "notificationTitle": "Täytä puuttuvat tai virheelliset tiedot",
+		"backToEdit": "Takaisin lomakkeelle",
+		"preview": "Esikatselu",
     "employerInfo": {
       "header": "Työpaikan tiedot",
       "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",
@@ -83,6 +85,14 @@
 			}
     }
   },
+	"postingTemplate": {
+		"spots": "TET-paikkoja",
+		"contact": "Yhteystiedot",
+		"description": "Kuvaus",
+		"share": "Jaa tapahtuma",
+		"dateAndTime": "Päivä ja aika",
+		"location": "Paikka"
+	},
   "footer": {
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",

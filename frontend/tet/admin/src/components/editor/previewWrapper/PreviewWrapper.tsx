@@ -6,7 +6,7 @@ import {
   $PreviewText,
 } from 'tet/admin/components/editor/previewWrapper/PreviewWrapper.sc';
 import { Button } from 'hds-react';
-import Container from 'shared/components/container/Container';
+import Container from 'tet/shared/components/container/Container';
 import { IconArrowLeft, IconUpload } from 'hds-react';
 
 const PreviewBar: React.FC = () => {

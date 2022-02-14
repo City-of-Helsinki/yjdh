@@ -1,6 +1,6 @@
 import React from 'react';
 import TetPosting from 'tet/admin/types/tetposting';
-import Container from 'shared/components/container/Container';
+import Container from 'tet/shared/components/container/Container';
 import {
   $PostingHero,
   $ImageContainer,
@@ -9,7 +9,10 @@ import {
   $Keywords,
   $Title,
   $Date,
+  $Spots,
   $Address,
+  $ContactTitle,
+  $ContactInfo,
 } from 'tet/shared/components/posting/postingHero/PostingHero.sc';
 import { IconLocation, Button, Tag } from 'hds-react';
 import { useTheme } from 'styled-components';
@@ -38,16 +41,33 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
             <$Keywords>
               {keywords.map((keyword) => (
                 <li>
-                  <Tag>{keyword}</Tag>
+                  <Tag
+                    theme={{
+                      '--tag-background': 'var(--color-success-light)',
+                      '--tag-color': 'var(--color-black-90)',
+                      '--tag-focus-outline-color': 'var(--color-black-90)',
+                    }}
+                  >
+                    {keyword}
+                  </Tag>
                 </li>
               ))}
             </$Keywords>
             <$Title>{posting.title}</$Title>
             <$Date>11.10.2021-15.10.2021</$Date>
+            <$Spots>TET-paikkoja: 5</$Spots>
             <$Address>
               <IconLocation />
               <span>Kallion kirjasto, Viides Linja 11, 00530 Helsinki</span>
             </$Address>
+            <$ContactTitle>Yhteystiedot</$ContactTitle>
+            <$ContactInfo>
+              <li>Yrjö Yhteyshenkilö</li>
+              <li>040 123 4567</li>
+              <li>email@email.com</li>
+            </$ContactInfo>
+
+            {/** 
             <Button
               css={`
                 background-color: ${theme.colors.copperDark};
@@ -59,6 +79,7 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
             >
               Ota yhteyttä
             </Button>
+					**/}
           </$HeroContentWrapper>
         </$HeroWrapper>
       </Container>

@@ -53,6 +53,8 @@
     "preview": "ENG Siirry esikatseluun",
     "publish": "ENG Julkaise",
     "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
+		"backToEdit": "ENG Takaisin lomakkeelle",
+		"preview": "ENG Esikatselu",
     "employerInfo": {
       "header": "ENG Työpaikan tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
@@ -83,6 +85,14 @@
 			}
     }
   },
+	"postingTemplate": {
+		"spots": "ENG TET-paikkoja",
+		"contact": "ENG Yhteystiedot",
+		"description": "ENG Kuvaus",
+		"share": "ENG Jaa tapahtuma",
+		"dateAndTime": "ENG Päivä ja aika",
+		"location": "ENG Paikka",
+	},
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",

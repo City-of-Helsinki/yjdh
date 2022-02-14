@@ -10,6 +10,7 @@ import {
 } from 'tet/shared/components/posting/postingContent/PostingContent.sc';
 import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
 import PostingShareLinks from 'tet/shared/components/posting/postingShareLinks/PostingShareLinks';
+import getFormattedDate from 'tet/shared/util/getFormattedDate';
 
 type Props = {
   posting: TetPosting;
@@ -18,6 +19,9 @@ type Props = {
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const addressList = ['Kallin kirjasto', 'Viides Linja 11', '00530 Helsinki'];
   const contact = ['040 123 4567', 'email@email.com'];
+
+  const date = `${getFormattedDate('10-10-2022')}`;
+
   return (
     <Container>
       <$ContentWrapper>
@@ -36,7 +40,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           <PostingShareLinks />
         </$Body>
         <$InfoWrapper>
-          <PostingInfoItem title={'Päivä ja aika'} body={'11.10.2021-15.10.2021'} icon={<IconCalendarClock />} />
+          <PostingInfoItem title={'Päivä ja aika'} body={date} icon={<IconCalendarClock />} />
           <PostingInfoItem title={'Paikka'} body={addressList} icon={<IconLocation />} />
           <PostingInfoItem title={'Muut tiedot'} body={contact} icon={<IconInfoCircle />} />
         </$InfoWrapper>
