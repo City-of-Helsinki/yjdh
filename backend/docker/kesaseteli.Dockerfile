@@ -41,6 +41,11 @@ ENV DEV_SERVER=1
 COPY --chown=appuser:appuser /kesaseteli/ /app/
 
 USER appuser
+
+# Compile messages as a part of Docker image build so it doesn't have to be done during
+# container startup. This removes the need for writeable localization directories.
+RUN django-admin compilemessages
+
 EXPOSE 8000/tcp
 
 # ==============================
@@ -52,4 +57,9 @@ COPY --chown=appuser:appuser /kesaseteli/ /app/
 RUN SECRET_KEY="only-used-for-collectstatic" python manage.py collectstatic
 
 USER appuser
+
+# Compile messages as a part of Docker image build so it doesn't have to be done during
+# container startup. This removes the need for writeable localization directories.
+RUN django-admin compilemessages
+
 EXPOSE 8000/tcp

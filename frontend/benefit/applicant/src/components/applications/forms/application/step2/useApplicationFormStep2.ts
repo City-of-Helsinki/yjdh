@@ -23,8 +23,9 @@ import {
   parseDate,
 } from 'shared/utils/date.utils';
 import { focusAndScroll } from 'shared/utils/dom.utils';
+import { isString } from 'shared/utils/type-guards';
 
-import { getMaxEndDate,getMinEndDate } from './utils/dates';
+import { getMaxEndDate, getMinEndDate } from './utils/dates';
 import { getValidationSchema } from './utils/validation';
 
 type Step2Fields = Record<
@@ -46,6 +47,7 @@ type UseApplicationFormStep2Props = {
   getErrorMessage: (fieldName: string) => string | undefined;
   handleBack: () => void;
   handleSave: () => void;
+  handleDelete: () => void;
   handleSubmit: () => void;
   clearBenefitValues: () => void;
   clearCommissionValues: () => void;
@@ -66,7 +68,7 @@ const useApplicationFormStep2 = (
   const translationsBase = 'common:applications.sections.employee';
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const { onNext, onSave, onBack } = useFormActions(application, 2);
+  const { onNext, onSave, onBack, onDelete } = useFormActions(application);
 
   const formik = useFormik<Application>({
     initialValues: {
@@ -106,7 +108,7 @@ const useApplicationFormStep2 = (
           Record<EMPLOYEE_KEYS, Field<EmployeeFieldName>>
         ]
     )[] = Object.values(APPLICATION_FIELDS_STEP2).map((field) => {
-      if (typeof field === 'string') {
+      if (isString(field)) {
         return [
           field,
           {
@@ -169,6 +171,8 @@ const useApplicationFormStep2 = (
   };
 
   const handleSave = (): void => onSave(values);
+
+  const handleDelete = (): void => onDelete(values.id ?? '');
 
   const clearCommissionValues = React.useCallback((): void => {
     void setFieldValue(fields.employee.commissionDescription.name, '');
@@ -281,6 +285,7 @@ const useApplicationFormStep2 = (
     handleSubmit,
     handleSave,
     handleBack: onBack,
+    handleDelete,
   };
 };
 

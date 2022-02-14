@@ -1,17 +1,27 @@
 import random
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from typing import List, Optional
 
 import factory
+import factory.fuzzy
+import pytz
+from faker import Faker
 from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
     ApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )
-from applications.models import Application, Attachment, SummerVoucher
+from applications.models import (
+    Attachment,
+    EmployerApplication,
+    EmployerSummerVoucher,
+    YouthApplication,
+)
 from companies.models import Company
 
 
@@ -75,7 +85,7 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
     )
 
     class Meta:
-        model = SummerVoucher
+        model = EmployerSummerVoucher
 
 
 class ApplicationFactory(factory.django.DjangoModelFactory):
@@ -93,4 +103,77 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     invoicer_phone_number = factory.Faker("phone_number")
 
     class Meta:
-        model = Application
+        model = EmployerApplication
+
+
+def get_listed_test_schools() -> List[str]:
+    return [
+        "Arabian peruskoulu",
+        "Botby grundskola",
+        "Ressu Comprehensive School",
+    ]
+
+
+def get_unlisted_test_schools() -> List[str]:
+    return [
+        "Jokin muu koulu",
+        "Testikoulu",
+    ]
+
+
+def get_all_test_schools() -> List[str]:
+    return get_listed_test_schools() + get_unlisted_test_schools()
+
+
+def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
+    return youth_application.school not in get_listed_test_schools()
+
+
+def get_test_phone_number() -> str:
+    # PHONE_NUMBER_REGEX didn't accept phone numbers starting with (+358) but did with
+    # +358 so removing the parentheses to make the generated phone numbers fit it
+    return Faker(locale="fi").phone_number().replace("(+358)", "+358")
+
+
+def copy_created_at(youth_application: YouthApplication) -> Optional[datetime]:
+    return youth_application.created_at
+
+
+class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
+    created_at = factory.fuzzy.FuzzyDateTime(
+        start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
+    )
+    modified_at = factory.LazyAttribute(copy_created_at)
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
+    school = factory.Faker("random_element", elements=get_all_test_schools())
+    is_unlisted_school = factory.LazyAttribute(uses_unlisted_test_school)
+    email = factory.Faker("email")
+    phone_number = factory.LazyFunction(get_test_phone_number)
+    postcode = factory.Faker("postcode", locale="fi")
+    language = factory.Faker("random_element", elements=get_supported_languages())
+    _is_active = None
+
+    class Meta:
+        model = YouthApplication
+        exclude = ["_is_active"]
+
+
+class YouthApplicationFactory(BaseYouthApplicationFactory):
+    _is_active = factory.Faker("boolean")
+    receipt_confirmed_at = factory.Maybe(
+        "_is_active",
+        factory.LazyAttribute(copy_created_at),
+        None,
+    )
+
+
+class ActiveYouthApplicationFactory(BaseYouthApplicationFactory):
+    _is_active = True
+    receipt_confirmed_at = factory.LazyAttribute(copy_created_at)
+
+
+class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
+    _is_active = False
+    receipt_confirmed_at = None

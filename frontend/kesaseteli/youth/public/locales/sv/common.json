@@ -1,0 +1,113 @@
+{
+  "appName": "Sommarsedel för unga",
+  "header": {
+    "linkSkipToContent": "Gå till innehållet",
+    "menuToggleAriaLabel": "Menyn"
+  },
+  "errorPage": {
+    "title": "Ett oförväntat fel skedde",
+    "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
+    "retry": "Ladda upp sidan på nytt.",
+    "logout": "Logga ut"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Sidan kunde inte hittas",
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
+  },
+  "footer": {
+    "copyrightText": "Helsingfors stad",
+    "allRightsReservedText": "Med ensamrätt",
+    "backToTop": "Tillbaka till toppen",
+    "registerInformation": "Dataskyddspolicy",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Ungdomstjansternas%20register%20for%20sommarjobbssedlar.pdf",
+    "jobOpenings": "Öppna arbetsplatser (Endast på finska)",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Ta kontakt",
+    "contactUsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/ta-kontakt/",
+    "accessibilityStatement": "Tillgänglighetsutlåtande",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
+    "information": "Information om servicen",
+    "informationLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/kesatyonhakijalle/",
+  "error": {
+    "generic": {
+      "label": "Ett okänt fel inträffade.",
+      "text": "Försök igen senare."
+    },
+    "attachments": {
+      "title": "Det skedde ett fel i nedladdningen av filen",
+      "tooBig": "Filen är för stor",
+      "fileType": "Filtypen är inte tillåten"
+    }
+  },
+  "youthApplication": {
+    "title": "Registrera dig och få din personlig Sommarsedel",
+    "paragraph_1": "Det är roligt och enkelt att tjäna egna pengar!\nSommarsedeln är personlig och värd 325 euro för arbetsgivaren.",
+    "form" : {
+      "title": "Information om Sommarsedeln",
+      "info": "Fyll i uppgifterna på samma sätt som på ditt FPA-kort",
+      "button": "Skicka informationen",
+      "first_name" : "Förnamn",
+      "last_name": "Efternamn",
+      "social_security_number": "Personbeteckning",
+      "postcode": "Post nummer",
+      "schoolsDropdown": "Skola",
+      "schoolsLoading": "Laddar upp alternativ...",
+      "schoolsPlaceholder": "Välj din skola från listan",
+      "is_unlisted_school": "Skolan finns inte i listan",
+      "schoolName": "Skolans namn",
+      "schoolNamePlaceholder": "Te.x. Grundskolan Norsen",
+      "email": "E-postadress",
+      "phone_number": "Telefonnummer",
+      "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
+      "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/",
+      "sendButton": "Skicka informationen",
+      "requiredInfo": "Alla fält som är märkta med * är obligatoriska"
+    }
+  },
+  "errors": {
+    "required": "Uppgifter fattas",
+    "minLength": "Den inmatade texten är för kort",
+    "maxLength": "Den inmatade texten är för lång",
+    "pattern": "Den inmatade uppgiftern är i fel format",
+    "validate": "Den inmatade uppgiftern är i fel format"
+  },
+  "assistive": {
+    "toggleMenu": "Öppna menyn"
+  },
+  "thankyouPage" : {
+    "title": "Tack!",
+    "notificationTitle": "Fint! Du har skickat dina uppgifter till Sommarsedelns digitala system.",
+    "notificationMessage": "Du fick en aktiveringslänk för Sommarsedeln per e-post. Den måste aktiveras inom {{ expirationHours }} timmar.",
+    "goToFrontendPage": "Gå till Sommarsedelns förstasida"
+  },
+  "activationErrorPage" : {
+    "goToFrontendPage": "Kolla din information och skicka på nytt"
+  },
+  "emailInUsePage" : {
+    "title": "Hoppsan! E-postadressen används redan.",
+    "notificationMessage": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen."
+  },
+  "alreadyAssignedPage" : {
+    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
+  },
+  "activatedPage" : {
+    "title": "Din Sommarsedel är nu aktiverad!",
+    "notificationTitle": "Bekräftelsen lyckades",
+    "notificationMessage": "Fint! Du har skickat din information till Sommarsedelns eletroniska systemet. Efter att din ansökan har granskats får du Sommarsedlen och bruksanvisningar till din e-post."
+  },
+  "expiredPage" : {
+    "title": "Hoppsan! Bekräftelselänken har gått ut.",
+    "notificationMessage": " Det har tyvärr gått mer än {{ expirationHours }} timmar sedan registreringsbekräftelsen. Fyll i registreringsblanketten igen.",
+    "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
+  },
+  "alreadyActivatedPage" : {
+    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
+  }
+}

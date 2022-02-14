@@ -14,11 +14,14 @@ import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
-import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  convertToUIDateFormat,
+} from 'shared/utils/date.utils';
 import { getInitials } from 'shared/utils/string.utils';
 import { DefaultTheme } from 'styled-components';
 
-const translationListBase = 'common:applications.list.submitted';
+const translationListBase = 'common:applications.list';
 const translationStatusBase = 'common:applications.statuses';
 
 interface ApplicationListProps {
@@ -35,7 +38,7 @@ const getAvatarBGColor = (
       return 'black40';
 
     case APPLICATION_STATUSES.INFO_REQUIRED:
-      return 'alertDark';
+      return 'alert';
 
     case APPLICATION_STATUSES.RECEIVED:
       return 'info';
@@ -80,7 +83,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       case APPLICATION_STATUSES.DRAFT:
       case APPLICATION_STATUSES.INFO_REQUIRED:
         return {
-          label: t(`${translationListBase}.edit`),
+          label: t(`${translationListBase}.common.edit`),
           handleAction: (): void => {
             void router.push(`${ROUTES.APPLICATION_FORM}?id=${id}`);
           },
@@ -89,7 +92,7 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
 
       default:
         return {
-          label: t(`${translationListBase}.check`),
+          label: t(`${translationListBase}.common.check`),
           // implement the action
           handleAction: noop,
         };
@@ -99,39 +102,61 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
   const list = data?.reduce<ApplicationListItemData[]>((acc, application) => {
     const {
       id = '',
-      status: applStatus,
+      status: appStatus,
       employee,
       last_modified_at,
       created_at,
       submitted_at,
       application_number: applicationNum,
+      additional_information_needed_by,
+      unread_messages_count,
     } = application;
 
-    const statusText = getStatusTranslation(applStatus);
+    const statusText = getStatusTranslation(appStatus);
     const name = getEmployeeFullName(employee?.first_name, employee?.last_name);
 
     const avatar = {
-      color: getAvatarBGColor(applStatus),
+      color: getAvatarBGColor(appStatus),
       initials: getInitials(name),
     };
-    const allowedAction = getAllowedActions(id, applStatus);
-    const submittedAt = submitted_at ? formatDate(new Date(submitted_at)) : '-';
-    const createdAt =
-      created_at &&
-      formatDate(new Date(created_at), DATE_FORMATS.DATE_AND_TIME);
+    const allowedAction = getAllowedActions(id, appStatus);
+    const submittedAt = submitted_at
+      ? convertToUIDateFormat(submitted_at)
+      : '-';
+    const createdAt = created_at && convertToUIDateAndTimeFormat(created_at);
     const modifiedAt =
-      last_modified_at && formatDate(new Date(last_modified_at));
-    const commonProps = { id, name, avatar, modifiedAt, allowedAction };
-    const draftProps = { createdAt };
+      last_modified_at && convertToUIDateFormat(last_modified_at);
+    const editEndDate =
+      additional_information_needed_by &&
+      convertToUIDateFormat(additional_information_needed_by);
+    const commonProps = {
+      id,
+      name,
+      avatar,
+      modifiedAt,
+      allowedAction,
+      status: appStatus,
+      unreadMessagesCount: unread_messages_count ?? 0,
+    };
+    const draftProps = { createdAt, applicationNum };
     const submittedProps = {
       submittedAt,
       applicationNum,
       statusText,
     };
+    const infoNeededProps = {
+      submittedAt,
+      applicationNum,
+      editEndDate,
+    };
 
-    if (applStatus === APPLICATION_STATUSES.DRAFT) {
+    if (appStatus === APPLICATION_STATUSES.DRAFT) {
       const newDraftProps = { ...commonProps, ...draftProps };
       return [...acc, newDraftProps];
+    }
+    if (appStatus === APPLICATION_STATUSES.INFO_REQUIRED) {
+      const newInfoNeededProps = { ...commonProps, ...infoNeededProps };
+      return [...acc, newInfoNeededProps];
     }
     const newSubmittedProps = { ...commonProps, ...submittedProps };
     return [...acc, newSubmittedProps];

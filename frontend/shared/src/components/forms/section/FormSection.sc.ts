@@ -10,6 +10,7 @@ export type FormSectionProps = {
   withoutDivider?: boolean;
   header?: string;
   paddingBottom?: boolean;
+  'aria-label'?: string;
 } & HeadingProps &
   GridProps;
 

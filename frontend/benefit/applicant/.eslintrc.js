@@ -3,7 +3,7 @@ const { join } = require('path');
 module.exports = {
   extends: [
     'auto',
-    'next/core-web-vitals',
+    'plugin:@next/next/recommended',
     'plugin:you-dont-need-lodash-underscore/compatible',
   ],
   rules: {
@@ -25,8 +25,12 @@ module.exports = {
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
     'unicorn/no-array-reduce': 'off',
+    'unicorn/prefer-export-from': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'react/function-component-definition': 'off',
     'chai-friendly/no-unused-expressions': 'off',
+    'sonarjs/no-nested-template-literals': 'off',
+    'unicorn/prefer-node-protocol': 'off',
   },
   overrides: [
     {
@@ -49,6 +53,12 @@ module.exports = {
       files: ['*.components.ts'],
       rules: {
         'security/detect-non-literal-fs-filename': 'off',
+      },
+    },
+    {
+      files: ['validation.ts'],
+      rules: {
+        'unicorn/no-thenable': 'off',
       },
     },
   ],

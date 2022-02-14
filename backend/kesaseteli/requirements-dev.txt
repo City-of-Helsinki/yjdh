@@ -42,6 +42,8 @@ isort==5.8.0
     # via -r requirements-dev.in
 jedi==0.18.0
     # via ipython
+langdetect==1.0.9
+    # via -r requirements-dev.in
 matplotlib-inline==0.1.2
     # via ipython
 mccabe==0.6.1
@@ -106,6 +108,7 @@ requests==2.25.1
     # via requests-mock
 six==1.16.0
     # via
+    #   langdetect
     #   python-dateutil
     #   requests-mock
 toml==0.10.2

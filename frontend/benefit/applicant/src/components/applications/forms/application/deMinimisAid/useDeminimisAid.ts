@@ -12,7 +12,7 @@ import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
 import { Field } from 'shared/components/forms/fields/types';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
-import { capitalize } from 'shared/utils/string.utils';
+import { capitalize, stringToFloatValue } from 'shared/utils/string.utils';
 
 import { getValidationSchema } from './utils/validation';
 
@@ -39,13 +39,13 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
   const { deMinimisAids, setDeMinimisAids } =
     React.useContext(DeMinimisContext);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [defaultValue, setDefaultValue] = useState(false);
+  const [defaultValue, setDefaultValue] = useState<boolean | null>(null);
 
   // initial data
   useEffect(() => {
     if (!defaultValue) {
       setDeMinimisAids(data);
-      setDefaultValue(true);
+      setDefaultValue(null);
     }
   }, [data, defaultValue, setDefaultValue, setDeMinimisAids]);
 
@@ -63,7 +63,9 @@ const useDeminimisAid = (data: DeMinimisAid[]): UseDeminimisAidProps => {
         ...prevDeMinimisAids,
         {
           [DE_MINIMIS_AID_KEYS.GRANTER]: formik.values.granter,
-          [DE_MINIMIS_AID_KEYS.AMOUNT]: parseFloat(formik.values.amount),
+          [DE_MINIMIS_AID_KEYS.AMOUNT]: stringToFloatValue(
+            formik.values.amount
+          ),
           [DE_MINIMIS_AID_KEYS.GRANTED_AT]: convertToBackendDateFormat(
             formik.values.grantedAt
           ),

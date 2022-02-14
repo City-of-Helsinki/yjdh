@@ -5,6 +5,9 @@ on:
     - cron: "0 5 * * *"
   push:
     branches: [develop, main]
+  pull_request:
+    paths:
+      - '.github/workflows/yarn-audit-scheduled.yml'
 defaults:
   run:
     working-directory: ./frontend
@@ -15,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: '14'
       - name: Get yarn cache directory path

@@ -4,7 +4,7 @@ import React from 'react';
 import { $SpinnerContainer } from './PageLoadingSpinner.sc';
 
 const PageLoadingSpinner = (): JSX.Element => (
-  <$SpinnerContainer>
+  <$SpinnerContainer data-testid="page-loading-spinner">
     <LoadingSpinner />
   </$SpinnerContainer>
 );

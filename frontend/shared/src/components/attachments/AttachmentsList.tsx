@@ -1,8 +1,9 @@
-import { IconAlertCircleFill, IconPlus } from 'hds-react';
+import { IconPlus } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import AttachmentItem from 'shared/components/attachments/AttachmentItem';
 import UploadAttachment from 'shared/components/attachments/UploadAttachment';
+import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
 import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_MAX_SIZE,
@@ -10,24 +11,19 @@ import {
 import Attachment from 'shared/types/attachment';
 import { getAttachmentsByType } from 'shared/utils/attachment.utils';
 
-import {
-  $Container,
-  $ErrorMessage,
-  $Heading,
-  $Message,
-} from './AttachmentsList.sc';
+import { $Container, $Heading, $Message } from './AttachmentsList.sc';
 
-type Props = {
+type Props<T extends Attachment> = {
   title: string;
   attachmentType: string;
   allowedFileTypes?: readonly string[];
   maxSize?: number;
   message?: string | false;
   errorMessage?: string | false;
-  attachments?: Attachment[];
+  attachments?: T[];
   onUpload: (data: FormData) => void | Promise<void>;
   onRemove: (fileId: string) => void | Promise<void>;
-  onOpen: (attachment: Attachment) => void | Promise<void>;
+  onOpen: (attachment: T) => void | Promise<void>;
   isUploading: boolean;
   isRemoving: boolean;
   required?: boolean;
@@ -35,7 +31,7 @@ type Props = {
   name?: string;
 };
 
-const AttachmentsList: React.FC<Props> = ({
+const AttachmentsList = <T extends Attachment>({
   title,
   attachmentType,
   allowedFileTypes = ATTACHMENT_CONTENT_TYPES,
@@ -51,14 +47,16 @@ const AttachmentsList: React.FC<Props> = ({
   required,
   name,
   buttonRef,
-}) => {
+}: Props<T>): JSX.Element => {
   const { t } = useTranslation();
   const translationsBase = 'common:applications.sections.attachments';
 
   const files = React.useMemo(
-    (): Attachment[] => getAttachmentsByType(attachments ?? [], attachmentType),
+    (): T[] => getAttachmentsByType(attachments ?? [], attachmentType),
     [attachmentType, attachments]
   );
+  const uploadText = t(`${translationsBase}.add`);
+
   return (
     <$Container>
       <$Heading>
@@ -70,7 +68,11 @@ const AttachmentsList: React.FC<Props> = ({
             <AttachmentItem
               key={file.id}
               id={file.id}
-              name={file.attachmentFileName ?? file.attachment_file_name}
+              name={
+                'attachmentFileName' in file
+                  ? file.attachmentFileName
+                  : file.attachment_file_name
+              }
               removeText={t(`${translationsBase}.remove`)}
               onClick={() => onOpen(file)}
               onRemove={() => !isRemoving && onRemove(file.id)}
@@ -78,7 +80,7 @@ const AttachmentsList: React.FC<Props> = ({
           ))}
         </>
       ) : (
-        <>{message && <$Message>{message}</$Message>}</>
+        message && <$Message>{message}</$Message>
       )}
       <UploadAttachment
         buttonRef={buttonRef}
@@ -91,20 +93,31 @@ const AttachmentsList: React.FC<Props> = ({
         allowedFileTypes={allowedFileTypes}
         maxSize={maxSize}
         icon={<IconPlus />}
-        uploadText={t(`${translationsBase}.add`)}
+        ariaUploadText={`${title} - ${uploadText}`}
+        uploadText={uploadText}
         loadingText={t(`common:upload.isUploading`)}
         errorTitle={t('common:error.attachments.title')}
         errorFileSizeText={t('common:error.attachments.tooBig')}
         errorFileTypeText={t('common:error.attachments.fileType')}
       />
       {errorMessage && (
-        <$ErrorMessage>
-          <IconAlertCircleFill size="s" />
+        <FieldErrorMessage data-testid={`${name ?? 'attachments'}-error`}>
           {errorMessage}
-        </$ErrorMessage>
+        </FieldErrorMessage>
       )}
     </$Container>
   );
+};
+
+AttachmentsList.defaultProps = {
+  allowedFileTypes: ATTACHMENT_CONTENT_TYPES,
+  maxSize: ATTACHMENT_MAX_SIZE,
+  message: '',
+  errorMessage: '',
+  attachments: [],
+  required: false,
+  buttonRef: null,
+  name: '',
 };
 
 export default AttachmentsList;

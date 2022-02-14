@@ -17,15 +17,26 @@ class ApplicationStatus(models.TextChoices):
     def is_editable_status(cls, user, status):
         if not user.is_authenticated:
             return False
-        if user.is_handler():
-            return cls.is_handler_editable_status(status)
+        elif user.is_handler():
+            return cls.is_handler_editable_status(status, None)
         else:
             return cls.is_applicant_editable_status(status)
 
     @classmethod
-    def is_handler_editable_status(cls, status):
+    def is_handler_editable_status(cls, status, new_status=None):
         if status not in cls.values:
             raise ValueError(_("Invalid application status"))
+        if new_status is not None and new_status not in cls.values:
+            raise ValueError(_("Invalid application status change"))
+
+        # Application can be transitioned back from these non-editable statuses, so make an exception
+        # to make the application editable if status transition is done at the same time
+        if (status, new_status) in [
+            (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING),
+            (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING),
+        ]:
+            return True
+
         # drafts may be edited by the handler when entering data from a paper application
         return status in (
             cls.DRAFT,
@@ -70,7 +81,13 @@ class OrganizationType(models.TextChoices):
     @classmethod
     def resolve_organization_type(cls, company_form):
         # TODO: actual implementation when integration to YTJ/palveluväylä/PRH is implemented
-        if company_form.lower() in ["oy", "oyj", "tmi"]:
+        if company_form.lower() in [
+            "oy",
+            "oyj",
+            "tmi",
+            "osakeyhtiö",
+            "ysityinen elinkeinonharjoittaja",
+        ]:
             return OrganizationType.COMPANY
         else:
             return OrganizationType.ASSOCIATION
@@ -94,6 +111,9 @@ class AttachmentRequirement(models.TextChoices):
 
 class ApplicationBatchStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
+    AHJO_REPORT_CREATED = "exported_ahjo_report", _(
+        "Ahjo report created, not yet sent to AHJO"
+    )
     AWAITING_AHJO_DECISION = "awaiting_ahjo_decision", _(
         "Sent to Ahjo, decision pending"
     )

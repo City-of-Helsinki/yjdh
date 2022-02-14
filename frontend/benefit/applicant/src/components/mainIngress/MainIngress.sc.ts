@@ -1,4 +1,4 @@
-import { Notification } from 'hds-react';
+import { $Notification as NotificationBase } from 'benefit/applicant/components/Notification/Notification.sc';
 import styled from 'styled-components';
 
 export const $Container = styled.div`
@@ -33,6 +33,6 @@ export const $ActionContainer = styled.div`
   box-sizing: border-box;
 `;
 
-export const $Notification = styled(Notification)`
+export const $Notification = styled(NotificationBase)`
   margin-bottom: ${(props) => props.theme.spacing.xs};
 `;

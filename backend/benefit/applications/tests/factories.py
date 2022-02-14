@@ -16,12 +16,7 @@ from applications.models import (
 )
 from calculator.models import Calculation
 from companies.tests.factories import CompanyFactory
-from django.contrib.auth import get_user_model
-
-
-class UserFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = get_user_model()
+from users.tests.factories import HandlerFactory
 
 
 class DeMinimisAidFactory(factory.django.DjangoModelFactory):
@@ -139,7 +134,18 @@ class ReceivedApplicationFactory(ApplicationFactory):
         self.calculation.save()
 
 
-class DecidedApplicationFactory(ReceivedApplicationFactory):
+class HandlingApplicationFactory(ReceivedApplicationFactory):
+    status = ApplicationStatus.HANDLING
+
+    @factory.post_generation
+    def calculation(self, created, extracted, **kwargs):
+        self.calculation = Calculation.objects.create_for_application(self)
+        self.calculation.calculated_benefit_amount = decimal.Decimal("123.00")
+        self.calculation.handler = HandlerFactory()
+        self.calculation.save()
+
+
+class DecidedApplicationFactory(HandlingApplicationFactory):
     status = ApplicationStatus.ACCEPTED
 
 

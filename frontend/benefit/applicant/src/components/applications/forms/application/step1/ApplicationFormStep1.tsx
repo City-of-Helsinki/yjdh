@@ -1,5 +1,7 @@
 import { APPLICATION_FIELDS_STEP1_KEYS } from 'benefit/applicant/constants';
+import DeMinimisContext from 'benefit/applicant/context/DeMinimisContext';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
+import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Select, SelectionGroup, TextArea, TextInput } from 'hds-react';
 import React from 'react';
@@ -22,17 +24,32 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
     t,
     handleSubmit,
     handleSave,
+    handleDelete,
     getErrorMessage,
     clearDeminimisAids,
     getDefaultSelectValue,
+    showDeminimisSection,
     languageOptions,
     fields,
     translationsBase,
     formik,
-    deMinimisAids,
+    deMinimisAidSet,
   } = useApplicationFormStep1(data);
 
   useAlertBeforeLeaving(formik.dirty);
+
+  useDependentFieldsEffect(
+    {
+      associationHasBusinessActivities:
+        formik.values.associationHasBusinessActivities,
+    },
+    {
+      isFormDirty: formik.dirty,
+      clearDeminimisAids,
+    }
+  );
+
+  const { setDeMinimisAids } = React.useContext(DeMinimisContext);
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -144,54 +161,56 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
       </FormSection>
-      <FormSection
-        header={t(`${translationsBase}.heading3`)}
-        tooltip={t(`${translationsBase}.tooltips.heading3`)}
-      >
-        <$GridCell $colSpan={8}>
-          <SelectionGroup
-            id={fields.deMinimisAid.name}
-            label={fields.deMinimisAid.label}
-            direction="vertical"
-            required
-            errorText={getErrorMessage(fields.deMinimisAid.name)}
-          >
-            <$RadioButton
-              id={`${fields.deMinimisAid.name}False`}
-              name={fields.deMinimisAid.name}
-              value="false"
-              label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.no`
-              )}
-              onChange={() => {
-                formik.setFieldValue(fields.deMinimisAid.name, false);
-                clearDeminimisAids();
-              }}
-              // 3 states: null (none is selected), true, false
-              checked={formik.values.deMinimisAid === false}
-            />
-            <$RadioButton
-              id={`${fields.deMinimisAid.name}True`}
-              name={fields.deMinimisAid.name}
-              value="true"
-              label={t(
-                `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.yes`
-              )}
-              onChange={() =>
-                formik.setFieldValue(fields.deMinimisAid.name, true)
-              }
-              checked={formik.values.deMinimisAid === true}
-            />
-          </SelectionGroup>
-        </$GridCell>
+      {showDeminimisSection && (
+        <FormSection
+          header={t(`${translationsBase}.heading3`)}
+          tooltip={t(`${translationsBase}.tooltips.heading3`)}
+        >
+          <$GridCell $colSpan={8}>
+            <SelectionGroup
+              id={fields.deMinimisAid.name}
+              label={fields.deMinimisAid.label}
+              direction="vertical"
+              required
+              errorText={getErrorMessage(fields.deMinimisAid.name)}
+            >
+              <$RadioButton
+                id={`${fields.deMinimisAid.name}False`}
+                name={fields.deMinimisAid.name}
+                value="false"
+                label={t(
+                  `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.no`
+                )}
+                onChange={() => {
+                  formik.setFieldValue(fields.deMinimisAid.name, false);
+                  setDeMinimisAids([]);
+                }}
+                // 3 states: null (none is selected), true, false
+                checked={formik.values.deMinimisAid === false}
+              />
+              <$RadioButton
+                id={`${fields.deMinimisAid.name}True`}
+                name={fields.deMinimisAid.name}
+                value="true"
+                label={t(
+                  `${translationsBase}.fields.${APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID}.yes`
+                )}
+                onChange={() =>
+                  formik.setFieldValue(fields.deMinimisAid.name, true)
+                }
+                checked={formik.values.deMinimisAid === true}
+              />
+            </SelectionGroup>
+          </$GridCell>
 
-        {formik.values.deMinimisAid && (
-          <>
-            <DeMinimisAidForm data={deMinimisAids} />
-            <DeMinimisAidsList />
-          </>
-        )}
-      </FormSection>
+          {formik.values.deMinimisAid && (
+            <>
+              <DeMinimisAidForm data={deMinimisAidSet} />
+              <DeMinimisAidsList />
+            </>
+          )}
+        </FormSection>
+      )}
       <FormSection paddingBottom header={t(`${translationsBase}.heading4`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
@@ -263,7 +282,11 @@ const ApplicationFormStep1: React.FC<DynamicFormStepComponentProps> = ({
           </$GridCell>
         )}
       </FormSection>
-      <StepperActions handleSubmit={handleSubmit} handleSave={handleSave} />
+      <StepperActions
+        handleSubmit={handleSubmit}
+        handleSave={handleSave}
+        handleDelete={handleDelete}
+      />
     </form>
   );
 };

@@ -1,5 +1,49 @@
 {
-  "appName": "Helsinki-benefit handler EN",
+  "appName": "Helsinki-lisä käsittelijä",
+  "header": {
+    "navigation": {
+      "applications": "Hakemukset",
+      "processed": "Käsitellyt",
+      "archive": "Arkisto",
+      "reports": "Raportointi"
+    },
+    "messages": "Viestit",
+    "notes": "Muistiinpanot",
+    "drawer": {
+      "title": "Hakemuksen viestit"
+    }
+  },
+  "messenger": {
+    "titles": {
+      "applicantMessage": "Hakija",
+      "handlerMessage": "Käsittelijä",
+      "note": ""
+    },
+    "list": {
+      "errors": {
+        "create": {
+          "label": "The error occurred",
+          "text": "The error occurred when trying create the message. Please try again later."
+        },
+        "fetch": {
+          "label": "The error occurred",
+          "text": "The error occurred when trying fetch messages. Please try again later."
+        }
+      }
+    },
+    "showEveryone": "Nämä viestit näkyvät hakijalle",
+    "showToHanlderOnly": "Näkyy vain käsittelijöille",
+    "compose": "Kirjoita viesti",
+    "composeNote": "Kirjoita sisäinen muistiinpano",
+    "send": "Lähetä",
+    "save": "Tallenna",
+    "close": "Sulje",
+    "noMessages": "Ei viestejä"
+  },
+  "mainIngress": {
+    "heading": "Hakemukset",
+    "btnText": "Syötä hakemus"
+  },
   "footer": {
     "copyrightText": "Copyright text",
     "allRightsReservedText": "All rights reserved text"
@@ -25,6 +69,243 @@
     "generic": {
       "label": "Error occurred",
       "text": "Please try again later."
+    },
+    "attachments": {
+      "title": "Error occurred",
+      "tooBig": "The attachemnt size is too big.",
+      "fileType": "The attachment file type is not allowed."
+    }
+  },
+  "applications": {
+    "list": {
+      "columns": {
+        "companyName": "Hakija",
+        "companyId": "Y-tunnus",
+        "submittedAt": "Saapunut",
+        "applicationNum": "Numero",
+        "employeeName": "Työntekijä",
+        "handlerName": "Käsittelijä",
+        "companyForm": "Yritysmuoto",
+        "additionalInformationNeededBy": "",
+        "additionalInformationNeededByVal": "Muokattava {{date}}"
+      },
+      "messages": {
+        "empty": "Ei eriä tällä hetkellä"
+      },
+      "headings": {
+        "received": "Saapuneet",
+        "handling": "Käsittelyssä"
+      },
+      "errors": {
+        "fetch": {
+          "label": "Error occurred",
+          "text": "Unable to fetch applications with status {{status}}"
+        }
+      }
+    }
+  },
+  "review": {
+    "actions": {
+      "handle": "Ota käsittelyyn",
+      "close": "Sulje",
+      "done": "Valmis",
+      "saveAndContinue": "Tallenna ja sulje",
+      "handlingPanel": "Käsittelypaneeli",
+      "cancel": "Peruuta hakemus",
+      "addAttachment": "Liitä uusi tiedosto",
+      "addPreviouslyGrantedBenefit": "Lisää aikaisempi lisä",
+      "targetGroupCheck": "Kohderyhmätarkistus",
+      "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia",
+      "handlingToInfoRequired": "Avaa muokattavaksi",
+      "infoRequiredToHandling": "Lukitse hakemus"
+    },
+    "headings": {
+      "heading1": "Työnantajan tiedot",
+      "heading1Additional": "Postiosoite päätöstä varten",
+      "heading2": "Yhteyshenkilö",
+      "heading3": "Hakijan de minimis-tuet",
+      "heading4": "YT-neuvottelut",
+      "heading5": "Palkattava henkilö",
+      "heading6": "Palkkatukipäätös",
+      "heading7": "Haettava tukimuoto ja ajankohta",
+      "heading8": "Työsuhde",
+      "heading9": "Suostumus",
+      "heading10": "Hakemuksen käsittely"
+    },
+    "fields": {
+      "businessId": "Y-tunnus",
+      "bankAccountNumber": "Tilinumero",
+      "associationHasBusinessActivities": "Harjoittaako työnantaja elinkeinotoimintaa?",
+      "associationImmediateManagerCheck": "Lähiesihenkilö palkattavalle henkilölle?",
+      "applicantLanguage": "Asiointikieli",
+      "deMinimisAidGranter": "Tuen myöntäjä",
+      "deMinimisAidAmount": "Tuen määrä",
+      "deMinimisAidGrantedAt": "Myönnetty",
+      "deMinimisAidTotal": "Yhteensä",
+      "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
+      "coOperationNegotiations": "Onko hakijalla menossa YT-neuvottelut?",
+      "isLivingInHelsinki": "Helsinki kotikuntana",
+      "paySubsidyGranted": "Onko työsuhteeseen myönnetty palkkatuki?",
+      "apprenticeshipProgram": "Onko kyseessä oppisopimus?",
+      "benefitType": "Tukimuoto",
+      "startDate": "Alkaen",
+      "endDate": "Päättyen",
+      "jobTitle": "Tehtävänimike",
+      "workingHours": "Työaika: {{workingHours}} t / viikko",
+      "monthlyPay": "Bruttopalkka {{monthlyPay}} €/kk",
+      "otherExpenses": "Sivukulut {{otherExpenses}} €/kk",
+      "vacationMoney": "Lomaraha {{vacationMoney}} €",
+      "noSupport": "Ei puolleta",
+      "support": "Puolletaan",
+      "reason": "Perustelu",
+      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
+      "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
+    }
+  },
+  "calculators": {
+    "fields": {
+      "startDate": {
+        "label": "Alkaen",
+        "placeholder": "Alkaen"
+      },
+      "endDate": { "label": "Päättyen", "placeholder": "Päättyen" },
+      "monthlyPay": {
+        "label": "Bruttopalkka €/kk",
+        "placeholder": "Bruttopalkka"
+      },
+      "otherExpenses": {
+        "label": "Sivukulut €/kk",
+        "placeholder": "Sivukulut"
+      },
+      "vacationMoney": {
+        "label": "Lomaraha €",
+        "placeholder": "Lomaraha"
+      },
+      "stateAidMaxPercentage": {
+        "label": "Valtiotukimaksimi",
+        "placeholder": "Valtiotukimaksimi"
+      },
+      "paySubsidyPercent": {
+        "label": "Palkkatukiprosentti",
+        "placeholder": "Palkkatukiprosentti"
+      }
+    },
+    "notifications": {
+      "error": {
+        "title": "Laskurissa on virheitä",
+        "message": "Ole hyvä ja tarkista laskelman tiedot ja yritä laskea uudestaan:"
+      }
+    },
+    "employment": {
+      "header": "Työllistämisen Helsinki-lisää haettu ajalle",
+      "startEndDates": "{{startDate}} - {{endDate}} ({{period}} kk)",
+      "grantedPeriod": "Helsinki-lisää myönnetään ajalle ({{period}} kk)",
+      "reset": "Palauta arvot",
+      "tableRowHeader": "Helsinki-lisä / kk",
+      "tableRowValue": "{{amount}} €",
+      "tableTotalHeader": "Helsinki-lisä yhteensä",
+      "calculate": "Laske"
+    },
+    "salary": {
+      "header": "Palkan Helsinki-lisää haettu ajalle",
+      "monthlyPay": "Bruttopalkka €/kk",
+      "otherExpenses": "Sivukulut €/kk",
+      "vacationMoney": "Lomaraha €",
+      "startEndDates": "{{startDate}} - {{endDate}} ({{period}} kk)",
+      "maximumAid": "Valtiotukimaksimi",
+      "salarySubsidyPercentage": "Palkkatukiprosentti",
+      "salarySupportPeriod": "Palkkatukea myönnetty ajalle ({{period}} kk)",
+      "grantedPeriod": "Helsinki-lisää myönnetään ajalle ({{period}} kk)",
+      "calculate": "Laske",
+      "reset": "Palauta arvot",
+      "salaryCosts": "Palkkauskustannukset / kk",
+      "deductibleAllowances": "Vähennettävät korvaukset / kk",
+      "salarySupport": "Palkkatuki (enintään {{amount}} €)",
+      "tableRowHeader": "Helsinki-lisä / kk (enintään {{amount}} €)",
+      "tableRowValue": "{{amount}} €",
+      "tableTotalHeader": "Helsinki-lisä yhteensä",
+      "manualInput": "Manuaalinen laskelma"
+    }
+  },
+  "organizationTypes": {
+    "company": "Yritys",
+    "association": "Yhteisö"
+  },
+  "benefitTypes": {
+    "employment": "Työllistämisen Helsinki-lisä",
+    "salary": "Palkan Helsinki-lisä",
+    "commission": "Toimeksiannon Helsinki-lisä"
+  },
+  "attachments": {
+    "heading1": "Liittet",
+    "types": {
+      "employmentContract": {
+        "title": "Työsopimus"
+      },
+      "paySubsidyDecision": {
+        "title": "Palkkatukipäätös"
+      },
+      "commissionContract": {
+        "title": "Toimeksiantosopimus"
+      },
+      "educationContract": {
+        "title": "Sopimus oppisopimuskoulutuksen järjestämisestä"
+      },
+      "helsinkiBenefitVoucher": {
+        "title": "Helsinki-lisä seteli"
+      }
+    },
+    "add": "Liitä tiedosto",
+    "remove": "Poista liite"
+  },
+  "utility": {
+    "yes": "Kyllä",
+    "no": "Ei",
+    "and": "ja"
+  },
+  "upload": {
+    "isUploading": "Uploading...",
+    "errorTitle": "Uploading failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "form": {
+    "validation": {
+      "required": "This field is required",
+      "invalid": "Invalid value",
+      "number": {
+        "max": "Maximum value is {{max}}",
+        "min": "Value must be at least {{min}}"
+      },
+      "string": {
+        "max": "This field can be up to {{max}} characters long",
+        "min": "This field must be at least {{min}} characters long",
+        "url": "This field must be a valid URL",
+        "date": "This field must be a valid date",
+        "time": "Time must be given in the following format hh:mm",
+        "positiveNumber": "This field must be a valid number"
+      },
+      "date": {
+        "mustNotInThePast": "This date must not be in the past",
+        "min": "This date must be earliest {{min}}",
+        "max": "This date must be latest {{max}}",
+        "format": "This date is incorrect"
+      },
+      "time": {
+        "min": "This time must be earliest {{min}}",
+        "max": "This time must be latest {{max}}"
+      },
+      "phone": {
+        "invalid": "The value must be a telephone number"
+      },
+      "email": {
+        "invalid": "This field must be a valid email"
+      },
+      "iban": {
+        "invalid": "Invalid IBAN value"
+      },
+      "ssn": {
+        "invalid": "Invalid SSN value"
+      }
     }
   }
 }

@@ -709,3 +709,1523 @@ DUMMY_YTJ_BUSINESS_DETAILS_RESPONSE = {
         }
     ],
 }
+
+DUMMY_ASSOCIATION_DATA = {
+    "id": "8c0c7a56-cb98-4c31-87ca-6f1853253987",
+    "name": "SIPOON NUORISOMUSIIKINYHDISTYS SUSIMUSA ry",
+    "business_id": "2686723-5",
+    "company_form": "association",
+    "bank_account_number": "FI2112345600000785",
+    "street_address": "Vasaratie 4 A 3",
+    "postcode": "65350",
+    "city": "Vaasa",
+}
+
+DUMMY_YRTTI_RESPONSE = {
+    "BasicInfoResponse": {
+        "AssociationNameInfo": [
+            {
+                "AssociationNameType": "P",
+                "AssociationName": "SIPOON NUORISOMUSIIKINYHDISTYS SUSIMUSA ry",
+                "AssociationNameLanguage": "FI",
+                "AssociationIndustry": None,
+                "AssociationNameStatus": "R",
+                "AssociationNameStartDate": "2007-02-27T00:00:00.000+00:00",
+            },
+            {
+                "AssociationNameType": "P",
+                "AssociationName": "SIPOON NUORISOMUSIIKINYHDISTYS SYSIMUSA ry",
+                "AssociationNameLanguage": "FI",
+                "AssociationIndustry": None,
+                "AssociationNameStatus": "VE",
+                "AssociationNameStartDate": None,
+            },
+        ],
+        "BusinessId": "2686723-5",
+        "RegistrationNumber": "195.883",
+        "Domicile": "753",
+        "DomicileStartDate": "2007-02-27T00:00:00.000+00:00",
+        "AssociationRegistrationLanguage": "FI",
+        "Address": [
+            {
+                "AddressTypeCode": "YRPO",
+                "FormattedAddressFI": "Lamberg Matti Olavi\nKatajakalliontie 16\n01120 Västerskog\nSuomi",
+                "FormattedAddressEN": "Lamberg Matti Olavi\nKatajakalliontie 16\n01120 Västerskog\nFinland",
+                "FormattedAddressSE": "Lamberg Matti Olavi\nKatajakalliontie 16\n01120 Västerskog\nFinland",
+                "CoAddress": None,
+                "StreetName": "Lamberg Matti Olavi\nKatajakalliontie 16",
+                "HouseNumber": None,
+                "Stair": None,
+                "FlatNumber": None,
+                "FlatDivisionLetter": None,
+                "PoBoxPrefix": None,
+                "PoBox": None,
+                "PostCode": "01120",
+                "City": "Västerskog",
+                "CountryCode": "FI",
+                "AddressAbroad": None,
+            }
+        ],
+        "ContactInfo": None,
+        "RegistryDate": "2007-02-27T00:00:00.000+00:00",
+        "LastRegistrationPeriod": "2007-02-27T00:00:00.000+00:00",
+        "AssociationStatus": "R",
+        "AssociationStatusDate": "2007-02-27T00:00:00.000+00:00",
+        "AssociationSpecialCondition": None,
+        "AssociationSpecialConditionDate": None,
+        "EndRegistrationReason": None,
+        "PurposeClassMain": "400",
+        "PurposeClassSecondary": "400",
+    },
+    "faultCode": None,
+    "faultString": None,
+}
+DUMMY_SERVICE_BUS_RESPONSE = {
+    "GetCompanyResult": {
+        "Company": {
+            "BusinessId": "0877830-0",
+            "Person": None,
+            "TradeName": {
+                "Name": "I. Haanpää Oy",
+                "Validity": {
+                    "StartDate": "1999-03-31T00:00:00.000+00:00",
+                    "EndDate": None,
+                },
+                "Source": {
+                    "PrimaryCode": "TLAHDE",
+                    "SecondaryCode": "1",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Patentti- ja rekisterihallitus",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Patent- och registerstyrelsen",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Finnish Patent and Registration Office",
+                            },
+                        ]
+                    },
+                },
+                "Type": {
+                    "PrimaryCode": "TLAJI",
+                    "SecondaryCode": "1",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Toiminimi",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Firma",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Company name",
+                            },
+                        ]
+                    },
+                },
+            },
+            "AuxiliaryTradeNames": None,
+            "ParallelTradeNames": None,
+            "Bankruptcy": None,
+            "CompanyReorganisation": None,
+            "Liquidation": None,
+            "BusinessInterruption": None,
+            "LegalForm": {
+                "CodeActive": True,
+                "Validity": {
+                    "StartDate": "1999-03-31T00:00:00.000+00:00",
+                    "EndDate": None,
+                },
+                "Source": {
+                    "PrimaryCode": "TLAHDE",
+                    "SecondaryCode": "1",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Patentti- ja rekisterihallitus",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Patent- och registerstyrelsen",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Finnish Patent and Registration Office",
+                            },
+                        ]
+                    },
+                },
+                "Type": {
+                    "PrimaryCode": "YRMU",
+                    "SecondaryCode": "16",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Osakeyhtiö",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Aktiebolag",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Limited company",
+                            },
+                        ]
+                    },
+                },
+            },
+            "Municipality": {
+                "CodeActive": True,
+                "Validity": {
+                    "StartDate": "2005-01-25T00:00:00.000+00:00",
+                    "EndDate": None,
+                },
+                "Source": {
+                    "PrimaryCode": "TLAHDE",
+                    "SecondaryCode": "1",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Patentti- ja rekisterihallitus",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Patent- och registerstyrelsen",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Finnish Patent and Registration Office",
+                            },
+                        ]
+                    },
+                },
+                "Type": {
+                    "PrimaryCode": "KUNTA",
+                    "SecondaryCode": "905",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "VAASA",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "VASA",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "VAASA",
+                            },
+                        ]
+                    },
+                },
+            },
+            "BusinessLine": {
+                "CodeActive": True,
+                "Validity": {
+                    "StartDate": "2007-12-31T00:00:00.000+00:00",
+                    "EndDate": None,
+                },
+                "Source": {
+                    "PrimaryCode": "TLAHDE",
+                    "SecondaryCode": "2",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Verohallinto",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Skatteförvaltningen",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Tax Administration",
+                            },
+                        ]
+                    },
+                },
+                "Type": {
+                    "PrimaryCode": "TOIMI3",
+                    "SecondaryCode": "47594",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Taloustavaroiden vähittäiskauppa",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Specialiserad butikshandel med hushållsartiklar",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Retail sale of household articles",
+                            },
+                        ]
+                    },
+                },
+            },
+            "Language": {
+                "CodeActive": True,
+                "Validity": {
+                    "StartDate": "1992-03-03T00:00:00.000+00:00",
+                    "EndDate": None,
+                },
+                "Source": {
+                    "PrimaryCode": "TLAHDE",
+                    "SecondaryCode": "2",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Verohallinto",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Skatteförvaltningen",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Tax Administration",
+                            },
+                        ]
+                    },
+                },
+                "Type": {
+                    "PrimaryCode": "KIELI",
+                    "SecondaryCode": "1",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Suomi",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Suomi",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Finnish",
+                            },
+                        ]
+                    },
+                },
+            },
+            "BusinessActivity": None,
+            "CompanyStatus": {
+                "Validity": {
+                    "StartDate": "1992-03-03T00:00:00.000+00:00",
+                    "EndDate": None,
+                },
+                "BusinessIdStatus": {
+                    "PrimaryCode": "STATUS3",
+                    "SecondaryCode": "2",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Voimassa",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Giltigt",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Valid",
+                            },
+                        ]
+                    },
+                },
+                "Status": {
+                    "PrimaryCode": "STATUS3",
+                    "SecondaryCode": "2",
+                    "Descriptions": {
+                        "CodeDescription": [
+                            {
+                                "Language": "fi",
+                                "Type": "Default",
+                                "Description": "Voimassa",
+                            },
+                            {
+                                "Language": "sv",
+                                "Type": "Default",
+                                "Description": "Giltigt",
+                            },
+                            {
+                                "Language": "en",
+                                "Type": "Default",
+                                "Description": "Valid",
+                            },
+                        ]
+                    },
+                },
+            },
+            "PostalAddress": {
+                "ForeignAddress": None,
+                "DomesticAddress": {
+                    "CareOf": "",
+                    "Street": "Vasaratie",
+                    "PostOfficeBox": "",
+                    "BuildingNumber": "4",
+                    "Entrance": "A",
+                    "ApartmentNumber": "3",
+                    "ApartmentIDSuffix": "",
+                    "PostalCode": "65350",
+                    "City": "VAASA",
+                    "Language": {
+                        "PrimaryCode": "KIELI3",
+                        "SecondaryCode": "1",
+                        "Descriptions": {
+                            "CodeDescription": [
+                                {
+                                    "Language": "fi",
+                                    "Type": "Default",
+                                    "Description": "Suomi",
+                                },
+                                {
+                                    "Language": "sv",
+                                    "Type": "Default",
+                                    "Description": "Finska",
+                                },
+                                {
+                                    "Language": "en",
+                                    "Type": "Default",
+                                    "Description": "Finnish",
+                                },
+                            ]
+                        },
+                    },
+                    "Type": {
+                        "PrimaryCode": "OLAJI",
+                        "SecondaryCode": "2",
+                        "Descriptions": {
+                            "CodeDescription": [
+                                {
+                                    "Language": "fi",
+                                    "Type": "Default",
+                                    "Description": "Postiosoite",
+                                },
+                                {
+                                    "Language": "sv",
+                                    "Type": "Default",
+                                    "Description": "Postadress",
+                                },
+                                {
+                                    "Language": "en",
+                                    "Type": "Default",
+                                    "Description": "Postal address",
+                                },
+                            ]
+                        },
+                    },
+                    "PostalCodeActive": True,
+                    "Validity": {
+                        "StartDate": "2020-07-22T13:43:08.933+00:00",
+                        "EndDate": None,
+                    },
+                },
+                "NonstandardDomesticAddress": None,
+            },
+            "StreetAddress": None,
+            "ContactDetails": {
+                "ContactDetail": [
+                    {
+                        "Value": "",
+                        "Validity": {
+                            "StartDate": "2020-07-22T13:43:08.933+00:00",
+                            "EndDate": None,
+                        },
+                        "Type": {
+                            "PrimaryCode": "YLAJI",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Puhelin",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Telefon",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Telephone",
+                                    },
+                                ]
+                            },
+                        },
+                    },
+                    {
+                        "Value": "",
+                        "Validity": {
+                            "StartDate": "2020-07-22T13:43:08.933+00:00",
+                            "EndDate": None,
+                        },
+                        "Type": {
+                            "PrimaryCode": "YLAJI",
+                            "SecondaryCode": "2",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Faksi",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Fax",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Fax",
+                                    },
+                                ]
+                            },
+                        },
+                    },
+                    {
+                        "Value": "jari.haanpaa@netikka.fi",
+                        "Validity": {
+                            "StartDate": "2020-07-22T13:43:08.933+00:00",
+                            "EndDate": None,
+                        },
+                        "Type": {
+                            "PrimaryCode": "YLAJI",
+                            "SecondaryCode": "3",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Sähköposti",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "E-post",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Email",
+                                    },
+                                ]
+                            },
+                        },
+                    },
+                    {
+                        "Value": "0400 665254",
+                        "Validity": {
+                            "StartDate": "2005-01-11T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                        "Type": {
+                            "PrimaryCode": "YLAJI",
+                            "SecondaryCode": "5",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Matkapuhelin",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Mobiltelefon",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Mobile phone",
+                                    },
+                                ]
+                            },
+                        },
+                    },
+                ]
+            },
+            "RegistrationsInForce": {
+                "RegistryEntry": [
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "6",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Arvonlisäverovelvollisuus",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Momsskyldighet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Value added tax-liability",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "82",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Kiinteistön käyttöoikeuden luovuttamisesta",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "För överlåtelse av nyttjanderätten till en fastighet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "VAT-obliged for the transfer of rights to"
+                                        " use immovable property",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2008-07-21T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "2008-08-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "6",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Arvonlisäverovelvollisuus",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Momsskyldighet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Value added tax-liability",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "80",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Liiketoiminnasta arvonlisäverovelvollinen",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Momsskyldig för rörelseverksamhet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "VAT-liable for business activity",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2008-07-21T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1994-06-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "7",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Työnantajarekisteri",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Arbetsgivarregistret",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Employer register",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "41",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2001-03-30T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1992-03-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Kaupparekisteri",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Handelsregistret",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Trade register",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "2",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Patentti- ja rekisterihallitus",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Patent- och registerstyrelsen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Finnish Patent and Registration Office",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "1992-01-29T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1992-01-29T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "5",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Ennakkoperintärekisteri",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Förskottsuppbördsregistret",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Prepayment register",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "55",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2017-03-16T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1995-03-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "4",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinnon perustiedot",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningens basuppgifter",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2020-06-03T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1992-03-03T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                ]
+            },
+            "RegistrationHistory": {
+                "RegistryEntry": [
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "6",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Arvonlisäverovelvollisuus",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Momsskyldighet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Value added tax-liability",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "82",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Kiinteistön käyttöoikeuden luovuttamisesta",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "För överlåtelse av nyttjanderätten till en fastighet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "VAT-obliged for the transfer of rights to use"
+                                        " immovable property",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2008-07-21T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "2008-08-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "6",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Arvonlisäverovelvollisuus",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Momsskyldighet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Value added tax-liability",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "80",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Liiketoiminnasta arvonlisäverovelvollinen",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Momsskyldig för rörelseverksamhet",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "VAT-liable for business activity",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2008-07-21T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1994-06-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "7",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Työnantajarekisteri",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Arbetsgivarregistret",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Employer register",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "41",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2001-03-30T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1992-03-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Kaupparekisteri",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Handelsregistret",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Trade register",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "2",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Patentti- ja rekisterihallitus",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Patent- och registerstyrelsen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Finnish Patent and Registration Office",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "1992-01-29T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1992-01-29T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "5",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Ennakkoperintärekisteri",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Förskottsuppbördsregistret",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Prepayment register",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "55",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2017-03-16T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1995-03-01T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                    {
+                        "Registry": {
+                            "PrimaryCode": "REK",
+                            "SecondaryCode": "4",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinnon perustiedot",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningens basuppgifter",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistryCode": {
+                            "PrimaryCode": "REK_KDI",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Rekisterissä",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Registrerad",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Registered",
+                                    },
+                                ]
+                            },
+                        },
+                        "Authority": {
+                            "PrimaryCode": "VIRANOM",
+                            "SecondaryCode": "1",
+                            "Descriptions": {
+                                "CodeDescription": [
+                                    {
+                                        "Language": "fi",
+                                        "Type": "Default",
+                                        "Description": "Verohallinto",
+                                    },
+                                    {
+                                        "Language": "sv",
+                                        "Type": "Default",
+                                        "Description": "Skatteförvaltningen",
+                                    },
+                                    {
+                                        "Language": "en",
+                                        "Type": "Default",
+                                        "Description": "Tax Administration",
+                                    },
+                                ]
+                            },
+                        },
+                        "RegistrationDate": "2020-06-03T00:00:00.000+00:00",
+                        "Validity": {
+                            "StartDate": "1992-03-03T00:00:00.000+00:00",
+                            "EndDate": None,
+                        },
+                    },
+                ]
+            },
+            "RegisteredInPrepaymentRegister": True,
+            "NextRevisionDateOfPrepaymentRegister": None,
+            "BusinessIdHistory": None,
+            "InDebtAdjustment": None,
+        }
+    }
+}

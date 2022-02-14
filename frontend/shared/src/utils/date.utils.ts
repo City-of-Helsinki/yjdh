@@ -7,6 +7,7 @@ import parseISO from 'date-fns/parseISO';
 
 import { DATE_BACKEND_REGEX, DATE_UI_REGEX } from '../constants';
 import { DEFAULT_LANGUAGE, Language } from '../i18n/i18n';
+import { isString } from './type-guards';
 
 export const DATE_FORMATS = {
   UI_DATE: 'd.M.yyyy',
@@ -19,10 +20,6 @@ const locales: Record<Language, Locale> = { fi, sv, en };
 
 export const isValidDate = (date?: string | number | Date | null): boolean =>
   date ? isValid(new Date(date)) : false;
-
-// https://stackoverflow.com/questions/643782/how-to-check-whether-an-object-is-a-date
-export const isDateObject = (date?: unknown): boolean =>
-  Object.prototype.toString.call(date) === '[object Date]';
 
 /**
  * Format date string
@@ -58,7 +55,7 @@ const getFormat = (dateAsString: string): string | undefined => {
   return undefined;
 };
 
-export const parseDate = (dateAsString?: string): Date | undefined => {
+export const parseDate = (dateAsString?: string | null): Date | undefined => {
   if (!dateAsString) {
     return undefined;
   }
@@ -78,7 +75,7 @@ export const convertDateFormat = (
   date: string | Date | number | undefined,
   toFormat = DATE_FORMATS.BACKEND_DATE
 ): string => {
-  const parsedDate = typeof date === 'string' ? parseDate(date) : date;
+  const parsedDate = isString(date) ? parseDate(date) : date;
   return formatDate(parsedDate, toFormat);
 };
 
@@ -93,3 +90,83 @@ export const convertToBackendDateFormat = (
 export const convertToUIDateAndTimeFormat = (
   date: string | Date | number | undefined
 ): string => convertDateFormat(date, DATE_FORMATS.DATE_AND_TIME);
+
+export const isLeapYear = (year: number): boolean =>
+  (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+
+/**
+ * Calculates the difference in days between 2 dates
+ * Based on excelDays360
+ *
+ * @param startDate
+ * Date1
+ * @param endDate
+ * Date2
+ * @returns
+ * Number of days
+ */
+export const days360 = (
+  startDate: Date | undefined,
+  endDate: Date | undefined,
+  method = 'EU'
+): number => {
+  if (!endDate || !startDate) return 0;
+
+  let startDay = startDate.getDate();
+  const startMonth = startDate.getMonth();
+  const startYear = startDate.getFullYear();
+  let endDay = endDate.getDate();
+  let endMonth = endDate.getMonth();
+  let endYear = endDate.getFullYear();
+
+  if (
+    startDay === 31 ||
+    (method !== 'EU' &&
+      startMonth === 2 &&
+      (startDay === 29 || (startDay === 28 && !isLeapYear(startYear))))
+  )
+    startDay = 30;
+
+  if (endDay === 31) {
+    if (method !== 'EU' && startDay !== 30) {
+      endDay = 1;
+
+      if (endMonth === 12) {
+        endYear += 1;
+        endMonth = 1;
+      } else endMonth += 1;
+    }
+
+    endDay = 30;
+  }
+
+  return (
+    endDay +
+    endMonth * 30 +
+    endYear * 360 -
+    startDay -
+    startMonth * 30 -
+    startYear * 360
+  );
+};
+
+/**
+ * Calculates the different in months between 2 dates with two decimals accuracy
+ * Based on excelDays360
+ * @param endDate
+ * Date1
+ * @param startDate
+ * Date2
+ * @returns
+ * Number of months
+ */
+export const diffMonths = (
+  endDate: Date | undefined,
+  startDate: Date | undefined,
+  method = 'EU'
+): number => {
+  if (!endDate || !startDate) return 0;
+  const correctEndDate = new Date(endDate);
+  correctEndDate.setDate(correctEndDate.getDate() + 1);
+  return Number((days360(startDate, correctEndDate, method) / 30).toFixed(2));
+};

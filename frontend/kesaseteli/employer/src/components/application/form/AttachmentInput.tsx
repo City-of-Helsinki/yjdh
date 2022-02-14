@@ -3,22 +3,26 @@ import useApplicationFormField from 'kesaseteli/employer/hooks/application/useAp
 import useOpenAttachment from 'kesaseteli/employer/hooks/backend/useOpenAttachment';
 import useRemoveAttachmentQuery from 'kesaseteli/employer/hooks/backend/useRemoveAttachmentQuery';
 import useUploadAttachmentQuery from 'kesaseteli/employer/hooks/backend/useUploadAttachmentQuery';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldPathValue } from 'react-hook-form';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import Application from 'shared/types/application-form-data';
-import Attachment, { AttachmentType } from 'shared/types/attachment';
-import { validateAttachments } from 'shared/utils/attachment.utils';
+import ApplicationFormData from 'shared/types/application-form-data';
+import { AttachmentType, KesaseteliAttachment } from 'shared/types/attachment';
 
 type Props = {
   index: number;
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  id: ApplicationFieldPath;
   required?: boolean;
 };
+
+const validate = (
+  val: FieldPathValue<ApplicationFormData, ApplicationFieldPath>
+): boolean => !isEmpty(val);
 
 const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
   const { t } = useTranslation();
@@ -32,7 +36,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     setError,
     watch,
     clearErrors,
-  } = useApplicationFormField<Attachment[]>(id);
+  } = useApplicationFormField<KesaseteliAttachment[]>(id);
   const attachments = watch();
 
   const attachmentType = fieldName as AttachmentType;
@@ -126,7 +130,9 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
 
   const openAttachment = useOpenAttachment();
 
-  const { ref } = register(id, { validate: validateAttachments });
+  const { ref } = register(id, {
+    validate,
+  });
 
   React.useEffect(() => {
     if (hasError() && getError()?.type !== attachmentType) {
@@ -136,7 +142,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
 
   const message = `${t(
     `common:application.form.helpers.${attachmentType}`
-  )} ${t(`common:application.form.helpers.attachments`)}`;
+  )} ${t('common:application.form.helpers.attachments')}`;
 
   if (applicationQuery.isSuccess) {
     return (
@@ -156,7 +162,7 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
         message={message}
         errorMessage={
           hasError()
-            ? `${t(`common:application.form.errors.${attachmentType}`)}`
+            ? `${t('common:application.form.errors.attachments')}`
             : undefined
         }
         required={required}
@@ -164,6 +170,10 @@ const AttachmentInput: React.FC<Props> = ({ index, id, required }) => {
     );
   }
   return <PageLoadingSpinner />;
+};
+
+AttachmentInput.defaultProps = {
+  required: false,
 };
 
 export default AttachmentInput;

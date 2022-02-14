@@ -13,7 +13,10 @@ const nextConfig = {
   i18n,
   env,
   webpack: (config) => {
-    config.resolve.fallback = { fs: false };
+    config.resolve.fallback = {
+      fs: false,
+      path: require.resolve('path-browserify'),
+    };
     const babelRule = config.module.rules.find((rule) =>
       Array.isArray(rule.use)
         ? rule.use.find((u) => u.loader?.match(/next.*babel.*loader/i))
@@ -22,7 +25,9 @@ const nextConfig = {
     if (babelRule) {
       babelRule.include.push(path.resolve('../../'));
     }
-    config.plugins.push(new webpack.IgnorePlugin(/\/(__tests__|test)\//));
+    config.plugins.push(
+      new webpack.IgnorePlugin({ resourceRegExp: /\/(__tests__|test)\// })
+    );
     config.module.rules.push({
       test: /\.test.tsx$/,
       loader: 'ignore-loader',

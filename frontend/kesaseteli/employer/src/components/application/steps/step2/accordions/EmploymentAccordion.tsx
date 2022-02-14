@@ -83,7 +83,7 @@ const EmploymentAccordion: React.FC<Props> = ({ index }: Props) => {
           id={getId('employee_ssn')}
           validation={{
             required: true,
-            maxLength: 32, // eslint-disable-next-line security/detect-unsafe-regex
+            maxLength: 32,
           }}
         />
         <SelectionGroup

@@ -32,7 +32,7 @@ const Accordion: React.FC<AccordionProps> = (props: AccordionProps) => {
   const angleIcon = isOpen ? <IconAngleUp /> : <IconAngleDown />;
 
   return (
-    <$Accordion {...props}>
+    <$Accordion {...props} data-testid={`${id}-${isOpen ? 'open' : 'closed'}`}>
       <$AccordionHeader {...props}>
         <$HeadingContainer
           role="button"

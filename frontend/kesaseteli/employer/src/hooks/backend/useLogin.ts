@@ -1,7 +1,7 @@
 import {
   BackendEndpoint,
   getBackendUrl,
-} from 'kesaseteli/employer/backend-api/backend-api';
+} from 'kesaseteli-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useLocale from 'shared/hooks/useLocale';

@@ -23,6 +23,7 @@ env = environ.Env(
     STATIC_ROOT=(environ.Path(), default_var_root("static")),
     MEDIA_URL=(str, "/media/"),
     STATIC_URL=(str, "/static/"),
+    YOUTH_URL=(str, "https://localhost:3100"),
     ALLOWED_HOSTS=(list, ["*"]),
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
@@ -35,13 +36,18 @@ env = environ.Env(
     MAIL_MAILGUN_API=(str, ""),
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
-    CORS_ORIGIN_WHITELIST=(list, []),
-    CORS_ORIGIN_ALLOW_ALL=(bool, False),
+    SENTRY_ATTACH_STACKTRACE=(bool, False),
+    SENTRY_MAX_BREADCRUMBS=(int, 0),
+    SENTRY_REQUEST_BODIES=(str, "never"),
+    SENTRY_SEND_DEFAULT_PII=(bool, False),
+    SENTRY_WITH_LOCALS=(bool, False),
+    CORS_ALLOWED_ORIGINS=(list, []),
+    CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
-    MOCK_FLAG=(bool, False),
+    NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 60 * 60 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
     OIDC_RP_CLIENT_SECRET=(str, ""),
@@ -69,14 +75,32 @@ env = environ.Env(
         str,
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
+    SOCIAL_SECURITY_NUMBER_HASH_KEY=(
+        str,
+        "ee235e39ebc238035a6264c063dd829d4b6d2270604b57ee1f463e676ec44669",
+    ),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "kesaseteli_audit_log"),
-    ELASTICSEARCH_CLOUD_ID=(str, ""),
-    ELASTICSEARCH_API_ID=(str, ""),
-    ELASTICSEARCH_API_KEY=(str, ""),
+    ELASTICSEARCH_HOST=(str, ""),
+    ELASTICSEARCH_PORT=(str, ""),
+    ELASTICSEARCH_USERNAME=(str, ""),
+    ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, True),
     DB_PREFIX=(str, ""),
+    EMAIL_USE_TLS=(bool, False),
+    EMAIL_HOST=(str, "ema.platta-net.hel.fi"),
+    EMAIL_HOST_USER=(str, ""),
+    EMAIL_HOST_PASSWORD=(str, ""),
+    EMAIL_PORT=(int, 25),
+    EMAIL_TIMEOUT=(int, 15),
+    DEFAULT_FROM_EMAIL=(str, "Kesäseteli <kesaseteli@hel.fi>"),
+    HANDLER_EMAIL=(str, "Kesäseteli <kesaseteli@hel.fi>"),
+    NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=(
+        int,
+        12 * 60 * 60,
+    ),
+    DISABLE_VTJ=(bool, False),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -88,7 +112,9 @@ SECRET_KEY = env.str("SECRET_KEY")
 if DEBUG and not SECRET_KEY:
     SECRET_KEY = "xxx"
 ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
+SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
+DISABLE_VTJ = env.bool("DISABLE_VTJ")
 
 DB_PREFIX = {
     None: env.str("DB_PREFIX"),
@@ -101,7 +127,18 @@ DATABASES = {"default": env.db()}
 
 CACHES = {"default": env.cache()}
 
+SENTRY_ATTACH_STACKTRACE = env.bool("SENTRY_ATTACH_STACKTRACE")
+SENTRY_MAX_BREADCRUMBS = env.int("SENTRY_MAX_BREADCRUMBS")
+SENTRY_REQUEST_BODIES = env.str("SENTRY_REQUEST_BODIES")
+SENTRY_SEND_DEFAULT_PII = env.bool("SENTRY_SEND_DEFAULT_PII")
+SENTRY_WITH_LOCALS = env.bool("SENTRY_WITH_LOCALS")
+
 sentry_sdk.init(
+    attach_stacktrace=SENTRY_ATTACH_STACKTRACE,
+    max_breadcrumbs=SENTRY_MAX_BREADCRUMBS,
+    request_bodies=SENTRY_REQUEST_BODIES,
+    send_default_pii=SENTRY_SEND_DEFAULT_PII,
+    with_locals=SENTRY_WITH_LOCALS,
     dsn=env.str("SENTRY_DSN"),
     release="n/a",
     environment=env("SENTRY_ENVIRONMENT"),
@@ -112,6 +149,7 @@ MEDIA_ROOT = env("MEDIA_ROOT")
 STATIC_ROOT = env("STATIC_ROOT")
 MEDIA_URL = env.str("MEDIA_URL")
 STATIC_URL = env.str("STATIC_URL")
+YOUTH_URL = env.str("YOUTH_URL")
 
 ROOT_URLCONF = "kesaseteli.urls"
 WSGI_APPLICATION = "kesaseteli.wsgi.application"
@@ -175,9 +213,21 @@ TEMPLATES = [
     }
 ]
 
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_HOST = env.str("EMAIL_HOST")
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env.int("EMAIL_PORT")
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT")
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+HANDLER_EMAIL = env.str("HANDLER_EMAIL")
+NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS = env.int(
+    "NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS"
+)
+
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
-CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 CSRF_COOKIE_SECURE = True
@@ -186,9 +236,10 @@ CSRF_COOKIE_SECURE = True
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
 CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
 ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
-ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
-ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
-ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
+ELASTICSEARCH_HOST = env("ELASTICSEARCH_HOST")
+ELASTICSEARCH_PORT = env("ELASTICSEARCH_PORT")
+ELASTICSEARCH_USERNAME = env("ELASTICSEARCH_USERNAME")
+ELASTICSEARCH_PASSWORD = env("ELASTICSEARCH_PASSWORD")
 ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 
 LOGGING = {
@@ -224,7 +275,12 @@ YTJ_BASE_URL = env.str("YTJ_BASE_URL")
 YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
-MOCK_FLAG = env.bool("MOCK_FLAG")
+NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
+
+if NEXT_PUBLIC_MOCK_FLAG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # Authentication
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")

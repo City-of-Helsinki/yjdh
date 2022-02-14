@@ -22,8 +22,12 @@ module.exports = {
     ],
     'no-void': 'off',
     'unicorn/no-array-reduce': 'off',
+    'unicorn/prefer-export-from': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'react/function-component-definition': 'off',
     'lodash/prefer-noop': 'off',
+    'sonarjs/no-nested-template-literals': 'off',
+    'unicorn/prefer-node-protocol': 'off',
   },
   overrides: [
     {

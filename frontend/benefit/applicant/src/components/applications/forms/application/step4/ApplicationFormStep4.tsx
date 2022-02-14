@@ -20,7 +20,10 @@ import {
   $GridCell,
   $Hr,
 } from 'shared/components/forms/section/FormSection.sc';
-import { ATTACHMENT_MAX_SIZE } from 'shared/constants/attachment-constants';
+import {
+  ATTACHMENT_CONTENT_TYPES,
+  ATTACHMENT_MAX_SIZE,
+} from 'shared/constants/attachment-constants';
 import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -35,6 +38,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
     handleBack,
     handleNext,
     handleSave,
+    handleDelete,
     handleRemoveAttachment,
     handleUploadAttachment,
     translationsBase,
@@ -123,7 +127,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
                         onUpload={handleUploadAttachment}
                         isUploading={isUploading}
                         attachmentType={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
-                        allowedFileTypes={['application/pdf']}
+                        allowedFileTypes={ATTACHMENT_CONTENT_TYPES}
                         maxSize={ATTACHMENT_MAX_SIZE}
                         uploadText={t(
                           `${translationsBase}.uploadPowerOfAttorney.action2`
@@ -159,6 +163,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
         handleSubmit={handleNext}
         handleSave={handleSave}
         handleBack={handleBack}
+        handleDelete={handleDelete}
       />
     </>
   );

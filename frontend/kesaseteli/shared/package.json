@@ -1,0 +1,24 @@
+{
+  "name": "@frontend/kesaseteli-shared",
+  "version": "1.0.0",
+  "files": [
+    "./"
+  ],
+  "scripts": {
+    "lint": "eslint --ext js,ts,tsx src",
+    "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
+    "test": "jest --passWithNoTests",
+    "test:staged": "yarn test --watchAll=false --findRelatedTests",
+    "test:coverage": "yarn test --verbose --coverage"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@frontend/shared": "*",
+    "axios": "^0.25.0",
+    "react-query": "^3.34.0"
+  },
+  "devDependencies": {
+    "eslint-config-adjunct": "^4.11.1",
+    "typescript": "^4.5.5"
+  }
+}

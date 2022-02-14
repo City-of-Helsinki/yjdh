@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { getBackendDomain } from 'benefit/applicant/backend-api/backend-api';
+import { getBackendDomain } from 'benefit-shared/backend-api/backend-api';
 
 const AxiosTestContext = Axios.create({
   baseURL: getBackendDomain(),

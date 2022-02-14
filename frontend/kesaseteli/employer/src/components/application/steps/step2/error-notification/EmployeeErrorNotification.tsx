@@ -1,32 +1,28 @@
+import ErrorNotificationRow from 'kesaseteli/employer/components/application/form/error-summary/ErrorNotificationRow';
 import useWatchEmployeeDisplayName from 'kesaseteli/employer/hooks/employments/useWatchEmployeeDisplayName';
-import { useTranslation } from 'next-i18next';
+import { getEmploymentFieldPath } from 'kesaseteli/employer/utils/application-form.utils';
 import React from 'react';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import Employment from 'shared/types/employment';
 
 type Props = {
   index: number;
-  errors: Array<{
-    field: keyof Employment;
-    errorType: string;
-  }>;
+  errorFields: Array<keyof Employment>;
 };
 
 const EmployeeErrorNotification: React.FC<Props> = ({
   index,
-  errors,
+  errorFields,
 }: Props) => {
-  const { t } = useTranslation();
   const employeeDisplayname = useWatchEmployeeDisplayName(index);
   return (
     <$GridCell key={index}>
       <h4>{employeeDisplayname}</h4>
       <ul>
-        {errors.map(({ field, errorType }) => (
-          <li key={field}>{`${t(
-            `common:application.form.inputs.${field}`
-          )}: ${t(`common:application.form.errors.${errorType}`)}`}</li>
-        ))}
+        {errorFields.map((field) => {
+          const fieldPath = getEmploymentFieldPath(index, field);
+          return <ErrorNotificationRow key={fieldPath} fieldPath={fieldPath} />;
+        })}
       </ul>
     </$GridCell>
   );
