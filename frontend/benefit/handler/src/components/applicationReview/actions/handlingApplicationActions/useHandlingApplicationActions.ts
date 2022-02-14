@@ -6,7 +6,7 @@ import {
   HandledAplication,
 } from 'benefit/handler/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useToggle from 'shared/hooks/useToggle';
 
 type ExtendedComponentProps = {
@@ -16,7 +16,8 @@ type ExtendedComponentProps = {
   onCommentsChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   toggleMessagesDrawerVisiblity: () => void;
   handleCancel: (application: HandledAplication) => void;
-  setIsConfirmationModalOpen: Dispatch<SetStateAction<boolean>>;
+  openDialog: () => void;
+  closeDialog: () => void;
   translationsBase: string;
   isDisabledDoneButton: boolean;
   isMessagesDrawerVisible: boolean;
@@ -51,10 +52,22 @@ const useHandlingApplicationActions = (
     [handledApplication]
   );
 
+  const openDialog = (): void => setIsConfirmationModalOpen(true);
+
+  const closeDialog = (): void => {
+    setIsConfirmationModalOpen(false);
+    setHandledApplication(null);
+  };
+
+  useEffect(() => {
+    if (application.status === APPLICATION_STATUSES.CANCELLED) {
+      setIsConfirmationModalOpen(false);
+    }
+  }, [application]);
+
   const handleCancel = (cancelledApplication: HandledAplication): void => {
-    //workaround for broken hds dialog
+    // workaround for broken hds dialog
     setHandledApplication(cancelledApplication);
-    onDone();
   };
 
   const onCommentsChange = (
@@ -68,7 +81,8 @@ const useHandlingApplicationActions = (
     onCommentsChange,
     toggleMessagesDrawerVisiblity,
     handleCancel,
-    setIsConfirmationModalOpen,
+    openDialog,
+    closeDialog,
     isMessagesDrawerVisible,
     translationsBase,
     isDisabledDoneButton,

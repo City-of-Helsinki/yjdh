@@ -55,9 +55,7 @@ const Modal: React.FC<ModalProps> = ({
       variant={variant}
     >
       {title && <Dialog.Header title={title} id={id} iconLeft={headerIcon} />}
-      {customContent ? (
-        customContent
-      ) : (
+      {customContent || (
         <>
           {children && <Dialog.Content>{children}</Dialog.Content>}
           <Dialog.ActionButtons>

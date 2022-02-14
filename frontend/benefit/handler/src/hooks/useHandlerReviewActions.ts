@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
-import { ROUTES } from '../constants';
+
+import { APPLICATION_STATUSES, ROUTES } from '../constants';
 import AppContext from '../context/AppContext';
 import {
   Application,
@@ -36,6 +37,26 @@ const useHandlerReviewActions = (
   const { handledApplication } = React.useContext(AppContext);
 
   const { updateStatus } = useApplicationActions(application);
+
+  // ACCEPTED, REJECTED, CANCELLED
+  const onDone = React.useCallback((): void => {
+    if (handledApplication?.status) {
+      updateStatus(
+        handledApplication.status,
+        handledApplication.logEntryComment
+      );
+    }
+  }, [handledApplication, updateStatus]);
+
+  // workaround for cancellation, untill hds dialog is fixed
+  useEffect(() => {
+    if (
+      handledApplication?.status === APPLICATION_STATUSES.CANCELLED &&
+      handledApplication.logEntryComment
+    ) {
+      onDone();
+    }
+  }, [handledApplication, onDone]);
 
   const getDataEmployment = (values: CalculationFormProps): ApplicationData => {
     const startDate = values.startDate
@@ -131,16 +152,6 @@ const useHandlerReviewActions = (
 
   const onSaveAndClose = (): void => {
     void router.push(ROUTES.HOME);
-  };
-
-  // ACCEPTED or REJECTED or CANCELLED
-  const onDone = (): void => {
-    if (handledApplication?.status) {
-      updateStatus(
-        handledApplication.status,
-        handledApplication.logEntryComment
-      );
-    }
   };
 
   return {

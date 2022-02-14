@@ -10,6 +10,7 @@ import {
 import noop from 'lodash/noop';
 import * as React from 'react';
 import Modal from 'shared/components/modal/Modal';
+
 import EditAction from '../editAction/EditAction';
 import CancelModalContent from './CancelModalContent/CancelModalContent';
 import {
@@ -29,7 +30,9 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
     onDone,
     onSaveAndClose,
     toggleMessagesDrawerVisiblity,
-    setIsConfirmationModalOpen,
+    openDialog,
+    closeDialog,
+    handleCancel,
     isMessagesDrawerVisible,
     translationsBase,
     isDisabledDoneButton,
@@ -55,7 +58,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
       </$Column>
       <$Column>
         <Button
-          onClick={() => setIsConfirmationModalOpen(true)}
+          onClick={openDialog}
           theme="black"
           variant="supplementary"
           iconLeft={<IconTrash />}
@@ -69,15 +72,13 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
           isOpen={isConfirmationModalOpen}
           title={t(`${translationsBase}.reasonCancelDialogTitle`)}
           submitButtonLabel=""
-          handleToggle={() => setIsConfirmationModalOpen(false)}
+          handleToggle={closeDialog}
           handleSubmit={noop}
           headerIcon={<IconInfoCircle />}
           submitButtonIcon={<IconTrash />}
+          variant="danger"
           customContent={
-            <CancelModalContent
-              onClose={() => setIsConfirmationModalOpen(false)}
-              onSubmit={noop}
-            />
+            <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
           }
         />
       )}
