@@ -7,7 +7,7 @@ trigger:
   paths:
     include:
     - frontend/tet/admin/**
-    - frontend/*
+#    - frontend/*
     exclude:
     - frontend/**/browser-tests 
     - frontend/**/__tests__ 
