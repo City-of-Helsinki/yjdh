@@ -20,12 +20,12 @@
     "backToTop": "Takaisin ylös",
     "registerInformation": "Rekisteriseloste",
     "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen%20kesatyosetelirekisteri.pdf",
-    "jobOpenings": "Avoimet työpaikat",
+    "jobOpenings": "Avoimet kesätyöpaikat",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Ota yhteyttä",
     "contactUsLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/ota-yhteytta/",
     "accessibilityStatement": "Saavutettavuusseloste",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "information": "Tietoa palvelusta",
     "informationLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/"
   },
@@ -34,7 +34,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "termsAndConditionsLink": "https://nuorten.helsinki/kesaseteli/nuorelle/",
   "error": {
     "generic": {
       "label": "Tapahtui tuntematon virhe",
@@ -48,9 +48,9 @@
   },
   "youthApplication": {
     "title": "Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
-    "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "paragraph_1": "Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa.",
     "form" : {
-      "title": "Setelin tiedot",
+      "title": "Kesäsetelin tiedot",
       "info": "Täytäthän tiedot samalla tavalla kuin kelakortissasi",
       "button": "Lähetä tiedot",
       "first_name" : "Etunimi",
@@ -66,9 +66,9 @@
       "email": "Sähköpostiosoite",
       "phone_number": "Puhelinnumero",
       "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
-      "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+      "termsAndConditionsLink": "https://kesasethttps://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/",
       "sendButton": "Lähetä tiedot",
-      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia"
     }
   },
   "errors": {
@@ -84,25 +84,23 @@
   "thankyouPage" : {
     "title": "Kiitos",
     "notificationTitle": "Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
-    "goToFrontendPage": "Kesäseteli etusivulle"
+    "notificationMessage": "Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa.",
+    "goToFrontendPage": "Siirry kesäsetelin etusivulle"
   },
   "activationErrorPage" : {
     "goToFrontendPage": "Tarkista tiedot ja lähetä uudelleen"
   },
   "emailInUsePage" : {
     "title": "Hups! Sähköposti on jo käytössä.",
-    "notificationMessage": "Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+    "notificationMessage": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
   },
   "alreadyAssignedPage" : {
-    "title": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
-    "notificationMessage": "Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+    "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä."
   },
   "activatedPage" : {
-    "title": "Kesäsetelisi on nyt aktivoitu",
+    "title": "Kesäsetelisi on nyt aktivoitu!",
     "notificationTitle": "Vahvistus onnistui",
-    "notificationMessage": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    "paragraph_1": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "notificationMessage": "Hienoa! Olet lähettänyt tietosi järjestelmään ja hakemuksesi käsitellään mahdollisimman pian - viimeistään kuukauden kuluessa. Saat Kesäsetelin ja käyttöohjeet sähköpostiisi kun hakemuksesi on tarkastettu!"
   },
   "expiredPage" : {
     "title": "Hups! Vahvistuslinkki on vanhentunut.",
@@ -110,8 +108,6 @@
     "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
   },
   "alreadyActivatedPage" : {
-    "title": "Hups! Vahvistuslinkki on jo aktivoitu.",
-    "notificationMessage": "Kesäseteli on lähetetty sähköpostiisi.",
-    "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
+    "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä."
   }
 }

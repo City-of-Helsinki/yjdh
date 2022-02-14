@@ -104,7 +104,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
             end_date=self.application.end_date,
             state_aid_max_percentage=STATE_AID_MAX_PERCENTAGE_CHOICES[0][0],
             calculated_benefit_amount=0,
-            override_benefit_amount=None,
+            override_monthly_benefit_amount=None,
         )
 
         self.application.pay_subsidy_1 = PaySubsidyFactory()
@@ -244,7 +244,7 @@ class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
             end_date=self.application.end_date,
             state_aid_max_percentage=STATE_AID_MAX_PERCENTAGE_CHOICES[0][0],
             calculated_benefit_amount=0,
-            override_benefit_amount=None,
+            override_monthly_benefit_amount=None,
         )
 
         self.application.pay_subsidy = PaySubsidyFactory()

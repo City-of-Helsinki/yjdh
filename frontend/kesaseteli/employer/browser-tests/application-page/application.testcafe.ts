@@ -1,3 +1,4 @@
+import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
@@ -22,14 +23,18 @@ let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 fixture('Application')
   .page(url)
-  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
     step2Components = getStep2Components(t);
     headerComponents = getHeaderComponents(t);
-  });
+  })
+  .afterEach(async () =>
+    // eslint-disable-next-line no-console
+    console.log(requestLogger.requests)
+  );
 
 if (isRealIntegrationsEnabled()) {
   test('Fills up employer form and retrieves its data when logged out and in', async (t: TestController) => {

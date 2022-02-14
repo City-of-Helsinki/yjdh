@@ -65,14 +65,29 @@
       "workHoursNotice": "ENG Työaika on aina sama 30h per viikko.",
       "startDateLabel": "ENG Alkaen",
       "endDateLabel": "ENG Päättyen",
-      "spotsLabel": "ENG Työharjoittelupaikkoja"
+      "spotsLabel": "ENG Työharjoittelupaikkoja",
+			"contactFirstName": "ENG Etunimi",
+			"contactLastName": "ENG Sukunimi",
+			"contactPhone": "ENG Puhelin",
+			"contactEmail": "ENG Sähköposti",
+			"contactLanguage": "ENG Asiointikieli",
+			"contactLanguageFi": "ENG Suomi",
+			"contactLanguageSv": "ENG Ruotsi",
+			"contactLanguageEn": "ENG Englanti",
+			"validation": {
+				"required": "ENG Tieto vaaditaan",
+				"email": "ENG Syötä sähköposti oikeassa muodossa",
+				"max": "ENG Maksimimerkkimäärä ylittyy",
+				"phone": "ENG Syötä oikeassa muodossa",
+				"name": "ENG Syötä nimi sallitussa muodossa"
+			}
     }
   },
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "ENG Anna palautetta",

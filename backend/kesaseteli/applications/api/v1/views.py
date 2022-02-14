@@ -1,10 +1,13 @@
 import logging
+from functools import cached_property
 
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
-from django.db.models import Func
+from django.db.models import F, Func
+from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -44,18 +47,53 @@ LOGGER = logging.getLogger(__name__)
 
 
 class SchoolListView(ListAPIView):
+    serializer_class = SchoolSerializer
+
     # PostgreSQL specific functionality:
     # - Custom sorter for name field to ensure finnish language sorting order.
-    # - NOTE: This can be removed if the database is made to use collation fi_FI.UTF8
+    # - NOTE: This can be removed if the database is made to use collation fi_FI.utf8
     # TODO: Remove this after fixing related GitHub workflows to use Finnish PostgreSQL
-    _name_fi = Func(
-        "name",
-        function="fi-FI-x-icu",  # fi_FI.UTF8 would be best but wasn't available
-        template='(%(expressions)s) COLLATE "%(function)s"',
-    )
+    def get_sorter(self, field_name, collation):
+        if collation is None:
+            return F(field_name)
+        else:
+            return Func(
+                field_name,
+                function=collation,
+                template='(%(expressions)s) COLLATE "%(function)s"',
+            )
 
-    queryset = School.objects.order_by(_name_fi.asc())
-    serializer_class = SchoolSerializer
+    def get_collations(self):
+        return [
+            "fi_FI.utf8",  # PostgreSQL UTF-8 version
+            "Finnish_Swedish_CI_AS_UTF8",  # Azure's UTF-8 version
+            "fi-FI-x-icu",  # PostgreSQL fallback
+            None,  # No collation override
+        ]
+
+    def get_sorters(self):
+        return [
+            self.get_sorter("name", collation) for collation in self.get_collations()
+        ]
+
+    @cached_property
+    def preferred_sorter(self):
+        for sorter in self.get_sorters():
+            # Try out different order by functions until a functional one is found
+            try:
+                # Use transaction to avoid django.db.utils.InternalError:
+                # "current transaction is aborted, commands ignored until end of
+                # transaction block"
+                with transaction.atomic():
+                    # Force evaluation of queryset to test sorting function
+                    list(School.objects.order_by(sorter.asc()))
+                return sorter
+            except ProgrammingError:  # Collation for encoding does not exist
+                pass
+        raise ProgrammingError("Unable to determine working collation for school list")
+
+    def get_queryset(self):
+        return School.objects.order_by(self.preferred_sorter.asc())
 
     def get_permissions(self):
         permission_classes = [AllowAny]
@@ -68,10 +106,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
     @action(methods=["get"], detail=True)
     def process(self, request, pk=None) -> HttpResponse:
-        try:
-            YouthApplication.objects.get(pk=pk)
-        except (exceptions.ValidationError, YouthApplication.DoesNotExist):
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        youth_application: YouthApplication = self.get_object()  # noqa: F841
 
         # TODO: Implement
         return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
@@ -79,10 +114,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @transaction.atomic
     @action(methods=["get"], detail=True)
     def activate(self, request, pk=None) -> HttpResponse:
-        try:
-            youth_application = YouthApplication.objects.select_for_update().get(pk=pk)
-        except (exceptions.ValidationError, YouthApplication.DoesNotExist):
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        youth_application: YouthApplication = self.get_object()
 
         # Lock same person's applications to prevent activation of more than one of them
         same_persons_apps = YouthApplication.objects.select_for_update().filter(
@@ -112,6 +144,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def error_response(cls, reason: YouthApplicationRejectedReason):
         return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=reason.json())
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         # This function is based on CreateModelMixin class's create function.
         serializer = self.get_serializer(data=request.data)
@@ -133,7 +166,17 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
         # Send the localized activation email
         youth_application = serializer.instance
-        youth_application.send_activation_email(request, youth_application.language)
+        was_email_sent = youth_application.send_activation_email(
+            request, youth_application.language
+        )
+
+        if not was_email_sent:
+            transaction.set_rollback(True)
+            with translation.override(youth_application.language):
+                return HttpResponse(
+                    _("Failed to send activation email"),
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
         # Return success creating the object
         headers = self.get_success_headers(serializer.data)

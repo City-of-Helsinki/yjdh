@@ -3,7 +3,9 @@ import {
   CALCULATION_DESCRIPTION_ROW_TYPES,
   CALCULATION_SUMMARY_ROW_TYPES,
   CALCULATION_TOTAL_ROW_TYPE,
+  CALCULATION_TYPES,
 } from 'benefit/handler/constants';
+import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
 import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
@@ -13,6 +15,7 @@ import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSepara
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
@@ -21,28 +24,31 @@ import {
   $CalculatorText,
   $DateTimeDuration,
 } from '../ApplicationReview.sc';
+import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
 import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
 
 const SalaryBenefitCalculatorView: React.FC<
   SalaryBenefitCalculatorViewProps
 > = ({ data }) => {
   const {
-    t,
-    translationsBase,
-    theme,
     formik,
     fields,
-    language,
-    grantedPeriod,
-    appliedPeriod,
+    calculationsErrors,
     paySubsidyPeriod,
-    getErrorMessage,
-    handleSubmit,
+    grantedPeriod,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,
     paySubsidyPercentageOptions,
     getPaySubsidyPercentageSelectValue,
   } = useSalaryBenefitCalculatorData(data);
+  const {
+    t,
+    translationsBase,
+    theme,
+    language,
+    getErrorMessage,
+    handleSubmit,
+  } = useCalculatorData(CALCULATION_TYPES.SALARY, formik);
 
   return (
     <ReviewSection withMargin>
@@ -61,9 +67,9 @@ const SalaryBenefitCalculatorView: React.FC<
         <$GridCell $colStart={1} $colSpan={3} style={{ alignSelf: 'center' }}>
           <$ViewField>
             {t(`${translationsBase}.startEndDates`, {
-              startDate: data.startDate,
-              endDate: data.endDate,
-              period: formatStringFloatValue(appliedPeriod),
+              startDate: convertToUIDateFormat(data.startDate),
+              endDate: convertToUIDateFormat(data.endDate),
+              period: formatStringFloatValue(data.durationInMonthsRounded),
             })}
           </$ViewField>
         </$GridCell>
@@ -277,6 +283,7 @@ const SalaryBenefitCalculatorView: React.FC<
 
       <$GridCell $colStart={1} $colSpan={11}>
         <$CalculatorHr />
+        <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
 
       <$GridCell $colSpan={7}>
@@ -296,7 +303,9 @@ const SalaryBenefitCalculatorView: React.FC<
                   </$ViewField>
                   {!isDescriptionRowType && (
                     <$ViewField isBold={isTotalRowType}>
-                      {row.amount}
+                      {t(`${translationsBase}.tableRowValue`, {
+                        amount: formatStringFloatValue(row.amount),
+                      })}
                     </$ViewField>
                   )}
                 </$CalculatorTableRow>

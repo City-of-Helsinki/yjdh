@@ -55,6 +55,7 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   padding: ${({ theme: { spacing } }) => `${spacing.xs3} ${spacing.xs}`};
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
+  margin-bottom: ${(props) => (props.isTotal ? props.theme.spacing.m : '0')};
 `;
 
 export const $DateTimeDuration = styled.div`

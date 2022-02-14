@@ -24,18 +24,18 @@ const translations = {
     sendButton: /lähetä tiedot/i,
   },
   sv: {
-    title: /sv rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
-    schoolsDropdown: /sv koulu/i,
-    unlistedSchoolCheckbox: /sv koulua ei löydy listalta/i,
+    title: /registrera dig och få din personlig sommarsedel/i,
+    schoolsDropdown: /skola/i,
+    unlistedSchoolCheckbox: /skolan finns inte i listan/i,
     termsAndConditionsCheckbox: /jag har läst och godkänner villkoren/i,
-    sendButton: /sv lähetä tiedot/i,
+    sendButton: /skicka informationen/i,
   },
   en: {
-    title: /eng rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
-    schoolsDropdown: /eng koulu/i,
-    unlistedSchoolCheckbox: /eng koulua ei löydy listalta/i,
+    title: /sign up to receive your personal summer job voucher/i,
+    schoolsDropdown: /school/i,
+    unlistedSchoolCheckbox: /school not found on the list/i,
     termsAndConditionsCheckbox: /i have read and accept the terms of use/i,
-    sendButton: /eng lähetä tiedot/i,
+    sendButton: /submit information/i,
   },
 };
 

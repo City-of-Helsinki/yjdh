@@ -192,6 +192,7 @@ export type CalculationData = {
   override_benefit_amount_comment?: string;
   rows: RowData[];
   handler_details: HandlerDetailsData;
+  duration_in_months_rounded: string;
 };
 
 export type PaySubsidyData = {
@@ -258,6 +259,7 @@ export type ApplicationData = {
   calculation?: CalculationData;
   submitted_at?: string;
   pay_subsidies?: PaySubsidyData[];
+  duration_in_months_rounded?: string;
 };
 
 export type ApplicationListItemData = {
@@ -363,16 +365,17 @@ export type Calculation = {
   overrideBenefitAmountComment?: string;
   rows: Row[];
   handlerDetails: HandlerDetails;
+  durationInMonthsRounded?: string;
 } & CalculationCommon;
 
-export type SalaryCalculation = {
+export type CalculationFormProps = {
   monthlyPay?: string;
   vacationMoney?: string;
   otherExpenses?: string;
   stateAidMaxPercentage?: number;
-  paySubsidyStartDate: string;
-  paySubsidyEndDate: string;
-  paySubsidyPercent: number;
+  paySubsidyStartDate?: string;
+  paySubsidyEndDate?: string;
+  paySubsidyPercent?: number;
 } & CalculationCommon;
 
 export type Application = {
@@ -394,6 +397,7 @@ export type Application = {
   calculation?: Calculation;
   submittedAt?: string;
   paySubsidies?: PaySubsidy[];
+  durationInMonthsRounded?: string;
 } & Step1 &
   Step2;
 

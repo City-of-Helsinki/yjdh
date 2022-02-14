@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-01 11:37+0200\n"
-"PO-Revision-Date: 2022-01-10 08:48+0200\n"
+"POT-Creation-Date: 2022-02-08 14:51+0200\n"
+"PO-Revision-Date: 2022-02-08 14:52+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -60,6 +60,9 @@ msgstr ""
 
 msgid "Social security number must be set"
 msgstr ""
+
+msgid "Failed to send activation email"
+msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
 
 msgid "File not found."
 msgstr ""
@@ -292,13 +295,17 @@ msgstr ""
 msgid "vtj json"
 msgstr ""
 
-msgid "Vahvista sähköpostiosoitteesi"
+msgid "Aktivoi Kesäseteli"
 msgstr ""
 
 #, python-format
 msgid ""
-"Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
-"%(activation_link)s"
+"Aktivoi Kesäsetelisi vahvistamalla sähköpostiosoitteesi klikkaamalla alla "
+"olevaa linkkiä:\n"
+"\n"
+"%(activation_link)s\n"
+"\n"
+"Ystävällisin terveisin, Kesäseteli-tiimi"
 msgstr ""
 
 #, python-format
