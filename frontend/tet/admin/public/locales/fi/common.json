@@ -58,7 +58,9 @@
     "employerInfo": {
       "header": "Työpaikan tiedot",
       "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "Toimipiste tai osasto"
+      "departmentLabel": "Toimipiste tai osasto",
+			"address": "Osoite",
+			"streetAddress": "Katuosoite"
     },
     "posting": {
       "header": "Työharjoittelupaikan tiedot",
@@ -83,6 +85,18 @@
 				"phone": "Syötä oikeassa muodossa",
 				"name": "Syötä nimi sallitussa muodossa"
 			}
+    },
+		"classification": {
+			"classifications": "Luokittelut",
+			"workMethod": "Työtapa",
+			"workFeature": "Työn ominaisuudet",
+			"keywords": "Avainsanat",
+			"search": "Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "Poista valinta"
     }
   },
 	"postingTemplate": {
@@ -97,7 +111,7 @@
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "privacyPolicy": "Rekisteriseloste",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Anna palautetta",

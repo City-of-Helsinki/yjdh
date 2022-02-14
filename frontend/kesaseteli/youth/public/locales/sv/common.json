@@ -25,7 +25,7 @@
     "contactUs": "Ta kontakt",
     "contactUsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/ta-kontakt/",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
     "information": "Information om servicen",
     "informationLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/"
   },
@@ -34,7 +34,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/kesatyonhakijalle/",
   "error": {
     "generic": {
       "label": "Ett okänt fel inträffade.",
@@ -95,13 +95,12 @@
     "notificationMessage": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen."
   },
   "alreadyAssignedPage" : {
-    "title": "Hoppsan! En Sommarsedel har redan beviljats med den information som du har lämnat.",
-    "notificationMessage": " Aktiveringslänken för Sommarsedeln har skickats till den e-postadress som du uppgav på registreringssidan."
+    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
   },
   "activatedPage" : {
     "title": "Din Sommarsedel är nu aktiverad!",
     "notificationTitle": "Bekräftelsen lyckades",
-    "notificationMessage": "Fint! Du har skickat din information till Sommarsedelns eletroniska systemet. Efter att din ansökan har granskats får du Sommarsedlen och bruksanvisningar till din e-post."
+    "notificationMessage": "Bra! Du har lämnat in dina uppgifter till systemet och din ansökan kommer att behandlas så snart som möjligt – senast inom en månad. Du får sommarsedeln och bruksanvisningar via e-post när din ansökan har kontrollerats!"
   },
   "expiredPage" : {
     "title": "Hoppsan! Bekräftelselänken har gått ut.",
@@ -109,8 +108,6 @@
     "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
   },
   "alreadyActivatedPage" : {
-    "title": "Hoppsan! Bekräftelselänken är redan aktiverad.",
-    "notificationMessage": "Sommarsedeln har skickats till din epost.",
-    "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
+    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
   }
 }

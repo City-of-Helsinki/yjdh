@@ -1,4 +1,6 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { CALCULATION_TYPES } from 'benefit/handler/constants';
+import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { Button, DateInput } from 'hds-react';
 import * as React from 'react';
@@ -22,19 +24,17 @@ import { useEmploymentAppliedMoreView } from './useEmploymentAppliedMoreView';
 const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
   data,
 }) => {
+  const { formik, fields, calculationsErrors, grantedPeriod } =
+    useEmploymentAppliedMoreView(data);
   const {
     t,
     translationsBase,
     theme,
-    formik,
-    fields,
     language,
-    grantedPeriod,
-    appliedPeriod,
-    calculationsErrors,
     getErrorMessage,
     handleSubmit,
-  } = useEmploymentAppliedMoreView(data);
+  } = useCalculatorData(CALCULATION_TYPES.EMPLOYMENT, formik);
+
   return (
     <form onSubmit={handleSubmit} noValidate>
       <ReviewSection withMargin>
@@ -46,7 +46,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
                 {t(`${translationsBase}.startEndDates`, {
                   startDate: convertToUIDateFormat(data.startDate),
                   endDate: convertToUIDateFormat(data.endDate),
-                  period: formatStringFloatValue(appliedPeriod),
+                  period: formatStringFloatValue(data.durationInMonthsRounded),
                 })}
               </>
             )}

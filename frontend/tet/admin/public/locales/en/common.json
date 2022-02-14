@@ -58,7 +58,9 @@
     "employerInfo": {
       "header": "ENG Työpaikan tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "ENG Toimipiste tai osasto"
+      "departmentLabel": "ENG Toimipiste tai osasto",
+			"address": "ENG Osoite",
+			"streetAddress": "ENG Katuosoite"
     },
     "posting": {
       "header": "ENG Työharjoittelupaikan tiedot",
@@ -83,6 +85,18 @@
 				"phone": "ENG Syötä oikeassa muodossa",
 				"name": "ENG Syötä nimi sallitussa muodossa"
 			}
+    },
+		"classification": {
+			"classifications": "ENG Luokittelut",
+			"workMethod": "ENG Työtapa",
+			"workFeature": "ENG Työn ominaisuudet",
+			"keywords": "ENG Avainsanat",
+			"search": "ENG Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "ENG Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "ENG Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "ENG Poista valinta"
     }
   },
 	"postingTemplate": {
@@ -97,7 +111,7 @@
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "ENG Anna palautetta",

@@ -135,3 +135,8 @@ export const CALCULATION_SUMMARY_ROW_TYPES = [
 export const CALCULATION_DESCRIPTION_ROW_TYPES = ['description'];
 
 export const CALCULATION_TOTAL_ROW_TYPE = 'helsinki_benefit_total_eur';
+
+export enum CALCULATION_TYPES {
+  SALARY = 'salary',
+  EMPLOYMENT = 'employment',
+}

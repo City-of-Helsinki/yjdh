@@ -84,8 +84,8 @@ class CalculationFactory(factory.django.DjangoModelFactory):
     calculated_benefit_amount = factory.Faker(
         "pydecimal", left_digits=4, right_digits=2, min_value=0
     )
-    override_benefit_amount = None
-    override_benefit_amount_comment = ""
+    override_monthly_benefit_amount = None
+    override_monthly_benefit_amount_comment = ""
 
     row_1 = factory.RelatedFactory(
         CalculationRowFactory,
