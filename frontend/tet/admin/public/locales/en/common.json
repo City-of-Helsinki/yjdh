@@ -56,7 +56,9 @@
     "employerInfo": {
       "header": "ENG Työpaikan tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "ENG Toimipiste tai osasto"
+      "departmentLabel": "ENG Toimipiste tai osasto",
+			"address": "ENG Osoite",
+			"streetAddress": "ENG Katuosoite"
     },
     "posting": {
       "header": "ENG Työharjoittelupaikan tiedot",
@@ -81,6 +83,18 @@
 				"phone": "ENG Syötä oikeassa muodossa",
 				"name": "ENG Syötä nimi sallitussa muodossa"
 			}
+    },
+		"classification": {
+			"classifications": "ENG Luokittelut",
+			"workMethod": "ENG Työtapa",
+			"workFeature": "ENG Työn ominaisuudet",
+			"keywords": "ENG Avainsanat",
+			"search": "ENG Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "ENG Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "ENG Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "ENG Poista valinta"
     }
   },
   "footer": {
