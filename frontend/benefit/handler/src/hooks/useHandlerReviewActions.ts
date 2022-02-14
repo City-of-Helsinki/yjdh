@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
 
-import { APPLICATION_STATUSES, ROUTES } from '../constants';
+import { ROUTES } from '../constants';
 import AppContext from '../context/AppContext';
 import {
   Application,
   ApplicationData,
   CalculationFormProps,
+  HandledAplication,
   PaySubsidy,
 } from '../types/application';
 import { ErrorData } from '../types/common';
@@ -20,6 +21,7 @@ interface HandlerReviewActions {
   onCalculateEmployment: (calculator: CalculationFormProps) => void;
   onSaveAndClose: () => void;
   onDone: () => void;
+  onCancel: (cancelledApplication: HandledAplication) => void;
   calculationsErrors: ErrorData | undefined | null;
   calculateSalaryBenefit: (values: CalculationFormProps) => void;
 }
@@ -38,7 +40,7 @@ const useHandlerReviewActions = (
 
   const { updateStatus } = useApplicationActions(application);
 
-  // ACCEPTED, REJECTED, CANCELLED
+  // ACCEPTED, REJECTED
   const onDone = React.useCallback((): void => {
     if (handledApplication?.status) {
       updateStatus(
@@ -48,15 +50,15 @@ const useHandlerReviewActions = (
     }
   }, [handledApplication, updateStatus]);
 
-  // workaround for cancellation, untill hds dialog is fixed
-  useEffect(() => {
-    if (
-      handledApplication?.status === APPLICATION_STATUSES.CANCELLED &&
-      handledApplication.logEntryComment
-    ) {
-      onDone();
+  // CANCELL
+  const onCancel = (cancelledApplication: HandledAplication): void => {
+    if (cancelledApplication?.status) {
+      updateStatus(
+        cancelledApplication.status,
+        cancelledApplication.logEntryComment
+      );
     }
-  }, [handledApplication, onDone]);
+  };
 
   const getDataEmployment = (values: CalculationFormProps): ApplicationData => {
     const startDate = values.startDate
@@ -158,6 +160,7 @@ const useHandlerReviewActions = (
     onCalculateEmployment,
     onSaveAndClose,
     onDone,
+    onCancel,
     calculateSalaryBenefit,
     calculationsErrors,
   };

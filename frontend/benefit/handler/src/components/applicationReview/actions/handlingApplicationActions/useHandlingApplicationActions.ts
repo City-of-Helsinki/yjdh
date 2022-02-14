@@ -30,7 +30,8 @@ const useHandlingApplicationActions = (
 ): ExtendedComponentProps => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
-  const { onSaveAndClose, onDone } = useHandlerReviewActions(application);
+  const { onSaveAndClose, onDone, onCancel } =
+    useHandlerReviewActions(application);
   const { handledApplication, setHandledApplication } =
     React.useContext(AppContext);
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
@@ -68,6 +69,7 @@ const useHandlingApplicationActions = (
   const handleCancel = (cancelledApplication: HandledAplication): void => {
     // workaround for broken hds dialog
     setHandledApplication(cancelledApplication);
+    onCancel(cancelledApplication);
   };
 
   const onCommentsChange = (

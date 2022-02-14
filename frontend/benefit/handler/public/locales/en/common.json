@@ -15,20 +15,20 @@
   },
   "notifications": {
     "accepted": {
-      "title": "Application was successfully accepted",
-      "message": "Application was successfully accepted"
+      "title": "Hakemusta on puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
     },
     "rejected": {
-      "title": "Application was successfully rejected",
-      "message": "Application was successfully rejected"
+      "title": "Hakemusta ei puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
     },
     "cancelled": {
-      "title": "Application was successfully cencelled",
-      "message": "Application was successfully cencelled"
+      "title": "Hakemus on peruuttu",
+      "message": "Hakemus {{applicationNum}} on peruuttu onnistuneesti ja siirretty arkistoon."
     },
     "error": {
-      "title": "Error occurred",
-      "message": "Error occurred"
+      "title": "Tapahtui tuntematon virhe",
+      "message": " Yritä myöhemmin uudelleen"
     }
   },
   "messenger": {
