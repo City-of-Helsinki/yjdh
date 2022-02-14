@@ -4,19 +4,34 @@ import AppContext from 'benefit/handler/context/AppContext';
 import { TextArea } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { $RadioButton } from 'shared/components/forms/fields/Fields.sc';
+import {
+  $Checkbox,
+  $RadioButton,
+} from 'shared/components/forms/fields/Fields.sc';
 import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import theme from 'shared/styles/theme';
 
-import { $CalculatorHr, $MainHeader } from '../ApplicationReview.sc';
+import {
+  $CalculatorHr,
+  $FieldHeaderText,
+  $MainHeader,
+} from '../ApplicationReview.sc';
 
 const ApplicationProcessingView: React.FC = () => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   const { handledApplication, setHandledApplication } =
     React.useContext(AppContext);
+
+  const toggleGrantedAsDeMinimisAid = (): void => {
+    setHandledApplication({
+      ...handledApplication,
+      grantedAsDeMinimisAid: !handledApplication?.grantedAsDeMinimisAid,
+    });
+  };
 
   const onCommentsChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -44,6 +59,7 @@ const ApplicationProcessingView: React.FC = () => {
                     setHandledApplication({
                       logEntryComment: '',
                       status: APPLICATION_STATUSES.REJECTED,
+                      grantedAsDeMinimisAid: false,
                     });
                   }
                 }}
@@ -54,7 +70,12 @@ const ApplicationProcessingView: React.FC = () => {
           {handledApplication?.status === APPLICATION_STATUSES.REJECTED && (
             <>
               <$Grid>
-                <$GridCell $colSpan={12}>
+                <$GridCell
+                  $colSpan={12}
+                  css={`
+                    margin-top: ${theme.spacing.s};
+                  `}
+                >
                   <$CalculatorHr />
                 </$GridCell>
               </$Grid>
@@ -102,7 +123,12 @@ const ApplicationProcessingView: React.FC = () => {
           {handledApplication?.status === APPLICATION_STATUSES.ACCEPTED && (
             <>
               <$Grid>
-                <$GridCell $colSpan={12}>
+                <$GridCell
+                  $colSpan={12}
+                  css={`
+                    margin-top: ${theme.spacing.s};
+                  `}
+                >
                   <$CalculatorHr />
                 </$GridCell>
               </$Grid>
@@ -117,6 +143,25 @@ const ApplicationProcessingView: React.FC = () => {
                     )}
                     value={handledApplication?.logEntryComment}
                     onChange={onCommentsChange}
+                  />
+                </$GridCell>
+              </$Grid>
+              <$Grid>
+                <$GridCell $colSpan={12}>
+                  <$FieldHeaderText>
+                    {t(`${translationsBase}.actions.grantedAsDeminimisText`)}
+                  </$FieldHeaderText>
+                </$GridCell>
+                <$GridCell $colSpan={12}>
+                  <$Checkbox
+                    id="deminimisCheckbox"
+                    name="deminimisCheckbox"
+                    label={t(
+                      `${translationsBase}.actions.grantedAsDeminimisAid`
+                    )}
+                    required
+                    checked={handledApplication.grantedAsDeMinimisAid === true}
+                    onChange={toggleGrantedAsDeMinimisAid}
                   />
                 </$GridCell>
               </$Grid>

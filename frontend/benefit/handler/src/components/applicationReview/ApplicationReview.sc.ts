@@ -20,6 +20,12 @@ export const $CalculatorText = styled.p`
   font-size: ${(props) => props.theme.fontSize.body.m};
 `;
 
+export const $FieldHeaderText = styled.p`
+  margin-bottom: 0;
+  font-size: ${(props) => props.theme.fontSize.body.m};
+  font-weight: 500;
+`;
+
 export const $CalculatorHr = styled($Hr)`
   margin-top: ${(props) => props.theme.spacing.xs};
   margin-bottom: ${(props) => props.theme.spacing.m};

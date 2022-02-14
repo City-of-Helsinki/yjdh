@@ -146,7 +146,9 @@
       "reasonCancelDialogDescription": "Hakemus peruututan lopullisesti ja siirretään arkistoon eikä sitä voida enää palauttaa käsittelyyn",
       "reasonCancelLabel": "Syy peruutuksen",
       "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
-      "reasonCancelConfirm": "Peruuta hakemus"
+      "reasonCancelConfirm": "Peruuta hakemus",
+      "grantedAsDeminimisText": "De minimis",
+      "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",

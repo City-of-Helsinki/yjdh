@@ -45,7 +45,8 @@ const useHandlerReviewActions = (
     if (handledApplication?.status) {
       updateStatus(
         handledApplication.status,
-        handledApplication.logEntryComment
+        handledApplication.logEntryComment,
+        handledApplication.grantedAsDeMinimisAid
       );
     }
   }, [handledApplication, updateStatus]);
@@ -55,7 +56,8 @@ const useHandlerReviewActions = (
     if (cancelledApplication?.status) {
       updateStatus(
         cancelledApplication.status,
-        cancelledApplication.logEntryComment
+        cancelledApplication.logEntryComment,
+        false
       );
     }
   };

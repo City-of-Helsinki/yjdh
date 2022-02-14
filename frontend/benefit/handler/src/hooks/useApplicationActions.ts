@@ -11,7 +11,8 @@ import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 type ExtendedComponentProps = {
   updateStatus: (
     newStatus: APPLICATION_STATUSES,
-    logEntryComment?: string
+    logEntryComment?: string,
+    grantedAsDeMinimisAid?: boolean
   ) => void;
   isUpdatingApplication: boolean;
 };
@@ -23,13 +24,15 @@ const useApplicationActions = (
 
   const updateStatus = (
     status: APPLICATION_STATUSES,
-    logEntryComment?: string
+    logEntryComment?: string,
+    grantedAsDeMinimisAid?: boolean
   ): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,
         status,
         logEntryComment,
+        grantedAsDeMinimisAid,
         applicationStep: getApplicationStepString(1),
       },
       { deep: true }
