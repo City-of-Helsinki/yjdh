@@ -12,6 +12,7 @@ import pytz
 from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
     AttachmentSerializer,
+    HandlerApplicationSerializer,
 )
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
@@ -965,7 +966,8 @@ def test_application_status_change_as_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
-    data = ApplicantApplicationSerializer(application).data
+    application.refresh_from_db()
+    data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
@@ -1034,7 +1036,7 @@ def test_application_status_change_as_handler_auto_assign_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
-    data = ApplicantApplicationSerializer(application).data
+    data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:

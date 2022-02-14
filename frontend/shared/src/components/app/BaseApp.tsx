@@ -14,6 +14,7 @@ import HDSToastContainer from 'shared/components/toast/ToastContainer';
 import useIsRouting from 'shared/hooks/useIsRouting';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
+import maskGDPRData from 'shared/utils/mask-gdpr-data';
 import { isError } from 'shared/utils/type-guards';
 import { ThemeProvider } from 'styled-components';
 
@@ -22,9 +23,23 @@ type Props = AppProps & {
   footer: React.ReactNode;
 };
 
+// Centralized logging with Sentry. See more:
+// https://docs.sentry.io/platforms/javascript/configuration/options
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
   environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development',
+  attachStacktrace: Boolean(process.env.NEXT_PUBLIC_SENTRY_ATTACH_STACKTRACE),
+  maxBreadcrumbs: Number(process.env.NEXT_PUBLIC_SENTRY_MAX_BREADCRUMBS) || 100,
+  beforeBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
+    return {
+      ...breadcrumb,
+      message: maskGDPRData(breadcrumb.message),
+      data: maskGDPRData(breadcrumb.data),
+    };
+  },
+  beforeSend(event: Sentry.Event) {
+    return maskGDPRData(event);
+  },
 });
 
 setLogger({

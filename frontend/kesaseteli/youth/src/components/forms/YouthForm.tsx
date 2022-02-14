@@ -52,6 +52,8 @@ const YouthForm: React.FC = () => {
         switch (errorCode) {
           case 'already_assigned':
           case 'email_in_use':
+            // eslint-disable-next-line no-console
+            console.error('youth application creation error', errorCode, error);
             void router.push(`${locale}/${encodeURIComponent(errorCode)}`);
             return;
 

@@ -59,6 +59,7 @@ export const getThankYouPageComponents = async (
     async clickActivationLink() {
       const href = await selectors.activationLink().getAttribute('href');
       setDataToPrintOnFailure(t, 'activationLink', href);
+      // eslint-disable-next-line no-console
       console.log('Clicking activation link', href);
       await t.click(selectors.activationLink());
     },

@@ -9,6 +9,7 @@ from calculator.models import (
     DescriptionRow,
     EmployeeBenefitMonthlyRow,
     EmployeeBenefitTotalRow,
+    ManualOverrideTotalRow,
     PaySubsidy,
     PaySubsidyMonthlyRow,
     SalaryBenefitMonthlyRow,
@@ -37,7 +38,9 @@ class HelsinkiBenefitCalculator:
     @staticmethod
     def get_calculator(calculation):
         # in future, one might use e.g. application date to determine the correct calculator
-        if calculation.application.benefit_type == BenefitType.SALARY_BENEFIT:
+        if calculation.override_monthly_benefit_amount is not None:
+            return ManualOverrideCalculator(calculation)
+        elif calculation.application.benefit_type == BenefitType.SALARY_BENEFIT:
             return SalaryBenefitCalculator2021(calculation)
         elif calculation.application.benefit_type == BenefitType.EMPLOYMENT_BENEFIT:
             return EmployeeBenefitCalculator2021(calculation)
@@ -147,6 +150,11 @@ class DummyBenefitCalculator(HelsinkiBenefitCalculator):
 
     def get_amount(self, row_type, default=None):
         return decimal.Decimal(0)
+
+
+class ManualOverrideCalculator(HelsinkiBenefitCalculator):
+    def create_rows(self):
+        self._create_row(ManualOverrideTotalRow)
 
 
 class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
