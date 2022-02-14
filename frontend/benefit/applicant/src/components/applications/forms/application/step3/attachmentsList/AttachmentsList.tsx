@@ -2,20 +2,20 @@ import { ATTACHMENT_TYPES } from 'benefit/applicant/constants';
 import camelCase from 'lodash/camelCase';
 import * as React from 'react';
 import AttachmentsListBase from 'shared/components/attachments/AttachmentsList';
-import Attachment from 'shared/types/attachment';
+import { BenefitAttachment } from 'shared/types/attachment';
 
 import { useAttachmentsList } from './useAttachmentsList';
 
-export interface AttachmentsListProps {
+export type AttachmentsListProps = {
   attachmentType: ATTACHMENT_TYPES;
   showMessage?: boolean;
-  attachments?: Attachment[];
+  attachments?: BenefitAttachment[];
   required?: boolean;
-}
+};
 
 const AttachmentsList: React.FC<AttachmentsListProps> = ({
   attachmentType,
-  showMessage,
+  showMessage = true,
   attachments,
   required,
 }) => {
@@ -37,6 +37,7 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     <AttachmentsListBase
       title={t(`${translationsBase}.types.${camelCase(attachmentType)}.title`)}
       attachmentType={attachmentType}
+      name={attachmentType}
       message={showMessage && message}
       attachments={attachments}
       onUpload={handleUpload}
@@ -48,11 +49,5 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
     />
   );
 };
-
-const defaultProps = {
-  showMessage: true,
-};
-
-AttachmentsList.defaultProps = defaultProps;
 
 export default AttachmentsList;

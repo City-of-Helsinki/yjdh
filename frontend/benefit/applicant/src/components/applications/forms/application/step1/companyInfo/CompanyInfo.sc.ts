@@ -1,4 +1,4 @@
-import { Notification as HDSNotification } from 'hds-react';
+import { $Notification as NotificationBase } from 'benefit/applicant/components/Notification/Notification.sc';
 import styled from 'styled-components';
 
 export const $CompanyInfoRow = styled.div`
@@ -6,7 +6,6 @@ export const $CompanyInfoRow = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.xs2};
 `;
 
-export const $Notification = styled(HDSNotification)`
+export const $Notification = styled(NotificationBase)`
   grid-area: notification;
-  font-size: ${(props) => props.theme.fontSize.heading.xs};
 `;

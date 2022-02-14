@@ -12,7 +12,7 @@ type SlackMessageSender = {
 /**
  * Based on https://www.charactercountonline.com/ it seems that slack message accepts maximum of 7200 characters
  */
-const SLACK_MESSAGE_MAX_LENGTH = 7_200;
+const SLACK_MESSAGE_MAX_LENGTH = 7200;
 
 export const createSlackMessageSender = (): SlackMessageSender => {
   const slack = new Slack();

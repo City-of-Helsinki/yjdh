@@ -1,15 +1,15 @@
 import { axe } from 'jest-axe';
+import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
+import ApplicationPage from 'kesaseteli/employer/pages/application';
+import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import {
   expectAuthorizedReply,
   expectToGetApplicationErrorFromBackend,
   expectToGetApplicationFromBackend,
   expectUnauthorizedReply,
-} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import getApplicationPageApi from 'kesaseteli/employer/__tests__/utils/components/get-application-page-api';
-import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
-import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
-import ApplicationPage from 'kesaseteli/employer/pages/application';
-import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import renderPage from 'kesaseteli-shared/__tests__/utils/components/render-page';
 import React from 'react';
 import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
@@ -33,7 +33,9 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
       expectUnauthorizedReply();
       const spyPush = jest.fn();
       await renderPage(ApplicationPage, { push: spyPush });
-      await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
+      await waitFor(() =>
+        expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
+      );
     });
 
     describe('when authorized', () => {
@@ -45,7 +47,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           query: {},
         });
         await waitFor(() =>
-          expect(spyReplace).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/`)
+          expect(spyReplace).toHaveBeenCalledWith(
+            `${DEFAULT_LANGUAGE}/`,
+            `${DEFAULT_LANGUAGE}/`,
+            {}
+          )
         );
       });
 
@@ -59,7 +65,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           locale,
         });
         await waitFor(() =>
-          expect(spyReplace).toHaveBeenCalledWith(`${locale}/`)
+          expect(spyReplace).toHaveBeenCalledWith(
+            `${locale}/`,
+            `${locale}/`,
+            {}
+          )
         );
       });
 

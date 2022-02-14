@@ -1,7 +1,7 @@
-import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
-import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
 import { ApplicationData } from 'benefit/applicant/types/application';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useQuery, UseQueryResult } from 'react-query';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationQuery = (
   id: string
@@ -16,7 +16,10 @@ const useApplicationQuery = (
         : handleResponse<ApplicationData>(
             axios.get(`${BackendEndpoint.APPLICATIONS}${id}/`)
           ),
-    { enabled: Boolean(id), retry: false }
+    {
+      enabled: Boolean(id),
+      staleTime: Infinity,
+    }
   );
 };
 

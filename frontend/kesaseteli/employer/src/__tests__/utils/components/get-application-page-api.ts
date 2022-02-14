@@ -1,7 +1,7 @@
 import {
   expectToGetApplicationFromBackend,
   expectToSaveApplication,
-} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';

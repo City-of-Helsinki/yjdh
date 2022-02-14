@@ -1,0 +1,500 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-08 14:51+0200\n"
+"PO-Revision-Date: 2022-02-08 14:52+0200\n"
+"Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#, python-brace-format
+msgid "EmployerApplication state transition not allowed: {status} to {value}"
+msgstr ""
+
+msgid "Initial status of application must be draft"
+msgstr ""
+
+msgid "Can not add attachment to an application in this state"
+msgstr ""
+
+#, python-brace-format
+msgid "Upload file size cannot be greater than {size} bytes"
+msgstr ""
+
+msgid "Too many attachments"
+msgstr ""
+
+msgid "Not a valid pdf file"
+msgstr ""
+
+msgid "Not a valid image file"
+msgstr ""
+
+msgid "This field is required before submitting the application"
+msgstr ""
+
+msgid "Status of the application, visible to the applicant"
+msgstr ""
+
+#, python-brace-format
+msgid "Reading summer voucher data failed: {errors}"
+msgstr ""
+
+msgid "Attachments missing from summer voucher"
+msgstr ""
+
+#, python-brace-format
+msgid "Attachments missing with types: {attachment_types}"
+msgstr ""
+
+msgid "Social security number must be set"
+msgstr ""
+
+msgid "Failed to send activation email"
+msgstr ""
+
+msgid "File not found."
+msgstr ""
+
+msgid "Operation not allowed for this application status."
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
+msgid "Submitted"
+msgstr ""
+
+msgid "Additional information requested"
+msgstr ""
+
+msgid "Additional information provided"
+msgstr ""
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Rejected"
+msgstr ""
+
+msgid "Deleted by customer"
+msgstr ""
+
+msgid "employment contract"
+msgstr ""
+
+msgid "payslip"
+msgstr ""
+
+msgid "9th grader"
+msgstr ""
+
+msgid "born 2004"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "maybe"
+msgstr ""
+
+msgid "Email in use"
+msgstr ""
+
+msgid "Already assigned"
+msgstr ""
+
+msgid "Järjestys"
+msgstr ""
+
+msgid "Saatu pvm"
+msgstr ""
+
+msgid "Hakemuksen kieli"
+msgstr ""
+
+msgid "Setelin numero"
+msgstr ""
+
+msgid "Erikoistapaus (esim yhdeksäsluokkalainen)"
+msgstr ""
+
+msgid "Nuoren nimi"
+msgstr ""
+
+msgid "Henkilötunnus"
+msgstr ""
+
+msgid "Koulu"
+msgstr ""
+
+msgid "Kotipostinumero"
+msgstr ""
+
+msgid "Puhelin"
+msgstr ""
+
+msgid "Kotikaupunki"
+msgstr ""
+
+msgid "Työnantaja muoto"
+msgstr ""
+
+msgid "Työnantaja"
+msgstr ""
+
+msgid "Y-tunnus"
+msgstr ""
+
+msgid "Työnantajan lähiosoite"
+msgstr ""
+
+msgid "Työnantajan postinumero"
+msgstr ""
+
+msgid "Työnantajan kunta"
+msgstr ""
+
+msgid "Yhdyshenkilö"
+msgstr ""
+
+msgid "Yhdyshenkilön sähköposti"
+msgstr ""
+
+msgid "Yhdyshenkilön Puhelin"
+msgstr ""
+
+msgid "Erillinen laskuttaja"
+msgstr ""
+
+msgid "Laskuttajan nimi"
+msgstr ""
+
+msgid "Laskuttajan sähköposti"
+msgstr ""
+
+msgid "Laskuttajan Puhelin"
+msgstr ""
+
+msgid "Yrityksen toimiala"
+msgstr ""
+
+msgid "Työn suorituspaikan postinumero"
+msgstr ""
+
+msgid "Työsuhteen aloituspäivämäärä"
+msgstr ""
+
+msgid "Työsuhteen päättymispäivämäärä"
+msgstr ""
+
+msgid "Työtunnit"
+msgstr ""
+
+msgid "Maksettu palkka"
+msgstr ""
+
+msgid "Muut edut"
+msgstr ""
+
+msgid "Raporttiin luokittelu"
+msgstr ""
+
+msgid "Työtehtävät"
+msgstr ""
+
+msgid "Olisitko palkannut?"
+msgstr ""
+
+msgid "Työnantajan kokemus"
+msgstr ""
+
+msgid "Muuta"
+msgstr ""
+
+msgid "Liite: Työsopimus 1"
+msgstr ""
+
+msgid "Liite: Työsopimus 2"
+msgstr ""
+
+msgid "Liite: Työsopimus 3"
+msgstr ""
+
+msgid "Liite: Työsopimus 4"
+msgstr ""
+
+msgid "Liite: Työsopimus 5"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 1"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 2"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 3"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 4"
+msgstr ""
+
+msgid "Liite: Palkkalaskelma 5"
+msgstr ""
+
+msgid "Kyllä"
+msgstr ""
+
+msgid "Ei"
+msgstr ""
+
+msgid "Setelit"
+msgstr ""
+
+msgid "school"
+msgstr ""
+
+msgid "schools"
+msgstr ""
+
+msgid "first name"
+msgstr ""
+
+msgid "last name"
+msgstr ""
+
+msgid "social security number"
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "phone number"
+msgstr ""
+
+msgid "postcode"
+msgstr ""
+
+msgid "timestamp of receipt confirmation"
+msgstr ""
+
+msgid "vtj json"
+msgstr ""
+
+msgid "Aktivoi Kesäseteli"
+msgstr "Activate your Summer Job Voucher"
+
+#, python-format
+msgid ""
+"Aktivoi Kesäsetelisi vahvistamalla sähköpostiosoitteesi klikkaamalla alla "
+"olevaa linkkiä:\n"
+"\n"
+"%(activation_link)s\n"
+"\n"
+"Ystävällisin terveisin, Kesäseteli-tiimi"
+msgstr ""
+"To activate your Summer Job Voucher, please confirm your email address by "
+"clicking the link below:\n"
+"\n"
+"%(activation_link)s\n"
+"\n"
+"Kind regards, the Summer Job Voucher Team"
+
+#, python-format
+msgid "Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Seuraava henkilö on pyytänyt Kesäseteliä:\n"
+"\n"
+"%(first_name)s %(last_name)s\n"
+"Postinumero: %(postcode)s\n"
+"Koulu: %(school)s\n"
+"Puhelinnumero: %(phone_number)s\n"
+"Sähköposti: %(email)s\n"
+"\n"
+"%(processing_link)s"
+msgstr ""
+
+msgid "Unable to send youth application's activation email"
+msgstr ""
+
+msgid "Unable to send youth application's processing email to handler"
+msgstr ""
+
+msgid "youth application"
+msgstr ""
+
+msgid "youth applications"
+msgstr ""
+
+msgid "summer voucher id"
+msgstr ""
+
+msgid "summer voucher exception class"
+msgstr ""
+
+msgid "Special case of admitting the summer voucher."
+msgstr ""
+
+msgid "youth summer voucher"
+msgstr ""
+
+msgid "youth summer vouchers"
+msgstr ""
+
+msgid "company"
+msgstr ""
+
+msgid "user"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "invoicer work address"
+msgstr ""
+
+msgid "contact person name"
+msgstr ""
+
+msgid "contact person email"
+msgstr ""
+
+msgid "contact person phone number"
+msgstr ""
+
+msgid "is separate invoicer"
+msgstr ""
+
+msgid "invoicing is not handled by the contact person"
+msgstr ""
+
+msgid "invoicer name"
+msgstr ""
+
+msgid "invoicer email"
+msgstr ""
+
+msgid "invoicer phone number"
+msgstr ""
+
+msgid "application"
+msgstr ""
+
+msgid "applications"
+msgstr ""
+
+msgid "employee name"
+msgstr ""
+
+msgid "employee school"
+msgstr ""
+
+msgid "employee social security number"
+msgstr ""
+
+msgid "employee phone number"
+msgstr ""
+
+msgid "employee home city"
+msgstr ""
+
+msgid "employee postcode"
+msgstr ""
+
+msgid "employment postcode"
+msgstr ""
+
+msgid "employment start date"
+msgstr ""
+
+msgid "employment end date"
+msgstr ""
+
+msgid "employment work hours"
+msgstr ""
+
+msgid "employment salary paid"
+msgstr ""
+
+msgid "employment description"
+msgstr ""
+
+msgid "hired without voucher assessment"
+msgstr ""
+
+msgid "Whether the employee would have been hired without a summer voucher."
+msgstr ""
+
+msgid "is exported"
+msgstr ""
+
+msgid "Has been exported to Excel"
+msgstr ""
+
+msgid "summer voucher"
+msgstr ""
+
+msgid "summer vouchers"
+msgstr ""
+
+msgid "attachment type in business rules"
+msgstr ""
+
+msgid "technical content type of the attachment"
+msgstr ""
+
+msgid "application attachment content"
+msgstr ""
+
+msgid "attachment"
+msgstr ""
+
+msgid "attachments"
+msgstr ""
+
+msgid "Kirjaudu ulos"
+msgstr ""
+
+msgid ""
+"Luo uusi excel tiedosto kaikista järjestelmän käsittelemättömistä "
+"hakemuksista. Kun hakemus lisätään käsittelemättömien hakemusten excel "
+"tiedostoon, se merkataan järjestelmässä \"käsitellyiksi\" eikä sitä tuoda "
+"enää seuraavaan käsittelemättömien hakemusten exceliin."
+msgstr ""
+
+msgid "Lataa Excel tiedosto käsittelemättömistä hakemuksista"
+msgstr ""
+
+msgid ""
+"Luo uusi excel tiedosto kaikista järjestelmän tämän vuoden hakemuksista. "
+"Tiedosto sisältää myös kaikki käsitellyt hakemukset."
+msgstr ""
+
+msgid "Lataa Excel tiedosto kaikista tämän vuoden hakemuksista"
+msgstr ""
+
+msgid "Ei uusia käsittelemättömiä hakemuksia."
+msgstr ""
+
+msgid "Hakemuksia ei löytynyt."
+msgstr ""
+
+#~ msgid "Vahvista sähköpostiosoitteesi"
+#~ msgstr "Confirm your email address"

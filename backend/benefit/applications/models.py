@@ -7,7 +7,8 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
-from common.utils import duration_in_months
+from calculator.enums import RowType
+from common.utils import DurationMixin
 from companies.models import Company
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
@@ -61,7 +62,7 @@ def address_property(field_suffix):
     return _address_property_getter
 
 
-class Application(UUIDModel, TimeStampedModel):
+class Application(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Data model for Helsinki benefit applications
 
@@ -72,6 +73,8 @@ class Application(UUIDModel, TimeStampedModel):
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
+
+    BENEFIT_MAX_MONTHS = 12
 
     company = models.ForeignKey(
         Company,
@@ -275,9 +278,9 @@ class Application(UUIDModel, TimeStampedModel):
     history = HistoricalRecords(table_name="bf_applications_application_history")
 
     @property
-    def benefit_amount(self):
+    def calculated_benefit_amount(self):
         if hasattr(self, "calculation"):
-            return self.calculation.benefit_amount
+            return self.calculation.calculated_benefit_amount
         else:
             return None
 
@@ -298,9 +301,13 @@ class Application(UUIDModel, TimeStampedModel):
         return "Y{}".format(self.application_number)
 
     @property
-    def duration_in_months(self):
-        # The application calculation Excel file used the DAYS360 function, so we're doing the same
-        return duration_in_months(self.start_date, self.end_date)
+    def ahjo_rows(self):
+        rows = self.calculation.rows.filter(
+            row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+        )
+        if rows.count() > 0:
+            return rows
+        return self.calculation.rows.filter(row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR)
 
     def __str__(self):
         return "{}: {} {} {}-{}".format(
@@ -367,6 +374,7 @@ class ApplicationLogEntry(UUIDModel, TimeStampedModel):
         db_table = "bf_applications_applicationlogentry"
         verbose_name = _("application log entry")
         verbose_name_plural = _("application log entries")
+        ordering = ["application__created_at", "created_at"]
 
 
 class ApplicationBatch(UUIDModel, TimeStampedModel):

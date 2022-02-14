@@ -1,7 +1,9 @@
+import logging
+
 from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
-from companies.services import get_or_create_company_with_business_id
+from companies.services import get_or_create_organisation_with_business_id
 from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.db import transaction
@@ -13,6 +15,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from shared.oidc.utils import get_organization_roles
+
+LOGGER = logging.getLogger(__name__)
 
 
 class GetCompanyView(APIView):
@@ -59,37 +63,40 @@ class GetCompanyView(APIView):
         description="Retrieve company information from YTJ/other API",
     )
     @transaction.atomic
-    def get(
-        self, request: HttpRequest, business_id: str = None, format: str = None
-    ) -> Response:
-        if settings.MOCK_FLAG:
+    def get(self, request: HttpRequest, format: str = None) -> Response:
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
             return self.get_mock(request, format)
 
-        if not settings.DISABLE_AUTHENTICATION:
-
+        if settings.DISABLE_AUTHENTICATION:
+            company = Company.objects.all().order_by("name").first()
+        else:
             try:
                 organization_roles = get_organization_roles(request)
             except HTTPError:
                 return self.organization_roles_error
 
             business_id = organization_roles.get("identifier")
-        try:
-            # TODO: Switch to another API to be able to collect association data
-            company = get_or_create_company_with_business_id(business_id)
-        except HTTPError:
-            # Since YTJ public API is not 100% reliable, we can use the Company data
-            # saved in our DB as a fallback data, this Company data should be the
-            # data that we got from the latest request to YTJ
             try:
-                company = Company.objects.get(business_id=business_id)
-            except Company.DoesNotExist:
-                # Throw error if API failed or no object found in both places
-                return self.ytj_api_error
-        except ValueError:
-            return Response(
-                "Could not handle the response from YTJ API",
-                status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+                company = get_or_create_organisation_with_business_id(business_id)
+            except HTTPError:
+                # Since YTJ public API is not 100% reliable, we can use the Company data
+                # saved in our DB as a fallback data, this Company data should be the
+                # data that we got from the latest request to YTJ
+                try:
+                    company = Company.objects.get(business_id=business_id)
+                except Company.DoesNotExist:
+                    # Throw error if API failed or no object found in both places
+                    return self.ytj_api_error
+            except (ValueError, KeyError) as err:
+                LOGGER.debug(
+                    "Could not handle the response from Palveluväylä and YRTTI API, error: {}".format(
+                        err
+                    )
+                )
+                return Response(
+                    "Could not handle the response from Palveluväylä and YRTTI API",
+                    status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
         company_data = CompanySerializer(company).data
 
         return Response(company_data)

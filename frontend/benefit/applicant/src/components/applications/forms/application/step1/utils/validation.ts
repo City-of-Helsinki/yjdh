@@ -1,12 +1,14 @@
 import {
   APPLICATION_FIELDS_STEP1_KEYS,
   MAX_LONG_STRING_LENGTH,
+  MAX_PHONE_NUMBER_LENGTH,
   MAX_SHORT_STRING_LENGTH,
+  MIN_PHONE_NUMBER_LENGTH,
   ORGANIZATION_TYPES,
   SUPPORTED_LANGUAGES,
-  VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { Step1 } from 'benefit/applicant/types/application';
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import { TFunction } from 'next-i18next';
 import {
   ADDRESS_REGEX,
@@ -104,7 +106,8 @@ export const getValidationSchema = (
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_PHONE_NUMBER]:
       Yup.string()
         .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
-        .max(MAX_SHORT_STRING_LENGTH, t(VALIDATION_MESSAGE_KEYS.STRING_MAX))
+        .min(MIN_PHONE_NUMBER_LENGTH, t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN))
+        .max(MAX_PHONE_NUMBER_LENGTH, t(VALIDATION_MESSAGE_KEYS.NUMBER_MAX))
         .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.COMPANY_CONTACT_PERSON_EMAIL]: Yup.string()
       .email(t(VALIDATION_MESSAGE_KEYS.EMAIL_INVALID))
@@ -118,7 +121,12 @@ export const getValidationSchema = (
       .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
     [APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID]: Yup.boolean()
       .nullable()
-      .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      .when(APPLICATION_FIELDS_STEP1_KEYS.ASSOCIATION_HAS_BUSINESS_ACTIVITIES, {
+        is: true,
+        then: Yup.boolean()
+          .nullable()
+          .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
+      }),
     [APPLICATION_FIELDS_STEP1_KEYS.DE_MINIMIS_AID_SET]: Yup.array().of(
       getDeminimisValidationSchema(t).nullable()
     ),

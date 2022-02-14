@@ -14,3 +14,7 @@ export type NavigationItem = {
 export type Headers = {
   [name: string]: string;
 };
+
+export type ThemeOption = 'dark' | 'light';
+
+export type NavigationVariant = 'default' | 'inline';

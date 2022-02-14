@@ -10,10 +10,11 @@ const Heading: React.FC<HeadingProps> = ({
   header,
   loading,
   tooltip,
+  'data-testid': dataTestId,
 }) => {
   const { t } = useTranslation();
   return (
-    <$Header size={size} as={as}>
+    <$Header size={size} as={as} data-testid={dataTestId}>
       {header}
       {tooltip && (
         <Tooltip

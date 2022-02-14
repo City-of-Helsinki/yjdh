@@ -1,7 +1,7 @@
-import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
-import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
 import { ApplicationData } from 'benefit/applicant/types/application';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useQuery, UseQueryResult } from 'react-query';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useApplicationsQuery = (
   status: string[]
@@ -12,9 +12,12 @@ const useApplicationsQuery = (
     ['applicationsList', ...status],
     async () => {
       const res = axios.get<ApplicationData[]>(
-        `${BackendEndpoint.APPLICATIONS}?status=${status.join()}`
+        `${BackendEndpoint.APPLICATIONS}?status=${status.join(',')}`
       );
       return handleResponse(res);
+    },
+    {
+      retry: false,
     }
   );
 };

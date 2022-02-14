@@ -1,0 +1,140 @@
+{
+  "appName": "TET Job Search",
+  "header": {
+    "loginLabel": "Sign in to the service",
+    "logoutLabel": "Log out",
+    "userAriaLabelPrefix": "User:",
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu"
+  },
+  "errorPage": {
+    "title": "An unexpected error occured",
+    "message": "Something went wrong. Refreshing the page might help.",
+    "retry": "Reload the page again",
+    "logout": "Log out"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Page was not found",
+    "pageNotFoundContent": "Oh no, something went wrong. Try to enter the application <lnk>here</lnk>, through the front page"
+  },
+  "loginPage": {
+    "logoutMessageLabel": "You have logged out",
+    "errorLabel": "An unexpected error occurred. Please, sign in again. ",
+    "sessionExpiredLabel": "User session expired. Sign in again",
+    "infoLabel": "Using the service requires strong authentication",
+    "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
+    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+  },
+  "application": {
+    "jobPostings": {
+      "title": "ENG TET-paikkailmoitukset",
+      "noPostingsFound": "ENG Sinulla ei ole vielä yhtään TET-paikkaa.",
+      "addNewPosting": "ENG Lisää uusi harjoittelupaikka",
+			"publishedPostings": "ENG Työharjoittelupaikat",
+			"draftPostings": "ENG Keskeneräiset ilmoitukset",
+			"openSpots_one": "ENG {{count}} TET-paikka",
+			"openSpots_other": "ENG {{count}} TET-paikkaa",
+			"published": "ENG Julkaistu",
+			"notPublished": "ENG Ei julkaistu",
+			"total": "ENG kpl",
+			"menu": {
+				"publishNow": "ENG Julkaise nyt",
+				"edit": "ENG Muokkaa",
+				"copy": "ENG Tee kopio",
+				"delete": "ENG Poista"
+			}
+    }
+  },
+  "editor": {
+    "newTitle": "ENG Uusi TET-paikka",
+    "editTitle": "ENG Muokkaa TET-paikkaa",
+    "saveDraft": "ENG Tallenna julkaisematta",
+    "deletePosting": "ENG Poista ilmoitus",
+    "preview": "ENG Siirry esikatseluun",
+    "publish": "ENG Julkaise",
+    "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
+    "employerInfo": {
+      "header": "ENG Työpaikan tiedot",
+      "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
+      "departmentLabel": "ENG Toimipiste tai osasto"
+    },
+    "posting": {
+      "header": "ENG Työharjoittelupaikan tiedot",
+      "title": "ENG Tehtävänimike",
+      "description": "ENG Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
+      "workHoursNotice": "ENG Työaika on aina sama 30h per viikko.",
+      "startDateLabel": "ENG Alkaen",
+      "endDateLabel": "ENG Päättyen",
+      "spotsLabel": "ENG Työharjoittelupaikkoja",
+			"contactFirstName": "ENG Etunimi",
+			"contactLastName": "ENG Sukunimi",
+			"contactPhone": "ENG Puhelin",
+			"contactEmail": "ENG Sähköposti",
+			"contactLanguage": "ENG Asiointikieli",
+			"contactLanguageFi": "ENG Suomi",
+			"contactLanguageSv": "ENG Ruotsi",
+			"contactLanguageEn": "ENG Englanti",
+			"validation": {
+				"required": "ENG Tieto vaaditaan",
+				"email": "ENG Syötä sähköposti oikeassa muodossa",
+				"max": "ENG Maksimimerkkimäärä ylittyy",
+				"phone": "ENG Syötä oikeassa muodossa",
+				"name": "ENG Syötä nimi sallitussa muodossa"
+			}
+    }
+  },
+  "footer": {
+    "copyrightText": "City of Helsinki",
+    "allRightsReservedText": "All rights reserved",
+    "accessibilityStatement": "Accessibility statement",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
+    "privacyPolicy": "Privacy policy",
+    "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
+    "feedback": "ENG Anna palautetta",
+    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "error": {
+    "generic": {
+      "label": "An unexpected error occurred",
+      "text": "Try again later."
+    },
+    "attachments": {
+      "title": "An error occured while uploading the file.",
+      "tooBig": "The file is too big.",
+      "fileType": "The file type is not allowed."
+    }
+  },
+  "upload": {
+    "isUploading": "Sending...",
+    "errorTitle": "File upload failed",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "delete": {
+    "errorTitle": "Deleting the file failed.",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "applications": {
+    "sections": {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Employment contract",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Pay statement",
+            "message": ""
+          }
+        },
+        "add": "Add attachment",
+        "remove": "Remove file"
+      }
+    }
+  }
+}

@@ -1,17 +1,12 @@
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import useBackendAPI from 'kesaseteli/employer/hooks/backend/useBackendAPI';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
-import handleError from 'shared/error-handler/error-handler';
-import useLocale from 'shared/hooks/useLocale';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
+import useGoToPage from 'shared/hooks/useGoToPage';
 
-const useLogoutQuery = (): UseMutationResult<unknown, Error> => {
+const useLogoutQuery = (): UseMutationResult<unknown> => {
   const { axios, handleResponse } = useBackendAPI();
-  const { t } = useTranslation();
-  const router = useRouter();
-  const locale = useLocale();
+  const goToPage = useGoToPage();
   const queryClient = useQueryClient();
   return useMutation(
     'logout',
@@ -20,9 +15,8 @@ const useLogoutQuery = (): UseMutationResult<unknown, Error> => {
       onSuccess: () => {
         void queryClient.removeQueries();
         clearLocalStorage('application');
-        void router.push('/login?logout=true');
+        void goToPage('/login?logout=true');
       },
-      onError: (error) => handleError(error, t, router, locale),
     }
   );
 };

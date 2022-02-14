@@ -1,9 +1,9 @@
+import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
 import React from 'react';
-import FormSection from 'shared/components/forms/section/FormSection';
 import { useTheme } from 'styled-components';
 
 import ConsentViewer from '../consentViewer/ConsentViewer';
@@ -21,6 +21,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
     handleBack,
     handleSave,
     handleSubmit,
+    handleDelete,
     handleStepChange,
     translationsBase,
     isSubmit,
@@ -34,7 +35,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
 
       <EmployeeView data={data} handleStepChange={handleStepChange} />
 
-      <FormSection
+      <SummarySection
         header={t(`${translationsBase}.attachments.heading1`)}
         action={
           <Button
@@ -50,34 +51,32 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           </Button>
         }
       >
-        <>
-          {(data.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
-            data.benefitType === BENEFIT_TYPES.SALARY) && (
-            <>
-              <AttachmentsListView
-                type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
-                title={t(
-                  `${translationsBase}.attachments.types.employmentContract.title`
-                )}
-                attachments={data.attachments || []}
-              />
-              <AttachmentsListView
-                type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
-                title={t(
-                  `${translationsBase}.attachments.types.paySubsidyDecision.title`
-                )}
-                attachments={data.attachments || []}
-              />
-              <AttachmentsListView
-                type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
-                title={t(
-                  `${translationsBase}.attachments.types.educationContract.title`
-                )}
-                attachments={data.attachments || []}
-              />
-            </>
-          )}
-        </>
+        {(data.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
+          data.benefitType === BENEFIT_TYPES.SALARY) && (
+          <>
+            <AttachmentsListView
+              type={ATTACHMENT_TYPES.EMPLOYMENT_CONTRACT}
+              title={t(
+                `${translationsBase}.attachments.types.employmentContract.title`
+              )}
+              attachments={data.attachments || []}
+            />
+            <AttachmentsListView
+              type={ATTACHMENT_TYPES.PAY_SUBSIDY_CONTRACT}
+              title={t(
+                `${translationsBase}.attachments.types.paySubsidyDecision.title`
+              )}
+              attachments={data.attachments || []}
+            />
+            <AttachmentsListView
+              type={ATTACHMENT_TYPES.EDUCATION_CONTRACT}
+              title={t(
+                `${translationsBase}.attachments.types.educationContract.title`
+              )}
+              attachments={data.attachments || []}
+            />
+          </>
+        )}
         {data.benefitType === BENEFIT_TYPES.COMMISSION && (
           <AttachmentsListView
             type={ATTACHMENT_TYPES.COMMISSION_CONTRACT}
@@ -94,8 +93,8 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           )}
           attachments={data.attachments || []}
         />
-      </FormSection>
-      <FormSection
+      </SummarySection>
+      <SummarySection
         paddingBottom={isEmpty(data.applicantTermsApproval)}
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
@@ -116,20 +115,21 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           type={ATTACHMENT_TYPES.EMPLOYEE_CONSENT}
           attachments={data.attachments || []}
         />
-      </FormSection>
+      </SummarySection>
       {!isEmpty(data.applicantTermsApproval) && (
-        <FormSection
+        <SummarySection
           paddingBottom
           header={t(`${translationsBase}.send.heading1`)}
         >
           <ConsentViewer data={data} />
-        </FormSection>
+        </SummarySection>
       )}
       <StepperActions
         lastStep={isSubmit}
         handleSave={handleSave}
         handleSubmit={handleSubmit}
         handleBack={handleBack}
+        handleDelete={handleDelete}
       />
     </>
   );

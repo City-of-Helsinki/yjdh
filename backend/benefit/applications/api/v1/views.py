@@ -5,17 +5,19 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import ApplicationStatus
 from applications.models import Application
-from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
+from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
+from django.db.models import Count, Q
+from django.http import FileResponse
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
+from messages.models import MessageType
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from users.utils import get_company_from_request
 
@@ -88,7 +90,8 @@ class BaseApplicationViewSet(viewsets.ModelViewSet):
     )
     def post_attachment(self, request, *args, **kwargs):
         """
-        Upload a single file as attachment
+        Upload a single file as attachment.
+        Validate that adding attachments is allowed in this application status
         """
         obj = self.get_object()
         if not ApplicationStatus.is_editable_status(self.request.user, obj.status):
@@ -109,6 +112,17 @@ class BaseApplicationViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def _get_attachment(self, attachment_pk):
+        try:
+            return self.get_object().attachments.get(id=attachment_pk)
+        except exceptions.ObjectDoesNotExist:
+            return None
+
+    def _attachment_not_found(self):
+        return Response(
+            {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
+        )
+
     @action(
         methods=("DELETE",),
         detail=True,
@@ -122,14 +136,27 @@ class BaseApplicationViewSet(viewsets.ModelViewSet):
                 {"detail": _("Operation not allowed for this application status.")},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        try:
-            instance = obj.attachments.get(id=attachment_pk)
-        except exceptions.ObjectDoesNotExist:
-            return Response(
-                {"detail": _("File not found.")}, status=status.HTTP_404_NOT_FOUND
-            )
-        instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if instance := self._get_attachment(attachment_pk):
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return self._attachment_not_found()
+
+    @action(
+        methods=("GET",),
+        detail=True,
+        url_path="attachments/(?P<attachment_pk>[^/.]+)/download",
+    )
+    def download_attachment(self, request, attachment_pk, *args, **kwargs):
+        """
+        Download a single attachment
+        """
+        if (
+            attachment := self._get_attachment(attachment_pk)
+        ) and attachment.attachment_file:
+            return FileResponse(attachment.attachment_file)
+        else:
+            return self._attachment_not_found()
 
     @extend_schema(
         description="Get a partial application object (not saved in database), with various fields pre-filled"
@@ -163,6 +190,15 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
     permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
     filterset_class = ApplicantApplicationFilter
 
+    def _annotate_unread_messages_count(self, qs):
+        return qs.annotate(
+            unread_messages_count=Count(
+                "messages",
+                filter=Q(messages__seen_by_applicant=False)
+                & ~Q(messages__message_type=MessageType.NOTE),
+            )
+        )
+
     def get_queryset(self):
         qs = super().get_queryset()
         # FIXME: Remove this when FE implemented authentication
@@ -170,7 +206,7 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
             return qs
         company = get_company_from_request(self.request)
         if company:
-            return company.applications.all()
+            return self._annotate_unread_messages_count(company.applications).all()
         else:
             return Application.objects.none()
 
@@ -180,13 +216,22 @@ class ApplicantApplicationViewSet(BaseApplicationViewSet):
 )
 class HandlerApplicationViewSet(BaseApplicationViewSet):
     serializer_class = HandlerApplicationSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [BFIsHandler]
     filterset_class = HandlerApplicationFilter
 
+    def _annotate_unread_messages_count(self, qs):
+        return qs.annotate(
+            unread_messages_count=Count(
+                "messages",
+                filter=Q(messages__seen_by_handler=False)
+                & ~Q(messages__message_type=MessageType.NOTE),
+            )
+        )
+
     def get_queryset(self):
-        return (
+        return self._annotate_unread_messages_count(
             super()
             .get_queryset()
             .select_related("batch", "calculation")
-            .prefetch_related("pay_subsidies")
+            .prefetch_related("pay_subsidies", "training_compensations")
         )

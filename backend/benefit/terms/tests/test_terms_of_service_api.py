@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 import pytest
-from common.tests.conftest import *  # noqa
+from common.tests.conftest import get_client_user
 from companies.tests.conftest import *  # noqa
 from django.conf import settings
 from django.urls import reverse
@@ -14,10 +14,6 @@ from users.utils import get_company_from_request
 
 def get_current_user_url():
     return "/v1/users/me/"
-
-
-def _get_user(api_client):
-    return api_client.handler._force_user
 
 
 def test_terms_of_service_in_effect(
@@ -73,7 +69,7 @@ def test_approve_terms_success(
         )
         TermsOfServiceApprovalFactory(
             company=mock_get_organisation_roles_and_create_company,
-            user=_get_user(api_client),
+            user=get_client_user(api_client),
             terms=previous_terms,
         )
 
@@ -93,7 +89,7 @@ def test_approve_terms_success(
     assert response.status_code == 200
     assert response.data["terms"]["id"] == str(terms_of_service.pk)
     assert api_client.session[settings.TERMS_OF_SERVICE_SESSION_KEY]
-    approval = _get_user(api_client).terms_of_service_approvals.get(
+    approval = get_client_user(api_client).terms_of_service_approvals.get(
         terms=terms_of_service
     )
     assert {obj.pk for obj in approval.selected_applicant_consents.all()} == {
@@ -213,7 +209,7 @@ def test_validate_tos_approval_by_session(
     assert response.data["terms"]["id"] == str(terms_of_service.pk)
     assert api_client.session[settings.TERMS_OF_SERVICE_SESSION_KEY]
 
-    approval = _get_user(api_client).terms_of_service_approvals.get(
+    approval = get_client_user(api_client).terms_of_service_approvals.get(
         terms=terms_of_service
     )
 

@@ -2,19 +2,21 @@ import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/us
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import React from 'react';
-import { UseMutationResult, UseQueryResult } from 'react-query';
+import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 
 export type ApplicationApi<T> = {
   applicationId?: string;
-  applicationQuery: UseQueryResult<T, Error>;
+  applicationQuery: UseQueryResult<T>;
   updateApplicationQuery: UseMutationResult<
     Application,
-    Error,
+    unknown,
     DraftApplication
   >;
   updateApplication: (
@@ -45,6 +47,8 @@ const useApplicationApi = <T = Application>(
   select?: (application: Application) => T
 ): ApplicationApi<T> => {
   const applicationId = useApplicationIdQueryParam();
+  const queryClient = useQueryClient();
+  const onError = useErrorHandler();
 
   const applicationQuery = useApplicationQuery<T>(applicationId, select);
   const updateApplicationQuery = useUpdateApplicationQuery(applicationId);
@@ -59,10 +63,11 @@ const useApplicationApi = <T = Application>(
         { ...draftApplication, status: 'draft', summer_vouchers },
         {
           onSuccess: () => onSuccess(draftApplication),
+          onError,
         }
       );
     },
-    [updateApplicationQuery]
+    [updateApplicationQuery, onError]
   );
 
   const removeEmployment: ApplicationApi<T>['removeEmployment'] =
@@ -79,10 +84,11 @@ const useApplicationApi = <T = Application>(
           { ...draftApplication, status: 'draft', summer_vouchers },
           {
             onSuccess: () => onSuccess(draftApplication),
+            onError,
           }
         );
       },
-      [updateApplicationQuery]
+      [updateApplicationQuery, onError]
     );
 
   const updateApplication: ApplicationApi<T>['updateApplication'] =
@@ -95,10 +101,11 @@ const useApplicationApi = <T = Application>(
           { ...draftApplication, status: 'draft' },
           {
             onSuccess,
+            onError,
           }
         );
       },
-      [updateApplicationQuery, addEmployment]
+      [updateApplicationQuery, addEmployment, onError]
     );
 
   const sendApplication: ApplicationApi<T>['sendApplication'] =
@@ -109,11 +116,15 @@ const useApplicationApi = <T = Application>(
           {
             onSuccess: () => {
               clearLocalStorage(`application-${completeApplication.id}`);
+              void queryClient.invalidateQueries(
+                BackendEndpoint.EMPLOYER_APPLICATIONS
+              );
               return onSuccess();
             },
+            onError,
           }
         ),
-      [updateApplicationQuery]
+      [queryClient, updateApplicationQuery, onError]
     );
 
   return {

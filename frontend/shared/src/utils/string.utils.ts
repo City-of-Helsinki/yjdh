@@ -1,6 +1,8 @@
 /*
 Get initials from full name
 */
+import { isString } from 'shared/utils/type-guards';
+
 export const getInitials = (name: string): string =>
   name
     .match(/(^\S\S?|\b\S)?/g)
@@ -25,4 +27,17 @@ export const getBooleanValueFromString = (value?: string): boolean | null => {
 };
 
 export const isEmpty = (value?: string): boolean =>
-  typeof value === 'string' ? value?.trim().length === 0 : Boolean(!value);
+  isString(value) ? value?.trim().length === 0 : Boolean(!value);
+
+export const getNumberValue = (s: unknown): number =>
+  Number(isString(s) ? s.toString().replace(/,/, '.') : s);
+
+export const stringFloatToFixed = (value: string): string =>
+  value.includes(',') ? value.slice(0, value.indexOf(',') + 3) : value;
+
+export const stringToFloatValue = (value: string): number =>
+  parseFloat(value.replace(',', '.'));
+
+export const formatStringFloatValue = (
+  value: number | string | undefined
+): string => value?.toString().replace('.', ',') || '';

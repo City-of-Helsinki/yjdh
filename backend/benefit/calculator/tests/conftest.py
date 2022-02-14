@@ -4,6 +4,7 @@ from calculator.tests.factories import (
     CalculationFactory,
     PaySubsidyFactory,
     PreviousBenefitFactory,
+    TrainingCompensationFactory,
 )
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
@@ -19,6 +20,11 @@ def calculation():
 @pytest.fixture
 def pay_subsidy():
     return PaySubsidyFactory()
+
+
+@pytest.fixture
+def training_compensation():
+    return TrainingCompensationFactory()
 
 
 @pytest.fixture

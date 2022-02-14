@@ -1,0 +1,140 @@
+{
+  "appName": "SV TET-paikat",
+  "header": {
+    "loginLabel": "Logga in i tjänsten",
+    "logoutLabel": "Logga ut",
+    "userAriaLabelPrefix": "Användaren:",
+    "linkSkipToContent": "Gå till innehållet",
+    "menuToggleAriaLabel": "Menyn"
+  },
+  "errorPage": {
+    "title": "Ett oförväntat fel skedde",
+    "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
+    "retry": "Ladda upp sidan på nytt.",
+    "logout": "Logga ut"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Sidan kunde inte hittas",
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
+  },
+  "loginPage": {
+    "logoutMessageLabel": "Du har loggat ut",
+    "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
+    "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
+    "infoLabel": "Att använda tjänsten kräver stark autentisering",
+    "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
+    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
+  },
+  "application": {
+    "jobPostings": {
+      "title": "SV TET-paikkailmoitukset",
+      "noPostingsFound": "SV Sinulla ei ole vielä yhtään TET-paikkaa.",
+      "addNewPosting": "SV Lisää uusi harjoittelupaikka",
+			"publishedPostings": "SV Työharjoittelupaikat",
+			"draftPostings": "SV Keskeneräiset ilmoitukset",
+			"openSpots_one": "SV {{count}} TET-paikka",
+			"openSpots_other": "SV {{count}} TET-paikkaa",
+			"published": "SV Julkaistu",
+			"notPublished": "SV Ei julkaistu",
+			"total": "SV kpl",
+			"menu": {
+				"publishNow": "SV Julkaise nyt",
+				"edit": "SV Muokkaa",
+				"copy": "SV Tee kopio",
+				"delete": "SV Poista"
+			}
+    }
+  },
+  "editor": {
+    "newTitle": "SV Uusi TET-paikka",
+    "editTitle": "SV Muokkaa TET-paikkaa",
+    "saveDraft": "SV Tallenna julkaisematta",
+    "deletePosting": "SV Poista ilmoitus",
+    "preview": "SV Siirry esikatseluun",
+    "publish": "SV Julkaise",
+    "notificationTitle": "SV Täytä puuttuvat tai virheelliset tiedot",
+    "employerInfo": {
+      "header": "SV Työpaikan tiedot",
+      "addressNeededLabel": "SV Työharjoittelu suoritetaan eri osoitteessa",
+      "departmentLabel": "SV Toimipiste tai osasto"
+    },
+    "posting": {
+      "header": "SV Työharjoittelupaikan tiedot",
+      "title": "SV Tehtävänimike",
+      "description": "SV Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
+      "workHoursNotice": "SV Työaika on aina sama 30h per viikko.",
+      "startDateLabel": "SV Alkaen",
+      "endDateLabel": "SV Päättyen",
+      "spotsLabel": "SV Työharjoittelupaikkoja",
+			"contactFirstName": "SV Etunimi",
+			"contactLastName": "SV Sukunimi",
+			"contactPhone": "SV Puhelin",
+			"contactEmail": "SV Sähköposti",
+			"contactLanguage": "SV Asiointikieli",
+			"contactLanguageFi": "SV Suomi",
+			"contactLanguageSv": "SV Ruotsi",
+			"contactLanguageEn": "SV Englanti",
+			"validation": {
+				"required": "SV Tieto vaaditaan",
+				"email": "SV Syötä sähköposti oikeassa muodossa",
+				"max": "SV Maksimimerkkimäärä ylittyy",
+				"phone": "SV Syötä oikeassa muodossa",
+				"name": "SV Syötä nimi sallitussa muodossa"
+			}
+    }
+  },
+  "footer": {
+    "copyrightText": "Helsingfors stad",
+    "allRightsReservedText": "Med ensamrätt",
+    "accessibilityStatement": "Tillgänglighetsutlåtande",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
+    "privacyPolicy": "SV Rekisteriseloste",
+    "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
+    "feedback": "SV Anna palautetta",
+    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
+  "error": {
+    "generic": {
+      "label": "Ett okänt fel inträffade.",
+      "text": "Försök igen senare."
+    },
+    "attachments": {
+      "title": "Det skedde ett fel i nedladdningen av filen",
+      "tooBig": "Filen är för stor",
+      "fileType": "Filtypen är inte tillåten"
+    }
+  },
+  "upload": {
+    "isUploading": "Sänder...",
+    "errorTitle": "Uppladdningen av filen misslyckades",
+    "errorMessage": "Något gick fel. Försök igen senare."
+  },
+  "delete": {
+    "errorTitle": "Borttagningen misslyckades",
+    "errorMessage": "Något gick fel. Försök igen senare."
+  },
+  "applications": {
+    "sections": {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Arbetskontrakt",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Löneintyg",
+            "message": ""
+          }
+        },
+        "add": "Bifoga bilaga",
+        "remove": "Ta bort filen"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['auto', 'next/core-web-vitals'],
+  extends: ['auto', 'plugin:@next/next/recommended'],
   rules: {
     'no-secrets/no-secrets': ['error', { tolerance: 4.2 }],
     'sonarjs/cognitive-complexity': ['error', 20],
@@ -21,7 +21,11 @@ module.exports = {
       { packageDir: [__dirname, join(__dirname, '../../')] },
     ],
     'unicorn/no-array-reduce': 'off',
+    'unicorn/prefer-export-from': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'react/function-component-definition': 'off',
+    'sonarjs/no-nested-template-literals': 'off',
+    'unicorn/prefer-node-protocol': 'off',
   },
   overrides: [
     {

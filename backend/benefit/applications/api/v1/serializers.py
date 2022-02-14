@@ -1,5 +1,6 @@
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from typing import Dict, List
 
 import filetype
 from applications.api.v1.status_transition_validator import (
@@ -7,6 +8,7 @@ from applications.api.v1.status_transition_validator import (
     ApplicationBatchStatusValidator,
     HandlerApplicationStatusValidator,
 )
+from applications.benefit_aggregation import get_former_benefit_info
 from applications.enums import (
     ApplicationBatchStatus,
     ApplicationStatus,
@@ -24,15 +26,19 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
-from calculator.api.v1.serializers import CalculationSerializer, PaySubsidySerializer
+from calculator.api.v1.serializers import (
+    CalculationSerializer,
+    PaySubsidySerializer,
+    TrainingCompensationSerializer,
+)
 from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
 from common.utils import (
-    date_range_overlap,
-    duration_in_months,
-    pairwise,
+    get_date_range_end_with_days360,
     PhoneNumberField,
+    to_decimal,
+    update_object,
     xgroup,
 )
 from companies.api.v1.serializers import CompanySerializer
@@ -47,7 +53,10 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
+from messages.automatic_messages import send_application_reopened_message
 from rest_framework import serializers
+from rest_framework.fields import FileField
+from rest_framework.reverse import reverse
 from terms.api.v1.serializers import (
     ApplicantTermsApprovalSerializer,
     ApproveTermsSerializer,
@@ -75,9 +84,34 @@ class ApplicationBasisSerializer(serializers.ModelSerializer):
         }
 
 
+class AttachmentField(FileField):
+    def to_representation(self, value):
+        if not value:
+            return None
+
+        url_pattern_name = "v1:applicant-application-download-attachment"
+        request = self.context.get("request")
+        if request and get_request_user_from_context(self).is_handler():
+            url_pattern_name = "v1:handler-application-download-attachment"
+
+        path = reverse(
+            url_pattern_name,
+            kwargs={
+                "pk": value.instance.application.pk,
+                "attachment_pk": value.instance.pk,
+            },
+        )
+        if request is not None:
+            return request.build_absolute_uri(path)
+        return path
+
+
 class AttachmentSerializer(serializers.ModelSerializer):
     # this limit is a security feature, not a business rule
+
     MAX_ATTACHMENTS_PER_APPLICATION = 20
+
+    attachment_file = AttachmentField()
 
     class Meta:
         model = Attachment
@@ -107,18 +141,9 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Validation includes:
-        * validate that adding attachments is allowed in this application status
-        * rudimentary validation of file content to guard against accidentally uploading
+        Rudimentary validation of file content to guard against accidentally uploading
         invalid files.
         """
-        if (
-            data["application"].status
-            not in self.ATTACHMENT_MODIFICATION_ALLOWED_STATUSES
-        ):
-            raise serializers.ValidationError(
-                _("Can not add attachment to an application in this state")
-            )
 
         if data["attachment_file"].size > MAX_UPLOAD_SIZE:
             raise serializers.ValidationError(
@@ -457,7 +482,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         help_text=(
             "Set the approved terms of this application."
             "Only used when application status is changed"
-            "from DRAFT or ADDITIONAL_INFORMATION_NEEDED to RECEIVED"
+            "from DRAFT->RECEIVED or ADDITIONAL_INFORMATION_NEEDED->HANDLING"
             "in the same request."
         ),
     )
@@ -501,6 +526,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
+            "former_benefit_info",
             "available_benefit_types",
             "official_company_street_address",
             "official_company_city",
@@ -533,8 +559,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "de_minimis_aid_set",
             "last_modified_at",
             "created_at",
+            "additional_information_needed_by",
+            "status_last_changed_at",
             "attachments",
             "ahjo_decision",
+            "unread_messages_count",
+            "warnings",
+            "duration_in_months_rounded",
         ]
         read_only_fields = [
             "submitted_at",
@@ -543,6 +574,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
+            "former_benefit_info",
             "company_name",
             "company_form",
             "official_company_street_address",
@@ -551,6 +583,11 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "available_benefit_types",
             "last_modified_at",
             "created_at",
+            "additional_information_needed_by",
+            "status_last_changed_at",
+            "unread_messages_count",
+            "warnings",
+            "duration_in_months_rounded",
         ]
         extra_kwargs = {
             "company_name": {
@@ -664,6 +701,21 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         help_text="Last modified timestamp. Only handlers see the timestamp of non-draft applications.",
     )
 
+    former_benefit_info = serializers.SerializerMethodField(
+        "get_former_benefit_info",
+        help_text="Aggregated information about previously granted benefits for the same employee and company",
+    )
+
+    warnings = serializers.SerializerMethodField("get_warnings")
+
+    additional_information_needed_by = serializers.SerializerMethodField(
+        "get_additional_information_needed_by"
+    )
+
+    status_last_changed_at = serializers.SerializerMethodField(
+        "get_status_last_changed_at"
+    )
+
     available_bases = serializers.SerializerMethodField(
         "get_available_bases", help_text="List of available application basis slugs"
     )
@@ -692,6 +744,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         allow_blank=True,
         help_text="Company contact person phone number normalized (start with zero, without country code)",
     )
+    unread_messages_count = serializers.IntegerField(
+        read_only=True, help_text="Count of unread messages"
+    )
 
     def get_applicant_terms_approval_needed(self, obj):
         return ApplicantTermsApproval.terms_approval_needed(obj)
@@ -705,6 +760,100 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             return TermsSerializer(terms, context=context).data
         else:
             return None
+
+    def get_warnings(self, obj) -> Dict[str, List[str]]:
+        """
+        Return the warnings related to this application. The data format is same as for error responses:
+        the return value is a dict, where the key is a string that specifies a field name or other identifier,
+        and the value is a list of human-readable strings.
+
+        For warnings related to former benefits, the key used is "former_benefits"
+
+        More fields may be added in the future. The format of the data is:
+            {
+                "some_field_name_or_key": [
+                    "warning string",
+                    "other warning string",
+                ],
+                "other_field_name_or_key": [
+                    "warning string",
+                ],
+            }
+        """
+        warnings = {}
+        if all(
+            [
+                obj.start_date,
+                obj.end_date,
+                obj.employee.social_security_number,
+            ]
+        ):
+            if former_benefit_warnings := get_former_benefit_info(
+                obj,
+                obj.company,
+                obj.employee.social_security_number,
+                obj.start_date,
+                obj.end_date,
+                obj.apprenticeship_program,
+            ).warnings:
+                warnings["former_benefits"] = former_benefit_warnings
+        return warnings
+
+    def _get_status_change_timestamp(self, obj, to_status=None):
+        change_qs = obj.log_entries.all()
+        if to_status:
+            change_qs = change_qs.filter(to_status=to_status)
+        if log_entry := change_qs.order_by("-created_at").first():
+            return log_entry.created_at
+        else:
+            return None
+
+    ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=14)
+
+    def get_additional_information_needed_by(self, obj):
+        if info_asked_timestamp := self._get_status_change_timestamp(
+            obj, ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED
+        ):
+            return info_asked_timestamp.date() + self.ADDITIONAL_INFORMATION_DEADLINE
+        else:
+            return None
+
+    def get_status_last_changed_at(self, obj):
+        if log_entry := obj.log_entries.all().order_by("-created_at").first():
+            return log_entry.created_at
+        else:
+            return None
+
+    def get_former_benefit_info(self, obj):
+
+        if not hasattr(obj, "calculation"):
+            return {}
+
+        # use start_date and end_date from calculation, if defined
+        aggregated_info = get_former_benefit_info(
+            obj,
+            obj.company,
+            obj.employee.social_security_number,
+            obj.calculation.start_date or obj.start_date,
+            obj.calculation.end_date or obj.end_date,
+            obj.apprenticeship_program,
+        )
+        if aggregated_info.months_remaining is None:
+            last_possible_end_date = None
+        else:
+            last_possible_end_date = get_date_range_end_with_days360(
+                obj.start_date, aggregated_info.months_remaining
+            )
+
+        return {
+            "months_used": to_decimal(
+                aggregated_info.months_used, decimal_places=2, allow_null=True
+            ),
+            "months_remaining": to_decimal(
+                aggregated_info.months_remaining, decimal_places=2, allow_null=True
+            ),
+            "last_possible_end_date": last_possible_end_date,
+        }
 
     def get_submitted_at(self, obj):
         if (
@@ -854,17 +1003,19 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                 {"de_minimis_aid_set": _("Total amount of de minimis aid too large")}
             )
 
+    def _validate_date_range_on_submit(self, start_date, end_date):
+        if start_date < date(date.today().year, 1, 1):
+            raise serializers.ValidationError(
+                {"start_date": _("start_date must not be in a past year")}
+            )
+        if end_date < date(date.today().year, 1, 1):
+            raise serializers.ValidationError(
+                {"end_date": _("end_date must not be in a past year")}
+            )
+
     def _validate_date_range(self, start_date, end_date, benefit_type):
         # keeping all start/end date validation together
-        if start_date and start_date < date(date.today().year, 1, 1):
-            raise serializers.ValidationError(
-                {"start_date": _("start_date must be within the current year")}
-            )
         if end_date:
-            if end_date < date(date.today().year, 1, 1):
-                raise serializers.ValidationError(
-                    {"end_date": _("end_date must be within the current year")}
-                )
             if start_date:
                 if end_date < start_date:
                     raise serializers.ValidationError(
@@ -887,97 +1038,12 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                         {"end_date": _("minimum duration of the benefit is one month")}
                     )
                 if (
-                    start_date + relativedelta(months=self.BENEFIT_MAX_MONTHS)
+                    start_date + relativedelta(months=Application.BENEFIT_MAX_MONTHS)
                     <= end_date
                 ):
                     raise serializers.ValidationError(
                         {"end_date": _("maximum duration of the benefit is 12 months")}
                     )
-
-    BENEFIT_WAITING_PERIOD_MONTHS = 24
-    BENEFIT_MAX_MONTHS = 12
-
-    def _validate_previous_benefits(
-        self, company, employee_social_security_number, start_date, end_date, status
-    ):
-        if not all([start_date, end_date, employee_social_security_number]):
-            return
-        if status in [ApplicationStatus.CANCELLED, ApplicationStatus.REJECTED]:
-            # it must be possible to cancel/reject applications with this error, or they
-            # migth be impossible for admins to get rid of. For example, if there are two
-            # simultaneously submitted applications for the same employee and one of them is accepted, that might
-            # make the other application invalid.
-            return
-
-        # The waiting time starts at the end of the latest benefit period granted.
-        previously_granted_benefits = Application.objects.filter(
-            employee__social_security_number=employee_social_security_number,
-            company=company,
-            status=ApplicationStatus.ACCEPTED,
-            start_date__lte=end_date,  # catch also overlapping benefits
-        ).order_by("-start_date")
-        if self.instance:
-            previously_granted_benefits = previously_granted_benefits.exclude(
-                pk=self.instance.pk
-            )
-
-        self._validate_no_benefit_overlap(
-            start_date, end_date, previously_granted_benefits
-        )
-
-        most_recent_benefit = previously_granted_benefits.first()
-        if (
-            not most_recent_benefit
-            or most_recent_benefit.end_date
-            < start_date - relativedelta(months=self.BENEFIT_WAITING_PERIOD_MONTHS)
-        ):
-            # at least BENEFIT_WAITING_PERIOD_MONTHS elapsed since a Helsinki benefit was granted
-            # for this employee last time.
-            return
-
-        # scroll back previous benefits until we find a gap of BENEFIT_WAITING_PERIOD_MONTHS
-        applicable_benefits = [most_recent_benefit]
-        for old_benefit, older_benefit in pairwise(previously_granted_benefits):
-            # on the first round of loop, old_benefit == most_recent_benefit, which already is in
-            # applicable_benefits
-            if (
-                older_benefit.end_date
-                + relativedelta(months=self.BENEFIT_WAITING_PERIOD_MONTHS)
-                < old_benefit.start_date
-            ):
-                break
-            applicable_benefits.append(older_benefit)
-
-        past_months_of_benefit = sum(
-            benefit.duration_in_months for benefit in applicable_benefits
-        )
-        if (
-            past_months_of_benefit + duration_in_months(start_date, end_date)
-            > self.BENEFIT_MAX_MONTHS
-        ):
-            # granting this benefit would exceed the limit
-            raise serializers.ValidationError(
-                {
-                    "start_date": _(
-                        "Benefit can not be granted before 24-month waiting period expires"
-                    )
-                }
-            )
-
-    def _validate_no_benefit_overlap(
-        self, start_date, end_date, previously_granted_benefits
-    ):
-        for benefit in previously_granted_benefits:
-            if date_range_overlap(
-                start_date, end_date, benefit.start_date, benefit.end_date
-            ):
-                raise serializers.ValidationError(
-                    {
-                        "start_date": _(
-                            "There's already an accepted application with overlapping date range for this employee"
-                        )
-                    }
-                )
 
     def _validate_co_operation_negotiations(
         self, co_operation_negotiations, co_operation_negotiations_description
@@ -1027,8 +1093,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         "company_contact_person_last_name",
         "co_operation_negotiations",
         "pay_subsidy_granted",
-        "apprenticeship_program",
-        "de_minimis_aid",
         "benefit_type",
         "start_date",
         "end_date",
@@ -1041,16 +1105,24 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         # newly created applications are always DRAFT
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
         if (
-            OrganizationType.resolve_organization_type(
+            organization_type := OrganizationType.resolve_organization_type(
                 self.get_company(data).company_form
             )
-            == OrganizationType.ASSOCIATION
-        ):
+        ) == OrganizationType.ASSOCIATION:
             required_fields.append("association_has_business_activities")
 
             # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
             # at submit time, only True is allowed.
             required_fields.append("association_immediate_manager_check")
+        elif organization_type == OrganizationType.COMPANY:
+            required_fields.append("de_minimis_aid")
+        else:
+            assert False, "unreachable"
+
+        # if pay_subsidy_granted is selected, then the applicant needs to also select if
+        # it's an apprenticeship_program or not
+        if data["pay_subsidy_granted"]:
+            required_fields.append("apprenticeship_program")
 
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:
@@ -1211,13 +1283,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         self._validate_date_range(
             data.get("start_date"), data.get("end_date"), data.get("benefit_type")
         )
-        self._validate_previous_benefits(
-            company,
-            data.get("employee", {}).get("social_security_number"),
-            data.get("start_date"),
-            data.get("end_date"),
-            data.get("status"),
-        )
         self._validate_co_operation_negotiations(
             data.get("co_operation_negotiations"),
             data.get("co_operation_negotiations_description"),
@@ -1250,7 +1315,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         return data
 
     def handle_status_transition(self, instance, previous_status, approve_terms):
-        if instance.status == ApplicationStatus.RECEIVED:
+        if (
+            (
+                previous_status,
+                instance.status,
+            )
+            in ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
+        ):
             # moving out of DRAFT or ADDITIONAL_INFORMATION_NEEDED, so the applicant
             # may have modified the application
             self._validate_attachments(instance)
@@ -1261,6 +1332,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                 # exists
                 Calculation.objects.create_for_application(instance)
 
+            if previous_status == ApplicationStatus.DRAFT:
+                # Do not validate if previous_status is ADDITIONAL_INFORMATION_NEEDED, as the validation
+                # rule only applies to the first application submission.
+                self._validate_date_range_on_submit(
+                    instance.start_date, instance.end_date
+                )
+
             call_now_or_later(
                 instance.calculation.calculate,
                 duplicate_check=("calculation.calculate", instance.pk),
@@ -1270,6 +1348,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             from_status=previous_status,
             to_status=instance.status,
         )
+        if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
+            # Create an automatic message for the applicant
+            send_application_reopened_message(
+                get_request_user_from_context(self),
+                instance,
+                self.get_additional_information_needed_by(instance),
+            )
 
     def _validate_employee_consent(self, instance):
         consent_count = instance.attachments.filter(
@@ -1455,6 +1540,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     The following fields are available for logged in handlers only:
     * calculation
     * pay_subsidies
+    * training compensations
     * batch
     """
 
@@ -1474,6 +1560,12 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     pay_subsidies = PaySubsidySerializer(
         many=True,
         help_text="PaySubsidy objects, available for handlers only",
+        required=False,
+    )
+
+    training_compensations = TrainingCompensationSerializer(
+        many=True,
+        help_text="TrainingCompensation objects, available for handlers only",
         required=False,
     )
 
@@ -1505,6 +1597,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         fields = BaseApplicationSerializer.Meta.fields + [
             "calculation",
             "pay_subsidies",
+            "training_compensations",
             "batch",
             "create_application_for_company",
         ]
@@ -1512,25 +1605,27 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     @transaction.atomic
     @do_delayed_calls_at_end()  # application recalculation
     def update(self, instance, validated_data):
-        if not ApplicationStatus.is_handler_editable_status(instance.status):
+        if not ApplicationStatus.is_handler_editable_status(
+            instance.status, validated_data["status"]
+        ):
             raise BenefitAPIException(
                 _("Application can not be changed in this status")
             )
         calculation_data = validated_data.pop("calculation", None)
         pay_subsidy_data = validated_data.pop("pay_subsidies", None)
+        training_compensation_data = validated_data.pop("training_compensations", None)
         application = self._base_update(instance, validated_data)
         if calculation_data is not None:
             self._update_calculation(instance, calculation_data)
         if pay_subsidy_data is not None:
             self._update_pay_subsidies(instance, pay_subsidy_data)
+        if training_compensation_data is not None:
+            self._update_training_compensations(instance, training_compensation_data)
         return application
 
     def _update_calculation(self, application, calculation_data):
         request = self.context.get("request")
-        if application.status not in [ApplicationStatus.RECEIVED]:
-            # TODO: add ApplicationStatus.HANDLING here
-            return
-        if not request and request.method != "PUT":
+        if not request or request.method != "PUT":
             return
         if not self.logged_in_user_is_admin():
             # only admins are allowed to modify calculations
@@ -1539,52 +1634,58 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             raise serializers.ValidationError(
                 _("The calculation should be created when the application is submitted")
             )
-        if application.calculation.id != calculation_data["id"]:
-            raise serializers.ValidationError(
-                _("The calculation id does not match existing id")
+        if (
+            calculation_data is not None
+            and ApplicationStatus.is_handler_editable_status(application.status)
+        ):
+            if application.calculation.id != calculation_data["id"]:
+                raise serializers.ValidationError(
+                    _("The calculation id does not match existing id")
+                )
+            call_now_or_later(
+                application.calculation.calculate,
+                duplicate_check=("calculation.calculate", application.pk),
             )
-        serializer = CalculationSerializer(
-            application.calculation,
-            data=calculation_data,
-        )
+            update_object(application.calculation, calculation_data)
 
-        if serializer.is_valid():
-            serializer.save()
-            if hasattr(application, "calculation"):
-                call_now_or_later(
-                    application.calculation.calculate,
-                    duplicate_check=("calculation.calculate", application.pk),
-                )
-        else:
-            raise serializers.ValidationError(
-                format_lazy(
-                    _("Reading calculation data failed: {errors}"),
-                    errors=serializer.errors,
-                )
-            )
+    def _update_training_compensations(self, application, training_compensation_data):
+        return self._common_ordered_nested_update(
+            application,
+            TrainingCompensationSerializer(
+                application.training_compensations.all(),
+                data=training_compensation_data,
+                many=True,
+            ),
+        )
 
     def _update_pay_subsidies(self, application, pay_subsidy_data):
-
-        if application.status != ApplicationStatus.RECEIVED:
-            # pay subsidies are not editable after application is locked,
-            # and draft applications can't have them
-            # TODO: check for ApplicationStatus.HANDLING here
-            return
-
-        serializer = PaySubsidySerializer(
-            application.pay_subsidies.all(), data=pay_subsidy_data, many=True
+        return self._common_ordered_nested_update(
+            application,
+            PaySubsidySerializer(
+                application.pay_subsidies.all(), data=pay_subsidy_data, many=True
+            ),
         )
+
+    def _common_ordered_nested_update(self, application, serializer):
+        if application.status not in [
+            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
+        ]:
+            # These objects are not editable after application is locked,
+            # and draft applications can't have them
+            return
 
         if not serializer.is_valid():
             raise serializers.ValidationError(
                 format_lazy(
-                    _("Reading pay subsidy data failed: {errors}"),
+                    _("Reading {localized_model_name} data failed: {errors}"),
                     errors=serializer.errors,
+                    localized_model_name=serializer.instance.model._meta.verbose_name,
                 )
             )
-        for idx, pay_subsidy in enumerate(serializer.validated_data):
-            pay_subsidy["application_id"] = application.pk
-            pay_subsidy[
+        for idx, nested_object in enumerate(serializer.validated_data):
+            nested_object["application_id"] = application.pk
+            nested_object[
                 "ordering"
             ] = idx  # use the ordering defined in the JSON sent by the client
         serializer.save()
@@ -1593,3 +1694,16 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 application.calculation.calculate,
                 duplicate_check=("calculation.calculate", application.pk),
             )
+
+    def handle_status_transition(self, instance, previous_status, approve_terms):
+        # Super need to call first so instance.calculation is always present
+        super().handle_status_transition(instance, previous_status, approve_terms)
+        # Extend from base class function.
+        # Assign current user to the application.calculation.handler
+        # NOTE: This handler might be overridden if there is a handler pk included in the request post data
+        handler = get_request_user_from_context(self)
+        if settings.DISABLE_AUTHENTICATION and isinstance(handler, AnonymousUser):
+            handler = get_user_model().objects.all().order_by("username").first()
+        if instance.status in HandlerApplicationStatusValidator.ASSIGN_HANDLER_STATUSES:
+            instance.calculation.handler = handler
+            instance.calculation.save()

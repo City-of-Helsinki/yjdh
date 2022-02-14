@@ -4,7 +4,8 @@
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:",
-    "linkSkipToContent": "Siirry sisältöön"
+    "linkSkipToContent": "Siirry sisältöön",
+    "menuToggleAriaLabel": "Valikko"
   },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
@@ -131,8 +132,7 @@
         "validate": "Syöttämäsi tieto on virheellistä muotoa",
         "selectionGroups": "Valitse jokin vaihtoehto",
         "checkboxRequired": "Valinta on pakollinen",
-        "employment_contract": "Liitä ainakin yksi tiedosto",
-        "payslip": "Liitä ainakin yksi tiedosto"
+        "attachments": "Liitä ainakin yksi tiedosto"
       },
       "notification": {
         "title": "Täytä puuttuvat tai virheelliset tiedot"
@@ -143,7 +143,7 @@
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "information": "Tietoa palvelusta",
     "informationLink": "https://kesaseteli.fi/"
   },
@@ -152,7 +152,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu",
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {

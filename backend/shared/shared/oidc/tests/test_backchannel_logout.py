@@ -34,7 +34,7 @@ def post_to_backchannel_logout(claims, client):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_backchannel_logout(client):
     """
@@ -59,7 +59,7 @@ def test_backchannel_logout(client):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_backchannel_logout_with_username_that_does_not_exist(client):
     """
@@ -76,7 +76,7 @@ def test_backchannel_logout_with_username_that_does_not_exist(client):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_backchannel_logout_without_logout_token(client):
     """
@@ -93,7 +93,7 @@ def test_backchannel_logout_without_logout_token(client):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_backchannel_logout_invalid_logout_token_without_events(client):
     """
@@ -118,7 +118,7 @@ def test_backchannel_logout_invalid_logout_token_without_events(client):
 
 @pytest.mark.django_db
 @override_settings(
-    MOCK_FLAG=False,
+    NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_backchannel_logout_invalid_logout_token_with_nonce(client):
     """

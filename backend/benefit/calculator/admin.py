@@ -1,4 +1,10 @@
-from calculator.models import Calculation, CalculationRow, PaySubsidy, PreviousBenefit
+from calculator.models import (
+    Calculation,
+    CalculationRow,
+    PaySubsidy,
+    PreviousBenefit,
+    TrainingCompensation,
+)
 from django.contrib import admin
 
 
@@ -19,7 +25,7 @@ class CalculationAdmin(admin.ModelAdmin):
         "start_date",
         "end_date",
         "calculated_benefit_amount",
-        "override_benefit_amount",
+        "override_monthly_benefit_amount",
         "granted_as_de_minimis_aid",
         "target_group_check",
         "created_at",
@@ -39,5 +45,6 @@ class CalculationAdmin(admin.ModelAdmin):
 
 admin.site.register(Calculation, CalculationAdmin)
 admin.site.register(PaySubsidy)
+admin.site.register(TrainingCompensation)
 admin.site.register(PreviousBenefit)
 admin.site.register(CalculationRow)

@@ -3,9 +3,10 @@ export const IS_CLIENT = typeof window !== 'undefined';
 export enum ROUTES {
   HOME = '/',
   APPLICATION_FORM = '/application',
+  LOGIN = '/login',
 }
 
-export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200000;
+export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;
 
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
@@ -37,6 +38,7 @@ export enum APPLICATION_STATUSES {
   RECEIVED = 'received',
   APPROVED = 'approved',
   REJECTED = 'rejected',
+  HANDLING = 'handling',
 }
 
 export enum ORGANIZATION_TYPES {
@@ -179,28 +181,8 @@ export const EMPLOYEE_MAX_WORKING_HOURS = 168;
 export const MAX_SHORT_STRING_LENGTH = 64 as const;
 export const MAX_LONG_STRING_LENGTH = 256 as const;
 
-export enum VALIDATION_MESSAGE_KEYS {
-  REQUIRED = 'common:form.validation.required',
-  INVALID = 'common:form.validation.invalid',
-  EMAIL_INVALID = 'common:form.validation.email.invalid',
-  IBAN_INVALID = 'common:form.validation.iban.invalid',
-  NUMBER_MIN = 'common:form.validation.number.min',
-  NUMBER_MAX = 'common:form.validation.number.max',
-  PHONE_INVALID = 'common:form.validation.phone.invalid',
-  STRING_POSITIVENUMBER = 'common:form.validation.string.positiveNumber',
-  STRING_MIN = 'common:form.validation.string.min',
-  STRING_MAX = 'common:form.validation.string.max',
-  SSN_INVALID = 'common:form.validation.ssn.invalid',
-  URL = 'common:form.validation.string.url',
-  DATE = 'common:form.validation.string.date',
-  DATE_IN_THE_FUTURE = 'common:form.validation.date.mustNotInThePast',
-  DATE_MIN = 'common:form.validation.date.min',
-  DATE_MAX = 'common:form.validation.date.max',
-  DATE_FORMAT = 'common:form.validation.date.format',
-  TIME = 'common:form.validation.string.time',
-  TIME_MIN = 'common:form.validation.time.min',
-  TIME_MAX = 'common:form.validation.time.max',
-}
+export const MIN_PHONE_NUMBER_LENGTH = 7 as const;
+export const MAX_PHONE_NUMBER_LENGTH = 13 as const;
 
 // temporary consent file
 export const EMPLOYEE_CONSENT_FILE = 'employee_consent.pdf';

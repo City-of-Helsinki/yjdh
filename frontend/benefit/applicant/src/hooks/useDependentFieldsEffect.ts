@@ -6,6 +6,7 @@ interface FieldValues {
   apprenticeshipProgram?: boolean | null;
   benefitType?: BENEFIT_TYPES | '';
   paySubsidyGranted?: boolean | null;
+  associationHasBusinessActivities?: boolean | null;
   startDate?: string;
 }
 
@@ -17,6 +18,7 @@ interface Options {
   clearDatesValues?: () => void;
   clearBenefitValues?: () => void;
   clearPaySubsidyValues?: () => void;
+  clearDeminimisAids?: () => void;
   setEndDate?: () => void;
 }
 
@@ -39,6 +41,7 @@ enum EFFECTS {
   CLEAR_DATES_VALUES = 'clearDatesValues',
   CLEAR_BENEFIT_VALUES = 'clearBenefitValues',
   CLEAR_PAY_SUBSIDY_VALUES = 'clearPaySubsidyValues',
+  CLEAR_DE_MINIMIS_AIDS = 'clearDeMinimisAids',
   SET_END_DATE = 'setEndDate',
 }
 
@@ -50,6 +53,7 @@ export const useDependentFieldsEffect = (
     apprenticeshipProgram,
     benefitType,
     paySubsidyGranted,
+    associationHasBusinessActivities,
     startDate,
   }: FieldValues,
   {
@@ -60,6 +64,7 @@ export const useDependentFieldsEffect = (
     clearDatesValues,
     clearBenefitValues,
     clearPaySubsidyValues,
+    clearDeminimisAids,
     setEndDate,
   }: Options
 ): void => {
@@ -100,6 +105,10 @@ export const useDependentFieldsEffect = (
   }, [state, clearPaySubsidyValues]);
 
   React.useEffect(() => {
+    if (state.includes(EFFECTS.CLEAR_DE_MINIMIS_AIDS)) clearDeminimisAids?.();
+  }, [state, clearDeminimisAids]);
+
+  React.useEffect(() => {
     if (state.includes(EFFECTS.SET_END_DATE)) setEndDate?.();
   }, [state, setEndDate]);
 
@@ -132,6 +141,13 @@ export const useDependentFieldsEffect = (
       dispatch(createUpdateAction([EFFECTS.CLEAR_BENEFIT_VALUES]));
     }
   }, [apprenticeshipProgram, benefitType]);
+
+  // Effects when associationHasBusinessActivities changes
+  React.useEffect(() => {
+    if (associationHasBusinessActivities === false) {
+      dispatch(createUpdateAction([EFFECTS.CLEAR_DE_MINIMIS_AIDS]));
+    }
+  }, [associationHasBusinessActivities]);
 
   // Effects when benefitType changes
   React.useEffect(() => {

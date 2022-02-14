@@ -4,10 +4,11 @@ import os
 from applications.enums import ApplicationStatus, BenefitType
 from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation, STATE_AID_MAX_PERCENTAGE_CHOICES
-from calculator.tests.factories import PaySubsidyFactory
+from calculator.tests.factories import PaySubsidyFactory, TrainingCompensationFactory
 from common.utils import nested_setattr, to_decimal
 from helsinkibenefit.tests.conftest import *  # noqa
 from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
 
 
 class CaseNotFound(Exception):
@@ -27,7 +28,8 @@ def make_bool_fi(value):
 
 
 MAX_TEST_ROW = 100
-MAX_TEST_COLUMN = 5  # complex cases not tested yet
+FIRST_TEST_COLUMN = 3
+MAX_TEST_COLUMN = 50  # large enough number that all test columns are included
 
 
 class ExpectedResults:
@@ -41,11 +43,6 @@ class ExcelTestCase:
         self.worksheet = worksheet
         self.column_idx = column_idx
 
-    BENEFIT_TYPE_MAP = {
-        "Palkan Helsinki-lisä": BenefitType.SALARY_BENEFIT,
-        "Työllistämisen Helsinki-lisä": BenefitType.EMPLOYMENT_BENEFIT,
-    }
-
 
 # unique object
 sentinel = object()
@@ -56,6 +53,8 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         self._setup_expected_results()
         self._setup_db_objects()
         self._load_values_from_excel()
+        if self.expected_results.calculated_benefit_amount is None:
+            raise CaseNotFound
         self._save_initial_state()
 
     def _setup_expected_results(self):
@@ -80,6 +79,14 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 monthly_amount=sentinel,
                 total_amount=sentinel,
             ),
+            time_range_3=ExpectedResults(
+                start_date=sentinel,
+                end_date=None,
+                duration=sentinel,
+                pay_subsidy_monthly=sentinel,
+                monthly_amount=sentinel,
+                total_amount=sentinel,
+            ),
         )
 
     def _setup_db_objects(self):
@@ -97,7 +104,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
             end_date=self.application.end_date,
             state_aid_max_percentage=STATE_AID_MAX_PERCENTAGE_CHOICES[0][0],
             calculated_benefit_amount=0,
-            override_benefit_amount=None,
+            override_monthly_benefit_amount=None,
         )
 
         self.application.pay_subsidy_1 = PaySubsidyFactory()
@@ -105,9 +112,15 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         self.application.pay_subsidy_2 = PaySubsidyFactory()
         self.application.pay_subsidy_2.pay_subsidy_percent = None
 
+        self.application.training_compensation_1 = TrainingCompensationFactory()
+        self.application.training_compensation_1.monthly_amount = None
+        self.application.training_compensation_2 = TrainingCompensationFactory()
+        self.application.training_compensation_2.monthly_amount = None
+
     value_conversion_table = {
         "Palkan Helsinki-lisä": BenefitType.SALARY_BENEFIT,
         "Työllistämisen Helsinki-lisä": BenefitType.EMPLOYMENT_BENEFIT,
+        "Palkkatuettu oppisopimus": BenefitType.SALARY_BENEFIT,
         "kyllä": True,
         "ei": False,
     }
@@ -129,7 +142,9 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 if value is not None:
                     value = to_decimal(value, decimal_places=2)
 
-            print(f"{target}={value} ({type(value)}")
+            print(
+                f"{get_column_letter(self.column_idx)} {target}={value} ({type(value)}"
+            )
             nested_setattr(self, target, value)
 
     def convert_date(self, value):
@@ -146,6 +161,7 @@ class SalaryBenefitExcelTest(ExcelTestCase):
     def _save_initial_state(self):
         self.application.save()
         self.application.calculation.save()
+        self.application.company.save()
 
         for pay_subsidy in [
             self.application.pay_subsidy_1,
@@ -157,13 +173,89 @@ class SalaryBenefitExcelTest(ExcelTestCase):
                 pay_subsidy.application = self.application
                 pay_subsidy.save()
 
+        for training_compensation in [
+            self.application.training_compensation_1,
+            self.application.training_compensation_2,
+        ]:
+            if training_compensation.monthly_amount is not None:
+                # only add the pay subsidy to application if the subsidy is defined
+                # in the Excel testcase
+                training_compensation.application = self.application
+                training_compensation.save()
+
         self.application.calculation.start_date = (
             self.expected_results.time_range_1.start_date
         )
+        assert isinstance(self.application.calculation.start_date, datetime.date)
         self.application.calculation.end_date = (
-            self.expected_results.time_range_2.end_date
+            self.expected_results.time_range_3.end_date
+            or self.expected_results.time_range_2.end_date
             or self.expected_results.time_range_1.end_date
         )
+        assert isinstance(self.application.calculation.end_date, datetime.date)
+        self.application.calculation.save()
+        self.application.save()
+
+        self.application.refresh_from_db()  # so that DecimalFields have proper type (not float)
+
+    def run_test(self):
+        self._setup()
+        self.application.calculation.init_calculator()
+        if self.application.TEST_FLAGS == "SKIP":
+            return
+        self.application.calculation.calculate()
+        self._verify_results()
+
+    def _verify_results(self):
+        for row in self.application.calculation.rows.all():
+            print(row)
+        assert (
+            self.application.calculation.calculated_benefit_amount
+            == self.expected_results.calculated_benefit_amount
+        )
+
+
+class EmployeeBenefitExcelTest(SalaryBenefitExcelTest):
+    def _setup_expected_results(self):
+        # actual expected values loaded from Excel
+        self.expected_results = ExpectedResults(
+            calculated_benefit_amount=sentinel,
+            salary_costs=sentinel,
+            state_aid_max_monthly_eur=sentinel,
+            start_date=sentinel,
+            end_date=sentinel,
+            duration=sentinel,
+            monthly_amount=sentinel,
+            total_amount=sentinel,
+        )
+
+    def _setup_db_objects(self):
+
+        self.application = ApplicationFactory()
+        self.application.status = ApplicationStatus.RECEIVED
+        self.application.save()
+
+        self.application.calculation = Calculation(
+            application=self.application,
+            monthly_pay=self.application.employee.monthly_pay,
+            vacation_money=self.application.employee.vacation_money,
+            other_expenses=self.application.employee.other_expenses,
+            start_date=self.application.start_date,
+            end_date=self.application.end_date,
+            state_aid_max_percentage=STATE_AID_MAX_PERCENTAGE_CHOICES[0][0],
+            calculated_benefit_amount=0,
+            override_monthly_benefit_amount=None,
+        )
+
+        self.application.pay_subsidy = PaySubsidyFactory()
+        self.application.pay_subsidy.pay_subsidy_percent = None
+
+    def _save_initial_state(self):
+        self.application.save()
+        self.application.calculation.save()
+
+        self.application.calculation.start_date = self.expected_results.start_date
+        self.application.calculation.end_date = self.expected_results.end_date
         self.application.calculation.save()
 
     def run_test(self):
@@ -181,7 +273,11 @@ class SalaryBenefitExcelTest(ExcelTestCase):
         )
 
 
-FIRST_TEST_COLUMN = 3
+SHEETS_TO_TEST = [
+    ("Palkan Helsinki-lisä", SalaryBenefitExcelTest),
+    ("Työllistämisen Helsinki-lisä", EmployeeBenefitExcelTest),
+    ("Palkkatuettu oppisopimus", SalaryBenefitExcelTest),
+]
 
 
 def test_cases_from_excel(request, api_client):
@@ -190,12 +286,34 @@ def test_cases_from_excel(request, api_client):
         request.fspath.dirname, "Helsinki-lisä laskurin testitapaukset.xlsx"
     )
     wb = load_workbook(filename=excel_file_name, data_only=True)  # do not load formulas
-    salary_benefit_tests = wb["Palkan Helsinki-lisä"]
-    for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
-        try:
-            test = SalaryBenefitExcelTest(salary_benefit_tests, col_idx)
-            # add_attachments_to_application(request, application)
-        except CaseNotFound:  # no tests
-            break
-        else:
-            test.run_test()
+    for sheet_name, test_handler_class in SHEETS_TO_TEST:
+        if (
+            os.getenv("TEST_SHEET")
+            and os.getenv("TEST_SHEET").lower() != sheet_name.lower()
+        ):
+            continue
+        test_sheet = wb[sheet_name]
+        print(f"sheet {sheet_name}")
+        run_sheet(test_handler_class, test_sheet)
+
+
+def run_sheet(test_handler_class, test_sheet):
+    try:
+        for col_idx in range(FIRST_TEST_COLUMN, MAX_TEST_COLUMN):
+            if test_column := os.getenv("TEST_COLUMN"):
+                if get_column_letter(col_idx).lower() not in [
+                    v.lower() for v in test_column.split(",")
+                ]:
+                    continue
+            test = test_handler_class(test_sheet, col_idx)
+            if os.getenv("KEEP_GOING", None) == "1":
+                try:
+                    test.run_test()
+                except AssertionError:
+                    import pdb
+
+                    pdb.post_mortem()
+            else:
+                test.run_test()
+    except CaseNotFound:  # no tests
+        assert col_idx > 4  # all sheets should have at least some tests

@@ -1,14 +1,14 @@
-import { BackendEndpoint } from 'benefit/applicant/backend-api/backend-api';
-import useBackendAPI from 'benefit/applicant/hooks/useBackendAPI';
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
+import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 import User from 'shared/types/user';
 
 // check that authentication is still alive in every 5 minutes
-const FIVE_MINUTES = 5 * 60 * 1_000;
+const FIVE_MINUTES = 5 * 60 * 1000;
 
 const useUserQuery = <T = User>(
   select?: (user: User) => T

@@ -1,5 +1,6 @@
 import TestController from 'testcafe';
 
+import isRealIntegrationsEnabled from '../../src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '../../src/i18n/i18n';
 import Company from '../../src/types/company';
 import User from '../../src/types/user';
@@ -8,7 +9,6 @@ import { getSuomiFiProfileComponents } from '../components/suomiFiProfile.compon
 import { getSuomiFiTestIdentificationComponents } from '../components/suomiFiTestIdentification.components';
 import { getSuomiFiValtuutusComponents } from '../components/suomiFiValtuutus.components';
 import { getUrlApi } from '../components/url.api';
-import isRealIntegrationsEnabled from '../utils/is-real-integrations-enabled';
 
 let suomiFiAuthenticationComponents: ReturnType<
   typeof getSuomiFiAuthenticationComponents
@@ -58,7 +58,7 @@ const doSuomiFiLogin = async (
   }
   await profileForm.actions.clickContinueButton();
   const companiesTable = await suomiFiValtuutusComponents.companiesTable();
-  const company = await companiesTable.actions.selectCompanyRadioButton(0);
+  const company = await companiesTable.actions.selectCompanyRadioButton(2);
   const authorizeForm = await suomiFiValtuutusComponents.authorizeForm();
   await authorizeForm.actions.clickSubmitButton(lang);
   return { user, company };
