@@ -140,7 +140,9 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
 
       indexPageApi.actions.typeInput('first_name', '!#$%&()*+/:;<=>?@');
       indexPageApi.actions.typeInput('last_name', '~¡¿÷ˆ]+$');
-      indexPageApi.actions.typeInput('social_security_number', '111111-111D');
+      // Note! 170915-915L is a fake ssn. See more info (in finnish only):
+      // https://www.tuomas.salste.net/doc/tunnus/henkilotunnus.html#keinotunnus
+      indexPageApi.actions.typeInput('social_security_number', '170915-915L');
       indexPageApi.actions.typeInput('postcode', 'abcde');
       indexPageApi.actions.typeInput('phone_number', '+44-20-7011-5555');
       indexPageApi.actions.typeInput('email', 'aaaa@bbb');
