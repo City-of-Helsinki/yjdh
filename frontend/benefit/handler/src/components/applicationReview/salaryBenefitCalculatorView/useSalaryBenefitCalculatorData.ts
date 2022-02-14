@@ -106,11 +106,11 @@ const useSalaryBenefitCalculatorData = (
     >;
   }, [t]);
 
-  const changeCalculatorMode = () => {
+  const changeCalculatorMode = (): void => {
     // Backend detects manual mode if overrideMonthlyBenefitAmount is not null
     // so to switch to auto mode, we set empty value here
     if (isManualCalculator)
-      formik.setFieldValue(fields.overrideMonthlyBenefitAmount.name, null);
+      void formik.setFieldValue(fields.overrideMonthlyBenefitAmount.name, null);
     setIsManualCalculator(!isManualCalculator);
   };
 

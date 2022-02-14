@@ -1,5 +1,5 @@
 import camelcaseKeys from 'camelcase-keys';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';

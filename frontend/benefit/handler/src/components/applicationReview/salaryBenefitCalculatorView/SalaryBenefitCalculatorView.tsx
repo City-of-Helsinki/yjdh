@@ -293,9 +293,7 @@ const SalaryBenefitCalculatorView: React.FC<
             }
             value={
               formik.values.overrideMonthlyBenefitAmount
-                ? formatStringFloatValue(
-                    formik.values.overrideMonthlyBenefitAmount
-                  )
+                ? formik.values.overrideMonthlyBenefitAmount
                 : ''
             }
             invalid={
