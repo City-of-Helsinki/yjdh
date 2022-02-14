@@ -90,7 +90,12 @@
 			"workFeature": "SV Työn ominaisuudet",
 			"keywords": "SV Avainsanat",
 			"search": "SV Hae"
-  	}
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "SV Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "SV Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "SV Poista valinta"
+    }
   },
   "footer": {
     "copyrightText": "Helsingfors stad",

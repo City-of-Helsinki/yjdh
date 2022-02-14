@@ -90,7 +90,12 @@
 			"workFeature": "ENG Työn ominaisuudet",
 			"keywords": "ENG Avainsanat",
 			"search": "ENG Hae"
-  	}
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "ENG Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "ENG Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "ENG Poista valinta"
+    }
   },
   "footer": {
     "copyrightText": "City of Helsinki",

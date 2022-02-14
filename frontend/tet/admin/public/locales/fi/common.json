@@ -90,7 +90,12 @@
 			"workFeature": "Työn ominaisuudet",
 			"keywords": "Avainsanat",
 			"search": "Hae"
-  	}
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "Poista valinta"
+    }
   },
   "footer": {
     "copyrightText": "Helsingin kaupunki",

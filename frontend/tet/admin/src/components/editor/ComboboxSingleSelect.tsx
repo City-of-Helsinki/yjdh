@@ -1,13 +1,9 @@
 import React from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Combobox as HdsCombobox } from 'hds-react';
 import Id from 'shared/types/id';
-import { RegisterOptions, NestedValue } from 'react-hook-form';
-
-type ComboboxFields<O extends Option> = {
-  location: NestedValue<O>;
-};
+import { RegisterOptions } from 'react-hook-form';
+import { useTranslation } from 'next-i18next';
 
 type Props<T, O extends Option> = {
   id: Id<T>;
@@ -38,6 +34,7 @@ const ComboboxSingleSelect = <T, O extends Option>({
   required = false,
 }: Props<T, O>): React.ReactElement<T> => {
   const { control } = useFormContext<T>();
+  const { t } = useTranslation();
 
   return (
     <Controller
@@ -61,9 +58,7 @@ const ComboboxSingleSelect = <T, O extends Option>({
           invalid={Boolean(invalid)}
           aria-invalid={Boolean(error)}
           filter={filter}
-          toggleButtonAriaLabel="test"
-          clearButtonAriaLabel="test"
-          selectedItemRemoveButtonAriaLabel="test"
+          toggleButtonAriaLabel={t('common:editor.combobox.toggleButtonAriaLabel')}
         />
       )}
     />

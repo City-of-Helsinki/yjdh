@@ -4,6 +4,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { Combobox as HdsCombobox } from 'hds-react';
 import Id from 'shared/types/id';
 import { RegisterOptions, NestedValue } from 'react-hook-form';
+import { useTranslation } from 'next-i18next';
 
 type ComboboxFields<O extends Option> = {
   keywords: NestedValue<O[]>;
@@ -41,6 +42,7 @@ const Combobox = <O extends Option>({
   required = false,
 }: Props<O>): React.ReactElement<ComboboxFields<O>> => {
   const { control } = useFormContext<ComboboxFields<O>>();
+  const { t } = useTranslation();
 
   return (
     <Controller
@@ -65,9 +67,9 @@ const Combobox = <O extends Option>({
           invalid={Boolean(invalid)}
           aria-invalid={Boolean(error)}
           filter={filter}
-          toggleButtonAriaLabel="test"
-          clearButtonAriaLabel="test"
-          selectedItemRemoveButtonAriaLabel="test"
+          toggleButtonAriaLabel={t('common:editor.combobox.toggleButtonAriaLabel')}
+          clearButtonAriaLabel={t('common:editor.combobox.clearButtonAriaLabel')}
+          selectedItemRemoveButtonAriaLabel={t('common:editor.combobox.selectedItemRemoveButtonAriaLabel')}
         />
       )}
     />
