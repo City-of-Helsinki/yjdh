@@ -1634,20 +1634,19 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             raise serializers.ValidationError(
                 _("The calculation should be created when the application is submitted")
             )
-        if calculation_data is not None:
-            if not ApplicationStatus.is_handler_editable_status(application.status):
-                raise serializers.ValidationError(
-                    _("The calculation can not be updated in this status")
-                )
+        if (
+            calculation_data is not None
+            and ApplicationStatus.is_handler_editable_status(application.status)
+        ):
             if application.calculation.id != calculation_data["id"]:
                 raise serializers.ValidationError(
                     _("The calculation id does not match existing id")
                 )
+            call_now_or_later(
+                application.calculation.calculate,
+                duplicate_check=("calculation.calculate", application.pk),
+            )
             update_object(application.calculation, calculation_data)
-        call_now_or_later(
-            application.calculation.calculate,
-            duplicate_check=("calculation.calculate", application.pk),
-        )
 
     def _update_training_compensations(self, application, training_compensation_data):
         return self._common_ordered_nested_update(
