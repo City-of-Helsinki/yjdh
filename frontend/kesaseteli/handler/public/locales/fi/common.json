@@ -25,7 +25,7 @@
     "contactUs": "Ota yhteyttä",
     "contactUsLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/ota-yhteytta/",
     "accessibilityStatement": "Saavutettavuusseloste",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "information": "Tietoa palvelusta",
     "informationLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/"
   },
@@ -70,7 +70,7 @@
   },
   "emailInUsePage" : {
     "title": "Hups! Sähköposti on jo käytössä.",
-    "notificationMessage": "Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+    "notificationMessage": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
   },
   "alreadyAssignedPage" : {
     "title": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",

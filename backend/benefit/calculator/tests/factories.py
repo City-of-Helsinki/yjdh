@@ -28,7 +28,7 @@ class PaySubsidyFactory(factory.django.DjangoModelFactory):
         lambda o: o.start_date + timedelta(days=random.randint(31, 364))
     )
     pay_subsidy_percent = 50
-    work_time_percent = 100
+    work_time_percent = decimal.Decimal(100)
     ordering = factory.Sequence(lambda n: n + 1)
     disability_or_illness = False
 
@@ -84,8 +84,8 @@ class CalculationFactory(factory.django.DjangoModelFactory):
     calculated_benefit_amount = factory.Faker(
         "pydecimal", left_digits=4, right_digits=2, min_value=0
     )
-    override_benefit_amount = None
-    override_benefit_amount_comment = ""
+    override_monthly_benefit_amount = None
+    override_monthly_benefit_amount_comment = ""
 
     row_1 = factory.RelatedFactory(
         CalculationRowFactory,

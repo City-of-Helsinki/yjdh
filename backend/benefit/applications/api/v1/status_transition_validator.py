@@ -78,8 +78,8 @@ class HandlerApplicationStatusValidator(BaseApplicationStatusValidator):
             ApplicationStatus.CANCELLED,
         ),
         ApplicationStatus.CANCELLED: (),
-        ApplicationStatus.ACCEPTED: (),
-        ApplicationStatus.REJECTED: (),
+        ApplicationStatus.ACCEPTED: (ApplicationStatus.HANDLING,),
+        ApplicationStatus.REJECTED: (ApplicationStatus.HANDLING,),
     }
 
     ASSIGN_HANDLER_STATUSES = [

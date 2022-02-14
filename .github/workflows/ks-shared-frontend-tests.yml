@@ -9,6 +9,8 @@ on:
       - 'frontend/kesaseteli/shared/**'
       - 'frontend/*'
       - '.github/workflows/ks-shared-tests.yml'
+      - "!**/browser-tests/**"
+      - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:

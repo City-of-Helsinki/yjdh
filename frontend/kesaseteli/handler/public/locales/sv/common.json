@@ -25,7 +25,7 @@
     "contactUs": "Ta kontakt",
     "contactUsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/ta-kontakt/",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
     "information": "Information om servicen",
     "informationLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/"
   },
@@ -70,7 +70,7 @@
   },
   "emailInUsePage" : {
     "title": "SV Hups! Sähköposti on jo käytössä.",
-    "notificationMessage": "SV Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+    "notificationMessage": "SV Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
   },
   "alreadyAssignedPage" : {
     "title": "SV Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",

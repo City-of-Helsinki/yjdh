@@ -27,6 +27,7 @@ module.exports = {
     'react/function-component-definition': 'off',
     'lodash/prefer-noop': 'off',
     'sonarjs/no-nested-template-literals': 'off',
+    'unicorn/prefer-node-protocol': 'off',
   },
   overrides: [
     {

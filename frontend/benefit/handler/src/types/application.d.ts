@@ -192,6 +192,17 @@ export type CalculationData = {
   override_benefit_amount_comment?: string;
   rows: RowData[];
   handler_details: HandlerDetailsData;
+  duration_in_months_rounded: string;
+};
+
+export type PaySubsidyData = {
+  id?: string;
+  start_date: string;
+  end_date: string;
+  pay_subsidy_percent: number;
+  work_time_percent?: number;
+  disability_or_illness?: boolean;
+  duration_in_months_rounded: string;
 };
 
 export type ApplicationData = {
@@ -247,6 +258,8 @@ export type ApplicationData = {
   approve_terms?: ApproveTermsData;
   calculation?: CalculationData;
   submitted_at?: string;
+  pay_subsidies?: PaySubsidyData[];
+  duration_in_months_rounded?: string;
 };
 
 export type ApplicationListItemData = {
@@ -310,10 +323,21 @@ export interface Step2 {
 // handler
 
 export type Row = {
+  id: string;
   rowType: string;
   ordering: number;
   descriptionFi: string;
   amount: string;
+};
+
+export type PaySubsidy = {
+  id?: string;
+  startDate: string;
+  endDate: string;
+  paySubsidyPercent: number;
+  workTimePercent?: number;
+  disabilityOrIllness?: boolean;
+  durationInMonthsRounded: string;
 };
 
 export type HandlerDetails = {
@@ -324,8 +348,8 @@ export type HandlerDetails = {
 };
 
 export interface CalculationCommon {
-  [CALCULATION_EMPLOYMENT_KEYS.START_DATE]: string;
-  [CALCULATION_EMPLOYMENT_KEYS.END_DATE]: string;
+  [CALCULATION_EMPLOYMENT_KEYS.START_DATE]?: string;
+  [CALCULATION_EMPLOYMENT_KEYS.END_DATE]?: string;
 }
 
 export type Calculation = {
@@ -341,6 +365,17 @@ export type Calculation = {
   overrideBenefitAmountComment?: string;
   rows: Row[];
   handlerDetails: HandlerDetails;
+  durationInMonthsRounded?: string;
+} & CalculationCommon;
+
+export type CalculationFormProps = {
+  monthlyPay?: string;
+  vacationMoney?: string;
+  otherExpenses?: string;
+  stateAidMaxPercentage?: number;
+  paySubsidyStartDate?: string;
+  paySubsidyEndDate?: string;
+  paySubsidyPercent?: number;
 } & CalculationCommon;
 
 export type Application = {
@@ -361,6 +396,8 @@ export type Application = {
   approveTerms?: ApproveTerms;
   calculation?: Calculation;
   submittedAt?: string;
+  paySubsidies?: PaySubsidy[];
+  durationInMonthsRounded?: string;
 } & Step1 &
   Step2;
 
@@ -370,5 +407,9 @@ export type SubmittedApplication = {
 };
 
 export interface ApplicationReviewViewProps {
+  data: Application;
+}
+
+export interface SalaryBenefitCalculatorViewProps {
   data: Application;
 }

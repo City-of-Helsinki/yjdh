@@ -17,7 +17,7 @@ type Props = {
   type: NotificationType;
   size?: NotificationSizeInline;
   title: string;
-  message: React.ReactNode;
+  message?: React.ReactNode;
   goToFrontPageText?: string;
   children?: React.ReactNode;
 };
@@ -65,6 +65,7 @@ NotificationPage.defaultProps = {
   size: 'large',
   goToFrontPageText: undefined,
   children: null,
+  message: undefined,
 };
 
 export default NotificationPage;

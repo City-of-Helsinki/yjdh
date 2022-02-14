@@ -1,9 +1,8 @@
-import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
+import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import {
   getHeaderComponents,
   Translation,
 } from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import { getFrontendUrl } from '../utils/url.utils';
@@ -14,17 +13,21 @@ let headerComponents: ReturnType<typeof getHeaderComponents>;
 
 const appTranslation: Translation = {
   fi: 'Nuorten kesäseteli',
-  en: 'ENG Nuorten kesäseteli',
-  sv: 'SV Nuorten kesäseteli',
+  en: 'Summer Job Voucher for youth',
+  sv: 'Sommarsedel för unga',
 };
 
 fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
     headerComponents = getHeaderComponents(t, appTranslation);
-  });
+  })
+  .afterEach(async () =>
+    // eslint-disable-next-line no-console
+    console.log(requestLogger.requests)
+  );
 
 test('can change to languages', async () => {
   const languageDropdown = await headerComponents.languageDropdown();

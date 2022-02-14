@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from datetime import date, datetime
+from decimal import Decimal
 from unittest import mock
 
 import pytest
@@ -27,6 +28,7 @@ from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
+from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -133,6 +135,9 @@ def test_application_single_read_as_applicant(api_client, application):
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
     assert "batch" not in response.data
+    assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
+        application.start_date, application.end_date, decimal_places=2
+    )
     assert response.status_code == 200
 
 
@@ -768,6 +773,54 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
+    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    [
+        ("ry", None, [], False, 200),
+        ("ry", False, [], False, 200),
+        ("ry", None, [], True, 200),
+        ("ry", False, [], True, 200),
+        ("oy", None, [], None, 400),
+        ("oy", False, [], None, 200),
+    ],
+)
+def test_submit_application_without_de_minimis_aid(
+    request,
+    api_client,
+    application,
+    company_form,
+    de_minimis_aid,
+    de_minimis_aid_set,
+    association_has_business_activities,
+    expected_result,
+):
+    application.company.company_form = company_form
+    application.company.save()
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["benefit_type"] = BenefitType.SALARY_BENEFIT
+    data["de_minimis_aid"] = de_minimis_aid
+    data["de_minimis_aid_set"] = de_minimis_aid_set
+    data["pay_subsidy_percent"] = "50"
+    data["pay_subsidy_granted"] = True
+    data["association_has_business_activities"] = association_has_business_activities
+    if company_form == "ry":
+        data["association_immediate_manager_check"] = True
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
     "pay_subsidy_granted,apprenticeship_program,expected_result",
     [
         (True, True, 200),
@@ -890,9 +943,12 @@ def test_application_status_change_as_applicant(
         (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.HANDLING, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )

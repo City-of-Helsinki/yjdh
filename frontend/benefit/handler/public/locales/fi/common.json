@@ -168,7 +168,27 @@
         "label": "Alkaen",
         "placeholder": "Alkaen"
       },
-      "endDate": { "label": "Päättyen", "placeholder": "Päättyen" }
+      "endDate": { "label": "Päättyen", "placeholder": "Päättyen" },
+      "monthlyPay": {
+        "label": "Bruttopalkka €/kk",
+        "placeholder": "Bruttopalkka"
+      },
+      "otherExpenses": {
+        "label": "Sivukulut €/kk",
+        "placeholder": "Sivukulut"
+      },
+      "vacationMoney": {
+        "label": "Lomaraha €",
+        "placeholder": "Lomaraha"
+      },
+      "stateAidMaxPercentage": {
+        "label": "Valtiotukimaksimi",
+        "placeholder": "Valtiotukimaksimi"
+      },
+      "paySubsidyPercent": {
+        "label": "Palkkatukiprosentti",
+        "placeholder": "Palkkatukiprosentti"
+      }
     },
     "notifications": {
       "error": {
