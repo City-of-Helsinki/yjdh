@@ -100,7 +100,7 @@
   "activatedPage" : {
     "title": "Din Sommarsedel är nu aktiverad!",
     "notificationTitle": "Bekräftelsen lyckades",
-    "notificationMessage": "Fint! Du har skickat din information till Sommarsedelns eletroniska systemet. Efter att din ansökan har granskats får du Sommarsedlen och bruksanvisningar till din e-post."
+    "notificationMessage": "Bra! Du har lämnat in dina uppgifter till systemet och din ansökan kommer att behandlas så snart som möjligt – senast inom en månad. Du får sommarsedeln och bruksanvisningar via e-post när din ansökan har kontrollerats!"
   },
   "expiredPage" : {
     "title": "Hoppsan! Bekräftelselänken har gått ut.",
