@@ -29,7 +29,9 @@ const EventList: React.FC = () => {
           data.data.map((e) => (
             <li key={e.id}>
               {getLocalizedString(e.name)}
-              <button onClick={() => router.push(`/posting/${encodeURIComponent(e.id)}`)}>Näytä</button>
+              <button style={{ marginLeft: 5 }} onClick={() => router.push(`/posting/${encodeURIComponent(e.id)}`)}>
+                Näytä
+              </button>
             </li>
           ))}
       </ol>
