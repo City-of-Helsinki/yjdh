@@ -16,6 +16,7 @@ export type ModalProps = {
   handleToggle: () => void;
   handleSubmit: (e: React.SyntheticEvent) => void;
   children?: React.ReactNode;
+  customContent?: React.ReactNode;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -32,6 +33,7 @@ const Modal: React.FC<ModalProps> = ({
   handleToggle,
   handleSubmit,
   children,
+  customContent,
 }) => {
   const { t } = useTranslation();
   const onAccept = (e: React.SyntheticEvent): void => {
@@ -53,27 +55,33 @@ const Modal: React.FC<ModalProps> = ({
       variant={variant}
     >
       {title && <Dialog.Header title={title} id={id} iconLeft={headerIcon} />}
-      {children && <Dialog.Content>{children}</Dialog.Content>}
-      <Dialog.ActionButtons>
-        <Button
-          theme="black"
-          variant="secondary"
-          onClick={handleToggle}
-          data-testid="cancel"
-        >
-          {t('common:applications.actions.close')}
-        </Button>
-        <Button
-          theme="coat"
-          variant={variant}
-          onClick={onAccept}
-          disabled={actionDisabled}
-          data-testid="submit"
-          iconLeft={submitButtonIcon}
-        >
-          {submitButtonLabel}
-        </Button>
-      </Dialog.ActionButtons>
+      {customContent ? (
+        customContent
+      ) : (
+        <>
+          {children && <Dialog.Content>{children}</Dialog.Content>}
+          <Dialog.ActionButtons>
+            <Button
+              theme="black"
+              variant="secondary"
+              onClick={handleToggle}
+              data-testid="cancel"
+            >
+              {t('common:applications.actions.close')}
+            </Button>
+            <Button
+              theme="coat"
+              variant={variant}
+              onClick={onAccept}
+              disabled={actionDisabled}
+              data-testid="submit"
+              iconLeft={submitButtonIcon}
+            >
+              {submitButtonLabel}
+            </Button>
+          </Dialog.ActionButtons>
+        </>
+      )}
     </Dialog>
   );
 };

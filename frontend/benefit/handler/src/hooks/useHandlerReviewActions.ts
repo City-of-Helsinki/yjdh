@@ -3,8 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
-
-import { APPLICATION_STATUSES, ROUTES } from '../constants';
+import { ROUTES } from '../constants';
 import AppContext from '../context/AppContext';
 import {
   Application,
@@ -20,7 +19,6 @@ interface HandlerReviewActions {
   onCalculateEmployment: (calculator: CalculationFormProps) => void;
   onSaveAndClose: () => void;
   onDone: () => void;
-  onCancel: (comment: string) => void;
   calculationsErrors: ErrorData | undefined | null;
   calculateSalaryBenefit: (values: CalculationFormProps) => void;
 }
@@ -135,7 +133,7 @@ const useHandlerReviewActions = (
     void router.push(ROUTES.HOME);
   };
 
-  // ACCEPTED or REJECTED
+  // ACCEPTED or REJECTED or CANCELLED
   const onDone = (): void => {
     if (handledApplication?.status) {
       updateStatus(
@@ -145,14 +143,10 @@ const useHandlerReviewActions = (
     }
   };
 
-  const onCancel = (comment: string): void =>
-    updateStatus(APPLICATION_STATUSES.CANCELLED, comment);
-
   return {
     onCalculateEmployment,
     onSaveAndClose,
     onDone,
-    onCancel,
     calculateSalaryBenefit,
     calculationsErrors,
   };

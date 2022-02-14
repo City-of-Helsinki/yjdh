@@ -1,7 +1,10 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
-import { Application } from 'benefit/handler/types/application';
+import {
+  Application,
+  HandledAplication,
+} from 'benefit/handler/types/application';
 import { TFunction, useTranslation } from 'next-i18next';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import useToggle from 'shared/hooks/useToggle';
@@ -12,7 +15,7 @@ type ExtendedComponentProps = {
   onSaveAndClose: () => void;
   onCommentsChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   toggleMessagesDrawerVisiblity: () => void;
-  // handleDelete: () => void;
+  handleCancel: (application: HandledAplication) => void;
   setIsConfirmationModalOpen: Dispatch<SetStateAction<boolean>>;
   translationsBase: string;
   isDisabledDoneButton: boolean;
@@ -27,7 +30,8 @@ const useHandlingApplicationActions = (
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
   const { onSaveAndClose, onDone } = useHandlerReviewActions(application);
-  const { handledApplication } = React.useContext(AppContext);
+  const { handledApplication, setHandledApplication } =
+    React.useContext(AppContext);
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
     useToggle(false);
 
@@ -47,7 +51,11 @@ const useHandlingApplicationActions = (
     [handledApplication]
   );
 
-  // const handleDelete = (): void => {};
+  const handleCancel = (cancelledApplication: HandledAplication): void => {
+    //workaround for broken hds dialog
+    setHandledApplication(cancelledApplication);
+    onDone();
+  };
 
   const onCommentsChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -59,7 +67,7 @@ const useHandlingApplicationActions = (
     onSaveAndClose,
     onCommentsChange,
     toggleMessagesDrawerVisiblity,
-    // handleDelete,
+    handleCancel,
     setIsConfirmationModalOpen,
     isMessagesDrawerVisible,
     translationsBase,
