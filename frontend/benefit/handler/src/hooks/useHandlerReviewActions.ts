@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys';
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -71,6 +72,16 @@ const useHandlerReviewActions = (
       paySubsidyPercent,
     } = values;
 
+    const isManualCalculator = !isEmpty(values.overrideMonthlyBenefitAmount);
+
+    const overrideMonthlyBenefitAmount = isManualCalculator
+      ? values.overrideMonthlyBenefitAmount
+      : null;
+
+    const overrideMonthlyBenefitAmountComment = isManualCalculator
+      ? values.overrideMonthlyBenefitAmountComment
+      : '';
+
     return snakecaseKeys(
       {
         ...application,
@@ -82,6 +93,8 @@ const useHandlerReviewActions = (
           vacationMoney,
           stateAidMaxPercentage,
           otherExpenses,
+          overrideMonthlyBenefitAmount,
+          overrideMonthlyBenefitAmountComment,
         },
         paySubsidies: application.paySubsidies?.map(
           (item: PaySubsidy, index: number) => {

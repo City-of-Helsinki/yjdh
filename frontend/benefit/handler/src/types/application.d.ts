@@ -188,8 +188,8 @@ export type CalculationData = {
   granted_as_de_minimis_aid: boolean;
   target_group_check: boolean;
   calculated_benefit_amount: string;
-  override_benefit_amount: string;
-  override_benefit_amount_comment?: string;
+  override_monthly_benefit_amount: string;
+  override_monthly_benefit_amount_comment?: string;
   rows: RowData[];
   handler_details: HandlerDetailsData;
   duration_in_months_rounded: string;
@@ -361,8 +361,8 @@ export type Calculation = {
   grantedAsDeMinimisAid?: boolean;
   targetGroupCheck?: boolean;
   calculatedBenefitAmount: string;
-  overrideBenefitAmount: string;
-  overrideBenefitAmountComment?: string;
+  overrideMonthlyBenefitAmount: string | null;
+  overrideMonthlyBenefitAmountComment?: string;
   rows: Row[];
   handlerDetails: HandlerDetails;
   durationInMonthsRounded?: string;
@@ -376,6 +376,8 @@ export type CalculationFormProps = {
   paySubsidyStartDate?: string;
   paySubsidyEndDate?: string;
   paySubsidyPercent?: number;
+  overrideMonthlyBenefitAmount?: string | null;
+  overrideMonthlyBenefitAmountComment?: string;
 } & CalculationCommon;
 
 export type Application = {

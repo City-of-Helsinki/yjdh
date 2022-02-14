@@ -188,6 +188,14 @@
       "paySubsidyPercent": {
         "label": "Palkkatukiprosentti",
         "placeholder": "Palkkatukiprosentti"
+      },
+      "overrideMonthlyBenefitAmount": {
+        "label": "Helsinki-lisää €/kk",
+        "placeholder": "Helsinki-lisää €/kk"
+      },
+      "overrideMonthlyBenefitAmountComment": {
+        "label": "Perustelu",
+        "placeholder": "Perustelu"
       }
     },
     "notifications": {

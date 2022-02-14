@@ -122,6 +122,8 @@ export enum CALCULATION_SALARY_KEYS {
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
   PAY_SUBSIDY_START_DATE = 'paySubsidyStartDate',
   PAY_SUBSIDY_END_DATE = 'paySubsidyEndDate',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT = 'overrideMonthlyBenefitAmount',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT_COMMENT = 'overrideMonthlyBenefitAmountComment',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];

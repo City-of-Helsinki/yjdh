@@ -11,7 +11,7 @@ import {
 import { ErrorData } from 'benefit/handler/types/common';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field } from 'shared/components/forms/fields/types';
 import { OptionType } from 'shared/types/common';
@@ -35,12 +35,18 @@ type ExtendedComponentProps = {
   getStateAidMaxPercentageSelectValue: () => OptionType | undefined;
   paySubsidyPercentageOptions: OptionType[];
   getPaySubsidyPercentageSelectValue: () => OptionType | undefined;
+  isManualCalculator: boolean;
+  changeCalculatorMode: () => void;
 };
 
 const useSalaryBenefitCalculatorData = (
   application: Application
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
+
+  const [isManualCalculator, setIsManualCalculator] = useState(
+    !!application.calculation?.overrideMonthlyBenefitAmount
+  );
 
   const { calculateSalaryBenefit, calculationsErrors } =
     useHandlerReviewActions(application);
@@ -70,6 +76,10 @@ const useSalaryBenefitCalculatorData = (
       [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_END_DATE]: convertToUIDateFormat(
         application?.paySubsidies ? application?.paySubsidies[0].endDate : ''
       ),
+      [CALCULATION_SALARY_KEYS.OVERRIDE_MONTHLY_BENEFIT_AMOUNT]:
+        application?.calculation?.overrideMonthlyBenefitAmount,
+      [CALCULATION_SALARY_KEYS.OVERRIDE_MONTHLY_BENEFIT_AMOUNT_COMMENT]:
+        application?.calculation?.overrideMonthlyBenefitAmountComment,
     },
     validationSchema: getValidationSchema(),
     validateOnChange: true,
@@ -95,6 +105,14 @@ const useSalaryBenefitCalculatorData = (
       Field<CALCULATION_SALARY_KEYS>
     >;
   }, [t]);
+
+  const changeCalculatorMode = () => {
+    // Backend detects manual mode if overrideMonthlyBenefitAmount is not null
+    // so to switch to auto mode, we set empty value here
+    if (isManualCalculator)
+      formik.setFieldValue(fields.overrideMonthlyBenefitAmount.name, null);
+    setIsManualCalculator(!isManualCalculator);
+  };
 
   const stateAidMaxPercentageOptions = React.useMemo(
     (): OptionType[] =>
@@ -170,6 +188,8 @@ const useSalaryBenefitCalculatorData = (
     getStateAidMaxPercentageSelectValue,
     paySubsidyPercentageOptions,
     getPaySubsidyPercentageSelectValue,
+    isManualCalculator,
+    changeCalculatorMode,
   };
 };
 
