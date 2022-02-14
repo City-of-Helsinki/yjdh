@@ -100,7 +100,7 @@
   "activatedPage" : {
     "title": "Your Summer Job Voucher has been activated!",
     "notificationTitle": "Confirmation succeeded",
-    "notificationMessage": "Great! You have submitted your information to the Summer Job Voucher system. When your application has been handled you will receive the Summer Job Voucher and the instructions to your email. "
+    "notificationMessage": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!"
   },
   "expiredPage" : {
     "title": "Oops! The confirmation link has expired",
