@@ -5,16 +5,19 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import useWizard from 'shared/hooks/useWizard';
 import Application from 'shared/types/application-form-data';
 
 const AddNewEmploymentButton: React.FC = () => {
   const { t } = useTranslation();
   const { getValues } = useFormContext<Application>();
   const { addEmployment } = useApplicationApi();
+  const { clearStepHistory } = useWizard();
 
   const addNewEmployment = React.useCallback(() => {
+    clearStepHistory();
     addEmployment(getValues());
-  }, [addEmployment, getValues]);
+  }, [addEmployment, getValues, clearStepHistory]);
 
   return (
     <$ButtonSection columns={1}>

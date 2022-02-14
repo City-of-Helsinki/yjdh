@@ -35,13 +35,13 @@ env = environ.Env(
     MAIL_MAILGUN_API=(str, ""),
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
-    CORS_ORIGIN_WHITELIST=(list, []),
-    CORS_ORIGIN_ALLOW_ALL=(bool, False),
+    CORS_ALLOWED_ORIGINS=(list, []),
+    CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
-    MOCK_FLAG=(bool, False),
+    NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     # Random 32 bytes AES key, for testing purpose only, DO NOT use the same value in staging/production
     # Always override this value from env variables
     ENCRYPTION_KEY=(
@@ -80,9 +80,10 @@ env = environ.Env(
     MINIMUM_WORKING_HOURS_PER_WEEK=(int, 18),
     AUDIT_LOG_ORIGIN=(str, "helsinki-benefit-api"),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "helsinki_benefit_audit_log"),
-    ELASTICSEARCH_CLOUD_ID=(str, ""),
-    ELASTICSEARCH_API_ID=(str, ""),
-    ELASTICSEARCH_API_KEY=(str, ""),
+    ELASTICSEARCH_HOST=(str, ""),
+    ELASTICSEARCH_PORT=(str, ""),
+    ELASTICSEARCH_USERNAME=(str, ""),
+    ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
@@ -92,6 +93,20 @@ env = environ.Env(
     ENABLE_DEBUG_ENV=(bool, False),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
     DISABLE_TOS_APPROVAL_CHECK=(bool, False),
+    YRTTI_BASIC_INFO_PATH=(
+        str,
+        "https://yrtti-integration-dev.agw.arodevtest.hel.fi/api/BasicInfo",
+    ),
+    YRTTI_AUTH_USERNAME=(str, "sample_username"),
+    YRTTI_AUTH_PASSWORD=(str, "sample_password"),
+    YRTTI_TIMEOUT=(int, 30),
+    SERVICE_BUS_INFO_PATH=(
+        str,
+        "https://ytj-integration-dev.agw.arodevtest.hel.fi/api/GetCompany",
+    ),
+    SERVICE_BUS_AUTH_USERNAME=(str, "sample_username"),
+    SERVICE_BUS_AUTH_PASSWORD=(str, "sample_password"),
+    SERVICE_BUS_TIMEOUT=(int, 30),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -149,6 +164,7 @@ INSTALLED_APPS = [
     "applications.apps.AppConfig",
     "terms.apps.AppConfig",
     "calculator.apps.AppConfig",
+    "messages",
     # libraries
     "django.contrib.admin",
     "django.contrib.auth",
@@ -199,18 +215,20 @@ TEMPLATES = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
-CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL")
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_COOKIE_SECURE = True
 
 # Audit logging
 AUDIT_LOG_ORIGIN = env.str("AUDIT_LOG_ORIGIN")
 CLEAR_AUDIT_LOG_ENTRIES = env.bool("CLEAR_AUDIT_LOG_ENTRIES")
 ELASTICSEARCH_APP_AUDIT_LOG_INDEX = env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
-ELASTICSEARCH_CLOUD_ID = env("ELASTICSEARCH_CLOUD_ID")
-ELASTICSEARCH_API_ID = env("ELASTICSEARCH_API_ID")
-ELASTICSEARCH_API_KEY = env("ELASTICSEARCH_API_KEY")
+ELASTICSEARCH_HOST = env("ELASTICSEARCH_HOST")
+ELASTICSEARCH_PORT = env("ELASTICSEARCH_PORT")
+ELASTICSEARCH_USERNAME = env("ELASTICSEARCH_USERNAME")
+ELASTICSEARCH_PASSWORD = env("ELASTICSEARCH_PASSWORD")
 ENABLE_SEND_AUDIT_LOG = env("ENABLE_SEND_AUDIT_LOG")
 
 LOGGING = {
@@ -221,7 +239,6 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    # 'EXCEPTION_HANDLER': 'common.debug_util.rest_framework_debug_exception_handler',
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
@@ -260,7 +277,7 @@ YTJ_BASE_URL = env.str("YTJ_BASE_URL")
 YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
-MOCK_FLAG = env.bool("MOCK_FLAG")
+NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
 DUMMY_COMPANY_FORM = env.str("DUMMY_COMPANY_FORM")
 ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 
@@ -320,7 +337,7 @@ AUTH_ADFS = {
 
 ADFS_LOGIN_REDIRECT_URL = env.str("ADFS_LOGIN_REDIRECT_URL")
 ADFS_LOGIN_REDIRECT_URL_FAILURE = env.str("ADFS_LOGIN_REDIRECT_URL_FAILURE")
-
+ADFS_CONTROLLER_GROUP_UUIDS = env.list("ADFS_CONTROLLER_GROUP_UUIDS")
 # Authentication settings end
 
 FIELD_ENCRYPTION_KEYS = [ENCRYPTION_KEY]
@@ -331,7 +348,9 @@ DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
 AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
 AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
 AZURE_CONTAINER = env("AZURE_CONTAINER")
-AZURE_URL_EXPIRATION_SECS = env("AZURE_URL_EXPIRATION_SECS")  # default 900s
+AZURE_URL_EXPIRATION_SECS = env(
+    "AZURE_URL_EXPIRATION_SECS"
+)  # a typical setting would be 900
 
 MAX_UPLOAD_SIZE = 10485760  # 10MB
 MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
@@ -339,6 +358,16 @@ MINIMUM_WORKING_HOURS_PER_WEEK = env("MINIMUM_WORKING_HOURS_PER_WEEK")
 WKHTMLTOPDF_BIN = env("WKHTMLTOPDF_BIN")
 
 TALPA_ROBOT_AUTH_CREDENTIAL = env("TALPA_ROBOT_AUTH_CREDENTIAL")
+
+YRTTI_TIMEOUT = env("YRTTI_TIMEOUT")
+YRTTI_BASIC_INFO_PATH = env("YRTTI_BASIC_INFO_PATH")
+YRTTI_AUTH_USERNAME = env("YRTTI_AUTH_USERNAME")
+YRTTI_AUTH_PASSWORD = env("YRTTI_AUTH_PASSWORD")
+
+SERVICE_BUS_TIMEOUT = env("SERVICE_BUS_TIMEOUT")
+SERVICE_BUS_INFO_PATH = env("SERVICE_BUS_INFO_PATH")
+SERVICE_BUS_AUTH_USERNAME = env("SERVICE_BUS_AUTH_USERNAME")
+SERVICE_BUS_AUTH_PASSWORD = env("SERVICE_BUS_AUTH_PASSWORD")
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

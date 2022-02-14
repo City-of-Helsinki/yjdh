@@ -1,0 +1,140 @@
+{
+  "appName": "TET-paikat",
+  "header": {
+    "loginLabel": "Kirjaudu palveluun",
+    "logoutLabel": "Kirjaudu ulos",
+    "userAriaLabelPrefix": "Käyttäjä:",
+    "linkSkipToContent": "Siirry sisältöön",
+    "menuToggleAriaLabel": "Valikko"
+  },
+  "errorPage": {
+    "title": "Tapahtui odottamaton virhe",
+    "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
+    "retry": "Lataa sivu uudelleen",
+    "logout": "Kirjaudu ulos"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Sivua ei löytynyt",
+    "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> etusivun kautta takaisin hakemukseen."
+  },
+  "loginPage": {
+    "logoutMessageLabel": "Olet kirjautunut ulos",
+    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "infoLabel": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
+    "infoContent": "TET-paikkailmoituksen tekemistä..."
+  },
+  "application": {
+    "jobPostings": {
+      "title": "TET-paikkailmoitukset",
+      "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
+      "addNewPosting": "Lisää uusi harjoittelupaikka",
+			"publishedPostings": "Työharjoittelupaikat",
+			"draftPostings": "Keskeneräiset ilmoitukset",
+			"openSpots_one": "{{count}} TET-paikka",
+			"openSpots_other": "{{count}} TET-paikkaa",
+			"published": "Julkaistu",
+			"notPublished": "Ei julkaistu",
+			"total": "kpl",
+			"menu": {
+				"publishNow": "Julkaise nyt",
+				"edit": "Muokkaa",
+				"copy": "Tee kopio",
+				"delete": "Poista"
+			}
+    }
+  },
+  "editor": {
+    "newTitle": "Uusi TET-paikka",
+    "editTitle": "Muokkaa TET-paikkaa",
+    "saveDraft": "Tallenna julkaisematta",
+    "deletePosting": "Poista ilmoitus",
+    "preview": "Siirry esikatseluun",
+    "publish": "Julkaise",
+    "notificationTitle": "Täytä puuttuvat tai virheelliset tiedot",
+    "employerInfo": {
+      "header": "Työpaikan tiedot",
+      "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",
+      "departmentLabel": "Toimipiste tai osasto"
+    },
+    "posting": {
+      "header": "Työharjoittelupaikan tiedot",
+      "title": "Tehtävänimike",
+      "description": "Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
+      "workHoursNotice": "Työaika on aina sama 30h per viikko.",
+      "startDateLabel": "Alkaen",
+      "endDateLabel": "Päättyen",
+      "spotsLabel": "Työharjoittelupaikkoja",
+			"contactFirstName": "Etunimi",
+			"contactLastName": "Sukunimi",
+			"contactPhone": "Puhelin",
+			"contactEmail": "Sähköposti",
+			"contactLanguage": "Asiointikieli",
+			"contactLanguageFi": "Suomi",
+			"contactLanguageSv": "Ruotsi",
+			"contactLanguageEn": "Englanti",
+			"validation": {
+				"required": "Tieto vaaditaan",
+				"email": "Syötä sähköposti oikeassa muodossa",
+				"max": "Maksimimerkkimäärä ylittyy",
+				"phone": "Syötä oikeassa muodossa",
+				"name": "Syötä nimi sallitussa muodossa"
+			}
+    }
+  },
+  "footer": {
+    "copyrightText": "Helsingin kaupunki",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "accessibilityStatement": "Saavutettavuusseloste",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
+    "privacyPolicy": "Rekisteriseloste",
+    "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
+    "feedback": "Anna palautetta",
+    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
+  "error": {
+    "generic": {
+      "label": "Tapahtui tuntematon virhe",
+      "text": " Yritä myöhemmin uudelleen"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe",
+      "tooBig": "Tiedosto on liian iso",
+      "fileType": "Tiedoston tyyppi ei ole sallittu."
+    }
+  },
+  "upload": {
+    "isUploading": "Lähetetään...",
+    "errorTitle": "Lähetys epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "delete": {
+    "errorTitle": "Poistaminen epäonnistui",
+    "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
+  "applications": {
+    "sections": {
+      "attachments": {
+        "types": {
+          "employment_contract": {
+            "title": "Työsopimus",
+            "message": ""
+          },
+          "payslip": {
+            "title": "Palkkatodistus",
+            "message": ""
+          }
+        },
+        "add": "Liitä tiedosto",
+        "remove": "Poista tiedosto"
+      }
+    }
+  }
+}

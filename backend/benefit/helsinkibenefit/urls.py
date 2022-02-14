@@ -12,7 +12,12 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from rest_framework import routers
+from messages.views import (
+    ApplicantMessageViewSet,
+    HandlerMessageViewSet,
+    HandlerNoteViewSet,
+)
+from rest_framework_nested import routers
 from terms.api.v1.views import ApproveTermsOfServiceView
 from users.api.v1.views import CurrentUserView
 
@@ -22,22 +27,38 @@ router.register(
     application_views.ApplicantApplicationViewSet,
     basename="applicant-application",
 )
+
+applicant_app_router = routers.NestedSimpleRouter(
+    router, r"applications", lookup="application"
+)
+applicant_app_router.register(
+    r"messages", ApplicantMessageViewSet, basename="applicant-message"
+)
+
 router.register(
     r"handlerapplications",
     application_views.HandlerApplicationViewSet,
     basename="handler-application",
 )
+
+handler_app_router = routers.NestedSimpleRouter(
+    router, r"handlerapplications", lookup="application"
+)
+handler_app_router.register(
+    r"messages", HandlerMessageViewSet, basename="handler-message"
+)
+handler_app_router.register(r"notes", HandlerNoteViewSet, basename="handler-note")
+
 router.register(r"applicationbatches", application_batch_views.ApplicationBatchViewSet)
 router.register(r"previousbenefits", calculator_views.PreviousBenefitViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("v1/", include((router.urls, "v1"), namespace="v1")),
+    path("v1/", include(applicant_app_router.urls)),
+    path("v1/", include(handler_app_router.urls)),
     path("v1/terms/approve_terms_of_service/", ApproveTermsOfServiceView.as_view()),
     path("v1/company/", GetCompanyView.as_view()),
-    path(
-        "v1/company/<str:business_id>", GetCompanyView.as_view()
-    ),  # FIXME: Remove this later
     path("v1/users/me/", CurrentUserView.as_view()),
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),

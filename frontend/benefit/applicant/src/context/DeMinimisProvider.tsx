@@ -3,7 +3,7 @@ import React from 'react';
 
 import DeMinimisContext from './DeMinimisContext';
 
-const ApplicationProvider = <P,>({
+const DeMinimisProvider = <P,>({
   children,
 }: React.PropsWithChildren<P>): JSX.Element => {
   const [deMinimisAids, setDeMinimisAids] = React.useState<DeMinimisAid[]>([]);
@@ -20,4 +20,4 @@ const ApplicationProvider = <P,>({
   );
 };
 
-export default ApplicationProvider;
+export default DeMinimisProvider;

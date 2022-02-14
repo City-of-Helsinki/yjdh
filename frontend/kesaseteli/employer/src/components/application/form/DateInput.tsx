@@ -1,27 +1,21 @@
 import { DateInput as HdsDateInput } from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { RegisterOptions, UseFormRegister } from 'react-hook-form';
-import {
-  $GridCell,
-  GridCellProps,
-} from 'shared/components/forms/section/FormSection.sc';
-import useLocale from 'shared/hooks/useLocale';
-import Application from 'shared/types/application-form-data';
+import { RegisterOptions } from 'react-hook-form';
+import DateInputBase from 'shared/components/forms/inputs/DateInput';
+import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
+import ApplicationFormData from 'shared/types/application-form-data';
 import {
   convertToBackendDateFormat,
   convertToUIDateFormat,
-  isValidDate,
-  parseDate,
 } from 'shared/utils/date.utils';
 
-import { $DateInput } from './DateInput.sc';
-
 type Props = {
-  validation: RegisterOptions<Application>;
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
+  validation: RegisterOptions<ApplicationFormData>;
+  id: ApplicationFieldPath;
 } & GridCellProps;
 
 // TODO: This can be removed after backend supports invalid values in draft save
@@ -36,10 +30,8 @@ const DateInput = ({
   ...$gridCellProps
 }: Props): ReturnType<typeof HdsDateInput> => {
   const { t } = useTranslation();
-  const locale = useLocale();
 
   const {
-    register,
     defaultLabel,
     getValue,
     getError,
@@ -48,15 +40,9 @@ const DateInput = ({
     clearErrors,
     setValue,
     clearValue,
-    hasError,
   } = useApplicationFormField<string>(id);
 
   const date = convertToUIDateFormat(getValue());
-
-  const validate = React.useCallback(
-    (value) => isValidDate(parseDate(value)),
-    []
-  );
 
   const errorType = getError()?.type;
   const errorMessage = getError()?.message;
@@ -70,7 +56,7 @@ const DateInput = ({
       setError({
         type: errorType,
         message: `${t(`common:application.form.errors.${errorType}`)}. ${t(
-          `common:application.form.helpers.date`
+          'common:application.form.helpers.date'
         )}`,
       });
     }
@@ -78,7 +64,7 @@ const DateInput = ({
 
   // TODO: This can be removed after backend supports invalid values in draft save
   const handleChange = React.useCallback(
-    (dateString: string) => {
+    (dateString?: string) => {
       const uiDate = convertToUIDateFormat(dateString);
       if (isEmpty(uiDate)) {
         setError({ type: 'pattern' });
@@ -92,31 +78,15 @@ const DateInput = ({
   );
 
   return (
-    <$GridCell {...$gridCellProps}>
-      <$DateInput
-        {...register(id, {
-          ...validation,
-          validate,
-          setValueAs: convertDateForBackend,
-        })}
-        key={id}
-        id={id}
-        data-testid={id}
-        name={id}
-        required={Boolean(validation.required)}
-        initialMonth={new Date()}
-        defaultValue={date}
-        language={locale}
-        // for some reason date picker causes error "Warning: An update to ForwardRef inside a test was not wrapped in act" in tests.
-        // Date picker is not needed for tests so it's disabled for them.
-        disableDatePicker={process.env.NODE_ENV === 'test'}
-        onChange={handleChange}
-        errorText={getErrorText()}
-        label={defaultLabel}
-        invalid={hasError()}
-        aria-invalid={hasError()}
-      />
-    </$GridCell>
+    <DateInputBase<ApplicationFormData>
+      id={id}
+      registerOptions={{ ...validation, setValueAs: convertDateForBackend }}
+      initialValue={date}
+      onChange={handleChange}
+      errorText={getErrorText()}
+      label={defaultLabel}
+      {...$gridCellProps}
+    />
   );
 };
 

@@ -1,0 +1,78 @@
+version: "3.8"
+services:
+  postgres:
+    build:
+      context: ./backend
+      dockerfile: ./docker/finnish_postgres.Dockerfile
+    restart: on-failure
+    environment:
+      POSTGRES_USER: kesaseteli
+      POSTGRES_PASSWORD: kesaseteli
+      POSTGRES_DB: kesaseteli
+      LC_COLLATE: 'fi_FI.UTF-8'
+      LC_CTYPE: 'fi_FI.UTF-8'
+    ports:
+      - 5434:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: kesaseteli-db
+
+  kesaseteli-backend:
+    build:
+      context: ./backend
+      dockerfile: ./docker/kesaseteli.Dockerfile
+      target: development
+    # Entrypoint is overridden because although "django-admin compilemessages" is run as
+    # a part of Docker image build, the resulting files are overridden by volume mount
+    # in this docker-compose file and thus have to be regenerated.
+    entrypoint:
+      bash -c "django-admin compilemessages && /entrypoint/docker-entrypoint.sh"
+    env_file:
+      - .env.kesaseteli
+    environment:
+      DATABASE_URL: postgres://kesaseteli:kesaseteli@kesaseteli-db/kesaseteli
+      DATABASE_HOST: kesaseteli-db.helsinki
+    volumes:
+      - ./backend/kesaseteli:/app
+      - ./backend/shared:/shared
+      - ./backend/kesaseteli/media:/var/media
+    depends_on:
+      - postgres
+    container_name: kesaseteli-backend
+
+  kesaseteli-handler:
+    build:
+      context: ./frontend
+      dockerfile: kesaseteli/handler/Dockerfile
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.kesaseteli
+    environment:
+      - PORT=3200
+    container_name: kesaseteli-handler
+
+  kesaseteli-local-proxy:
+    depends_on:
+      - postgres
+      - kesaseteli-backend
+      - kesaseteli-handler
+    build:
+      context: ./localdevelopment/handler/nginx
+    container_name: kesaseteli-local-proxy
+    volumes:
+      - ./localdevelopment/handler/nginx/:/etc/nginx/
+    ports:
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:3200:3200
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  default:
+    name: helsinki

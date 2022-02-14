@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
+import useErrorHandler from 'shared/hooks/useErrorHandler';
 import useLocale from 'shared/hooks/useLocale';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
@@ -37,35 +38,27 @@ const Header: React.FC = () => {
     [router, asPath]
   );
 
-  const handleNavigationItemClick = React.useCallback(
-    (newPath: string): void => {
-      void router.push(newPath);
-    },
-    [router]
-  );
-
-  const handleTitleClick = React.useCallback(
-    () => handleNavigationItemClick('/'),
-    [handleNavigationItemClick]
-  );
+  const onError = useErrorHandler(false);
 
   const login = useLogin();
   const userQuery = useUserQuery();
   const logoutQuery = useLogoutQuery();
+  const logout = React.useCallback(
+    () => logoutQuery.mutate({}, { onError }),
+    [logoutQuery, onError]
+  );
 
   const isLoading = userQuery.isLoading || logoutQuery.isLoading;
-  const isLoginPage = asPath?.startsWith('/login');
+  const isLoginPage = asPath?.includes('/login');
 
   return (
     <BaseHeader
       title={t('common:appName')}
       skipToContentLabel={t('common:header.linkSkipToContent')}
-      menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
+      menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}
       locale={locale}
       onLanguageChange={handleLanguageChange}
-      onNavigationItemClick={handleNavigationItemClick}
-      onTitleClick={handleTitleClick}
       login={
         !isLoading
           ? {
@@ -73,7 +66,7 @@ const Header: React.FC = () => {
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
               onLogin: login,
-              onLogout: logoutQuery.mutate as () => void,
+              onLogout: logout,
               userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }

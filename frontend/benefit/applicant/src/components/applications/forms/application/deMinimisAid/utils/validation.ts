@@ -1,12 +1,13 @@
 import {
   DE_MINIMIS_AID_GRANTED_AT_MAX_DATE,
   DE_MINIMIS_AID_KEYS,
-  VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { DeMinimisAid } from 'benefit/applicant/types/application';
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import isFuture from 'date-fns/isFuture';
 import { TFunction } from 'next-i18next';
 import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
+import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
 export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
@@ -18,6 +19,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
         key: VALIDATION_MESSAGE_KEYS.STRING_MAX,
       })),
     [DE_MINIMIS_AID_KEYS.AMOUNT]: Yup.number()
+      .transform((_value, originalValue) => getNumberValue(originalValue))
       .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
       .typeError(VALIDATION_MESSAGE_KEYS.INVALID)
       .min(0, (param) => ({

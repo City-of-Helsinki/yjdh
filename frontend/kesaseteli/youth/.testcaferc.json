@@ -1,0 +1,13 @@
+{
+  "clientScripts": [
+    { "module": "@testing-library/dom/dist/@testing-library/dom.umd.js" },
+    "../../testcafeClientErrorHandler.js"
+  ],
+  "screenshots": {
+    "takeOnFails": true
+  },
+  "compilerOptions": {
+    "typescript": { "configPath": "../../tsconfig.testcafe.json"}
+  },
+  "pageRequestTimeout": 20000
+}

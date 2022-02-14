@@ -1,8 +1,4 @@
-import {
-  APPLICATION_STATUSES,
-  ROUTES,
-  VALIDATION_MESSAGE_KEYS,
-} from 'benefit/applicant/constants';
+import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
 import AppContext from 'benefit/applicant/context/AppContext';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
@@ -12,10 +8,11 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import { getFullName } from 'benefit/applicant/utils/common';
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useContext, useEffect, useState } from 'react';
+import { getFullName } from 'shared/utils/application.utils';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -25,6 +22,7 @@ type ExtendedComponentProps = {
   handleBack: () => void;
   handleSubmit: () => void;
   handleSave: () => void;
+  handleDelete: () => void;
   handleClick: (consentIndex: number) => void;
   getErrorText: (consentIndex: number) => string;
   translationsBase: string;
@@ -54,7 +52,7 @@ const useApplicationFormStep6 = (
 
   const [errorsArray, setErrorsArray] = useState<boolean[]>(getInitialvalues());
 
-  const { onSave, onBack } = useFormActions(application, 6);
+  const { onSave, onBack, onDelete } = useFormActions(application);
 
   const { setSubmittedApplication, submittedApplication } =
     useContext(AppContext);
@@ -65,7 +63,8 @@ const useApplicationFormStep6 = (
   useEffect(() => {
     if (
       isApplicationUpdated &&
-      application.status === APPLICATION_STATUSES.RECEIVED
+      (application.status === APPLICATION_STATUSES.RECEIVED ||
+        application.status === APPLICATION_STATUSES.HANDLING)
     ) {
       setSubmittedApplication({
         applicantName: getFullName(
@@ -116,7 +115,10 @@ const useApplicationFormStep6 = (
                 (consent) => consent.id
               ),
           },
-          status: APPLICATION_STATUSES.RECEIVED,
+          status:
+            application.status === APPLICATION_STATUSES.DRAFT
+              ? APPLICATION_STATUSES.RECEIVED
+              : APPLICATION_STATUSES.HANDLING,
         },
         { deep: true }
       );
@@ -125,12 +127,14 @@ const useApplicationFormStep6 = (
   };
 
   const handleSave = (): void => onSave(application);
+  const handleDelete = (): void => onDelete(application.id ?? '');
 
   return {
     t,
     handleBack: onBack,
     handleSubmit,
     handleSave,
+    handleDelete,
     handleClick,
     getErrorText,
     translationsBase,

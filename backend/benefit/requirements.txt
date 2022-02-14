@@ -18,6 +18,8 @@ azure-storage-blob==2.1.0
     # via django-storages
 azure-storage-common==2.1.0
     # via azure-storage-blob
+babel==2.9.1
+    # via -r requirements.in
 certifi==2020.12.5
     # via
     #   elasticsearch
@@ -70,13 +72,17 @@ django==3.2.4
     #   django-searchable-encrypted-fields
     #   django-storages
     #   djangorestframework
+    #   drf-nested-routers
     #   drf-spectacular
     #   mozilla-django-oidc
     #   yjdh-backend-shared
 djangorestframework==3.12.4
     # via
     #   -r requirements.in
+    #   drf-nested-routers
     #   drf-spectacular
+drf-nested-routers==0.93.4
+    # via -r requirements.in
 drf-spectacular==0.17.2
     # via -r requirements.in
 elasticsearch==7.14.0
@@ -129,7 +135,9 @@ python-dateutil==2.8.1
 python-stdnum==1.16
     # via django-localflavor
 pytz==2021.1
-    # via django
+    # via
+    #   babel
+    #   django
 pyyaml==5.4.1
     # via
     #   -r requirements.in

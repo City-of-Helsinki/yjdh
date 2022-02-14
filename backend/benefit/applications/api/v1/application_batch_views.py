@@ -4,6 +4,7 @@ from applications.models import ApplicationBatch
 from applications.services.ahjo_integration import export_application_batch
 from applications.services.talpa_integration import TalpaService
 from common.authentications import RobotBasicAuthentication
+from common.permissions import BFIsHandler
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -14,7 +15,7 @@ from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
@@ -43,7 +44,7 @@ class ApplicationBatchFilter(filters.FilterSet):
 class ApplicationBatchViewSet(viewsets.ModelViewSet):
     queryset = ApplicationBatch.objects.all()
     serializer_class = ApplicationBatchSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [BFIsHandler]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
@@ -61,19 +62,22 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
         Export ApplicationBatch to pdf format
         """
         batch = self.get_object()
-        if batch.status != ApplicationBatchStatus.AWAITING_AHJO_DECISION:
+        if batch.status in (
+            ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
+        ):
             if batch.status == ApplicationBatchStatus.DRAFT:
-                batch.status = ApplicationBatchStatus.AWAITING_AHJO_DECISION
+                batch.status = ApplicationBatchStatus.AHJO_REPORT_CREATED
                 batch.save()
-            else:
-                return Response(
-                    {
-                        "detail": _(
-                            "Application status cannot be exported because of invalid status"
-                        )
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        else:
+            return Response(
+                {
+                    "detail": _(
+                        "Application status cannot be exported because of invalid status"
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if batch.applications.count() <= 0:
             return Response(
@@ -120,7 +124,7 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
         csv_file = talpa_service.get_talpa_csv_string()
         file_name = format_lazy(
             _("TALPA export {date}"),
-            date=timezone.now().strftime("%d-%m-%Y %H.%M.%S"),
+            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
         response = HttpResponse(csv_file, content_type="text/csv")
         response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(

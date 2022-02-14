@@ -16,6 +16,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
     handleBack,
     handleNext,
     handleSave,
+    handleDelete,
     benefitType,
     apprenticeshipProgram,
     paySubsidyGranted,
@@ -75,6 +76,7 @@ const ApplicationFormStep3: React.FC<DynamicFormStepComponentProps> = ({
         handleSubmit={handleNext}
         handleSave={handleSave}
         handleBack={handleBack}
+        handleDelete={handleDelete}
       />
     </>
   );

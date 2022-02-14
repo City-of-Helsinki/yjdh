@@ -15,6 +15,7 @@ WORKDIR /app
 # Install dependencies
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser kesaseteli/employer/package.json kesaseteli/employer/package.json
+COPY --chown=appuser:appuser kesaseteli/shared/package.json kesaseteli/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
@@ -40,7 +41,7 @@ FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
-ARG MOCK_FLAG
+ARG NEXT_PUBLIC_MOCK_FLAG
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT
 
@@ -79,6 +80,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/public
 COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/employer/package.json app/kesaseteli/employer/start.js kesaseteli/employer/
 
 # shared data
+COPY --from=staticbuilder --chown=appuser:appuser app/kesaseteli/shared/package.json kesaseteli/shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
@@ -87,15 +89,6 @@ RUN yarn install --production --frozen-lockfile --check-files
 
 # install lerna
 RUN yarn add -W lerna
-
-USER root
-# Use non-root user and add it to the root group (0)
-RUN usermod -a -G 0 appuser
-# Sets the directory and file permissions to allow users in the root group to access them in the built image (for OpenShift)
-# https://docs.openshift.com/enterprise/3.2/creating_images/guidelines.html
-RUN chgrp -R 0 . \
-  && chmod -R g+rwX .
-USER appuser
 
 # Expose port
 EXPOSE 3000

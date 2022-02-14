@@ -43,12 +43,12 @@ export const getSuomiFiProfileComponents = (t: TestController) => {
           .ok(await getErrorMessage(t));
       },
       async userDataIsPresent(): Promise<User> {
-        const given_name = (await selectors.firstName().textContent).trim();
-        const family_name = (await selectors.lastName().textContent).trim();
+        const given_name = await selectors.firstName().textContent;
+        const family_name = await selectors.lastName().textContent;
 
         const userData: User = {
-          given_name,
-          family_name,
+          given_name: given_name.trim(),
+          family_name: family_name.trim(),
           name: `${given_name} ${family_name}`,
         };
 

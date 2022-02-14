@@ -1,36 +1,206 @@
+import logging
+from functools import cached_property
+
+from django.conf import settings
 from django.core import exceptions
-from django.http import FileResponse
+from django.db import transaction
+from django.db.models import F, Func
+from django.db.utils import ProgrammingError
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
     ALLOWED_APPLICATION_VIEW_STATUSES,
-    ApplicationPermission,
+    EmployerApplicationPermission,
+    EmployerSummerVoucherPermission,
     get_user_company,
     StaffPermission,
-    SummerVoucherPermission,
 )
 from applications.api.v1.serializers import (
-    ApplicationSerializer,
     AttachmentSerializer,
-    SummerVoucherSerializer,
+    EmployerApplicationSerializer,
+    EmployerSummerVoucherSerializer,
+    SchoolSerializer,
+    YouthApplicationSerializer,
 )
-from applications.enums import ApplicationStatus
-from applications.models import Application, SummerVoucher
+from applications.enums import ApplicationStatus, YouthApplicationRejectedReason
+from applications.models import (
+    EmployerApplication,
+    EmployerSummerVoucher,
+    School,
+    YouthApplication,
+)
+from common.permissions import DenyAll, IsHandler
+
+LOGGER = logging.getLogger(__name__)
 
 
-class ApplicationViewSet(AuditLoggingModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
-    permission_classes = [IsAuthenticated, ApplicationPermission]
+class SchoolListView(ListAPIView):
+    serializer_class = SchoolSerializer
+
+    # PostgreSQL specific functionality:
+    # - Custom sorter for name field to ensure finnish language sorting order.
+    # - NOTE: This can be removed if the database is made to use collation fi_FI.utf8
+    # TODO: Remove this after fixing related GitHub workflows to use Finnish PostgreSQL
+    def get_sorter(self, field_name, collation):
+        if collation is None:
+            return F(field_name)
+        else:
+            return Func(
+                field_name,
+                function=collation,
+                template='(%(expressions)s) COLLATE "%(function)s"',
+            )
+
+    def get_collations(self):
+        return [
+            "fi_FI.utf8",  # PostgreSQL UTF-8 version
+            "Finnish_Swedish_CI_AS_UTF8",  # Azure's UTF-8 version
+            "fi-FI-x-icu",  # PostgreSQL fallback
+            None,  # No collation override
+        ]
+
+    def get_sorters(self):
+        return [
+            self.get_sorter("name", collation) for collation in self.get_collations()
+        ]
+
+    @cached_property
+    def preferred_sorter(self):
+        for sorter in self.get_sorters():
+            # Try out different order by functions until a functional one is found
+            try:
+                # Use transaction to avoid django.db.utils.InternalError:
+                # "current transaction is aborted, commands ignored until end of
+                # transaction block"
+                with transaction.atomic():
+                    # Force evaluation of queryset to test sorting function
+                    list(School.objects.order_by(sorter.asc()))
+                return sorter
+            except ProgrammingError:  # Collation for encoding does not exist
+                pass
+        raise ProgrammingError("Unable to determine working collation for school list")
+
+    def get_queryset(self):
+        return School.objects.order_by(self.preferred_sorter.asc())
+
+    def get_permissions(self):
+        permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class YouthApplicationViewSet(AuditLoggingModelViewSet):
+    queryset = YouthApplication.objects.all()
+    serializer_class = YouthApplicationSerializer
+
+    @action(methods=["get"], detail=True)
+    def process(self, request, pk=None) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object()  # noqa: F841
+
+        # TODO: Implement
+        return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    @transaction.atomic
+    @action(methods=["get"], detail=True)
+    def activate(self, request, pk=None) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object()
+
+        # Lock same person's applications to prevent activation of more than one of them
+        same_persons_apps = YouthApplication.objects.select_for_update().filter(
+            social_security_number=youth_application.social_security_number
+        )
+        list(same_persons_apps)  # Force evaluation of queryset to lock its rows
+
+        if same_persons_apps.active().exists():
+            return HttpResponseRedirect(youth_application.already_activated_page_url())
+        elif youth_application.has_activation_link_expired:
+            return HttpResponseRedirect(youth_application.expired_page_url())
+        elif youth_application.activate():
+            if settings.DISABLE_VTJ:
+                LOGGER.info(
+                    f"Activated youth application {youth_application.pk}: "
+                    "VTJ is disabled, sending application to be processed by a handler"
+                )
+                youth_application.send_processing_email_to_handler(request)
+            return HttpResponseRedirect(youth_application.activated_page_url())
+
+        return HttpResponse(
+            status=status.HTTP_401_UNAUTHORIZED,
+            content="Unable to activate youth application",
+        )
+
+    @classmethod
+    def error_response(cls, reason: YouthApplicationRejectedReason):
+        return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=reason.json())
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        # This function is based on CreateModelMixin class's create function.
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Data is valid but let's check other criteria before creating the object
+        email = serializer.validated_data["email"]
+        social_security_number = serializer.validated_data["social_security_number"]
+
+        if YouthApplication.is_email_or_social_security_number_active(
+            email, social_security_number
+        ):
+            return self.error_response(YouthApplicationRejectedReason.ALREADY_ASSIGNED)
+        elif YouthApplication.is_email_used(email):
+            return self.error_response(YouthApplicationRejectedReason.EMAIL_IN_USE)
+
+        # Data was valid and other criteria passed too, so let's create the object
+        self.perform_create(serializer)
+
+        # Send the localized activation email
+        youth_application = serializer.instance
+        was_email_sent = youth_application.send_activation_email(
+            request, youth_application.language
+        )
+
+        if not was_email_sent:
+            transaction.set_rollback(True)
+            with translation.override(youth_application.language):
+                return HttpResponse(
+                    _("Failed to send activation email"),
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+
+        # Return success creating the object
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ["activate", "create"]:
+            permission_classes = [AllowAny]
+        elif self.action in ["process", "retrieve"]:
+            permission_classes = [IsHandler]
+        else:
+            permission_classes = [DenyAll]
+        return [permission() for permission in permission_classes]
+
+
+class EmployerApplicationViewSet(AuditLoggingModelViewSet):
+    queryset = EmployerApplication.objects.all()
+    serializer_class = EmployerApplicationSerializer
+    permission_classes = [IsAuthenticated, EmployerApplicationPermission]
 
     def get_queryset(self):
         """
@@ -78,10 +248,13 @@ class ApplicationViewSet(AuditLoggingModelViewSet):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class SummerVoucherViewSet(AuditLoggingModelViewSet):
-    queryset = SummerVoucher.objects.all()
-    serializer_class = SummerVoucherSerializer
-    permission_classes = [IsAuthenticated, StaffPermission | SummerVoucherPermission]
+class EmployerSummerVoucherViewSet(AuditLoggingModelViewSet):
+    queryset = EmployerSummerVoucher.objects.all()
+    serializer_class = EmployerSummerVoucherSerializer
+    permission_classes = [
+        IsAuthenticated,
+        StaffPermission | EmployerSummerVoucherPermission,
+    ]
 
     def get_queryset(self):
         """

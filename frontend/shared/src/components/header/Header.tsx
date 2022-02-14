@@ -1,24 +1,32 @@
 import { IconGlobe, IconSignout, LogoLanguage, Navigation } from 'hds-react';
 import React from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
-import { NavigationItem, OptionType } from 'shared/types/common';
+import useGoToPage from 'shared/hooks/useGoToPage';
+import {
+  NavigationItem,
+  NavigationVariant,
+  OptionType,
+  ThemeOption,
+} from 'shared/types/common';
 import { isTabActive } from 'shared/utils/menu.utils';
 
 import { useHeader } from './useHeader';
 
 export type HeaderProps = {
   title?: string;
+  titleUrl?: string;
   skipToContentLabel?: string;
   menuToggleAriaLabel?: string;
   locale: string;
   languages: OptionType<string>[];
+  isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
+  customItems?: React.ReactNode[];
+  navigationVariant?: NavigationVariant;
   onLanguageChange: (
     e: React.SyntheticEvent<unknown>,
     language: OptionType<string>
   ) => void;
-  onTitleClick?: (callback: () => void) => void;
-  onNavigationItemClick: (pathname: string) => void;
   login?: {
     isAuthenticated: boolean;
     loginLabel: string;
@@ -28,54 +36,67 @@ export type HeaderProps = {
     onLogout: () => void;
     userName?: string;
   };
+  theme?: ThemeOption;
 };
 
 const Header: React.FC<HeaderProps> = ({
   skipToContentLabel,
   title,
+  titleUrl,
   menuToggleAriaLabel,
   languages,
   locale,
+  isNavigationVisible = true,
   navigationItems,
-  onTitleClick,
-  onNavigationItemClick,
+  navigationVariant,
+  customItems,
   onLanguageChange,
   login,
+  theme,
 }) => {
   const {
     logoLang,
     menuOpen,
     toggleMenu,
     closeMenu,
-    handleNavigationItemClick,
     handleLogin,
     handleLogout,
-  } = useHeader(locale, onNavigationItemClick, login);
+  } = useHeader(locale, login);
 
-  const handleTitleClick = onTitleClick
-    ? () => onTitleClick(closeMenu)
-    : undefined;
+  const goToPage = useGoToPage();
+
+  const handleClickLink = React.useCallback(
+    (url = '/') =>
+      (event?: Event | MouseEvent) => {
+        event?.preventDefault();
+        closeMenu();
+        goToPage(url as string);
+      },
+    [closeMenu, goToPage]
+  );
 
   return (
     <Navigation
+      theme={theme}
       menuOpen={menuOpen}
       onMenuToggle={toggleMenu}
       menuToggleAriaLabel={menuToggleAriaLabel || ''}
       skipTo={`#${MAIN_CONTENT_ID}`}
       skipToContentLabel={skipToContentLabel}
-      onTitleClick={handleTitleClick}
       logoLanguage={logoLang as LogoLanguage}
       title={title}
+      titleUrl={titleUrl}
+      titleAriaLabel={title}
     >
-      {navigationItems && (
-        <Navigation.Row variant="inline">
+      {isNavigationVisible && navigationItems && (
+        <Navigation.Row variant={navigationVariant || 'default'}>
           {navigationItems?.map((item) => (
             <Navigation.Item
               key={item.url}
               active={isTabActive(item.url)}
               href={item.url}
               label={item.label}
-              onClick={handleNavigationItemClick(item.url)}
+              onClick={() => handleClickLink(item.url)}
               icon={item.icon}
             />
           ))}
@@ -83,6 +104,12 @@ const Header: React.FC<HeaderProps> = ({
       )}
 
       <Navigation.Actions>
+        {customItems?.map((item, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Navigation.Item key={`custom-nav-item-${index}`}>
+            {item}
+          </Navigation.Item>
+        ))}
         {login && (
           <Navigation.User
             authenticated={login.isAuthenticated}

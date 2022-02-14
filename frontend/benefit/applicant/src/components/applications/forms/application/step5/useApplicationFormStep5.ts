@@ -7,15 +7,12 @@ import {
   Application,
   ApplicationData,
 } from 'benefit/applicant/types/application';
-import {
-  getApplicationStepString,
-  getFullName,
-} from 'benefit/applicant/utils/common';
-import isEmpty from 'lodash/isEmpty';
+import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
+import { getFullName } from 'shared/utils/application.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
@@ -23,6 +20,7 @@ type ExtendedComponentProps = {
   handleSave: () => void;
   handleSubmit: () => void;
   handleBack: () => void;
+  handleDelete: () => void;
   handleStepChange: (step: number) => void;
   translationsBase: string;
   isSubmit: boolean;
@@ -44,12 +42,13 @@ const useApplicationFormStep5 = (
     isSuccess: isApplicationUpdatedStep5,
   } = useUpdateApplicationQuery();
 
-  const isSubmit = !isEmpty(application?.applicantTermsApproval);
+  const isSubmit = !application?.applicantTermsApprovalNeeded;
 
   useEffect(() => {
     if (
       isApplicationUpdatedStep5 &&
-      application.status === APPLICATION_STATUSES.RECEIVED
+      (application.status === APPLICATION_STATUSES.RECEIVED ||
+        application.status === APPLICATION_STATUSES.HANDLING)
     ) {
       setSubmittedApplication({
         applicantName: getFullName(
@@ -79,7 +78,7 @@ const useApplicationFormStep5 = (
     }
   }, [t, updateApplicationErrorStep5]);
 
-  const { onBack, onSave } = useFormActions(application, 5);
+  const { onBack, onSave, onDelete } = useFormActions(application);
 
   const handleStepChange = (nextStep: number): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
@@ -93,10 +92,16 @@ const useApplicationFormStep5 = (
   };
 
   const handleSave = (): void => onSave(application);
+  const handleDelete = (): void => onDelete(application.id ?? '');
 
   const handleSubmit = (): void => {
     const submitFields = isSubmit
-      ? { status: APPLICATION_STATUSES.RECEIVED }
+      ? {
+          status:
+            application.status === APPLICATION_STATUSES.DRAFT
+              ? APPLICATION_STATUSES.RECEIVED
+              : APPLICATION_STATUSES.HANDLING,
+        }
       : { applicationStep: getApplicationStepString(6) };
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
@@ -113,6 +118,7 @@ const useApplicationFormStep5 = (
     handleSave,
     handleSubmit,
     handleBack: onBack,
+    handleDelete,
     handleStepChange,
     translationsBase,
     isSubmit,

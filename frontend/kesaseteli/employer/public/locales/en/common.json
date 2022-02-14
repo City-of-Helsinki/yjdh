@@ -4,7 +4,8 @@
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:",
-    "linkSkipToContent": "Skip to content"
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu"
   },
   "errorPage": {
     "title": "An unexpected error occured",
@@ -55,7 +56,7 @@
     },
     "step2": {
       "name": "Employment",
-      "header": "2. Emoloyments reports",
+      "header": "2. Employments reports",
       "employment": "Employment",
       "tooltip": "Write in the form the information of the summer worker and the serial number of the Summer Job Voucher. You can return to the data also at the next stage.",
       "attachments_section": "Mandatory attachments",
@@ -131,8 +132,7 @@
         "validate": "The information you entered is in an incorrect format",
         "selectionGroups": "Select an option",
         "checkboxRequired": "Selection is mandatory",
-        "employment_contract": "Add at least one file",
-        "payslip": "Add at least one file"
+        "attachments": "Add at least one file"
       },
       "notification": {
         "title": "Fill in the missing or incorrect information"
@@ -143,7 +143,7 @@
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
     "accessibilityStatement": "Accessibility statement",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "information": "Information on the service",
     "informationLink": "https://kesaseteli.fi/en/"
   },
@@ -152,7 +152,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "menuToggleAriaLabel": "Menu",
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {

@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from datetime import date, datetime
+from decimal import Decimal
 from unittest import mock
 
 import pytest
@@ -11,6 +12,9 @@ import pytz
 from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
     AttachmentSerializer,
+)
+from applications.api.v1.status_transition_validator import (
+    ApplicantApplicationStatusValidator,
 )
 from applications.enums import (
     ApplicationStatus,
@@ -20,11 +24,15 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
+from applications.tests.factories import ApplicationFactory
+from calculator.models import Calculation
 from common.tests.conftest import *  # noqa
+from common.tests.conftest import get_client_user
+from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
+from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
 from PIL import Image
@@ -127,6 +135,9 @@ def test_application_single_read_as_applicant(api_client, application):
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
     assert "batch" not in response.data
+    assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
+        application.start_date, application.end_date, decimal_places=2
+    )
     assert response.status_code == 200
 
 
@@ -684,6 +695,11 @@ def test_application_delete(api_client, application):
         ("2021-02-01", "2021-02-28", 200),  # exactly one month
         ("2021-02-01", "2022-01-31", 200),  # exactly 12 months
         ("2021-02-01", "2022-02-01", 400),  # too long
+        (
+            "2020-02-01",
+            "2020-12-31",
+            200,
+        ),  # past year is allowed, as the application is not submitted
     ],
 )
 def test_application_date_range(
@@ -711,168 +727,34 @@ def test_application_date_range(
 
 
 @pytest.mark.parametrize(
-    "previous_benefits, benefit_type, expected_result",
+    "start_date,end_date,status_code",
     [
         (
-            [
-                (
-                    "2020-01-01",
-                    "2020-12-31",
-                )
-            ],
-            BenefitType.SALARY_BENEFIT,
+            "2020-12-21",
+            "2021-02-27",
             400,
-        ),  # 12 months of benefit used, 24 months not elapsed
+        ),  # start_date in past (relative to freeze_time date)
         (
-            [
-                (
-                    "2020-01-01",
-                    "2020-12-31",
-                )
-            ],
-            BenefitType.EMPLOYMENT_BENEFIT,
-            400,
-        ),  # same as above, benefit_type does not matter
-        (
-            [
-                (
-                    "2019-01-01",
-                    "2019-12-31",
-                )
-            ],
-            BenefitType.EMPLOYMENT_BENEFIT,
-            400,
-        ),  # 12 months of benefit used, 24 months not elapsed
-        (
-            [
-                (
-                    "2018-01-01",
-                    "2018-12-31",
-                )
-            ],
-            BenefitType.EMPLOYMENT_BENEFIT,
+            "2021-01-01",
+            "2021-02-28",
             200,
-        ),  # 24 months is elapsed
+        ),  # start_date in current year (relative to freeze_time date)
         (
-            [
-                (
-                    "2020-01-01",
-                    "2020-06-30",
-                )
-            ],
-            BenefitType.SALARY_BENEFIT,
+            "2022-12-31",
+            "2023-01-31",
             200,
-        ),  # only 6 months of benefit used
-        (
-            [
-                (
-                    "2020-01-01",
-                    "2020-07-01",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),
-        # 6 months + 1 day of benefit used, one day too much for a new 6-month benefit
-        (
-            [
-                (
-                    "2019-07-01",
-                    "2019-12-31",
-                ),
-                (
-                    "2020-07-01",
-                    "2020-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),  # 24 months not elapsed
-        (
-            [
-                (
-                    "2019-01-01",
-                    "2019-06-30",
-                ),
-                (
-                    "2020-07-01",
-                    "2020-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),  # 24 months not elapsed
-        (
-            [
-                (
-                    "2018-01-01",
-                    "2018-06-30",
-                ),
-                (
-                    "2018-07-01",
-                    "2018-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            200,
-        ),  # 24 months elapsed
-        (
-            [
-                (
-                    "2017-07-01",
-                    "2018-06-30",
-                ),
-                (
-                    "2020-07-01",
-                    "2020-12-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            200,
-        ),
-        # 24-month gap in past benefits so the benefit from 2017-2018 is not included and application is valid
-        (
-            [
-                (
-                    "2018-01-01",
-                    "2018-03-31",
-                ),
-                (
-                    "2019-01-01",
-                    "2019-03-31",
-                ),
-                (
-                    "2020-01-01",
-                    "2020-03-31",
-                ),
-            ],
-            BenefitType.SALARY_BENEFIT,
-            400,
-        ),
-        # several previously granted benefits that don't have a 24-month gap
+        ),  # start_date in next year (relative to freeze_time date)
     ],
 )
-def test_application_with_previously_granted_benefits(
-    api_client, application, previous_benefits, benefit_type, expected_result
+def test_application_date_range_on_submit(
+    request, api_client, application, start_date, end_date, status_code
 ):
-    for previous_start_date, previous_end_date in previous_benefits:
-        # previous, already granted benefits for the same employee+company
-        decided_application = DecidedApplicationFactory()
-        decided_application.benefit_type = BenefitType.SALARY_BENEFIT
-        decided_application.start_date = previous_start_date
-        decided_application.end_date = previous_end_date
-        decided_application.company = application.company
-        decided_application.save()
-        decided_application.employee.social_security_number = (
-            application.employee.social_security_number
-        )
-        decided_application.employee.save()
+    add_attachments_to_application(request, application)
 
     data = ApplicantApplicationSerializer(application).data
 
-    data["benefit_type"] = benefit_type
-    data["start_date"] = date(2021, 7, 1)
-    data["end_date"] = date(2021, 12, 31)
+    data["start_date"] = start_date
+    data["end_date"] = end_date
     data["pay_subsidy_granted"] = True
     data["pay_subsidy_percent"] = 50
 
@@ -880,32 +762,127 @@ def test_application_with_previously_granted_benefits(
         get_detail_url(application),
         data,
     )
-    assert response.status_code == expected_result
-    if expected_result == 200:
-        assert response.data["start_date"] == "2021-07-01"
-        assert response.data["end_date"] == "2021-12-31"
-    else:
-        assert response.data.keys() == {"start_date"}
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    assert response.data["start_date"] == start_date
+    assert response.data["end_date"] == end_date
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == status_code
+
+
+@pytest.mark.parametrize(
+    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    [
+        ("ry", None, [], False, 200),
+        ("ry", False, [], False, 200),
+        ("ry", None, [], True, 200),
+        ("ry", False, [], True, 200),
+        ("oy", None, [], None, 400),
+        ("oy", False, [], None, 200),
+    ],
+)
+def test_submit_application_without_de_minimis_aid(
+    request,
+    api_client,
+    application,
+    company_form,
+    de_minimis_aid,
+    de_minimis_aid_set,
+    association_has_business_activities,
+    expected_result,
+):
+    application.company.company_form = company_form
+    application.company.save()
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["benefit_type"] = BenefitType.SALARY_BENEFIT
+    data["de_minimis_aid"] = de_minimis_aid
+    data["de_minimis_aid_set"] = de_minimis_aid_set
+    data["pay_subsidy_percent"] = "50"
+    data["pay_subsidy_granted"] = True
+    data["association_has_business_activities"] = association_has_business_activities
+    if company_form == "ry":
+        data["association_immediate_manager_check"] = True
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
+    "pay_subsidy_granted,apprenticeship_program,expected_result",
+    [
+        (True, True, 200),
+        (True, False, 200),
+        (True, None, 400),
+        (False, None, 200),
+    ],
+)
+def test_apprenticeship_program_validation_on_submit(
+    request,
+    api_client,
+    application,
+    pay_subsidy_granted,
+    apprenticeship_program,
+    expected_result,
+):
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["pay_subsidy_granted"] = pay_subsidy_granted
+    data["pay_subsidy_percent"] = "50" if pay_subsidy_granted else None
+    data["additional_pay_subsidy_percent"] = None
+    data["apprenticeship_program"] = apprenticeship_program
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
 
 
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING, 400),
         (
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             400,
         ),
         (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.RECEIVED,
+            400,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.HANDLING,
             200,
         ),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 400),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 400),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 400),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 400),
+        (ApplicationStatus.HANDLING, ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
@@ -923,7 +900,10 @@ def test_application_status_change_as_applicant(
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
 
-    if to_status == ApplicationStatus.RECEIVED:
+    if (
+        from_status,
+        to_status,
+    ) in ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS:
         add_attachments_to_application(request, application)
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
@@ -951,21 +931,24 @@ def test_application_status_change_as_applicant(
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
         (
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             200,
         ),
         (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             200,
         ),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.ACCEPTED, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.REJECTED, 200),
-        (ApplicationStatus.RECEIVED, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200),
+        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200),
+        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.HANDLING, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
@@ -976,12 +959,16 @@ def test_application_status_change_as_handler(
     modify existing application
     """
     application.status = from_status
+    application.applicant_language = "en"
     application.save()
+    if from_status not in (
+        ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
+    ):
+        Calculation.objects.create_for_application(application)
     data = ApplicantApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
-
-    if to_status == ApplicationStatus.RECEIVED:
+    if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
         add_attachments_to_application(request, application)
     if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
         data["association_has_business_activities"] = False
@@ -1000,8 +987,85 @@ def test_application_status_change_as_handler(
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+
+        if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
+            assert application.messages.count() == 1
+            assert (
+                "Please make the requested changes by 18.06.2021"
+                in application.messages.first().content
+            )
+
     else:
         assert application.log_entries.all().count() == 0
+
+
+@pytest.mark.parametrize(
+    "from_status, to_status, auto_assign",
+    [
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, False),
+        (
+            ApplicationStatus.HANDLING,
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            False,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.HANDLING,
+            True,
+        ),
+        (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, True),
+        (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, True),
+        (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, True),
+    ],
+)
+def test_application_status_change_as_handler_auto_assign_handler(
+    request, handler_api_client, application, from_status, to_status, auto_assign
+):
+    """
+    modify existing application
+    """
+    user = get_client_user(handler_api_client)
+    user.first_name = "adminFirst"
+    user.last_name = "adminLast"
+    user.save()
+    application.status = from_status
+    application.save()
+    if from_status not in (
+        ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
+    ):
+        Calculation.objects.create_for_application(application)
+    data = ApplicantApplicationSerializer(application).data
+    data["status"] = to_status
+    data["bases"] = []  # as of 2021-10, bases are not used when submitting application
+    if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
+        add_attachments_to_application(request, application)
+    if data["company"]["organization_type"] == OrganizationType.ASSOCIATION:
+        data["association_has_business_activities"] = False
+        data["association_immediate_manager_check"] = True
+
+    with mock.patch(
+        "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
+    ):
+        # terms approval is tested separately
+        response = handler_api_client.put(
+            get_handler_detail_url(application),
+            data,
+        )
+    assert response.status_code == 200
+    if auto_assign:
+        assert response.data["calculation"]["handler_details"]["id"] == str(
+            get_client_user(handler_api_client).pk
+        )
+        assert (
+            response.data["calculation"]["handler_details"]["first_name"]
+            == get_client_user(handler_api_client).first_name
+        )
+        assert (
+            response.data["calculation"]["handler_details"]["last_name"]
+            == get_client_user(handler_api_client).last_name
+        )
+    else:
+        assert response.data["calculation"]["handler_details"] is None
 
 
 def add_attachments_to_application(request, application):
@@ -1029,6 +1093,7 @@ def test_application_last_modified_at_draft(api_client, application):
     "status",
     [
         ApplicationStatus.RECEIVED,
+        ApplicationStatus.HANDLING,
         ApplicationStatus.ACCEPTED,
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
         ApplicationStatus.REJECTED,
@@ -1159,12 +1224,16 @@ def _pdf_file_path(request):
 
 
 def _upload_pdf(
-    request, api_client, application, attachment_type=AttachmentType.EMPLOYMENT_CONTRACT
+    request,
+    api_client,
+    application,
+    attachment_type=AttachmentType.EMPLOYMENT_CONTRACT,
+    urlpattern_name="v1:applicant-application-post-attachment",
 ):
     with open(os.path.join(_pdf_file_path(request)), "rb") as valid_pdf_file:
         return api_client.post(
             reverse(
-                "v1:applicant-application-post-attachment",
+                urlpattern_name,
                 kwargs={"pk": application.pk},
             ),
             {
@@ -1227,6 +1296,7 @@ def test_attachment_delete_unauthorized(
     [
         (ApplicationStatus.DRAFT, 204),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 204),
+        (ApplicationStatus.HANDLING, 403),
         (ApplicationStatus.RECEIVED, 403),
         (ApplicationStatus.ACCEPTED, 403),
         (ApplicationStatus.CANCELLED, 403),
@@ -1253,21 +1323,102 @@ def test_attachment_delete(request, api_client, application, status, expected_co
 
 
 @pytest.mark.parametrize(
-    "status",
+    "status,upload_result",
     [
-        ApplicationStatus.DRAFT,
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        (ApplicationStatus.DRAFT, 201),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
+        (ApplicationStatus.HANDLING, 403),
+        (ApplicationStatus.ACCEPTED, 403),
+        (ApplicationStatus.REJECTED, 403),
     ],
 )
-def test_pdf_attachment_upload(request, api_client, application, status):
+def test_pdf_attachment_upload_and_download_as_applicant(
+    request, api_client, application, status, upload_result
+):
     application.status = status
     application.save()
     response = _upload_pdf(request, api_client, application)
-    assert response.status_code == 201
+    assert response.status_code == upload_result
+    if upload_result != 201:
+        return
     assert len(application.attachments.all()) == 1
     attachment = application.attachments.all().first()
     assert attachment.attachment_type == AttachmentType.EMPLOYMENT_CONTRACT
     assert attachment.attachment_file.name.endswith(".pdf")
+    response = api_client.get(get_detail_url(application))
+    assert len(response.data["attachments"]) == 1
+    assert response.data["attachments"][0]["attachment_file"].startswith("http://")
+    assert (
+        "handlerapplications" not in response.data["attachments"][0]["attachment_file"]
+    )
+    file_dl = api_client.get(response.data["attachments"][0]["attachment_file"])
+    assert file_dl.status_code == 200
+    bytes = file_dl.getvalue()
+    assert bytes[:4].decode("utf-8") == "%PDF"
+
+
+@pytest.mark.parametrize(
+    "status,upload_result",
+    [
+        (ApplicationStatus.DRAFT, 201),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
+        (ApplicationStatus.HANDLING, 201),
+        (ApplicationStatus.ACCEPTED, 403),
+        (ApplicationStatus.REJECTED, 403),
+    ],
+)
+def test_pdf_attachment_upload_and_download_as_handler(
+    request, handler_api_client, application, status, upload_result
+):
+    application.status = status
+    application.save()
+    response = _upload_pdf(
+        request,
+        handler_api_client,
+        application,
+        urlpattern_name="v1:handler-application-post-attachment",
+    )
+    assert response.status_code == upload_result
+    if upload_result != 201:
+        return
+    response = handler_api_client.get(get_detail_url(application))
+    assert len(response.data["attachments"]) == 1
+    assert response.data["attachments"][0]["attachment_file"]
+    # the URL must point to the handler API
+    assert "handlerapplications" in response.data["attachments"][0]["attachment_file"]
+    file_dl = handler_api_client.get(response.data["attachments"][0]["attachment_file"])
+    assert file_dl.status_code == 200
+
+
+@pytest.mark.django_db
+def test_attachment_download_unauthenticated(request, anonymous_client, application):
+    attachment = _add_pdf_attachment(request, application)
+    response = anonymous_client.get(
+        reverse(
+            "v1:applicant-application-download-attachment",
+            kwargs={"pk": application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_attachment_download_unauthorized(
+    request,
+    api_client,
+    anonymous_application,
+    mock_get_organisation_roles_and_create_company,
+):
+    attachment = _add_pdf_attachment(request, anonymous_application)
+    response = api_client.get(
+        reverse(
+            "v1:applicant-application-download-attachment",
+            kwargs={"pk": anonymous_application.pk, "attachment_pk": attachment.pk},
+        ),
+        format="multipart",
+    )
+    assert response.status_code == 404
 
 
 @pytest.mark.parametrize(
@@ -1567,4 +1718,36 @@ def test_application_api_before_accept_tos(api_client, application):
     assert (
         str(response.data["detail"])
         == "You have to accept Terms of Service before doing any action"
+    )
+
+
+def test_application_additional_information_needed_by(api_client, handling_application):
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.status_code == 200
+    assert response.data["additional_information_needed_by"] is None
+
+    handling_application.status = ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED
+    handling_application.save()
+    with freeze_time("2021-12-01"):
+        ApplicationLogEntry.objects.create(
+            application=handling_application,
+            from_status=ApplicationStatus.RECEIVED,
+            to_status=ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        )
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.status_code == 200
+    assert response.data["additional_information_needed_by"] == date(2021, 12, 15)
+
+
+def test_application_status_last_changed_at(api_client, handling_application):
+    with freeze_time("2021-12-01"):
+        ApplicationLogEntry.objects.create(
+            application=handling_application,
+            from_status=ApplicationStatus.RECEIVED,
+            to_status=ApplicationStatus.HANDLING,
+        )
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.status_code == 200
+    assert response.data["status_last_changed_at"] == datetime(
+        2021, 12, 1, tzinfo=pytz.UTC
     )

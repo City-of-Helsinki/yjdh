@@ -2,16 +2,31 @@ import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyI
 import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import ContactInputs from 'kesaseteli/employer/components/application/steps/step1/ContactInputs';
+import EmployerErrorSummary from 'kesaseteli/employer/components/application/steps/step1/EmployerErrorSummary';
 import useInvoicerToggle from 'kesaseteli/employer/hooks/application/useInvoicerToggle';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
+import useWizard from 'shared/hooks/useWizard';
+import Application from 'shared/types/application-form-data';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
   const stepTitle = t('common:application.step1.header');
 
+  const { trigger, formState } = useFormContext<Application>();
+
   const [showInvoicer, toggleInvoicer] = useInvoicerToggle();
+  const { clearStepHistory } = useWizard();
+
+  const onToggleInvoicer = React.useCallback(() => {
+    if (formState.isSubmitted) {
+      void trigger();
+    }
+    toggleInvoicer();
+    clearStepHistory();
+  }, [formState.isSubmitted, toggleInvoicer, trigger, clearStepHistory]);
 
   return (
     <>
@@ -21,6 +36,7 @@ const EmployerForm: React.FC = () => {
         withoutDivider
       />
       <CompanyInfoGrid />
+      <EmployerErrorSummary />
       <FormSection columns={2}>
         <ContactInputs type="contact_person" />
         <TextInput
@@ -30,7 +46,7 @@ const EmployerForm: React.FC = () => {
         <Checkbox
           $colSpan={2}
           id="is_separate_invoicer"
-          onChange={toggleInvoicer}
+          onChange={onToggleInvoicer}
           initialValue={showInvoicer}
         />
         {showInvoicer && <ContactInputs type="invoicer" />}

@@ -39,13 +39,21 @@ class StatusTransitionValidator:
 
 class BaseApplicationStatusValidator(StatusTransitionValidator):
     initial_status = ApplicationStatus.DRAFT
+    SUBMIT_APPLICATION_STATE_TRANSITIONS = [
+        (
+            ApplicationStatus.DRAFT,
+            ApplicationStatus.RECEIVED,
+        ),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
+    ]
 
 
 class ApplicantApplicationStatusValidator(BaseApplicationStatusValidator):
     STATUS_TRANSITIONS = {
         ApplicationStatus.DRAFT: (ApplicationStatus.RECEIVED,),
         ApplicationStatus.RECEIVED: (),
-        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED: (ApplicationStatus.RECEIVED,),
+        ApplicationStatus.HANDLING: (),
+        ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED: (ApplicationStatus.HANDLING,),
         ApplicationStatus.CANCELLED: (),
         ApplicationStatus.ACCEPTED: (),
         ApplicationStatus.REJECTED: (),
@@ -56,26 +64,40 @@ class HandlerApplicationStatusValidator(BaseApplicationStatusValidator):
     STATUS_TRANSITIONS = {
         ApplicationStatus.DRAFT: (ApplicationStatus.RECEIVED,),
         ApplicationStatus.RECEIVED: (
+            ApplicationStatus.HANDLING,
+            ApplicationStatus.CANCELLED,
+        ),
+        ApplicationStatus.HANDLING: (
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
             ApplicationStatus.CANCELLED,
             ApplicationStatus.ACCEPTED,
             ApplicationStatus.REJECTED,
         ),
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED: (
-            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
             ApplicationStatus.CANCELLED,
         ),
         ApplicationStatus.CANCELLED: (),
-        ApplicationStatus.ACCEPTED: (),
-        ApplicationStatus.REJECTED: (),
+        ApplicationStatus.ACCEPTED: (ApplicationStatus.HANDLING,),
+        ApplicationStatus.REJECTED: (ApplicationStatus.HANDLING,),
     }
+
+    ASSIGN_HANDLER_STATUSES = [
+        ApplicationStatus.HANDLING,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.REJECTED,
+        ApplicationStatus.CANCELLED,
+    ]
 
 
 class ApplicationBatchStatusValidator(StatusTransitionValidator):
     initial_status = ApplicationBatchStatus.DRAFT
 
     STATUS_TRANSITIONS = {
-        ApplicationBatchStatus.DRAFT: (ApplicationBatchStatus.AWAITING_AHJO_DECISION,),
+        ApplicationBatchStatus.DRAFT: (ApplicationBatchStatus.AHJO_REPORT_CREATED,),
+        ApplicationBatchStatus.AHJO_REPORT_CREATED: (
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION
+        ),
         ApplicationBatchStatus.AWAITING_AHJO_DECISION: (
             ApplicationBatchStatus.DECIDED_ACCEPTED,
             ApplicationBatchStatus.DECIDED_REJECTED,

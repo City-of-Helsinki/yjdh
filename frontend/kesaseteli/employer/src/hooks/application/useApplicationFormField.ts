@@ -1,4 +1,5 @@
 import useGetApplicationFormFieldLabel from 'kesaseteli/employer/hooks/application/useGetApplicationFormFieldLabel';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -13,11 +14,8 @@ import ApplicationFieldName from 'shared/types/application-field-name';
 import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
 import { getLastValue } from 'shared/utils/array.utils';
-import {
-  convertToUIDateFormat,
-  isDateObject,
-  parseDate,
-} from 'shared/utils/date.utils';
+import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
+import { isDateObject } from 'shared/utils/type-guards';
 
 type Value =
   | Application[keyof Application]
@@ -39,10 +37,11 @@ type ApplicationFormField<V extends Value> = {
   clearValue: () => void;
   trigger: () => Promise<boolean>;
   clearErrors: () => void;
+  setFocus: () => void;
 };
 
 const useApplicationFormField = <V extends Value>(
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>
+  id: ApplicationFieldPath
 ): ApplicationFormField<V> => {
   const { t } = useTranslation();
   const {
@@ -54,6 +53,7 @@ const useApplicationFormField = <V extends Value>(
     trigger,
     clearErrors,
     formState,
+    setFocus,
     setError: setErrorF,
   } = useFormContext<Application>();
   const fieldName = (getLastValue((id as string).split('.')) ??
@@ -86,13 +86,27 @@ const useApplicationFormField = <V extends Value>(
   );
 
   const getErrorText = React.useCallback((): string | undefined => {
-    const message = getError()?.message as string;
+    const error = getError();
+    if (!error) {
+      return undefined;
+    }
+    const message = error.message as string;
     if (message) {
       return message;
     }
-    const type = getError()?.type as string;
-    return type ? t(`common:application.form.errors.${type}`) : undefined;
-  }, [getError, t]);
+    switch (fieldName) {
+      case 'summer_voucher_exception_reason':
+      case 'hired_without_voucher_assessment':
+        return t(`common:application.form.errors.selectionGroups`);
+
+      case 'employment_contract':
+      case 'payslip':
+        return t(`common:application.form.errors.attachments`);
+
+      default:
+        return t(`common:application.form.errors.${error.type}`);
+    }
+  }, [fieldName, getError, t]);
 
   const clearValue = React.useCallback(() => setValue(id, ''), [setValue, id]);
   const triggerF = React.useCallback(
@@ -103,6 +117,7 @@ const useApplicationFormField = <V extends Value>(
     () => clearErrors(id),
     [clearErrors, id]
   );
+  const setFocusF = React.useCallback(() => setFocus(id), [setFocus, id]);
 
   return {
     control,
@@ -119,6 +134,7 @@ const useApplicationFormField = <V extends Value>(
     clearValue,
     trigger: triggerF,
     clearErrors: clearErrorsF,
+    setFocus: setFocusF,
   };
 };
 export default useApplicationFormField;

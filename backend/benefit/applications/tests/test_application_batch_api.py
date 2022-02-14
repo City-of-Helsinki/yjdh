@@ -253,6 +253,11 @@ def test_application_batch_put_read_only_fields(handler_api_client, application_
     [
         (
             ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
+            200,
+        ),
+        (
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
             200,
         ),
@@ -300,6 +305,16 @@ def test_application_batch_put_read_only_fields(handler_api_client, application_
             400,
         ),
         (ApplicationBatchStatus.COMPLETED, ApplicationBatchStatus.DRAFT, 400),
+        (
+            ApplicationBatchStatus.DRAFT,
+            ApplicationBatchStatus.AWAITING_AHJO_DECISION,
+            400,
+        ),
+        (
+            ApplicationBatchStatus.AHJO_REPORT_CREATED,
+            ApplicationBatchStatus.DECIDED_ACCEPTED,
+            400,
+        ),
     ],
 )
 def test_application_batch_status_change(
@@ -448,7 +463,17 @@ def test_application_batch_export(mock_export, handler_api_client, application_b
         reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
     )
     application_batch.refresh_from_db()
-    assert application_batch.status == ApplicationBatchStatus.AWAITING_AHJO_DECISION
+    assert application_batch.status == ApplicationBatchStatus.AHJO_REPORT_CREATED
+
+    assert response.headers["Content-Type"] == "application/x-zip-compressed"
+    assert response.status_code == 200
+
+    # Export draft batch again
+    response = handler_api_client.get(
+        reverse("v1:applicationbatch-export-batch", kwargs={"pk": application_batch.id})
+    )
+    application_batch.refresh_from_db()
+    assert application_batch.status == ApplicationBatchStatus.AHJO_REPORT_CREATED
 
     assert response.headers["Content-Type"] == "application/x-zip-compressed"
     assert response.status_code == 200

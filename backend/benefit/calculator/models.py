@@ -1,9 +1,18 @@
 import decimal
+import operator
+from datetime import timedelta
 
 from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
+from babel.dates import format_date
 from calculator.enums import RowType
 from common.exceptions import BenefitAPIException
-from common.utils import duration_in_months, nested_getattr
+from common.utils import (
+    date_range_overlap,
+    duration_in_months,
+    DurationMixin,
+    nested_getattr,
+    to_decimal,
+)
 from companies.models import Company
 from django.conf import settings
 from django.db import models
@@ -29,7 +38,7 @@ class CalculationManager(models.Manager):
         return calculation
 
 
-class Calculation(UUIDModel, TimeStampedModel):
+class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Data model for Helsinki benefit calculations
 
@@ -40,6 +49,15 @@ class Calculation(UUIDModel, TimeStampedModel):
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
+
+    handler = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="calculations",
+        verbose_name=_("handler"),
+        blank=True,
+        null=True,
+    )
 
     objects = CalculationManager()
 
@@ -84,11 +102,11 @@ class Calculation(UUIDModel, TimeStampedModel):
         blank=True,
         null=True,
     )
-    override_benefit_amount = models.DecimalField(
+    override_monthly_benefit_amount = models.DecimalField(
         max_digits=7,
         decimal_places=2,
         verbose_name=_(
-            "amount of the benefit manually entered by the application handler"
+            "monthly amount of the benefit manually entered by the application handler"
         ),
         blank=True,
         null=True,
@@ -97,14 +115,7 @@ class Calculation(UUIDModel, TimeStampedModel):
 
     target_group_check = models.BooleanField(default=False)
 
-    @property
-    def benefit_amount(self):
-        if self.override_benefit_amount is not None:
-            return self.override_benefit_amount
-        else:
-            return self.calculated_benefit_amount
-
-    override_benefit_amount_comment = models.CharField(
+    override_monthly_benefit_amount_comment = models.CharField(
         max_length=256,
         verbose_name=_("reason for overriding the calculated benefit amount"),
         blank=True,
@@ -136,11 +147,6 @@ class Calculation(UUIDModel, TimeStampedModel):
             setattr(self, target_field_name, value)
         PaySubsidy.reset_pay_subsidies(self.application)
 
-    @property
-    def duration_in_months(self):
-        # The calculation Excel file used the DAYS360 function, so we're doing the same
-        return duration_in_months(self.start_date, self.end_date)
-
     calculator = None
 
     def init_calculator(self):
@@ -169,10 +175,12 @@ class Calculation(UUIDModel, TimeStampedModel):
         ordering = ("created_at",)
 
 
-class PaySubsidy(UUIDModel, TimeStampedModel):
+class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Information about pay subsidies, as entered by the handlers in the calculator.
     """
+
+    DEFAULT_WORK_TIME_PERCENT = decimal.Decimal("100")
 
     application = models.ForeignKey(
         Application,
@@ -187,10 +195,10 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
     pay_subsidy_percent = models.IntegerField(
         verbose_name=_("Pay subsidy percent"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,
-        null=True,
-        blank=True,
     )
-    work_time_percent = models.IntegerField(
+    work_time_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
         verbose_name=_("Work time percent"),
         default=100,
         null=True,
@@ -199,6 +207,60 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
     disability_or_illness = models.BooleanField(default=False)
 
     history = HistoricalRecords(table_name="bf_calculator_paysubsidy_history")
+
+    def get_work_time_percent(self):
+        if self.work_time_percent is None:
+            return self.DEFAULT_WORK_TIME_PERCENT
+        return self.work_time_percent
+
+    @staticmethod
+    def merge_compatible_subsidies(pay_subsidies):
+        """
+        Given a list of PaySubsidy objects, return a new list, where compatible PaySubsidies are replaced with
+        a single PaySubsidy whose date range covers the combined range of the originals.
+        The PaySubsidy objects in the returned list are new objects to avoid any aliasing effects.
+
+        Two PaySubsidy objects are considered compatible if:
+        * they have the equal values in these fields: application, pay_subsidy_percent, work_time_percent,
+          disability_or_illness
+        * the date ranges either overlap or are adjacent to each other
+        """
+        if len(pay_subsidies) == 0:
+            return []
+        pay_subsidies.sort(key=operator.attrgetter("start_date"))
+        ret = []
+        for subsidy in pay_subsidies:
+            if (
+                not ret
+                or ret[-1].pay_subsidy_percent != subsidy.pay_subsidy_percent
+                or ret[-1].get_work_time_percent() != subsidy.get_work_time_percent()
+                or ret[-1].disability_or_illness != subsidy.disability_or_illness
+                or not date_range_overlap(
+                    ret[-1].start_date,
+                    ret[-1].end_date + timedelta(days=1),  # also catch adjacent ranges
+                    subsidy.start_date,
+                    subsidy.end_date,
+                )
+            ):
+                # make a copy so that the original object is not changed by accident
+                ret.append(
+                    PaySubsidy(
+                        pay_subsidy_percent=subsidy.pay_subsidy_percent,
+                        work_time_percent=subsidy.get_work_time_percent(),
+                        application=subsidy.application,
+                        disability_or_illness=subsidy.disability_or_illness,
+                        start_date=subsidy.start_date,
+                        end_date=subsidy.end_date,
+                    )
+                )
+            else:
+                assert (
+                    ret[-1].application == subsidy.application
+                ), "Should only process PaySubsidies with the same application"
+                # it's a compatible PaySubsidy, just merge it with the previous one
+                ret[-1].start_date = min(ret[-1].start_date, subsidy.start_date)
+                ret[-1].end_date = max(ret[-1].end_date, subsidy.end_date)
+        return ret
 
     @staticmethod
     def reset_pay_subsidies(application):
@@ -209,7 +271,7 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
                 application.additional_pay_subsidy_percent,
             ]
         ):
-            if percent:
+            if percent is not None:
                 application.pay_subsidies.create(
                     start_date=application.start_date,
                     end_date=application.end_date,
@@ -217,13 +279,8 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
                     ordering=ordering,
                 )
 
-    @property
-    def duration_in_months(self):
-        # The calculation Excel file used the DAYS360 function, so we're doing the same
-        return duration_in_months(self.start_date, self.end_date)
-
     def __str__(self):
-        return f"PaySubsidy {self.start_date}-{self.end_date} of {self.pay_subsidy_percent}%"
+        return f"PaySubsidy {self.start_date} - {self.end_date} of {self.pay_subsidy_percent}%"
 
     class Meta:
         db_table = "bf_calculator_paysubsidy"
@@ -232,7 +289,7 @@ class PaySubsidy(UUIDModel, TimeStampedModel):
         ordering = ["application__created_at", "ordering"]
 
 
-class PreviousBenefit(UUIDModel, TimeStampedModel):
+class PreviousBenefit(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Used to record benefits that have been granted before the Helsinki benefit system
     was taken to use. Up to two years of info is needed for the calculations.
@@ -277,7 +334,40 @@ class PreviousBenefit(UUIDModel, TimeStampedModel):
         verbose_name_plural = _("Previously granted benefits")
 
 
-class CalculationRow(UUIDModel, TimeStampedModel):
+class TrainingCompensation(UUIDModel, TimeStampedModel, DurationMixin):
+    """
+    Information about pay subsidies, as entered by the handlers in the calculator.
+    """
+
+    application = models.ForeignKey(
+        Application,
+        verbose_name=_("application"),
+        related_name="training_compensations",
+        on_delete=models.CASCADE,
+    )
+    # ordering of the training compensations within application.
+    ordering = models.IntegerField()
+    start_date = models.DateField(verbose_name=_("Pay subsidy start date"))
+    end_date = models.DateField(verbose_name=_("Pay subsidy end date"))
+    monthly_amount = models.DecimalField(  # can be zero
+        verbose_name=_("Monthly amount of compensation"),
+        decimal_places=2,
+        max_digits=7,
+    )
+
+    history = HistoricalRecords(table_name="bf_calculator_trainingcompensation_history")
+
+    def __str__(self):
+        return f"TrainingCompensation {self.start_date} - {self.end_date} of {self.monthly_amount} eur"
+
+    class Meta:
+        db_table = "bf_calculator_trainingcompensation"
+        verbose_name = _("training compensation")
+        verbose_name_plural = _("training compensations")
+        ordering = ["application__created_at", "ordering"]
+
+
+class CalculationRow(UUIDModel, TimeStampedModel, DurationMixin):
 
     proxy_row_type = None
 
@@ -286,7 +376,7 @@ class CalculationRow(UUIDModel, TimeStampedModel):
         if "description_fi_template" in kwargs:
             self.description_fi_template = kwargs.pop("description_fi_template")
 
-        super(CalculationRow, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if not self.row_type and self.proxy_row_type:
             self.row_type = self.proxy_row_type
 
@@ -311,11 +401,16 @@ class CalculationRow(UUIDModel, TimeStampedModel):
     amount = models.DecimalField(
         max_digits=7, decimal_places=2, verbose_name=_("row amount")
     )
+    start_date = models.DateField(blank=True, null=True, verbose_name=_("Start date"))
+    end_date = models.DateField(blank=True, null=True, verbose_name=_("End date"))
 
     history = HistoricalRecords(table_name="bf_calculator_calculationrow_history")
 
     def __str__(self):
-        return f"{self.ordering}: {self.row_type} {self.description_fi} {self.amount}"
+        return (
+            f"{self.ordering}: {self.row_type} {self.description_fi} "
+            f"{self.amount if self.row_type != RowType.DESCRIPTION else ''}"
+        )
 
     def update_row(self):
         self.amount = self.calculate_amount()
@@ -352,6 +447,29 @@ class DescriptionRow(CalculationRow):
         proxy = True
 
 
+class DateRangeDescriptionRow(CalculationRow):
+    proxy_row_type = RowType.DESCRIPTION
+
+    def __init__(self, *args, **kwargs):
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        prefix_text = kwargs.pop("prefix_text", None)
+
+        if start_date and end_date and prefix_text:
+            self.description_fi_template = (
+                f'{prefix_text} {format_date(start_date, locale="fi_FI")} - '
+                f'{format_date(end_date, locale="fi_FI")} '
+                f"({to_decimal(duration_in_months(start_date, end_date), 2)} kk)"
+            )
+        super().__init__(*args, **kwargs)
+
+    def calculate_amount(self):
+        return 0
+
+    class Meta:
+        proxy = True
+
+
 class SalaryCostsRow(CalculationRow):
     proxy_row_type = RowType.SALARY_COSTS_EUR
     description_fi_template = "Palkkakustannukset / kk"
@@ -359,7 +477,7 @@ class SalaryCostsRow(CalculationRow):
     def calculate_amount(self):
         return (
             self.calculation.monthly_pay
-            + self.calculation.vacation_money
+            + self.calculation.vacation_money / self.calculation.duration_in_months
             + self.calculation.other_expenses
         )
 
@@ -386,19 +504,115 @@ class PaySubsidyMonthlyRow(CalculationRow):
     proxy_row_type = RowType.PAY_SUBSIDY_MONTHLY_EUR
     description_fi_template = "Palkkatuki (enintään {row.max_subsidy} €)"
 
+    """
+    Special rule regarding a 100% pay subsidy. The 100% subsidy is limited so, that it's only possible
+    to have 100% of salary costs covered if the employee is working part-time, up to 65% of the full work time.
+    Example (from Excel tests):
+    * monthly pay = 1330,27
+    * additional expenses = 656,04
+    * vacation money = 498,85
+    * 100% pay subsidy has been granted for 6 months
+    * Pay subsidy is calcuated using formula:
+      min(1800, (monthly_pay+additional_expenses)/0.8*0.65) + vacation_money/6/0.8*0.65
+    """
+    MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY = decimal.Decimal("0.65")
+
     def __init__(self, *args, **kwargs):
         self.pay_subsidy = kwargs.pop("pay_subsidy", None)
         self.max_subsidy = kwargs.pop("max_subsidy", None)
-        super(PaySubsidyMonthlyRow, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def calculate_amount(self):
+        """
+        Rule regarding the vacation money:
+        "Palkkatuen enimmäismäärä yritykselle vuonna 2021 on 1400 €/kk, jonka lisäksi maksetaan enintään
+        palkkatukipäätöksen mukainen prosenttiosuus lomarahasta."
+        Therefore, the pay subsidy limit does not apply to the vacation_money
+        """
         assert self.max_subsidy is not None
         assert self.pay_subsidy is not None
-        return min(
-            self.max_subsidy,
-            self.pay_subsidy.pay_subsidy_percent
-            * decimal.Decimal("0.01")
-            * self.calculation.calculator.get_amount(RowType.SALARY_COSTS_EUR),
+
+        # for calculations, use a fraction in [0,1] range instead of a percent in [0,100] range
+        work_time_fraction = self.pay_subsidy.get_work_time_percent() * decimal.Decimal(
+            "0.01"
+        )
+        pay_subsidy_fraction = self.pay_subsidy.pay_subsidy_percent * decimal.Decimal(
+            "0.01"
+        )
+
+        if (
+            pay_subsidy_fraction == 1
+            and work_time_fraction > self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
+        ):
+            full_time_salary_cost_excluding_vacation_money = (
+                self.calculation.monthly_pay + self.calculation.other_expenses
+            ) / work_time_fraction
+            full_time_vacation_money = (
+                self.calculation.vacation_money / work_time_fraction
+            ) / self.calculation.duration_in_months
+            subsidy_amount = (
+                min(
+                    self.max_subsidy,
+                    full_time_salary_cost_excluding_vacation_money
+                    * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY,
+                )
+                + full_time_vacation_money
+                * self.MAX_WORK_TIME_FRACTION_FOR_FULL_PAY_SUBSIDY
+            )
+        else:
+            salary_cost_excluding_vacation_money = (
+                self.calculation.monthly_pay + self.calculation.other_expenses
+            )
+            monthly_vacation_money = (
+                self.calculation.vacation_money / self.calculation.duration_in_months
+            )
+            subsidy_amount = (
+                min(
+                    self.max_subsidy,
+                    pay_subsidy_fraction * salary_cost_excluding_vacation_money,
+                )
+                + monthly_vacation_money * pay_subsidy_fraction
+            )
+        return subsidy_amount
+
+    class Meta:
+        proxy = True
+
+
+class TrainingCompensationMonthlyRow(CalculationRow):
+    proxy_row_type = RowType.TRAINING_COMPENSATION_MONTHLY_EUR
+    description_fi_template = "Oppisopimuksen koulutuskorvaus"
+
+    def __init__(self, *args, **kwargs):
+        self.training_compensation = kwargs.pop(
+            "training_compensation", None
+        )  # sometimes there's no training benefit
+        super().__init__(*args, **kwargs)
+
+    def calculate_amount(self):
+        return to_decimal(
+            self.training_compensation.monthly_amount
+            if self.training_compensation
+            else 0,
+            2,
+        )
+
+    class Meta:
+        proxy = True
+
+
+class TotalDeductionsMonthlyRow(CalculationRow):
+    proxy_row_type = RowType.DEDUCTIONS_TOTAL_EUR
+    description_fi_template = "Vähennykset yhteensä"
+
+    def __init__(self, *args, **kwargs):
+        self.monthly_deductions = kwargs.pop("monthly_deductions", None)
+        super().__init__(*args, **kwargs)
+
+    def calculate_amount(self):
+        return to_decimal(
+            self.monthly_deductions,
+            2,
         )
 
     class Meta:
@@ -411,21 +625,25 @@ class SalaryBenefitMonthlyRow(CalculationRow):
 
     def __init__(self, *args, **kwargs):
         self.max_benefit = kwargs.pop("max_benefit", None)
-        super(SalaryBenefitMonthlyRow, self).__init__(*args, **kwargs)
+        self.monthly_deductions = kwargs.pop(
+            "monthly_deductions", 0
+        )  # sometimes there are no deductions
+        super().__init__(*args, **kwargs)
 
     def calculate_amount(self):
         assert self.max_benefit is not None
-        return max(
-            0,
-            min(
-                self.max_benefit,
-                self.calculation.calculator.get_amount(
-                    RowType.STATE_AID_MAX_MONTHLY_EUR
-                )
-                - self.calculation.calculator.get_amount(
-                    RowType.PAY_SUBSIDY_MONTHLY_EUR, default=0
+        return to_decimal(
+            max(
+                0,
+                min(
+                    self.max_benefit,
+                    self.calculation.calculator.get_amount(
+                        RowType.STATE_AID_MAX_MONTHLY_EUR
+                    )
+                    - self.monthly_deductions,
                 ),
             ),
+            0,
         )
 
     class Meta:
@@ -433,6 +651,78 @@ class SalaryBenefitMonthlyRow(CalculationRow):
 
 
 class SalaryBenefitTotalRow(CalculationRow):
+    """
+    SalaryBenefitTotalRow for the simple cases where
+    * there is a single pay subsidy decision for the duration of the benefit
+    * or there is no pay subsidy decision
+    """
+
+    proxy_row_type = RowType.HELSINKI_BENEFIT_TOTAL_EUR
+    description_fi_template = "Helsinki-lisä yhteensä"
+
+    def calculate_amount(self):
+        return to_decimal(
+            self.calculation.duration_in_months
+            * self.calculation.calculator.get_amount(
+                RowType.HELSINKI_BENEFIT_MONTHLY_EUR
+            ),
+            0,
+        )
+
+    class Meta:
+        proxy = True
+
+
+class SalaryBenefitSubTotalRow(CalculationRow):
+    proxy_row_type = RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+    description_fi_template = "Yhteensä ajanjaksolta"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def calculate_amount(self):
+        return to_decimal(
+            duration_in_months(self.start_date, self.end_date)
+            * self.calculation.calculator.get_amount(
+                RowType.HELSINKI_BENEFIT_MONTHLY_EUR
+            ),
+            0,
+        )
+
+    class Meta:
+        proxy = True
+
+
+class SalaryBenefitSumSubTotalsRow(CalculationRow):
+    proxy_row_type = RowType.HELSINKI_BENEFIT_TOTAL_EUR
+    description_fi_template = "Helsinki-lisä yhteensä"
+
+    def calculate_amount(self):
+        return sum(
+            [
+                row.amount
+                for row in self.calculation.rows.all().filter(
+                    row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+                )
+            ]
+        )
+
+    class Meta:
+        proxy = True
+
+
+class EmployeeBenefitMonthlyRow(CalculationRow):
+    proxy_row_type = RowType.HELSINKI_BENEFIT_MONTHLY_EUR
+    description_fi_template = "Helsinki-lisä / kk"
+
+    def calculate_amount(self):
+        return self.calculation.calculator.EMPLOYEE_BENEFIT_AMOUNT_PER_MONTH
+
+    class Meta:
+        proxy = True
+
+
+class EmployeeBenefitTotalRow(CalculationRow):
     """
     SalaryBenefitTotalRow for the simple cases where
     * there is a single pay subsidy decision for the duration of the benefit
@@ -454,54 +744,25 @@ class SalaryBenefitTotalRow(CalculationRow):
         proxy = True
 
 
-class SalaryBenefitSubTotalRow(CalculationRow):
-    proxy_row_type = RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
-    description_fi_template = "Yhteensä ajanjaksolta"
+class ManualOverrideTotalRow(CalculationRow):
+    """
+    SalaryBenefitTotalRow for the simple cases where
+    * there is a single pay subsidy decision for the duration of the benefit
+    * or there is no pay subsidy decision
+    """
 
-    def __init__(self, *args, **kwargs):
-        self.start_date = kwargs.pop("start_date")
-        self.end_date = kwargs.pop("end_date")
-
-    def calculate_amount(self, calculation_context):
-        return duration_in_months(
-            self.start_date, self.end_date
-        ) * self.calculation.calculator.get_amount(RowType.HELSINKI_BENEFIT_MONTHLY_EUR)
-
-    class Meta:
-        proxy = True
-
-
-"""
-class SalaryBenefitPaySubsidySubTotalRow(CalculationRow):
-    proxy_row_type = RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
-    description_fi_template = 'Yhteensä ajanjaksolta'
-
-    def calculate_amount(self, calculation_context):
-        assert calculation_context.get('pay_subsidy') is not None
-        return (calculation_context['pay_subsidy'].duration_in_months *
-                calculation_context['calculator'].get_amount(RowType.HELSINKI_BENEFIT_MONTHLY_EUR))
-
-    class Meta:
-        proxy = True
-"""
-
-
-class SalaryBenefitSumSubTotalsRow(CalculationRow):
     proxy_row_type = RowType.HELSINKI_BENEFIT_TOTAL_EUR
     description_fi_template = "Helsinki-lisä yhteensä"
 
-    def calculate_amount(self, calculation_context):
-        return max(
+    @property
+    def monthly_amount(self):
+        return self.calculation.override_monthly_benefit_amount
+
+    def calculate_amount(self):
+        return to_decimal(
+            self.calculation.duration_in_months
+            * self.calculation.override_monthly_benefit_amount,
             0,
-            min(
-                self.max_benefit,
-                calculation_context["calculator"].get_amount(
-                    RowType.STATE_AID_MAX_MONTHLY_EUR
-                )
-                - calculation_context["calculator"].get_amount(
-                    RowType.PAY_SUBSIDY_MONTHLY_EUR
-                ),
-            ),
         )
 
     class Meta:

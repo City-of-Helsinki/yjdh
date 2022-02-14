@@ -1,7 +1,8 @@
-import { $Notification } from 'kesaseteli/employer/components/application/steps/step2/error-notification/EmploymentsErrorNotification.sc';
+import { ErrorSummary } from 'hds-react';
+import { getEmploymentFieldPath } from 'kesaseteli/employer/utils/application-form.utils';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { FieldError, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { $Grid } from 'shared/components/forms/section/FormSection.sc';
 import Application from 'shared/types/application-form-data';
 import Employment from 'shared/types/employment';
@@ -16,40 +17,31 @@ const EmploymentsErrorNotification: React.FC = () => {
   } = useFormContext<Application>();
 
   const getEmploymentId = React.useCallback(
-    (index: number): Employment['id'] =>
-      getValues(`summer_vouchers.${index}.id`),
+    (index: number) => getValues(getEmploymentFieldPath(index, 'id')) as string,
     [getValues]
   );
 
-  if (!errors || isValid || !isSubmitted) {
+  if (isValid || !isSubmitted || !errors.summer_vouchers) {
     return null;
   }
-  const employmentsErrors = errors.summer_vouchers || [];
-  const employmentErrorEntries = Array.isArray(employmentsErrors)
-    ? employmentsErrors.map((employmentErrors, index) => ({
-        index,
-        errors: Object.entries(employmentErrors ?? {}).map(
-          ([field, error]) => ({
-            field: field as keyof Employment,
-            errorType: ((error as FieldError).type || 'required') as string,
-          })
-        ),
-      }))
-    : [];
-
 
   return (
-    <$Notification type="error" label={t(`common:application.form.notification.title`)}>
+    <ErrorSummary
+      label={t(`common:application.form.notification.title`)}
+      autofocus
+    >
       <$Grid columns={2}>
-        {employmentErrorEntries.map(({ index, errors: employmentErrors }) => (
+        {errors.summer_vouchers.map((employmentErrors, index) => (
           <EmployeeErrorNotification
             key={getEmploymentId(index)}
             index={index}
-            errors={employmentErrors}
+            errorFields={
+              Object.keys(employmentErrors ?? {}) as Array<keyof Employment>
+            }
           />
         ))}
       </$Grid>
-    </$Notification>
+    </ErrorSummary>
   );
 };
 

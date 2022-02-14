@@ -1,9 +1,11 @@
 import TestController, { Selector } from 'testcafe';
 
+import isRealIntegrationsEnabled from '../../src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import User from '../../src/types/user';
 import {
   getErrorMessage,
+  screenContext,
   setDataToPrintOnFailure,
   withinContext,
 } from '../utils/testcafe.utils';
@@ -13,25 +15,51 @@ const translations = {
     login: 'Kirjaudu palveluun',
     logout: 'Kirjaudu ulos',
     language: 'Suomeksi',
-    userInfo: (user?: User) => new RegExp(`Käyttäjä: ${user?.name ?? ''}`),
+    userInfo: (user?: User) =>
+      new RegExp(
+        `Käyttäjä: ${
+          // eslint-disable-next-line sonarjs/no-duplicate-string
+          isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
+        }`
+      ),
   },
   sv: {
     login: 'Logga in i tjänsten',
     logout: 'Logga ut',
     language: 'På svenska',
-    userInfo: (user?: User) => new RegExp(`Användare: ${user?.name ?? ''}`),
+    userInfo: (user?: User) =>
+      new RegExp(
+        `Användare: ${
+          isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
+        }`
+      ),
   },
   en: {
     login: 'Sign in to the service',
     logout: 'Log out',
     language: 'In English',
-    userInfo: (user?: User) => new RegExp(`User: ${user?.name ?? ''}`),
+    userInfo: (user?: User) =>
+      new RegExp(
+        `User: ${
+          isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
+        }`
+      ),
   },
 };
 
-export const getHeaderComponents = (t: TestController) => {
-  const within = withinContext(t);
+export type Translation = {
+  [key in Language]: string;
+};
 
+export const getHeaderComponents = (
+  t: TestController,
+  appName?: Translation
+) => {
+  const within = withinContext(t);
+  const screen = screenContext(t);
+
+  const withinHeader = (): ReturnType<typeof within> =>
+    within(screen.findByRole('banner'));
   const navigationActions = Selector('div[class*="NavigationActions"]');
   const withinNavigationActions = (): ReturnType<typeof within> =>
     within(navigationActions);
@@ -59,12 +87,46 @@ export const getHeaderComponents = (t: TestController) => {
       },
     };
     const actions = {
-      async changeLanguage(fromLang = DEFAULT_LANGUAGE, toLang: Language) {
-        await t
-          .click(selectors.languageSelector(fromLang))
-          .click(selectors.languageSelectorItem(toLang));
+      async changeLanguage(fromLang: Language, toLang: Language) {
+        if (fromLang !== toLang) {
+          await t
+            .click(selectors.languageSelector(fromLang))
+            .click(selectors.languageSelectorItem(toLang));
+        }
       },
     };
+    await expectations.isPresent();
+    return {
+      expectations,
+      actions,
+    };
+  };
+  const header = async () => {
+    const selectors = {
+      headerTitle(asLang = DEFAULT_LANGUAGE) {
+        if (!appName) {
+          throw new Error(
+            'Did you forgot to give expected app name translations?'
+          );
+        }
+        return withinHeader()
+          .findAllByText(new RegExp(`^${appName[asLang]}$`, 'i'), {})
+          .nth(0);
+      },
+    };
+    const expectations = {
+      async isPresent() {
+        await t
+          .expect(selectors.headerTitle().exists)
+          .ok(await getErrorMessage(t));
+      },
+      async titleIsTranslatedAs(asLang: Language) {
+        await t
+          .expect(selectors.headerTitle(asLang).exists)
+          .ok(await getErrorMessage(t));
+      },
+    };
+    const actions = {};
     await expectations.isPresent();
     return {
       expectations,
@@ -104,12 +166,12 @@ export const getHeaderComponents = (t: TestController) => {
       async userIsLoggedIn(user: User, asLang = DEFAULT_LANGUAGE) {
         await t
           .expect(selectors.userInfoDropdown(user, asLang).exists)
-          .ok(await getErrorMessage(t));
+          .ok(await getErrorMessage(t), { timeout: 60_000 });
       },
       async userIsLoggedOut(asLang = DEFAULT_LANGUAGE) {
         await t
           .expect(selectors.loginButton(asLang).exists)
-          .ok(await getErrorMessage(t), { timeout: 10000 });
+          .ok(await getErrorMessage(t), { timeout: 60_000 });
       },
       async loginButtonIsTranslatedAs(asLang: Language) {
         await t
@@ -134,6 +196,7 @@ export const getHeaderComponents = (t: TestController) => {
     };
   };
   return {
+    header,
     languageDropdown,
     headerUser,
   };

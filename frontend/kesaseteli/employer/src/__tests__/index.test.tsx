@@ -1,4 +1,5 @@
 import { axe } from 'jest-axe';
+import IndexPage from 'kesaseteli/employer/pages';
 import {
   expectAuthorizedReply,
   expectToCreateApplicationErrorFromBackend,
@@ -6,11 +7,10 @@ import {
   expectToGetApplicationsErrorFromBackend,
   expectToGetApplicationsFromBackend,
   expectUnauthorizedReply,
-} from 'kesaseteli/employer/__tests__/utils/backend/backend-nocks';
-import renderComponent from 'kesaseteli/employer/__tests__/utils/components/render-component';
-import renderPage from 'kesaseteli/employer/__tests__/utils/components/render-page';
-import { BackendEndpoint } from 'kesaseteli/employer/backend-api/backend-api';
-import IndexPage from 'kesaseteli/employer/pages';
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import renderPage from 'kesaseteli-shared/__tests__/utils/components/render-page';
+import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
 import {
   fakeApplication,
@@ -32,7 +32,9 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
     await renderPage(IndexPage, { push: spyPush });
-    await waitFor(() => expect(spyPush).toHaveBeenCalledWith('/login'));
+    await waitFor(() =>
+      expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
+    );
   });
 
   describe('when authorized', () => {
@@ -69,17 +71,22 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         await waitFor(() => {
           expect(
             queryClient.getQueryData(
-              `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`
+              `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication?.id}/`
             )
           ).toEqual(newApplication);
-          expect(spyPush).toHaveBeenCalledWith(
-            `${DEFAULT_LANGUAGE}/application?id=${newApplication.id}`
-          );
         });
+        expect(spyPush).toHaveBeenCalledWith(
+          `${DEFAULT_LANGUAGE}/application?id=${newApplication.id}`
+        );
       });
       it('Should create a new application and redirect to its page with router locale', async () => {
         const locale: Language = 'en';
-        const newApplication = fakeApplication('123-foo-bar', false, locale);
+        const newApplication = fakeApplication(
+          '123-foo-bar',
+          undefined,
+          false,
+          locale
+        );
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationToBackend(newApplication);
@@ -91,19 +98,19 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         await waitFor(() => {
           expect(
             queryClient.getQueryData(
-              `${BackendEndpoint.APPLICATIONS}${newApplication?.id}/`
+              `${BackendEndpoint.EMPLOYER_APPLICATIONS}${newApplication?.id}/`
             )
           ).toEqual(newApplication);
-          expect(spyPush).toHaveBeenCalledWith(
-            `${locale}/application?id=${newApplication.id}`
-          );
         });
+        expect(spyPush).toHaveBeenCalledWith(
+          `${locale}/application?id=${newApplication.id}`
+        );
       });
     });
 
     describe('when user has previous applications', () => {
       it("Should redirect to latest application page with application's locale", async () => {
-        const application = fakeApplication('my-id', false, 'sv');
+        const application = fakeApplication('my-id', undefined, false, 'sv');
         const applications = [application, ...fakeApplications(4)];
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend(applications);

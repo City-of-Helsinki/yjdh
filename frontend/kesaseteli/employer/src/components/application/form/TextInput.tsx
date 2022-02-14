@@ -1,41 +1,18 @@
-import {
-  NumberInput as HdsNumberInput,
-  TextArea as HdsTextArea,
-  TextInput as HdsTextInput,
-} from 'hds-react';
 import useApplicationFormField from 'kesaseteli/employer/hooks/application/useApplicationFormField';
+import ApplicationFieldPath from 'kesaseteli/employer/types/application-field-path';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { RegisterOptions, UseFormRegister } from 'react-hook-form';
-import {
-  $GridCell,
-  GridCellProps,
-} from 'shared/components/forms/section/FormSection.sc';
-import Application from 'shared/types/application-form-data';
-
-import { $TextInput, $TextInputProps } from './TextInput.sc';
-
-const getComponentType = (
-  type: TextInputProps['type']
-): typeof HdsTextInput | typeof HdsNumberInput | typeof HdsTextArea => {
-  switch (type) {
-    case 'number':
-    case 'decimal':
-      return HdsNumberInput;
-
-    case 'textArea':
-      return HdsTextArea;
-
-    case 'text':
-    default:
-      return HdsTextInput;
-  }
-};
+import { RegisterOptions } from 'react-hook-form';
+import TextInputBase, {
+  TextInputProps as TextInputBaseProps,
+} from 'shared/components/forms/inputs/TextInput';
+import { GridCellProps } from 'shared/components/forms/section/FormSection.sc';
+import ApplicationFormData from 'shared/types/application-form-data';
 
 export type TextInputProps = {
-  validation?: RegisterOptions<Application>;
-  id: NonNullable<Parameters<UseFormRegister<Application>>[0]>;
-  type?: $TextInputProps['$type'];
+  validation?: RegisterOptions<ApplicationFormData>;
+  id: ApplicationFieldPath;
+  type?: TextInputBaseProps<ApplicationFormData>['type'];
   placeholder?: string;
   helperFormat?: string;
 } & GridCellProps;
@@ -50,7 +27,7 @@ const TextInput: React.FC<TextInputProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { register, getValue, getError, fieldName, getErrorText, hasError } =
+  const { getValue, getError, fieldName, getErrorText } =
     useApplicationFormField<string>(id);
 
   const errorText = React.useMemo((): string | undefined => {
@@ -77,33 +54,17 @@ const TextInput: React.FC<TextInputProps> = ({
       getError() && getValue() === newValue ? undefined : newValue,
     [getError, getValue]
   );
-
-  const preventScrolling = React.useCallback(
-    (event: React.WheelEvent<HTMLInputElement>) => event.currentTarget.blur(),
-    []
-  );
-
   return (
-    <$GridCell {...$gridCellProps}>
-      <$TextInput
-        as={getComponentType(type)}
-        {...register(id, { ...validation, setValueAs: setValueForBackend })}
-        $type={type}
-        key={id}
-        id={id}
-        data-testid={id}
-        name={id}
-        placeholder={placeholder}
-        required={Boolean(validation.required)}
-        max={validation.maxLength ? String(validation.maxLength) : undefined}
-        defaultValue={getValue()}
-        onWheel={preventScrolling}
-        errorText={errorText}
-        label={t(`common:application.form.inputs.${fieldName}`)}
-        invalid={hasError()}
-        aria-invalid={hasError()}
-      />
-    </$GridCell>
+    <TextInputBase<ApplicationFormData>
+      registerOptions={{ ...validation, setValueAs: setValueForBackend }}
+      type={type}
+      id={id}
+      placeholder={placeholder}
+      initialValue={getValue()}
+      errorText={errorText}
+      label={t(`common:application.form.inputs.${fieldName}`)}
+      {...$gridCellProps}
+    />
   );
 };
 

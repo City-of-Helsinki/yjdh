@@ -6,10 +6,13 @@ from shared.common.tests.conftest import store_tokens_in_session
 
 from applications.enums import ApplicationStatus, AttachmentType
 from common.tests.factories import (
+    ActiveYouthApplicationFactory,
     ApplicationFactory,
     AttachmentFactory,
     CompanyFactory,
+    InactiveYouthApplicationFactory,
     SummerVoucherFactory,
+    YouthApplicationFactory,
 )
 
 
@@ -97,6 +100,21 @@ def store_company_in_session(client, company):
         }
     )
     s.save()
+
+
+@pytest.fixture
+def youth_application():
+    return YouthApplicationFactory()
+
+
+@pytest.fixture
+def inactive_youth_application():
+    return InactiveYouthApplicationFactory()
+
+
+@pytest.fixture
+def active_youth_application():
+    return ActiveYouthApplicationFactory()
 
 
 @pytest.fixture

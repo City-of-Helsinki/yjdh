@@ -8,11 +8,11 @@ import {
 
 const useLocale = (): Language => {
   const { i18n } = useTranslation();
-  const language = i18n.language as Language;
   const router = useRouter();
   const locales = router.locales ?? SUPPORTED_LANGUAGES;
+  const locale = (router.locale ?? i18n.language) as Language;
   const defaultLocale = (router.defaultLocale ?? DEFAULT_LANGUAGE) as Language;
-  return locales.includes(language) ? language : defaultLocale;
+  return locales.includes(locale) ? locale : defaultLocale;
 };
 
 export default useLocale;

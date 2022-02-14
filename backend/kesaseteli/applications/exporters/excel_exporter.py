@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from xlsxwriter import Workbook
 
-from applications.models import SummerVoucher
+from applications.models import EmployerSummerVoucher
 from common.utils import getattr_nested
 
 FIELDS = (
@@ -162,7 +162,9 @@ def set_header_and_formatting(wb, ws, column, field, header_format):
     ws.set_column(column, column, field[3], cell_format)
 
 
-def get_attachment_uri(summer_voucher: SummerVoucher, field: tuple, value, request):
+def get_attachment_uri(
+    summer_voucher: EmployerSummerVoucher, field: tuple, value, request
+):
     field_name = field[0]
     attachment_number = int(field_name.split(" ")[-1])
     attachment_type = field_name.split(" ")[1]
@@ -183,7 +185,7 @@ def get_attachment_uri(summer_voucher: SummerVoucher, field: tuple, value, reque
         return ""
 
     path = reverse(
-        "v1:summervoucher-handle-attachment",
+        "v1:employersummervoucher-handle-attachment",
         kwargs={"pk": summer_voucher.id, "attachment_pk": attachment.id},
     )
     return request.build_absolute_uri(path)
@@ -221,7 +223,9 @@ def write_data_row(ws, row_number, summer_voucher, request):
         ws.write(row_number, column_number, cell_value)
 
 
-def populate_workbook(wb: Workbook, summer_vouchers: QuerySet[SummerVoucher], request):
+def populate_workbook(
+    wb: Workbook, summer_vouchers: QuerySet[EmployerSummerVoucher], request
+):
     """
     Fill the workbook with information from the summer vouchers queryset. Field names and values are
     fetched from the FIELDS tuple.
@@ -239,7 +243,7 @@ def populate_workbook(wb: Workbook, summer_vouchers: QuerySet[SummerVoucher], re
 
 
 def export_applications_as_xlsx_output(
-    summer_vouchers: QuerySet[SummerVoucher], request
+    summer_vouchers: QuerySet[EmployerSummerVoucher], request
 ) -> bytes:
     """
     Creates an xlsx file in memory, without saving it on the disk. Return the output value as bytes.

@@ -1,5 +1,6 @@
 import { FormikErrors, FormikTouched, FormikValues, getIn } from 'formik';
 import { TFunction } from 'next-i18next';
+import { isString } from 'shared/utils/type-guards';
 
 /** Get error text
  * @param {Object} errors
@@ -18,7 +19,7 @@ export const getErrorText = (
 ): string => {
   const error: FormikValues = getIn(errors, name) as FormikValues;
   return !!error && (getIn(touched, name) || isSubmitted)
-    ? typeof error === 'string'
+    ? isString(error)
       ? t(error)
       : t(error.key || '', error)
     : '';

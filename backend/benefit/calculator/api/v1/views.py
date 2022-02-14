@@ -1,9 +1,9 @@
 from calculator.api.v1.serializers import PreviousBenefitSerializer
 from calculator.models import PreviousBenefit
+from common.permissions import BFIsHandler
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters, viewsets
-from rest_framework.permissions import IsAdminUser
 
 
 class PreviousBenefitFilter(filters.FilterSet):
@@ -23,7 +23,7 @@ class PreviousBenefitFilter(filters.FilterSet):
 class PreviousBenefitViewSet(viewsets.ModelViewSet):
     queryset = PreviousBenefit.objects.all()
     serializer_class = PreviousBenefitSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [BFIsHandler]
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
