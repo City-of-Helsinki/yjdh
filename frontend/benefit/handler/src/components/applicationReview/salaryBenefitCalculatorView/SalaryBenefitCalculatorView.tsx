@@ -243,6 +243,11 @@ const SalaryBenefitCalculatorView: React.FC<
           <$GridCell
             $colStart={item.paySubsidyPercent === 100 ? 6 : 3}
             $colSpan={6}
+            style={{
+              marginLeft: `${
+                item.paySubsidyPercent === 100 ? theme.spacing.xs2 : ''
+              }`,
+            }}
           >
             <$CalculatorText
               css={`
@@ -263,6 +268,14 @@ const SalaryBenefitCalculatorView: React.FC<
                 name={fields.paySubsidyStartDate.name}
                 placeholder={fields.paySubsidyStartDate.placeholder}
                 onChange={(value) => {
+                  const newStartDateObject = parseDate(value);
+                  var endDateObject = parseDate(item.endDate);
+                  if (
+                    newStartDateObject &&
+                    endDateObject &&
+                    newStartDateObject > endDateObject
+                  )
+                    endDateObject = newStartDateObject;
                   formik.setFieldValue(
                     fields.paySubsidies.name,
                     formik.values.paySubsidies?.map(
@@ -271,6 +284,7 @@ const SalaryBenefitCalculatorView: React.FC<
                           return {
                             ...paySubsidyItem,
                             startDate: convertToBackendDateFormat(value),
+                            endDate: convertToBackendDateFormat(endDateObject),
                           };
                         return paySubsidyItem;
                       }
@@ -285,6 +299,14 @@ const SalaryBenefitCalculatorView: React.FC<
                 name={fields.paySubsidyEndDate.name}
                 placeholder={fields.paySubsidyEndDate.placeholder}
                 onChange={(value) => {
+                  const newEndDateObject = parseDate(value);
+                  var startDateObject = parseDate(item.startDate);
+                  if (
+                    newEndDateObject &&
+                    startDateObject &&
+                    newEndDateObject < startDateObject
+                  )
+                    startDateObject = newEndDateObject;
                   formik.setFieldValue(
                     fields.paySubsidies.name,
                     formik.values.paySubsidies?.map(
@@ -292,6 +314,8 @@ const SalaryBenefitCalculatorView: React.FC<
                         if (paySubsidyItemIndex === index)
                           return {
                             ...paySubsidyItem,
+                            startDate:
+                              convertToBackendDateFormat(startDateObject),
                             endDate: convertToBackendDateFormat(value),
                           };
                         return paySubsidyItem;
