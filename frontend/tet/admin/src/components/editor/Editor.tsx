@@ -10,6 +10,7 @@ import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
 import { DevTool } from '@hookform/devtools';
+import { tetPostingToEvent } from 'tet/admin/backend-api/transformations';
 
 const initialValuesForNew: TetPosting = {
   title: '',
@@ -57,8 +58,8 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const posting = initialValue || initialValuesForNew;
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
-    //console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
-    upsertTetPosting.mutate(validatedPosting);
+    const event = tetPostingToEvent(validatedPosting);
+    upsertTetPosting.mutate(event);
   };
 
   const submitHandler = async () => {

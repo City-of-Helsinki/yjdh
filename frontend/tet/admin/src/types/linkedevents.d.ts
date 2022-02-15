@@ -45,7 +45,7 @@ export type CustomData = {
   contact_language: string;
   contact_first_name: string;
   contact_last_name: string;
-  editor_email: string;
+  editor_email?: string;
 };
 
 export type TetEvent = {
@@ -63,6 +63,17 @@ export type TetEvent = {
   last_modified_time: string | null;
   event_status: string;
   publication_status: string;
+};
+
+export type TetEventPayload = {
+  name: LocalizedObject;
+  location: IdObject;
+  description: LocalizedObject;
+  keywords: IdObject[];
+  custom_data: CustomData;
+  start_time: string;
+  end_time: string | null;
+  date_published: string | null;
 };
 
 export type TetEvents = {

@@ -12,7 +12,7 @@ type TetPosting = {
   contact_last_name: string;
   contact_language: string;
   contact_phone: string;
-  date_published?: string;
+  date_published: string | null;
   keywords: string[];
   keywords_working_methods: string[];
   keywords_attributes: string[];

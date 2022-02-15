@@ -45,7 +45,7 @@ async function query<T>(
   params: Record<string, string | number>,
 ): Promise<T[]> {
   try {
-    const result: AxiosResponse<{ data: T[] }> = await apiHelsinki.get(path, { params });
+    const result: AxiosResponse<{ data: T[] }> = await axiosInstance.get(path, { params });
     return result?.data?.data || [];
   } catch (error) {
     console.error(error);
@@ -78,8 +78,7 @@ export const getWorkFeatures = async (): Promise<OptionType[]> => {
 };
 
 export const getWorkKeywords = async (search: string): Promise<OptionType[]> => {
-  // TODO we need to change this to linkedEvents when we start saving events
-  const keywords = await query<Keyword>(apiHelsinki, '/v1/keyword/', {
+  const keywords = await query<Keyword>(linkedEvents, '/v1/keyword/', {
     free_text: search,
   });
   return keywords.map((k) => keywordToOptionType(k));
