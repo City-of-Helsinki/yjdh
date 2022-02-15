@@ -15,7 +15,7 @@
   },
   "404Page": {
     "pageNotFoundLabel": "Sidan kunde inte hittas",
-    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
   "loginPage": {
     "logoutMessageLabel": "Du har loggat ut",
