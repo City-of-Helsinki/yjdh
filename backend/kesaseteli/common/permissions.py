@@ -11,16 +11,24 @@ class DenyAll(BasePermission):
         return False
 
 
-class IsHandler(BasePermission):
+class HandlerPermission(BasePermission):
     """
-    Is the user a youth application / youth summer voucher handler?
+    Does the user have permission to act as a handler for youth applications /
+    youth summer vouchers?
 
-    NOTE: If NEXT_PUBLIC_MOCK_FLAG is set then everyone is a handler.
+    NOTE: This depends on the user's staff status being equal to its controller status
+    which should have been updated by HelsinkiAdfsAuthCodeBackend.authenticate function.
+
+    :return: True if NEXT_PUBLIC_MOCK_FLAG setting is set, or request has an active
+    staff or superuser user, otherwise False.
     """
 
     def has_permission(self, request, view):
         if settings.NEXT_PUBLIC_MOCK_FLAG:
             return True
 
-        # TODO: Implement
-        return False
+        return bool(
+            request.user
+            and request.user.is_active
+            and (request.user.is_staff or request.user.is_superuser)
+        )
