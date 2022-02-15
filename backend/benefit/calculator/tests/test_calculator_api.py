@@ -188,13 +188,14 @@ def test_modify_calculation_invalid_status(
     data = HandlerApplicationSerializer(handling_application).data
     assert handling_application.calculation
     assert handling_application.pay_subsidies.count() == 0
+    assert handling_application.calculation.handler is not None
     data["calculation"]["handler"] = None
     data["pay_subsidies"] = [
         {
             "start_date": str(handling_application.start_date),
             "end_date": str(handling_application.end_date),
-            "pay_subsidy_percent": 50,
-            "work_time_percent": "100.00",
+            "pay_subsidy_percent": 40,
+            "work_time_percent": "50.00",
         }
     ]
     with mock.patch("calculator.models.Calculation.calculate") as calculate_wrap:
@@ -203,8 +204,13 @@ def test_modify_calculation_invalid_status(
             data,
         )
         calculate_wrap.assert_not_called()
+        assert response.data["calculation"]["handler_details"]["id"] is not None
+        assert len(response.data["pay_subsidies"]) == 0
+        assert response.status_code == 200
 
-    assert response.status_code == 400
+    handling_application.refresh_from_db()
+    assert handling_application.calculation.handler is not None
+    assert handling_application.pay_subsidies.all().count() == 0
 
 
 def test_can_not_delete_calculation(handler_api_client, received_application):
