@@ -44,7 +44,12 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
     criteriaMode: 'all',
-    defaultValues: { contact_language: 'fi', keywords_working_methods: [], keywords_attributes: [], spots: 1 },
+    defaultValues: initialValue || {
+      contact_language: 'fi',
+      keywords_working_methods: [],
+      keywords_attributes: [],
+      spots: 1,
+    },
   });
 
   const upsertTetPosting = useUpsertTetPosting();
@@ -72,6 +77,8 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
       }
     }
   };
+
+  console.log(`Editing posting ${JSON.stringify(initialValue, null, 2)}`);
 
   return (
     <>
