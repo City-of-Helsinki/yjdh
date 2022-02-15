@@ -1,6 +1,8 @@
 import json
+import uuid
 from datetime import timedelta
 from typing import List, Optional
+from urllib.parse import urlparse
 
 import factory.random
 import langdetect
@@ -11,16 +13,22 @@ from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
+from shared.common.tests.conftest import staff_client, superuser_client
 from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import get_supported_languages, YouthApplicationRejectedReason
 from applications.models import YouthApplication
+from common.tests.conftest import api_client
 from common.tests.factories import (
     ActiveYouthApplicationFactory,
     InactiveYouthApplicationFactory,
     YouthApplicationFactory,
 )
+
+
+def get_random_pk() -> uuid.UUID:
+    return uuid.uuid4()
 
 
 def get_required_fields() -> List[str]:
@@ -90,30 +98,93 @@ def test_youth_applications_list(api_client):
 
 
 @pytest.mark.django_db
-def test_youth_applications_process_valid_pk(api_client, youth_application):
-    response = api_client.get(get_processing_url(pk=youth_application.pk))
-    assert response.status_code == status.HTTP_501_NOT_IMPLEMENTED
+@pytest.mark.parametrize(
+    "mock_flag,client_fixture_name,expected_status_code",
+    [
+        (
+            mock_flag,
+            client_fixture_function.__name__,
+            status.HTTP_501_NOT_IMPLEMENTED if mock_flag else status.HTTP_403_FORBIDDEN,
+        )
+        for mock_flag in [False, True]
+        for client_fixture_function in [api_client, staff_client, superuser_client]
+    ],
+)
+def test_youth_applications_process_valid_pk(
+    request,
+    youth_application,
+    settings,
+    mock_flag,
+    client_fixture_name,
+    expected_status_code,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    response = client_fixture.get(get_processing_url(pk=youth_application.pk))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
-def test_youth_applications_process_invalid_pk(api_client):
-    response = api_client.get(get_processing_url(pk="invalid value"))
-    assert response.status_code == status.HTTP_404_NOT_FOUND
+@pytest.mark.parametrize(
+    "mock_flag,expected_status_code",
+    [
+        (False, status.HTTP_403_FORBIDDEN),
+        (True, status.HTTP_404_NOT_FOUND),
+    ],
+)
+def test_youth_applications_process_unused_pk(
+    api_client, settings, mock_flag, expected_status_code
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    response = api_client.get(get_processing_url(pk=get_random_pk()))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
-def test_youth_applications_detail_valid_pk(api_client, youth_application):
-    response = api_client.get(get_detail_url(pk=youth_application.pk))
-    assert response.status_code == status.HTTP_200_OK
+@pytest.mark.parametrize(
+    "mock_flag,client_fixture_name,expected_status_code",
+    [
+        (
+            mock_flag,
+            client_fixture_function.__name__,
+            status.HTTP_200_OK if mock_flag else status.HTTP_403_FORBIDDEN,
+        )
+        for mock_flag in [False, True]
+        for client_fixture_function in [api_client, staff_client, superuser_client]
+    ],
+)
+def test_youth_applications_detail_valid_pk(
+    request,
+    youth_application,
+    settings,
+    mock_flag,
+    client_fixture_name,
+    expected_status_code,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    response = client_fixture.get(get_detail_url(pk=youth_application.pk))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
-def test_youth_applications_detail_invalid_pk(api_client):
-    response = api_client.get(get_detail_url(pk="invalid value"))
-    assert response.status_code == status.HTTP_404_NOT_FOUND
+@pytest.mark.parametrize(
+    "mock_flag,expected_status_code",
+    [
+        (False, status.HTTP_403_FORBIDDEN),
+        (True, status.HTTP_404_NOT_FOUND),
+    ],
+)
+def test_youth_applications_detail_unused_pk(
+    api_client, settings, mock_flag, expected_status_code
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    response = api_client.get(get_detail_url(pk=get_random_pk()))
+    assert response.status_code == expected_status_code
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize("field", get_handler_fields())
 def test_youth_applications_detail_response_field(api_client, youth_application, field):
     response = api_client.get(get_detail_url(pk=youth_application.pk))
@@ -121,6 +192,7 @@ def test_youth_applications_detail_response_field(api_client, youth_application,
 
 
 @pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize(
     "input_encrypted_vtj_json,expected_output_encrypted_vtj_json",
     [
@@ -141,8 +213,8 @@ def test_youth_applications_detail_encrypted_vtj_json(
 
 
 @pytest.mark.django_db
-def test_youth_applications_activate_invalid_pk(api_client):
-    response = api_client.get(get_activation_url(pk="invalid value"))
+def test_youth_applications_activate_unused_pk(api_client):
+    response = api_client.get(get_activation_url(pk=get_random_pk()))
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -235,6 +307,39 @@ def test_youth_applications_activate_expired_active(
 
 
 @pytest.mark.django_db
+def test_youth_applications_dual_activate_unexpired_inactive(
+    api_client,
+    make_youth_application_activation_link_unexpired,
+):
+    app_1 = InactiveYouthApplicationFactory()
+    app_2 = InactiveYouthApplicationFactory(
+        social_security_number=app_1.social_security_number
+    )
+
+    # Make sure the source objects are set up correctly
+    assert not app_1.is_active
+    assert not app_1.has_activation_link_expired
+    assert not app_2.is_active
+    assert not app_2.has_activation_link_expired
+    assert app_1.social_security_number == app_2.social_security_number
+    assert app_1.email != app_2.email
+
+    response_1 = api_client.get(get_activation_url(app_1.pk))
+    response_2 = api_client.get(get_activation_url(app_2.pk))
+
+    app_1.refresh_from_db()
+    app_2.refresh_from_db()
+
+    assert app_1.is_active
+    assert response_1.status_code == status.HTTP_302_FOUND
+    assert response_1.url == app_1.activated_page_url()
+
+    assert not app_2.is_active
+    assert response_2.status_code == status.HTTP_302_FOUND
+    assert response_2.url == app_2.already_activated_page_url()
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "test_value",
     [
@@ -273,19 +378,13 @@ def test_youth_application_post_valid_random_data(api_client, random_seed):
 @pytest.mark.django_db
 @override_settings(
     EMAIL_USE_TLS=False,
-    EMAIL_HOST="ema.platta-net.hel.fi",
-    EMAIL_HOST_USER="",
-    EMAIL_HOST_PASSWORD="",
-    EMAIL_PORT=25,
-    EMAIL_TIMEOUT=15,
-    DEFAULT_FROM_EMAIL="Kesäseteli <kesaseteli@hel.fi>",
+    EMAIL_HOST="",  # Use inexistent email host to ensure emails will never go anywhere
 )
 @pytest.mark.parametrize(
     "email_backend_override",
     [
         None,  # No override
         "django.core.mail.backends.console.EmailBackend",
-        "django.core.mail.backends.smtp.EmailBackend",
     ],
 )
 def test_youth_application_post_valid_data_with_email_backends(
@@ -299,8 +398,35 @@ def test_youth_application_post_valid_data_with_email_backends(
     if email_backend_override is not None:
         settings.EMAIL_BACKEND = email_backend_override
     data = YouthApplicationSerializer(youth_application).data
+    start_app_count = YouthApplication.objects.count()
     response = api_client.post(reverse("v1:youthapplication-list"), data)
+    end_app_count = YouthApplication.objects.count()
     assert response.status_code == status.HTTP_201_CREATED
+    assert end_app_count == start_app_count + 1
+
+
+@pytest.mark.django_db
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend",
+    EMAIL_HOST="",  # Use inexistent email host to ensure emails will never go anywhere
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_application_post_valid_data_with_invalid_smtp_server(
+    api_client,
+    settings,
+    language,
+):
+    # Use an email address which uses a reserved domain name (See RFC 2606)
+    # so even if it'd be sent to an SMTP server it wouldn't go anywhere
+    youth_application = YouthApplicationFactory.build(
+        email="test@example.com", language=language
+    )
+    data = YouthApplicationSerializer(youth_application).data
+    start_app_count = YouthApplication.objects.count()
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    end_app_count = YouthApplication.objects.count()
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert end_app_count == start_app_count
 
 
 @pytest.mark.django_db
@@ -326,6 +452,24 @@ def test_youth_application_activation_email_language(api_client, language):
     activation_email = mail.outbox[-1]
     assert_email_subject_language(activation_email.subject, language)
     assert_email_body_language(activation_email.body, language)
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_youth_application_activation_email_link_path(api_client):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    assert len(mail.outbox) > 0
+    activation_email = mail.outbox[-1]
+    assert "id" in response.data
+    assert response.data["id"]
+    assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
+    # Check that the activation URL path
+    # i.e. without the hostname and port is found in the email body
+    activation_url = get_activation_url(pk=response.data["id"])
+    activation_url_with_path_only = urlparse(activation_url).path
+    assert activation_url_with_path_only in activation_email.body
 
 
 @pytest.mark.django_db

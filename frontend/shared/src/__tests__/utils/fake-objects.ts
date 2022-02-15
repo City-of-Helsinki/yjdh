@@ -1,7 +1,5 @@
 import faker from 'faker';
-// eslint-disable-next-line unicorn/prefer-node-protocol
 import fs from 'fs';
-// eslint-disable-next-line unicorn/prefer-node-protocol
 import path from 'path';
 
 /* These are relatively resolved paths because fake-objects is used from

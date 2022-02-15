@@ -278,9 +278,9 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     history = HistoricalRecords(table_name="bf_applications_application_history")
 
     @property
-    def benefit_amount(self):
+    def calculated_benefit_amount(self):
         if hasattr(self, "calculation"):
-            return self.calculation.benefit_amount
+            return self.calculation.calculated_benefit_amount
         else:
             return None
 

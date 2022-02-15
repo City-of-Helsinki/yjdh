@@ -3,8 +3,7 @@ type TetPosting = {
   title: string;
   description: string;
   org_name: string;
-  // TODO react-hook-forms gets this as a string from `NumberInput`
-  // but NumberInput expects it as a number
+  location: string;
   spots: number;
   start_date: string;
   end_date?: string;
@@ -14,6 +13,9 @@ type TetPosting = {
   contact_language: string;
   contact_phone: string;
   date_published?: string;
+  keywords: string[];
+  keywords_working_methods: string[];
+  keywords_attributes: string[];
 };
 
 export type TetPostings = {

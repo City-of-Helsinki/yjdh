@@ -5,6 +5,7 @@ import { RequestHook } from 'testcafe';
 type Event = {
   requestOptions: { headers: Record<string, string> };
 };
+
 export class HttpRequestHook extends RequestHook {
   private referer: string;
 

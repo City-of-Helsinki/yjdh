@@ -8,6 +8,8 @@ on:
       - 'frontend/*'
       - 'frontend/shared/**'
       - '.github/workflows/shared-tests.yml'
+      - "!**/browser-tests/**"
+      - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:

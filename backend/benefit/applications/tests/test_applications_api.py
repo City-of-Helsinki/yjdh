@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from datetime import date, datetime
+from decimal import Decimal
 from unittest import mock
 
 import pytest
@@ -11,6 +12,7 @@ import pytz
 from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
     AttachmentSerializer,
+    HandlerApplicationSerializer,
 )
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
@@ -27,6 +29,7 @@ from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
+from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -133,6 +136,9 @@ def test_application_single_read_as_applicant(api_client, application):
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
     assert "batch" not in response.data
+    assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
+        application.start_date, application.end_date, decimal_places=2
+    )
     assert response.status_code == 200
 
 
@@ -768,6 +774,92 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
+    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    [
+        ("ry", None, [], False, 200),
+        ("ry", False, [], False, 200),
+        ("ry", None, [], True, 200),
+        ("ry", False, [], True, 200),
+        ("oy", None, [], None, 400),
+        ("oy", False, [], None, 200),
+    ],
+)
+def test_submit_application_without_de_minimis_aid(
+    request,
+    api_client,
+    application,
+    company_form,
+    de_minimis_aid,
+    de_minimis_aid_set,
+    association_has_business_activities,
+    expected_result,
+):
+    application.company.company_form = company_form
+    application.company.save()
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["benefit_type"] = BenefitType.SALARY_BENEFIT
+    data["de_minimis_aid"] = de_minimis_aid
+    data["de_minimis_aid_set"] = de_minimis_aid_set
+    data["pay_subsidy_percent"] = "50"
+    data["pay_subsidy_granted"] = True
+    data["association_has_business_activities"] = association_has_business_activities
+    if company_form == "ry":
+        data["association_immediate_manager_check"] = True
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
+    "pay_subsidy_granted,apprenticeship_program,expected_result",
+    [
+        (True, True, 200),
+        (True, False, 200),
+        (True, None, 400),
+        (False, None, 200),
+    ],
+)
+def test_apprenticeship_program_validation_on_submit(
+    request,
+    api_client,
+    application,
+    pay_subsidy_granted,
+    apprenticeship_program,
+    expected_result,
+):
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["pay_subsidy_granted"] = pay_subsidy_granted
+    data["pay_subsidy_percent"] = "50" if pay_subsidy_granted else None
+    data["additional_pay_subsidy_percent"] = None
+    data["apprenticeship_program"] = apprenticeship_program
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
@@ -852,9 +944,12 @@ def test_application_status_change_as_applicant(
         (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.HANDLING, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
@@ -871,7 +966,8 @@ def test_application_status_change_as_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
-    data = ApplicantApplicationSerializer(application).data
+    application.refresh_from_db()
+    data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
@@ -940,7 +1036,7 @@ def test_application_status_change_as_handler_auto_assign_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
-    data = ApplicantApplicationSerializer(application).data
+    data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:

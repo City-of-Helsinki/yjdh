@@ -56,7 +56,9 @@
     "employerInfo": {
       "header": "Työpaikan tiedot",
       "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "Toimipiste tai osasto"
+      "departmentLabel": "Toimipiste tai osasto",
+			"address": "Osoite",
+			"streetAddress": "Katuosoite"
     },
     "posting": {
       "header": "Työharjoittelupaikan tiedot",
@@ -65,14 +67,41 @@
       "workHoursNotice": "Työaika on aina sama 30h per viikko.",
       "startDateLabel": "Alkaen",
       "endDateLabel": "Päättyen",
-      "spotsLabel": "Työharjoittelupaikkoja"
+      "spotsLabel": "Työharjoittelupaikkoja",
+			"contactFirstName": "Etunimi",
+			"contactLastName": "Sukunimi",
+			"contactPhone": "Puhelin",
+			"contactEmail": "Sähköposti",
+			"contactLanguage": "Asiointikieli",
+			"contactLanguageFi": "Suomi",
+			"contactLanguageSv": "Ruotsi",
+			"contactLanguageEn": "Englanti",
+			"validation": {
+				"required": "Tieto vaaditaan",
+				"email": "Syötä sähköposti oikeassa muodossa",
+				"max": "Maksimimerkkimäärä ylittyy",
+				"phone": "Syötä oikeassa muodossa",
+				"name": "Syötä nimi sallitussa muodossa"
+			}
+    },
+		"classification": {
+			"classifications": "Luokittelut",
+			"workMethod": "Työtapa",
+			"workFeature": "Työn ominaisuudet",
+			"keywords": "Avainsanat",
+			"search": "Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "Poista valinta"
     }
   },
   "footer": {
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
     "accessibilityStatement": "Saavutettavuusseloste",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/saavutettavuus/saavutettavuusselosteet",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
     "privacyPolicy": "Rekisteriseloste",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Anna palautetta",

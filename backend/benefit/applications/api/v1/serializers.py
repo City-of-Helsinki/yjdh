@@ -565,6 +565,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "ahjo_decision",
             "unread_messages_count",
             "warnings",
+            "duration_in_months_rounded",
         ]
         read_only_fields = [
             "submitted_at",
@@ -586,6 +587,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "status_last_changed_at",
             "unread_messages_count",
             "warnings",
+            "duration_in_months_rounded",
         ]
         extra_kwargs = {
             "company_name": {
@@ -1091,8 +1093,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         "company_contact_person_last_name",
         "co_operation_negotiations",
         "pay_subsidy_granted",
-        "apprenticeship_program",
-        "de_minimis_aid",
         "benefit_type",
         "start_date",
         "end_date",
@@ -1105,16 +1105,24 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         # newly created applications are always DRAFT
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
         if (
-            OrganizationType.resolve_organization_type(
+            organization_type := OrganizationType.resolve_organization_type(
                 self.get_company(data).company_form
             )
-            == OrganizationType.ASSOCIATION
-        ):
+        ) == OrganizationType.ASSOCIATION:
             required_fields.append("association_has_business_activities")
 
             # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
             # at submit time, only True is allowed.
             required_fields.append("association_immediate_manager_check")
+        elif organization_type == OrganizationType.COMPANY:
+            required_fields.append("de_minimis_aid")
+        else:
+            assert False, "unreachable"
+
+        # if pay_subsidy_granted is selected, then the applicant needs to also select if
+        # it's an apprenticeship_program or not
+        if data["pay_subsidy_granted"]:
+            required_fields.append("apprenticeship_program")
 
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:
@@ -1597,7 +1605,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     @transaction.atomic
     @do_delayed_calls_at_end()  # application recalculation
     def update(self, instance, validated_data):
-        if not ApplicationStatus.is_handler_editable_status(instance.status):
+        if not ApplicationStatus.is_handler_editable_status(
+            instance.status, validated_data["status"]
+        ):
             raise BenefitAPIException(
                 _("Application can not be changed in this status")
             )
@@ -1624,20 +1634,19 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             raise serializers.ValidationError(
                 _("The calculation should be created when the application is submitted")
             )
-        if calculation_data is not None:
-            if not ApplicationStatus.is_handler_editable_status(application.status):
-                raise serializers.ValidationError(
-                    _("The calculation can not be updated in this status")
-                )
+        if (
+            calculation_data is not None
+            and ApplicationStatus.is_handler_editable_status(application.status)
+        ):
             if application.calculation.id != calculation_data["id"]:
                 raise serializers.ValidationError(
                     _("The calculation id does not match existing id")
                 )
+            call_now_or_later(
+                application.calculation.calculate,
+                duplicate_check=("calculation.calculate", application.pk),
+            )
             update_object(application.calculation, calculation_data)
-        call_now_or_later(
-            application.calculation.calculate,
-            duplicate_check=("calculation.calculate", application.pk),
-        )
 
     def _update_training_compensations(self, application, training_compensation_data):
         return self._common_ordered_nested_update(
