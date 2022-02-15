@@ -1,7 +1,12 @@
 import Messenger from 'benefit/handler/components/messenger/Messenger';
+import {
+  APPLICATION_STATUSES,
+  HANDLED_STATUSES,
+} from 'benefit/handler/constants';
 import { Application } from 'benefit/handler/types/application';
 import {
   Button,
+  IconArrowUndo,
   IconInfoCircle,
   IconLock,
   IconPen,
@@ -28,6 +33,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
   const {
     t,
     onDone,
+    onBackToHandling,
     onSaveAndClose,
     toggleMessagesDrawerVisiblity,
     openDialog,
@@ -41,12 +47,31 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
   return (
     <$Wrapper>
       <$Column>
-        <Button onClick={onDone} theme="coat" disabled={isDisabledDoneButton}>
-          {t(`${translationsBase}.done`)}
-        </Button>
+        {application.status === APPLICATION_STATUSES.HANDLING && (
+          <Button onClick={onDone} theme="coat" disabled={isDisabledDoneButton}>
+            {t(`${translationsBase}.done`)}
+          </Button>
+        )}
         <Button onClick={onSaveAndClose} theme="black" variant="secondary">
-          {t(`${translationsBase}.saveAndContinue`)}
+          {t(
+            `${translationsBase}.${
+              application.status === APPLICATION_STATUSES.HANDLING
+                ? 'saveAndContinue'
+                : 'close'
+            }`
+          )}
         </Button>
+        {(application.status === APPLICATION_STATUSES.ACCEPTED ||
+          application.status === APPLICATION_STATUSES.REJECTED) && (
+          <Button
+            onClick={onBackToHandling}
+            theme="black"
+            variant="secondary"
+            iconLeft={<IconArrowUndo />}
+          >
+            {t(`${translationsBase}.backToHandling`)}
+          </Button>
+        )}
         <Button
           onClick={toggleMessagesDrawerVisiblity}
           theme="black"
@@ -56,22 +81,26 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
       </$Column>
-      <$Column>
-        <Button
-          onClick={openDialog}
-          theme="black"
-          variant="supplementary"
-          iconLeft={<IconTrash />}
-        >
-          {t(`${translationsBase}.cancel`)}
-        </Button>
-      </$Column>
+      {application.status !== APPLICATION_STATUSES.CANCELLED && (
+        <$Column>
+          <Button
+            onClick={openDialog}
+            theme="black"
+            variant="supplementary"
+            iconLeft={<IconTrash />}
+          >
+            {t(`${translationsBase}.cancel`)}
+          </Button>
+        </$Column>
+      )}
+
       {isConfirmationModalOpen && (
         <Modal
           id="Handler-confirmDeleteApplicationModal"
           isOpen={isConfirmationModalOpen}
           title={t(`${translationsBase}.reasonCancelDialogTitle`)}
           submitButtonLabel=""
+          cancelButtonLabel={t('common:applications.actions.close')}
           handleToggle={closeDialog}
           handleSubmit={noop}
           headerIcon={<IconInfoCircle />}
@@ -84,6 +113,9 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
       )}
       <Messenger
         isOpen={isMessagesDrawerVisible}
+        isReadOnly={
+          application.status && HANDLED_STATUSES.includes(application.status)
+        }
         onClose={toggleMessagesDrawerVisiblity}
         customItemsMessages={<EditAction application={application} />}
         customItemsNotes={

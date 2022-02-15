@@ -45,6 +45,7 @@ env:
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
   NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 60
   CORS_ALLOW_ALL_ORIGINS: 1
+  DISABLE_VTJ: 1
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -75,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build ${{ matrix.service }}
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
@@ -124,7 +125,7 @@ jobs:
     needs: build
     name: Review
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
@@ -143,8 +144,10 @@ jobs:
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.EMPLOYER_URL }}/login?logout=true" >> $GITHUB_ENV
           echo "K8S_SECRET_YOUTH_URL=${{ env.YOUTH_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_HANDLER_URL=${{ env.HANDLER_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DISABLE_VTJ=${{ env.DISABLE_VTJ }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
@@ -187,6 +190,7 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == true && '/app/.prod/on_deploy.sh' || ''}}
+          LOGOUT_REDIRECT_URL: ${{ env.EMPLOYER_URL }}/login?logout=true
 
       - name: Deploy Cronjobs
         if: matrix.database
@@ -228,20 +232,20 @@ jobs:
           - service: ks-handler
             dir: kesaseteli/handler
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup kubectl
         run: |
           echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
         shell: bash
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
           node-version: '14'
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}

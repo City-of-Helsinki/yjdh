@@ -17,13 +17,12 @@ export type HeaderProps = {
   titleUrl?: string;
   skipToContentLabel?: string;
   menuToggleAriaLabel?: string;
-  locale: string;
-  languages: OptionType<string>[];
+  languages?: OptionType<string>[];
   isNavigationVisible?: boolean;
   navigationItems?: NavigationItem[];
   customItems?: React.ReactNode[];
   navigationVariant?: NavigationVariant;
-  onLanguageChange: (
+  onLanguageChange?: (
     e: React.SyntheticEvent<unknown>,
     language: OptionType<string>
   ) => void;
@@ -37,6 +36,7 @@ export type HeaderProps = {
     userName?: string;
   };
   theme?: ThemeOption;
+  onTitleClick?: () => void;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -45,7 +45,6 @@ const Header: React.FC<HeaderProps> = ({
   titleUrl,
   menuToggleAriaLabel,
   languages,
-  locale,
   isNavigationVisible = true,
   navigationItems,
   navigationVariant,
@@ -53,15 +52,17 @@ const Header: React.FC<HeaderProps> = ({
   onLanguageChange,
   login,
   theme,
+  onTitleClick,
 }) => {
   const {
+    locale,
     logoLang,
     menuOpen,
     toggleMenu,
     closeMenu,
     handleLogin,
     handleLogout,
-  } = useHeader(locale, login);
+  } = useHeader(login);
 
   const goToPage = useGoToPage();
 
@@ -87,6 +88,7 @@ const Header: React.FC<HeaderProps> = ({
       title={title}
       titleUrl={titleUrl}
       titleAriaLabel={title}
+      onTitleClick={onTitleClick}
     >
       {isNavigationVisible && navigationItems && (
         <Navigation.Row variant={navigationVariant || 'default'}>
@@ -131,7 +133,7 @@ const Header: React.FC<HeaderProps> = ({
             />
           </Navigation.User>
         )}
-        {languages && (
+        {languages && onLanguageChange && (
           <Navigation.LanguageSelector
             buttonAriaLabel={locale?.toUpperCase()}
             label={locale?.toUpperCase()}

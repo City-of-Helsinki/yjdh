@@ -1,6 +1,8 @@
 import requests
 from django.conf import settings
 
+from shared.service_bus.enums import YtjOrganizationCode
+
 TARGET_ASSOCIATION_NAME_TYPE = "P"
 TARGET_ASSOCIATION_NAME_LANGUAGE = "FI"
 TARGET_ASSOCIATION_NAME_STATUS = "R"
@@ -21,6 +23,10 @@ class YRTTIClient:
     def get_association_data_from_yrtti_data(self, yrtti_data: dict) -> dict:
         """
         Get the required company fields from YRTTI data.
+
+        The YRTTI API only returns data for associations, so the response does not contain
+        a field for company form.
+        Use the YTJ "yritysmuoto" code for associations when creating the Company objects
         """
         association_name = self._get_active_association_name(
             yrtti_data["AssociationNameInfo"]
@@ -31,7 +37,8 @@ class YRTTIClient:
         company_data = {
             "name": association_name["AssociationName"],
             "business_id": yrtti_data["BusinessId"],
-            "company_form": "association",
+            "company_form": YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT.label,
+            "company_form_code": YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT,
             "industry": association_name["AssociationIndustry"] or "",
             "street_address": self._sanitize_text(address["StreetName"]),
             "postcode": address["PostCode"],

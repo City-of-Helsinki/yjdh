@@ -10,3 +10,14 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = get_user_model()
+
+
+class HandlerUserFactory(UserFactory):
+    is_active = True
+    is_staff = factory.Faker("boolean")
+    is_superuser = factory.Maybe("is_staff", factory.Faker("boolean"), True)
+
+
+class StaffUserFactory(UserFactory):
+    is_active = True
+    is_staff = True

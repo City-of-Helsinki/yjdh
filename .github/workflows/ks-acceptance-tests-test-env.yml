@@ -33,19 +33,19 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{env.BRANCH}}
       - run: |
           echo "COMMIT_INFO=$(git log -1 --pretty=format:'%h%x09%an%x09%ad%x09%s')" >> $GITHUB_ENV
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
           node-version: '14'
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}

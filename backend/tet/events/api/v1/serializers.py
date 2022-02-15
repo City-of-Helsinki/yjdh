@@ -27,3 +27,6 @@ class TetUpsertEventSerializer(Serializer):
     end_time = CharField(max_length=30, allow_null=True)
     date_published = CharField(max_length=30, allow_null=True)
     custom_data = CustomDataSerializer()
+    in_language = ListField(
+        child=DictField(child=URLField()), min_length=1, max_length=30
+    )

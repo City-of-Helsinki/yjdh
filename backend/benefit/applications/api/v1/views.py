@@ -6,11 +6,11 @@ from applications.api.v1.serializers import (
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.services.applications_csv_report import ApplicationsCsvService
-from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
+from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
-from django.db.models import Count, Max, Q
+from django.db.models import Q
 from django.http import FileResponse, HttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
@@ -23,6 +23,7 @@ from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
+from sql_util.aggregates import SubqueryCount
 from users.utils import get_company_from_request
 
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
@@ -56,33 +57,23 @@ class ApplicantApplicationFilter(BaseApplicationFilter):
 
 class HandlerApplicationFilter(BaseApplicationFilter):
 
-    # the date when application was last set to either REJECTED or ACCEPTED status
-    date_handled = DateFromToRangeFilter(method="filter_date_handled")
+    # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED status
+    handled_at = DateFromToRangeFilter(method="filter_handled_at")
 
-    HANDLED_STATUSES = [ApplicationStatus.REJECTED, ApplicationStatus.ACCEPTED]
-
-    def filter_date_handled(self, queryset, name, value):
+    def filter_handled_at(self, queryset, name, value):
         assert value.step is None, "Should not happen"
         if value.start and value.stop:
-            filter_kw = {"date_handled__range": (value.start, value.stop)}
+            filter_kw = {"handled_at__range": (value.start, value.stop)}
         elif value.start:
-            filter_kw = {"date_handled__gte": value.start}
+            filter_kw = {"handled_at__gte": value.start}
         elif value.stop:
-            filter_kw = {"date_handled__lte": value.stop}
+            filter_kw = {"handled_at__lte": value.stop}
         else:
             # no filtering, so skip the annotation query
             return queryset
-        queryset = (
-            queryset.filter(status__in=self.HANDLED_STATUSES)
-            .annotate(
-                date_handled=Max(
-                    "log_entries__created_at",
-                    filter=Q(log_entries__to_status__in=self.HANDLED_STATUSES),
-                )
-            )
-            .filter(**filter_kw)
+        return queryset.filter(
+            status__in=HandlerApplicationViewSet.HANDLED_STATUSES, **filter_kw
         )
-        return queryset
 
     class Meta:
         model = Application
@@ -222,15 +213,16 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 )
 class ApplicantApplicationViewSet(BaseApplicationViewSet):
     serializer_class = ApplicantApplicationSerializer
-    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
+    permission_classes = [BFIsApplicant, TermsOfServiceAccepted]
     filterset_class = ApplicantApplicationFilter
 
     def _annotate_unread_messages_count(self, qs):
+        # since there other annotations added elsewhere, use subquery to avoid wrong results.
+        # also, using a subquery is more performant
         return qs.annotate(
-            unread_messages_count=Count(
+            unread_messages_count=SubqueryCount(
                 "messages",
-                filter=Q(messages__seen_by_applicant=False)
-                & ~Q(messages__message_type=MessageType.NOTE),
+                filter=Q(seen_by_applicant=False) & ~Q(message_type=MessageType.NOTE),
             )
         )
 
@@ -256,17 +248,31 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     def _annotate_unread_messages_count(self, qs):
         return qs.annotate(
-            unread_messages_count=Count(
+            unread_messages_count=SubqueryCount(
                 "messages",
-                filter=Q(messages__seen_by_handler=False)
-                & ~Q(messages__message_type=MessageType.NOTE),
+                filter=Q(seen_by_handler=False) & ~Q(message_type=MessageType.NOTE),
             )
         )
+
+    HANDLED_STATUSES = [
+        ApplicationStatus.REJECTED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+    ]
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        # In case new AuditLogEntry objects were created during the
+        # processing of the update, then the annotation value for handled_at
+        # in the serializer.instance might have become stale.
+        # Update the object.
+        serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
 
     def get_queryset(self):
         return self._annotate_unread_messages_count(
             super()
             .get_queryset()
+            .exclude(status=ApplicationStatus.DRAFT)
             .select_related("batch", "calculation")
             .prefetch_related("pay_subsidies", "training_compensations")
         )

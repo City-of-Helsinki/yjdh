@@ -3,7 +3,7 @@ import datetime
 import decimal
 import logging
 
-from applications.enums import ApplicationStatus, BenefitType, OrganizationType
+from applications.enums import ApplicationStatus, BenefitType
 from calculator.enums import RowType
 from calculator.models import (
     DateRangeDescriptionRow,
@@ -124,13 +124,9 @@ class HelsinkiBenefitCalculator:
             [
                 self.calculation.start_date,
                 self.calculation.end_date,
-                self.calculation.state_aid_max_percentage,
             ]
         ):
             return False
-        for pay_subsidy in self.calculation.application.pay_subsidies.all():
-            if not all([pay_subsidy.start_date, pay_subsidy.end_date]):
-                return False
         return True
 
     @transaction.atomic
@@ -184,21 +180,30 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
     Calculation of salary benefit, according to rules in effect 2021 (and possibly onwards)
     """
 
-    ASSOCIATION_PAY_SUBSIDY_MAX = 1800
-    COMPANY_PAY_SUBSIDY_MAX = 1400
+    # The maximum amount of pay subsidy depends on the pay subsidy percent in the pay subsidy decision.
+    PAY_SUBSIDY_MAX_FOR_100_PERCENT = 1800
+    DEFAULT_PAY_SUBSIDY_MAX = 1400
     SALARY_BENEFIT_MAX = 800
 
-    def get_maximum_monthly_pay_subsidy(self):
-        if (
-            OrganizationType.resolve_organization_type(
-                self.calculation.application.company.company_form
-            )
-            == "company"
-            or self.calculation.application.association_has_business_activities
+    def can_calculate(self):
+        if not all(
+            [
+                self.calculation.start_date,
+                self.calculation.end_date,
+                self.calculation.state_aid_max_percentage,
+            ]
         ):
-            return self.COMPANY_PAY_SUBSIDY_MAX
+            return False
+        for pay_subsidy in self.calculation.application.pay_subsidies.all():
+            if not all([pay_subsidy.start_date, pay_subsidy.end_date]):
+                return False
+        return True
+
+    def get_maximum_monthly_pay_subsidy(self, pay_subsidy):
+        if pay_subsidy.pay_subsidy_percent == 100:
+            return self.PAY_SUBSIDY_MAX_FOR_100_PERCENT
         else:
-            return self.ASSOCIATION_PAY_SUBSIDY_MAX
+            return self.DEFAULT_PAY_SUBSIDY_MAX
 
     def create_deduction_rows(self, benefit_sub_range):
         if benefit_sub_range.pay_subsidy or benefit_sub_range.training_compensation:
@@ -210,7 +215,9 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
             pay_subsidy_monthly_eur = self._create_row(
                 PaySubsidyMonthlyRow,
                 pay_subsidy=benefit_sub_range.pay_subsidy,
-                max_subsidy=self.get_maximum_monthly_pay_subsidy(),
+                max_subsidy=self.get_maximum_monthly_pay_subsidy(
+                    benefit_sub_range.pay_subsidy
+                ),
             ).amount
         else:
             pay_subsidy_monthly_eur = 0

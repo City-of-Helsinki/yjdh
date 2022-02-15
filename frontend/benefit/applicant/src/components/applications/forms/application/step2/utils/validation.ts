@@ -12,12 +12,14 @@ import {
 } from 'benefit/applicant/constants';
 import { Step2 } from 'benefit/applicant/types/application';
 import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
-import isAfter from 'date-fns/isAfter';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
-import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
+import {
+  convertToUIDateFormat,
+  validateDateIsFromCurrentYearOnwards,
+} from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
@@ -74,10 +76,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
           min: convertToUIDateFormat(startOfYear(new Date())),
         }),
-        test: (value = '') => {
-          const date = parseDate(value);
-          return date ? isAfter(date, startOfYear(new Date())) : false;
-        },
+        test: (value = '') => validateDateIsFromCurrentYearOnwards(value),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
@@ -105,7 +104,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
           [true],
-          t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+          t(VALIDATION_MESSAGE_KEYS.REQUIRED_IS_LIVING_IN_HELSINKI)
         ),
       })
       .when(APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE, {

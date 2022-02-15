@@ -1,12 +1,16 @@
+from common.localized_iban_field import LocalizedIBANField
+from django.db import models
 from django.utils.translation import gettext_lazy as _
-from localflavor.generic.models import IBANField
 
 from shared.models.abstract_models import AbstractCompany
 
 
 class Company(AbstractCompany):
-    bank_account_number = IBANField(
+    bank_account_number = LocalizedIBANField(
         include_countries=("FI",), verbose_name=_("bank account number")
+    )
+    company_form_code = models.IntegerField(
+        verbose_name=_("YTJ type code for company form")
     )
 
     def __str__(self):

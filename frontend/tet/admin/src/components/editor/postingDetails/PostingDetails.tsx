@@ -3,17 +3,40 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
 import DateInput from 'tet/admin/components/editor/DateInput';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import TextArea from 'tet/admin/components/editor/TextArea';
 import NumberInput from 'tet/admin/components/editor/NumberInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
+import { Notification } from 'hds-react';
+import Dropdown from 'tet/admin/components/editor/Dropdown';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
+import { useFormContext, useWatch } from 'react-hook-form';
+import TetPosting from 'tet-shared/types/tetposting';
+import { parseDate } from 'shared/utils/date.utils';
+import isBefore from 'date-fns/isBefore';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name } = useValidationRules();
+  const { required, name, description } = useValidationRules();
+  const { control, setValue } = useFormContext<TetPosting>();
+
+  const languageOptions = useLanguageOptions();
+  const startDate = useWatch({
+    control: control,
+    name: 'start_date',
+  });
+  const endDate = useWatch({
+    control: control,
+    name: 'end_date',
+  });
+
+  React.useEffect(() => {
+    if (isBefore(parseDate(endDate) as Date, parseDate(startDate) as Date)) {
+      setValue('end_date', '');
+    }
+  }, [startDate, endDate]);
 
   return (
     <FormSection header={t('common:editor.posting.header')}>
@@ -41,12 +64,14 @@ const PostingDetails: React.FC = () => {
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          <DateInput id="end_date" label={t('common:editor.posting.endDateLabel')} required={false} />
+          <DateInput
+            id="end_date"
+            label={t('common:editor.posting.endDateLabel')}
+            required={false}
+            minDate={parseDate(startDate)}
+          />
         </$GridCell>
         <$GridCell $colSpan={3}></$GridCell>
-      </$GridCell>
-      <$GridCell $colSpan={12}>
-        <$CompanyInfoRow>{t('common:editor.posting.workHoursNotice')}</$CompanyInfoRow>
       </$GridCell>
       <$GridCell $colSpan={2}>
         <NumberInput
@@ -56,12 +81,28 @@ const PostingDetails: React.FC = () => {
           required={true}
         />
       </$GridCell>
+      <$GridCell $colSpan={3}>
+        <Dropdown
+          id="languages"
+          options={languageOptions}
+          initialValue={[languageOptions[0]]}
+          label={t('common:editor.posting.contactLanguage')}
+          registerOptions={{
+            required: required,
+          }}
+        />
+      </$GridCell>
+      <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell $colSpan={6}>
+          <Notification size="small">{t('common:editor.posting.workHoursNotice')}</Notification>
+        </$GridCell>
+      </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={12}>
           <TextArea
             id="description"
             label={t('common:editor.posting.description')}
-            registerOptions={{ required: required }}
+            registerOptions={description}
             required={true}
           />
         </$GridCell>

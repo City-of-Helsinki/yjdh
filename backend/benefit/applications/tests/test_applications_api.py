@@ -19,13 +19,14 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.enums import (
     ApplicationStatus,
+    ApplicationStep,
     AttachmentType,
     BenefitType,
     OrganizationType,
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationFactory
+from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
@@ -43,6 +44,7 @@ from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
 
 from shared.audit_log import models as audit_models
+from shared.service_bus.enums import YtjOrganizationCode
 
 
 def get_detail_url(application):
@@ -172,12 +174,40 @@ def test_application_single_read_as_applicant(
     assert response.status_code == 200
 
 
-def test_application_single_read_as_handler(handler_api_client, application):
+@pytest.mark.parametrize(
+    "status, expected_result",
+    [
+        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 200),
+        (ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.ACCEPTED, 200),
+        (ApplicationStatus.REJECTED, 200),
+        (ApplicationStatus.CANCELLED, 200),
+    ],
+)
+def test_application_single_read_as_handler(
+    handler_api_client, application, status, expected_result
+):
+    application.status = status
+    application.save()
     response = handler_api_client.get(get_handler_detail_url(application))
-    assert response.data["ahjo_decision"] is None
-    assert response.data["application_number"] is not None
-    assert "batch" in response.data
-    assert response.status_code == 200
+    assert response.status_code == expected_result
+    if response.status_code == 200:
+        assert response.data["ahjo_decision"] is None
+        assert response.data["application_number"] is not None
+        assert "batch" in response.data
+
+
+def test_application_submitted_at(
+    api_client, application, received_application, handling_application
+):
+    response = api_client.get(get_detail_url(application))
+    assert response.data["submitted_at"] is None
+    response = api_client.get(get_detail_url(received_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
 
 
 def test_application_template(api_client):
@@ -246,6 +276,9 @@ def test_application_post_success(api_client, application):
     assert new_application.company_name == new_application.company.name
     assert new_application.company_form == new_application.company.company_form
     assert (
+        new_application.company_form_code == new_application.company.company_form_code
+    )
+    assert (
         new_application.official_company_street_address
         == new_application.company.street_address
     )
@@ -309,7 +342,17 @@ def test_application_post_unfinished(api_client, application):
     )
 
 
-def test_application_post_invalid_data(api_client, application):
+@pytest.mark.parametrize(
+    "language,company_bank_account_number_validation_error",
+    [
+        ("en", "Invalid IBAN"),
+        ("fi", "Virheellinen IBAN-tilinumero"),
+        ("sv", "Felaktigt IBAN-kontonummer"),
+    ],
+)
+def test_application_post_invalid_data(
+    api_client, application, language, company_bank_account_number_validation_error
+):
     data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
@@ -319,10 +362,13 @@ def test_application_post_invalid_data(api_client, application):
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
+    data["company_bank_account_number"] = "FI91 4008 0282 0002 02"  # invalid number
 
     data[
         "company_contact_person_phone_number"
     ] = "+359505658789"  # Invalid country code
+
+    api_client.defaults["HTTP_ACCEPT_LANGUAGE"] = language
     response = api_client.post(
         reverse("v1:applicant-application-list"), data, format="json"
     )
@@ -333,7 +379,13 @@ def test_application_post_invalid_data(api_client, application):
         "applicant_language",
         "company_contact_person_phone_number",
         "de_minimis_aid_set",
+        "company_bank_account_number",
     }
+    assert (
+        str(response.data["company_bank_account_number"][0])
+        == company_bank_account_number_validation_error
+    )
+    assert len(response.data["company_bank_account_number"]) == 1
     assert response.data["de_minimis_aid_set"][0].keys() == {"amount"}
     assert len(response.data["de_minimis_aid_set"]) == 2
 
@@ -623,6 +675,7 @@ def test_application_edit_benefit_type_business_association(
     data = ApplicantApplicationSerializer(association_application).data
     company = mock_get_organisation_roles_and_create_company
     company.company_form = "ry"
+    company.company_form_code = YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT
     company.save()
     association_application.company = company
     association_application.save()
@@ -829,27 +882,27 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
-    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    "company_form_code,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
     [
-        ("ry", None, [], False, 200),
-        ("ry", False, [], False, 200),
-        ("ry", None, [], True, 200),
-        ("ry", False, [], True, 200),
-        ("oy", None, [], None, 400),
-        ("oy", False, [], None, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, None, [], False, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False, [], False, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, None, [], True, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False, [], True, 200),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, None, [], None, 400),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, False, [], None, 200),
     ],
 )
 def test_submit_application_without_de_minimis_aid(
     request,
     api_client,
     application,
-    company_form,
+    company_form_code,
     de_minimis_aid,
     de_minimis_aid_set,
     association_has_business_activities,
     expected_result,
 ):
-    application.company.company_form = company_form
+    application.company.company_form_code = company_form_code
     application.company.save()
     add_attachments_to_application(request, application)
 
@@ -861,7 +914,7 @@ def test_submit_application_without_de_minimis_aid(
     data["pay_subsidy_percent"] = "50"
     data["pay_subsidy_granted"] = True
     data["association_has_business_activities"] = association_has_business_activities
-    if company_form == "ry":
+    if company_form_code == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT:
         data["association_immediate_manager_check"] = True
 
     response = api_client.put(
@@ -985,7 +1038,7 @@ def test_application_status_change_as_applicant(
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 404),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
@@ -1067,7 +1120,7 @@ def test_application_status_change_as_handler(
         if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             assert application.messages.count() == 1
             assert (
-                "Please make the requested changes by 18.06.2021"
+                "Please make the corrections by 18.06.2021"
                 in application.messages.first().content
             )
 
@@ -1079,16 +1132,77 @@ def test_application_status_change_as_handler(
             assert (
                 response.data["latest_decision_comment"] == expected_log_entry_comment
             )
+            assert response.data["handled_at"] == datetime.now().replace(
+                tzinfo=pytz.utc
+            )
         else:
             assert response.data["latest_decision_comment"] is None
+            assert response.data["handled_at"] is None
     else:
         assert application.log_entries.all().count() == 0
+
+
+def test_application_accept(
+    request,
+    handler_api_client,
+    handling_application,
+):
+    """
+    granted_as_de_minimis_aid is set at the same time the application is accepted.
+    """
+    handling_application.calculation.granted_as_de_minimis_aid = False
+    handling_application.calculation.save()
+    handling_application.application_step = ApplicationStep.STEP_6
+    handling_application.save()
+    data = HandlerApplicationSerializer(handling_application).data
+    data["status"] = ApplicationStatus.ACCEPTED
+    data["calculation"]["granted_as_de_minimis_aid"] = True
+    data["application_step"] = ApplicationStep.STEP_2
+    data["log_entry_comment"] = "log entry comment"
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 200
+
+    handling_application.refresh_from_db()
+    assert (
+        handling_application.log_entries.get(
+            to_status=ApplicationStatus.ACCEPTED
+        ).comment
+        == "log entry comment"
+    )
+    assert handling_application.application_step == ApplicationStep.STEP_2
+    assert handling_application.calculation.granted_as_de_minimis_aid is True
+
+
+def test_application_with_batch_back_to_handling(
+    request,
+    handler_api_client,
+    decided_application,
+):
+    """
+    When application is moved back to handling, the application
+    needs to be remvoved from any batch.
+    """
+    decided_application.batch = ApplicationBatchFactory()
+    decided_application.save()
+    data = HandlerApplicationSerializer(decided_application).data
+    data["status"] = ApplicationStatus.HANDLING
+
+    response = handler_api_client.put(
+        get_handler_detail_url(decided_application),
+        data,
+    )
+    assert response.status_code == 200
+    decided_application.refresh_from_db()
+    assert decided_application.batch is None
 
 
 @pytest.mark.parametrize(
     "from_status, to_status, auto_assign",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, False),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
@@ -1447,7 +1561,7 @@ def test_pdf_attachment_upload_and_download_as_applicant(
 @pytest.mark.parametrize(
     "status,upload_result",
     [
-        (ApplicationStatus.DRAFT, 201),
+        (ApplicationStatus.DRAFT, 404),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
         (ApplicationStatus.HANDLING, 201),
         (ApplicationStatus.ACCEPTED, 403),
@@ -1468,7 +1582,7 @@ def test_pdf_attachment_upload_and_download_as_handler(
     assert response.status_code == upload_result
     if upload_result != 201:
         return
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(application))
     assert len(response.data["attachments"]) == 1
     assert response.data["attachments"][0]["attachment_file"]
     # the URL must point to the handler API

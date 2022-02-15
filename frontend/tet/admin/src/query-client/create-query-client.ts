@@ -1,5 +1,3 @@
-// TODO copied from kesaseteli, modify to work with tet
-
 import Axios, { AxiosInstance } from 'axios';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
 import { isString } from 'shared/utils/type-guards';

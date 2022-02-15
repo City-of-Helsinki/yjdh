@@ -102,10 +102,20 @@
         "submittedAt": "Saapunut",
         "applicationNum": "Numero",
         "employeeName": "Työntekijä",
+        "employeeNameArchive": "Työllistetty",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
+        "handledAt": "Käsittelypvm",
+        "dataReceived": "Ladattu",
+        "statusArchive": "Käsittelyn tulos",
+        "statuses": {
+          "cancelled": "Peruutettu",
+          "accepted": "Puolettu",
+          "rejected": "Ei puolettu"
+        },
         "additionalInformationNeededBy": "",
-        "additionalInformationNeededByVal": "Muokattava {{date}}"
+        "additionalInformationNeededByVal": "Muokattava {{date}}",
+        "unreadMessagesCount": ""
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"
@@ -119,6 +129,10 @@
           "label": "Error occurred",
           "text": "Unable to fetch applications with status {{status}}"
         }
+      },
+      "total": {
+        "count_one": "{{count}} hakemus",
+        "count_other": "{{count}} hakemusta"
       }
     },
     "actions": {
@@ -131,6 +145,7 @@
       "close": "Sulje",
       "done": "Valmis",
       "saveAndContinue": "Tallenna ja sulje",
+      "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
       "cancel": "Peruuta hakemus",
       "addAttachment": "Liitä uusi tiedosto",
@@ -166,8 +181,8 @@
     "fields": {
       "businessId": "Y-tunnus",
       "bankAccountNumber": "Tilinumero",
-      "associationHasBusinessActivities": "Harjoittaako työnantaja elinkeinotoimintaa?",
-      "associationImmediateManagerCheck": "Lähiesihenkilö palkattavalle henkilölle?",
+      "associationHasBusinessActivities": "Harjoittaako työnantaja taloudellista toimintaa?",
+      "associationImmediateManagerCheck": "Lähiesihenkilö työllistetylle henkilölle?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
       "deMinimisAidAmount": "Tuen määrä",
@@ -190,6 +205,30 @@
       "support": "Puolletaan",
       "reason": "Perustelu",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
+    },
+    "summary": {
+      "accepted": {
+        "title": "Käsittely valmis",
+        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}}–{{endDate}}",
+        "row1": "Myönnetty Helsinki-lisä per kuukausi",
+        "row2": "Myönnetty Helsinki-lisä yhteensä",
+        "deMinimis": "Myönnetään de minimis-tukena",
+        "commentsTitle": "Tiedot"
+      },
+      "rejected": {
+        "description": "Hakemusta ei hyväksytä.",
+        "title": "Käsittely valmis",
+        "commentsTitle": "Perustelu"
+      },
+      "cancelled": {
+        "title": "Peruutustiedot",
+        "description": "",
+        "commentsTitle": "Syy peruutukseen"
+      },
+      "common": {
+        "handler": "Käsittelijä",
+        "handledAt": "Käsittelypäivämäärä"
+      }
     }
   },
   "calculators": {
@@ -230,6 +269,10 @@
       "workTimePercent": {
         "label": "Työaika %",
         "placeholder": "Työaika %"
+      },
+      "monthlyAmount": {
+        "label": "Koulutuskorvaus €/kk",
+        "placeholder": "Koulutuskorvaus €/kk"
       }
     },
     "notifications": {
@@ -269,7 +312,12 @@
       "tableRowHeader": "Helsinki-lisä / kk (enintään {{amount}} €)",
       "tableRowValue": "{{amount}} €",
       "tableTotalHeader": "Helsinki-lisä yhteensä",
-      "manualInput": "Manuaalinen syöttö"
+      "manualInput": "Manuaalinen laskelma",
+      "apprenticeshipCompensation": "Oppisopimuksesta maksettava korvaus",
+      "apprenticeshipPeriod": "Koulutuskorvaus myönnetty ajalle",
+      "apprenticeshipPeriodWithDiff": "Koulutuskorvaus myönnetty ajalle ({{period}} kk)",
+      "add": "Lisää",
+      "remove": "Poista"
     }
   },
   "organizationTypes": {
@@ -353,6 +401,33 @@
       "ssn": {
         "invalid": "Invalid SSN value"
       }
+    }
+  },
+  "reports": {
+    "headings": {
+      "main": "Raportointi",
+      "downloadAcceptedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
+      "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
+      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"
+    },
+    "fields": {
+      "lastDownloadDateText": "Ladattu viimeksi {{date}}",
+      "startDate": "Alkaen",
+      "endDate": "Päättyen"
+    },
+    "buttons": {
+      "downloadAcceptedApplications": "Hyväksyt hakemukset CSV",
+      "downloadRejectedApplications": "Hylätyt hakemukset CSV",
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
+    },
+    "login": {
+      "login": "Logga in i tjänsten",
+      "logoutMessageLabel": "Du har loggat ut",
+      "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
+      "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
+      "infoLabel": "Att använda tjänsten kräver stark autentisering",
+      "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
+      "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
     }
   }
 }

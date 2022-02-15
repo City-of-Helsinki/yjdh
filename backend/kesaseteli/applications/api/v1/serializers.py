@@ -9,8 +9,8 @@ from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
 from applications.enums import (
-    ApplicationStatus,
     AttachmentType,
+    EmployerApplicationStatus,
     SummerVoucherExceptionReason,
 )
 from applications.models import (
@@ -20,36 +20,37 @@ from applications.models import (
     School,
     YouthApplication,
 )
+from common.permissions import HandlerPermission
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
 
 
-class ApplicationStatusValidator:
+class EmployerApplicationStatusValidator:
     requires_context = True
 
     APPLICATION_STATUS_TRANSITIONS = {
-        ApplicationStatus.DRAFT: (
-            ApplicationStatus.DELETED_BY_CUSTOMER,
-            ApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.DRAFT: (
+            EmployerApplicationStatus.DELETED_BY_CUSTOMER,
+            EmployerApplicationStatus.SUBMITTED,
         ),
-        ApplicationStatus.SUBMITTED: (
-            ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-            ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            ApplicationStatus.REJECTED,
-            ApplicationStatus.ACCEPTED,
+        EmployerApplicationStatus.SUBMITTED: (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.ACCEPTED,
         ),
-        ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
-            ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.REJECTED,
         ),
-        ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
+            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.REJECTED,
         ),
-        ApplicationStatus.ACCEPTED: (),
-        ApplicationStatus.REJECTED: (),
-        ApplicationStatus.DELETED_BY_CUSTOMER: (),
+        EmployerApplicationStatus.ACCEPTED: (),
+        EmployerApplicationStatus.REJECTED: (),
+        EmployerApplicationStatus.DELETED_BY_CUSTOMER: (),
     }
 
     def __call__(self, value, serializer_field):
@@ -69,7 +70,7 @@ class ApplicationStatusValidator:
                     )
                 )
         else:
-            if value != ApplicationStatus.DRAFT:
+            if value != EmployerApplicationStatus.DRAFT:
                 raise serializers.ValidationError(
                     _("Initial status of application must be draft")
                 )
@@ -94,8 +95,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
     MAX_ATTACHMENTS_PER_TYPE = 5
 
     ATTACHMENT_MODIFICATION_ALLOWED_STATUSES = (
-        ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-        ApplicationStatus.DRAFT,
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        EmployerApplicationStatus.DRAFT,
     )
 
     attachment_file_name = serializers.SerializerMethodField(
@@ -253,7 +254,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             self.parent.parent.initial_data.get("status") if self.parent.parent else ""
         )
 
-        if not status or status == ApplicationStatus.DRAFT:
+        if not status or status == EmployerApplicationStatus.DRAFT:
             # newly created applications are always DRAFT
             return
 
@@ -283,8 +284,8 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         many=True, required=False, allow_null=True
     )
     status = serializers.ChoiceField(
-        choices=ApplicationStatus.choices,
-        validators=[ApplicationStatusValidator()],
+        choices=EmployerApplicationStatus.choices,
+        validators=[EmployerApplicationStatusValidator()],
         help_text=_("Status of the application, visible to the applicant"),
         required=False,
     )
@@ -332,7 +333,9 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
     def get_submitted_at(self, obj):
         if (
-            hisory_entry := obj.history.filter(status=ApplicationStatus.SUBMITTED)
+            hisory_entry := obj.history.filter(
+                status=EmployerApplicationStatus.SUBMITTED
+            )
             .order_by("modified_at")
             .first()
         ):
@@ -383,7 +386,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
     ]
 
     def _validate_non_draft_required_fields(self, data):
-        if not data.get("status") or data["status"] == ApplicationStatus.DRAFT:
+        if not data.get("status") or data["status"] == EmployerApplicationStatus.DRAFT:
             # newly created applications are always DRAFT
             return
 
@@ -454,12 +457,32 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         self.validate_social_security_number(data.get("social_security_number", None))
         return data
 
+    def to_internal_value(self, data):
+        """
+        Dict of native values <- Dict of primitive datatypes.
+
+        NOTE: Overridden to remove non-conforming read-only field handler from result.
+        """
+        result = super().to_internal_value(data)
+        if "handler" in result and "handler" in self.Meta.read_only_fields:
+            # FIXME: Why is handler field in result? It shouldn't be as it's read-only.
+            #        Maybe something to do with it using PrimaryKeyRelatedField?
+            del result["handler"]  # Remove non-conforming read-only field from result
+        return result
+
     class Meta:
         model = YouthApplication
-        fields = [
+        read_only_fields = [
             "id",
             "created_at",
             "modified_at",
+            "receipt_confirmed_at",
+            "encrypted_vtj_json",
+            "status",
+            "handler",
+            "handled_at",
+        ]
+        fields = read_only_fields + [
             "first_name",
             "last_name",
             "social_security_number",
@@ -469,16 +492,14 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "phone_number",
             "postcode",
             "language",
-            "receipt_confirmed_at",
-            "encrypted_vtj_json",
-        ]
-        read_only_fields = [
-            "id",
-            "created_at",
-            "encrypted_vtj_json",
         ]
 
     encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")
+    handler = serializers.PrimaryKeyRelatedField(
+        required=False,
+        allow_null=True,
+        queryset=HandlerPermission.get_handler_users_queryset(),
+    )
 
     def get_encrypted_vtj_json(self, obj):
         """
@@ -491,3 +512,11 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             return {}
         else:
             return json.loads(obj.encrypted_vtj_json)
+
+
+class YouthApplicationStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YouthApplication
+        fields = read_only_fields = [
+            "status",
+        ]

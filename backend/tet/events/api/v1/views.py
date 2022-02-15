@@ -1,7 +1,9 @@
 from rest_framework import status
+from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from events.api.v1.permissions import TetAdminPermission
 from events.api.v1.serializers import TetUpsertEventSerializer
 from events.services import ServiceClient
 
@@ -11,13 +13,11 @@ from events.services import ServiceClient
 class JobPostingsViewSet(ViewSet):
     """CRUD operations for TET job postings"""
 
+    permission_classes = [TetAdminPermission]
+
     def list(self, request):
-        # TODO move to services.py
         job_postings = ServiceClient().list_job_postings_for_user(request.user)
         return Response(job_postings)
-        # TODO any reason to use a serializer here?
-        # serializer = TetPostingSerializer(queryset, many=True)
-        # return serializer.data)
 
     def retrieve(self, request, pk=None):
         if pk is not None:
@@ -46,5 +46,16 @@ class JobPostingsViewSet(ViewSet):
         if pk is not None:
             response_status = ServiceClient().delete_event(pk, request.user)
             return Response(status=response_status)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class PublishTetPostingView(UpdateAPIView):
+    permission_classes = [TetAdminPermission]
+
+    def update(self, request, pk=None):
+        if pk is not None:
+            event = ServiceClient().publish_job_posting(pk, request.user)
+            return Response(event)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)

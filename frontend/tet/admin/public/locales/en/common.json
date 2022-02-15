@@ -19,84 +19,120 @@
   },
   "loginPage": {
     "logoutMessageLabel": "You have logged out",
-    "errorLabel": "An unexpected error occurred. Please, sign in again. ",
+    "errorLabel": "An unexpected error occurred. Please sign in again. ",
     "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires strong authentication",
-    "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
-    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+    "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again by clicking the button below.",
+    "infoContent": {
+      "listHeading": "The City of Helsinki will process the following necessary information before creating a TET position advertisement:",
+      "bullet1": "name of the person who filled in the application (to be retrieved from suomi.fi in connection with authentication)",
+      "bullet2": "name, telephone number and e-mail address of the contact person designated by you (to be entered in the service)",
+      "bullet3": "name, business ID and address of the employer organisation (to be entered in the service).",
+      "moreInfo": "More information on how personal data is processed (e.g. legal basis and retention periods) in the TET position advertisement service is available in the student administration register <a>.</a>",
+      "registerRights1": "The data subject has rights relating to personal data and its processing by the City of Helsinki.",
+      "registerRights2": "Among other things, the data subject may check what information has been collected about them. More information about the rights and their implementation can be found on the <a>City of Helsinki’s data protection page</a>."
+    }
   },
+	"dialog": {
+		"cancel": "Cancel"
+	},
   "application": {
+		"backToFrontPage": "Back to front page",
+		"publishTerms": "By publishing, you accept",
+		"termsLink": "the terms and conditions",
+		"backToFrontPage": "Back to the front page",
+		"createTerms": "I am in a manager position or have discussed the announcement with my manager.",
+		"accept": "Accept",
     "jobPostings": {
-      "title": "ENG TET-paikkailmoitukset",
-      "noPostingsFound": "ENG Sinulla ei ole vielä yhtään TET-paikkaa.",
-      "addNewPosting": "ENG Lisää uusi harjoittelupaikka",
-			"publishedPostings": "ENG Työharjoittelupaikat",
-			"draftPostings": "ENG Keskeneräiset ilmoitukset",
-			"openSpots_one": "ENG {{count}} TET-paikka",
-			"openSpots_other": "ENG {{count}} TET-paikkaa",
-			"published": "ENG Julkaistu",
-			"notPublished": "ENG Ei julkaistu",
-			"total": "ENG kpl",
+      "title": "TET workplace advertisements",
+      "noPostingsFound": "You do not have any TET advertisements yet.",
+      "addNewPosting": "Add new training advertisement",
+			"publishedPostings": "TET advertisements",
+			"draftPostings": "Incomplete advertisements",
+			"openSpots_one": "{{count}} TET advertisement",
+			"openSpots_other": "{{count}} TET advertisements",
+			"published": "Published",
+			"notPublished": "Unpublished",
+			"total": " pcs",
 			"menu": {
-				"publishNow": "ENG Julkaise nyt",
-				"edit": "ENG Muokkaa",
-				"copy": "ENG Tee kopio",
-				"delete": "ENG Poista"
+				"publishNow": "Publish now",
+				"edit": "Edit",
+				"copy": "Make a copy",
+				"delete": "Delete"
 			}
     }
   },
   "editor": {
-    "newTitle": "ENG Uusi TET-paikka",
-    "editTitle": "ENG Muokkaa TET-paikkaa",
-    "saveDraft": "ENG Tallenna julkaisematta",
-    "deletePosting": "ENG Poista ilmoitus",
-    "preview": "ENG Siirry esikatseluun",
-    "publish": "ENG Julkaise",
-    "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
+		"companyInfo": "Employer information",
+    "helsinkiCity": "City of Helsinki",
+		"companyInfoFetch": "The information has been fetched during authentication.",
+    "newTitle": "New TET advertisement",
+    "editTitle": "Edit TET advertisement",
+		"copyTitle": "Copy TET advertisement",
+    "saveDraft": "Save without publishing",
+    "deletePosting": "Delete advertisement",
+    "preview": "Move to preview",
+    "publish": "Publish",
+    "notificationTitle": "Fill in missing or incorrect information",
+		"backToEdit": "Back to the form",
+		"requiredInfo": "marked fields are required",
+		"preview": "Preview",
+    "loadingError": "Error while loading the event. Please try again later.",
+    "language": "Language of the TET workplace",
     "employerInfo": {
-      "header": "ENG Työpaikan tiedot",
-      "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "ENG Toimipiste tai osasto",
-			"address": "ENG Osoite",
-			"streetAddress": "ENG Katuosoite"
+			"contactPerson": "Contact person",
+      "header": "Unit details",
+      "addressNeededLabel": "The TET is carried out at a different address",
+      "departmentLabel": "Unit or department",
+			"address": "Address",
+			"streetAddress": "Street address"
     },
     "posting": {
-      "header": "ENG Työharjoittelupaikan tiedot",
-      "title": "ENG Tehtävänimike",
-      "description": "ENG Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
-      "workHoursNotice": "ENG Työaika on aina sama 30h per viikko.",
-      "startDateLabel": "ENG Alkaen",
-      "endDateLabel": "ENG Päättyen",
-      "spotsLabel": "ENG Työharjoittelupaikkoja",
-			"contactFirstName": "ENG Etunimi",
-			"contactLastName": "ENG Sukunimi",
-			"contactPhone": "ENG Puhelin",
-			"contactEmail": "ENG Sähköposti",
-			"contactLanguage": "ENG Asiointikieli",
-			"contactLanguageFi": "ENG Suomi",
-			"contactLanguageSv": "ENG Ruotsi",
-			"contactLanguageEn": "ENG Englanti",
+      "header": "Workplace details",
+      "title": "Job title",
+      "description": "Free-form description of the workplace/tasks",
+      "workHoursNotice": "The working hours are always the same (30 h per week).",
+      "startDateLabel": "Start date",
+      "endDateLabel": "End date",
+      "spotsLabel": "Number of open spots",
+			"contactFirstName": "First name",
+			"contactLastName": "Last name",
+			"contactPhone": "Telephone",
+			"contactEmail": "E-mail",
+			"contactLanguage": "The language used during TET-period",
+			"contactLanguageFi": "Finnish",
+			"contactLanguageSv": "Swedish",
+			"contactLanguageEn": "English",
 			"validation": {
-				"required": "ENG Tieto vaaditaan",
-				"email": "ENG Syötä sähköposti oikeassa muodossa",
-				"max": "ENG Maksimimerkkimäärä ylittyy",
-				"phone": "ENG Syötä oikeassa muodossa",
-				"name": "ENG Syötä nimi sallitussa muodossa"
+				"required": "Required information",
+				"email": "Enter e-mail in the correct format",
+				"max": "The maximum number of characters is exceeded",
+				"phone": "Enter the correct format",
+				"name": "Enter the name without special characters or letters"
 			}
     },
 		"classification": {
-			"classifications": "ENG Luokittelut",
-			"workMethod": "ENG Työtapa",
-			"workFeature": "ENG Työn ominaisuudet",
-			"keywords": "ENG Avainsanat",
-			"search": "ENG Hae"
+			"classifications": "Classification",
+			"workMethod": "Work method",
+			"workFeature": "Characteristics of work",
+			"keywords": "Tags",
+			"search": "Search"
   	},
     "combobox": {
-      "toggleButtonAriaLabel": "ENG Näytä/piilota vaihtoehdot",
-      "clearButtonAriaLabel": "ENG Tyhjennä valinnat",
-      "selectedItemRemoveButtonAriaLabel": "ENG Poista valinta"
+      "toggleButtonAriaLabel": "Show/hide options",
+      "clearButtonAriaLabel": "Clear selection",
+      "selectedItemRemoveButtonAriaLabel": "Deselect"
     }
   },
+	"postingTemplate": {
+		"spots": "TET positions",
+		"contact": "Contact information",
+		"description": "Description",
+		"share": "Share event",
+		"dateAndTime": "Date and time",
+		"location": "Place",
+		"languages": "Languages used in the workplace"
+	},
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
@@ -104,7 +140,7 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
-    "feedback": "ENG Anna palautetta",
+    "feedback": "ENG Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
   },
   "languages": {
@@ -125,12 +161,23 @@
     }
   },
   "upload": {
+		"successMessage": "ENG Information saved",
     "isUploading": "Sending...",
     "errorTitle": "File upload failed",
     "errorMessage": "Something went wrong. Please try again later."
   },
   "delete": {
+		"deletePosting": "Delete TET advertisement",
+		"confirmation": "Are you sure you want to delete the TET advertisement {{posting}}?",
+		"successTitle": "TET advertisement was deleted",
     "errorTitle": "Deleting the file failed.",
+    "errorMessage": "Something went wrong. Please try again later."
+  },
+  "publish": {
+		"publishPosting": "Publish TET advertisement",
+		"confirmation": "Are you sure you want to publish the TET advertisement {{posting}}?",
+		"successTitle": "TET advertisement was published",
+    "errorTitle": "Publishing failed",
     "errorMessage": "Something went wrong. Please try again later."
   },
   "applications": {
@@ -138,11 +185,11 @@
       "attachments": {
         "types": {
           "employment_contract": {
-            "title": "Employment contract",
+            "title": "TET-contract",
             "message": ""
           },
           "payslip": {
-            "title": "Pay statement",
+            "title": "TET-certificate",
             "message": ""
           }
         },
