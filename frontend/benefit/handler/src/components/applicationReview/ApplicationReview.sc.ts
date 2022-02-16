@@ -16,8 +16,9 @@ export const $ActionsWrapper = styled.div`
 `;
 
 export const $CalculatorText = styled.p`
-  margin-top: 0;
+  margin: 0;
   font-size: ${(props) => props.theme.fontSize.body.m};
+  font-weight: 500;
 `;
 
 export const $CalculatorHr = styled($Hr)`
@@ -56,9 +57,4 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
   margin-bottom: ${(props) => (props.isTotal ? props.theme.spacing.m : '0')};
-`;
-
-export const $DateTimeDuration = styled.div`
-  display: flex;
-  align-items: center;
 `;
