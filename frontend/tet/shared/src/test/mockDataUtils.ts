@@ -1,4 +1,4 @@
-import { TetData } from 'tet/shared/types/TetData';
+import { TetData } from 'tet-shared/types/TetData';
 import merge from 'lodash/merge';
 import faker from 'faker';
 
@@ -24,7 +24,7 @@ export const fakeTetData = (overrides?: Partial<TetData>): TetData => {
       keywords_working_methods: [],
       keywords_attributes: [],
     },
-    overrides,
+    overrides
   );
 };
 

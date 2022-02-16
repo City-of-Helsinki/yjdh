@@ -3,7 +3,7 @@ import {
   $InfoItem,
   $Header,
   $List,
-} from 'tet/shared/src/components/posting/postingInfoItem/PostingInfoItem.sc';
+} from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem.sc';
 
 type Props = {
   title: string;

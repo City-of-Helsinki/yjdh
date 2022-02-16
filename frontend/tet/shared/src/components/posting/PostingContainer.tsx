@@ -1,7 +1,7 @@
 import React from 'react';
-import { TetData } from 'tet/shared/types/TetData';
-import PostingHero from 'tet/shared/src/components/posting/postingHero/PostingHero';
-import PostingContent from 'tet/shared/src/components/posting/postingContent/PostingContent';
+import { TetData } from 'tet-shared/types/TetData';
+import PostingHero from 'tet-shared/components/posting/postingHero/PostingHero';
+import PostingContent from 'tet-shared/components/posting/postingContent/PostingContent';
 
 type Props = {
   posting: TetData;

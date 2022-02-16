@@ -1,16 +1,16 @@
 import React from 'react';
-import { TetData } from 'tet/shared/types/TetData';
+import { TetData } from 'tet-shared/types/TetData';
 import Container from 'shared/components/container/Container';
-import PostingInfoItem from 'tet/shared/src/components/posting/postingInfoItem/PostingInfoItem';
+import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import {
   $ContentWrapper,
   $Body,
   $InfoWrapper,
   $Title,
-} from 'tet/shared/src/components/posting/postingContent/PostingContent.sc';
+} from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
-import PostingShareLinks from 'tet/shared/src/components/posting/postingShareLinks/PostingShareLinks';
-import getFormattedDate from 'tet/shared/util/getFormattedDate';
+import PostingShareLinks from 'tet-shared//components/posting/postingShareLinks/PostingShareLinks';
+import getFormattedDate from 'tet-shared/util/getFormattedDate';
 import { useTranslation } from 'next-i18next';
 
 type Props = {

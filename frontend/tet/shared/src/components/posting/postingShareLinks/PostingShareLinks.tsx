@@ -3,7 +3,7 @@ import {
   $ShareTitle,
   $Links,
   $ShareButton,
-} from 'tet/shared/src/components/posting/postingShareLinks/PostingShareLinks.sc';
+} from 'tet-shared//components/posting/postingShareLinks/PostingShareLinks.sc';
 import { IconLink, IconFacebook, IconTwitter, IconLinkedin } from 'hds-react';
 
 const PostingShareLinks: React.FC = () => {

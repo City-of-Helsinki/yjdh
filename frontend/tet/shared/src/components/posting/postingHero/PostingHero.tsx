@@ -1,6 +1,6 @@
 import React from 'react';
-import { TetData } from 'tet/shared/types/TetData';
-import Container from 'tet/shared/src/components/container/Container';
+import { TetData } from 'tet-shared/types/TetData';
+import Container from 'tet-shared//components/container/Container';
 import {
   $PostingHero,
   $ImageContainer,
@@ -14,7 +14,7 @@ import {
   $Address,
   $ContactTitle,
   $ContactInfo,
-} from 'tet/shared/src/components/posting/postingHero/PostingHero.sc';
+} from 'tet-shared//components/posting/postingHero/PostingHero.sc';
 import { useTranslation } from 'next-i18next';
 import { IconLocation, Button, Tag } from 'hds-react';
 
