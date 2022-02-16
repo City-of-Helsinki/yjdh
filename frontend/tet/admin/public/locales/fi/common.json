@@ -105,7 +105,8 @@
 		"description": "Kuvaus",
 		"share": "Jaa tapahtuma",
 		"dateAndTime": "Päivä ja aika",
-		"location": "Paikka"
+		"location": "Paikka",
+		"languages": "TET-paikassa käytettävät kielet"
 	},
   "footer": {
     "copyrightText": "Helsingin kaupunki",

@@ -1,32 +1,25 @@
-import React from 'react';
+import { useContext } from 'react';
 import { GetStaticProps, NextPage } from 'next';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import Container from 'shared/components/container/Container';
 import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
 import Editor from 'tet/admin/components/editor/Editor';
 import { useTranslation } from 'next-i18next';
-import PostingContainer from 'tet/shared/components/posting/PostingContainer';
-import { useQuery } from 'react-query';
-import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
+import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
+import { PreviewContext } from 'tet/admin/store/PreviewContext';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
+  const { showPreview, tetData } = useContext(PreviewContext);
 
-  const { isLoading, data } = useQuery<TetPostings>(BackendEndpoint.TET_POSTINGS);
-
-  if (isLoading) {
-    return <PageLoadingSpinner />;
+  if (showPreview) {
+    return (
+      <PreviewWrapper>
+        <PostingContainer posting={tetData} />
+      </PreviewWrapper>
+    );
   }
-
-  const { draft } = data;
-
-  return (
-    <PreviewWrapper>
-      <PostingContainer posting={draft[0]} />
-    </PreviewWrapper>
-  );
 
   return (
     <Container>

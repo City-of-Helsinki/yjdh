@@ -8,7 +8,8 @@ interface ContainerProps {
 export const $Container = styled.div<ContainerProps>`
   display: grid;
   background-color: ${(props) => props.backgroundColor || ''};
-  grid-template-columns: ${(props) => props.theme.spacing.xs2} 1fr ${(props) => props.theme.spacing.xs2};
+  grid-template-columns: ${(props) => props.theme.spacing.xs2} 1fr ${(props) =>
+      props.theme.spacing.xs2};
 
   ${respondAbove('md')`
     grid-template-columns: 1fr minmax(auto, 1240px) 1fr;

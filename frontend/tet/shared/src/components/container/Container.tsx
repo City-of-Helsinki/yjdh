@@ -4,7 +4,10 @@ import { $Container, $Inner } from './Container.sc';
 
 type ContainerProps = { children: React.ReactNode; backgroundColor?: string };
 
-const Container: React.FC<ContainerProps> = ({ children, backgroundColor = '' }: ContainerProps) => (
+const Container: React.FC<ContainerProps> = ({
+  children,
+  backgroundColor = '',
+}: ContainerProps) => (
   <$Container backgroundColor={backgroundColor}>
     <$Inner>{children}</$Inner>
   </$Container>

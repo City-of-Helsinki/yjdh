@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Button } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -7,14 +8,23 @@ import TetPosting from 'tet/admin/types/tetposting';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
 import { IconCross, IconEye, IconUpload } from 'hds-react';
+import { PreviewContext } from 'tet/admin/store/PreviewContext';
 
 type Props = {
   onSubmit: () => void;
 };
 
 const ActionButtons: React.FC<Props> = ({ onSubmit }) => {
+  const { setPreviewVisibility, setPreviewData } = useContext(PreviewContext);
+
+  const showPreview = () => {
+    setPreviewData(getValues());
+    setPreviewVisibility(true);
+  };
+
   const { t } = useTranslation();
   const {
+    getValues,
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
   const theme = useTheme();
@@ -39,7 +49,7 @@ const ActionButtons: React.FC<Props> = ({ onSubmit }) => {
         </$GridCell>
         <$GridCell $colSpan={2}>{null}</$GridCell>
         <$GridCell $colSpan={3}>
-          <Button disabled={isSubmitting} iconLeft={<IconEye />} onClick={() => alert('Not implemented')}>
+          <Button disabled={isSubmitting} iconLeft={<IconEye />} onClick={showPreview}>
             {t('common:editor.preview')}
           </Button>
         </$GridCell>

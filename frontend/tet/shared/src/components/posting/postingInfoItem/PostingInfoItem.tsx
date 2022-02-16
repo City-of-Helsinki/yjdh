@@ -1,5 +1,9 @@
 import React from 'react';
-import { $InfoItem, $Header, $List } from 'tet/shared/components/posting/postingInfoItem/PostingInfoItem.sc';
+import {
+  $InfoItem,
+  $Header,
+  $List,
+} from 'tet/shared/src/components/posting/postingInfoItem/PostingInfoItem.sc';
 
 type Props = {
   title: string;

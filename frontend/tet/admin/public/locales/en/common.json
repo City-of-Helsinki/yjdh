@@ -106,6 +106,7 @@
 		"share": "ENG Jaa tapahtuma",
 		"dateAndTime": "ENG Päivä ja aika",
 		"location": "ENG Paikka",
+		"languages": "ENG TET-paikassa käytettävät kielet"
 	},
   "footer": {
     "copyrightText": "City of Helsinki",

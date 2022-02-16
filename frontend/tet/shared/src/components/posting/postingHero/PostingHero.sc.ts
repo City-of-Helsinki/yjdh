@@ -52,8 +52,8 @@ export const $Title = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.l};
 `;
 
-export const $Subtitle = styled.h1`
-  font-size: ${(props) => props.theme.fontSize.body.l};
+export const $Subtitle = styled.h2`
+  font-size: ${(props) => props.theme.fontSize.body.m};
 `;
 export const $Date = styled.div`
   font-size: ${(props) => props.theme.fontSize.body.l};

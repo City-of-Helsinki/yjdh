@@ -1,5 +1,6 @@
 import { TetData } from 'tet/shared/types/TetData';
 import merge from 'lodash/merge';
+import faker from 'faker';
 
 export const fakeTetData = (overrides?: Partial<TetData>): TetData => {
   return merge<TetData, typeof overrides>(
@@ -19,14 +20,23 @@ export const fakeTetData = (overrides?: Partial<TetData>): TetData => {
         city: 'Helsinki',
         street_address: 'Mannerheimintie 10',
       },
+      keywords: [],
+      keywords_working_methods: [],
+      keywords_attributes: [],
     },
     overrides,
   );
 };
 
-/**
- * TODO Get to work with faker {@link https://github.com/faker-js/faker}
- */
+const sentences: string[] = [];
 const uniqueSentences = (): string => {
-  return 'word_a word_b';
+  const sentence = faker.random.words();
+
+  if (sentences.includes(sentence)) {
+    return uniqueSentences();
+  } else {
+    sentences.push(sentence);
+  }
+
+  return sentence;
 };

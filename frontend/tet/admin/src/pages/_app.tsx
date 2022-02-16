@@ -11,11 +11,14 @@ import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
+import PreviewContextProvider from 'tet/admin/store/PreviewContext';
 
 const App: React.FC<AppProps> = (appProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
     <QueryClientProvider client={createQueryClient()}>
-      <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+      <PreviewContextProvider>
+        <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+      </PreviewContextProvider>
     </QueryClientProvider>
   </BackendAPIProvider>
 );

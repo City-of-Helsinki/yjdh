@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import CompanyInfo from 'tet/admin/components/editor/companyInfo/CompanyInfo';
 import PostingDetails from 'tet/admin/components/editor/postingDetails/PostingDetails';
 import ContactPerson from 'tet/admin/components/editor/contactPerson/ContactPerson';
@@ -10,6 +10,7 @@ import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
 import { DevTool } from '@hookform/devtools';
+import { PreviewContext } from 'tet/admin/store/PreviewContext';
 
 const initialValuesForNew: TetPosting = {
   title: '',
@@ -46,6 +47,24 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     criteriaMode: 'all',
     defaultValues: { contact_language: 'fi', keywords_working_methods: [], keywords_attributes: [], spots: 1 },
   });
+
+  const { tetData } = useContext(PreviewContext);
+
+  useEffect(() => {
+    console.log('tesg');
+    methods.reset({
+      contact_first_name: tetData.contact_first_name,
+      contact_last_name: tetData.contact_last_name,
+      contact_phone: tetData.contact_phone,
+      contact_email: tetData.contact_email,
+      org_name: tetData.org_name,
+      title: tetData.title,
+      spots: tetData.spots,
+      description: tetData.description,
+      start_date: tetData.start_date,
+      end_date: tetData.end_date,
+    });
+  }, [tetData, methods.reset]);
 
   const upsertTetPosting = useUpsertTetPosting();
 

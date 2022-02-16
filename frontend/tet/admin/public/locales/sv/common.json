@@ -106,6 +106,7 @@
 		"share": "SV Jaa tapahtuma",
 		"dateAndTime": "SV Päivä ja aika",
 		"location": "SV Paikka",
+		"languages": "SV TET-paikassa käytettävät kielet"
 	},
   "footer": {
     "copyrightText": "Helsingfors stad",
