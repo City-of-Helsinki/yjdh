@@ -12,25 +12,6 @@ import Classification from 'tet/admin/components/editor/classification/Classific
 import { DevTool } from '@hookform/devtools';
 import { tetPostingToEvent } from 'tet/admin/backend-api/transformations';
 
-const initialValuesForNew: TetPosting = {
-  title: '',
-  description: '',
-  location: '',
-  spots: 3,
-  contact_first_name: 'test',
-  contact_last_name: '',
-  contact_email: '',
-  contact_phone: '',
-  contact_language: 'fi',
-  start_date: '',
-  end_date: '',
-  date_published: '',
-  org_name: '',
-  keywords_working_methods: [],
-  keywords_attributes: [],
-  keywords: [],
-};
-
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
@@ -54,8 +35,6 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   });
 
   const upsertTetPosting = useUpsertTetPosting();
-
-  const posting = initialValue || initialValuesForNew;
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
     const event = tetPostingToEvent(validatedPosting);
@@ -85,13 +64,13 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     <>
       <FormProvider {...methods}>
         <form aria-label="add/modify tet posting">
-          <HiddenIdInput id="id" initialValue={posting.id} />
+          <HiddenIdInput id="id" initialValue={initialValue?.id} />
           <p>* pakollinen tieto</p>
           <EditorErrorNotification />
           <CompanyInfo />
-          <ContactPerson initialValue={posting} />
-          <PostingDetails initialValue={posting} />
-          <Classification initialValue={posting} />
+          <ContactPerson />
+          <PostingDetails />
+          <Classification />
           <ActionButtons onSubmit={submitHandler} />
         </form>
       </FormProvider>

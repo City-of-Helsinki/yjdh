@@ -3,18 +3,15 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-//import { SelectionGroup } from 'hds-react';
 import { getWorkMethods, getWorkFeatures, getWorkKeywords } from 'tet/admin/backend-api/linked-events-api';
 import { useQuery, useQueries } from 'react-query';
 import { OptionType } from 'tet/admin/types/classification';
-import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
-import TetPosting from 'tet/admin/types/tetposting';
 
 export type FilterFunction = (options: OptionType[], search: string) => OptionType[];
 
-const Classification: React.FC<EditorSectionProps> = () => {
+const Classification: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [search, setSearch] = React.useState('');
