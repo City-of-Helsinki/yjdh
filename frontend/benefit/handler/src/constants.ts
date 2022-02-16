@@ -120,10 +120,8 @@ export enum CALCULATION_SALARY_KEYS {
   VACATION_MONEY = 'vacationMoney',
   STATE_AID_MAX_PERCENTAGE = 'stateAidMaxPercentage',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
-  PAY_SUBSIDY_START_DATE = 'paySubsidyStartDate',
-  PAY_SUBSIDY_END_DATE = 'paySubsidyEndDate',
   // eslint-disable-next-line no-secrets/no-secrets
-  PAY_SUBSIDY_WORK_TIME_PERCENT = 'paySubsidyWorkTimePercent',
+  WORK_TIME_PERCENT = 'workTimePercent',
   PAY_SUBSIDIES = 'paySubsidies',
 }
 

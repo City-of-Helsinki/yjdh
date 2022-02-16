@@ -190,7 +190,7 @@
         "placeholder": "Palkkatukiprosentti"
       },
 
-      "paySubsidyWorkTimePercent": {
+      "workTimePercent": {
         "label": "Työaika %",
         "placeholder": "Työaika %"
       }
@@ -199,7 +199,8 @@
       "error": {
         "title": "Laskurissa on virheitä",
         "message": "Ole hyvä ja tarkista laskelman tiedot ja yritä laskea uudestaan."
-      }
+      },
+      "paySubsidy": "Palkkatuki"
     },
     "employment": {
       "header": "Työllistämisen Helsinki-lisää haettu ajalle",

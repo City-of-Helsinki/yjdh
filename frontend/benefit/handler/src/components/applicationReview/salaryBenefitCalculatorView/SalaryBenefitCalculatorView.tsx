@@ -207,9 +207,9 @@ const SalaryBenefitCalculatorView: React.FC<
           {item.paySubsidyPercent === 100 && (
             <$GridCell $colStart={3} $colSpan={2}>
               <TextInput
-                id={fields.paySubsidyWorkTimePercent.name}
-                name={fields.paySubsidyWorkTimePercent.name}
-                label={fields.paySubsidyWorkTimePercent.label}
+                id={fields.workTimePercent.name}
+                name={fields.workTimePercent.name}
+                label={fields.workTimePercent.label}
                 onBlur={undefined}
                 onChange={(e) => {
                   formik.setFieldValue(
@@ -227,15 +227,9 @@ const SalaryBenefitCalculatorView: React.FC<
                   );
                 }}
                 value={formatStringFloatValue(item.workTimePercent)}
-                invalid={
-                  !!getErrorMessage(fields.paySubsidyWorkTimePercent.name)
-                }
-                aria-invalid={
-                  !!getErrorMessage(fields.paySubsidyWorkTimePercent.name)
-                }
-                errorText={getErrorMessage(
-                  fields.paySubsidyWorkTimePercent.name
-                )}
+                invalid={!!getErrorMessage(fields.workTimePercent.name)}
+                aria-invalid={!!getErrorMessage(fields.workTimePercent.name)}
+                errorText={getErrorMessage(fields.workTimePercent.name)}
               />
             </$GridCell>
           )}
@@ -264,12 +258,12 @@ const SalaryBenefitCalculatorView: React.FC<
 
             <$DateTimeDuration>
               <DateInput
-                id={fields.paySubsidyStartDate.name}
-                name={fields.paySubsidyStartDate.name}
-                placeholder={fields.paySubsidyStartDate.placeholder}
+                id={fields.startDate.name}
+                name={fields.startDate.name}
+                placeholder={fields.startDate.placeholder}
                 onChange={(value) => {
                   const newStartDateObject = parseDate(value);
-                  var endDateObject = parseDate(item.endDate);
+                  let endDateObject = parseDate(item.endDate);
                   if (
                     newStartDateObject &&
                     endDateObject &&
@@ -295,12 +289,12 @@ const SalaryBenefitCalculatorView: React.FC<
               />
               <DateFieldsSeparator />
               <DateInput
-                id={fields.paySubsidyEndDate.name}
-                name={fields.paySubsidyEndDate.name}
-                placeholder={fields.paySubsidyEndDate.placeholder}
+                id={fields.endDate.name}
+                name={fields.endDate.name}
+                placeholder={fields.endDate.placeholder}
                 onChange={(value) => {
                   const newEndDateObject = parseDate(value);
-                  var startDateObject = parseDate(item.startDate);
+                  let startDateObject = parseDate(item.startDate);
                   if (
                     newEndDateObject &&
                     startDateObject &&
