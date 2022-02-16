@@ -170,3 +170,11 @@ export const diffMonths = (
   correctEndDate.setDate(correctEndDate.getDate() + 1);
   return Number((days360(startDate, correctEndDate, method) / 30).toFixed(2));
 };
+
+export const getCorrectEndDate = (
+  startDate: string,
+  endDate: string
+): string | undefined | Date => {
+  if ((parseDate(startDate) ?? 0) > (parseDate(endDate) ?? 0)) return startDate;
+  return endDate;
+};
