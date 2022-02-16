@@ -1,7 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import Footer from 'kesaseteli/youth/components/footer/Footer';
-import Header from 'kesaseteli/youth/components/header/Header';
+import Header from 'kesaseteli/handler/components/header/Header';
 import { getBackendDomain } from 'kesaseteli-shared/backend-api/backend-api';
 import createQueryClient from 'kesaseteli-shared/query-client/create-query-client';
 import { AppProps } from 'next/app';
@@ -14,7 +13,7 @@ import BaseApp from 'shared/components/app/BaseApp';
 const App: React.FC<AppProps> = (appProps: AppProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
     <QueryClientProvider client={createQueryClient()}>
-      <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+      <BaseApp header={<Header />} {...appProps} />
     </QueryClientProvider>
   </BackendAPIProvider>
 );

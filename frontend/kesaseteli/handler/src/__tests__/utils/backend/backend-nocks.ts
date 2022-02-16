@@ -1,10 +1,9 @@
 import faker from 'faker';
-import { fakeSchools } from 'kesaseteli/youth/__tests__/utils/fake-objects';
-import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import YouthApplication from 'kesaseteli-shared/types/youth-application';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
@@ -30,11 +29,6 @@ afterEach(async () => {
   nock.cleanAll();
 });
 nock.disableNetConnect();
-
-export const expectToGetSchoolsFromBackend = (): nock.Scope =>
-  nock(getBackendDomain())
-    .get(BackendEndpoint.SCHOOLS)
-    .reply(200, fakeSchools, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectToGetSchoolsErrorFromBackend = (
   errorCode: 400 | 404 | 500

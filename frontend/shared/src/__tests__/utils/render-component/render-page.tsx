@@ -17,7 +17,7 @@ import { ThemeProvider } from 'styled-components';
 type Props = {
   backendUrl: string;
   Header: React.FC;
-  Footer: React.FC;
+  Footer?: React.FC;
   AuthProvider?: React.FC;
 };
 
@@ -43,7 +43,7 @@ const renderPage =
           <Content>
             <Page />
           </Content>
-          <Footer />
+          {Footer && <Footer />}
         </Layout>
       </ThemeProvider>
     );
