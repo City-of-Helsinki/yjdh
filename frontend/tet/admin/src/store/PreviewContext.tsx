@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TetData } from 'tet/shared/types/TetData';
+import { TetData } from 'tet-shared/types/TetData';
 import TetPosting from 'tet/admin/types/tetposting';
 
 type PreviewContextObj = {
