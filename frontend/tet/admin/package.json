@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@frontend/shared": "*",
+    "@frontend/tet-shared": "*",
     "axios": "^0.25.0",
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
