@@ -1,4 +1,3 @@
-import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
@@ -8,6 +7,7 @@ import noop from 'lodash/noop';
 import React from 'react';
 import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
+import useIdQueryParam from 'shared/hooks/useIdQueryParam';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 
@@ -46,7 +46,7 @@ export type Params = {
 const useApplicationApi = <T = Application>(
   select?: (application: Application) => T
 ): ApplicationApi<T> => {
-  const applicationId = useApplicationIdQueryParam();
+  const applicationId = useIdQueryParam();
   const queryClient = useQueryClient();
   const onError = useErrorHandler();
 
