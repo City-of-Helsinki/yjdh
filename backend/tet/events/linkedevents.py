@@ -151,3 +151,10 @@ class LinkedEventsClient:
             resource_id=eventid,
             json=event,
         )
+
+    def get_url(self, url):
+        # TODO check that url.startswith(settings.LINKEDEVENTS_URL)
+        r = requests.get(url, headers=self._headers())
+        # TODO better error handling
+        r.raise_for_status()
+        return r.json()
