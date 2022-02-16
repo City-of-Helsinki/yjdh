@@ -74,8 +74,8 @@ def list_ended_job_postings_for_user(user):
 def get_tet_event(event_id, user):
     event = get_event_and_raise_for_unauthorized(user, event_id)
 
-    event['location'] = client.get_url(event['location']['@id'])
-    event['keywords'] = [client.get_url(k['@id']) for k in event['keywords']]
+    event["location"] = client.get_url(event["location"]["@id"])
+    event["keywords"] = [client.get_url(k["@id"]) for k in event["keywords"]]
 
     return reduce_get_event(event)
 

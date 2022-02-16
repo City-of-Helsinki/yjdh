@@ -1,15 +1,15 @@
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { OptionType } from 'tet/admin/types/classification';
+import { IdObject } from 'tet/admin/types/linkedevents';
 
 // TODO replacing these values with real data source names should be enough when they're available in LinkedEvents
 export const workMethodDataSource = 'helmet';
 export const workFeaturesDataSource = 'kulke';
 
-type Keyword = {
+type Keyword = IdObject & {
   name: {
     fi: string;
   };
-  '@id': string;
 };
 
 type Place = {

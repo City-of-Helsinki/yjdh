@@ -8,8 +8,9 @@ import {
 } from 'tet/admin/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
 import { workFeaturesDataSource, workMethodDataSource } from 'tet/admin/backend-api/linked-events-api';
+import { OptionType } from 'tet/admin/types/classification';
 
-export const getLocalizedString = (obj: LocalizedObject): string => obj.fi;
+export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
 
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
@@ -54,7 +55,13 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
     title: getLocalizedString(event.name),
     description: getLocalizedString(event.description),
     org_name: event.custom_data?.org_name || '',
-    location: event.location['@id'],
+    // TODO label is what is shown in address field
+    // note that with GET /event/ all but @id are empty
+    location: {
+      name: getLocalizedString(event.location.name),
+      label: getLocalizedString(event.location.name),
+      value: event.location['@id'],
+    },
     start_date: isoDateToHdsFormat(event.start_time)!,
     end_date: isoDateToHdsFormat(event.end_time),
     date_published: event.date_published,
@@ -64,8 +71,16 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
     contact_language: event.custom_data?.contact_language || 'fi',
     contact_phone: event.custom_data?.contact_phone || '',
     keywords: event.keywords
-      .map((keyword) => keyword['@id'])
-      .filter((url) => ![workMethodDataSource, workFeaturesDataSource].includes(parseDataSourceFromKeywordUrl(url))),
+      .filter(
+        (keyword) =>
+          ![workMethodDataSource, workFeaturesDataSource].includes(parseDataSourceFromKeywordUrl(keyword['@id'])),
+      )
+      // note that with GET /event/ all but @id are empty
+      .map((keyword) => ({
+        name: getLocalizedString(keyword.name),
+        label: getLocalizedString(keyword.name),
+        value: keyword['@id'],
+      })),
     keywords_working_methods: event.keywords
       .map((keyword) => keyword['@id'])
       .filter((url) => parseDataSourceFromKeywordUrl(url) === workMethodDataSource),
@@ -99,9 +114,7 @@ export const eventsToTetPostings = (events: TetEvents | undefined): TetPostings 
 
 export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
   name: setLocalizedString(posting.title),
-  location: { '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:15321/' },
-  // TODO we get location as OptionType instead of string
-  // location: { '@id': posting.location },
+  location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
   start_time: hdsDateToIsoFormat(posting.start_date)!,
   end_time: hdsDateToIsoFormat(posting.end_date),
@@ -109,8 +122,7 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
   keywords: [
     ...posting.keywords_working_methods,
     ...posting.keywords_attributes,
-    // TODO we get keywords as OptionType[] instead of string[]
-    // ...posting.keywords,
+    ...posting.keywords.map((option) => option.value),
   ].map((url) => ({ '@id': url })),
   custom_data: {
     spots: posting.spots.toString(),

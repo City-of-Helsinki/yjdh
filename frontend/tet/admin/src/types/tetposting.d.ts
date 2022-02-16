@@ -1,9 +1,11 @@
+import { OptionType } from 'tet/admin/types/classification';
+
 type TetPosting = {
   id?: string;
   title: string;
   description: string;
   org_name: string;
-  location: string;
+  location: OptionType;
   spots: number;
   start_date: string;
   end_date?: string;
@@ -13,7 +15,7 @@ type TetPosting = {
   contact_language: string;
   contact_phone: string;
   date_published: string | null;
-  keywords: string[];
+  keywords: OptionType[];
   keywords_working_methods: string[];
   keywords_attributes: string[];
 };

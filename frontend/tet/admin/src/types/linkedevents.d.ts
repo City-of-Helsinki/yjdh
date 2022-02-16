@@ -19,13 +19,14 @@ export type LocalizedObject = {
 
 export type IdObject = {
   '@id': string;
+  name?: LocalizedObject;
 };
 
 export type Keyword = {
   name: LocalizedObject;
 };
 
-type Place = {
+type Place = IdObject & {
   name: LocalizedObject;
   street_address: LocalizedObject;
   postal_code: string;
@@ -34,7 +35,6 @@ type Place = {
     type: string;
     coordinates: number[];
   };
-  '@id': string;
 };
 
 export type CustomData = {
@@ -51,7 +51,7 @@ export type CustomData = {
 export type TetEvent = {
   id: string;
   name: LocalizedObject;
-  location: IdObject;
+  location: Place;
   description: LocalizedObject;
   short_description: LocalizedObject;
   keywords: IdObject[];
