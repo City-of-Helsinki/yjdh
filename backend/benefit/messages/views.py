@@ -10,8 +10,10 @@ from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from users.utils import get_company_from_request
 
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
-class ApplicantMessageViewSet(viewsets.ModelViewSet):
+
+class ApplicantMessageViewSet(AuditLoggingModelViewSet):
 
     serializer_class = MessageSerializer
     permission_classes = [
@@ -31,6 +33,8 @@ class ApplicantMessageViewSet(viewsets.ModelViewSet):
                 id=self.kwargs["application_pk"]
             ).messages.get_messages_qs()
         company = get_company_from_request(self.request)
+        if not company:
+            return Message.objects.none()
         try:
             application = company.applications.get(id=self.kwargs["application_pk"])
         except Application.DoesNotExist:
