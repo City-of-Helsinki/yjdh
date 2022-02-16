@@ -118,7 +118,7 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
   description: setLocalizedString(posting.description),
   start_time: hdsDateToIsoFormat(posting.start_date)!,
   end_time: hdsDateToIsoFormat(posting.end_date),
-  date_published: posting.date_published,
+  date_published: posting.date_published || null,
   keywords: [
     ...posting.keywords_working_methods,
     ...posting.keywords_attributes,

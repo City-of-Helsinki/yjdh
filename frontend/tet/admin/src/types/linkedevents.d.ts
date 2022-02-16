@@ -76,6 +76,11 @@ export type TetEventPayload = {
   date_published: string | null;
 };
 
+export type TetUpsert = {
+  id?: string;
+  event: TetEventPayload;
+};
+
 export type TetEvents = {
   draft: TetEvent[];
   published: TetEvent[];

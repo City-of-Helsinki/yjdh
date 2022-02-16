@@ -38,7 +38,10 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
     const event = tetPostingToEvent(validatedPosting);
-    upsertTetPosting.mutate(event);
+    upsertTetPosting.mutate({
+      id: validatedPosting.id,
+      event,
+    });
   };
 
   const submitHandler = async () => {
@@ -53,7 +56,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     } else {
       methods.clearErrors('keywords_working_methods');
       if (validationResults) {
-        methods.handleSubmit(handleSuccess)();
+        void methods.handleSubmit(handleSuccess)();
       }
     }
   };
