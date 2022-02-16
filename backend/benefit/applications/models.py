@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from applications.enums import (
     AhjoDecision,
     ApplicationBatchStatus,
@@ -7,7 +9,6 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
-from calculator.enums import RowType
 from common.utils import DurationMixin
 from companies.models import Company
 from django.conf import settings
@@ -302,12 +303,36 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     @property
     def ahjo_rows(self):
-        rows = self.calculation.rows.filter(
-            row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+        # enable uniform handling of applications with and without a calculation object
+        from calculator.models import CalculationRow
+
+        if hasattr(self, "calculation"):
+            return self.calculation.ahjo_rows
+        else:
+            return CalculationRow.objects.none()
+
+    @property
+    def latest_decision_comment(self):
+        return self.get_log_entry_field(
+            [
+                ApplicationStatus.ACCEPTED,
+                ApplicationStatus.CANCELLED,
+                ApplicationStatus.REJECTED,
+            ],
+            "comment",
         )
-        if rows.count() > 0:
-            return rows
-        return self.calculation.rows.filter(row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR)
+
+    def get_log_entry_field(self, to_statuses, field_name):
+        if (
+            log_entry := self.log_entries.filter(to_status__in=to_statuses)
+            .order_by(
+                "-created_at"
+            )  # the latest transition to one of the statuses listed in to_statuses
+            .first()
+        ):
+            return getattr(log_entry, field_name)
+        else:
+            return None
 
     def __str__(self):
         return "{}: {} {} {}-{}".format(
@@ -570,6 +595,14 @@ class Employee(UUIDModel, TimeStampedModel):
         verbose_name=_("Description of the commission"),
         blank=True,
     )
+
+    @property
+    def birthday(self):
+        if not self.social_security_number:
+            return None
+        # invalid social security number results in ValueError.
+        # input validation should ensure it's always valid.
+        return datetime.strptime(self.social_security_number[:6], "%d%m%y").date()
 
     def __str__(self):
         return "{} {} ({})".format(self.first_name, self.last_name, self.email)

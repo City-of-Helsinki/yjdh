@@ -30,7 +30,10 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   }, [onClickOutside]);
 
   const editPostingHandler = (): void => {
-    router.push(`/edit/${postingId}`);
+    void router.push({
+      pathname: '/editstatic',
+      query: { id: postingId },
+    });
   };
 
   const deletePostingHandler = (): void => {

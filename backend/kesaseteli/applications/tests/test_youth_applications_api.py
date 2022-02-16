@@ -101,13 +101,14 @@ def test_youth_applications_list(api_client):
 @pytest.mark.parametrize(
     "mock_flag,client_fixture_name,expected_status_code",
     [
-        (
-            mock_flag,
-            client_fixture_function.__name__,
-            status.HTTP_501_NOT_IMPLEMENTED if mock_flag else status.HTTP_403_FORBIDDEN,
-        )
-        for mock_flag in [False, True]
-        for client_fixture_function in [api_client, staff_client, superuser_client]
+        # Without mock flag
+        (False, api_client.__name__, status.HTTP_403_FORBIDDEN),
+        (False, staff_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
+        (False, superuser_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
+        # With mock flag
+        (True, api_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
+        (True, staff_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
+        (True, superuser_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
     ],
 )
 def test_youth_applications_process_valid_pk(
@@ -144,13 +145,14 @@ def test_youth_applications_process_unused_pk(
 @pytest.mark.parametrize(
     "mock_flag,client_fixture_name,expected_status_code",
     [
-        (
-            mock_flag,
-            client_fixture_function.__name__,
-            status.HTTP_200_OK if mock_flag else status.HTTP_403_FORBIDDEN,
-        )
-        for mock_flag in [False, True]
-        for client_fixture_function in [api_client, staff_client, superuser_client]
+        # Without mock flag
+        (False, api_client.__name__, status.HTTP_403_FORBIDDEN),
+        (False, staff_client.__name__, status.HTTP_200_OK),
+        (False, superuser_client.__name__, status.HTTP_200_OK),
+        # With mock flag
+        (True, api_client.__name__, status.HTTP_200_OK),
+        (True, staff_client.__name__, status.HTTP_200_OK),
+        (True, superuser_client.__name__, status.HTTP_200_OK),
     ],
 )
 def test_youth_applications_detail_valid_pk(

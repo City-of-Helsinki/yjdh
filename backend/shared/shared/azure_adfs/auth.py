@@ -153,8 +153,7 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
             f"adfs-{group_uuid}"
             for group_uuid in django_settings.ADFS_CONTROLLER_GROUP_UUIDS
         ]
-        if user.groups.filter(name__in=controller_group_uuids).exists():
-            user.is_staff = True
-            user.save()
+        user.is_staff = user.groups.filter(name__in=controller_group_uuids).exists()
+        user.save()
 
         return user

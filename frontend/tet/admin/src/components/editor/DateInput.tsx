@@ -4,7 +4,6 @@ import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { DateInput as HdsDateInput } from 'hds-react';
 import Id from 'shared/types/id';
 
-// TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
   id: Id<TetPosting>;
   label: string;
@@ -20,6 +19,7 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
       name={id}
       render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
         <HdsDateInput
+          disableConfirmation
           id={id}
           label={label}
           onChange={onChange}

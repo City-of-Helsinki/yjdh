@@ -15,11 +15,13 @@ from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from messages.models import MessageType
-from rest_framework import filters as drf_filters, status, viewsets
+from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from users.utils import get_company_from_request
+
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class BaseApplicationFilter(filters.FilterSet):
@@ -65,7 +67,7 @@ class HandlerApplicationFilter(BaseApplicationFilter):
         }
 
 
-class BaseApplicationViewSet(viewsets.ModelViewSet):
+class BaseApplicationViewSet(AuditLoggingModelViewSet):
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,

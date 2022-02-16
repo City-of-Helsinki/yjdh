@@ -15,7 +15,7 @@
   },
   "404Page": {
     "pageNotFoundLabel": "Page was not found",
-    "pageNotFoundContent": "Oh no, something went wrong. Try to enter the application <lnk>here</lnk>, through the front page"
+    "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
   "loginPage": {
     "logoutMessageLabel": "You have logged out",

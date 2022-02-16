@@ -121,6 +121,18 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         blank=True,
     )
 
+    @property
+    def ahjo_rows(self):
+        rows = SalaryBenefitSubTotalRow.objects.filter(
+            calculation=self, row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+        )
+
+        if rows.count() > 0:
+            return rows
+        return SalaryBenefitTotalRow.objects.filter(
+            calculation=self, row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
+        )
+
     history = HistoricalRecords(table_name="bf_calculator_calculator_history")
 
     copy_fields_from_application = {
@@ -163,7 +175,12 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         return self.calculator
 
     def calculate(self):
-        self.init_calculator().calculate()
+        try:
+            return self.init_calculator().calculate()
+        finally:
+            # Do not leave the calculator instance around. If parameters are changed,
+            # a different calculator may be needed in the next run
+            self.calculator = None
 
     def __str__(self):
         return f"Calculation for {self.application}"
@@ -650,7 +667,25 @@ class SalaryBenefitMonthlyRow(CalculationRow):
         proxy = True
 
 
-class SalaryBenefitTotalRow(CalculationRow):
+class TotalRowMixin:
+    @property
+    def monthly_amount(self):
+        # For each total row, there needs to be a row that defines the monthly amount
+        row = (
+            self.calculation.rows.filter(
+                ordering__lt=self.ordering,
+                row_type=RowType.HELSINKI_BENEFIT_MONTHLY_EUR,
+            )
+            .order_by("-ordering")
+            .first()
+        )
+        assert (
+            row is not None
+        ), "Application logic error - misconstructed application rows"
+        return row.amount
+
+
+class SalaryBenefitTotalRow(CalculationRow, TotalRowMixin):
     """
     SalaryBenefitTotalRow for the simple cases where
     * there is a single pay subsidy decision for the duration of the benefit
@@ -673,7 +708,7 @@ class SalaryBenefitTotalRow(CalculationRow):
         proxy = True
 
 
-class SalaryBenefitSubTotalRow(CalculationRow):
+class SalaryBenefitSubTotalRow(CalculationRow, TotalRowMixin):
     proxy_row_type = RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
     description_fi_template = "Yhteensä ajanjaksolta"
 
@@ -722,7 +757,7 @@ class EmployeeBenefitMonthlyRow(CalculationRow):
         proxy = True
 
 
-class EmployeeBenefitTotalRow(CalculationRow):
+class EmployeeBenefitTotalRow(CalculationRow, TotalRowMixin):
     """
     SalaryBenefitTotalRow for the simple cases where
     * there is a single pay subsidy decision for the duration of the benefit

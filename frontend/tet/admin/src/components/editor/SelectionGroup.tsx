@@ -5,9 +5,8 @@ import { SelectionGroup as HdsSelectionGroup, Checkbox } from 'hds-react';
 import Id from 'shared/types/id';
 import { OptionType } from 'tet/admin/types/classification';
 
-// TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
-  fieldId: Id<TetPosting>;
+  fieldId: Id<Pick<TetPosting, 'keywords_working_methods' | 'keywords_attributes'>>;
   label: string;
   options: OptionType[];
   required: boolean;

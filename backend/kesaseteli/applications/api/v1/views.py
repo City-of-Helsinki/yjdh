@@ -41,7 +41,7 @@ from applications.models import (
     School,
     YouthApplication,
 )
-from common.permissions import DenyAll, IsHandler
+from common.permissions import DenyAll, HandlerPermission
 
 LOGGER = logging.getLogger(__name__)
 
@@ -191,7 +191,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if self.action in ["activate", "create"]:
             permission_classes = [AllowAny]
         elif self.action in ["process", "retrieve"]:
-            permission_classes = [IsHandler]
+            permission_classes = [HandlerPermission]
         else:
             permission_classes = [DenyAll]
         return [permission() for permission in permission_classes]

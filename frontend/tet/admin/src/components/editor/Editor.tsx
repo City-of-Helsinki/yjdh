@@ -11,25 +11,8 @@ import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
 import { DevTool } from '@hookform/devtools';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import { tetPostingToEvent } from 'tet/admin/backend-api/transformations';
 
-const initialValuesForNew: TetPosting = {
-  title: '',
-  description: '',
-  location: '',
-  spots: 3,
-  contact_first_name: 'test',
-  contact_last_name: '',
-  contact_email: '',
-  contact_phone: '',
-  contact_language: 'fi',
-  start_date: '',
-  end_date: '',
-  date_published: '',
-  org_name: '',
-  keywords_working_methods: [],
-  keywords_attributes: [],
-  keywords: [],
-};
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
@@ -45,7 +28,12 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
     criteriaMode: 'all',
-    defaultValues: { contact_language: 'fi', keywords_working_methods: [], keywords_attributes: [], spots: 1 },
+    defaultValues: initialValue || {
+      contact_language: 'fi',
+      keywords_working_methods: [],
+      keywords_attributes: [],
+      spots: 1,
+    },
   });
 
   const { tetData } = useContext(PreviewContext);
@@ -68,11 +56,12 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
 
   const upsertTetPosting = useUpsertTetPosting();
 
-  const posting = initialValue || initialValuesForNew;
-
   const handleSuccess = (validatedPosting: TetPosting): void => {
-    //console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
-    upsertTetPosting.mutate(validatedPosting);
+    const event = tetPostingToEvent(validatedPosting);
+    upsertTetPosting.mutate({
+      id: validatedPosting.id,
+      event,
+    });
   };
 
   const submitHandler = async () => {
@@ -87,22 +76,24 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     } else {
       methods.clearErrors('keywords_working_methods');
       if (validationResults) {
-        methods.handleSubmit(handleSuccess)();
+        void methods.handleSubmit(handleSuccess)();
       }
     }
   };
+
+  console.log(`Editing posting ${JSON.stringify(initialValue, null, 2)}`);
 
   return (
     <>
       <FormProvider {...methods}>
         <form aria-label="add/modify tet posting">
-          <HiddenIdInput id="id" initialValue={posting.id} />
+          <HiddenIdInput id="id" initialValue={initialValue?.id} />
           <p>* pakollinen tieto</p>
           <EditorErrorNotification />
           <CompanyInfo />
-          <ContactPerson initialValue={posting} />
-          <PostingDetails initialValue={posting} />
-          <Classification initialValue={posting} />
+          <ContactPerson />
+          <PostingDetails />
+          <Classification />
           <ActionButtons onSubmit={submitHandler} />
         </form>
       </FormProvider>

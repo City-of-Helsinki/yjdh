@@ -9,32 +9,41 @@ import { APPLICATION_STATUSES } from '../constants';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 type ExtendedComponentProps = {
-  updateStatus: (newStatus: APPLICATION_STATUSES) => void;
+  updateStatus: (
+    newStatus: APPLICATION_STATUSES,
+    logEntryComment?: string,
+    grantedAsDeMinimisAid?: boolean
+  ) => void;
   isUpdatingApplication: boolean;
 };
 
 const useApplicationActions = (
   application: Application
 ): ExtendedComponentProps => {
-  const { mutate: updateApplication, isLoading: isUpdatingApplication } =
-    useUpdateApplicationQuery();
+  const updateApplicationQuery = useUpdateApplicationQuery();
 
-  const updateStatus = (status: APPLICATION_STATUSES): void => {
+  const updateStatus = (
+    status: APPLICATION_STATUSES,
+    logEntryComment?: string,
+    grantedAsDeMinimisAid?: boolean
+  ): void => {
     const currentApplicationData: ApplicationData = snakecaseKeys(
       {
         ...application,
         status,
+        logEntryComment,
+        grantedAsDeMinimisAid,
         applicationStep: getApplicationStepString(1),
       },
       { deep: true }
     );
-    updateApplication(currentApplicationData);
+    updateApplicationQuery.mutate(currentApplicationData);
     window.scrollTo(0, 0);
   };
 
   return {
     updateStatus,
-    isUpdatingApplication,
+    isUpdatingApplication: updateApplicationQuery.isLoading,
   };
 };
 
