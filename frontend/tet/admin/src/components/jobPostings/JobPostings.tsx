@@ -12,6 +12,7 @@ import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
 import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
 import { TetEvent, TetEvents } from 'tet/admin/types/linkedevents';
 import { eventsToTetPostings } from 'tet/admin/backend-api/transformations';
+import theme from 'shared/styles/theme';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
@@ -36,7 +37,7 @@ const JobPostings: React.FC = () => {
     );
 
   return (
-    <Container>
+    <Container backgroundColor={theme.colors.silverLight}>
       <$HeadingContainer>
         <$Heading>{t('common:application.jobPostings.title')}</$Heading>
       </$HeadingContainer>

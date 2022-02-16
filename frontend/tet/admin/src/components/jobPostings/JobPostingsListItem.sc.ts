@@ -33,6 +33,7 @@ export const $PostingCardBody = styled.div`
   display: inline-flex;
   flex-flow: column nowrap;
   justify-content: space-between;
+  background-color: ${(props) => props.theme.colors.white};
   flex: 1;
 
   @media (min-width: ${(props) => props.theme.breakpoints.s}) {
