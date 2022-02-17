@@ -13,6 +13,24 @@
       "title": "Hakemuksen viestit"
     }
   },
+  "notifications": {
+    "accepted": {
+      "title": "Hakemusta on puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
+    },
+    "rejected": {
+      "title": "Hakemusta ei puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
+    },
+    "cancelled": {
+      "title": "Hakemus on peruuttu",
+      "message": "Hakemus {{applicationNum}} on peruuttu onnistuneesti ja siirretty arkistoon."
+    },
+    "error": {
+      "title": "Tapahtui tuntematon virhe",
+      "message": " Yritä myöhemmin uudelleen"
+    }
+  },
   "messenger": {
     "titles": {
       "applicantMessage": "Hakija",
@@ -102,6 +120,9 @@
           "text": "Unable to fetch applications with status {{status}}"
         }
       }
+    },
+    "actions": {
+      "close": "Sulje"
     }
   },
   "review": {
@@ -117,7 +138,17 @@
       "targetGroupCheck": "Kohderyhmätarkistus",
       "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia",
       "handlingToInfoRequired": "Avaa muokattavaksi",
-      "infoRequiredToHandling": "Lukitse hakemus"
+      "infoRequiredToHandling": "Lukitse hakemus",
+      "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija katsotaan kuuluvan kohderyhmään",
+      "reasonCancelPlaceholder": "Kirjoita syy",
+      "reasonCancelTitle": "Kirjoita syy",
+      "reasonCancelDialogTitle": "Haluatko varmasti peruuttaa?",
+      "reasonCancelDialogDescription": "Hakemus peruututan lopullisesti ja siirretään arkistoon eikä sitä voida enää palauttaa käsittelyyn",
+      "reasonCancelLabel": "Syy peruutuksen",
+      "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
+      "reasonCancelConfirm": "Peruuta hakemus",
+      "grantedAsDeminimisText": "De minimis",
+      "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
@@ -158,7 +189,6 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
     }
   },
@@ -266,7 +296,9 @@
   "utility": {
     "yes": "Kyllä",
     "no": "Ei",
-    "and": "ja"
+    "and": "ja",
+    "home": "Palaa etusivulle",
+    "check": "Tarkastele"
   },
   "upload": {
     "isUploading": "Uploading...",

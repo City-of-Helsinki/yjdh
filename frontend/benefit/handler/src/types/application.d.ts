@@ -260,6 +260,8 @@ export type ApplicationData = {
   submitted_at?: string;
   pay_subsidies?: PaySubsidyData[];
   duration_in_months_rounded?: string;
+  log_entry_comment?: string;
+  granted_as_de_minimis_aid?: boolean;
 };
 
 export type ApplicationListItemData = {
@@ -396,6 +398,8 @@ export type Application = {
   submittedAt?: string;
   paySubsidies?: PaySubsidy[];
   durationInMonthsRounded?: string;
+  logEntryComment?: string;
+  grantedAsDeMinimisAid?: boolean;
 } & Step1 &
   Step2;
 
@@ -411,3 +415,12 @@ export interface ApplicationReviewViewProps {
 export interface SalaryBenefitCalculatorViewProps {
   data: Application;
 }
+
+export type HandledAplication = {
+  status?:
+    | APPLICATION_STATUSES.ACCEPTED
+    | APPLICATION_STATUSES.REJECTED
+    | APPLICATION_STATUSES.CANCELLED;
+  logEntryComment?: string;
+  grantedAsDeMinimisAid?: boolean;
+};

@@ -8,10 +8,9 @@ import DateInput from 'tet/admin/components/editor/DateInput';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import TextArea from 'tet/admin/components/editor/TextArea';
 import NumberInput from 'tet/admin/components/editor/NumberInput';
-import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 
-const PostingDetails: React.FC<EditorSectionProps> = () => {
+const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { required, name } = useValidationRules();

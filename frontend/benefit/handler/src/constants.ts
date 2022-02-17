@@ -48,8 +48,9 @@ export enum APPLICATION_STATUSES {
   DRAFT = 'draft',
   INFO_REQUIRED = 'additional_information_needed',
   RECEIVED = 'received',
-  APPROVED = 'approved',
+  ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+  CANCELLED = 'cancelled',
   HANDLING = 'handling',
 }
 
