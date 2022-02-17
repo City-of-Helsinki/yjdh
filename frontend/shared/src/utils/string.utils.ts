@@ -35,8 +35,9 @@ export const getNumberValue = (s: unknown): number =>
 export const stringFloatToFixed = (value: string): string =>
   value.includes(',') ? value.slice(0, value.indexOf(',') + 3) : value;
 
-export const stringToFloatValue = (value: string): number =>
-  parseFloat(value.replace(',', '.'));
+export const stringToFloatValue = (
+  value: string | number | undefined | null
+): number => parseFloat(value?.toString().replace(',', '.') || '');
 
 export const formatStringFloatValue = (
   value: number | string | undefined

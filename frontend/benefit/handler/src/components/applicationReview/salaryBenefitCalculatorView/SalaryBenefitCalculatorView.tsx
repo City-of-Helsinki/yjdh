@@ -87,11 +87,10 @@ const SalaryBenefitCalculatorView: React.FC<
           id={fields.monthlyPay.name}
           name={fields.monthlyPay.name}
           label={fields.monthlyPay.label}
-          onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.monthlyPay.name, e.target.value)
           }
-          value={formik.values.monthlyPay}
+          value={formatStringFloatValue(formik.values.monthlyPay)}
           invalid={!!getErrorMessage(fields.monthlyPay.name)}
           aria-invalid={!!getErrorMessage(fields.monthlyPay.name)}
           errorText={getErrorMessage(fields.monthlyPay.name)}
@@ -103,11 +102,10 @@ const SalaryBenefitCalculatorView: React.FC<
           id={fields.otherExpenses.name}
           name={fields.otherExpenses.name}
           label={fields.otherExpenses.label}
-          onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.otherExpenses.name, e.target.value)
           }
-          value={formik.values.otherExpenses}
+          value={formatStringFloatValue(formik.values.otherExpenses)}
           invalid={!!getErrorMessage(fields.otherExpenses.name)}
           aria-invalid={!!getErrorMessage(fields.otherExpenses.name)}
           errorText={getErrorMessage(fields.otherExpenses.name)}
@@ -119,11 +117,10 @@ const SalaryBenefitCalculatorView: React.FC<
           id={fields.vacationMoney.name}
           name={fields.vacationMoney.name}
           label={fields.vacationMoney.label}
-          onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.vacationMoney.name, e.target.value)
           }
-          value={formik.values.vacationMoney}
+          value={formatStringFloatValue(formik.values.vacationMoney)}
           invalid={!!getErrorMessage(fields.vacationMoney.name)}
           aria-invalid={!!getErrorMessage(fields.vacationMoney.name)}
           errorText={getErrorMessage(fields.vacationMoney.name)}
@@ -246,7 +243,6 @@ const SalaryBenefitCalculatorView: React.FC<
                     <TextInput
                       id={fields.workTimePercent.name}
                       name={fields.workTimePercent.name}
-                      onBlur={undefined}
                       onChange={(e) => {
                         formik.setFieldValue(
                           fields.paySubsidies.name,
@@ -262,7 +258,9 @@ const SalaryBenefitCalculatorView: React.FC<
                           )
                         );
                       }}
-                      value={item.workTimePercent?.toString()}
+                      value={formatStringFloatValue(
+                        item.workTimePercent?.toString()
+                      )}
                       invalid={!!getErrorMessage(fields.workTimePercent.name)}
                       aria-invalid={
                         !!getErrorMessage(fields.workTimePercent.name)
@@ -391,7 +389,6 @@ const SalaryBenefitCalculatorView: React.FC<
             <TextInput
               id={fields.overrideMonthlyBenefitAmount.name}
               name={fields.overrideMonthlyBenefitAmount.name}
-              onBlur={undefined}
               onChange={(e) =>
                 formik.setFieldValue(
                   fields.overrideMonthlyBenefitAmount.name,
@@ -400,7 +397,9 @@ const SalaryBenefitCalculatorView: React.FC<
               }
               value={
                 formik.values.overrideMonthlyBenefitAmount
-                  ? formik.values.overrideMonthlyBenefitAmount
+                  ? formatStringFloatValue(
+                      formik.values.overrideMonthlyBenefitAmount
+                    )
                   : ''
               }
               invalid={

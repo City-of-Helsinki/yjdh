@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
+import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import { ROUTES } from '../constants';
@@ -92,23 +93,26 @@ const useHandlerReviewActions = (
       ? convertToBackendDateFormat(values.endDate)
       : undefined;
 
+    const overrideMonthlyBenefitAmountComment = !isEmpty(
+      values.overrideMonthlyBenefitAmount
+    )
+      ? values.overrideMonthlyBenefitAmountComment
+      : '';
+
+    const paySubsidies = values.paySubsidies
+      ? values.paySubsidies.map((item) => ({
+            ...item,
+            workTimePercent: stringToFloatValue(item.workTimePercent),
+          }))
+      : undefined;
+
     const {
       monthlyPay,
       vacationMoney,
       stateAidMaxPercentage,
       otherExpenses,
-      paySubsidies,
+      overrideMonthlyBenefitAmount,
     } = values;
-
-    const isManualCalculator = !isEmpty(values.overrideMonthlyBenefitAmount);
-
-    const overrideMonthlyBenefitAmount = isManualCalculator
-      ? values.overrideMonthlyBenefitAmount
-      : null;
-
-    const overrideMonthlyBenefitAmountComment = isManualCalculator
-      ? values.overrideMonthlyBenefitAmountComment
-      : '';
 
     return snakecaseKeys(
       {
@@ -117,11 +121,13 @@ const useHandlerReviewActions = (
           ...application.calculation,
           startDate,
           endDate,
-          monthlyPay,
-          vacationMoney,
+          monthlyPay: stringToFloatValue(monthlyPay),
+          otherExpenses: stringToFloatValue(otherExpenses),
+          vacationMoney: stringToFloatValue(vacationMoney),
           stateAidMaxPercentage,
-          otherExpenses,
-          overrideMonthlyBenefitAmount,
+          overrideMonthlyBenefitAmount: stringToFloatValue(
+            overrideMonthlyBenefitAmount
+          ),
           overrideMonthlyBenefitAmountComment,
         },
         paySubsidies,
