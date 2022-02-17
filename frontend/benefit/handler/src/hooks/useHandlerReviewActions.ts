@@ -1,10 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
-
 import isEmpty from 'lodash/isEmpty';
-
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
 

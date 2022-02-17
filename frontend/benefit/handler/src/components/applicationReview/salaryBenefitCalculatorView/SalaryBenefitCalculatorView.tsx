@@ -6,14 +6,11 @@ import {
   CALCULATION_TYPES,
 } from 'benefit/handler/constants';
 import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
-
-import { Button, DateInput, Select, TextArea, TextInput } from 'hds-react';
-
 import {
   PaySubsidy,
   SalaryBenefitCalculatorViewProps,
 } from 'benefit/handler/types/application';
-
+import { Button, DateInput, Select, TextArea, TextInput } from 'hds-react';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
@@ -265,7 +262,7 @@ const SalaryBenefitCalculatorView: React.FC<
                           )
                         );
                       }}
-                      value={formatStringFloatValue(item.workTimePercent)}
+                      value={item.workTimePercent?.toString()}
                       invalid={!!getErrorMessage(fields.workTimePercent.name)}
                       aria-invalid={
                         !!getErrorMessage(fields.workTimePercent.name)
