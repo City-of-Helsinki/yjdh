@@ -15,7 +15,7 @@
   },
   "404Page": {
     "pageNotFoundLabel": "Sidan kunde inte hittas",
-    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
   "loginPage": {
     "logoutMessageLabel": "Du har loggat ut",
@@ -56,7 +56,9 @@
     "employerInfo": {
       "header": "SV Työpaikan tiedot",
       "addressNeededLabel": "SV Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "SV Toimipiste tai osasto"
+      "departmentLabel": "SV Toimipiste tai osasto",
+			"address": "SV Osoite",
+			"streetAddress": "SV Katuosoite"
     },
     "posting": {
       "header": "SV Työharjoittelupaikan tiedot",
@@ -81,6 +83,18 @@
 				"phone": "SV Syötä oikeassa muodossa",
 				"name": "SV Syötä nimi sallitussa muodossa"
 			}
+    },
+		"classification": {
+			"classifications": "SV Luokittelut",
+			"workMethod": "SV Työtapa",
+			"workFeature": "SV Työn ominaisuudet",
+			"keywords": "SV Avainsanat",
+			"search": "SV Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "SV Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "SV Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "SV Poista valinta"
     }
   },
   "footer": {

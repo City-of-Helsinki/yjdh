@@ -30,13 +30,14 @@ type ExtendedComponentProps = {
   };
   calculationsErrors: ErrorData | undefined | null;
   grantedPeriod: number;
-  paySubsidyPeriod: number;
   stateAidMaxPercentageOptions: OptionType[];
   getStateAidMaxPercentageSelectValue: () => OptionType | undefined;
   paySubsidyPercentageOptions: OptionType[];
-  getPaySubsidyPercentageSelectValue: () => OptionType | undefined;
   isManualCalculator: boolean;
   changeCalculatorMode: () => void;
+  getPaySubsidyPercentageSelectValue: (
+    percent: number
+  ) => OptionType | undefined;
 };
 
 const useSalaryBenefitCalculatorData = (
@@ -67,19 +68,13 @@ const useSalaryBenefitCalculatorData = (
         application?.calculation?.stateAidMaxPercentage,
       [CALCULATION_SALARY_KEYS.VACATION_MONEY]:
         application?.calculation?.vacationMoney,
-      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_PERCENT]: application?.paySubsidies
-        ? application?.paySubsidies[0].paySubsidyPercent
-        : 0,
-      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_START_DATE]: convertToUIDateFormat(
-        application?.paySubsidies ? application?.paySubsidies[0].startDate : ''
-      ),
-      [CALCULATION_SALARY_KEYS.PAY_SUBSIDY_END_DATE]: convertToUIDateFormat(
-        application?.paySubsidies ? application?.paySubsidies[0].endDate : ''
-      ),
       [CALCULATION_SALARY_KEYS.OVERRIDE_MONTHLY_BENEFIT_AMOUNT]:
         application?.calculation?.overrideMonthlyBenefitAmount,
       [CALCULATION_SALARY_KEYS.OVERRIDE_MONTHLY_BENEFIT_AMOUNT_COMMENT]:
         application?.calculation?.overrideMonthlyBenefitAmountComment,
+      [CALCULATION_SALARY_KEYS.PAY_SUBSIDIES]: application?.paySubsidies
+        ? application?.paySubsidies
+        : [],
     },
     validationSchema: getValidationSchema(),
     validateOnChange: true,
@@ -141,14 +136,14 @@ const useSalaryBenefitCalculatorData = (
     );
   };
 
-  const getPaySubsidyPercentageSelectValue = (): OptionType | undefined => {
-    const { paySubsidyPercent } = values;
-    return paySubsidyPercentageOptions.find(
-      (o) => o.value?.toString() === paySubsidyPercent?.toString()
+  const getPaySubsidyPercentageSelectValue = (
+    percent: number
+  ): OptionType | undefined =>
+    paySubsidyPercentageOptions.find(
+      (o) => o.value?.toString() === percent.toString()
     );
-  };
 
-  const { startDate, endDate, paySubsidyStartDate, paySubsidyEndDate } = values;
+  const { startDate, endDate } = values;
 
   const grantedPeriod = React.useMemo(
     () => diffMonths(parseDate(endDate), parseDate(startDate)),
@@ -161,29 +156,11 @@ const useSalaryBenefitCalculatorData = (
     }
   }, [grantedPeriod, startDate, fields.endDate.name, setFieldValue]);
 
-  const paySubsidyPeriod = React.useMemo(
-    () =>
-      diffMonths(parseDate(paySubsidyEndDate), parseDate(paySubsidyStartDate)),
-    [paySubsidyStartDate, paySubsidyEndDate]
-  );
-
-  useEffect(() => {
-    if (paySubsidyPeriod < 0) {
-      void setFieldValue(fields.paySubsidyEndDate.name, paySubsidyStartDate);
-    }
-  }, [
-    paySubsidyPeriod,
-    paySubsidyStartDate,
-    fields.paySubsidyEndDate.name,
-    setFieldValue,
-  ]);
-
   return {
     formik,
     fields,
     calculationsErrors,
     grantedPeriod,
-    paySubsidyPeriod,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,
     paySubsidyPercentageOptions,

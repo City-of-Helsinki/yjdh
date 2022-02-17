@@ -24,15 +24,8 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
   const [showMenu, setShowMenu] = React.useState(false);
   const { t } = useTranslation();
 
-  const getFormattedDate = (date: string | undefined): string => {
-    if (date) {
-      const newDate = new Date(date);
-      return `${newDate.getDate()}.${newDate.getMonth() + 1}.${newDate.getFullYear()}`;
-    } else return '';
-  };
-
-  const startDate = getFormattedDate(posting.start_date);
-  const endDate = getFormattedDate(posting.end_date);
+  const startDate = posting.start_date;
+  const endDate = posting.end_date;
 
   return (
     <>

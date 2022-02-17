@@ -100,7 +100,7 @@
   "activatedPage" : {
     "title": "Kesäsetelisi on nyt aktivoitu!",
     "notificationTitle": "Vahvistus onnistui",
-    "notificationMessage": "Hienoa! Olet lähettänyt tietosi Kesäseteli-järjestelmään. Kun hakemuksesi on käsitelty saat Kesäsetelin ja käyttöohjeet sähköpostiisi."
+    "notificationMessage": "Hienoa! Olet lähettänyt tietosi järjestelmään ja hakemuksesi käsitellään mahdollisimman pian - viimeistään kuukauden kuluessa. Saat Kesäsetelin ja käyttöohjeet sähköpostiisi kun hakemuksesi on tarkastettu!"
   },
   "expiredPage" : {
     "title": "Hups! Vahvistuslinkki on vanhentunut.",

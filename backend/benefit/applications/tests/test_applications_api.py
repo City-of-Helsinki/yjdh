@@ -41,6 +41,8 @@ from rest_framework.reverse import reverse
 from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
 
+from shared.audit_log import models as audit_models
+
 
 def get_detail_url(application):
     return reverse("v1:applicant-application-detail", kwargs={"pk": application.id})
@@ -56,6 +58,13 @@ def get_handler_detail_url(application):
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
     assert response.status_code == 403
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["operation"] == "READ"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "Application"
 
 
 def test_applications_unauthorized(
@@ -170,6 +179,13 @@ def test_application_post_success_unauthenticated(anonymous_client, application)
         data,
     )
     assert response.status_code == 403
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["operation"] == "CREATE"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "Application"
 
 
 def test_application_post_success(api_client, application):
@@ -214,6 +230,12 @@ def test_application_post_success(api_client, application):
     )
     assert new_application.official_company_postcode == new_application.company.postcode
     assert new_application.official_company_city == new_application.company.city
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["target"]["id"] == str(Application.objects.all().first().id)
+    assert audit_event["operation"] == "CREATE"
 
 
 def test_application_post_unfinished(api_client, application):
@@ -354,6 +376,12 @@ def test_application_put_edit_fields_unauthorized(
         data,
     )
     assert response.status_code == 404
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["target"]["id"] == str(anonymous_application.id)
+    assert audit_event["operation"] == "UPDATE"
 
 
 def test_application_put_edit_fields(api_client, application):
@@ -372,6 +400,12 @@ def test_application_put_edit_fields(api_client, application):
     )  # normalized format
     application.refresh_from_db()
     assert application.company_contact_person_phone_number == "0505658789"
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["target"]["id"] == str(application.id)
+    assert audit_event["operation"] == "UPDATE"
 
 
 def test_application_put_edit_employee(api_client, application):
@@ -953,8 +987,15 @@ def test_application_status_change_as_applicant(
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
+@pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
 def test_application_status_change_as_handler(
-    request, handler_api_client, application, from_status, to_status, expected_code
+    request,
+    handler_api_client,
+    application,
+    from_status,
+    to_status,
+    expected_code,
+    log_entry_comment,
 ):
     """
     modify existing application
@@ -969,6 +1010,9 @@ def test_application_status_change_as_handler(
     application.refresh_from_db()
     data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
+    if log_entry_comment is not None:
+        # the field is write-only
+        data["log_entry_comment"] = log_entry_comment
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
         add_attachments_to_application(request, application)
@@ -985,10 +1029,18 @@ def test_application_status_change_as_handler(
             data,
         )
     assert response.status_code == expected_code
+
+    expected_log_entry_comment = ""
+    if isinstance(log_entry_comment, str):
+        expected_log_entry_comment = log_entry_comment
+
     if expected_code == 200:
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+        assert (
+            application.log_entries.all().first().comment == expected_log_entry_comment
+        )
 
         if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             assert application.messages.count() == 1
@@ -997,6 +1049,16 @@ def test_application_status_change_as_handler(
                 in application.messages.first().content
             )
 
+        if to_status in [
+            ApplicationStatus.CANCELLED,
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.ACCEPTED,
+        ]:
+            assert (
+                response.data["latest_decision_comment"] == expected_log_entry_comment
+            )
+        else:
+            assert response.data["latest_decision_comment"] is None
     else:
         assert application.log_entries.all().count() == 0
 

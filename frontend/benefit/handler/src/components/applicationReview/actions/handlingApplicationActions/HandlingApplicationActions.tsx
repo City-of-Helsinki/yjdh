@@ -1,41 +1,50 @@
 import Messenger from 'benefit/handler/components/messenger/Messenger';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
-import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
 import { Application } from 'benefit/handler/types/application';
-import { Button, IconLock, IconPen, IconTrash } from 'hds-react';
+import {
+  Button,
+  IconInfoCircle,
+  IconLock,
+  IconPen,
+  IconTrash,
+} from 'hds-react';
 import noop from 'lodash/noop';
-import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import useToggle from 'shared/hooks/useToggle';
+import Modal from 'shared/components/modal/Modal';
 
 import EditAction from '../editAction/EditAction';
+import CancelModalContent from './CancelModalContent/CancelModalContent';
 import {
   $Column,
   $CustomNotesActions,
   $Wrapper,
 } from './HandlingApplicationActions.sc';
+import { useHandlingApplicationActions } from './useHandlingApplicationActions';
 
 export type Props = {
   application: Application;
 };
 
 const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
-  const translationsBase = 'common:review.actions';
-  const { t } = useTranslation();
-  const { updateStatus } = useApplicationActions(application);
-  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
-    useToggle(false);
-
+  const {
+    t,
+    onDone,
+    onSaveAndClose,
+    toggleMessagesDrawerVisiblity,
+    openDialog,
+    closeDialog,
+    handleCancel,
+    isMessagesDrawerVisible,
+    translationsBase,
+    isDisabledDoneButton,
+    isConfirmationModalOpen,
+  } = useHandlingApplicationActions(application);
   return (
     <$Wrapper>
       <$Column>
-        <Button
-          onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
-          theme="coat"
-        >
+        <Button onClick={onDone} theme="coat" disabled={isDisabledDoneButton}>
           {t(`${translationsBase}.done`)}
         </Button>
-        <Button onClick={noop} theme="black" variant="secondary">
+        <Button onClick={onSaveAndClose} theme="black" variant="secondary">
           {t(`${translationsBase}.saveAndContinue`)}
         </Button>
         <Button
@@ -49,7 +58,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
       </$Column>
       <$Column>
         <Button
-          onClick={noop}
+          onClick={openDialog}
           theme="black"
           variant="supplementary"
           iconLeft={<IconTrash />}
@@ -57,6 +66,22 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
           {t(`${translationsBase}.cancel`)}
         </Button>
       </$Column>
+      {isConfirmationModalOpen && (
+        <Modal
+          id="Handler-confirmDeleteApplicationModal"
+          isOpen={isConfirmationModalOpen}
+          title={t(`${translationsBase}.reasonCancelDialogTitle`)}
+          submitButtonLabel=""
+          handleToggle={closeDialog}
+          handleSubmit={noop}
+          headerIcon={<IconInfoCircle />}
+          submitButtonIcon={<IconTrash />}
+          variant="danger"
+          customContent={
+            <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
+          }
+        />
+      )}
       <Messenger
         isOpen={isMessagesDrawerVisible}
         onClose={toggleMessagesDrawerVisiblity}

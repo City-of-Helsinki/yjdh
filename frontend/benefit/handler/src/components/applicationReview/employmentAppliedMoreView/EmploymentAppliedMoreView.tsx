@@ -39,7 +39,13 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     <form onSubmit={handleSubmit} noValidate>
       <ReviewSection withMargin>
         <$GridCell $colSpan={6}>
-          <$CalculatorText>{t(`${translationsBase}.header`)}</$CalculatorText>
+          <$CalculatorText
+            css={`
+              margin: 0 0 ${theme.spacing.xs} 0;
+            `}
+          >
+            {t(`${translationsBase}.header`)}
+          </$CalculatorText>
           <$ViewField>
             {data.startDate && data.endDate && (
               <>
@@ -54,12 +60,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
         </$GridCell>
         <$GridCell $colSpan={11}>
           <$CalculatorHr />
-          <$CalculatorText
-            css={`
-              margin: 0 0 ${theme.spacing.xs2} 0;
-              font-weight: 500;
-            `}
-          >
+          <$CalculatorText>
             {t(`${translationsBase}.grantedPeriod`, {
               period: formatStringFloatValue(grantedPeriod),
             })}

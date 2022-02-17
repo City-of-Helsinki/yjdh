@@ -8,12 +8,14 @@ import { useQuery } from 'react-query';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { useRouter } from 'next/router';
-import { TetPostings } from 'tet/admin/types/tetposting';
+import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
 import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
+import { TetEvent, TetEvents } from 'tet/admin/types/linkedevents';
+import { eventsToTetPostings } from 'tet/admin/backend-api/transformations';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, data } = useQuery<TetPostings>(BackendEndpoint.TET_POSTINGS);
+  const { isLoading, data } = useQuery<TetEvents>(BackendEndpoint.TET_POSTINGS);
   const router = useRouter();
 
   if (isLoading) {
@@ -22,9 +24,11 @@ const JobPostings: React.FC = () => {
 
   console.dir(data);
 
+  const postings = eventsToTetPostings(data);
+
   const content =
-    data?.draft?.length || data?.published?.length ? (
-      <JobPostingsList draft={data.draft} published={data.published} />
+    postings.draft.length > 0 || postings.published.length > 0 ? (
+      <JobPostingsList draft={postings.draft} published={postings.published} />
     ) : (
       <>
         <p>{t('common:application.jobPostings.noPostingsFound')}</p>
