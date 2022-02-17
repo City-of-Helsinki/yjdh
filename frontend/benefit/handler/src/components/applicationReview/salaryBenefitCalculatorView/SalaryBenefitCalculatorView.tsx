@@ -18,7 +18,6 @@ import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import {
-  convertToBackendDateFormat,
   convertToUIDateFormat,
   diffMonths,
   getCorrectEndDate,
@@ -287,10 +286,8 @@ const SalaryBenefitCalculatorView: React.FC<
                             if (paySubsidyItemIndex === index)
                               return {
                                 ...paySubsidyItem,
-                                startDate: convertToBackendDateFormat(value),
-                                endDate: convertToBackendDateFormat(
-                                  getCorrectEndDate(value, item.endDate)
-                                ),
+                                startDate: value,
+                                endDate: getCorrectEndDate(value, item.endDate),
                               };
                             return paySubsidyItem;
                           }
@@ -316,11 +313,10 @@ const SalaryBenefitCalculatorView: React.FC<
                             if (paySubsidyItemIndex === index)
                               return {
                                 ...paySubsidyItem,
-                                startDate: convertToBackendDateFormat(
-                                  item.startDate
-                                ),
-                                endDate: convertToBackendDateFormat(
-                                  getCorrectEndDate(item.startDate, value)
+                                startDate: item.startDate,
+                                endDate: getCorrectEndDate(
+                                  item.startDate,
+                                  value
                                 ),
                               };
                             return paySubsidyItem;

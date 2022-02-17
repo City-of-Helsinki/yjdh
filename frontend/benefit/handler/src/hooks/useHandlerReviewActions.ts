@@ -101,9 +101,11 @@ const useHandlerReviewActions = (
 
     const paySubsidies = values.paySubsidies
       ? values.paySubsidies.map((item) => ({
-            ...item,
-            workTimePercent: stringToFloatValue(item.workTimePercent),
-          }))
+          ...item,
+          workTimePercent: stringToFloatValue(item.workTimePercent),
+          startDate: convertToBackendDateFormat(item.startDate),
+          endDate: convertToBackendDateFormat(item.endDate),
+        }))
       : undefined;
 
     const {
