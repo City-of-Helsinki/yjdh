@@ -1,0 +1,991 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-11 13:10+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: applications/api/v1/application_batch_views.py:76
+msgid "Application status cannot be exported because of invalid status"
+msgstr "Hakemuksen tilaa ei voida viedä virheellisen tilan takia"
+
+#: applications/api/v1/application_batch_views.py:84
+msgid "Cannot export empty batch"
+msgstr "Tyhjää erää ei voida viedä"
+
+#: applications/api/v1/application_batch_views.py:90
+#, python-brace-format
+msgid "Application batch {date}"
+msgstr "Hakemuserä {date}"
+
+#: applications/api/v1/application_batch_views.py:118
+msgid "There is no available application to export, please try again later"
+msgstr "Ei vietävää hakemusta, yritä myöhemmin uudelleen"
+
+#: applications/api/v1/application_batch_views.py:126
+#, python-brace-format
+msgid "TALPA export {date}"
+msgstr "TALPA-vienti {date}"
+
+#: applications/api/v1/serializers.py:125
+msgid "Can not add attachment to an application in this state"
+msgstr "Liitettä ei voida lisätä hakemukseen tässä tilassa"
+
+#: applications/api/v1/serializers.py:131
+#, python-brace-format
+msgid "Upload file size cannot be greater than {size} bytes"
+msgstr "Ladattavan tiedoston koko ei voi ylittää {size} tavua"
+
+#: applications/api/v1/serializers.py:140
+msgid "Too many attachments"
+msgstr "Liian monta liitettä"
+
+#: applications/api/v1/serializers.py:143
+msgid "Not a valid pdf file"
+msgstr "Epäkelpo PDF-tiedosto"
+
+#: applications/api/v1/serializers.py:147
+msgid "Not a valid image file"
+msgstr "Epäkelpo kuvatiedosto"
+
+#: applications/api/v1/serializers.py:189
+msgid "Grant date too far in past"
+msgstr "Myöntämispäivä liian kaukana menneisyydessä"
+
+#: applications/api/v1/serializers.py:191
+msgid "Grant date can not be in the future"
+msgstr "Myöntämispäivä ei voi olla tulevaisuudessa"
+
+#: applications/api/v1/serializers.py:290
+msgid "Social security number invalid"
+msgstr "Epäkelpo henkilötunnus"
+
+#: applications/api/v1/serializers.py:297
+msgid "Social security number checksum invalid"
+msgstr "Epäkelpo henkilötunnuksen tarkistussumma"
+
+#: applications/api/v1/serializers.py:306
+#, python-brace-format
+msgid "Working hour must be greater than {min_hour} per week"
+msgstr "Työajan on oltava suurempi kuin {min_hour} viikossa"
+
+#: applications/api/v1/serializers.py:314
+msgid "Monthly pay must be greater than 0"
+msgstr "Kuukausipalkan on oltava suurempi kuin 0"
+
+#: applications/api/v1/serializers.py:320
+msgid "Vacation money must be a positive number"
+msgstr "Lomarahojen täytyy olla positiivinen luku"
+
+#: applications/api/v1/serializers.py:327
+msgid "Other expenses must be a positive number"
+msgstr "Muiden kulujen täytyy olla positiivinen luku"
+
+#: applications/api/v1/serializers.py:419
+msgid "Applications in a batch can not be changed when batch is in this status"
+msgstr "Erän hakemuksia ei voida muuttaa erän ollessa tässä tilassa"
+
+#: applications/api/v1/serializers.py:431
+msgid "This application has invalid status and can not be added to this batch"
+msgstr "Tämän hakemuksen tila on virheellinen, eikä sitä voi lisätä tähän erään"
+
+#: applications/api/v1/serializers.py:819
+msgid "This should be unreachable"
+msgstr "Tämän pitäisi olla tavoittamattomissa"
+
+#: applications/api/v1/serializers.py:839
+msgid "Invalid value for association_immediate_manager_check"
+msgstr "Epäkelpo arvo kohteessa association_immediate_manager_check"
+
+#: applications/api/v1/serializers.py:847
+msgid "for companies, association_immediate_manager_check must always be null"
+msgstr "yrityksen ollessa kyseessä kohteen association_immediate_manager_check on aina oltava tyhjä"
+
+#: applications/api/v1/serializers.py:875
+msgid ""
+"This application has non-null de_minimis_aid but is applied by an association"
+msgstr ""
+"Tässä hakemuksessa on ei-nolla de_minimis_aid, mutta hakija on yhdistys"
+
+#: applications/api/v1/serializers.py:884
+msgid "This application has de_minimis_aid set but does not define any"
+msgstr "Tässä hakemuksessa on valittu de_minimis_aid, mutta sitä ei määritetä"
+
+#: applications/api/v1/serializers.py:893
+msgid "This application can not have de minimis aid"
+msgstr "Tässä hakemuksessa ei voi olla de minimis -tukea"
+
+#: applications/api/v1/serializers.py:901
+msgid "Total amount of de minimis aid too large"
+msgstr "De minimis -tuen kokonaismäärä liian suuri"
+
+#: applications/api/v1/serializers.py:907
+msgid "start_date must not be in a past year"
+msgstr "start_date ei saa olla menneessä vuodessa"
+
+#: applications/api/v1/serializers.py:911
+msgid "end_date must not be in a past year"
+msgstr "end_date ei saa olla menneessä vuodessa"
+
+#: applications/api/v1/serializers.py:922
+msgid "application end_date can not be less than start_date"
+msgstr "hakemuksen end_date ei voi olla aiemmin kuin start_date"
+
+#: applications/api/v1/serializers.py:936
+msgid "minimum duration of the benefit is one month"
+msgstr "avustuksen vähimmäiskesto on yksi kuukausi"
+
+#: applications/api/v1/serializers.py:943
+msgid "maximum duration of the benefit is 12 months"
+msgstr "avustuksen enimmäiskesto on 12 kuukautta"
+
+#: applications/api/v1/serializers.py:1011
+msgid "Benefit can not be granted before 24-month waiting period expires"
+msgstr "Avustusta ei voida myöntää ennen 24 kuukauden odotusajan päättymistä"
+
+#: applications/api/v1/serializers.py:1026
+msgid "There's already an accepted application with overlapping date range for this employee"
+msgstr "Tälle työntekijälle on jo hyväksytty hakemus päällekkäisellä aikavälillä"
+
+#: applications/api/v1/serializers.py:1038
+msgid "This application can not have a description for co-operation negotiations"
+msgstr "Tässä hakemuksessa ei voi olla kuvausta yhteistoimintaneuvotteluista"
+
+#: applications/api/v1/serializers.py:1048
+msgid "Pay subsidy percent required"
+msgstr "Palkkatukiprosentti on pakollinen"
+
+#: applications/api/v1/serializers.py:1056
+#, python-brace-format
+msgid "This application can not have {key}"
+msgstr "Tässä hakemuksessa ei voi olla kohdetta {key}"
+
+#: applications/api/v1/serializers.py:1064
+msgid "This application can not have additional_pay_subsidy_percent"
+msgstr "Tässä hakemuksessa ei voi olla kohdetta additional_pay_subsidy_percent"
+
+#: applications/api/v1/serializers.py:1109
+msgid "This field is required before submitting the application"
+msgstr "Tämä kenttä on pakollinen ennen hakemuksen lähettämistä"
+
+#: applications/api/v1/serializers.py:1125
+msgid "This field can be set for associations only"
+msgstr "Tämä kenttä voidaan valita vain yhdistyksille"
+
+#: applications/api/v1/serializers.py:1162
+msgid "This benefit type can not be selected"
+msgstr "Tätä avustustyyppiä ei voida valita"
+
+#: applications/api/v1/serializers.py:1342
+msgid "Application does not have the employee consent attachment"
+msgstr "Hakemuksessa ei ole liitteenä työntekijän suostumusta"
+
+#: applications/api/v1/serializers.py:1346
+msgid "Application cannot have more than one employee consent attachment"
+msgstr "Hakemuksessa voi olla enintään yksi työntekijän suostumusliite"
+
+#: applications/api/v1/serializers.py:1353 terms/api/v1/views.py:48
+msgid "Terms must be approved"
+msgstr "Ehdot on hyväksyttävä"
+
+#: applications/api/v1/serializers.py:1408
+msgid "Application does not have required attachments"
+msgstr "Hakemuksessa ei ole pakollisia liitteitä"
+
+#: applications/api/v1/serializers.py:1434
+msgid "Application initial state must be draft"
+msgstr "Hakemuksen alkutilan on oltava luonnos"
+
+#: applications/api/v1/serializers.py:1470
+#, python-brace-format
+msgid "Reading de minimis data failed: {errors}"
+msgstr "De minimis -tietojen lukeminen epäonnistui: {errors}"
+
+#: applications/api/v1/serializers.py:1510
+#: applications/api/v1/serializers.py:1587
+msgid "Application can not be changed in this status"
+msgstr "Hakemusta ei voida muuttaa tässä tilassa"
+
+#: applications/api/v1/serializers.py:1569
+msgid "create_application_for_company missing from request"
+msgstr "create_application_for_company puuttuu pyynnöstä"
+
+#: applications/api/v1/serializers.py:1610
+msgid "The calculation should be created when the application is submitted"
+msgstr "Laskelma on luotava, kun hakemus lähetetään"
+
+#: applications/api/v1/serializers.py:1615
+msgid "The calculation can not be updated in this status"
+msgstr "Laskelmaa ei voida päivittää tässä tilassa"
+
+#: applications/api/v1/serializers.py:1619
+msgid "The calculation id does not match existing id"
+msgstr "Laskelman tunnus ei vastaa nykyistä tunnusta"
+
+#: applications/api/v1/serializers.py:1657
+#, python-brace-format
+msgid "Reading {localized_model_name} data failed: {errors}"
+msgstr "{localized_model_name} -tietojen lukeminen epäonnistui: {errors}"
+
+#: applications/api/v1/status_transition_validator.py:23
+#, python-brace-format
+msgid "State transition not allowed: {status} to {value}"
+msgstr "Tilan siirto ei ole sallittu: {status} arvoon {value}"
+
+#: applications/api/v1/status_transition_validator.py:32
+#, python-brace-format
+msgid "Initial status must be {initial_status}"
+msgstr "Alkutilan on oltava {initial_status}"
+
+#: applications/api/v1/views.py:97 applications/api/v1/views.py:123
+msgid "Operation not allowed for this application status."
+msgstr "Toiminto ei ole sallittu tässä hakemuksen tilassa."
+
+#: applications/api/v1/views.py:130
+msgid "File not found."
+msgstr "Tiedostoa ei löydy."
+
+#: applications/enums.py:6 applications/enums.py:102
+msgid "Draft"
+msgstr "Luonnos"
+
+#: applications/enums.py:7
+msgid "Received"
+msgstr "Vastaanotettu"
+
+#: applications/enums.py:8
+msgid "Handling"
+msgstr "Käsittely"
+
+#: applications/enums.py:10
+msgid "Additional information requested"
+msgstr "Lisätietoja pyydetty"
+
+#: applications/enums.py:12
+msgid "Cancelled"
+msgstr "Peruutettu"
+
+#: applications/enums.py:13
+msgid "Accepted"
+msgstr "Hyväksytty"
+
+#: applications/enums.py:14
+msgid "Rejected"
+msgstr "Hylätty"
+
+#: applications/enums.py:28 applications/enums.py:40
+msgid "Invalid application status"
+msgstr "Epäkelpo hakemuksen tila"
+
+#: applications/enums.py:45
+msgid "Employment Benefit"
+msgstr "Työllistämisen Helsinki-lisä"
+
+#: applications/enums.py:46
+msgid "Salary Benefit"
+msgstr "Palkan Helsinki-lisä"
+
+#: applications/enums.py:47
+msgid "Commission Benefit"
+msgstr "Toimeksiannon Helsinki-lisä"
+
+#: applications/enums.py:51
+msgid "Step 1 - employer details"
+msgstr "Vaihe 1 – työnantajan tiedot"
+
+#: applications/enums.py:52
+msgid "Step 2 - employee details"
+msgstr "Vaihe 2 – työntekijän tiedot"
+
+#: applications/enums.py:53
+msgid "Step 3 - attachments"
+msgstr "Vaihe 3 – liitteet"
+
+#: applications/enums.py:54
+msgid "Step 4 - summary"
+msgstr "Vaihe 4 – yhteenveto"
+
+#: applications/enums.py:55
+msgid "Step 5 - power of attorney"
+msgstr "Vaihe 5 – valtuutus"
+
+#: applications/enums.py:56
+msgid "Step 6 - terms and send"
+msgstr "Vaihe 6 – ehdot ja lähetys"
+
+#: applications/enums.py:67
+msgid "Company"
+msgstr "Yritys"
+
+#: applications/enums.py:68
+msgid "Association"
+msgstr "Yhdistys"
+
+#: applications/enums.py:86
+msgid "employment contract"
+msgstr "työsopimus"
+
+#: applications/enums.py:87
+msgid "pay subsidy decision"
+msgstr "palkkatukipäätös"
+
+#: applications/enums.py:88
+msgid "commission contract"
+msgstr "toimeksiantosopimus"
+
+#: applications/enums.py:90
+msgid "education contract of the apprenticeship office"
+msgstr "oppisopimustoimiston koulutussopimus"
+
+#: applications/enums.py:92 applications/enums.py:93
+msgid "helsinki benefit voucher"
+msgstr "Helsinki-lisä-seteli"
+
+#: applications/enums.py:97
+msgid "attachment is required"
+msgstr "liite on pakollinen"
+
+#: applications/enums.py:98
+msgid "attachment is optional"
+msgstr "liite on valinnainen"
+
+#: applications/enums.py:104
+msgid "Ahjo report created, not yet sent to AHJO"
+msgstr "Ahjo-raportti luotu, ei vielä lähetetty Ahjoon"
+
+#: applications/enums.py:107
+msgid "Sent to Ahjo, decision pending"
+msgstr "Lähetetty Ahjoon, päätös vireillä"
+
+#: applications/enums.py:109
+msgid "Accepted in Ahjo"
+msgstr "Hyväksytty Ahjossa"
+
+#: applications/enums.py:110
+msgid "Rejected in Ahjo"
+msgstr "Hylätty Ahjossa"
+
+#: applications/enums.py:112
+msgid "Returned from Ahjo without decision"
+msgstr "Palautettu Ahjosta ilman päätöstä"
+
+#: applications/enums.py:114
+msgid "Sent to Talpa"
+msgstr "Lähetetty Talpaan"
+
+#: applications/enums.py:115
+msgid "Processing is completed"
+msgstr "Käsittely on valmis"
+
+#: applications/models.py:81 calculator/models.py:320 companies/models.py:17
+#: terms/models.py:180
+msgid "company"
+msgstr "yritys"
+
+#: applications/models.py:89
+msgid "status"
+msgstr "tila"
+
+#: applications/models.py:95
+msgid "application number"
+msgstr "hakemuksen numero"
+
+#: applications/models.py:98
+msgid "company name"
+msgstr "yrityksen nimi"
+
+#: applications/models.py:100
+msgid "company form"
+msgstr "yritysmuoto"
+
+#: applications/models.py:103
+msgid "company department"
+msgstr "yrityksen osasto"
+
+#: applications/models.py:108 applications/models.py:120
+msgid "company street address"
+msgstr "yrityksen katuosoite"
+
+#: applications/models.py:111 applications/models.py:123
+msgid "company city"
+msgstr "yrityksen kaupunki"
+
+#: applications/models.py:114 applications/models.py:126
+msgid "company post code"
+msgstr "yrityksen postinumero"
+
+#: applications/models.py:138
+msgid "company bank account number"
+msgstr "yrityksen tilinumero"
+
+#: applications/models.py:143 applications/models.py:493
+msgid "first name"
+msgstr "etunimi"
+
+#: applications/models.py:146 applications/models.py:496
+msgid "last name"
+msgstr "sukunimi"
+
+#: applications/models.py:150
+msgid "company contact person's phone number"
+msgstr "yrityksen yhteyshenkilön puhelinnumero"
+
+#: applications/models.py:158
+msgid "company contact person's email"
+msgstr "yrityksen yhteyshenkilön sähköpostiosoite"
+
+#: applications/models.py:193
+msgid "additional information about the ongoing co-operation negotiations"
+msgstr "lisätietoja käynnissä olevista yhteistoimintaneuvotteluista"
+
+#: applications/models.py:203 calculator/models.py:213
+msgid "Pay subsidy percent"
+msgstr "Palkkatukiprosentti"
+
+#: applications/models.py:210
+msgid "Pay subsidy percent for second pay subsidy grant"
+msgstr "Palkkatukiprosentti toisesta palkkatukiavustuksesta"
+
+#: applications/models.py:236 calculator/models.py:89 calculator/models.py:333
+msgid "benefit start from date"
+msgstr "avustuksen alkamispäivä"
+
+#: applications/models.py:239 calculator/models.py:90 calculator/models.py:334
+msgid "benefit end date"
+msgstr "avustuksen päättymispäivä"
+
+#: applications/models.py:267
+msgid "ahjo batch"
+msgstr "Ahjo-erä"
+
+#: applications/models.py:322 applications/models.py:330
+#: applications/models.py:358 applications/models.py:487
+#: applications/models.py:593 calculator/models.py:204 calculator/models.py:364
+#: messages/models.py:30 terms/models.py:145
+msgid "application"
+msgstr "hakemus"
+
+#: applications/models.py:323
+msgid "applications"
+msgstr "hakemukset"
+
+#: applications/models.py:335
+msgid "granter of the de minimis aid"
+msgstr "de minimis -tuen myöntäjä"
+
+#: applications/models.py:338
+msgid "amount of the de minimis aid"
+msgstr "de minimis -tuen määrä"
+
+#: applications/models.py:340
+msgid "benefit granted at"
+msgstr "avustus myönnetty"
+
+#: applications/models.py:349
+msgid "de minimis aid"
+msgstr "de minimis -tuki"
+
+#: applications/models.py:350
+msgid "de minimis aids"
+msgstr "de minimis -tuet"
+
+#: applications/models.py:378
+msgid "application log entry"
+msgstr "hakemuksen lokimerkintä"
+
+#: applications/models.py:379
+msgid "application log entries"
+msgstr "hakemuksen lokimerkinnät"
+
+#: applications/models.py:392
+msgid "status of batch"
+msgstr "erän tila"
+
+#: applications/models.py:399
+msgid "proposal for decision"
+msgstr "päätösehdotus"
+
+#: applications/models.py:404
+msgid "decision maker's title in Ahjo"
+msgstr "päätöksentekijän tehtävänimike Ahjossa"
+
+#: applications/models.py:407
+msgid "decision maker's name in Ahjo"
+msgstr "päätöksentekijän nimi Ahjossa"
+
+#: applications/models.py:410
+msgid "section of the law in Ahjo decision"
+msgstr "Ahjo-päätöksen lakipykälä"
+
+#: applications/models.py:413
+msgid "date of the decision in Ahjo"
+msgstr "päätöksen päivämäärä Ahjossa"
+
+#: applications/models.py:416
+msgid "Expert inspector's name"
+msgstr "Asiantuntijatarkastajan nimi"
+
+#: applications/models.py:419
+msgid "Expert inspector's email address"
+msgstr "Asiantuntijatarkastajan sähköpostiosoite"
+
+#: applications/models.py:459
+msgid "application batch"
+msgstr "hakemuserä"
+
+#: applications/models.py:460
+msgid "application batches"
+msgstr "hakemuserät"
+
+#: applications/models.py:480
+msgid "application basis"
+msgstr "hakemuksen peruste"
+
+#: applications/models.py:481
+msgid "application bases"
+msgstr "hakemuksen perusteet"
+
+#: applications/models.py:500 calculator/models.py:330
+msgid "social security number"
+msgstr "henkilötunnus"
+
+#: applications/models.py:508
+msgid "phone number"
+msgstr "puhelinnumero"
+
+#: applications/models.py:515
+msgid "email"
+msgstr "sähköpostiosoite"
+
+#: applications/models.py:525
+msgid "job title"
+msgstr "tehtävänimike"
+
+#: applications/models.py:528 calculator/models.py:72
+msgid "monthly pay"
+msgstr "kuukausipalkka"
+
+#: applications/models.py:535 calculator/models.py:79
+msgid "vacation money"
+msgstr "lomaraha"
+
+#: applications/models.py:543 calculator/models.py:85
+msgid "other expenses"
+msgstr "muut kulut"
+
+#: applications/models.py:550
+msgid "working hour"
+msgstr "työaika"
+
+#: applications/models.py:557
+msgid "collective bargaining agreement"
+msgstr "työehtosopimus"
+
+#: applications/models.py:560
+msgid "is living in helsinki"
+msgstr "asuu Helsingissä"
+
+#: applications/models.py:564
+msgid "amount of the commission (eur)"
+msgstr "Toimeksiannon rahamäärä (EUR)"
+
+#: applications/models.py:573
+msgid "Description of the commission"
+msgstr "Toimeksiannon kuvaus"
+
+#: applications/models.py:582
+msgid "employee"
+msgstr "työntekijä"
+
+#: applications/models.py:583
+msgid "employees"
+msgstr "työntekijät"
+
+#: applications/models.py:599
+msgid "attachment type in business rules"
+msgstr "liitetyyppi liiketoimintasäännöissä"
+
+#: applications/models.py:605
+msgid "technical content type of the attachment"
+msgstr "liitteen tekninen sisältötyyppi"
+
+#: applications/models.py:607
+msgid "application attachment content"
+msgstr "hakemuksen liitteen sisältö"
+
+#: applications/models.py:611
+msgid "attachment"
+msgstr "liite"
+
+#: applications/models.py:612
+msgid "attachments"
+msgstr "liitteet"
+
+#: calculator/api/v1/serializers.py:67
+msgid "Date range too large"
+msgstr "Päivämääräalue liian suuri"
+
+#: calculator/api/v1/serializers.py:76
+msgid "This calculation can not have a override_benefit_amount_comment"
+msgstr "Tässä laskelmassa ei voi olla kohdetta override_benefit_amount_comment"
+
+#: calculator/api/v1/serializers.py:84
+msgid "This calculation needs override_benefit_amount_comment"
+msgstr "Tässä laskelmassa on oltava kohde override_benefit_amount_comment"
+
+#: calculator/api/v1/serializers.py:106
+msgid "Handler can not be unassigned in this status"
+msgstr "Käsittelijää ei voida muuttaa tässä tilassa"
+
+#: calculator/api/v1/serializers.py:114
+msgid "Handler can not assigned in this status"
+msgstr "Käsittelijää ei voida määrittää tässä tilassa"
+
+#: calculator/enums.py:6
+msgid "Description row, amount ignored"
+msgstr "Kuvausrivi, rahamäärä ohitettu"
+
+#: calculator/enums.py:7
+msgid "Salary costs"
+msgstr "Palkkakustannukset"
+
+#: calculator/enums.py:8 calculator/models.py:92
+msgid "State aid maximum %"
+msgstr "Valtiontuen enimmäis-%"
+
+#: calculator/enums.py:9
+msgid "Pay subsidy/month"
+msgstr "Palkkatuki/kuukausi"
+
+#: calculator/enums.py:11
+msgid "Helsinki benefit amount monthly"
+msgstr "Helsinki-lisän määrä kuukaudelta"
+
+#: calculator/enums.py:14
+msgid "Helsinki benefit amount for a date range"
+msgstr "Helsinki-lisän määrä ajanjaksolta"
+
+#: calculator/enums.py:17
+msgid "Helsinki benefit total amount"
+msgstr "Helsinki-lisän kokonaismäärä"
+
+#: calculator/enums.py:20
+msgid "Training compensation amount monthly"
+msgstr "Koulutuskorvauksen määrä kuukaudelta"
+
+#: calculator/enums.py:23
+msgid "Total amount of deductions monthly"
+msgstr "Vähennysten kokonaismäärä kuukaudelta"
+
+#: calculator/models.py:33
+msgid "Calculation already exists"
+msgstr "Laskelma on jo olemassa"
+
+#: calculator/models.py:56
+msgid "handler"
+msgstr "käsittelijä"
+
+#: calculator/models.py:67 calculator/models.py:190 calculator/models.py:414
+msgid "calculation"
+msgstr "laskelma"
+
+#: calculator/models.py:100
+msgid "amount of the benefit granted, calculated by the system"
+msgstr "järjestelmän laskema myönnetyn avustuksen määrä"
+
+#: calculator/models.py:108
+msgid "amount of the benefit manually entered by the application handler"
+msgstr "hakemuksen käsittelijän käsin syöttämä avustuksen määrä"
+
+#: calculator/models.py:126
+msgid "reason for overriding the calculated benefit amount"
+msgstr "lasketun avustuksen määrän ohittamisen syy"
+
+#: calculator/models.py:152
+msgid "Incomplete application"
+msgstr "Puutteellinen hakemus"
+
+#: calculator/models.py:191
+msgid "calculations"
+msgstr "laskelmat"
+
+#: calculator/models.py:210 calculator/models.py:370
+msgid "Pay subsidy start date"
+msgstr "Palkkatuen alkamispäivä"
+
+#: calculator/models.py:211 calculator/models.py:371
+msgid "Pay subsidy end date"
+msgstr "Palkkatuen päättymispäivä"
+
+#: calculator/models.py:217
+msgid "Work time percent"
+msgstr "Työaikaprosentti"
+
+#: calculator/models.py:307
+msgid "pay subsidy"
+msgstr "palkkatuki"
+
+#: calculator/models.py:308
+msgid "pay subsidies"
+msgstr "palkkatuet"
+
+#: calculator/models.py:326
+msgid "encrypted social security number"
+msgstr "salattu henkilötunnus"
+
+#: calculator/models.py:338
+msgid "monthly amount of the previous benefit"
+msgstr "aiemman avustuksen kuukausimäärä"
+
+#: calculator/models.py:343
+msgid "total amount of the previous benefit"
+msgstr "aiemman avustuksen kokonaismäärä"
+
+#: calculator/models.py:353
+msgid "Previously granted benefit"
+msgstr "Aiemmin myönnetty avustus"
+
+#: calculator/models.py:354
+msgid "Previously granted benefits"
+msgstr "Aiemmin myönnetyt avustukset"
+
+#: calculator/models.py:373
+msgid "Monthly amount of compensation"
+msgstr "Korvauksen kuukausimäärä"
+
+#: calculator/models.py:390
+msgid "training compensation"
+msgstr "koulutuskorvaus"
+
+#: calculator/models.py:391
+msgid "training compensations"
+msgstr "koulutuskorvaukset"
+
+#: calculator/models.py:424
+msgid "Description of the row to be shown in handler UI"
+msgstr "Rivin kuvaus näytettävä käsittelijän käyttöliittymässä"
+
+#: calculator/models.py:427
+msgid "row amount"
+msgstr "rivin rahamäärä"
+
+#: calculator/models.py:429
+msgid "Start date"
+msgstr "Alkamispäivä"
+
+#: calculator/models.py:430
+msgid "End date"
+msgstr "Päättymispäivä"
+
+#: calculator/models.py:463
+msgid "calculation row"
+msgstr "laskelmarivi"
+
+#: calculator/models.py:464
+msgid "calculation rows"
+msgstr "laskelmarivit"
+
+#: common/permissions.py:25
+msgid "You have to accept Terms of Service before doing any action"
+msgstr "Sinun on hyväksyttävä palveluehdot ennen mitään toimenpiteitä"
+
+#: common/permissions.py:44
+msgid "Company information is not available"
+msgstr "Yrityksen tietoja ei ole saatavilla"
+
+#: companies/models.py:9
+msgid "bank account number"
+msgstr "tilinumero"
+
+#: companies/models.py:18
+msgid "companies"
+msgstr "yritykset"
+
+#: helsinkibenefit/settings.py:148
+msgid "Finnish"
+msgstr "Suomi"
+
+#: helsinkibenefit/settings.py:148
+msgid "English"
+msgstr "Englanti"
+
+#: helsinkibenefit/settings.py:148
+msgid "Swedish"
+msgstr "Ruotsi"
+
+#: messages/admin.py:13
+msgid "Application number"
+msgstr "Hakemuksen numero"
+
+#: messages/models.py:16
+msgid "Note"
+msgstr "Huomautus"
+
+#: messages/models.py:17
+msgid "Handler's message"
+msgstr "Käsittelijän viesti"
+
+#: messages/models.py:18
+msgid "Applicant's message"
+msgstr "Hakijan viesti"
+
+#: messages/models.py:22
+msgid "content"
+msgstr "sisältö"
+
+#: messages/models.py:24
+msgid "sender"
+msgstr "lähettäjä"
+
+#: messages/models.py:33
+msgid "message type"
+msgstr "viestityyppi"
+
+#: messages/models.py:36 messages/models.py:39
+msgid "read by applicant"
+msgstr "hakijan lukenut"
+
+#: messages/models.py:46
+msgid "message"
+msgstr "viesti"
+
+#: messages/models.py:47
+msgid "messages"
+msgstr "viestit"
+
+#: messages/permissions.py:9
+msgid "You don't have permission to change this message"
+msgstr "Sinulla ei ole oikeutta muuttaa tätä viestiä"
+
+#: messages/serializers.py:33 messages/views.py:37
+msgid "Application not found"
+msgstr "Hakemusta ei löytynyt"
+
+#: messages/serializers.py:38
+msgid "You are not allowed to do this action"
+msgstr "Sinä et saa tehdä tätä toimenpidettä"
+
+#: messages/serializers.py:42
+msgid "Cannot do this action because application is not in handling status"
+msgstr "Tätä toimenpidettä ei voida tehdä, koska hakemus ei ole käsittelytilassa"
+
+#: messages/serializers.py:48
+msgid "Applicant is not allowed to do this action"
+msgstr "Hakija ei saa tehdä tätä toimenpidettä"
+
+#: messages/serializers.py:52
+msgid "Handler is not allowed to do this action"
+msgstr "Käsittelijä ei saa tehdä tätä toimenpidettä"
+
+#: terms/api/v1/serializers.py:87
+msgid "Only the terms currently in effect can be approved"
+msgstr "Vain voimassa olevat ehdot voidaan hyväksyä"
+
+#: terms/api/v1/serializers.py:96
+msgid "User must explicitly select all the applicant consents required by the terms"
+msgstr "Käyttäjän on nimenomaisesti valittava kaikki ehdoissa vaaditut hakijan suostumukset"
+
+#: terms/api/v1/views.py:42
+msgid "The user has no company, terms of service can not be accepted"
+msgstr "Käyttäjällä ei ole yritystä, palveluehtoja ei voida hyväksyä"
+
+#: terms/api/v1/views.py:66
+msgid "The terms of service should only be approved once"
+msgstr "Palveluehdot tulee hyväksyä vain kerran"
+
+#: terms/enums.py:6
+msgid "Terms of service - shown at login"
+msgstr "Palveluehdot – näytetään sisäänkirjautumisen yhteydessä"
+
+#: terms/enums.py:8
+msgid "Terms of application - show at application submit"
+msgstr "Hakuehdot – näytä hakemuksen lähettämisen yhteydessä"
+
+#: terms/models.py:31
+msgid "type of terms"
+msgstr "ehtojen tyyppi"
+
+#: terms/models.py:40
+msgid "first day these terms are in effect"
+msgstr "näiden ehtojen ensimmäinen voimassaolopäivä"
+
+#: terms/models.py:43
+msgid "finnish terms (pdf file)"
+msgstr "suomenkieliset ehdot (PDF-tiedosto)"
+
+#: terms/models.py:44
+msgid "english terms (pdf file)"
+msgstr "englanninkieliset ehdot (PDF-tiedosto)"
+
+#: terms/models.py:45
+msgid "swedish terms (pdf file)"
+msgstr "ruotsinkieliset ehdot (PDF-tiedosto)"
+
+#: terms/models.py:58 terms/models.py:59 terms/models.py:71 terms/models.py:126
+msgid "terms"
+msgstr "ehdot"
+
+#: terms/models.py:76
+msgid "finnish text for the consent checkbox"
+msgstr "suostumuksen valintaruudun suomenkielinen teksti"
+
+#: terms/models.py:79
+msgid "english text for the consent checkbox"
+msgstr "suostumuksen valintaruudun englanninkielinen teksti"
+
+#: terms/models.py:82
+msgid "swedish text for the consent checkbox"
+msgstr "Suostumuksen valintaruudun ruotsinkielinen teksti"
+
+#: terms/models.py:91
+msgid "application consent"
+msgstr "hakusuostumus"
+
+#: terms/models.py:92
+msgid "application consents"
+msgstr "hakusuostumukset"
+
+#: terms/models.py:118
+msgid "timestamp of approval"
+msgstr "hyväksynnän aikaleima"
+
+#: terms/models.py:122
+msgid "user who approved the terms"
+msgstr "ehdot hyväksynyt käyttäjä"
+
+#: terms/models.py:134
+msgid "selected applicant consents"
+msgstr "valitut hakijan suostumukset"
+
+#: terms/models.py:167
+msgid "applicant terms approval"
+msgstr "hakijan ehtojen hyväksyntä"
+
+#: terms/models.py:168
+msgid "applicant terms approvals"
+msgstr "hakijan ehtojen hyväksynnät"
+
+#: terms/models.py:174
+msgid "user"
+msgstr "käyttäjä"
+
+#: terms/models.py:207
+msgid "terms of service approval"
+msgstr "palveluehtojen hyväksyntä"
+
+#: terms/models.py:208
+msgid "terms of service approvals"
+msgstr "palveluehtojen hyväksynnät"
