@@ -1,5 +1,5 @@
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import YouthApplication from 'kesaseteli-shared/types/youth-application';
+import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import {
   QueryKey,
   useQuery,
@@ -11,8 +11,8 @@ import { isError } from 'shared/utils/type-guards';
 
 const useYouthApplicationQuery = (
   id?: string,
-  options?: UseQueryOptions<YouthApplication>
-): UseQueryResult<YouthApplication> => {
+  options?: UseQueryOptions<CreatedYouthApplication>
+): UseQueryResult<CreatedYouthApplication> => {
   const handleError = useErrorHandler(false);
   return useQuery({
     queryKey: `${BackendEndpoint.YOUTH_APPLICATIONS}${String(id)}/` as QueryKey,

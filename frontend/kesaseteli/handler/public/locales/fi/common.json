@@ -21,7 +21,14 @@
     }
   },
   "handlerApplication": {
-    "title": "Käsittelijän käyttöliittymä",
+    "title": "Hakemuksen tiedot",
+    "name": "Nimi",
+    "social_security_number": "Hlö-tunnus",
+    "postcode": "Postinumero",
+    "school": "Koulu",
+    "is_unlisted_school": "(Koulua ei löytynyt listalta)",
+    "phone_number": "Puhelinnumero",
+    "email": "Sähköposti",
     "notFound": "Hakemusta ei löytynyt"
   },
   "errors": {

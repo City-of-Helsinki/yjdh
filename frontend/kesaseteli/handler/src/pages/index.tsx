@@ -1,10 +1,11 @@
+import HandlerForm from 'kesaseteli/handler/components/form/HandlerForm';
 import useYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useYouthApplicationQuery';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import Heading from 'shared/components/forms/heading/Heading';
+import NotificationPage from 'shared/components/pages/NotificationPage';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import useIdQueryParam from 'shared/hooks/useIdQueryParam';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
@@ -17,22 +18,25 @@ const handlerIndex: NextPage = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const youthApplicationQuery = useYouthApplicationQuery(applicationId);
 
-  if (youthApplicationQuery.isLoading) {
-    return <PageLoadingSpinner />;
+  if (youthApplicationQuery.isError || !applicationId) {
+    return (
+      <NotificationPage
+        title={t('common:handlerApplication.notFound')}
+        type="alert"
+      />
+    );
   }
-  return (
-    <Container>
-      <Head>
-        <title>{t(`common:appName`)}</title>
-      </Head>
-      <Heading size="s" header={t('common:handlerApplication.title')} as="h2" />
-      {youthApplicationQuery.isSuccess ? (
-        <pre>{JSON.stringify(youthApplicationQuery.data, null, 2)}</pre>
-      ) : (
-        t('common:handlerApplication.notFound')
-      )}
-    </Container>
-  );
+  if (youthApplicationQuery.isSuccess) {
+    return (
+      <Container>
+        <Head>
+          <title>{t(`common:appName`)}</title>
+        </Head>
+        <HandlerForm application={youthApplicationQuery.data} />
+      </Container>
+    );
+  }
+  return <PageLoadingSpinner />;
 };
 
 export const getStaticProps: GetStaticProps =
