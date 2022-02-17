@@ -11,9 +11,10 @@ import {
 import { ErrorData } from 'benefit/handler/types/common';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field } from 'shared/components/forms/fields/types';
+import useToggle from 'shared/hooks/useToggle';
 import { OptionType } from 'shared/types/common';
 import {
   convertToUIDateFormat,
@@ -45,7 +46,7 @@ const useSalaryBenefitCalculatorData = (
 ): ExtendedComponentProps => {
   const { t } = useTranslation();
 
-  const [isManualCalculator, setIsManualCalculator] = useState(
+  const [isManualCalculator, toggleManualCalculator] = useToggle(
     !!application.calculation?.overrideMonthlyBenefitAmount
   );
 
@@ -106,7 +107,7 @@ const useSalaryBenefitCalculatorData = (
     // so to switch to auto mode, we set empty value here
     if (isManualCalculator)
       void formik.setFieldValue(fields.overrideMonthlyBenefitAmount.name, null);
-    setIsManualCalculator(!isManualCalculator);
+    toggleManualCalculator();
   };
 
   const stateAidMaxPercentageOptions = React.useMemo(
