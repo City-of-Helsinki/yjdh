@@ -21,12 +21,14 @@ import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
 import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
+import NotificationView from './notificationView/NotificationView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
 import { useApplicationReview } from './useApplicationReview';
 
 const ApplicationReview: React.FC = () => {
-  const { application, isLoading, t } = useApplicationReview();
+  const { application, handledApplication, isLoading, t } =
+    useApplicationReview();
   const theme = useTheme();
 
   const CalculatorView = (): ReactElement | null => {
@@ -47,6 +49,15 @@ const ApplicationReview: React.FC = () => {
       <Container>
         <LoadingSpinner />
       </Container>
+    );
+  }
+
+  if (handledApplication?.status === application.status) {
+    return (
+      <>
+        <ApplicationHeader data={application} />
+        <NotificationView data={application} />
+      </>
     );
   }
 

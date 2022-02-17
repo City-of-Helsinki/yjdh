@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { HandledAplication } from '../types/application';
 import AppContext from './AppContext';
 
 const AppContextProvider = <P,>({
@@ -10,6 +11,8 @@ const AppContextProvider = <P,>({
     React.useState<boolean>(false);
   const [layoutBackgroundColor, setLayoutBackgroundColor] =
     React.useState<string>('');
+  const [handledApplication, setHandledApplication] =
+    React.useState<HandledAplication | null>(null);
 
   return (
     <AppContext.Provider
@@ -17,6 +20,8 @@ const AppContextProvider = <P,>({
         layoutBackgroundColor,
         isFooterVisible,
         isNavigationVisible,
+        handledApplication,
+        setHandledApplication,
         setIsNavigationVisible,
         setIsFooterVisible,
         setLayoutBackgroundColor,

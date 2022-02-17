@@ -1,19 +1,27 @@
 import camelcaseKeys from 'camelcase-keys';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import snakecaseKeys from 'snakecase-keys';
 
+import { ROUTES } from '../constants';
+import AppContext from '../context/AppContext';
 import {
   Application,
   ApplicationData,
   CalculationFormProps,
+  HandledAplication,
   PaySubsidy,
 } from '../types/application';
 import { ErrorData } from '../types/common';
+import { useApplicationActions } from './useApplicationActions';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface HandlerReviewActions {
   onCalculateEmployment: (calculator: CalculationFormProps) => void;
+  onSaveAndClose: () => void;
+  onDone: () => void;
+  onCancel: (cancelledApplication: HandledAplication) => void;
   calculationsErrors: ErrorData | undefined | null;
   calculateSalaryBenefit: (values: CalculationFormProps) => void;
 }
@@ -25,6 +33,34 @@ const useHandlerReviewActions = (
   const [calculationsErrors, setCalculationErrors] = useState<
     ErrorData | undefined | null
   >();
+
+  const router = useRouter();
+
+  const { handledApplication } = React.useContext(AppContext);
+
+  const { updateStatus } = useApplicationActions(application);
+
+  // ACCEPTED, REJECTED
+  const onDone = React.useCallback((): void => {
+    if (handledApplication?.status) {
+      updateStatus(
+        handledApplication.status,
+        handledApplication.logEntryComment,
+        handledApplication.grantedAsDeMinimisAid
+      );
+    }
+  }, [handledApplication, updateStatus]);
+
+  // CANCELL
+  const onCancel = (cancelledApplication: HandledAplication): void => {
+    if (cancelledApplication?.status) {
+      updateStatus(
+        cancelledApplication.status,
+        cancelledApplication.logEntryComment,
+        false
+      );
+    }
+  };
 
   const getDataEmployment = (values: CalculationFormProps): ApplicationData => {
     const startDate = values.startDate
@@ -118,10 +154,17 @@ const useHandlerReviewActions = (
     void updateApplicationQuery.mutate(getSalaryBenefitData(values));
   };
 
+  const onSaveAndClose = (): void => {
+    void router.push(ROUTES.HOME);
+  };
+
   return {
     onCalculateEmployment,
-    calculationsErrors,
+    onSaveAndClose,
+    onDone,
+    onCancel,
     calculateSalaryBenefit,
+    calculationsErrors,
   };
 };
 
