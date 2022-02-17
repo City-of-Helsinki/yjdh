@@ -6,23 +6,31 @@ import {
   CALCULATION_TYPES,
 } from 'benefit/handler/constants';
 import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
-import { SalaryBenefitCalculatorViewProps } from 'benefit/handler/types/application';
+import {
+  PaySubsidy,
+  SalaryBenefitCalculatorViewProps,
+} from 'benefit/handler/types/application';
 import { Button, DateInput, Select, TextInput } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
-import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
+import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import {
+  convertToBackendDateFormat,
+  convertToUIDateFormat,
+  diffMonths,
+  getCorrectEndDate,
+  parseDate,
+} from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import {
   $CalculatorHr,
   $CalculatorTableRow,
   $CalculatorText,
-  $DateTimeDuration,
 } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
 import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
@@ -34,7 +42,6 @@ const SalaryBenefitCalculatorView: React.FC<
     formik,
     fields,
     calculationsErrors,
-    paySubsidyPeriod,
     grantedPeriod,
     stateAidMaxPercentageOptions,
     getStateAidMaxPercentageSelectValue,
@@ -56,7 +63,6 @@ const SalaryBenefitCalculatorView: React.FC<
         <$CalculatorText
           css={`
             margin: 0 0 ${theme.spacing.xs2} 0;
-            font-weight: 500;
           `}
         >
           {t(`${translationsBase}.header`)}
@@ -84,7 +90,7 @@ const SalaryBenefitCalculatorView: React.FC<
           onChange={(e) =>
             formik.setFieldValue(fields.monthlyPay.name, e.target.value)
           }
-          value={formik.values.monthlyPay}
+          value={formatStringFloatValue(formik.values.monthlyPay)}
           invalid={!!getErrorMessage(fields.monthlyPay.name)}
           aria-invalid={!!getErrorMessage(fields.monthlyPay.name)}
           errorText={getErrorMessage(fields.monthlyPay.name)}
@@ -95,12 +101,12 @@ const SalaryBenefitCalculatorView: React.FC<
         <TextInput
           id={fields.otherExpenses.name}
           name={fields.otherExpenses.name}
-          label={fields.monthlyPay.label}
+          label={fields.otherExpenses.label}
           onBlur={undefined}
           onChange={(e) =>
             formik.setFieldValue(fields.otherExpenses.name, e.target.value)
           }
-          value={formik.values.otherExpenses}
+          value={formatStringFloatValue(formik.values.otherExpenses)}
           invalid={!!getErrorMessage(fields.otherExpenses.name)}
           aria-invalid={!!getErrorMessage(fields.otherExpenses.name)}
           errorText={getErrorMessage(fields.otherExpenses.name)}
@@ -116,7 +122,7 @@ const SalaryBenefitCalculatorView: React.FC<
           onChange={(e) =>
             formik.setFieldValue(fields.vacationMoney.name, e.target.value)
           }
-          value={formik.values.vacationMoney}
+          value={formatStringFloatValue(formik.values.vacationMoney)}
           invalid={!!getErrorMessage(fields.vacationMoney.name)}
           aria-invalid={!!getErrorMessage(fields.vacationMoney.name)}
           errorText={getErrorMessage(fields.vacationMoney.name)}
@@ -165,69 +171,152 @@ const SalaryBenefitCalculatorView: React.FC<
         />
       </$GridCell>
 
-      <$GridCell $colStart={1}>
-        <Select
-          value={getPaySubsidyPercentageSelectValue()}
-          helper=""
-          optionLabelField="label"
-          label={fields.paySubsidyPercent.label}
-          onChange={(paySubsidyPercent: Option) =>
-            formik.setFieldValue(
-              fields.paySubsidyPercent.name,
-              paySubsidyPercent.value
-            )
-          }
-          options={paySubsidyPercentageOptions}
-          id={fields.paySubsidyPercent.name}
-          placeholder={t('common:select')}
-          invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-          aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
-          error={getErrorMessage(fields.paySubsidyPercent.name)}
-        />
-      </$GridCell>
+      {formik.values.paySubsidies?.map((item: PaySubsidy, index: number) => (
+        <>
+          <$GridCell $colStart={1}>
+            <$CalculatorText>{fields.paySubsidyPercent.label}</$CalculatorText>
+          </$GridCell>
+          {item.paySubsidyPercent === 100 && (
+            <$GridCell $colStart={3} $colSpan={2}>
+              <$CalculatorText>{fields.workTimePercent.label}</$CalculatorText>
+            </$GridCell>
+          )}
+          <$GridCell
+            $colStart={item.paySubsidyPercent === 100 ? 6 : 3}
+            $colSpan={4}
+          >
+            <$CalculatorText>
+              {t(`${translationsBase}.salarySupportPeriod`, {
+                period: formatStringFloatValue(
+                  diffMonths(parseDate(item.endDate), parseDate(item.startDate))
+                ),
+              })}
+            </$CalculatorText>
+          </$GridCell>
 
-      <$GridCell $colStart={3} $colSpan={6}>
-        <$CalculatorText
-          css={`
-            margin: 0 0 ${theme.spacing.xs3} 0;
-            font-weight: 500;
-          `}
-        >
-          {t(`${translationsBase}.salarySupportPeriod`, {
-            period: formatStringFloatValue(paySubsidyPeriod),
-          })}
-        </$CalculatorText>
+          <$GridCell $colStart={1}>
+            <Select
+              value={getPaySubsidyPercentageSelectValue(item.paySubsidyPercent)}
+              helper=""
+              optionLabelField="label"
+              label=""
+              onChange={(paySubsidyPercent: Option) => {
+                formik.setFieldValue(
+                  fields.paySubsidies.name,
+                  formik.values.paySubsidies?.map(
+                    (paySubsidyItem, paySubsidyItemIndex) => {
+                      if (paySubsidyItemIndex === index)
+                        return {
+                          ...paySubsidyItem,
+                          paySubsidyPercent: paySubsidyPercent.value,
+                        };
+                      return paySubsidyItem;
+                    }
+                  )
+                );
+              }}
+              options={paySubsidyPercentageOptions}
+              id={fields.paySubsidyPercent.name}
+              placeholder={t('common:select')}
+              invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
+              aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
+              error={getErrorMessage(fields.paySubsidyPercent.name)}
+            />
+          </$GridCell>
 
-        <$DateTimeDuration>
-          <DateInput
-            id={fields.paySubsidyStartDate.name}
-            name={fields.paySubsidyStartDate.name}
-            placeholder={fields.paySubsidyStartDate.placeholder}
-            onChange={(value) => {
-              formik.setFieldValue(fields.paySubsidyStartDate.name, value);
-            }}
-            value={formik.values.paySubsidyStartDate}
-          />
-          <DateFieldsSeparator />
-          <DateInput
-            id={fields.paySubsidyEndDate.name}
-            name={fields.paySubsidyEndDate.name}
-            placeholder={fields.paySubsidyEndDate.placeholder}
-            onChange={(value) => {
-              formik.setFieldValue(fields.paySubsidyEndDate.name, value);
-            }}
-            value={formik.values.paySubsidyEndDate}
-          />
-        </$DateTimeDuration>
-      </$GridCell>
+          {item.paySubsidyPercent === 100 && (
+            <$GridCell $colStart={3} $colSpan={2}>
+              <TextInput
+                id={fields.workTimePercent.name}
+                name={fields.workTimePercent.name}
+                onBlur={undefined}
+                onChange={(e) => {
+                  formik.setFieldValue(
+                    fields.paySubsidies.name,
+                    formik.values.paySubsidies?.map(
+                      (paySubsidyItem, paySubsidyItemIndex) => {
+                        if (paySubsidyItemIndex === index)
+                          return {
+                            ...paySubsidyItem,
+                            workTimePercent: e.target.value,
+                          };
+                        return paySubsidyItem;
+                      }
+                    )
+                  );
+                }}
+                value={formatStringFloatValue(item.workTimePercent)}
+                invalid={!!getErrorMessage(fields.workTimePercent.name)}
+                aria-invalid={!!getErrorMessage(fields.workTimePercent.name)}
+                errorText={getErrorMessage(fields.workTimePercent.name)}
+              />
+            </$GridCell>
+          )}
+
+          <$GridCell
+            $colStart={item.paySubsidyPercent === 100 ? 6 : 3}
+            $colSpan={3}
+          >
+            <DateInputWithSeparator
+              id={fields.startDate.name}
+              name={fields.startDate.name}
+              placeholder={fields.startDate.placeholder}
+              value={convertToUIDateFormat(item.startDate)}
+              onChange={(value) => {
+                formik.setFieldValue(
+                  fields.paySubsidies.name,
+                  formik.values.paySubsidies?.map(
+                    (paySubsidyItem, paySubsidyItemIndex) => {
+                      if (paySubsidyItemIndex === index)
+                        return {
+                          ...paySubsidyItem,
+                          startDate: convertToBackendDateFormat(value),
+                          endDate: convertToBackendDateFormat(
+                            getCorrectEndDate(value, item.endDate)
+                          ),
+                        };
+                      return paySubsidyItem;
+                    }
+                  )
+                );
+              }}
+            />
+          </$GridCell>
+
+          <$GridCell
+            $colStart={item.paySubsidyPercent === 100 ? 9 : 6}
+            $colSpan={3}
+          >
+            <DateInput
+              id={fields.endDate.name}
+              name={fields.endDate.name}
+              placeholder={fields.endDate.placeholder}
+              onChange={(value) => {
+                formik.setFieldValue(
+                  fields.paySubsidies.name,
+                  formik.values.paySubsidies?.map(
+                    (paySubsidyItem, paySubsidyItemIndex) => {
+                      if (paySubsidyItemIndex === index)
+                        return {
+                          ...paySubsidyItem,
+                          startDate: convertToBackendDateFormat(item.startDate),
+                          endDate: convertToBackendDateFormat(
+                            getCorrectEndDate(item.startDate, value)
+                          ),
+                        };
+                      return paySubsidyItem;
+                    }
+                  )
+                );
+              }}
+              value={convertToUIDateFormat(item.endDate)}
+            />
+          </$GridCell>
+        </>
+      ))}
 
       <$GridCell $colStart={1} $colSpan={5}>
-        <$CalculatorText
-          css={`
-            font-weight: 500;
-            margin: 0 0 ${theme.spacing.xs3} 0;
-          `}
-        >
+        <$CalculatorText>
           {t(`${translationsBase}.grantedPeriod`, {
             period: formatStringFloatValue(grantedPeriod),
           })}
@@ -235,23 +324,19 @@ const SalaryBenefitCalculatorView: React.FC<
       </$GridCell>
 
       <$GridCell $colStart={1} $colSpan={2}>
-        <$DateTimeDuration>
-          <DateInput
-            id={fields.startDate.name}
-            name={fields.startDate.name}
-            placeholder={fields.startDate.placeholder}
-            language={language}
-            onChange={(value) => {
-              formik.setFieldValue(fields.startDate.name, value);
-            }}
-            value={formik.values.startDate ?? ''}
-            invalid={!!getErrorMessage(fields.startDate.name)}
-            aria-invalid={!!getErrorMessage(fields.startDate.name)}
-            errorText={getErrorMessage(fields.startDate.name)}
-          />
-
-          <DateFieldsSeparator />
-        </$DateTimeDuration>
+        <DateInputWithSeparator
+          id={fields.startDate.name}
+          name={fields.startDate.name}
+          placeholder={fields.startDate.placeholder}
+          language={language}
+          onChange={(value) => {
+            formik.setFieldValue(fields.startDate.name, value);
+          }}
+          value={formik.values.startDate ?? ''}
+          invalid={!!getErrorMessage(fields.startDate.name)}
+          aria-invalid={!!getErrorMessage(fields.startDate.name)}
+          errorText={getErrorMessage(fields.startDate.name)}
+        />
       </$GridCell>
 
       <$GridCell $colStart={3} $colSpan={3}>

@@ -11,7 +11,6 @@ import {
   ApplicationData,
   CalculationFormProps,
   HandledAplication,
-  PaySubsidy,
 } from '../types/application';
 import { ErrorData } from '../types/common';
 import { useApplicationActions } from './useApplicationActions';
@@ -92,19 +91,12 @@ const useHandlerReviewActions = (
       ? convertToBackendDateFormat(values.endDate)
       : undefined;
 
-    const paySubsidyStartDate = convertToBackendDateFormat(
-      values.paySubsidyStartDate
-    );
-    const paySubsidyEndDate = convertToBackendDateFormat(
-      values.paySubsidyEndDate
-    );
-
     const {
       monthlyPay,
       vacationMoney,
       stateAidMaxPercentage,
       otherExpenses,
-      paySubsidyPercent,
+      paySubsidies,
     } = values;
 
     return snakecaseKeys(
@@ -119,18 +111,7 @@ const useHandlerReviewActions = (
           stateAidMaxPercentage,
           otherExpenses,
         },
-        paySubsidies: application.paySubsidies?.map(
-          (item: PaySubsidy, index: number) => {
-            if (index === 0)
-              return {
-                ...item,
-                paySubsidyPercent,
-                startDate: paySubsidyStartDate,
-                endDate: paySubsidyEndDate,
-              };
-            return item;
-          }
-        ),
+        paySubsidies,
       },
       { deep: true }
     );
