@@ -13,9 +13,13 @@ import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import EmployeeView from './employeeView/EmployeeView';
 import { useApplicationFormStep5 } from './useApplicationFormStep5';
 
-const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
-  data,
-}) => {
+type ExtendedProps = {
+  isReadOnly?: boolean;
+};
+
+const ApplicationFormStep5: React.FC<
+  DynamicFormStepComponentProps & ExtendedProps
+> = ({ data, isReadOnly }) => {
   const {
     t,
     handleBack,
@@ -23,6 +27,7 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
     handleSubmit,
     handleDelete,
     handleStepChange,
+    handleClose,
     translationsBase,
     isSubmit,
   } = useApplicationFormStep5(data);
@@ -31,24 +36,34 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
 
   return (
     <>
-      <CompanyInfoView data={data} handleStepChange={handleStepChange} />
+      <CompanyInfoView
+        isReadOnly={isReadOnly}
+        data={data}
+        handleStepChange={handleStepChange}
+      />
 
-      <EmployeeView data={data} handleStepChange={handleStepChange} />
+      <EmployeeView
+        isReadOnly={isReadOnly}
+        data={data}
+        handleStepChange={handleStepChange}
+      />
 
       <SummarySection
         header={t(`${translationsBase}.attachments.heading1`)}
         action={
-          <Button
-            theme="black"
-            css={`
-              margin-top: ${theme.spacing.s};
-            `}
-            onClick={() => handleStepChange(3)}
-            variant="supplementary"
-            iconLeft={<IconPen />}
-          >
-            {t(`common:applications.actions.edit`)}
-          </Button>
+          !isReadOnly && (
+            <Button
+              theme="black"
+              css={`
+                margin-top: ${theme.spacing.s};
+              `}
+              onClick={() => handleStepChange(3)}
+              variant="supplementary"
+              iconLeft={<IconPen />}
+            >
+              {t(`common:applications.actions.edit`)}
+            </Button>
+          )
         }
       >
         {(data.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
@@ -98,17 +113,19 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
         paddingBottom={isEmpty(data.applicantTermsApproval)}
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
-          <Button
-            theme="black"
-            css={`
-              margin-top: ${theme.spacing.s};
-            `}
-            onClick={() => handleStepChange(4)}
-            variant="supplementary"
-            iconLeft={<IconPen />}
-          >
-            {t(`common:applications.actions.edit`)}
-          </Button>
+          !isReadOnly && (
+            <Button
+              theme="black"
+              css={`
+                margin-top: ${theme.spacing.s};
+              `}
+              onClick={() => handleStepChange(4)}
+              variant="supplementary"
+              iconLeft={<IconPen />}
+            >
+              {t(`common:applications.actions.edit`)}
+            </Button>
+          )
         }
       >
         <AttachmentsListView
@@ -124,15 +141,27 @@ const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
           <ConsentViewer data={data} />
         </SummarySection>
       )}
-      <StepperActions
-        lastStep={isSubmit}
-        handleSave={handleSave}
-        handleSubmit={handleSubmit}
-        handleBack={handleBack}
-        handleDelete={handleDelete}
-      />
+      {isReadOnly ? (
+        <Button theme="black" variant="secondary" onClick={handleClose}>
+          {t('common:utility.close')}
+        </Button>
+      ) : (
+        <StepperActions
+          lastStep={isSubmit}
+          handleSave={handleSave}
+          handleSubmit={handleSubmit}
+          handleBack={handleBack}
+          handleDelete={handleDelete}
+        />
+      )}
     </>
   );
 };
+
+const defaultProps = {
+  isReadOnly: false,
+};
+
+ApplicationFormStep5.defaultProps = defaultProps;
 
 export default ApplicationFormStep5;

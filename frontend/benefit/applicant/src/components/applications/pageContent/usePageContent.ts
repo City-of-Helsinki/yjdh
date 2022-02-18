@@ -17,6 +17,7 @@ type ExtendedComponentProps = {
   steps: StepProps[];
   currentStep: number;
   application: Application;
+  isReadOnly: string | string[] | undefined;
   id: string | string[] | undefined;
   isError: boolean;
   isLoading: boolean;
@@ -25,8 +26,8 @@ type ExtendedComponentProps = {
 const usePageContent = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
+  const isReadOnly = router?.query?.isReadOnly?.toString() ?? '';
   const { t } = useTranslation();
-
   const [isLoading, setIsLoading] = useState(true);
   // query param used in edit mode. id from context used for updating newly created application
   const {
@@ -81,6 +82,7 @@ const usePageContent = (): ExtendedComponentProps => {
     application,
     isLoading,
     isError: Boolean(id && existingApplicationError),
+    isReadOnly,
   };
 };
 
