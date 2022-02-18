@@ -1,13 +1,13 @@
 import { Language } from '@frontend/shared/src/i18n/i18n';
+import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
-import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
+import CreatedYouthApplication from '../../types/created-youth-application';
 import YouthApplication from '../../types/youth-application';
 import YouthFormData from '../../types/youth-form-data';
 import { convertFormDataToApplication } from '../../utils/youth-form-data.utils';
