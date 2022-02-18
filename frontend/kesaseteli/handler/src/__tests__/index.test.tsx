@@ -15,7 +15,7 @@ import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
-  it.only('should not violate accessibility', async () => {
+  it('should not violate accessibility', async () => {
     const {
       renderResult: { container },
     } = renderComponent(<HandlerIndex />, { query: {} });
