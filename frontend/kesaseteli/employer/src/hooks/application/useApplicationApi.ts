@@ -7,12 +7,13 @@ import noop from 'lodash/noop';
 import React from 'react';
 import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
-import useIdQueryParam from 'shared/hooks/useIdQueryParam';
+import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 
 export type ApplicationApi<T> = {
   applicationId?: string;
+  isRouterLoading: boolean;
   applicationQuery: UseQueryResult<T>;
   updateApplicationQuery: UseMutationResult<
     Application,
@@ -46,7 +47,7 @@ export type Params = {
 const useApplicationApi = <T = Application>(
   select?: (application: Application) => T
 ): ApplicationApi<T> => {
-  const applicationId = useIdQueryParam();
+  const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
   const queryClient = useQueryClient();
   const onError = useErrorHandler();
 
@@ -128,6 +129,7 @@ const useApplicationApi = <T = Application>(
     );
 
   return {
+    isRouterLoading,
     applicationId,
     applicationQuery,
     updateApplicationQuery,

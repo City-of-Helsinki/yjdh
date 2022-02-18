@@ -6,12 +6,12 @@ import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import useGoToPage from 'shared/hooks/useGoToPage';
-import useIdQueryParam from 'shared/hooks/useIdQueryParam';
+import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
 
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();
   const goToPage = useGoToPage();
-  const applicationId = useIdQueryParam();
+  const { applicationId } = useApplicationApi();
   const goToThankYouPage = React.useCallback(() => {
     if (applicationId) {
       void goToPage(`/thankyou?id=${applicationId}`);

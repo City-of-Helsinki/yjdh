@@ -2,8 +2,6 @@ import Field from 'kesaseteli/handler/components/form/Field';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import FormSection from 'shared/components/forms/section/FormSection';
-import FormSectionHeading from 'shared/components/forms/section/FormSectionHeading';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 type Props = {
@@ -24,13 +22,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     email,
   } = application;
   return (
-    <FormSection columns={2}>
-      <FormSectionHeading
-        $colSpan={2}
-        size="s"
-        header={t('common:handlerApplication.title')}
-        as="h3"
-      />
+    <>
       <Field
         id="receipt_confirmed_at"
         value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
@@ -48,7 +40,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
       />
       <Field type="phone_number" value={phone_number} />
       <Field type="email" value={email} />
-    </FormSection>
+    </>
   );
 };
 

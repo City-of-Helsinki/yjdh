@@ -58,7 +58,7 @@ const renderPage =
             <HiddenLoadingIndicator />
           </QueryClientProvider>
         </BackendAPIContext.Provider>,
-        router
+        { isReady: true, ...router }
       );
     });
     return queryClient;
