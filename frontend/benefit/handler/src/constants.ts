@@ -121,6 +121,8 @@ export enum CALCULATION_SALARY_KEYS {
   VACATION_MONEY = 'vacationMoney',
   STATE_AID_MAX_PERCENTAGE = 'stateAidMaxPercentage',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT = 'overrideMonthlyBenefitAmount',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT_COMMENT = 'overrideMonthlyBenefitAmountComment',
   // eslint-disable-next-line no-secrets/no-secrets
   WORK_TIME_PERCENT = 'workTimePercent',
   PAY_SUBSIDIES = 'paySubsidies',

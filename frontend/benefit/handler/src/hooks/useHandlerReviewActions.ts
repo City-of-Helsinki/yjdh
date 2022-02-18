@@ -1,7 +1,9 @@
 import camelcaseKeys from 'camelcase-keys';
+import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
+import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 import { ROUTES } from '../constants';
@@ -91,12 +93,27 @@ const useHandlerReviewActions = (
       ? convertToBackendDateFormat(values.endDate)
       : undefined;
 
+    const overrideMonthlyBenefitAmountComment = !isEmpty(
+      values.overrideMonthlyBenefitAmount
+    )
+      ? values.overrideMonthlyBenefitAmountComment
+      : '';
+
+    const paySubsidies = values.paySubsidies
+      ? values.paySubsidies.map((item) => ({
+          ...item,
+          workTimePercent: stringToFloatValue(item.workTimePercent),
+          startDate: convertToBackendDateFormat(item.startDate),
+          endDate: convertToBackendDateFormat(item.endDate),
+        }))
+      : undefined;
+
     const {
       monthlyPay,
       vacationMoney,
       stateAidMaxPercentage,
       otherExpenses,
-      paySubsidies,
+      overrideMonthlyBenefitAmount,
     } = values;
 
     return snakecaseKeys(
@@ -106,10 +123,14 @@ const useHandlerReviewActions = (
           ...application.calculation,
           startDate,
           endDate,
-          monthlyPay,
-          vacationMoney,
+          monthlyPay: stringToFloatValue(monthlyPay),
+          otherExpenses: stringToFloatValue(otherExpenses),
+          vacationMoney: stringToFloatValue(vacationMoney),
           stateAidMaxPercentage,
-          otherExpenses,
+          overrideMonthlyBenefitAmount: stringToFloatValue(
+            overrideMonthlyBenefitAmount
+          ),
+          overrideMonthlyBenefitAmountComment,
         },
         paySubsidies,
       },
