@@ -179,7 +179,7 @@ if (!isRealIntegrationsEnabled()) {
     await activatedPage.expectations.isLoaded();
     await goToHandlerUrl(t, `?id=${applicationId}`);
     const expectedApplication = convertFormDataToApplication(formData);
-    const { first_name, last_name } = expectedApplication;
+    const { first_name, last_name, is_unlisted_school } = expectedApplication;
     const handlerFormPage = await getHandlerFormPageComponents(
       t,
       expectedApplication
@@ -194,7 +194,7 @@ if (!isRealIntegrationsEnabled()) {
     );
     await handlerFormPage.expectations.applicationFieldHasValue('postcode');
     await handlerFormPage.expectations.applicationFieldHasValue('school');
-    if (expectedApplication.is_unlisted_school) {
+    if (is_unlisted_school) {
       await handlerFormPage.expectations.applicationFieldHasValue(
         'school',
         '(Koulua ei löytynyt listalta)'
