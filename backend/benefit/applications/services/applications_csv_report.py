@@ -300,7 +300,7 @@ class ApplicationsCsvService(CsvExportBase):
         if self.get_applications():
             return super().get_csv_lines()
         else:
-            header_row = [self._get_header_row()]
+            header_row = self._get_header_row()
             return [
                 header_row,
                 ["Ei löytynyt ehdot täyttäviä hakemuksia"]
