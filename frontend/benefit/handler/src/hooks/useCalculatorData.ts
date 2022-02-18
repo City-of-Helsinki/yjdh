@@ -18,7 +18,7 @@ type ExtendedComponentProps = {
   language: Language;
   handleSubmit: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
-  requiresRecalculation: boolean;
+  isRecalculationRequired: boolean;
 };
 
 const useCalculatorData = (
@@ -33,7 +33,7 @@ const useCalculatorData = (
   const { errors, touched, values } = formik;
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const [requiresRecalculation, setRequiresRecalculation] = useState(false);
+  const [isRecalculationRequired, setIsRecalculationRequired] = useState(false);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
@@ -50,7 +50,7 @@ const useCalculatorData = (
   };
 
   useDidMountEffect(() => {
-    if (!requiresRecalculation) setRequiresRecalculation(true);
+    if (!isRecalculationRequired) setIsRecalculationRequired(true);
   }, [values]);
 
   return {
@@ -60,7 +60,7 @@ const useCalculatorData = (
     language,
     getErrorMessage,
     handleSubmit,
-    requiresRecalculation,
+    isRecalculationRequired,
   };
 };
 

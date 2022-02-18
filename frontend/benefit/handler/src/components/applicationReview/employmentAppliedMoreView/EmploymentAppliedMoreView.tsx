@@ -34,7 +34,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     language,
     getErrorMessage,
     handleSubmit,
-    requiresRecalculation,
+    isRecalculationRequired,
   } = useCalculatorData(CALCULATION_TYPES.EMPLOYMENT, formik);
 
   return (
@@ -124,7 +124,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
           <CalculatorErrors data={calculationsErrors} />
         </$GridCell>
 
-        {requiresRecalculation && (
+        {isRecalculationRequired && (
           <$GridCell $colStart={1} $colSpan={11}>
             <$Notification
               type="alert"

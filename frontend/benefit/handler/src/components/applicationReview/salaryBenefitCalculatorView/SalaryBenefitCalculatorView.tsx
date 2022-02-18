@@ -56,7 +56,7 @@ const SalaryBenefitCalculatorView: React.FC<
     language,
     getErrorMessage,
     handleSubmit,
-    requiresRecalculation,
+    isRecalculationRequired,
   } = useCalculatorData(CALCULATION_TYPES.SALARY, formik);
 
   return (
@@ -429,7 +429,7 @@ const SalaryBenefitCalculatorView: React.FC<
         <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
 
-      {requiresRecalculation && (
+      {isRecalculationRequired && (
         <$GridCell $colStart={1} $colSpan={11}>
           <$Notification
             type="alert"
