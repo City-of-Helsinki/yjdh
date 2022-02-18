@@ -10,6 +10,7 @@ import {
   $Grid,
   $GridCell,
 } from 'shared/components/forms/section/FormSection.sc';
+import $Notification from 'shared/components/notification/Notification.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
@@ -33,6 +34,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     language,
     getErrorMessage,
     handleSubmit,
+    requiresRecalculation,
   } = useCalculatorData(CALCULATION_TYPES.EMPLOYMENT, formik);
 
   return (
@@ -116,9 +118,24 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             {t(`${translationsBase}.calculate`)}
           </Button>
         </$GridCell>
-        <$GridCell $colSpan={11}>
+
+        <$GridCell $colStart={1} $colSpan={11}>
           <$CalculatorHr />
           <CalculatorErrors data={calculationsErrors} />
+        </$GridCell>
+
+        {requiresRecalculation && (
+          <$GridCell $colStart={1} $colSpan={11}>
+            <$Notification
+              type="alert"
+              label={t('common:calculators.notifications.recalculateLabel')}
+            >
+              {t('common:calculators.notifications.recalculateContent')}
+            </$Notification>
+          </$GridCell>
+        )}
+
+        <$GridCell $colSpan={11}>
           {data?.calculation?.rows &&
             data?.calculation?.rows.map((row, i, { length }) => {
               const isTotal = length - 1 === i;
