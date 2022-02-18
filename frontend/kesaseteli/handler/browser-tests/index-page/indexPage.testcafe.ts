@@ -4,7 +4,7 @@ import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-reque
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import { getFrontendUrl } from '../utils/url.utils';
-import { getIndexPageComponents } from './indexPage.components';
+import { getHandlerFormPageComponents } from '@frontend/kesaseteli-shared/browser-tests/handler-form-page/handlerFormPage.components';
 
 const url = getFrontendUrl('/');
 
@@ -19,7 +19,7 @@ fixture('Frontpage')
     console.log(requestLogger.requests)
   );
 
-test('shows frontpage', async (t) => {
-  const indexPage = await getIndexPageComponents(t);
-  await indexPage.expectations.isLoaded();
+test('application is not found without id', async (t) => {
+  const handlerFormPage = await getHandlerFormPageComponents(t);
+  await handlerFormPage.expectations.applicationNotFound();
 });
