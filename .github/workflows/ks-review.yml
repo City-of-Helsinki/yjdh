@@ -45,6 +45,7 @@ env:
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
   NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 60
   CORS_ALLOW_ALL_ORIGINS: 1
+  DISABLE_VTJ: 1
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -145,6 +146,7 @@ jobs:
           echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
           echo "K8S_SECRET_YOUTH_URL=${{ env.YOUTH_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_HANDLER_URL=${{ env.HANDLER_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DISABLE_VTJ=${{ env.DISABLE_VTJ }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV

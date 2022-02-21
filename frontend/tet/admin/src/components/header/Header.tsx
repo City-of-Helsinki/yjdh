@@ -1,17 +1,15 @@
-import useLogin from 'tet/admin/hooks/backend/useLogin';
-import useLogoutQuery from 'tet/admin/hooks/backend/useLogoutQuery';
-import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
-import useLocale from 'shared/hooks/useLocale';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
+import useLogin from 'tet/admin/hooks/backend/useLogin';
+import useLogoutQuery from 'tet/admin/hooks/backend/useLogoutQuery';
+import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
-  const locale = useLocale();
   const router = useRouter();
   const { asPath } = router;
 
@@ -47,7 +45,6 @@ const Header: React.FC = () => {
       skipToContentLabel={t('common:header.linkSkipToContent')}
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}
-      locale={locale}
       onLanguageChange={handleLanguageChange}
       login={
         !isLoading

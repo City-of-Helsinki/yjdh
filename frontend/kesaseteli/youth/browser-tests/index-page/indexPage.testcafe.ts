@@ -1,11 +1,16 @@
+import { getHandlerFormPageComponents } from '@frontend/kesaseteli-shared/browser-tests/handler-form-page/handlerFormPage.components';
 import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
+import { fakeYouthFormData } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
+import { convertFormDataToApplication } from '@frontend/kesaseteli-shared/src/utils/youth-form-data.utils';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { getCurrentUrl } from '@frontend/shared/browser-tests/utils/url.utils';
+import {
+  getCurrentUrl,
+  getUrlParam,
+} from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 
-import { fakeYouthFormData } from '../../src/__tests__/utils/fake-objects';
 import getActivationLinkExpirationSeconds from '../../src/utils/get-activation-link-expiration-seconds';
 import sendYouthApplication from '../actions/send-youth-application';
 import { getActivatedPageComponents } from '../notification-page/activatedPage.components';
@@ -18,6 +23,7 @@ import {
   clickBrowserBackButton,
   getFrontendUrl,
   goToFrontPage,
+  goToHandlerUrl,
 } from '../utils/url.utils';
 import { getIndexPageComponents } from './indexPage.components';
 
@@ -156,5 +162,45 @@ if (!isRealIntegrationsEnabled()) {
     await thankYouPage.actions.clickActivationLink();
     const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);
     await alreadyActivatedPage.expectations.isLoaded();
+  });
+
+  test("activated application can be opened in handler's application", async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await thankYouPage.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t);
+    await activatedPage.expectations.isLoaded();
+    await goToHandlerUrl(t, `?id=${applicationId}`);
+    const expectedApplication = convertFormDataToApplication(formData);
+    const { first_name, last_name, is_unlisted_school } = expectedApplication;
+    const handlerFormPage = await getHandlerFormPageComponents(
+      t,
+      expectedApplication
+    );
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.expectations.applicationFieldHasValue(
+      'name',
+      `${first_name} ${last_name}`
+    );
+    await handlerFormPage.expectations.applicationFieldHasValue(
+      'social_security_number'
+    );
+    await handlerFormPage.expectations.applicationFieldHasValue('postcode');
+    await handlerFormPage.expectations.applicationFieldHasValue('school');
+    if (is_unlisted_school) {
+      await handlerFormPage.expectations.applicationFieldHasValue(
+        'school',
+        '(Koulua ei löytynyt listalta)'
+      );
+    }
+    await handlerFormPage.expectations.applicationFieldHasValue('phone_number');
+    await handlerFormPage.expectations.applicationFieldHasValue('email');
   });
 }

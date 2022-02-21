@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",
+    "finnish-ssn": "^2.0.4",
     "typescript": "^4.5.5"
   }
 }
