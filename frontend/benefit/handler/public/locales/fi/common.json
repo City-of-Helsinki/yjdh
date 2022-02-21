@@ -237,7 +237,9 @@
         "title": "Laskurissa on virheitä",
         "message": "Ole hyvä ja tarkista laskelman tiedot ja yritä laskea uudestaan."
       },
-      "paySubsidy": "Palkkatuki"
+      "paySubsidy": "Palkkatuki",
+      "recalculateLabel": "Laskelman arvot muuttuneet",
+      "recalculateContent": "Ole hyvä ja laske uudestaan"
     },
     "employment": {
       "header": "Työllistämisen Helsinki-lisää haettu ajalle",

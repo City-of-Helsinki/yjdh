@@ -17,6 +17,7 @@ import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWith
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import { Option } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import $Notification from 'shared/components/notification/Notification.sc';
 import {
   convertToUIDateFormat,
   diffMonths,
@@ -55,6 +56,7 @@ const SalaryBenefitCalculatorView: React.FC<
     language,
     getErrorMessage,
     handleSubmit,
+    isRecalculationRequired,
   } = useCalculatorData(CALCULATION_TYPES.SALARY, formik);
 
   return (
@@ -426,6 +428,17 @@ const SalaryBenefitCalculatorView: React.FC<
         <$CalculatorHr />
         <CalculatorErrors data={calculationsErrors} />
       </$GridCell>
+
+      {isRecalculationRequired && (
+        <$GridCell $colStart={1} $colSpan={11}>
+          <$Notification
+            type="alert"
+            label={t('common:calculators.notifications.recalculateLabel')}
+          >
+            {t('common:calculators.notifications.recalculateContent')}
+          </$Notification>
+        </$GridCell>
+      )}
 
       <$GridCell $colSpan={7}>
         {data?.calculation?.rows &&
