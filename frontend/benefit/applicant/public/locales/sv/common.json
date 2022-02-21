@@ -26,6 +26,7 @@
     },
     "pageHeaders": {
       "created": "Luotu",
+      "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
       "new": "Uusi hakemus",
       "edit": "Hakemus",
       "helperText": "Ole hyvä ja tarkista hakemus. Tarvittaessa voit vielä muokata tietoja ennen kuin siirryt eteenpäin."
@@ -36,7 +37,8 @@
       "received": "Vastaanotettu",
       "approved": "Hyväksytty",
       "rejected": "Hylätty",
-      "handling": "Käsittelyssä"
+      "handling": "Käsittelyssä",
+      "cancelled": "Peruuttu"
     },
     "steps": {
       "company": "Työnantaja",
