@@ -3,9 +3,8 @@ import { CalculationFormProps } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
 import { FormikProps } from 'formik';
 import { TFunction } from 'next-i18next';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useDidMountEffect from 'shared/hooks/useDidMountEffect';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
 import { focusAndScroll } from 'shared/utils/dom.utils';
@@ -31,6 +30,9 @@ const useCalculatorData = (
   const { t } = useTranslation();
 
   const { errors, touched, values } = formik;
+
+  const didMount = useRef(false);
+
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const [isRecalculationRequired, setIsRecalculationRequired] = useState(false);
@@ -49,9 +51,11 @@ const useCalculatorData = (
     });
   };
 
-  useDidMountEffect(() => {
-    if (!isRecalculationRequired) setIsRecalculationRequired(true);
-  }, [values]);
+  useEffect(() => {
+    if (didMount.current && !isRecalculationRequired)
+      setIsRecalculationRequired(true);
+    else didMount.current = true;
+  }, [isRecalculationRequired, values]);
 
   return {
     t,
