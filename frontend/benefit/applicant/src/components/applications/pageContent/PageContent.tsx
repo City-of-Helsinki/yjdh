@@ -17,9 +17,12 @@ import { LoadingSpinner } from 'hds-react';
 import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import Stepper from 'shared/components/stepper/Stepper';
-import { DATE_FORMATS, formatDate } from 'shared/utils/date.utils';
+import {
+  convertToUIDateAndTimeFormat,
+  DATE_FORMATS,
+  formatDate,
+} from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
-
 import ErrorPage from '../../errorPage/ErrorPage';
 import { usePageContent } from './usePageContent';
 
@@ -83,9 +86,8 @@ const PageContent: React.FC = () => {
           >
             {t('common:applications.pageHeaders.sent', {
               applicationNumber: application.applicationNumber,
-              submittedAt: formatDate(
-                new Date(application?.submittedAt),
-                DATE_FORMATS.DATE_AND_TIME
+              submittedAt: convertToUIDateAndTimeFormat(
+                application?.submittedAt
               ),
             })}
           </$PageSubHeading>
@@ -123,10 +125,9 @@ const PageContent: React.FC = () => {
       {id && application?.createdAt && (
         <>
           <$PageSubHeading>
-            {`${t('common:applications.pageHeaders.created')} ${formatDate(
-              new Date(application?.createdAt),
-              DATE_FORMATS.DATE_AND_TIME
-            )}`}
+            {`${t(
+              'common:applications.pageHeaders.created'
+            )} ${convertToUIDateAndTimeFormat(application?.createdAt)}`}
           </$PageSubHeading>
           <$PageHeadingHelperText>
             {t('common:applications.pageHeaders.helperText')}
