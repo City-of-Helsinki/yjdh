@@ -47,6 +47,23 @@ def test_create_for_application(application):
     assert calculation.monthly_pay == application.employee.monthly_pay
 
 
+def test_create_for_application_with_pay_subsidies(application):
+    application.status = ApplicationStatus.RECEIVED
+    application.pay_subsidy_granted = True
+    application.pay_subsidy_percent = 50
+    application.additional_pay_subsidy_percent = 40
+    assert application.pay_subsidies.count() == 0
+    Calculation.objects.create_for_application(application)
+    assert application.pay_subsidies.count() == 2
+    assert application.pay_subsidies.all()[0].pay_subsidy_percent == 50
+    assert application.pay_subsidies.all()[1].pay_subsidy_percent == 40
+    for pay_subsidy in application.pay_subsidies.all():
+        assert pay_subsidy.start_date is None
+        assert pay_subsidy.end_date is None
+        assert pay_subsidy.work_time_percent == PaySubsidy.DEFAULT_WORK_TIME_PERCENT
+        assert pay_subsidy.disability_or_illness is False
+
+
 def test_create_for_application_fail(received_application):
     # calculation already exists
     with pytest.raises(BenefitAPIException):
