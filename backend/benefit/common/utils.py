@@ -82,6 +82,8 @@ def date_range_overlap(start_1, end_1, start_2, end_2):
     """
     Based on: https://stackoverflow.com/questions/9044084/efficient-date-range-overlap-calculation-in-python
     """
+    if None in [start_1, end_1, start_2, end_2]:
+        raise ValueError("Cannot check date range overlap if start or end date is None")
     latest_start = max(start_1, start_2)
     earliest_end = min(end_1, end_2)
     delta = (earliest_end - latest_start).days + 1
