@@ -61,6 +61,9 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
       name: getLocalizedString(event.location.name),
       label: getLocalizedString(event.location.name),
       value: event.location['@id'],
+      street_address: getLocalizedString(event.location.street_address),
+      city: getLocalizedString(event.location.address_locality),
+      postal_code: event.location.postal_code,
     },
     start_date: isoDateToHdsFormat(event.start_time)!,
     end_date: isoDateToHdsFormat(event.end_time),
@@ -82,11 +85,19 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
         value: keyword['@id'],
       })),
     keywords_working_methods: event.keywords
-      .map((keyword) => keyword['@id'])
-      .filter((url) => parseDataSourceFromKeywordUrl(url) === workMethodDataSource),
+      .map((keyword) => ({
+        name: getLocalizedString(keyword.name),
+        label: getLocalizedString(keyword.name),
+        value: keyword['@id'],
+      }))
+      .filter((keyword) => parseDataSourceFromKeywordUrl(keyword.value) === workMethodDataSource),
     keywords_attributes: event.keywords
-      .map((keyword) => keyword['@id'])
-      .filter((url) => parseDataSourceFromKeywordUrl(url) === workFeaturesDataSource),
+      .map((keyword) => ({
+        name: getLocalizedString(keyword.name),
+        label: getLocalizedString(keyword.name),
+        value: keyword['@id'],
+      }))
+      .filter((keyword) => parseDataSourceFromKeywordUrl(keyword.value) === workMethodDataSource),
     spots,
   };
 };
@@ -120,8 +131,8 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
   end_time: hdsDateToIsoFormat(posting.end_date),
   date_published: posting.date_published || null,
   keywords: [
-    ...posting.keywords_working_methods,
-    ...posting.keywords_attributes,
+    ...posting.keywords_working_methods.map((option) => option.value),
+    ...posting.keywords_attributes.map((option) => option.value),
     ...posting.keywords.map((option) => option.value),
   ].map((url) => ({ '@id': url })),
   custom_data: {

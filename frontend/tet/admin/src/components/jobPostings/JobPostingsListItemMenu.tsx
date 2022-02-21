@@ -36,6 +36,13 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
     });
   };
 
+  const copyPostingHandler = (): void => {
+    void router.push({
+      pathname: '/copystatic',
+      query: { id: postingId },
+    });
+  };
+
   const deletePostingHandler = (): void => {
     //TODO
   };
@@ -53,7 +60,7 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
           <IconPen />
           <span>{t('common:application.jobPostings.menu.edit')}</span>
         </$MenuItem>
-        <$MenuItem>
+        <$MenuItem onClick={copyPostingHandler}>
           <IconPlusCircle />
           <span>{t('common:application.jobPostings.menu.copy')}</span>
         </$MenuItem>

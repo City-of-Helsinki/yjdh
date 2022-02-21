@@ -10,7 +10,7 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { useQuery } from 'react-query';
 
-const EditStaticPage: NextPage = () => {
+const CopyStaticPage: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const id = router.query.id as string;
@@ -21,7 +21,7 @@ const EditStaticPage: NextPage = () => {
   }
 
   if (data) {
-    return <EditById title={t('common:editor.editTitle')} data={eventToTetPosting(data)} />;
+    return <EditById title={t('common:editor.copyTitle')} data={eventToTetPosting(data)} />;
   } else {
     return <>Not found. </>;
   }
@@ -29,4 +29,4 @@ const EditStaticPage: NextPage = () => {
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
 
-export default EditStaticPage;
+export default CopyStaticPage;

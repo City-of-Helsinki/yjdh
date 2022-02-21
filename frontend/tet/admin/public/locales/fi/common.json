@@ -26,6 +26,7 @@
     "infoContent": "TET-paikkailmoituksen tekemistä..."
   },
   "application": {
+		"backToFrontPage": "Takaisin etusivulle",
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -46,17 +47,22 @@
     }
   },
   "editor": {
+		"companyInfo": "Yrityksen tiedot",
+		"companyInfoFetch": "Yrityksen tiedot on haettu YTJS:stä",
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
+		"copyTitle": "Kopioi TET-paikka",
     "saveDraft": "Tallenna julkaisematta",
     "deletePosting": "Poista ilmoitus",
     "preview": "Siirry esikatseluun",
     "publish": "Julkaise",
     "notificationTitle": "Täytä puuttuvat tai virheelliset tiedot",
 		"backToEdit": "Takaisin lomakkeelle",
+		"requiredInfo": "merkityt kentät ovat pakollisia",
 		"preview": "Esikatselu",
     "employerInfo": {
-      "header": "Työpaikan tiedot",
+			"contactPerson": "Yhteyshenkilö",
+      "header": "Toimipisteen tiedot",
       "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",
       "departmentLabel": "Toimipiste tai osasto",
 			"address": "Osoite",

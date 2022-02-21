@@ -14,13 +14,13 @@ type Props = {
 
 const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required }) => {
   const { control, setValue, getValues, clearErrors } = useFormContext<TetPosting>();
-  const checkboxChangeHandler = (optionId: string) => {
+  const checkboxChangeHandler = (option: OptionType) => {
     const values = getValues(fieldId);
     if (Array.isArray(values)) {
-      let list = [...values];
-      const index = list.indexOf(optionId);
+      let list: OptionType[] = [...values];
+      const index = list.findIndex((item) => item.value === option.value);
       if (index === -1) {
-        list = list.concat(optionId);
+        list = list.concat(option);
         if (required) {
           clearErrors(fieldId);
         }
@@ -41,8 +41,8 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required }) 
             <Checkbox
               id={option.value}
               label={option.label}
-              checked={value && Array.isArray(value) ? value.includes(option.value) : false}
-              onChange={() => checkboxChangeHandler(option.value)}
+              checked={value && Array.isArray(value) ? value.some((item) => item.value === option.value) : false}
+              onChange={() => checkboxChangeHandler(option)}
             />
           ))}
         </HdsSelectionGroup>

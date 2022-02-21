@@ -27,16 +27,19 @@ export const $ImageContainer = styled.div<ImageProps>`
 
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
     width: 60%;
-    height: 500px;
+    height: 600px;
   }
 `;
 
 export const $HeroContentWrapper = styled.div`
-  padding: ${(props) => props.theme.spacing.l};
+  @media (min-width: ${(props) => props.theme.breakpoints.l}) {
+    padding: ${(props) => props.theme.spacing.l};
+    width: 40%;
+  }
 `;
 
 export const $Keywords = styled.ul`
-  display: flex;
+  display: inline-flex;
   flex-flow: row wrap;
   list-style: none;
   padding-left: 0;

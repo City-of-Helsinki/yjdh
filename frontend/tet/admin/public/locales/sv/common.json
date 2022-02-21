@@ -26,6 +26,7 @@
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
   },
   "application": {
+		"backToFrontPage": "SV Takaisin etusivulle",
     "jobPostings": {
       "title": "SV TET-paikkailmoitukset",
       "noPostingsFound": "SV Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -46,17 +47,22 @@
     }
   },
   "editor": {
+		"companyInfo": "SV Yrityksen tiedot",
+		"companyInfoFetch": "SV Yrityksen tiedot on haettu YTJS:stä",
     "newTitle": "SV Uusi TET-paikka",
     "editTitle": "SV Muokkaa TET-paikkaa",
+		"copyTitle": "SV Kopioi TET-paikka",
     "saveDraft": "SV Tallenna julkaisematta",
     "deletePosting": "SV Poista ilmoitus",
     "preview": "SV Siirry esikatseluun",
     "publish": "SV Julkaise",
     "notificationTitle": "SV Täytä puuttuvat tai virheelliset tiedot",
 		"backToEdit": "SV Takaisin lomakkeelle",
+		"requiredInfo": "SV merkityt kentät ovat pakollisia",
 		"preview": "SV Esikatselu",
     "employerInfo": {
-      "header": "SV Työpaikan tiedot",
+			"contactPerson": "SV Yhteyshenkilö",
+      "header": "SV Toimipisteen tiedot",
       "addressNeededLabel": "SV Työharjoittelu suoritetaan eri osoitteessa",
       "departmentLabel": "SV Toimipiste tai osasto",
 			"address": "SV Osoite",

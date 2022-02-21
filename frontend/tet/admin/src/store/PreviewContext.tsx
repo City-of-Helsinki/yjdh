@@ -4,27 +4,54 @@ import TetPosting from 'tet/admin/types/tetposting';
 
 type PreviewContextObj = {
   showPreview: boolean;
-  tetData: TetData;
+  tetPosting: TetPosting;
   setPreviewVisibility: (visibility: boolean) => void;
-  setPreviewData: (data: TetPosting) => void;
+  setTetPostingData: (data: TetPosting) => void;
+  getTemplateData: () => TetData;
 };
 
-const initialTetData: TetData = {
+const initialPosting: TetPosting = {
   title: '',
   description: '',
+  location: {
+    name: '',
+    label: '',
+    value: '',
+    street_address: '',
+    postal_code: '',
+    city: '',
+  },
   org_name: '',
   spots: 1,
   start_date: '',
   contact_email: '',
   contact_first_name: '',
   contact_last_name: '',
+  date_published: null,
   contact_language: '',
   contact_phone: '',
+  keywords: [],
+  keywords_working_methods: [],
+  keywords_attributes: [],
+};
+const initialTemplateData: TetData = {
+  title: '',
+  description: '',
   location: {
-    zip_code: '',
-    city: '',
+    name: '',
     street_address: '',
+    postal_code: '',
+    city: '',
   },
+  org_name: '',
+  spots: 1,
+  start_date: '',
+  contact_email: '',
+  contact_first_name: '',
+  contact_last_name: '',
+  date_published: null,
+  contact_language: '',
+  contact_phone: '',
   keywords: [],
   keywords_working_methods: [],
   keywords_attributes: [],
@@ -32,44 +59,52 @@ const initialTetData: TetData = {
 
 export const PreviewContext = React.createContext<PreviewContextObj>({
   showPreview: false,
-  tetData: initialTetData,
+  tetPosting: initialPosting,
   setPreviewVisibility: (visibility: boolean) => {},
-  setPreviewData: (data: TetPosting) => {},
+  setTetPostingData: (data: TetPosting) => {},
+  getTemplateData: () => initialTemplateData,
 });
 
 const PreviewContextProvider: React.FC = (props) => {
   const [showPreview, setShowPreview] = useState(false);
-  const [tetData, setTetData] = useState<TetData>(initialTetData);
+  const [tetPosting, setTetPosting] = useState<TetPosting>(initialPosting);
 
-  const setPreviewData = (posting: TetPosting) => {
-    setTetData({
-      title: posting.title,
-      description: posting.description,
-      org_name: posting.org_name,
-      spots: posting.spots,
-      start_date: posting.start_date,
-      end_date: posting.end_date,
-      contact_email: posting.contact_email,
-      contact_first_name: posting.contact_first_name,
-      contact_last_name: posting.contact_last_name,
-      contact_language: '',
-      contact_phone: posting.contact_phone,
+  const setTetPostingData = (posting: TetPosting) => {
+    setTetPosting(posting);
+  };
+
+  const getTemplateData = (): TetData => {
+    return {
+      title: tetPosting.title,
+      description: tetPosting.description,
       location: {
-        zip_code: '',
-        city: '',
-        street_address: '',
+        name: tetPosting.location?.name ? tetPosting.location.name : '',
+        street_address: tetPosting?.location?.street_address ? tetPosting.location.street_address : '',
+        postal_code: tetPosting?.location?.postal_code ? tetPosting.location.postal_code : '',
+        city: tetPosting?.location?.city ? tetPosting.location.city : '',
       },
-      keywords: [],
-      keywords_working_methods: [],
-      keywords_attributes: [],
-    });
+      org_name: tetPosting.org_name,
+      spots: tetPosting.spots,
+      start_date: tetPosting.start_date,
+      end_date: tetPosting.end_date,
+      contact_email: tetPosting.contact_email,
+      contact_first_name: tetPosting.contact_first_name,
+      contact_last_name: tetPosting.contact_last_name,
+      contact_phone: tetPosting.contact_phone,
+      date_published: null,
+      contact_language: tetPosting.contact_language,
+      keywords: tetPosting.keywords.map((item) => item.name),
+      keywords_working_methods: tetPosting.keywords_working_methods.map((item) => item.name),
+      keywords_attributes: tetPosting.keywords_attributes.map((item) => item.name),
+    };
   };
 
   const contextValue: PreviewContextObj = {
     showPreview,
-    tetData,
+    tetPosting,
     setPreviewVisibility: setShowPreview,
-    setPreviewData,
+    setTetPostingData,
+    getTemplateData,
   };
 
   return <PreviewContext.Provider value={contextValue}>{props.children}</PreviewContext.Provider>;

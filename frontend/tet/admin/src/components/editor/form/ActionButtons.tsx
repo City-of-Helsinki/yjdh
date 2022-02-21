@@ -9,16 +9,17 @@ import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc
 import { useTheme } from 'styled-components';
 import { IconCross, IconEye, IconUpload } from 'hds-react';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import cloneDeep from 'lodash/cloneDeep';
 
 type Props = {
   onSubmit: () => void;
 };
 
 const ActionButtons: React.FC<Props> = ({ onSubmit }) => {
-  const { setPreviewVisibility, setPreviewData } = useContext(PreviewContext);
+  const { setPreviewVisibility, setTetPostingData } = useContext(PreviewContext);
 
   const showPreview = () => {
-    setPreviewData(getValues());
+    setTetPostingData(cloneDeep(getValues()));
     setPreviewVisibility(true);
   };
 

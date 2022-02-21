@@ -1,9 +1,10 @@
 type Nullable<T> = T | null;
 
 type LocationFields = {
-  zip_code: string;
-  city: string;
+  postal_code: string;
+  name: string;
   street_address: string;
+  city: string;
 };
 
 export type TetData = {
@@ -20,7 +21,7 @@ export type TetData = {
   contact_language: string;
   contact_phone: string;
   location: LocationFields;
-  date_published?: string;
+  date_published?: string | null;
   keywords: string[];
   keywords_working_methods: string[];
   keywords_attributes: string[];

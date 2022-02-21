@@ -24,13 +24,30 @@ type Props = {
 
 const PostingHero: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
-  const keywords = [
-    'TEST Asiakaspalvelu',
-    'TEST Taide ja kulttuuri',
-    'TEST Soveltuu viittomakielisille',
-  ];
   const date =
     posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
+  const address = `${posting.location.name}, ${posting.location.street_address}, ${posting.location.postal_code}, ${posting.location.city}`;
+
+  const keywordList = (list: string[], color: string) => {
+    //TODO use different color for the lists
+    return (
+      <>
+        {list.map((keyword: string) => (
+          <li>
+            <Tag
+              theme={{
+                '--tag-background': `var(--color-${color})`,
+                '--tag-color': 'var(--color-black-90)',
+                '--tag-focus-outline-color': 'var(--color-black-90)',
+              }}
+            >
+              {keyword}
+            </Tag>
+          </li>
+        ))}
+      </>
+    );
+  };
 
   return (
     <$PostingHero>
@@ -43,19 +60,12 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
           ></$ImageContainer>
           <$HeroContentWrapper>
             <$Keywords>
-              {keywords.map((keyword) => (
-                <li>
-                  <Tag
-                    theme={{
-                      '--tag-background': 'var(--color-success-light)',
-                      '--tag-color': 'var(--color-black-90)',
-                      '--tag-focus-outline-color': 'var(--color-black-90)',
-                    }}
-                  >
-                    {keyword}
-                  </Tag>
-                </li>
-              ))}
+              {keywordList(posting.keywords_working_methods, 'success-light')}
+              {keywordList(
+                posting.keywords_attributes,
+                'coat-of-arms-medium-light'
+              )}
+              {keywordList(posting.keywords, 'engel-medium-light')}
             </$Keywords>
             <$Title>{posting.org_name}</$Title>
             <$Subtitle>{posting.title}</$Subtitle>
@@ -65,9 +75,7 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
             </$Spots>
             <$Address>
               <IconLocation />
-              <span>
-                TEST Kallion kirjasto, Viides Linja 11, 00530 Helsinki
-              </span>
+              <span>{address}</span>
             </$Address>
             <$ContactTitle>{t('common:postingTemplate.contact')}</$ContactTitle>
             <$ContactInfo>

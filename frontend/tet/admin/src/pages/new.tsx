@@ -11,12 +11,14 @@ import { PreviewContext } from 'tet/admin/store/PreviewContext';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
-  const { showPreview, tetData } = useContext(PreviewContext);
+  const { showPreview, getTemplateData } = useContext(PreviewContext);
+
+  const data = getTemplateData();
 
   if (showPreview) {
     return (
       <PreviewWrapper>
-        <PostingContainer posting={tetData} />
+        <PostingContainer posting={data} />
       </PreviewWrapper>
     );
   }

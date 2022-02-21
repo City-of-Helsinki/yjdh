@@ -26,6 +26,7 @@
     "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
   },
   "application": {
+		"backToFrontPage": "ENG Takaisin etusivulle",
     "jobPostings": {
       "title": "ENG TET-paikkailmoitukset",
       "noPostingsFound": "ENG Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -46,17 +47,22 @@
     }
   },
   "editor": {
+		"companyInfo": "ENG Yrityksen tiedot",
+		"companyInfoFetch": "ENG Yrityksen tiedot on haettu YTJS:stä",
     "newTitle": "ENG Uusi TET-paikka",
     "editTitle": "ENG Muokkaa TET-paikkaa",
+		"copyTitle": "ENG Kopioi TET-paikka",
     "saveDraft": "ENG Tallenna julkaisematta",
     "deletePosting": "ENG Poista ilmoitus",
     "preview": "ENG Siirry esikatseluun",
     "publish": "ENG Julkaise",
     "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
 		"backToEdit": "ENG Takaisin lomakkeelle",
+		"requiredInfo": "ENG merkityt kentät ovat pakollisia",
 		"preview": "ENG Esikatselu",
     "employerInfo": {
-      "header": "ENG Työpaikan tiedot",
+			"contactPerson": "ENG Yhteyshenkilö",
+      "header": "ENG Toimipisteen tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
       "departmentLabel": "ENG Toimipiste tai osasto",
 			"address": "ENG Osoite",

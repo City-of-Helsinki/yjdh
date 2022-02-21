@@ -20,9 +20,9 @@ type Props = {
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
   const addressList = [
-    'TEST Kallin kirjasto',
-    'TEST Viides Linja 11',
-    'TEST 00530 Helsinki',
+    posting.location.name,
+    posting.location.street_address,
+    `${posting.location.postal_code} ${posting.location.city}`,
   ];
   const contact = [posting.contact_phone, posting.contact_email];
   const languages = ['TEST Suomi', 'TEST Ruotsi'];
@@ -35,7 +35,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
     <Container>
       <$ContentWrapper>
         <$Body>
-          <$Title>{posting.org_name}</$Title>
+          <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
         </$Body>
         <$InfoWrapper>

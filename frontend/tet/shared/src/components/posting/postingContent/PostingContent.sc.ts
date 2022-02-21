@@ -3,6 +3,10 @@ import styled from 'styled-components';
 export const $ContentWrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.l}) {
+    flex-wrap: nowrap;
+  }
 `;
 
 export const $Body = styled.div`
@@ -10,20 +14,17 @@ export const $Body = styled.div`
   font-size: ${(props) => props.theme.fontSize.body.l};
   font-weight: normal;
   line-height: ${(props) => props.theme.lineHeight.l};
-  order: 2;
+  white-space: pre-wrap;
 
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
-    order: 1;
     width: 60%;
   }
 `;
 
 export const $InfoWrapper = styled.div`
-  padding: ${(props) => props.theme.spacing.l};
-  order: 1;
-
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
-    order: 2;
+    padding: ${(props) => props.theme.spacing.l};
+    width: 40%;
   }
 `;
 
