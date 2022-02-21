@@ -17,12 +17,9 @@ import { LoadingSpinner } from 'hds-react';
 import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import Stepper from 'shared/components/stepper/Stepper';
-import {
-  convertToUIDateAndTimeFormat,
-  DATE_FORMATS,
-  formatDate,
-} from 'shared/utils/date.utils';
+import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
+
 import ErrorPage from '../../errorPage/ErrorPage';
 import { usePageContent } from './usePageContent';
 
