@@ -866,7 +866,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         }
 
     def get_submitted_at(self, obj):
-        return obj.get_log_entry_field(ApplicationStatus.RECEIVED, "created_at")
+        return obj.get_log_entry_field([ApplicationStatus.RECEIVED], "created_at")
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:

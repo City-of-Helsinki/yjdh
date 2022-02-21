@@ -179,6 +179,17 @@ def test_application_single_read_as_handler(handler_api_client, application):
     assert response.status_code == 200
 
 
+def test_application_submitted_at(
+    api_client, application, received_application, handling_application
+):
+    response = api_client.get(get_detail_url(application))
+    assert response.data["submitted_at"] is None
+    response = api_client.get(get_detail_url(received_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
+
+
 def test_application_template(api_client):
     response = api_client.get(
         reverse("v1:applicant-application-get-application-template")
