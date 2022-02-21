@@ -127,6 +127,13 @@ class ReceivedApplicationFactory(ApplicationFactory):
     )
 
     @factory.post_generation
+    def received_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.DRAFT,
+            to_status=ApplicationStatus.RECEIVED,
+        )
+
+    @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
         self.calculation = Calculation.objects.create_for_application(self)
         self.calculation.init_calculator()
