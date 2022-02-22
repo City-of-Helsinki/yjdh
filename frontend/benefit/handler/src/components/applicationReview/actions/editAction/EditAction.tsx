@@ -12,14 +12,27 @@ export type Props = {
 const EditAction: React.FC<Props> = ({ application }) => {
   const translationsBase = 'common:review.actions';
   const { t } = useTranslation();
-  const { updateStatus, isUpdatingApplication } =
-    useApplicationActions(application);
+  const { updateStatus } = useApplicationActions(application);
+
+  const [isUpdatingApplication, setIsUpdatingApplication] =
+    React.useState(false);
+
+  const updateApplicationStatus = (status: APPLICATION_STATUSES): void => {
+    setIsUpdatingApplication(true);
+    updateStatus(status);
+  };
+
+  React.useEffect(() => {
+    setIsUpdatingApplication(false);
+  }, [application.status]);
 
   return (
     <>
       {application.status === APPLICATION_STATUSES.HANDLING && (
         <Button
-          onClick={() => updateStatus(APPLICATION_STATUSES.INFO_REQUIRED)}
+          onClick={() =>
+            updateApplicationStatus(APPLICATION_STATUSES.INFO_REQUIRED)
+          }
           theme="black"
           variant="secondary"
           size="small"
@@ -31,7 +44,7 @@ const EditAction: React.FC<Props> = ({ application }) => {
       )}
       {application.status === APPLICATION_STATUSES.INFO_REQUIRED && (
         <Button
-          onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
+          onClick={() => updateApplicationStatus(APPLICATION_STATUSES.HANDLING)}
           theme="black"
           variant="secondary"
           size="small"

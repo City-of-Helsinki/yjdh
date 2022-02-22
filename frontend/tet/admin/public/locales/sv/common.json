@@ -15,7 +15,7 @@
   },
   "404Page": {
     "pageNotFoundLabel": "Sidan kunde inte hittas",
-    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
   "loginPage": {
     "logoutMessageLabel": "Du har loggat ut",
@@ -59,7 +59,9 @@
     "employerInfo": {
       "header": "SV Työpaikan tiedot",
       "addressNeededLabel": "SV Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "SV Toimipiste tai osasto"
+      "departmentLabel": "SV Toimipiste tai osasto",
+			"address": "SV Osoite",
+			"streetAddress": "SV Katuosoite"
     },
     "posting": {
       "header": "SV Työharjoittelupaikan tiedot",
@@ -68,14 +70,41 @@
       "workHoursNotice": "SV Työaika on aina sama 30h per viikko.",
       "startDateLabel": "SV Alkaen",
       "endDateLabel": "SV Päättyen",
-      "spotsLabel": "SV Työharjoittelupaikkoja"
+      "spotsLabel": "SV Työharjoittelupaikkoja",
+			"contactFirstName": "SV Etunimi",
+			"contactLastName": "SV Sukunimi",
+			"contactPhone": "SV Puhelin",
+			"contactEmail": "SV Sähköposti",
+			"contactLanguage": "SV Asiointikieli",
+			"contactLanguageFi": "SV Suomi",
+			"contactLanguageSv": "SV Ruotsi",
+			"contactLanguageEn": "SV Englanti",
+			"validation": {
+				"required": "SV Tieto vaaditaan",
+				"email": "SV Syötä sähköposti oikeassa muodossa",
+				"max": "SV Maksimimerkkimäärä ylittyy",
+				"phone": "SV Syötä oikeassa muodossa",
+				"name": "SV Syötä nimi sallitussa muodossa"
+			}
+    },
+		"classification": {
+			"classifications": "SV Luokittelut",
+			"workMethod": "SV Työtapa",
+			"workFeature": "SV Työn ominaisuudet",
+			"keywords": "SV Avainsanat",
+			"search": "SV Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "SV Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "SV Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "SV Poista valinta"
     }
   },
   "footer": {
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/tillganglighet/tillganglighetsutlatanden",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
     "privacyPolicy": "SV Rekisteriseloste",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "SV Anna palautetta",

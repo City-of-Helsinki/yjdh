@@ -1,10 +1,11 @@
+import { OptionType } from 'tet/admin/types/classification';
+
 type TetPosting = {
   id?: string;
   title: string;
   description: string;
   org_name: string;
-  // TODO react-hook-forms gets this as a string from `NumberInput`
-  // but NumberInput expects it as a number
+  location: OptionType;
   spots: number;
   start_date: string;
   end_date?: string;
@@ -13,7 +14,10 @@ type TetPosting = {
   contact_last_name: string;
   contact_language: string;
   contact_phone: string;
-  date_published?: string;
+  date_published: string | null;
+  keywords: OptionType[];
+  keywords_working_methods: string[];
+  keywords_attributes: string[];
 };
 
 export type TetPostings = {

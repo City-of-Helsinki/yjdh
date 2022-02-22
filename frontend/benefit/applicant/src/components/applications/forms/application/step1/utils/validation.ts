@@ -6,9 +6,9 @@ import {
   MIN_PHONE_NUMBER_LENGTH,
   ORGANIZATION_TYPES,
   SUPPORTED_LANGUAGES,
-  VALIDATION_MESSAGE_KEYS,
 } from 'benefit/applicant/constants';
 import { Step1 } from 'benefit/applicant/types/application';
+import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import { TFunction } from 'next-i18next';
 import {
   ADDRESS_REGEX,

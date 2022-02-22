@@ -1,6 +1,5 @@
 import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
-import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
@@ -11,7 +10,6 @@ import { NavigationItem, OptionType } from 'shared/types/common';
 type ExtendedComponentProps = {
   t: TFunction;
   languageOptions: OptionType<string>[];
-  locale: string;
   navigationItems?: NavigationItem[];
   hasMessenger: boolean;
   handleLanguageChange: (
@@ -23,7 +21,6 @@ type ExtendedComponentProps = {
 
 const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
-  const locale = useLocale();
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
@@ -64,7 +61,6 @@ const useHeader = (): ExtendedComponentProps => {
   return {
     t,
     languageOptions,
-    locale,
     handleLanguageChange,
     handleNavigationItemClick,
     hasMessenger,

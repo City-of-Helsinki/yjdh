@@ -172,6 +172,11 @@ class YouthApplication(TimeStampedModel, UUIDModel):
             reverse("v1:youthapplication-activate", kwargs={"pk": self.id})
         )
 
+    def _processing_link(self, request):
+        return request.build_absolute_uri(
+            reverse("v1:youthapplication-process", kwargs={"pk": self.id})
+        )
+
     @staticmethod
     def expiration_duration() -> timedelta:
         return timedelta(
@@ -192,29 +197,105 @@ class YouthApplication(TimeStampedModel, UUIDModel):
     @staticmethod
     def _activation_email_subject(language):
         with translation.override(language):
-            return gettext("Vahvista sähköpostiosoitteesi")
+            return gettext("Aktivoi Kesäseteli")
 
     @staticmethod
     def _activation_email_message(language, activation_link):
         with translation.override(language):
             return gettext(
-                "Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
-                "%(activation_link)s"
+                "Aktivoi Kesäsetelisi vahvistamalla sähköpostiosoitteesi "
+                "klikkaamalla alla olevaa linkkiä:\n\n"
+                "%(activation_link)s\n\n"
+                "Ystävällisin terveisin, Kesäseteli-tiimi"
             ) % {"activation_link": activation_link}
 
-    def send_activation_email(self, request, language):
-        activation_link = self._activation_link(request)
+    def _processing_email_subject(self):
+        with translation.override("fi"):
+            return gettext("Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s") % {
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+            }
+
+    def _processing_email_message(self, processing_link):
+        with translation.override("fi"):
+            return gettext(
+                "Seuraava henkilö on pyytänyt Kesäseteliä:\n"
+                "\n"
+                "%(first_name)s %(last_name)s\n"
+                "Postinumero: %(postcode)s\n"
+                "Koulu: %(school)s\n"
+                "Puhelinnumero: %(phone_number)s\n"
+                "Sähköposti: %(email)s\n"
+                "\n"
+                "%(processing_link)s"
+            ) % {
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+                "postcode": self.postcode,
+                "school": self.school,
+                "phone_number": self.phone_number,
+                "email": self.email,
+                "processing_link": processing_link,
+            }
+
+    @staticmethod
+    def _send_mail(subject, message, from_email, recipient_list, error_message) -> bool:
+        """
+        Send email with given parameters and log given error message in case of failure.
+
+        :param subject: Email subject
+        :param message: Email body
+        :param from_email: Email address of the email's sender
+        :param recipient_list: List of email recipients
+        :param error_message: Error message to be logged in case of failure
+        :return: True if email was sent, otherwise False.
+        """
         sent_email_count = send_mail(
-            subject=YouthApplication._activation_email_subject(language),
-            message=YouthApplication._activation_email_message(
-                language, activation_link
-            ),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.email],
+            subject=subject,
+            message=message,
+            from_email=from_email,
+            recipient_list=recipient_list,
             fail_silently=True,
         )
         if sent_email_count == 0:
-            LOGGER.error("Unable to send youth application's activation email")
+            LOGGER.error(error_message)
+        return sent_email_count > 0
+
+    def send_activation_email(self, request, language) -> bool:
+        """
+        Send youth application's activation email with given language to the applicant.
+
+        :param request: Request used for generating the activation link
+        :param language: The activation email language to be used
+        :return: True if email was sent, otherwise False.
+        """
+        return YouthApplication._send_mail(
+            subject=YouthApplication._activation_email_subject(language),
+            message=YouthApplication._activation_email_message(
+                language=language,
+                activation_link=self._activation_link(request),
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.email],
+            error_message=_("Unable to send youth application's activation email"),
+        )
+
+    def send_processing_email_to_handler(self, request) -> bool:
+        """
+        Send youth application's manual processing email to the handler.
+
+        :param request: Request used for generating the processing link
+        :return: True if email was sent, otherwise False.
+        """
+        return YouthApplication._send_mail(
+            subject=self._processing_email_subject(),
+            message=self._processing_email_message(self._processing_link(request)),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.HANDLER_EMAIL],
+            error_message=_(
+                "Unable to send youth application's processing email to handler"
+            ),
+        )
 
     @property
     def is_active(self) -> bool:

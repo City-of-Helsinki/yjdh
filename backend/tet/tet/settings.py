@@ -76,13 +76,17 @@ django_env = environ.Env(
         "f164ec6bd6fbc4aef5647abc15199da0f9badcc1d2127bde2087ae0d794a9a0b",
     ),
     ELASTICSEARCH_APP_AUDIT_LOG_INDEX=(str, "tet_audit_log"),
-    ELASTICSEARCH_CLOUD_ID=(str, ""),
-    ELASTICSEARCH_API_ID=(str, ""),
-    ELASTICSEARCH_API_KEY=(str, ""),
+    ELASTICSEARCH_HOST=(str, ""),
+    ELASTICSEARCH_PORT=(str, ""),
+    ELASTICSEARCH_USERNAME=(str, ""),
+    ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     ENABLE_ADMIN=(bool, True),
     DB_PREFIX=(str, ""),
+    LINKEDEVENTS_URL=(str, ""),
+    LINKEDEVENTS_API_KEY=(str, ""),
+    LINKEDEVENTS_TIMEOUT=(int, 20),
 )
 
 if os.path.exists(env_file):
@@ -136,6 +140,7 @@ INSTALLED_APPS = [
     "shared.audit_log",
     "shared.oidc",
     # local apps
+    "events",
 ]
 
 if ENABLE_ADMIN:
@@ -182,9 +187,10 @@ ENABLE_SEND_AUDIT_LOG = django_env("ENABLE_SEND_AUDIT_LOG")
 AUDIT_LOG_ORIGIN = django_env.str("AUDIT_LOG_ORIGIN")
 CLEAR_AUDIT_LOG_ENTRIES = django_env.bool("CLEAR_AUDIT_LOG_ENTRIES")
 ELASTICSEARCH_APP_AUDIT_LOG_INDEX = django_env("ELASTICSEARCH_APP_AUDIT_LOG_INDEX")
-ELASTICSEARCH_CLOUD_ID = django_env("ELASTICSEARCH_CLOUD_ID")
-ELASTICSEARCH_API_ID = django_env("ELASTICSEARCH_API_ID")
-ELASTICSEARCH_API_KEY = django_env("ELASTICSEARCH_API_KEY")
+ELASTICSEARCH_HOST = django_env("ELASTICSEARCH_HOST")
+ELASTICSEARCH_PORT = django_env("ELASTICSEARCH_PORT")
+ELASTICSEARCH_USERNAME = django_env("ELASTICSEARCH_USERNAME")
+ELASTICSEARCH_PASSWORD = django_env("ELASTICSEARCH_PASSWORD")
 
 
 LOGGING = {
@@ -216,6 +222,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "EXCEPTION_HANDLER": "events.exceptions.base_exception_handler",
 }
 
 # Mock flag for testing purposes
@@ -251,6 +258,10 @@ EAUTHORIZATIONS_BASE_URL = django_env.str("EAUTHORIZATIONS_BASE_URL")
 EAUTHORIZATIONS_CLIENT_ID = django_env.str("EAUTHORIZATIONS_CLIENT_ID")
 EAUTHORIZATIONS_CLIENT_SECRET = django_env.str("EAUTHORIZATIONS_CLIENT_SECRET")
 EAUTHORIZATIONS_API_OAUTH_SECRET = django_env.str("EAUTHORIZATIONS_API_OAUTH_SECRET")
+
+LINKEDEVENTS_URL = django_env.str("LINKEDEVENTS_URL")
+LINKEDEVENTS_API_KEY = django_env.str("LINKEDEVENTS_API_KEY")
+LINKEDEVENTS_TIMEOUT = django_env.str("LINKEDEVENTS_TIMEOUT")
 
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"

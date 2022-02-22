@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 import pytest
+from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
 from companies.tests.conftest import *  # noqa
 from django.conf import settings

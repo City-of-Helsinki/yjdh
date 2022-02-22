@@ -194,7 +194,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
         end_date=application.end_date,
         state_aid_max_percentage=50,
         calculated_benefit_amount=0,
-        override_benefit_amount=None,
+        override_monthly_benefit_amount=None,
     )
     pay_subsidy = PaySubsidyFactory(
         pay_subsidy_percent=40, start_date=date(2021, 7, 10), end_date=date(2021, 9, 10)

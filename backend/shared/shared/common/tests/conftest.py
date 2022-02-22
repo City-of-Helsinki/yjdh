@@ -45,6 +45,11 @@ def staff_user():
 
 
 @pytest.fixture()
+def superuser_user():
+    return UserFactory(is_superuser=True)
+
+
+@pytest.fixture()
 def other_user():
     return UserFactory()
 
@@ -59,6 +64,13 @@ def client():
 def staff_client(staff_user):
     client = Client()
     client.force_login(staff_user)
+    return client
+
+
+@pytest.fixture
+def superuser_client(superuser_user):
+    client = Client()
+    client.force_login(superuser_user)
     return client
 
 

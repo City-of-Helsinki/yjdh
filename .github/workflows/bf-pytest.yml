@@ -48,13 +48,16 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Install wkhtmltopdf dependency
+      - name: Install wkhtmltopdf and gettext dependencies
         run: |
           apt-get update
-          apt-get install -y wkhtmltopdf
+          apt-get install -y wkhtmltopdf gettext
 
       - name: Install dependencies
         run: cd backend/benefit && pip install -r requirements.txt -r requirements-dev.txt codecov
+
+      - name: Compile messages
+        run: cd backend/benefit && python manage.py compilemessages
 
       - name: Run tests
         run: pytest backend/benefit -ra -vv --doctest-modules --cov=. --pyargs shared.oidc shared.audit_log

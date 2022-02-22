@@ -1,5 +1,5 @@
 {
-  "appName": "ENG Nuorten kesäseteli",
+  "appName": "Summer Job Voucher for youth",
   "header": {
     "linkSkipToContent": "Skip to content",
     "menuToggleAriaLabel": "Menu"
@@ -18,14 +18,14 @@
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
     "backToTop": "Back to top",
-    "registerInformation": "ENG Rekisteriseloste ",
+    "registerInformation": "Privacy policy",
     "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Youth%20services%20summer%20job%20voucher%20data%20file.pdf",
-    "jobOpenings": "ENG Avoimet työpaikat (Only in finnish)",
+    "jobOpenings": "Open Summer Jobs (Only in finnish)",
     "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
     "contactUs": "Contact us",
     "contactUsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/contact-us/",
     "accessibilityStatement": "Accessibility statement",
-    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/accessibility/accessibility-statements",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "information": "Information on the service",
     "informationLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/"
   },
@@ -34,7 +34,7 @@
     "sv": "På svenska",
     "en": "In English"
   },
-  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "termsAndConditionsLink": "https://nuorten.helsinki/en/studies-and-work/for-summer-job-seekers/",
   "error": {
     "generic": {
       "label": "An unexpected error occurred",
@@ -47,71 +47,67 @@
     }
   },
   "youthApplication": {
-    "title": "ENG Rekisteröidy ja saat henkilökohtaisen Kesäsetelin käyttöösi",
-    "paragraph_1": "ENG Oman rahan tienaaminen on hauskaa ja helppoa! Kesäseteli on henkilökohtainen ja sen arvo on työnantajalle 325 euroa. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "title": "Sign up to receive your personal Summer Job Voucher",
+    "paragraph_1": "Earning your own money is fun and easy! The Summer Job Voucher is personal and worth 325€ for the employer.",
     "form" : {
-      "title": "ENG Setelin tiedot",
-      "info": "ENG Täytäthän tiedot samalla tavalla kuin kelakortissasi",
-      "button": "ENG Lähetä tiedot",
-      "first_name" : "ENG Etunimi",
-      "last_name": "ENG Sukunimi",
-      "social_security_number": "ENG Henkilötunnus",
-      "postcode": "ENG Postinumero",
-      "schoolsDropdown": "ENG Koulu",
-      "schoolsLoading": "ENG Ladataan vaihtoehtoja...",
-      "schoolsPlaceholder": "ENG Valitse koulusi listalta",
-      "is_unlisted_school": "ENG Koulua ei löydy listalta",
-      "schoolName": "ENG Koulun nimi",
-      "schoolNamePlaceholder": "ENG Esim. Merilahden Peruskoulu",
-      "email": "ENG Sähköpostiosoite",
-      "phone_number": "ENG Puhelinnumero",
+      "title": "Summer Job Voucher information",
+      "info": "Please fill in the information as it appears on your Kela card",
+      "button": "Submit information",
+      "first_name" : "First name",
+      "last_name": "Last name",
+      "social_security_number": "Personal identity code",
+      "postcode": "Postal code",
+      "schoolsDropdown": "School",
+      "schoolsLoading": "Loading up options ...",
+      "schoolsPlaceholder": "Choose your school from the list",
+      "is_unlisted_school": "School not found on the list",
+      "schoolName": "Name of the school",
+      "schoolNamePlaceholder": "E.g. International School of Helsinki",
+      "email": "Email address",
+      "phone_number": "Phone number",
       "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
-      "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
-      "sendButton": "ENG Lähetä tiedot",
-      "requiredInfo": "ENG Kaikki * merkityt kentät ovat pakollisia. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "termsAndConditionsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-summer-job-seekers/",
+      "sendButton": "Submit information",
+      "requiredInfo": "All fields marked with * are required"
     }
   },
   "errors": {
     "required": "Information is missing or is incorrect",
-    "minLength": "ENG Syöttämäsi tieto on liian lyhyt",
+    "minLength": "The information you entered is too short",
     "maxLength": "The information you entered is too long",
     "pattern": "The information you entered is in an incorrect format",
     "validate": "The information you entered is in an incorrect format"
   },
   "assistive": {
-    "toggleMenu": "ENG Avaa valikko"
+    "toggleMenu": "Open the menu"
   },
   "thankyouPage" : {
     "title": "Thank You!",
-    "notificationTitle": "ENG Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "ENG Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
-    "goToFrontendPage": "ENG Kesäseteli etusivulle"
+    "notificationTitle": "Excellent! You sent your information to the Summer Job Vouchers´ digital system.",
+    "notificationMessage": "You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
+    "goToFrontendPage": "Go to the Summer Job Voucher front page"
   },
   "activationErrorPage" : {
-    "goToFrontendPage": "ENG Tarkista tiedot ja lähetä uudelleen"
+    "goToFrontendPage": "Check your information and send again"
   },
   "emailInUsePage" : {
-    "title": "ENG Hups! Sähköposti on jo käytössä.",
-    "notificationMessage": "ENG Jos kyeessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+    "title": "Oops! The email is already in use.",
+    "notificationMessage": " If you made a mistake, please wait {{ expirationHours }} hours and try again."
   },
   "alreadyAssignedPage" : {
-    "title": "ENG Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
-    "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
   },
   "activatedPage" : {
-    "title": "ENG Kesäsetelisi on nyt aktivoitu",
-    "notificationTitle": "ENG Vahvistus onnistui",
-    "notificationMessage": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    "paragraph_1": "ENG Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "title": "Your Summer Job Voucher has been activated!",
+    "notificationTitle": "Confirmation succeeded",
+    "notificationMessage": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!"
   },
   "expiredPage" : {
-    "title": "ENG Hups! Vahvistuslinkki on vanhentunut.",
-    "notificationMessage": "ENG Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
-    "goToFrontendPage": "ENG Rekisteröidy ja lähetä kesäseteli uudelleen"
+    "title": "Oops! The confirmation link has expired",
+    "notificationMessage": "Unfortunately, it has been more than {{ expirationHours }} hours since your registration was confirmed. Please fill in the registration form again.",
+    "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
   },
   "alreadyActivatedPage" : {
-    "title": "ENG Hups! Vahvistuslinkki on jo aktivoitu.",
-    "notificationMessage": "ENG Kesäseteli on lähetetty sähköpostiisi.",
-    "goToFrontendPage": "ENG Rekisteröidy ja lähetä kesäseteli uudelleen"
+    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
   }
 }

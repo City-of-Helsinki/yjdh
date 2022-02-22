@@ -20,6 +20,11 @@ services:
       context: ./backend
       dockerfile: ./docker/kesaseteli.Dockerfile
       target: development
+    # Entrypoint is overridden because although "django-admin compilemessages" is run as
+    # a part of Docker image build, the resulting files are overridden by volume mount
+    # in this docker-compose file and thus have to be regenerated.
+    entrypoint:
+      bash -c "django-admin compilemessages && /entrypoint/docker-entrypoint.sh"
     env_file:
       - .env.kesaseteli
     environment:
@@ -55,7 +60,7 @@ services:
       - kesaseteli-employer
     build:
       context: ./localdevelopment/employer/nginx
-    container_name: kesaseteli-local-proxy
+    container_name: employer-local-proxy
     volumes:
       - ./localdevelopment/employer/nginx/:/etc/nginx/
     ports:

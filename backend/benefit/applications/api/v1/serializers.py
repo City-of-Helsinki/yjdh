@@ -34,7 +34,13 @@ from calculator.api.v1.serializers import (
 from calculator.models import Calculation
 from common.delay_call import call_now_or_later, do_delayed_calls_at_end
 from common.exceptions import BenefitAPIException
-from common.utils import PhoneNumberField, to_decimal, update_object, xgroup
+from common.utils import (
+    get_date_range_end_with_days360,
+    PhoneNumberField,
+    to_decimal,
+    update_object,
+    xgroup,
+)
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
 from dateutil.relativedelta import relativedelta
@@ -286,9 +292,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "commission_amount",
             "commission_description",
             "created_at",
+            "birthday",
         ]
         read_only_fields = [
             "ordering",
+            "birthday",
         ]
 
     def validate_social_security_number(self, value):
@@ -558,7 +566,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "attachments",
             "ahjo_decision",
             "unread_messages_count",
+            "log_entry_comment",
             "warnings",
+            "duration_in_months_rounded",
         ]
         read_only_fields = [
             "submitted_at",
@@ -580,6 +590,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "status_last_changed_at",
             "unread_messages_count",
             "warnings",
+            "duration_in_months_rounded",
         ]
         extra_kwargs = {
             "company_name": {
@@ -740,6 +751,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         read_only=True, help_text="Count of unread messages"
     )
 
+    log_entry_comment = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        write_only=True,
+        help_text="If application status is changed in the request, set the comment field in the ApplicationLogEntry",
+    )
+
     def get_applicant_terms_approval_needed(self, obj):
         return ApplicantTermsApproval.terms_approval_needed(obj)
 
@@ -817,14 +835,26 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             return None
 
     def get_former_benefit_info(self, obj):
+
+        if not hasattr(obj, "calculation"):
+            return {}
+
+        # use start_date and end_date from calculation, if defined
         aggregated_info = get_former_benefit_info(
             obj,
             obj.company,
             obj.employee.social_security_number,
-            obj.start_date,
-            obj.end_date,
+            obj.calculation.start_date or obj.start_date,
+            obj.calculation.end_date or obj.end_date,
             obj.apprenticeship_program,
         )
+        if aggregated_info.months_remaining is None:
+            last_possible_end_date = None
+        else:
+            last_possible_end_date = get_date_range_end_with_days360(
+                obj.start_date, aggregated_info.months_remaining
+            )
+
         return {
             "months_used": to_decimal(
                 aggregated_info.months_used, decimal_places=2, allow_null=True
@@ -832,17 +862,11 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "months_remaining": to_decimal(
                 aggregated_info.months_remaining, decimal_places=2, allow_null=True
             ),
+            "last_possible_end_date": last_possible_end_date,
         }
 
     def get_submitted_at(self, obj):
-        if (
-            log_entry := obj.log_entries.filter(to_status=ApplicationStatus.RECEIVED)
-            .order_by("-created_at")
-            .first()
-        ):
-            return log_entry.created_at
-        else:
-            return None
+        return obj.get_log_entry_field([ApplicationStatus.RECEIVED], "created_at")
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
@@ -1072,8 +1096,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         "company_contact_person_last_name",
         "co_operation_negotiations",
         "pay_subsidy_granted",
-        "apprenticeship_program",
-        "de_minimis_aid",
         "benefit_type",
         "start_date",
         "end_date",
@@ -1086,16 +1108,24 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         # newly created applications are always DRAFT
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
         if (
-            OrganizationType.resolve_organization_type(
+            organization_type := OrganizationType.resolve_organization_type(
                 self.get_company(data).company_form
             )
-            == OrganizationType.ASSOCIATION
-        ):
+        ) == OrganizationType.ASSOCIATION:
             required_fields.append("association_has_business_activities")
 
             # For associations, validate() already limits the association_immediate_manager_check value to [None, True]
             # at submit time, only True is allowed.
             required_fields.append("association_immediate_manager_check")
+        elif organization_type == OrganizationType.COMPANY:
+            required_fields.append("de_minimis_aid")
+        else:
+            assert False, "unreachable"
+
+        # if pay_subsidy_granted is selected, then the applicant needs to also select if
+        # it's an apprenticeship_program or not
+        if data["pay_subsidy_granted"]:
+            required_fields.append("apprenticeship_program")
 
         for field_name in required_fields:
             if data[field_name] in [None, "", []]:
@@ -1287,7 +1317,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         self._validate_non_draft_required_fields(data)
         return data
 
-    def handle_status_transition(self, instance, previous_status, approve_terms):
+    def handle_status_transition(
+        self, instance, previous_status, approve_terms, log_entry_comment
+    ):
         if (
             (
                 previous_status,
@@ -1320,6 +1352,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             application=instance,
             from_status=previous_status,
             to_status=instance.status,
+            comment=log_entry_comment or "",
         )
         if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             # Create an automatic message for the applicant
@@ -1420,7 +1453,12 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             self._update_or_create_employee(application, employee_data)
 
         if instance.status != pre_update_status:
-            self.handle_status_transition(instance, pre_update_status, approve_terms)
+            self.handle_status_transition(
+                instance,
+                pre_update_status,
+                approve_terms,
+                validated_data.get("log_entry_comment"),
+            )
         return application
 
     @transaction.atomic
@@ -1492,7 +1530,33 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         return get_company_from_request(self.context.get("request"))
 
 
+class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
+    """
+    Some application processing statuses need to be hidden from the applicant
+    """
+
+    STATUS_OVERRIDES = {
+        ApplicationStatus.RECEIVED: ApplicationStatus.HANDLING,
+        ApplicationStatus.ACCEPTED: ApplicationStatus.HANDLING,
+        ApplicationStatus.REJECTED: ApplicationStatus.HANDLING,
+    }
+
+    def to_representation(self, value):
+        """
+        Transform the *outgoing* native value into primitive data.
+        """
+        value_shown_to_applicant = self.STATUS_OVERRIDES.get(value, value)
+        return super().to_representation(value_shown_to_applicant)
+
+
 class ApplicantApplicationSerializer(BaseApplicationSerializer):
+
+    status = ApplicantApplicationStatusChoiceField(
+        choices=ApplicationStatus.choices,
+        validators=[ApplicantApplicationStatusValidator()],
+        help_text="Status of the application, statuses that are visible to the applicant are limited",
+    )
+
     def get_company_for_new_application(self, validated_data):
         """
         Company field is read_only. When creating a new application, assign company.
@@ -1515,6 +1579,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     * pay_subsidies
     * training compensations
     * batch
+    * latest_decision_comment
     """
 
     # more status transitions
@@ -1573,12 +1638,18 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "training_compensations",
             "batch",
             "create_application_for_company",
+            "latest_decision_comment",
+        ]
+        read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
+            "latest_decision_comment"
         ]
 
     @transaction.atomic
     @do_delayed_calls_at_end()  # application recalculation
     def update(self, instance, validated_data):
-        if not ApplicationStatus.is_handler_editable_status(instance.status):
+        if not ApplicationStatus.is_handler_editable_status(
+            instance.status, validated_data["status"]
+        ):
             raise BenefitAPIException(
                 _("Application can not be changed in this status")
             )
@@ -1605,20 +1676,19 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             raise serializers.ValidationError(
                 _("The calculation should be created when the application is submitted")
             )
-        if calculation_data is not None:
-            if not ApplicationStatus.is_handler_editable_status(application.status):
-                raise serializers.ValidationError(
-                    _("The calculation can not be updated in this status")
-                )
+        if (
+            calculation_data is not None
+            and ApplicationStatus.is_handler_editable_status(application.status)
+        ):
             if application.calculation.id != calculation_data["id"]:
                 raise serializers.ValidationError(
                     _("The calculation id does not match existing id")
                 )
+            call_now_or_later(
+                application.calculation.calculate,
+                duplicate_check=("calculation.calculate", application.pk),
+            )
             update_object(application.calculation, calculation_data)
-        call_now_or_later(
-            application.calculation.calculate,
-            duplicate_check=("calculation.calculate", application.pk),
-        )
 
     def _update_training_compensations(self, application, training_compensation_data):
         return self._common_ordered_nested_update(
@@ -1667,9 +1737,13 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
                 duplicate_check=("calculation.calculate", application.pk),
             )
 
-    def handle_status_transition(self, instance, previous_status, approve_terms):
+    def handle_status_transition(
+        self, instance, previous_status, approve_terms, log_entry_comment
+    ):
         # Super need to call first so instance.calculation is always present
-        super().handle_status_transition(instance, previous_status, approve_terms)
+        super().handle_status_transition(
+            instance, previous_status, approve_terms, log_entry_comment
+        )
         # Extend from base class function.
         # Assign current user to the application.calculation.handler
         # NOTE: This handler might be overridden if there is a handler pk included in the request post data

@@ -18,6 +18,11 @@ services:
       context: ./backend
       dockerfile: ./docker/benefit.Dockerfile
       target: development
+    # Entrypoint is overridden because although "django-admin compilemessages" is run as
+    # a part of Docker image build, the resulting files are overridden by volume mount
+    # in this docker-compose file and thus have to be regenerated.
+    entrypoint:
+      bash -c "django-admin compilemessages && /entrypoint/docker-entrypoint.sh"
     env_file:
       - .env.benefit-backend
     environment:

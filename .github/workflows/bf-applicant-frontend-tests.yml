@@ -8,6 +8,8 @@ on:
       - "frontend/benefit/applicant/**"
       - "frontend/*"
       - ".github/workflows/bf-applicant-frontend-tests.yml"
+      - "!**/browser-tests/**"
+      - "!**/README.md"
   push:
     branches: [develop, main]
   workflow_dispatch:

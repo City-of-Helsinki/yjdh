@@ -48,8 +48,9 @@ export enum APPLICATION_STATUSES {
   DRAFT = 'draft',
   INFO_REQUIRED = 'additional_information_needed',
   RECEIVED = 'received',
-  APPROVED = 'approved',
+  ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+  CANCELLED = 'cancelled',
   HANDLING = 'handling',
 }
 
@@ -105,4 +106,41 @@ export enum DE_MINIMIS_AID_KEYS {
   GRANTER = 'granter',
   AMOUNT = 'amount',
   GRANTED_AT = 'grantedAt',
+}
+
+export enum CALCULATION_EMPLOYMENT_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+}
+
+export enum CALCULATION_SALARY_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+  MONTHLY_PAY = 'monthlyPay',
+  OTHER_EXPENSES = 'otherExpenses',
+  VACATION_MONEY = 'vacationMoney',
+  STATE_AID_MAX_PERCENTAGE = 'stateAidMaxPercentage',
+  PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT = 'overrideMonthlyBenefitAmount',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT_COMMENT = 'overrideMonthlyBenefitAmountComment',
+  // eslint-disable-next-line no-secrets/no-secrets
+  WORK_TIME_PERCENT = 'workTimePercent',
+  PAY_SUBSIDIES = 'paySubsidies',
+}
+
+export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];
+
+export const CALCULATION_SUMMARY_ROW_TYPES = [
+  'state_aid_max_monthly_eur',
+  'pay_subsidy_monthly_eur',
+  'helsinki_benefit_total_eur',
+];
+
+export const CALCULATION_DESCRIPTION_ROW_TYPES = ['description'];
+
+export const CALCULATION_TOTAL_ROW_TYPE = 'helsinki_benefit_total_eur';
+
+export enum CALCULATION_TYPES {
+  SALARY = 'salary',
+  EMPLOYMENT = 'employment',
 }

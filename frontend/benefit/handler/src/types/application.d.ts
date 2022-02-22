@@ -5,6 +5,7 @@ import {
   APPLICATION_FIELDS_STEP2_KEYS,
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
+  CALCULATION_EMPLOYMENT_KEYS,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
@@ -187,10 +188,21 @@ export type CalculationData = {
   granted_as_de_minimis_aid: boolean;
   target_group_check: boolean;
   calculated_benefit_amount: string;
-  override_benefit_amount: string;
-  override_benefit_amount_comment?: string;
+  override_monthly_benefit_amount: string;
+  override_monthly_benefit_amount_comment?: string;
   rows: RowData[];
   handler_details: HandlerDetailsData;
+  duration_in_months_rounded: string;
+};
+
+export type PaySubsidyData = {
+  id?: string;
+  start_date: string;
+  end_date: string;
+  pay_subsidy_percent: number;
+  work_time_percent?: number;
+  disability_or_illness?: boolean;
+  duration_in_months_rounded: string;
 };
 
 export type ApplicationData = {
@@ -246,6 +258,10 @@ export type ApplicationData = {
   approve_terms?: ApproveTermsData;
   calculation?: CalculationData;
   submitted_at?: string;
+  pay_subsidies?: PaySubsidyData[];
+  duration_in_months_rounded?: string;
+  log_entry_comment?: string;
+  granted_as_de_minimis_aid?: boolean;
 };
 
 export type ApplicationListItemData = {
@@ -309,10 +325,21 @@ export interface Step2 {
 // handler
 
 export type Row = {
+  id: string;
   rowType: string;
   ordering: number;
   descriptionFi: string;
   amount: string;
+};
+
+export type PaySubsidy = {
+  id?: string;
+  startDate: string;
+  endDate: string;
+  paySubsidyPercent: number;
+  workTimePercent?: number;
+  disabilityOrIllness?: boolean;
+  durationInMonthsRounded: string;
 };
 
 export type HandlerDetails = {
@@ -322,22 +349,36 @@ export type HandlerDetails = {
   termsOfServiceApprovals: ApplicantTermsApproval;
 };
 
+export interface CalculationCommon {
+  [CALCULATION_EMPLOYMENT_KEYS.START_DATE]?: string;
+  [CALCULATION_EMPLOYMENT_KEYS.END_DATE]?: string;
+}
+
 export type Calculation = {
   id?: string;
   monthlyPay: string;
   vacationMoney: string;
   otherExpenses: string;
-  startDate: string;
-  endDate: string;
   stateAidMaxPercentage?: number;
-  grantedAsDeMinimisAid: boolean;
-  targetGroupCheck: boolean;
+  grantedAsDeMinimisAid?: boolean;
+  targetGroupCheck?: boolean;
   calculatedBenefitAmount: string;
-  overrideBenefitAmount: string;
-  overrideBenefitAmountComment?: string;
+  overrideMonthlyBenefitAmount: string | null;
+  overrideMonthlyBenefitAmountComment?: string;
   rows: Row[];
   handlerDetails: HandlerDetails;
-};
+  durationInMonthsRounded?: string;
+} & CalculationCommon;
+
+export type CalculationFormProps = {
+  monthlyPay?: string;
+  vacationMoney?: string;
+  otherExpenses?: string;
+  stateAidMaxPercentage?: number;
+  overrideMonthlyBenefitAmount?: string | null;
+  overrideMonthlyBenefitAmountComment?: string;
+  paySubsidies?: PaySubsidy[];
+} & CalculationCommon;
 
 export type Application = {
   id?: string;
@@ -357,6 +398,10 @@ export type Application = {
   approveTerms?: ApproveTerms;
   calculation?: Calculation;
   submittedAt?: string;
+  paySubsidies?: PaySubsidy[];
+  durationInMonthsRounded?: string;
+  logEntryComment?: string;
+  grantedAsDeMinimisAid?: boolean;
 } & Step1 &
   Step2;
 
@@ -368,3 +413,16 @@ export type SubmittedApplication = {
 export interface ApplicationReviewViewProps {
   data: Application;
 }
+
+export interface SalaryBenefitCalculatorViewProps {
+  data: Application;
+}
+
+export type HandledAplication = {
+  status?:
+    | APPLICATION_STATUSES.ACCEPTED
+    | APPLICATION_STATUSES.REJECTED
+    | APPLICATION_STATUSES.CANCELLED;
+  logEntryComment?: string;
+  grantedAsDeMinimisAid?: boolean;
+};

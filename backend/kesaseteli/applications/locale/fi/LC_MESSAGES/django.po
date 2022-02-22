@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-10 09:10+0000\n"
-"PO-Revision-Date: 2022-01-10 08:48+0200\n"
+"POT-Creation-Date: 2022-02-08 14:51+0200\n"
+"PO-Revision-Date: 2022-02-08 14:52+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -61,6 +61,9 @@ msgstr ""
 msgid "Social security number must be set"
 msgstr ""
 
+msgid "Failed to send activation email"
+msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
+
 msgid "File not found."
 msgstr ""
 
@@ -108,6 +111,12 @@ msgstr "ei"
 
 msgid "maybe"
 msgstr "ehkä"
+
+msgid "Email in use"
+msgstr ""
+
+msgid "Already assigned"
+msgstr ""
 
 msgid "Järjestys"
 msgstr ""
@@ -256,9 +265,6 @@ msgstr ""
 msgid "Setelit"
 msgstr ""
 
-msgid "time deleted"
-msgstr ""
-
 msgid "school"
 msgstr ""
 
@@ -280,16 +286,49 @@ msgstr ""
 msgid "phone number"
 msgstr ""
 
+msgid "postcode"
+msgstr ""
+
 msgid "timestamp of receipt confirmation"
 msgstr ""
 
-msgid "Vahvista sähköpostiosoitteesi"
+msgid "vtj json"
+msgstr ""
+
+msgid "Aktivoi Kesäseteli"
 msgstr ""
 
 #, python-format
 msgid ""
-"Vahvista sähköpostiosoitteesi klikkaamalla oheista linkkiä:\n"
-"%(activation_link)s"
+"Aktivoi Kesäsetelisi vahvistamalla sähköpostiosoitteesi klikkaamalla alla "
+"olevaa linkkiä:\n"
+"\n"
+"%(activation_link)s\n"
+"\n"
+"Ystävällisin terveisin, Kesäseteli-tiimi"
+msgstr ""
+
+#, python-format
+msgid "Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Seuraava henkilö on pyytänyt Kesäseteliä:\n"
+"\n"
+"%(first_name)s %(last_name)s\n"
+"Postinumero: %(postcode)s\n"
+"Koulu: %(school)s\n"
+"Puhelinnumero: %(phone_number)s\n"
+"Sähköposti: %(email)s\n"
+"\n"
+"%(processing_link)s"
+msgstr ""
+
+msgid "Unable to send youth application's activation email"
+msgstr ""
+
+msgid "Unable to send youth application's processing email to handler"
 msgstr ""
 
 msgid "youth application"

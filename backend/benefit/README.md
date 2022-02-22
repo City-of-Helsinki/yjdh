@@ -39,9 +39,16 @@ and upload the files manually.
 * Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
 * Set the `DEBUG` environment variable to `1`.
 * Run `python manage.py migrate`
+* Run `python manage.py compilemessages`
 * Run `python manage.py runserver 0:8000`
 
 The project is now running at [localhost:8000](https://localhost:8000)
+
+### Updating translations
+
+In `backend/benefit/`:
+* Run `python manage.py makemessages --no-location -l fi -l sv -l en`
+* Run `python manage.py compilemessages`
 
 ### Testing and debugging
 

@@ -22,6 +22,7 @@ type ExtendedComponentProps = {
   handleBack: () => void;
   handleDelete: () => void;
   handleStepChange: (step: number) => void;
+  handleClose: () => void;
   translationsBase: string;
   isSubmit: boolean;
 };
@@ -112,6 +113,9 @@ const useApplicationFormStep5 = (
     );
     updateApplicationStep5(currentApplicationData);
   };
+  const handleClose = (): void => {
+    void router.push(ROUTES.HOME);
+  };
 
   return {
     t,
@@ -120,6 +124,7 @@ const useApplicationFormStep5 = (
     handleBack: onBack,
     handleDelete,
     handleStepChange,
+    handleClose,
     translationsBase,
     isSubmit,
   };

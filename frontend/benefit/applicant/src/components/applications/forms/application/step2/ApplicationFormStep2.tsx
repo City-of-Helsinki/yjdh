@@ -244,7 +244,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 }
                 options={subsidyOptions}
                 id={fields.paySubsidyPercent.name}
-                name={fields.paySubsidyPercent.name}
                 placeholder={selectLabel}
                 invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}
                 aria-invalid={!!getErrorMessage(fields.paySubsidyPercent.name)}

@@ -5,7 +5,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "clean": "docker compose -f docker-compose.youth.yml down; docker compose -f docker-compose.employer.yml down; docker compose -f docker-compose.benefit.yml down; docker compose -f docker-compose.handler.yml down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q)",
+    "clean": "docker compose -f docker-compose.handler.yml down; docker compose -f docker-compose.youth.yml down; docker compose -f docker-compose.employer.yml down; docker compose -f docker-compose.benefit.yml down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q)",
     "benefit": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.benefit.yml up",
     "employer": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.employer.yml up",
     "handler": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.handler.yml up",

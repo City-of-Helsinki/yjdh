@@ -90,3 +90,91 @@ export const convertToBackendDateFormat = (
 export const convertToUIDateAndTimeFormat = (
   date: string | Date | number | undefined
 ): string => convertDateFormat(date, DATE_FORMATS.DATE_AND_TIME);
+
+export const isLeapYear = (year: number): boolean =>
+  (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+
+/**
+ * Calculates the difference in days between 2 dates
+ * Based on excelDays360
+ *
+ * @param startDate
+ * Date1
+ * @param endDate
+ * Date2
+ * @returns
+ * Number of days
+ */
+export const days360 = (
+  startDate: Date | undefined,
+  endDate: Date | undefined,
+  method = 'EU'
+): number => {
+  if (!endDate || !startDate) return 0;
+
+  let startDay = startDate.getDate();
+  const startMonth = startDate.getMonth();
+  const startYear = startDate.getFullYear();
+  let endDay = endDate.getDate();
+  let endMonth = endDate.getMonth();
+  let endYear = endDate.getFullYear();
+
+  if (
+    startDay === 31 ||
+    (method !== 'EU' &&
+      startMonth === 2 &&
+      (startDay === 29 || (startDay === 28 && !isLeapYear(startYear))))
+  )
+    startDay = 30;
+
+  if (endDay === 31) {
+    if (method !== 'EU' && startDay !== 30) {
+      endDay = 1;
+
+      if (endMonth === 12) {
+        endYear += 1;
+        endMonth = 1;
+      } else endMonth += 1;
+    }
+
+    endDay = 30;
+  }
+
+  return (
+    endDay +
+    endMonth * 30 +
+    endYear * 360 -
+    startDay -
+    startMonth * 30 -
+    startYear * 360
+  );
+};
+
+/**
+ * Calculates the different in months between 2 dates with two decimals accuracy
+ * Based on excelDays360
+ * @param endDate
+ * Date1
+ * @param startDate
+ * Date2
+ * @returns
+ * Number of months
+ */
+export const diffMonths = (
+  endDate: Date | undefined,
+  startDate: Date | undefined,
+  method = 'EU'
+): number => {
+  if (!endDate || !startDate) return 0;
+  const correctEndDate = new Date(endDate);
+  correctEndDate.setDate(correctEndDate.getDate() + 1);
+  return Number((days360(startDate, correctEndDate, method) / 30).toFixed(2));
+};
+
+export const getCorrectEndDate = (
+  startDate: string,
+  endDate: string
+): string | undefined | Date => {
+  if ((parseDate(startDate) ?? 0) > (parseDate(endDate) ?? 0)) return startDate;
+  return endDate;
+};

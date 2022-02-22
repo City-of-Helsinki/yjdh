@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from datetime import date, datetime
+from decimal import Decimal
 from unittest import mock
 
 import pytest
@@ -11,6 +12,7 @@ import pytz
 from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
     AttachmentSerializer,
+    HandlerApplicationSerializer,
 )
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
@@ -25,8 +27,10 @@ from applications.models import Application, ApplicationLogEntry, Attachment, Em
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation
+from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
+from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -37,6 +41,8 @@ from PIL import Image
 from rest_framework.reverse import reverse
 from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
+
+from shared.audit_log import models as audit_models
 
 
 def get_detail_url(application):
@@ -53,6 +59,13 @@ def get_handler_detail_url(application):
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
     assert response.status_code == 403
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["operation"] == "READ"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "Application"
 
 
 def test_applications_unauthorized(
@@ -128,11 +141,34 @@ def test_application_single_read_unauthorized(
     assert response.status_code == 404
 
 
-def test_application_single_read_as_applicant(api_client, application):
+@pytest.mark.parametrize(
+    "actual_status, visible_status",
+    [
+        (ApplicationStatus.DRAFT, ApplicationStatus.DRAFT),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.HANDLING, ApplicationStatus.HANDLING),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.CANCELLED),
+    ],
+)
+def test_application_single_read_as_applicant(
+    api_client, application, actual_status, visible_status
+):
+    application.status = actual_status
+    application.save()
     response = api_client.get(get_detail_url(application))
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
+    assert response.data["status"] == visible_status
     assert "batch" not in response.data
+    assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
+        application.start_date, application.end_date, decimal_places=2
+    )
     assert response.status_code == 200
 
 
@@ -142,6 +178,17 @@ def test_application_single_read_as_handler(handler_api_client, application):
     assert response.data["application_number"] is not None
     assert "batch" in response.data
     assert response.status_code == 200
+
+
+def test_application_submitted_at(
+    api_client, application, received_application, handling_application
+):
+    response = api_client.get(get_detail_url(application))
+    assert response.data["submitted_at"] is None
+    response = api_client.get(get_detail_url(received_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
 
 
 def test_application_template(api_client):
@@ -164,6 +211,13 @@ def test_application_post_success_unauthenticated(anonymous_client, application)
         data,
     )
     assert response.status_code == 403
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["operation"] == "CREATE"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "Application"
 
 
 def test_application_post_success(api_client, application):
@@ -208,6 +262,12 @@ def test_application_post_success(api_client, application):
     )
     assert new_application.official_company_postcode == new_application.company.postcode
     assert new_application.official_company_city == new_application.company.city
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["target"]["id"] == str(Application.objects.all().first().id)
+    assert audit_event["operation"] == "CREATE"
 
 
 def test_application_post_unfinished(api_client, application):
@@ -348,6 +408,12 @@ def test_application_put_edit_fields_unauthorized(
         data,
     )
     assert response.status_code == 404
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["target"]["id"] == str(anonymous_application.id)
+    assert audit_event["operation"] == "UPDATE"
 
 
 def test_application_put_edit_fields(api_client, application):
@@ -366,6 +432,12 @@ def test_application_put_edit_fields(api_client, application):
     )  # normalized format
     application.refresh_from_db()
     assert application.company_contact_person_phone_number == "0505658789"
+    audit_event = (
+        audit_models.AuditLogEntry.objects.all().first().message["audit_event"]
+    )
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["target"]["id"] == str(application.id)
+    assert audit_event["operation"] == "UPDATE"
 
 
 def test_application_put_edit_employee(api_client, application):
@@ -768,6 +840,92 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
+    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    [
+        ("ry", None, [], False, 200),
+        ("ry", False, [], False, 200),
+        ("ry", None, [], True, 200),
+        ("ry", False, [], True, 200),
+        ("oy", None, [], None, 400),
+        ("oy", False, [], None, 200),
+    ],
+)
+def test_submit_application_without_de_minimis_aid(
+    request,
+    api_client,
+    application,
+    company_form,
+    de_minimis_aid,
+    de_minimis_aid_set,
+    association_has_business_activities,
+    expected_result,
+):
+    application.company.company_form = company_form
+    application.company.save()
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["benefit_type"] = BenefitType.SALARY_BENEFIT
+    data["de_minimis_aid"] = de_minimis_aid
+    data["de_minimis_aid_set"] = de_minimis_aid_set
+    data["pay_subsidy_percent"] = "50"
+    data["pay_subsidy_granted"] = True
+    data["association_has_business_activities"] = association_has_business_activities
+    if company_form == "ry":
+        data["association_immediate_manager_check"] = True
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
+    "pay_subsidy_granted,apprenticeship_program,expected_result",
+    [
+        (True, True, 200),
+        (True, False, 200),
+        (True, None, 400),
+        (False, None, 200),
+    ],
+)
+def test_apprenticeship_program_validation_on_submit(
+    request,
+    api_client,
+    application,
+    pay_subsidy_granted,
+    apprenticeship_program,
+    expected_result,
+):
+    add_attachments_to_application(request, application)
+
+    data = ApplicantApplicationSerializer(application).data
+
+    data["pay_subsidy_granted"] = pay_subsidy_granted
+    data["pay_subsidy_percent"] = "50" if pay_subsidy_granted else None
+    data["additional_pay_subsidy_percent"] = None
+    data["apprenticeship_program"] = apprenticeship_program
+
+    response = api_client.put(
+        get_detail_url(application),
+        data,
+    )
+    assert (
+        response.status_code == 200
+    )  # the values are valid while application is a draft
+    application.refresh_from_db()
+    submit_response = _submit_application(api_client, application)
+    assert submit_response.status_code == expected_result
+
+
+@pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
         (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
@@ -852,14 +1010,24 @@ def test_application_status_change_as_applicant(
         (ApplicationStatus.HANDLING, ApplicationStatus.ACCEPTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.REJECTED, 200),
         (ApplicationStatus.HANDLING, ApplicationStatus.CANCELLED, 200),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING, 200),
         (ApplicationStatus.RECEIVED, ApplicationStatus.DRAFT, 400),
         (ApplicationStatus.ACCEPTED, ApplicationStatus.RECEIVED, 400),
         (ApplicationStatus.CANCELLED, ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.HANDLING, 400),
         (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
     ],
 )
+@pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
 def test_application_status_change_as_handler(
-    request, handler_api_client, application, from_status, to_status, expected_code
+    request,
+    handler_api_client,
+    application,
+    from_status,
+    to_status,
+    expected_code,
+    log_entry_comment,
 ):
     """
     modify existing application
@@ -871,8 +1039,13 @@ def test_application_status_change_as_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
-    data = ApplicantApplicationSerializer(application).data
+        fill_empty_calculation_fields(application)
+    application.refresh_from_db()
+    data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
+    if log_entry_comment is not None:
+        # the field is write-only
+        data["log_entry_comment"] = log_entry_comment
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:
         add_attachments_to_application(request, application)
@@ -889,10 +1062,18 @@ def test_application_status_change_as_handler(
             data,
         )
     assert response.status_code == expected_code
+
+    expected_log_entry_comment = ""
+    if isinstance(log_entry_comment, str):
+        expected_log_entry_comment = log_entry_comment
+
     if expected_code == 200:
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+        assert (
+            application.log_entries.all().first().comment == expected_log_entry_comment
+        )
 
         if to_status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             assert application.messages.count() == 1
@@ -901,6 +1082,16 @@ def test_application_status_change_as_handler(
                 in application.messages.first().content
             )
 
+        if to_status in [
+            ApplicationStatus.CANCELLED,
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.ACCEPTED,
+        ]:
+            assert (
+                response.data["latest_decision_comment"] == expected_log_entry_comment
+            )
+        else:
+            assert response.data["latest_decision_comment"] is None
     else:
         assert application.log_entries.all().count() == 0
 
@@ -940,7 +1131,8 @@ def test_application_status_change_as_handler_auto_assign_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
-    data = ApplicantApplicationSerializer(application).data
+        fill_empty_calculation_fields(application)
+    data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
     if to_status in [ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING]:

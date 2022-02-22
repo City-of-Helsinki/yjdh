@@ -11,7 +11,7 @@ const getEmailInUseApi = () => ({
     async notificationMessageIsPresent(hours: number) {
       return screen.findByText(
         new RegExp(
-          `Jos kyeessä on virhe, odota ${hours} tuntia ja yritä uudelleen.`,
+          `Jos kyseessä on virhe, odota ${hours} tuntia ja yritä uudelleen.`,
           'i'
         )
       );

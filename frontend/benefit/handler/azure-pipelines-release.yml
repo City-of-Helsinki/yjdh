@@ -8,9 +8,14 @@ trigger:
 #    - refs/tags/*
   paths:
     include:
-    - frontend/benefit/handler
+    - frontend/benefit/handler/**
+    - frontend/benefit/shared/**
+    - frontend/shared/**
+    - frontend/*
     exclude:
     - README.md
+    - frontend/**/browser-tests
+    - frontend/**/__tests__
 
 # Pull request (PR) triggers cause a pipeline to run whenever a pull request is
 # opened with one of the specified target branches, or when updates are made to

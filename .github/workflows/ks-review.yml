@@ -7,6 +7,8 @@ on:
       - 'frontend/shared/**'
       - 'frontend/*'
       - '.github/workflows/ks-review.yml'
+      - '!frontend/**/__tests__'
+      - '!**/README.md'
   workflow_dispatch:
     inputs:
       build_required:
@@ -27,12 +29,13 @@ env:
   BUILD_ARTIFACT_FOLDER: 'build_artifacts'
   SERVICE_ARTIFACT_FOLDER: 'service_artifacts'
   BASE_DOMAIN: ${{ secrets.BASE_DOMAIN_STAGING }}
-  K8S_REQUEST_CPU: 50m
+  K8S_REQUEST_CPU: 5m
   K8S_REQUEST_RAM: 256Mi
   K8S_LIMIT_CPU: 500m
   K8S_LIMIT_RAM: 428Mi
   K8S_PROBE_FAILURE_THRESHOLD: 30
   K8S_PROBE_PERIOD: 20
+  HELM_BUFFER_TIME: 300
   EMPLOYER_URL: https://ks-empl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   YOUTH_URL: https://ks-youth-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   HANDLER_URL: https://ks-hdlr-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
@@ -40,8 +43,9 @@ env:
   NEXT_PUBLIC_MOCK_FLAG: 1
   NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
-  NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 15
+  NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 60
   CORS_ALLOW_ALL_ORIGINS: 1
+  DISABLE_VTJ: 1
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -66,6 +70,9 @@ jobs:
             context: ./frontend
             dockerfile: ./frontend/kesaseteli/handler/Dockerfile
             port: 3200
+    concurrency:
+      group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     name: Build
     steps:
@@ -111,6 +118,9 @@ jobs:
             dockerfile: ./frontend/kesaseteli/handler/Dockerfile
             database: false
             port: 3200
+    concurrency:
+      group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     needs: build
     name: Review
@@ -136,6 +146,7 @@ jobs:
           echo "K8S_SECRET_LOGIN_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
           echo "K8S_SECRET_YOUTH_URL=${{ env.YOUTH_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_HANDLER_URL=${{ env.HANDLER_URL }}" >> $GITHUB_ENV
+          echo "K8S_SECRET_DISABLE_VTJ=${{ env.DISABLE_VTJ }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_MOCK_FLAG=${{ env.NEXT_PUBLIC_MOCK_FLAG }}" >> $GITHUB_ENV
           echo "K8S_SECRET_NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS=${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
