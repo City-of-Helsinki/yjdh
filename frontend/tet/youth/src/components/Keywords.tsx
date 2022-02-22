@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { IdObject, Keyword, LocalizedObject } from 'tet/youth/linkedevents';
+import { useTranslation } from 'next-i18next';
 
 const getLocalizedString = (obj: LocalizedObject): string => obj.fi;
 
@@ -27,6 +28,9 @@ type Props = {
 const Keywords: React.FC<Props> = ({ keyword }) => {
   const { isLoading, data, error } = useQuery<Keyword>(BackendEndpoint.KEYWORD + getIdFromUrl(keyword));
 
+  const { t } = useTranslation();
+
+  console.log(t('common:appName'));
   if (isLoading) {
     return <PageLoadingSpinner />;
   }
