@@ -112,6 +112,19 @@ def test_applications_csv_export_new_applications(handler_api_client):
     assert ApplicationBatch.objects.all().count() == 2
 
 
+def test_applications_csv_export_without_calculation(
+    handler_api_client, received_application
+):
+    received_application.calculation.delete()
+    _get_csv(
+        handler_api_client,
+        reverse("v1:handler-application-list") + "export_csv/",
+        [
+            received_application.application_number,
+        ],
+    )
+
+
 def test_applications_csv_export_with_date_range(handler_api_client):
     (
         application1,
