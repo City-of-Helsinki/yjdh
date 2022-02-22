@@ -43,7 +43,7 @@ const initialState: DialogState = {
 };
 
 const reducer = (state: DialogState = initialState, action: DialogActionTypes) => {
-  const content = action?.payload?.content ? action.payload.content : '';
+  const content = action?.payload?.content ?? '';
   switch (action.type) {
     case SHOW_CONFIRM:
       return {

@@ -21,7 +21,7 @@ const App: React.FC<AppProps> = (appProps) => (
       <DialogContextProvider>
         <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
         <Portal>
-          <ConfirmDialog></ConfirmDialog>
+          <ConfirmDialog />
         </Portal>
       </DialogContextProvider>
     </QueryClientProvider>
