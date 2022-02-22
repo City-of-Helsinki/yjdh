@@ -21,7 +21,7 @@ const CopyStaticPage: NextPage = () => {
   }
 
   if (data) {
-    return <EditById title={t('common:editor.copyTitle')} data={eventToTetPosting(data)} />;
+    return <EditById title={t('common:editor.copyTitle')} data={{ ...eventToTetPosting(data), id: null }} />;
   } else {
     return <>Not found. </>;
   }

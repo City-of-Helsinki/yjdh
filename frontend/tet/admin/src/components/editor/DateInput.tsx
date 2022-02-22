@@ -26,6 +26,7 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
           value={value ? String(value) : ''}
           required={required}
           invalid={invalid}
+          language="fi"
           errorText={error ? error.message : ''}
         />
       )}

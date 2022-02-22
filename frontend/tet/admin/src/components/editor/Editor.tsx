@@ -28,6 +28,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const { t } = useTranslation();
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
+    mode: 'onBlur',
     criteriaMode: 'all',
     defaultValues: initialValue || {
       contact_language: 'fi',
@@ -49,7 +50,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
 
   const submitHandler = async () => {
     const chosenWorkMethods = methods.getValues('keywords_working_methods');
-    const validationResults = await methods.trigger();
+    //const validationResults = await methods.trigger();
 
     if (!chosenWorkMethods.length) {
       methods.setError('keywords_working_methods', {
@@ -57,9 +58,10 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
         message: 'Valitse yksi',
       });
     } else {
-      methods.clearErrors('keywords_working_methods');
-      if (validationResults) {
-        void methods.handleSubmit(handleSuccess)();
+      //methods.clearErrors('keywords_working_methods');
+      void methods.handleSubmit(handleSuccess)();
+      if (true) {
+        //void methods.handleSubmit(handleSuccess)();
       }
     }
   };
@@ -71,9 +73,9 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
       <FormProvider {...methods}>
         <form aria-label="add/modify tet posting">
           <HiddenIdInput id="id" initialValue={initialValue?.id} />
+          <EditorErrorNotification />
           <p>* {t('common:editor.requiredInfo')}</p>
           <EmployerInfo />
-          <EditorErrorNotification />
           <CompanyInfo />
           <ContactPerson />
           <PostingDetails />

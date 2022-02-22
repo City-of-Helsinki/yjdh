@@ -81,6 +81,7 @@ export const $ContactInfo = styled.ul`
 
   li {
     font-size: ${(props) => props.theme.fontSize.body.l};
+    line-height: 1.4;
   }
 `;
 

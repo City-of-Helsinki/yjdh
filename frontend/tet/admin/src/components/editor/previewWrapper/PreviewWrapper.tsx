@@ -11,12 +11,12 @@ import { IconArrowLeft, IconUpload } from 'hds-react';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import { useTranslation } from 'next-i18next';
 
-const PreviewBar: React.FC = () => {
+const PreviewBar: React.FC<{ hasMargin?: boolean }> = ({ hasMargin }) => {
   const { setPreviewVisibility } = useContext(PreviewContext);
   const { t } = useTranslation();
 
   return (
-    <$Bar>
+    <$Bar style={hasMargin ? { marginBottom: '20px' } : {}}>
       <Container>
         <$BarWrapper>
           <$BackLink onClick={() => setPreviewVisibility(false)}>
@@ -38,7 +38,7 @@ const PreviewWrapper: React.FC = ({ children }) => {
     <>
       <PreviewBar />
       <div>{children}</div>
-      <PreviewBar />
+      <PreviewBar hasMargin={true} />
     </>
   );
 };
