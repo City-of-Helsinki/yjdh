@@ -3,7 +3,12 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { getWorkMethods, getWorkFeatures, getWorkKeywords } from 'tet/admin/backend-api/linked-events-api';
+import {
+  getWorkMethods,
+  getWorkFeatures,
+  getWorkKeywords,
+  keywordToOptionType,
+} from 'tet/admin/backend-api/linked-events-api';
 import { useQuery, useQueries } from 'react-query';
 import { OptionType } from 'tet/admin/types/classification';
 import Combobox from 'tet/admin/components/editor/Combobox';
@@ -23,7 +28,8 @@ const Classification: React.FC = () => {
 
   const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search));
 
-  const keywords = !keywordsResults.isLoading && keywordsResults.data ? keywordsResults.data : [];
+  const keywords =
+    !keywordsResults.isLoading && keywordsResults.data ? keywordsResults.data.map((k) => keywordToOptionType(k)) : [];
 
   const [workMethods, workFeatures] = results;
 
@@ -36,8 +42,8 @@ const Classification: React.FC = () => {
     return options;
   };
 
-  const workMethodsList = workMethods.data || [];
-  const workFeaturesList = workFeatures.data || [];
+  const workMethodsList = workMethods.data?.map((k) => keywordToOptionType(k)) || [];
+  const workFeaturesList = workFeatures.data?.map((k) => keywordToOptionType(k)) || [];
 
   return (
     <FormSection header={'Luokittelut'}>
