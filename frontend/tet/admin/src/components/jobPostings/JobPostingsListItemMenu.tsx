@@ -3,18 +3,23 @@ import { IconPen, IconEye, IconPlusCircle, IconCrossCircle } from 'hds-react';
 import { $Menu, $MenuItem } from 'tet/admin/components/jobPostings/JobPostingsListItemMenu.sc';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
+import useConfirm from 'tet/admin/hooks/context/useConfirm';
+import TetPosting from 'tet/admin/types/tetposting';
+import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 
 type JobPostingsListItemMenuProps = {
-  postingId: string;
+  posting: TetPosting;
   onClickOutside: () => void;
   show: boolean;
 };
 
 const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) => {
   const { t } = useTranslation();
+  const { confirm } = useConfirm();
   const ref = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { postingId, onClickOutside, show } = props;
+  const { posting, onClickOutside, show } = props;
+  const deleteTetPosting = useDeleteTetPosting();
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
@@ -32,12 +37,22 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   const editPostingHandler = (): void => {
     void router.push({
       pathname: '/editstatic',
-      query: { id: postingId },
+      query: { id: posting.id },
     });
   };
 
-  const deletePostingHandler = (): void => {
+  const deletePostingHandler = async () => {
     //TODO
+    await showConfirm();
+  };
+  const showConfirm = async () => {
+    const isConfirmed = await confirm(t('common:delete.confirmation', { posting: posting.title }));
+
+    if (isConfirmed) {
+      deleteTetPosting.mutate(posting);
+    } else {
+      console.log('not confirmed');
+    }
   };
 
   if (!show) return null;
