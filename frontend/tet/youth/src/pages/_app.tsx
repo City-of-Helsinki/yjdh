@@ -6,7 +6,6 @@ import { appWithTranslation } from 'next-i18next';
 import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BaseApp from 'shared/components/app/BaseApp';
-import YouthApp from 'tet/youth/components/YouthApp';
 import Header from 'tet/youth/components/header/Header';
 import Footer from 'tet/youth/components/footer/Footer';
 
