@@ -10,7 +10,7 @@ type PreviewContextObj = {
   getTemplateData: () => TetData;
 };
 
-const initialPosting: TetPosting = {
+export const initialPosting: TetPosting = {
   title: '',
   description: '',
   location: {
@@ -28,7 +28,7 @@ const initialPosting: TetPosting = {
   contact_first_name: '',
   contact_last_name: '',
   date_published: null,
-  contact_language: '',
+  contact_language: 'fi',
   contact_phone: '',
   keywords: [],
   keywords_working_methods: [],
@@ -74,6 +74,7 @@ const PreviewContextProvider: React.FC = (props) => {
   };
 
   const getTemplateData = (): TetData => {
+    console.log(tetPosting, 'previewContext posting');
     return {
       title: tetPosting.title,
       description: tetPosting.description,

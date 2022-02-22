@@ -13,7 +13,6 @@ type Props = {
 
 const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false }) => {
   const { control } = useFormContext<TetPosting>();
-  console.log('date_rules', registerOptions);
   return (
     <Controller
       name={id}

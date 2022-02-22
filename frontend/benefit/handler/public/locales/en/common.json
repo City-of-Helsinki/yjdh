@@ -218,13 +218,28 @@
       "paySubsidyPercent": {
         "label": "Palkkatukiprosentti",
         "placeholder": "Palkkatukiprosentti"
+      },
+      "overrideMonthlyBenefitAmount": {
+        "label": "Helsinki-lisää €/kk",
+        "placeholder": "Helsinki-lisää €/kk"
+      },
+      "overrideMonthlyBenefitAmountComment": {
+        "label": "Perustelu",
+        "placeholder": "Perustelu"
+      },
+      "workTimePercent": {
+        "label": "Työaika %",
+        "placeholder": "Työaika %"
       }
     },
     "notifications": {
       "error": {
         "title": "Laskurissa on virheitä",
         "message": "Ole hyvä ja tarkista laskelman tiedot ja yritä laskea uudestaan:"
-      }
+      },
+      "paySubsidy": "Palkkatuki",
+      "recalculateLabel": "Laskelman arvot muuttuneet",
+      "recalculateContent": "Ole hyvä ja laske uudestaan"
     },
     "employment": {
       "header": "Työllistämisen Helsinki-lisää haettu ajalle",

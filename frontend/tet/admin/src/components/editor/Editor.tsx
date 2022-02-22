@@ -13,10 +13,12 @@ import Classification from 'tet/admin/components/editor/classification/Classific
 import { DevTool } from '@hookform/devtools';
 import { tetPostingToEvent } from 'tet/admin/backend-api/transformations';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
+import { initialPosting } from 'tet/admin/store/PreviewContext';
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
+  allowDelete?: boolean;
 };
 
 export type EditorSectionProps = {
@@ -24,18 +26,13 @@ export type EditorSectionProps = {
 };
 
 // add new posting / edit existing
-const Editor: React.FC<EditorProps> = ({ initialValue }) => {
+const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => {
   const { t } = useTranslation();
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
     mode: 'onBlur',
     criteriaMode: 'all',
-    defaultValues: initialValue || {
-      contact_language: 'fi',
-      keywords_working_methods: [],
-      keywords_attributes: [],
-      spots: 1,
-    },
+    defaultValues: initialValue || initialPosting,
   });
 
   const upsertTetPosting = useUpsertTetPosting();
@@ -46,24 +43,6 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
       id: validatedPosting.id,
       event,
     });
-  };
-
-  const submitHandler = async () => {
-    const chosenWorkMethods = methods.getValues('keywords_working_methods');
-    //const validationResults = await methods.trigger();
-
-    if (!chosenWorkMethods.length) {
-      methods.setError('keywords_working_methods', {
-        type: 'manual',
-        message: 'Valitse yksi',
-      });
-    } else {
-      //methods.clearErrors('keywords_working_methods');
-      void methods.handleSubmit(handleSuccess)();
-      if (true) {
-        //void methods.handleSubmit(handleSuccess)();
-      }
-    }
   };
 
   console.log(`Editing posting ${JSON.stringify(initialValue, null, 2)}`);
@@ -80,7 +59,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
           <ContactPerson />
           <PostingDetails />
           <Classification />
-          <ActionButtons onSubmit={submitHandler} />
+          <ActionButtons onSubmit={methods.handleSubmit(handleSuccess)} allowDelete={allowDelete} />
         </form>
       </FormProvider>
       <DevTool control={methods.control} />

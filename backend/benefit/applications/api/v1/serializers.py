@@ -866,7 +866,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         }
 
     def get_submitted_at(self, obj):
-        return obj.get_log_entry_field(ApplicationStatus.RECEIVED, "created_at")
+        return obj.get_log_entry_field([ApplicationStatus.RECEIVED], "created_at")
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
@@ -1530,7 +1530,33 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         return get_company_from_request(self.context.get("request"))
 
 
+class ApplicantApplicationStatusChoiceField(serializers.ChoiceField):
+    """
+    Some application processing statuses need to be hidden from the applicant
+    """
+
+    STATUS_OVERRIDES = {
+        ApplicationStatus.RECEIVED: ApplicationStatus.HANDLING,
+        ApplicationStatus.ACCEPTED: ApplicationStatus.HANDLING,
+        ApplicationStatus.REJECTED: ApplicationStatus.HANDLING,
+    }
+
+    def to_representation(self, value):
+        """
+        Transform the *outgoing* native value into primitive data.
+        """
+        value_shown_to_applicant = self.STATUS_OVERRIDES.get(value, value)
+        return super().to_representation(value_shown_to_applicant)
+
+
 class ApplicantApplicationSerializer(BaseApplicationSerializer):
+
+    status = ApplicantApplicationStatusChoiceField(
+        choices=ApplicationStatus.choices,
+        validators=[ApplicantApplicationStatusValidator()],
+        help_text="Status of the application, statuses that are visible to the applicant are limited",
+    )
+
     def get_company_for_new_application(self, validated_data):
         """
         Company field is read_only. When creating a new application, assign company.

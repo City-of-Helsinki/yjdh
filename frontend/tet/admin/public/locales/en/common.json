@@ -25,6 +25,9 @@
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
     "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
   },
+	"dialog": {
+		"cancel": "ENG Peruuta"
+	},
   "application": {
 		"backToFrontPage": "ENG Takaisin etusivulle",
     "jobPostings": {
@@ -147,6 +150,9 @@
     "errorMessage": "Something went wrong. Please try again later."
   },
   "delete": {
+		"deletePosting": "ENG Poista TET-paikka",
+		"confirmation": "ENG Haluatko varmasti poistaa TET-paikan {{posting}}?",
+		"successTitle": "ENG TETP-paikka poistettiin", 
     "errorTitle": "Deleting the file failed.",
     "errorMessage": "Something went wrong. Please try again later."
   },

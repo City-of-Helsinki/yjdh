@@ -8,15 +8,20 @@ import TetPosting from 'tet/admin/types/tetposting';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTheme } from 'styled-components';
 import { IconCross, IconEye, IconUpload } from 'hds-react';
+import useConfirm from 'tet/admin/hooks/context/useConfirm';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import cloneDeep from 'lodash/cloneDeep';
 
 type Props = {
   onSubmit: () => void;
+  allowDelete: boolean;
 };
 
-const ActionButtons: React.FC<Props> = ({ onSubmit }) => {
+const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
   const { setPreviewVisibility, setTetPostingData } = useContext(PreviewContext);
+  const deleteTetPosting = useDeleteTetPosting();
+  const { confirm } = useConfirm();
 
   const showPreview = () => {
     setTetPostingData(cloneDeep(getValues()));
@@ -29,6 +34,21 @@ const ActionButtons: React.FC<Props> = ({ onSubmit }) => {
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
   const theme = useTheme();
+  const posting = getValues();
+
+  const deletePostingHandler = async () => {
+    await showConfirm();
+  };
+
+  const showConfirm = async () => {
+    const isConfirmed = await confirm(t('common:delete.confirmation', { posting: posting.title }));
+
+    if (isConfirmed) {
+      deleteTetPosting.mutate(posting);
+    } else {
+      console.log('not confirmed');
+    }
+  };
 
   return (
     <FormSection withoutDivider>
@@ -38,16 +58,20 @@ const ActionButtons: React.FC<Props> = ({ onSubmit }) => {
             {t('common:editor.saveDraft')}
           </Button>
         </$GridCell>
-        <$GridCell $colSpan={2}>
-          <Button
-            variant="supplementary"
-            iconLeft={<IconCross />}
-            disabled={isSubmitting}
-            onClick={() => alert('Not implemented')}
-          >
-            {t('common:editor.deletePosting')}
-          </Button>
-        </$GridCell>
+        {allowDelete ? (
+          <$GridCell $colSpan={2}>
+            <Button
+              variant="supplementary"
+              iconLeft={<IconCross />}
+              disabled={isSubmitting}
+              onClick={deletePostingHandler}
+            >
+              {t('common:editor.deletePosting')}
+            </Button>
+          </$GridCell>
+        ) : (
+          <$GridCell $colSpan={2}>{null}</$GridCell>
+        )}
         <$GridCell $colSpan={2}>{null}</$GridCell>
         <$GridCell $colSpan={3}>
           <Button disabled={isSubmitting} iconLeft={<IconEye />} onClick={showPreview}>

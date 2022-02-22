@@ -48,10 +48,18 @@ def test_applicant_terms_in_effect(api_client, application, accept_tos):
 
 
 @pytest.mark.parametrize(
-    "from_status,to_status",
+    "from_status,to_status,status_visible_to_applicant",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED),
-        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, ApplicationStatus.HANDLING),
+        (
+            ApplicationStatus.DRAFT,
+            ApplicationStatus.RECEIVED,
+            ApplicationStatus.HANDLING,
+        ),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.HANDLING,
+            ApplicationStatus.HANDLING,
+        ),
     ],
 )
 @pytest.mark.parametrize("previously_approved", [False, True])
@@ -62,6 +70,7 @@ def test_approve_terms_success(
     applicant_terms,
     from_status,
     to_status,
+    status_visible_to_applicant,
     previously_approved,
 ):
     application.status = from_status
@@ -94,9 +103,10 @@ def test_approve_terms_success(
         data,
     )
     application.refresh_from_db()
+    assert application.status == to_status
     assert response.status_code == 200
     assert response.data["applicant_terms_approval_needed"] is False
-    assert response.data["status"] == to_status
+    assert response.data["status"] == status_visible_to_applicant
     assert response.data["applicant_terms_approval"]["terms"]["id"] == str(
         applicant_terms.pk
     )

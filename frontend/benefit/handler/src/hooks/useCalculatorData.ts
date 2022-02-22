@@ -3,7 +3,7 @@ import { CalculationFormProps } from 'benefit/handler/types/application';
 import { getErrorText } from 'benefit/handler/utils/forms';
 import { FormikProps } from 'formik';
 import { TFunction } from 'next-i18next';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
@@ -17,6 +17,7 @@ type ExtendedComponentProps = {
   language: Language;
   handleSubmit: () => void;
   getErrorMessage: (fieldName: string) => string | undefined;
+  isRecalculationRequired: boolean;
 };
 
 const useCalculatorData = (
@@ -28,8 +29,13 @@ const useCalculatorData = (
   const translationsBase = `common:calculators.${calculatorType}`;
   const { t } = useTranslation();
 
-  const { errors, touched } = formik;
+  const { errors, touched, values } = formik;
+
+  const didMount = useRef(false);
+
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+  const [isRecalculationRequired, setIsRecalculationRequired] = useState(false);
 
   const getErrorMessage = (fieldName: string): string | undefined =>
     getErrorText(errors, touched, fieldName, t, isSubmitted);
@@ -45,6 +51,12 @@ const useCalculatorData = (
     });
   };
 
+  useEffect(() => {
+    if (didMount.current && !isRecalculationRequired)
+      setIsRecalculationRequired(true);
+    else didMount.current = true;
+  }, [isRecalculationRequired, values]);
+
   return {
     t,
     translationsBase,
@@ -52,6 +64,7 @@ const useCalculatorData = (
     language,
     getErrorMessage,
     handleSubmit,
+    isRecalculationRequired,
   };
 };
 

@@ -1,4 +1,5 @@
 import { Language } from '@frontend/shared/src/i18n/i18n';
+import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
 
@@ -6,6 +7,7 @@ import { FinnishSSN } from 'finnish-ssn';
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
+import CreatedYouthApplication from '../../types/created-youth-application';
 import YouthApplication from '../../types/youth-application';
 import YouthFormData from '../../types/youth-form-data';
 import { convertFormDataToApplication } from '../../utils/youth-form-data.utils';
@@ -90,7 +92,7 @@ export const fakeSchools: string[] = [
   'Östersundom skola',
 ];
 
-export const fakeYouthFormData = (): YouthFormData => ({
+export const fakeYouthFormData = (isUnlistedSchool = false): YouthFormData => ({
   first_name: faker.name.findName(),
   last_name: faker.name.findName(),
   social_security_number: FinnishSSN.createWithAge(
@@ -98,8 +100,8 @@ export const fakeYouthFormData = (): YouthFormData => ({
   ),
   postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
   selectedSchool: { name: faker.random.arrayElement(fakeSchools) },
-  unlistedSchool: faker.commerce.department(),
-  is_unlisted_school: faker.datatype.boolean(),
+  unlistedSchool: isUnlistedSchool ? faker.commerce.department() : undefined,
+  is_unlisted_school: isUnlistedSchool,
   phone_number: faker.phone.phoneNumber('+358#########'),
   email: faker.internet.email(),
   termsAndConditions: true,
@@ -107,3 +109,22 @@ export const fakeYouthFormData = (): YouthFormData => ({
 
 export const fakeYouthApplication = (language?: Language): YouthApplication =>
   convertFormDataToApplication(fakeYouthFormData(), language);
+
+type Options = { activated?: boolean; isUnlistedSchool?: boolean };
+
+export const fakeCreatedYouthApplication = (
+  options?: Options
+): CreatedYouthApplication => {
+  const { activated, isUnlistedSchool } = {
+    activated: true,
+    isUnlistedSchool: false,
+    ...options,
+  };
+  return {
+    id: faker.datatype.uuid(),
+    receipt_confirmed_at: activated
+      ? convertToBackendDateFormat(faker.date.past())
+      : undefined,
+    ...convertFormDataToApplication(fakeYouthFormData(isUnlistedSchool)),
+  };
+};

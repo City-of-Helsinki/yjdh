@@ -3,15 +3,19 @@ from applications.api.v1.serializers import (
     AttachmentSerializer,
     HandlerApplicationSerializer,
 )
-from applications.enums import ApplicationStatus
-from applications.models import Application
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.models import Application, ApplicationBatch
+from applications.services.applications_csv_report import ApplicationsCsvService
 from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
-from django.db.models import Count, Q
-from django.http import FileResponse
+from django.db import transaction
+from django.db.models import Count, Max, Q
+from django.http import FileResponse, HttpResponse
+from django.utils import timezone
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-from django_filters import rest_framework as filters
+from django_filters import DateFromToRangeFilter, rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from messages.models import MessageType
@@ -51,10 +55,39 @@ class ApplicantApplicationFilter(BaseApplicationFilter):
 
 
 class HandlerApplicationFilter(BaseApplicationFilter):
+
+    # the date when application was last set to either REJECTED or ACCEPTED status
+    date_handled = DateFromToRangeFilter(method="filter_date_handled")
+
+    HANDLED_STATUSES = [ApplicationStatus.REJECTED, ApplicationStatus.ACCEPTED]
+
+    def filter_date_handled(self, queryset, name, value):
+        assert value.step is None, "Should not happen"
+        if value.start and value.stop:
+            filter_kw = {"date_handled__range": (value.start, value.stop)}
+        elif value.start:
+            filter_kw = {"date_handled__gte": value.start}
+        elif value.stop:
+            filter_kw = {"date_handled__lte": value.stop}
+        else:
+            # no filtering, so skip the annotation query
+            return queryset
+        queryset = (
+            queryset.filter(status__in=self.HANDLED_STATUSES)
+            .annotate(
+                date_handled=Max(
+                    "log_entries__created_at",
+                    filter=Q(log_entries__to_status__in=self.HANDLED_STATUSES),
+                )
+            )
+            .filter(**filter_kw)
+        )
+        return queryset
+
     class Meta:
         model = Application
         fields = {
-            "batch": ["exact"],
+            "batch": ["exact", "isnull"],
             "archived": ["exact"],
             "employee__social_security_number": ["exact"],
             "company__business_id": ["exact"],
@@ -237,3 +270,58 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             .select_related("batch", "calculation")
             .prefetch_related("pay_subsidies", "training_compensations")
         )
+
+    @action(methods=["GET"], detail=False)
+    def export_csv(self, request):
+        queryset = self.get_queryset()
+        filtered_queryset = self.filter_queryset(queryset)
+        return self._csv_response(filtered_queryset)
+
+    CSV_ORDERING = "application_number"
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def export_new_accepted_applications(self, request):
+        return self._csv_response(
+            self._create_application_batch(ApplicationStatus.ACCEPTED)
+        )
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def export_new_rejected_applications(self, request):
+        return self._csv_response(
+            self._create_application_batch(ApplicationStatus.REJECTED)
+        )
+
+    def _create_application_batch(self, status):
+        """
+        Create a new application batch out of the existing applications in the given status
+        that are not yet assigned to a batch.
+        """
+        queryset = self.get_queryset().filter(status=status, batch__isnull=True)
+        status_map = {
+            ApplicationStatus.ACCEPTED: ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationStatus.REJECTED: ApplicationBatchStatus.DECIDED_REJECTED,
+        }
+        if status not in status_map:
+            assert False, "Internal error, should not happen"
+        application_ids = [application.pk for application in queryset]
+        if queryset:
+            batch = ApplicationBatch.objects.create(
+                proposal_for_decision=status_map[status]
+            )
+            queryset.update(batch=batch)
+        return self.get_queryset().filter(pk__in=application_ids)
+
+    def _csv_response(self, queryset):
+        csv_service = ApplicationsCsvService(queryset.order_by(self.CSV_ORDERING))
+        csv_file = csv_service.get_csv_string()
+        file_name = format_lazy(
+            _("Helsinki-lisän hakemukset viety {date}"),
+            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
+        )
+        response = HttpResponse(csv_file, content_type="text/csv")
+        response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
+            file_name=file_name
+        )
+        return response

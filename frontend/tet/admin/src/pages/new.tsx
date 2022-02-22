@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next';
 import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import BackButton from 'tet/admin/components/BackButton';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
@@ -25,10 +26,11 @@ const NewPostingPage: NextPage = () => {
 
   return (
     <Container>
+      <BackButton />
       <$HeadingContainer>
         <$Heading>{t('common:editor.newTitle')}</$Heading>
       </$HeadingContainer>
-      <Editor />
+      <Editor allowDelete={false} />
     </Container>
   );
 };

@@ -27,6 +27,7 @@ from applications.models import Application, ApplicationLogEntry, Attachment, Em
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation
+from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
@@ -140,10 +141,30 @@ def test_application_single_read_unauthorized(
     assert response.status_code == 404
 
 
-def test_application_single_read_as_applicant(api_client, application):
+@pytest.mark.parametrize(
+    "actual_status, visible_status",
+    [
+        (ApplicationStatus.DRAFT, ApplicationStatus.DRAFT),
+        (
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+            ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
+        ),
+        (ApplicationStatus.RECEIVED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.HANDLING, ApplicationStatus.HANDLING),
+        (ApplicationStatus.ACCEPTED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.REJECTED, ApplicationStatus.HANDLING),
+        (ApplicationStatus.CANCELLED, ApplicationStatus.CANCELLED),
+    ],
+)
+def test_application_single_read_as_applicant(
+    api_client, application, actual_status, visible_status
+):
+    application.status = actual_status
+    application.save()
     response = api_client.get(get_detail_url(application))
     assert response.data["ahjo_decision"] is None
     assert response.data["application_number"] is not None
+    assert response.data["status"] == visible_status
     assert "batch" not in response.data
     assert Decimal(response.data["duration_in_months_rounded"]) == duration_in_months(
         application.start_date, application.end_date, decimal_places=2
@@ -157,6 +178,17 @@ def test_application_single_read_as_handler(handler_api_client, application):
     assert response.data["application_number"] is not None
     assert "batch" in response.data
     assert response.status_code == 200
+
+
+def test_application_submitted_at(
+    api_client, application, received_application, handling_application
+):
+    response = api_client.get(get_detail_url(application))
+    assert response.data["submitted_at"] is None
+    response = api_client.get(get_detail_url(received_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
+    response = api_client.get(get_detail_url(handling_application))
+    assert response.data["submitted_at"].isoformat() == "2021-06-04T00:00:00+00:00"
 
 
 def test_application_template(api_client):
@@ -1007,6 +1039,7 @@ def test_application_status_change_as_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
+        fill_empty_calculation_fields(application)
     application.refresh_from_db()
     data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
@@ -1098,6 +1131,7 @@ def test_application_status_change_as_handler_auto_assign_handler(
         ApplicantApplicationStatusValidator.SUBMIT_APPLICATION_STATE_TRANSITIONS
     ):
         Calculation.objects.create_for_application(application)
+        fill_empty_calculation_fields(application)
     data = HandlerApplicationSerializer(application).data
     data["status"] = to_status
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application

@@ -13,11 +13,13 @@ import { $ViewField, $ViewFieldBold } from '../../Application.sc';
 
 export interface EmployeeViewProps {
   data: Application;
+  isReadOnly?: boolean;
   handleStepChange: (step: number) => void;
 }
 
 const EmployeeView: React.FC<EmployeeViewProps> = ({
   data,
+  isReadOnly,
   handleStepChange,
 }) => {
   const theme = useTheme();
@@ -28,17 +30,19 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
       <SummarySection
         header={t(`${translationsBase}.employee.heading1Short`)}
         action={
-          <Button
-            theme="black"
-            css={`
-              margin-top: ${theme.spacing.s};
-            `}
-            onClick={() => handleStepChange(2)}
-            variant="supplementary"
-            iconLeft={<IconPen />}
-          >
-            {t(`common:applications.actions.edit`)}
-          </Button>
+          !isReadOnly && (
+            <Button
+              theme="black"
+              css={`
+                margin-top: ${theme.spacing.s};
+              `}
+              onClick={() => handleStepChange(2)}
+              variant="supplementary"
+              iconLeft={<IconPen />}
+            >
+              {t(`common:applications.actions.edit`)}
+            </Button>
+          )
         }
         withoutDivider
       >

@@ -127,6 +127,13 @@ class ReceivedApplicationFactory(ApplicationFactory):
     )
 
     @factory.post_generation
+    def received_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.DRAFT,
+            to_status=ApplicationStatus.RECEIVED,
+        )
+
+    @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
         self.calculation = Calculation.objects.create_for_application(self)
         self.calculation.init_calculator()
@@ -135,6 +142,13 @@ class ReceivedApplicationFactory(ApplicationFactory):
 
 class HandlingApplicationFactory(ReceivedApplicationFactory):
     status = ApplicationStatus.HANDLING
+
+    @factory.post_generation
+    def handling_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.RECEIVED,
+            to_status=ApplicationStatus.HANDLING,
+        )
 
     @factory.post_generation
     def calculation(self, created, extracted, **kwargs):
@@ -148,6 +162,11 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         )  # so that recalculation succeeds even in subclasses
         self.calculation = Calculation.objects.create_for_application(self)
         self.save()
+        self.calculation.start_date = self.start_date
+        self.calculation.end_date = self.end_date
+        self.calculation.state_aid_max_percentage = 50
+        self.calculation.handler = HandlerFactory()
+        self.calculation.save()
         PaySubsidyFactory(
             application=self,
             start_date=self.calculation.start_date,
@@ -155,14 +174,19 @@ class HandlingApplicationFactory(ReceivedApplicationFactory):
         )
         self.calculation.calculate()
         self.status = previous_status
-        self.calculation.handler = HandlerFactory()
-        self.calculation.save()
         self.save()
         assert len(self.ahjo_rows) == 1
 
 
 class DecidedApplicationFactory(HandlingApplicationFactory):
     status = ApplicationStatus.ACCEPTED
+
+    @factory.post_generation
+    def handling_log_event(self, created, extracted, **kwargs):
+        self.log_entries.create(
+            from_status=ApplicationStatus.HANDLING,
+            to_status=self.status,
+        )
 
 
 class EmployeeFactory(factory.django.DjangoModelFactory):

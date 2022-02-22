@@ -8,8 +8,6 @@ import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import { TetEvent } from 'tet/admin/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
-import Container from 'shared/components/container/Container';
-import BackButton from 'tet/admin/components/BackButton';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 
@@ -23,22 +21,11 @@ const CopyStaticPage: NextPage = () => {
     return <PageLoadingSpinner />;
   }
 
-  let content;
-
   if (data) {
-    content = <EditById title={t('common:editor.copyTitle')} data={{ ...eventToTetPosting(data), id: null }} />;
+    return <EditById title={t('common:editor.copyTitle')} data={{ ...eventToTetPosting(data), id: null }} />;
   } else {
-    content = <PageNotFound />;
+    return <PageNotFound />;
   }
-
-  return (
-    <>
-      <Container>
-        <BackButton />
-        {content}
-      </Container>
-    </>
-  );
 };
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');

@@ -26,10 +26,16 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
   const date =
     posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
-  const address = `${posting.location.name}, ${posting.location.street_address}, ${posting.location.postal_code}, ${posting.location.city}`;
+  const street_address = posting.location.street_address
+    ? `, ${posting.location.street_address}`
+    : '';
+  const postal_code = posting.location.postal_code
+    ? `, ${posting.location.postal_code}`
+    : '';
+  const city = posting.location.city ? `, ${posting.location.city}` : '';
+  const address = posting.location.name + street_address + postal_code + city;
 
   const keywordList = (list: string[], color: string) => {
-    //TODO use different color for the lists
     return (
       <>
         {list.map((keyword: string) => (

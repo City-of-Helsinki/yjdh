@@ -5,6 +5,8 @@ import { IdObject } from 'tet/admin/types/linkedevents';
 // TODO replacing these values with real data source names should be enough when they're available in LinkedEvents
 export const workMethodDataSource = 'helmet';
 export const workFeaturesDataSource = 'kulke';
+// By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)
+export const keywordsDataSource = process.env.NEXT_PUBLIC_KEYWORDS_DATA_SOURCE || 'yso';
 
 type Keyword = IdObject & {
   name: {
@@ -53,36 +55,31 @@ async function query<T>(
   }
 }
 
-const keywordToOptionType = (keyword: Keyword): OptionType => ({
+export const keywordToOptionType = (keyword: Keyword): OptionType => ({
   label: keyword.name.fi,
   name: keyword.name.fi,
   value: keyword['@id'],
 });
 
-export const getWorkMethods = async (): Promise<OptionType[]> => {
-  const keywords = await query<Keyword>(linkedEvents, '/v1/keyword/', {
+export const getWorkMethods = (): Promise<Keyword[]> =>
+  query<Keyword>(linkedEvents, '/v1/keyword/', {
     show_all_keywords: 'true',
     data_source: workMethodDataSource,
     page_size: 3, // TODO omit when the real data source is created
   });
-  return keywords.map((k) => keywordToOptionType(k));
-};
 
-export const getWorkFeatures = async (): Promise<OptionType[]> => {
-  const keywords = await query<Keyword>(linkedEvents, '/v1/keyword/', {
+export const getWorkFeatures = (): Promise<Keyword[]> =>
+  query<Keyword>(linkedEvents, '/v1/keyword/', {
     show_all_keywords: 'true',
     data_source: workFeaturesDataSource,
     page_size: 9, // TODO omit when the real data source is created
   });
-  return keywords.map((k) => keywordToOptionType(k));
-};
 
-export const getWorkKeywords = async (search: string): Promise<OptionType[]> => {
-  const keywords = await query<Keyword>(linkedEvents, '/v1/keyword/', {
+export const getWorkKeywords = (search: string): Promise<Keyword[]> =>
+  query<Keyword>(linkedEvents, '/v1/keyword/', {
     free_text: search,
+    data_source: keywordsDataSource,
   });
-  return keywords.map((k) => keywordToOptionType(k));
-};
 
 export const getAddressList = (search: string): Promise<Place[]> =>
   query<Place>(linkedEvents, '/v1/place/', {

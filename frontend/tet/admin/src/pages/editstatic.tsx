@@ -9,8 +9,6 @@ import { TetEvent } from 'tet/admin/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { useQuery } from 'react-query';
-import BackButton from 'tet/admin/components/BackButton';
-import Container from 'shared/components/container/Container';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 
 const EditStaticPage: NextPage = () => {
@@ -23,22 +21,11 @@ const EditStaticPage: NextPage = () => {
     return <PageLoadingSpinner />;
   }
 
-  let content;
-
   if (data) {
-    content = <EditById title={t('common:editor.copyTitle')} data={{ ...eventToTetPosting(data), id: null }} />;
+    return <EditById title={t('common:editor.editTitle')} data={{ ...eventToTetPosting(data), id: null }} />;
   } else {
-    content = <PageNotFound />;
+    return <PageNotFound />;
   }
-
-  return (
-    <>
-      <Container>
-        <BackButton />
-        {content}
-      </Container>
-    </>
-  );
 };
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');

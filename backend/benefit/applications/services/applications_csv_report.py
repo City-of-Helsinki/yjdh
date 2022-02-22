@@ -176,17 +176,21 @@ class ApplicationsCsvService(CsvExportBase):
             CsvDefaultColumn(
                 "Manuaalinen syöttö", "calculation.override_monthly_benefit_amount"
             ),
-            CsvColumn(
+            CsvDefaultColumn(
                 "Manuaalinen syöttö kommentti",
                 "calculation.override_monthly_benefit_amount_comment",
             ),
-            CsvColumn(
+            CsvDefaultColumn(
                 "Myönnetään de minimis -tukena?",
                 "calculation.granted_as_de_minimis_aid",
                 format_bool,
+                default_value=None,
             ),
-            CsvColumn(
-                "Kohderyhmätarkistus", "calculation.target_group_check", format_bool
+            CsvDefaultColumn(
+                "Kohderyhmätarkistus",
+                "calculation.target_group_check",
+                format_bool,
+                default_value=None,
             ),
             CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),
             CsvDefaultColumn("Päättäjän nimi", "batch.decision_maker_name"),
@@ -300,7 +304,7 @@ class ApplicationsCsvService(CsvExportBase):
         if self.get_applications():
             return super().get_csv_lines()
         else:
-            header_row = [self._get_header_row()]
+            header_row = self._get_header_row()
             return [
                 header_row,
                 ["Ei löytynyt ehdot täyttäviä hakemuksia"]

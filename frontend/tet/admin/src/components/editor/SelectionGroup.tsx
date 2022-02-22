@@ -10,9 +10,10 @@ type Props = {
   label: string;
   options: OptionType[];
   required: boolean;
+  rules?: () => true | string;
 };
 
-const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required }) => {
+const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, rules }) => {
   const { control, setValue, getValues, clearErrors } = useFormContext<TetPosting>();
   const checkboxChangeHandler = (option: OptionType) => {
     const values = getValues(fieldId);
@@ -35,6 +36,9 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required }) 
     <Controller
       name={fieldId}
       control={control}
+      rules={{
+        validate: rules,
+      }}
       render={({ field: { ref, value, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
         <HdsSelectionGroup label={label} errorText={error && error.message ? error.message : ''} required={required}>
           {options.map((option) => (
