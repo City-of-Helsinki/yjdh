@@ -4,8 +4,8 @@ import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { CustomData, LocalizedObject, TetEvent } from 'tet/youth/linkedevents';
 import { useRouter } from 'next/router';
-import Keywords from 'tet/youth/components/Keywords';
-import PlaceView from 'tet/youth/components/PlaceView';
+import Keywords from 'tet/youth/eventDataPage/Keywords';
+import PlaceView from 'tet/youth/eventDataPage/PlaceView';
 
 const getLocalizedString = (obj: LocalizedObject): string => obj.fi;
 
@@ -13,7 +13,7 @@ type Props = {
   id: string;
 };
 
-const EventPage: React.FC<Props> = ({ id }) => {
+const EventDataPage: React.FC<Props> = ({ id }) => {
   const { isLoading, data, error } = useQuery<TetEvent>(BackendEndpoint.EVENT + id);
   const router = useRouter();
 
@@ -71,4 +71,4 @@ const EventPage: React.FC<Props> = ({ id }) => {
   );
 };
 
-export default EventPage;
+export default EventDataPage;
