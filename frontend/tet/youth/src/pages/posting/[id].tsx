@@ -23,7 +23,7 @@ export async function getStaticPaths(): Promise<{ paths: never[]; fallback: bool
 
 export const getStaticProps = async () => ({
   props: {
-    ...(await serverSideTranslations('fi', 'common')),
+    ...(await serverSideTranslations('fi', ['common'])),
   },
 });
 
