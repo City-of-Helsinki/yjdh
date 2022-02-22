@@ -16,7 +16,7 @@ import {
   $ContactInfo,
 } from 'tet-shared//components/posting/postingHero/PostingHero.sc';
 import { useTranslation } from 'next-i18next';
-import { IconLocation, Button, Tag } from 'hds-react';
+import { IconLocation, Tag } from 'hds-react';
 
 type Props = {
   posting: TetData;

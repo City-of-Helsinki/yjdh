@@ -9,6 +9,9 @@ import { TetEvent } from 'tet/admin/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { useQuery } from 'react-query';
+import BackButton from 'tet/admin/components/BackButton';
+import Container from 'shared/components/container/Container';
+import PageNotFound from 'shared/components/pages/PageNotFound';
 
 const EditStaticPage: NextPage = () => {
   const { t } = useTranslation();
@@ -20,11 +23,22 @@ const EditStaticPage: NextPage = () => {
     return <PageLoadingSpinner />;
   }
 
+  let content;
+
   if (data) {
-    return <EditById title={t('common:editor.editTitle')} data={eventToTetPosting(data)} />;
+    content = <EditById title={t('common:editor.copyTitle')} data={{ ...eventToTetPosting(data), id: null }} />;
   } else {
-    return <>Not found. </>;
+    content = <PageNotFound />;
   }
+
+  return (
+    <>
+      <Container>
+        <BackButton />
+        {content}
+      </Container>
+    </>
+  );
 };
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
