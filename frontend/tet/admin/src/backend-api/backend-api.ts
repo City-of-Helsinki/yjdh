@@ -2,7 +2,7 @@
 const mockFlag = process.env.NEXT_PUBLIC_MOCK_FLAG === '1';
 
 export const BackendEndpoint = {
-  TET_POSTINGS: '/tet/postings',
+  TET_POSTINGS: '/v1/events/',
   LOGIN: mockFlag ? '/oidc/authenticate/' : '/oauth2/login',
   LOGOUT: mockFlag ? '/oidc/logout/' : '/oauth2/logout',
   USER: mockFlag ? '/oidc/userinfo/' : '/TODO/what', // TODO do we need to implement userinfo like in oidc?

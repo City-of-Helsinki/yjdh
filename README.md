@@ -13,7 +13,7 @@ YJDH-Kesäseteli service for employers to fulfill employee applications
 3. Run `yarn employer` or, if you want to rebuild, then `yarn employer --build`
   - The Frontend is now running at [localhost:3000](https://localhost:3000)
   - The backend is now running at [localhost:8000](https://localhost:8000)
-4. If services fail to get up, `yarn clean` might help.
+4. If services fail to get up, `yarn clean` or `docker system prune --all` might help.
 
 ## kesaseteli youth
 

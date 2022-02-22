@@ -65,9 +65,16 @@ class CalculationSerializer(serializers.ModelSerializer):
     CALCULATION_MAX_MONTHS = 24
 
     def _validate_date_range(self, start_date, end_date):
-        # validation is more relaxed as it's assumed that the handlers know what they're doing
-        if start_date + relativedelta(months=self.CALCULATION_MAX_MONTHS) <= end_date:
-            raise serializers.ValidationError({"end_date": _("Date range too large")})
+        # Only validate date range if both of them are set
+        if not (start_date is None and end_date is None):
+            # validation is more relaxed as it's assumed that the handlers know what they're doing
+            if (
+                start_date + relativedelta(months=self.CALCULATION_MAX_MONTHS)
+                <= end_date
+            ):
+                raise serializers.ValidationError(
+                    {"end_date": _("Date range too large")}
+                )
 
     def _validate_override_monthly_benefit_amount_comment(
         self, override_monthly_benefit_amount, override_monthly_benefit_amount_comment

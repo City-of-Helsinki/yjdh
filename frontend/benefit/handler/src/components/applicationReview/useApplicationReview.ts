@@ -1,14 +1,19 @@
+import AppContext from 'benefit/handler/context/AppContext';
 import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
-import { Application } from 'benefit/handler/types/application';
+import {
+  Application,
+  HandledAplication,
+} from 'benefit/handler/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
 
 type ExtendedComponentProps = {
   t: TFunction;
   application: Application;
+  handledApplication: HandledAplication | null;
   id: string | string[] | undefined;
   isError: boolean;
   isLoading: boolean;
@@ -17,6 +22,7 @@ type ExtendedComponentProps = {
 const useApplicationReview = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { handledApplication } = React.useContext(AppContext);
   const id = router?.query?.id?.toString() ?? '';
   const [isLoading, setIsLoading] = useState(true);
 
@@ -62,6 +68,7 @@ const useApplicationReview = (): ExtendedComponentProps => {
     t,
     id,
     application,
+    handledApplication,
     isLoading,
     isError: Boolean(id && applicationDataError),
   };

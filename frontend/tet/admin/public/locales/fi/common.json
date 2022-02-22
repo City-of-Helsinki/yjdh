@@ -15,7 +15,7 @@
   },
   "404Page": {
     "pageNotFoundLabel": "Sivua ei löytynyt",
-    "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> etusivun kautta takaisin hakemukseen."
+    "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> takaisin etusivulle."
   },
   "loginPage": {
     "logoutMessageLabel": "Olet kirjautunut ulos",
@@ -56,7 +56,9 @@
     "employerInfo": {
       "header": "Työpaikan tiedot",
       "addressNeededLabel": "Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "Toimipiste tai osasto"
+      "departmentLabel": "Toimipiste tai osasto",
+			"address": "Osoite",
+			"streetAddress": "Katuosoite"
     },
     "posting": {
       "header": "Työharjoittelupaikan tiedot",
@@ -81,6 +83,18 @@
 				"phone": "Syötä oikeassa muodossa",
 				"name": "Syötä nimi sallitussa muodossa"
 			}
+    },
+		"classification": {
+			"classifications": "Luokittelut",
+			"workMethod": "Työtapa",
+			"workFeature": "Työn ominaisuudet",
+			"keywords": "Avainsanat",
+			"search": "Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "Poista valinta"
     }
   },
   "footer": {

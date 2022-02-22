@@ -12,18 +12,14 @@ const EditorErrorNotification: React.FC = () => {
 
   const noTetErrors = Object.keys(errors).length === 0;
 
-  if (isValid || !isSubmitted || noTetErrors) {
+  if (isValid || noTetErrors) {
     return null;
   }
 
   // TODO display all errors
   console.dir(errors);
 
-  return (
-    <ErrorSummary label={t(`common:editor.notificationTitle`)} autofocus>
-      {Object.keys(errors).join(', ')}
-    </ErrorSummary>
-  );
+  return <ErrorSummary label={t(`common:editor.notificationTitle`)} autofocus></ErrorSummary>;
 };
 
 export default EditorErrorNotification;

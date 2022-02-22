@@ -48,8 +48,9 @@ export enum APPLICATION_STATUSES {
   DRAFT = 'draft',
   INFO_REQUIRED = 'additional_information_needed',
   RECEIVED = 'received',
-  APPROVED = 'approved',
+  ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+  CANCELLED = 'cancelled',
   HANDLING = 'handling',
 }
 
@@ -120,8 +121,11 @@ export enum CALCULATION_SALARY_KEYS {
   VACATION_MONEY = 'vacationMoney',
   STATE_AID_MAX_PERCENTAGE = 'stateAidMaxPercentage',
   PAY_SUBSIDY_PERCENT = 'paySubsidyPercent',
-  PAY_SUBSIDY_START_DATE = 'paySubsidyStartDate',
-  PAY_SUBSIDY_END_DATE = 'paySubsidyEndDate',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT = 'overrideMonthlyBenefitAmount',
+  OVERRIDE_MONTHLY_BENEFIT_AMOUNT_COMMENT = 'overrideMonthlyBenefitAmountComment',
+  // eslint-disable-next-line no-secrets/no-secrets
+  WORK_TIME_PERCENT = 'workTimePercent',
+  PAY_SUBSIDIES = 'paySubsidies',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];

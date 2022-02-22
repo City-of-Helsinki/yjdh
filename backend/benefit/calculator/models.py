@@ -87,12 +87,18 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         decimal_places=2,
         max_digits=7,
     )
-    start_date = models.DateField(verbose_name=_("benefit start from date"))
-    end_date = models.DateField(verbose_name=_("benefit end date"))
+    start_date = models.DateField(
+        verbose_name=_("benefit start from date"), blank=True, null=True
+    )
+    end_date = models.DateField(
+        verbose_name=_("benefit end date"), blank=True, null=True
+    )
     state_aid_max_percentage = models.IntegerField(
         verbose_name=_("State aid maximum %"),
         choices=STATE_AID_MAX_PERCENTAGE_CHOICES,
-        default=STATE_AID_MAX_PERCENTAGE_CHOICES[0][0],
+        default=None,
+        blank=True,
+        null=True,
     )
 
     calculated_benefit_amount = models.DecimalField(
@@ -121,6 +127,18 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         blank=True,
     )
 
+    @property
+    def ahjo_rows(self):
+        rows = SalaryBenefitSubTotalRow.objects.filter(
+            calculation=self, row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+        )
+
+        if rows.count() > 0:
+            return rows
+        return SalaryBenefitTotalRow.objects.filter(
+            calculation=self, row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
+        )
+
     history = HistoricalRecords(table_name="bf_calculator_calculator_history")
 
     copy_fields_from_application = {
@@ -130,19 +148,24 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         "start_date": "start_date",
         "end_date": "end_date",
     }
+    null_fields_when_reset_values = ["start_date", "end_date"]
 
     def reset_values(self):
         # Reset the source data for calculation.
         # 1. Fill the fields of this Calculation based on the data that the applicant
         #    entered in the Application. The handlers are supposed to edit the values
         #    in Calculation, so the data entered by applicant stays intact.
-        # 2. reset pay subsidy objects according to the applicant's input
+        # 2. reset pay subsidy objects according to the applicant's input. One exception,
+        # default value for start_time and end_time will be null
+
         for (
             source_field_name,
             target_field_name,
         ) in self.copy_fields_from_application.items():
             value = nested_getattr(self.application, source_field_name)
-            if value in [None, ""]:
+            if target_field_name in self.null_fields_when_reset_values:
+                value = None
+            elif value in [None, ""]:
                 raise BenefitAPIException(_("Incomplete application"))
             setattr(self, target_field_name, value)
         PaySubsidy.reset_pay_subsidies(self.application)
@@ -163,7 +186,12 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
         return self.calculator
 
     def calculate(self):
-        self.init_calculator().calculate()
+        try:
+            return self.init_calculator().calculate()
+        finally:
+            # Do not leave the calculator instance around. If parameters are changed,
+            # a different calculator may be needed in the next run
+            self.calculator = None
 
     def __str__(self):
         return f"Calculation for {self.application}"
@@ -190,8 +218,12 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
     )
     # ordering of the pay subsidies within application.
     ordering = models.IntegerField()
-    start_date = models.DateField(verbose_name=_("Pay subsidy start date"))
-    end_date = models.DateField(verbose_name=_("Pay subsidy end date"))
+    start_date = models.DateField(
+        verbose_name=_("Pay subsidy start date"), blank=True, null=True
+    )
+    end_date = models.DateField(
+        verbose_name=_("Pay subsidy end date"), blank=True, null=True
+    )
     pay_subsidy_percent = models.IntegerField(
         verbose_name=_("Pay subsidy percent"),
         choices=PAY_SUBSIDY_PERCENT_CHOICES,
@@ -273,8 +305,8 @@ class PaySubsidy(UUIDModel, TimeStampedModel, DurationMixin):
         ):
             if percent is not None:
                 application.pay_subsidies.create(
-                    start_date=application.start_date,
-                    end_date=application.end_date,
+                    start_date=None,
+                    end_date=None,
                     pay_subsidy_percent=percent,
                     ordering=ordering,
                 )
@@ -650,7 +682,25 @@ class SalaryBenefitMonthlyRow(CalculationRow):
         proxy = True
 
 
-class SalaryBenefitTotalRow(CalculationRow):
+class TotalRowMixin:
+    @property
+    def monthly_amount(self):
+        # For each total row, there needs to be a row that defines the monthly amount
+        row = (
+            self.calculation.rows.filter(
+                ordering__lt=self.ordering,
+                row_type=RowType.HELSINKI_BENEFIT_MONTHLY_EUR,
+            )
+            .order_by("-ordering")
+            .first()
+        )
+        assert (
+            row is not None
+        ), "Application logic error - misconstructed application rows"
+        return row.amount
+
+
+class SalaryBenefitTotalRow(CalculationRow, TotalRowMixin):
     """
     SalaryBenefitTotalRow for the simple cases where
     * there is a single pay subsidy decision for the duration of the benefit
@@ -673,7 +723,7 @@ class SalaryBenefitTotalRow(CalculationRow):
         proxy = True
 
 
-class SalaryBenefitSubTotalRow(CalculationRow):
+class SalaryBenefitSubTotalRow(CalculationRow, TotalRowMixin):
     proxy_row_type = RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
     description_fi_template = "Yhteensä ajanjaksolta"
 
@@ -722,7 +772,7 @@ class EmployeeBenefitMonthlyRow(CalculationRow):
         proxy = True
 
 
-class EmployeeBenefitTotalRow(CalculationRow):
+class EmployeeBenefitTotalRow(CalculationRow, TotalRowMixin):
     """
     SalaryBenefitTotalRow for the simple cases where
     * there is a single pay subsidy decision for the duration of the benefit

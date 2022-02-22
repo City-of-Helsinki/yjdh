@@ -10,7 +10,7 @@ import PhoneInput from 'tet/admin/components/editor/PhoneInput';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 
-const ContactPerson: React.FC<EditorSectionProps> = ({ initialValue }) => {
+const ContactPerson: React.FC = () => {
   const { t } = useTranslation();
   const { required, name, email, phone } = useValidationRules();
   const theme = useTheme();

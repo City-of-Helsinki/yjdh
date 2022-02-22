@@ -1,7 +1,7 @@
-import CreatedYouthApplication from 'kesaseteli/youth/types/created-youth-application';
-import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
-import { convertFormDataToApplication } from 'kesaseteli/youth/utils/youth-form-data.utils';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
+import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
+import { convertFormDataToApplication } from 'kesaseteli-shared/utils/youth-form-data.utils';
 import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useGetLanguage from 'shared/hooks/useGetLanguage';

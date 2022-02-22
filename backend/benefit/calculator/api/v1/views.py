@@ -3,7 +3,9 @@ from calculator.models import PreviousBenefit
 from common.permissions import BFIsHandler
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from rest_framework import filters as drf_filters, viewsets
+from rest_framework import filters as drf_filters
+
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class PreviousBenefitFilter(filters.FilterSet):
@@ -20,7 +22,7 @@ class PreviousBenefitFilter(filters.FilterSet):
 @extend_schema(
     description="API for create/read/update/delete operations on PreviousBenefit objects"
 )
-class PreviousBenefitViewSet(viewsets.ModelViewSet):
+class PreviousBenefitViewSet(AuditLoggingModelViewSet):
     queryset = PreviousBenefit.objects.all()
     serializer_class = PreviousBenefitSerializer
     permission_classes = [BFIsHandler]
