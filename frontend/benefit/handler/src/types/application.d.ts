@@ -205,6 +205,13 @@ export type PaySubsidyData = {
   duration_in_months_rounded: string;
 };
 
+export type TrainingCompensationData = {
+  id: string;
+  start_date: string;
+  end_date: string;
+  monthly_amount: string;
+};
+
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
@@ -262,6 +269,7 @@ export type ApplicationData = {
   duration_in_months_rounded?: string;
   log_entry_comment?: string;
   granted_as_de_minimis_aid?: boolean;
+  training_compensations: TrainingCompensationData[];
 };
 
 export type ApplicationListItemData = {
@@ -342,6 +350,13 @@ export type PaySubsidy = {
   durationInMonthsRounded: string;
 };
 
+export type TrainingCompensation = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  monthlyAmount: string;
+};
+
 export type HandlerDetails = {
   id?: string;
   firstName: string;
@@ -378,6 +393,7 @@ export type CalculationFormProps = {
   overrideMonthlyBenefitAmount?: string | null;
   overrideMonthlyBenefitAmountComment?: string;
   paySubsidies?: PaySubsidy[];
+  trainingCompensations?: TrainingCompensation[];
 } & CalculationCommon;
 
 export type Application = {
@@ -402,6 +418,7 @@ export type Application = {
   durationInMonthsRounded?: string;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
+  trainingCompensations?: TrainingCompensation[];
 } & Step1 &
   Step2;
 
