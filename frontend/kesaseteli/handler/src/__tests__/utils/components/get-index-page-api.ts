@@ -67,9 +67,9 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
       ).not.toBeInTheDocument();
     },
 
-    // eslint-disable-next-line consistent-return
     statusNotificationIsPresent: async (
       status: typeof YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED[number]
+      // eslint-disable-next-line consistent-return
     ): Promise<HTMLElement | undefined> => {
       switch (status) {
         case 'submitted':
