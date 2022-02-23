@@ -54,7 +54,7 @@ jobs:
       matrix:
 #        Disable te-empl and te-yout due to YJDH-370
 #        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
-        service: [ 'te-bknd', 'te-admn' ]
+        service: [ 'te-bknd', 'te-admn', 'te-yout' ]
         include:
           - service: te-bknd
             context: ./backend
@@ -64,10 +64,10 @@ jobs:
 #            context: ./frontend
 #            dockerfile: ./frontend/tet/employer/Dockerfile
 #            port: 3000
-#          - service: te-yout
-#            context: ./frontend
-#            dockerfile: ./frontend/tet/youth/Dockerfile
-#            port: 3000
+          - service: te-yout
+            context: ./frontend
+            dockerfile: ./frontend/tet/youth/Dockerfile
+            port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
@@ -98,7 +98,7 @@ jobs:
       matrix:
 #        Disable te-empl and te-yout due to YJDH-370
 #        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
-        service: [ 'te-bknd', 'te-admn' ]
+        service: [ 'te-bknd', 'te-admn', 'te-yout' ]
         include:
           - service: te-bknd
             context: ./backend
@@ -110,11 +110,11 @@ jobs:
 #            dockerfile: ./frontend/tet/employer/Dockerfile
 #            database: false
 #            port: 3000
-#          - service: te-yout
-#            context: ./frontend
-#            dockerfile: ./frontend/tet/youth/Dockerfile
-#            database: false
-#            port: 3000
+          - service: te-yout
+            context: ./frontend
+            dockerfile: ./frontend/tet/youth/Dockerfile
+            database: false
+            port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
