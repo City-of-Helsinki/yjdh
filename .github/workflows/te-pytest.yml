@@ -12,6 +12,7 @@ on:
 
 env:
   DEBUG: 1
+  OIDC_OP_BASE_URL: https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect
 
 jobs:
   pytest:
