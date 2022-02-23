@@ -276,6 +276,7 @@
       "manualInput": "Manuaalinen laskelma",
       "apprenticeshipCompensation": "Oppisopimuksesta maksettava korvaus",
       "apprenticeshipPeriod": "Koulutuskorvaus myönnetty ajalle",
+      "apprenticeshipPeriodWithDiff": "Koulutuskorvaus myönnetty ajalle ({{period}} kk)",
       "add": "Liisä",
       "remove": "Poista"
     }

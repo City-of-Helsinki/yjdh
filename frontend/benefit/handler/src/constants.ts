@@ -126,6 +126,8 @@ export enum CALCULATION_SALARY_KEYS {
   // eslint-disable-next-line no-secrets/no-secrets
   WORK_TIME_PERCENT = 'workTimePercent',
   PAY_SUBSIDIES = 'paySubsidies',
+  TRAINING_COMPENSATIONS = 'trainingCompensations',
+  MONTHLY_AMOUNT = 'monthlyAmount',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];

@@ -174,7 +174,7 @@ export const diffMonths = (
 export const getCorrectEndDate = (
   startDate: string,
   endDate: string
-): string | undefined | Date => {
+): string => {
   if ((parseDate(startDate) ?? 0) > (parseDate(endDate) ?? 0)) return startDate;
   return endDate;
 };
