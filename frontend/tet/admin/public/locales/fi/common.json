@@ -92,7 +92,7 @@
 				"email": "Syötä sähköposti oikeassa muodossa",
 				"max": "Maksimimerkkimäärä ylittyy",
 				"phone": "Syötä oikeassa muodossa",
-				"name": "Syötä nimi sallitussa muodossa"
+				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia"
 			}
     },
 		"classification": {
@@ -145,6 +145,7 @@
     }
   },
   "upload": {
+		"successMessage": "Tiedot tallennettiin",
     "isUploading": "Lähetetään...",
     "errorTitle": "Lähetys epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."

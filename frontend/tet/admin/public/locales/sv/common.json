@@ -92,7 +92,7 @@
 				"email": "SV Syötä sähköposti oikeassa muodossa",
 				"max": "SV Maksimimerkkimäärä ylittyy",
 				"phone": "SV Syötä oikeassa muodossa",
-				"name": "SV Syötä nimi sallitussa muodossa"
+				"name": "SV Syötä nimi ilman erikoismerkkejä ja kirjaimia"
 			}
     },
 		"classification": {
@@ -145,6 +145,7 @@
     }
   },
   "upload": {
+		"successMessage": "SV Tiedot tallennettiin",
     "isUploading": "Sänder...",
     "errorTitle": "Uppladdningen av filen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."

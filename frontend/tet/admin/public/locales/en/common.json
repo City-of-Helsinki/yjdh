@@ -92,7 +92,7 @@
 				"email": "ENG Syötä sähköposti oikeassa muodossa",
 				"max": "ENG Maksimimerkkimäärä ylittyy",
 				"phone": "ENG Syötä oikeassa muodossa",
-				"name": "ENG Syötä nimi sallitussa muodossa"
+				"name": "ENG Syötä nimi ilman erikoismerkkejä ja kirjaimia"
 			}
     },
 		"classification": {
@@ -145,6 +145,7 @@
     }
   },
   "upload": {
+		"successMessage": "ENG Tiedot tallennettiin",
     "isUploading": "Sending...",
     "errorTitle": "File upload failed",
     "errorMessage": "Something went wrong. Please try again later."
