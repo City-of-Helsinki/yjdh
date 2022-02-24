@@ -21,7 +21,7 @@ from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUI
 
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
-    ApplicationStatus,
+    EmployerApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
     HiredWithoutVoucherAssessment,
@@ -403,8 +403,8 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     status = models.CharField(
         max_length=64,
         verbose_name=_("status"),
-        choices=ApplicationStatus.choices,
-        default=ApplicationStatus.DRAFT,
+        choices=EmployerApplicationStatus.choices,
+        default=EmployerApplicationStatus.DRAFT,
     )
     street_address = models.CharField(
         max_length=256,

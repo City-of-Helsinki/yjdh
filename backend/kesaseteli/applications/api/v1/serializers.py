@@ -9,7 +9,7 @@ from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
 from applications.enums import (
-    ApplicationStatus,
+    EmployerApplicationStatus,
     AttachmentType,
     SummerVoucherExceptionReason,
 )
@@ -28,28 +28,28 @@ class ApplicationStatusValidator:
     requires_context = True
 
     APPLICATION_STATUS_TRANSITIONS = {
-        ApplicationStatus.DRAFT: (
-            ApplicationStatus.DELETED_BY_CUSTOMER,
-            ApplicationStatus.SUBMITTED,
+        EmployerApplicationStatus.DRAFT: (
+            EmployerApplicationStatus.DELETED_BY_CUSTOMER,
+            EmployerApplicationStatus.SUBMITTED,
         ),
-        ApplicationStatus.SUBMITTED: (
-            ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-            ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            ApplicationStatus.REJECTED,
-            ApplicationStatus.ACCEPTED,
+        EmployerApplicationStatus.SUBMITTED: (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.REJECTED,
+            EmployerApplicationStatus.ACCEPTED,
         ),
-        ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
-            ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED: (
+            EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.REJECTED,
         ),
-        ApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
-            ApplicationStatus.ACCEPTED,
-            ApplicationStatus.REJECTED,
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED: (
+            EmployerApplicationStatus.ACCEPTED,
+            EmployerApplicationStatus.REJECTED,
         ),
-        ApplicationStatus.ACCEPTED: (),
-        ApplicationStatus.REJECTED: (),
-        ApplicationStatus.DELETED_BY_CUSTOMER: (),
+        EmployerApplicationStatus.ACCEPTED: (),
+        EmployerApplicationStatus.REJECTED: (),
+        EmployerApplicationStatus.DELETED_BY_CUSTOMER: (),
     }
 
     def __call__(self, value, serializer_field):
@@ -69,7 +69,7 @@ class ApplicationStatusValidator:
                     )
                 )
         else:
-            if value != ApplicationStatus.DRAFT:
+            if value != EmployerApplicationStatus.DRAFT:
                 raise serializers.ValidationError(
                     _("Initial status of application must be draft")
                 )
@@ -94,8 +94,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
     MAX_ATTACHMENTS_PER_TYPE = 5
 
     ATTACHMENT_MODIFICATION_ALLOWED_STATUSES = (
-        ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
-        ApplicationStatus.DRAFT,
+        EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        EmployerApplicationStatus.DRAFT,
     )
 
     attachment_file_name = serializers.SerializerMethodField(
@@ -253,7 +253,7 @@ class EmployerSummerVoucherSerializer(serializers.ModelSerializer):
             self.parent.parent.initial_data.get("status") if self.parent.parent else ""
         )
 
-        if not status or status == ApplicationStatus.DRAFT:
+        if not status or status == EmployerApplicationStatus.DRAFT:
             # newly created applications are always DRAFT
             return
 
@@ -283,7 +283,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
         many=True, required=False, allow_null=True
     )
     status = serializers.ChoiceField(
-        choices=ApplicationStatus.choices,
+        choices=EmployerApplicationStatus.choices,
         validators=[ApplicationStatusValidator()],
         help_text=_("Status of the application, visible to the applicant"),
         required=False,
@@ -332,7 +332,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
     def get_submitted_at(self, obj):
         if (
-            hisory_entry := obj.history.filter(status=ApplicationStatus.SUBMITTED)
+            hisory_entry := obj.history.filter(status=EmployerApplicationStatus.SUBMITTED)
             .order_by("modified_at")
             .first()
         ):
@@ -383,7 +383,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
     ]
 
     def _validate_non_draft_required_fields(self, data):
-        if not data.get("status") or data["status"] == ApplicationStatus.DRAFT:
+        if not data.get("status") or data["status"] == EmployerApplicationStatus.DRAFT:
             # newly created applications are always DRAFT
             return
 

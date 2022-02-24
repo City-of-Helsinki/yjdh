@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 
-from applications.enums import ApplicationStatus
+from applications.enums import EmployerApplicationStatus
 from applications.exporters.excel_exporter import (
     export_applications_as_xlsx_output,
     get_xlsx_filename,
@@ -64,13 +64,13 @@ class ApplicationExcelDownloadView(TemplateView):
         The user will see a new xlsx file generated in the generated files list.
         """
         newest_submitted = EmployerSummerVoucher.history.filter(
-            id=OuterRef("id"), application__status=ApplicationStatus.SUBMITTED
+            id=OuterRef("id"), application__status=EmployerApplicationStatus.SUBMITTED
         ).order_by("modified_at")
         queryset = (
             EmployerSummerVoucher.objects.select_related(
                 "application", "application__company"
             )
-            .filter(is_exported=False, application__status=ApplicationStatus.SUBMITTED)
+            .filter(is_exported=False, application__status=EmployerApplicationStatus.SUBMITTED)
             .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
             .order_by("-submitted_at")
         )
@@ -90,7 +90,7 @@ class ApplicationExcelDownloadView(TemplateView):
         """
         start_of_year = date(date.today().year, 1, 1)
         newest_submitted = EmployerSummerVoucher.history.filter(
-            id=OuterRef("id"), application__status=ApplicationStatus.SUBMITTED
+            id=OuterRef("id"), application__status=EmployerApplicationStatus.SUBMITTED
         ).order_by("modified_at")
         queryset = (
             EmployerSummerVoucher.objects.select_related(
@@ -99,7 +99,7 @@ class ApplicationExcelDownloadView(TemplateView):
             .filter(
                 application__created_at__gte=start_of_year,
             )
-            .exclude(application__status=ApplicationStatus.DRAFT)
+            .exclude(application__status=EmployerApplicationStatus.DRAFT)
             .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
             .order_by("-submitted_at")
         )

@@ -7,7 +7,7 @@ from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
     EmployerSummerVoucherSerializer,
 )
-from applications.enums import ApplicationStatus
+from applications.enums import EmployerApplicationStatus
 from applications.models import EmployerApplication
 from common.tests.factories import ApplicationFactory, SummerVoucherFactory
 
@@ -62,17 +62,17 @@ def test_application_put_invalid_data(api_client, application):
 
 @pytest.mark.django_db
 def test_application_patch(api_client, application):
-    data = {"status": ApplicationStatus.SUBMITTED.value}
+    data = {"status": EmployerApplicationStatus.SUBMITTED.value}
     response = api_client.patch(
         get_detail_url(application),
         data,
     )
 
     assert response.status_code == 200
-    assert response.data["status"] == ApplicationStatus.SUBMITTED
+    assert response.data["status"] == EmployerApplicationStatus.SUBMITTED
 
     application.refresh_from_db()
-    assert application.status == ApplicationStatus.SUBMITTED
+    assert application.status == EmployerApplicationStatus.SUBMITTED
 
 
 @pytest.mark.django_db

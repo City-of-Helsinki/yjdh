@@ -5,7 +5,7 @@ from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
     EmployerSummerVoucherSerializer,
 )
-from applications.enums import ApplicationStatus, AttachmentType
+from applications.enums import EmployerApplicationStatus, AttachmentType
 from applications.models import School, validate_name, YouthApplication
 from applications.tests.test_applications_api import get_detail_url
 
@@ -85,20 +85,20 @@ def test_validate_name_with_invalid_unlisted_school(name):
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.SUBMITTED, 200),
+        (EmployerApplicationStatus.DRAFT, EmployerApplicationStatus.SUBMITTED, 200),
         # TODO: To be added after MVP:
         # (
-        #     ApplicationStatus.SUBMITTED,
-        #     ApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        #     EmployerApplicationStatus.SUBMITTED,
+        #     EmployerApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
         #     200,
         # ),
-        # (ApplicationStatus.SUBMITTED, ApplicationStatus.ACCEPTED, 200),
-        # (ApplicationStatus.SUBMITTED, ApplicationStatus.REJECTED, 200),
-        # (ApplicationStatus.SUBMITTED, ApplicationStatus.DELETED_BY_CUSTOMER, 200),
-        # (ApplicationStatus.SUBMITTED, ApplicationStatus.DRAFT, 400),
-        # (ApplicationStatus.ACCEPTED, ApplicationStatus.SUBMITTED, 400),
-        # (ApplicationStatus.DELETED_BY_CUSTOMER, ApplicationStatus.ACCEPTED, 400),
-        # (ApplicationStatus.REJECTED, ApplicationStatus.DRAFT, 400),
+        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.ACCEPTED, 200),
+        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.REJECTED, 200),
+        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.DELETED_BY_CUSTOMER, 200),
+        # (EmployerApplicationStatus.SUBMITTED, EmployerApplicationStatus.DRAFT, 400),
+        # (EmployerApplicationStatus.ACCEPTED, EmployerApplicationStatus.SUBMITTED, 400),
+        # (EmployerApplicationStatus.DELETED_BY_CUSTOMER, EmployerApplicationStatus.ACCEPTED, 400),
+        # (EmployerApplicationStatus.REJECTED, EmployerApplicationStatus.DRAFT, 400),
     ],
 )
 def test_application_status_change(
@@ -144,8 +144,8 @@ def test_application_status_change_with_missing_data(
     payslip_attachment,
     missing_field,
 ):
-    from_status = ApplicationStatus.DRAFT
-    to_status = ApplicationStatus.SUBMITTED
+    from_status = EmployerApplicationStatus.DRAFT
+    to_status = EmployerApplicationStatus.SUBMITTED
 
     application.status = from_status
     application.save()
@@ -182,8 +182,8 @@ def test_application_status_change_with_missing_summer_voucher_data(
     summer_voucher.summer_voucher_exception_reason = ""
     summer_voucher.save()
 
-    from_status = ApplicationStatus.DRAFT
-    to_status = ApplicationStatus.SUBMITTED
+    from_status = EmployerApplicationStatus.DRAFT
+    to_status = EmployerApplicationStatus.SUBMITTED
 
     application.status = from_status
     application.save()
@@ -217,8 +217,8 @@ def test_application_status_change_with_missing_attachments(
     payslip_attachment,
     missing_attachment,
 ):
-    from_status = ApplicationStatus.DRAFT
-    to_status = ApplicationStatus.SUBMITTED
+    from_status = EmployerApplicationStatus.DRAFT
+    to_status = EmployerApplicationStatus.SUBMITTED
 
     application.status = from_status
     application.save()
@@ -259,8 +259,8 @@ def test_separate_invoicer_fields_not_required_if_condition_false(
     employment_contract_attachment,
     payslip_attachment,
 ):
-    from_status = ApplicationStatus.DRAFT
-    to_status = ApplicationStatus.SUBMITTED
+    from_status = EmployerApplicationStatus.DRAFT
+    to_status = EmployerApplicationStatus.SUBMITTED
 
     application.status = from_status
     application.is_separate_invoicer = False
@@ -296,8 +296,8 @@ def test_separate_invoicer_fields_required_if_condition_true(
     payslip_attachment,
     missing_field,
 ):
-    from_status = ApplicationStatus.DRAFT
-    to_status = ApplicationStatus.SUBMITTED
+    from_status = EmployerApplicationStatus.DRAFT
+    to_status = EmployerApplicationStatus.SUBMITTED
 
     application.status = from_status
     application.is_separate_invoicer = True

@@ -34,7 +34,7 @@ from applications.api.v1.serializers import (
     SchoolSerializer,
     YouthApplicationSerializer,
 )
-from applications.enums import ApplicationStatus, YouthApplicationRejectedReason
+from applications.enums import EmployerApplicationStatus, YouthApplicationRejectedReason
 from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
@@ -231,7 +231,7 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         """
         Allow only 1 (DRAFT) application per user & company.
         """
-        if self.get_queryset().filter(status=ApplicationStatus.DRAFT).exists():
+        if self.get_queryset().filter(status=EmployerApplicationStatus.DRAFT).exists():
             raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
 

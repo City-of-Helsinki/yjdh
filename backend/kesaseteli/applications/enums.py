@@ -26,7 +26,7 @@ def get_supported_languages() -> Tuple[str]:
     return list(zip(*APPLICATION_LANGUAGE_CHOICES))[0]
 
 
-class ApplicationStatus(models.TextChoices):
+class EmployerApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")
     ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(

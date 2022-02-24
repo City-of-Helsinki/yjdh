@@ -4,7 +4,7 @@ from rest_framework.test import APIClient
 from shared.common.tests.conftest import *  # noqa
 from shared.common.tests.conftest import store_tokens_in_session
 
-from applications.enums import ApplicationStatus, AttachmentType
+from applications.enums import EmployerApplicationStatus, AttachmentType
 from common.tests.factories import (
     ActiveYouthApplicationFactory,
     ApplicationFactory,
@@ -31,14 +31,14 @@ def company2():
 @pytest.fixture
 def application(company, user):
     return ApplicationFactory(
-        status=ApplicationStatus.DRAFT, company=company, user=user
+        status=EmployerApplicationStatus.DRAFT, company=company, user=user
     )
 
 
 @pytest.fixture
 def submitted_application(company, user):
     return ApplicationFactory(
-        status=ApplicationStatus.SUBMITTED, company=company, user=user
+        status=EmployerApplicationStatus.SUBMITTED, company=company, user=user
     )
 
 

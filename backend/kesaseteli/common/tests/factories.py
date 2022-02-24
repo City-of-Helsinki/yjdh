@@ -9,7 +9,7 @@ from faker import Faker
 from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
-    ApplicationStatus,
+    EmployerApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
     get_supported_languages,
@@ -91,7 +91,7 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
 class ApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
     user = factory.SubFactory(UserFactory)
-    status = factory.Faker("random_element", elements=ApplicationStatus.values)
+    status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
     street_address = factory.Faker("street_address")
     contact_person_name = factory.Faker("name")
     contact_person_email = factory.Faker("email")
