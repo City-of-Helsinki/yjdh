@@ -4,6 +4,7 @@ import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { LinkedEventsPagedResponse, LocalizedObject, TetEvent } from 'tet/youth/linkedevents';
 import { useRouter } from 'next/router';
+import JobPostingCard from 'tet/youth/components/eventList/JobPostingCard/JobPostingCard';
 
 const getLocalizedString = (obj: LocalizedObject): string => obj.fi;
 
@@ -24,25 +25,7 @@ const EventList: React.FC = () => {
   return (
     <div>
       <h1>Tet-paikat testi</h1>
-      <ol>
-        {data &&
-          data.data.map((e) => (
-            <li key={e.id}>
-              {getLocalizedString(e.name)}
-              <button
-                style={{ marginLeft: 5 }}
-                onClick={() =>
-                  router.push({
-                    pathname: '/posting',
-                    query: { id: e.id },
-                  })
-                }
-              >
-                Näytä
-              </button>
-            </li>
-          ))}
-      </ol>
+      {data && data.data.map((e) => <JobPostingCard key={e.id} jobPosting={e} />)}
     </div>
   );
 };
