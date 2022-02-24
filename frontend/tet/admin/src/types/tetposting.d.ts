@@ -1,7 +1,7 @@
 import { OptionType, LocationType } from 'tet/admin/types/classification';
 
 type TetPosting = {
-  id?: string;
+  id?: string | null;
   title: string;
   description: string;
   org_name: string;
