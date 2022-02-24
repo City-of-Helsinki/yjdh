@@ -12,7 +12,6 @@ import {
 } from 'benefit/applicant/constants';
 import { Step2 } from 'benefit/applicant/types/application';
 import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
-import isAfter from 'date-fns/isAfter';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
