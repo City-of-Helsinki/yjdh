@@ -15,6 +15,7 @@ from applications.enums import (
     get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
+    YouthApplicationStatus,
 )
 from applications.models import (
     Attachment,
@@ -167,13 +168,24 @@ class YouthApplicationFactory(BaseYouthApplicationFactory):
         factory.LazyAttribute(copy_created_at),
         None,
     )
+    status = factory.Maybe(
+        "_is_active",
+        factory.Faker(
+            "random_element", elements=YouthApplicationStatus.active_values()
+        ),
+        YouthApplicationStatus.SUBMITTED.value,
+    )
 
 
 class ActiveYouthApplicationFactory(BaseYouthApplicationFactory):
     _is_active = True
     receipt_confirmed_at = factory.LazyAttribute(copy_created_at)
+    status = factory.Faker(
+        "random_element", elements=YouthApplicationStatus.active_values()
+    )
 
 
 class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
     _is_active = False
     receipt_confirmed_at = None
+    status = YouthApplicationStatus.SUBMITTED.value

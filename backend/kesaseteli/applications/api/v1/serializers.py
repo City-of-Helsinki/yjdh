@@ -473,11 +473,13 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "language",
             "receipt_confirmed_at",
             "encrypted_vtj_json",
+            "status",
         ]
         read_only_fields = [
             "id",
             "created_at",
             "encrypted_vtj_json",
+            "status",
         ]
 
     encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")

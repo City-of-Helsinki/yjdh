@@ -26,6 +26,7 @@ from applications.enums import (
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
+    YouthApplicationStatus,
 )
 from common.utils import validate_finnish_social_security_number
 from companies.models import Company
@@ -150,6 +151,12 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         max_length=1024 * 1024,
         verbose_name=_("vtj json"),
         validators=[validate_optional_json],
+    )
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("status"),
+        choices=YouthApplicationStatus.choices,
+        default=YouthApplicationStatus.SUBMITTED,
     )
     objects = YouthApplicationQuerySet.as_manager()
 
