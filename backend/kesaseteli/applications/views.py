@@ -17,7 +17,7 @@ from applications.models import EmployerSummerVoucher
 
 
 @method_decorator(staff_member_required, name="dispatch")
-class ApplicationExcelDownloadView(TemplateView):
+class EmployerApplicationExcelDownloadView(TemplateView):
     """
     TODO: This should be removed after the actual controller UI is implemented.
     This is a temporary view implemented by Django for MVP purposes. Basically it provides

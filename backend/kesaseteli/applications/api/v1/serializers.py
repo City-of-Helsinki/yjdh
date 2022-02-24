@@ -24,7 +24,7 @@ from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
 
 
-class ApplicationStatusValidator:
+class EmployerApplicationStatusValidator:
     requires_context = True
 
     APPLICATION_STATUS_TRANSITIONS = {
@@ -284,7 +284,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
     )
     status = serializers.ChoiceField(
         choices=EmployerApplicationStatus.choices,
-        validators=[ApplicationStatusValidator()],
+        validators=[EmployerApplicationStatusValidator()],
         help_text=_("Status of the application, visible to the applicant"),
         required=False,
     )

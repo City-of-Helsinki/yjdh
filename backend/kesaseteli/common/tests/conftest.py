@@ -7,7 +7,7 @@ from shared.common.tests.conftest import store_tokens_in_session
 from applications.enums import EmployerApplicationStatus, AttachmentType
 from common.tests.factories import (
     ActiveYouthApplicationFactory,
-    ApplicationFactory,
+    EmployerApplicationFactory,
     AttachmentFactory,
     CompanyFactory,
     InactiveYouthApplicationFactory,
@@ -30,14 +30,14 @@ def company2():
 
 @pytest.fixture
 def application(company, user):
-    return ApplicationFactory(
+    return EmployerApplicationFactory(
         status=EmployerApplicationStatus.DRAFT, company=company, user=user
     )
 
 
 @pytest.fixture
 def submitted_application(company, user):
-    return ApplicationFactory(
+    return EmployerApplicationFactory(
         status=EmployerApplicationStatus.SUBMITTED, company=company, user=user
     )
 

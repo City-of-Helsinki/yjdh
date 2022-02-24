@@ -88,7 +88,7 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
         model = EmployerSummerVoucher
 
 
-class ApplicationFactory(factory.django.DjangoModelFactory):
+class EmployerApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
     user = factory.SubFactory(UserFactory)
     status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)

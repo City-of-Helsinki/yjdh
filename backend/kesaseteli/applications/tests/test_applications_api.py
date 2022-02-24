@@ -9,7 +9,7 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import EmployerApplicationStatus
 from applications.models import EmployerApplication
-from common.tests.factories import ApplicationFactory, SummerVoucherFactory
+from common.tests.factories import EmployerApplicationFactory, SummerVoucherFactory
 
 
 def get_list_url():
@@ -347,9 +347,9 @@ def test_application_create_double(api_client, company):
 def test_applications_list_only_finds_own_application(
     api_client, application, company, user
 ):
-    ApplicationFactory()
-    ApplicationFactory(company=company)
-    ApplicationFactory(user=user)
+    EmployerApplicationFactory()
+    EmployerApplicationFactory(company=company)
+    EmployerApplicationFactory(user=user)
 
     assert EmployerApplication.objects.count() == 4
 
@@ -364,9 +364,9 @@ def test_applications_list_only_finds_own_application(
 def test_application_get_only_finds_own_application(
     api_client, application, company, user
 ):
-    app1 = ApplicationFactory()
-    app2 = ApplicationFactory(company=company)
-    app3 = ApplicationFactory(user=user)
+    app1 = EmployerApplicationFactory()
+    app2 = EmployerApplicationFactory(company=company)
+    app3 = EmployerApplicationFactory(user=user)
 
     assert EmployerApplication.objects.count() == 4
 
