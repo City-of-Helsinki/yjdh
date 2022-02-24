@@ -1,7 +1,7 @@
 import {
   expectToGetYouthApplication,
-  expectToPostYouthApplication,
-  expectToPostYouthApplicationError,
+  expectToPatchYouthApplication,
+  expectToPatchYouthApplicationError,
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
 import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/status-constants';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
@@ -105,13 +105,13 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
         );
       }
       if (errorCode) {
-        expectToPostYouthApplicationError(
+        expectToPatchYouthApplicationError(
           type,
           expectedApplication.id,
           errorCode
         );
       } else {
-        expectToPostYouthApplication(type, expectedApplication);
+        expectToPatchYouthApplication(type, expectedApplication.id);
         expectToGetYouthApplication({
           ...expectedApplication,
           status: type === 'accept' ? 'accepted' : 'rejected',

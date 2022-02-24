@@ -49,17 +49,19 @@ export const expectToGetYouthApplicationError = (
     );
 };
 
-export const expectToPostYouthApplication = (
+export const expectToPatchYouthApplication = (
   operation: 'accept' | 'reject',
-  expectedApplication: CreatedYouthApplication
+  id: CreatedYouthApplication['id']
 ): nock.Scope =>
   nock(getBackendDomain())
-    .post(
-      `${BackendEndpoint.YOUTH_APPLICATIONS}${expectedApplication.id}/${operation}`
-    )
-    .reply(200, expectedApplication, { 'Access-Control-Allow-Origin': '*' });
+    .post(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}`)
+    .reply(
+      200,
+      { status: operation === 'accept' ? 'accepted' : 'rejected' },
+      { 'Access-Control-Allow-Origin': '*' }
+    );
 
-export const expectToPostYouthApplicationError = (
+export const expectToPatchYouthApplicationError = (
   operation: 'accept' | 'reject',
   id: CreatedYouthApplication['id'],
   errorCode: 400 | 404 | 500
