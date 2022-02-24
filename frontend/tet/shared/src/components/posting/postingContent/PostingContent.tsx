@@ -9,8 +9,6 @@ import {
   $Title,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
-import PostingShareLinks from 'tet-shared//components/posting/postingShareLinks/PostingShareLinks';
-import getFormattedDate from 'tet-shared/util/getFormattedDate';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
@@ -29,7 +27,6 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
 
   const date =
     posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
-  //const date = `${getFormattedDate('10-10-2022')}`;
 
   return (
     <Container>
