@@ -9,8 +9,8 @@ from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
 from applications.enums import (
-    EmployerApplicationStatus,
     AttachmentType,
+    EmployerApplicationStatus,
     SummerVoucherExceptionReason,
 )
 from applications.models import (
@@ -332,7 +332,9 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
 
     def get_submitted_at(self, obj):
         if (
-            hisory_entry := obj.history.filter(status=EmployerApplicationStatus.SUBMITTED)
+            hisory_entry := obj.history.filter(
+                status=EmployerApplicationStatus.SUBMITTED
+            )
             .order_by("modified_at")
             .first()
         ):

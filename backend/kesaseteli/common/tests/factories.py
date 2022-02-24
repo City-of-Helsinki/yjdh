@@ -9,9 +9,9 @@ from faker import Faker
 from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
-    EmployerApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    EmployerApplicationStatus,
     get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,

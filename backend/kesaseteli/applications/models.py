@@ -21,9 +21,9 @@ from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUI
 
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
-    EmployerApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
 )

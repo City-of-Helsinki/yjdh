@@ -5,7 +5,7 @@ from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
     EmployerSummerVoucherSerializer,
 )
-from applications.enums import EmployerApplicationStatus, AttachmentType
+from applications.enums import AttachmentType, EmployerApplicationStatus
 from applications.models import School, validate_name, YouthApplication
 from applications.tests.test_applications_api import get_detail_url
 

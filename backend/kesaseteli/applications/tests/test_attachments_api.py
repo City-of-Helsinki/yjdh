@@ -10,7 +10,7 @@ from PIL import Image
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import AttachmentSerializer
-from applications.enums import EmployerApplicationStatus, AttachmentType
+from applications.enums import AttachmentType, EmployerApplicationStatus
 from applications.models import Attachment, EmployerSummerVoucher
 
 

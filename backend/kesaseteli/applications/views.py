@@ -70,7 +70,10 @@ class EmployerApplicationExcelDownloadView(TemplateView):
             EmployerSummerVoucher.objects.select_related(
                 "application", "application__company"
             )
-            .filter(is_exported=False, application__status=EmployerApplicationStatus.SUBMITTED)
+            .filter(
+                is_exported=False,
+                application__status=EmployerApplicationStatus.SUBMITTED,
+            )
             .annotate(submitted_at=Subquery(newest_submitted.values("modified_at")[:1]))
             .order_by("-submitted_at")
         )

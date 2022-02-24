@@ -23,7 +23,9 @@ urlpatterns = [
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(
-        "excel-download/", EmployerApplicationExcelDownloadView.as_view(), name="excel-download"
+        "excel-download/",
+        EmployerApplicationExcelDownloadView.as_view(),
+        name="excel-download",
     ),
     path("logout/", LogoutView.as_view(), name="logout"),
 ]

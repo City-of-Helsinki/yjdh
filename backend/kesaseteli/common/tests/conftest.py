@@ -4,12 +4,12 @@ from rest_framework.test import APIClient
 from shared.common.tests.conftest import *  # noqa
 from shared.common.tests.conftest import store_tokens_in_session
 
-from applications.enums import EmployerApplicationStatus, AttachmentType
+from applications.enums import AttachmentType, EmployerApplicationStatus
 from common.tests.factories import (
     ActiveYouthApplicationFactory,
-    EmployerApplicationFactory,
     AttachmentFactory,
     CompanyFactory,
+    EmployerApplicationFactory,
     InactiveYouthApplicationFactory,
     SummerVoucherFactory,
     YouthApplicationFactory,
