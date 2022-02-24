@@ -4,7 +4,7 @@ import {
   getHeaderComponents,
   Translation,
 } from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
+import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import { doEmployerLogin } from '../actions/employer-header.actions';
