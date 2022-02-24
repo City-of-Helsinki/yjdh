@@ -22,7 +22,7 @@ const EditStaticPage: NextPage = () => {
   }
 
   if (data) {
-    return <EditById title={t('common:editor.editTitle')} data={{ ...eventToTetPosting(data), id: null }} />;
+    return <EditById title={t('common:editor.editTitle')} data={eventToTetPosting(data)} />;
   } else {
     return <PageNotFound />;
   }
