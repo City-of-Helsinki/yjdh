@@ -108,7 +108,7 @@ if (!isRealIntegrationsEnabled()) {
     await expiredPage.expectations.isLoaded();
   });
 
-  test.only('If I send an application but it expires, I can send the same application again and activate it', async (t) => {
+  test('If I send an application but it expires, I can send the same application again and activate it', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
