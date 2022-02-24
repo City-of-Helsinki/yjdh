@@ -55,7 +55,7 @@ jobs:
         run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
       - name: Run TestCafe tests for Staging
         id: testcafe
-        run: yarn --cwd ${{ matrix.context }} browser-test:ci
+        run: yarn --cwd ${{ matrix.context }} browser-test:ci -q attemptLimit=3,successThreshold=1
         env:
           GITHUB_WORKFLOW_NAME: ${{  github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
