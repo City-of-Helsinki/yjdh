@@ -76,7 +76,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
         }),
         test: (value = '') => {
           const date = parseDate(value);
-          return date ? isAfter(date, startOfYear(new Date())) : false;
+          return date ? date >= startOfYear(new Date()) : false;
         },
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
