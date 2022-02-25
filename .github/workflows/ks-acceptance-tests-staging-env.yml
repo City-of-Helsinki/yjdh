@@ -6,6 +6,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/ks-staging-env-acceptance-tests.yml'
+      - '**/browser-tests/**'
 env:
   EMPLOYER_URL: https://yjdh-kesaseteli-ui-stg.apps.platta.hel.fi
   YOUTH_URL: https://yjdh-youth-ui-stg.apps.platta.hel.fi
