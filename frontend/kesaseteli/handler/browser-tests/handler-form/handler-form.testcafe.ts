@@ -10,7 +10,7 @@ import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
 
-fixture('Frontpage')
+fixture('Handler form')
   .page(url)
   .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
@@ -21,7 +21,7 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('application is not found without id', async (t) => {
+test('handler form is not found without id', async (t) => {
   const handlerFormPage = await getHandlerFormPageComponents(t);
   await handlerFormPage.expectations.applicationNotFound();
 });

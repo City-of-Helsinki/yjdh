@@ -1,4 +1,6 @@
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import {
   getHeaderComponents,
   Translation,
@@ -26,7 +28,7 @@ fixture('Frontpage')
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 test('can change to languages', async () => {

@@ -1,5 +1,7 @@
 import { getHandlerFormPageComponents } from '@frontend/kesaseteli-shared/browser-tests/handler-form-page/handlerFormPage.components';
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { fakeYouthFormData } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 import { convertFormDataToApplication } from '@frontend/kesaseteli-shared/src/utils/youth-form-data.utils';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
@@ -37,7 +39,7 @@ fixture('Youth Application')
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 test('I can send application and return to front page', async (t) => {

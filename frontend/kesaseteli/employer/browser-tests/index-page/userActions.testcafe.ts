@@ -1,4 +1,6 @@
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import {
   getHeaderComponents,
@@ -28,7 +30,7 @@ fixture('Frontpage')
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 test('user can authenticate and logout', async (t) => {

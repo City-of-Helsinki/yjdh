@@ -1,4 +1,6 @@
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
@@ -33,7 +35,7 @@ fixture('Application')
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 if (isRealIntegrationsEnabled()) {
