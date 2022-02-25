@@ -1,30 +1,39 @@
 import json
 import uuid
 from datetime import timedelta
+from enum import auto, Enum
 from typing import List, Optional
 from urllib.parse import urlparse
 
 import factory.random
 import langdetect
 import pytest
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core import mail
 from django.test import override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
+from shared.audit_log.models import AuditLogEntry
 from shared.common.tests.conftest import staff_client, superuser_client
 from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
 from applications.enums import get_supported_languages, YouthApplicationRejectedReason
 from applications.models import YouthApplication
-from common.tests.conftest import api_client
+from common.tests.conftest import api_client, unauthenticated_api_client
 from common.tests.factories import (
     ActiveYouthApplicationFactory,
     InactiveYouthApplicationFactory,
     YouthApplicationFactory,
 )
+from common.urls import handler_403_url
+
+
+class RedirectTarget(Enum):
+    adfs_login = auto()
+    handler_403 = auto()
 
 
 def get_random_pk() -> uuid.UUID:
@@ -68,6 +77,29 @@ def get_processing_url(pk):
     return reverse("v1:youthapplication-process", kwargs={"pk": pk})
 
 
+def get_django_adfs_login_url(redirect_url):
+    return "{login_url}?{redirect_field_name}={redirect_url}".format(
+        login_url=reverse("django_auth_adfs:login"),
+        redirect_field_name=REDIRECT_FIELD_NAME,
+        redirect_url=redirect_url,
+    )
+
+
+def get_detail_redirect_url(pk):
+    return get_django_adfs_login_url(get_detail_url(pk))
+
+
+def get_processing_redirect_url(pk):
+    return get_django_adfs_login_url(get_processing_url(pk))
+
+
+def get_redirect_url(redirect_target: RedirectTarget, adfs_login_url):
+    return {
+        RedirectTarget.adfs_login: adfs_login_url,
+        RedirectTarget.handler_403: handler_403_url(),
+    }[redirect_target]
+
+
 def get_test_vtj_json() -> dict:
     return {"first_name": "Maija", "last_name": "Meikäläinen"}
 
@@ -91,24 +123,85 @@ def assert_email_body_language(email_body, expected_language):
 
 
 @pytest.mark.django_db
-def test_youth_applications_list(api_client):
-    response = api_client.get(get_list_url())
-
+@pytest.mark.parametrize(
+    "mock_flag,client_fixture_name",
+    [
+        (mock_flag, client_fixture.__name__)
+        for mock_flag in [False, True]
+        for client_fixture in [
+            unauthenticated_api_client,
+            api_client,
+            staff_client,
+            superuser_client,
+        ]
+    ],
+)
+def test_youth_applications_list(request, settings, mock_flag, client_fixture_name):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    response = client_fixture.get(get_list_url())
     assert response.status_code == status.HTTP_403_FORBIDDEN
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["operation"] == "READ"
+    assert audit_event["target"]["id"] == ""
+    assert audit_event["target"]["type"] == "YouthApplication"
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "mock_flag,client_fixture_name,expected_status_code",
+    "mock_flag, client_fixture_name, http_method, expected_audit_log_operation",
+    [
+        (mock_flag, client_fixture.__name__, http_method, expected_audit_log_operation)
+        for mock_flag in [False, True]
+        for client_fixture in [
+            unauthenticated_api_client,
+            api_client,
+            staff_client,
+            superuser_client,
+        ]
+        for http_method, expected_audit_log_operation in [
+            ("put", "UPDATE"),
+            ("patch", "UPDATE"),
+            ("delete", "DELETE"),
+        ]
+    ],
+)
+def test_youth_applications_forbidden_modification_methods(
+    request,
+    youth_application,
+    settings,
+    mock_flag,
+    client_fixture_name,
+    http_method,
+    expected_audit_log_operation,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    client_http_method_func = getattr(client_fixture, http_method)
+    response = client_http_method_func(get_detail_url(pk=youth_application.pk))
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["status"] == "FORBIDDEN"
+    assert audit_event["operation"] == expected_audit_log_operation
+    assert audit_event["target"]["id"] == str(youth_application.pk)
+    assert audit_event["target"]["type"] == "YouthApplication"
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "mock_flag,client_fixture_name,expected_status_code,expected_redirect_target",
     [
         # Without mock flag
-        (False, api_client.__name__, status.HTTP_403_FORBIDDEN),
-        (False, staff_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
-        (False, superuser_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
+        (False, unauthenticated_api_client.__name__, 302, RedirectTarget.adfs_login),
+        (False, api_client.__name__, 302, RedirectTarget.handler_403),
+        (False, staff_client.__name__, 501, None),
+        (False, superuser_client.__name__, 501, None),
         # With mock flag
-        (True, api_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
-        (True, staff_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
-        (True, superuser_client.__name__, status.HTTP_501_NOT_IMPLEMENTED),
+        (True, unauthenticated_api_client.__name__, 501, None),
+        (True, api_client.__name__, 501, None),
+        (True, staff_client.__name__, 501, None),
+        (True, superuser_client.__name__, 501, None),
     ],
 )
 def test_youth_applications_process_valid_pk(
@@ -118,41 +211,77 @@ def test_youth_applications_process_valid_pk(
     mock_flag,
     client_fixture_name,
     expected_status_code,
+    expected_redirect_target,
 ):
+    assert (expected_status_code == status.HTTP_302_FOUND) == (
+        expected_redirect_target is not None
+    )
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_name)
     response = client_fixture.get(get_processing_url(pk=youth_application.pk))
     assert response.status_code == expected_status_code
+    if response.status_code == status.HTTP_302_FOUND:
+        expected_redirect_url = get_redirect_url(
+            expected_redirect_target,
+            adfs_login_url=get_processing_redirect_url(pk=youth_application.pk),
+        )
+        assert response.url == expected_redirect_url
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "mock_flag,expected_status_code",
+    "mock_flag,client_fixture_name,expected_status_code,expected_redirect_target",
     [
-        (False, status.HTTP_403_FORBIDDEN),
-        (True, status.HTTP_404_NOT_FOUND),
+        # Without mock flag
+        (False, unauthenticated_api_client.__name__, 302, RedirectTarget.adfs_login),
+        (False, api_client.__name__, 302, RedirectTarget.handler_403),
+        (False, staff_client.__name__, 404, None),
+        (False, superuser_client.__name__, 404, None),
+        # With mock flag
+        (True, unauthenticated_api_client.__name__, 404, None),
+        (True, api_client.__name__, 404, None),
+        (True, staff_client.__name__, 404, None),
+        (True, superuser_client.__name__, 404, None),
     ],
 )
 def test_youth_applications_process_unused_pk(
-    api_client, settings, mock_flag, expected_status_code
+    request,
+    settings,
+    mock_flag,
+    client_fixture_name,
+    expected_status_code,
+    expected_redirect_target,
 ):
+    assert (expected_status_code == status.HTTP_302_FOUND) == (
+        expected_redirect_target is not None
+    )
+    unused_pk = get_random_pk()
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    response = api_client.get(get_processing_url(pk=get_random_pk()))
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    response = client_fixture.get(get_processing_url(pk=unused_pk))
     assert response.status_code == expected_status_code
+    if response.status_code == status.HTTP_302_FOUND:
+        expected_redirect_url = get_redirect_url(
+            expected_redirect_target,
+            adfs_login_url=get_processing_redirect_url(pk=unused_pk),
+        )
+        assert response.url == expected_redirect_url
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "mock_flag,client_fixture_name,expected_status_code",
+    "mock_flag,client_fixture_name,expected_status_code,expected_redirect_target",
     [
         # Without mock flag
-        (False, api_client.__name__, status.HTTP_403_FORBIDDEN),
-        (False, staff_client.__name__, status.HTTP_200_OK),
-        (False, superuser_client.__name__, status.HTTP_200_OK),
+        (False, unauthenticated_api_client.__name__, 302, RedirectTarget.adfs_login),
+        (False, api_client.__name__, 302, RedirectTarget.handler_403),
+        (False, staff_client.__name__, 200, None),
+        (False, superuser_client.__name__, 200, None),
         # With mock flag
-        (True, api_client.__name__, status.HTTP_200_OK),
-        (True, staff_client.__name__, status.HTTP_200_OK),
-        (True, superuser_client.__name__, status.HTTP_200_OK),
+        (True, unauthenticated_api_client.__name__, 200, None),
+        (True, api_client.__name__, 200, None),
+        (True, staff_client.__name__, 200, None),
+        (True, superuser_client.__name__, 200, None),
     ],
 )
 def test_youth_applications_detail_valid_pk(
@@ -162,27 +291,61 @@ def test_youth_applications_detail_valid_pk(
     mock_flag,
     client_fixture_name,
     expected_status_code,
+    expected_redirect_target,
 ):
+    assert (expected_status_code == status.HTTP_302_FOUND) == (
+        expected_redirect_target is not None
+    )
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_name)
     response = client_fixture.get(get_detail_url(pk=youth_application.pk))
     assert response.status_code == expected_status_code
+    if response.status_code == status.HTTP_302_FOUND:
+        expected_redirect_url = get_redirect_url(
+            expected_redirect_target,
+            adfs_login_url=get_detail_redirect_url(pk=youth_application.pk),
+        )
+        assert response.url == expected_redirect_url
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "mock_flag,expected_status_code",
+    "mock_flag,client_fixture_name,expected_status_code,expected_redirect_target",
     [
-        (False, status.HTTP_403_FORBIDDEN),
-        (True, status.HTTP_404_NOT_FOUND),
+        # Without mock flag
+        (False, unauthenticated_api_client.__name__, 302, RedirectTarget.adfs_login),
+        (False, api_client.__name__, 302, RedirectTarget.handler_403),
+        (False, staff_client.__name__, 404, None),
+        (False, superuser_client.__name__, 404, None),
+        # With mock flag
+        (True, unauthenticated_api_client.__name__, 404, None),
+        (True, api_client.__name__, 404, None),
+        (True, staff_client.__name__, 404, None),
+        (True, superuser_client.__name__, 404, None),
     ],
 )
 def test_youth_applications_detail_unused_pk(
-    api_client, settings, mock_flag, expected_status_code
+    request,
+    settings,
+    mock_flag,
+    client_fixture_name,
+    expected_status_code,
+    expected_redirect_target,
 ):
+    assert (expected_status_code == status.HTTP_302_FOUND) == (
+        expected_redirect_target is not None
+    )
+    unused_pk = get_random_pk()
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    response = api_client.get(get_detail_url(pk=get_random_pk()))
+    client_fixture = request.getfixturevalue(client_fixture_name)
+    response = client_fixture.get(get_detail_url(pk=unused_pk))
     assert response.status_code == expected_status_code
+    if response.status_code == status.HTTP_302_FOUND:
+        expected_redirect_url = get_redirect_url(
+            expected_redirect_target,
+            adfs_login_url=get_detail_redirect_url(pk=unused_pk),
+        )
+        assert response.url == expected_redirect_url
 
 
 @pytest.mark.django_db
@@ -375,6 +538,21 @@ def test_youth_application_post_valid_random_data(api_client, random_seed):
     response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_youth_application_post_valid_audit_log(api_client):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(get_list_url(), data)
+    assert "id" in response.data
+    assert response.data["id"]
+    assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
+    audit_event = AuditLogEntry.objects.first().message["audit_event"]
+    assert audit_event["status"] == "SUCCESS"
+    assert audit_event["operation"] == "CREATE"
+    assert audit_event["target"]["id"] == str(response.data["id"])
+    assert audit_event["target"]["type"] == "YouthApplication"
 
 
 @pytest.mark.django_db

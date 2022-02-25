@@ -24,6 +24,7 @@ env = environ.Env(
     MEDIA_URL=(str, "/media/"),
     STATIC_URL=(str, "/static/"),
     YOUTH_URL=(str, "https://localhost:3100"),
+    HANDLER_URL=(str, "https://localhost:3200"),
     ALLOWED_HOSTS=(list, ["*"]),
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
@@ -150,6 +151,7 @@ STATIC_ROOT = env("STATIC_ROOT")
 MEDIA_URL = env.str("MEDIA_URL")
 STATIC_URL = env.str("STATIC_URL")
 YOUTH_URL = env.str("YOUTH_URL")
+HANDLER_URL = env.str("HANDLER_URL")
 
 ROOT_URLCONF = "kesaseteli.urls"
 WSGI_APPLICATION = "kesaseteli.wsgi.application"
