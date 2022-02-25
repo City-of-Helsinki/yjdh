@@ -135,9 +135,16 @@
   "delete": {
 		"deletePosting": "SV Poista TET-paikka",
 		"confirmation": "SV Haluatko varmasti poistaa TET-paikan {{posting}}?",
-		"successTitle": "SV TETP-paikka poistettiin", 
+		"successTitle": "SV TETP-paikka poistettiin",
     "errorTitle": "Borttagningen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
+  },
+  "publish": {
+		"publishPosting": "SV Julkaise TET-paikka",
+		"confirmation": "SV Haluatko varmasti julkaista TET-paikan {{posting}}?",
+		"successTitle": "SV TET-paikka julkaistiin",
+    "errorTitle": "SV Julkaiseminen epäonnistui",
+    "errorMessage": "SV Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
   "applications": {
     "sections": {

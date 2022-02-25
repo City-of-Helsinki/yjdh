@@ -16,15 +16,16 @@ const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorDa
   const queryClient = useQueryClient();
   return useMutation<TetPosting, AxiosError<ErrorData>, TetPosting>(
     'delete',
-    (posting: TetPosting) => handleResponse<TetPosting>(axios.delete(`${BackendEndpoint.TET_POSTINGS}${posting.id}`)),
+    (posting: TetPosting) =>
+      handleResponse<TetPosting>(axios.put(`${BackendEndpoint.TET_POSTINGS}${posting.id}/publish/`)),
     {
       onSuccess: () => {
         void queryClient.removeQueries();
         void router.push('/');
-        showSuccessToast(t('common:delete.successTitle'), '');
+        showSuccessToast(t('common:publish.successTitle'), '');
       },
       onError: () => {
-        showErrorToast(t('common:delete.errorTitle'), t('common:delete.errorMessage'));
+        showErrorToast(t('common:publish.errorTitle'), t('common:publish.errorMessage'));
       },
     },
   );
