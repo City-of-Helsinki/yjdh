@@ -5,7 +5,7 @@ import Container from 'shared/components/container/Container';
 import { COLUMN_WIDTH } from 'shared/components/table/constants';
 import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
-import { useTheme } from 'styled-components';
+
 import {
   $ArchiveCount,
   $Empty,
@@ -25,8 +25,6 @@ const ApplicationsArchive: React.FC = () => {
     translationsBase,
     getHeader,
   } = useApplicationsArchive();
-
-  const theme = useTheme();
 
   const columns: ColumnType[] = React.useMemo(() => {
     const cols: ColumnType[] = [
@@ -90,14 +88,18 @@ const ApplicationsArchive: React.FC = () => {
               original: { status },
             },
           },
-        }) => <$Status status={status}>{status}</$Status>,
-        Header: getHeader('status'),
+        }) => (
+          <$Status status={status}>
+            {t(`${translationsBase}.columns.statuses.${status}`)?.toString()}
+          </$Status>
+        ),
+        Header: t(`${translationsBase}.columns.statusArchive`)?.toString(),
         accessor: 'status',
         width: COLUMN_WIDTH.L,
       },
     ];
     return cols.filter(Boolean);
-  }, [t, getHeader]);
+  }, [t, getHeader, translationsBase]);
 
   if (shouldShowSkeleton) {
     return (
@@ -111,7 +113,7 @@ const ApplicationsArchive: React.FC = () => {
     <Container>
       <$Heading>{`${t('common:header.navigation.archive')}`}</$Heading>
       {list.length > 0 && (
-        <$ArchiveCount>{`${t('common:applications.list.total.count', {
+        <$ArchiveCount>{`${t(`${translationsBase}.total.count`, {
           count: list.length,
         })}`}</$ArchiveCount>
       )}

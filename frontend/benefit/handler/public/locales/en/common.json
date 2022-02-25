@@ -106,6 +106,12 @@
         "companyForm": "Yritysmuoto",
         "handledDate": "Käsittelypvm",
         "dataReceived": "Ladattu",
+        "statusArchive": "Käsittelyn tulos",
+        "statuses": {
+          "cancelled": "Peruutettu",
+          "accepted": "Puolettu",
+          "rejected": "Ei puolettu"
+        },
         "additionalInformationNeededBy": "",
         "additionalInformationNeededByVal": "Muokattava {{date}}"
       },
