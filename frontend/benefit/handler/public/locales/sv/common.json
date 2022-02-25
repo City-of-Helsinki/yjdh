@@ -104,6 +104,8 @@
         "employeeName": "Työntekijä",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
+        "handledDate": "Käsittelypvm",
+        "dataReceived": "Ladattu",
         "additionalInformationNeededBy": "",
         "additionalInformationNeededByVal": "Muokattava {{date}}"
       },
@@ -119,6 +121,10 @@
           "label": "Error occurred",
           "text": "Unable to fetch applications with status {{status}}"
         }
+      },
+      "total": {
+        "count_one": "{{count}} hakemus",
+        "count_other": "{{count}} hakemusta"
       }
     },
     "actions": {

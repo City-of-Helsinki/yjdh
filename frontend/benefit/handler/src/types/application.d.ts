@@ -262,6 +262,8 @@ export type ApplicationData = {
   duration_in_months_rounded?: string;
   log_entry_comment?: string;
   granted_as_de_minimis_aid?: boolean;
+  handled_date?: string;
+  data_received?: boolean;
 };
 
 export type ApplicationListItemData = {
@@ -274,6 +276,8 @@ export type ApplicationListItemData = {
   employeeName?: string;
   handlerName?: string;
   additionalInformationNeededBy?: string;
+  handledDate?: string;
+  dataReceived?: string;
 };
 
 export interface Step1 {
