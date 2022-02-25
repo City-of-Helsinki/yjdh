@@ -9,12 +9,13 @@ from faker import Faker
 from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
-    ApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    EmployerApplicationStatus,
     get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
+    YouthApplicationStatus,
 )
 from applications.models import (
     Attachment,
@@ -88,10 +89,10 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
         model = EmployerSummerVoucher
 
 
-class ApplicationFactory(factory.django.DjangoModelFactory):
+class EmployerApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
     user = factory.SubFactory(UserFactory)
-    status = factory.Faker("random_element", elements=ApplicationStatus.values)
+    status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
     street_address = factory.Faker("street_address")
     contact_person_name = factory.Faker("name")
     contact_person_email = factory.Faker("email")
@@ -167,13 +168,24 @@ class YouthApplicationFactory(BaseYouthApplicationFactory):
         factory.LazyAttribute(copy_created_at),
         None,
     )
+    status = factory.Maybe(
+        "_is_active",
+        factory.Faker(
+            "random_element", elements=YouthApplicationStatus.active_values()
+        ),
+        YouthApplicationStatus.SUBMITTED.value,
+    )
 
 
 class ActiveYouthApplicationFactory(BaseYouthApplicationFactory):
     _is_active = True
     receipt_confirmed_at = factory.LazyAttribute(copy_created_at)
+    status = factory.Faker(
+        "random_element", elements=YouthApplicationStatus.active_values()
+    )
 
 
 class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
     _is_active = False
     receipt_confirmed_at = None
+    status = YouthApplicationStatus.SUBMITTED.value
