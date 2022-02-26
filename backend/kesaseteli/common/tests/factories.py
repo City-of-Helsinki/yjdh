@@ -6,7 +6,7 @@ import factory
 import factory.fuzzy
 import pytz
 from faker import Faker
-from shared.common.tests.factories import UserFactory
+from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 from applications.enums import (
     ATTACHMENT_CONTENT_TYPE_CHOICES,
@@ -140,6 +140,18 @@ def copy_created_at(youth_application: YouthApplication) -> Optional[datetime]:
     return youth_application.created_at
 
 
+def determine_youth_application_handler(youth_application: YouthApplication):
+    if youth_application.status in YouthApplicationStatus.handled_values():
+        return HandlerUserFactory()
+    return None
+
+
+def determine_youth_application_handled_at(youth_application: YouthApplication):
+    if youth_application.status in YouthApplicationStatus.handled_values():
+        return youth_application.created_at
+    return None
+
+
 class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     created_at = factory.fuzzy.FuzzyDateTime(
         start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
@@ -154,6 +166,8 @@ class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     phone_number = factory.LazyFunction(get_test_phone_number)
     postcode = factory.Faker("postcode", locale="fi")
     language = factory.Faker("random_element", elements=get_supported_languages())
+    handler = factory.LazyAttribute(determine_youth_application_handler)
+    handled_at = factory.LazyAttribute(determine_youth_application_handled_at)
     _is_active = None
 
     class Meta:

@@ -141,8 +141,12 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @enforce_handler_view_adfs_login
     def accept(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()
-        if not youth_application.is_accepted and youth_application.accept():
-            with self.record_action(additional_information="accept"):
+        if not youth_application.is_accepted and youth_application.accept(
+            handler=request.user
+        ):
+            with self.record_action(
+                additional_information=f"Handler {request.user.pk} accepted"
+            ):
                 return HttpResponse(status=status.HTTP_200_OK)
         else:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
@@ -152,8 +156,12 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @enforce_handler_view_adfs_login
     def reject(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()
-        if not youth_application.is_rejected and youth_application.reject():
-            with self.record_action(additional_information="reject"):
+        if not youth_application.is_rejected and youth_application.reject(
+            handler=request.user
+        ):
+            with self.record_action(
+                additional_information=f"Handler {request.user.pk} rejected"
+            ):
                 return HttpResponse(status=status.HTTP_200_OK)
         else:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)

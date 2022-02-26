@@ -11,6 +11,7 @@ import factory.random
 import langdetect
 import pytest
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.test import override_settings
 from django.utils import timezone
@@ -28,6 +29,7 @@ from applications.enums import (
     YouthApplicationStatus,
 )
 from applications.models import YouthApplication
+from common.permissions import HandlerPermission
 from common.tests.conftest import (
     api_client,
     unauthenticated_api_client as unauth_api_client,
@@ -87,6 +89,8 @@ def get_handler_fields() -> List[str]:
         "receipt_confirmed_at",
         "encrypted_vtj_json",
         "status",
+        "handler",
+        "handled_at",
     ]
 
 
@@ -434,6 +438,8 @@ def test_youth_applications_activate_unexpired_inactive(
             inactive_youth_application.status
             == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
         )
+    assert inactive_youth_application.handler is None
+    assert inactive_youth_application.handled_at is None
 
 
 @pytest.mark.django_db
@@ -455,6 +461,8 @@ def test_youth_applications_activate_unexpired_active(
     settings.DISABLE_VTJ = disable_vtj
     active_youth_application = ActiveYouthApplicationFactory(language=language)
     old_status = active_youth_application.status
+    old_handler = active_youth_application.handler
+    old_handled_at = active_youth_application.handled_at
 
     assert active_youth_application.is_active
     assert not active_youth_application.has_activation_link_expired
@@ -468,6 +476,8 @@ def test_youth_applications_activate_unexpired_active(
     active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
     assert active_youth_application.status == old_status
+    assert active_youth_application.handler == old_handler
+    assert active_youth_application.handled_at == old_handled_at
 
 
 @pytest.mark.django_db
@@ -502,6 +512,8 @@ def test_youth_applications_activate_expired_inactive(
     inactive_youth_application.refresh_from_db()
     assert not inactive_youth_application.is_active
     assert inactive_youth_application.status == old_status
+    assert inactive_youth_application.handler is None
+    assert inactive_youth_application.handled_at is None
 
 
 @pytest.mark.django_db
@@ -523,6 +535,8 @@ def test_youth_applications_activate_expired_active(
     settings.DISABLE_VTJ = disable_vtj
     active_youth_application = ActiveYouthApplicationFactory(language=language)
     old_status = active_youth_application.status
+    old_handler = active_youth_application.handler
+    old_handled_at = active_youth_application.handled_at
 
     assert active_youth_application.is_active
     assert active_youth_application.has_activation_link_expired
@@ -536,6 +550,8 @@ def test_youth_applications_activate_expired_active(
     active_youth_application.refresh_from_db()
     assert active_youth_application.is_active
     assert active_youth_application.status == old_status
+    assert active_youth_application.handler == old_handler
+    assert active_youth_application.handled_at == old_handled_at
 
 
 @pytest.mark.django_db
@@ -985,21 +1001,30 @@ def test_youth_applications_accept_acceptable(
 
     if response.status_code == status.HTTP_200_OK:
         assert acceptable_youth_application.status == YouthApplicationStatus.ACCEPTED
+        handler = response.wsgi_request.user
+        assert handler is not None
+        if handler == AnonymousUser():
+            assert HandlerPermission.allow_empty_handler()
+            assert handler.pk is None
+            assert acceptable_youth_application.handler is None
+        else:
+            assert handler.pk is not None
+            assert acceptable_youth_application.handler == handler
         audit_event = AuditLogEntry.objects.first().message["audit_event"]
         assert audit_event["status"] == "SUCCESS"
         assert audit_event["operation"] == "UPDATE"
         assert audit_event["target"]["id"] == str(acceptable_youth_application.pk)
         assert audit_event["target"]["type"] == "YouthApplication"
-        assert audit_event["additional_information"] == "accept"
-    elif response.status_code == status.HTTP_302_FOUND:
+        assert audit_event["additional_information"] == f"Handler {handler.pk} accepted"
+    else:
         assert acceptable_youth_application.status == old_status
         assert acceptable_youth_application.modified_at == old_modified_at
         assert not AuditLogEntry.objects.exists()
+
+    if response.status_code == status.HTTP_302_FOUND:
         assert response.url == RedirectTo.get_redirect_url(
             expected_redirect_to, "accept", acceptable_youth_application.pk
         )
-    else:
-        assert False, f"Unhandled response status code {response.status_code}"
 
 
 @pytest.mark.django_db
@@ -1091,21 +1116,30 @@ def test_youth_applications_reject_rejectable(
 
     if response.status_code == status.HTTP_200_OK:
         assert rejectable_youth_application.status == YouthApplicationStatus.REJECTED
+        handler = response.wsgi_request.user
+        assert handler is not None
+        if handler == AnonymousUser():
+            assert HandlerPermission.allow_empty_handler()
+            assert handler.pk is None
+            assert rejectable_youth_application.handler is None
+        else:
+            assert handler.pk is not None
+            assert rejectable_youth_application.handler == handler
         audit_event = AuditLogEntry.objects.first().message["audit_event"]
         assert audit_event["status"] == "SUCCESS"
         assert audit_event["operation"] == "UPDATE"
         assert audit_event["target"]["id"] == str(rejectable_youth_application.pk)
         assert audit_event["target"]["type"] == "YouthApplication"
-        assert audit_event["additional_information"] == "reject"
-    elif response.status_code == status.HTTP_302_FOUND:
+        assert audit_event["additional_information"] == f"Handler {handler.pk} rejected"
+    else:
         assert rejectable_youth_application.status == old_status
         assert rejectable_youth_application.modified_at == old_modified_at
         assert not AuditLogEntry.objects.exists()
+
+    if response.status_code == status.HTTP_302_FOUND:
         assert response.url == RedirectTo.get_redirect_url(
             expected_redirect_to, "reject", rejectable_youth_application.pk
         )
-    else:
-        assert False, f"Unhandled response status code {response.status_code}"
 
 
 @pytest.mark.django_db

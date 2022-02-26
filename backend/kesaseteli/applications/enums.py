@@ -89,6 +89,13 @@ class YouthApplicationStatus(models.TextChoices):
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
         ]
 
+    @staticmethod
+    def handled_values():
+        """
+        Youth application statuses which have been handled and require a handler.
+        """
+        return [YouthApplicationStatus.ACCEPTED, YouthApplicationStatus.REJECTED]
+
 
 class AttachmentType(models.TextChoices):
     EMPLOYMENT_CONTRACT = "employment_contract", _("employment contract")
