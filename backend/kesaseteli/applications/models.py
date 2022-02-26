@@ -28,6 +28,7 @@ from applications.enums import (
     SummerVoucherExceptionReason,
     YouthApplicationStatus,
 )
+from common.urls import handler_youth_application_processing_url
 from common.utils import validate_finnish_social_security_number
 from companies.models import Company
 
@@ -159,6 +160,9 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         default=YouthApplicationStatus.SUBMITTED,
     )
     objects = YouthApplicationQuerySet.as_manager()
+
+    def handler_processing_url(self):
+        return handler_youth_application_processing_url(self.pk)
 
     def _localized_frontend_page_url(self, page_name):
         return urljoin(
@@ -315,12 +319,54 @@ class YouthApplication(TimeStampedModel, UUIDModel):
     @transaction.atomic
     def activate(self) -> bool:
         """
-        Activate this youth application. Return self.is_active after this call.
+        Activate this youth application if possible.
+
+        :return: self.is_active
         """
         if self.can_activate:
             self.receipt_confirmed_at = timezone.now()
             self.save()
         return self.is_active
+
+    @property
+    def is_accepted(self) -> bool:
+        return self.status == YouthApplicationStatus.ACCEPTED
+
+    @property
+    def can_accept(self) -> bool:
+        return self.status in YouthApplicationStatus.acceptable_values()
+
+    @transaction.atomic
+    def accept(self) -> bool:
+        """
+        Accept this youth application if possible.
+
+        :return: self.is_accepted
+        """
+        if self.can_accept:
+            self.status = YouthApplicationStatus.ACCEPTED
+            self.save()
+        return self.is_accepted
+
+    @property
+    def is_rejected(self) -> bool:
+        return self.status == YouthApplicationStatus.REJECTED
+
+    @property
+    def can_reject(self) -> bool:
+        return self.status in YouthApplicationStatus.rejectable_values()
+
+    @transaction.atomic
+    def reject(self) -> bool:
+        """
+        Reject youth application if possible.
+
+        :return: self.is_rejected
+        """
+        if self.can_reject:
+            self.status = YouthApplicationStatus.REJECTED
+            self.save()
+        return self.is_rejected
 
     @classmethod
     def is_email_or_social_security_number_active(
