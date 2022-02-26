@@ -57,15 +57,36 @@ class YouthApplicationStatus(models.TextChoices):
     @staticmethod
     def active_values():
         """
-        Youth application status values for youth application that have been activated.
-
-        :return: YouthApplicationStatus.values without
-                 YouthApplicationStatus.SUBMITTED.value
+        Youth application statuses for youth application that have been activated.
         """
         return [
-            value
-            for value in YouthApplicationStatus.values
-            if value != YouthApplicationStatus.SUBMITTED.value
+            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+            YouthApplicationStatus.ACCEPTED.value,
+            YouthApplicationStatus.REJECTED.value,
+        ]
+
+    @staticmethod
+    def acceptable_values():
+        """
+        Youth application statuses from which the youth application can be accepted.
+        """
+        return [
+            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+        ]
+
+    @staticmethod
+    def rejectable_values():
+        """
+        Youth application statuses from which the youth application can be rejected.
+        """
+        return [
+            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
         ]
 
 

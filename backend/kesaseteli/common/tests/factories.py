@@ -189,3 +189,23 @@ class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
     _is_active = False
     receipt_confirmed_at = None
     status = YouthApplicationStatus.SUBMITTED.value
+
+
+class AcceptableYouthApplicationFactory(ActiveYouthApplicationFactory):
+    status = factory.Faker(
+        "random_element", elements=YouthApplicationStatus.acceptable_values()
+    )
+
+
+class AcceptedYouthApplicationFactory(ActiveYouthApplicationFactory):
+    status = YouthApplicationStatus.ACCEPTED
+
+
+class RejectableYouthApplicationFactory(ActiveYouthApplicationFactory):
+    status = factory.Faker(
+        "random_element", elements=YouthApplicationStatus.rejectable_values()
+    )
+
+
+class RejectedYouthApplicationFactory(ActiveYouthApplicationFactory):
+    status = YouthApplicationStatus.REJECTED
