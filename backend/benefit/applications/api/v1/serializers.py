@@ -1580,6 +1580,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     * training compensations
     * batch
     * latest_decision_comment
+    * handled_at
     """
 
     # more status transitions
@@ -1631,6 +1632,17 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             )
         return Company.objects.get(validated_data["create_application_for_company"])
 
+    handled_at = serializers.SerializerMethodField(
+        "get_handled_at",
+        help_text="Timestamp when the application was handled (accepted/rejected/cancelled)",
+    )
+
+    def get_handled_at(self, obj):
+        if hasattr(obj, "handled_at"):
+            return obj.handled_at
+        else:
+            return None
+
     class Meta(BaseApplicationSerializer.Meta):
         fields = BaseApplicationSerializer.Meta.fields + [
             "calculation",
@@ -1639,9 +1651,11 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "batch",
             "create_application_for_company",
             "latest_decision_comment",
+            "handled_at",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
-            "latest_decision_comment"
+            "latest_decision_comment",
+            "handled_at",
         ]
 
     @transaction.atomic

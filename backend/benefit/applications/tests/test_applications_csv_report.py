@@ -46,9 +46,9 @@ def _create_applications_for_csv_export():
         created_at=datetime(2022, 3, 1)
     )
     application4 = DecidedApplicationFactory(
-        status=ApplicationStatus.CANCELLED
+        status=ApplicationStatus.HANDLING
     )  # should be excluded
-    application4.log_entries.filter(to_status=ApplicationStatus.CANCELLED).update(
+    application4.log_entries.filter(to_status=ApplicationStatus.HANDLING).update(
         created_at=datetime(2022, 2, 1)
     )
     return (application1, application2, application3, application4)
@@ -156,14 +156,14 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-01-02",
+        + "export_csv/?handled_at_after=2022-01-02",
         [application2.application_number, application3.application_number],
     )
 
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2021-12-31&date_handled_before=2022-03-02",
+        + "export_csv/?handled_at_after=2021-12-31&handled_at_before=2022-03-02",
         [
             application1.application_number,
             application2.application_number,
@@ -173,7 +173,7 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-01-01&date_handled_before=2022-03-01",
+        + "export_csv/?handled_at_after=2022-01-01&handled_at_before=2022-03-01",
         [
             application1.application_number,
             application2.application_number,
@@ -183,13 +183,13 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-01-02&date_handled_before=2022-02-28",
+        + "export_csv/?handled_at_after=2022-01-02&handled_at_before=2022-02-28",
         [application2.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-02&date_handled_before=2022-02-28",
+        + "export_csv/?handled_at_after=2022-02-02&handled_at_before=2022-02-28",
         [],
         expect_empty=True,
     )
@@ -197,25 +197,25 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-01",
+        + "export_csv/?handled_at_after=2022-02-01",
         [application2.application_number, application3.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_before=2022-02-28",
+        + "export_csv/?handled_at_before=2022-02-28",
         [application1.application_number, application2.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-01&status=rejected",
+        + "export_csv/?handled_at_after=2022-02-01&status=rejected",
         [application3.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-01&status=cancelled",
+        + "export_csv/?handled_at_after=2022-02-01&status=handling",
         [],
         expect_empty=True,
     )
