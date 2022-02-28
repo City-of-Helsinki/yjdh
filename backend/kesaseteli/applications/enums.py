@@ -26,7 +26,7 @@ def get_supported_languages() -> Tuple[str]:
     return list(zip(*APPLICATION_LANGUAGE_CHOICES))[0]
 
 
-class ApplicationStatus(models.TextChoices):
+class EmployerApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")
     ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
@@ -38,6 +38,35 @@ class ApplicationStatus(models.TextChoices):
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
     DELETED_BY_CUSTOMER = "deleted_by_customer", _("Deleted by customer")
+
+
+class YouthApplicationStatus(models.TextChoices):
+    SUBMITTED = "submitted", _("Submitted")
+    AWAITING_MANUAL_PROCESSING = "awaiting_manual_processing", _(
+        "Awaiting manual processing"
+    )
+    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
+        "Additional information requested"
+    )
+    ADDITIONAL_INFORMATION_PROVIDED = "additional_information_provided", _(
+        "Additional information provided"
+    )
+    ACCEPTED = "accepted", _("Accepted")
+    REJECTED = "rejected", _("Rejected")
+
+    @staticmethod
+    def active_values():
+        """
+        Youth application status values for youth application that have been activated.
+
+        :return: YouthApplicationStatus.values without
+                 YouthApplicationStatus.SUBMITTED.value
+        """
+        return [
+            value
+            for value in YouthApplicationStatus.values
+            if value != YouthApplicationStatus.SUBMITTED.value
+        ]
 
 
 class AttachmentType(models.TextChoices):

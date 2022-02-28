@@ -44,6 +44,7 @@ def send_audit_log_to_elastic_search():
             index=settings.ELASTICSEARCH_APP_AUDIT_LOG_INDEX,
             id=entry.id,
             body=message_body,
+            op_type="create",
         )
         if rs.get("result") == ES_STATUS_CREATED:
             entry.is_sent = True

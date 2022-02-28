@@ -1,3 +1,4 @@
+import base64
 import re
 from unittest import mock
 
@@ -7,6 +8,7 @@ from django.test import override_settings
 from django.urls import reverse
 
 from shared.azure_adfs.auth import HelsinkiAdfsAuthCodeBackend, provider_config
+from shared.common.tests import get_default_test_host
 
 
 @override_settings(
@@ -151,6 +153,43 @@ def test_adfs_callback(client, user):
 
     assert response.status_code == 302
     assert response.url == settings.ADFS_LOGIN_REDIRECT_URL
+    assert "_auth_user_id" in client.session
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False, ADFS_LOGIN_REDIRECT_URL="http://example.com"
+)
+@pytest.mark.parametrize(
+    "original_redirect_url",
+    [
+        "./test/",
+        "https://{host}/v1/test/".format(host=get_default_test_host()),
+    ],
+)
+def test_adfs_callback_original_redirect(client, user, original_redirect_url):
+    with mock.patch("shared.azure_adfs.auth.provider_config"):
+        with mock.patch.multiple(
+            "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
+            exchange_auth_code=mock.MagicMock,
+            validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
+            process_access_token=mock.MagicMock(return_value=user),
+            get_graph_api_access_token=mock.MagicMock,
+            update_user_groups_from_graph_api=mock.MagicMock,
+        ):
+            session = client.session  # Client.session property generates a new session
+            session["USE_ORIGINAL_REDIRECT_URL"] = True
+            session.save()
+            state = base64.urlsafe_b64encode(original_redirect_url.encode())
+            callback_url = reverse("callback")
+            # Make sure the session variable is set up correctly
+            assert "USE_ORIGINAL_REDIRECT_URL" in client.session
+            assert client.session["USE_ORIGINAL_REDIRECT_URL"] is True
+            response = client.get(callback_url, {"code": "test", "state": state})
+
+    assert response.status_code == 302
+    assert response.url == original_redirect_url
+    assert "USE_ORIGINAL_REDIRECT_URL" not in client.session
     assert "_auth_user_id" in client.session
 
 

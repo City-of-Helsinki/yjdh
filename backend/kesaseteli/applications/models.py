@@ -21,11 +21,12 @@ from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUI
 
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
-    ApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
+    YouthApplicationStatus,
 )
 from common.utils import validate_finnish_social_security_number
 from companies.models import Company
@@ -150,6 +151,12 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         max_length=1024 * 1024,
         verbose_name=_("vtj json"),
         validators=[validate_optional_json],
+    )
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("status"),
+        choices=YouthApplicationStatus.choices,
+        default=YouthApplicationStatus.SUBMITTED,
     )
     objects = YouthApplicationQuerySet.as_manager()
 
@@ -403,8 +410,8 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     status = models.CharField(
         max_length=64,
         verbose_name=_("status"),
-        choices=ApplicationStatus.choices,
-        default=ApplicationStatus.DRAFT,
+        choices=EmployerApplicationStatus.choices,
+        default=EmployerApplicationStatus.DRAFT,
     )
     street_address = models.CharField(
         max_length=256,
