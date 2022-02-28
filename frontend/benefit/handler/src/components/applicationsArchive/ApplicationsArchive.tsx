@@ -47,7 +47,8 @@ const ApplicationsArchive: React.FC = () => {
         ),
         Header: getHeader('companyName'),
         accessor: 'companyName',
-        width: COLUMN_WIDTH.L,
+        width: COLUMN_WIDTH.XL,
+        disableSortBy: true,
       },
       {
         Header: getHeader('companyId'),
@@ -63,14 +64,16 @@ const ApplicationsArchive: React.FC = () => {
       },
 
       {
-        Header: getHeader('employeeName'),
+        Header: t(
+          `${translationsBase}.columns.employeeNameArchive`
+        )?.toString(),
         accessor: 'employeeName',
         disableSortBy: true,
         width: COLUMN_WIDTH.M,
       },
       {
-        Header: getHeader('handledDate'),
-        accessor: 'handledDate',
+        Header: getHeader('handledAt'),
+        accessor: 'handledAt',
         disableSortBy: true,
         width: COLUMN_WIDTH.S,
       },
@@ -96,6 +99,7 @@ const ApplicationsArchive: React.FC = () => {
         Header: t(`${translationsBase}.columns.statusArchive`)?.toString(),
         accessor: 'status',
         width: COLUMN_WIDTH.L,
+        disableSortBy: true,
       },
     ];
     return cols.filter(Boolean);

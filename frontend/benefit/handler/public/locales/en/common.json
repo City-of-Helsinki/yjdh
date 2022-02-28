@@ -102,9 +102,10 @@
         "submittedAt": "Saapunut",
         "applicationNum": "Numero",
         "employeeName": "Työntekijä",
+        "employeeNameArchive": "Työllistetty",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
-        "handledDate": "Käsittelypvm",
+        "handledAt": "Käsittelypvm",
         "dataReceived": "Ladattu",
         "statusArchive": "Käsittelyn tulos",
         "statuses": {

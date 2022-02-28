@@ -3,6 +3,7 @@ import {
   ApplicationData,
   ApplicationListItemData,
 } from 'benefit/handler/types/application';
+import { getBatchDataReceived } from 'benefit/handler/utils/common';
 import { TFunction, useTranslation } from 'next-i18next';
 import isServerSide from 'shared/server/is-server-side';
 import { getFullName } from 'shared/utils/application.utils';
@@ -29,9 +30,10 @@ const useApplicationsArchive = (): ApplicationListProps => {
         id = '',
         employee,
         company,
-        handled_date,
+        handled_at,
         application_number: applicationNum,
         status,
+        batch,
       } = application;
 
       return {
@@ -41,8 +43,8 @@ const useApplicationsArchive = (): ApplicationListProps => {
         companyId: company ? company.business_id : '-',
         employeeName:
           getFullName(employee?.first_name, employee?.last_name) || '-',
-        handledDate: convertToUIDateFormat(handled_date) || '-',
-        dataReceived: '-',
+        handledAt: convertToUIDateFormat(handled_at) || '-',
+        dataReceived: getBatchDataReceived(status, batch?.created_at),
         applicationNum,
       };
     }

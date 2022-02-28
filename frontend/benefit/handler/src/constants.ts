@@ -14,6 +14,11 @@ export enum SUPPORTED_LANGUAGES {
   EN = 'en',
 }
 
+export enum PROPOSALS_FOR_DESISION {
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
+}
+
 export enum BENEFIT_TYPES {
   EMPLOYMENT = 'employment_benefit',
   SALARY = 'salary_benefit',
