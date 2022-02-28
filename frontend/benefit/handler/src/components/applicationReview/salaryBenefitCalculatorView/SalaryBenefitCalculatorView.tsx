@@ -495,10 +495,10 @@ const SalaryBenefitCalculatorView: React.FC<
               id={fields.monthlyAmount.name}
               name={fields.monthlyAmount.name}
               onChange={(e) =>
-                setNewTrainingCompensation({
-                  ...newTrainingCompensation,
+                setNewTrainingCompensation((prevValue) => ({
+                  ...prevValue,
                   monthlyAmount: e.target.value,
-                })
+                }))
               }
               value={formatStringFloatValue(
                 newTrainingCompensation.monthlyAmount
@@ -515,12 +515,12 @@ const SalaryBenefitCalculatorView: React.FC<
               name={fields.startDate.name}
               placeholder={fields.startDate.placeholder}
               language={language}
-              onChange={(value) => {
-                setNewTrainingCompensation({
-                  ...newTrainingCompensation,
+              onChange={(value) =>
+                setNewTrainingCompensation((prevValue) => ({
+                  ...prevValue,
                   startDate: value,
-                });
-              }}
+                }))
+              }
               value={convertToUIDateFormat(newTrainingCompensation.startDate)}
               invalid={!!getErrorMessage(fields.startDate.name)}
               aria-invalid={!!getErrorMessage(fields.startDate.name)}
@@ -534,15 +534,12 @@ const SalaryBenefitCalculatorView: React.FC<
               name={fields.endDate.name}
               placeholder={fields.endDate.placeholder}
               language={language}
-              onChange={(value) => {
-                setNewTrainingCompensation({
-                  ...newTrainingCompensation,
-                  endDate: getCorrectEndDate(
-                    newTrainingCompensation.startDate,
-                    value
-                  ),
-                });
-              }}
+              onChange={(value) =>
+                setNewTrainingCompensation((prevValue) => ({
+                  ...prevValue,
+                  endDate: getCorrectEndDate(prevValue.startDate, value),
+                }))
+              }
               value={convertToUIDateFormat(newTrainingCompensation.endDate)}
               invalid={!!getErrorMessage(fields.endDate.name)}
               aria-invalid={!!getErrorMessage(fields.endDate.name)}
