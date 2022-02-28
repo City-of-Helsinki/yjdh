@@ -16,7 +16,6 @@ import {
   IconMinusCircle,
   IconPlusCircle,
   Select,
-  TextArea,
   TextInput,
 } from 'hds-react';
 import * as React from 'react';
@@ -40,6 +39,7 @@ import {
   $CalculatorText,
 } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
+import SalaryBenefitManualCalculatorView from './SalaryBenefitManualCalculatorView';
 import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
 
 const SalaryBenefitCalculatorView: React.FC<
@@ -562,41 +562,11 @@ const SalaryBenefitCalculatorView: React.FC<
       )}
 
       {isManualCalculator && (
-        <>
-          <$GridCell $colStart={1} $colSpan={2}>
-            <$CalculatorText>
-              {fields.overrideMonthlyBenefitAmount.label}
-            </$CalculatorText>
-          </$GridCell>
-          <$GridCell $colStart={1} $colSpan={1}>
-            <TextInput
-              id={fields.overrideMonthlyBenefitAmount.name}
-              name={fields.overrideMonthlyBenefitAmount.name}
-              onChange={(e) =>
-                formik.setFieldValue(
-                  fields.overrideMonthlyBenefitAmount.name,
-                  e.target.value
-                )
-              }
-              value={
-                formik.values.overrideMonthlyBenefitAmount
-                  ? formatStringFloatValue(
-                      formik.values.overrideMonthlyBenefitAmount
-                    )
-                  : ''
-              }
-              invalid={
-                !!getErrorMessage(fields.overrideMonthlyBenefitAmount.name)
-              }
-              aria-invalid={
-                !!getErrorMessage(fields.overrideMonthlyBenefitAmount.name)
-              }
-              errorText={getErrorMessage(
-                fields.overrideMonthlyBenefitAmount.name
-              )}
-            />
-          </$GridCell>
-        </>
+        <SalaryBenefitManualCalculatorView
+          formik={formik}
+          fields={fields}
+          getErrorMessage={getErrorMessage}
+        />
       )}
 
       <$GridCell $colStart={1}>
@@ -652,25 +622,6 @@ const SalaryBenefitCalculatorView: React.FC<
             );
           })}
       </$GridCell>
-
-      {isManualCalculator && (
-        <$GridCell $colStart={1} $colSpan={6}>
-          <TextArea
-            id={fields.overrideMonthlyBenefitAmountComment.name}
-            name={fields.overrideMonthlyBenefitAmountComment.name}
-            label={fields.overrideMonthlyBenefitAmountComment.label}
-            placeholder={fields.overrideMonthlyBenefitAmountComment.placeholder}
-            value={formik.values.overrideMonthlyBenefitAmountComment}
-            onChange={(e) =>
-              formik.setFieldValue(
-                fields.overrideMonthlyBenefitAmountComment.name,
-                e.target.value
-              )
-            }
-            required
-          />
-        </$GridCell>
-      )}
     </ReviewSection>
   );
 };

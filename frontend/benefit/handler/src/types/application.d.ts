@@ -1,3 +1,4 @@
+import { FormikProps } from 'formik';
 import { BenefitAttachment } from 'shared/types/attachment';
 
 import {
@@ -6,6 +7,7 @@ import {
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
   CALCULATION_EMPLOYMENT_KEYS,
+  CALCULATION_SALARY_KEYS,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
@@ -433,6 +435,14 @@ export interface ApplicationReviewViewProps {
 
 export interface SalaryBenefitCalculatorViewProps {
   data: Application;
+}
+
+export interface SalaryBenefitManualCalculatorViewProps {
+  formik: FormikProps<CalculationFormProps>;
+  fields: {
+    [key in CALCULATION_SALARY_KEYS]: Field<CALCULATION_SALARY_KEYS>;
+  };
+  getErrorMessage: (fieldName: string) => string | undefined;
 }
 
 export type HandledAplication = {
