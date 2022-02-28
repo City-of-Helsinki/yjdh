@@ -5,8 +5,14 @@ FROM helsinkitest/node:14-slim as appbase
 # Use non-root user
 USER appuser
 
+# Build ARGS
+ARG PROJECT
+ARG FOLDER
+ARG SERVICE
+
 # Yarn
 ENV YARN_VERSION 1.22.10
+
 RUN yarn policies set-version $YARN_VERSION
 RUN yarn config set ignore-engines true
 
@@ -14,7 +20,8 @@ WORKDIR /app
 
 # Install dependencies
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
-COPY --chown=appuser:appuser tet/employer/package.json tet/employer/package.json
+COPY --chown=appuser:appuser $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
+COPY --chown=appuser:appuser $PROJECT/shared/package.json* $PROJECT/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
@@ -25,24 +32,31 @@ COPY --chown=appuser:appuser . .
 # =============================
 FROM appbase as development
 # =============================
-
+ARG SERVICE
 # Use non-root user
 USER appuser
 WORKDIR /app
 
 # Copy all files
 COPY --chown=appuser:appuser . .
+
+
+
 # Bake package.json start command into the image
-CMD ["yarn", "te-empl:dev"]
+ENV START "yarn $SERVICE:dev"
+CMD ["sh", "-c", "${START}"]
 
 # ===================================
 FROM appbase as staticbuilder
 # ===================================
 # Set environmental variables for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
 ARG NEXT_PUBLIC_MOCK_FLAG
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT
+ARG PROJECT
+ARG FOLDER
 
 # Use non-root user
 USER appuser
@@ -52,7 +66,8 @@ WORKDIR /app
 COPY --chown=appuser:appuser . .
 
 # Build application
-WORKDIR /app/tet/employer/
+WORKDIR /app/$PROJECT/$FOLDER/
+
 RUN yarn build
 
 # Clean all dependencies (this should avoid caching + missing /pages directory problem)
@@ -63,22 +78,29 @@ RUN yarn cache clean
 FROM helsinkitest/node:14-slim AS production
 # ==========================================
 
+ARG PORT
+ARG PROJECT
+ARG FOLDER
+ARG SERVICE
+
 # Use non-root user
 USER appuser
 
 WORKDIR /app
 
 # Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/.next tet/employer/.next
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
 
 # Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/next-i18next.config.js app/tet/employer/next.config.js tet/employer/
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/public app/next.config.js app/start.js ./
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
 
 # Copy package.json and yarn.lock files
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/public app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/employer/package.json app/tet/employer/start.js tet/employer/
+COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/
 
 # shared data
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/shared/package.json* $PROJECT/shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
@@ -88,10 +110,9 @@ RUN yarn install --production --frozen-lockfile --check-files
 # install lerna
 RUN yarn add -W lerna
 
-
 # Expose port
-EXPOSE 3000
+EXPOSE $PORT
 
 # Start nextjs server
-# https://github.com/lerna/lerna/issues/2428
-CMD ["yarn", "te-empl:start"]
+ENV START "yarn $SERVICE:start"
+CMD ["sh", "-c", "${START}"]

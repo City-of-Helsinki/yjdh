@@ -62,15 +62,21 @@ jobs:
             port: 8000
 #          - service: te-empl
 #            context: ./frontend
-#            dockerfile: ./frontend/tet/employer/Dockerfile
+#            dockerfile: ./Dockerfile
+#            project: tet
+#            folder: employer
 #            port: 3000
           - service: te-yout
             context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
+            dockerfile: ./Dockerfile
+            project: tet
+            folder: youth
             port: 3000
           - service: te-admn
             context: ./frontend
-            dockerfile: ./frontend/tet/admin/Dockerfile
+            dockerfile: ./Dockerfile
+            project: tet
+            folder: admin
             port: 3000
     concurrency:
       group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
@@ -112,12 +118,12 @@ jobs:
 #            port: 3000
           - service: te-yout
             context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
+            dockerfile: ./Dockerfile
             database: false
             port: 3000
           - service: te-admn
             context: ./frontend
-            dockerfile: ./frontend/tet/admin/Dockerfile
+            dockerfile: ./Dockerfile
             database: false
             port: 3000
     concurrency:

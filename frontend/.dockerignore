@@ -5,13 +5,13 @@
 !lerna.json
 !babel.config.js
 !package.json
+!next.config.js
+!start.js
 
 !shared/src
 !shared/package.json
 !shared/tsconfig.json
 !tsconfig.json
-
-
 !yarn.lock
 
 !kesaseteli/employer/next.config.js
@@ -20,7 +20,6 @@
 !kesaseteli/employer/src
 !kesaseteli/employer/package.json
 !kesaseteli/employer/tsconfig.json
-!kesaseteli/employer/start.js
 
 !kesaseteli/handler/next.config.js
 !kesaseteli/handler/next-i18next.config.js
@@ -28,7 +27,6 @@
 !kesaseteli/handler/src
 !kesaseteli/handler/package.json
 !kesaseteli/handler/tsconfig.json
-!kesaseteli/handler/start.js
 
 !kesaseteli/youth/next.config.js
 !kesaseteli/youth/next-i18next.config.js
@@ -36,7 +34,6 @@
 !kesaseteli/youth/src
 !kesaseteli/youth/package.json
 !kesaseteli/youth/tsconfig.json
-!kesaseteli/youth/start.js
 
 !kesaseteli/shared/src
 !kesaseteli/shared/package.json
@@ -48,7 +45,6 @@
 !benefit/applicant/public
 !benefit/applicant/src
 !benefit/applicant/tsconfig.json
-!benefit/applicant/start.js
 
 !benefit/handler/next.config.js
 !benefit/handler/next-i18next.config.js
@@ -56,7 +52,6 @@
 !benefit/handler/public
 !benefit/handler/src
 !benefit/handler/tsconfig.json
-!benefit/handler/start.js
 
 !benefit/shared/src
 !benefit/shared/package.json
@@ -68,21 +63,18 @@
 !tet/employer/public
 !tet/employer/src
 !tet/employer/tsconfig.json
-!tet/employer/start.js
 !tet/youth/next.config.js
 !tet/youth/next-i18next.config.js
 !tet/youth/package.json
 !tet/youth/public
 !tet/youth/src
 !tet/youth/tsconfig.json
-!tet/youth/start.js
 !tet/admin/next.config.js
 !tet/admin/next-i18next.config.js
 !tet/admin/package.json
 !tet/admin/public
 !tet/admin/src
 !tet/admin/tsconfig.json
-!tet/admin/start.js
 
 !tet/shared/src
 !tet/shared/package.json

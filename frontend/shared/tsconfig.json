@@ -1,8 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "incremental": true
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "shared/*": ["src/*", "browser-tests/*"]
+    }
   }
 }
