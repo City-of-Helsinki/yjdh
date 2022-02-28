@@ -100,24 +100,20 @@ const useHandlerReviewActions = (
       ? values.overrideMonthlyBenefitAmountComment
       : '';
 
-    const paySubsidies = values.paySubsidies
-      ? values.paySubsidies.map((item) => ({
-          ...item,
-          workTimePercent: stringToFloatValue(item.workTimePercent),
-          startDate: convertToBackendDateFormat(item.startDate),
-          endDate: convertToBackendDateFormat(item.endDate),
-        }))
-      : undefined;
+    const paySubsidies = values.paySubsidies?.map((item) => ({
+      ...item,
+      workTimePercent: stringToFloatValue(item.workTimePercent),
+      startDate: convertToBackendDateFormat(item.startDate),
+      endDate: convertToBackendDateFormat(item.endDate),
+    }));
 
-    const trainingCompensations = values.trainingCompensations
-      ? values.trainingCompensations.map((item) => ({
-          ...item,
-          id: uuidv4(),
-          monthlyAmount: stringToFloatValue(item.monthlyAmount),
-          startDate: convertToBackendDateFormat(item.startDate),
-          endDate: convertToBackendDateFormat(item.endDate),
-        }))
-      : undefined;
+    const trainingCompensations = values.trainingCompensations?.map((item) => ({
+      ...item,
+      id: uuidv4(),
+      monthlyAmount: stringToFloatValue(item.monthlyAmount),
+      startDate: convertToBackendDateFormat(item.startDate),
+      endDate: convertToBackendDateFormat(item.endDate),
+    }));
 
     const {
       monthlyPay,

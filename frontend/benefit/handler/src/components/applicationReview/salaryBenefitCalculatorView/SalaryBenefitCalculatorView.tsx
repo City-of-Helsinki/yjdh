@@ -537,7 +537,7 @@ const SalaryBenefitCalculatorView: React.FC<
               onChange={(value) =>
                 setNewTrainingCompensation((prevValue) => ({
                   ...prevValue,
-                  endDate: getCorrectEndDate(prevValue.startDate, value),
+                  endDate: getCorrectEndDate(prevValue.startDate, value) ?? '',
                 }))
               }
               value={convertToUIDateFormat(newTrainingCompensation.endDate)}
