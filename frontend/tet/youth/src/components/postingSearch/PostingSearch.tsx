@@ -5,6 +5,7 @@ import { QueryParams } from 'tet/youth/types/queryparams';
 import Container from 'shared/components/container/Container';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { $Search } from 'tet/youth/components/postingSearch/PostingSearch.sc';
+import { IconGroup, IconCalendar, IconLocation, IconGlobe } from 'hds-react';
 
 type Props = {
   onSearchByFilters: (value: QueryParams) => void;
@@ -25,20 +26,24 @@ const PostingSearch: React.FC<Props> = ({ onSearchByFilters }) => {
         <$GridCell as={$Grid} $colSpan={12}>
           <$GridCell $colSpan={12}>
             <$GridCell $colSpan={10}>
-              <TextInput onChange={(e) => setSearchText(e.target.value)} id="searchText" label="Hakusana"></TextInput>
+              <TextInput
+                onChange={(e) => setSearchText(e.target.value)}
+                id="searchText"
+                placeholder="Kirjoita hakusana"
+              ></TextInput>
             </$GridCell>
           </$GridCell>
-          <$GridCell $colSpan={2}>
-            <Select placeholder="Valitse työtapa" options={[{ label: 'test' }]}></Select>
+          <$GridCell $colSpan={3}>
+            <Select placeholder="Valitse työtapa" icon={<IconGroup />} options={[{ label: 'test' }]}></Select>
           </$GridCell>
-          <$GridCell $colSpan={2}>
-            <Select options={[{ label: 'test' }]}></Select>
+          <$GridCell $colSpan={3}>
+            <Select placeholder="Valitse ajankohta" icon={<IconCalendar />} options={[{ label: 'test' }]}></Select>
           </$GridCell>
-          <$GridCell $colSpan={2}>
-            <Select placeholder="Valitse alue" options={[{ label: 'test' }]}></Select>
+          <$GridCell $colSpan={3}>
+            <Select placeholder="Valitse alue" icon={<IconLocation />} options={[{ label: 'test' }]}></Select>
           </$GridCell>
-          <$GridCell $colSpan={2}>
-            <Select placeholder="Valitse kieli" options={[{ label: 'test' }]}></Select>
+          <$GridCell $colSpan={3}>
+            <Select placeholder="Valitse kieli" icon={<IconGlobe />} options={[{ label: 'test' }]}></Select>
           </$GridCell>
           <$GridCell $colSpan={2}>
             <Button onClick={searchHandler}>Etsi</Button>
