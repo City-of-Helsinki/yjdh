@@ -1,4 +1,10 @@
-import { days360, diffMonths, isLeapYear, parseDate } from '../date.utils';
+import {
+  days360,
+  diffMonths,
+  isLeapYear,
+  parseDate,
+  validateDateIsFromCurrentYearOnwards,
+} from '../date.utils';
 
 describe('dates', () => {
   describe('isLeapYear', () => {
@@ -37,6 +43,29 @@ describe('dates', () => {
         parseDate('31.12.2021')
       );
       expect(diffMonthsResult).toBeLessThan(0);
+    });
+  });
+
+  describe('validateDateIsFromCurrentYearOnwards', () => {
+    const currentYear = new Date().getFullYear();
+    it('should return false', () => {
+      expect(
+        validateDateIsFromCurrentYearOnwards(`31.12.${currentYear - 1}`)
+      ).toBe(false);
+      expect(
+        validateDateIsFromCurrentYearOnwards(`2.1.${currentYear - 4}`)
+      ).toBe(false);
+      expect(
+        validateDateIsFromCurrentYearOnwards(`4.8.${currentYear - 2}`)
+      ).toBe(false);
+    });
+    it('should return true', () => {
+      expect(validateDateIsFromCurrentYearOnwards(`1.1.${currentYear}`)).toBe(
+        true
+      );
+      expect(
+        validateDateIsFromCurrentYearOnwards(`3.4.${currentYear + 5}`)
+      ).toBe(true);
     });
   });
 });
