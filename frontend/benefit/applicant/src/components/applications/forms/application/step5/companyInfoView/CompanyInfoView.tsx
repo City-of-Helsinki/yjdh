@@ -197,4 +197,8 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
   );
 };
 
+CompanyInfoView.defaultProps = {
+  isReadOnly: undefined,
+};
+
 export default CompanyInfoView;

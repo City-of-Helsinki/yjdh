@@ -54,7 +54,7 @@ const CalculatorErrors: React.FC<CalculatorErrorsProps> = ({ data }) => {
         <ul>
           {
             // eslint-disable-next-line @typescript-eslint/dot-notation
-            getErrorList(data['calculation'])
+            getErrorList(data['calculation'] as Record<string, unknown>)
           }
         </ul>
       )}

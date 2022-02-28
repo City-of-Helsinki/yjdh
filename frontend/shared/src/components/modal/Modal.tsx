@@ -86,4 +86,16 @@ const Modal: React.FC<ModalProps> = ({
   );
 };
 
+Modal.defaultProps = {
+  submitButtonIcon: undefined,
+  headerIcon: undefined,
+  actionDisabled: undefined,
+  title: undefined,
+  className: undefined,
+  scrollable: undefined,
+  variant: undefined,
+  children: undefined,
+  customContent: undefined,
+};
+
 export default Modal;

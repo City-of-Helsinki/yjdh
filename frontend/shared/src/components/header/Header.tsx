@@ -155,4 +155,19 @@ const Header: React.FC<HeaderProps> = ({
   );
 };
 
+Header.defaultProps = {
+  title: undefined,
+  titleUrl: undefined,
+  skipToContentLabel: undefined,
+  menuToggleAriaLabel: undefined,
+  languages: undefined,
+  isNavigationVisible: undefined,
+  navigationItems: undefined,
+  customItems: undefined,
+  navigationVariant: undefined,
+  onLanguageChange: undefined,
+  login: undefined,
+  theme: undefined,
+};
+
 export default Header;

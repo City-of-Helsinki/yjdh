@@ -102,4 +102,12 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   );
 };
 
+ReviewSection.defaultProps = {
+  children: undefined,
+  action: undefined,
+  withMargin: undefined,
+  withoutDivider: undefined,
+  header: undefined,
+};
+
 export default ReviewSection;
