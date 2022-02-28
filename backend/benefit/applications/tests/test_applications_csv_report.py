@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 
 from applications.enums import AhjoDecision, ApplicationStatus, BenefitType
@@ -403,6 +403,26 @@ def test_applications_csv_missing_data(applications_csv_with_no_applications):
     assert len(csv_lines) == 2
     assert len(csv_lines[0]) == len(csv_lines[1])
     assert csv_lines[1][0] == '"Ei löytynyt ehdot täyttäviä hakemuksia"'
+
+
+def test_applications_csv_monthly_amount_override(
+    applications_csv_service_with_one_application,
+):
+    application = applications_csv_service_with_one_application.get_applications()[0]
+    application.status = ApplicationStatus.HANDLING
+    application.save()
+    application.calculation.override_monthly_benefit_amount = 100
+    application.calculation.save()
+    application.calculation.start_date = date(2021, 1, 1)
+    application.calculation.end_date = date(2021, 2, 28)
+    application.calculation.calculate()
+    csv_lines = split_lines_at_semicolon(
+        applications_csv_service_with_one_application.get_csv_string()
+    )
+    monthly_col = csv_lines[0].index('"Ahjo-rivi 1 / määrä eur kk"')
+    total_col = csv_lines[0].index('"Ahjo-rivi 1 / määrä eur yht"')
+    assert csv_lines[1][monthly_col] == "100.00"
+    assert csv_lines[1][total_col] == "200.00"
 
 
 def test_write_applications_csv_file(applications_csv_service, tmp_path):
