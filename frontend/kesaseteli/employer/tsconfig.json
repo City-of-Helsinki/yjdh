@@ -4,7 +4,8 @@
     "baseUrl": "../../",
     "paths": {
       "kesaseteli/employer/*": ["kesaseteli/employer/src/*", "kesaseteli/employer/browser-tests/*"],
-      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"]
+      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
+      "shared/*": ["shared/src/*","shared/browser-tests/*"]
     }
   },
   "include": [
