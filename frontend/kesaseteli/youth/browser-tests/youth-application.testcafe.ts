@@ -219,4 +219,20 @@ if (!isRealIntegrationsEnabled()) {
     await handlerFormPage.expectations.applicationFieldHasValue('phone_number');
     await handlerFormPage.expectations.applicationFieldHasValue('email');
   });
+
+  test('As a handler I can open non-activated application, but I will see "youth has not yet activated the application" -error message ', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await goToHandlerUrl(t, `?id=${applicationId}`);
+    const handlerFormPage = await getHandlerFormPageComponents(t);
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.expectations.applicationIsNotYetActivated();
+  });
 }
