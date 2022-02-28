@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 
 from applications.enums import AhjoDecision, ApplicationStatus, BenefitType
@@ -46,9 +46,9 @@ def _create_applications_for_csv_export():
         created_at=datetime(2022, 3, 1)
     )
     application4 = DecidedApplicationFactory(
-        status=ApplicationStatus.CANCELLED
+        status=ApplicationStatus.HANDLING
     )  # should be excluded
-    application4.log_entries.filter(to_status=ApplicationStatus.CANCELLED).update(
+    application4.log_entries.filter(to_status=ApplicationStatus.HANDLING).update(
         created_at=datetime(2022, 2, 1)
     )
     return (application1, application2, application3, application4)
@@ -156,14 +156,14 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-01-02",
+        + "export_csv/?handled_at_after=2022-01-02",
         [application2.application_number, application3.application_number],
     )
 
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2021-12-31&date_handled_before=2022-03-02",
+        + "export_csv/?handled_at_after=2021-12-31&handled_at_before=2022-03-02",
         [
             application1.application_number,
             application2.application_number,
@@ -173,7 +173,7 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-01-01&date_handled_before=2022-03-01",
+        + "export_csv/?handled_at_after=2022-01-01&handled_at_before=2022-03-01",
         [
             application1.application_number,
             application2.application_number,
@@ -183,13 +183,13 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-01-02&date_handled_before=2022-02-28",
+        + "export_csv/?handled_at_after=2022-01-02&handled_at_before=2022-02-28",
         [application2.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-02&date_handled_before=2022-02-28",
+        + "export_csv/?handled_at_after=2022-02-02&handled_at_before=2022-02-28",
         [],
         expect_empty=True,
     )
@@ -197,25 +197,25 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-01",
+        + "export_csv/?handled_at_after=2022-02-01",
         [application2.application_number, application3.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_before=2022-02-28",
+        + "export_csv/?handled_at_before=2022-02-28",
         [application1.application_number, application2.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-01&status=rejected",
+        + "export_csv/?handled_at_after=2022-02-01&status=rejected",
         [application3.application_number],
     )
     _get_csv(
         handler_api_client,
         reverse("v1:handler-application-list")
-        + "export_csv/?date_handled_after=2022-02-01&status=cancelled",
+        + "export_csv/?handled_at_after=2022-02-01&status=handling",
         [],
         expect_empty=True,
     )
@@ -403,6 +403,26 @@ def test_applications_csv_missing_data(applications_csv_with_no_applications):
     assert len(csv_lines) == 2
     assert len(csv_lines[0]) == len(csv_lines[1])
     assert csv_lines[1][0] == '"Ei löytynyt ehdot täyttäviä hakemuksia"'
+
+
+def test_applications_csv_monthly_amount_override(
+    applications_csv_service_with_one_application,
+):
+    application = applications_csv_service_with_one_application.get_applications()[0]
+    application.status = ApplicationStatus.HANDLING
+    application.save()
+    application.calculation.override_monthly_benefit_amount = 100
+    application.calculation.save()
+    application.calculation.start_date = date(2021, 1, 1)
+    application.calculation.end_date = date(2021, 2, 28)
+    application.calculation.calculate()
+    csv_lines = split_lines_at_semicolon(
+        applications_csv_service_with_one_application.get_csv_string()
+    )
+    monthly_col = csv_lines[0].index('"Ahjo-rivi 1 / määrä eur kk"')
+    total_col = csv_lines[0].index('"Ahjo-rivi 1 / määrä eur yht"')
+    assert csv_lines[1][monthly_col] == "100.00"
+    assert csv_lines[1][total_col] == "200.00"
 
 
 def test_write_applications_csv_file(applications_csv_service, tmp_path):
