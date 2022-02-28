@@ -418,7 +418,7 @@ const SalaryBenefitCalculatorView: React.FC<
             )}
 
           {formik.values.trainingCompensations?.map((item) => (
-            <>
+            <div key={item.id}>
               <$GridCell
                 $colStart={1}
                 $colSpan={2}
@@ -470,7 +470,7 @@ const SalaryBenefitCalculatorView: React.FC<
                   {t(`${translationsBase}.remove`)}
                 </Button>
               </$GridCell>
-            </>
+            </div>
           ))}
 
           <$GridCell $colStart={1} $colSpan={2}>
