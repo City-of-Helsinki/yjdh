@@ -400,19 +400,22 @@ const SalaryBenefitCalculatorView: React.FC<
             </$CalculatorText>
           </$GridCell>
 
-          {formik.values.trainingCompensations?.length > 0 && (
-            <>
-              <$GridCell $colStart={1} $colSpan={2}>
-                <$CalculatorText>{fields.monthlyAmount.label}</$CalculatorText>
-              </$GridCell>
+          {formik.values.trainingCompensations &&
+            formik.values.trainingCompensations.length > 0 && (
+              <>
+                <$GridCell $colStart={1} $colSpan={2}>
+                  <$CalculatorText>
+                    {fields.monthlyAmount.label}
+                  </$CalculatorText>
+                </$GridCell>
 
-              <$GridCell $colStart={3} $colSpan={3}>
-                <$CalculatorText>
-                  {t(`${translationsBase}.apprenticeshipPeriod`)}
-                </$CalculatorText>
-              </$GridCell>
-            </>
-          )}
+                <$GridCell $colStart={3} $colSpan={3}>
+                  <$CalculatorText>
+                    {t(`${translationsBase}.apprenticeshipPeriod`)}
+                  </$CalculatorText>
+                </$GridCell>
+              </>
+            )}
 
           {formik.values.trainingCompensations?.map((item) => (
             <>
