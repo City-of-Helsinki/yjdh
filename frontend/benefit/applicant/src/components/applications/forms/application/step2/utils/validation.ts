@@ -16,7 +16,10 @@ import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
 import { NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
-import { convertToUIDateFormat, parseDate } from 'shared/utils/date.utils';
+import {
+  convertToUIDateFormat,
+  validateDateIsFromCurrentYearOnwards,
+} from 'shared/utils/date.utils';
 import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
@@ -73,10 +76,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
         message: t(VALIDATION_MESSAGE_KEYS.DATE_MIN, {
           min: convertToUIDateFormat(startOfYear(new Date())),
         }),
-        test: (value = '') => {
-          const date = parseDate(value);
-          return date ? date >= startOfYear(new Date()) : false;
-        },
+        test: (value = '') => validateDateIsFromCurrentYearOnwards(value),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.END_DATE]: Yup.string().required(
       t(VALIDATION_MESSAGE_KEYS.REQUIRED)
