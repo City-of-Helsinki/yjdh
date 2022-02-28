@@ -394,7 +394,10 @@ const SalaryBenefitCalculatorView: React.FC<
         <>
           <$GridCell $colStart={1} $colSpan={11}>
             <$CalculatorText
-              style={{ marginTop: theme.spacing.m, fontWeight: 'bold' }}
+              isBold
+              css={`
+                margin-top: ${theme.spacing.m};
+              `}
             >
               {t(`${translationsBase}.apprenticeshipCompensation`)}
             </$CalculatorText>
