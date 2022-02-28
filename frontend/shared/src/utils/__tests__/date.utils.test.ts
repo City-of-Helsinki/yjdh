@@ -47,17 +47,25 @@ describe('dates', () => {
   });
 
   describe('validateDateIsFromCurrentYearOnwards', () => {
+    const currentYear = new Date().getFullYear();
     it('should return false', () => {
-      const validateDateIsFromCurrentYearOnwardsResult =
-        validateDateIsFromCurrentYearOnwards('31.12.2021');
-
-      expect(validateDateIsFromCurrentYearOnwardsResult).toBe(false);
+      expect(
+        validateDateIsFromCurrentYearOnwards(`31.12.${currentYear - 1}`)
+      ).toBe(false);
+      expect(
+        validateDateIsFromCurrentYearOnwards(`2.1.${currentYear - 4}`)
+      ).toBe(false);
+      expect(
+        validateDateIsFromCurrentYearOnwards(`4.8.${currentYear - 2}`)
+      ).toBe(false);
     });
     it('should return true', () => {
-      const validateDateIsFromCurrentYearOnwardsResult =
-        validateDateIsFromCurrentYearOnwards(`1.1.${new Date().getFullYear()}`);
-
-      expect(validateDateIsFromCurrentYearOnwardsResult).toBe(true);
+      expect(validateDateIsFromCurrentYearOnwards(`1.1.${currentYear}`)).toBe(
+        true
+      );
+      expect(
+        validateDateIsFromCurrentYearOnwards(`3.4.${currentYear + 5}`)
+      ).toBe(true);
     });
   });
 });
