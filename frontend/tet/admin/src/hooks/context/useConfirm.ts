@@ -18,16 +18,17 @@ function useConfirm() {
     closeConfirm();
     resolveCallback(false);
   };
-  const confirm = (header: string, content?: string) => {
+  const confirm = (header: string, submitButtonLabel: string, content?: string) => {
     dispatch({
       type: DialogActionKind.SHOW_CONFIRM,
       payload: {
         header,
+        submitButtonLabel,
         content,
       },
     });
-    return new Promise((res, rej) => {
-      resolveCallback = res;
+    return new Promise((resolve, reject) => {
+      resolveCallback = resolve;
     });
   };
 

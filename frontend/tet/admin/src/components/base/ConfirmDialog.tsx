@@ -12,7 +12,7 @@ const ConfirmDialog = () => {
       id="confirmation_dialog"
       isOpen={confirmState.show}
       title={confirmState.header}
-      submitButtonLabel={t('common:delete.deletePosting')}
+      submitButtonLabel={confirmState.submitButtonLabel}
       cancelButtonLabel={t('common:dialog.cancel')}
       handleToggle={onCancel}
       handleSubmit={onConfirm}

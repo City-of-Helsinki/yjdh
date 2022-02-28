@@ -44,27 +44,24 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   };
 
   const deletePostingHandler = async () => {
-    //TODO
-    await showConfirm();
-  };
-
-  const publishPostingHandler = async () => {
-    const isConfirmed = await confirm(t('common:publish.confirmation', { posting: posting.title }));
-
-    if (isConfirmed) {
-      publishTetPosting.mutate(posting);
-    } else {
-      console.log('not confirmed');
-    }
-  };
-
-  const showConfirm = async () => {
-    const isConfirmed = await confirm(t('common:delete.confirmation', { posting: posting.title }));
+    const isConfirmed = await confirm(
+      t('common:delete.confirmation', { posting: posting.title }),
+      t('common:delete.deletePosting'),
+    );
 
     if (isConfirmed) {
       deleteTetPosting.mutate(posting);
-    } else {
-      console.log('not confirmed');
+    }
+  };
+
+  const publishPostingHandler = async () => {
+    const isConfirmed = await confirm(
+      t('common:publish.confirmation', { posting: posting.title }),
+      t('common:publish.publishPosting'),
+    );
+
+    if (isConfirmed) {
+      publishTetPosting.mutate(posting);
     }
   };
 
