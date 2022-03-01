@@ -25,7 +25,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     );
   });
 
-  it('Redirects to logout and clear userdata when clicked logout button', async () => {
+  it('Userdata is cleared when clicked logout button', async () => {
     const user = fakeUser();
     expectAuthorizedReply(user);
     const spyRouterPush = jest.fn();
@@ -36,9 +36,6 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     await headerApi.actions.clickLogoutButton(user);
     await waitFor(() =>
       expect(queryClient.getQueryData('user')).toBeUndefined()
-    );
-    expect(spyRouterPush).toHaveBeenCalledWith(
-      `${DEFAULT_LANGUAGE}/login?logout=true`
     );
   });
 

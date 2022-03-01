@@ -16,7 +16,7 @@ const useUserQuery = <T = User>(
   const { t } = useTranslation();
   const router = useRouter();
   const logout =
-    router.route == '/login' && router.asPath.includes('logout=true'); // router.query doesn't always contain the logout parameter
+    router.route === '/login' && router.asPath.includes('logout=true'); // router.query doesn't always contain the logout parameter
   const locale = useLocale();
   const { axios, handleResponse } = useBackendAPI();
 

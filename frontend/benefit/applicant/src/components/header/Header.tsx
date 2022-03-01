@@ -1,6 +1,6 @@
 import { ROUTES } from 'benefit/applicant/constants';
 import useLogin from 'benefit/applicant/hooks/useLogin';
-import useLogoutQuery from 'benefit/applicant/hooks/useLogoutQuery';
+import useLogout from 'benefit/applicant/hooks/useLogout';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
 import { Button, IconLock, IconSpeechbubbleText } from 'hds-react';
 import noop from 'lodash/noop';
@@ -21,9 +21,10 @@ const Header: React.FC = () => {
 
   const login = useLogin();
   const userQuery = useUserQuery();
-  const logoutQuery = useLogoutQuery();
 
-  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
+  const logout = useLogout();
+
+  const { isLoading } = userQuery;
   const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
 
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
@@ -43,7 +44,7 @@ const Header: React.FC = () => {
           loginLabel: t('common:header.loginLabel'),
           logoutLabel: t('common:header.logoutLabel'),
           onLogin: !isLoading ? login : noop,
-          onLogout: !isLoading ? () => logoutQuery.mutate({}) : noop,
+          onLogout: !isLoading ? logout : noop,
           userName: userQuery.isSuccess ? userQuery.data.name : undefined,
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}

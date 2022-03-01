@@ -5,8 +5,8 @@ import BaseHeader from 'shared/components/header/Header';
 import { SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
-import useLogoutQuery from 'tet/admin/hooks/backend/useLogoutQuery';
 import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
+import useLogout from 'tet/admin/hooks/backend/useLogout';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
@@ -34,9 +34,10 @@ const Header: React.FC = () => {
 
   const login = useLogin();
   const userQuery = useUserQuery();
-  const logoutQuery = useLogoutQuery();
 
-  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
+  const logout = useLogout();
+
+  const isLoading = userQuery.isLoading;
   const isLoginPage = asPath?.startsWith('/login');
 
   return (
@@ -53,7 +54,7 @@ const Header: React.FC = () => {
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
               onLogin: login,
-              onLogout: logoutQuery.mutate as () => void,
+              onLogout: logout as () => void,
               userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }
