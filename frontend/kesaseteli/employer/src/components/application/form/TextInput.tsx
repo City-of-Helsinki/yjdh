@@ -73,6 +73,6 @@ TextInput.defaultProps = {
   type: undefined,
   placeholder: undefined,
   helperFormat: undefined,
-}
+};
 
 export default TextInput;

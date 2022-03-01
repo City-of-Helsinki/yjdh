@@ -90,7 +90,7 @@ const useApplicationFormField = <V extends Value>(
     if (!error) {
       return undefined;
     }
-    const {message} = error;
+    const { message } = error;
     if (message) {
       return message;
     }

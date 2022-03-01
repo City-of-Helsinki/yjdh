@@ -43,8 +43,8 @@ COPY --chown=appuser:appuser . .
 
 
 # Bake package.json start command into the image
-ENV START "yarn $SERVICE:dev"
-CMD ["sh", "-c", "${START}"]
+ENV DEV_START "yarn $SERVICE:dev"
+CMD ["sh", "-c", "${DEV_START}"]
 
 # ===================================
 FROM appbase as staticbuilder
@@ -114,5 +114,5 @@ RUN yarn add -W lerna
 EXPOSE $PORT
 
 # Start nextjs server
-ENV START "yarn $SERVICE:start"
-CMD ["sh", "-c", "${START}"]
+ENV PROD_START "yarn $PRODSTART:start"
+CMD ["sh", "-c", "${PROD_START}"]
