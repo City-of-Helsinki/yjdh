@@ -7,6 +7,13 @@ TARGET_ASSOCIATION_NAME_STATUS = "R"
 
 
 class YRTTIClient:
+
+    # The YRTTI API only returns data for associations, so the response does not contain
+    # a field for company form.
+    # Use the YTJ "yritysmuoto" code for associations when creating the Company objects
+    ASSOCIATION_FORM_CODE = 29
+    ASSOCIATION_FORM = "Yhdistys"
+
     def __init__(self):
         if not all([settings.YRTTI_BASIC_INFO_PATH, settings.YRTTI_TIMEOUT]):
             raise ValueError("YRTTI client settings not configured.")
@@ -31,7 +38,8 @@ class YRTTIClient:
         company_data = {
             "name": association_name["AssociationName"],
             "business_id": yrtti_data["BusinessId"],
-            "company_form": "association",
+            "company_form": self.ASSOCIATION_FORM,
+            "company_form_code": self.ASSOCIATION_FORM_CODE,
             "industry": association_name["AssociationIndustry"] or "",
             "street_address": self._sanitize_text(address["StreetName"]),
             "postcode": address["PostCode"],

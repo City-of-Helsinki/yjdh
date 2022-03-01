@@ -14,7 +14,7 @@ from applications.models import (
     Employee,
 )
 from calculator.models import Calculation
-from companies.tests.factories import CompanyFactory
+from companies.tests.factories import COMPANY_FORM_CODE, CompanyFactory
 from users.tests.factories import HandlerFactory
 
 
@@ -53,6 +53,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     )
     company_name = factory.Faker("sentence", nb_words=2)
     company_form = factory.Faker("sentence", nb_words=1)
+    company_form_code = COMPANY_FORM_CODE
     company_department = factory.Faker("street_address")
     official_company_street_address = factory.Faker("street_address")
     official_company_city = factory.Faker("city")

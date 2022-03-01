@@ -94,6 +94,7 @@ class ApplicationsCsvService(CsvExportBase):
             ),
             CsvColumn("Työnantajan osasto", "company_department"),
             CsvColumn("Työnantajan yhtiömuoto", "company_form"),
+            CsvColumn("Työnantajan yhtiömuoto (YTJ-numero)", "company_form_code"),
             CsvDefaultColumn(
                 "Hyväksymisen/hylkäyksen/peruutuksen syy", "latest_decision_comment"
             ),

@@ -14,7 +14,11 @@ from applications.services.ahjo_integration import (
 from applications.tests.factories import ApplicationFactory, DecidedApplicationFactory
 from calculator.models import Calculation
 from calculator.tests.factories import PaySubsidyFactory
-from companies.tests.factories import CompanyFactory
+from companies.tests.factories import (
+    ASSOCIATION_FORM_CODE,
+    COMPANY_FORM_CODE,
+    CompanyFactory,
+)
 from helsinkibenefit.tests.conftest import *  # noqa
 
 
@@ -26,19 +30,19 @@ def _assert_html_content(html, include_keys=(), excluded_keys=()):
 
 
 @pytest.mark.parametrize(
-    "company_type, de_minimis_aid",
+    "company_form_code, de_minimis_aid",
     [
-        ("ry", False),
-        ("oy", False),
-        ("oy", True),
+        (ASSOCIATION_FORM_CODE, False),
+        (COMPANY_FORM_CODE, False),
+        (COMPANY_FORM_CODE, True),
     ],
 )
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_single_approved_template_html(
-    mock_pdf_convert, company_type, de_minimis_aid
+    mock_pdf_convert, company_form_code, de_minimis_aid
 ):
     mock_pdf_convert.return_value = {}
-    company = CompanyFactory(company_form=company_type)
+    company = CompanyFactory(company_form_code=company_form_code)
     apps = DecidedApplicationFactory.create_batch(
         3,
         company=company,
@@ -179,6 +183,7 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     application = ApplicationFactory(
         association_has_business_activities=True,
         company__company_form="ry",
+        company__company_form_code=ASSOCIATION_FORM_CODE,
         start_date=date(2021, 7, 10),
         end_date=date(2021, 11, 10),
         status=ApplicationStatus.RECEIVED,

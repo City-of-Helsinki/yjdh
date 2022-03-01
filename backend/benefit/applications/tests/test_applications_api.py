@@ -33,7 +33,11 @@ from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
-from companies.tests.factories import CompanyFactory
+from companies.tests.factories import (
+    ASSOCIATION_FORM_CODE,
+    COMPANY_FORM_CODE,
+    CompanyFactory,
+)
 from django.core.files.uploadedfile import SimpleUploadedFile
 from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
@@ -274,6 +278,9 @@ def test_application_post_success(api_client, application):
     # ensure that the current values for company info are filled in
     assert new_application.company_name == new_application.company.name
     assert new_application.company_form == new_application.company.company_form
+    assert (
+        new_application.company_form_code == new_application.company.company_form_code
+    )
     assert (
         new_application.official_company_street_address
         == new_application.company.street_address
@@ -652,6 +659,7 @@ def test_application_edit_benefit_type_business_association(
     data = ApplicantApplicationSerializer(association_application).data
     company = mock_get_organisation_roles_and_create_company
     company.company_form = "ry"
+    company.company_form_code = ASSOCIATION_FORM_CODE
     company.save()
     association_application.company = company
     association_application.save()
@@ -858,27 +866,27 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
-    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    "company_form_code,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
     [
-        ("ry", None, [], False, 200),
-        ("ry", False, [], False, 200),
-        ("ry", None, [], True, 200),
-        ("ry", False, [], True, 200),
-        ("oy", None, [], None, 400),
-        ("oy", False, [], None, 200),
+        (ASSOCIATION_FORM_CODE, None, [], False, 200),
+        (ASSOCIATION_FORM_CODE, False, [], False, 200),
+        (ASSOCIATION_FORM_CODE, None, [], True, 200),
+        (ASSOCIATION_FORM_CODE, False, [], True, 200),
+        (COMPANY_FORM_CODE, None, [], None, 400),
+        (COMPANY_FORM_CODE, False, [], None, 200),
     ],
 )
 def test_submit_application_without_de_minimis_aid(
     request,
     api_client,
     application,
-    company_form,
+    company_form_code,
     de_minimis_aid,
     de_minimis_aid_set,
     association_has_business_activities,
     expected_result,
 ):
-    application.company.company_form = company_form
+    application.company.company_form_code = company_form_code
     application.company.save()
     add_attachments_to_application(request, application)
 
@@ -890,7 +898,7 @@ def test_submit_application_without_de_minimis_aid(
     data["pay_subsidy_percent"] = "50"
     data["pay_subsidy_granted"] = True
     data["association_has_business_activities"] = association_has_business_activities
-    if company_form == "ry":
+    if company_form_code == ASSOCIATION_FORM_CODE:
         data["association_immediate_manager_check"] = True
 
     response = api_client.put(

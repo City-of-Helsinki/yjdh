@@ -13,6 +13,7 @@ from applications.tests.factories import (
 )
 from common.tests.conftest import *  # noqa
 from companies.tests.conftest import *  # noqa
+from companies.tests.conftest import ASSOCIATION_FORM_CODE
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.tests.conftest import *  # noqa
 from terms.tests.factories import TermsOfServiceApprovalFactory
@@ -114,6 +115,7 @@ def association_application(mock_get_organisation_roles_and_create_company):
     application.company = mock_get_organisation_roles_and_create_company
     application.save()
     application.company.company_form = "association"  # TODO: fix with actual value
+    application.company.company_form_code = ASSOCIATION_FORM_CODE
     application.company.save()
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.de_minimis_aid = None
