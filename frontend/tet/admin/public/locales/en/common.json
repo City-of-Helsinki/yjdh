@@ -147,6 +147,13 @@
     "errorTitle": "Deleting the file failed.",
     "errorMessage": "Something went wrong. Please try again later."
   },
+  "publish": {
+		"publishPosting": "ENG Julkaise TET-paikka",
+		"confirmation": "ENG Haluatko varmasti julkaista TET-paikan {{posting}}?",
+		"successTitle": "ENG TET-paikka julkaistiin",
+    "errorTitle": "ENG Julkaiseminen epäonnistui",
+    "errorMessage": "ENG Jotain meni pieleen. Yritä myöhemmin uudelleen."
+  },
   "applications": {
     "sections": {
       "attachments": {
