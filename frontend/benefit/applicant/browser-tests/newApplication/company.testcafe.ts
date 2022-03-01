@@ -33,13 +33,17 @@ test('Oppisopimus', async (t) => {
   await step2.fillEmployeeInfo('Larry', 'Blick', '010101-150J', '040444321');
   await step2.fillPaidSubsidyGrant();
   await step2.selectBenefitType('salary');
-  await step2.fillBenefitPeriod('1.3.2021', '28.2.2022');
+  const currentYear: number = new Date().getFullYear();
+  await step2.fillBenefitPeriod(
+    `1.3.${currentYear}`,
+    `28.2.${currentYear + 1}`
+  );
   await step2.fillEmploymentInfo(
     'Kuljettaja',
     '30',
     'Logistiikka TES',
     '2300',
-    '2300',
+    '300',
     '500'
   );
   await step2.submit();

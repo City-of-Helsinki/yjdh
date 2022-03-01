@@ -32,6 +32,8 @@ class Step2 {
     '#additionalPaySubsidyPercent-menu li'
   ).withText('30%');
 
+  apprenticeshipProgramFalse = Selector('#apprenticeshipProgramFalse');
+
   benefitTypeEmployment = Selector('#benefitTypeEmployment');
   benefitTypeSalary = Selector('#benefitTypeSalary');
   benefitTypeCommission = Selector('#benefitTypeCommission');
@@ -78,7 +80,8 @@ class Step2 {
       .click(this.paidSubsidySelect)
       .click(this.paidSubsidyFiftyPercent)
       .click(this.additionalPaidSubsidySelect)
-      .click(this.additionalPaidSubsidyThirtyPercent);
+      .click(this.additionalPaidSubsidyThirtyPercent)
+      .click(this.apprenticeshipProgramFalse);
   }
 
   async selectBenefitType(benefitType: 'employment' | 'salary' | 'commission') {
