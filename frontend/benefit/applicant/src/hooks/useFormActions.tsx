@@ -84,6 +84,7 @@ const useFormActions = (application: Application): FormActions => {
 
   const { deMinimisAids } = useContext(DeMinimisContext);
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const getModifiedValues = (currentValues: Application): Application => {
     const employee: Employee | undefined = currentValues?.employee ?? undefined;
     if (employee) {

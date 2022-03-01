@@ -11,6 +11,17 @@ module.exports = {
     'lodash/prefer-noop': 'off',
     'sonarjs/no-nested-template-literals': 'off',
     'unicorn/prefer-node-protocol': 'off',
+    'jsx-a11y/anchor-is-valid': [
+      'error',
+      {
+        components: ['Link'],
+        specialLink: ['hrefLeft', 'hrefRight'],
+        aspects: ['invalidHref', 'preferButton'],
+      },
+    ],
+    'no-void': 'off',
+    'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
+    'react/function-component-definition': 'off',
   },
   overrides: [
     {

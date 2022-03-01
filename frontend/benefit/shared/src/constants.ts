@@ -31,3 +31,5 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MIN = 'common:form.validation.time.min',
   TIME_MAX = 'common:form.validation.time.max',
 }
+
+export const PAY_SUBSIDY_OPTIONS = [30, 40, 50, 100] as const;

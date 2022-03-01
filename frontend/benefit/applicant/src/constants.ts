@@ -173,8 +173,6 @@ export const APPLICATION_INITIAL_VALUES = {
   applicationStep: DEFAULT_APPLICATION_STEP,
 };
 
-export const PAY_SUBSIDY_OPTIONS = [30, 40, 50, 100] as const;
-
 export const EMPLOYEE_MIN_WORKING_HOURS = 18;
 export const EMPLOYEE_MAX_WORKING_HOURS = 168;
 
