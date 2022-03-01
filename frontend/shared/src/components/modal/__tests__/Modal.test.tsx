@@ -7,6 +7,7 @@ import Modal, { ModalProps } from '../Modal';
 describe('Modal', () => {
   const initialProps: ModalProps = {
     id: 'modal-id',
+    cancelButtonLabel: 'Cancel',
     submitButtonLabel: 'Submit',
     isOpen: true,
     handleSubmit: jest.fn(),

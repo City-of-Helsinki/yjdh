@@ -34,14 +34,14 @@ from applications.api.v1.serializers import (
     SchoolSerializer,
     YouthApplicationSerializer,
 )
-from applications.enums import ApplicationStatus, YouthApplicationRejectedReason
+from applications.enums import EmployerApplicationStatus, YouthApplicationRejectedReason
 from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
     YouthApplication,
 )
-from common.permissions import DenyAll, HandlerPermission
+from common.decorators import enforce_handler_view_adfs_login
 
 LOGGER = logging.getLogger(__name__)
 
@@ -101,11 +101,33 @@ class SchoolListView(ListAPIView):
 
 
 class YouthApplicationViewSet(AuditLoggingModelViewSet):
+    permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
 
+    def list(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def update(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def partial_update(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    @enforce_handler_view_adfs_login
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
     @action(methods=["get"], detail=True)
-    def process(self, request, pk=None) -> HttpResponse:
+    @enforce_handler_view_adfs_login
+    def process(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()  # noqa: F841
 
         # TODO: Implement
@@ -113,7 +135,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
     @transaction.atomic
     @action(methods=["get"], detail=True)
-    def activate(self, request, pk=None) -> HttpResponse:
+    def activate(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()
 
         # Lock same person's applications to prevent activation of more than one of them
@@ -184,18 +206,6 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ["activate", "create"]:
-            permission_classes = [AllowAny]
-        elif self.action in ["process", "retrieve"]:
-            permission_classes = [HandlerPermission]
-        else:
-            permission_classes = [DenyAll]
-        return [permission() for permission in permission_classes]
-
 
 class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     queryset = EmployerApplication.objects.all()
@@ -231,7 +241,7 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         """
         Allow only 1 (DRAFT) application per user & company.
         """
-        if self.get_queryset().filter(status=ApplicationStatus.DRAFT).exists():
+        if self.get_queryset().filter(status=EmployerApplicationStatus.DRAFT).exists():
             raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
 

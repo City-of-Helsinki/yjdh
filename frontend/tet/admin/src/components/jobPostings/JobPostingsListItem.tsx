@@ -50,11 +50,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
                 onClick={() => setShowMenu(true)}
               />
               {posting.id && (
-                <JobPostingsListItemMenu
-                  postingId={posting.id}
-                  show={showMenu}
-                  onClickOutside={() => setShowMenu(false)}
-                />
+                <JobPostingsListItemMenu posting={posting} show={showMenu} onClickOutside={() => setShowMenu(false)} />
               )}
             </$MenuContainer>
           </$PostingHeader>

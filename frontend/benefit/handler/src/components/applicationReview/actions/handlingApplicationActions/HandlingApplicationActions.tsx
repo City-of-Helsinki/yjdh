@@ -72,6 +72,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
           isOpen={isConfirmationModalOpen}
           title={t(`${translationsBase}.reasonCancelDialogTitle`)}
           submitButtonLabel=""
+          cancelButtonLabel={t('common:applications.actions.close')}
           handleToggle={closeDialog}
           handleSubmit={noop}
           headerIcon={<IconInfoCircle />}

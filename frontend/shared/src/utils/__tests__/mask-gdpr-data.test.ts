@@ -62,7 +62,9 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
   });
 
   it('finds finnish ssn from string', () => {
-    const ssn = FinnishSSN.createWithAge(faker.datatype.number(120));
+    const ssn = FinnishSSN.createWithAge(
+      faker.datatype.number({ min: 1, max: 120 })
+    );
     const text1 = faker.lorem.text();
     const text2 = faker.lorem.text();
     expect(maskGDPRData(text1 + ssn + text2)).toEqual(
@@ -71,8 +73,12 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
   });
 
   it('finds finnish ssn from object', () => {
-    const ssn1 = FinnishSSN.createWithAge(faker.datatype.number(120));
-    const ssn2 = FinnishSSN.createWithAge(faker.datatype.number(120));
+    const ssn1 = FinnishSSN.createWithAge(
+      faker.datatype.number({ min: 1, max: 120 })
+    );
+    const ssn2 = FinnishSSN.createWithAge(
+      faker.datatype.number({ min: 1, max: 120 })
+    );
     const text1 = faker.lorem.text();
     const text2 = faker.lorem.text();
     const obj = {

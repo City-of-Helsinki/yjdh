@@ -1,9 +1,10 @@
 import {
   days360,
   diffMonths,
-  getCorrectEndDate,
   isLeapYear,
   parseDate,
+  validateDateIsFromCurrentYearOnwards,
+  getCorrectEndDate,
 } from '../date.utils';
 
 describe('dates', () => {
@@ -52,6 +53,29 @@ describe('dates', () => {
       expect(getCorrectEndDate('31.12.2021', '1.1.2023')).toBe('1.1.2023');
       expect(getCorrectEndDate('31.12.', '1.1.2021')).toBeUndefined();
       expect(getCorrectEndDate('31.12.', '2021')).toBeUndefined();
+    });
+  });
+
+  describe('validateDateIsFromCurrentYearOnwards', () => {
+    const currentYear = new Date().getFullYear();
+    it('should return false', () => {
+      expect(
+        validateDateIsFromCurrentYearOnwards(`31.12.${currentYear - 1}`)
+      ).toBe(false);
+      expect(
+        validateDateIsFromCurrentYearOnwards(`2.1.${currentYear - 4}`)
+      ).toBe(false);
+      expect(
+        validateDateIsFromCurrentYearOnwards(`4.8.${currentYear - 2}`)
+      ).toBe(false);
+    });
+    it('should return true', () => {
+      expect(validateDateIsFromCurrentYearOnwards(`1.1.${currentYear}`)).toBe(
+        true
+      );
+      expect(
+        validateDateIsFromCurrentYearOnwards(`3.4.${currentYear + 5}`)
+      ).toBe(true);
     });
   });
 });

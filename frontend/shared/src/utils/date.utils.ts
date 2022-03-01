@@ -1,3 +1,4 @@
+import { startOfYear } from 'date-fns';
 import formatDateStr from 'date-fns/format';
 import isFutureFn from 'date-fns/isFuture';
 import isValid from 'date-fns/isValid';
@@ -183,4 +184,11 @@ export const getCorrectEndDate = (
   if (parsedStartDate > parsedEndDate) return startDate;
 
   return endDate;
+};
+
+export const validateDateIsFromCurrentYearOnwards = (
+  date: string | undefined | null
+): boolean => {
+  const parsedDate = parseDate(date);
+  return parsedDate ? parsedDate >= startOfYear(new Date()) : false;
 };

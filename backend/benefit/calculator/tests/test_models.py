@@ -1,5 +1,5 @@
 import pytest
-from applications.enums import ApplicationStatus
+from applications.enums import ApplicationStatus, BenefitType
 from applications.tests.conftest import *  # noqa
 from calculator.models import (
     Calculation,
@@ -68,3 +68,23 @@ def test_create_for_application_fail(received_application):
     # calculation already exists
     with pytest.raises(BenefitAPIException):
         Calculation.objects.create_for_application(received_application)
+
+
+@pytest.mark.parametrize(
+    "pay_subsidy_percent, max_subsidy", [(40, 1400), (50, 1400), (100, 1800)]
+)
+def test_pay_subsidy_maximum(handling_application, pay_subsidy_percent, max_subsidy):
+    assert handling_application.pay_subsidies.count() == 1
+    handling_application.pay_subsidies.all().update(
+        pay_subsidy_percent=pay_subsidy_percent
+    )
+    handling_application.status = ApplicationStatus.RECEIVED
+    handling_application.benefit_type = BenefitType.SALARY_BENEFIT
+    handling_application.save()
+    calculator = handling_application.calculation.init_calculator()
+    assert (
+        calculator.get_maximum_monthly_pay_subsidy(
+            handling_application.pay_subsidies.all().first()
+        )
+        == max_subsidy
+    )
