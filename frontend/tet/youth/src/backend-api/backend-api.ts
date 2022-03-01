@@ -2,7 +2,7 @@ export const linkedEventsUrl =
   process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/';
 
 export const BackendEndpoint = {
-  EVENT: 'event/',
+  EVENT: 'event/?sort=-name',
   PLACE: 'place/',
   KEYWORD: 'keyword/',
 } as const;

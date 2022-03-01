@@ -1,3 +1,5 @@
 export type QueryParams = {
-  searchText?: string;
+  text?: string;
+  start?: String;
+  end?: String;
 };

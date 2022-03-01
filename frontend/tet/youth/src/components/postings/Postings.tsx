@@ -7,14 +7,14 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { LinkedEventsPagedResponse, LocalizedObject, TetEvent } from 'tet/youth/linkedevents';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { useRouter } from 'next/router';
+import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
 
 const Postings: React.FC = () => {
   const router = useRouter();
 
   const params = router.query;
-  console.log('params', params);
 
-  const { isLoading, data, error } = useQuery<LinkedEventsPagedResponse<TetEvent>>([BackendEndpoint.EVENT, params]);
+  const { isLoading, data, error } = useGetPostings(params);
 
   const postings = () => {
     if (isLoading) {
@@ -29,18 +29,18 @@ const Postings: React.FC = () => {
   };
 
   const searchHandler = (queryParams: QueryParams) => {
-    console.log(queryParams.searchText);
+    console.log(queryParams, 'queryparams');
     router.push({
       pathname: '/',
       query: {
-        text: queryParams.searchText,
+        ...queryParams,
       },
     });
   };
 
   return (
     <div>
-      <PostingSearch onSearchByFilters={searchHandler}></PostingSearch>
+      <PostingSearch initParams={params} onSearchByFilters={searchHandler}></PostingSearch>
       {postings()}
     </div>
   );
