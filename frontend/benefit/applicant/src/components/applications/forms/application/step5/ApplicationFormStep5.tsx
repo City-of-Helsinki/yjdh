@@ -1,9 +1,12 @@
+import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
+import noop from 'lodash/noop';
 import React from 'react';
+import { getFullName } from 'shared/utils/application.utils';
 import { useTheme } from 'styled-components';
 
 import ConsentViewer from '../consentViewer/ConsentViewer';
@@ -15,11 +18,13 @@ import { useApplicationFormStep5 } from './useApplicationFormStep5';
 
 type ExtendedProps = {
   isReadOnly?: boolean;
+  isSubmittedApplication?: boolean;
+  onSubmit?: () => void;
 };
 
 const ApplicationFormStep5: React.FC<
   DynamicFormStepComponentProps & ExtendedProps
-> = ({ data, isReadOnly }) => {
+> = ({ data, isReadOnly, isSubmittedApplication, onSubmit }) => {
   const {
     t,
     handleBack,
@@ -30,9 +35,24 @@ const ApplicationFormStep5: React.FC<
     handleClose,
     translationsBase,
     isSubmit,
-  } = useApplicationFormStep5(data);
+  } = useApplicationFormStep5(data, onSubmit);
 
   const theme = useTheme();
+
+  if (isSubmittedApplication) {
+    return (
+      <NotificationView
+        title={t('common:notifications.applicationSubmitted.label')}
+        message={t('common:notifications.applicationSubmitted.message', {
+          applicationNumber: data?.applicationNumber,
+          applicantName: getFullName(
+            data?.employee?.firstName,
+            data?.employee?.lastName
+          ),
+        })}
+      />
+    );
+  }
 
   return (
     <>
@@ -160,6 +180,8 @@ const ApplicationFormStep5: React.FC<
 
 const defaultProps = {
   isReadOnly: false,
+  isSubmittedApplication: false,
+  onSubmit: noop,
 };
 
 ApplicationFormStep5.defaultProps = defaultProps;

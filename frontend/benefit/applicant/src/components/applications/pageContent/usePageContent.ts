@@ -21,6 +21,8 @@ type ExtendedComponentProps = {
   id: string | string[] | undefined;
   isError: boolean;
   isLoading: boolean;
+  isSubmittedApplication: boolean;
+  handleSubmit: () => void;
 };
 
 const usePageContent = (): ExtendedComponentProps => {
@@ -29,6 +31,10 @@ const usePageContent = (): ExtendedComponentProps => {
   const isReadOnly = router?.query?.isReadOnly?.toString() ?? '';
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
+
+  const [isSubmittedApplication, setIsSubmittedApplication] =
+    useState<boolean>(false);
+
   // query param used in edit mode. id from context used for updating newly created application
   const {
     status: existingApplicationStatus,
@@ -72,6 +78,8 @@ const usePageContent = (): ExtendedComponentProps => {
     }));
   }, [t]);
 
+  const handleSubmit = (): void => setIsSubmittedApplication(true);
+
   return {
     t,
     id,
@@ -83,6 +91,8 @@ const usePageContent = (): ExtendedComponentProps => {
     isLoading,
     isError: Boolean(id && existingApplicationError),
     isReadOnly,
+    isSubmittedApplication,
+    handleSubmit,
   };
 };
 

@@ -309,10 +309,5 @@ export type Application = {
 } & Step1 &
   Step2;
 
-export type SubmittedApplication = {
-  applicationNumber: number;
-  applicantName: string;
-};
-
 export type TextProp = 'textFi' | 'textEn' | 'textSv';
 export type TermsProp = 'termsPdfFi' | 'termsPdfEn' | 'termsPdfSv';
