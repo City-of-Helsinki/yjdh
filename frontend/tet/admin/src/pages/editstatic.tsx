@@ -6,6 +6,7 @@ import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/Jo
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import EditById from 'tet/admin/components/editor/EditById';
+import withAuth from 'shared/components/hocs/withAuth';
 
 const EditStaticPage: NextPage = () => {
   const { t } = useTranslation();
@@ -25,4 +26,4 @@ const EditStaticPage: NextPage = () => {
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
 
-export default EditStaticPage;
+export default withAuth(EditStaticPage);

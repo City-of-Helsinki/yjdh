@@ -23,7 +23,15 @@
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
     "infoLabel": "Att använda tjänsten kräver stark autentisering",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
-    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
+    "infoContent": {
+      "listHeading": "SV TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
+      "bullet1": "SV Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
+      "bullet2": "SV Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
+      "bullet3": "SV Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
+      "moreInfo": "SV Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>",
+      "registerRights1": "SV Rekisteröidyllä on oikeuksia liittyen henkilötietoihin ja niiden käsittelyyn Helsingin kaupungilla.",
+      "registerRights2": "SV Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>."
+    }
   },
 	"dialog": {
 		"cancel": "SV Peruuta"

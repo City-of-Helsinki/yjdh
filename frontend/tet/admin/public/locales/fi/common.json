@@ -23,7 +23,15 @@
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "TET-paikkailmoituksen tekemistä..."
+    "infoContent": {
+      "listHeading": "TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
+      "bullet1": "Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
+      "bullet2": "Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
+      "bullet3": "Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
+      "moreInfo": "Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>",
+      "registerRights1": "Rekisteröidyllä on oikeuksia liittyen henkilötietoihin ja niiden käsittelyyn Helsingin kaupungilla.",
+      "registerRights2": "Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>."
+    }
   },
 	"dialog": {
 		"cancel": "Peruuta"
