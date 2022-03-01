@@ -1,4 +1,4 @@
-import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
+import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 import React from 'react';
 import AuthContext from 'shared/auth/AuthContext';
 
