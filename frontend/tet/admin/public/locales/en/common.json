@@ -23,7 +23,15 @@
     "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires strong authentication",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
-    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+    "infoContent": {
+      "listHeading": "ENG TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
+      "bullet1": "ENG Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
+      "bullet2": "ENG Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
+      "bullet3": "ENG Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
+      "moreInfo": "ENG Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>",
+      "registerRights1": "ENG Rekisteröidyllä on oikeuksia liittyen henkilötietoihin ja niiden käsittelyyn Helsingin kaupungilla.",
+      "registerRights2": "ENG Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>."
+    }
   },
 	"dialog": {
 		"cancel": "ENG Peruuta"
@@ -135,7 +143,7 @@
   "delete": {
 		"deletePosting": "ENG Poista TET-paikka",
 		"confirmation": "ENG Haluatko varmasti poistaa TET-paikan {{posting}}?",
-		"successTitle": "ENG TETP-paikka poistettiin", 
+		"successTitle": "ENG TETP-paikka poistettiin",
     "errorTitle": "Deleting the file failed.",
     "errorMessage": "Something went wrong. Please try again later."
   },
