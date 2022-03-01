@@ -5,6 +5,7 @@ import Container from 'shared/components/container/Container';
 import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
 import Editor from 'tet/admin/components/editor/Editor';
 import { useTranslation } from 'next-i18next';
+import withAuth from 'shared/components/hocs/withAuth';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
@@ -21,4 +22,4 @@ const NewPostingPage: NextPage = () => {
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
 
-export default NewPostingPage;
+export default withAuth(NewPostingPage);
