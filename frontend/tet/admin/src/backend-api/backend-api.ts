@@ -5,7 +5,7 @@ export const BackendEndpoint = {
   TET_POSTINGS: '/v1/events/',
   LOGIN: mockFlag ? '/oidc/authenticate/' : '/oauth2/login',
   LOGOUT: mockFlag ? '/oidc/logout/' : '/oauth2/logout',
-  USER: mockFlag ? '/oidc/userinfo/' : '/TODO/what', // TODO do we need to implement userinfo like in oidc?
+  USER: '/userinfo/',
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
