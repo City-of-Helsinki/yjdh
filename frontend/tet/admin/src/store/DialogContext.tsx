@@ -41,6 +41,7 @@ type DialogActionTypes = ShowConfirmAction | HideConfirmAction;
 const initialState: DialogState = {
   show: false,
   header: '',
+  submitButtonLabel: '',
   content: '',
 };
 
