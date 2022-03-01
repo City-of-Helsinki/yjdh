@@ -24,13 +24,13 @@ const Header: React.FC = () => {
 
   const logout = useLogout();
 
-  const { isLoading } = userQuery;
+  const { isLoading, isSuccess, data } = userQuery;
   const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
 
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
     useToggle(false);
 
-  const isAuthenticated = !isLoginPage && userQuery.isSuccess;
+  const isAuthenticated = !isLoginPage && isSuccess;
 
   return (
     <>
@@ -40,12 +40,12 @@ const Header: React.FC = () => {
         languages={languageOptions}
         onLanguageChange={handleLanguageChange}
         login={{
-          isAuthenticated: !isLoginPage && userQuery.isSuccess,
+          isAuthenticated: !isLoginPage && isSuccess,
           loginLabel: t('common:header.loginLabel'),
           logoutLabel: t('common:header.logoutLabel'),
           onLogin: !isLoading ? login : noop,
           onLogout: !isLoading ? logout : noop,
-          userName: userQuery.isSuccess ? userQuery.data.name : undefined,
+          userName: isSuccess ? data?.name : undefined,
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}
         customItems={
