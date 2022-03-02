@@ -24,7 +24,7 @@ const useCompleteYouthApplicationQuery = (
   return useMutation({
     mutationFn: (operation: Operation) =>
       handleResponse<CreatedYouthApplication>(
-        axios.post(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}`)
+        axios.patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
       ),
     onSuccess: (data, operation, context) => {
       void queryClient.invalidateQueries(getYouthApplicationQueryKey(id));

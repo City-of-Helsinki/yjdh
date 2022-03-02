@@ -54,7 +54,7 @@ export const expectToPatchYouthApplication = (
   id: CreatedYouthApplication['id']
 ): nock.Scope =>
   nock(getBackendDomain())
-    .post(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}`)
+    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
     .reply(
       200,
       { status: operation === 'accept' ? 'accepted' : 'rejected' },
@@ -68,7 +68,7 @@ export const expectToPatchYouthApplicationError = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .post(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}`)
+    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
     .reply(
       errorCode,
       `This is a youthapplications ${operation} backend test error. Please ignore this error message.`

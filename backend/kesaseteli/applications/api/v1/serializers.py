@@ -20,6 +20,7 @@ from applications.models import (
     School,
     YouthApplication,
 )
+from common.permissions import HandlerPermission
 from companies.api.v1.serializers import CompanySerializer
 from companies.services import get_or_create_company_using_organization_roles
 
@@ -474,15 +475,24 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "receipt_confirmed_at",
             "encrypted_vtj_json",
             "status",
+            "handler",
+            "handled_at",
         ]
         read_only_fields = [
             "id",
             "created_at",
             "encrypted_vtj_json",
             "status",
+            "handler",
+            "handled_at",
         ]
 
     encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")
+    handler = serializers.PrimaryKeyRelatedField(
+        required=False,
+        allow_null=True,
+        queryset=HandlerPermission.get_handler_users_queryset(),
+    )
 
     def get_encrypted_vtj_json(self, obj):
         """
