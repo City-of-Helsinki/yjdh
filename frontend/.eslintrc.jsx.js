@@ -1,24 +1,16 @@
 module.exports = {
   root: true,
-  extends: ['auto', 'plugin:you-dont-need-lodash-underscore/compatible'],
+  extends: ['.eslintrc.base.js'],
   rules: {
-    'no-secrets/no-secrets': [
+    'jsx-a11y/anchor-is-valid': [
       'error',
-      { ignoreContent: 'https://makasiini.hel.ninja/delivery' },
-    ],
-    'unicorn/no-array-reduce': 'off',
-    'unicorn/prefer-export-from': 'off',
-    'lodash/prefer-noop': 'off',
-    'sonarjs/no-nested-template-literals': 'off',
-    'unicorn/prefer-node-protocol': 'off',
-    'no-void': 'off',
-    'react/function-component-definition': 'off',
-    "@typescript-eslint/no-misused-promises": [
-      "error",
       {
-        "checksVoidReturn": false
-      }
+        components: ['Link'],
+        specialLink: ['hrefLeft', 'hrefRight'],
+        aspects: ['invalidHref', 'preferButton'],
+      },
     ],
+    'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
   },
   overrides: [
     {
