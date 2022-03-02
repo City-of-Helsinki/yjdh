@@ -3,15 +3,20 @@ export const IS_CLIENT = typeof window !== 'undefined';
 export enum ROUTES {
   HOME = '/',
   // temporary urls, not defined yet
-  APPLICATIONS_PROCESSED = '/applications/processed',
-  APPLICATIONS_ARCHIVE = 'applications/archive',
-  APPLICATIONS_REPORTS = 'applications/reports',
+  APPLICATIONS_PROCESSED = '/processed',
+  APPLICATIONS_ARCHIVE = '/archive',
+  APPLICATIONS_REPORTS = '/reports',
 }
 
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
   SV = 'sv',
   EN = 'en',
+}
+
+export enum PROPOSALS_FOR_DESISION {
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
 }
 
 export enum BENEFIT_TYPES {

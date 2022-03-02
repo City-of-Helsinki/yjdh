@@ -9,25 +9,26 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import { useTranslation } from 'next-i18next';
 
-const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorData>, TetPosting> => {
+const usePublishTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorData>, TetPosting> => {
   const { t } = useTranslation();
   const { axios, handleResponse } = useBackendAPI();
   const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation<TetPosting, AxiosError<ErrorData>, TetPosting>(
     'delete',
-    (posting: TetPosting) => handleResponse<TetPosting>(axios.delete(`${BackendEndpoint.TET_POSTINGS}${posting.id}`)),
+    (posting: TetPosting) =>
+      handleResponse<TetPosting>(axios.put(`${BackendEndpoint.TET_POSTINGS}${posting.id}/publish/`)),
     {
       onSuccess: () => {
         void queryClient.removeQueries();
         void router.push('/');
-        showSuccessToast(t('common:delete.successTitle'), '');
+        showSuccessToast(t('common:publish.successTitle'), '');
       },
       onError: () => {
-        showErrorToast(t('common:delete.errorTitle'), t('common:delete.errorMessage'));
+        showErrorToast(t('common:publish.errorTitle'), t('common:publish.errorMessage'));
       },
     },
   );
 };
 
-export default useUpsertTetPosting;
+export default usePublishTetPosting;

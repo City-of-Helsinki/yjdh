@@ -11,6 +11,7 @@ import {
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
+  PROPOSALS_FOR_DESISION,
   SUPPORTED_LANGUAGES,
 } from '../constants';
 
@@ -197,6 +198,20 @@ export type CalculationData = {
   duration_in_months_rounded: string;
 };
 
+export type BatchData = {
+  id: string;
+  status: APPLICATION_STATUSES;
+  applications: string[];
+  proposal_for_decision: PROPOSALS_FOR_DESISION;
+  decision_maker_title?: string;
+  decision_maker_name?: string;
+  section_of_the_law?: string;
+  decision_date?: string;
+  expert_inspector_name?: string;
+  expert_inspector_email?: string;
+  created_at: string;
+};
+
 export type PaySubsidyData = {
   id?: string;
   start_date: string;
@@ -272,6 +287,8 @@ export type ApplicationData = {
   log_entry_comment?: string;
   granted_as_de_minimis_aid?: boolean;
   training_compensations: TrainingCompensationData[];
+  handled_at?: string;
+  batch?: BatchData;
 };
 
 export type ApplicationListItemData = {
@@ -284,6 +301,8 @@ export type ApplicationListItemData = {
   employeeName?: string;
   handlerName?: string;
   additionalInformationNeededBy?: string;
+  handledAt?: string;
+  dataReceived?: string;
 };
 
 export interface Step1 {
@@ -333,6 +352,20 @@ export interface Step2 {
 }
 
 // handler
+
+export type Batch = {
+  id: string;
+  status: APPLICATION_STATUSES;
+  applications: string[];
+  proposalForDecision: PROPOSALS_FOR_DESISION;
+  decisionMakerTitle?: string;
+  decisionMakerName?: string;
+  sectionOfTheLaw?: string;
+  decisionDate?: string;
+  expertInspectorName?: string;
+  expertInspectorEmail?: string;
+  createdAt: string;
+};
 
 export type Row = {
   id: string;
@@ -421,6 +454,7 @@ export type Application = {
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
   trainingCompensations?: TrainingCompensation[];
+  batch?: Batch;
 } & Step1 &
   Step2;
 

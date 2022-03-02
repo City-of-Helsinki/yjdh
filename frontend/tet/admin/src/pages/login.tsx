@@ -3,12 +3,13 @@ import useLogin from 'tet/admin/hooks/backend/useLogin';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { $InfoboxContent } from 'tet/admin/components/login/InfoboxContent.sc';
 
 const Login: NextPage = () => {
   useClearQueryParams();
@@ -31,14 +32,55 @@ const Login: NextPage = () => {
     return `common:loginPage.infoLabel`;
   }, [logout, error, sessionExpired]);
 
-  const notificationContent = React.useMemo((): string | null => {
+  const notificationContent = React.useMemo((): JSX.Element | null => {
     if (error || logout) {
       return null;
     }
     if (sessionExpired) {
       return t(`common:loginPage.logoutInfoContent`);
     }
-    return t(`common:loginPage.infoContent`);
+    return (
+      <$InfoboxContent>
+        {t(`common:loginPage.infoContent.listHeading`)}
+        <br />- {t(`common:loginPage.infoContent.bullet1`)}
+        <br />- {t(`common:loginPage.infoContent.bullet2`)}
+        <br />- {t(`common:loginPage.infoContent.bullet3`)}
+        <br />
+        <br />
+        <Trans
+          i18nKey="common:loginPage.infoContent.moreInfo"
+          components={{
+            a: (
+              <a href={t('common:footer.privacyPolicyLink')} rel="noopener noreferrer" target="_blank">
+                {}
+              </a>
+            ),
+          }}
+        >
+          {
+            'Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>'
+          }
+        </Trans>
+        <br />
+        <br />
+        {t(`common:loginPage.infoContent.registerRights1`)}
+        <br />
+        <Trans
+          i18nKey="common:loginPage.infoContent.registerRights2"
+          components={{
+            a: (
+              <a href={t('common:footer.privacyPolicyLink')} rel="noopener noreferrer" target="_blank">
+                {}
+              </a>
+            ),
+          }}
+        >
+          {
+            'Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>.'
+          }
+        </Trans>
+      </$InfoboxContent>
+    );
   }, [logout, error, sessionExpired, t]);
 
   const notificationType = error || sessionExpired ? 'error' : 'info';

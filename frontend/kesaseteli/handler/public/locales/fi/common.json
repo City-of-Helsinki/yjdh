@@ -33,7 +33,16 @@
     "is_unlisted_school": "(Koulua ei löytynyt listalta)",
     "phone_number": "Puhelinnumero",
     "email": "Sähköposti",
-    "notFound": "Hakemusta ei löytynyt"
+    "notFound": "Hakemusta ei löytynyt",
+    "accept": "Hyväksy",
+    "reject": "Hylkää",
+    "saving": "Tallennetaan...",
+    "notification": {
+      "submitted": "Nuori ei ole vielä aktivoinut hakemusta",
+      "additional_information_requested": "Nuori ei ole vielä täyttänyt lisätietohakemusta",
+      "accepted": "Hyväksytty",
+      "rejected": "Hylätty"
+    }
   },
   "errors": {
     "required": "Tieto puuttuu",
