@@ -1,6 +1,7 @@
 import {
   days360,
   diffMonths,
+  getCorrectEndDate,
   isLeapYear,
   parseDate,
   validateDateIsFromCurrentYearOnwards,
@@ -43,6 +44,15 @@ describe('dates', () => {
         parseDate('31.12.2021')
       );
       expect(diffMonthsResult).toBeLessThan(0);
+    });
+  });
+
+  describe('getCorrectEndDate', () => {
+    it('should be expected result', () => {
+      expect(getCorrectEndDate('31.12.2022', '1.1.2021')).toBe('31.12.2022');
+      expect(getCorrectEndDate('31.12.2021', '1.1.2023')).toBe('1.1.2023');
+      expect(getCorrectEndDate('31.12.', '1.1.2021')).toBeUndefined();
+      expect(getCorrectEndDate('31.12.', '2021')).toBeUndefined();
     });
   });
 
