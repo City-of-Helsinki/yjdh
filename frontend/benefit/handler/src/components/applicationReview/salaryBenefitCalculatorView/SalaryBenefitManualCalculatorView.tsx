@@ -1,6 +1,8 @@
+import { CALCULATION_SALARY_KEYS } from 'benefit/handler/constants';
 import { SalaryBenefitManualCalculatorViewProps } from 'benefit/handler/types/application';
 import { TextArea, TextInput } from 'hds-react';
 import * as React from 'react';
+import { Field } from 'shared/components/forms/fields/types';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
@@ -10,7 +12,9 @@ const SalaryBenefitManualCalculatorView: React.FC<
   SalaryBenefitManualCalculatorViewProps
 > = ({ formik, fields, getErrorMessage }) => {
   const { overrideMonthlyBenefitAmount, overrideMonthlyBenefitAmountComment } =
-    fields;
+    fields as {
+      [key in CALCULATION_SALARY_KEYS]: Field<CALCULATION_SALARY_KEYS>;
+    };
 
   return (
     <>

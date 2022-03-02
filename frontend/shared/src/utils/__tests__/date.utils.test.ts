@@ -1,10 +1,10 @@
 import {
   days360,
   diffMonths,
+  getCorrectEndDate,
   isLeapYear,
   parseDate,
   validateDateIsFromCurrentYearOnwards,
-  getCorrectEndDate,
 } from '../date.utils';
 
 describe('dates', () => {
