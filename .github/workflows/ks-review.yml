@@ -60,19 +60,19 @@ jobs:
             port: 8000
           - service: ks-empl
             context: ./frontend
-            dockerfile: ./Dockerfile
+            dockerfile: ./frontend/Dockerfile
             project: kesaseteli
             folder: employer
             port: 3000
           - service: ks-youth
             context: ./frontend
-            dockerfile: ./Dockerfile
+            dockerfile: ./frontend/Dockerfile
             project: kesaseteli
             folder: youth
             port: 3100
           - service: ks-hdlr
             context: ./frontend
-            dockerfile: ./Dockerfile
+            dockerfile: ./frontend/Dockerfile
             project: kesaseteli
             folder: handler
             port: 3200
