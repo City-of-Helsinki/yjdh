@@ -180,8 +180,8 @@
     "fields": {
       "businessId": "Y-tunnus",
       "bankAccountNumber": "Tilinumero",
-      "associationHasBusinessActivities": "Harjoittaako työnantaja elinkeinotoimintaa?",
-      "associationImmediateManagerCheck": "Lähiesihenkilö palkattavalle henkilölle?",
+      "associationHasBusinessActivities": "Harjoittaako työnantaja taloudellista toimintaa?",
+      "associationImmediateManagerCheck": "Lähiesihenkilö työllistetylle henkilölle?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
       "deMinimisAidAmount": "Tuen määrä",
