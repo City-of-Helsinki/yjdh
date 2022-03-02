@@ -126,6 +126,14 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         "de_minimis_aid_set",
     ]
 
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        # In case new AuditLogEntry objects were created during the
+        # processing of the update, then the annotation value for handled_at
+        # in the serializer.instance might have become stale.
+        # Update the object.
+        serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
+
     @action(methods=["get"], detail=False, url_path="simplified_list")
     def simplified_application_list(self, request):
         """
@@ -296,15 +304,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         ApplicationStatus.CANCELLED,
     ]
 
-    def perform_update(self, serializer):
-        super().perform_update(serializer)
-        # In case new AuditLogEntry objects were created during the
-        # processing of the update, then the annotation value for handled_at
-        # in the serializer.instance might have become stale.
-        # Update the object.
-        serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
-
     def get_queryset(self):
+        # The default ordering in the handling views:
+        # * In the "received" table, ordering should be by the send time, most recent first
+        # * In the "handling" table, ordering should be by the calculation modification
+        #   time, most recent first
+        # * In the archive page, ordering should be by handled_at, most recent first.
+        # All these goals are achieved by ordering by first handled_at, then
+        # calculation.modified_at.
+        # * in the "received" and "handling" table, no application has handled_at set yet,
+        #   so applications will compare as equals
+        # * For received applications, the send time is the same as calculation
+        #   modification time
         return self._annotate_unread_messages_count(
             super()
             .get_queryset()
@@ -313,7 +324,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             .prefetch_related(
                 "pay_subsidies", "training_compensations", "calculation__rows"
             )
-        )
+        ).order_by("-handled_at", "-calculation__modified_at")
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
