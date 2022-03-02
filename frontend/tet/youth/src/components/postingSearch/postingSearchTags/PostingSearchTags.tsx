@@ -2,30 +2,67 @@ import React from 'react';
 import { Tag } from 'hds-react';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { $Tags, $RemoveButton } from './PostingSearchTags.sc';
+import Button from 'hds-react';
+import { OptionType } from 'tet/admin/types/classification';
 
 type Props = {
   initParams: QueryParams;
-  onRemoveFilter: (filter: keyof QueryParams) => void;
+  onRemoveFilter: (removeKeys: keyof QueryParams | Array<keyof QueryParams> | 'all') => void;
+  workMethods: OptionType[];
 };
 
-const PostingSearchTags: React.FC<Props> = ({ initParams, onRemoveFilter }) => {
+const PostingSearchTags: React.FC<Props> = ({ initParams, onRemoveFilter, workMethods }) => {
   const startText = `${initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : ''}`;
   const endText = `${initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : ''}`;
   const dateText = startText + (startText.length || endText.length ? '-' : '') + endText;
 
+  const getWorkMethodLabel = () => {
+    const workMethod = workMethods.find((item) => item.value === initParams.keyword);
+    return workMethod ? workMethod.label : '';
+  };
+
   return (
-    <div>
-      {initParams?.text && <Tag onClick={() => onRemoveFilter('text')}>{initParams.text}</Tag>}
-      <Tag
-        theme={{
-          '--tag-background': `var(--color-engel-medium-light)`,
-          '--tag-color': 'var(--color-black-90)',
-          '--tag-focus-outline-color': 'var(--color-black-90)',
-        }}
-      >
-        {dateText}
-      </Tag>
-    </div>
+    <$Tags>
+      {initParams?.text && (
+        <li>
+          <Tag onDelete={() => onRemoveFilter('text')}>{initParams.text}</Tag>
+        </li>
+      )}
+      {initParams?.keyword && (
+        <li>
+          <Tag
+            onDelete={() => onRemoveFilter('keyword')}
+            theme={{
+              '--tag-background': `var(--color-engel-medium-light)`,
+              '--tag-color': 'var(--color-black-90)',
+              '--tag-focus-outline-color': 'var(--color-black-90)',
+            }}
+          >
+            {getWorkMethodLabel()}
+          </Tag>
+        </li>
+      )}
+      {dateText.length > 0 && (
+        <li>
+          <Tag
+            onDelete={() => onRemoveFilter(['start', 'end'])}
+            theme={{
+              '--tag-background': `var(--color-engel-medium-light)`,
+              '--tag-color': 'var(--color-black-90)',
+              '--tag-focus-outline-color': 'var(--color-black-90)',
+            }}
+          >
+            {dateText}
+          </Tag>
+        </li>
+      )}
+      {Object.keys(initParams).length > 0 && (
+        <li>
+          <$RemoveButton onClick={() => onRemoveFilter('all')}>Tyhjennä hakuehdot</$RemoveButton>
+        </li>
+      )}
+    </$Tags>
   );
 };
 

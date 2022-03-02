@@ -29,13 +29,24 @@ const Postings: React.FC = () => {
   };
 
   const searchHandler = (queryParams: QueryParams) => {
-    console.log(queryParams, 'queryparams');
-    router.push({
-      pathname: '/',
-      query: {
-        ...queryParams,
+    const searchQuery = {
+      ...(queryParams.text && queryParams.text.length > 0 && { text: queryParams.text }),
+      ...(queryParams.start && queryParams.start.length > 0 && { start: queryParams.start }),
+      ...(queryParams.end && queryParams.end.length > 0 && { end: queryParams.end }),
+      ...(queryParams.keyword && queryParams.keyword.length > 0 && { keyword: queryParams.keyword }),
+    };
+    router.push(
+      {
+        pathname: '/',
+        query: {
+          ...searchQuery,
+        },
       },
-    });
+      undefined,
+      {
+        shallow: true,
+      },
+    );
   };
 
   return (

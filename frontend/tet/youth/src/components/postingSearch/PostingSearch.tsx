@@ -6,17 +6,11 @@ import Container from 'shared/components/container/Container';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { $Search } from 'tet/youth/components/postingSearch/PostingSearch.sc';
 import { useTranslation } from 'next-i18next';
-import { IconGroup, IconCalendar, IconLocation, IconGlobe } from 'hds-react';
-import {
-  DATE_FORMATS,
-  convertDateFormat,
-  formatDate,
-  parseDate,
-  convertToBackendDateFormat,
-  convertToUIDateFormat,
-} from 'shared/utils/date.utils';
+import { IconGroup } from 'hds-react';
+import { convertToBackendDateFormat, convertToUIDateFormat } from 'shared/utils/date.utils';
 import PostingSearchTags from 'tet/youth/components/postingSearch/postingSearchTags/PostingSearchTags';
-import { Query } from 'react-query';
+import useGetKeywords from 'tet/youth/hooks/backend/useGetKeywords';
+import { keywordToOptionType } from 'tet/youth/backend-api/backend-api'; //TODO to shared
 
 type Props = {
   initParams: QueryParams;
@@ -24,27 +18,44 @@ type Props = {
 };
 
 const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
-  const [searchText, setSearchText] = React.useState('');
+  const [searchText, setSearchText] = React.useState<string>('');
   const [startTime, setStartTime] = React.useState('');
   const [endTime, setEndTime] = React.useState('');
+  const [workMethod, setWorkMethod] = React.useState<string>();
   const { i18n } = useTranslation();
+
+  const workMethodsResults = useGetKeywords();
+
+  const workMethods =
+    !workMethodsResults.isLoading && workMethodsResults.data
+      ? workMethodsResults.data.data.map((k) => keywordToOptionType(k))
+      : [];
 
   React.useEffect(() => {
     setStartTime(initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : '');
     setEndTime(initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : '');
-  }, []);
+    setWorkMethod(initParams.keyword ?? '');
+    setSearchText(initParams.text ?? '');
+  }, [initParams]);
 
   const searchHandler = () => {
     onSearchByFilters({
       text: searchText,
       start: convertToBackendDateFormat(startTime),
       end: convertToBackendDateFormat(endTime),
+      keyword: workMethod,
     });
   };
 
-  const removeFilterHandler = (key: keyof QueryParams) => {
-    const searchObj = { ...initParams };
-    delete searchObj[key];
+  const removeFilterHandler = (removeKeys: keyof QueryParams | Array<keyof QueryParams> | 'all') => {
+    let searchObj = { ...initParams };
+    if (removeKeys === 'all') {
+      searchObj = {};
+    } else if (Array.isArray(removeKeys)) {
+      removeKeys.forEach((item) => delete searchObj[item]);
+    } else {
+      delete searchObj[removeKeys];
+    }
     onSearchByFilters(searchObj);
   };
 
@@ -56,13 +67,20 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
             <$GridCell $colSpan={10}>
               <TextInput
                 onChange={(e) => setSearchText(e.target.value)}
+                value={searchText}
                 id="searchText"
-                placeholder="Kirjoita hakusana"
+                placeholder="Kirjoita hakusana tai paikan nimi"
               ></TextInput>
             </$GridCell>
           </$GridCell>
           <$GridCell $colSpan={3}>
-            <Select placeholder="Valitse työtapa" icon={<IconGroup />} options={[{ label: 'test' }]}></Select>
+            <Select
+              placeholder="Valitse työtapa"
+              onChange={(val) => setWorkMethod(val.value)}
+              value={workMethods.find((method) => method.value === workMethod)}
+              icon={<IconGroup />}
+              options={workMethods}
+            ></Select>
           </$GridCell>
           <$GridCell $colSpan={3}>
             <DateInput
@@ -82,14 +100,22 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               placeholder="Päättymispäivä"
             ></DateInput>
           </$GridCell>
+          <$GridCell $colSpan={3}></$GridCell>
           <$GridCell $colSpan={3}>
-            <Select placeholder="Valitse kieli" icon={<IconGlobe />} options={[{ label: 'test' }]}></Select>
-          </$GridCell>
-          <$GridCell $colSpan={2}>
-            <Button onClick={searchHandler}>Etsi</Button>
+            <Button
+              onClick={searchHandler}
+              css={`
+                background-color: #008567;
+                border-color: #008567;
+                width: 100%;
+              `}
+              theme="black"
+            >
+              Etsi
+            </Button>
           </$GridCell>
         </$GridCell>
-        <PostingSearchTags initParams={initParams} onRemoveFilter={removeFilterHandler} />
+        <PostingSearchTags initParams={initParams} onRemoveFilter={removeFilterHandler} workMethods={workMethods} />
       </Container>
     </$Search>
   );
