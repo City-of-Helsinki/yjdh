@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 module.exports = {
-  extends: ['../.eslintrc.base.js'],
+  extends: ['../.eslintrc.jsx.js'],
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
