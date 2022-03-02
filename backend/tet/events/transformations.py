@@ -12,7 +12,7 @@ EVENT_BASE_DATA = {
 CREATE_EVENT_BASE_DATA = {
     "event_status": "EventScheduled",
     "type_id": "General",
-    "publication_status": "public",
+    "publication_status": "draft",
     "data_source": "tet",
     "in_language": [{"@id": "http://localhost:8080/v1/language/fi/"}],
 }
@@ -25,11 +25,23 @@ def _new_from(obj, keys):
     return new
 
 
+def _shorten_description(descobj):
+    shortened_obj = {}
+    for lang in descobj.keys():
+        desc = descobj[lang]
+        if len(desc) <= 125:
+            shortened_obj[lang] = desc
+        else:
+            shortened_obj[lang] = f"{desc[:125]}\u2026"
+
+    return shortened_obj
+
+
 def enrich_create_event(event, publisher, email):
     event.update(EVENT_BASE_DATA)
     event.update(CREATE_EVENT_BASE_DATA)
     event["publisher"] = publisher
-    event["short_description"] = event["description"]  # TODO substring
+    event["short_description"] = _shorten_description(event["description"])
     event["custom_data"]["editor_email"] = email
     event["provider"] = {
         "fi": event["custom_data"]["org_name"]
@@ -40,9 +52,12 @@ def enrich_create_event(event, publisher, email):
 
 def enrich_update_event(event, email):
     event.update(EVENT_BASE_DATA)
-    event["short_description"] = event["description"]  # TODO substring
+    event["short_description"] = _shorten_description(event["description"])
     event["custom_data"]["editor_email"] = email
-    # TODO check that update doesn't delete any fields
+    # Not sure why it resets publication status from draft to public without the following line
+    # This is not a problem because we keep the two in sync
+    # publication_status is what decides whether the event is shown in Youth UI
+    event["publication_status"] = "public" if event['date_published'] else "draft"
     return event
 
 
@@ -59,6 +74,7 @@ def reduce_get_event(event):
             "start_time",
             "end_time",
             "custom_data",
+            "publication_status",
         ),
     )
 

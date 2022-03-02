@@ -91,6 +91,7 @@ class LinkedEventsClient:
                 params = {
                     "data_source": "tet",
                     "nocache": True,
+                    "show_all": True,
                     # TODO exclude ended events
                     # "start": "2021-01-01",
                     # "end"

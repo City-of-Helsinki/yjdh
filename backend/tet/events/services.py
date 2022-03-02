@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def is_published(posting):
-    return posting["date_published"] is not None  # TODO add proper handling
+    return posting["publication_status"] == "public"
 
 
 class ServiceClient:
@@ -87,6 +87,7 @@ class ServiceClient:
     def publish_job_posting(self, event_id, user):
         event = self._get_event_and_raise_for_unauthorized(user, event_id)
         # TODO do we also need to set event status?
+        event["publication_status"] = "public"
         event["date_published"] = date.today().isoformat()
         updated_event = self.client.update_event(event_id, event)
 
