@@ -19,9 +19,9 @@ import useDeleteApplicationQuery from './useDeleteApplicationQuery';
 import useUpdateApplicationQuery from './useUpdateApplicationQuery';
 
 interface FormActions {
-  onNext: (values: Application) => void;
-  onBack: () => void;
-  onSave: (values: Application) => void;
+  onNext: (values: Application) => Promise<ApplicationData | void>;
+  onBack: () => Promise<ApplicationData | void>;
+  onSave: (values: Application) => Promise<ApplicationData | void>;
   onDelete: (id: string) => void;
 }
 

@@ -99,8 +99,12 @@ const useApplicationFormStep6 = (
     }
   };
 
-  const handleSave = (): void => onSave(application);
-  const handleDelete = (): void => onDelete(application.id ?? '');
+  const handleSave = (): void => {
+    void onSave(application);
+  };
+  const handleDelete = (): void => {
+    void onDelete(application.id ?? '');
+  };
 
   return {
     t,

@@ -22,6 +22,12 @@ module.exports = {
     'no-void': 'off',
     'react/jsx-pascal-case': ['error', { ignore: ['$*'] }],
     'react/function-component-definition': 'off',
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": false
+      }
+    ],
   },
   overrides: [
     {

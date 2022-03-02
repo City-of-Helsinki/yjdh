@@ -170,9 +170,13 @@ const useApplicationFormStep2 = (
     });
   };
 
-  const handleSave = (): void => onSave(values);
+  const handleSave = (): void => {
+    void onSave(values);
+  };
 
-  const handleDelete = (): void => onDelete(values.id ?? '');
+  const handleDelete = (): void => {
+    void onDelete(values.id ?? '');
+  };
 
   const clearCommissionValues = React.useCallback((): void => {
     void setFieldValue(fields.employee.commissionDescription.name, '');
