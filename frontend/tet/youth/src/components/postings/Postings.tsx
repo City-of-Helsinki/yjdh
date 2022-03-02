@@ -37,7 +37,7 @@ const Postings: React.FC = () => {
     };
     router.push(
       {
-        pathname: '/',
+        pathname: '/postings',
         query: {
           ...searchQuery,
         },
