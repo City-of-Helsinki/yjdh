@@ -1,4 +1,4 @@
-import ReportView from 'benefit/handler/components/reportView/ReportView';
+import ApplicationReports from 'benefit/handler/components/applicationReports/ApplicationReports';
 import AppContext from 'benefit/handler/context/AppContext';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -25,7 +25,7 @@ const ReportIndex: NextPage = () => {
     };
   }, [setIsFooterVisible, setIsNavigationVisible, setLayoutBackgroundColor]);
 
-  return <ReportView />;
+  return <ApplicationReports />;
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({

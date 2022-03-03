@@ -369,20 +369,20 @@
       }
     }
   },
-  "reportsView": {
+  "reports": {
     "headings": {
       "main": "Raportointi",
-      "downloadApprovedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
+      "downloadAcceptedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
       "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
       "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"
     },
     "fields": {
-      "lastDownloadDateText": "Viimeksi ladattu {{date}}",
+      "lastDownloadDateText": "Ladattu viimeksi {{date}}",
       "startDate": "Alkaen",
       "endDate": "Päättyen"
     },
     "buttons": {
-      "downloadApprovedApplications": "Hyväksyt hakemukset CSV",
+      "downloadAcceptedApplications": "Hyväksyt hakemukset CSV",
       "downloadRejectedApplications": "Hylätyt hakemukset CSV",
       "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
     }

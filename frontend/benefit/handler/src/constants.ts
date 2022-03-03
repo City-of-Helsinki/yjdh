@@ -8,6 +8,12 @@ export enum ROUTES {
   APPLICATIONS_REPORTS = '/reports',
 }
 
+export enum EXPORT_APPLICATIONS_ROUTES {
+  ACCEPTED = 'export_new_accepted_applications',
+  REJECTED = 'export_new_rejected_applications',
+  IN_TIME_RANGE = 'export_csv',
+}
+
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
   SV = 'sv',
