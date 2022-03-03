@@ -1,9 +1,6 @@
 import React, { useReducer } from 'react';
 
-export const SHOW_CONFIRM = 'SHOW_CONFIRM';
-export const HIDE_CONFIRM = 'HIDE_CONFIRM';
-
-type DialogState = {
+export type DialogState = {
   show: boolean;
   header: string;
   submitButtonLabel: string;
@@ -14,11 +11,6 @@ export enum DialogActionKind {
   SHOW_CONFIRM = 'SHOW_CONFIRM',
   HIDE_CONFIRM = 'HIDE_CONFIRM',
 }
-
-export type DialogAction = {
-  type: DialogActionKind;
-  payload: DialogState;
-};
 
 type DialogPayload = {
   header: string;
@@ -45,31 +37,37 @@ const initialState: DialogState = {
   content: '',
 };
 
-const reducer = (state: DialogState = initialState, action: DialogActionTypes) => {
+const reducer = (
+  state: DialogState,
+  action: DialogActionTypes
+): DialogState => {
   const content = action?.payload?.content ?? '';
   switch (action.type) {
-    case SHOW_CONFIRM:
+    case DialogActionKind.SHOW_CONFIRM:
       return {
         show: true,
         header: action.payload.header,
         submitButtonLabel: action.payload.submitButtonLabel,
         content,
       };
-    case HIDE_CONFIRM:
-      return initialState;
+
+    case DialogActionKind.HIDE_CONFIRM:
     default:
       return initialState;
   }
 };
 
-const DialogContext = React.createContext<[DialogState, React.Dispatch<DialogActionTypes>]>([
-  { show: false, header: '', content: '', submitButtonLabel: '' },
-  () => {},
-]);
+const DialogContext = React.createContext<
+  [DialogState, React.Dispatch<DialogActionTypes>]
+>([{ show: false, header: '', content: '', submitButtonLabel: '' }, () => {}]);
 
 export const DialogContextProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  return <DialogContext.Provider value={[state, dispatch]}>{children}</DialogContext.Provider>;
+  return (
+    <DialogContext.Provider value={[state, dispatch]}>
+      {children}
+    </DialogContext.Provider>
+  );
 };
 
 export default DialogContext;

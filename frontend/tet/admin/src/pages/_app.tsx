@@ -13,8 +13,8 @@ import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 import PreviewContextProvider from 'tet/admin/store/PreviewContext';
 import { DialogContextProvider } from 'tet/admin/store/DialogContext';
-import Portal from 'tet/admin/components/base/Portal';
-import ConfirmDialog from 'tet/admin/components/base/ConfirmDialog';
+import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
+import Portal from 'shared/components/confirm-dialog/Portal';
 
 const App: React.FC<AppProps> = (appProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>

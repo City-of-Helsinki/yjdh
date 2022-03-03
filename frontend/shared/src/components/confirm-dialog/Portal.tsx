@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import PORTAL_ID from 'shared/contants/portal-id';
 
 const Portal: React.FC = ({ children }) => {
   const [mounted, setMounted] = useState(false);
@@ -10,7 +11,12 @@ const Portal: React.FC = ({ children }) => {
     return () => setMounted(false);
   }, []);
 
-  return mounted ? createPortal(children, document.querySelector('#portal') as HTMLDivElement) : null;
+  return mounted
+    ? createPortal(
+        children,
+        document.querySelector(`#${PORTAL_ID}`) as HTMLDivElement
+      )
+    : null;
 };
 
 export default Portal;

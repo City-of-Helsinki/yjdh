@@ -1,13 +1,13 @@
+import { useTranslation } from 'benefit/applicant/i18n';
 import React from 'react';
 import Modal from 'shared/components/modal/Modal';
-import useConfirm from 'tet/admin/hooks/context/useConfirm';
-import { useTranslation } from 'benefit/applicant/i18n';
+import useConfirm from 'shared/hooks/useConfirm';
 
-const ConfirmDialog = () => {
+const ConfirmDialog: React.FC = () => {
   const { onConfirm, onCancel, confirmState } = useConfirm();
   const { t } = useTranslation();
 
-  const component = confirmState.show ? (
+  return confirmState.show ? (
     <Modal
       id="confirmation_dialog"
       isOpen={confirmState.show}
@@ -21,7 +21,5 @@ const ConfirmDialog = () => {
       {confirmState.content?.length ? confirmState.content : null}
     </Modal>
   ) : null;
-
-  return component;
 };
 export default ConfirmDialog;
