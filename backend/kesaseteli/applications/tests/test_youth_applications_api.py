@@ -1,7 +1,7 @@
 import json
 import operator
 import uuid
-from datetime import timedelta
+from datetime import datetime, timedelta
 from enum import auto, Enum
 from functools import reduce
 from typing import List, Optional
@@ -28,7 +28,7 @@ from applications.enums import (
     YouthApplicationRejectedReason,
     YouthApplicationStatus,
 )
-from applications.models import YouthApplication
+from applications.models import YouthApplication, YouthSummerVoucher
 from common.permissions import HandlerPermission
 from common.tests.conftest import (
     api_client,
@@ -83,15 +83,53 @@ def get_required_fields() -> List[str]:
     ]
 
 
-def get_handler_fields() -> List[str]:
-    return get_required_fields() + [
+def get_optional_fields() -> List[str]:
+    return [
         "language",
+    ]
+
+
+def get_read_only_fields() -> List[str]:
+    return [
+        "id",
+        "created_at",
+        "modified_at",
         "receipt_confirmed_at",
         "encrypted_vtj_json",
         "status",
         "handler",
         "handled_at",
     ]
+
+
+def get_handler_fields() -> List[str]:
+    return get_required_fields() + get_optional_fields() + get_read_only_fields()
+
+
+def test_youth_application_serializer_fields():
+    """
+    Test that YouthApplicationSerializer's fields are all handled.
+
+    If this test breaks then update the following:
+     - get_required_fields()
+     - get_optional_fields()
+     - get_read_only_fields()
+     - YouthApplicationSerializer.Meta.read_only_fields
+     - YouthApplicationSerializer.Meta.fields
+    """
+    assert len(set(get_required_fields())) == len(get_required_fields())
+    assert len(set(get_optional_fields())) == len(get_optional_fields())
+    assert len(set(get_read_only_fields())) == len(get_read_only_fields())
+    assert set(get_required_fields()).isdisjoint(set(get_optional_fields()))
+    assert set(get_required_fields()).isdisjoint(set(get_read_only_fields()))
+    assert set(get_optional_fields()).isdisjoint(set(get_read_only_fields()))
+    assert set(get_required_fields()).issubset(set(get_handler_fields()))
+    assert set(get_optional_fields()).issubset(set(get_handler_fields()))
+    assert set(get_read_only_fields()).issubset(set(get_handler_fields()))
+    assert set(YouthApplicationSerializer.Meta.read_only_fields) == set(
+        get_read_only_fields()
+    )
+    assert set(YouthApplicationSerializer.Meta.fields) == set(get_handler_fields())
 
 
 def get_list_url():
@@ -415,6 +453,7 @@ def test_youth_applications_activate_unexpired_inactive(
 ):
     settings.DISABLE_VTJ = disable_vtj
     inactive_youth_application = InactiveYouthApplicationFactory(language=language)
+    assert not inactive_youth_application.has_youth_summer_voucher
     old_status = inactive_youth_application.status
 
     assert not inactive_youth_application.is_active
@@ -428,6 +467,7 @@ def test_youth_applications_activate_unexpired_inactive(
         assert response.url == inactive_youth_application.activated_page_url()
 
     inactive_youth_application.refresh_from_db()
+    assert not inactive_youth_application.has_youth_summer_voucher
 
     if response.status_code == status.HTTP_501_NOT_IMPLEMENTED:
         assert not inactive_youth_application.is_active
@@ -460,6 +500,7 @@ def test_youth_applications_activate_unexpired_active(
 ):
     settings.DISABLE_VTJ = disable_vtj
     active_youth_application = ActiveYouthApplicationFactory(language=language)
+    assert not active_youth_application.has_youth_summer_voucher
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
     old_handled_at = active_youth_application.handled_at
@@ -474,6 +515,7 @@ def test_youth_applications_activate_unexpired_active(
     assert response.url == active_youth_application.already_activated_page_url()
 
     active_youth_application.refresh_from_db()
+    assert not active_youth_application.has_youth_summer_voucher
     assert active_youth_application.is_active
     assert active_youth_application.status == old_status
     assert active_youth_application.handler == old_handler
@@ -498,6 +540,7 @@ def test_youth_applications_activate_expired_inactive(
 ):
     settings.DISABLE_VTJ = disable_vtj
     inactive_youth_application = InactiveYouthApplicationFactory(language=language)
+    assert not inactive_youth_application.has_youth_summer_voucher
     old_status = inactive_youth_application.status
 
     assert not inactive_youth_application.is_active
@@ -510,6 +553,7 @@ def test_youth_applications_activate_expired_inactive(
     assert response.url == inactive_youth_application.expired_page_url()
 
     inactive_youth_application.refresh_from_db()
+    assert not inactive_youth_application.has_youth_summer_voucher
     assert not inactive_youth_application.is_active
     assert inactive_youth_application.status == old_status
     assert inactive_youth_application.handler is None
@@ -534,6 +578,7 @@ def test_youth_applications_activate_expired_active(
 ):
     settings.DISABLE_VTJ = disable_vtj
     active_youth_application = ActiveYouthApplicationFactory(language=language)
+    assert not active_youth_application.has_youth_summer_voucher
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
     old_handled_at = active_youth_application.handled_at
@@ -548,6 +593,7 @@ def test_youth_applications_activate_expired_active(
     assert response.url == active_youth_application.already_activated_page_url()
 
     active_youth_application.refresh_from_db()
+    assert not active_youth_application.has_youth_summer_voucher
     assert active_youth_application.is_active
     assert active_youth_application.status == old_status
     assert active_youth_application.handler == old_handler
@@ -567,8 +613,10 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     app_2_old_status = app_2.status
 
     # Make sure the source objects are set up correctly
+    assert not app_1.has_youth_summer_voucher
     assert not app_1.is_active
     assert not app_1.has_activation_link_expired
+    assert not app_2.has_youth_summer_voucher
     assert not app_2.is_active
     assert not app_2.has_activation_link_expired
     assert app_1.social_security_number == app_2.social_security_number
@@ -580,11 +628,13 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     app_1.refresh_from_db()
     app_2.refresh_from_db()
 
+    assert not app_1.has_youth_summer_voucher
     assert app_1.is_active
     assert app_1.status == YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
     assert response_1.status_code == status.HTTP_302_FOUND
     assert response_1.url == app_1.activated_page_url()
 
+    assert not app_2.has_youth_summer_voucher
     assert not app_2.is_active
     assert app_2.status == app_2_old_status
     assert response_2.status_code == status.HTTP_302_FOUND
@@ -616,15 +666,56 @@ def test_youth_application_post_valid_social_security_number(api_client, test_va
     assert "social_security_number" in response.data
 
 
+@freeze_time()
 @pytest.mark.django_db
-@pytest.mark.parametrize("random_seed", list(range(10)))
+@pytest.mark.parametrize("random_seed", list(range(20)))
 def test_youth_application_post_valid_random_data(api_client, random_seed):
     factory.random.reseed_random(random_seed)
-    youth_application = YouthApplicationFactory.build()
-    data = YouthApplicationSerializer(youth_application).data
+    source_app = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(source_app).data
     response = api_client.post(get_list_url(), data)
 
     assert response.status_code == status.HTTP_201_CREATED
+
+    # Check response content
+    assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
+    assert datetime.fromisoformat(response.data["created_at"]) == timezone.now()
+    assert datetime.fromisoformat(response.data["modified_at"]) == timezone.now()
+    assert response.data["first_name"] == source_app.first_name
+    assert response.data["last_name"] == source_app.last_name
+    assert response.data["school"] == source_app.school
+    assert response.data["email"] == source_app.email
+    assert response.data["phone_number"] == source_app.phone_number
+    assert response.data["postcode"] == source_app.postcode
+    assert response.data["social_security_number"] == source_app.social_security_number
+    assert response.data["is_unlisted_school"] == source_app.is_unlisted_school
+    assert response.data["language"] == source_app.language
+    assert response.data["receipt_confirmed_at"] is None
+    assert response.data["encrypted_vtj_json"] == {}
+    assert response.data["status"] == YouthApplicationStatus.SUBMITTED.value
+    assert response.data["handler"] is None
+    assert response.data["handled_at"] is None
+
+    # Check created youth application
+    created_app = YouthApplication.objects.get(pk=response.data["id"])
+    assert source_app.pk != created_app.pk
+    assert str(created_app.id) == response.data["id"]
+    assert created_app.created_at == timezone.now()
+    assert created_app.modified_at == timezone.now()
+    assert created_app.first_name == source_app.first_name
+    assert created_app.last_name == source_app.last_name
+    assert created_app.school == source_app.school
+    assert created_app.email == source_app.email
+    assert created_app.phone_number == source_app.phone_number
+    assert created_app.postcode == source_app.postcode
+    assert created_app.social_security_number == source_app.social_security_number
+    assert created_app.is_unlisted_school == source_app.is_unlisted_school
+    assert created_app.language == source_app.language
+    assert created_app.receipt_confirmed_at is None
+    assert created_app.encrypted_vtj_json is None
+    assert created_app.status == YouthApplicationStatus.SUBMITTED.value
+    assert created_app.handler is None
+    assert created_app.handled_at is None
 
 
 @pytest.mark.django_db
@@ -992,6 +1083,8 @@ def test_youth_applications_accept_acceptable(
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
     old_status = acceptable_youth_application.status
     old_modified_at = acceptable_youth_application.modified_at
+    old_youth_summer_voucher_count = YouthSummerVoucher.objects.count()
+    assert not acceptable_youth_application.has_youth_summer_voucher
     response = client_fixture.patch(
         reverse_youth_application_action("accept", acceptable_youth_application.pk)
     )
@@ -1001,6 +1094,12 @@ def test_youth_applications_accept_acceptable(
 
     if response.status_code == status.HTTP_200_OK:
         assert acceptable_youth_application.status == YouthApplicationStatus.ACCEPTED
+        assert acceptable_youth_application.has_youth_summer_voucher
+        assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
+        assert (
+            acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
+            == YouthSummerVoucher.objects.count()
+        )
         audit_event = AuditLogEntry.objects.first().message["audit_event"]
         assert audit_event["status"] == "SUCCESS"
         assert audit_event["operation"] == "UPDATE"
@@ -1023,6 +1122,8 @@ def test_youth_applications_accept_acceptable(
     else:
         assert acceptable_youth_application.status == old_status
         assert acceptable_youth_application.modified_at == old_modified_at
+        assert not acceptable_youth_application.has_youth_summer_voucher
+        assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count
         assert not AuditLogEntry.objects.exists()
 
     if response.status_code == status.HTTP_302_FOUND:
@@ -1062,6 +1163,7 @@ def test_youth_applications_accept_accepted(
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
     assert accepted_youth_application.status == YouthApplicationStatus.ACCEPTED
+    assert not accepted_youth_application.has_youth_summer_voucher
     old_modified_at = accepted_youth_application.modified_at
     response = client_fixture.patch(
         reverse_youth_application_action("accept", accepted_youth_application.pk)
@@ -1070,6 +1172,7 @@ def test_youth_applications_accept_accepted(
 
     accepted_youth_application.refresh_from_db()
     assert accepted_youth_application.status == YouthApplicationStatus.ACCEPTED
+    assert not accepted_youth_application.has_youth_summer_voucher
     assert accepted_youth_application.modified_at == old_modified_at
     assert not AuditLogEntry.objects.exists()
 
@@ -1111,12 +1214,14 @@ def test_youth_applications_reject_rejectable(
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
     old_status = rejectable_youth_application.status
     old_modified_at = rejectable_youth_application.modified_at
+    assert not rejectable_youth_application.has_youth_summer_voucher
     response = client_fixture.patch(
         reverse_youth_application_action("reject", rejectable_youth_application.pk)
     )
     assert response.status_code == expected_status_code
 
     rejectable_youth_application.refresh_from_db()
+    assert not rejectable_youth_application.has_youth_summer_voucher
 
     if response.status_code == status.HTTP_200_OK:
         assert rejectable_youth_application.status == YouthApplicationStatus.REJECTED
@@ -1181,6 +1286,7 @@ def test_youth_applications_reject_rejected(
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
     assert rejected_youth_application.status == YouthApplicationStatus.REJECTED
+    assert not rejected_youth_application.has_youth_summer_voucher
     old_modified_at = rejected_youth_application.modified_at
     response = client_fixture.patch(
         reverse_youth_application_action("reject", rejected_youth_application.pk)
@@ -1189,6 +1295,7 @@ def test_youth_applications_reject_rejected(
 
     rejected_youth_application.refresh_from_db()
     assert rejected_youth_application.status == YouthApplicationStatus.REJECTED
+    assert not rejected_youth_application.has_youth_summer_voucher
     assert rejected_youth_application.modified_at == old_modified_at
     assert not AuditLogEntry.objects.exists()
 

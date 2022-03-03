@@ -457,12 +457,37 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         self.validate_social_security_number(data.get("social_security_number", None))
         return data
 
+    def to_internal_value(self, data):
+        """
+        Dict of native values <- Dict of primitive datatypes.
+
+        NOTE: Overridden to remove non-conforming read-only field handler from result.
+        """
+        result = super().to_internal_value(data)
+        # FIXME: Fix properly by understanding why read-only handler field is in result.
+        # Maybe something to do with handler using PrimaryKeyRelatedField?
+        is_handler_writable = "handler" in [
+            field.field_name for field in self._writable_fields
+        ]
+        is_handler_not_writable = "handler" in self.Meta.read_only_fields
+        assert is_handler_writable and is_handler_not_writable and "handler" in result
+        if is_handler_not_writable and "handler" in result:
+            del result["handler"]  # Remove non-conforming read-only field from result
+        return result
+
     class Meta:
         model = YouthApplication
-        fields = [
+        read_only_fields = [
             "id",
             "created_at",
             "modified_at",
+            "receipt_confirmed_at",
+            "encrypted_vtj_json",
+            "status",
+            "handler",
+            "handled_at",
+        ]
+        fields = read_only_fields + [
             "first_name",
             "last_name",
             "social_security_number",
@@ -472,19 +497,6 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "phone_number",
             "postcode",
             "language",
-            "receipt_confirmed_at",
-            "encrypted_vtj_json",
-            "status",
-            "handler",
-            "handled_at",
-        ]
-        read_only_fields = [
-            "id",
-            "created_at",
-            "encrypted_vtj_json",
-            "status",
-            "handler",
-            "handled_at",
         ]
 
     encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")

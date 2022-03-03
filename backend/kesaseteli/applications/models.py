@@ -2,8 +2,11 @@ import logging
 from datetime import timedelta
 from urllib.parse import quote, urljoin
 
+import sequences
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
 from django.urls import reverse
@@ -18,6 +21,7 @@ from shared.common.validators import (
     validate_postcode,
 )
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
+from shared.models.mixins import LockForUpdateMixin
 
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
@@ -100,7 +104,7 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         return self.filter(self._active_q_filter())
 
 
-class YouthApplication(TimeStampedModel, UUIDModel):
+class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
         max_length=128,
         verbose_name=_("first name"),
@@ -340,7 +344,7 @@ class YouthApplication(TimeStampedModel, UUIDModel):
             self.save()
         return self.is_active
 
-    def set_handler(self, handler):
+    def _set_handler(self, handler):
         try:
             self.handler = handler
         except ValueError:  # e.g. cannot assign AnonymousUser: Must be a User instance
@@ -349,7 +353,7 @@ class YouthApplication(TimeStampedModel, UUIDModel):
             raise ValueError("Forbidden empty handler")
 
     @transaction.atomic
-    def handle(self, status: YouthApplicationStatus, handler):
+    def _handle(self, status: YouthApplicationStatus, handler):
         """
         Handle the youth application by setting the status, handler and handled_at.
 
@@ -361,9 +365,24 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         if status not in YouthApplicationStatus.handled_values():
             raise ValueError(f"Invalid handle status: {status}")
         self.status = status
-        self.set_handler(handler)
+        self._set_handler(handler)
         self.handled_at = timezone.now()
         self.save()
+
+    @property
+    def has_youth_summer_voucher(self) -> bool:
+        try:
+            self.youth_summer_voucher
+        except ObjectDoesNotExist:
+            return False
+        return True
+
+    @transaction.atomic  # Needed for django-sequences serial number handling
+    def create_youth_summer_voucher(self) -> "YouthSummerVoucher":
+        return YouthSummerVoucher.objects.create(
+            youth_application=self,
+            summer_voucher_serial_number=YouthSummerVoucher.get_next_serial_number(),
+        )
 
     @property
     def is_accepted(self) -> bool:
@@ -373,17 +392,20 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         return (
             self.status in YouthApplicationStatus.acceptable_values()
             and HandlerPermission.has_user_permission(handler)
+            and not self.has_youth_summer_voucher
         )
 
     @transaction.atomic
     def accept(self, handler) -> bool:
         """
         Accept this youth application using given handler user if possible.
+        Create related YouthSummerVoucher if changed to accepted.
 
         :return: self.is_accepted
         """
         if self.can_accept(handler=handler):
-            self.handle(status=YouthApplicationStatus.ACCEPTED, handler=handler)
+            self._handle(status=YouthApplicationStatus.ACCEPTED, handler=handler)
+            self.create_youth_summer_voucher()
         return self.is_accepted
 
     @property
@@ -404,7 +426,7 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         :return: self.is_rejected
         """
         if self.can_reject(handler=handler):
-            self.handle(status=YouthApplicationStatus.REJECTED, handler=handler)
+            self._handle(status=YouthApplicationStatus.REJECTED, handler=handler)
         return self.is_rejected
 
     @classmethod
@@ -456,14 +478,16 @@ class YouthApplication(TimeStampedModel, UUIDModel):
 
 
 class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
-    youth_application = models.ForeignKey(
+    youth_application = models.OneToOneField(
         YouthApplication,
         on_delete=models.CASCADE,
-        related_name="youth_summer_vouchers",
+        related_name="youth_summer_voucher",
         verbose_name=_("youth application"),
     )
-    summer_voucher_serial_number = models.CharField(
-        max_length=256, blank=True, verbose_name=_("summer voucher id")
+    summer_voucher_serial_number = models.PositiveBigIntegerField(
+        unique=True,
+        validators=[MinValueValidator(1)],
+        verbose_name=_("summer voucher id"),
     )
     summer_voucher_exception_reason = models.CharField(
         max_length=256,
@@ -473,10 +497,17 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         choices=SummerVoucherExceptionReason.choices,
     )
 
+    @staticmethod
+    def get_next_serial_number() -> int:
+        return sequences.get_next_value(
+            sequence_name="youth_summer_voucher_serial_numbers",
+            initial_value=1,
+        )
+
     class Meta:
         verbose_name = _("youth summer voucher")
         verbose_name_plural = _("youth summer vouchers")
-        ordering = ["-youth_application__created_at"]
+        ordering = ["summer_voucher_serial_number"]
 
 
 class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
