@@ -4,7 +4,7 @@ import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { Select as HdsSelect } from 'hds-react';
 import Id from 'shared/types/id';
 
-type OptionType = {
+export type OptionType = {
   value: string;
   label: string;
 };
@@ -12,7 +12,7 @@ type OptionType = {
 type Props = {
   id: Id<TetPosting>;
   options: OptionType[];
-  initialValue: OptionType;
+  initialValue: OptionType[];
   label: string;
   registerOptions: RegisterOptions;
 };
@@ -25,6 +25,7 @@ const Dropdown: React.FC<Props> = ({ id, options, initialValue, label, registerO
       name={id}
       render={({ field: { onChange } }) => (
         <HdsSelect
+          multiselect
           options={options}
           label={label}
           optionLabelField="label"

@@ -1,4 +1,5 @@
 import { OptionType } from 'tet/admin/types/classification';
+import { OptionType as DropdownOptionType } from 'tet/admin/components/editor/Dropdown';
 
 type TetPosting = {
   id?: string;
@@ -18,6 +19,7 @@ type TetPosting = {
   keywords: OptionType[];
   keywords_working_methods: string[];
   keywords_attributes: string[];
+  languages: DropdownOptionType[];
 };
 
 export type TetPostings = {

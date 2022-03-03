@@ -8,7 +8,6 @@ import {
 } from 'tet/admin/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
 import { workFeaturesDataSource, workMethodDataSource } from 'tet/admin/backend-api/linked-events-api';
-import { OptionType } from 'tet/admin/types/classification';
 
 export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
 
@@ -87,6 +86,14 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
     keywords_attributes: event.keywords
       .map((keyword) => keyword['@id'])
       .filter((url) => parseDataSourceFromKeywordUrl(url) === workFeaturesDataSource),
+    languages: event.in_language.map((obj) => {
+      const splits = obj['@id'].split('/');
+      const value = splits[splits.length - 2];
+      return {
+        label: 'suomi',
+        value,
+      };
+    }),
     spots,
   };
 };
@@ -133,4 +140,5 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
     contact_first_name: posting.contact_first_name,
     contact_last_name: posting.contact_last_name,
   },
+  in_language: posting.languages.map((lang) => ({ '@id': `http://localhost:8080/v1/language/${lang.value}/` })),
 });

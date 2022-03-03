@@ -9,11 +9,18 @@ import TextInput from 'tet/admin/components/editor/TextInput';
 import TextArea from 'tet/admin/components/editor/TextArea';
 import NumberInput from 'tet/admin/components/editor/NumberInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
+import Dropdown from 'tet/admin/components/editor/Dropdown';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { required, name } = useValidationRules();
+
+  const languageOptions = [
+    { value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
+    { value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
+    { value: 'en', label: t('common:editor.posting.contactLanguageEn') },
+  ];
 
   return (
     <FormSection header={t('common:editor.posting.header')}>
@@ -54,6 +61,17 @@ const PostingDetails: React.FC = () => {
           label={t('common:editor.posting.spotsLabel')}
           registerOptions={{ required: required }}
           required={true}
+        />
+      </$GridCell>
+      <$GridCell $colSpan={3}>
+        <Dropdown
+          id="languages"
+          options={languageOptions}
+          initialValue={[languageOptions[0]]}
+          label={t('common:editor.posting.contactLanguage')}
+          registerOptions={{
+            required: required,
+          }}
         />
       </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
