@@ -1,17 +1,12 @@
 import { LocalizedObject, TetEvent, TetEventPayload, TetEvents } from 'tet/admin/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
-import { ClassificationType, KeywordFn } from 'tet/admin/types/classification';
+import { KeywordFn, ClassificationType } from 'tet/admin/types/keywords';
 
 export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
 
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
 });
-
-export const parseDataSourceFromKeywordUrl = (url: string): string => {
-  const match = url.match(/(\w+):\d+\/?$/);
-  return match ? match[1] : '';
-};
 
 export const hdsDateToIsoFormat = (str: string | undefined): string | null => {
   if (!str) {
