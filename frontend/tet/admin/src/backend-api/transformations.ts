@@ -1,14 +1,6 @@
-import {
-  CustomData,
-  IdObject,
-  LocalizedObject,
-  TetEvent,
-  TetEventPayload,
-  TetEvents,
-} from 'tet/admin/types/linkedevents';
+import { LocalizedObject, TetEvent, TetEventPayload, TetEvents } from 'tet/admin/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
-import { workFeaturesDataSource, workMethodDataSource } from 'tet/admin/backend-api/linked-events-api';
-import { OptionType } from 'tet/admin/types/classification';
+import { ClassificationType, KeywordFn } from 'tet/admin/types/classification';
 
 export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
 
@@ -46,7 +38,7 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   return `${newDate.getDate()}.${newDate.getMonth() + 1}.${newDate.getFullYear()}`;
 };
 
-export const eventToTetPosting = (event: TetEvent): TetPosting => {
+export const eventToTetPosting = (event: TetEvent, keywordType?: KeywordFn): TetPosting => {
   const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
   const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
@@ -70,23 +62,26 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
     contact_last_name: event.custom_data?.contact_last_name || '',
     contact_language: event.custom_data?.contact_language || 'fi',
     contact_phone: event.custom_data?.contact_phone || '',
-    keywords: event.keywords
-      .filter(
-        (keyword) =>
-          ![workMethodDataSource, workFeaturesDataSource].includes(parseDataSourceFromKeywordUrl(keyword['@id'])),
-      )
-      // note that with GET /event/ all but @id are empty
-      .map((keyword) => ({
-        name: getLocalizedString(keyword.name),
-        label: getLocalizedString(keyword.name),
-        value: keyword['@id'],
-      })),
-    keywords_working_methods: event.keywords
-      .map((keyword) => keyword['@id'])
-      .filter((url) => parseDataSourceFromKeywordUrl(url) === workMethodDataSource),
-    keywords_attributes: event.keywords
-      .map((keyword) => keyword['@id'])
-      .filter((url) => parseDataSourceFromKeywordUrl(url) === workFeaturesDataSource),
+    keywords: keywordType
+      ? event.keywords
+          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.KEYWORD)
+          // note that with GET /event/ all but @id are empty
+          .map((keyword) => ({
+            name: getLocalizedString(keyword.name),
+            label: getLocalizedString(keyword.name),
+            value: keyword['@id'],
+          }))
+      : [],
+    keywords_working_methods: keywordType
+      ? event.keywords
+          .map((keyword) => keyword['@id'])
+          .filter((url) => keywordType(url) === ClassificationType.WORKING_METHOD)
+      : [],
+    keywords_attributes: keywordType
+      ? event.keywords
+          .map((keyword) => keyword['@id'])
+          .filter((url) => keywordType(url) === ClassificationType.WORKING_FEATURE)
+      : [],
     spots,
   };
 };

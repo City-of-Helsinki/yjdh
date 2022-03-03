@@ -33,14 +33,6 @@ const linkedEvents = Axios.create({
   },
 });
 
-const apiHelsinki = Axios.create({
-  baseURL: ' https://api.hel.fi/linkedevents',
-  timeout: 3000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
 async function query<T>(
   axiosInstance: AxiosInstance,
   path: string,
@@ -55,6 +47,20 @@ async function query<T>(
   }
 }
 
+async function queryKeywordSet<T>(
+  axiosInstance: AxiosInstance,
+  path: string,
+  params: Record<string, string | number>,
+): Promise<T[]> {
+  try {
+    const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(path, { params });
+    return result?.data?.keywords || [];
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
 export const keywordToOptionType = (keyword: Keyword): OptionType => ({
   label: keyword.name.fi,
   name: keyword.name.fi,
@@ -62,17 +68,13 @@ export const keywordToOptionType = (keyword: Keyword): OptionType => ({
 });
 
 export const getWorkMethods = (): Promise<Keyword[]> =>
-  query<Keyword>(linkedEvents, '/v1/keyword/', {
-    show_all_keywords: 'true',
-    data_source: workMethodDataSource,
-    page_size: 3, // TODO omit when the real data source is created
+  queryKeywordSet<Keyword>(linkedEvents, '/v1/keyword_set/tet:wm/', {
+    include: 'keywords',
   });
 
 export const getWorkFeatures = (): Promise<Keyword[]> =>
-  query<Keyword>(linkedEvents, '/v1/keyword/', {
-    show_all_keywords: 'true',
-    data_source: workFeaturesDataSource,
-    page_size: 9, // TODO omit when the real data source is created
+  queryKeywordSet<Keyword>(linkedEvents, '/v1/keyword_set/tet:attr/', {
+    include: 'keywords',
   });
 
 export const getWorkKeywords = (search: string): Promise<Keyword[]> =>
