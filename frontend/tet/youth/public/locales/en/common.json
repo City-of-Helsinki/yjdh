@@ -10,6 +10,25 @@
     "pageNotFoundLabel": "Page was not found",
     "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
+	"frontPage": {
+		"heading": "ENG Muistathan etsiä TET-paikkasi ajoissa",
+		"search": "ENG Etsi",
+		"fetch": "ENG Hae",
+		"advancedSearch": "ENG Tarkennettu haku"
+	},
+	"filters": {
+		"searchPlaceholder": "ENG Kirjoita hakusana tai paikan nimi",
+		"workMethod": "ENG Valitse työtapa",
+		"startDate": "ENG Alkamispäivä",
+		"endDate": "ENG Päättymispäivä",
+		"language": "ENG Valitse kieli"
+	},
+	"postings": {
+		"searchResults": "ENG hakutulosta",
+		"readMore": "ENG Lue lisää",
+		"showMore": "ENG Näytä lisää tuloksia"
+		"languages": "ENG Kielisyys"
+	},
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",

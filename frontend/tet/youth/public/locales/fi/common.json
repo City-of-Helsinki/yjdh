@@ -10,6 +10,25 @@
     "pageNotFoundLabel": "Sivua ei löytynyt",
     "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> takaisin etusivulle."
   },
+	"frontPage": {
+		"heading": "Muistathan etsiä TET-paikkasi ajoissa",
+		"search": "Etsi",
+		"fetch": "Hae",
+		"advancedSearch": "Tarkennettu haku"
+	},
+	"filters": {
+		"searchPlaceholder": "Kirjoita hakusana tai paikan nimi",
+		"workMethod": "Valitse työtapa",
+		"startDate": "Alkamispäivä",
+		"endDate": "Päättymispäivä",
+		"language": "Valitse kieli"
+	},
+	"postings": {
+		"searchResults": "hakutulosta",
+		"readMore": "Lue lisää",
+		"showMore": "Näytä lisää tuloksia"
+		"languages": "Kielisyys"
+	},
   "footer": {
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
