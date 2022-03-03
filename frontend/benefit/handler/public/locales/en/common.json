@@ -367,5 +367,23 @@
         "invalid": "Invalid SSN value"
       }
     }
+  },
+  "reportsView": {
+    "headings": {
+      "main": "Raportointi",
+      "downloadApprovedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
+      "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
+      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"
+    },
+    "fields": {
+      "lastDownloadDateText": "Viimeksi ladattu {{date}}",
+      "startDate": "Alkaen",
+      "endDate": "Päättyen"
+    },
+    "buttons": {
+      "downloadApprovedApplications": "Hyväksyt hakemukset CSV",
+      "downloadRejectedApplications": "Hylätyt hakemukset CSV",
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
+    }
   }
 }

@@ -42,7 +42,7 @@ const useHeader = (): ExtendedComponentProps => {
       },
       {
         label: t('common:header.navigation.reports'),
-        url: '#3',
+        url: ROUTES.APPLICATIONS_REPORTS,
       },
     ],
     [t]
