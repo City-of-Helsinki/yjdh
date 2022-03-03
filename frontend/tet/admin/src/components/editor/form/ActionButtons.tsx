@@ -41,7 +41,10 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
   };
 
   const showConfirm = async () => {
-    const isConfirmed = await confirm(t('common:delete.confirmation', { posting: posting.title }));
+    const isConfirmed = await confirm(
+      t('common:delete.confirmation', { posting: posting.title }),
+      t('common:delete.deletePosting'),
+    );
 
     if (isConfirmed) {
       deleteTetPosting.mutate(posting);
