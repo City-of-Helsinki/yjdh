@@ -13,6 +13,8 @@ import { useQuery, useQueries } from 'react-query';
 import { OptionType } from 'tet/admin/types/classification';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
+import { useFormContext } from 'react-hook-form';
+import TetPosting from 'tet/admin/types/tetposting';
 
 export type FilterFunction = (options: OptionType[], search: string) => OptionType[];
 
@@ -20,6 +22,7 @@ const Classification: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [search, setSearch] = React.useState('');
+  const { getValues } = useFormContext<TetPosting>();
 
   const results = useQueries([
     { queryKey: 'workMethods', queryFn: getWorkMethods },
@@ -45,6 +48,10 @@ const Classification: React.FC = () => {
   const workMethodsList = workMethods.data?.map((k) => keywordToOptionType(k)) || [];
   const workFeaturesList = workFeatures.data?.map((k) => keywordToOptionType(k)) || [];
 
+  const isSetRule = () => {
+    return getValues('keywords_working_methods').length > 0 ? true : 'Valitse yksi';
+  };
+
   return (
     <FormSection header={'Luokittelut'}>
       <$GridCell
@@ -59,6 +66,7 @@ const Classification: React.FC = () => {
             required={true}
             fieldId="keywords_working_methods"
             label="Työtavat"
+            rules={isSetRule}
             options={workMethodsList}
           ></SelectionGroup>
         </$GridCell>

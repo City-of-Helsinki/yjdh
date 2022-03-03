@@ -13,6 +13,7 @@ module.exports = {
     [`^tet/admin\/(.*)$`]: '<rootDir>/tet/admin/src/$1',
     [`^tet/employer\/(.*)$`]: '<rootDir>/tet/employer/src/$1',
     [`^tet/youth\/(.*)$`]: '<rootDir>/tet/youth/src/$1',
+    [`^tet/shared\/(.*)$`]: '<rootDir>/tet/shared/src/$1',
   },
   setupFilesAfterEnv: [
     '<rootDir>/shared/src/__tests_/utils/setupTests.ts',
