@@ -19,8 +19,12 @@ export class HttpRequestHook extends RequestHook {
 
   async onRequest(event: Event): Promise<void> {
     if (this.host.includes(event.requestOptions.headers.host)) {
+      // eslint-disable-next-line no-console
+      console.log('onRequest()');
       // eslint-disable-next-line no-param-reassign
       event.requestOptions.headers.Referer = this.referer;
+      // eslint-disable-next-line no-console
+      console.log(event.requestOptions.headers);
     }
   }
 

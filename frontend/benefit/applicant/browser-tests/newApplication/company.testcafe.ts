@@ -5,10 +5,20 @@ import step2 from '../page-modal/step2';
 import step3 from '../page-modal/step3';
 import company from '../roles/company';
 import { getFrontendUrl } from '../utils/url.utils';
+import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
+import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+
+const getBackendDomain = (): string =>
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
 
 const url = getFrontendUrl('/');
 
-fixture`Company: New application`.page`${url}`;
+fixture('Company: New application')
+  .page(url)
+  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .beforeEach(async (t) => {
+    clearDataToPrintOnFailure(t);
+  });
 
 test('Oppisopimus', async (t) => {
   await t.useRole(company);
