@@ -27,3 +27,4 @@ Babel
 factory-boy # TODO: added temporarily so that NEXT_PUBLIC_MOCK_FLAG can be set on dev env, remove when authentication done
 drf-nested-routers
 -e file:../shared
+django-silk

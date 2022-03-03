@@ -181,6 +181,7 @@ INSTALLED_APPS = [
     "encrypted_fields",
     "mozilla_django_oidc",
     "django_auth_adfs",
+    "silk",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -188,6 +189,7 @@ AUTH_USER_MODEL = "users.User"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "silk.middleware.SilkyMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -213,6 +215,8 @@ TEMPLATES = [
         },
     }
 ]
+
+SILKY_PYTHON_PROFILER = True
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")

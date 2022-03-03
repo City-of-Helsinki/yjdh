@@ -92,3 +92,5 @@ def readiness(*args, **kwargs):
 
 
 urlpatterns += [path("healthz", healthz), path("readiness", readiness)]
+
+urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]

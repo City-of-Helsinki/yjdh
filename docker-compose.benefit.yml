@@ -64,7 +64,7 @@ services:
   local-proxy:
     depends_on:
       - postgres
-      - django
+      # - django
       - applicant
       - handler
     build:
@@ -73,7 +73,7 @@ services:
     volumes:
       - ./localdevelopment/benefit/nginx/:/etc/nginx/
     ports:
-      - 127.0.0.1:8000:8000
+      # - 127.0.0.1:8000:8000
       - 127.0.0.1:3000:3000
       - 127.0.0.1:3100:3100
 
