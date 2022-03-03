@@ -490,7 +490,8 @@
     "and": "ja",
     "yes": "Kyllä",
     "no": "Ei",
-    "close": "Stäng"
+    "close": "Stäng",
+    "home": "Palaa etusivulle"
   },
   "messenger": {
     "messages": "Hakemuksen viestit",

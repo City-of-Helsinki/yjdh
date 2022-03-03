@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -46,5 +47,14 @@ class JobPostingsViewSet(ViewSet):
         if pk is not None:
             response_status = ServiceClient().delete_event(pk, request.user)
             return Response(status=response_status)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class PublishTetPostingView(UpdateAPIView):
+    def update(self, request, pk=None):
+        if pk is not None:
+            event = ServiceClient().publish_job_posting(pk, request.user)
+            return Response(event)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)

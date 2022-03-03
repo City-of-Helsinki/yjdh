@@ -6,6 +6,7 @@ export const HIDE_CONFIRM = 'HIDE_CONFIRM';
 type DialogState = {
   show: boolean;
   header: string;
+  submitButtonLabel: string;
   content?: string;
 };
 
@@ -21,6 +22,7 @@ export type DialogAction = {
 
 type DialogPayload = {
   header: string;
+  submitButtonLabel: string;
   content?: string;
 };
 
@@ -39,6 +41,7 @@ type DialogActionTypes = ShowConfirmAction | HideConfirmAction;
 const initialState: DialogState = {
   show: false,
   header: '',
+  submitButtonLabel: '',
   content: '',
 };
 
@@ -49,7 +52,8 @@ const reducer = (state: DialogState = initialState, action: DialogActionTypes) =
       return {
         show: true,
         header: action.payload.header,
-        content: content,
+        submitButtonLabel: action.payload.submitButtonLabel,
+        content,
       };
     case HIDE_CONFIRM:
       return initialState;
@@ -59,7 +63,7 @@ const reducer = (state: DialogState = initialState, action: DialogActionTypes) =
 };
 
 const DialogContext = React.createContext<[DialogState, React.Dispatch<DialogActionTypes>]>([
-  { show: false, header: '', content: '' },
+  { show: false, header: '', content: '', submitButtonLabel: '' },
   () => {},
 ]);
 

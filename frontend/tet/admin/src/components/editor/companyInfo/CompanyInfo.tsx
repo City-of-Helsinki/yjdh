@@ -24,21 +24,21 @@ const CompanyInfo: React.FC = () => {
 
   const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
 
-  const keywords: LocationType[] = keywordsResults.data
-    ? keywordsResults.data.map(
-        (keyword) =>
-          ({
-            name: keyword.name?.fi,
-            label: `${keyword.name.fi}, ${keyword.street_address?.fi ? keyword.street_address.fi : ''}, ${
-              keyword.postal_code ? keyword.postal_code : ''
-            }`,
-            value: keyword['@id'],
-            street_address: keyword.street_address?.fi ? keyword.street_address.fi : '',
-            postal_code: keyword.postal_code ? keyword.postal_code : '',
-            city: keyword.address_locality?.fi ? keyword.address_locality.fi : '',
-          } as LocationType),
-      )
-    : [];
+  const keywords: LocationType[] = React.useMemo(() => {
+    return keywordsResults.data
+      ? keywordsResults.data.map(
+          (keyword) =>
+            ({
+              name: keyword.name?.fi,
+              label: `${keyword.name.fi}, ${keyword.street_address?.fi ?? ''}, ${keyword.postal_code ?? ''}`,
+              value: keyword['@id'],
+              street_address: keyword.street_address?.fi ?? '',
+              postal_code: keyword.postal_code ?? '',
+              city: keyword.address_locality?.fi ?? '',
+            } as LocationType),
+        )
+      : [];
+  }, [keywordsResults]);
 
   const filterSetter = React.useCallback(
     debounce((search) => setAddressSearch(search), 500),

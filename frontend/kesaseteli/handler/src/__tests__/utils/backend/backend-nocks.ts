@@ -42,9 +42,35 @@ export const expectToGetYouthApplicationError = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .get(`${BackendEndpoint.YOUTH_APPLICATIONS}${String(id)}/`)
+    .get(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/`)
     .reply(
       errorCode,
       'This is a youthapplications backend test error. Please ignore this error message.'
+    );
+};
+
+export const expectToPatchYouthApplication = (
+  operation: 'accept' | 'reject',
+  id: CreatedYouthApplication['id']
+): nock.Scope =>
+  nock(getBackendDomain())
+    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
+    .reply(
+      200,
+      { status: operation === 'accept' ? 'accepted' : 'rejected' },
+      { 'Access-Control-Allow-Origin': '*' }
+    );
+
+export const expectToPatchYouthApplicationError = (
+  operation: 'accept' | 'reject',
+  id: CreatedYouthApplication['id'],
+  errorCode: 400 | 404 | 500
+): nock.Scope => {
+  consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+  return nock(getBackendDomain())
+    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
+    .reply(
+      errorCode,
+      `This is a youthapplications ${operation} backend test error. Please ignore this error message.`
     );
 };

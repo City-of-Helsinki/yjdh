@@ -11,6 +11,10 @@ from events.transformations import (
 LOGGER = logging.getLogger(__name__)
 
 
+def is_published(posting):
+    return posting["date_published"] is not None  # TODO add proper handling
+
+
 class ServiceClient:
     def __init__(self):
         self.client = LinkedEventsClient()
@@ -57,8 +61,8 @@ class ServiceClient:
         job_postings = [reduce_get_event(e) for e in events]
         # TODO divide into published and drafts
         return {
-            "draft": job_postings,
-            "published": [],
+            "draft": [p for p in job_postings if not is_published(p)],
+            "published": [p for p in job_postings if is_published(p)],
         }
 
     # not MVP?

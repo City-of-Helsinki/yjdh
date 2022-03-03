@@ -15,29 +15,8 @@ import {
 import { useMainIngress } from './useMainIngress';
 
 const MainIngress: React.FC = () => {
-  const {
-    errors,
-    application,
-    handleNewApplicationClick,
-    handleMoreInfoClick,
-    t,
-    handleCloseNotification,
-  } = useMainIngress();
-
-  const successNotification = application ? (
-    <$Notification
-      label={t('common:notifications.applicationSubmitted.label')}
-      type="success"
-      dismissible
-      closeButtonLabelText={t('common:utility.close') ?? ''}
-      onClose={handleCloseNotification}
-    >
-      {t('common:notifications.applicationSubmitted.message', {
-        applicationNumber: application?.applicationNumber,
-        applicantName: application?.applicantName,
-      })}
-    </$Notification>
-  ) : null;
+  const { errors, handleNewApplicationClick, handleMoreInfoClick, t } =
+    useMainIngress();
 
   const notificationItems = errors?.map(({ message, name }, i) => (
     // eslint-disable-next-line react/no-array-index-key
@@ -50,7 +29,6 @@ const MainIngress: React.FC = () => {
     <Container backgroundColor={theme.colors.silverLight}>
       <$Container>
         <$Heading>{t('common:mainIngress.heading')}</$Heading>
-        {successNotification}
         {notificationItems}
         <$TextContainer>
           <$Description>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GetStaticProps, GetStaticPaths, NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -10,6 +10,7 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
+import withAuth from 'shared/components/hocs/withAuth';
 
 const EditStaticPage: NextPage = () => {
   const { t } = useTranslation();
@@ -30,4 +31,4 @@ const EditStaticPage: NextPage = () => {
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
 
-export default EditStaticPage;
+export default withAuth(EditStaticPage);

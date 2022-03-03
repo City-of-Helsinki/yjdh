@@ -9,6 +9,7 @@ import PostingContainer from 'tet/shared/src/components/posting/PostingContainer
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import BackButton from 'tet/admin/components/BackButton';
+import withAuth from 'shared/components/hocs/withAuth';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
@@ -37,4 +38,4 @@ const NewPostingPage: NextPage = () => {
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
 
-export default NewPostingPage;
+export default withAuth(NewPostingPage);

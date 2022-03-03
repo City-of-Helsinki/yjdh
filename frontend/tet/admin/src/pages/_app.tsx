@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-// import AuthProvider from 'tet/admin/auth/AuthProvider';
+import AuthProvider from 'tet/admin/auth/AuthProvider';
 import Footer from 'tet/admin/components/footer/Footer';
 import Header from 'tet/admin/components/header/Header';
 import { getBackendDomain } from 'tet/admin/backend-api/backend-api';
@@ -21,10 +21,12 @@ const App: React.FC<AppProps> = (appProps) => (
     <QueryClientProvider client={createQueryClient()}>
       <DialogContextProvider>
         <PreviewContextProvider>
-          <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
-          <Portal>
-            <ConfirmDialog />
-          </Portal>
+          <AuthProvider>
+            <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+            <Portal>
+              <ConfirmDialog />
+            </Portal>
+          </AuthProvider>
         </PreviewContextProvider>
       </DialogContextProvider>
     </QueryClientProvider>

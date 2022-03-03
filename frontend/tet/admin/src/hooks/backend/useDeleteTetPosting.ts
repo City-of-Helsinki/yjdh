@@ -16,7 +16,7 @@ const useDeleteTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorDa
   const queryClient = useQueryClient();
   return useMutation<TetPosting, AxiosError<ErrorData>, TetPosting>(
     'delete',
-    (posting: TetPosting) => handleResponse<TetPosting>(axios.delete(`${BackendEndpoint.TET_POSTINGS}/${posting.id}`)),
+    (posting: TetPosting) => handleResponse<TetPosting>(axios.delete(`${BackendEndpoint.TET_POSTINGS}${posting.id}`)),
     {
       onSuccess: () => {
         void queryClient.removeQueries();
