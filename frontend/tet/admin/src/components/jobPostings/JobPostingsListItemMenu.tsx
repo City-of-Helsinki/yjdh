@@ -43,7 +43,17 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
     });
   };
 
+  const copyPostingHandler = (): void => {
+    void router.push({
+      pathname: '/copystatic',
+      query: { id: posting.id },
+    });
+  };
+
   const deletePostingHandler = async () => {
+    await showConfirm();
+  };
+  const showConfirm = async () => {
     const isConfirmed = await confirm(
       t('common:delete.confirmation', { posting: posting.title }),
       t('common:delete.deletePosting'),
@@ -78,7 +88,7 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
           <IconPen />
           <span>{t('common:application.jobPostings.menu.edit')}</span>
         </$MenuItem>
-        <$MenuItem>
+        <$MenuItem onClick={copyPostingHandler}>
           <IconPlusCircle />
           <span>{t('common:application.jobPostings.menu.copy')}</span>
         </$MenuItem>

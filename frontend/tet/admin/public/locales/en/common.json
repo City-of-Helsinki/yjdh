@@ -37,6 +37,7 @@
 		"cancel": "ENG Peruuta"
 	},
   "application": {
+		"backToFrontPage": "ENG Takaisin etusivulle",
     "jobPostings": {
       "title": "ENG TET-paikkailmoitukset",
       "noPostingsFound": "ENG Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -57,15 +58,22 @@
     }
   },
   "editor": {
+		"companyInfo": "ENG Yrityksen tiedot",
+		"companyInfoFetch": "ENG Yrityksen tiedot on haettu YTJS:stä",
     "newTitle": "ENG Uusi TET-paikka",
     "editTitle": "ENG Muokkaa TET-paikkaa",
+		"copyTitle": "ENG Kopioi TET-paikka",
     "saveDraft": "ENG Tallenna julkaisematta",
     "deletePosting": "ENG Poista ilmoitus",
     "preview": "ENG Siirry esikatseluun",
     "publish": "ENG Julkaise",
     "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
+		"backToEdit": "ENG Takaisin lomakkeelle",
+		"requiredInfo": "ENG merkityt kentät ovat pakollisia",
+		"preview": "ENG Esikatselu",
     "employerInfo": {
-      "header": "ENG Työpaikan tiedot",
+			"contactPerson": "ENG Yhteyshenkilö",
+      "header": "ENG Toimipisteen tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
       "departmentLabel": "ENG Toimipiste tai osasto",
 			"address": "ENG Osoite",
@@ -92,7 +100,7 @@
 				"email": "ENG Syötä sähköposti oikeassa muodossa",
 				"max": "ENG Maksimimerkkimäärä ylittyy",
 				"phone": "ENG Syötä oikeassa muodossa",
-				"name": "ENG Syötä nimi sallitussa muodossa"
+				"name": "ENG Syötä nimi ilman erikoismerkkejä ja kirjaimia"
 			}
     },
 		"classification": {
@@ -108,6 +116,15 @@
       "selectedItemRemoveButtonAriaLabel": "ENG Poista valinta"
     }
   },
+	"postingTemplate": {
+		"spots": "ENG TET-paikkoja",
+		"contact": "ENG Yhteystiedot",
+		"description": "ENG Kuvaus",
+		"share": "ENG Jaa tapahtuma",
+		"dateAndTime": "ENG Päivä ja aika",
+		"location": "ENG Paikka",
+		"languages": "ENG TET-paikassa käytettävät kielet"
+	},
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
@@ -136,6 +153,7 @@
     }
   },
   "upload": {
+		"successMessage": "ENG Tiedot tallennettiin",
     "isUploading": "Sending...",
     "errorTitle": "File upload failed",
     "errorMessage": "Something went wrong. Please try again later."

@@ -33,6 +33,13 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   return `${newDate.getDate()}.${newDate.getMonth() + 1}.${newDate.getFullYear()}`;
 };
 
+/**
+ * Convert event read from Linked Events API to form data.
+ *
+ * @param event
+ * @param keywordType If this function is set, it will be used to find classification data for the posting.
+ *    Othwerwise classification data is left empty, which is okay if we don't need to show it.
+ */
 export const eventToTetPosting = (event: TetEvent, keywordType?: KeywordFn): TetPosting => {
   const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
   const spots = parsedSpots >= 0 ? parsedSpots : 1;
@@ -48,6 +55,9 @@ export const eventToTetPosting = (event: TetEvent, keywordType?: KeywordFn): Tet
       name: getLocalizedString(event.location.name),
       label: getLocalizedString(event.location.name),
       value: event.location['@id'],
+      street_address: getLocalizedString(event.location.street_address),
+      city: getLocalizedString(event.location.address_locality),
+      postal_code: event.location.postal_code,
     },
     start_date: isoDateToHdsFormat(event.start_time)!,
     end_date: isoDateToHdsFormat(event.end_time),
@@ -69,13 +79,21 @@ export const eventToTetPosting = (event: TetEvent, keywordType?: KeywordFn): Tet
       : [],
     keywords_working_methods: keywordType
       ? event.keywords
-          .map((keyword) => keyword['@id'])
-          .filter((url) => keywordType(url) === ClassificationType.WORKING_METHOD)
+          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.WORKING_METHOD)
+          .map((keyword) => ({
+            name: getLocalizedString(keyword.name),
+            label: getLocalizedString(keyword.name),
+            value: keyword['@id'],
+          }))
       : [],
     keywords_attributes: keywordType
       ? event.keywords
-          .map((keyword) => keyword['@id'])
-          .filter((url) => keywordType(url) === ClassificationType.WORKING_FEATURE)
+          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.WORKING_FEATURE)
+          .map((keyword) => ({
+            name: getLocalizedString(keyword.name),
+            label: getLocalizedString(keyword.name),
+            value: keyword['@id'],
+          }))
       : [],
     spots,
   };
@@ -110,8 +128,8 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
   end_time: hdsDateToIsoFormat(posting.end_date),
   date_published: posting.date_published || null,
   keywords: [
-    ...posting.keywords_working_methods,
-    ...posting.keywords_attributes,
+    ...posting.keywords_working_methods.map((option) => option.value),
+    ...posting.keywords_attributes.map((option) => option.value),
     ...posting.keywords.map((option) => option.value),
   ].map((url) => ({ '@id': url })),
   custom_data: {

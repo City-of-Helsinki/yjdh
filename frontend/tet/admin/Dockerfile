@@ -15,6 +15,7 @@ WORKDIR /app
 # Install dependencies
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser tet/admin/package.json tet/admin/package.json
+COPY --chown=appuser:appuser tet/shared/package.json tet/shared/package.json
 COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 RUN yarn --frozen-lockfile --check-files && yarn cache clean --force
@@ -79,6 +80,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/next-i18next.con
 # Copy package.json and yarn.lock files
 COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/public app/package.json app/yarn.lock app/lerna.json ./
 COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/package.json app/tet/admin/start.js tet/admin/
+COPY --from=staticbuilder --chown=appuser:appuser app/tet/shared/package.json tet/shared/
 
 # shared data
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/

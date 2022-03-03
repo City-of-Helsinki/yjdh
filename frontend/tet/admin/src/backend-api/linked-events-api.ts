@@ -21,6 +21,9 @@ type Place = {
   street_address: {
     fi: string;
   };
+  address_locality: {
+    fi: string;
+  };
   postal_code: string;
   '@id': string;
 };
