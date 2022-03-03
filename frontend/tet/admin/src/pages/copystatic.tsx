@@ -10,6 +10,7 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
+import withAuth from 'shared/components/hocs/withAuth';
 
 const CopyStaticPage: NextPage = () => {
   const { t } = useTranslation();
@@ -32,4 +33,4 @@ const CopyStaticPage: NextPage = () => {
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
 
-export default CopyStaticPage;
+export default withAuth(CopyStaticPage);
