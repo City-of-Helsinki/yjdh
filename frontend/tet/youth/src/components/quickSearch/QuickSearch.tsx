@@ -14,12 +14,13 @@ import { TextInput, Button, DateInput, IconSearch, IconAngleRight } from 'hds-re
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import { Language } from 'shared/i18n/i18n';
 
 const QuickSearch = () => {
   const router = useRouter();
   const [searchText, setSearchText] = React.useState<string>('');
   const [startTime, setStartTime] = React.useState('');
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const searchHandler = () => {
     const searchQuery = {
@@ -38,14 +39,14 @@ const QuickSearch = () => {
   return (
     <$SearchBar>
       <$SearchBarWrapper>
-        <$SearchText>Etsi</$SearchText>
+        <$SearchText>{t('common:frontPage.search')}</$SearchText>
         <$Filters>
           <$SearchField>
             <TextInput
               onChange={(e) => setSearchText(e.target.value)}
               value={searchText}
               id="searchText"
-              placeholder="Kirjoita hakusana tai paikan nimi"
+              placeholder={t('common:filters.searchPlaceholder')}
             ></TextInput>
           </$SearchField>
           <$DateField>
@@ -53,8 +54,8 @@ const QuickSearch = () => {
               id="start_time"
               onChange={(value) => setStartTime(value)}
               value={startTime}
-              language={i18n.language}
-              placeholder="Alkamispäivä"
+              language={i18n.language as Language}
+              placeholder={t('common:filters.startDate')}
             ></DateInput>
           </$DateField>
           <$ButtonContainer>
@@ -68,14 +69,14 @@ const QuickSearch = () => {
               theme="black"
               iconLeft={<IconSearch />}
             >
-              Hae
+              {t('common:frontPage.fetch')}
             </Button>
           </$ButtonContainer>
         </$Filters>
       </$SearchBarWrapper>
       <Link href="/postings" passHref>
         <$FiltersLink>
-          Tarkennettu haku <IconAngleRight />
+          {t('common:frontPage.advancedSearch')} <IconAngleRight />
         </$FiltersLink>
       </Link>
     </$SearchBar>

@@ -1,6 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
 import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
-import { isString } from 'shared/utils/type-guards';
 import { linkedEventsUrl, BackendEndPoints } from 'tet/youth/backend-api/backend-api';
 
 export const createAxios = (): AxiosInstance =>

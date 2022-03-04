@@ -3,7 +3,7 @@ import TetPosting from 'tet/admin/types/tetposting';
 import { Controller, useFormContext } from 'react-hook-form';
 import { SelectionGroup as HdsSelectionGroup, Checkbox } from 'hds-react';
 import Id from 'shared/types/id';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 
 type Props = {
   fieldId: Id<Pick<TetPosting, 'keywords_working_methods' | 'keywords_attributes'>>;

@@ -21,12 +21,13 @@
 		"workMethod": "SV Valitse työtapa",
 		"startDate": "SV Alkamispäivä",
 		"endDate": "SV Päättymispäivä",
-		"language": "SV Valitse kieli"
+		"language": "SV Valitse kieli",
+		"clearFilters": "SV Tyhjennä hakuehdot"
 	},
 	"postings": {
 		"searchResults": "SV hakutulosta",
 		"readMore": "SV Lue lisää",
-		"showMore": "SV Näytä lisää tuloksia"
+		"showMore": "SV Näytä lisää tuloksia",
 		"languages": "SV Kielisyys"
 	},
   "footer": {

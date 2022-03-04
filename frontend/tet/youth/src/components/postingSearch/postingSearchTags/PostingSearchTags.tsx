@@ -3,7 +3,7 @@ import { Tag } from 'hds-react';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { $Tags, $RemoveButton } from './PostingSearchTags.sc';
-import Button from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import { OptionType } from 'tet/admin/types/classification';
 
 type Props = {
@@ -16,6 +16,7 @@ const PostingSearchTags: React.FC<Props> = ({ initParams, onRemoveFilter, workMe
   const startText = `${initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : ''}`;
   const endText = `${initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : ''}`;
   const dateText = startText + (startText.length || endText.length ? '-' : '') + endText;
+  const { t } = useTranslation();
 
   const getWorkMethodLabel = () => {
     const workMethod = workMethods.find((item) => item.value === initParams.keyword);
@@ -59,7 +60,7 @@ const PostingSearchTags: React.FC<Props> = ({ initParams, onRemoveFilter, workMe
       )}
       {Object.keys(initParams).length > 0 && (
         <li>
-          <$RemoveButton onClick={() => onRemoveFilter('all')}>Tyhjennä hakuehdot</$RemoveButton>
+          <$RemoveButton onClick={() => onRemoveFilter('all')}>{t('common:filters.clearFilters')}</$RemoveButton>
         </li>
       )}
     </$Tags>

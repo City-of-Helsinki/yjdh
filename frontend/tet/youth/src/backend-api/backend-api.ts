@@ -1,5 +1,7 @@
 import { OptionType } from 'tet/admin/types/classification';
 import { IdObject } from 'tet/youth/linkedevents';
+import Axios, { AxiosInstance, AxiosResponse } from 'axios';
+
 type Keyword = IdObject & {
   name: {
     fi: string;
@@ -22,3 +24,17 @@ export const keywordToOptionType = (keyword: Keyword): OptionType => ({
 });
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
+
+export const createAxios = (): AxiosInstance =>
+  Axios.create({
+    baseURL: linkedEventsUrl,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
+
+export const handleResponse = async <R>(axiosPromise: Promise<AxiosResponse<R>>): Promise<R> => {
+  const { data } = await axiosPromise;
+  return data;
+};

@@ -10,7 +10,7 @@ import TextArea from 'tet/admin/components/editor/TextArea';
 import NumberInput from 'tet/admin/components/editor/NumberInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import { Notification } from 'hds-react';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import Combobox from 'tet/admin/components/editor/Combobox';
 

@@ -21,12 +21,13 @@
 		"workMethod": "Valitse työtapa",
 		"startDate": "Alkamispäivä",
 		"endDate": "Päättymispäivä",
-		"language": "Valitse kieli"
+		"language": "Valitse kieli",
+		"clearFilters": "Tyhjennä hakuehdot"
 	},
 	"postings": {
 		"searchResults": "hakutulosta",
 		"readMore": "Lue lisää",
-		"showMore": "Näytä lisää tuloksia"
+		"showMore": "Näytä lisää tuloksia",
 		"languages": "Kielisyys"
 	},
   "footer": {

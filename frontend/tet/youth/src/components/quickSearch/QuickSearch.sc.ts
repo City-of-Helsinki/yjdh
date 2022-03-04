@@ -4,10 +4,13 @@ export const $SearchBar = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-top: -5rem;
-  width: 95%;
   max-width: 1400px;
   background-color: ${(props) => props.theme.colors.black60};
   padding: ${(props) => props.theme.spacing.xl2} ${(props) => props.theme.spacing.m} ${(props) => props.theme.spacing.m};
+
+  @media (min-width: ${(props) => props.theme.breakpoints.l}) {
+    width: 95%;
+  }
 `;
 
 export const $SearchBarWrapper = styled.div`
@@ -24,7 +27,7 @@ export const $SearchText = styled.div`
   font-weight: bold;
 
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
-    width: auto;
+    width: 20%;
   }
 `;
 
