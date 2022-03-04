@@ -4,7 +4,7 @@ import { QueryParams } from 'tet/youth/types/queryparams';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { $Tags, $RemoveButton } from './PostingSearchTags.sc';
 import { useTranslation } from 'next-i18next';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 
 type Props = {
   initParams: QueryParams;

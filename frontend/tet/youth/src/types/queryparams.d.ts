@@ -3,4 +3,5 @@ export type QueryParams = {
   start?: String;
   end?: string;
   keyword?: string;
+  language?: string;
 };

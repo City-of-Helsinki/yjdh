@@ -45,6 +45,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     setEndTime(initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : '');
     setWorkMethod(initParams.keyword ?? '');
     setSearchText(initParams.text ?? '');
+    setChosenLanguage(initParams.language ?? '');
   }, [initParams]);
 
   const searchHandler = () => {
@@ -53,6 +54,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
       start: convertToBackendDateFormat(startTime),
       end: convertToBackendDateFormat(endTime),
       keyword: workMethod,
+      language: chosenLanguage,
     });
   };
 
@@ -85,12 +87,15 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
           <$GridCell $colSpan={3}>
             <Select<OptionType>
               id="workMethod"
+              label=""
               placeholder={t('common:filters.workMethod')}
               onChange={(val: OptionType) => setWorkMethod(val.value)}
-              value={workMethods.find((method) => method.value === workMethod)}
+              value={workMethods.find((method) => method.value === workMethod) as OptionType}
               icon={<IconGroup />}
               options={workMethods}
               optionLabelField={'label'}
+              clearButtonAriaLabel=""
+              selectedItemRemoveButtonAriaLabel=""
             ></Select>
           </$GridCell>
           <$GridCell $colSpan={3}>
@@ -114,6 +119,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
           <$GridCell $colSpan={3}>
             <Select
               id="language"
+              label=""
               options={languageOptions}
               icon={<IconGlobe />}
               placeholder={t('common:filters.language')}

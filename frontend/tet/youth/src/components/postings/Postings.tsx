@@ -1,10 +1,7 @@
 import React from 'react';
 import PostingSearch from 'tet/youth/components/postingSearch/PostingSearch';
 import PostingList from 'tet/youth/components/PostingList/PostingList';
-import { useQuery } from 'react-query';
-import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import { LinkedEventsPagedResponse, LocalizedObject, TetEvent } from 'tet/youth/linkedevents';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { useRouter } from 'next/router';
 import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
@@ -25,7 +22,12 @@ const Postings: React.FC = () => {
       return <div>Virhe datan latauksessa</div>;
     }
 
-    return <PostingList postings={data.data}></PostingList>;
+    if (data) {
+      return <PostingList postings={data.data}></PostingList>;
+    } else {
+      //TODO
+      return <div>Ei hakutuloksia</div>;
+    }
   };
 
   const searchHandler = (queryParams: QueryParams) => {
@@ -34,6 +36,7 @@ const Postings: React.FC = () => {
       ...(queryParams.start && queryParams.start.length > 0 && { start: queryParams.start }),
       ...(queryParams.end && queryParams.end.length > 0 && { end: queryParams.end }),
       ...(queryParams.keyword && queryParams.keyword.length > 0 && { keyword: queryParams.keyword }),
+      ...(queryParams.language && queryParams.language.length > 0 && { keyword: queryParams.language }),
     };
     router.push(
       {

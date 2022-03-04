@@ -1,4 +1,4 @@
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 import { IdObject } from 'tet/youth/linkedevents';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 
