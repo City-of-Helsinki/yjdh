@@ -12,8 +12,8 @@ import BaseApp from 'shared/components/app/BaseApp';
 import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
 import Portal from 'shared/components/confirm-dialog/Portal';
 import {
-  DialogContextProvider,
   DialogContext,
+  DialogContextProvider,
 } from 'shared/contexts/DialogContext';
 
 const App: React.FC<AppProps> = (appProps: AppProps) => (
