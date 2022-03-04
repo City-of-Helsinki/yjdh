@@ -62,19 +62,19 @@ jobs:
             port: 8000
 #          - service: te-empl
 #            context: ./frontend
-#            dockerfile: ./Dockerfile
+#            dockerfile: ./frontend/Dockerfile
 #            project: tet
 #            folder: employer
 #            port: 3000
           - service: te-yout
             context: ./frontend
-            dockerfile: ./Dockerfile
+            dockerfile: ./frontend/Dockerfile
             project: tet
             folder: youth
             port: 3000
           - service: te-admn
             context: ./frontend
-            dockerfile: ./Dockerfile
+            dockerfile: ./frontend/Dockerfile
             project: tet
             folder: admin
             port: 3000

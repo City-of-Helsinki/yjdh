@@ -57,13 +57,13 @@ jobs:
             port: 8000
           - service: bf-appl
             context: ./frontend
-            dockerfile: ./Dockerfile
+            dockerfile: ./frontend/Dockerfile
             project: benefit
             folder: applicant
             port: 3000
           - service: bf-hdlr
             context: ./frontend
-            dockerfile: ./Dockerfile
+            dockerfile: ./frontend/Dockerfile
             project: benefit
             folder: handler
             port: 3100
