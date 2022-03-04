@@ -1,5 +1,4 @@
-import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
-import AppContext from 'benefit/applicant/context/AppContext';
+import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
@@ -9,10 +8,8 @@ import {
   ApplicationData,
 } from 'benefit/applicant/types/application';
 import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
-import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import { useContext, useEffect, useState } from 'react';
-import { getFullName } from 'shared/utils/application.utils';
+import { useState } from 'react';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -32,12 +29,11 @@ type ExtendedComponentProps = {
 };
 
 const useApplicationFormStep6 = (
-  application: Application
+  application: Application,
+  onSubmit?: () => void
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.send';
   const { t } = useTranslation();
-  const router = useRouter();
-
   const locale = useLocale();
   const textLocale = capitalize(locale);
   const cbPrefix = 'application_consent';
@@ -54,33 +50,7 @@ const useApplicationFormStep6 = (
 
   const { onSave, onBack, onDelete } = useFormActions(application);
 
-  const { setSubmittedApplication, submittedApplication } =
-    useContext(AppContext);
-
-  const { mutate: updateApplicationStep6, isSuccess: isApplicationUpdated } =
-    useUpdateApplicationQuery();
-
-  useEffect(() => {
-    if (
-      isApplicationUpdated &&
-      (application.status === APPLICATION_STATUSES.RECEIVED ||
-        application.status === APPLICATION_STATUSES.HANDLING)
-    ) {
-      setSubmittedApplication({
-        applicantName: getFullName(
-          application.employee?.firstName,
-          application.employee?.lastName
-        ),
-        applicationNumber: application.applicationNumber || 0,
-      });
-    }
-  }, [isApplicationUpdated, application, setSubmittedApplication]);
-
-  useEffect(() => {
-    if (submittedApplication) {
-      void router.push(ROUTES.HOME);
-    }
-  }, [router, submittedApplication]);
+  const { mutate: updateApplicationStep6 } = useUpdateApplicationQuery();
 
   const handleClick = (consentIndex: number): void => {
     const newValue = !checkedArray[consentIndex];
@@ -122,6 +92,9 @@ const useApplicationFormStep6 = (
         },
         { deep: true }
       );
+      if (onSubmit) {
+        onSubmit();
+      }
       updateApplicationStep6(currentApplicationData);
     }
   };

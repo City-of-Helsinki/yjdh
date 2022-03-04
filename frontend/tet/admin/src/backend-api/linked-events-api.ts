@@ -2,9 +2,6 @@ import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { OptionType } from 'tet/admin/types/classification';
 import { IdObject } from 'tet/admin/types/linkedevents';
 
-// TODO replacing these values with real data source names should be enough when they're available in LinkedEvents
-export const workMethodDataSource = 'helmet';
-export const workFeaturesDataSource = 'kulke';
 // By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)
 export const keywordsDataSource = process.env.NEXT_PUBLIC_KEYWORDS_DATA_SOURCE || 'yso';
 
@@ -21,21 +18,16 @@ type Place = {
   street_address: {
     fi: string;
   };
+  address_locality: {
+    fi: string;
+  };
   postal_code: string;
   '@id': string;
 };
 
 const linkedEvents = Axios.create({
   baseURL: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev',
-  timeout: 3000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-const apiHelsinki = Axios.create({
-  baseURL: ' https://api.hel.fi/linkedevents',
-  timeout: 3000,
+  timeout: 4000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -51,7 +43,21 @@ async function query<T>(
     return result?.data?.data || [];
   } catch (error) {
     console.error(error);
-    return [];
+    throw error;
+  }
+}
+
+async function queryKeywordSet<T>(
+  axiosInstance: AxiosInstance,
+  path: string,
+  params: Record<string, string | number>,
+): Promise<T[]> {
+  try {
+    const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(path, { params });
+    return result?.data?.keywords || [];
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 }
 
@@ -62,17 +68,13 @@ export const keywordToOptionType = (keyword: Keyword): OptionType => ({
 });
 
 export const getWorkMethods = (): Promise<Keyword[]> =>
-  query<Keyword>(linkedEvents, '/v1/keyword/', {
-    show_all_keywords: 'true',
-    data_source: workMethodDataSource,
-    page_size: 3, // TODO omit when the real data source is created
+  queryKeywordSet<Keyword>(linkedEvents, '/v1/keyword_set/tet:wm/', {
+    include: 'keywords',
   });
 
 export const getWorkFeatures = (): Promise<Keyword[]> =>
-  query<Keyword>(linkedEvents, '/v1/keyword/', {
-    show_all_keywords: 'true',
-    data_source: workFeaturesDataSource,
-    page_size: 9, // TODO omit when the real data source is created
+  queryKeywordSet<Keyword>(linkedEvents, '/v1/keyword_set/tet:attr/', {
+    include: 'keywords',
   });
 
 export const getWorkKeywords = (search: string): Promise<Keyword[]> =>

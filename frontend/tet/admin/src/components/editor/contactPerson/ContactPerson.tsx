@@ -7,7 +7,6 @@ import TetPosting from 'tet/admin/types/tetposting';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import PhoneInput from 'tet/admin/components/editor/PhoneInput';
-import Dropdown from 'tet/admin/components/editor/Dropdown';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 
 const ContactPerson: React.FC = () => {
@@ -16,7 +15,7 @@ const ContactPerson: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <FormSection header={t('common:editor.posting.header')}>
+    <FormSection header={t('common:editor.employerInfo.contactPerson')}>
       <$GridCell
         as={$Grid}
         $colSpan={12}
@@ -57,13 +56,6 @@ const ContactPerson: React.FC = () => {
           />
         </$GridCell>
       </$GridCell>
-      <$GridCell
-        as={$Grid}
-        $colSpan={12}
-        css={`
-          row-gap: ${theme.spacing.xl};
-        `}
-      ></$GridCell>
     </FormSection>
   );
 };

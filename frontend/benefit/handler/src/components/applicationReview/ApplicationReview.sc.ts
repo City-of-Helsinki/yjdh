@@ -6,6 +6,10 @@ type CalculatorTableRowProps = {
   isTotal?: boolean;
 };
 
+type CalculatorTextProps = {
+  isBold?: boolean;
+};
+
 export const $MainHeader = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.m};
 `;
@@ -15,10 +19,10 @@ export const $ActionsWrapper = styled.div`
   margin-left: 0;
 `;
 
-export const $CalculatorText = styled.p`
+export const $CalculatorText = styled.p<CalculatorTextProps>`
   margin: 0;
   font-size: ${(props) => props.theme.fontSize.body.m};
-  font-weight: 500;
+  font-weight: ${(props) => (props.isBold ? 'bold' : '500')};
 `;
 
 export const $FieldHeaderText = styled.p`

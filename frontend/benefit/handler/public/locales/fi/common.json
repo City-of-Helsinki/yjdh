@@ -244,6 +244,10 @@
       "workTimePercent": {
         "label": "Työaika %",
         "placeholder": "Työaika %"
+      },
+      "monthlyAmount": {
+        "label": "Koulutuskorvaus €/kk",
+        "placeholder": "Koulutuskorvaus €/kk"
       }
     },
     "notifications": {
@@ -283,7 +287,12 @@
       "tableRowHeader": "Helsinki-lisä / kk (enintään {{amount}} €)",
       "tableRowValue": "{{amount}} €",
       "tableTotalHeader": "Helsinki-lisä yhteensä",
-      "manualInput": "Manuaalinen syöttö"
+      "manualInput": "Manuaalinen laskelma",
+      "apprenticeshipCompensation": "Oppisopimuksesta maksettava korvaus",
+      "apprenticeshipPeriod": "Koulutuskorvaus myönnetty ajalle",
+      "apprenticeshipPeriodWithDiff": "Koulutuskorvaus myönnetty ajalle ({{period}} kk)",
+      "add": "Lisää",
+      "remove": "Poista"
     }
   },
   "organizationTypes": {

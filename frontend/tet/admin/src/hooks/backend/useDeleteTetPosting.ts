@@ -9,7 +9,7 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import { useTranslation } from 'next-i18next';
 
-const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorData>, TetPosting> => {
+const useDeleteTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorData>, TetPosting> => {
   const { t } = useTranslation();
   const { axios, handleResponse } = useBackendAPI();
   const router = useRouter();
@@ -30,4 +30,4 @@ const useUpsertTetPosting = (): UseMutationResult<TetPosting, AxiosError<ErrorDa
   );
 };
 
-export default useUpsertTetPosting;
+export default useDeleteTetPosting;

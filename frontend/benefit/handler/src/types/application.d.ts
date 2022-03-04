@@ -1,3 +1,4 @@
+import { FormikProps } from 'formik';
 import { BenefitAttachment } from 'shared/types/attachment';
 
 import {
@@ -6,6 +7,7 @@ import {
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
   CALCULATION_EMPLOYMENT_KEYS,
+  CALCULATION_SALARY_KEYS,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
@@ -220,6 +222,13 @@ export type PaySubsidyData = {
   duration_in_months_rounded: string;
 };
 
+export type TrainingCompensationData = {
+  id: string;
+  start_date: string;
+  end_date: string;
+  monthly_amount: string;
+};
+
 export type ApplicationData = {
   id?: string;
   status: APPLICATION_STATUSES; // required
@@ -277,6 +286,7 @@ export type ApplicationData = {
   duration_in_months_rounded?: string;
   log_entry_comment?: string;
   granted_as_de_minimis_aid?: boolean;
+  training_compensations: TrainingCompensationData[];
   handled_at?: string;
   batch?: BatchData;
 };
@@ -375,6 +385,13 @@ export type PaySubsidy = {
   durationInMonthsRounded: string;
 };
 
+export type TrainingCompensation = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  monthlyAmount: string;
+};
+
 export type HandlerDetails = {
   id?: string;
   firstName: string;
@@ -411,6 +428,7 @@ export type CalculationFormProps = {
   overrideMonthlyBenefitAmount?: string | null;
   overrideMonthlyBenefitAmountComment?: string;
   paySubsidies?: PaySubsidy[];
+  trainingCompensations?: TrainingCompensation[];
 } & CalculationCommon;
 
 export type Application = {
@@ -435,6 +453,7 @@ export type Application = {
   durationInMonthsRounded?: string;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
+  trainingCompensations?: TrainingCompensation[];
   batch?: Batch;
 } & Step1 &
   Step2;
@@ -450,6 +469,14 @@ export interface ApplicationReviewViewProps {
 
 export interface SalaryBenefitCalculatorViewProps {
   data: Application;
+}
+
+export interface SalaryBenefitManualCalculatorViewProps {
+  formik: FormikProps<CalculationFormProps>;
+  fields: {
+    [key in CALCULATION_SALARY_KEYS]: Field<CALCULATION_SALARY_KEYS>;
+  };
+  getErrorMessage: (fieldName: string) => string | undefined;
 }
 
 export type HandledAplication = {

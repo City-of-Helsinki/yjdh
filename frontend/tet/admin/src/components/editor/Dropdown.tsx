@@ -3,11 +3,7 @@ import TetPosting from 'tet/admin/types/tetposting';
 import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { Select as HdsSelect } from 'hds-react';
 import Id from 'shared/types/id';
-
-export type OptionType = {
-  value: string;
-  label: string;
-};
+import { OptionType } from 'tet/admin/types/classification';
 
 type Props = {
   id: Id<TetPosting>;

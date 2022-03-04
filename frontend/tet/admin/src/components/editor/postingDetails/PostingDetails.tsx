@@ -9,17 +9,20 @@ import TextInput from 'tet/admin/components/editor/TextInput';
 import TextArea from 'tet/admin/components/editor/TextArea';
 import NumberInput from 'tet/admin/components/editor/NumberInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
+import { Notification } from 'hds-react';
+import { OptionType } from 'tet/admin/types/classification';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
+import Combobox from 'tet/admin/components/editor/Combobox';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { required, name } = useValidationRules();
 
-  const languageOptions = [
-    { value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
-    { value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
-    { value: 'en', label: t('common:editor.posting.contactLanguageEn') },
+  const languageOptions: OptionType[] = [
+    { name: 'fi', value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
+    { name: 'sv', value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
+    { name: 'en', value: 'en', label: t('common:editor.posting.contactLanguageEn') },
   ];
 
   return (
@@ -52,9 +55,6 @@ const PostingDetails: React.FC = () => {
         </$GridCell>
         <$GridCell $colSpan={3}></$GridCell>
       </$GridCell>
-      <$GridCell $colSpan={12}>
-        <$CompanyInfoRow>{t('common:editor.posting.workHoursNotice')}</$CompanyInfoRow>
-      </$GridCell>
       <$GridCell $colSpan={2}>
         <NumberInput
           id="spots"
@@ -73,6 +73,11 @@ const PostingDetails: React.FC = () => {
             required: required,
           }}
         />
+      </$GridCell>
+      <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell $colSpan={6}>
+          <Notification size="small">{t('common:editor.posting.workHoursNotice')}</Notification>
+        </$GridCell>
       </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={12}>
