@@ -1,17 +1,15 @@
-import { useContext } from 'react';
-import { Button } from 'hds-react';
+import { Button, IconCross, IconEye, IconUpload } from 'hds-react';
+import cloneDeep from 'lodash/cloneDeep';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import TetPosting from 'tet/admin/types/tetposting';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import useConfirm from 'shared/hooks/useConfirm';
 import { useTheme } from 'styled-components';
-import { IconCross, IconEye, IconUpload } from 'hds-react';
-import useConfirm from 'tet/admin/hooks/context/useConfirm';
-import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
-import cloneDeep from 'lodash/cloneDeep';
+import { PreviewContext } from 'tet/admin/store/PreviewContext';
+import TetPosting from 'tet/admin/types/tetposting';
 
 type Props = {
   onSubmit: () => void;
@@ -41,10 +39,10 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
   };
 
   const showConfirm = async () => {
-    const isConfirmed = await confirm(
-      t('common:delete.confirmation', { posting: posting.title }),
-      t('common:delete.deletePosting'),
-    );
+    const isConfirmed = await confirm({
+      header: t('common:delete.confirmation', { posting: posting.title }),
+      submitButtonLabel: t('common:delete.deletePosting'),
+    });
 
     if (isConfirmed) {
       deleteTetPosting.mutate(posting);

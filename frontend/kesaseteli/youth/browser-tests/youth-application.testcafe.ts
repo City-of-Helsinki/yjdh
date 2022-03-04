@@ -25,7 +25,6 @@ import {
   getFrontendUrl,
   goToBackendUrl,
   goToFrontPage,
-  goToHandlerUrl,
 } from './utils/url.utils';
 
 const url = getFrontendUrl('/');
@@ -189,6 +188,7 @@ if (!isRealIntegrationsEnabled()) {
     const thankYouPage = await getThankYouPageComponents(t);
     const applicationId = await getUrlParam('id');
     if (!applicationId) {
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       throw new Error('cannot complete test without application id');
     }
     await thankYouPage.actions.clickActivationLink();
