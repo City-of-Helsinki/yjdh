@@ -10,7 +10,7 @@ def get_dummy_company_data():
 
 DUMMY_COMPANY_DATA = {
     "id": "8c0c7a56-cb98-4c31-87ca-6f1853253986",
-    "name": "I. Haanpää Oy",
+    "name": "Demo I. Haanpää Oy",
     "business_id": "0877830-0",
     "company_form": "OY",
     "bank_account_number": "FI2112345600000785",
