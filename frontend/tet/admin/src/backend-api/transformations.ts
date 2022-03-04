@@ -1,6 +1,7 @@
 import { LocalizedObject, TetEvent, TetEventPayload, TetEvents } from 'tet/admin/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
 import { KeywordFn, ClassificationType } from 'tet/admin/types/keywords';
+import { OptionType } from 'tet/admin/types/classification';
 
 export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
 
@@ -40,10 +41,15 @@ export const isoDateToHdsFormat = (date: string | null): string => {
  * We could customize this by providing the function with user's locale as parameter.
  *
  * @param event
- * @param keywordType If this function is set, it will be used to find classification data for the posting.
+ * @param keywordType If this function is set, it is used to find classification data for the posting.
  *    Othwerwise classification data is left empty, which is okay if we don't need to show it.
+ * @param languageOptions If this value is set, it is used to set language labels.
  */
-export const eventToTetPosting = (event: TetEvent, keywordType?: KeywordFn): TetPosting => {
+export const eventToTetPosting = (
+  event: TetEvent,
+  keywordType?: KeywordFn,
+  languageOptions?: OptionType[],
+): TetPosting => {
   const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
   const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
@@ -98,6 +104,13 @@ export const eventToTetPosting = (event: TetEvent, keywordType?: KeywordFn): Tet
             value: keyword['@id'],
           }))
       : [],
+    languages: languageOptions
+      ? event.in_language.map((obj) => {
+          const splits = obj['@id'].split('/');
+          const lang = splits[splits.length - 2];
+          return languageOptions.find((option) => option.value === lang) || { name: '', value: lang, label: '' };
+        })
+      : [],
     spots,
   };
 };
@@ -144,4 +157,5 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
     contact_first_name: posting.contact_first_name,
     contact_last_name: posting.contact_last_name,
   },
+  in_language: posting.languages.map((lang) => ({ '@id': `http://localhost:8080/v1/language/${lang.value}/` })),
 });

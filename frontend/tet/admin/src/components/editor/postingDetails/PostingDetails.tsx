@@ -13,16 +13,14 @@ import { Notification } from 'hds-react';
 import { OptionType } from 'tet-shared/types/classification';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import Combobox from 'tet/admin/components/editor/Combobox';
+import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { required, name } = useValidationRules();
-  const languageOptions = [
-    { name: 'fi', value: 'fi', label: t('common:editor.posting.contactLanguageFi') },
-    { name: 'sv', value: 'sv', label: t('common:editor.posting.contactLanguageSv') },
-    { name: 'en', value: 'en', label: t('common:editor.posting.contactLanguageEn') },
-  ];
+
+  const languageOptions = useLanguageOptions();
 
   return (
     <FormSection header={t('common:editor.posting.header')}>
@@ -64,9 +62,9 @@ const PostingDetails: React.FC = () => {
       </$GridCell>
       <$GridCell $colSpan={3}>
         <Dropdown
-          id="contact_language"
+          id="languages"
           options={languageOptions}
-          initialValue={languageOptions[0]}
+          initialValue={[languageOptions[0]]}
           label={t('common:editor.posting.contactLanguage')}
           registerOptions={{
             required: required,

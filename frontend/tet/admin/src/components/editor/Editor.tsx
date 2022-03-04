@@ -45,8 +45,6 @@ const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => 
     });
   };
 
-  console.log(`Editing posting ${JSON.stringify(initialValue, null, 2)}`);
-
   return (
     <>
       <FormProvider {...methods}>
