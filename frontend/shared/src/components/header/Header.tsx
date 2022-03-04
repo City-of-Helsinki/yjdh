@@ -163,7 +163,7 @@ Header.defaultProps = {
   languages: undefined,
   isNavigationVisible: undefined,
   navigationItems: undefined,
-  customItems: undefined,
+  customItems: null,
   navigationVariant: undefined,
   onLanguageChange: undefined,
   login: undefined,

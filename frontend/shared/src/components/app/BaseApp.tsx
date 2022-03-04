@@ -86,7 +86,7 @@ const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
 };
 
 BaseApp.defaultProps = {
-  footer: undefined,
+  footer: null,
 };
 
 export default initLocale(BaseApp);

@@ -71,11 +71,11 @@ const SummarySection: React.FC<SummarySectionProps> = ({
 };
 
 SummarySection.defaultProps = {
-  children: undefined,
+  children: null,
   withoutDivider: undefined,
   paddingBottom: undefined,
-  header: undefined,
-  action: undefined,
+  header: null,
+  action: null,
 };
 
 export default SummarySection;

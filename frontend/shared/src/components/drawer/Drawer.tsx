@@ -43,7 +43,7 @@ const Drawer: React.FC<DrawerProps> = ({
 Drawer.defaultProps = {
   title: undefined,
   closeText: undefined,
-  footer: undefined,
+  footer: null,
   onClose: undefined,
 };
 
