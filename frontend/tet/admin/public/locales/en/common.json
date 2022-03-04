@@ -71,6 +71,7 @@
 		"backToEdit": "ENG Takaisin lomakkeelle",
 		"requiredInfo": "ENG merkityt kentät ovat pakollisia",
 		"preview": "ENG Esikatselu",
+    "loadingError": "ENG Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
     "employerInfo": {
 			"contactPerson": "ENG Yhteyshenkilö",
       "header": "ENG Toimipisteen tiedot",

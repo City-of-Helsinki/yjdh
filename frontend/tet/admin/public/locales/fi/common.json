@@ -71,6 +71,7 @@
 		"backToEdit": "Takaisin lomakkeelle",
 		"requiredInfo": "merkityt kentät ovat pakollisia",
 		"preview": "Esikatselu",
+    "loadingError": "Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
       "header": "Toimipisteen tiedot",

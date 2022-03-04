@@ -71,6 +71,7 @@
 		"backToEdit": "SV Takaisin lomakkeelle",
 		"requiredInfo": "SV merkityt kentät ovat pakollisia",
 		"preview": "SV Esikatselu",
+    "loadingError": "SV Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
     "employerInfo": {
 			"contactPerson": "SV Yhteyshenkilö",
       "header": "SV Toimipisteen tiedot",

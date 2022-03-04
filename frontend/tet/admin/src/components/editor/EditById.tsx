@@ -18,7 +18,7 @@ const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
-    //If initial, use data from query and not from previewContext
+    // If initial, use data from query and not from previewContext
     if (isInitialRender) setIsInitialRender(false);
   }, []);
 
