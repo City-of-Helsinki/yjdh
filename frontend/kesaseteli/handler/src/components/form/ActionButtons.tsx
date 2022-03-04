@@ -18,18 +18,27 @@ const HandlerForm: React.FC<Props> = ({ id }) => {
   const { confirm } = useConfirm();
   const { isLoading, mutate } = useCompleteYouthApplicationQuery(id);
 
+  const icon = React.useMemo(
+    () => ({
+      accept: <IconCheck aria-hidden />,
+      reject: <IconCross aria-hidden />,
+    }),
+    []
+  );
+
   const complete = React.useCallback(
     async (type: CompleteOperation) => {
       const isConfirmed = await confirm({
         header: t(`common:dialog.${type}.title`),
         content: t(`common:dialog.${type}.content`),
         submitButtonLabel: t(`common:dialog.${type}.submit`),
+        submitButtonIcon: icon[type],
       });
       if (isConfirmed) {
         mutate(type);
       }
     },
-    [confirm, mutate, t]
+    [confirm, icon, mutate, t]
   );
 
   const accept = React.useCallback(() => complete('accept'), [complete]);
@@ -40,7 +49,7 @@ const HandlerForm: React.FC<Props> = ({ id }) => {
       <Button
         theme="coat"
         data-testid="accept-button"
-        iconLeft={<IconCheck />}
+        iconLeft={icon.accept}
         onClick={accept}
         isLoading={isLoading}
         disabled={isLoading}
@@ -54,7 +63,7 @@ const HandlerForm: React.FC<Props> = ({ id }) => {
         variant="secondary"
         theme="black"
         data-testid="reject-button"
-        iconLeft={<IconCross />}
+        iconLeft={icon.reject}
         onClick={reject}
         loadingText={t(`common:handlerApplication.saving`)}
         isLoading={isLoading}

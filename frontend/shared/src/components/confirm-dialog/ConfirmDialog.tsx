@@ -1,9 +1,10 @@
-import { useTranslation } from 'benefit/applicant/i18n';
+import { IconQuestionCircle } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import Modal from 'shared/components/modal/Modal';
+import Modal, { ModalProps } from 'shared/components/modal/Modal';
 import useConfirm from 'shared/hooks/useConfirm';
 
-const ConfirmDialog: React.FC = () => {
+const ConfirmDialog: React.FC<Partial<ModalProps>> = (modalProps) => {
   const { onConfirm, onCancel, confirmState } = useConfirm();
   const { t } = useTranslation();
 
@@ -17,9 +18,12 @@ const ConfirmDialog: React.FC = () => {
       handleToggle={onCancel}
       handleSubmit={onConfirm}
       variant="primary"
+      headerIcon={<IconQuestionCircle aria-hidden="true" />}
+      {...modalProps}
     >
       {confirmState.content?.length ? confirmState.content : null}
     </Modal>
   ) : null;
 };
+
 export default ConfirmDialog;

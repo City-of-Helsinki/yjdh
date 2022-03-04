@@ -123,8 +123,25 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     });
   }
   for (const status of YOUTH_APPLICATION_STATUS_COMPLETED) {
-    const buttonType = status === 'accepted' ? 'accept' : 'reject';
-    describe(`when completing application by clicking ${buttonType}-button`, () => {
+    const operationType = status === 'accepted' ? 'accept' : 'reject';
+    describe(`when clicking cancel-button on ${operationType}-confirmation dialog`, () => {
+      it(`cancels the operation ${operationType}`, async () => {
+        const application = fakeCreatedYouthApplication({
+          status: 'awaiting_manual_processing',
+        });
+        expectToGetYouthApplication(application);
+        await renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = getIndexPageApi(application);
+        await indexPageApi.expectations.actionButtonsArePresent();
+        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.expectations.showsConfirmDialog(operationType);
+        await indexPageApi.actions.clickCancelButton();
+        await indexPageApi.expectations.actionButtonsArePresent();
+      });
+    });
+    describe(`when clicking confirm button on ${operationType}-confirmation dialog`, () => {
       it(`shows a message that application is ${status}`, async () => {
         const application = fakeCreatedYouthApplication({
           status: 'awaiting_manual_processing',
@@ -135,7 +152,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = getIndexPageApi(application);
         await indexPageApi.expectations.actionButtonsArePresent();
-        indexPageApi.actions.clickButton(buttonType);
+        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.expectations.showsConfirmDialog(operationType);
+        await indexPageApi.actions.clickConfirmButton(operationType);
         await indexPageApi.expectations.statusNotificationIsPresent(status);
       });
       it(`shows error toast when backend returns bad request`, async () => {
@@ -148,7 +167,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = getIndexPageApi(application);
         await indexPageApi.expectations.actionButtonsArePresent();
-        indexPageApi.actions.clickButton(buttonType, 400);
+        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.expectations.showsConfirmDialog(operationType);
+        await indexPageApi.actions.clickConfirmButton(operationType, 400);
         await headerApi.expectations.errorToastIsShown();
       });
 
@@ -164,7 +185,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = getIndexPageApi(application);
         await indexPageApi.expectations.actionButtonsArePresent();
-        indexPageApi.actions.clickButton(buttonType, 500);
+        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.expectations.showsConfirmDialog(operationType);
+        await indexPageApi.actions.clickConfirmButton(operationType, 500);
         await waitFor(() =>
           expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
         );

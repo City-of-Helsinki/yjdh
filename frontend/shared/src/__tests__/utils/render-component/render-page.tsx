@@ -13,12 +13,17 @@ import HDSToastContainer from 'shared/components/toast/ToastContainer';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
+import { DialogContextProvider } from 'shared/contexts/DialogContext';
+import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
+import Portal from 'shared/components/confirm-dialog/Portal';
+import PORTAL_ID from 'shared/contants/portal-id';
 
 type Props = {
   backendUrl: string;
   Header: React.FC;
   Footer?: React.FC;
   AuthProvider?: React.FC;
+  confirmDialog?: boolean;
 };
 
 const renderPage =
@@ -27,6 +32,7 @@ const renderPage =
     Header,
     Footer,
     AuthProvider,
+    confirmDialog,
   }: Props) =>
   async (
     Page: NextPage,
@@ -54,8 +60,22 @@ const renderPage =
       render(
         <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
           <QueryClientProvider client={queryClient}>
-            {AuthProvider ? <AuthProvider>{children}</AuthProvider> : children}
-            <HiddenLoadingIndicator />
+            <DialogContextProvider>
+              {AuthProvider ? (
+                <AuthProvider>{children}</AuthProvider>
+              ) : (
+                children
+              )}
+              <HiddenLoadingIndicator />
+              {confirmDialog && (
+                <>
+                  <Portal>
+                    <ConfirmDialog />
+                  </Portal>
+                  <div id={PORTAL_ID} />
+                </>
+              )}
+            </DialogContextProvider>
           </QueryClientProvider>
         </BackendAPIContext.Provider>,
         { isReady: true, ...router }

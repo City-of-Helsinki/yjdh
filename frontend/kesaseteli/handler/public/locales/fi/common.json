@@ -54,7 +54,7 @@
     "toggleMenu": "Avaa valikko"
   },
   "dialog": {
-    "cancel": "peruuta",
+    "cancel": "Peruuta",
     "accept": {
       "title": "Oletko varma?",
       "content": "Kesäseteli lähetetään sähköpostiin päätöksen jälkeen. Toimintoa ei voi peruuttaa.",
@@ -64,6 +64,11 @@
       "title": "Oletko varma?",
       "content": "Toimintoa ei voi peruuttaa.",
       "submit": "Hylkää"
+    }
+  },
+  "applications" : {
+    "actions": {
+      "close": "Sulje"
     }
   }
 }

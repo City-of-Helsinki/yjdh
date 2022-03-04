@@ -1,22 +1,21 @@
 import React, { useReducer } from 'react';
+import { ModalProps } from 'shared/components/modal/Modal';
+
+export type DialogPayload = {
+  header: string;
+  submitButtonLabel: ModalProps['submitButtonLabel'];
+  submitButtonIcon?: ModalProps['submitButtonIcon'];
+  content?: string;
+};
 
 export type DialogState = {
   show: boolean;
-  header: string;
-  submitButtonLabel: string;
-  content?: string;
-};
+} & DialogPayload;
 
 export enum DialogActionKind {
   SHOW_CONFIRM = 'SHOW_CONFIRM',
   HIDE_CONFIRM = 'HIDE_CONFIRM',
 }
-
-type DialogPayload = {
-  header: string;
-  submitButtonLabel: string;
-  content?: string;
-};
 
 type ShowConfirmAction = {
   type: DialogActionKind.SHOW_CONFIRM;
@@ -48,6 +47,7 @@ const reducer = (
         show: true,
         header: action.payload.header,
         submitButtonLabel: action.payload.submitButtonLabel,
+        submitButtonIcon: action.payload.submitButtonIcon,
         content,
       };
 
@@ -57,7 +57,7 @@ const reducer = (
   }
 };
 
-const DialogContext = React.createContext<
+export const DialogContext = React.createContext<
   [DialogState, React.Dispatch<DialogActionTypes>]
 >([{ show: false, header: '', content: '', submitButtonLabel: '' }, () => {}]);
 

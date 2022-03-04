@@ -1,23 +1,19 @@
 import { useContext } from 'react';
 import DialogContext, {
   DialogActionKind,
+  DialogPayload,
   DialogState,
 } from 'shared/contexts/DialogContext';
 
 type ResolverCallback = (a: boolean) => void;
 
-type ConfirmArgs = {
-  header: string;
-  submitButtonLabel: string;
-  content?: string | undefined;
-};
-
 type ReturnType = {
   confirm: ({
     header,
     submitButtonLabel,
+    submitButtonIcon,
     content,
-  }: ConfirmArgs) => Promise<unknown>;
+  }: DialogPayload) => Promise<unknown>;
   onConfirm: () => void;
   onCancel: () => void;
   confirmState: DialogState;
@@ -45,13 +41,15 @@ const useConfirm = (): ReturnType => {
   const confirm = ({
     header,
     submitButtonLabel,
+    submitButtonIcon,
     content,
-  }: ConfirmArgs): Promise<unknown> => {
+  }: DialogPayload): Promise<unknown> => {
     dispatch({
       type: DialogActionKind.SHOW_CONFIRM,
       payload: {
         header,
         submitButtonLabel,
+        submitButtonIcon,
         content,
       },
     });
