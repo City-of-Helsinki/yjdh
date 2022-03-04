@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
+import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
 
 const EditStaticPage: NextPage = () => {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ const EditStaticPage: NextPage = () => {
   const { isLoading, data, error } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
 
   const keywordResult = useKeywordType();
+  const languageOptions = useLanguageOptions();
 
   if (isLoading || keywordResult.isLoading) {
     return <PageLoadingSpinner />;
@@ -33,7 +35,10 @@ const EditStaticPage: NextPage = () => {
 
   if (data) {
     return (
-      <EditById title={t('common:editor.editTitle')} data={eventToTetPosting(data, keywordResult.getKeywordType)} />
+      <EditById
+        title={t('common:editor.editTitle')}
+        data={eventToTetPosting(data, keywordResult.getKeywordType, languageOptions)}
+      />
     );
   } else {
     return <PageNotFound />;

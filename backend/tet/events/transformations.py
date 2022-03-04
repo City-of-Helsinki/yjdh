@@ -59,6 +59,7 @@ def reduce_get_event(event):
             "start_time",
             "end_time",
             "custom_data",
+            "in_language",
         ),
     )
 
