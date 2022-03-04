@@ -58,7 +58,7 @@ const useApplicationReports = (): ExtendedComponentProps => {
           )
           .then((response) => {
             if (response.status === 200 && response.data)
-              downloadCSVFile(response.data);
+              window.open(`data:text/csv;charset=utf-8,${response.data}`);
           });
     },
     []
