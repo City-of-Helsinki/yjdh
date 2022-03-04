@@ -33,7 +33,6 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
 
   const showPreview = () => {
     const values = getValues();
-    console.log(`showPreview values: ${JSON.stringify(values, null, 2)}`);
     setTetPostingData(cloneDeep(values));
     setPreviewVisibility(true);
   };

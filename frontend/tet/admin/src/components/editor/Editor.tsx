@@ -39,15 +39,11 @@ const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => 
 
   const handleSuccess = (validatedPosting: TetPosting): void => {
     const event = tetPostingToEvent(validatedPosting);
-    console.log(`posting languages = ${JSON.stringify(validatedPosting.languages)}`);
-    console.log(`event languages = ${JSON.stringify(event.in_language)}`);
     upsertTetPosting.mutate({
       id: validatedPosting.id,
       event,
     });
   };
-
-  console.log(`Editing posting ${JSON.stringify(initialValue, null, 2)}`);
 
   return (
     <>

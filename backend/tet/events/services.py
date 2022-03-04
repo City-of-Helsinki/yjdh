@@ -95,7 +95,6 @@ class ServiceClient:
     def update_tet_event(self, event_id, validated_data, user):
         self._get_event_and_raise_for_unauthorized(user, event_id)
         event = enrich_update_event(validated_data, user.email)
-        LOGGER.warning(event)
         updated_event = self.client.update_event(event_id, event)
 
         return reduce_get_event(updated_event)
