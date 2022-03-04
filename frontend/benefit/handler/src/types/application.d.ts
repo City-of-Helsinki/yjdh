@@ -413,6 +413,11 @@ export type CalculationFormProps = {
   paySubsidies?: PaySubsidy[];
 } & CalculationCommon;
 
+export type ExportApplicationInTimeRangeFormProps = {
+  startDate: string;
+  endDate: string;
+};
+
 export type Application = {
   id?: string;
   status?: APPLICATION_STATUSES;

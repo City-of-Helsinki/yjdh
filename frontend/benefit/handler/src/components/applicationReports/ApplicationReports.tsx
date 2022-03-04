@@ -1,23 +1,26 @@
-import * as React from 'react';
+import { EXPORT_APPLICATIONS_ROUTES } from 'benefit/handler/constants';
 import { DateInput } from 'hds-react';
-import { $Heading } from '../applicationsArchive/ApplicationsArchive.sc';
-import { useApplicationReports } from './useApplicationReports';
-import ReportsSection from './ReportsSection';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
-import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { EXPORT_APPLICATIONS_ROUTES } from 'benefit/handler/constants';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import {
+  convertToUIDateFormat,
+  getCorrectEndDate,
+} from 'shared/utils/date.utils';
+
+import { $Heading } from '../applicationsArchive/ApplicationsArchive.sc';
+import ReportsSection from './ReportsSection';
+import { useApplicationReports } from './useApplicationReports';
 
 const ApplicationReports: React.FC = () => {
   const {
     t,
     translationsBase,
-    startDate,
-    endDate,
-    setStartDate,
-    setEndDate,
-    exportApplication,
+    exportApplications,
+    formik,
+    fields,
+    exportApplicationsInTimeRange,
   } = useApplicationReports();
   const today = convertToUIDateFormat(new Date());
 
@@ -27,7 +30,7 @@ const ApplicationReports: React.FC = () => {
 
       <ReportsSection
         onDownloadButtonClick={() =>
-          exportApplication(EXPORT_APPLICATIONS_ROUTES.ACCEPTED)
+          exportApplications(EXPORT_APPLICATIONS_ROUTES.ACCEPTED)
         }
         header={`${t(
           `${translationsBase}.headings.downloadAcceptedApplications`
@@ -38,15 +41,18 @@ const ApplicationReports: React.FC = () => {
         withDivider
       >
         <$GridCell $colSpan={11}>
-          <label>{`${t(`${translationsBase}.fields.lastDownloadDateText`, {
-            date: today,
-          })}`}</label>
+          <p style={{ margin: 0 }}>{`${t(
+            `${translationsBase}.fields.lastDownloadDateText`,
+            {
+              date: today,
+            }
+          )}`}</p>
         </$GridCell>
       </ReportsSection>
 
       <ReportsSection
         onDownloadButtonClick={() =>
-          exportApplication(EXPORT_APPLICATIONS_ROUTES.REJECTED)
+          exportApplications(EXPORT_APPLICATIONS_ROUTES.REJECTED)
         }
         header={`${t(
           `${translationsBase}.headings.downloadRejectedApplications`
@@ -57,16 +63,17 @@ const ApplicationReports: React.FC = () => {
         withDivider
       >
         <$GridCell $colSpan={11}>
-          <label>{`${t(`${translationsBase}.fields.lastDownloadDateText`, {
-            date: today,
-          })}`}</label>
+          <p style={{ margin: 0 }}>{`${t(
+            `${translationsBase}.fields.lastDownloadDateText`,
+            {
+              date: today,
+            }
+          )}`}</p>
         </$GridCell>
       </ReportsSection>
 
       <ReportsSection
-        onDownloadButtonClick={() =>
-          exportApplication(EXPORT_APPLICATIONS_ROUTES.IN_TIME_RANGE)
-        }
+        onDownloadButtonClick={exportApplicationsInTimeRange}
         header={`${t(
           `${translationsBase}.headings.downloadApplicationsInTimeRange`
         )}`}
@@ -85,8 +92,10 @@ const ApplicationReports: React.FC = () => {
             id={`${t(`${translationsBase}.fields.startDate`)}`}
             name={`${t(`${translationsBase}.fields.startDate`)}`}
             placeholder={`${t(`${translationsBase}.fields.startDate`)}`}
-            value={convertToUIDateFormat(startDate)}
-            onChange={(value) => setStartDate(value)}
+            value={convertToUIDateFormat(formik.values.startDate)}
+            onChange={(value) =>
+              formik.setFieldValue(fields.startDate.name, value)
+            }
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
@@ -94,8 +103,13 @@ const ApplicationReports: React.FC = () => {
             id={`${t(`${translationsBase}.fields.endDate`)}`}
             name={`${t(`${translationsBase}.fields.endDate`)}`}
             placeholder={`${t(`${translationsBase}.fields.endDate`)}`}
-            value={convertToUIDateFormat(endDate)}
-            onChange={(value) => setEndDate(value)}
+            value={convertToUIDateFormat(formik.values.endDate)}
+            onChange={(value) =>
+              formik.setFieldValue(
+                fields.endDate.name,
+                getCorrectEndDate(formik.values.startDate, value)
+              )
+            }
           />
         </$GridCell>
       </ReportsSection>

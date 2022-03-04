@@ -124,6 +124,11 @@ export enum CALCULATION_EMPLOYMENT_KEYS {
   END_DATE = 'endDate',
 }
 
+export enum EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+}
+
 export enum CALCULATION_SALARY_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',

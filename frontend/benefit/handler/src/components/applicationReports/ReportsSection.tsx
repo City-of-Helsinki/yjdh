@@ -52,7 +52,7 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
             css={`
               margin-top: ${theme.spacing.l};
             `}
-            onClick={() => onDownloadButtonClick()}
+            onClick={onDownloadButtonClick}
           >
             {buttonText}
           </Button>
