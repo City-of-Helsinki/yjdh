@@ -92,39 +92,45 @@ export const fakeSchools: string[] = [
   'Östersundom skola',
 ];
 
-export const fakeYouthFormData = (isUnlistedSchool = false): YouthFormData => ({
-  first_name: faker.name.findName(),
-  last_name: faker.name.findName(),
-  social_security_number: FinnishSSN.createWithAge(
-    faker.datatype.number({ min: 15, max: 16 })
-  ),
-  postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
-  selectedSchool: { name: faker.random.arrayElement(fakeSchools) },
-  unlistedSchool: isUnlistedSchool ? faker.commerce.department() : undefined,
-  is_unlisted_school: isUnlistedSchool,
-  phone_number: faker.phone.phoneNumber('+358#########'),
-  email: faker.internet.email(),
-  termsAndConditions: true,
-});
+export const fakeYouthFormData = (
+  override?: Partial<YouthApplication>
+): YouthFormData => {
+  const { isUnlistedSchool } = { isUnlistedSchool: false, ...override };
+  return {
+    first_name: faker.name.findName(),
+    last_name: faker.name.findName(),
+    social_security_number: FinnishSSN.createWithAge(
+      faker.datatype.number({ min: 15, max: 16 })
+    ),
+    postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
+    selectedSchool: { name: faker.random.arrayElement(fakeSchools) },
+    unlistedSchool: isUnlistedSchool ? faker.commerce.department() : undefined,
+    is_unlisted_school: isUnlistedSchool,
+    phone_number: faker.phone.phoneNumber('+358#########'),
+    email: faker.internet.email(),
+    termsAndConditions: true,
+    ...override,
+  };
+};
 
 export const fakeYouthApplication = (language?: Language): YouthApplication =>
   convertFormDataToApplication(fakeYouthFormData(), language);
 
-type Options = { activated?: boolean; isUnlistedSchool?: boolean };
-
 export const fakeCreatedYouthApplication = (
-  options?: Options
+  override?: Partial<CreatedYouthApplication>
 ): CreatedYouthApplication => {
-  const { activated, isUnlistedSchool } = {
-    activated: true,
-    isUnlistedSchool: false,
-    ...options,
+  const { status } = {
+    status: 'submitted' as CreatedYouthApplication['status'],
+    ...override,
   };
   return {
     id: faker.datatype.uuid(),
-    receipt_confirmed_at: activated
-      ? convertToBackendDateFormat(faker.date.past())
-      : undefined,
-    ...convertFormDataToApplication(fakeYouthFormData(isUnlistedSchool)),
+    status,
+    receipt_confirmed_at:
+      override?.status !== 'submitted'
+        ? convertToBackendDateFormat(faker.date.past())
+        : undefined,
+    ...convertFormDataToApplication(fakeYouthFormData(override)),
+    ...override,
   };
 };

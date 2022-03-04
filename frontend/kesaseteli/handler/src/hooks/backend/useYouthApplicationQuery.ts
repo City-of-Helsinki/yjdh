@@ -1,11 +1,6 @@
-import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
+import { getYouthApplicationQueryKey } from 'kesaseteli-shared/backend-api/backend-api';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import {
-  QueryKey,
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
-} from 'react-query';
+import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import { isError } from 'shared/utils/type-guards';
 
@@ -15,7 +10,7 @@ const useYouthApplicationQuery = (
 ): UseQueryResult<CreatedYouthApplication> => {
   const handleError = useErrorHandler(false);
   return useQuery({
-    queryKey: `${BackendEndpoint.YOUTH_APPLICATIONS}${String(id)}/` as QueryKey,
+    queryKey: id ? getYouthApplicationQueryKey(id) : undefined,
     enabled: Boolean(id),
     staleTime: Infinity,
     onError: (error: unknown) => {

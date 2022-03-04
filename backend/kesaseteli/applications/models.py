@@ -21,12 +21,15 @@ from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUI
 
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
-    ApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
+    EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
+    YouthApplicationStatus,
 )
+from common.permissions import HandlerPermission
+from common.urls import handler_youth_application_processing_url
 from common.utils import validate_finnish_social_security_number
 from companies.models import Company
 
@@ -151,7 +154,27 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         verbose_name=_("vtj json"),
         validators=[validate_optional_json],
     )
+    status = models.CharField(
+        max_length=64,
+        verbose_name=_("status"),
+        choices=YouthApplicationStatus.choices,
+        default=YouthApplicationStatus.SUBMITTED,
+    )
+    handler = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="youth_applications",
+        verbose_name=_("handler"),
+        blank=True,
+        null=True,
+    )
+    handled_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("time handled")
+    )
     objects = YouthApplicationQuerySet.as_manager()
+
+    def handler_processing_url(self):
+        return handler_youth_application_processing_url(self.pk)
 
     def _localized_frontend_page_url(self, page_name):
         return urljoin(
@@ -308,12 +331,81 @@ class YouthApplication(TimeStampedModel, UUIDModel):
     @transaction.atomic
     def activate(self) -> bool:
         """
-        Activate this youth application. Return self.is_active after this call.
+        Activate this youth application if possible.
+
+        :return: self.is_active
         """
         if self.can_activate:
             self.receipt_confirmed_at = timezone.now()
             self.save()
         return self.is_active
+
+    def set_handler(self, handler):
+        try:
+            self.handler = handler
+        except ValueError:  # e.g. cannot assign AnonymousUser: Must be a User instance
+            self.handler = None
+        if self.handler is None and not HandlerPermission.allow_empty_handler():
+            raise ValueError("Forbidden empty handler")
+
+    @transaction.atomic
+    def handle(self, status: YouthApplicationStatus, handler):
+        """
+        Handle the youth application by setting the status, handler and handled_at.
+
+        :param status: The target status
+        :type status: YouthApplicationStatus
+        :param handler: Handler user
+        :type handler: None | AnonymousUser | User
+        """
+        if status not in YouthApplicationStatus.handled_values():
+            raise ValueError(f"Invalid handle status: {status}")
+        self.status = status
+        self.set_handler(handler)
+        self.handled_at = timezone.now()
+        self.save()
+
+    @property
+    def is_accepted(self) -> bool:
+        return self.status == YouthApplicationStatus.ACCEPTED
+
+    def can_accept(self, handler) -> bool:
+        return (
+            self.status in YouthApplicationStatus.acceptable_values()
+            and HandlerPermission.has_user_permission(handler)
+        )
+
+    @transaction.atomic
+    def accept(self, handler) -> bool:
+        """
+        Accept this youth application using given handler user if possible.
+
+        :return: self.is_accepted
+        """
+        if self.can_accept(handler=handler):
+            self.handle(status=YouthApplicationStatus.ACCEPTED, handler=handler)
+        return self.is_accepted
+
+    @property
+    def is_rejected(self) -> bool:
+        return self.status == YouthApplicationStatus.REJECTED
+
+    def can_reject(self, handler) -> bool:
+        return (
+            self.status in YouthApplicationStatus.rejectable_values()
+            and HandlerPermission.has_user_permission(handler)
+        )
+
+    @transaction.atomic
+    def reject(self, handler) -> bool:
+        """
+        Reject youth application using given handler user if possible.
+
+        :return: self.is_rejected
+        """
+        if self.can_reject(handler=handler):
+            self.handle(status=YouthApplicationStatus.REJECTED, handler=handler)
+        return self.is_rejected
 
     @classmethod
     def is_email_or_social_security_number_active(
@@ -403,8 +495,8 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
     status = models.CharField(
         max_length=64,
         verbose_name=_("status"),
-        choices=ApplicationStatus.choices,
-        default=ApplicationStatus.DRAFT,
+        choices=EmployerApplicationStatus.choices,
+        default=EmployerApplicationStatus.DRAFT,
     )
     street_address = models.CharField(
         max_length=256,

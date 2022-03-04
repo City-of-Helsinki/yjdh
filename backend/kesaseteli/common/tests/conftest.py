@@ -4,13 +4,17 @@ from rest_framework.test import APIClient
 from shared.common.tests.conftest import *  # noqa
 from shared.common.tests.conftest import store_tokens_in_session
 
-from applications.enums import ApplicationStatus, AttachmentType
+from applications.enums import AttachmentType, EmployerApplicationStatus
 from common.tests.factories import (
+    AcceptableYouthApplicationFactory,
+    AcceptedYouthApplicationFactory,
     ActiveYouthApplicationFactory,
-    ApplicationFactory,
     AttachmentFactory,
     CompanyFactory,
+    EmployerApplicationFactory,
     InactiveYouthApplicationFactory,
+    RejectableYouthApplicationFactory,
+    RejectedYouthApplicationFactory,
     SummerVoucherFactory,
     YouthApplicationFactory,
 )
@@ -30,15 +34,15 @@ def company2():
 
 @pytest.fixture
 def application(company, user):
-    return ApplicationFactory(
-        status=ApplicationStatus.DRAFT, company=company, user=user
+    return EmployerApplicationFactory(
+        status=EmployerApplicationStatus.DRAFT, company=company, user=user
     )
 
 
 @pytest.fixture
 def submitted_application(company, user):
-    return ApplicationFactory(
-        status=ApplicationStatus.SUBMITTED, company=company, user=user
+    return EmployerApplicationFactory(
+        status=EmployerApplicationStatus.SUBMITTED, company=company, user=user
     )
 
 
@@ -105,6 +109,26 @@ def store_company_in_session(client, company):
 @pytest.fixture
 def youth_application():
     return YouthApplicationFactory()
+
+
+@pytest.fixture
+def acceptable_youth_application():
+    return AcceptableYouthApplicationFactory()
+
+
+@pytest.fixture
+def accepted_youth_application():
+    return AcceptedYouthApplicationFactory()
+
+
+@pytest.fixture
+def rejectable_youth_application():
+    return RejectableYouthApplicationFactory()
+
+
+@pytest.fixture
+def rejected_youth_application():
+    return RejectedYouthApplicationFactory()
 
 
 @pytest.fixture

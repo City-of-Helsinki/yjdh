@@ -9,6 +9,11 @@ import HandlerIndex from 'kesaseteli/handler/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeCreatedYouthApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import {
+  YOUTH_APPLICATION_STATUS_COMPLETED,
+  YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED,
+  YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
+} from 'kesaseteli-shared/constants/status-constants';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
@@ -25,8 +30,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
   it(`shows error toast when backend returns bad request`, async () => {
     expectToGetYouthApplicationError('123-abc', 400);
-    const spyPush = jest.fn();
-    await renderPage(HandlerIndex, { push: spyPush, query: { id: '123-abc' } });
+    await renderPage(HandlerIndex, { query: { id: '123-abc' } });
     await headerApi.expectations.errorToastIsShown();
   });
 
@@ -70,8 +74,10 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     await indexPageApi.expectations.fieldValueIsPresent('email');
   });
 
-  it(`shows youth application data wiht unlisted school`, async () => {
-    const application = fakeCreatedYouthApplication({ isUnlistedSchool: true });
+  it(`shows youth application data with unlisted school`, async () => {
+    const application = fakeCreatedYouthApplication({
+      is_unlisted_school: true,
+    });
     expectToGetYouthApplication(application);
     const spyPush = jest.fn();
     await renderPage(HandlerIndex, {
@@ -85,4 +91,84 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       (school) => `${school ?? ''} (Koulua ei löytynyt listalta)`
     );
   });
+
+  for (const status of YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION) {
+    describe(`when application status is "${status}"`, () => {
+      it('shows accept and reject buttons', async () => {
+        const application = fakeCreatedYouthApplication({ status });
+        expectToGetYouthApplication(application);
+        await renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = getIndexPageApi(application);
+        await indexPageApi.expectations.pageIsLoaded();
+        await indexPageApi.expectations.actionButtonsArePresent();
+      });
+    });
+  }
+
+  for (const status of YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED) {
+    describe(`when application status is "${status}"`, () => {
+      it('shows notification message and buttons are not present', async () => {
+        const application = fakeCreatedYouthApplication({ status });
+        expectToGetYouthApplication(application);
+        await renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = getIndexPageApi(application);
+        await indexPageApi.expectations.pageIsLoaded();
+        indexPageApi.expectations.actionButtonsAreNotPresent();
+        await indexPageApi.expectations.statusNotificationIsPresent(status);
+      });
+    });
+  }
+  for (const status of YOUTH_APPLICATION_STATUS_COMPLETED) {
+    const buttonType = status === 'accepted' ? 'accept' : 'reject';
+    describe(`when completing application by clicking ${buttonType}-button`, () => {
+      it(`shows a message that application is ${status}`, async () => {
+        const application = fakeCreatedYouthApplication({
+          status: 'awaiting_manual_processing',
+        });
+        expectToGetYouthApplication(application);
+        await renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = getIndexPageApi(application);
+        await indexPageApi.expectations.actionButtonsArePresent();
+        indexPageApi.actions.clickButton(buttonType);
+        await indexPageApi.expectations.statusNotificationIsPresent(status);
+      });
+      it(`shows error toast when backend returns bad request`, async () => {
+        const application = fakeCreatedYouthApplication({
+          status: 'awaiting_manual_processing',
+        });
+        expectToGetYouthApplication(application);
+        await renderPage(HandlerIndex, {
+          query: { id: application.id },
+        });
+        const indexPageApi = getIndexPageApi(application);
+        await indexPageApi.expectations.actionButtonsArePresent();
+        indexPageApi.actions.clickButton(buttonType, 400);
+        await headerApi.expectations.errorToastIsShown();
+      });
+
+      it(`redirects to 500 -error page when backend returns unexpected error`, async () => {
+        const application = fakeCreatedYouthApplication({
+          status: 'awaiting_manual_processing',
+        });
+        expectToGetYouthApplication(application);
+        const spyPush = jest.fn();
+        await renderPage(HandlerIndex, {
+          push: spyPush,
+          query: { id: application.id },
+        });
+        const indexPageApi = getIndexPageApi(application);
+        await indexPageApi.expectations.actionButtonsArePresent();
+        indexPageApi.actions.clickButton(buttonType, 500);
+        await waitFor(() =>
+          expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
+        );
+      });
+    });
+  }
 });

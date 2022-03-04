@@ -20,7 +20,6 @@ const EditPostingPage: NextPage = () => {
       <$HeadingContainer>
         <$Heading>{t('common:editor.editTitle')}</$Heading>
       </$HeadingContainer>
-      <EditById id={id} />
     </Container>
   );
 };

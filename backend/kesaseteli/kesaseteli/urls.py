@@ -6,7 +6,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from applications.api.v1 import views as application_views
-from applications.views import ApplicationExcelDownloadView
+from applications.views import EmployerApplicationExcelDownloadView
 from companies.api.v1.views import GetCompanyView
 
 router = routers.DefaultRouter()
@@ -23,7 +23,9 @@ urlpatterns = [
     path("oidc/", include("shared.oidc.urls")),
     path("oauth2/", include("shared.azure_adfs.urls")),
     path(
-        "excel-download/", ApplicationExcelDownloadView.as_view(), name="excel-download"
+        "excel-download/",
+        EmployerApplicationExcelDownloadView.as_view(),
+        name="excel-download",
     ),
     path("logout/", LogoutView.as_view(), name="logout"),
 ]
