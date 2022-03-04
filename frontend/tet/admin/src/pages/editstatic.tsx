@@ -12,17 +12,23 @@ import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
+import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 
 const EditStaticPage: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const id = router.query.id as string;
-  const { isLoading, data } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
+  const { isLoading, data, error } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
 
   const keywordResult = useKeywordType();
 
   if (isLoading || keywordResult.isLoading) {
     return <PageLoadingSpinner />;
+  }
+
+  if (error || keywordResult.error) {
+    const err = (error as Error) || keywordResult.error;
+    return <EditorLoadingError error={err} />;
   }
 
   if (data) {

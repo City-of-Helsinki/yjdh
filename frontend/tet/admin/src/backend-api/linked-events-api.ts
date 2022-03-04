@@ -2,9 +2,6 @@ import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { OptionType } from 'tet/admin/types/classification';
 import { IdObject } from 'tet/admin/types/linkedevents';
 
-// TODO replacing these values with real data source names should be enough when they're available in LinkedEvents
-export const workMethodDataSource = 'helmet';
-export const workFeaturesDataSource = 'kulke';
 // By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)
 export const keywordsDataSource = process.env.NEXT_PUBLIC_KEYWORDS_DATA_SOURCE || 'yso';
 
@@ -30,7 +27,7 @@ type Place = {
 
 const linkedEvents = Axios.create({
   baseURL: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev',
-  timeout: 3000,
+  timeout: 4000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -46,7 +43,7 @@ async function query<T>(
     return result?.data?.data || [];
   } catch (error) {
     console.error(error);
-    return [];
+    throw error;
   }
 }
 
@@ -60,7 +57,7 @@ async function queryKeywordSet<T>(
     return result?.data?.keywords || [];
   } catch (error) {
     console.error(error);
-    return [];
+    throw error;
   }
 }
 

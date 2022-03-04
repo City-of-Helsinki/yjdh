@@ -15,6 +15,7 @@ import Combobox from 'tet/admin/components/editor/Combobox';
 import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
 import { useFormContext } from 'react-hook-form';
 import TetPosting from 'tet/admin/types/tetposting';
+import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 
 export type FilterFunction = (options: OptionType[], search: string) => OptionType[];
 
@@ -44,6 +45,11 @@ const Classification: React.FC = () => {
     setSearch(search);
     return options;
   };
+
+  if (workMethods.error || workFeatures.error) {
+    const error = (workMethods.error || workFeatures.error) as Error;
+    return <EditorLoadingError error={error} />;
+  }
 
   const workMethodsList = workMethods.data?.map((k) => keywordToOptionType(k)) || [];
   const workFeaturesList = workFeatures.data?.map((k) => keywordToOptionType(k)) || [];

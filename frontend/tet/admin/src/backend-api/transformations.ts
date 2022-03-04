@@ -36,6 +36,9 @@ export const isoDateToHdsFormat = (date: string | null): string => {
 /**
  * Convert event read from Linked Events API to form data.
  *
+ * Event keywords (classification in posting) and address are converted to Finnish labels.
+ * We could customize this by providing the function with user's locale as parameter.
+ *
  * @param event
  * @param keywordType If this function is set, it will be used to find classification data for the posting.
  *    Othwerwise classification data is left empty, which is okay if we don't need to show it.

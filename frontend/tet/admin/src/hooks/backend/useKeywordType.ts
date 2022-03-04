@@ -5,7 +5,7 @@ import { getWorkFeatures, getWorkMethods } from 'tet/admin/backend-api/linked-ev
 export type UseKeywordResult = {
   getKeywordType?: KeywordFn;
   isLoading: boolean;
-  // TODO add error
+  error?: Error;
 };
 
 const useKeywordType = (): UseKeywordResult => {
@@ -22,8 +22,15 @@ const useKeywordType = (): UseKeywordResult => {
     };
   }
 
+  if (workMethods.error || workFeatures.error) {
+    const error = (workMethods.error || workFeatures.error) as Error;
+    return {
+      isLoading: false,
+      error,
+    };
+  }
+
   if (!workMethods.data || !workFeatures.data) {
-    // TODO return error
     return {
       isLoading: false,
     };
