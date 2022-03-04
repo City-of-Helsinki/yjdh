@@ -1,12 +1,15 @@
 import React from 'react';
 import Container from 'shared/components/container/Container';
-import { $Banner, $Title } from './Banner.sc';
+import { $Banner, $BannerWrapper, $Title } from './Banner.sc';
 
 const Banner = () => {
   return (
     <$Banner>
       <Container>
-        <$Title>Muistathan etsiä TET-paikkasi ajoissa</$Title>
+        <$BannerWrapper>
+          <$Title>Muistathan etsiä TET-paikkasi ajoissa</$Title>
+          <img src="lippakioski.png" alt="canteen counter" />
+        </$BannerWrapper>
       </Container>
     </$Banner>
   );
