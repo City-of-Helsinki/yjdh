@@ -53,8 +53,11 @@ class GetCompanyView(APIView):
             return self.ytj_api_error
 
         dummy_data = get_dummy_company_data()
-        dummy_company = Company.objects.filter(pk=dummy_data["id"]).first()
+        dummy_company = Company.objects.filter(
+            business_id=dummy_data["business_id"]
+        ).first()
         if not dummy_company:
+            del dummy_data["id"]
             dummy_company = Company(**dummy_data)
             dummy_company.save()
         company_data = CompanySerializer(dummy_company).data
