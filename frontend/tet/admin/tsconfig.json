@@ -4,6 +4,7 @@
     "baseUrl": "../../",
     "paths": {
       "tet/admin/*": ["tet/admin/src/*"],
+      "tet-shared/*": ["tet/shared/src/*"],
       "shared/*": ["shared/src/*","shared/browser-tests/*"]
     }
   },
