@@ -1,36 +1,54 @@
 import React from 'react';
 import TetPosting from 'tet/admin/types/tetposting';
-import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
+import { useFormContext, Controller, RegisterOptions, NestedValue } from 'react-hook-form';
 import { Select as HdsSelect } from 'hds-react';
 import Id from 'shared/types/id';
 import { OptionType } from 'tet/admin/types/classification';
 
-type Props = {
-  id: Id<TetPosting>;
-  options: OptionType[];
-  initialValue: OptionType[];
-  label: string;
-  registerOptions: RegisterOptions;
+type LanguagesType = Pick<TetPosting, 'languages'>;
+
+type DropdownFields<O extends OptionType> = {
+  languages: NestedValue<O[]>;
 };
 
-const Dropdown: React.FC<Props> = ({ id, options, initialValue, label, registerOptions }) => {
+type Props<O extends OptionType> = {
+  id: Id<DropdownFields<O>>;
+  options: O[];
+  initialValue: O[];
+  label: string;
+  registerOptions: RegisterOptions<DropdownFields<O>>;
+};
+
+const Dropdown = <O extends OptionType>({
+  id,
+  options,
+  label,
+  registerOptions,
+}: Props<O>): React.ReactElement<DropdownFields<O>> => {
   const { control } = useFormContext<TetPosting>();
 
   return (
     <Controller
       name={id}
-      render={({ field: { onChange } }) => (
-        <HdsSelect
+      render={({ field: { value, onChange }, fieldState: { error } }) => (
+        <HdsSelect<O>
           multiselect
+          required
+          value={value as O[]}
           options={options}
           label={label}
           optionLabelField="label"
-          defaultValue={initialValue}
-          onChange={(val: OptionType) => onChange(val.value)}
+          onChange={(val: OptionType[] | null) => {
+            console.log(`onChange got ${JSON.stringify(val)}`);
+            // onChange(val == null ? val : val.map(v => v.value))
+            onChange(val);
+          }}
+          error={error ? error.message : ''}
+          clearButtonAriaLabel=""
+          selectedItemRemoveButtonAriaLabel=""
         />
       )}
       control={control}
-      rules={registerOptions}
     ></Controller>
   );
 };

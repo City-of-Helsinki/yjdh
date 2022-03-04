@@ -23,11 +23,6 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
   const deleteTetPosting = useDeleteTetPosting();
   const { confirm } = useConfirm();
 
-  const showPreview = () => {
-    setTetPostingData(cloneDeep(getValues()));
-    setPreviewVisibility(true);
-  };
-
   const { t } = useTranslation();
   const {
     getValues,
@@ -35,6 +30,13 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
   } = useFormContext<TetPosting>();
   const theme = useTheme();
   const posting = getValues();
+
+  const showPreview = () => {
+    const values = getValues();
+    console.log(`showPreview values: ${JSON.stringify(values, null, 2)}`);
+    setTetPostingData(cloneDeep(values));
+    setPreviewVisibility(true);
+  };
 
   const deletePostingHandler = async () => {
     await showConfirm();
