@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-08 14:51+0200\n"
-"PO-Revision-Date: 2022-02-08 14:53+0200\n"
+"POT-Creation-Date: 2022-03-07 13:53+0200\n"
+"PO-Revision-Date: 2022-03-07 09:16+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: sv\n"
@@ -61,6 +61,15 @@ msgstr ""
 msgid "Social security number must be set"
 msgstr ""
 
+msgid "Failed to send youth summer voucher email"
+msgstr ""
+
+msgid "Failed to send manual processing email to handler"
+msgstr ""
+
+msgid "VTJ integration is not implemented"
+msgstr ""
+
 msgid "Failed to send activation email"
 msgstr "Det gick inte att skicka aktiveringsmail"
 
@@ -89,6 +98,9 @@ msgid "Rejected"
 msgstr ""
 
 msgid "Deleted by customer"
+msgstr ""
+
+msgid "Awaiting manual processing"
 msgstr ""
 
 msgid "employment contract"
@@ -295,6 +307,15 @@ msgstr ""
 msgid "vtj json"
 msgstr ""
 
+msgid "status"
+msgstr ""
+
+msgid "handler"
+msgstr ""
+
+msgid "time handled"
+msgstr ""
+
 msgid "Aktivoi Kesäseteli"
 msgstr "Aktivera Sommarsedeln"
 
@@ -352,6 +373,13 @@ msgstr ""
 msgid "Special case of admitting the summer voucher."
 msgstr ""
 
+#, python-format
+msgid "Vuoden %(year)s Kesäsetelisi"
+msgstr "Din Sommarsedel %(year)s"
+
+msgid "Unable to send youth summer voucher email"
+msgstr ""
+
 msgid "youth summer voucher"
 msgstr ""
 
@@ -362,9 +390,6 @@ msgid "company"
 msgstr ""
 
 msgid "user"
-msgstr ""
-
-msgid "status"
 msgstr ""
 
 msgid "invoicer work address"
@@ -490,11 +515,152 @@ msgstr ""
 msgid "Lataa Excel tiedosto kaikista tämän vuoden hakemuksista"
 msgstr ""
 
+msgid "Kesäsetelisi ja ohjeet sen käyttämiseen"
+msgstr "Din Sommarsedel och instruktioner för hur du använder den"
+
+msgid "Helsinki, Kesäseteli, 325€"
+msgstr "Helsingfors, Sommarsedel, 325€"
+
+msgid "Kesäsetelisi, ole hyvä"
+msgstr "Din Sommarsedel, varsågod"
+
+msgid "Tässä henkilökohtainen Kesäsetelisi."
+msgstr "Här är din personliga Sommarsedel."
+
+msgid ""
+"Tutustu Kesäsetelin nettisivuihin, jossa on tietoa Kesäsetelin käytöstä, "
+"kesätyönhausta sekä työpaikkoja."
+msgstr ""
+"Ta del av Sommarsedelns webbplats, som innehåller information om användning "
+"av Sommarsedeln, sökande av sommarjobb och arbetsplatser."
+
+msgid "Ystävällisin terveisin, Kesäseteli-tiimi"
+msgstr "Med vänliga hälsningar, Sommarsedeln-teamet"
+
+msgid "Kesäsetelinumero:"
+msgstr "Sommarsedelns nummer:"
+
+msgid "Kesäsetelin summa:"
+msgstr "Sommadsedelns belopp:"
+
+msgid "325€"
+msgstr "325€"
+
+msgid "Postinumero:"
+msgstr "Postnummer:"
+
+msgid "Koulu:"
+msgstr "Skolan:"
+
+msgid "Puhelinnumero:"
+msgstr "Telefonnummer:"
+
+msgid "Sähköpostiosoite:"
+msgstr "E-postadress:"
+
+msgid ""
+"Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän "
+"sähköpostiviestin työnantajalle tai antaa heille yllä olevan "
+"kesäsetelinumeron."
+msgstr ""
+"När du har hittat ett sommarjobb och ingått ett arbetsavtal kan du "
+"vidarebefordra det här e-postmeddelandet till arbetsgivaren eller ge dem "
+"sommarsedelnumret som finns här ovanför."
+
+msgid "Ohjeita työnhakijalle"
+msgstr "Anvisningar för den arbetssökande"
+
+msgid ""
+"Kesäseteli helpottaa sinua kesätyöpaikan löytämisessä: viime vuonna "
+"tyypillisiä työtehtäviä olivat kesäleirin ohjaaja, myymälän hyllyttäjä, "
+"ravintolan saliapulainen, puutarhatyöntekijä, lastenhoitaja, verkkosivujen "
+"ja somen sisällöntuottaja ja kioskimyyjä."
+msgstr ""
+"Sommarsedeln gör det lättare för dig att hitta ett sommarjobb: i fjol var "
+"typiska arbetsuppgifter sommarlägerledare, varuplockare, diskplockare, "
+"trädgårdsarbetare, barnskötare, webbinnehållsproducent och kioskförsäljare."
+
+msgid ""
+"Erikoisia kesätöitä olivat esimerkiksi peliohjelmointi, äänitiedostojen "
+"editointi ja nahkapajan apulainen!"
+msgstr ""
+"Mer speciella sommarjobb var bland annat spelprogrammering, editerande av "
+"ljudfiler och hjälpreda i en läderateljé!"
+
+msgid "Työpäivät ja palkka:"
+msgstr "Arbetsdagar och lön:"
+
+msgid "Kesäsetelillä tehdään 60 työtuntia."
+msgstr "Med Sommarsedeln ska man arbeta 60 timmar."
+
+msgid "Työtunteja on vähintään 18h/viikko."
+msgstr "Man ska arbeta minst 18h/vecka."
+
+msgid "Työnantaja maksaa sinulle palkkaa vähintään 400 euroa (60 työtunnilta)."
+msgstr ""
+"Arbetsgivaren betalar dig en lön på minst 400 euro (för 60 arbetstimmar)."
+
+msgid "Summa pitää sisällään lomakorvauksen."
+msgstr "I beloppet ingår semesterersättning."
+
+msgid "Lisäksi työnantaja maksaa normaalit työnantajamaksut."
+msgstr "Därutöver ska arbetsgivaren betala de normala arbetsgivaravgifterna."
+
+msgid ""
+"Kesätyöjakso voi olla tuntimäärältään pidempi, tällöin 60 työtuntia "
+"ylittävän osuuden palkan on oltava vähintään alan työehtosopimuksen mukainen "
+"vähimmäispalkka."
+msgstr ""
+"Sommarjobbsperioden kan var längre till timantalet, i så fall ska lönen för "
+"den del som överstiger 60 arbetstimmar uppgå minst till minimilönen enligt "
+"kollektivavtal."
+
+msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/"
+msgstr ""
+"https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/"
+
+msgid "Lue lisää"
+msgstr "Läs mer"
+
+msgid "Ohjeita työnantajalle"
+msgstr "Anvisningar för arbetsgivaren"
+
+msgid ""
+"Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke."
+msgstr ""
+"Sommarsedeln är ett gemensamt projekt mellan ungdomar, företagare och "
+"Helsingfors stad."
+
+msgid ""
+"Kaupunki korvaa 325 euroa työnantajalle, joka palkkaa Kesäseteliin "
+"oikeutetun nuoren töihin 1.6.–15.8.2022 välisenä aikana."
+msgstr ""
+"Helsingfors stad betalar 325 euro till en arbetsgivare som anställer en elev "
+"i årskurs 9 med Sommarsedeln för sommaren mellan den 1 juni och den 15 "
+"augusti 2022."
+
+msgid ""
+"Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 400 euron palkka."
+msgstr "Minimikravet på sommarjobb är 60 timmar arbete och en lön på 400 euro."
+
+msgid "Muut käyttöehdot voit lukea täältä:"
+msgstr "Anda användarvillkor kan läsas här:"
+
+msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
+msgstr ""
+"https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/at-arbetsgivaren/"
+
+msgid "Helsinki"
+msgstr "Helsingfors"
+
+msgid "https://nuorten.helsinki/kesaseteli/"
+msgstr "https://nuorten.helsinki/sommarsedeln/"
+
+msgid "nuorten.helsinki/kesaseteli/"
+msgstr "nuorten.helsinki/sommarsedeln/"
+
 msgid "Ei uusia käsittelemättömiä hakemuksia."
 msgstr ""
 
 msgid "Hakemuksia ei löytynyt."
 msgstr ""
-
-#~ msgid "Vahvista sähköpostiosoitteesi"
-#~ msgstr "Bekräfta din e-postadress"

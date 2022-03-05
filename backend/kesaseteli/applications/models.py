@@ -1,14 +1,15 @@
-import logging
 from datetime import timedelta
+from email.mime.image import MIMEImage
+from pathlib import Path
 from urllib.parse import quote, urljoin
 
 import sequences
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
@@ -34,10 +35,11 @@ from applications.enums import (
 )
 from common.permissions import HandlerPermission
 from common.urls import handler_youth_application_processing_url
-from common.utils import validate_finnish_social_security_number
+from common.utils import (
+    send_mail_with_error_logging,
+    validate_finnish_social_security_number,
+)
 from companies.models import Company
-
-LOGGER = logging.getLogger(__name__)
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -265,29 +267,6 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 "processing_link": processing_link,
             }
 
-    @staticmethod
-    def _send_mail(subject, message, from_email, recipient_list, error_message) -> bool:
-        """
-        Send email with given parameters and log given error message in case of failure.
-
-        :param subject: Email subject
-        :param message: Email body
-        :param from_email: Email address of the email's sender
-        :param recipient_list: List of email recipients
-        :param error_message: Error message to be logged in case of failure
-        :return: True if email was sent, otherwise False.
-        """
-        sent_email_count = send_mail(
-            subject=subject,
-            message=message,
-            from_email=from_email,
-            recipient_list=recipient_list,
-            fail_silently=True,
-        )
-        if sent_email_count == 0:
-            LOGGER.error(error_message)
-        return sent_email_count > 0
-
     def send_activation_email(self, request, language) -> bool:
         """
         Send youth application's activation email with given language to the applicant.
@@ -296,7 +275,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :param language: The activation email language to be used
         :return: True if email was sent, otherwise False.
         """
-        return YouthApplication._send_mail(
+        return send_mail_with_error_logging(
             subject=YouthApplication._activation_email_subject(language),
             message=YouthApplication._activation_email_message(
                 language=language,
@@ -314,7 +293,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :param request: Request used for generating the processing link
         :return: True if email was sent, otherwise False.
         """
-        return YouthApplication._send_mail(
+        return send_mail_with_error_logging(
             subject=self._processing_email_subject(),
             message=self._processing_email_message(self._processing_link(request)),
             from_email=settings.DEFAULT_FROM_EMAIL,
@@ -503,6 +482,68 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             sequence_name="youth_summer_voucher_serial_numbers",
             initial_value=1,
         )
+
+    @property
+    def year(self) -> int:
+        return self.youth_application.created_at.year
+
+    def _email_subject(self, language):
+        with translation.override(language):
+            return gettext("Vuoden %(year)s Kesäsetelisi") % {"year": self.year}
+
+    @staticmethod
+    def _template_image(filename, content_id) -> MIMEImage:
+        source_folder = Path(__file__).resolve().parent / "templates" / "images"
+        with open(source_folder / filename, "rb") as file:
+            data = file.read()
+            image = MIMEImage(data)
+            image.add_header("Content-ID", f"<{content_id}>")
+            return image
+
+    def youth_summer_voucher_logo(self, language) -> MIMEImage:
+        return YouthSummerVoucher._template_image(
+            filename=f"youth_summer_voucher-325e-{language}.png",
+            content_id="youth_summer_voucher_logo",
+        )
+
+    def helsinki_logo(self) -> MIMEImage:
+        return YouthSummerVoucher._template_image(
+            filename="helsinki.png",
+            content_id="helsinki_logo",
+        )
+
+    def send_youth_summer_voucher_email(self, language) -> bool:
+        """
+        Send youth summer voucher email with given language to the applicant.
+
+        :param language: The language to be used in the email
+        :return: True if email was sent, otherwise False.
+        """
+        with translation.override(language):
+            context = {
+                "first_name": self.youth_application.first_name,
+                "last_name": self.youth_application.last_name,
+                "summer_voucher_serial_number": self.summer_voucher_serial_number,
+                "postcode": self.youth_application.postcode,
+                "school": self.youth_application.school,
+                "phone_number": self.youth_application.phone_number,
+                "email": self.youth_application.email,
+                "year": self.year,
+            }
+            return send_mail_with_error_logging(
+                subject=self._email_subject(language),
+                message=get_template("youth_summer_voucher_email.txt").render(context),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[self.youth_application.email],
+                error_message=_("Unable to send youth summer voucher email"),
+                html_message=get_template("youth_summer_voucher_email.html").render(
+                    context
+                ),
+                images=[
+                    self.helsinki_logo(),
+                    self.youth_summer_voucher_logo(language=language),
+                ],
+            )
 
     class Meta:
         verbose_name = _("youth summer voucher")

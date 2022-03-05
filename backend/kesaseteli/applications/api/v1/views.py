@@ -145,7 +145,18 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         if not youth_application.is_accepted and youth_application.accept(
             handler=request.user
         ):
-            # TODO: Send youth summer voucher email
+            was_email_sent = (
+                youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                    language=youth_application.language
+                )
+            )
+            if not was_email_sent:
+                transaction.set_rollback(True)
+                with translation.override(youth_application.language):
+                    return HttpResponse(
+                        _("Failed to send youth summer voucher email"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
             with self.record_action(additional_information="accept"):
                 return HttpResponse(status=status.HTTP_200_OK)
         else:
