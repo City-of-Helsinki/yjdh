@@ -80,3 +80,4 @@
 !tet/shared/package.json
 !tet/shared/tsconfig.json
 
+**/__tests__

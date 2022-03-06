@@ -16,13 +16,7 @@ const config = {
     '<rootDir>/../../shared/src/__tests__/utils/setupTests.ts',
     '<rootDir>src/__tests__/utils/i18n/i18n-test.ts',
   ],
-  coveragePathIgnorePatterns: [
-    '<rootDir>/../kesaseteli/shared/src/__tests__/utils/',
-    '<rootDir>/../kesaseteli/youth/src/pages/',
-    '<rootDir>/../../shared/src/server/next-server.js',
-    '<rootDir>/../../shared/src/__tests__/component-apis/',
-    '<rootDir>/../../shared/src/__tests__/utils/',
-  ],
+  coveragePathIgnorePatterns: ['<rootDir>/kesaseteli/handler/src/pages/'],
 };
 
 module.exports = createJestConfig(config);

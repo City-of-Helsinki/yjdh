@@ -108,7 +108,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
 # Install production dependencies
-RUN yarn install --production --frozen-lockfile --check-files
+RUN yarn install --production --check-files --ignore-scripts --prefer-offline
 
 # install lerna
 RUN yarn add -W lerna
@@ -116,6 +116,7 @@ RUN yarn add -W lerna
 # Expose port
 EXPOSE $PORT
 
+ENV NEXT_TELEMETRY_DISABLED 1
 # Start nextjs server
 ENV PROD_START "yarn $SERVICE:start"
 CMD ["sh", "-c", "${PROD_START}"]
