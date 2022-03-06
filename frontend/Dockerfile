@@ -117,5 +117,5 @@ RUN yarn add -W lerna
 EXPOSE $PORT
 
 # Start nextjs server
-ENV PROD_START "yarn $PRODSTART:start"
+ENV PROD_START "yarn $SERVICE:start"
 CMD ["sh", "-c", "${PROD_START}"]
