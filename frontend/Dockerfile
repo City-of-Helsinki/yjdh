@@ -89,7 +89,10 @@ USER appuser
 WORKDIR /app
 
 # Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next/standalone $PROJECT/$FOLDER/
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next/static $PROJECT/$FOLDER/.next/static
 
 # Copy next.js config
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/public app/next.config.js app/start.js ./

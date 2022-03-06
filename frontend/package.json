@@ -70,18 +70,27 @@
     "@babel/preset-typescript": "^7.16.0",
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^16.0.0",
+    "eslint-config-adjunct": "^4.11.1",
+    "@faker-js/faker": "^6.0.0-alpha.6",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@hookform/devtools": "^4.0.2",
     "@next/eslint-plugin-next": "^12.1.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/testcafe": "^4.4.0",
+    "@testing-library/react-hooks": "^7.0.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/faker": "^5.5.9",
     "@types/jest": "^27.4.0",
     "@types/jest-axe": "^3.5.3",
+    "@types/node": "^16.11.12",
     "@types/pretty": "^2.0.1",
+    "@types/react-input-mask": "2.0.5",
+    "@types/react-pdf": "^5.0.9",
+    "@types/react-table": "^7.7.0",
     "@types/slack-node": "^0.1.4",
     "@types/styled-components": "^5.1.24",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.9.1",
     "@typescript-eslint/typescript-estree": "^5.13.0",
@@ -143,8 +152,6 @@
     "typescript": "^4.5.5"
   },
   "resolutions": {
-    "requestretry": "7.0.0",
-    "**/react": "^17.0.2",
-    "**/react-dom": "^17.0.2"
+    "requestretry": "7.0.0"
   }
 }

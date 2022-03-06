@@ -14,12 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "@frontend/shared": "*",
-    "camelcase-keys": "^7.0.2",
-    "hds-react": "^1.8.0",
+    "camelcase-keys": "^7.0.1",
+    "hds-react": "^1.10.0",
     "styled-components": "^5.3.3"
-  },
-  "devDependencies": {
-    "eslint-config-adjunct": "^4.11.1",
-    "typescript": "^4.5.5"
   }
 }
