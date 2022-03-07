@@ -19,7 +19,7 @@ import { useTheme } from 'styled-components';
 import EmploymentCalculatorResults from '../employmentAppliedMoreView/EmploymentCalculatorResults/EmploymentCalculatorResults';
 import SalaryCalculatorResults from '../salaryBenefitCalculatorView/SalaryCalculatorResults/SalaryCalculatorResults';
 
-const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+const HandledView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review.summary';
   const { t } = useTranslation();
   const theme = useTheme();
@@ -103,4 +103,4 @@ const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   );
 };
 
-export default HandledVew;
+export default HandledView;
