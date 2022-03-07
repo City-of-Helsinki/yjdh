@@ -1,20 +1,20 @@
-name: Benefit-shared Lint, Unit and Component tests
+name: Kesaseteli-shared Lint, Unit and Component tests
 
 on:
   push:
-    branches: [develop, main]
+    branches: [ develop, main ]
   pull_request:
     paths:
-      - "frontend/shared/**"
-      - "frontend/benefit/shared/**"
-      - "frontend/*"
-      - ".github/workflows/bf-shared-frontend-tests.yml"
+      - 'frontend/shared/**'
+      - 'frontend/tet/shared/**'
+      - 'frontend/*'
+      - '.github/workflows/te-shared-frontend-tests.yml'
       - "!**/browser-tests/**"
       - "!**/README.md"
   workflow_dispatch:
 defaults:
   run:
-    working-directory: ./frontend/benefit/shared
+    working-directory: ./frontend/kesaseteli/shared
 jobs:
   test:
     name: Test
@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: '14'
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -50,6 +50,6 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_USERNAME: GitHub-Alerts
           SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
-          SLACK_MESSAGE: "*Benefit-shared tests have failed on ${{ github.ref }}!*"
+          SLACK_MESSAGE: "*Kesaseteli-shared tests have failed on ${{ github.ref }}!*"
           SLACK_CHANNEL: yjdh-alerts
         if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main'))

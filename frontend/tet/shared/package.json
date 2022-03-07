@@ -16,5 +16,9 @@
     "@frontend/shared": "*",
     "axios": "^0.24.0",
     "react-query": "^3.34.0"
+  },
+  "devDependencies": {
+    "eslint-config-adjunct": "^4.11.1",
+    "typescript": "^4.5.5"
   }
 }
