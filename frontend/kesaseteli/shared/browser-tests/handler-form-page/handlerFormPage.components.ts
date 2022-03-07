@@ -1,6 +1,7 @@
 import {
   getErrorMessage,
   screenContext,
+  withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -11,6 +12,7 @@ export const getHandlerFormPageComponents = async (
   expectedApplication?: YouthApplication
 ) => {
   const screen = screenContext(t);
+  const within = withinContext(t);
 
   const selectors = {
     title() {
@@ -31,8 +33,21 @@ export const getHandlerFormPageComponents = async (
         name: /hyväksy/i,
       });
     },
+    confirmDialog() {
+      return screen.findByRole('dialog');
+    },
+    confirmAcceptButton() {
+      return within(screen.findByRole('dialog')).findByRole('button', {
+        name: /hyväksy/i,
+      });
+    },
     rejectButton() {
       return screen.findByRole('button', {
+        name: /hylkää/i,
+      });
+    },
+    confirmRejectButton() {
+      return within(screen.findByRole('dialog')).findByRole('button', {
         name: /hylkää/i,
       });
     },
@@ -93,6 +108,11 @@ export const getHandlerFormPageComponents = async (
         .expect(selectors.additionalInformationRequested().exists)
         .ok(await getErrorMessage(t));
     },
+    async confirmationDialogIsPresent() {
+      await t
+        .expect(selectors.confirmDialog().exists)
+        .ok(await getErrorMessage(t));
+    },
     async applicationIsAccepted() {
       await t
         .expect(selectors.applicationIsAccepted().exists)
@@ -108,8 +128,14 @@ export const getHandlerFormPageComponents = async (
     clickAcceptButton() {
       return t.click(selectors.acceptButton());
     },
+    clickConfirmAcceptButton() {
+      return t.click(selectors.confirmAcceptButton());
+    },
     clickRejectButton() {
       return t.click(selectors.rejectButton());
+    },
+    clickConfirmRejectButton() {
+      return t.click(selectors.confirmRejectButton());
     },
   };
   await expectations.isLoaded();
