@@ -39,7 +39,6 @@ const Header: React.FC = () => {
   const userQuery = useUserQuery();
   const logout = useLogout();
 
-  const { isLoading, isSuccess, data } = userQuery;
   const isLoginPage = asPath?.includes('/login');
 
   return (
@@ -50,14 +49,14 @@ const Header: React.FC = () => {
       languages={languageOptions}
       onLanguageChange={handleLanguageChange}
       login={
-        !isLoading
+        !userQuery.isLoading
           ? {
-              isAuthenticated: !isLoginPage && isSuccess,
+              isAuthenticated: !isLoginPage && userQuery.isSuccess,
               loginLabel: t('common:header.loginLabel'),
               logoutLabel: t('common:header.logoutLabel'),
               onLogin: login,
               onLogout: logout,
-              userName: isSuccess ? data?.name : undefined,
+              userName: userQuery.isSuccess ? userQuery.data.name : undefined,
               userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
             }
           : undefined

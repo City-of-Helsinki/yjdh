@@ -7,18 +7,20 @@ import {
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
 
 import useLogin from '../hooks/useLogin';
+import { useQueryClient } from 'react-query';
 
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
 };
 
 const Login: NextPage = () => {
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
   const {
     query: { logout, error, sessionExpired },
@@ -43,6 +45,12 @@ const Login: NextPage = () => {
       content: t('common:login.infoContent'),
     };
   }, [t, error, sessionExpired, logout]);
+
+  useEffect(() => {
+    if (logout) {
+      void queryClient.clear();
+    }
+  }, [logout]);
 
   return (
     <Container>

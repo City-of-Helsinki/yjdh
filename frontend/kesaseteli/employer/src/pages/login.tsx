@@ -4,13 +4,16 @@ import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+import { clearLocalStorage } from '../utils/localstorage.utils';
+import { useQueryClient } from 'react-query';
 
 const Login: NextPage = () => {
+  const queryClient = useQueryClient();
   useClearQueryParams();
   const { t } = useTranslation();
   const {
@@ -42,6 +45,14 @@ const Login: NextPage = () => {
   }, [logout, error, sessionExpired, t]);
 
   const notificationType = error || sessionExpired ? 'error' : 'info';
+
+  useEffect(() => {
+    if (logout) {
+      clearLocalStorage('application');
+
+      void queryClient.removeQueries();
+    }
+  }, [logout]);
 
   return (
     <Container>

@@ -35,6 +35,11 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
     await headerApi.expectations.userIsLoggedIn(user);
     await headerApi.actions.clickLogoutButton(user);
     await waitFor(() =>
+      expect(spyRouterPush).toHaveBeenCalledWith(
+        `${getBackendUrl('/oidc/logout/')}`
+      )
+    );
+    await waitFor(() =>
       expect(queryClient.getQueryData('user')).toBeUndefined()
     );
   });
