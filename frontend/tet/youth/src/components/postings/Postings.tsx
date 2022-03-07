@@ -36,7 +36,7 @@ const Postings: React.FC = () => {
       ...(queryParams.start && queryParams.start.length > 0 && { start: queryParams.start }),
       ...(queryParams.end && queryParams.end.length > 0 && { end: queryParams.end }),
       ...(queryParams.keyword && queryParams.keyword.length > 0 && { keyword: queryParams.keyword }),
-      ...(queryParams.language && queryParams.language.length > 0 && { keyword: queryParams.language }),
+      ...(queryParams.language && queryParams.language.length > 0 && { language: queryParams.language }),
     };
     router.push(
       {
