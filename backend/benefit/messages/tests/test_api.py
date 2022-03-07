@@ -4,7 +4,10 @@ from copy import deepcopy
 import pytest
 from applications.enums import ApplicationStatus
 from applications.tests.factories import HandlingApplicationFactory
-from applications.tests.test_applications_api import get_detail_url
+from applications.tests.test_applications_api import (
+    get_detail_url,
+    get_handler_detail_url,
+)
 from common.tests.conftest import get_client_user
 from companies.tests.factories import CompanyFactory
 from messages.models import Message, MessageType
@@ -218,9 +221,10 @@ def test_create_handler_message_invalid(handler_api_client, handling_application
         ),
         msg,
     )
-    assert result.status_code == 400
-    assert "Handler is not allowed to do this action" in str(
-        result.data["non_field_errors"]
+    assert result.status_code == 403
+
+    assert "You do not have permission to perform this action." in str(
+        result.data["detail"]
     )
 
 
@@ -468,22 +472,22 @@ def test_delete_message(
 
 
 def test_applications_list_with_message_count(
-    api_client, application, handler_api_client
+    api_client, handling_application, handler_api_client
 ):
-    msg = MessageFactory(application=application)
+    msg = MessageFactory(application=handling_application)
     response = api_client.get(reverse("v1:applicant-application-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
     assert response.data[0]["unread_messages_count"] == 1
-    response = api_client.get(get_detail_url(application))
+    response = api_client.get(get_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 1
 
-    response = handler_api_client.get(reverse("v1:applicant-application-list"))
+    response = handler_api_client.get(reverse("v1:handler-application-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
     assert response.data[0]["unread_messages_count"] == 1
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 1
 
@@ -493,13 +497,13 @@ def test_applications_list_with_message_count(
 
     response = api_client.get(reverse("v1:applicant-application-list"))
     assert response.data[0]["unread_messages_count"] == 0
-    response = api_client.get(get_detail_url(application))
+    response = api_client.get(get_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 0
 
-    response = handler_api_client.get(reverse("v1:applicant-application-list"))
+    response = handler_api_client.get(reverse("v1:handler-application-list"))
     assert response.data[0]["unread_messages_count"] == 0
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 0
 
@@ -546,3 +550,21 @@ def test_list_messages_read_receipt(
         assert result.status_code == 200
         assert Message.objects.filter(seen_by_applicant=True).count() == 0
         assert Message.objects.filter(seen_by_handler=True).count() == 2
+
+
+def test_applications_list_with_message_count_multiple_messages(
+    api_client, handling_application, handler_api_client
+):
+    MessageFactory(
+        application=handling_application, message_type=MessageType.HANDLER_MESSAGE
+    )
+    MessageFactory(
+        application=handling_application, message_type=MessageType.HANDLER_MESSAGE
+    )
+    response = api_client.get(reverse("v1:applicant-application-list"))
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    assert response.data[0]["unread_messages_count"] == 2
+    response = api_client.get(get_detail_url(handling_application))
+    assert "unread_messages_count" in response.data
+    assert response.data["unread_messages_count"] == 2
