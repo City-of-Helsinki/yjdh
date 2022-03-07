@@ -124,13 +124,9 @@ class HelsinkiBenefitCalculator:
             [
                 self.calculation.start_date,
                 self.calculation.end_date,
-                self.calculation.state_aid_max_percentage,
             ]
         ):
             return False
-        for pay_subsidy in self.calculation.application.pay_subsidies.all():
-            if not all([pay_subsidy.start_date, pay_subsidy.end_date]):
-                return False
         return True
 
     @transaction.atomic
@@ -188,6 +184,20 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
     PAY_SUBSIDY_MAX_FOR_100_PERCENT = 1800
     DEFAULT_PAY_SUBSIDY_MAX = 1400
     SALARY_BENEFIT_MAX = 800
+
+    def can_calculate(self):
+        if not all(
+            [
+                self.calculation.start_date,
+                self.calculation.end_date,
+                self.calculation.state_aid_max_percentage,
+            ]
+        ):
+            return False
+        for pay_subsidy in self.calculation.application.pay_subsidies.all():
+            if not all([pay_subsidy.start_date, pay_subsidy.end_date]):
+                return False
+        return True
 
     def get_maximum_monthly_pay_subsidy(self, pay_subsidy):
         if pay_subsidy.pay_subsidy_percent == 100:

@@ -23,7 +23,6 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
     `${posting.location.postal_code} ${posting.location.city}`,
   ];
   const contact = [posting.contact_phone, posting.contact_email];
-  const languages = ['TEST Suomi', 'TEST Ruotsi'];
 
   const date =
     posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
@@ -53,7 +52,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           />
           <PostingInfoItem
             title={t('common:postingTemplate.languages')}
-            body={languages}
+            body={posting.languages}
             icon={<IconInfoCircle />}
           />
         </$InfoWrapper>

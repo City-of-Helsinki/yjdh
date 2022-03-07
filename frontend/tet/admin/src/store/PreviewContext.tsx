@@ -33,6 +33,7 @@ export const initialPosting: TetPosting = {
   keywords: [],
   keywords_working_methods: [],
   keywords_attributes: [],
+  languages: [],
 };
 const initialTemplateData: TetData = {
   title: '',
@@ -55,6 +56,7 @@ const initialTemplateData: TetData = {
   keywords: [],
   keywords_working_methods: [],
   keywords_attributes: [],
+  languages: [],
 };
 
 export const PreviewContext = React.createContext<PreviewContextObj>({
@@ -97,6 +99,7 @@ const PreviewContextProvider: React.FC = (props) => {
       keywords: tetPosting.keywords.map((item) => item.name),
       keywords_working_methods: tetPosting.keywords_working_methods.map((item) => item.name),
       keywords_attributes: tetPosting.keywords_attributes.map((item) => item.name),
+      languages: tetPosting.languages.map((lang) => lang.label),
     };
   };
 

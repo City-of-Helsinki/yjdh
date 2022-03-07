@@ -25,4 +25,5 @@ export type TetData = {
   keywords: string[];
   keywords_working_methods: string[];
   keywords_attributes: string[];
+  languages: string[];
 };
