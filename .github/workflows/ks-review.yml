@@ -1,5 +1,5 @@
 name: (KESÄSETELI) Build & Review & Acceptance tests
-on:
+on: #
   pull_request:
     paths:
       - 'backend/kesaseteli/**'
