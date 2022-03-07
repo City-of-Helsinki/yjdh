@@ -99,9 +99,10 @@ const ApplicationReview: React.FC = () => {
             <ApplicationProcessingView />
           </>
         )}
-        {HANDLED_STATUSES.includes(
-          application.status || APPLICATION_STATUSES.DRAFT
-        ) && <HandledVew data={application} />}
+        {application.status &&
+          HANDLED_STATUSES.includes(application.status) && (
+            <HandledVew data={application} />
+          )}
       </Container>
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (
@@ -109,9 +110,10 @@ const ApplicationReview: React.FC = () => {
         )}
         {(application.status === APPLICATION_STATUSES.HANDLING ||
           application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-          HANDLED_STATUSES.includes(
-            application.status || APPLICATION_STATUSES.DRAFT
-          )) && <HandlingApplicationActions application={application} />}
+          (application.status &&
+            HANDLED_STATUSES.includes(application.status))) && (
+          <HandlingApplicationActions application={application} />
+        )}
       </StickyActionBar>
       <$StickyBarSpacing />
     </>
