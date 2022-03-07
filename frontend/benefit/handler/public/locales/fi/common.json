@@ -102,8 +102,18 @@
         "submittedAt": "Saapunut",
         "applicationNum": "Numero",
         "employeeName": "Työntekijä",
+        "employeeNameArchive": "Työllistetty",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
+        "handledAt": "Käsittelypvm",
+        "dataReceived": "Ladattu",
+        "status": "Käsittelyn tulos",
+        "statusArchive": "Käsittelyn tulos",
+        "statuses": {
+          "cancelled": "Peruutettu",
+          "accepted": "Puolettu",
+          "rejected": "Ei puolettu"
+        },
         "additionalInformationNeededBy": "",
         "additionalInformationNeededByVal": "Muokattava {{date}}"
       },
@@ -119,6 +129,10 @@
           "label": "Error occurred",
           "text": "Unable to fetch applications with status {{status}}"
         }
+      },
+      "total": {
+        "count_one": "{{count}} hakemus",
+        "count_other": "{{count}} hakemusta"
       }
     },
     "actions": {
@@ -166,8 +180,8 @@
     "fields": {
       "businessId": "Y-tunnus",
       "bankAccountNumber": "Tilinumero",
-      "associationHasBusinessActivities": "Harjoittaako työnantaja elinkeinotoimintaa?",
-      "associationImmediateManagerCheck": "Lähiesihenkilö palkattavalle henkilölle?",
+      "associationHasBusinessActivities": "Harjoittaako työnantaja taloudellista toimintaa?",
+      "associationImmediateManagerCheck": "Lähiesihenkilö työllistetylle henkilölle?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
       "deMinimisAidAmount": "Tuen määrä",
@@ -230,6 +244,10 @@
       "workTimePercent": {
         "label": "Työaika %",
         "placeholder": "Työaika %"
+      },
+      "monthlyAmount": {
+        "label": "Koulutuskorvaus €/kk",
+        "placeholder": "Koulutuskorvaus €/kk"
       }
     },
     "notifications": {
@@ -269,7 +287,12 @@
       "tableRowHeader": "Helsinki-lisä / kk (enintään {{amount}} €)",
       "tableRowValue": "{{amount}} €",
       "tableTotalHeader": "Helsinki-lisä yhteensä",
-      "manualInput": "Manuaalinen syöttö"
+      "manualInput": "Manuaalinen laskelma",
+      "apprenticeshipCompensation": "Oppisopimuksesta maksettava korvaus",
+      "apprenticeshipPeriod": "Koulutuskorvaus myönnetty ajalle",
+      "apprenticeshipPeriodWithDiff": "Koulutuskorvaus myönnetty ajalle ({{period}} kk)",
+      "add": "Lisää",
+      "remove": "Poista"
     }
   },
   "organizationTypes": {
@@ -353,6 +376,24 @@
       "ssn": {
         "invalid": "Invalid SSN value"
       }
+    }
+  },
+  "reports": {
+    "headings": {
+      "main": "Raportointi",
+      "downloadAcceptedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
+      "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
+      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"
+    },
+    "fields": {
+      "lastDownloadDateText": "Ladattu viimeksi {{date}}",
+      "startDate": "Alkaen",
+      "endDate": "Päättyen"
+    },
+    "buttons": {
+      "downloadAcceptedApplications": "Hyväksyt hakemukset CSV",
+      "downloadRejectedApplications": "Hylätyt hakemukset CSV",
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
     }
   }
 }

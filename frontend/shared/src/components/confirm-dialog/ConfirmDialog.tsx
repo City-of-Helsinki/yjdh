@@ -1,27 +1,29 @@
+import { IconQuestionCircle } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import Modal from 'shared/components/modal/Modal';
-import useConfirm from 'tet/admin/hooks/context/useConfirm';
-import { useTranslation } from 'benefit/applicant/i18n';
+import Modal, { ModalProps } from 'shared/components/modal/Modal';
+import useConfirm from 'shared/hooks/useConfirm';
 
-const ConfirmDialog = () => {
+const ConfirmDialog: React.FC<Partial<ModalProps>> = (modalProps) => {
   const { onConfirm, onCancel, confirmState } = useConfirm();
   const { t } = useTranslation();
 
-  const component = confirmState.show ? (
+  return confirmState.show ? (
     <Modal
       id="confirmation_dialog"
       isOpen={confirmState.show}
       title={confirmState.header}
-      submitButtonLabel={t('common:delete.deletePosting')}
+      submitButtonLabel={confirmState.submitButtonLabel}
       cancelButtonLabel={t('common:dialog.cancel')}
       handleToggle={onCancel}
       handleSubmit={onConfirm}
       variant="primary"
+      headerIcon={<IconQuestionCircle aria-hidden="true" />}
+      {...modalProps}
     >
       {confirmState.content?.length ? confirmState.content : null}
     </Modal>
   ) : null;
-
-  return component;
 };
+
 export default ConfirmDialog;

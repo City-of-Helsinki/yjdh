@@ -11,25 +11,25 @@ import {
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 
-import getActivationLinkExpirationSeconds from '../../src/utils/get-activation-link-expiration-seconds';
-import sendYouthApplication from '../actions/send-youth-application';
-import { getActivatedPageComponents } from '../notification-page/activatedPage.components';
-import { getAlreadyActivatedPageComponents } from '../notification-page/alreadyActivatedPage.components';
-import { getAlreadyAssignedPageComponents } from '../notification-page/alreadyAssignedPage.components';
-import { getEmailInUsePageComponents } from '../notification-page/emailInUsePage.components';
-import { getExpiredPageComponents } from '../notification-page/expiredPage.components';
-import { getThankYouPageComponents } from '../thank-you-page/thankYouPage.components';
+import getActivationLinkExpirationSeconds from '../src/utils/get-activation-link-expiration-seconds';
+import sendYouthApplication from './actions/send-youth-application';
+import { getIndexPageComponents } from './index-page/indexPage.components';
+import { getActivatedPageComponents } from './notification-page/activatedPage.components';
+import { getAlreadyActivatedPageComponents } from './notification-page/alreadyActivatedPage.components';
+import { getAlreadyAssignedPageComponents } from './notification-page/alreadyAssignedPage.components';
+import { getEmailInUsePageComponents } from './notification-page/emailInUsePage.components';
+import { getExpiredPageComponents } from './notification-page/expiredPage.components';
+import { getThankYouPageComponents } from './thank-you-page/thankYouPage.components';
 import {
   clickBrowserBackButton,
   getFrontendUrl,
+  goToBackendUrl,
   goToFrontPage,
-  goToHandlerUrl,
-} from '../utils/url.utils';
-import { getIndexPageComponents } from './indexPage.components';
+} from './utils/url.utils';
 
 const url = getFrontendUrl('/');
 
-fixture('Frontpage')
+fixture('Youth Application')
   .page(url)
   .requestHooks(requestLogger)
   .beforeEach(async (t) => {
@@ -40,7 +40,7 @@ fixture('Frontpage')
     console.log(requestLogger.requests)
   );
 
-test('can send application and return to front page', async (t) => {
+test('I can send application and return to front page', async (t) => {
   const indexPage = await getIndexPageComponents(t);
   await indexPage.expectations.isLoaded();
   const formData = fakeYouthFormData();
@@ -50,7 +50,7 @@ test('can send application and return to front page', async (t) => {
   await indexPage.expectations.isLoaded();
 });
 
-test('sending two applications with same email redirects latter to email_in_use page', async (t) => {
+test('If I send two applications with same email, I will see "email is in use" -message', async (t) => {
   const indexPage = await getIndexPageComponents(t);
   await indexPage.expectations.isLoaded();
   const formData = fakeYouthFormData();
@@ -65,7 +65,7 @@ test('sending two applications with same email redirects latter to email_in_use 
 });
 
 if (!isRealIntegrationsEnabled()) {
-  test('activation remembers the selected language', async (t) => {
+  test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async (t) => {
     const languageDropdown = await getHeaderComponents(t).languageDropdown();
     await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
     const indexPage = await getIndexPageComponents(t, 'sv');
@@ -78,7 +78,7 @@ if (!isRealIntegrationsEnabled()) {
     await activatedPage.expectations.isLoaded();
   });
 
-  test('activating application twice redirects to already activated -page', async (t) => {
+  test('If I send and activate application and then I try to activate it again, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -96,7 +96,7 @@ if (!isRealIntegrationsEnabled()) {
     await alreadyActivatedPage.expectations.isLoaded();
   });
 
-  test('shows expiration page if kesäseteli is activated too late', async (t) => {
+  test('If I send application, but then I activate it too late, I see "confirmation link has expired" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -108,7 +108,23 @@ if (!isRealIntegrationsEnabled()) {
     await expiredPage.expectations.isLoaded();
   });
 
-  test('sending application with already activated email redirects to already assigned -page', async (t) => {
+  test('If I send an application but it expires, I can send the same application again and activate it', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    await thankYouPage.expectations.isLoaded();
+    await t.wait((getActivationLinkExpirationSeconds() + 1) * 1000);
+    await goToFrontPage(t);
+    await sendYouthApplication(t, formData);
+    const thankYouPage2 = await getThankYouPageComponents(t);
+    await thankYouPage2.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t);
+    await activatedPage.expectations.isLoaded();
+  });
+
+  test('If I have forgot that I already sent and activated an application, and then I send another application with same email, I see  "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -123,7 +139,7 @@ if (!isRealIntegrationsEnabled()) {
     await alreadyAssignedPage.expectations.isLoaded();
   });
 
-  test('sending application with already activated ssn redirects to already assigned -page', async (t) => {
+  test('If I have forgot that I already sent and activated an application, and then I send another application with same ssn, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -141,7 +157,7 @@ if (!isRealIntegrationsEnabled()) {
     await alreadyAssignedPage.expectations.isLoaded();
   });
 
-  test('when activating two applications with same ssn, latter activation should redirect to already activated -page', async (t) => {
+  test('If I accidentally send two applications with different emails, and then I activate first application and then second application, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -164,7 +180,7 @@ if (!isRealIntegrationsEnabled()) {
     await alreadyActivatedPage.expectations.isLoaded();
   });
 
-  test("activated application can be opened in handler's application", async (t) => {
+  test('As a handler I can open activated application in handler-ui and see correct application data', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -172,12 +188,13 @@ if (!isRealIntegrationsEnabled()) {
     const thankYouPage = await getThankYouPageComponents(t);
     const applicationId = await getUrlParam('id');
     if (!applicationId) {
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       throw new Error('cannot complete test without application id');
     }
     await thankYouPage.actions.clickActivationLink();
     const activatedPage = await getActivatedPageComponents(t);
     await activatedPage.expectations.isLoaded();
-    await goToHandlerUrl(t, `?id=${applicationId}`);
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
     const expectedApplication = convertFormDataToApplication(formData);
     const { first_name, last_name, is_unlisted_school } = expectedApplication;
     const handlerFormPage = await getHandlerFormPageComponents(
@@ -202,5 +219,64 @@ if (!isRealIntegrationsEnabled()) {
     }
     await handlerFormPage.expectations.applicationFieldHasValue('phone_number');
     await handlerFormPage.expectations.applicationFieldHasValue('email');
+  });
+
+  test('As a handler I can open non-activated application, but I will see "youth has not yet activated the application" -error message ', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
+    const handlerFormPage = await getHandlerFormPageComponents(t);
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.expectations.applicationIsNotYetActivated();
+  });
+
+  test('As a handler I can accept an application', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await thankYouPage.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t);
+    await activatedPage.expectations.isLoaded();
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
+    const handlerFormPage = await getHandlerFormPageComponents(t);
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.actions.clickAcceptButton();
+    await handlerFormPage.expectations.confirmationDialogIsPresent();
+    await handlerFormPage.actions.clickConfirmAcceptButton();
+    await handlerFormPage.expectations.applicationIsAccepted();
+  });
+  test('As a handler I can reject an application', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await thankYouPage.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t);
+    await activatedPage.expectations.isLoaded();
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
+    const handlerFormPage = await getHandlerFormPageComponents(t);
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.actions.clickRejectButton();
+    await handlerFormPage.expectations.confirmationDialogIsPresent();
+    await handlerFormPage.actions.clickConfirmRejectButton();
+    await handlerFormPage.expectations.applicationIsRejected();
   });
 }

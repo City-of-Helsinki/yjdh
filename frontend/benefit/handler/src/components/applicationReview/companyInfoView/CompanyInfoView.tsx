@@ -65,7 +65,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           </$GridCell>
         </>
       )}
-      {data.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
+      {data.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION && (
         <$GridCell $colSpan={12}>
           <$ViewField>
             {t(`${translationsBase}.fields.associationHasBusinessActivities`)}{' '}

@@ -1090,8 +1090,12 @@ def test_application_status_change_as_handler(
             assert (
                 response.data["latest_decision_comment"] == expected_log_entry_comment
             )
+            assert response.data["handled_at"] == datetime.now().replace(
+                tzinfo=pytz.utc
+            )
         else:
             assert response.data["latest_decision_comment"] is None
+            assert response.data["handled_at"] is None
     else:
         assert application.log_entries.all().count() == 0
 

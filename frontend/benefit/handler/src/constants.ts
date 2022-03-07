@@ -3,15 +3,26 @@ export const IS_CLIENT = typeof window !== 'undefined';
 export enum ROUTES {
   HOME = '/',
   // temporary urls, not defined yet
-  APPLICATIONS_PROCESSED = '/applications/processed',
-  APPLICATIONS_ARCHIVE = 'applications/archive',
-  APPLICATIONS_REPORTS = 'applications/reports',
+  APPLICATIONS_PROCESSED = '/processed',
+  APPLICATIONS_ARCHIVE = '/archive',
+  APPLICATIONS_REPORTS = '/reports',
+}
+
+export enum EXPORT_APPLICATIONS_ROUTES {
+  ACCEPTED = 'export_new_accepted_applications',
+  REJECTED = 'export_new_rejected_applications',
+  IN_TIME_RANGE = 'export_csv',
 }
 
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
   SV = 'sv',
   EN = 'en',
+}
+
+export enum PROPOSALS_FOR_DESISION {
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
 }
 
 export enum BENEFIT_TYPES {
@@ -113,6 +124,11 @@ export enum CALCULATION_EMPLOYMENT_KEYS {
   END_DATE = 'endDate',
 }
 
+export enum EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+}
+
 export enum CALCULATION_SALARY_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',
@@ -126,6 +142,8 @@ export enum CALCULATION_SALARY_KEYS {
   // eslint-disable-next-line no-secrets/no-secrets
   WORK_TIME_PERCENT = 'workTimePercent',
   PAY_SUBSIDIES = 'paySubsidies',
+  TRAINING_COMPENSATIONS = 'trainingCompensations',
+  MONTHLY_AMOUNT = 'monthlyAmount',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];

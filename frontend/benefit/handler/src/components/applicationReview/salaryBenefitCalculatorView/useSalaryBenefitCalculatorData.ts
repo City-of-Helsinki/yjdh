@@ -7,11 +7,12 @@ import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActio
 import {
   Application,
   CalculationFormProps,
+  TrainingCompensation,
 } from 'benefit/handler/types/application';
 import { ErrorData } from 'benefit/handler/types/common';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field } from 'shared/components/forms/fields/types';
 import useToggle from 'shared/hooks/useToggle';
@@ -39,6 +40,11 @@ type ExtendedComponentProps = {
   getPaySubsidyPercentageSelectValue: (
     percent: number
   ) => OptionType | undefined;
+  newTrainingCompensation: TrainingCompensation;
+  setNewTrainingCompensation: Dispatch<SetStateAction<TrainingCompensation>>;
+  addNewTrainingCompensation: () => void;
+  removeTrainingCompensation: (id: string) => void;
+  isDisabledAddTrainingCompensationButton: boolean;
 };
 
 const useSalaryBenefitCalculatorData = (
@@ -52,6 +58,19 @@ const useSalaryBenefitCalculatorData = (
 
   const { calculateSalaryBenefit, calculationsErrors } =
     useHandlerReviewActions(application);
+
+  const [newTrainingCompensation, setNewTrainingCompensation] =
+    useState<TrainingCompensation>({
+      id: '',
+      monthlyAmount: '',
+      startDate: '',
+      endDate: '',
+    });
+
+  const [
+    isDisabledAddTrainingCompensationButton,
+    setIsDisabledAddTrainingCompensationButton,
+  ] = useState(true);
 
   const formik = useFormik<CalculationFormProps>({
     initialValues: {
@@ -76,6 +95,10 @@ const useSalaryBenefitCalculatorData = (
       [CALCULATION_SALARY_KEYS.PAY_SUBSIDIES]: application?.paySubsidies
         ? application?.paySubsidies
         : [],
+      [CALCULATION_SALARY_KEYS.TRAINING_COMPENSATIONS]:
+        application?.trainingCompensations
+          ? application?.trainingCompensations
+          : [],
     },
     validationSchema: getValidationSchema(),
     validateOnChange: true,
@@ -101,6 +124,26 @@ const useSalaryBenefitCalculatorData = (
       Field<CALCULATION_SALARY_KEYS>
     >;
   }, [t]);
+
+  const addNewTrainingCompensation = (): void => {
+    const currentTrainingCompensations = formik.values.trainingCompensations
+      ? formik.values.trainingCompensations
+      : [];
+    void formik.setFieldValue(fields.trainingCompensations.name, [
+      ...currentTrainingCompensations,
+      newTrainingCompensation,
+    ]);
+  };
+
+  const removeTrainingCompensation = (id: string): void => {
+    const currentTrainingCompensations = formik.values.trainingCompensations
+      ? formik.values.trainingCompensations
+      : [];
+    void formik.setFieldValue(
+      fields.trainingCompensations.name,
+      currentTrainingCompensations.filter((item) => item.id !== id)
+    );
+  };
 
   const changeCalculatorMode = (): void => {
     // Backend detects manual mode if overrideMonthlyBenefitAmount is not null
@@ -157,6 +200,16 @@ const useSalaryBenefitCalculatorData = (
     }
   }, [grantedPeriod, startDate, fields.endDate.name, setFieldValue]);
 
+  useEffect(() => {
+    if (
+      newTrainingCompensation.monthlyAmount &&
+      newTrainingCompensation.startDate &&
+      newTrainingCompensation.endDate
+    )
+      setIsDisabledAddTrainingCompensationButton(false);
+    else setIsDisabledAddTrainingCompensationButton(true);
+  }, [newTrainingCompensation]);
+
   return {
     formik,
     fields,
@@ -168,6 +221,11 @@ const useSalaryBenefitCalculatorData = (
     getPaySubsidyPercentageSelectValue,
     isManualCalculator,
     changeCalculatorMode,
+    newTrainingCompensation,
+    setNewTrainingCompensation,
+    addNewTrainingCompensation,
+    removeTrainingCompensation,
+    isDisabledAddTrainingCompensationButton,
   };
 };
 

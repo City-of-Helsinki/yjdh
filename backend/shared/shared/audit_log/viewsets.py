@@ -77,7 +77,9 @@ class AuditLoggingModelViewSet(ModelViewSet):
             super().perform_destroy(instance)
 
     @contextmanager
-    def record_action(self, target: Optional[Model] = None):
+    def record_action(
+        self, target: Optional[Model] = None, additional_information: str = ""
+    ):
         """
         This context manager will run the managed code in a transaction and writes
         a new audit log entry in the same transaction. If an exception is raised,
@@ -96,6 +98,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
                     operation,
                     target or self._get_target(),
                     ip_address=self._get_ip_address(),
+                    additional_information=additional_information,
                 )
         except (NotAuthenticated, PermissionDenied):
             audit_logging.log(
@@ -105,6 +108,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
                 target or self._get_target(),
                 Status.FORBIDDEN,
                 ip_address=self._get_ip_address(),
+                additional_information=additional_information,
             )
             raise
 
