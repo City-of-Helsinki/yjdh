@@ -99,16 +99,19 @@ jobs:
           - service: bf-bknd
             context: ./backend
             dockerfile: ./backend/docker/benefit.Dockerfile
+            database: true
             port: 8000
           - service: bf-appl
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
+            database: false
             project: benefit
             folder: applicant
             port: 3000
           - service: bf-hdlr
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
+            database: false
             project: benefit
             folder: handler
             port: 3100

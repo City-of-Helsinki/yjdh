@@ -111,22 +111,26 @@ jobs:
           - service: ks-bknd
             context: ./backend
             dockerfile: ./backend/docker/kesaseteli.Dockerfile
+            database: true
             port: 8000
           - service: ks-empl
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
+            database: false
             project: kesaseteli
             folder: employer
             port: 3000
           - service: ks-youth
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
+            database: false
             project: kesaseteli
             folder: youth
             port: 3100
           - service: ks-hdlr
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
+            database: false
             project: kesaseteli
             folder: handler
             port: 3200

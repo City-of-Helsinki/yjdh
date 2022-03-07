@@ -12,10 +12,7 @@ const Portal: React.FC = ({ children }) => {
   }, []);
 
   return mounted
-    ? createPortal(
-        children,
-        document.querySelector(`#${PORTAL_ID}`) as HTMLDivElement
-      )
+    ? createPortal(children, document.querySelector(`#${PORTAL_ID}`))
     : null;
 };
 

@@ -118,18 +118,21 @@ jobs:
           #          - service: te-empl
           #            context: ./frontend
           #            dockerfile: ./frontend/Dockerfile
+          #            database: false
           #            project: tet
           #            folder: employer
           #            port: 3000
           - service: te-yout
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
+            database: false
             project: tet
             folder: youth
             port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/Dockerfile
+            database: false
             project: tet
             folder: admin
             port: 3000
