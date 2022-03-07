@@ -15,6 +15,7 @@ import {
   parseDate,
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
+
 import EmploymentCalculatorTable from '../employmentAppliedMoreView/EmploymentCalculatorTable/EmpoloymentCalculatorTable';
 
 const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {

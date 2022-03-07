@@ -9,6 +9,7 @@ import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
+
 import { $CalculatorTableRow } from '../../ApplicationReview.sc';
 
 const SalaryCalculatorTable: React.FC<ApplicationReviewViewProps> = ({
