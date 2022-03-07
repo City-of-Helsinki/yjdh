@@ -7,20 +7,15 @@ import {
   $ViewField,
   $ViewFieldBold,
 } from 'shared/components/benefit/summaryView/SummaryView.sc';
-import {
-  $Grid,
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
 import {
   convertToUIDateFormat,
   diffMonths,
   parseDate,
 } from 'shared/utils/date.utils';
-import { formatStringFloatValue } from 'shared/utils/string.utils';
 import { useTheme } from 'styled-components';
-
-import { $CalculatorTableRow } from '../ApplicationReview.sc';
+import EmploymentCalculatorTable from '../employmentAppliedMoreView/EmploymentCalculatorTable/EmpoloymentCalculatorTable';
 
 const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review.summary';
@@ -43,7 +38,7 @@ const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
           })}
         </$ViewField>
       </$GridCell>
-      {!data.latestDecisionComment && (
+      {data.latestDecisionComment && (
         <$GridCell $colSpan={12}>
           <$ViewFieldBold>
             {t(`${translationsBase}.${data.status || ''}.commentsTitle`)}
@@ -59,22 +54,7 @@ const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               margin: ${theme.spacing.s} 0;
             `}
           >
-            <$Grid>
-              <$GridCell $colSpan={8}>
-                <$CalculatorTableRow>
-                  <$ViewField>
-                    {t(`${translationsBase}.${data.status}.row1`)}
-                  </$ViewField>
-                  <$ViewField>{formatStringFloatValue(1)}€</$ViewField>
-                </$CalculatorTableRow>
-                <$CalculatorTableRow>
-                  <$ViewField isBold>
-                    {t(`${translationsBase}.${data.status}.row2`)}
-                  </$ViewField>
-                  <$ViewField isBold>1€</$ViewField>
-                </$CalculatorTableRow>
-              </$GridCell>
-            </$Grid>
+            <EmploymentCalculatorTable data={data} />
           </$GridCell>
           <$GridCell $colSpan={12}>
             <$ViewField>
