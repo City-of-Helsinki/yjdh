@@ -6,19 +6,14 @@ import { Button, DateInput } from 'hds-react';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
-import {
-  $Grid,
-  $GridCell,
-} from 'shared/components/forms/section/FormSection.sc';
+import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import $Notification from 'shared/components/notification/Notification.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
-import {
-  $CalculatorHr,
-  $CalculatorTableRow,
-  $CalculatorText,
-} from '../ApplicationReview.sc';
+import { $CalculatorHr, $CalculatorText } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
+import EmploymentCalculatorResults from './EmploymentCalculatorResults/EmploymentCalculatorResults';
 import { useEmploymentAppliedMoreView } from './useEmploymentAppliedMoreView';
 
 const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
@@ -33,13 +28,20 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
     language,
     getErrorMessage,
     handleSubmit,
+    isRecalculationRequired,
   } = useCalculatorData(CALCULATION_TYPES.EMPLOYMENT, formik);
 
   return (
     <form onSubmit={handleSubmit} noValidate>
       <ReviewSection withMargin>
         <$GridCell $colSpan={6}>
-          <$CalculatorText>{t(`${translationsBase}.header`)}</$CalculatorText>
+          <$CalculatorText
+            css={`
+              margin: 0 0 ${theme.spacing.xs} 0;
+            `}
+          >
+            {t(`${translationsBase}.header`)}
+          </$CalculatorText>
           <$ViewField>
             {data.startDate && data.endDate && (
               <>
@@ -54,12 +56,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
         </$GridCell>
         <$GridCell $colSpan={11}>
           <$CalculatorHr />
-          <$CalculatorText
-            css={`
-              margin: 0 0 ${theme.spacing.xs2} 0;
-              font-weight: 500;
-            `}
-          >
+          <$CalculatorText>
             {t(`${translationsBase}.grantedPeriod`, {
               period: formatStringFloatValue(grantedPeriod),
             })}
@@ -115,30 +112,23 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             {t(`${translationsBase}.calculate`)}
           </Button>
         </$GridCell>
-        <$GridCell $colSpan={11}>
+
+        <$GridCell $colStart={1} $colSpan={11}>
           <$CalculatorHr />
           <CalculatorErrors data={calculationsErrors} />
-          {data?.calculation?.rows &&
-            data?.calculation?.rows.map((row, i, { length }) => {
-              const isTotal = length - 1 === i;
-              return (
-                <$Grid key={row.id}>
-                  <$GridCell $colSpan={6}>
-                    <$CalculatorTableRow isTotal={isTotal}>
-                      <$ViewField isBold={isTotal}>
-                        {row.descriptionFi}
-                      </$ViewField>
-                      <$ViewField isBold={isTotal}>
-                        {t(`${translationsBase}.tableRowValue`, {
-                          amount: formatStringFloatValue(row.amount),
-                        })}
-                      </$ViewField>
-                    </$CalculatorTableRow>
-                  </$GridCell>
-                </$Grid>
-              );
-            })}
         </$GridCell>
+
+        {isRecalculationRequired && (
+          <$GridCell $colStart={1} $colSpan={11}>
+            <$Notification
+              type="alert"
+              label={t('common:calculators.notifications.recalculateLabel')}
+            >
+              {t('common:calculators.notifications.recalculateContent')}
+            </$Notification>
+          </$GridCell>
+        )}
+        <EmploymentCalculatorResults data={data} />
       </ReviewSection>
     </form>
   );

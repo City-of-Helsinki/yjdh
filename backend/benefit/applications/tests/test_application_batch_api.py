@@ -64,7 +64,6 @@ def test_applications_batch_list_with_filter(handler_api_client, application_bat
 @pytest.mark.parametrize(
     "status,batch_status,expected_decision",
     [
-        (ApplicationStatus.DRAFT, ApplicationBatchStatus.DRAFT, None),
         (
             ApplicationStatus.ACCEPTED,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,
@@ -492,7 +491,7 @@ def test_application_batches_talpa_export(
     mock_talpa_service, anonymous_client, application_batch
 ):
     # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
-    mock_talpa_service.get_talpa_csv_string.return_value = ""
+    mock_talpa_service.get_csv_string.return_value = ""
 
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
     assert response.status_code == 401

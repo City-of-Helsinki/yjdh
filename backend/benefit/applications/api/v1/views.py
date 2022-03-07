@@ -3,23 +3,30 @@ from applications.api.v1.serializers import (
     AttachmentSerializer,
     HandlerApplicationSerializer,
 )
-from applications.enums import ApplicationStatus
-from applications.models import Application
-from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.models import Application, ApplicationBatch
+from applications.services.applications_csv_report import ApplicationsCsvService
+from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
-from django.db.models import Count, Q
-from django.http import FileResponse
+from django.db import transaction
+from django.db.models import Q
+from django.http import FileResponse, HttpResponse
+from django.utils import timezone
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-from django_filters import rest_framework as filters
+from django_filters import DateFromToRangeFilter, rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
 from messages.models import MessageType
-from rest_framework import filters as drf_filters, status, viewsets
+from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
+from sql_util.aggregates import SubqueryCount
 from users.utils import get_company_from_request
+
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class BaseApplicationFilter(filters.FilterSet):
@@ -49,10 +56,29 @@ class ApplicantApplicationFilter(BaseApplicationFilter):
 
 
 class HandlerApplicationFilter(BaseApplicationFilter):
+
+    # the date when application was last set to either REJECTED, ACCEPTED or CANCELLED status
+    handled_at = DateFromToRangeFilter(method="filter_handled_at")
+
+    def filter_handled_at(self, queryset, name, value):
+        assert value.step is None, "Should not happen"
+        if value.start and value.stop:
+            filter_kw = {"handled_at__range": (value.start, value.stop)}
+        elif value.start:
+            filter_kw = {"handled_at__gte": value.start}
+        elif value.stop:
+            filter_kw = {"handled_at__lte": value.stop}
+        else:
+            # no filtering, so skip the annotation query
+            return queryset
+        return queryset.filter(
+            status__in=HandlerApplicationViewSet.HANDLED_STATUSES, **filter_kw
+        )
+
     class Meta:
         model = Application
         fields = {
-            "batch": ["exact"],
+            "batch": ["exact", "isnull"],
             "archived": ["exact"],
             "employee__social_security_number": ["exact"],
             "company__business_id": ["exact"],
@@ -65,7 +91,7 @@ class HandlerApplicationFilter(BaseApplicationFilter):
         }
 
 
-class BaseApplicationViewSet(viewsets.ModelViewSet):
+class BaseApplicationViewSet(AuditLoggingModelViewSet):
     filter_backends = [
         drf_filters.OrderingFilter,
         filters.DjangoFilterBackend,
@@ -187,15 +213,16 @@ class BaseApplicationViewSet(viewsets.ModelViewSet):
 )
 class ApplicantApplicationViewSet(BaseApplicationViewSet):
     serializer_class = ApplicantApplicationSerializer
-    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
+    permission_classes = [BFIsApplicant, TermsOfServiceAccepted]
     filterset_class = ApplicantApplicationFilter
 
     def _annotate_unread_messages_count(self, qs):
+        # since there other annotations added elsewhere, use subquery to avoid wrong results.
+        # also, using a subquery is more performant
         return qs.annotate(
-            unread_messages_count=Count(
+            unread_messages_count=SubqueryCount(
                 "messages",
-                filter=Q(messages__seen_by_applicant=False)
-                & ~Q(messages__message_type=MessageType.NOTE),
+                filter=Q(seen_by_applicant=False) & ~Q(message_type=MessageType.NOTE),
             )
         )
 
@@ -221,17 +248,86 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     def _annotate_unread_messages_count(self, qs):
         return qs.annotate(
-            unread_messages_count=Count(
+            unread_messages_count=SubqueryCount(
                 "messages",
-                filter=Q(messages__seen_by_handler=False)
-                & ~Q(messages__message_type=MessageType.NOTE),
+                filter=Q(seen_by_handler=False) & ~Q(message_type=MessageType.NOTE),
             )
         )
+
+    HANDLED_STATUSES = [
+        ApplicationStatus.REJECTED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+    ]
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        # In case new AuditLogEntry objects were created during the
+        # processing of the update, then the annotation value for handled_at
+        # in the serializer.instance might have become stale.
+        # Update the object.
+        serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
 
     def get_queryset(self):
         return self._annotate_unread_messages_count(
             super()
             .get_queryset()
+            .exclude(status=ApplicationStatus.DRAFT)
             .select_related("batch", "calculation")
             .prefetch_related("pay_subsidies", "training_compensations")
         )
+
+    @action(methods=["GET"], detail=False)
+    def export_csv(self, request):
+        queryset = self.get_queryset()
+        filtered_queryset = self.filter_queryset(queryset)
+        return self._csv_response(filtered_queryset)
+
+    CSV_ORDERING = "application_number"
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def export_new_accepted_applications(self, request):
+        return self._csv_response(
+            self._create_application_batch(ApplicationStatus.ACCEPTED)
+        )
+
+    @action(methods=["GET"], detail=False)
+    @transaction.atomic
+    def export_new_rejected_applications(self, request):
+        return self._csv_response(
+            self._create_application_batch(ApplicationStatus.REJECTED)
+        )
+
+    def _create_application_batch(self, status):
+        """
+        Create a new application batch out of the existing applications in the given status
+        that are not yet assigned to a batch.
+        """
+        queryset = self.get_queryset().filter(status=status, batch__isnull=True)
+        status_map = {
+            ApplicationStatus.ACCEPTED: ApplicationBatchStatus.DECIDED_ACCEPTED,
+            ApplicationStatus.REJECTED: ApplicationBatchStatus.DECIDED_REJECTED,
+        }
+        if status not in status_map:
+            assert False, "Internal error, should not happen"
+        application_ids = [application.pk for application in queryset]
+        if queryset:
+            batch = ApplicationBatch.objects.create(
+                proposal_for_decision=status_map[status]
+            )
+            queryset.update(batch=batch)
+        return self.get_queryset().filter(pk__in=application_ids)
+
+    def _csv_response(self, queryset):
+        csv_service = ApplicationsCsvService(queryset.order_by(self.CSV_ORDERING))
+        csv_file = csv_service.get_csv_string()
+        file_name = format_lazy(
+            _("Helsinki-lisän hakemukset viety {date}"),
+            date=timezone.now().strftime("%Y%m%d_%H%M%S"),
+        )
+        response = HttpResponse(csv_file, content_type="text/csv")
+        response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
+            file_name=file_name
+        )
+        return response

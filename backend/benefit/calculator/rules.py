@@ -1,8 +1,9 @@
 import collections
 import datetime
 import decimal
+import logging
 
-from applications.enums import ApplicationStatus, BenefitType, OrganizationType
+from applications.enums import ApplicationStatus, BenefitType
 from calculator.enums import RowType
 from calculator.models import (
     DateRangeDescriptionRow,
@@ -24,6 +25,7 @@ from calculator.models import (
 from common.utils import pairwise
 from django.db import transaction
 
+LOGGER = logging.getLogger(__name__)
 BenefitSubRange = collections.namedtuple(
     "BenefitSubRange",
     ["start_date", "end_date", "pay_subsidy", "training_compensation"],
@@ -51,7 +53,10 @@ class HelsinkiBenefitCalculator:
         # return a list of BenefitSubRange(start_date, end_date, pay_subsidy, training_compensation)
         # that require a separate calculation.
         # date range are inclusive
-
+        if self.calculation.start_date is None or self.calculation.end_date is None:
+            raise ValueError(
+                "Cannot get sub total range of calculation start_date or end_date"
+            )
         pay_subsidies = PaySubsidy.merge_compatible_subsidies(
             list(self.calculation.application.pay_subsidies.order_by("start_date"))
         )
@@ -114,15 +119,28 @@ class HelsinkiBenefitCalculator:
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
     ]
 
+    def can_calculate(self):
+        if not all(
+            [
+                self.calculation.start_date,
+                self.calculation.end_date,
+            ]
+        ):
+            return False
+        return True
+
     @transaction.atomic
     def calculate(self):
         if self.calculation.application.status in self.CALCULATION_ALLOWED_STATUSES:
             self.calculation.rows.all().delete()
-            self.create_rows()
-            # the total benefit amount is stored in Calculation model, for easier processing.
-            self.calculation.calculated_benefit_amount = self.get_amount(
-                RowType.HELSINKI_BENEFIT_TOTAL_EUR
-            )
+            if self.can_calculate():
+                self.create_rows()
+                # the total benefit amount is stored in Calculation model, for easier processing.
+                self.calculation.calculated_benefit_amount = self.get_amount(
+                    RowType.HELSINKI_BENEFIT_TOTAL_EUR
+                )
+            else:
+                self.calculation.calculated_benefit_amount = None
             self.calculation.save()
 
     def _create_row(self, row_class, **kwargs):
@@ -162,21 +180,30 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
     Calculation of salary benefit, according to rules in effect 2021 (and possibly onwards)
     """
 
-    ASSOCIATION_PAY_SUBSIDY_MAX = 1800
-    COMPANY_PAY_SUBSIDY_MAX = 1400
+    # The maximum amount of pay subsidy depends on the pay subsidy percent in the pay subsidy decision.
+    PAY_SUBSIDY_MAX_FOR_100_PERCENT = 1800
+    DEFAULT_PAY_SUBSIDY_MAX = 1400
     SALARY_BENEFIT_MAX = 800
 
-    def get_maximum_monthly_pay_subsidy(self):
-        if (
-            OrganizationType.resolve_organization_type(
-                self.calculation.application.company.company_form
-            )
-            == "company"
-            or self.calculation.application.association_has_business_activities
+    def can_calculate(self):
+        if not all(
+            [
+                self.calculation.start_date,
+                self.calculation.end_date,
+                self.calculation.state_aid_max_percentage,
+            ]
         ):
-            return self.COMPANY_PAY_SUBSIDY_MAX
+            return False
+        for pay_subsidy in self.calculation.application.pay_subsidies.all():
+            if not all([pay_subsidy.start_date, pay_subsidy.end_date]):
+                return False
+        return True
+
+    def get_maximum_monthly_pay_subsidy(self, pay_subsidy):
+        if pay_subsidy.pay_subsidy_percent == 100:
+            return self.PAY_SUBSIDY_MAX_FOR_100_PERCENT
         else:
-            return self.ASSOCIATION_PAY_SUBSIDY_MAX
+            return self.DEFAULT_PAY_SUBSIDY_MAX
 
     def create_deduction_rows(self, benefit_sub_range):
         if benefit_sub_range.pay_subsidy or benefit_sub_range.training_compensation:
@@ -188,7 +215,9 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
             pay_subsidy_monthly_eur = self._create_row(
                 PaySubsidyMonthlyRow,
                 pay_subsidy=benefit_sub_range.pay_subsidy,
-                max_subsidy=self.get_maximum_monthly_pay_subsidy(),
+                max_subsidy=self.get_maximum_monthly_pay_subsidy(
+                    benefit_sub_range.pay_subsidy
+                ),
             ).amount
         else:
             pay_subsidy_monthly_eur = 0

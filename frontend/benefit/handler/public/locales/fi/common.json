@@ -13,6 +13,24 @@
       "title": "Hakemuksen viestit"
     }
   },
+  "notifications": {
+    "accepted": {
+      "title": "Hakemusta on puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
+    },
+    "rejected": {
+      "title": "Hakemusta ei puollettu",
+      "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
+    },
+    "cancelled": {
+      "title": "Hakemus on peruuttu",
+      "message": "Hakemus {{applicationNum}} on peruuttu onnistuneesti ja siirretty arkistoon."
+    },
+    "error": {
+      "title": "Tapahtui tuntematon virhe",
+      "message": " Yritä myöhemmin uudelleen"
+    }
+  },
   "messenger": {
     "titles": {
       "applicantMessage": "Hakija",
@@ -84,8 +102,18 @@
         "submittedAt": "Saapunut",
         "applicationNum": "Numero",
         "employeeName": "Työntekijä",
+        "employeeNameArchive": "Työllistetty",
         "handlerName": "Käsittelijä",
         "companyForm": "Yritysmuoto",
+        "handledAt": "Käsittelypvm",
+        "dataReceived": "Ladattu",
+        "status": "Käsittelyn tulos",
+        "statusArchive": "Käsittelyn tulos",
+        "statuses": {
+          "cancelled": "Peruutettu",
+          "accepted": "Puolettu",
+          "rejected": "Ei puolettu"
+        },
         "additionalInformationNeededBy": "",
         "additionalInformationNeededByVal": "Muokattava {{date}}"
       },
@@ -101,7 +129,14 @@
           "label": "Error occurred",
           "text": "Unable to fetch applications with status {{status}}"
         }
+      },
+      "total": {
+        "count_one": "{{count}} hakemus",
+        "count_other": "{{count}} hakemusta"
       }
+    },
+    "actions": {
+      "close": "Sulje"
     }
   },
   "review": {
@@ -110,6 +145,7 @@
       "close": "Sulje",
       "done": "Valmis",
       "saveAndContinue": "Tallenna ja sulje",
+      "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
       "cancel": "Peruuta hakemus",
       "addAttachment": "Liitä uusi tiedosto",
@@ -117,7 +153,17 @@
       "targetGroupCheck": "Kohderyhmätarkistus",
       "grantedDueInjury": "Palkkatuki myönnetty vamman tai sairauden takia",
       "handlingToInfoRequired": "Avaa muokattavaksi",
-      "infoRequiredToHandling": "Lukitse hakemus"
+      "infoRequiredToHandling": "Lukitse hakemus",
+      "reasonAcceptPlaceholder": "Valinnainen perustelu jos hakija katsotaan kuuluvan kohderyhmään",
+      "reasonCancelPlaceholder": "Kirjoita syy",
+      "reasonCancelTitle": "Kirjoita syy",
+      "reasonCancelDialogTitle": "Haluatko varmasti peruuttaa?",
+      "reasonCancelDialogDescription": "Hakemus peruututan lopullisesti ja siirretään arkistoon eikä sitä voida enää palauttaa käsittelyyn",
+      "reasonCancelLabel": "Syy peruutuksen",
+      "reasonRejectPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
+      "reasonCancelConfirm": "Peruuta hakemus",
+      "grantedAsDeminimisText": "De minimis",
+      "grantedAsDeminimisAid": "Helsinki-lisä myönnetään de minimis-tukena"
     },
     "headings": {
       "heading1": "Työnantajan tiedot",
@@ -135,8 +181,8 @@
     "fields": {
       "businessId": "Y-tunnus",
       "bankAccountNumber": "Tilinumero",
-      "associationHasBusinessActivities": "Harjoittaako työnantaja elinkeinotoimintaa?",
-      "associationImmediateManagerCheck": "Lähiesihenkilö palkattavalle henkilölle?",
+      "associationHasBusinessActivities": "Harjoittaako työnantaja taloudellista toimintaa?",
+      "associationImmediateManagerCheck": "Lähiesihenkilö työllistetylle henkilölle?",
       "applicantLanguage": "Asiointikieli",
       "deMinimisAidGranter": "Tuen myöntäjä",
       "deMinimisAidAmount": "Tuen määrä",
@@ -158,8 +204,31 @@
       "noSupport": "Ei puolleta",
       "support": "Puolletaan",
       "reason": "Perustelu",
-      "reasonPlaceholder": "Helsinki-lisää ei voida myöntää koska syitä",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
+    },
+    "summary": {
+      "accepted": {
+        "title": "Käsittely valmis",
+        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}}–{{endDate}}",
+        "row1": "Myönnetty Helsinki-lisä per kuukausi",
+        "row2": "Myönnetty Helsinki-lisä yhteensä",
+        "deMinimis": "Myönnetään de minimis-tukena",
+        "commentsTitle": "Tiedot"
+      },
+      "rejected": {
+        "description": "Hakemusta ei hyväksytä.",
+        "title": "Käsittely valmis",
+        "commentsTitle": "Perustelu"
+      },
+      "cancelled": {
+        "title": "Peruutustiedot",
+        "description": "",
+        "commentsTitle": "Syy peruutukseen"
+      },
+      "common": {
+        "handler": "Käsittelijä",
+        "handledAt": "Käsittelypäivämäärä"
+      }
     }
   },
   "calculators": {
@@ -188,13 +257,32 @@
       "paySubsidyPercent": {
         "label": "Palkkatukiprosentti",
         "placeholder": "Palkkatukiprosentti"
+      },
+      "overrideMonthlyBenefitAmount": {
+        "label": "Helsinki-lisää €/kk",
+        "placeholder": "Helsinki-lisää €/kk"
+      },
+      "overrideMonthlyBenefitAmountComment": {
+        "label": "Perustelu",
+        "placeholder": "Perustelu"
+      },
+      "workTimePercent": {
+        "label": "Työaika %",
+        "placeholder": "Työaika %"
+      },
+      "monthlyAmount": {
+        "label": "Koulutuskorvaus €/kk",
+        "placeholder": "Koulutuskorvaus €/kk"
       }
     },
     "notifications": {
       "error": {
         "title": "Laskurissa on virheitä",
         "message": "Ole hyvä ja tarkista laskelman tiedot ja yritä laskea uudestaan."
-      }
+      },
+      "paySubsidy": "Palkkatuki",
+      "recalculateLabel": "Laskelman arvot muuttuneet",
+      "recalculateContent": "Ole hyvä ja laske uudestaan"
     },
     "employment": {
       "header": "Työllistämisen Helsinki-lisää haettu ajalle",
@@ -224,7 +312,12 @@
       "tableRowHeader": "Helsinki-lisä / kk (enintään {{amount}} €)",
       "tableRowValue": "{{amount}} €",
       "tableTotalHeader": "Helsinki-lisä yhteensä",
-      "manualInput": "Manuaalinen syöttö"
+      "manualInput": "Manuaalinen laskelma",
+      "apprenticeshipCompensation": "Oppisopimuksesta maksettava korvaus",
+      "apprenticeshipPeriod": "Koulutuskorvaus myönnetty ajalle",
+      "apprenticeshipPeriodWithDiff": "Koulutuskorvaus myönnetty ajalle ({{period}} kk)",
+      "add": "Lisää",
+      "remove": "Poista"
     }
   },
   "organizationTypes": {
@@ -261,7 +354,9 @@
   "utility": {
     "yes": "Kyllä",
     "no": "Ei",
-    "and": "ja"
+    "and": "ja",
+    "home": "Palaa etusivulle",
+    "check": "Tarkastele"
   },
   "upload": {
     "isUploading": "Uploading...",
@@ -306,6 +401,24 @@
       "ssn": {
         "invalid": "Invalid SSN value"
       }
+    }
+  },
+  "reports": {
+    "headings": {
+      "main": "Raportointi",
+      "downloadAcceptedApplications": "Hyväksytyt hakemukset joita ei ole vielä ladattu",
+      "downloadRejectedApplications": "Hylätyt hakemukset joita ei ole vielä ladattu",
+      "downloadApplicationsInTimeRange": "Lataa kaikki hakemukset tietyltä ajalta"
+    },
+    "fields": {
+      "lastDownloadDateText": "Ladattu viimeksi {{date}}",
+      "startDate": "Alkaen",
+      "endDate": "Päättyen"
+    },
+    "buttons": {
+      "downloadAcceptedApplications": "Hyväksyt hakemukset CSV",
+      "downloadRejectedApplications": "Hylätyt hakemukset CSV",
+      "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
     }
   }
 }

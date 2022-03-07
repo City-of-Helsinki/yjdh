@@ -1,5 +1,5 @@
 import YouthForm from 'kesaseteli/youth/components/forms/YouthForm';
-import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
+import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next';

@@ -1,5 +1,5 @@
 from applications.models import Application
-from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
+from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
@@ -10,12 +10,14 @@ from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from users.utils import get_company_from_request
 
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
-class ApplicantMessageViewSet(viewsets.ModelViewSet):
+
+class ApplicantMessageViewSet(AuditLoggingModelViewSet):
 
     serializer_class = MessageSerializer
     permission_classes = [
-        BFIsAuthenticated,
+        BFIsApplicant,
         TermsOfServiceAccepted,
         HasMessagePermission,
     ]
@@ -31,6 +33,8 @@ class ApplicantMessageViewSet(viewsets.ModelViewSet):
                 id=self.kwargs["application_pk"]
             ).messages.get_messages_qs()
         company = get_company_from_request(self.request)
+        if not company:
+            return Message.objects.none()
         try:
             application = company.applications.get(id=self.kwargs["application_pk"])
         except Application.DoesNotExist:

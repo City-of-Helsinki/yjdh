@@ -62,7 +62,7 @@ services:
       - kesaseteli-youth
     build:
       context: ./localdevelopment/youth/nginx
-    container_name: kesaseteli-local-proxy
+    container_name: youth-local-proxy
     volumes:
       - ./localdevelopment/youth/nginx/:/etc/nginx/
     ports:

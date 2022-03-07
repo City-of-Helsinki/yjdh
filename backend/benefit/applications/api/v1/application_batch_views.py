@@ -13,10 +13,12 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
-from rest_framework import filters as drf_filters, status, viewsets
+from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+
+from shared.audit_log.viewsets import AuditLoggingModelViewSet
 
 
 class ApplicationBatchFilter(filters.FilterSet):
@@ -41,7 +43,7 @@ class ApplicationBatchFilter(filters.FilterSet):
 @extend_schema(
     description="API for create/read/update/delete/export operations on Helsinki benefit application batches"
 )
-class ApplicationBatchViewSet(viewsets.ModelViewSet):
+class ApplicationBatchViewSet(AuditLoggingModelViewSet):
     queryset = ApplicationBatch.objects.all()
     serializer_class = ApplicationBatchSerializer
     permission_classes = [BFIsHandler]
@@ -121,7 +123,7 @@ class ApplicationBatchViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         talpa_service = TalpaService(approved_batches)
-        csv_file = talpa_service.get_talpa_csv_string()
+        csv_file = talpa_service.get_csv_string()
         file_name = format_lazy(
             _("TALPA export {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),

@@ -1,6 +1,7 @@
 import factory
 import pytest
 from applications.enums import BenefitType
+from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.talpa_integration import TalpaService
 from applications.tests.factories import (
     ApplicationBatchFactory,
@@ -72,6 +73,23 @@ def talpa_service_with_one_application(talpa_service):
 
 
 @pytest.fixture
+def applications_csv_service():
+    return ApplicationsCsvService(
+        [DecidedApplicationFactory(), DecidedApplicationFactory()]
+    )
+
+
+@pytest.fixture
+def applications_csv_service_with_one_application():
+    return ApplicationsCsvService([DecidedApplicationFactory()])
+
+
+@pytest.fixture
+def applications_csv_with_no_applications():
+    return ApplicationsCsvService([])
+
+
+@pytest.fixture
 def employee():
     with factory.Faker.override_default_locale("fi_FI"):
         return EmployeeFactory()
@@ -118,3 +136,9 @@ def accept_tos(
 @pytest.fixture(autouse=True)
 def auto_accept_tos(autouse_django_db, accept_tos):
     return accept_tos
+
+
+def split_lines_at_semicolon(csv_string):
+    # split CSV into lines and columns without using the csv library
+    csv_lines = csv_string.splitlines()
+    return [line.split(";") for line in csv_lines]

@@ -7,7 +7,6 @@ import { useHeader } from './useHeader';
 const Header: React.FC = () => {
   const {
     t,
-    locale,
     languageOptions,
     navigationItems,
     isNavigationVisible,
@@ -20,7 +19,6 @@ const Header: React.FC = () => {
       titleUrl={ROUTES.HOME}
       menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
       languages={languageOptions}
-      locale={locale}
       isNavigationVisible={isNavigationVisible}
       navigationItems={navigationItems}
       onLanguageChange={handleLanguageChange}

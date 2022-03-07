@@ -1,3 +1,4 @@
+import YouthFormData from '@frontend/kesaseteli-shared/src/types/youth-form-data';
 import { fillInput } from '@frontend/shared/browser-tests/utils/input.utils';
 import {
   getErrorMessage,
@@ -6,8 +7,6 @@ import {
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
-
-import YouthFormData from '../../src/types/youth-form-data';
 
 type TextInputName = keyof Omit<
   YouthFormData,

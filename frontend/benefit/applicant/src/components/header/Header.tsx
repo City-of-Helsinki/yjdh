@@ -14,7 +14,7 @@ import { $CustomMessagesActions } from './Header.sc';
 import { useHeader } from './useHeader';
 
 const Header: React.FC = () => {
-  const { t, locale, languageOptions, hasMessenger, handleLanguageChange } =
+  const { t, languageOptions, hasMessenger, handleLanguageChange } =
     useHeader();
   const router = useRouter();
   const { asPath } = router;
@@ -37,7 +37,6 @@ const Header: React.FC = () => {
         title={t('common:appName')}
         menuToggleAriaLabel={t('common:menuToggleAriaLabel')}
         languages={languageOptions}
-        locale={locale}
         onLanguageChange={handleLanguageChange}
         login={{
           isAuthenticated: !isLoginPage && userQuery.isSuccess,

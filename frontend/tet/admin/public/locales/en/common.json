@@ -15,7 +15,7 @@
   },
   "404Page": {
     "pageNotFoundLabel": "Page was not found",
-    "pageNotFoundContent": "Oh no, something went wrong. Try to enter the application <lnk>here</lnk>, through the front page"
+    "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
   "loginPage": {
     "logoutMessageLabel": "You have logged out",
@@ -23,9 +23,21 @@
     "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires strong authentication",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
-    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+    "infoContent": {
+      "listHeading": "ENG TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
+      "bullet1": "ENG Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
+      "bullet2": "ENG Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
+      "bullet3": "ENG Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
+      "moreInfo": "ENG Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>",
+      "registerRights1": "ENG Rekisteröidyllä on oikeuksia liittyen henkilötietoihin ja niiden käsittelyyn Helsingin kaupungilla.",
+      "registerRights2": "ENG Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>."
+    }
   },
+	"dialog": {
+		"cancel": "ENG Peruuta"
+	},
   "application": {
+		"backToFrontPage": "ENG Takaisin etusivulle",
     "jobPostings": {
       "title": "ENG TET-paikkailmoitukset",
       "noPostingsFound": "ENG Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -46,17 +58,27 @@
     }
   },
   "editor": {
+		"companyInfo": "ENG Yrityksen tiedot",
+		"companyInfoFetch": "ENG Yrityksen tiedot on haettu YTJS:stä",
     "newTitle": "ENG Uusi TET-paikka",
     "editTitle": "ENG Muokkaa TET-paikkaa",
+		"copyTitle": "ENG Kopioi TET-paikka",
     "saveDraft": "ENG Tallenna julkaisematta",
     "deletePosting": "ENG Poista ilmoitus",
     "preview": "ENG Siirry esikatseluun",
     "publish": "ENG Julkaise",
     "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
+		"backToEdit": "ENG Takaisin lomakkeelle",
+		"requiredInfo": "ENG merkityt kentät ovat pakollisia",
+		"preview": "ENG Esikatselu",
+    "loadingError": "ENG Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
     "employerInfo": {
-      "header": "ENG Työpaikan tiedot",
+			"contactPerson": "ENG Yhteyshenkilö",
+      "header": "ENG Toimipisteen tiedot",
       "addressNeededLabel": "ENG Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "ENG Toimipiste tai osasto"
+      "departmentLabel": "ENG Toimipiste tai osasto",
+			"address": "ENG Osoite",
+			"streetAddress": "ENG Katuosoite"
     },
     "posting": {
       "header": "ENG Työharjoittelupaikan tiedot",
@@ -79,10 +101,31 @@
 				"email": "ENG Syötä sähköposti oikeassa muodossa",
 				"max": "ENG Maksimimerkkimäärä ylittyy",
 				"phone": "ENG Syötä oikeassa muodossa",
-				"name": "ENG Syötä nimi sallitussa muodossa"
+				"name": "ENG Syötä nimi ilman erikoismerkkejä ja kirjaimia"
 			}
+    },
+		"classification": {
+			"classifications": "ENG Luokittelut",
+			"workMethod": "ENG Työtapa",
+			"workFeature": "ENG Työn ominaisuudet",
+			"keywords": "ENG Avainsanat",
+			"search": "ENG Hae"
+  	},
+    "combobox": {
+      "toggleButtonAriaLabel": "ENG Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "ENG Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "ENG Poista valinta"
     }
   },
+	"postingTemplate": {
+		"spots": "ENG TET-paikkoja",
+		"contact": "ENG Yhteystiedot",
+		"description": "ENG Kuvaus",
+		"share": "ENG Jaa tapahtuma",
+		"dateAndTime": "ENG Päivä ja aika",
+		"location": "ENG Paikka",
+		"languages": "ENG TET-paikassa käytettävät kielet"
+	},
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
@@ -111,13 +154,24 @@
     }
   },
   "upload": {
+		"successMessage": "ENG Tiedot tallennettiin",
     "isUploading": "Sending...",
     "errorTitle": "File upload failed",
     "errorMessage": "Something went wrong. Please try again later."
   },
   "delete": {
+		"deletePosting": "ENG Poista TET-paikka",
+		"confirmation": "ENG Haluatko varmasti poistaa TET-paikan {{posting}}?",
+		"successTitle": "ENG TETP-paikka poistettiin",
     "errorTitle": "Deleting the file failed.",
     "errorMessage": "Something went wrong. Please try again later."
+  },
+  "publish": {
+		"publishPosting": "ENG Julkaise TET-paikka",
+		"confirmation": "ENG Haluatko varmasti julkaista TET-paikan {{posting}}?",
+		"successTitle": "ENG TET-paikka julkaistiin",
+    "errorTitle": "ENG Julkaiseminen epäonnistui",
+    "errorMessage": "ENG Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
   "applications": {
     "sections": {

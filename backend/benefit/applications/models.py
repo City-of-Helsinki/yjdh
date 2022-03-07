@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from applications.enums import (
     AhjoDecision,
     ApplicationBatchStatus,
@@ -7,12 +9,12 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
-from calculator.enums import RowType
 from common.utils import DurationMixin
 from companies.models import Company
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
+from django.db.models import OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
@@ -62,6 +64,28 @@ def address_property(field_suffix):
     return _address_property_getter
 
 
+class ApplicationManager(models.Manager):
+
+    HANDLED_STATUSES = [
+        ApplicationStatus.REJECTED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+    ]
+
+    def _annotate_handled_at(self, qs):
+        subquery = (
+            ApplicationLogEntry.objects.filter(
+                application=OuterRef("pk"), to_status__in=self.HANDLED_STATUSES
+            )
+            .order_by("-created_at")
+            .values("created_at")[:1]
+        )
+        return qs.annotate(handled_at=Subquery(subquery))
+
+    def get_queryset(self):
+        return self._annotate_handled_at(super().get_queryset())
+
+
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Data model for Helsinki benefit applications
@@ -73,6 +97,8 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
+
+    objects = ApplicationManager()
 
     BENEFIT_MAX_MONTHS = 12
 
@@ -302,12 +328,36 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     @property
     def ahjo_rows(self):
-        rows = self.calculation.rows.filter(
-            row_type=RowType.HELSINKI_BENEFIT_SUB_TOTAL_EUR
+        # enable uniform handling of applications with and without a calculation object
+        from calculator.models import CalculationRow
+
+        if hasattr(self, "calculation"):
+            return self.calculation.ahjo_rows
+        else:
+            return CalculationRow.objects.none()
+
+    @property
+    def latest_decision_comment(self):
+        return self.get_log_entry_field(
+            [
+                ApplicationStatus.ACCEPTED,
+                ApplicationStatus.CANCELLED,
+                ApplicationStatus.REJECTED,
+            ],
+            "comment",
         )
-        if rows.count() > 0:
-            return rows
-        return self.calculation.rows.filter(row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR)
+
+    def get_log_entry_field(self, to_statuses, field_name):
+        if (
+            log_entry := self.log_entries.filter(to_status__in=to_statuses)
+            .order_by(
+                "-created_at"
+            )  # the latest transition to one of the statuses listed in to_statuses
+            .first()
+        ):
+            return getattr(log_entry, field_name)
+        else:
+            return None
 
     def __str__(self):
         return "{}: {} {} {}-{}".format(
@@ -570,6 +620,14 @@ class Employee(UUIDModel, TimeStampedModel):
         verbose_name=_("Description of the commission"),
         blank=True,
     )
+
+    @property
+    def birthday(self):
+        if not self.social_security_number:
+            return None
+        # invalid social security number results in ValueError.
+        # input validation should ensure it's always valid.
+        return datetime.strptime(self.social_security_number[:6], "%d%m%y").date()
 
     def __str__(self):
         return "{} {} ({})".format(self.first_name, self.last_name, self.email)

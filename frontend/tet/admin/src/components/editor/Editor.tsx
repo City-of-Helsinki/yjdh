@@ -1,32 +1,24 @@
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import CompanyInfo from 'tet/admin/components/editor/companyInfo/CompanyInfo';
 import PostingDetails from 'tet/admin/components/editor/postingDetails/PostingDetails';
 import ContactPerson from 'tet/admin/components/editor/contactPerson/ContactPerson';
 import { FormProvider, useForm } from 'react-hook-form';
 import TetPosting from 'tet/admin/types/tetposting';
 import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
+import { useTranslation } from 'next-i18next';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
-
-const initialValuesForNew: TetPosting = {
-  title: '',
-  description: '',
-  spots: 3,
-  contact_first_name: 'test',
-  contact_last_name: '',
-  contact_email: '',
-  contact_phone: '',
-  contact_language: 'fi',
-  start_date: '',
-  end_date: '',
-  date_published: '',
-  org_name: '',
-};
+import Classification from 'tet/admin/components/editor/classification/Classification';
+import { DevTool } from '@hookform/devtools';
+import { tetPostingToEvent } from 'tet/admin/backend-api/transformations';
+import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
+import { initialPosting } from 'tet/admin/store/PreviewContext';
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
+  allowDelete?: boolean;
 };
 
 export type EditorSectionProps = {
@@ -34,37 +26,41 @@ export type EditorSectionProps = {
 };
 
 // add new posting / edit existing
-const Editor: React.FC<EditorProps> = ({ initialValue }) => {
+const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => {
+  const { t } = useTranslation();
   const methods = useForm<TetPosting>({
-    mode: 'onBlur',
     reValidateMode: 'onChange',
+    mode: 'onBlur',
     criteriaMode: 'all',
-    defaultValues: { contact_language: 'fi' }, //Could be used for all
+    defaultValues: initialValue || initialPosting,
   });
 
   const upsertTetPosting = useUpsertTetPosting();
 
-  const posting = initialValue || initialValuesForNew;
-
   const handleSuccess = (validatedPosting: TetPosting): void => {
-    const verb = validatedPosting.id ? 'PUT' : 'POST';
-    console.log(`${verb} ${JSON.stringify(validatedPosting, null, 2)}`);
-    upsertTetPosting.mutate(validatedPosting);
+    const event = tetPostingToEvent(validatedPosting);
+    upsertTetPosting.mutate({
+      id: validatedPosting.id,
+      event,
+    });
   };
 
   return (
     <>
       <FormProvider {...methods}>
-        <form aria-label="add/modify tet posting" onSubmit={methods.handleSubmit(handleSuccess)}>
-          <HiddenIdInput id="id" initialValue={posting.id} />
-          <p>* pakollinen tieto</p>
+        <form aria-label="add/modify tet posting">
+          <HiddenIdInput id="id" initialValue={initialValue?.id} />
           <EditorErrorNotification />
+          <p>* {t('common:editor.requiredInfo')}</p>
+          <EmployerInfo />
           <CompanyInfo />
-          <ContactPerson initialValue={posting} />
-          <PostingDetails initialValue={posting} />
-          <ActionButtons />
+          <ContactPerson />
+          <PostingDetails />
+          <Classification />
+          <ActionButtons onSubmit={methods.handleSubmit(handleSuccess)} allowDelete={allowDelete} />
         </form>
       </FormProvider>
+      <DevTool control={methods.control} />
     </>
   );
 };

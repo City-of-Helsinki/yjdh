@@ -8,6 +8,7 @@ export const $Checkbox = styled(Checkbox)`
   --border-color-selected-hover: ${(props) => props.theme.colors.coatOfArms};
   --border-color-selected-focus: ${(props) => props.theme.colors.coatOfArms};
   --focus-outline-color: ${(props) => props.theme.colors.coatOfArms};
+  --background-unselected: ${(props) => props.theme.colors.white};
 `;
 
 export const $RadioButton = styled(RadioButton)`

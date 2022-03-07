@@ -7,6 +7,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.db.models import Model
 from django.db.models.base import ModelBase
+from django.http import Http404
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 from rest_framework.viewsets import ModelViewSet
 
@@ -27,6 +28,10 @@ class AuditLoggingModelViewSet(ModelViewSet):
     created_instance: Optional[Model] = None
 
     def permission_denied(self, request, message=None, code=None):
+        self._log_permission_denied()
+        super().permission_denied(request, message, code)
+
+    def _log_permission_denied(self):
         audit_logging.log(
             self._get_actor(),
             self._get_actor_backend(),
@@ -35,7 +40,20 @@ class AuditLoggingModelViewSet(ModelViewSet):
             Status.FORBIDDEN,
             ip_address=self._get_ip_address(),
         )
-        super().permission_denied(request, message, code)
+
+    def update(self, request, *args, **kwargs):
+        # Handle updates and treat 404 errors as permission denied errors, if
+        # the target object actually exists
+        try:
+            return super().update(request, *args, **kwargs)
+        except Http404:
+            if self._get_target_object():
+                # _get_target_object() performs the lookup using the unfiltered queryset.
+                # Here we'll assume that the queryset was limited based on user's
+                # permissions. Since the object exists, the 404 actually indicates
+                # an attempt to access something they don't have permission to.
+                self._log_permission_denied()
+            raise
 
     def retrieve(self, request, *args, **kwargs):
         with self.record_action():
@@ -59,7 +77,9 @@ class AuditLoggingModelViewSet(ModelViewSet):
             super().perform_destroy(instance)
 
     @contextmanager
-    def record_action(self, target: Optional[Model] = None):
+    def record_action(
+        self, target: Optional[Model] = None, additional_information: str = ""
+    ):
         """
         This context manager will run the managed code in a transaction and writes
         a new audit log entry in the same transaction. If an exception is raised,
@@ -78,6 +98,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
                     operation,
                     target or self._get_target(),
                     ip_address=self._get_ip_address(),
+                    additional_information=additional_information,
                 )
         except (NotAuthenticated, PermissionDenied):
             audit_logging.log(
@@ -87,6 +108,7 @@ class AuditLoggingModelViewSet(ModelViewSet):
                 target or self._get_target(),
                 Status.FORBIDDEN,
                 ip_address=self._get_ip_address(),
+                additional_information=additional_information,
             )
             raise
 
@@ -100,13 +122,25 @@ class AuditLoggingModelViewSet(ModelViewSet):
         return self.method_to_operation.get(self.request.method, Operation.READ)
 
     def _get_target(self) -> Optional[Union[Model, ModelBase]]:
-        target = None
+        return (
+            self._get_target_object()
+            or self.created_instance
+            or self._unfiltered_queryset().model
+        )
+
+    def _get_target_object(self):
         lookup_value = self.kwargs.get(self.lookup_field, None)
         if lookup_value is not None:
-            target = self.queryset.model.objects.filter(
-                **{self.lookup_field: lookup_value}
-            ).first()
-        return target or self.created_instance or self.queryset.model()
+            return (
+                self._unfiltered_queryset()
+                .filter(**{self.lookup_field: lookup_value})
+                .first()
+            )
+        else:
+            return None
+
+    def _unfiltered_queryset(self):
+        return self.get_queryset().model.objects.all()
 
     def _get_ip_address(self) -> str:
         x_forwarded_for = self.request.META.get("HTTP_X_FORWARDED_FOR")

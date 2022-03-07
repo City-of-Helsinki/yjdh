@@ -1,0 +1,35 @@
+{
+  "appName": "TET Job Search",
+  "errorPage": {
+    "title": "An unexpected error occured",
+    "message": "Something went wrong. Refreshing the page might help.",
+    "retry": "Reload the page again",
+    "logout": "Log out"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Page was not found",
+    "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
+  },
+  "footer": {
+    "copyrightText": "City of Helsinki",
+    "allRightsReservedText": "All rights reserved",
+    "accessibilityStatement": "Accessibility statement",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
+    "privacyPolicy": "Privacy policy",
+    "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
+    "feedback": "ENG Anna palautetta",
+    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
+  },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
+  "error": {
+    "generic": {
+      "label": "An unexpected error occurred",
+      "text": "Try again later."
+    }
+  }
+}

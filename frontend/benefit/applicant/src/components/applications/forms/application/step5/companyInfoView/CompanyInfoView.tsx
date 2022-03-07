@@ -18,11 +18,13 @@ import {
 
 export interface CompanyInfoViewProps {
   data: Application;
+  isReadOnly?: boolean;
   handleStepChange: (step: number) => void;
 }
 
 const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
   data,
+  isReadOnly,
   handleStepChange,
 }) => {
   const translationsBase = 'common:applications.sections';
@@ -33,17 +35,19 @@ const CompanyInfoView: React.FC<CompanyInfoViewProps> = ({
       <SummarySection
         header={t(`${translationsBase}.company.heading1`)}
         action={
-          <Button
-            theme="black"
-            css={`
-              margin-top: ${theme.spacing.s};
-            `}
-            onClick={() => handleStepChange(1)}
-            variant="supplementary"
-            iconLeft={<IconPen />}
-          >
-            {t(`common:applications.actions.edit`)}
-          </Button>
+          !isReadOnly && (
+            <Button
+              theme="black"
+              css={`
+                margin-top: ${theme.spacing.s};
+              `}
+              onClick={() => handleStepChange(1)}
+              variant="supplementary"
+              iconLeft={<IconPen />}
+            >
+              {t(`common:applications.actions.edit`)}
+            </Button>
+          )
         }
         withoutDivider
       >

@@ -18,3 +18,6 @@ export const getBackendDomain = (): string =>
 
 export const getBackendUrl = (path: BackendPath): string =>
   `${getBackendDomain()}${path}`;
+
+export const getYouthApplicationQueryKey = (id: string): string =>
+  `${BackendEndpoint.YOUTH_APPLICATIONS}${id}/`;

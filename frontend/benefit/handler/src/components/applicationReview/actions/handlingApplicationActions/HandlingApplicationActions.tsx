@@ -1,43 +1,77 @@
 import Messenger from 'benefit/handler/components/messenger/Messenger';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
-import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
+import {
+  APPLICATION_STATUSES,
+  HANDLED_STATUSES,
+} from 'benefit/handler/constants';
 import { Application } from 'benefit/handler/types/application';
-import { Button, IconLock, IconPen, IconTrash } from 'hds-react';
+import {
+  Button,
+  IconArrowUndo,
+  IconInfoCircle,
+  IconLock,
+  IconPen,
+  IconTrash,
+} from 'hds-react';
 import noop from 'lodash/noop';
-import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import useToggle from 'shared/hooks/useToggle';
+import Modal from 'shared/components/modal/Modal';
 
 import EditAction from '../editAction/EditAction';
+import CancelModalContent from './CancelModalContent/CancelModalContent';
 import {
   $Column,
   $CustomNotesActions,
   $Wrapper,
 } from './HandlingApplicationActions.sc';
+import { useHandlingApplicationActions } from './useHandlingApplicationActions';
 
 export type Props = {
   application: Application;
 };
 
 const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
-  const translationsBase = 'common:review.actions';
-  const { t } = useTranslation();
-  const { updateStatus } = useApplicationActions(application);
-  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
-    useToggle(false);
-
+  const {
+    t,
+    onDone,
+    onBackToHandling,
+    onSaveAndClose,
+    toggleMessagesDrawerVisiblity,
+    openDialog,
+    closeDialog,
+    handleCancel,
+    isMessagesDrawerVisible,
+    translationsBase,
+    isDisabledDoneButton,
+    isConfirmationModalOpen,
+  } = useHandlingApplicationActions(application);
   return (
     <$Wrapper>
       <$Column>
-        <Button
-          onClick={() => updateStatus(APPLICATION_STATUSES.HANDLING)}
-          theme="coat"
-        >
-          {t(`${translationsBase}.done`)}
+        {application.status === APPLICATION_STATUSES.HANDLING && (
+          <Button onClick={onDone} theme="coat" disabled={isDisabledDoneButton}>
+            {t(`${translationsBase}.done`)}
+          </Button>
+        )}
+        <Button onClick={onSaveAndClose} theme="black" variant="secondary">
+          {t(
+            `${translationsBase}.${
+              application.status === APPLICATION_STATUSES.HANDLING
+                ? 'saveAndContinue'
+                : 'close'
+            }`
+          )}
         </Button>
-        <Button onClick={noop} theme="black" variant="secondary">
-          {t(`${translationsBase}.saveAndContinue`)}
-        </Button>
+        {(application.status === APPLICATION_STATUSES.ACCEPTED ||
+          application.status === APPLICATION_STATUSES.REJECTED) && (
+          <Button
+            onClick={onBackToHandling}
+            theme="black"
+            variant="secondary"
+            iconLeft={<IconArrowUndo />}
+          >
+            {t(`${translationsBase}.backToHandling`)}
+          </Button>
+        )}
         <Button
           onClick={toggleMessagesDrawerVisiblity}
           theme="black"
@@ -47,18 +81,41 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
           {t(`${translationsBase}.handlingPanel`)}
         </Button>
       </$Column>
-      <$Column>
-        <Button
-          onClick={noop}
-          theme="black"
-          variant="supplementary"
-          iconLeft={<IconTrash />}
-        >
-          {t(`${translationsBase}.cancel`)}
-        </Button>
-      </$Column>
+      {application.status !== APPLICATION_STATUSES.CANCELLED && (
+        <$Column>
+          <Button
+            onClick={openDialog}
+            theme="black"
+            variant="supplementary"
+            iconLeft={<IconTrash />}
+          >
+            {t(`${translationsBase}.cancel`)}
+          </Button>
+        </$Column>
+      )}
+
+      {isConfirmationModalOpen && (
+        <Modal
+          id="Handler-confirmDeleteApplicationModal"
+          isOpen={isConfirmationModalOpen}
+          title={t(`${translationsBase}.reasonCancelDialogTitle`)}
+          submitButtonLabel=""
+          cancelButtonLabel={t('common:applications.actions.close')}
+          handleToggle={closeDialog}
+          handleSubmit={noop}
+          headerIcon={<IconInfoCircle />}
+          submitButtonIcon={<IconTrash />}
+          variant="danger"
+          customContent={
+            <CancelModalContent onClose={closeDialog} onSubmit={handleCancel} />
+          }
+        />
+      )}
       <Messenger
         isOpen={isMessagesDrawerVisible}
+        isReadOnly={
+          application.status && HANDLED_STATUSES.includes(application.status)
+        }
         onClose={toggleMessagesDrawerVisiblity}
         customItemsMessages={<EditAction application={application} />}
         customItemsNotes={

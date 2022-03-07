@@ -1,3 +1,4 @@
+import { startOfYear } from 'date-fns';
 import formatDateStr from 'date-fns/format';
 import isFutureFn from 'date-fns/isFuture';
 import isValid from 'date-fns/isValid';
@@ -169,4 +170,25 @@ export const diffMonths = (
   const correctEndDate = new Date(endDate);
   correctEndDate.setDate(correctEndDate.getDate() + 1);
   return Number((days360(startDate, correctEndDate, method) / 30).toFixed(2));
+};
+
+export const getCorrectEndDate = (
+  startDate: string,
+  endDate: string
+): string | undefined => {
+  const parsedStartDate = parseDate(startDate);
+  const parsedEndDate = parseDate(endDate);
+
+  if (!parsedStartDate || !parsedEndDate) return undefined;
+
+  if (parsedStartDate > parsedEndDate) return startDate;
+
+  return endDate;
+};
+
+export const validateDateIsFromCurrentYearOnwards = (
+  date: string | undefined | null
+): boolean => {
+  const parsedDate = parseDate(date);
+  return parsedDate ? parsedDate >= startOfYear(new Date()) : false;
 };

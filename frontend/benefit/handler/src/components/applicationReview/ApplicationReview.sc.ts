@@ -6,6 +6,10 @@ type CalculatorTableRowProps = {
   isTotal?: boolean;
 };
 
+type CalculatorTextProps = {
+  isBold?: boolean;
+};
+
 export const $MainHeader = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.m};
 `;
@@ -15,9 +19,16 @@ export const $ActionsWrapper = styled.div`
   margin-left: 0;
 `;
 
-export const $CalculatorText = styled.p`
-  margin-top: 0;
+export const $CalculatorText = styled.p<CalculatorTextProps>`
+  margin: 0;
   font-size: ${(props) => props.theme.fontSize.body.m};
+  font-weight: ${(props) => (props.isBold ? 'bold' : '500')};
+`;
+
+export const $FieldHeaderText = styled.p`
+  margin-bottom: 0;
+  font-size: ${(props) => props.theme.fontSize.body.m};
+  font-weight: 500;
 `;
 
 export const $CalculatorHr = styled($Hr)`
@@ -56,9 +67,4 @@ export const $CalculatorTableRow = styled.div<CalculatorTableRowProps>`
   background-color: ${(props) =>
     props.isTotal ? props.theme.colors.white : ''};
   margin-bottom: ${(props) => (props.isTotal ? props.theme.spacing.m : '0')};
-`;
-
-export const $DateTimeDuration = styled.div`
-  display: flex;
-  align-items: center;
 `;
