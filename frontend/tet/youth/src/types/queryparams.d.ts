@@ -1,6 +1,6 @@
 export type QueryParams = {
   text?: string;
-  start?: String;
+  start?: string;
   end?: string;
   keyword?: string;
   language?: string;

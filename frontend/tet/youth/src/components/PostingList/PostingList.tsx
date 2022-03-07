@@ -11,11 +11,13 @@ const PostingList: React.FC<Props> = ({ postings }) => {
   return (
     <div>
       <h1>Tet-paikat testi</h1>
+      {/*
       <ol>
         {postings.map((posting) => (
           <li key={posting.id}>{getLocalizedString(posting.name)}</li>
         ))}
       </ol>
+			*/}
     </div>
   );
 };
