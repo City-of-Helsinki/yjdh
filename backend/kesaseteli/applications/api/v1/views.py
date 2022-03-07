@@ -140,10 +140,23 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @action(methods=["patch"], detail=True)
     @enforce_handler_view_adfs_login
     def accept(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object()
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
         if not youth_application.is_accepted and youth_application.accept(
             handler=request.user
         ):
+            was_email_sent = (
+                youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                    language=youth_application.language
+                )
+            )
+            if not was_email_sent:
+                transaction.set_rollback(True)
+                with translation.override(youth_application.language):
+                    return HttpResponse(
+                        _("Failed to send youth summer voucher email"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
             with self.record_action(additional_information="accept"):
                 return HttpResponse(status=status.HTTP_200_OK)
         else:
@@ -153,7 +166,8 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     @action(methods=["patch"], detail=True)
     @enforce_handler_view_adfs_login
     def reject(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object()
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
         if not youth_application.is_rejected and youth_application.reject(
             handler=request.user
         ):
