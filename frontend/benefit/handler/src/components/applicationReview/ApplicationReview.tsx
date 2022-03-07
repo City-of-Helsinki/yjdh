@@ -21,6 +21,7 @@ import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
 import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
+import HandledVew from './handledView/HandledView';
 import NotificationView from './notificationView/NotificationView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
@@ -93,6 +94,11 @@ const ApplicationReview: React.FC = () => {
             <CalculatorView />
             <ApplicationProcessingView />
           </>
+        )}
+        {(application.status === APPLICATION_STATUSES.ACCEPTED ||
+          application.status === APPLICATION_STATUSES.CANCELLED ||
+          application.status === APPLICATION_STATUSES.REJECTED) && (
+          <HandledVew data={application} />
         )}
       </Container>
       <StickyActionBar>

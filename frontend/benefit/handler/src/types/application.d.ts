@@ -196,6 +196,7 @@ export type CalculationData = {
   rows: RowData[];
   handler_details: HandlerDetailsData;
   duration_in_months_rounded: string;
+  calculated_benefit_amount?: number;
 };
 
 export type BatchData = {
@@ -289,6 +290,7 @@ export type ApplicationData = {
   training_compensations: TrainingCompensationData[];
   handled_at?: string;
   batch?: BatchData;
+  latest_decision_comment?: string;
 };
 
 export type ApplicationListItemData = {
@@ -418,6 +420,7 @@ export type Calculation = {
   rows: Row[];
   handlerDetails: HandlerDetails;
   durationInMonthsRounded?: string;
+  calculatedBenefitAmount?: number;
 } & CalculationCommon;
 
 export type CalculationFormProps = {
@@ -455,6 +458,8 @@ export type Application = {
   grantedAsDeMinimisAid?: boolean;
   trainingCompensations?: TrainingCompensation[];
   batch?: Batch;
+  handledAt?: string;
+  latestDecisionComment?: string;
 } & Step1 &
   Step2;
 

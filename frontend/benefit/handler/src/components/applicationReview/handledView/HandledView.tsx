@@ -1,0 +1,119 @@
+import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
+import { useTranslation } from 'next-i18next';
+import * as React from 'react';
+import {
+  $ViewField,
+  $ViewFieldBold,
+} from 'shared/components/benefit/summaryView/SummaryView.sc';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
+import { getFullName } from 'shared/utils/application.utils';
+import {
+  convertToUIDateFormat,
+  diffMonths,
+  parseDate,
+} from 'shared/utils/date.utils';
+import { formatStringFloatValue } from 'shared/utils/string.utils';
+import { useTheme } from 'styled-components';
+
+import { $CalculatorTableRow } from '../ApplicationReview.sc';
+
+const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
+  const translationsBase = 'common:review.summary';
+  const { t } = useTranslation();
+  const theme = useTheme();
+  return (
+    <ReviewSection
+      withMargin
+      header={t(`${translationsBase}.${data.status || ''}.title`)}
+    >
+      <$GridCell $colSpan={8}>
+        <$ViewField>
+          {t(`${translationsBase}.${data.status || ''}.description`, {
+            months: diffMonths(
+              parseDate(data.calculation?.startDate),
+              parseDate(data.calculation?.endDate)
+            ),
+            startDate: convertToUIDateFormat(data.calculation?.startDate),
+            endDate: convertToUIDateFormat(data.calculation?.endDate),
+          })}
+        </$ViewField>
+      </$GridCell>
+      {!data.latestDecisionComment && (
+        <$GridCell $colSpan={12}>
+          <$ViewFieldBold>
+            {t(`${translationsBase}.${data.status || ''}.commentsTitle`)}
+          </$ViewFieldBold>
+          <$ViewField>{data.latestDecisionComment}</$ViewField>
+        </$GridCell>
+      )}
+      {data.status === APPLICATION_STATUSES.ACCEPTED && (
+        <>
+          <$GridCell
+            $colSpan={8}
+            css={`
+              margin: ${theme.spacing.s} 0;
+            `}
+          >
+            <$Grid>
+              <$GridCell $colSpan={8}>
+                <$CalculatorTableRow>
+                  <$ViewField>
+                    {t(`${translationsBase}.${data.status}.row1`)}
+                  </$ViewField>
+                  <$ViewField>{formatStringFloatValue(1)}€</$ViewField>
+                </$CalculatorTableRow>
+                <$CalculatorTableRow>
+                  <$ViewField isBold>
+                    {t(`${translationsBase}.${data.status}.row2`)}
+                  </$ViewField>
+                  <$ViewField isBold>1€</$ViewField>
+                </$CalculatorTableRow>
+              </$GridCell>
+            </$Grid>
+          </$GridCell>
+          <$GridCell $colSpan={12}>
+            <$ViewField>
+              {t(`${translationsBase}.${data.status}.deMinimis`)}
+              {': '}
+              <$ViewFieldBold>
+                {t(
+                  `common:utility.${
+                    data.calculation?.grantedAsDeMinimisAid ? 'yes' : 'no'
+                  }`
+                )}
+              </$ViewFieldBold>
+            </$ViewField>
+          </$GridCell>
+        </>
+      )}
+      <$GridCell $colSpan={12}>
+        <$ViewField>
+          {t(`${translationsBase}.common.handler`)}
+          {': '}
+          <$ViewFieldBold>
+            {getFullName(
+              data.calculation?.handlerDetails.firstName,
+              data.calculation?.handlerDetails.lastName
+            )}
+          </$ViewFieldBold>
+        </$ViewField>
+      </$GridCell>
+      <$GridCell $colSpan={12}>
+        <$ViewField>
+          {t(`${translationsBase}.common.handledAt`)}
+          {': '}
+          <$ViewFieldBold>
+            {convertToUIDateFormat(data.handledAt)}
+          </$ViewFieldBold>
+        </$ViewField>
+      </$GridCell>
+    </ReviewSection>
+  );
+};
+
+export default HandledVew;
