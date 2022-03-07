@@ -8,6 +8,12 @@ export enum ROUTES {
   APPLICATIONS_REPORTS = '/reports',
 }
 
+export enum EXPORT_APPLICATIONS_ROUTES {
+  ACCEPTED = 'export_new_accepted_applications',
+  REJECTED = 'export_new_rejected_applications',
+  IN_TIME_RANGE = 'export_csv',
+}
+
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
   SV = 'sv',
@@ -114,6 +120,11 @@ export enum DE_MINIMIS_AID_KEYS {
 }
 
 export enum CALCULATION_EMPLOYMENT_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+}
+
+export enum EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',
 }
