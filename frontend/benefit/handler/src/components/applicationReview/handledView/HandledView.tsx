@@ -16,8 +16,8 @@ import {
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import EmploymentCalculatorResults from '../employmentAppliedMoreView/EmploymentCalculatorResults/EmpoloymentCalculatorResults';
-import SalaryCalculatorResults from '../salaryBenefitCalculatorView/EmploymentCalculatorResults/SalaryCalculatorResults';
+import EmploymentCalculatorResults from '../employmentAppliedMoreView/EmploymentCalculatorResults/EmploymentCalculatorResults';
+import SalaryCalculatorResults from '../salaryBenefitCalculatorView/SalaryCalculatorResults/SalaryCalculatorResults';
 
 const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review.summary';

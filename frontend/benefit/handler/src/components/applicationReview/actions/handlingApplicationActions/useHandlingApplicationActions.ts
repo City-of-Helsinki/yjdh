@@ -25,18 +25,12 @@ type ExtendedComponentProps = {
   isMessagesDrawerVisible: boolean;
   isConfirmationModalOpen: boolean;
   cancelComments: string;
-  handledStatuses: APPLICATION_STATUSES[];
 };
 
 const useHandlingApplicationActions = (
   application: Application
 ): ExtendedComponentProps => {
   const translationsBase = 'common:review.actions';
-  const handledStatuses = [
-    APPLICATION_STATUSES.ACCEPTED,
-    APPLICATION_STATUSES.REJECTED,
-    APPLICATION_STATUSES.CANCELLED,
-  ];
   const { t } = useTranslation();
   const { onSaveAndClose, onDone, onCancel } =
     useHandlerReviewActions(application);
@@ -103,7 +97,6 @@ const useHandlingApplicationActions = (
     isDisabledDoneButton,
     isConfirmationModalOpen,
     cancelComments,
-    handledStatuses,
   };
 };
 

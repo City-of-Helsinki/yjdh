@@ -1,5 +1,9 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit/handler/constants';
+import {
+  APPLICATION_STATUSES,
+  BENEFIT_TYPES,
+  HANDLED_STATUSES,
+} from 'benefit/handler/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import { ReactElement } from 'react';
@@ -95,11 +99,9 @@ const ApplicationReview: React.FC = () => {
             <ApplicationProcessingView />
           </>
         )}
-        {(application.status === APPLICATION_STATUSES.ACCEPTED ||
-          application.status === APPLICATION_STATUSES.CANCELLED ||
-          application.status === APPLICATION_STATUSES.REJECTED) && (
-          <HandledVew data={application} />
-        )}
+        {HANDLED_STATUSES.includes(
+          application.status || APPLICATION_STATUSES.DRAFT
+        ) && <HandledVew data={application} />}
       </Container>
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (
@@ -107,11 +109,9 @@ const ApplicationReview: React.FC = () => {
         )}
         {(application.status === APPLICATION_STATUSES.HANDLING ||
           application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-          application.status === APPLICATION_STATUSES.ACCEPTED ||
-          application.status === APPLICATION_STATUSES.REJECTED ||
-          application.status === APPLICATION_STATUSES.CANCELLED) && (
-          <HandlingApplicationActions application={application} />
-        )}
+          HANDLED_STATUSES.includes(
+            application.status || APPLICATION_STATUSES.DRAFT
+          )) && <HandlingApplicationActions application={application} />}
       </StickyActionBar>
       <$StickyBarSpacing />
     </>

@@ -13,7 +13,7 @@ import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import { $CalculatorHr, $CalculatorText } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
-import EmploymentCalculatorTable from './EmploymentCalculatorTable/EmpoloymentCalculatorTable';
+import EmploymentCalculatorResults from './EmploymentCalculatorResults/EmploymentCalculatorResults';
 import { useEmploymentAppliedMoreView } from './useEmploymentAppliedMoreView';
 
 const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
@@ -128,7 +128,7 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             </$Notification>
           </$GridCell>
         )}
-        <EmploymentCalculatorTable data={data} />
+        <EmploymentCalculatorResults data={data} />
       </ReviewSection>
     </form>
   );

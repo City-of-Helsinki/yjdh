@@ -1,5 +1,8 @@
 import Messenger from 'benefit/handler/components/messenger/Messenger';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import {
+  APPLICATION_STATUSES,
+  HANDLED_STATUSES,
+} from 'benefit/handler/constants';
 import { Application } from 'benefit/handler/types/application';
 import {
   Button,
@@ -40,7 +43,6 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
     translationsBase,
     isDisabledDoneButton,
     isConfirmationModalOpen,
-    handledStatuses,
   } = useHandlingApplicationActions(application);
   return (
     <$Wrapper>
@@ -111,7 +113,7 @@ const HandlingApplicationActions: React.FC<Props> = ({ application }) => {
       )}
       <Messenger
         isOpen={isMessagesDrawerVisible}
-        isReadOnly={handledStatuses.includes(
+        isReadOnly={HANDLED_STATUSES.includes(
           application.status || APPLICATION_STATUSES.DRAFT
         )}
         onClose={toggleMessagesDrawerVisiblity}

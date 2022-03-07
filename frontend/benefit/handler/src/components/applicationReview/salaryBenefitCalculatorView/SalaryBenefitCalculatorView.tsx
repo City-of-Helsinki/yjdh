@@ -34,8 +34,8 @@ import {
   $CalculatorText,
 } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
-import SalaryCalculatorTable from './EmploymentCalculatorTable/SalaryCalculatorTable';
 import SalaryBenefitManualCalculatorView from './SalaryBenefitManualCalculatorView';
+import SalaryCalculatorResults from './SalaryCalculatorResults/SalaryCalculatorResults';
 import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
 
 const SalaryBenefitCalculatorView: React.FC<
@@ -590,7 +590,7 @@ const SalaryBenefitCalculatorView: React.FC<
           </$Notification>
         </$GridCell>
       )}
-      <SalaryCalculatorTable data={data} />
+      <SalaryCalculatorResults data={data} />
     </ReviewSection>
   );
 };
