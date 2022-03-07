@@ -1,5 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
+import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit/handler/constants';
 import { ApplicationReviewViewProps } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -16,7 +16,8 @@ import {
 } from 'shared/utils/date.utils';
 import { useTheme } from 'styled-components';
 
-import EmploymentCalculatorTable from '../employmentAppliedMoreView/EmploymentCalculatorTable/EmpoloymentCalculatorTable';
+import EmploymentCalculatorResults from '../employmentAppliedMoreView/EmploymentCalculatorResults/EmpoloymentCalculatorResults';
+import SalaryCalculatorResults from '../salaryBenefitCalculatorView/EmploymentCalculatorResults/SalaryCalculatorResults';
 
 const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review.summary';
@@ -55,7 +56,12 @@ const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
               margin: ${theme.spacing.s} 0;
             `}
           >
-            <EmploymentCalculatorTable data={data} />
+            {data.benefitType === BENEFIT_TYPES.EMPLOYMENT && (
+              <EmploymentCalculatorResults data={data} />
+            )}
+            {data.benefitType === BENEFIT_TYPES.SALARY && (
+              <SalaryCalculatorResults data={data} />
+            )}
           </$GridCell>
           <$GridCell $colSpan={12}>
             <$ViewField>

@@ -12,7 +12,7 @@ import { formatStringFloatValue } from 'shared/utils/string.utils';
 
 import { $CalculatorTableRow } from '../../ApplicationReview.sc';
 
-const SalaryCalculatorTable: React.FC<ApplicationReviewViewProps> = ({
+const SalaryCalculatorResults: React.FC<ApplicationReviewViewProps> = ({
   data,
 }) => {
   const translationsBase = 'common:calculators.employment';
@@ -48,4 +48,4 @@ const SalaryCalculatorTable: React.FC<ApplicationReviewViewProps> = ({
   );
 };
 
-export default SalaryCalculatorTable;
+export default SalaryCalculatorResults;
