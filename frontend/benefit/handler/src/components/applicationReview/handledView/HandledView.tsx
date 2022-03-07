@@ -31,8 +31,8 @@ const HandledVew: React.FC<ApplicationReviewViewProps> = ({ data }) => {
         <$ViewField>
           {t(`${translationsBase}.${data.status || ''}.description`, {
             months: diffMonths(
-              parseDate(data.calculation?.startDate),
-              parseDate(data.calculation?.endDate)
+              parseDate(data.calculation?.endDate),
+              parseDate(data.calculation?.startDate)
             ),
             startDate: convertToUIDateFormat(data.calculation?.startDate),
             endDate: convertToUIDateFormat(data.calculation?.endDate),

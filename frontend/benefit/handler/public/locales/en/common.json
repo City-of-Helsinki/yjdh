@@ -143,6 +143,7 @@
       "handle": "Ota käsittelyyn",
       "close": "Sulje",
       "done": "Valmis",
+      "backToHandling": "Palauta käsittelyyn",
       "saveAndContinue": "Tallenna ja sulje",
       "handlingPanel": "Käsittelypaneeli",
       "cancel": "Peruuta hakemus",

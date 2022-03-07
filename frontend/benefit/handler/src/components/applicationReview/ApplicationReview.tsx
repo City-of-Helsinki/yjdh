@@ -106,7 +106,10 @@ const ApplicationReview: React.FC = () => {
           <ReceivedApplicationActions application={application} />
         )}
         {(application.status === APPLICATION_STATUSES.HANDLING ||
-          application.status === APPLICATION_STATUSES.INFO_REQUIRED) && (
+          application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
+          application.status === APPLICATION_STATUSES.ACCEPTED ||
+          application.status === APPLICATION_STATUSES.REJECTED ||
+          application.status === APPLICATION_STATUSES.CANCELLED) && (
           <HandlingApplicationActions application={application} />
         )}
       </StickyActionBar>
