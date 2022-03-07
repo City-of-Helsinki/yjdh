@@ -19,7 +19,7 @@ import { isError } from 'shared/utils/type-guards';
 import { ThemeProvider } from 'styled-components';
 
 type Props = AppProps & {
-  header: React.ReactNode;
+  header?: React.ReactNode;
   footer?: React.ReactNode;
 };
 
@@ -86,6 +86,7 @@ const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
 };
 
 BaseApp.defaultProps = {
+  header: null,
   footer: null,
 };
 
