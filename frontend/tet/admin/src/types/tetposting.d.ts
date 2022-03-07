@@ -1,4 +1,4 @@
-import { OptionType, LocationType } from 'tet/admin/types/classification';
+import { OptionType, LocationType } from 'tet-shared/types/classification';
 
 type TetPosting = {
   id?: string;
