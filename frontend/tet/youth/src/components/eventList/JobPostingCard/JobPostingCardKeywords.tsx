@@ -1,8 +1,5 @@
 import * as React from 'react';
 import { Tag } from 'hds-react';
-import { useQueries } from 'react-query';
-import { IdObject, Keyword, LocalizedObject } from 'tet/youth/linkedevents';
-import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import styled from 'styled-components';
 
 const $KeywordList = styled.ul`
@@ -19,10 +16,10 @@ const $KeywordList = styled.ul`
 `;
 
 type Props = {
-  keywords: any;
+  jobPosting: any;
 };
 
-const JobPostingCardKeywords: React.FC<Props> = ({ keywords = [] }) => {
+const JobPostingCardKeywords: React.FC<Props> = ({ jobPosting }) => {
   const keywordList = (list: string[], color: string) => {
     return (
       <>
@@ -43,25 +40,11 @@ const JobPostingCardKeywords: React.FC<Props> = ({ keywords = [] }) => {
     );
   };
 
-  const getIdFromUrl = (keyword: IdObject) => {
-    const prefix = '/keyword/';
-    const url = keyword['@id'];
-    return url.substring(url.indexOf(prefix) + prefix.length);
-  };
-
-  const queries = keywords.map((keyword) => ({
-    queryKey: getIdFromUrl(keyword),
-    queryFn: BackendEndpoint.KEYWORD + getIdFromUrl(keyword),
-  }));
-
-  const results = useQueries(queries);
-
-  console.log(results);
   return (
     <$KeywordList>
-      {keywordList(['test1'], 'success-light')}
-      {keywordList(['test2'], 'coat-of-arms-medium-light')}
-      {keywordList(['test3'], 'engel-medium-light')}
+      {keywordList(jobPosting.keywords_working_methods, 'success-light')}
+      {keywordList(jobPosting.keywords_attributes, 'coat-of-arms-medium-light')}
+      {keywordList(jobPosting.keywords, 'engel-medium-light')}
     </$KeywordList>
   );
 };

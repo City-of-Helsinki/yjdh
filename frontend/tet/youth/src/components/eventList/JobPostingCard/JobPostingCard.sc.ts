@@ -18,7 +18,7 @@ export const $ImageContainer = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   width: 100%;
-  height: 250px;
+  height: 300px;
   align-items: center;
   background-color: ${(props) => props.theme.colors.black10};
 
@@ -47,6 +47,11 @@ export const $PostingCardBodyFooter = styled.div`
 
 export const $PostingDescription = styled.p`
   font-size: ${(props) => props.theme.fontSize.body.m};
+  overflow: hidden;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
   line-height: ${(props) => props.theme.lineHeight.xl};
 `;
 
@@ -60,6 +65,11 @@ export const $PostingSubtitle = styled.h6`
   margin-top: 0;
   margin-bottom: ${(props) => props.theme.spacing.xs3};
   font-size: ${(props) => props.theme.fontSize.heading.xxs};
+`;
+
+export const $PostingDate = styled.div`
+  font-size: ${(props) => props.theme.fontSize.body.l};
+  font-weight: normal;
 `;
 
 export const $PostingAddress = styled.div`

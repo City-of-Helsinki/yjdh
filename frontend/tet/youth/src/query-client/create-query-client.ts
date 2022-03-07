@@ -22,7 +22,7 @@ const createQueryClient = (): QueryClient =>
         notifyOnChangeProps: 'tracked',
         queryFn: async <T>({ queryKey: [url] }: QueryFunctionContext<QueryKey, unknown[]>): Promise<T> => {
           // Best practice: https://react-query.tanstack.com/guides/default-query-function
-          if (isString(url) && BackendEndPoints.some((endpoint) => url.startsWith(endpoint))) {
+          if ((isString(url) && BackendEndPoints.some((endpoint) => url.startsWith(endpoint))) || true) {
             const { data } = await createAxios().get<T>(`${linkedEventsUrl}${url.toLowerCase()}`, {
               params: {
                 data_source: 'tet',

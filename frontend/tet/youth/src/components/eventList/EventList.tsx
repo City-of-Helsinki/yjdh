@@ -2,11 +2,12 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import { LinkedEventsPagedResponse, LocalizedObject, TetEvent } from 'tet/youth/linkedevents';
+import { LinkedEventsPagedResponse, LocalizedObject, TetEvent } from 'tet/admin/types/linkedevents';
 import { useRouter } from 'next/router';
 import JobPostingCard from 'tet/youth/components/eventList/JobPostingCard/JobPostingCard';
 import { useTranslation } from 'next-i18next';
 import { Button } from 'hds-react';
+import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 
 const getLocalizedString = (obj: LocalizedObject): string => obj.fi;
 
@@ -23,15 +24,19 @@ const EventList: React.FC = () => {
     return <div>Virhe datan latauksessa</div>;
   }
 
-  console.log(data);
+  if (data) {
+    const postings = data.data.map((posting) => eventToTetPosting(posting));
 
-  return (
-    <div>
-      <h1>Tet-paikat testi</h1>
-      {data && data.data.map((e) => <JobPostingCard key={e.id} jobPosting={e} />)}
-      <Button>{t('common:postingsPage.showMore')}</Button>
-    </div>
-  );
+    return (
+      <div>
+        <h2>{data.meta.count} hakutulosta</h2>
+        {data && postings.map((e) => <JobPostingCard key={e.id} jobPosting={e} />)}
+        <Button>{t('common:postingsPage.showMore')}</Button>
+      </div>
+    );
+  } else {
+    return <div>Ei tet-paikkoja</div>;
+  }
 };
 
 export default EventList;
