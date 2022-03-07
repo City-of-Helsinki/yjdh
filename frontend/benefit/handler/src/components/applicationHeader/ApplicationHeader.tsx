@@ -1,4 +1,3 @@
-import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { Application } from 'benefit/handler/types/application';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -72,7 +71,7 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
               <$ItemValue>{employeeName}</$ItemValue>
             </$ItemWrapper>
           </$Col>
-          {data.status === APPLICATION_STATUSES.HANDLING && (
+          {handlerName && (
             <$Col>
               <$HandlerWrapper>{getInitials(handlerName)}</$HandlerWrapper>
             </$Col>

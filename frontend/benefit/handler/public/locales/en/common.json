@@ -143,6 +143,7 @@
       "handle": "Ota käsittelyyn",
       "close": "Sulje",
       "done": "Valmis",
+      "backToHandling": "Palauta käsittelyyn",
       "saveAndContinue": "Tallenna ja sulje",
       "handlingPanel": "Käsittelypaneeli",
       "cancel": "Peruuta hakemus",
@@ -203,6 +204,30 @@
       "support": "Puolletaan",
       "reason": "Perustelu",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
+    },
+    "summary": {
+      "accepted": {
+        "title": "Käsittely valmis",
+        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}}–{{endDate}}",
+        "row1": "Myönnetty Helsinki-lisä per kuukausi",
+        "row2": "Myönnetty Helsinki-lisä yhteensä",
+        "deMinimis": "Myönnetään de minimis-tukena",
+        "commentsTitle": "Tiedot"
+      },
+      "rejected": {
+        "description": "Hakemusta ei hyväksytä.",
+        "title": "Käsittely valmis",
+        "commentsTitle": "Perustelu"
+      },
+      "cancelled": {
+        "title": "Peruutustiedot",
+        "description": "",
+        "commentsTitle": "Syy peruutukseen"
+      },
+      "common": {
+        "handler": "Käsittelijä",
+        "handledAt": "Käsittelypäivämäärä"
+      }
     }
   },
   "calculators": {
