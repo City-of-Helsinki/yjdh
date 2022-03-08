@@ -14,7 +14,7 @@ from companies.models import Company
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
-from django.db.models import Max, Q
+from django.db.models import OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
@@ -73,12 +73,14 @@ class ApplicationManager(models.Manager):
     ]
 
     def _annotate_handled_at(self, qs):
-        return qs.annotate(
-            handled_at=Max(
-                "log_entries__created_at",
-                filter=Q(log_entries__to_status__in=self.HANDLED_STATUSES),
+        subquery = (
+            ApplicationLogEntry.objects.filter(
+                application=OuterRef("pk"), to_status__in=self.HANDLED_STATUSES
             )
+            .order_by("-created_at")
+            .values("created_at")[:1]
         )
+        return qs.annotate(handled_at=Subquery(subquery))
 
     def get_queryset(self):
         return self._annotate_handled_at(super().get_queryset())

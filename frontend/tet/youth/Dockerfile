@@ -26,6 +26,8 @@ COPY --chown=appuser:appuser . .
 FROM appbase as development
 # =============================
 
+ENV NODE_OPTIONS="--max_old_space_size=8192"
+
 # Use non-root user
 USER appuser
 WORKDIR /app

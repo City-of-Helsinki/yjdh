@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import EditById from 'tet/admin/components/editor/EditById';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
-import { TetEvent } from 'tet/admin/types/linkedevents';
+import { TetEvent } from 'tet-shared/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { useQuery } from 'react-query';

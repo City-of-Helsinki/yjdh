@@ -3,7 +3,7 @@ import CompanyInfo from 'tet/admin/components/editor/companyInfo/CompanyInfo';
 import PostingDetails from 'tet/admin/components/editor/postingDetails/PostingDetails';
 import ContactPerson from 'tet/admin/components/editor/contactPerson/ContactPerson';
 import { FormProvider, useForm } from 'react-hook-form';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import { useTranslation } from 'next-i18next';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';

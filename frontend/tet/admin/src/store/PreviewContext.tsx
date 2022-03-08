@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TetData } from 'tet-shared/types/TetData';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type PreviewContextObj = {
   showPreview: boolean;

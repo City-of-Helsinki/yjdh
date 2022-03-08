@@ -10,11 +10,11 @@ import {
   keywordToOptionType,
 } from 'tet/admin/backend-api/linked-events-api';
 import { useQuery, useQueries } from 'react-query';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 import Combobox from 'tet/admin/components/editor/Combobox';
 import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
 import { useFormContext } from 'react-hook-form';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 
 export type FilterFunction = (options: OptionType[], search: string) => OptionType[];

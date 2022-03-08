@@ -457,12 +457,32 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         self.validate_social_security_number(data.get("social_security_number", None))
         return data
 
+    def to_internal_value(self, data):
+        """
+        Dict of native values <- Dict of primitive datatypes.
+
+        NOTE: Overridden to remove non-conforming read-only field handler from result.
+        """
+        result = super().to_internal_value(data)
+        if "handler" in result and "handler" in self.Meta.read_only_fields:
+            # FIXME: Why is handler field in result? It shouldn't be as it's read-only.
+            #        Maybe something to do with it using PrimaryKeyRelatedField?
+            del result["handler"]  # Remove non-conforming read-only field from result
+        return result
+
     class Meta:
         model = YouthApplication
-        fields = [
+        read_only_fields = [
             "id",
             "created_at",
             "modified_at",
+            "receipt_confirmed_at",
+            "encrypted_vtj_json",
+            "status",
+            "handler",
+            "handled_at",
+        ]
+        fields = read_only_fields + [
             "first_name",
             "last_name",
             "social_security_number",
@@ -472,19 +492,6 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "phone_number",
             "postcode",
             "language",
-            "receipt_confirmed_at",
-            "encrypted_vtj_json",
-            "status",
-            "handler",
-            "handled_at",
-        ]
-        read_only_fields = [
-            "id",
-            "created_at",
-            "encrypted_vtj_json",
-            "status",
-            "handler",
-            "handled_at",
         ]
 
     encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")

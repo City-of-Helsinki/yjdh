@@ -6,7 +6,7 @@ import useConfirm from 'shared/hooks/useConfirm';
 import { $Menu, $MenuItem } from 'tet/admin/components/jobPostings/JobPostingsListItemMenu.sc';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import usePublishTetPosting from 'tet/admin/hooks/backend/usePublishTetPosting';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type JobPostingsListItemMenuProps = {
   posting: TetPosting;
@@ -55,9 +55,9 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   };
   const showConfirm = async () => {
     const isConfirmed = await confirm({
-        header: t('common:delete.confirmation', { posting: posting.title }),
-        submitButtonLabel: t('common:delete.deletePosting'),
-      });
+      header: t('common:delete.confirmation', { posting: posting.title }),
+      submitButtonLabel: t('common:delete.deletePosting'),
+    });
 
     if (isConfirmed) {
       deleteTetPosting.mutate(posting);
@@ -66,8 +66,8 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
 
   const publishPostingHandler = async () => {
     const isConfirmed = await confirm({
-      header:t('common:publish.confirmation', { posting: posting.title }),
-      submitButtonLabel:t('common:publish.publishPosting'),
+      header: t('common:publish.confirmation', { posting: posting.title }),
+      submitButtonLabel: t('common:publish.publishPosting'),
     });
 
     if (isConfirmed) {

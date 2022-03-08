@@ -9,7 +9,7 @@ import useConfirm from 'shared/hooks/useConfirm';
 import { useTheme } from 'styled-components';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   onSubmit: () => void;

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Tag } from 'hds-react';
+import { OptionType } from 'tet-shared/types/classification';
 import styled from 'styled-components';
 
 const $KeywordList = styled.ul`
@@ -20,10 +21,10 @@ type Props = {
 };
 
 const JobPostingCardKeywords: React.FC<Props> = ({ jobPosting }) => {
-  const keywordList = (list: string[], color: string) => {
+  const keywordList = (list: OptionType[], color: string) => {
     return (
       <>
-        {list.map((keyword: string) => (
+        {list.map((keyword: OptionType) => (
           <li>
             <Tag
               theme={{
@@ -32,7 +33,7 @@ const JobPostingCardKeywords: React.FC<Props> = ({ jobPosting }) => {
                 '--tag-focus-outline-color': 'var(--color-black-90)',
               }}
             >
-              {keyword}
+              {keyword.name}
             </Tag>
           </li>
         ))}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TetData } from 'tet-shared/types/TetData';
+import TetPosting from 'tet-shared/types/tetposting';
 import Container from 'shared/components/container/Container';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import {
@@ -12,7 +12,7 @@ import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
-  posting: TetData;
+  posting: TetPosting;
 };
 
 const PostingContent: React.FC<Props> = ({ posting }) => {

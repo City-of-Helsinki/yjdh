@@ -9,13 +9,15 @@ import {
   $PostingDescription,
   $PostingAddress,
   $PostingDate,
-} from 'tet/youth/components/eventList/JobPostingCard/JobPostingCard.sc';
+  $PostingLanguages,
+} from 'tet/youth/components/jobPostingCard/JobPostingCard.sc';
 import JobPostingCardKeywords from './JobPostingCardKeywords';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { IconPhoto } from 'hds-react';
 import { Button } from 'hds-react';
 import { useTheme } from 'styled-components';
+import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 
 type Props = {
   jobPosting: any;
@@ -32,6 +34,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const postal_code = jobPosting.location.postal_code ? `, ${jobPosting.location.postal_code}` : '';
   const city = jobPosting.location.city ? `, ${jobPosting.location.city}` : '';
   const address = jobPosting.location.name + street_address + postal_code + city;
+  const languages = jobPosting.languages.map((language) => language.label).join(', ');
 
   const readMoreHandler = () => {
     void router.push({
@@ -52,6 +55,9 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
         <$PostingDate>{date}</$PostingDate>
         <$PostingAddress> {address}</$PostingAddress>
         <$PostingDescription>{jobPosting.description}</$PostingDescription>
+        <$PostingLanguages>
+          <span>Kielisyys:</span> {languages}
+        </$PostingLanguages>
         <$PostingCardBodyFooter>
           <Button
             style={{

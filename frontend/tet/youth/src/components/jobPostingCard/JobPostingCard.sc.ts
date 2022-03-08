@@ -49,10 +49,20 @@ export const $PostingDescription = styled.p`
   font-size: ${(props) => props.theme.fontSize.body.m};
   overflow: hidden;
   width: 100%;
+  margin-bottom: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   line-height: ${(props) => props.theme.lineHeight.xl};
+  font-weight: regular;
+`;
+
+export const $PostingLanguages = styled.div`
+  font-size: ${(props) => props.theme.fontSize.body.m};
+
+  span {
+    font-weight: bold;
+  }
 `;
 
 export const $PostingTitle = styled.h4`

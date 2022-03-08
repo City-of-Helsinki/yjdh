@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import Editor from 'tet/admin/components/editor/Editor';
 import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';

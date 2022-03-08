@@ -1,5 +1,5 @@
 import React from 'react';
-import { TetData } from 'tet-shared/types/TetData';
+import TetPosting from 'tet-shared/types/tetposting';
 import Container from 'tet-shared//components/container/Container';
 import {
   $PostingHero,
@@ -16,10 +16,11 @@ import {
   $ContactInfo,
 } from 'tet-shared//components/posting/postingHero/PostingHero.sc';
 import { useTranslation } from 'next-i18next';
+import { OptionType } from 'tet-shared/types/classification';
 import { IconLocation, Tag } from 'hds-react';
 
 type Props = {
-  posting: TetData;
+  posting: TetPosting;
 };
 
 const PostingHero: React.FC<Props> = ({ posting }) => {
@@ -35,10 +36,10 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
   const city = posting.location.city ? `, ${posting.location.city}` : '';
   const address = posting.location.name + street_address + postal_code + city;
 
-  const keywordList = (list: string[], color: string) => {
+  const keywordList = (list: OptionType[], color: string) => {
     return (
       <>
-        {list.map((keyword: string) => (
+        {list.map((keyword: OptionType) => (
           <li>
             <Tag
               theme={{
@@ -47,7 +48,7 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
                 '--tag-focus-outline-color': 'var(--color-black-90)',
               }}
             >
-              {keyword}
+              {keyword.name}
             </Tag>
           </li>
         ))}
