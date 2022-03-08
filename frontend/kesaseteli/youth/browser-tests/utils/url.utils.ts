@@ -15,6 +15,18 @@ export const goToHandlerUrl = async (
   );
 };
 
+export const goToBackendUrl = async (
+  t: TestController,
+  path = ''
+): Promise<void> => {
+  await t.navigateTo(
+    getUrl(
+      process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://localhost:8000',
+      path
+    )
+  );
+};
+
 export const goToFrontPage = async (t: TestController): Promise<void> => {
   await t.navigateTo(getFrontendUrl());
 };

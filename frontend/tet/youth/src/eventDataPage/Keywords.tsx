@@ -9,7 +9,7 @@ const getLocalizedString = (obj: LocalizedObject): string => obj.fi;
 
 const getIdFromUrl = (keyword: IdObject) => {
   const prefix = '/keyword/';
-  const url = keyword['@id'];
+  const url = keyword.id;
   return url.substring(url.indexOf(prefix) + prefix.length);
 };
 

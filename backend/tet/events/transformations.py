@@ -75,6 +75,7 @@ def reduce_get_event(event):
             "end_time",
             "custom_data",
             "publication_status",
+            "in_language",
         ),
     )
 

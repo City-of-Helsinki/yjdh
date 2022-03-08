@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { IconPen, IconEye, IconPlusCircle, IconCrossCircle } from 'hds-react';
-import { $Menu, $MenuItem } from 'tet/admin/components/jobPostings/JobPostingsListItemMenu.sc';
+import { IconCrossCircle, IconEye, IconPen, IconPlusCircle } from 'hds-react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import useConfirm from 'tet/admin/hooks/context/useConfirm';
-import TetPosting from 'tet/admin/types/tetposting';
+import * as React from 'react';
+import useConfirm from 'shared/hooks/useConfirm';
+import { $Menu, $MenuItem } from 'tet/admin/components/jobPostings/JobPostingsListItemMenu.sc';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import usePublishTetPosting from 'tet/admin/hooks/backend/usePublishTetPosting';
+import TetPosting from 'tet/admin/types/tetposting';
 
 type JobPostingsListItemMenuProps = {
   posting: TetPosting;
@@ -43,11 +43,21 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
     });
   };
 
+  const copyPostingHandler = (): void => {
+    void router.push({
+      pathname: '/copystatic',
+      query: { id: posting.id },
+    });
+  };
+
   const deletePostingHandler = async () => {
-    const isConfirmed = await confirm(
-      t('common:delete.confirmation', { posting: posting.title }),
-      t('common:delete.deletePosting'),
-    );
+    await showConfirm();
+  };
+  const showConfirm = async () => {
+    const isConfirmed = await confirm({
+      header: t('common:delete.confirmation', { posting: posting.title }),
+      submitButtonLabel: t('common:delete.deletePosting'),
+    });
 
     if (isConfirmed) {
       deleteTetPosting.mutate(posting);
@@ -55,10 +65,10 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   };
 
   const publishPostingHandler = async () => {
-    const isConfirmed = await confirm(
-      t('common:publish.confirmation', { posting: posting.title }),
-      t('common:publish.publishPosting'),
-    );
+    const isConfirmed = await confirm({
+      header: t('common:publish.confirmation', { posting: posting.title }),
+      submitButtonLabel: t('common:publish.publishPosting'),
+    });
 
     if (isConfirmed) {
       publishTetPosting.mutate(posting);
@@ -78,7 +88,7 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
           <IconPen />
           <span>{t('common:application.jobPostings.menu.edit')}</span>
         </$MenuItem>
-        <$MenuItem>
+        <$MenuItem onClick={copyPostingHandler}>
           <IconPlusCircle />
           <span>{t('common:application.jobPostings.menu.copy')}</span>
         </$MenuItem>

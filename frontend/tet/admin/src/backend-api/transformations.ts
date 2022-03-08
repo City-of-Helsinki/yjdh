@@ -1,25 +1,13 @@
-import {
-  CustomData,
-  IdObject,
-  LocalizedObject,
-  TetEvent,
-  TetEventPayload,
-  TetEvents,
-} from 'tet/admin/types/linkedevents';
+import { LocalizedObject, TetEvent, TetEventPayload, TetEvents } from 'tet/admin/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
-import { workFeaturesDataSource, workMethodDataSource } from 'tet/admin/backend-api/linked-events-api';
-import { OptionType } from 'tet/admin/types/classification';
+import { KeywordFn, ClassificationType } from 'tet/admin/types/keywords';
+import { OptionType } from 'tet-shared/types/classification';
 
 export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
 
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
 });
-
-export const parseDataSourceFromKeywordUrl = (url: string): string => {
-  const match = url.match(/(\w+):\d+\/?$/);
-  return match ? match[1] : '';
-};
 
 export const hdsDateToIsoFormat = (str: string | undefined): string | null => {
   if (!str) {
@@ -46,7 +34,22 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   return `${newDate.getDate()}.${newDate.getMonth() + 1}.${newDate.getFullYear()}`;
 };
 
-export const eventToTetPosting = (event: TetEvent): TetPosting => {
+/**
+ * Convert event read from Linked Events API to form data.
+ *
+ * Event keywords (classification in posting) and address are converted to Finnish labels.
+ * We could customize this by providing the function with user's locale as parameter.
+ *
+ * @param event
+ * @param keywordType If this function is set, it is used to find classification data for the posting.
+ *    Othwerwise classification data is left empty, which is okay if we don't need to show it.
+ * @param languageOptions If this value is set, it is used to set language labels.
+ */
+export const eventToTetPosting = (
+  event: TetEvent,
+  keywordType?: KeywordFn,
+  languageOptions?: OptionType[],
+): TetPosting => {
   const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
   const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
@@ -61,6 +64,9 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
       name: getLocalizedString(event.location.name),
       label: getLocalizedString(event.location.name),
       value: event.location['@id'],
+      street_address: getLocalizedString(event.location.street_address),
+      city: getLocalizedString(event.location.address_locality),
+      postal_code: event.location.postal_code,
     },
     start_date: isoDateToHdsFormat(event.start_time)!,
     end_date: isoDateToHdsFormat(event.end_time),
@@ -70,23 +76,41 @@ export const eventToTetPosting = (event: TetEvent): TetPosting => {
     contact_last_name: event.custom_data?.contact_last_name || '',
     contact_language: event.custom_data?.contact_language || 'fi',
     contact_phone: event.custom_data?.contact_phone || '',
-    keywords: event.keywords
-      .filter(
-        (keyword) =>
-          ![workMethodDataSource, workFeaturesDataSource].includes(parseDataSourceFromKeywordUrl(keyword['@id'])),
-      )
-      // note that with GET /event/ all but @id are empty
-      .map((keyword) => ({
-        name: getLocalizedString(keyword.name),
-        label: getLocalizedString(keyword.name),
-        value: keyword['@id'],
-      })),
-    keywords_working_methods: event.keywords
-      .map((keyword) => keyword['@id'])
-      .filter((url) => parseDataSourceFromKeywordUrl(url) === workMethodDataSource),
-    keywords_attributes: event.keywords
-      .map((keyword) => keyword['@id'])
-      .filter((url) => parseDataSourceFromKeywordUrl(url) === workFeaturesDataSource),
+    keywords: keywordType
+      ? event.keywords
+          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.KEYWORD)
+          // note that with GET /event/ all but @id are empty
+          .map((keyword) => ({
+            name: getLocalizedString(keyword.name),
+            label: getLocalizedString(keyword.name),
+            value: keyword['@id'],
+          }))
+      : [],
+    keywords_working_methods: keywordType
+      ? event.keywords
+          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.WORKING_METHOD)
+          .map((keyword) => ({
+            name: getLocalizedString(keyword.name),
+            label: getLocalizedString(keyword.name),
+            value: keyword['@id'],
+          }))
+      : [],
+    keywords_attributes: keywordType
+      ? event.keywords
+          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.WORKING_FEATURE)
+          .map((keyword) => ({
+            name: getLocalizedString(keyword.name),
+            label: getLocalizedString(keyword.name),
+            value: keyword['@id'],
+          }))
+      : [],
+    languages: languageOptions
+      ? event.in_language.map((obj) => {
+          const splits = obj['@id'].split('/');
+          const lang = splits[splits.length - 2];
+          return languageOptions.find((option) => option.value === lang) || { name: '', value: lang, label: '' };
+        })
+      : [],
     spots,
   };
 };
@@ -120,8 +144,8 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
   end_time: hdsDateToIsoFormat(posting.end_date),
   date_published: posting.date_published || null,
   keywords: [
-    ...posting.keywords_working_methods,
-    ...posting.keywords_attributes,
+    ...posting.keywords_working_methods.map((option) => option.value),
+    ...posting.keywords_attributes.map((option) => option.value),
     ...posting.keywords.map((option) => option.value),
   ].map((url) => ({ '@id': url })),
   custom_data: {
@@ -133,4 +157,5 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
     contact_first_name: posting.contact_first_name,
     contact_last_name: posting.contact_last_name,
   },
+  in_language: posting.languages.map((lang) => ({ '@id': `http://localhost:8080/v1/language/${lang.value}/` })),
 });

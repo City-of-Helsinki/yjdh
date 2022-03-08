@@ -63,6 +63,7 @@ export type TetEvent = {
   last_modified_time: string | null;
   event_status: string;
   publication_status: string;
+  in_language: IdObject[];
 };
 
 export type TetEventPayload = {
@@ -74,6 +75,7 @@ export type TetEventPayload = {
   start_time: string;
   end_time: string | null;
   date_published: string | null;
+  in_language: IdObject[];
 };
 
 export type TetUpsert = {

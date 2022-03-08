@@ -1,3 +1,4 @@
+import { FormikProps } from 'formik';
 import { BenefitAttachment } from 'shared/types/attachment';
 
 import {
@@ -6,6 +7,7 @@ import {
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
   CALCULATION_EMPLOYMENT_KEYS,
+  CALCULATION_SALARY_KEYS,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
@@ -194,6 +196,7 @@ export type CalculationData = {
   rows: RowData[];
   handler_details: HandlerDetailsData;
   duration_in_months_rounded: string;
+  calculated_benefit_amount?: number;
 };
 
 export type BatchData = {
@@ -218,6 +221,13 @@ export type PaySubsidyData = {
   work_time_percent?: number;
   disability_or_illness?: boolean;
   duration_in_months_rounded: string;
+};
+
+export type TrainingCompensationData = {
+  id: string;
+  start_date: string;
+  end_date: string;
+  monthly_amount: string;
 };
 
 export type ApplicationData = {
@@ -277,8 +287,10 @@ export type ApplicationData = {
   duration_in_months_rounded?: string;
   log_entry_comment?: string;
   granted_as_de_minimis_aid?: boolean;
+  training_compensations: TrainingCompensationData[];
   handled_at?: string;
   batch?: BatchData;
+  latest_decision_comment?: string;
 };
 
 export type ApplicationListItemData = {
@@ -375,6 +387,13 @@ export type PaySubsidy = {
   durationInMonthsRounded: string;
 };
 
+export type TrainingCompensation = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  monthlyAmount: string;
+};
+
 export type HandlerDetails = {
   id?: string;
   firstName: string;
@@ -401,6 +420,7 @@ export type Calculation = {
   rows: Row[];
   handlerDetails: HandlerDetails;
   durationInMonthsRounded?: string;
+  calculatedBenefitAmount?: number;
 } & CalculationCommon;
 
 export type CalculationFormProps = {
@@ -411,7 +431,13 @@ export type CalculationFormProps = {
   overrideMonthlyBenefitAmount?: string | null;
   overrideMonthlyBenefitAmountComment?: string;
   paySubsidies?: PaySubsidy[];
+  trainingCompensations?: TrainingCompensation[];
 } & CalculationCommon;
+
+export type ExportApplicationInTimeRangeFormProps = {
+  startDate: string;
+  endDate: string;
+};
 
 export type Application = {
   id?: string;
@@ -435,7 +461,10 @@ export type Application = {
   durationInMonthsRounded?: string;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
+  trainingCompensations?: TrainingCompensation[];
   batch?: Batch;
+  handledAt?: string;
+  latestDecisionComment?: string;
 } & Step1 &
   Step2;
 
@@ -450,6 +479,14 @@ export interface ApplicationReviewViewProps {
 
 export interface SalaryBenefitCalculatorViewProps {
   data: Application;
+}
+
+export interface SalaryBenefitManualCalculatorViewProps {
+  formik: FormikProps<CalculationFormProps>;
+  fields: {
+    [key in CALCULATION_SALARY_KEYS]: Field<CALCULATION_SALARY_KEYS>;
+  };
+  getErrorMessage: (fieldName: string) => string | undefined;
 }
 
 export type HandledAplication = {

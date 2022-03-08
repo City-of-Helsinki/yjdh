@@ -3,9 +3,10 @@ import {
   expectToPatchYouthApplication,
   expectToPatchYouthApplicationError,
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
+import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/status-constants';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
+import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
 import { escapeRegExp } from 'shared/utils/regex.utils';
 import { assertUnreachable } from 'shared/utils/typescript.utils';
 
@@ -96,9 +97,31 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
           assertUnreachable(status, 'Unknown status');
       }
     },
+    showsConfirmDialog: async (type: CompleteOperation) => {
+      const dialog = await screen.findByRole('dialog');
+      switch (type) {
+        case 'accept':
+          return within(dialog).findByText(
+            /^kesäseteli lähetetään sähköpostiin päätöksen jälkeen\. toimintoa ei voi peruuttaa\./i
+          );
+
+        case 'reject':
+          return within(dialog).findByText(/^toimintoa ei voi peruuttaa\./i);
+
+        default:
+          assertUnreachable(type);
+      }
+      return null;
+    },
   },
   actions: {
-    clickButton: (type: 'accept' | 'reject', errorCode?: 400 | 500): void => {
+    clickCompleteButton: (type: CompleteOperation): void => {
+      userEvent.click(screen.getByTestId(`${type}-button`));
+    },
+    clickConfirmButton: async (
+      type: CompleteOperation,
+      errorCode?: 400 | 500
+    ) => {
       if (!expectedApplication) {
         throw new Error(
           'you forgot to give expected application values for the test'
@@ -117,7 +140,16 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
           status: type === 'accept' ? 'accepted' : 'rejected',
         });
       }
-      userEvent.click(screen.getByTestId(`${type}-button`));
+      const dialog = await screen.findByRole('dialog');
+      userEvent.click(
+        within(dialog).getByRole('button', {
+          name: type === 'accept' ? /hyväksy/i : /hylkää/i,
+        })
+      );
+    },
+    clickCancelButton: async () => {
+      const dialog = await screen.findByRole('dialog');
+      userEvent.click(within(dialog).getByRole('button', { name: /peruuta/i }));
     },
   },
 });

@@ -1,11 +1,15 @@
-import logging
 from datetime import timedelta
+from email.mime.image import MIMEImage
+from pathlib import Path
 from urllib.parse import quote, urljoin
 
+import sequences
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
+from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
@@ -18,6 +22,7 @@ from shared.common.validators import (
     validate_postcode,
 )
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
+from shared.models.mixins import LockForUpdateMixin
 
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
@@ -28,10 +33,13 @@ from applications.enums import (
     SummerVoucherExceptionReason,
     YouthApplicationStatus,
 )
-from common.utils import validate_finnish_social_security_number
+from common.permissions import HandlerPermission
+from common.urls import handler_youth_application_processing_url
+from common.utils import (
+    send_mail_with_error_logging,
+    validate_finnish_social_security_number,
+)
 from companies.models import Company
-
-LOGGER = logging.getLogger(__name__)
 
 
 class School(TimeStampedModel, UUIDModel):
@@ -98,7 +106,7 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         return self.filter(self._active_q_filter())
 
 
-class YouthApplication(TimeStampedModel, UUIDModel):
+class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
         max_length=128,
         verbose_name=_("first name"),
@@ -158,7 +166,21 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         choices=YouthApplicationStatus.choices,
         default=YouthApplicationStatus.SUBMITTED,
     )
+    handler = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="youth_applications",
+        verbose_name=_("handler"),
+        blank=True,
+        null=True,
+    )
+    handled_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("time handled")
+    )
     objects = YouthApplicationQuerySet.as_manager()
+
+    def handler_processing_url(self):
+        return handler_youth_application_processing_url(self.pk)
 
     def _localized_frontend_page_url(self, page_name):
         return urljoin(
@@ -245,29 +267,6 @@ class YouthApplication(TimeStampedModel, UUIDModel):
                 "processing_link": processing_link,
             }
 
-    @staticmethod
-    def _send_mail(subject, message, from_email, recipient_list, error_message) -> bool:
-        """
-        Send email with given parameters and log given error message in case of failure.
-
-        :param subject: Email subject
-        :param message: Email body
-        :param from_email: Email address of the email's sender
-        :param recipient_list: List of email recipients
-        :param error_message: Error message to be logged in case of failure
-        :return: True if email was sent, otherwise False.
-        """
-        sent_email_count = send_mail(
-            subject=subject,
-            message=message,
-            from_email=from_email,
-            recipient_list=recipient_list,
-            fail_silently=True,
-        )
-        if sent_email_count == 0:
-            LOGGER.error(error_message)
-        return sent_email_count > 0
-
     def send_activation_email(self, request, language) -> bool:
         """
         Send youth application's activation email with given language to the applicant.
@@ -276,7 +275,7 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         :param language: The activation email language to be used
         :return: True if email was sent, otherwise False.
         """
-        return YouthApplication._send_mail(
+        return send_mail_with_error_logging(
             subject=YouthApplication._activation_email_subject(language),
             message=YouthApplication._activation_email_message(
                 language=language,
@@ -294,7 +293,7 @@ class YouthApplication(TimeStampedModel, UUIDModel):
         :param request: Request used for generating the processing link
         :return: True if email was sent, otherwise False.
         """
-        return YouthApplication._send_mail(
+        return send_mail_with_error_logging(
             subject=self._processing_email_subject(),
             message=self._processing_email_message(self._processing_link(request)),
             from_email=settings.DEFAULT_FROM_EMAIL,
@@ -315,12 +314,99 @@ class YouthApplication(TimeStampedModel, UUIDModel):
     @transaction.atomic
     def activate(self) -> bool:
         """
-        Activate this youth application. Return self.is_active after this call.
+        Activate this youth application if possible.
+
+        :return: self.is_active
         """
         if self.can_activate:
             self.receipt_confirmed_at = timezone.now()
             self.save()
         return self.is_active
+
+    def _set_handler(self, handler):
+        try:
+            self.handler = handler
+        except ValueError:  # e.g. cannot assign AnonymousUser: Must be a User instance
+            self.handler = None
+        if self.handler is None and not HandlerPermission.allow_empty_handler():
+            raise ValueError("Forbidden empty handler")
+
+    @transaction.atomic
+    def _handle(self, status: YouthApplicationStatus, handler):
+        """
+        Handle the youth application by setting the status, handler and handled_at.
+
+        :param status: The target status
+        :type status: YouthApplicationStatus
+        :param handler: Handler user
+        :type handler: None | AnonymousUser | User
+        """
+        if status not in YouthApplicationStatus.handled_values():
+            raise ValueError(f"Invalid handle status: {status}")
+        self.status = status
+        self._set_handler(handler)
+        self.handled_at = timezone.now()
+        self.save()
+
+    @property
+    def has_youth_summer_voucher(self) -> bool:
+        try:
+            self.youth_summer_voucher
+        except ObjectDoesNotExist:
+            return False
+        return True
+
+    @transaction.atomic  # Needed for django-sequences serial number handling
+    def create_youth_summer_voucher(self) -> "YouthSummerVoucher":
+        return YouthSummerVoucher.objects.create(
+            youth_application=self,
+            summer_voucher_serial_number=YouthSummerVoucher.get_next_serial_number(),
+        )
+
+    @property
+    def is_accepted(self) -> bool:
+        return self.status == YouthApplicationStatus.ACCEPTED
+
+    def can_accept(self, handler) -> bool:
+        return (
+            self.status in YouthApplicationStatus.acceptable_values()
+            and HandlerPermission.has_user_permission(handler)
+            and not self.has_youth_summer_voucher
+        )
+
+    @transaction.atomic
+    def accept(self, handler) -> bool:
+        """
+        Accept this youth application using given handler user if possible.
+        Create related YouthSummerVoucher if changed to accepted.
+
+        :return: self.is_accepted
+        """
+        if self.can_accept(handler=handler):
+            self._handle(status=YouthApplicationStatus.ACCEPTED, handler=handler)
+            self.create_youth_summer_voucher()
+        return self.is_accepted
+
+    @property
+    def is_rejected(self) -> bool:
+        return self.status == YouthApplicationStatus.REJECTED
+
+    def can_reject(self, handler) -> bool:
+        return (
+            self.status in YouthApplicationStatus.rejectable_values()
+            and HandlerPermission.has_user_permission(handler)
+        )
+
+    @transaction.atomic
+    def reject(self, handler) -> bool:
+        """
+        Reject youth application using given handler user if possible.
+
+        :return: self.is_rejected
+        """
+        if self.can_reject(handler=handler):
+            self._handle(status=YouthApplicationStatus.REJECTED, handler=handler)
+        return self.is_rejected
 
     @classmethod
     def is_email_or_social_security_number_active(
@@ -371,14 +457,16 @@ class YouthApplication(TimeStampedModel, UUIDModel):
 
 
 class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
-    youth_application = models.ForeignKey(
+    youth_application = models.OneToOneField(
         YouthApplication,
         on_delete=models.CASCADE,
-        related_name="youth_summer_vouchers",
+        related_name="youth_summer_voucher",
         verbose_name=_("youth application"),
     )
-    summer_voucher_serial_number = models.CharField(
-        max_length=256, blank=True, verbose_name=_("summer voucher id")
+    summer_voucher_serial_number = models.PositiveBigIntegerField(
+        unique=True,
+        validators=[MinValueValidator(1)],
+        verbose_name=_("summer voucher id"),
     )
     summer_voucher_exception_reason = models.CharField(
         max_length=256,
@@ -388,10 +476,79 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
         choices=SummerVoucherExceptionReason.choices,
     )
 
+    @staticmethod
+    def get_next_serial_number() -> int:
+        return sequences.get_next_value(
+            sequence_name="youth_summer_voucher_serial_numbers",
+            initial_value=1,
+        )
+
+    @property
+    def year(self) -> int:
+        return self.youth_application.created_at.year
+
+    def _email_subject(self, language):
+        with translation.override(language):
+            return gettext("Vuoden %(year)s Kesäsetelisi") % {"year": self.year}
+
+    @staticmethod
+    def _template_image(filename, content_id) -> MIMEImage:
+        source_folder = Path(__file__).resolve().parent / "templates" / "images"
+        with open(source_folder / filename, "rb") as file:
+            data = file.read()
+            image = MIMEImage(data)
+            image.add_header("Content-ID", f"<{content_id}>")
+            return image
+
+    def youth_summer_voucher_logo(self, language) -> MIMEImage:
+        return YouthSummerVoucher._template_image(
+            filename=f"youth_summer_voucher-325e-{language}.png",
+            content_id="youth_summer_voucher_logo",
+        )
+
+    def helsinki_logo(self) -> MIMEImage:
+        return YouthSummerVoucher._template_image(
+            filename="helsinki.png",
+            content_id="helsinki_logo",
+        )
+
+    def send_youth_summer_voucher_email(self, language) -> bool:
+        """
+        Send youth summer voucher email with given language to the applicant.
+
+        :param language: The language to be used in the email
+        :return: True if email was sent, otherwise False.
+        """
+        with translation.override(language):
+            context = {
+                "first_name": self.youth_application.first_name,
+                "last_name": self.youth_application.last_name,
+                "summer_voucher_serial_number": self.summer_voucher_serial_number,
+                "postcode": self.youth_application.postcode,
+                "school": self.youth_application.school,
+                "phone_number": self.youth_application.phone_number,
+                "email": self.youth_application.email,
+                "year": self.year,
+            }
+            return send_mail_with_error_logging(
+                subject=self._email_subject(language),
+                message=get_template("youth_summer_voucher_email.txt").render(context),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[self.youth_application.email],
+                error_message=_("Unable to send youth summer voucher email"),
+                html_message=get_template("youth_summer_voucher_email.html").render(
+                    context
+                ),
+                images=[
+                    self.helsinki_logo(),
+                    self.youth_summer_voucher_logo(language=language),
+                ],
+            )
+
     class Meta:
         verbose_name = _("youth summer voucher")
         verbose_name_plural = _("youth summer vouchers")
-        ordering = ["-youth_application__created_at"]
+        ordering = ["summer_voucher_serial_number"]
 
 
 class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):

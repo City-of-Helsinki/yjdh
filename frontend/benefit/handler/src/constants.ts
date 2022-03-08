@@ -8,6 +8,12 @@ export enum ROUTES {
   APPLICATIONS_REPORTS = '/reports',
 }
 
+export enum EXPORT_APPLICATIONS_ROUTES {
+  ACCEPTED = 'export_new_accepted_applications',
+  REJECTED = 'export_new_rejected_applications',
+  IN_TIME_RANGE = 'export_csv',
+}
+
 export enum SUPPORTED_LANGUAGES {
   FI = 'fi',
   SV = 'sv',
@@ -118,6 +124,11 @@ export enum CALCULATION_EMPLOYMENT_KEYS {
   END_DATE = 'endDate',
 }
 
+export enum EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS {
+  START_DATE = 'startDate',
+  END_DATE = 'endDate',
+}
+
 export enum CALCULATION_SALARY_KEYS {
   START_DATE = 'startDate',
   END_DATE = 'endDate',
@@ -131,6 +142,8 @@ export enum CALCULATION_SALARY_KEYS {
   // eslint-disable-next-line no-secrets/no-secrets
   WORK_TIME_PERCENT = 'workTimePercent',
   PAY_SUBSIDIES = 'paySubsidies',
+  TRAINING_COMPENSATIONS = 'trainingCompensations',
+  MONTHLY_AMOUNT = 'monthlyAmount',
 }
 
 export const STATE_AID_MAX_PERCENTAGE_OPTIONS = [50, 100];
@@ -149,3 +162,9 @@ export enum CALCULATION_TYPES {
   SALARY = 'salary',
   EMPLOYMENT = 'employment',
 }
+
+export const HANDLED_STATUSES: APPLICATION_STATUSES[] = [
+  APPLICATION_STATUSES.ACCEPTED,
+  APPLICATION_STATUSES.REJECTED,
+  APPLICATION_STATUSES.CANCELLED,
+];
