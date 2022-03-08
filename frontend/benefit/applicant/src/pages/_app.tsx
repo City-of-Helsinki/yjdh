@@ -3,7 +3,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import AuthProvider from 'benefit/applicant/auth/AuthProvider';
 import Footer from 'benefit/applicant/components/footer/Footer';
 import Header from 'benefit/applicant/components/header/Header';
-import AppContextProvider from 'benefit/applicant/context/AppContextProvider';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import { appWithTranslation } from 'benefit/applicant/i18n';
 import {
@@ -30,23 +29,21 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       baseURL={getBackendDomain()}
       headers={getHeaders(locale)}
     >
-      <AppContextProvider>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <ThemeProvider theme={theme}>
-              <GlobalStyling />
-              <Layout>
-                <Header />
-                <ToastContainer />
-                <Content>
-                  <Component {...pageProps} />
-                </Content>
-                <Footer />
-              </Layout>
-            </ThemeProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </AppContextProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
+            <GlobalStyling />
+            <Layout>
+              <Header />
+              <ToastContainer />
+              <Content>
+                <Component {...pageProps} />
+              </Content>
+              <Footer />
+            </Layout>
+          </ThemeProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     </BackendAPIProvider>
   );
 };

@@ -14,6 +14,7 @@ from companies.models import Company
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
+from django.db.models import OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
 from localflavor.generic.models import IBANField
@@ -63,6 +64,28 @@ def address_property(field_suffix):
     return _address_property_getter
 
 
+class ApplicationManager(models.Manager):
+
+    HANDLED_STATUSES = [
+        ApplicationStatus.REJECTED,
+        ApplicationStatus.ACCEPTED,
+        ApplicationStatus.CANCELLED,
+    ]
+
+    def _annotate_handled_at(self, qs):
+        subquery = (
+            ApplicationLogEntry.objects.filter(
+                application=OuterRef("pk"), to_status__in=self.HANDLED_STATUSES
+            )
+            .order_by("-created_at")
+            .values("created_at")[:1]
+        )
+        return qs.annotate(handled_at=Subquery(subquery))
+
+    def get_queryset(self):
+        return self._annotate_handled_at(super().get_queryset())
+
+
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Data model for Helsinki benefit applications
@@ -74,6 +97,8 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
+
+    objects = ApplicationManager()
 
     BENEFIT_MAX_MONTHS = 12
 

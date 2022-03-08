@@ -1,3 +1,4 @@
+import { FormikProps } from 'formik';
 import { BenefitAttachment } from 'shared/types/attachment';
 
 import {
@@ -6,9 +7,11 @@ import {
   APPLICATION_STATUSES,
   BENEFIT_TYPES,
   CALCULATION_EMPLOYMENT_KEYS,
+  CALCULATION_SALARY_KEYS,
   DE_MINIMIS_AID_KEYS,
   EMPLOYEE_KEYS,
   ORGANIZATION_TYPES,
+  PROPOSALS_FOR_DESISION,
   SUPPORTED_LANGUAGES,
 } from '../constants';
 
@@ -193,6 +196,21 @@ export type CalculationData = {
   rows: RowData[];
   handler_details: HandlerDetailsData;
   duration_in_months_rounded: string;
+  calculated_benefit_amount?: number;
+};
+
+export type BatchData = {
+  id: string;
+  status: APPLICATION_STATUSES;
+  applications: string[];
+  proposal_for_decision: PROPOSALS_FOR_DESISION;
+  decision_maker_title?: string;
+  decision_maker_name?: string;
+  section_of_the_law?: string;
+  decision_date?: string;
+  expert_inspector_name?: string;
+  expert_inspector_email?: string;
+  created_at: string;
 };
 
 export type PaySubsidyData = {
@@ -203,6 +221,13 @@ export type PaySubsidyData = {
   work_time_percent?: number;
   disability_or_illness?: boolean;
   duration_in_months_rounded: string;
+};
+
+export type TrainingCompensationData = {
+  id: string;
+  start_date: string;
+  end_date: string;
+  monthly_amount: string;
 };
 
 export type ApplicationData = {
@@ -262,6 +287,10 @@ export type ApplicationData = {
   duration_in_months_rounded?: string;
   log_entry_comment?: string;
   granted_as_de_minimis_aid?: boolean;
+  training_compensations: TrainingCompensationData[];
+  handled_at?: string;
+  batch?: BatchData;
+  latest_decision_comment?: string;
 };
 
 export type ApplicationListItemData = {
@@ -274,6 +303,8 @@ export type ApplicationListItemData = {
   employeeName?: string;
   handlerName?: string;
   additionalInformationNeededBy?: string;
+  handledAt?: string;
+  dataReceived?: string;
 };
 
 export interface Step1 {
@@ -324,6 +355,20 @@ export interface Step2 {
 
 // handler
 
+export type Batch = {
+  id: string;
+  status: APPLICATION_STATUSES;
+  applications: string[];
+  proposalForDecision: PROPOSALS_FOR_DESISION;
+  decisionMakerTitle?: string;
+  decisionMakerName?: string;
+  sectionOfTheLaw?: string;
+  decisionDate?: string;
+  expertInspectorName?: string;
+  expertInspectorEmail?: string;
+  createdAt: string;
+};
+
 export type Row = {
   id: string;
   rowType: string;
@@ -340,6 +385,13 @@ export type PaySubsidy = {
   workTimePercent?: number;
   disabilityOrIllness?: boolean;
   durationInMonthsRounded: string;
+};
+
+export type TrainingCompensation = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  monthlyAmount: string;
 };
 
 export type HandlerDetails = {
@@ -368,6 +420,7 @@ export type Calculation = {
   rows: Row[];
   handlerDetails: HandlerDetails;
   durationInMonthsRounded?: string;
+  calculatedBenefitAmount?: number;
 } & CalculationCommon;
 
 export type CalculationFormProps = {
@@ -378,7 +431,13 @@ export type CalculationFormProps = {
   overrideMonthlyBenefitAmount?: string | null;
   overrideMonthlyBenefitAmountComment?: string;
   paySubsidies?: PaySubsidy[];
+  trainingCompensations?: TrainingCompensation[];
 } & CalculationCommon;
+
+export type ExportApplicationInTimeRangeFormProps = {
+  startDate: string;
+  endDate: string;
+};
 
 export type Application = {
   id?: string;
@@ -402,6 +461,10 @@ export type Application = {
   durationInMonthsRounded?: string;
   logEntryComment?: string;
   grantedAsDeMinimisAid?: boolean;
+  trainingCompensations?: TrainingCompensation[];
+  batch?: Batch;
+  handledAt?: string;
+  latestDecisionComment?: string;
 } & Step1 &
   Step2;
 
@@ -416,6 +479,14 @@ export interface ApplicationReviewViewProps {
 
 export interface SalaryBenefitCalculatorViewProps {
   data: Application;
+}
+
+export interface SalaryBenefitManualCalculatorViewProps {
+  formik: FormikProps<CalculationFormProps>;
+  fields: {
+    [key in CALCULATION_SALARY_KEYS]: Field<CALCULATION_SALARY_KEYS>;
+  };
+  getErrorMessage: (fieldName: string) => string | undefined;
 }
 
 export type HandledAplication = {

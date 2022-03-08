@@ -7,6 +7,7 @@ from django.db import transaction
 from django.db.models import F, Func
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect
 from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -34,14 +35,18 @@ from applications.api.v1.serializers import (
     SchoolSerializer,
     YouthApplicationSerializer,
 )
-from applications.enums import ApplicationStatus, YouthApplicationRejectedReason
+from applications.enums import (
+    EmployerApplicationStatus,
+    YouthApplicationRejectedReason,
+    YouthApplicationStatus,
+)
 from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
     YouthApplication,
 )
-from common.permissions import DenyAll, HandlerPermission
+from common.decorators import enforce_handler_view_adfs_login
 
 LOGGER = logging.getLogger(__name__)
 
@@ -101,19 +106,79 @@ class SchoolListView(ListAPIView):
 
 
 class YouthApplicationViewSet(AuditLoggingModelViewSet):
+    permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
 
-    @action(methods=["get"], detail=True)
-    def process(self, request, pk=None) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object()  # noqa: F841
+    def list(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
-        # TODO: Implement
-        return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
+    def update(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def partial_update(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, *args, **kwargs):
+        self._log_permission_denied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    @enforce_handler_view_adfs_login
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @action(methods=["get"], detail=True)
+    @enforce_handler_view_adfs_login
+    def process(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object()
+        return redirect(youth_application.handler_processing_url())
+
+    @transaction.atomic
+    @action(methods=["patch"], detail=True)
+    @enforce_handler_view_adfs_login
+    def accept(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        if not youth_application.is_accepted and youth_application.accept(
+            handler=request.user
+        ):
+            was_email_sent = (
+                youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                    language=youth_application.language
+                )
+            )
+            if not was_email_sent:
+                transaction.set_rollback(True)
+                with translation.override(youth_application.language):
+                    return HttpResponse(
+                        _("Failed to send youth summer voucher email"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
+            with self.record_action(additional_information="accept"):
+                return HttpResponse(status=status.HTTP_200_OK)
+        else:
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+    @transaction.atomic
+    @action(methods=["patch"], detail=True)
+    @enforce_handler_view_adfs_login
+    def reject(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        if not youth_application.is_rejected and youth_application.reject(
+            handler=request.user
+        ):
+            with self.record_action(additional_information="reject"):
+                return HttpResponse(status=status.HTTP_200_OK)
+        else:
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     @action(methods=["get"], detail=True)
-    def activate(self, request, pk=None) -> HttpResponse:
+    def activate(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()
 
         # Lock same person's applications to prevent activation of more than one of them
@@ -132,7 +197,32 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                     f"Activated youth application {youth_application.pk}: "
                     "VTJ is disabled, sending application to be processed by a handler"
                 )
-                youth_application.send_processing_email_to_handler(request)
+                youth_application.status = (
+                    YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
+                )
+                youth_application.save()
+                was_email_sent = youth_application.send_processing_email_to_handler(
+                    request
+                )
+                if not was_email_sent:
+                    transaction.set_rollback(True)
+                    with translation.override(youth_application.language):
+                        return HttpResponse(
+                            _("Failed to send manual processing email to handler"),
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        )
+            else:
+                # TODO: Implement VTJ integration
+                LOGGER.error(
+                    f"Tried to activate youth application {youth_application.pk}: "
+                    "Failed because VTJ integration is enabled but not implemented"
+                )
+                transaction.set_rollback(True)
+                return HttpResponse(
+                    _("VTJ integration is not implemented"),
+                    status=status.HTTP_501_NOT_IMPLEMENTED,
+                )
+
             return HttpResponseRedirect(youth_application.activated_page_url())
 
         return HttpResponse(
@@ -184,18 +274,6 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ["activate", "create"]:
-            permission_classes = [AllowAny]
-        elif self.action in ["process", "retrieve"]:
-            permission_classes = [HandlerPermission]
-        else:
-            permission_classes = [DenyAll]
-        return [permission() for permission in permission_classes]
-
 
 class EmployerApplicationViewSet(AuditLoggingModelViewSet):
     queryset = EmployerApplication.objects.all()
@@ -231,7 +309,7 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         """
         Allow only 1 (DRAFT) application per user & company.
         """
-        if self.get_queryset().filter(status=ApplicationStatus.DRAFT).exists():
+        if self.get_queryset().filter(status=EmployerApplicationStatus.DRAFT).exists():
             raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
 

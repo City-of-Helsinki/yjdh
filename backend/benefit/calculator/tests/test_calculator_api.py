@@ -3,7 +3,10 @@ import decimal
 from unittest import mock
 
 import pytest
-from applications.api.v1.serializers import HandlerApplicationSerializer
+from applications.api.v1.serializers import (
+    ApplicantApplicationSerializer,
+    HandlerApplicationSerializer,
+)
 from applications.enums import ApplicationStatus, BenefitType, OrganizationType
 from applications.tests.conftest import *  # noqa
 from applications.tests.test_applications_api import (
@@ -49,7 +52,7 @@ def test_application_try_retrieve_calculation_as_applicant(api_client, applicati
 
 
 def test_application_create_calculation_on_submit(
-    request, handler_api_client, application
+    request, api_client, handler_api_client, application
 ):
     # also test that calculation rows are not created yet,
     # as all fields are not filled yet.
@@ -59,7 +62,7 @@ def test_application_create_calculation_on_submit(
     application.benefit_type = BenefitType.SALARY_BENEFIT
     application.save()
     assert not hasattr(application, "calculation")
-    data = HandlerApplicationSerializer(application).data
+    data = ApplicantApplicationSerializer(application).data
 
     data["status"] = ApplicationStatus.RECEIVED
     data["bases"] = []  # as of 2021-10, bases are not used when submitting application
@@ -71,39 +74,47 @@ def test_application_create_calculation_on_submit(
     with mock.patch(
         "terms.models.ApplicantTermsApproval.terms_approval_needed", return_value=False
     ):
-        response = handler_api_client.put(
-            get_handler_detail_url(application),
+        # applicant submits the application
+        applicant_response = api_client.put(
+            get_detail_url(application),
             data,
         )
+        # applicant does not see the calculation
+        assert "calculation" not in applicant_response.data
 
-    assert response.status_code == 200
+    assert applicant_response.status_code == 200
     application.refresh_from_db()
     assert hasattr(application, "calculation")
 
-    assert response.data["calculation"] is not None
-    assert response.data["calculation"]["monthly_pay"] == str(
+    # handler retrieves the application for the first time
+    handler_response = handler_api_client.get(get_handler_detail_url(application))
+
+    assert handler_response.data["calculation"] is not None
+    assert handler_response.data["calculation"]["monthly_pay"] == str(
         application.employee.monthly_pay
     )
-    assert response.data["calculation"]["start_date"] is None
-    assert len(response.data["calculation"]["rows"]) == 0
-    assert response.status_code == 200
+    assert handler_response.data["calculation"]["start_date"] is None
+    assert len(handler_response.data["calculation"]["rows"]) == 0
+    assert handler_response.status_code == 200
 
 
 def test_application_can_not_create_calculation_through_api(
-    handler_api_client, application
+    handler_api_client, handling_application
 ):
     """ """
-    assert not hasattr(application, "calculation")
-    data = HandlerApplicationSerializer(application).data
+    handling_application.calculation.delete()
+    handling_application.refresh_from_db()
+    assert not hasattr(handling_application, "calculation")
+    data = HandlerApplicationSerializer(handling_application).data
     calc_data = CalculationSerializer(CalculationFactory()).data
     data["calculation"] = calc_data
     response = handler_api_client.put(
-        get_handler_detail_url(application),
+        get_handler_detail_url(handling_application),
         data,
     )
     assert response.status_code == 400
-    application.refresh_from_db()
-    assert not hasattr(application, "calculation")
+    handling_application.refresh_from_db()
+    assert not hasattr(handling_application, "calculation")
 
 
 def test_modify_calculation(handler_api_client, handling_application):
@@ -353,16 +364,16 @@ def test_assign_handler(handler_api_client, received_application):
 
 
 @pytest.mark.parametrize(
-    "status",
+    "status,expected_result",
     [
-        ApplicationStatus.ACCEPTED,
-        ApplicationStatus.CANCELLED,
-        ApplicationStatus.REJECTED,
-        ApplicationStatus.DRAFT,
+        (ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.CANCELLED, 400),
+        (ApplicationStatus.REJECTED, 400),
+        (ApplicationStatus.DRAFT, 404),
     ],
 )
 def test_assign_handler_invalid_status(
-    handler_api_client, received_application, status
+    handler_api_client, received_application, status, expected_result
 ):
     received_application.status = status
     received_application.save()
@@ -374,7 +385,7 @@ def test_assign_handler_invalid_status(
         get_handler_detail_url(received_application),
         data,
     )
-    assert response.status_code == 400
+    assert response.status_code == expected_result
 
 
 def test_unassign_handler_valid_status(handler_api_client, handling_application):

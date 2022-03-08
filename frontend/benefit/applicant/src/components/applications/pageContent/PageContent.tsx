@@ -33,6 +33,8 @@ const PageContent: React.FC = () => {
     isError,
     isLoading,
     isReadOnly,
+    isSubmittedApplication,
+    handleSubmit,
   } = usePageContent();
 
   const theme = useTheme();
@@ -95,7 +97,12 @@ const PageContent: React.FC = () => {
   }
 
   // if trying to access edit mode, but the status is not correct
-  if (application.status && SUBMITTED_STATUSES.includes(application.status)) {
+  // the exception case is only when the application was just submitted so we show success view inside 5th and 6th step
+  if (
+    application.status &&
+    SUBMITTED_STATUSES.includes(application.status) &&
+    !isSubmittedApplication
+  ) {
     return (
       <Container>
         <ErrorPage
@@ -119,7 +126,7 @@ const PageContent: React.FC = () => {
           <Stepper steps={steps} activeStep={currentStep} />
         </$HeaderItem>
       </$PageHeader>
-      {id && application?.createdAt && (
+      {id && application?.createdAt && !isSubmittedApplication && (
         <>
           <$PageSubHeading>
             {`${t(
@@ -135,8 +142,20 @@ const PageContent: React.FC = () => {
       {currentStep === 2 && <ApplicationFormStep2 data={application} />}
       {currentStep === 3 && <ApplicationFormStep3 data={application} />}
       {currentStep === 4 && <ApplicationFormStep4 data={application} />}
-      {currentStep === 5 && <ApplicationFormStep5 data={application} />}
-      {currentStep === 6 && <ApplicationFormStep6 data={application} />}
+      {currentStep === 5 && (
+        <ApplicationFormStep5
+          isSubmittedApplication={isSubmittedApplication}
+          onSubmit={handleSubmit}
+          data={application}
+        />
+      )}
+      {currentStep === 6 && (
+        <ApplicationFormStep6
+          isSubmittedApplication={isSubmittedApplication}
+          onSubmit={handleSubmit}
+          data={application}
+        />
+      )}
     </Container>
   );
 };

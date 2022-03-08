@@ -23,8 +23,8 @@ import { getThankYouPageComponents } from './thank-you-page/thankYouPage.compone
 import {
   clickBrowserBackButton,
   getFrontendUrl,
+  goToBackendUrl,
   goToFrontPage,
-  goToHandlerUrl,
 } from './utils/url.utils';
 
 const url = getFrontendUrl('/');
@@ -180,7 +180,7 @@ if (!isRealIntegrationsEnabled()) {
     await alreadyActivatedPage.expectations.isLoaded();
   });
 
-  test('As a handler I can open activated application in handler-ui', async (t) => {
+  test('As a handler I can open activated application in handler-ui and see correct application data', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthFormData();
@@ -188,12 +188,13 @@ if (!isRealIntegrationsEnabled()) {
     const thankYouPage = await getThankYouPageComponents(t);
     const applicationId = await getUrlParam('id');
     if (!applicationId) {
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       throw new Error('cannot complete test without application id');
     }
     await thankYouPage.actions.clickActivationLink();
     const activatedPage = await getActivatedPageComponents(t);
     await activatedPage.expectations.isLoaded();
-    await goToHandlerUrl(t, `?id=${applicationId}`);
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
     const expectedApplication = convertFormDataToApplication(formData);
     const { first_name, last_name, is_unlisted_school } = expectedApplication;
     const handlerFormPage = await getHandlerFormPageComponents(
@@ -218,5 +219,64 @@ if (!isRealIntegrationsEnabled()) {
     }
     await handlerFormPage.expectations.applicationFieldHasValue('phone_number');
     await handlerFormPage.expectations.applicationFieldHasValue('email');
+  });
+
+  test('As a handler I can open non-activated application, but I will see "youth has not yet activated the application" -error message ', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
+    const handlerFormPage = await getHandlerFormPageComponents(t);
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.expectations.applicationIsNotYetActivated();
+  });
+
+  test('As a handler I can accept an application', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await thankYouPage.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t);
+    await activatedPage.expectations.isLoaded();
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
+    const handlerFormPage = await getHandlerFormPageComponents(t);
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.actions.clickAcceptButton();
+    await handlerFormPage.expectations.confirmationDialogIsPresent();
+    await handlerFormPage.actions.clickConfirmAcceptButton();
+    await handlerFormPage.expectations.applicationIsAccepted();
+  });
+  test('As a handler I can reject an application', async (t) => {
+    const indexPage = await getIndexPageComponents(t);
+    await indexPage.expectations.isLoaded();
+    const formData = fakeYouthFormData();
+    await sendYouthApplication(t, formData);
+    const thankYouPage = await getThankYouPageComponents(t);
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      throw new Error('cannot complete test without application id');
+    }
+    await thankYouPage.actions.clickActivationLink();
+    const activatedPage = await getActivatedPageComponents(t);
+    await activatedPage.expectations.isLoaded();
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
+    const handlerFormPage = await getHandlerFormPageComponents(t);
+    await handlerFormPage.expectations.isLoaded();
+    await handlerFormPage.actions.clickRejectButton();
+    await handlerFormPage.expectations.confirmationDialogIsPresent();
+    await handlerFormPage.actions.clickConfirmRejectButton();
+    await handlerFormPage.expectations.applicationIsRejected();
   });
 }

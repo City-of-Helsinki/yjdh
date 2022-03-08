@@ -1,6 +1,7 @@
 import {
   getErrorMessage,
   screenContext,
+  withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
@@ -11,6 +12,7 @@ export const getHandlerFormPageComponents = async (
   expectedApplication?: YouthApplication
 ) => {
   const screen = screenContext(t);
+  const within = withinContext(t);
 
   const selectors = {
     title() {
@@ -25,6 +27,49 @@ export const getHandlerFormPageComponents = async (
     },
     applicationField(id: keyof YouthApplication | 'name') {
       return screen.findByTestId(`handlerApplication-${id}`);
+    },
+    acceptButton() {
+      return screen.findByRole('button', {
+        name: /hyväksy/i,
+      });
+    },
+    confirmDialog() {
+      return screen.findByRole('dialog');
+    },
+    confirmAcceptButton() {
+      return within(screen.findByRole('dialog')).findByRole('button', {
+        name: /hyväksy/i,
+      });
+    },
+    rejectButton() {
+      return screen.findByRole('button', {
+        name: /hylkää/i,
+      });
+    },
+    confirmRejectButton() {
+      return within(screen.findByRole('dialog')).findByRole('button', {
+        name: /hylkää/i,
+      });
+    },
+    notYetActivated() {
+      return screen.findByRole('heading', {
+        name: /nuori ei ole vielä aktivoinut hakemusta/i,
+      });
+    },
+    additionalInformationRequested() {
+      return screen.findByRole('heading', {
+        name: /nuori ei ole vielä täyttänyt lisätietohakemusta/i,
+      });
+    },
+    applicationIsAccepted() {
+      return screen.findByRole('heading', {
+        name: /hyväksytty/i,
+      });
+    },
+    applicationIsRejected() {
+      return screen.findByRole('heading', {
+        name: /hylätty/i,
+      });
     },
   };
   const expectations = {
@@ -53,8 +98,46 @@ export const getHandlerFormPageComponents = async (
         .expect(selectors.applicationField(key).textContent)
         .contains(value, await getErrorMessage(t));
     },
+    async applicationIsNotYetActivated() {
+      await t
+        .expect(selectors.notYetActivated().exists)
+        .ok(await getErrorMessage(t));
+    },
+    async additionalInformationRequested() {
+      await t
+        .expect(selectors.additionalInformationRequested().exists)
+        .ok(await getErrorMessage(t));
+    },
+    async confirmationDialogIsPresent() {
+      await t
+        .expect(selectors.confirmDialog().exists)
+        .ok(await getErrorMessage(t));
+    },
+    async applicationIsAccepted() {
+      await t
+        .expect(selectors.applicationIsAccepted().exists)
+        .ok(await getErrorMessage(t));
+    },
+    async applicationIsRejected() {
+      await t
+        .expect(selectors.applicationIsRejected().exists)
+        .ok(await getErrorMessage(t));
+    },
   };
-  const actions = {};
+  const actions = {
+    clickAcceptButton() {
+      return t.click(selectors.acceptButton());
+    },
+    clickConfirmAcceptButton() {
+      return t.click(selectors.confirmAcceptButton());
+    },
+    clickRejectButton() {
+      return t.click(selectors.rejectButton());
+    },
+    clickConfirmRejectButton() {
+      return t.click(selectors.confirmRejectButton());
+    },
+  };
   await expectations.isLoaded();
   return {
     selectors,

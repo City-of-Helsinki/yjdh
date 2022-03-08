@@ -1,9 +1,15 @@
+import logging
 from datetime import date
+from email.mime.image import MIMEImage
+from typing import List, Optional
 
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from stdnum.fi.hetu import is_valid as is_valid_finnish_social_security_number
+
+LOGGER = logging.getLogger(__name__)
 
 
 def has_whitespace(value):
@@ -16,6 +22,48 @@ def is_uppercase(value):
     Is the value all uppercase? Returns True also if there are no alphabetic characters.
     """
     return value == value.upper()
+
+
+def send_mail_with_error_logging(
+    subject,
+    message,
+    from_email,
+    recipient_list,
+    error_message,
+    html_message=None,
+    images: Optional[List[MIMEImage]] = None,
+) -> bool:
+    """
+    Send email with given parameters and log given error message in case of failure.
+
+    :param subject: Email subject
+    :param message: Plain text email body
+    :param from_email: Email address of the email's sender
+    :param recipient_list: List of email recipients
+    :param error_message: Error message to be logged in case of failure
+    :param html_message: Optional html message. If provided the resulting email will be
+                         a multipart/alternative email with message as the text/plain
+                         content type and html_message as the text/html content type.
+    :param images: Optional attachable images. Must also provide html_message if any
+                   images are provided. If provided will change mail's mixed_subtype to
+                   related.
+    :return: True if email was sent, otherwise False.
+    """
+    connection = get_connection(fail_silently=True)
+    mail = EmailMultiAlternatives(
+        subject, message, from_email, recipient_list, connection=connection
+    )
+    if html_message:
+        mail.attach_alternative(html_message, "text/html")
+        if images:
+            mail.mixed_subtype = "related"
+            for image in images:
+                mail.attach(image)
+
+    sent_email_count = mail.send(fail_silently=True)
+    if sent_email_count == 0:
+        LOGGER.error(error_message)
+    return sent_email_count > 0
 
 
 def validate_finnish_social_security_number(value):

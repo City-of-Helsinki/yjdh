@@ -172,12 +172,29 @@ def test_application_single_read_as_applicant(
     assert response.status_code == 200
 
 
-def test_application_single_read_as_handler(handler_api_client, application):
+@pytest.mark.parametrize(
+    "status, expected_result",
+    [
+        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 200),
+        (ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.ACCEPTED, 200),
+        (ApplicationStatus.REJECTED, 200),
+        (ApplicationStatus.CANCELLED, 200),
+    ],
+)
+def test_application_single_read_as_handler(
+    handler_api_client, application, status, expected_result
+):
+    application.status = status
+    application.save()
     response = handler_api_client.get(get_handler_detail_url(application))
-    assert response.data["ahjo_decision"] is None
-    assert response.data["application_number"] is not None
-    assert "batch" in response.data
-    assert response.status_code == 200
+    assert response.status_code == expected_result
+    if response.status_code == 200:
+        assert response.data["ahjo_decision"] is None
+        assert response.data["application_number"] is not None
+        assert "batch" in response.data
 
 
 def test_application_submitted_at(
@@ -996,7 +1013,7 @@ def test_application_status_change_as_applicant(
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 404),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
@@ -1090,8 +1107,12 @@ def test_application_status_change_as_handler(
             assert (
                 response.data["latest_decision_comment"] == expected_log_entry_comment
             )
+            assert response.data["handled_at"] == datetime.now().replace(
+                tzinfo=pytz.utc
+            )
         else:
             assert response.data["latest_decision_comment"] is None
+            assert response.data["handled_at"] is None
     else:
         assert application.log_entries.all().count() == 0
 
@@ -1099,7 +1120,6 @@ def test_application_status_change_as_handler(
 @pytest.mark.parametrize(
     "from_status, to_status, auto_assign",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, False),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
@@ -1458,7 +1478,7 @@ def test_pdf_attachment_upload_and_download_as_applicant(
 @pytest.mark.parametrize(
     "status,upload_result",
     [
-        (ApplicationStatus.DRAFT, 201),
+        (ApplicationStatus.DRAFT, 404),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
         (ApplicationStatus.HANDLING, 201),
         (ApplicationStatus.ACCEPTED, 403),
@@ -1479,7 +1499,7 @@ def test_pdf_attachment_upload_and_download_as_handler(
     assert response.status_code == upload_result
     if upload_result != 201:
         return
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(application))
     assert len(response.data["attachments"]) == 1
     assert response.data["attachments"][0]["attachment_file"]
     # the URL must point to the handler API

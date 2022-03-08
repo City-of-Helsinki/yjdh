@@ -9,11 +9,18 @@ import TextInput from 'tet/admin/components/editor/TextInput';
 import TextArea from 'tet/admin/components/editor/TextArea';
 import NumberInput from 'tet/admin/components/editor/NumberInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
+import { Notification } from 'hds-react';
+import { OptionType } from 'tet-shared/types/classification';
+import Dropdown from 'tet/admin/components/editor/Dropdown';
+import Combobox from 'tet/admin/components/editor/Combobox';
+import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { required, name } = useValidationRules();
+
+  const languageOptions = useLanguageOptions();
 
   return (
     <FormSection header={t('common:editor.posting.header')}>
@@ -45,9 +52,6 @@ const PostingDetails: React.FC = () => {
         </$GridCell>
         <$GridCell $colSpan={3}></$GridCell>
       </$GridCell>
-      <$GridCell $colSpan={12}>
-        <$CompanyInfoRow>{t('common:editor.posting.workHoursNotice')}</$CompanyInfoRow>
-      </$GridCell>
       <$GridCell $colSpan={2}>
         <NumberInput
           id="spots"
@@ -55,6 +59,22 @@ const PostingDetails: React.FC = () => {
           registerOptions={{ required: required }}
           required={true}
         />
+      </$GridCell>
+      <$GridCell $colSpan={3}>
+        <Dropdown
+          id="languages"
+          options={languageOptions}
+          initialValue={[languageOptions[0]]}
+          label={t('common:editor.posting.contactLanguage')}
+          registerOptions={{
+            required: required,
+          }}
+        />
+      </$GridCell>
+      <$GridCell as={$Grid} $colSpan={12}>
+        <$GridCell $colSpan={6}>
+          <Notification size="small">{t('common:editor.posting.workHoursNotice')}</Notification>
+        </$GridCell>
       </$GridCell>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={12}>
