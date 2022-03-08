@@ -103,6 +103,7 @@ if DEBUG and not SECRET_KEY:
 DEBUG = False
 
 ALLOWED_HOSTS = django_env.list("ALLOWED_HOSTS")
+USE_X_FORWARDED_HOST = django_env.bool("USE_X_FORWARDED_HOST")
 
 DATABASES = {"default": django_env.db()}
 
