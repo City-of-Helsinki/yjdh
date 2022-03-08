@@ -5,12 +5,13 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useEffect } from 'react';
+import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import useClearQueryParams from 'shared/hooks/useClearQueryParams';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
+
 import { clearLocalStorage } from '../utils/localstorage.utils';
-import { useQueryClient } from 'react-query';
 
 const Login: NextPage = () => {
   const queryClient = useQueryClient();
@@ -52,7 +53,7 @@ const Login: NextPage = () => {
 
       void queryClient.removeQueries();
     }
-  }, [logout]);
+  }, [logout, queryClient]);
 
   return (
     <Container>

@@ -92,7 +92,7 @@ const Login: NextPage = () => {
     if (logout) {
       void queryClient.removeQueries();
     }
-  }, [logout]);
+  }, [logout, queryClient]);
 
   return (
     <Container>
