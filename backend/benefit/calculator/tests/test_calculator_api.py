@@ -125,6 +125,7 @@ def test_modify_calculation(handler_api_client, handling_application):
     assert handling_application.calculation
     handling_application.pay_subsidies.all().delete()
     data["calculation"]["monthly_pay"] = "1234.56"
+    data["calculation"]["granted_as_de_minimis_aid"] = True
     # also modify pay_subsidies. Although multiple objects are modified, calculate() should only
     # be called once.
     data["pay_subsidies"] = [
@@ -151,6 +152,7 @@ def test_modify_calculation(handler_api_client, handling_application):
 
     assert response.status_code == 200
     assert response.data["calculation"]["monthly_pay"] == "1234.56"
+    assert response.data["calculation"]["granted_as_de_minimis_aid"] == True
     handling_application.refresh_from_db()
     assert handling_application.calculation.monthly_pay == decimal.Decimal("1234.56")
     assert handling_application.pay_subsidies.count() == 1
