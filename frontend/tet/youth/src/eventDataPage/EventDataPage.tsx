@@ -44,7 +44,7 @@ const EventDataPage: React.FC<Props> = ({ id }) => {
       <p>Harjoittelupaikkoja: {fromCustomData('spots')}</p>
       <h3>Luokittelut</h3>
       {data.keywords.map((k) => (
-        <Keywords key={k['@id']} keyword={k} />
+        <Keywords key={k.id} keyword={k} />
       ))}
       <h3>Päivämäärä ja aika</h3>
       <p>Alkaa: {data.start_time}</p>

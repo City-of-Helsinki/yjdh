@@ -1,7 +1,7 @@
 import { LocalizedObject, TetEvent, TetEventPayload, TetEvents } from 'tet/admin/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
 import { KeywordFn, ClassificationType } from 'tet/admin/types/keywords';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 
 export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
 

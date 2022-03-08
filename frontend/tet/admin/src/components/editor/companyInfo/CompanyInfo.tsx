@@ -12,7 +12,7 @@ import { getAddressList } from 'tet/admin/backend-api/linked-events-api';
 import debounce from 'lodash/debounce';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
-import { LocationType, OptionType } from 'tet/admin/types/classification';
+import { LocationType, OptionType } from 'tet-shared/types/classification';
 import ComboboxSingleSelect from 'tet/admin/components/editor/ComboboxSingleSelect';
 import TetPosting from 'tet/admin/types/tetposting';
 

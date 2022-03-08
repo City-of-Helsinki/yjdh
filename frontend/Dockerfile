@@ -40,7 +40,7 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 
-
+ENV NODE_OPTIONS="--max_old_space_size=8192"
 
 # Bake package.json start command into the image
 ENV DEV_START "yarn $SERVICE:dev"

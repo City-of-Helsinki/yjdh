@@ -1,4 +1,4 @@
-import { Option } from 'tet/admin/components/editor/Combobox';
+import { Option } from 'tet/admin/components/editor/Combobox'; //TODO to shared also
 
 export type OptionType = Option & {
   label: string;
