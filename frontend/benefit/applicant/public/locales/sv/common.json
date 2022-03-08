@@ -517,5 +517,9 @@
     "isSecure": "Viestit ovat salattuja",
     "noMessages": "Ei viestejä",
     "close": "Sulje"
+  },
+  "404Page": {
+    "pageNotFoundLabel": "Sidan kunde inte hittas",
+    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till ansökan genom framsidan <lnk>här</lnk>"
   }
 }

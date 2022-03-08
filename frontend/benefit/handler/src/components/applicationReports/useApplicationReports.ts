@@ -6,9 +6,8 @@ import { ExportApplicationInTimeRangeFormProps } from 'benefit/handler/types/app
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
-import { TFunction } from 'next-i18next';
+import { TFunction, useTranslation } from 'next-i18next';
 import React, { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Field } from 'shared/components/forms/fields/types';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';

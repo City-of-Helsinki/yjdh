@@ -1,6 +1,6 @@
 import { Application } from 'benefit/handler/types/application';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import { formatDate } from 'shared/utils/date.utils';
