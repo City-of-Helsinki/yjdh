@@ -57,6 +57,16 @@ const useValidationRules = () => {
         message: requiredMessage,
       },
     },
+    description: {
+      maxLength: {
+        value: 2000,
+        message: `${maxMessage} [2000]`,
+      },
+      required: {
+        value: true,
+        message: requiredMessage,
+      },
+    },
   };
 };
 
