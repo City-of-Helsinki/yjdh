@@ -54,5 +54,12 @@
       "label": "Ett okänt fel inträffade.",
       "text": "Försök igen senare."
     }
-  }
+  },
+	"editor": {
+		"posting": {
+			"contactLanguageFi": "SV Suomi",
+			"contactLanguageSv": "SV Ruotsi",
+			"contactLanguageEn": "SV Englanti"
+		}
+	}
 }

@@ -54,5 +54,12 @@
       "label": "An unexpected error occurred",
       "text": "Try again later."
     }
-  }
+  },
+	"editor": {
+		"posting": {
+			"contactLanguageFi": "ENG Suomi",
+			"contactLanguageSv": "ENG Ruotsi",
+			"contactLanguageEn": "ENG Englanti"
+		}
+	}
 }

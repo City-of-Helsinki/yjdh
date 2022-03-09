@@ -54,5 +54,12 @@
       "label": "Tapahtui tuntematon virhe",
       "text": " Yritä myöhemmin uudelleen"
     }
-  }
+  },
+	"editor": {
+		"posting": {
+			"contactLanguageFi": "Suomi",
+			"contactLanguageSv": "Ruotsi",
+			"contactLanguageEn": "Englanti"
+		}
+	}
 }

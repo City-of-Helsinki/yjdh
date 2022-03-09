@@ -3,7 +3,6 @@ import React from 'react';
 import JobPostings from 'tet/youth/components/jobPostings/JobPostings';
 import { GetStaticProps } from 'next';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import Container from 'shared/components/container/Container';
 
 const Postings: NextPage = () => {
   return <JobPostings />;
