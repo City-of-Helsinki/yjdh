@@ -97,7 +97,7 @@ class LinkedEventsClient:
                     # "end"
                 }
                 if publisher:
-                    params['publisher_ancestor'] = publisher
+                    params["publisher_ancestor"] = publisher
 
                 r = requests.get(
                     urljoin(settings.LINKEDEVENTS_URL, "event/"),

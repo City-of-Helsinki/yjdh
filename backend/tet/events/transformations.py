@@ -57,7 +57,7 @@ def enrich_update_event(event, email):
     # Not sure why it resets publication status from draft to public without the following line
     # This is not a problem because we keep the two in sync
     # publication_status is what decides whether the event is shown in Youth UI
-    event["publication_status"] = "public" if event['date_published'] else "draft"
+    event["publication_status"] = "public" if event["date_published"] else "draft"
     return event
 
 

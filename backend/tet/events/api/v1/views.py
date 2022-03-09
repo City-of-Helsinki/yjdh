@@ -12,6 +12,7 @@ from events.services import ServiceClient
 
 class JobPostingsViewSet(ViewSet):
     """CRUD operations for TET job postings"""
+
     permission_classes = [TetAdminPermission]
 
     def list(self, request):

@@ -26,7 +26,9 @@ def _email_matches(event, email):
 
 def _raise_unless_mocked():
     if not settings.NEXT_PUBLIC_MOCK_FLAG:
-        raise PermissionDenied(detail="User doesn't have permission to access this event")
+        raise PermissionDenied(
+            detail="User doesn't have permission to access this event"
+        )
 
 
 class ServiceClient:
@@ -85,7 +87,9 @@ class ServiceClient:
     def list_job_postings_for_user(self, user):
         # Currently this fetches all events under the TET data source, but it's more efficient if we can
         # filter by industry (toimiala) or company business id (Y-tunnus)
-        all_events = self.client.list_ongoing_events_authenticated(self._get_publisher(user))
+        all_events = self.client.list_ongoing_events_authenticated(
+            self._get_publisher(user)
+        )
         events = self._filter_events_for_user(all_events, user)
         job_postings = [reduce_get_event(e) for e in events]
 
