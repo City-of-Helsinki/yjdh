@@ -7,7 +7,7 @@ import EditById from 'tet/admin/components/editor/EditById';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import { TetEvent } from 'tet-shared/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
+import { eventToTetPosting } from 'tet-shared/backend-api/transformations';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';

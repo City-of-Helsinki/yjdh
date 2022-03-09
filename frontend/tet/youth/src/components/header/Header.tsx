@@ -35,6 +35,10 @@ const Header: React.FC = () => {
     [router, asPath],
   );
 
+  const titleClickHandler = () => {
+    void router.push('/');
+  };
+
   return (
     <Navigation
       title={t('common:appName')}
@@ -42,6 +46,7 @@ const Header: React.FC = () => {
       skipTo={''}
       skipToContentLabel={''}
       logoLanguage={logoLang as LogoLanguage}
+      onTitleClick={titleClickHandler}
     >
       <Navigation.Actions>
         {languages && onLanguageChange && (

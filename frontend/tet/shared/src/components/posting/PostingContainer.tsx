@@ -5,12 +5,16 @@ import PostingContent from 'tet-shared/components/posting/postingContent/Posting
 
 type Props = {
   posting: TetPosting;
+  showBackButton?: boolean;
 };
 
-const PostingContainer: React.FC<Props> = ({ posting }) => {
+const PostingContainer: React.FC<Props> = ({
+  posting,
+  showBackButton = false,
+}) => {
   return (
     <>
-      <PostingHero posting={posting} />
+      <PostingHero posting={posting} showBackButton={showBackButton} />
       <PostingContent posting={posting} />
     </>
   );

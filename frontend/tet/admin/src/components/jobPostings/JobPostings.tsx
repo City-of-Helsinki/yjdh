@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
 import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
-import { eventsToTetPostings } from 'tet/admin/backend-api/transformations';
+import { eventsToTetPostings } from 'tet-shared/backend-api/transformations';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();

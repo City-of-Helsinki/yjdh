@@ -4,10 +4,10 @@ import JobPostingCard from 'tet/youth/components/jobPostingCard/JobPostingCard';
 import { useTranslation } from 'next-i18next';
 import Container from 'shared/components/container/Container';
 import { Button } from 'hds-react';
-import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
+import { eventToTetPosting } from 'tet-shared/backend-api/transformations';
 import { $ButtonLoaderContainer } from './JobPostingList.sc';
-import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
-import useKeywordType from 'tet/admin/hooks/backend/useKeywordType';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
+import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
 import { TetEvent, LinkedEventsPagedResponse } from 'tet-shared/types/linkedevents';
 
 type Props = {

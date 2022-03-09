@@ -1,9 +1,15 @@
-import { LocalizedObject, TetEvent, TetEventPayload, TetEvents } from 'tet-shared/types/linkedevents';
+import {
+  LocalizedObject,
+  TetEvent,
+  TetEventPayload,
+  TetEvents,
+} from 'tet-shared/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import { KeywordFn, ClassificationType } from 'tet-shared/types/keywords';
 import { OptionType } from 'tet-shared/types/classification';
 
-export const getLocalizedString = (obj: LocalizedObject | undefined): string => (obj ? obj.fi : '');
+export const getLocalizedString = (obj: LocalizedObject | undefined): string =>
+  obj ? obj.fi : '';
 
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
@@ -15,7 +21,8 @@ export const hdsDateToIsoFormat = (str: string | undefined): string | null => {
   }
   const match = str.match(/^(\d+)\.(\d+)\.(\d+)/);
   if (match) {
-    const ensurePadding = (dayOrMonth: string): string => (dayOrMonth.length < 2 ? `0${dayOrMonth}` : dayOrMonth);
+    const ensurePadding = (dayOrMonth: string): string =>
+      dayOrMonth.length < 2 ? `0${dayOrMonth}` : dayOrMonth;
 
     return `${match[3]}-${ensurePadding(match[2])}-${ensurePadding(match[1])}`;
   }
@@ -31,7 +38,9 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   }
 
   const newDate = new Date(date);
-  return `${newDate.getDate()}.${newDate.getMonth() + 1}.${newDate.getFullYear()}`;
+  return `${newDate.getDate()}.${
+    newDate.getMonth() + 1
+  }.${newDate.getFullYear()}`;
 };
 
 /**
@@ -48,7 +57,7 @@ export const isoDateToHdsFormat = (date: string | null): string => {
 export const eventToTetPosting = (
   event: TetEvent,
   keywordType?: KeywordFn,
-  languageOptions?: OptionType[],
+  languageOptions?: OptionType[]
 ): TetPosting => {
   const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
   const spots = parsedSpots >= 0 ? parsedSpots : 1;
@@ -78,7 +87,10 @@ export const eventToTetPosting = (
     contact_phone: event.custom_data?.contact_phone || '',
     keywords: keywordType
       ? event.keywords
-          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.KEYWORD)
+          .filter(
+            (keyword) =>
+              keywordType(keyword['@id']) === ClassificationType.KEYWORD
+          )
           // note that with GET /event/ all but @id are empty
           .map((keyword) => ({
             name: getLocalizedString(keyword.name),
@@ -88,7 +100,10 @@ export const eventToTetPosting = (
       : [],
     keywords_working_methods: keywordType
       ? event.keywords
-          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.WORKING_METHOD)
+          .filter(
+            (keyword) =>
+              keywordType(keyword['@id']) === ClassificationType.WORKING_METHOD
+          )
           .map((keyword) => ({
             name: getLocalizedString(keyword.name),
             label: getLocalizedString(keyword.name),
@@ -97,7 +112,10 @@ export const eventToTetPosting = (
       : [],
     keywords_attributes: keywordType
       ? event.keywords
-          .filter((keyword) => keywordType(keyword['@id']) === ClassificationType.WORKING_FEATURE)
+          .filter(
+            (keyword) =>
+              keywordType(keyword['@id']) === ClassificationType.WORKING_FEATURE
+          )
           .map((keyword) => ({
             name: getLocalizedString(keyword.name),
             label: getLocalizedString(keyword.name),
@@ -108,14 +126,22 @@ export const eventToTetPosting = (
       ? event.in_language.map((obj) => {
           const splits = obj['@id'].split('/');
           const lang = splits[splits.length - 2];
-          return languageOptions.find((option) => option.value === lang) || { name: '', value: lang, label: '' };
+          return (
+            languageOptions.find((option) => option.value === lang) || {
+              name: '',
+              value: lang,
+              label: '',
+            }
+          );
         })
       : [],
     spots,
   };
 };
 
-export const eventsToTetPostings = (events: TetEvents | undefined): TetPostings => {
+export const eventsToTetPostings = (
+  events: TetEvents | undefined
+): TetPostings => {
   const postings: TetPostings = {
     draft: [],
     published: [],
@@ -157,5 +183,7 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
     contact_first_name: posting.contact_first_name,
     contact_last_name: posting.contact_last_name,
   },
-  in_language: posting.languages.map((lang) => ({ '@id': `http://localhost:8080/v1/language/${lang.value}/` })),
+  in_language: posting.languages.map((lang) => ({
+    '@id': `http://localhost:8080/v1/language/${lang.value}/`,
+  })),
 });

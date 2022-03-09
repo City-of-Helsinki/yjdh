@@ -11,7 +11,7 @@ import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
 import { DevTool } from '@hookform/devtools';
-import { tetPostingToEvent } from 'tet/admin/backend-api/transformations';
+import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
 
