@@ -42,6 +42,7 @@ class ServiceClient:
     def _get_event_and_raise_for_unauthorized(self, user, event_id):
         event = self.client.get_event(event_id)
         if self._is_city_employee(user) and not user.is_superuser:
+            LOGGER.warning(event["custom_data"])
             if event["custom_data"] is None:
                 _raise_unless_mocked()
             else:
