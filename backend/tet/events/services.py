@@ -1,6 +1,7 @@
 import logging
 from datetime import date
 
+from django.conf import settings
 from rest_framework.exceptions import PermissionDenied
 
 from events.linkedevents import LinkedEventsClient
@@ -9,7 +10,6 @@ from events.transformations import (
     enrich_update_event,
     reduce_get_event,
 )
-from tet import settings
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,7 +39,6 @@ class ServiceClient:
     def _is_city_employee(self, user):
         return True
 
-    # TODO return 403 instead of warning
     def _get_event_and_raise_for_unauthorized(self, user, event_id):
         event = self.client.get_event(event_id)
         if self._is_city_employee(user) and not user.is_superuser:
