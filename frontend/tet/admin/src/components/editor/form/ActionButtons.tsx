@@ -1,4 +1,4 @@
-import { Button, IconCross, IconEye, IconUpload } from 'hds-react';
+import { Button, IconCross, IconEye, IconUpload, IconSaveDiskette } from 'hds-react';
 import cloneDeep from 'lodash/cloneDeep';
 import { useTranslation } from 'next-i18next';
 import React, { useContext } from 'react';
@@ -56,31 +56,43 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
     <FormSection withoutDivider>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={3}>
-          <Button onClick={onSubmit} color={theme.colors.black90} disabled={isSubmitting}>
+          <Button
+            onClick={onSubmit}
+            disabled={isSubmitting}
+            iconLeft={<IconSaveDiskette />}
+            css={`
+              background-color: transparent;
+              color: ${theme.colors.black90};
+              border: ${theme.colors.black90} !important;
+            `}
+          >
             {t('common:editor.saveDraft')}
           </Button>
         </$GridCell>
         {allowDelete ? (
-          <$GridCell $colSpan={2}>
+          <$GridCell $colSpan={3}>
             <Button
               variant="supplementary"
               iconLeft={<IconCross />}
               disabled={isSubmitting}
               onClick={deletePostingHandler}
+              css={`
+                background-color: transparent;
+                color: ${theme.colors.black90};
+              `}
             >
               {t('common:editor.deletePosting')}
             </Button>
           </$GridCell>
         ) : (
-          <$GridCell $colSpan={2}>{null}</$GridCell>
+          <$GridCell $colSpan={3}>{null}</$GridCell>
         )}
-        <$GridCell $colSpan={2}>{null}</$GridCell>
-        <$GridCell $colSpan={3}>
+        <$GridCell $colSpan={3} style={{ textAlign: 'right' }}>
           <Button disabled={isSubmitting} iconLeft={<IconEye />} onClick={showPreview}>
             {t('common:editor.preview')}
           </Button>
         </$GridCell>
-        <$GridCell $colSpan={2}>
+        <$GridCell $colSpan={3} style={{ textAlign: 'right' }}>
           <Button
             variant="success"
             disabled={isSubmitting}
