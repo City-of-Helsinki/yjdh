@@ -23,6 +23,12 @@ def _email_matches(event, email):
         return False
     return event["custom_data"]["editor_email"] == email
 
+
+def _raise_unless_mocked():
+    if not settings.NEXT_PUBLIC_MOCK_FLAG:
+        raise PermissionDenied(detail="User doesn't have permission to access this event")
+
+
 class ServiceClient:
     def __init__(self):
         self.client = LinkedEventsClient()
@@ -34,35 +40,31 @@ class ServiceClient:
     # TODO return 403 instead of warning
     def _get_event_and_raise_for_unauthorized(self, user, event_id):
         event = self.client.get_event(event_id)
-        if self._is_city_employee(user) and not (user.is_staff or user.is_superuser):
+        if self._is_city_employee(user) and not user.is_superuser:
             if event["custom_data"] is None:
-                LOGGER.warning(
-                    f"Any city employee could update event {event['id']} because it has no custom_data"
-                )
+                _raise_unless_mocked()
             else:
                 if "editor_email" in event["custom_data"]:
                     if event["custom_data"]["editor_email"] != user.email:
                         LOGGER.warning(
-                            f"User {user.email} unauthorized access to event {event['id']}"
+                            f"User {user.email} was denied unauthorized access to event {event['id']}"
                         )
-                        if not settings.NEXT_PUBLIC_MOCK_FLAG:
-                            raise PermissionDenied(detail="User doesn't have permission to access this event")
+                        _raise_unless_mocked()
                 else:
-                    LOGGER.warning(
-                        f"Any city employee could update event {event['id']}, editor_email is not set in custom_data"
-                    )
+                    _raise_unless_mocked()
 
         else:
             LOGGER.warning(
                 "Authorization not implemented for company users (suomi.fi login)"
             )
+            _raise_unless_mocked()
 
         return event
 
     def _filter_events_for_user(self, all_events, user):
         if self._is_city_employee(user):
             if not settings.NEXT_PUBLIC_MOCK_FLAG:
-                if user.is_superuser or user.is_staff:
+                if user.is_superuser:
                     return all_events
                 else:
                     return [e for e in all_events if _email_matches(e, user.email)]
@@ -83,7 +85,7 @@ class ServiceClient:
     def list_job_postings_for_user(self, user):
         # Currently this fetches all events under the TET data source, but it's more efficient if we can
         # filter by industry (toimiala) or company business id (Y-tunnus)
-        all_events = self.client.list_ongoing_events_authenticated()
+        all_events = self.client.list_ongoing_events_authenticated(self._get_publisher(user))
         events = self._filter_events_for_user(all_events, user)
         job_postings = [reduce_get_event(e) for e in events]
 
