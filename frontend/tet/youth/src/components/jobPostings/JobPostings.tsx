@@ -17,6 +17,7 @@ const Postings: React.FC = () => {
     }
 
     if (error) {
+      //TODO
       return <div>Virhe datan latauksessa</div>;
     }
 

@@ -27,7 +27,9 @@ const JobPostingList: React.FC<Props> = ({ postings, onShowMore, isFetchingNextP
 
   return (
     <Container>
-      <h2>{total} hakutulosta</h2>
+      <h2>
+        {total} {t('common:postings.searchResults')}
+      </h2>
       {postings?.pages.map((group: LinkedEventsPagedResponse<TetEvent>, i: number) => {
         console.log('group', group);
         return (

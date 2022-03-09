@@ -17,6 +17,7 @@ import { IconPhoto } from 'hds-react';
 import { Button } from 'hds-react';
 import { useTheme } from 'styled-components';
 import { OptionType } from 'tet-shared/types/classification';
+import { useTranslation } from 'next-i18next';
 
 type Props = {
   jobPosting: any;
@@ -25,6 +26,7 @@ type Props = {
 const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const theme = useTheme();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const date = jobPosting.start_date + (jobPosting.end_date ? ` - ${jobPosting.end_date}` : '');
   const street_address = jobPosting.location.street_address ? `, ${jobPosting.location.street_address}` : '';
@@ -53,7 +55,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
         <$PostingAddress> {address}</$PostingAddress>
         <$PostingDescription>{jobPosting.description}</$PostingDescription>
         <$PostingLanguages>
-          <span>Kielisyys:</span> {languages}
+          <span>{t('common:postings.languages')}:</span> {languages}
         </$PostingLanguages>
         <$PostingCardBodyFooter>
           <Button
@@ -66,7 +68,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
             size="small"
             type="button"
           >
-            Lue lisää
+            {t('common:postings.readMore')}
           </Button>
         </$PostingCardBodyFooter>
       </$PostingCardBody>
