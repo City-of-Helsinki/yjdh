@@ -26,6 +26,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
 
   const date =
     posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
+  const languages = posting.languages.map((language) => language.label);
 
   return (
     <Container>
@@ -52,7 +53,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           />
           <PostingInfoItem
             title={t('common:postingTemplate.languages')}
-            body={posting.languages}
+            body={languages}
             icon={<IconInfoCircle />}
           />
         </$InfoWrapper>

@@ -8,6 +8,7 @@ import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 import { $ButtonLoaderContainer } from './JobPostingList.sc';
 import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
 import useKeywordType from 'tet/admin/hooks/backend/useKeywordType';
+import { TetEvent, LinkedEventsPagedResponse } from 'tet-shared/types/linkedevents';
 
 type Props = {
   postings: any;
@@ -20,14 +21,14 @@ const JobPostingList: React.FC<Props> = ({ postings, onShowMore, isFetchingNextP
   const { t } = useTranslation();
   const keywordResult = useKeywordType();
   const languageOptions = useLanguageOptions();
-  const eventsToPostings = (events) =>
+  const eventsToPostings = (events: TetEvent[]) =>
     events.map((event) => eventToTetPosting(event, keywordResult.getKeywordType, languageOptions));
   const total = postings?.pages[0].meta.count;
 
   return (
     <Container>
       <h2>{total} hakutulosta</h2>
-      {postings?.pages.map((group, i: number) => {
+      {postings?.pages.map((group: LinkedEventsPagedResponse<TetEvent>, i: number) => {
         console.log('group', group);
         return (
           <Fragment key={i}>

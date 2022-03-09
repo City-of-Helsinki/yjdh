@@ -28,7 +28,7 @@ const useGetPostings = (params: QueryParams): UseInfiniteQueryResult<LinkedEvent
       return handleResponse(res);
     },
     {
-      getNextPageParam: (lastPage, pages) => {
+      getNextPageParam: (lastPage, _pages) => {
         return lastPage.meta.next;
       },
       onError: () => handleError(),
