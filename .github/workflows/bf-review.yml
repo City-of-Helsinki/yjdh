@@ -124,7 +124,7 @@ jobs:
           K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY: ${{ secrets.K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY_REVIEW }}
           K8S_SECRET_PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY: ${{ secrets.K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY_REVIEW }}
         run: |
-          echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.EMPLOYER_URL }}/login?logout=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.APPLICANT_URL }}/login?logout=true" >> $GITHUB_ENV
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
           echo "K8S_SECRET_CREATE_SUPERUSER=${{ secrets.K8S_SECRET_CREATE_SUPERUSER_REVIEW }}" >> $GITHUB_ENV
           echo "K8S_SECRET_ADMIN_USER_PASSWORD=${{ secrets.K8S_SECRET_ADMIN_USER_PASSWORD_REVIEW }}" >> $GITHUB_ENV
@@ -171,7 +171,7 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
-          LOGOUT_REDIRECT_URL: ${{ env.EMPLOYER_URL }}/login?logout=true
+          LOGOUT_REDIRECT_URL: ${{ env.APPLICANT_URL }}/login?logout=true
       - name: Create PR comment for helsinkibenefit-V${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
