@@ -74,6 +74,22 @@ services:
       - .env.kesaseteli
     container_name: kesaseteli-handler
 
+  kesaseteli-local-proxy:
+    depends_on:
+      - postgres
+      - kesaseteli-backend
+      - kesaseteli-handler
+      - kesaseteli-youth
+    build:
+      context: ./localdevelopment/handler/nginx
+    container_name: handler-local-proxy
+    volumes:
+      - ./localdevelopment/handler/nginx/:/etc/nginx/
+    ports:
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:3100:3100
+      - 127.0.0.1:3200:3200
+
 volumes:
   pgdata:
     driver: local
