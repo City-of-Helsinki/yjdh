@@ -14,7 +14,7 @@ type EditByIdProps = {
 };
 
 const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
-  const { showPreview, tetPosting, getTemplateData } = useContext(PreviewContext);
+  const { showPreview, tetPosting } = useContext(PreviewContext);
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
@@ -22,12 +22,10 @@ const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
     if (isInitialRender) setIsInitialRender(false);
   }, []);
 
-  const templateData = getTemplateData();
-
   if (showPreview) {
     return (
       <PreviewWrapper>
-        <PostingContainer posting={templateData} />
+        <PostingContainer posting={tetPosting} />
       </PreviewWrapper>
     );
   }
