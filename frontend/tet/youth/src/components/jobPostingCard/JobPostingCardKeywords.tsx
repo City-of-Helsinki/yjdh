@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Tag } from 'hds-react';
 import { OptionType } from 'tet-shared/types/classification';
+import JobPosting from 'tet-shared/types/tetposting';
 import styled from 'styled-components';
 
 const $KeywordList = styled.ul`
@@ -17,7 +18,7 @@ const $KeywordList = styled.ul`
 `;
 
 type Props = {
-  jobPosting: any;
+  jobPosting: JobPosting;
 };
 
 const JobPostingCardKeywords: React.FC<Props> = ({ jobPosting }) => {

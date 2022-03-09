@@ -18,9 +18,10 @@ import { Button } from 'hds-react';
 import { useTheme } from 'styled-components';
 import { OptionType } from 'tet-shared/types/classification';
 import { useTranslation } from 'next-i18next';
+import JobPosting from 'tet-shared/types/tetposting';
 
 type Props = {
-  jobPosting: any;
+  jobPosting: JobPosting;
 };
 
 const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
