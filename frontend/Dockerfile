@@ -40,8 +40,7 @@ WORKDIR /app
 # Copy all files
 COPY --chown=appuser:appuser . .
 
-ENV NODE_OPTIONS="--max_old_space_size=8192"
-
+ENV NEXT_TELEMETRY_DISABLED 1
 # Bake package.json start command into the image
 ENV DEV_START "yarn $SERVICE:dev"
 CMD ["sh", "-c", "${DEV_START}"]
@@ -89,10 +88,7 @@ USER appuser
 WORKDIR /app
 
 # Copy build folder from stage 1
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next/standalone $PROJECT/$FOLDER/
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next/static $PROJECT/$FOLDER/.next/static
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
 
 # Copy next.js config
 COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/public app/next.config.js app/start.js ./

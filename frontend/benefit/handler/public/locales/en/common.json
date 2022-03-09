@@ -419,9 +419,5 @@
       "downloadRejectedApplications": "Hylätyt hakemukset CSV",
       "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
     }
-  },
-  "404Page": {
-    "pageNotFoundLabel": "Page was not found",
-    "pageNotFoundContent": "Oh no, something went wrong. Try to enter the application <lnk>here</lnk>, through the front page"
   }
 }
