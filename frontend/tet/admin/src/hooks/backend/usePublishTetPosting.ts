@@ -14,7 +14,10 @@ const usePublishTetPosting = (): UseMutationResult<TetPosting, AxiosError<Linked
   const { axios, handleResponse } = useBackendAPI();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const handleError = useLinkedEventsErrorHandler();
+  const handleError = useLinkedEventsErrorHandler({
+    errorTitle: 'Virhe julkaisussa', // TODO translations
+    errorMessage: 'TET-paikan julkaisu ei onnistunut', // TODO translations
+  });
 
   return useMutation<TetPosting, AxiosError<LinkedEventsError>, TetPosting>(
     'delete',
@@ -26,7 +29,7 @@ const usePublishTetPosting = (): UseMutationResult<TetPosting, AxiosError<Linked
         void router.push('/');
         showSuccessToast(t('common:publish.successTitle'), '');
       },
-      onError: (error) => handleError(error),
+      onError: handleError,
     },
   );
 };

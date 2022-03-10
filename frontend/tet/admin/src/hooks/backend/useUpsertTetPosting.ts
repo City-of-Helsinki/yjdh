@@ -13,7 +13,10 @@ const useUpsertTetPosting = (): UseMutationResult<TetUpsert, AxiosError<LinkedEv
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const handleError = useLinkedEventsErrorHandler();
+  const handleError = useLinkedEventsErrorHandler({
+    errorTitle: 'Virhe tapahtuman luonnissa',
+    errorMessage: 'Tapahtuman luonti/päivitys ei onnistunut',
+  });
 
   return useMutation<TetUpsert, AxiosError<LinkedEventsError>, TetUpsert>(
     'upsert',
