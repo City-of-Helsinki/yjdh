@@ -1,5 +1,5 @@
 import React from 'react';
-import { TetData } from 'tet-shared/types/TetData';
+import TetPosting from 'tet-shared/types/tetposting';
 import Container from 'shared/components/container/Container';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import {
@@ -12,7 +12,7 @@ import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
-  posting: TetData;
+  posting: TetPosting;
 };
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
@@ -26,6 +26,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
 
   const date =
     posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
+  const languages = posting.languages.map((language) => language.label);
 
   return (
     <Container>
@@ -52,7 +53,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           />
           <PostingInfoItem
             title={t('common:postingTemplate.languages')}
-            body={posting.languages}
+            body={languages}
             icon={<IconInfoCircle />}
           />
         </$InfoWrapper>

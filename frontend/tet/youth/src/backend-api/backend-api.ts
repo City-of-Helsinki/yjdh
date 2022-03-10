@@ -12,11 +12,14 @@ export const linkedEventsUrl =
   process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/';
 
 export const BackendEndpoint = {
-  EVENT: 'event/?sort=-name',
+  EVENT: 'event/?include=location,keywords&page_size=10&sort=-name',
   PLACE: 'place/',
   KEYWORD: 'keyword/',
 } as const;
 
+export const singleEvent = (id: string) => {
+  return `event/${id}?include=location,keywords`;
+};
 export const keywordToOptionType = (keyword: Keyword): OptionType => ({
   label: keyword.name.fi,
   name: keyword.name.fi,

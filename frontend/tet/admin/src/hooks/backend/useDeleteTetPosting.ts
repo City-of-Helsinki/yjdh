@@ -1,7 +1,7 @@
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import { AxiosError } from 'axios';
 import { ErrorData } from 'benefit/applicant/types/common';
 import { useRouter } from 'next/router';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TetData } from 'tet-shared/types/TetData';
+import TetPosting from 'tet-shared/types/tetposting';
 import Container from 'tet-shared//components/container/Container';
 import {
   $PostingHero,
@@ -13,17 +13,22 @@ import {
   $Spots,
   $Address,
   $ContactTitle,
+  $BackButton,
   $ContactInfo,
 } from 'tet-shared//components/posting/postingHero/PostingHero.sc';
 import { useTranslation } from 'next-i18next';
-import { IconLocation, Tag } from 'hds-react';
+import { OptionType } from 'tet-shared/types/classification';
+import { IconLocation, IconArrowLeft, Tag } from 'hds-react';
+import { useRouter } from 'next/router';
 
 type Props = {
-  posting: TetData;
+  posting: TetPosting;
+  showBackButton: boolean;
 };
 
-const PostingHero: React.FC<Props> = ({ posting }) => {
+const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const { t } = useTranslation();
+  const router = useRouter();
   const date =
     posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
   const street_address = posting.location.street_address
@@ -35,10 +40,14 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
   const city = posting.location.city ? `, ${posting.location.city}` : '';
   const address = posting.location.name + street_address + postal_code + city;
 
-  const keywordList = (list: string[], color: string) => {
+  const backButtonHandler = () => {
+    void router.push('/postings');
+  };
+
+  const keywordList = (list: OptionType[], color: string) => {
     return (
       <>
-        {list.map((keyword: string) => (
+        {list.map((keyword: OptionType) => (
           <li>
             <Tag
               theme={{
@@ -47,7 +56,7 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
                 '--tag-focus-outline-color': 'var(--color-black-90)',
               }}
             >
-              {keyword}
+              {keyword.name}
             </Tag>
           </li>
         ))}
@@ -59,6 +68,11 @@ const PostingHero: React.FC<Props> = ({ posting }) => {
     <$PostingHero>
       <Container>
         <$HeroWrapper>
+          {showBackButton && (
+            <$BackButton onClick={backButtonHandler}>
+              <IconArrowLeft size="m" />
+            </$BackButton>
+          )}
           <$ImageContainer
             imageUrl={
               'https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg'

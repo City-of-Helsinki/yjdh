@@ -12,17 +12,9 @@ import { linkedEventsUrl } from 'tet/youth/backend-api/backend-api';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 
 const App: React.FC<AppProps> = (appProps) => (
-  <BackendAPIProvider
-    baseURL={linkedEventsUrl}
-    headers={{
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    }}
-  >
-    <QueryClientProvider client={createQueryClient()}>
-      <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
-    </QueryClientProvider>
-  </BackendAPIProvider>
+  <QueryClientProvider client={createQueryClient()}>
+    <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
+  </QueryClientProvider>
 );
 
 export default appWithTranslation(App);

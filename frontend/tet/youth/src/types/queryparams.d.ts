@@ -4,4 +4,5 @@ export type QueryParams = {
   end?: string;
   keyword?: string;
   language?: string;
+  page?: number;
 };

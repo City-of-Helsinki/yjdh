@@ -231,48 +231,68 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         )
 
     @classmethod
-    def error_response(cls, reason: YouthApplicationRejectedReason):
-        return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=reason.json())
+    def error_response_with_logging(
+        cls, reason: YouthApplicationRejectedReason
+    ) -> JsonResponse:
+        response_status = status.HTTP_400_BAD_REQUEST
+        response_data = reason.json()
+        LOGGER.info(
+            f"Youth application submission rejected. "
+            f"Return HTTP status code: {response_status}. "
+            f"YouthApplicationRejectedReason: {response_data.get('code')}."
+        )
+        return JsonResponse(status=response_status, data=response_data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        # This function is based on CreateModelMixin class's create function.
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            # This function is based on CreateModelMixin class's create function.
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        # Data is valid but let's check other criteria before creating the object
-        email = serializer.validated_data["email"]
-        social_security_number = serializer.validated_data["social_security_number"]
+            # Data is valid but let's check other criteria before creating the object
+            email = serializer.validated_data["email"]
+            social_security_number = serializer.validated_data["social_security_number"]
 
-        if YouthApplication.is_email_or_social_security_number_active(
-            email, social_security_number
-        ):
-            return self.error_response(YouthApplicationRejectedReason.ALREADY_ASSIGNED)
-        elif YouthApplication.is_email_used(email):
-            return self.error_response(YouthApplicationRejectedReason.EMAIL_IN_USE)
-
-        # Data was valid and other criteria passed too, so let's create the object
-        self.perform_create(serializer)
-
-        # Send the localized activation email
-        youth_application = serializer.instance
-        was_email_sent = youth_application.send_activation_email(
-            request, youth_application.language
-        )
-
-        if not was_email_sent:
-            transaction.set_rollback(True)
-            with translation.override(youth_application.language):
-                return HttpResponse(
-                    _("Failed to send activation email"),
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            if YouthApplication.is_email_or_social_security_number_active(
+                email, social_security_number
+            ):
+                return self.error_response_with_logging(
+                    YouthApplicationRejectedReason.ALREADY_ASSIGNED
+                )
+            elif YouthApplication.is_email_used(email):
+                return self.error_response_with_logging(
+                    YouthApplicationRejectedReason.EMAIL_IN_USE
                 )
 
-        # Return success creating the object
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+            # Data was valid and other criteria passed too, so let's create the object
+            self.perform_create(serializer)
+
+            # Send the localized activation email
+            youth_application = serializer.instance
+            was_email_sent = youth_application.send_activation_email(
+                request, youth_application.language
+            )
+
+            if not was_email_sent:
+                transaction.set_rollback(True)
+                with translation.override(youth_application.language):
+                    return HttpResponse(
+                        _("Failed to send activation email"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
+
+            # Return success creating the object
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                serializer.data, status=status.HTTP_201_CREATED, headers=headers
+            )
+        except ValidationError as e:
+            LOGGER.error(
+                f"Youth application submission rejected because of validation error. "
+                f"Validation error codes: {str(e.get_codes())}"
+            )
+            raise
 
 
 class EmployerApplicationViewSet(AuditLoggingModelViewSet):

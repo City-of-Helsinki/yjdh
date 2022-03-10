@@ -8,10 +8,10 @@ import { useQuery } from 'react-query';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { useRouter } from 'next/router';
-import TetPosting, { TetPostings } from 'tet/admin/types/tetposting';
+import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
-import { TetEvent, TetEvents } from 'tet/admin/types/linkedevents';
-import { eventsToTetPostings } from 'tet/admin/backend-api/transformations';
+import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
+import { eventsToTetPostings } from 'tet-shared/backend-api/transformations';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();

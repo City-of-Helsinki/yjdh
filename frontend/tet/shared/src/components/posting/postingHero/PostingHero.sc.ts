@@ -10,11 +10,26 @@ export const $PostingHero = styled.div`
 `;
 
 export const $HeroWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-flow: row wrap;
 
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
     flex-wrap: nowrap;
+  }
+`;
+
+export const $BackButton = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: ${(props) => props.theme.colors.white};
+  padding: ${(props) => props.theme.spacing.xs3};
+  cursor: pointer;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.xl}) {
+    left: -3rem;
+    padding: ${(props) => props.theme.spacing.xs2};
   }
 `;
 

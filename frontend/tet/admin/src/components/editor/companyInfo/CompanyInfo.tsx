@@ -14,7 +14,7 @@ import TextInput from 'tet/admin/components/editor/TextInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import { LocationType, OptionType } from 'tet-shared/types/classification';
 import ComboboxSingleSelect from 'tet/admin/components/editor/ComboboxSingleSelect';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 const CompanyInfo: React.FC = () => {
   const { t } = useTranslation();

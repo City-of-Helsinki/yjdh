@@ -1,6 +1,6 @@
 import { ROUTES } from 'benefit/applicant/constants';
 import useLogin from 'benefit/applicant/hooks/useLogin';
-import useLogoutQuery from 'benefit/applicant/hooks/useLogoutQuery';
+import useLogout from 'benefit/applicant/hooks/useLogout';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
 import { Button, IconLock, IconSpeechbubbleText } from 'hds-react';
 import noop from 'lodash/noop';
@@ -21,15 +21,16 @@ const Header: React.FC = () => {
 
   const login = useLogin();
   const userQuery = useUserQuery();
-  const logoutQuery = useLogoutQuery();
 
-  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
+  const logout = useLogout();
+
+  const { isLoading, isSuccess, data } = userQuery;
   const isLoginPage = asPath?.startsWith(ROUTES.LOGIN);
 
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
     useToggle(false);
 
-  const isAuthenticated = !isLoginPage && userQuery.isSuccess;
+  const isAuthenticated = !isLoginPage && isSuccess;
 
   return (
     <>
@@ -39,12 +40,12 @@ const Header: React.FC = () => {
         languages={languageOptions}
         onLanguageChange={handleLanguageChange}
         login={{
-          isAuthenticated: !isLoginPage && userQuery.isSuccess,
+          isAuthenticated: !isLoginPage && isSuccess,
           loginLabel: t('common:header.loginLabel'),
           logoutLabel: t('common:header.logoutLabel'),
           onLogin: !isLoading ? login : noop,
-          onLogout: !isLoading ? () => logoutQuery.mutate({}) : noop,
-          userName: userQuery.isSuccess ? userQuery.data.name : undefined,
+          onLogout: !isLoading ? logout : noop,
+          userName: isSuccess ? data?.name : undefined,
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}
         customItems={
