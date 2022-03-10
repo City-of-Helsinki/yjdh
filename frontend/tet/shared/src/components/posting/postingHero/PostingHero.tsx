@@ -20,6 +20,7 @@ import { useTranslation } from 'next-i18next';
 import { OptionType } from 'tet-shared/types/classification';
 import { IconLocation, IconArrowLeft, Tag } from 'hds-react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 type Props = {
   posting: TetPosting;
@@ -77,7 +78,16 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
             imageUrl={
               'https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg'
             }
-          ></$ImageContainer>
+          >
+            <Image
+              width="100%"
+              height="100%"
+              layout="responsive"
+              objectFit="cover"
+              src="/event_placeholder_B.jpg"
+              alt="canteen counter"
+            />
+          </$ImageContainer>
           <$HeroContentWrapper>
             <$Keywords>
               {keywordList(posting.keywords_working_methods, 'success-light')}

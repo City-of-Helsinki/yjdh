@@ -80,10 +80,12 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   return (
     <$Menu ref={ref}>
       <ul>
-        <$MenuItem onClick={publishPostingHandler}>
-          <IconEye />
-          <span>{t('common:application.jobPostings.menu.publishNow')}</span>
-        </$MenuItem>
+        {!posting.date_published && (
+          <$MenuItem onClick={publishPostingHandler}>
+            <IconEye />
+            <span>{t('common:application.jobPostings.menu.publishNow')}</span>
+          </$MenuItem>
+        )}
         <$MenuItem onClick={editPostingHandler}>
           <IconPen />
           <span>{t('common:application.jobPostings.menu.edit')}</span>

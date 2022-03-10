@@ -15,6 +15,7 @@ import {
 import { IconMenuDots, IconCalendar, IconGroup, IconEye, IconEyeCrossed, IconPhoto } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import JobPostingsListItemMenu from 'tet/admin/components/jobPostings/JobPostingsListItemMenu';
+import Image from 'next/image';
 type JobPostingsListItemProps = {
   posting: TetPosting;
 };
@@ -30,7 +31,14 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
   return (
     <$PostingCard>
       <$ImageContainer>
-        <IconPhoto />
+        <Image
+          width="100%"
+          height="100%"
+          layout="responsive"
+          objectFit="cover"
+          src="/event_placeholder_B.jpg"
+          alt="canteen counter"
+        />
       </$ImageContainer>
       <$PostingCardBody>
         <$PostingHeader>
