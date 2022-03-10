@@ -49,6 +49,13 @@ class ServiceClient:
         return True
 
     def _get_event_and_raise_for_unauthorized(self, user, event_id):
+        """Raises PermissionDenied unless `user` is authorized to access event `event_id`
+        and also returns the event.
+
+        All operations that read, modify or delete events should call this method.
+
+        See `test_services.py` to understand the access logic better.
+        """
         event = self.client.get_event(event_id)
         LOGGER.warning(event)
         if self._is_city_employee(user):
@@ -66,6 +73,7 @@ class ServiceClient:
         return event
 
     def _filter_events_for_user(self, all_events, user):
+        """Filters events that `user` is authorized to access"""
         if self._is_city_employee(user):
             if not settings.NEXT_PUBLIC_MOCK_FLAG:
                 if user.is_superuser:
@@ -119,7 +127,6 @@ class ServiceClient:
 
     def publish_job_posting(self, event_id, user):
         event = self._get_event_and_raise_for_unauthorized(user, event_id)
-        # TODO do we also need to set event status?
         event["publication_status"] = "public"
         event["date_published"] = date.today().isoformat()
         updated_event = self.client.update_event(event_id, event)

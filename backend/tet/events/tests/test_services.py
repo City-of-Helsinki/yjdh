@@ -106,8 +106,11 @@ def test_edit_tet_posting(requests_mock):
     client = ServiceClient()
 
     # Updating shouldn't raise when either `editor_email` or `editor_oid` is correctly set in event `custom_data`
+
     client.update_tet_event("tet:test-user-email-set", ADD_EVENT_PAYLOAD, user)
     client.update_tet_event("tet:test-user-oid-set", ADD_EVENT_PAYLOAD, user)
+
+    # Updating other events should always raise PermissionDenied
 
     with pytest.raises(PermissionDenied):
         client.update_tet_event("tet:other-user", ADD_EVENT_PAYLOAD, user)
@@ -120,3 +123,6 @@ def test_edit_tet_posting(requests_mock):
 
 
 # TODO add tests for delete and publish
+# delete and publish both use the same `ServiceClient._get_event_and_raise_for_unauthorized`, so testing that
+# access control works for update ensures that it works for them too. However, these tests should be added
+# to test for regressions when delete or publish might be modified.
