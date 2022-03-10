@@ -18,10 +18,19 @@ def is_published(posting):
     return posting["publication_status"] == "public"
 
 
-def _email_matches(event, email):
-    if event["custom_data"] is None or "editor_email" not in event["custom_data"]:
+def _user_matches(event, user):
+    if event["custom_data"] is None:
         return False
-    return event["custom_data"]["editor_email"] == email
+
+    username_matches = False
+    oid_matches = False
+
+    if user.email and "editor_email" in event["custom_data"]:
+        username_matches = event["custom_data"]["editor_email"] == user.email
+    if user.username and "editor_oid" in event["custom_data"]:
+        oid_matches = event["custom_data"]["editor_oid"] == user.username
+
+    return username_matches or oid_matches
 
 
 def _raise_unless_mocked():
@@ -41,20 +50,12 @@ class ServiceClient:
 
     def _get_event_and_raise_for_unauthorized(self, user, event_id):
         event = self.client.get_event(event_id)
-        if self._is_city_employee(user) and not user.is_superuser:
-            LOGGER.warning(event["custom_data"])
-            if event["custom_data"] is None:
+        if self._is_city_employee(user):
+            if not _user_matches(event, user):
+                LOGGER.warning(
+                    f"User {user.email} was denied unauthorized access to event {event['id']}"
+                )
                 _raise_unless_mocked()
-            else:
-                if "editor_email" in event["custom_data"]:
-                    if event["custom_data"]["editor_email"] != user.email:
-                        LOGGER.warning(
-                            f"User {user.email} was denied unauthorized access to event {event['id']}"
-                        )
-                        _raise_unless_mocked()
-                else:
-                    _raise_unless_mocked()
-
         else:
             LOGGER.warning(
                 "Authorization not implemented for company users (suomi.fi login)"
@@ -69,7 +70,7 @@ class ServiceClient:
                 if user.is_superuser:
                     return all_events
                 else:
-                    return [e for e in all_events if _email_matches(e, user.email)]
+                    return [e for e in all_events if _user_matches(e, user)]
             else:
                 return all_events
         else:
@@ -112,7 +113,7 @@ class ServiceClient:
 
     def add_tet_event(self, validated_data, user):
         event = enrich_create_event(
-            validated_data, self._get_publisher(user), user.email
+            validated_data, self._get_publisher(user), user
         )
         created_event = self.client.create_event(event)
         return reduce_get_event(created_event)
@@ -128,7 +129,7 @@ class ServiceClient:
 
     def update_tet_event(self, event_id, validated_data, user):
         self._get_event_and_raise_for_unauthorized(user, event_id)
-        event = enrich_update_event(validated_data, user.email)
+        event = enrich_update_event(validated_data, user)
         updated_event = self.client.update_event(event_id, event)
 
         return reduce_get_event(updated_event)

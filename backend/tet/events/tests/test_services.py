@@ -25,7 +25,8 @@ LOGGER = logging.getLogger(__name__)
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    LINKEDEVENTS_URL='http://localhost/'
+    LINKEDEVENTS_URL='http://localhost/',
+    LINKEDEVENTS_API_KEY='test',
 )
 def test_get_postings(requests_mock):
     """Test that posts are filtered by user's email and divide into published/draft works"""
@@ -53,7 +54,8 @@ def test_get_postings(requests_mock):
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    LINKEDEVENTS_URL='http://localhost/'
+    LINKEDEVENTS_URL='http://localhost/',
+    LINKEDEVENTS_API_KEY='test',
 )
 def test_add_posting(requests_mock):
     requests_mock.post('http://localhost/event/', json=ADD_EVENT_RESPONSE)
@@ -64,7 +66,8 @@ def test_add_posting(requests_mock):
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
-    LINKEDEVENTS_URL='http://localhost/'
+    LINKEDEVENTS_URL='http://localhost/',
+    LINKEDEVENTS_API_KEY='test',
 )
 def test_edit_tet_posting(requests_mock):
     matcher = re.compile('.*')
