@@ -31,6 +31,10 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
     data.calculation?.handlerDetails?.lastName
   );
 
+  if (!data.applicationNumber) {
+    return null;
+  }
+
   return (
     <$Wrapper>
       <Container>
