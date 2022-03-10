@@ -18,7 +18,7 @@ import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions'
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name } = useValidationRules();
+  const { required, name, description } = useValidationRules();
 
   const languageOptions = useLanguageOptions();
 
@@ -81,7 +81,7 @@ const PostingDetails: React.FC = () => {
           <TextArea
             id="description"
             label={t('common:editor.posting.description')}
-            registerOptions={{ required: required }}
+            registerOptions={description}
             required={true}
           />
         </$GridCell>
