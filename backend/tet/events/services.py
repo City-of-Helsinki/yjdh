@@ -50,6 +50,7 @@ class ServiceClient:
 
     def _get_event_and_raise_for_unauthorized(self, user, event_id):
         event = self.client.get_event(event_id)
+        LOGGER.warning(event)
         if self._is_city_employee(user):
             if not _user_matches(event, user):
                 LOGGER.warning(
@@ -112,9 +113,7 @@ class ServiceClient:
         return reduce_get_event(event)
 
     def add_tet_event(self, validated_data, user):
-        event = enrich_create_event(
-            validated_data, self._get_publisher(user), user
-        )
+        event = enrich_create_event(validated_data, self._get_publisher(user), user)
         created_event = self.client.create_event(event)
         return reduce_get_event(created_event)
 
