@@ -57,7 +57,8 @@
       "send": "Lähetä hakemus",
       "back": "Back",
       "edit": "Muokkaa",
-      "close": "Sulje"
+      "close": "Sulje",
+      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
     },
     "sections": {
       "company": {
