@@ -1,7 +1,7 @@
 import { ROUTES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
-import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { NavigationItem, OptionType } from 'shared/types/common';
 import { getLanguageOptions } from 'shared/utils/common';
@@ -32,10 +32,6 @@ const useHeader = (): ExtendedComponentProps => {
   const navigationItems = React.useMemo(
     (): NavigationItem[] => [
       { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
-      {
-        label: t('common:header.navigation.processed'),
-        url: '#1',
-      },
       {
         label: t('common:header.navigation.archive'),
         url: ROUTES.APPLICATIONS_ARCHIVE,
