@@ -1,6 +1,6 @@
 import React from 'react';
-import PostingSearch from 'tet/youth/components/postingSearch/PostingSearch';
-import PostingList from 'tet/youth/components/PostingList/PostingList';
+import JobPostingSearch from 'tet/youth/components/jobPostingSearch/JobPostingSearch';
+import JobPostingList from 'tet/youth/components/jobPostingList/JobPostingList';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { useRouter } from 'next/router';
@@ -8,10 +8,8 @@ import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
 
 const Postings: React.FC = () => {
   const router = useRouter();
-
   const params = router.query;
-
-  const { isLoading, data, error } = useGetPostings(params);
+  const { isLoading, data, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useGetPostings(params);
 
   const postings = () => {
     if (isLoading) {
@@ -19,11 +17,20 @@ const Postings: React.FC = () => {
     }
 
     if (error) {
+      //TODO
       return <div>Virhe datan latauksessa</div>;
     }
 
     if (data) {
-      return <PostingList postings={data.data}></PostingList>;
+      console.log(data, 'data');
+      return (
+        <JobPostingList
+          postings={data}
+          isFetchingNextPage={isFetchingNextPage}
+          onShowMore={() => fetchNextPage()}
+          hasNextPage={hasNextPage}
+        />
+      );
     } else {
       //TODO
       return <div>Ei hakutuloksia</div>;
@@ -54,7 +61,7 @@ const Postings: React.FC = () => {
 
   return (
     <div>
-      <PostingSearch initParams={params} onSearchByFilters={searchHandler}></PostingSearch>
+      <JobPostingSearch initParams={params} onSearchByFilters={searchHandler}></JobPostingSearch>
       {postings()}
     </div>
   );

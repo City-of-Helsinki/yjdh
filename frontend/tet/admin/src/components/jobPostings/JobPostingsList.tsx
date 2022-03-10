@@ -1,5 +1,5 @@
 import * as React from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import { useTranslation } from 'next-i18next';
 import JobPostingsSection from 'tet/admin/components/jobPostings/JobPostingsSection';
 

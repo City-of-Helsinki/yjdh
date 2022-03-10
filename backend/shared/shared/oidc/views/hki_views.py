@@ -1,6 +1,6 @@
 import logging
+from urllib.parse import urlencode, urljoin
 
-import requests
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.sessions.models import Session
@@ -11,7 +11,6 @@ from django.views.generic import View
 from mozilla_django_oidc.views import (
     OIDCAuthenticationCallbackView,
     OIDCAuthenticationRequestView,
-    OIDCLogoutView,
 )
 from requests.exceptions import HTTPError
 
@@ -57,38 +56,44 @@ class HelsinkiOIDCAuthenticationCallbackView(OIDCAuthenticationCallbackView):
         return HttpResponseRedirect(url)
 
 
-class HelsinkiOIDCLogoutView(OIDCLogoutView):
-    """Override OIDCLogoutView to match the keycloak backchannel logout"""
+class HelsinkiOIDCLogoutView(View):
+    """
+    Initiate logout process with Keycloak.
+    Use GET request like e.g. Django auth logout does."""
 
-    def post(self, request):
+    http_method_names = ["get"]
+
+    def get(self, request):
         if request.user.is_authenticated:
             if not request.session.get("oidc_id_token"):
                 auth.logout(request)
-                return HttpResponse("OK", status=200)
+                return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
-            payload = {
+            params = {
                 "id_token_hint": request.session.get("oidc_id_token"),
-                "refresh_token": request.session.get("oidc_refresh_token"),
-                "client_id": settings.OIDC_RP_CLIENT_ID,
-                "client_secret": settings.OIDC_RP_CLIENT_SECRET,
+                "post_logout_redirect_uri": settings.OIDC_OP_LOGOUT_CALLBACK_URL,
             }
 
-            response = requests.post(
-                settings.OIDC_OP_LOGOUT_ENDPOINT,
-                data=payload,
-                verify=self.get_settings("OIDC_VERIFY_SSL", True),
-                timeout=self.get_settings("OIDC_TIMEOUT", None),
-                proxies=self.get_settings("OIDC_PROXY", None),
-            )
-
-            try:
-                response.raise_for_status()
-            except HTTPError as e:
-                logger.error(str(e))
-
+            query = urlencode(params)
+            redirect_url = urljoin(settings.OIDC_OP_LOGOUT_ENDPOINT, "?" + query)
             auth.logout(request)
+            return HttpResponseRedirect(redirect_url)
+        else:
+            # user is already logged out, inform them about the fact
+            HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
-        return HttpResponse("OK", status=200)
+
+class HelsinkiOIDCLogoutCallbackView(View):
+    """This callback is called after the suomi.fi logout has been performed at the city profile"""
+
+    http_method_names = ["get"]
+
+    def get(self, request):
+        # As of 2021-12, the city profile does not provide any error/status codes along with the
+        # callback. If such parameters are added in the future, we would handle them here.
+        # Now we just assume that the logout has been done successfully and redirect to
+        # the logout landing URL in the frontend.
+        return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 
 class HelsinkiOIDCUserInfoView(View):

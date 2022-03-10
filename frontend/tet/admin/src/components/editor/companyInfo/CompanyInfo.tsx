@@ -1,5 +1,3 @@
-// TODO a good reference what this should look like is benefit/applicant/src/components/applications/forms/application/step1/companyInfo/CompanyInfo.tsx
-
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
@@ -14,7 +12,7 @@ import TextInput from 'tet/admin/components/editor/TextInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import { LocationType, OptionType } from 'tet-shared/types/classification';
 import ComboboxSingleSelect from 'tet/admin/components/editor/ComboboxSingleSelect';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 const CompanyInfo: React.FC = () => {
   const { t } = useTranslation();

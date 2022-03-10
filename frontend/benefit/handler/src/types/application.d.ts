@@ -286,7 +286,6 @@ export type ApplicationData = {
   pay_subsidies?: PaySubsidyData[];
   duration_in_months_rounded?: string;
   log_entry_comment?: string;
-  granted_as_de_minimis_aid?: boolean;
   training_compensations: TrainingCompensationData[];
   handled_at?: string;
   batch?: BatchData;
@@ -460,7 +459,6 @@ export type Application = {
   paySubsidies?: PaySubsidy[];
   durationInMonthsRounded?: string;
   logEntryComment?: string;
-  grantedAsDeMinimisAid?: boolean;
   trainingCompensations?: TrainingCompensation[];
   batch?: Batch;
   handledAt?: string;

@@ -1,19 +1,15 @@
-import Axios, { AxiosInstance } from 'axios';
-import { QueryClient, QueryFunctionContext, QueryKey } from 'react-query';
-import { linkedEventsUrl, BackendEndPoints } from 'tet/youth/backend-api/backend-api';
-
-export const createAxios = (): AxiosInstance =>
-  Axios.create({
-    baseURL: linkedEventsUrl,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-  });
+import { QueryClient } from 'react-query';
 
 const createQueryClient = (): QueryClient =>
   new QueryClient({
-    defaultOptions: {},
+    defaultOptions: {
+      queries: {
+        retry: (failureCount, error) =>
+          process.env.NODE_ENV === 'production' && failureCount < 3 && !/40[134]/.test((error as Error).message),
+        staleTime: 30_000,
+        notifyOnChangeProps: 'tracked',
+      },
+    },
   });
 
 export default createQueryClient;

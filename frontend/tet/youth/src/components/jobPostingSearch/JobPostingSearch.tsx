@@ -4,11 +4,11 @@ import { Button } from 'hds-react';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import Container from 'shared/components/container/Container';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
-import { $Search } from 'tet/youth/components/postingSearch/PostingSearch.sc';
+import { $Search } from 'tet/youth/components/jobPostingSearch/JobPostingSearch.sc';
 import { useTranslation } from 'next-i18next';
 import { IconGroup, IconGlobe } from 'hds-react';
 import { convertToBackendDateFormat, convertToUIDateFormat } from 'shared/utils/date.utils';
-import PostingSearchTags from 'tet/youth/components/postingSearch/postingSearchTags/PostingSearchTags';
+import PostingSearchTags from 'tet/youth/components/jobPostingSearch/jobPostingSearchTags/JobPostingSearchTags';
 import useGetKeywords from 'tet/youth/hooks/backend/useGetKeywords';
 import { keywordToOptionType } from 'tet/youth/backend-api/backend-api'; //TODO to shared
 import { Language } from 'shared/i18n/i18n';

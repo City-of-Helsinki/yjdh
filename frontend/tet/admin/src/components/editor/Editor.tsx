@@ -3,7 +3,7 @@ import CompanyInfo from 'tet/admin/components/editor/companyInfo/CompanyInfo';
 import PostingDetails from 'tet/admin/components/editor/postingDetails/PostingDetails';
 import ContactPerson from 'tet/admin/components/editor/contactPerson/ContactPerson';
 import { FormProvider, useForm } from 'react-hook-form';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import ActionButtons from 'tet/admin/components/editor/form/ActionButtons';
 import { useTranslation } from 'next-i18next';
 import EditorErrorNotification from 'tet/admin/components/editor/EditorErrorNotification';
@@ -11,7 +11,7 @@ import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
 import { DevTool } from '@hookform/devtools';
-import { tetPostingToEvent } from 'tet/admin/backend-api/transformations';
+import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
 
@@ -19,6 +19,7 @@ type EditorProps = {
   // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
   allowDelete?: boolean;
+  allowPublish?: boolean;
 };
 
 export type EditorSectionProps = {
@@ -26,7 +27,7 @@ export type EditorSectionProps = {
 };
 
 // add new posting / edit existing
-const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => {
+const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true, allowPublish = false }) => {
   const { t } = useTranslation();
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
@@ -57,7 +58,11 @@ const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => 
           <ContactPerson />
           <PostingDetails />
           <Classification />
-          <ActionButtons onSubmit={methods.handleSubmit(handleSuccess)} allowDelete={allowDelete} />
+          <ActionButtons
+            onSubmit={methods.handleSubmit(handleSuccess)}
+            allowDelete={allowDelete}
+            allowPublish={allowPublish}
+          />
         </form>
       </FormProvider>
       <DevTool control={methods.control} />

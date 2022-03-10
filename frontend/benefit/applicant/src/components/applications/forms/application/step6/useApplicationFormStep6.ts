@@ -6,10 +6,11 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
+  TermsProp,
 } from 'benefit/applicant/types/application';
 import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
 import { TFunction } from 'next-i18next';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -26,6 +27,8 @@ type ExtendedComponentProps = {
   cbPrefix: string;
   textLocale: string;
   checkedArray: boolean[];
+  applicantTermsInEffectUrl: string;
+  openTermsAsPDF: () => void;
 };
 
 const useApplicationFormStep6 = (
@@ -106,6 +109,25 @@ const useApplicationFormStep6 = (
     void onDelete(application.id ?? '');
   };
 
+  const applicantTermsInEffectUrl = React.useMemo(() => {
+    if (
+      application.applicantTermsInEffect &&
+      application.applicantTermsInEffect[`termsPdf${textLocale}` as TermsProp]
+    )
+      return application.applicantTermsInEffect[
+        `termsPdf${textLocale}` as TermsProp
+      ];
+    return '';
+  }, [application.applicantTermsInEffect, textLocale]);
+
+  const openTermsAsPDF = (): void => {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    const newTab = window.open(applicantTermsInEffectUrl, '_blank');
+    if (newTab) {
+      newTab.focus();
+    }
+  };
+
   return {
     t,
     handleBack: onBack,
@@ -118,6 +140,8 @@ const useApplicationFormStep6 = (
     cbPrefix,
     textLocale,
     checkedArray,
+    applicantTermsInEffectUrl,
+    openTermsAsPDF,
   };
 };
 
