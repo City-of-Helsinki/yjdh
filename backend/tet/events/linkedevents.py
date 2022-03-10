@@ -120,6 +120,7 @@ class LinkedEventsClient:
         params = {
             "data_source": "tet",
             "nocache": True,
+            "include": "location,keywords",
         }
         return self._api_call(
             requests_method=requests.get,

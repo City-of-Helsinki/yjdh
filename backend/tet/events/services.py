@@ -115,9 +115,6 @@ class ServiceClient:
     def get_tet_event(self, event_id, user):
         event = self._get_event_and_raise_for_unauthorized(user, event_id)
 
-        event["location"] = self.client.get_url(event["location"]["@id"])
-        event["keywords"] = [self.client.get_url(k["@id"]) for k in event["keywords"]]
-
         return reduce_get_event(event)
 
     def add_tet_event(self, validated_data, user):
