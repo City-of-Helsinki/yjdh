@@ -1,6 +1,9 @@
-import { ClassificationType, KeywordFn } from 'tet/admin/types/keywords';
+import { ClassificationType, KeywordFn } from 'tet-shared/types/keywords';
 import { useQueries } from 'react-query';
-import { getWorkFeatures, getWorkMethods } from 'tet/admin/backend-api/linked-events-api';
+import {
+  getWorkFeatures,
+  getWorkMethods,
+} from 'tet/admin/backend-api/linked-events-api';
 
 export type UseKeywordResult = {
   getKeywordType?: KeywordFn;

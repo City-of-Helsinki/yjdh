@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import Editor from 'tet/admin/components/editor/Editor';
 import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
@@ -12,10 +12,11 @@ type EditByIdProps = {
   title: string;
   data: TetPosting;
   allowDelete?: boolean;
+  allowPublish?: boolean;
 };
 
-const EditById: React.FC<EditByIdProps> = ({ title, data, allowDelete = true }) => {
-  const { showPreview, tetPosting, getTemplateData } = useContext(PreviewContext);
+const EditById: React.FC<EditByIdProps> = ({ title, data, allowDelete = true, allowPublish = false }) => {
+  const { showPreview, tetPosting } = useContext(PreviewContext);
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
@@ -23,12 +24,10 @@ const EditById: React.FC<EditByIdProps> = ({ title, data, allowDelete = true }) 
     if (isInitialRender) setIsInitialRender(false);
   }, []);
 
-  const templateData = getTemplateData();
-
   if (showPreview) {
     return (
       <PreviewWrapper>
-        <PostingContainer posting={templateData} />
+        <PostingContainer posting={tetPosting} />
       </PreviewWrapper>
     );
   }
@@ -39,7 +38,11 @@ const EditById: React.FC<EditByIdProps> = ({ title, data, allowDelete = true }) 
         <$HeadingContainer>
           <$Heading>{title}</$Heading>
         </$HeadingContainer>
-        <Editor initialValue={isInitialRender ? data : tetPosting} allowDelete={allowDelete} />
+        <Editor
+          initialValue={isInitialRender ? data : tetPosting}
+          allowDelete={allowDelete}
+          allowPublish={allowPublish}
+        />
       </Container>
     </>
   );

@@ -6,7 +6,7 @@ import useConfirm from 'shared/hooks/useConfirm';
 import { $Menu, $MenuItem } from 'tet/admin/components/jobPostings/JobPostingsListItemMenu.sc';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import usePublishTetPosting from 'tet/admin/hooks/backend/usePublishTetPosting';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type JobPostingsListItemMenuProps = {
   posting: TetPosting;

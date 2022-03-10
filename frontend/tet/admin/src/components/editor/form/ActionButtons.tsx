@@ -9,14 +9,15 @@ import useConfirm from 'shared/hooks/useConfirm';
 import { useTheme } from 'styled-components';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   onSubmit: () => void;
   allowDelete: boolean;
+  allowPublish: boolean;
 };
 
-const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
+const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPublish }) => {
   const { setPreviewVisibility, setTetPostingData } = useContext(PreviewContext);
   const deleteTetPosting = useDeleteTetPosting();
   const { confirm } = useConfirm();
@@ -85,21 +86,23 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
         ) : (
           <$GridCell $colSpan={3}>{null}</$GridCell>
         )}
-        <$GridCell $colSpan={3} style={{ textAlign: 'right' }}>
+        <$GridCell $colSpan={3}>
           <Button disabled={isSubmitting} iconLeft={<IconEye />} onClick={showPreview}>
             {t('common:editor.preview')}
           </Button>
         </$GridCell>
-        <$GridCell $colSpan={3} style={{ textAlign: 'right' }}>
-          <Button
-            variant="success"
-            disabled={isSubmitting}
-            iconLeft={<IconUpload />}
-            onClick={() => alert('Not implemented')}
-          >
-            {t('common:editor.publish')}
-          </Button>
-        </$GridCell>
+        {allowPublish && (
+          <$GridCell $colSpan={3}>
+            <Button
+              variant="success"
+              disabled={isSubmitting}
+              iconLeft={<IconUpload />}
+              onClick={() => alert('Not implemented')}
+            >
+              {t('common:editor.publish')}
+            </Button>
+          </$GridCell>
+        )}
       </$GridCell>
     </FormSection>
   );

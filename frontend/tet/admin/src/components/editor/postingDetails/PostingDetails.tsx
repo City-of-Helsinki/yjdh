@@ -13,7 +13,7 @@ import { Notification } from 'hds-react';
 import { OptionType } from 'tet-shared/types/classification';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import Combobox from 'tet/admin/components/editor/Combobox';
-import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();

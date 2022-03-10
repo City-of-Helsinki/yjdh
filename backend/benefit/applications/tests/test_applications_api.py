@@ -19,6 +19,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.enums import (
     ApplicationStatus,
+    ApplicationStep,
     AttachmentType,
     BenefitType,
     OrganizationType,
@@ -1115,6 +1116,41 @@ def test_application_status_change_as_handler(
             assert response.data["handled_at"] is None
     else:
         assert application.log_entries.all().count() == 0
+
+
+def test_application_accept(
+    request,
+    handler_api_client,
+    handling_application,
+):
+    """
+    granted_as_de_minimis_aid is set at the same time the application is accepted.
+    """
+    handling_application.calculation.granted_as_de_minimis_aid = False
+    handling_application.calculation.save()
+    handling_application.application_step = ApplicationStep.STEP_6
+    handling_application.save()
+    data = HandlerApplicationSerializer(handling_application).data
+    data["status"] = ApplicationStatus.ACCEPTED
+    data["calculation"]["granted_as_de_minimis_aid"] = True
+    data["application_step"] = ApplicationStep.STEP_2
+    data["log_entry_comment"] = "log entry comment"
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 200
+
+    handling_application.refresh_from_db()
+    assert (
+        handling_application.log_entries.get(
+            to_status=ApplicationStatus.ACCEPTED
+        ).comment
+        == "log entry comment"
+    )
+    assert handling_application.application_step == ApplicationStep.STEP_2
+    assert handling_application.calculation.granted_as_de_minimis_aid is True
 
 
 @pytest.mark.parametrize(
