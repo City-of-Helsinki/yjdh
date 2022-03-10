@@ -1,4 +1,4 @@
-import { hdsDateToIsoFormat, isoDateToHdsFormat } from 'tet/admin/backend-api/transformations';
+import { hdsDateToIsoFormat, isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
 
 describe('transformations', () => {
   it('can transform HDS date into ISO format', () => {

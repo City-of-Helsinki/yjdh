@@ -45,11 +45,21 @@
     "sv": "På svenska",
     "en": "In English"
   },
+	"postingsPage": {
+		"showMore": "ENG Näytä lisää tuloksia"
+	},
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {
       "label": "An unexpected error occurred",
       "text": "Try again later."
     }
-  }
+  },
+	"editor": {
+		"posting": {
+			"contactLanguageFi": "ENG Suomi",
+			"contactLanguageSv": "ENG Ruotsi",
+			"contactLanguageEn": "ENG Englanti"
+		}
+	}
 }

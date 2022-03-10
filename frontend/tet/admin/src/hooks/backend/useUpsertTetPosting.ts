@@ -4,7 +4,7 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { AxiosError } from 'axios';
 import { ErrorData } from 'benefit/applicant/types/common';
 import { useRouter } from 'next/router';
-import { TetUpsert } from 'tet/admin/types/linkedevents';
+import { TetUpsert } from 'tet-shared/types/linkedevents';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import { useTranslation } from 'next-i18next';

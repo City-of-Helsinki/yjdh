@@ -13,14 +13,12 @@ import withAuth from 'shared/components/hocs/withAuth';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
-  const { showPreview, getTemplateData } = useContext(PreviewContext);
-
-  const data = getTemplateData();
+  const { showPreview, tetPosting } = useContext(PreviewContext);
 
   if (showPreview) {
     return (
       <PreviewWrapper>
-        <PostingContainer posting={data} />
+        <PostingContainer posting={tetPosting} />
       </PreviewWrapper>
     );
   }
