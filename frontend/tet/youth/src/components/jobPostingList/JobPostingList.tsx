@@ -8,10 +8,11 @@ import { eventToTetPosting } from 'tet-shared/backend-api/transformations';
 import { $ButtonLoaderContainer } from './JobPostingList.sc';
 import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
 import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
-import { TetEvent, LinkedEventsPagedResponse, LinkedEventsInfiniteResponse } from 'tet-shared/types/linkedevents';
+import { TetEvent, LinkedEventsPagedResponse } from 'tet-shared/types/linkedevents';
+import { InfiniteData } from 'react-query';
 
 type Props = {
-  postings: LinkedEventsInfiniteResponse<TetEvent>;
+  postings: InfiniteData<LinkedEventsPagedResponse<TetEvent>>;
   onShowMore: () => void;
   isFetchingNextPage: Boolean;
   hasNextPage?: Boolean;

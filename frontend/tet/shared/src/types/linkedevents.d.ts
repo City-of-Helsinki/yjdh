@@ -11,11 +11,6 @@ export type LinkedEventsPagedResponse<T> = {
   data: T[];
 };
 
-export type LinkedEventsInfiniteResponse<T> = {
-  pageParams: string[];
-  pages: Array<LinkedEventsPagedResponse<T>>;
-};
-
 export type LocalizedObject = {
   fi: string;
   en?: string;

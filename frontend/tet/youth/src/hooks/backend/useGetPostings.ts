@@ -1,8 +1,8 @@
 import { BackendEndpoint } from 'tet/youth/backend-api/backend-api';
 import { useTranslation } from 'next-i18next';
-import { useInfiniteQuery, UseInfiniteQueryResult } from 'react-query';
+import { useInfiniteQuery, UseInfiniteQueryResult, InfiniteData } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
-import { LinkedEventsPagedResponse, TetEvent } from 'tet/youth/linkedevents';
+import { LinkedEventsPagedResponse, TetEvent } from 'tet-shared/types/linkedevents';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { createAxios, handleResponse } from 'tet/youth/backend-api/backend-api'; //TODO to shared
 
