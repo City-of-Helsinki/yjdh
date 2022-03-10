@@ -47,8 +47,6 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
 
     if (isConfirmed) {
       deleteTetPosting.mutate(posting);
-    } else {
-      console.log('not confirmed');
     }
   };
 
