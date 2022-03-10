@@ -81,7 +81,7 @@ const PostingDetails: React.FC = () => {
           <TextArea
             id="description"
             label={t('common:editor.posting.description')}
-            // registerOptions={description}
+            registerOptions={description}
             required={true}
           />
         </$GridCell>
