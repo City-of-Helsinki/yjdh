@@ -8,6 +8,8 @@ import { QueryClientProvider } from 'react-query';
 import BaseApp from 'shared/components/app/BaseApp';
 import Header from 'tet/youth/components/header/Header';
 import Footer from 'tet/youth/components/footer/Footer';
+import { linkedEventsUrl } from 'tet/youth/backend-api/backend-api';
+import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 
 const App: React.FC<AppProps> = (appProps) => (
   <QueryClientProvider client={createQueryClient()}>

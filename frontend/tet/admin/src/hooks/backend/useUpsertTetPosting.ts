@@ -3,7 +3,7 @@ import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
-import { LinkedEventsError, TetUpsert } from 'tet/admin/types/linkedevents';
+import { LinkedEventsError, TetUpsert } from 'tet-shared/types/linkedevents';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import { useTranslation } from 'next-i18next';
 import useLinkedEventsErrorHandler from 'tet/admin/hooks/backend/useLinkedEventsErrorHandler';

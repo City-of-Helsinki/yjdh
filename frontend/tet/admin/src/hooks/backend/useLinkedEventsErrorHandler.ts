@@ -1,4 +1,4 @@
-import { LinkedEventsError } from 'tet/admin/types/linkedevents';
+import { LinkedEventsError } from 'tet-shared/types/linkedevents';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import { useTranslation } from 'next-i18next';
 import { AxiosError } from 'axios';
@@ -6,7 +6,12 @@ import { useRouter } from 'next/router';
 
 type ErrorHandlerFn = (error: AxiosError<LinkedEventsError>) => void;
 
-const useLinkedEventsErrorHandler = (): ErrorHandlerFn => {
+type Props = {
+  errorTitle: string;
+  errorMessage: string;
+};
+
+const useLinkedEventsErrorHandler = ({ errorTitle, errorMessage }: Props): ErrorHandlerFn => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -19,7 +24,7 @@ const useLinkedEventsErrorHandler = (): ErrorHandlerFn => {
       // TODO showErrorToast login expired?
     } else {
       const msg = error.response.data;
-      showErrorToast(t('common:upload.errorTitle'), `Virheilmoitus taustajärjestelmästä: ${JSON.stringify(msg)}`);
+      showErrorToast(errorTitle, `${errorMessage} (${JSON.stringify(msg)})`);
     }
   };
 };

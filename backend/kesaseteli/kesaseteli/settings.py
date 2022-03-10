@@ -55,6 +55,8 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    LOGOUT_REDIRECT_URL=(str, "/"),
+    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/excel-download/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, ""),
@@ -175,6 +177,7 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_extensions",
     "django_auth_adfs",
+    "sequences.apps.SequencesConfig",
     # shared apps
     "shared.audit_log",
     "shared.oidc",
@@ -306,9 +309,11 @@ OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
 OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
+OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
+LOGOUT_REDIRECT_URL = env.str("LOGOUT_REDIRECT_URL")
 
 EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
 EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")

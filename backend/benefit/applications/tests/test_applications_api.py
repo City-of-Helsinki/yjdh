@@ -19,6 +19,7 @@ from applications.api.v1.status_transition_validator import (
 )
 from applications.enums import (
     ApplicationStatus,
+    ApplicationStep,
     AttachmentType,
     BenefitType,
     OrganizationType,
@@ -172,12 +173,29 @@ def test_application_single_read_as_applicant(
     assert response.status_code == 200
 
 
-def test_application_single_read_as_handler(handler_api_client, application):
+@pytest.mark.parametrize(
+    "status, expected_result",
+    [
+        (ApplicationStatus.DRAFT, 404),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 200),
+        (ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.HANDLING, 200),
+        (ApplicationStatus.ACCEPTED, 200),
+        (ApplicationStatus.REJECTED, 200),
+        (ApplicationStatus.CANCELLED, 200),
+    ],
+)
+def test_application_single_read_as_handler(
+    handler_api_client, application, status, expected_result
+):
+    application.status = status
+    application.save()
     response = handler_api_client.get(get_handler_detail_url(application))
-    assert response.data["ahjo_decision"] is None
-    assert response.data["application_number"] is not None
-    assert "batch" in response.data
-    assert response.status_code == 200
+    assert response.status_code == expected_result
+    if response.status_code == 200:
+        assert response.data["ahjo_decision"] is None
+        assert response.data["application_number"] is not None
+        assert "batch" in response.data
 
 
 def test_application_submitted_at(
@@ -996,7 +1014,7 @@ def test_application_status_change_as_applicant(
 @pytest.mark.parametrize(
     "from_status,to_status,expected_code",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 200),
+        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, 404),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
@@ -1100,10 +1118,44 @@ def test_application_status_change_as_handler(
         assert application.log_entries.all().count() == 0
 
 
+def test_application_accept(
+    request,
+    handler_api_client,
+    handling_application,
+):
+    """
+    granted_as_de_minimis_aid is set at the same time the application is accepted.
+    """
+    handling_application.calculation.granted_as_de_minimis_aid = False
+    handling_application.calculation.save()
+    handling_application.application_step = ApplicationStep.STEP_6
+    handling_application.save()
+    data = HandlerApplicationSerializer(handling_application).data
+    data["status"] = ApplicationStatus.ACCEPTED
+    data["calculation"]["granted_as_de_minimis_aid"] = True
+    data["application_step"] = ApplicationStep.STEP_2
+    data["log_entry_comment"] = "log entry comment"
+
+    response = handler_api_client.put(
+        get_handler_detail_url(handling_application),
+        data,
+    )
+    assert response.status_code == 200
+
+    handling_application.refresh_from_db()
+    assert (
+        handling_application.log_entries.get(
+            to_status=ApplicationStatus.ACCEPTED
+        ).comment
+        == "log entry comment"
+    )
+    assert handling_application.application_step == ApplicationStep.STEP_2
+    assert handling_application.calculation.granted_as_de_minimis_aid is True
+
+
 @pytest.mark.parametrize(
     "from_status, to_status, auto_assign",
     [
-        (ApplicationStatus.DRAFT, ApplicationStatus.RECEIVED, False),
         (
             ApplicationStatus.HANDLING,
             ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
@@ -1462,7 +1514,7 @@ def test_pdf_attachment_upload_and_download_as_applicant(
 @pytest.mark.parametrize(
     "status,upload_result",
     [
-        (ApplicationStatus.DRAFT, 201),
+        (ApplicationStatus.DRAFT, 404),
         (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
         (ApplicationStatus.HANDLING, 201),
         (ApplicationStatus.ACCEPTED, 403),
@@ -1483,7 +1535,7 @@ def test_pdf_attachment_upload_and_download_as_handler(
     assert response.status_code == upload_result
     if upload_result != 201:
         return
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(application))
     assert len(response.data["attachments"]) == 1
     assert response.data["attachments"][0]["attachment_file"]
     # the URL must point to the handler API

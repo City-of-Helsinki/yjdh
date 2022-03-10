@@ -3,7 +3,7 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import { EditorSectionProps } from 'tet/admin/components/editor/Editor';
 import PhoneInput from 'tet/admin/components/editor/PhoneInput';

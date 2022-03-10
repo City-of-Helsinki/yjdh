@@ -5,15 +5,15 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import EditById from 'tet/admin/components/editor/EditById';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
-import useKeywordType from 'tet/admin/hooks/backend/useKeywordType';
-import { TetEvent } from 'tet/admin/types/linkedevents';
+import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
+import { TetEvent } from 'tet-shared/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
+import { eventToTetPosting } from 'tet-shared/backend-api/transformations';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
-import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
 
 const EditStaticPage: NextPage = () => {
   const { t } = useTranslation();
