@@ -12,9 +12,11 @@ import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
 
+const queryClient = createQueryClient();
+
 const App: React.FC<AppProps> = (appProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
-    <QueryClientProvider client={createQueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
       </AuthProvider>

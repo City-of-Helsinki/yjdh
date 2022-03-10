@@ -7,6 +7,7 @@ const { parsed: env } = require('dotenv').config({
 
 const nextConfig = (override) => ({
   env,
+  poweredByHeader: false,
   swcMinify: true,
   compiler: {
     styledComponents: true,
