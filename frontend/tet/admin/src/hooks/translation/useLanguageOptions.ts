@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 
 const useLanguageOptions = (): OptionType[] => {
   const { t } = useTranslation();

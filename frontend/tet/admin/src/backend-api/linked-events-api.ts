@@ -1,5 +1,5 @@
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 import { IdObject } from 'tet/admin/types/linkedevents';
 
 // By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)

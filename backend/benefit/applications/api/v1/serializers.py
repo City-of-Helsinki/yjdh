@@ -1670,16 +1670,19 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         calculation_data = validated_data.pop("calculation", None)
         pay_subsidy_data = validated_data.pop("pay_subsidies", None)
         training_compensation_data = validated_data.pop("training_compensations", None)
+        previous_status = instance.status
         application = self._base_update(instance, validated_data)
         if calculation_data is not None:
-            self._update_calculation(instance, calculation_data)
+            self._update_calculation(instance, calculation_data, previous_status)
         if pay_subsidy_data is not None:
             self._update_pay_subsidies(instance, pay_subsidy_data)
         if training_compensation_data is not None:
             self._update_training_compensations(instance, training_compensation_data)
         return application
 
-    def _update_calculation(self, application, calculation_data):
+    UPDATE_CALCULATION_FIELDS_ON_ACCEPT = ["granted_as_de_minimis_aid"]
+
+    def _update_calculation(self, application, calculation_data, previous_status):
         request = self.context.get("request")
         if not request or request.method != "PUT":
             return
@@ -1690,19 +1693,29 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             raise serializers.ValidationError(
                 _("The calculation should be created when the application is submitted")
             )
-        if (
-            calculation_data is not None
-            and ApplicationStatus.is_handler_editable_status(application.status)
-        ):
+        if calculation_data is not None:
             if application.calculation.id != calculation_data["id"]:
                 raise serializers.ValidationError(
                     _("The calculation id does not match existing id")
                 )
-            call_now_or_later(
-                application.calculation.calculate,
-                duplicate_check=("calculation.calculate", application.pk),
-            )
-            update_object(application.calculation, calculation_data)
+            if ApplicationStatus.is_handler_editable_status(application.status):
+                call_now_or_later(
+                    application.calculation.calculate,
+                    duplicate_check=("calculation.calculate", application.pk),
+                )
+                update_object(application.calculation, calculation_data)
+            elif (
+                ApplicationStatus.is_handler_editable_status(previous_status)
+                and application.status == ApplicationStatus.ACCEPTED
+            ):
+                # When application is accepted, only certain fields that don't change the calculation
+                # result can be modified, otherwise the handled would be accepting a benefit amount that they've not
+                # seen.
+                update_object(
+                    application.calculation,
+                    calculation_data,
+                    self.UPDATE_CALCULATION_FIELDS_ON_ACCEPT,
+                )
 
     def _update_training_compensations(self, application, training_compensation_data):
         return self._common_ordered_nested_update(
