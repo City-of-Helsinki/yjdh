@@ -33,10 +33,6 @@ const useHeader = (): ExtendedComponentProps => {
     (): NavigationItem[] => [
       { label: t('common:header.navigation.applications'), url: ROUTES.HOME },
       {
-        label: t('common:header.navigation.processed'),
-        url: '#1',
-      },
-      {
         label: t('common:header.navigation.archive'),
         url: ROUTES.APPLICATIONS_ARCHIVE,
       },
