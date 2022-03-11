@@ -14,17 +14,19 @@ export const $PostingCard = styled.div`
 `;
 
 export const $ImageContainer = styled.div`
+  width: 100%;
+  height: 250px;
+  background-color: ${(props) => props.theme.colors.black10};
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
-  width: 100%;
-  height: 300px;
-  align-items: center;
-  background-color: ${(props) => props.theme.colors.black10};
+
+  img {
+    width: 100%;
+  }
 
   @media (min-width: ${(props) => props.theme.breakpoints.s}) {
-    width: 380px;
-    min-height: 14.5rem;
+    width: 400px;
+    height: 100%;
   }
 `;
 

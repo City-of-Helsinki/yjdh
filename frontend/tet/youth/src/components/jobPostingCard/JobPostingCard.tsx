@@ -13,12 +13,12 @@ import {
 } from 'tet/youth/components/jobPostingCard/JobPostingCard.sc';
 import JobPostingCardKeywords from './JobPostingCardKeywords';
 import { useRouter } from 'next/router';
-import { IconPhoto } from 'hds-react';
 import { Button } from 'hds-react';
 import { useTheme } from 'styled-components';
 import { OptionType } from 'tet-shared/types/classification';
 import { useTranslation } from 'next-i18next';
 import JobPosting from 'tet-shared/types/tetposting';
+import Image from 'next/image';
 
 type Props = {
   jobPosting: JobPosting;
@@ -46,7 +46,14 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   return (
     <$PostingCard>
       <$ImageContainer>
-        <IconPhoto />
+        <Image
+          width="100%"
+          height="100%"
+          layout="responsive"
+          objectFit="cover"
+          src="/event_placeholder_B.jpg"
+          alt="event placeholder"
+        />
       </$ImageContainer>
       <$PostingCardBody>
         <JobPostingCardKeywords jobPosting={jobPosting} />
