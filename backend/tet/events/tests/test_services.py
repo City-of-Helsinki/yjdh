@@ -4,7 +4,7 @@ import re
 import pytest
 from django.test import override_settings
 from rest_framework.exceptions import PermissionDenied
-from shared.common.tests.factories import TetHelsinkiAdUserFactory
+from shared.common.tests.factories import StaffUserFactory
 
 from events.services import ServiceClient
 from events.tests.data.linked_events_responses import (
@@ -37,7 +37,7 @@ LOGGER = logging.getLogger(__name__)
 def test_get_postings(requests_mock):
     """Test that posts are filtered by user's email and divide into published/draft works"""
     requests_mock.get("http://localhost/event/", json=SAMPLE_EVENTS)
-    user = TetHelsinkiAdUserFactory()
+    user = StaffUserFactory()
 
     user.email = "testuser@example.org"
     user.username = "test-oid"
@@ -46,7 +46,7 @@ def test_get_postings(requests_mock):
     assert len(postings["published"]) == 1
     assert len(postings["draft"]) == 1
 
-    user = TetHelsinkiAdUserFactory()
+    user = StaffUserFactory()
     user.email = "hasnopostings@example.org"
     postings = ServiceClient().list_job_postings_for_user(user)
 
@@ -68,7 +68,7 @@ def test_get_postings(requests_mock):
 )
 def test_add_posting(requests_mock):
     requests_mock.post("http://localhost/event/", json=ADD_EVENT_RESPONSE)
-    event = ServiceClient().add_tet_event(ADD_EVENT_PAYLOAD, TetHelsinkiAdUserFactory())
+    event = ServiceClient().add_tet_event(ADD_EVENT_PAYLOAD, StaffUserFactory())
     assert event["id"] == "tet:af7w5v5m6e"
 
 
@@ -99,7 +99,7 @@ def test_edit_tet_posting(requests_mock):
         "http://localhost/event/tet:no-custom-data/", json=EVENT_RESPONSE_NO_CUSTOM_DATA
     )
 
-    user = TetHelsinkiAdUserFactory()
+    user = StaffUserFactory()
     user.email = "testuser@example.org"
     user.username = "test-oid"
 

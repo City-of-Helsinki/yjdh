@@ -18,6 +18,6 @@ class HandlerUserFactory(UserFactory):
     is_superuser = factory.Maybe("is_staff", factory.Faker("boolean"), True)
 
 
-class TetHelsinkiAdUserFactory(UserFactory):
+class StaffUserFactory(UserFactory):
     is_active = True
-    is_staff = factory.Faker("boolean")
+    is_staff = True

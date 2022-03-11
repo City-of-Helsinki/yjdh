@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
-from shared.common.tests.factories import TetHelsinkiAdUserFactory
+from shared.common.tests.factories import StaffUserFactory
 
 
 class MockLogoutView(View):
@@ -32,7 +32,7 @@ class MockLoginView(View):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            user = TetHelsinkiAdUserFactory()
+            user = StaffUserFactory()
             auth.login(
                 request,
                 user,

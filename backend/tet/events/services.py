@@ -22,22 +22,23 @@ def _user_matches(event, user):
     if event["custom_data"] is None:
         return False
 
-    username_matches = False
+    email_matches = False
     oid_matches = False
 
     if user.email and "editor_email" in event["custom_data"]:
-        username_matches = event["custom_data"]["editor_email"] == user.email
+        email_matches = event["custom_data"]["editor_email"] == user.email
+
+    # django-adfs places AD OID in `user.username`
     if user.username and "editor_oid" in event["custom_data"]:
         oid_matches = event["custom_data"]["editor_oid"] == user.username
 
-    return username_matches or oid_matches
+    return email_matches or oid_matches
 
 
-def _raise_unless_mocked():
-    if not settings.NEXT_PUBLIC_MOCK_FLAG:
-        raise PermissionDenied(
-            detail="User doesn't have permission to access this event"
-        )
+def _raise_permission_denied():
+    raise PermissionDenied(
+        detail="User doesn't have permission to access this event"
+    )
 
 
 class ServiceClient:
@@ -57,18 +58,22 @@ class ServiceClient:
         See `test_services.py` to understand the access logic better.
         """
         event = self.client.get_event(event_id)
-        LOGGER.warning(event)
+
+        if settings.NEXT_PUBLIC_MOCK_FLAG:
+            return event
+
         if self._is_city_employee(user):
             if not _user_matches(event, user):
+                # TODO audit log?
                 LOGGER.warning(
-                    f"User {user.email} was denied unauthorized access to event {event['id']}"
+                    f"User {user.pk} was denied unauthorized access to event {event['id']}"
                 )
-                _raise_unless_mocked()
+                _raise_permission_denied()
         else:
             LOGGER.warning(
                 "Authorization not implemented for company users (suomi.fi login)"
             )
-            _raise_unless_mocked()
+            _raise_permission_denied()
 
         return event
 
@@ -76,10 +81,7 @@ class ServiceClient:
         """Filters events that `user` is authorized to access"""
         if self._is_city_employee(user):
             if not settings.NEXT_PUBLIC_MOCK_FLAG:
-                if user.is_superuser:
-                    return all_events
-                else:
-                    return [e for e in all_events if _user_matches(e, user)]
+                return [e for e in all_events if _user_matches(e, user)]
             else:
                 return all_events
         else:
