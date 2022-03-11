@@ -2,51 +2,51 @@
   "applications": {
     "list": {
       "drafts": {
-        "heading": "Luonnokset"
+        "heading": "Drafts"
       },
       "submitted": {
-        "heading": "Lähetetyt"
+        "heading": "Submitted applications"
       },
       "moreInfo": {
         "heading": "Lisätietoa tarvitaan"
       },
       "common": {
         "created": "Luotu",
-        "employee": "Työllistetty",
+        "employee": "Employee",
         "saved": "Tallennettu",
         "edit": "Edit",
         "sent": "Submitted",
         "applicationNumber": "Application number",
-        "status": "Tila",
+        "status": "Status",
         "check": "Tarkastele",
-        "editEndDate": "Muokkaa viimeistään",
+        "editEndDate": "Edit by",
         "newMessages_one": "{{count}} new",
         "newMessages_other": "{{count}} new"
       }
     },
     "pageHeaders": {
       "created": "Luotu",
-      "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
+      "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
       "edit": "Hakemus",
       "helperText": "Ole hyvä ja tarkista hakemus. Tarvittaessa voit vielä muokata tietoja ennen kuin siirryt eteenpäin."
     },
     "statuses": {
       "draft": "Luonnos",
-      "additionalInformationNeeded": "Lisätietoja tarvitaan",
-      "received": "Vastaanotettu",
-      "approved": "Hyväksytty",
-      "rejected": "Hylätty",
+      "additionalInformationNeeded": "Additional information is needed",
+      "received": "Received",
+      "approved": "Accepted",
+      "rejected": "Rejected",
       "handling": "Käsittelyssä",
       "cancelled": "Peruuttu"
     },
     "steps": {
-      "employer": "Työnantaja",
+      "employer": "Employer",
       "hired": "Palkattava",
       "attachments": "Attachments",
-      "summary": "Yhteenveto",
+      "summary": "Summary",
       "credentials": "Valtakirja",
-      "send": "Lähetä"
+      "send": "Submit"
     },
     "actions": {
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
@@ -80,8 +80,8 @@
             "content": "Your organisation’s basic information has been retrieved from the Business Information System. If you wish, you can change the postal address to which the Helsinki benefit decision will be sent."
           },
           "deMinimisAidMaxAmount": {
-            "label": "Enimmäismäärä ylitetty",
-            "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+            "label": "Maximum amount exceeded",
+            "content": "The maximum amount of de minimis aid has been exceeded. Under the EU Regulation, a company may receive a maximum EUR 200,000 of de minimis aid during the current year and the previous two tax years. All forms of de minimis aid granted by various authorities during this period will be taken into account in the maximum amount."
           }
         },
         "tooltips": {
@@ -93,8 +93,8 @@
             "label": "Työnantajalle on toinen postiosoite"
           },
           "alternativeCompanyStreetAddress": {
-            "label": "Osoite",
-            "placeholder": "Katuosoite"
+            "label": "Street address",
+            "placeholder": "Street address"
           },
           "alternativeCompanyPostcode": {
             "label": "Postal code",
@@ -106,7 +106,7 @@
           },
           "companyDepartment": {
             "label": "Office or department (optional)",
-            "placeholder": "Toimipiste / osasto"
+            "placeholder": "Office / department"
           },
           "companyBankAccountNumber": {
             "label": "Bank account number",
@@ -348,11 +348,11 @@
         }
       },
       "send": {
-        "heading1": "Ehdot"
+        "heading1": "Terms"
       }
     }
   },
-  "appName": "Helsinki-benefit EN",
+  "appName": "Helsinki benefit",
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
@@ -364,7 +364,7 @@
   },
   "footer": {
     "copyrightText": "Copyright text",
-    "allRightsReservedText": "All rights reserved text"
+    "allRightsReservedText": "All rights reserved"
   },
   "notifications": {
     "applicationSubmitted": {
@@ -392,9 +392,9 @@
   },
   "mainIngress": {
     "heading": "Hakemukset",
-    "description1": "Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä ",
-    "description2": ". Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
-    "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
+    "description1": "Welcome to the Helsinki benefit service.",
+    "description2": "You can save an incomplete application and continue to fill it in later.",
+    "linkText": "Please take a look at the required information and attachments before filling in the application.",
     "newApplicationBtnText": "Submit a new application"
   },
   "attachmentsIngress": {
@@ -456,8 +456,8 @@
     "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
   },
   "errorPage": {
-    "title": "Palvelussa on valitettavsti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "title": "An error has unfortunately occurred",
+    "message": "We are probably already trying to fix the problem. Please try again later.",
     "home": "Return to the front page",
     "logout": "Log out"
   },
@@ -495,10 +495,10 @@
     "home": "Return to the front page"
   },
   "messenger": {
-    "messages": "Hakemuksen viestit",
+    "messages": "Application’s messages",
     "titles": {
-      "applicantMessage": "Hakija",
-      "handlerMessage": "Käsittelijä",
+      "applicantMessage": "Applicant",
+      "handlerMessage": "Handler",
       "note": ""
     },
     "list": {
@@ -514,7 +514,7 @@
       }
     },
     "compose": "Write a message",
-    "send": "Lähetä",
+    "send": "Submit",
     "isSecure": "Messages are encrypted",
     "noMessages": "Ei viestejä",
     "close": "Close"

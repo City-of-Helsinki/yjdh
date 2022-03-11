@@ -5,7 +5,7 @@
         "heading": "Luonnokset"
       },
       "submitted": {
-        "heading": "Lähetetyt"
+        "heading": "Lähetetyt hakemukset"
       },
       "moreInfo": {
         "heading": "Lisätietoa tarvitaan"
@@ -54,8 +54,8 @@
       "deleteApplicationConfirm": "Haluatko varmasti poistaa luonnoksen?",
       "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
       "continue": "Jatka",
-      "send": "Lähetä hakemus",
-      "back": "Back",
+      "send": "Skicka",
+      "back": "Takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
       "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
@@ -364,7 +364,7 @@
   },
   "footer": {
     "copyrightText": "Copyright text",
-    "allRightsReservedText": "All rights reserved text"
+    "allRightsReservedText": "Kaikki oikeudet pidätetään"
   },
   "notifications": {
     "applicationSubmitted": {
@@ -392,9 +392,9 @@
   },
   "mainIngress": {
     "heading": "Hakemukset",
-    "description1": "Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä ",
-    "description2": ". Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
-    "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
+    "description1": "Tervetuloa Helsinki-lisän asiointipalveluun.",
+    "description2": "Voit tallentaa hakemuksen keskeneräisenä ja jatkaa täyttämistä myöhemmin.",
+    "linkText": "Tutustu vaadittaviin tietoihin ja tarvittaviin liitteisiin ennen hakemuksen täyttämistä.",
     "newApplicationBtnText": "Tee uusi hakemus"
   },
   "attachmentsIngress": {
@@ -457,7 +457,7 @@
   },
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "message": "Yritämme todennäköisesti jo korjata ongelmaa. Yritä myöhemmin uudelleen.",
     "home": "Palaa etusivulle",
     "logout": "Kirjaudu ulos"
   },

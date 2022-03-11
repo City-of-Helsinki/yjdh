@@ -2,51 +2,51 @@
   "applications": {
     "list": {
       "drafts": {
-        "heading": "Luonnokset"
+        "heading": "Utkast"
       },
       "submitted": {
-        "heading": "Lähetetyt"
+        "heading": "Skickade ansökningar"
       },
       "moreInfo": {
         "heading": "Lisätietoa tarvitaan"
       },
       "common": {
         "created": "Luotu",
-        "employee": "Työllistetty",
+        "employee": "Anställd",
         "saved": "Tallennettu",
         "edit": "Redigera",
         "sent": "Skickad",
         "applicationNumber": "Ansökningsnummer",
-        "status": "Tila",
+        "status": "Status",
         "check": "Tarkastele",
-        "editEndDate": "Muokkaa viimeistään",
+        "editEndDate": "Redigera senast",
         "newMessages_one": "{{count}} ny",
         "newMessages_other": "{{count}} nya"
       }
     },
     "pageHeaders": {
       "created": "Luotu",
-      "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
+      "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Hakemus",
       "helperText": "Ole hyvä ja tarkista hakemus. Tarvittaessa voit vielä muokata tietoja ennen kuin siirryt eteenpäin."
     },
     "statuses": {
       "draft": "Luonnos",
-      "additionalInformationNeeded": "Lisätietoja tarvitaan",
-      "received": "Vastaanotettu",
-      "approved": "Hyväksytty",
-      "rejected": "Hylätty",
+      "additionalInformationNeeded": "Ytterligare uppgifter behövs",
+      "received": "Mottagen",
+      "approved": "Godkänd",
+      "rejected": "Avvisad",
       "handling": "Käsittelyssä",
       "cancelled": "Peruuttu"
     },
     "steps": {
-      "company": "Työnantaja",
+      "company": "Arbetsgivare",
       "hired": "Palkattava",
       "attachments": "Bilagor",
-      "summary": "Yhteenveto",
+      "summary": "Sammandrag",
       "credentials": "Valtakirja",
-      "send": "Lähetä"
+      "send": "Skicka"
     },
     "actions": {
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
@@ -54,8 +54,8 @@
       "deleteApplicationConfirm": "Är du säker på att du vill ta bort utkastet?",
       "deleteApplicationDescription": "Ansökan raderas permanent och den kan inte återställas.",
       "continue": "Fortsätt",
-      "send": "Lähetä hakemus",
-      "back": "Back",
+      "send": "Skicka",
+      "back": "Tillbaka",
       "edit": "Redigera",
       "close": "Stäng",
       "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
@@ -80,8 +80,8 @@
             "content": "De grundläggande uppgifterna om organisationen har hämtats från Företags- och organisationsdatasystemet. Om du vill kan du ange en särskild postadress dit beslutet om Helsingforstillägg skickas."
           },
           "deMinimisAidMaxAmount": {
-            "label": "Enimmäismäärä ylitetty",
-            "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+            "label": "Maximibeloppet har överskridits",
+            "content": "Maximibeloppet för de minimis-stöd har överskridits. Enligt EU:s förordning kan ett företag få de minimis-stöd till ett belopp om högst 200 000 euro under det innevarandet året och under de två föregående skatteåren. I maximibeloppet beaktas samtliga de minimis-stöd som olika myndigheter har beviljat under denna tidsperiod."
           }
         },
         "tooltips": {
@@ -93,8 +93,8 @@
             "label": "Työnantajalle on toinen postiosoite"
           },
           "alternativeCompanyStreetAddress": {
-            "label": "Osoite",
-            "placeholder": "Katuosoite"
+            "label": "Gatuadress",
+            "placeholder": "Gatuadress"
           },
           "alternativeCompanyPostcode": {
             "label": "Postnummer",
@@ -106,7 +106,7 @@
           },
           "companyDepartment": {
             "label": "Verksamhetsställe eller avdelning (valfri)",
-            "placeholder": "Toimipiste / osasto"
+            "placeholder": "Verksamhetsställe / avdelning"
           },
           "companyBankAccountNumber": {
             "label": "Kontonummer",
@@ -348,7 +348,7 @@
         }
       },
       "send": {
-        "heading1": "Ehdot"
+        "heading1": "Villkoren"
       }
     }
   },
@@ -364,7 +364,7 @@
   },
   "footer": {
     "copyrightText": "Copyright text",
-    "allRightsReservedText": "All rights reserved text"
+    "allRightsReservedText": "Alla rättigheter förbehållna"
   },
   "notifications": {
     "applicationSubmitted": {
@@ -392,9 +392,9 @@
   },
   "mainIngress": {
     "heading": "Hakemukset",
-    "description1": "Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä ",
-    "description2": ". Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
-    "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
+    "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
+    "description2": "Du kan spara en halvfärdig ansökan och komplettera den senare.",
+    "linkText": "Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
     "newApplicationBtnText": "Gör en ny ansökan"
   },
   "attachmentsIngress": {
@@ -456,8 +456,8 @@
     "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
   },
   "errorPage": {
-    "title": "Palvelussa on valitettavsti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "title": "Tyvärr har det inträffat ett fel i tjänsten",
+    "message": "Vi försöker sannolikt redan rätta till problemet. Försök på nytt senare.",
     "home": "Gå tillbaka till ingångssidan",
     "logout": "Logga ut"
   },
@@ -495,10 +495,10 @@
     "home": "Gå tillbaka till ingångssidan"
   },
   "messenger": {
-    "messages": "Hakemuksen viestit",
+    "messages": "Meddelanden om ansökan",
     "titles": {
-      "applicantMessage": "Hakija",
-      "handlerMessage": "Käsittelijä",
+      "applicantMessage": "Sökanden",
+      "handlerMessage": "Handläggare",
       "note": ""
     },
     "list": {
@@ -513,9 +513,9 @@
         }
       }
     },
-    "compose": "Kirjoita viesti",
-    "send": "Lähetä",
-    "isSecure": "Viestit ovat salattuja",
+    "compose": "Skriv ett meddelande",
+    "send": "Skicka",
+    "isSecure": "Meddelandena är skyddade",
     "noMessages": "Ei viestejä",
     "close": "Stäng"
   }
