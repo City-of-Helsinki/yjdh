@@ -20,8 +20,8 @@
         "status": "Tila",
         "check": "Tarkastele",
         "editEndDate": "Muokkaa viimeistään",
-        "newMessages_one": "{{count}} uusi viesti",
-        "newMessages_other": "{{count}} uutta viestiä"
+        "newMessages_one": "{{count}} uusi",
+        "newMessages_other": "{{count}} uutta"
       }
     },
     "pageHeaders": {
@@ -43,7 +43,7 @@
     "steps": {
       "employer": "Työnantaja",
       "hired": "Palkattava",
-      "attachments": "Liittet",
+      "attachments": "Liitteet",
       "summary": "Yhteenveto",
       "credentials": "Valtakirja",
       "send": "Lähetä"
@@ -51,7 +51,7 @@
     "actions": {
       "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
       "deleteApplication": "Poista hakemus",
-      "deleteApplicationConfirm": "Haluatko varmasti poistaa?",
+      "deleteApplicationConfirm": "Haluatko varmasti poistaa luonnoksen?",
       "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
       "continue": "Jatka",
       "send": "Lähetä hakemus",
@@ -66,18 +66,18 @@
         "heading1Additional": "Postiosoite päätöstä varten",
         "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis-tuet",
+        "heading3": "Hakijan de minimis -tuet",
         "heading4": "YT-tilanne",
         "heading5": "YT-neuvottelut",
         "businessId": "Y-tunnus: {{ businessId }}",
-        "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
+        "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
         "deMinimisAidsAdd": "Lisää",
         "deMinimisAidsRemove": "Poista",
         "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
         "notifications": {
           "companyInformation": {
-            "label": "Tiedot haettu YTJ:stä",
-            "content": "Työnantajan perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+            "label": "Tiedot haettu Yritys- ja yhteisötietojärjestelmästä",
+            "content": "Organisaatiosi perustiedot on haettu Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -85,7 +85,7 @@
           }
         },
         "tooltips": {
-          "heading3": "Hakijan de minimis-tuet tooltip text",
+          "heading3": "De minimis -tuki on vähämerkityksistä, yrityksille myönnettävää julkista tukea, kuten esimerkiksi avustusta, lainaa, korkotukea tai takausta. De minimis -tukea säätelee Euroopan komission asetus 1407/2013.",
           "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
         },
         "fields": {
@@ -132,16 +132,16 @@
             "label": "Asiointikieli"
           },
           "associationHasBusinessActivities": {
-            "label": "Harjoittaako työnantaja elinkeinotoimintaa?",
+            "label": "Harjoittaako työnantaja taloudellista toimintaa?",
             "yes": "Kyllä",
             "no": "Ei"
           },
           "associationImmediateManagerCheck": {
             "label": "Lähiesihenkilö palkattavalle henkilölle",
-            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen. ei palkkatuettu esihenkilö palkattavalle henkilölle."
+            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle."
           },
           "deMinimisAid": {
-            "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
+            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -150,27 +150,27 @@
             "placeholder": "Myöntävä taho"
           },
           "deMinimisAidAmount": {
-            "label": "Tuen määrä (euro)",
+            "label": "Tuen määrä (euroina)",
             "placeholder": "€"
           },
           "deMinimisAidGrantedAt": {
-            "label": "Myöntämispäivämääärä",
-            "labelShort": "Myönnetty",
+            "label": "Myöntämispäivämäärä",
+            "labelShort": "Myöntämispäivämäärä",
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
-            "label": "Onko työnantajalla menossa YT-neuvottelut?",
+            "label": "Onko organisaatiolla käynnissä YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
           "coOperationNegotiationsDescription": {
             "label": "Anna tarkempi selvitys YT-tilanteesta:",
-            "placeholder": "Kuvaile tilanne"
+            "placeholder": "Kuvaile tilannetta"
           }
         }
       },
       "employee": {
-        "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
+        "heading1": "Henkilö, jonka työllistämiseen Helsinki-lisää haetaan",
         "heading1Short": "Palkattava henkilö",
         "heading2": "Palkkatukipäätös",
         "heading3": "Haettava tukimuoto",
@@ -179,10 +179,10 @@
         "heading5Employment": "Työsuhde",
         "heading5Assignment": "Toimeksianto",
         "heading5EmploymentSub1": "Palkkauskustannukset",
-        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana ",
+        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
         "tooltips": {
-          "heading5Employment": "Työsuhde tooltip text",
-          "heading5EmploymentSub1": "Työsuhde sub header tooltip message 1",
+          "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
+          "heading5EmploymentSub1": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
           "heading5Assignment": "Palkkauskustannukset tooltip text"
         },
         "notifications": {
@@ -204,9 +204,9 @@
           }
         },
         "messages": {
-          "selectBenefitType": "Valitse ensi tukimuoto yllä",
-          "employmentBenefitSelected": "Helsinki-lisä haetaan työsuhteen keston mukaan 1–12 kk",
-          "salaryBenefitSelected": "Oppisopimuksessa 12 kk ylittävältä jaksolta on tehtävä uusi hakemus",
+          "selectBenefitType": "Valitse ensin tukimuoto yllä",
+          "employmentBenefitSelected": "Helsinki-lisää haetaan työsuhteen keston mukaisesti 1–12 kuukaudeksi.",
+          "salaryBenefitSelected": "Oppisopimuksessa 12 kuukautta ylittävältä jaksolta on tehtävä uusi hakemus",
           "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
         },
         "fields": {
@@ -227,8 +227,8 @@
             "placeholder": "040 1234567"
           },
           "isLivingInHelsinki": {
-            "label": "Helsinki kotikuntana",
-            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
+            "label": "Työllistetyn kotikunta on Helsinki",
+            "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -259,7 +259,7 @@
             "placeholder": "Tehtävänimike"
           },
           "workingHours": {
-            "label": "Työaika t/viikko",
+            "label": "Työaika tuntia viikossa",
             "placeholder": "Tunteja",
             "view": "Työaika: {{workingHours}} t / viikko"
           },
@@ -287,7 +287,7 @@
             "placeholder": "Kuvaus"
           },
           "commissionAmount": {
-            "label": "Palkkio €",
+            "label": "Palkkio euroina",
             "placeholder": "Palkkio"
           },
           "startDate": {
@@ -301,7 +301,7 @@
         }
       },
       "attachments": {
-        "heading1": "Liittet",
+        "heading1": "Liitteet",
         "types": {
           "employmentContract": {
             "title": "Työsopimus",
@@ -328,7 +328,7 @@
         "remove": "Poista liite"
       },
       "summary": {
-        "heading1": "Ole hyvä ja tarkista hakemus"
+        "heading1": "Vänligen kontrollera ansökan innan du skickar in den."
       },
       "credentials": {
         "heading1": "Valtakirja",
@@ -340,10 +340,10 @@
             "action1": "Pyydä sähköistä valtakirjaa"
           },
           "uploadPowerOfAttorney": {
-            "title": "Liitä valtakirja",
+            "title": "Liitä tiedoksianto",
             "description": "Voit myös tulostaa valtakirjapohjan, pyytää siihen allekirjoitus ja liittää se hakemukseen.",
             "action1": "Tulosta",
-            "action2": "Liitä valtakirja"
+            "action2": "Liitä tiedoksianto"
           }
         }
       },
@@ -352,7 +352,7 @@
       }
     }
   },
-  "appName": "Helsinki-benefit FI",
+  "appName": "Helsinki-lisä",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
@@ -398,7 +398,7 @@
     "newApplicationBtnText": "Tee uusi hakemus"
   },
   "attachmentsIngress": {
-    "text": "Lisää hakemukselle seuraavat liitteet. Liitteet ovat pakollisia, ellei toisin sanota. Tiedostomuoto voi olla JPG, PNG tai PDF. Suurin sallittu koko 10 MB.",
+    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB.",
     "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
   },
   "credentialsIngress": {
@@ -432,10 +432,10 @@
         "max": "Arvon tulee olla viimeistään {{max}}"
       },
       "phone": {
-        "invalid": "Arvon pitää olla puhelinnumero"
+        "invalid": "Virheellinen puhelinnumero"
       },
       "email": {
-        "invalid": "Tämän kentän on oltava kelvollinen sähköpostiosoite"
+        "invalid": "Virheellinen sähköpostiosoite"
       },
       "iban": {
         "invalid": "Virheellinen IBAN-tilinumero"
