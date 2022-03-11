@@ -16,14 +16,19 @@ import { eventsToTetPostings } from 'tet-shared/backend-api/transformations';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, data } = useQuery<TetEvents>(BackendEndpoint.TET_POSTINGS);
+  const { isLoading, data, error } = useQuery<TetEvents, Error>(BackendEndpoint.TET_POSTINGS);
   const router = useRouter();
 
   if (isLoading) {
     return <PageLoadingSpinner />;
   }
 
-  console.dir(data);
+  if (error) {
+    // TODO check that error is 403
+    // TODO add to translations
+    // TODO implement error view for this
+    return <div>Virhe latauksessa. Yritä uudestaan tai pyydä sovellukseen käyttöoikeus...</div>;
+  }
 
   const postings = eventsToTetPostings(data);
 
