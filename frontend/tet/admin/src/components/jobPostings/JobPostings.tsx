@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
 import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
+import theme from 'shared/styles/theme';
 import { eventsToTetPostings } from 'tet-shared/backend-api/transformations';
 
 const JobPostings: React.FC = () => {
@@ -41,7 +42,7 @@ const JobPostings: React.FC = () => {
     );
 
   return (
-    <Container>
+    <Container backgroundColor={theme.colors.silverLight}>
       <$HeadingContainer>
         <$Heading>{t('common:application.jobPostings.title')}</$Heading>
       </$HeadingContainer>

@@ -19,6 +19,7 @@ type EditorProps = {
   // eslint-disable-next-line react/require-default-props
   initialValue?: TetPosting;
   allowDelete?: boolean;
+  allowPublish?: boolean;
 };
 
 export type EditorSectionProps = {
@@ -26,7 +27,7 @@ export type EditorSectionProps = {
 };
 
 // add new posting / edit existing
-const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => {
+const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true, allowPublish = false }) => {
   const { t } = useTranslation();
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
@@ -57,7 +58,11 @@ const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true }) => 
           <ContactPerson />
           <PostingDetails />
           <Classification />
-          <ActionButtons onSubmit={methods.handleSubmit(handleSuccess)} allowDelete={allowDelete} />
+          <ActionButtons
+            onSubmit={methods.handleSubmit(handleSuccess)}
+            allowDelete={allowDelete}
+            allowPublish={allowPublish}
+          />
         </form>
       </FormProvider>
       <DevTool control={methods.control} />

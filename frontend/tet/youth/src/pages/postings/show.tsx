@@ -8,6 +8,8 @@ import { eventToTetPosting } from 'tet-shared/backend-api/transformations';
 import useGetSingePosting from 'tet/youth/hooks/backend/useGetSingePosting';
 import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
 import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import PageNotFound from 'shared/components/pages/PageNotFound';
 
 const ShowPostingPage: NextPage = () => {
   const router = useRouter();
@@ -17,8 +19,7 @@ const ShowPostingPage: NextPage = () => {
   const languageOptions = useLanguageOptions();
 
   if (isLoading) {
-    //TODO
-    return <div>lataa</div>;
+    return <PageLoadingSpinner />;
   }
 
   if (error) {
@@ -33,9 +34,9 @@ const ShowPostingPage: NextPage = () => {
         showBackButton={true}
       />
     );
+  } else {
+    return <PageNotFound />;
   }
-
-  return <div>jotain</div>;
 };
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');

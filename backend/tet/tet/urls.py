@@ -16,7 +16,6 @@ urlpatterns = [
     path("v1/events/<pk>/publish/", event_views.PublishTetPostingView.as_view()),
     path("userinfo/", UserInfoView.as_view(), name="userinfo"),
     path("oidc/", include("shared.oidc.urls")),
-    path("admin/", admin.site.urls),
 ]
 
 if not settings.NEXT_PUBLIC_MOCK_FLAG:
@@ -36,6 +35,10 @@ else:
             name="adfs_logout",
         ),
     ]
+
+
+if settings.ENABLE_ADMIN:
+    urlpatterns.append(path("admin/", admin.site.urls))
 
 
 @require_GET

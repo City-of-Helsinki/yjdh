@@ -35,14 +35,11 @@ export const $BackButton = styled.div`
 
 export const $ImageContainer = styled.div<ImageProps>`
   width: 100%;
-  height: 300px;
   background-color: ${(props) => props.theme.colors.black30};
-  background: url('${(props) => props.imageUrl || ''}') no-repeat center center;
   background-size: cover;
 
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
     width: 60%;
-    height: 600px;
   }
 `;
 

@@ -11,9 +11,11 @@ import BackButton from 'tet/admin/components/BackButton';
 type EditByIdProps = {
   title: string;
   data: TetPosting;
+  allowDelete?: boolean;
+  allowPublish?: boolean;
 };
 
-const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
+const EditById: React.FC<EditByIdProps> = ({ title, data, allowDelete = true, allowPublish = false }) => {
   const { showPreview, tetPosting } = useContext(PreviewContext);
   const [isInitialRender, setIsInitialRender] = useState(true);
 
@@ -36,7 +38,11 @@ const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
         <$HeadingContainer>
           <$Heading>{title}</$Heading>
         </$HeadingContainer>
-        <Editor initialValue={isInitialRender ? data : tetPosting} />
+        <Editor
+          initialValue={isInitialRender ? data : tetPosting}
+          allowDelete={allowDelete}
+          allowPublish={allowPublish}
+        />
       </Container>
     </>
   );
