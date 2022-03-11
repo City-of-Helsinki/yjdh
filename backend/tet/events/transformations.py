@@ -1,6 +1,5 @@
 import unicodedata
 
-
 EVENT_BASE_DATA = {
     "offers": [
         {
@@ -35,7 +34,9 @@ def _shorten_description(descobj):
         if len(desc) <= 125:
             shortened_obj[lang] = desc
         else:
-            shortened_obj[lang] = f"{desc[:125]}{unicodedata.lookup('Horizontal ellipsis')}"
+            shortened_obj[
+                lang
+            ] = f"{desc[:125]}{unicodedata.lookup('Horizontal ellipsis')}"
 
     return shortened_obj
 

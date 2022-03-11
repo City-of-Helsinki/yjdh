@@ -36,9 +36,7 @@ def _user_matches(event, user):
 
 
 def _raise_permission_denied():
-    raise PermissionDenied(
-        detail="User doesn't have permission to access this event"
-    )
+    raise PermissionDenied(detail="User doesn't have permission to access this event")
 
 
 class ServiceClient:
