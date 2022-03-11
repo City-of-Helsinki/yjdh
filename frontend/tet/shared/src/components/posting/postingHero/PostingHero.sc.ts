@@ -10,6 +10,7 @@ export const $PostingHero = styled.div`
 `;
 
 export const $HeroWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-flow: row wrap;
 
@@ -18,16 +19,27 @@ export const $HeroWrapper = styled.div`
   }
 `;
 
+export const $BackButton = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: ${(props) => props.theme.colors.white};
+  padding: ${(props) => props.theme.spacing.xs3};
+  cursor: pointer;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.xl}) {
+    left: -3rem;
+    padding: ${(props) => props.theme.spacing.xs2};
+  }
+`;
+
 export const $ImageContainer = styled.div<ImageProps>`
   width: 100%;
-  height: 300px;
   background-color: ${(props) => props.theme.colors.black30};
-  background: url('${(props) => props.imageUrl || ''}') no-repeat center center;
   background-size: cover;
 
   @media (min-width: ${(props) => props.theme.breakpoints.l}) {
     width: 60%;
-    height: 600px;
   }
 `;
 

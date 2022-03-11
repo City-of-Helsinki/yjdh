@@ -2,7 +2,7 @@ import React from 'react';
 import { Tag } from 'hds-react';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
-import { $Tags, $RemoveButton } from './PostingSearchTags.sc';
+import { $Tags, $RemoveButton } from './JobPostingSearchTags.sc';
 import { useTranslation } from 'next-i18next';
 import { OptionType } from 'tet-shared/types/classification';
 

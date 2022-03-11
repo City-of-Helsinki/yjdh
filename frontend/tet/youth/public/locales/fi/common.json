@@ -45,11 +45,21 @@
     "sv": "På svenska",
     "en": "In English"
   },
+	"postingsPage": {
+		"showMore": "Näytä lisää tuloksia"
+	},
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {
       "label": "Tapahtui tuntematon virhe",
       "text": " Yritä myöhemmin uudelleen"
     }
-  }
+  },
+	"editor": {
+		"posting": {
+			"contactLanguageFi": "Suomi",
+			"contactLanguageSv": "Ruotsi",
+			"contactLanguageEn": "Englanti"
+		}
+	}
 }

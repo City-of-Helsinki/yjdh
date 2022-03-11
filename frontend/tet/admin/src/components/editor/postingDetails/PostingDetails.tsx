@@ -13,12 +13,12 @@ import { Notification } from 'hds-react';
 import { OptionType } from 'tet-shared/types/classification';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
 import Combobox from 'tet/admin/components/editor/Combobox';
-import useLanguageOptions from 'tet/admin/hooks/translation/useLanguageOptions';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name } = useValidationRules();
+  const { required, name, description } = useValidationRules();
 
   const languageOptions = useLanguageOptions();
 
@@ -81,7 +81,7 @@ const PostingDetails: React.FC = () => {
           <TextArea
             id="description"
             label={t('common:editor.posting.description')}
-            registerOptions={{ required: required }}
+            registerOptions={description}
             required={true}
           />
         </$GridCell>

@@ -87,3 +87,19 @@ export type TetEvents = {
   draft: TetEvent[];
   published: TetEvent[];
 };
+
+export type ErrorData = {
+  data?: Record<string, string[]>;
+};
+
+export type LocalizedError = {
+  fi?: string[];
+  en?: string[];
+  sv?: string[];
+};
+
+export type LocalizedErrorData = {
+  data?: Record<string, LocalizedError>;
+};
+
+export type LinkedEventsError = ErrorData | LocalizedErrorData;
