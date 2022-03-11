@@ -14,6 +14,7 @@ import { DevTool } from '@hookform/devtools';
 import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
+import useLeaveConfirm from 'tet/admin/hooks/useLeaveConfirm';
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
@@ -29,6 +30,7 @@ export type EditorSectionProps = {
 // add new posting / edit existing
 const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true, allowPublish = false }) => {
   const { t } = useTranslation();
+  useLeaveConfirm(true);
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
     mode: 'onBlur',
