@@ -38,6 +38,8 @@
 	},
   "application": {
 		"backToFrontPage": "Takaisin etusivulle",
+		"createTerms": "Olen esihenkilöasemassa tai keskustellut esihenkilön kanssa ilmoituksen teosta.",
+		"accept": "Hyväksy",
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -106,7 +108,7 @@
     },
 		"classification": {
 			"classifications": "Luokittelut",
-			"workMethod": "Työtapa",
+			"workMethod": "Työtavat",
 			"workFeature": "Työn ominaisuudet",
 			"keywords": "Avainsanat",
 			"search": "Hae"
