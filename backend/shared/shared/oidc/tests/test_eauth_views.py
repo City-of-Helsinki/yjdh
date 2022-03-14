@@ -60,7 +60,7 @@ def test_get_organization_roles(session_request, requests_mock):
         }
     ]
 
-    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
+    matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
     requests_mock.get(matcher, json=organization_roles_json)
 
     organization_roles = get_organization_roles(session_request)
@@ -83,7 +83,7 @@ def test_eauth_authentication_init_view(requests_mock, user_client, user):
         "userId": "test_user",
     }
 
-    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
+    matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
     requests_mock.get(matcher, json=register_user_info)
 
     authentication_url = reverse("eauth_authentication_init")
@@ -115,7 +115,7 @@ def test_eauth_callback_view(requests_mock, user_client, user):
         "expires_in": 600,
         "refresh_token": "test3",
     }
-    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
+    matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
     requests_mock.post(matcher, json=token_info)
 
     organization_roles_json = [
