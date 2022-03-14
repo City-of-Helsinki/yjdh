@@ -38,6 +38,8 @@
 	},
   "application": {
 		"backToFrontPage": "Takaisin etusivulle",
+		"publishTerms": "Julkaisun yhteydessä hyväksyt",
+		"termsLink": "käyttöehdot",
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",

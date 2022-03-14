@@ -38,6 +38,8 @@
 	},
   "application": {
 		"backToFrontPage": "SV Takaisin etusivulle",
+		"publishTerms": "SV Julkaisun yhteydessä hyväksyt",
+		"termsLink": "SV käyttöehdot",
     "jobPostings": {
       "title": "SV TET-paikkailmoitukset",
       "noPostingsFound": "SV Sinulla ei ole vielä yhtään TET-paikkaa.",
