@@ -58,8 +58,9 @@
     }
   },
   "editor": {
-		"companyInfo": "ENG Yrityksen tiedot",
-		"companyInfoFetch": "ENG Yrityksen tiedot on haettu YTJS:stä",
+		"companyInfo": "ENG Työnantajan tiedot",
+    "helsinkiCity": "City of Helsinki",
+		"companyInfoFetch": "ENG Tiedot on haettu tunnistautumisen yhteydessä.",
     "newTitle": "ENG Uusi TET-paikka",
     "editTitle": "ENG Muokkaa TET-paikkaa",
 		"copyTitle": "ENG Kopioi TET-paikka",
