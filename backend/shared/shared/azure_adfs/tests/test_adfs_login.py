@@ -30,7 +30,7 @@ def test_get_member_objects(requests_mock):
         ],
     }
 
-    matcher = re.compile("https://graph.microsoft.com/")
+    matcher = re.compile(re.escape("https://graph.microsoft.com/"))
     requests_mock.post(matcher, json=member_objects_response)
 
     groups = auth_backend.get_member_objects_from_graph_api("test", "test")
@@ -59,7 +59,7 @@ def test_update_user_groups_from_graph_api(requests_mock, user):
         ],
     }
 
-    matcher = re.compile("https://graph.microsoft.com/")
+    matcher = re.compile(re.escape("https://graph.microsoft.com/"))
     requests_mock.post(matcher, json=member_objects_response)
 
     auth_backend.update_user_groups_from_graph_api(user, "test", "test")
@@ -89,7 +89,7 @@ def test_get_graph_api_access_token(requests_mock):
         "refresh_token": "OAQABAAAAAABnfiG-mA6NTae7CdWW7QfdAALzDWjw6qSn4GUDfxWzJDZ6lk9qRw4An",
     }
 
-    matcher = re.compile("https://login.microsoftonline.com/")
+    matcher = re.compile(re.escape("https://login.microsoftonline.com/"))
     requests_mock.post(matcher, json=token_endpoint_response)
 
     with mock.patch.object(
