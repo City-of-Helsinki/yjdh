@@ -1,7 +1,7 @@
 import CredentialsIngress from 'benefit/applicant/components/credentialsIngress/CredentialsIngress';
 import {
   ATTACHMENT_TYPES,
-  EMPLOYEE_CONSENT_FILE,
+  EMPLOYEE_CONSENT_FILE_PREFIX,
 } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import {
@@ -24,6 +24,7 @@ import {
   ATTACHMENT_CONTENT_TYPES,
   ATTACHMENT_MAX_SIZE,
 } from 'shared/constants/attachment-constants';
+import useLocale from 'shared/hooks/useLocale';
 import { useTheme } from 'styled-components';
 
 import StepperActions from '../stepperActions/StepperActions';
@@ -47,6 +48,7 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
     isUploading,
   } = useApplicationFormStep4(data);
   const theme = useTheme();
+  const locale = useLocale();
 
   // temporary disabled feature
   const hasElectronicPowerOfAttorney = false;
@@ -111,7 +113,10 @@ const ApplicationFormStep4: React.FC<DynamicFormStepComponentProps> = ({
                         onClick={() =>
                           // eslint-disable-next-line security/detect-non-literal-fs-filename
                           window
-                            .open(`/${EMPLOYEE_CONSENT_FILE}`, '_blank')
+                            .open(
+                              `/${EMPLOYEE_CONSENT_FILE_PREFIX}_${locale}.pdf`,
+                              '_blank'
+                            )
                             ?.focus()
                         }
                         variant="secondary"
