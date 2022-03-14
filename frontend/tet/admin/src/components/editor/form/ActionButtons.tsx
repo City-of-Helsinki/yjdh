@@ -10,6 +10,7 @@ import { useTheme } from 'styled-components';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import TetPosting from 'tet-shared/types/tetposting';
+import usePublishTetPosting from 'tet/admin/hooks/backend/usePublishTetPosting';
 
 type Props = {
   onSubmit: () => void;
@@ -20,6 +21,7 @@ type Props = {
 const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPublish }) => {
   const { setPreviewVisibility, setTetPostingData } = useContext(PreviewContext);
   const deleteTetPosting = useDeleteTetPosting();
+  const publishTetPosting = usePublishTetPosting();
   const { confirm } = useConfirm();
 
   const { t } = useTranslation();
@@ -37,10 +39,10 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPub
   };
 
   const deletePostingHandler = async () => {
-    await showConfirm();
+    await showDeleteConfirm();
   };
 
-  const showConfirm = async () => {
+  const showDeleteConfirm = async () => {
     const isConfirmed = await confirm({
       header: t('common:delete.confirmation', { posting: posting.title }),
       submitButtonLabel: t('common:delete.deletePosting'),
@@ -48,6 +50,17 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPub
 
     if (isConfirmed) {
       deleteTetPosting.mutate(posting);
+    }
+  };
+
+  const publishPostingHandler = async () => {
+    const isConfirmed = await confirm({
+      header: t('common:publish.confirmation', { posting: posting.title }),
+      submitButtonLabel: t('common:publish.publishPosting'),
+    });
+
+    if (isConfirmed) {
+      publishTetPosting.mutate(posting);
     }
   };
 
@@ -93,12 +106,7 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPub
         </$GridCell>
         {allowPublish && (
           <$GridCell $colSpan={3}>
-            <Button
-              variant="success"
-              disabled={isSubmitting}
-              iconLeft={<IconUpload />}
-              onClick={() => alert('Not implemented')}
-            >
+            <Button variant="success" disabled={isSubmitting} iconLeft={<IconUpload />} onClick={publishPostingHandler}>
               {t('common:editor.publish')}
             </Button>
           </$GridCell>

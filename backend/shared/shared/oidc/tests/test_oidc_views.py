@@ -59,7 +59,7 @@ def test_logout_view_without_oidc_info(user_client, user):
     MOCK_FLAG=False,
 )
 def test_logout_callback_view(requests_mock, user_client, user):
-    matcher = re.compile(settings.OIDC_OP_LOGOUT_ENDPOINT)
+    matcher = re.compile(re.escape(settings.OIDC_OP_LOGOUT_ENDPOINT))
     requests_mock.post(matcher)
 
     logout_url = reverse("oidc_logout_callback")
@@ -90,7 +90,7 @@ def test_userinfo_view(requests_mock, user_client, user):
         "name": userinfo["name"],
     }
 
-    matcher = re.compile(settings.OIDC_OP_USER_ENDPOINT)
+    matcher = re.compile(re.escape(settings.OIDC_OP_USER_ENDPOINT))
     requests_mock.get(matcher, json=userinfo)
 
     userinfo_url = reverse("oidc_userinfo")
@@ -127,7 +127,7 @@ def test_userinfo_view_without_oidc_info(user_client):
     NEXT_PUBLIC_MOCK_FLAG=False,
 )
 def test_userinfo_view_with_userinfo_returning_401(requests_mock, user_client, user):
-    matcher = re.compile(settings.OIDC_OP_USER_ENDPOINT)
+    matcher = re.compile(re.escape(settings.OIDC_OP_USER_ENDPOINT))
     requests_mock.get(matcher, status_code=401)
 
     userinfo_url = reverse("oidc_userinfo")
