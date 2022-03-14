@@ -58,8 +58,9 @@
     }
   },
   "editor": {
-		"companyInfo": "SV Yrityksen tiedot",
-		"companyInfoFetch": "SV Yrityksen tiedot on haettu YTJS:stä",
+		"companyInfo": "SV Työnantajan tiedot",
+    "helsinkiCity": "Helsingfors stad",
+		"companyInfoFetch": "SV Tiedot on haettu tunnistautumisen yhteydessä.",
     "newTitle": "SV Uusi TET-paikka",
     "editTitle": "SV Muokkaa TET-paikkaa",
 		"copyTitle": "SV Kopioi TET-paikka",
