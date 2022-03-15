@@ -71,6 +71,30 @@
       "requiredInfo": "Alla fält som är märkta med * är obligatoriska"
     }
   },
+  "additionalInfo": {
+    "title": "SWE Tarkenna hakemustasi",
+    "notification": {
+      "confirmed": "SWE Sähköpostiosoite on vahvistettu",
+      "confirmedDescription": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "sent" : "SWE Kiitos! Tarkennus lähetetty!",
+      "notFound": "SWE Hakemusta ei löytynyt"
+    },
+    "paragraph_1": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "paragraph_2": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "form" : {
+      "exceptionType": "SWE Otsikko",
+      "exceptionTypePlaceholder": "SWE Valitse seuraavista vaihtoehdoista",
+      "message": "SWE Lisätiedot",
+      "attachments": "SWE Liitetiedostot",
+      "attachmentsHelper": "SWE Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB"
+    },
+    "exceptions": {
+      "residence": "SWE En asu Helsingissä",
+      "age": "SWE Olen yli/ali-ikäinen",
+      "vtj": "SWE Henkilötiedot poikkeavat väestötietojärjestelmän tiedoista",
+      "other": "SWE Muu, kerro alla"
+    }
+  },
   "errors": {
     "required": "Uppgifter fattas",
     "minLength": "Den inmatade texten är för kort",

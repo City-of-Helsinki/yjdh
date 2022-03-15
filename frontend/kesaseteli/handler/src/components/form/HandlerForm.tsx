@@ -5,7 +5,7 @@ import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION,
-} from 'kesaseteli-shared/constants/status-constants';
+} from 'kesaseteli-shared/constants/youth-application-status';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';

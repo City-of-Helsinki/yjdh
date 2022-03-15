@@ -4,7 +4,7 @@ import {
   expectToPatchYouthApplicationError,
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
-import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/status-constants';
+import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/youth-application-status';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
 import { escapeRegExp } from 'shared/utils/regex.utils';

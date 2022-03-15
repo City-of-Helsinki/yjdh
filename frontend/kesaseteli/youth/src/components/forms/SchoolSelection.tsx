@@ -14,7 +14,7 @@ import useToggle from 'shared/hooks/useToggle';
 
 const SchoolSelection: React.FC = () => {
   const { t } = useTranslation();
-  const register = useRegisterInput<YouthFormData>();
+  const register = useRegisterInput<YouthFormData>('youthApplication');
 
   const [schoolIsUnlisted, toggleSchoolIsUnlisted] = useToggle(false);
 

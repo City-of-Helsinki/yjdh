@@ -2,7 +2,7 @@ import SchoolSelection from 'kesaseteli/youth/components/forms/SchoolSelection';
 import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
 import { isYouthApplicationCreationError } from 'kesaseteli/youth/utils/type-guards';
-import YouthApplication from 'kesaseteli-shared/types/youth-application';
+import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
@@ -30,12 +30,12 @@ const YouthForm: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const locale = useLocale();
-  const register = useRegisterInput<YouthFormData>();
+  const register = useRegisterInput<YouthFormData>('youthApplication');
   const handleDefaultError = useErrorHandler(false);
 
   const goToPage = useGoToPage();
   const handleSaveSuccess = React.useCallback(
-    (application: YouthApplication) => {
+    (application: CreatedYouthApplication) => {
       const url =
         isRealIntegrationsEnabled() || !application.id
           ? '/thankyou'

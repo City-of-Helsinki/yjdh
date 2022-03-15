@@ -1,5 +1,7 @@
-import { YOUTH_APPLICATION_STATUS } from '../constants/status-constants';
+import YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 
-type YouthApplicationStatus = typeof YOUTH_APPLICATION_STATUS[number];
+type YouthApplicationStatus = {
+  status: YouthApplicationStatusType;
+};
 
 export default YouthApplicationStatus;

@@ -71,6 +71,30 @@
       "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia"
     }
   },
+  "additionalInfo": {
+    "title": "Tarkenna hakemustasi",
+    "notification" : {
+      "confirmed" : "Sähköpostiosoite on vahvistettu",
+      "confirmedDescription" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "sent" : "Kiitos! Tarkennus lähetetty!",
+      "notFound":  "Hakemusta ei löytynyt"
+    },
+    "paragraph_1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "paragraph_2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "form" : {
+      "exceptionType": "Otsikko",
+      "exceptionTypePlaceholder": "Valitse seuraavista vaihtoehdoista",
+      "message": "Lisätiedot",
+      "attachments": "Liitetiedostot",
+      "attachmentsHelper": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, txt, jpg ja png. Maksimikoko 10MB"
+    },
+    "exceptions": {
+      "residence": "En asu Helsingissä",
+      "age": "Olen yli/ali-ikäinen",
+      "vtj": "Henkilötiedot poikkeavat väestötietojärjestelmän tiedoista",
+      "other": "Muu, kerro alla"
+    }
+  },
   "errors": {
     "required": "Tieto puuttuu",
     "minLength": "Syöttämäsi tieto on liian lyhyt",
