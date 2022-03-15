@@ -33,11 +33,7 @@ from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
 from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
-from companies.tests.factories import (
-    ASSOCIATION_FORM_CODE,
-    COMPANY_FORM_CODE,
-    CompanyFactory,
-)
+from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
 from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
@@ -48,6 +44,7 @@ from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
 
 from shared.audit_log import models as audit_models
+from shared.service_bus.enums import YtjOrganizationCode
 
 
 def get_detail_url(application):
@@ -659,7 +656,7 @@ def test_application_edit_benefit_type_business_association(
     data = ApplicantApplicationSerializer(association_application).data
     company = mock_get_organisation_roles_and_create_company
     company.company_form = "ry"
-    company.company_form_code = ASSOCIATION_FORM_CODE
+    company.company_form_code = YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT
     company.save()
     association_application.company = company
     association_application.save()
@@ -868,12 +865,12 @@ def test_application_date_range_on_submit(
 @pytest.mark.parametrize(
     "company_form_code,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
     [
-        (ASSOCIATION_FORM_CODE, None, [], False, 200),
-        (ASSOCIATION_FORM_CODE, False, [], False, 200),
-        (ASSOCIATION_FORM_CODE, None, [], True, 200),
-        (ASSOCIATION_FORM_CODE, False, [], True, 200),
-        (COMPANY_FORM_CODE, None, [], None, 400),
-        (COMPANY_FORM_CODE, False, [], None, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, None, [], False, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False, [], False, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, None, [], True, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False, [], True, 200),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, None, [], None, 400),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, False, [], None, 200),
     ],
 )
 def test_submit_application_without_de_minimis_aid(
@@ -898,7 +895,7 @@ def test_submit_application_without_de_minimis_aid(
     data["pay_subsidy_percent"] = "50"
     data["pay_subsidy_granted"] = True
     data["association_has_business_activities"] = association_has_business_activities
-    if company_form_code == ASSOCIATION_FORM_CODE:
+    if company_form_code == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT:
         data["association_immediate_manager_check"] = True
 
     response = api_client.put(

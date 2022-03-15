@@ -10,11 +10,12 @@ from companies.tests.data.company_data import (
     DUMMY_YRTTI_RESPONSE,
     get_dummy_company_data,
 )
-from companies.tests.factories import COMPANY_FORM_CODE
 from django.conf import settings
 from django.test import override_settings
 from requests import HTTPError
 from terms.tests.factories import TermsOfServiceApprovalFactory
+
+from shared.service_bus.enums import YtjOrganizationCode
 
 
 def get_company_api_url(business_id=""):
@@ -102,7 +103,10 @@ def test_get_organisation_from_service_bus(
     )
     company_data = CompanySerializer(company).data
     assert response.data == company_data
-    assert response.data["company_form_code"] == COMPANY_FORM_CODE
+    assert (
+        response.data["company_form_code"]
+        == YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
+    )
     assert response.data["company_form"] == "Osakeyhtiö"
 
 
@@ -132,8 +136,14 @@ def test_get_company_from_yrtti(
     )
     company_data = CompanySerializer(company).data
     assert response.data == company_data
-    assert response.data["company_form_code"] == 29
-    assert response.data["company_form"] == "Yhdistys"
+    assert (
+        response.data["company_form_code"]
+        == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT
+    )
+    assert (
+        response.data["company_form"]
+        == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT.label
+    )
 
 
 @pytest.mark.django_db
@@ -173,5 +183,8 @@ def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
     response = api_client.get(get_company_api_url())
     # Still be able to query company data
     assert response.data["business_id"] == get_dummy_company_data()["business_id"]
-    assert response.data["company_form_code"] == COMPANY_FORM_CODE
+    assert (
+        response.data["company_form_code"]
+        == YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
+    )
     assert response.data["company_form"] == "Osakeyhtiö"

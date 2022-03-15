@@ -14,8 +14,10 @@ from applications.models import (
     Employee,
 )
 from calculator.models import Calculation
-from companies.tests.factories import COMPANY_FORM_CODE, CompanyFactory
+from companies.tests.factories import CompanyFactory
 from users.tests.factories import HandlerFactory
+
+from shared.service_bus.enums import YtjOrganizationCode
 
 
 class DeMinimisAidFactory(factory.django.DjangoModelFactory):
@@ -53,7 +55,7 @@ class ApplicationFactory(factory.django.DjangoModelFactory):
     )
     company_name = factory.Faker("sentence", nb_words=2)
     company_form = factory.Faker("sentence", nb_words=1)
-    company_form_code = COMPANY_FORM_CODE
+    company_form_code = YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
     company_department = factory.Faker("street_address")
     official_company_street_address = factory.Faker("street_address")
     official_company_city = factory.Faker("city")
