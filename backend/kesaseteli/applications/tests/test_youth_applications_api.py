@@ -415,31 +415,55 @@ def test_youth_applications_adfs_login_enforced_action_unused_pk(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("mock_flag", [False, True])
+@pytest.mark.parametrize("action", ["activate", "status"])
 @pytest.mark.parametrize(
-    "mock_flag,client_fixture_func",
-    [
-        (mock_flag, client_fixture_func)
-        for mock_flag in [False, True]
-        for client_fixture_func in [
-            unauth_api_client,
-            api_client,
-            staff_client,
-            superuser_client,
-        ]
-    ],
+    "client_fixture_func",
+    [unauth_api_client, api_client, staff_client, superuser_client],
 )
-def test_youth_applications_activate_unused_pk(
+def test_youth_applications_public_action_unused_pk(
     request,
     settings,
     mock_flag,
+    action,
     client_fixture_func,
 ):
     unused_pk = get_random_pk()
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
-    endpoint_url = reverse_youth_application_action("activate", unused_pk)
+    endpoint_url = reverse_youth_application_action(action, unused_pk)
     response = client_fixture.get(endpoint_url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "youth_application_status",
+    [
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+    ],
+)
+@pytest.mark.parametrize("mock_flag", [False, True])
+@pytest.mark.parametrize(
+    "client_fixture_func",
+    [unauth_api_client, api_client, staff_client, superuser_client],
+)
+def test_youth_applications_status_valid_pk(
+    request,
+    settings,
+    youth_application_status,
+    mock_flag,
+    client_fixture_func,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_func.__name__)
+    youth_application = YouthApplicationFactory.create(status=youth_application_status)
+    endpoint_url = reverse_youth_application_action("status", youth_application.pk)
+    response = client_fixture.get(endpoint_url)
+    assert response.status_code == status.HTTP_200_OK
+    assert response["Content-Type"] == "application/json"
+    assert response.json() == {"status": youth_application_status}
 
 
 @pytest.mark.django_db
