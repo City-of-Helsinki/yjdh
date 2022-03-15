@@ -75,6 +75,7 @@
 		"preview": "Förhandsgranskning",
     "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
     "language": "TET-platsens språk",
+    "helsinkiCity": "Helsingfors stad",
     "employerInfo": {
 			"contactPerson": "Kontaktperson",
       "header": "Uppgifter om verksamhetsställe",

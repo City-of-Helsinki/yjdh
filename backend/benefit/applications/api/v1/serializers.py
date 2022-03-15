@@ -1772,6 +1772,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             instance, previous_status, approve_terms, log_entry_comment
         )
         # Extend from base class function.
+        self._assign_handler_if_needed(instance)
+        self._remove_batch_if_needed(instance)
+
+    def _assign_handler_if_needed(self, instance):
         # Assign current user to the application.calculation.handler
         # NOTE: This handler might be overridden if there is a handler pk included in the request post data
         handler = get_request_user_from_context(self)
@@ -1780,3 +1784,8 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         if instance.status in HandlerApplicationStatusValidator.ASSIGN_HANDLER_STATUSES:
             instance.calculation.handler = handler
             instance.calculation.save()
+
+    def _remove_batch_if_needed(self, instance):
+        if instance.status == ApplicationStatus.HANDLING and instance.batch:
+            instance.batch = None
+            instance.save()

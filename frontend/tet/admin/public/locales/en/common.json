@@ -74,6 +74,8 @@
 		"preview": "Preview",
     "loadingError": "Error while loading the event. Please try again later.",
     "language": "Language of the TET position",
+    "helsinkiCity": "City of Helsinki",
+    "notificationTitle": "ENG Täytä puuttuvat tai virheelliset tiedot",
     "employerInfo": {
 			"contactPerson": "Contact person",
       "header": "Unit details",

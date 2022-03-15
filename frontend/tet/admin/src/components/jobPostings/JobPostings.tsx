@@ -7,21 +7,27 @@ import { useQuery } from 'react-query';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { useRouter } from 'next/router';
-import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
-import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
+import { TetEvents } from 'tet-shared/types/linkedevents';
 import theme from 'shared/styles/theme';
 import { eventsToTetPostings } from 'tet-shared/backend-api/transformations';
 import useConfirm from 'shared/hooks/useConfirm';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, data } = useQuery<TetEvents>(BackendEndpoint.TET_POSTINGS);
   const { confirm } = useConfirm();
+  const { isLoading, data, error } = useQuery<TetEvents, Error>(BackendEndpoint.TET_POSTINGS);
   const router = useRouter();
 
   if (isLoading) {
     return <PageLoadingSpinner />;
+  }
+
+  if (error) {
+    // TODO check that error is 403
+    // TODO add to translations
+    // TODO implement error view for this
+    return <div>Virhe latauksessa. Yritä uudestaan tai pyydä sovellukseen käyttöoikeus...</div>;
   }
 
   const postings = eventsToTetPostings(data);
