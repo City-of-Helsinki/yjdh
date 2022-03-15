@@ -29,7 +29,8 @@
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Hakemus",
-      "helperText": "Ole hyvä ja tarkista hakemus. Tarvittaessa voit vielä muokata tietoja ennen kuin siirryt eteenpäin."
+      "helperText": "Vänligen kontrollera ansökan innan du skickar in den.",
+      "guideText": "Fälten märkta med * är obligatoriska"
     },
     "statuses": {
       "draft": "Luonnos",
@@ -45,11 +46,11 @@
       "hired": "Palkattava",
       "attachments": "Bilagor",
       "summary": "Sammandrag",
-      "credentials": "Valtakirja",
+      "credentials": "Behandling av personuppgifter",
       "send": "Skicka"
     },
     "actions": {
-      "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
+      "saveAndContinueLater": "Spara och stäng",
       "deleteApplication": "Ta bort ansökan",
       "deleteApplicationConfirm": "Är du säker på att du vill ta bort utkastet?",
       "deleteApplicationDescription": "Ansökan raderas permanent och den kan inte återställas.",
@@ -90,7 +91,7 @@
         },
         "fields": {
           "useAlternativeAddress": {
-            "label": "Työnantajalle on toinen postiosoite"
+            "label": "Använd en annan postadress"
           },
           "alternativeCompanyStreetAddress": {
             "label": "Gatuadress",
@@ -125,7 +126,7 @@
             "placeholder": "040 1234567"
           },
           "companyContactPersonEmail": {
-            "label": "E-postadress",
+            "label": "E-post för ärendehantering",
             "placeholder": "E-postadress"
           },
           "applicantLanguage": {
@@ -183,12 +184,14 @@
         "tooltips": {
           "heading5Employment": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
           "heading5EmploymentSub1": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
-          "heading5Assignment": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen. Med bikostnader avses arbetsgivarens lagstadgade bikostnader per månad. Semesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg."
+          "heading5Assignment": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen. Med bikostnader avses arbetsgivarens lagstadgade bikostnader per månad. Semesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg.",
+          "heading2": "Lönesubvention är ett ekonomiskt stöd för främjande av sysselsättningen av en arbetslös arbetssökande som arbets- och näringslivstjänsterna kan bevilja till arbetsgivaren för lönekostnader.",
+          "heading3": "Helsingforstillägg för sysselsättning är avsett för kostnaderna för handledning, inskolning, arbetsredskap, arbetskläder och arbetslokaler då inga andra understöd utbetalas för dessa. Helsingforstillägg för lön är avsett för lönekostnaderna för den anställda (=bruttolön, lagstadgade bikostnader och semesterpenning). Helsingforstillägg för uppdrag är avsett för utförande av ett enskilt jobb eller projekt."
         },
         "notifications": {
           "salaryBenefit": {
-            "label": "Palkkatuettu oppisopimus",
-            "content": "Palkkatuettuun oppisopimukseen voi hakea joko työllistämisen tai palkan Helsinki-lisää"
+            "label": "Ett lönesubventionerat läroavtal",
+            "content": "För ett lönesubventionerat läroavtal kan man ansöka om Helsingforstillägg för antingen sysselsättning eller lön."
           },
           "employmentBenefitSelected": {
             "label": "Tidsperiod",
@@ -249,17 +252,17 @@
             "no": "Nej"
           },
           "benefitType": {
-            "label": "Tukimuoto",
-            "employment": "Työllistämisen Helsinki-lisä",
-            "salary": "Palkan Helsinki-lisä",
-            "commission": "Toimeksiannon Helsinki-lisä"
+            "label": "Den stödform som söks",
+            "employment": "Helsingforstillägg för sysselsättning",
+            "salary": "Helsingforstillägg för lön",
+            "commission": "Helsingforstillägg för uppdrag"
           },
           "jobTitle": {
             "label": "Titel",
             "placeholder": "Titel"
           },
           "workingHours": {
-            "label": "Arbetstid timmar per vecka",
+            "label": "Arbetstid timmar på vecka",
             "placeholder": "Timmar",
             "view": "Työaika: {{workingHours}} t / viikko"
           },
@@ -331,7 +334,7 @@
         "heading1": "Ole hyvä ja tarkista hakemus"
       },
       "credentials": {
-        "heading1": "Valtakirja",
+        "heading1": "Behandling av den anställdas personuppgifter",
         "heading2": "Suostumus",
         "sections": {
           "electronicPowerOfAttorney": {
@@ -341,7 +344,7 @@
           },
           "uploadPowerOfAttorney": {
             "title": "Bifoga delgivningen",
-            "description": "Voit myös tulostaa valtakirjapohjan, pyytää siihen allekirjoitus ja liittää se hakemukseen.",
+            "description": "Filformatet kan vara JPG, PNG eller PDF.",
             "action1": "Skriv ut",
             "action2": "Bifoga delgivningen"
           }
@@ -368,16 +371,16 @@
   },
   "notifications": {
     "applicationSubmitted": {
-      "label": "Hakemus lähetty onnistuneesti",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen kun hakemus on käsitelty."
+      "label": "Ansökan har skickats in",
+      "message": "Ansökan om Helsingforstillägg {{applicationNumber}} ({{applicantName}}) har skickats. Du får ett meddelande när ansökan har behandlats."
     },
     "applicationSaved": {
       "label": "Hakemus tallennettu",
       "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
     },
     "applicationDeleted": {
-      "label": "Hakemus poistettu",
-      "message": "Helsinki-lisä hakemus on poistettu."
+      "label": "Utkast raderat",
+      "message": "Ansökan har raderats."
     }
   },
   "languages": {
@@ -402,7 +405,7 @@
     "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
   },
   "credentialsIngress": {
-    "text": "Valitse yksi alla olevista tavoista. Hakemus on valmis lähetettäväksi vasta, kun palkattava henkilö on tehnyt sähköisen valtakirjan tai olet liittänyt allekirjoitetun valtakirjan. Huomoithan, että tämän jälkeen hakemusta ei voi enää muokata."
+    "text": "Den person som anställs med Helsingforstillägg ska informeras om behandlingen av hens personuppgifter. Skriv ut informationen och be den anställda om underskrift."
   },
   "menuToggleAriaLabel": "Menu",
   "form": {
