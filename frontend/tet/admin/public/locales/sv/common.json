@@ -1,5 +1,5 @@
 {
-  "appName": "TET-platser",
+  "appName": "PRAO-platser",
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
@@ -9,26 +9,26 @@
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
-    "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
-    "retry": "Ladda upp sidan på nytt.",
+    "message": "Något gick fel. Det kan hjälpa att ladda om sidan.",
+    "retry": "Ladda om sidan.",
     "logout": "Logga ut"
   },
   "404Page": {
     "pageNotFoundLabel": "Sidan kunde inte hittas",
-    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
+    "pageNotFoundContent": "Äsch, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
   "loginPage": {
     "logoutMessageLabel": "Du har loggat ut",
     "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
-   "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
+    "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
     "infoLabel": "Att använda tjänsten kräver stark autentisering",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
     "infoContent": {
-      "listHeading": "Helsingfors stad behandlar följande behövliga uppgifter vid TET-platsannonsering:",
+      "listHeading": "Helsingfors stad behandlar följande nödvändiga uppgifter vid PRAO-platsannonsering:",
       "bullet1": "Namn på den person som fyllt i ansökan (hämtas från suomi.fi i samband med identifiering)",
       "bullet2": "Namn på, telefonnummer och e-postadress till den utsedda kontaktpersonen (matas in i tjänsten)",
-      "bullet3": "Namn på arbetsgivarorganisation, FO-nummer och adress(matas in i tjänsten)",
-      "moreInfo": "Mer information om hur personuppgifter behandlas(bland annat rättsliga grunder och lagringstider) i TET-platsernas annonstjänst finns <a>på studieförvaltningsregistret.</a>",
+      "bullet3": "Namn på arbetsgivarorganisation, FO-nummer och adress (matas in i tjänsten)",
+      "moreInfo": "Mer information om hur personuppgifter behandlas (bland annat rättsliga grunder och lagringstider) i PRAO-platsernas annonstjänst finns <a>i studieförvaltningsregistret.</a>",
       "registerRights1": "En registrerad har rättigheter med avseende på de personuppgifter som Helsingfors stad behandlar.",
       "registerRights2": "Den registrerade kan bland annat kontrollera vilka uppgifter som samlats om hen. Ytterligare information om rättigheterna och om utövande av dem finns på Helsingfors stads webbsida om datasekretess."
     }
@@ -41,13 +41,13 @@
 		"createTerms": "Jag är i positionen som arbetsledare eller har diskuterat tillkännagivandet med förmannen.",
 		"accept": "Acceptera",
     "jobPostings": {
-      "title": "TET-platsannonser",
-      "noPostingsFound": "Du har ännu inga TET-platser.",
+      "title": "PRAO-platsannonser",
+      "noPostingsFound": "Du har ännu inga PRAO-platser.",
       "addNewPosting": "Lägg till ny praktikplats",
-			"publishedPostings": "Arbetspraktikplatser",
+			"publishedPostings": "PRAO-platser",
 			"draftPostings": "Halvfärdiga annonser",
-			"openSpots_one": "{{count}} TET-plats",
-			"openSpots_other": "{{count}} TET-platser",
+			"openSpots_one": "{{count}} PRAO-plats",
+			"openSpots_other": "{{count}} PRAO-platser",
 			"published": "Publicerad",
 			"notPublished": "Ej publicerad",
 			"total": "st.",
@@ -62,9 +62,9 @@
   "editor": {
 		"companyInfo": "Företagets uppgifter",
 		"companyInfoFetch": "Företagets uppgifter har hämtats från YTJ",
-    "newTitle": "Ny TET-plats",
-    "editTitle": "Redigera TET-plats",
-		"copyTitle": "Kopiera TET-plats",
+    "newTitle": "Ny PRAO-plats",
+    "editTitle": "Redigera PRAO-plats",
+		"copyTitle": "Kopiera PRAO-plats",
     "saveDraft": "Spara som opublicerad",
     "deletePosting": "Ta bort annons",
     "preview": "Gå till förhandsgranskning",
@@ -74,8 +74,7 @@
 		"requiredInfo": "Markerade fält är obligatoriska",
 		"preview": "Förhandsgranskning",
     "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
-    "language": "TET-platsens språk",
-    "helsinkiCity": "Helsingfors stad",
+    "language": "PRAO-platsens språk",
     "employerInfo": {
 			"contactPerson": "Kontaktperson",
       "header": "Uppgifter om verksamhetsställe",
@@ -88,9 +87,9 @@
       "header": "Uppgifter om arbetspraktikplats",
       "title": "Befattning",
       "description": "Fri beskrivning av arbetspraktikplats/-uppgift",
-      "workHoursNotice": "Arbetstiden är alltid densamma 30 timmar i veckan.",
-      "startDateLabel": "Från",
-      "endDateLabel": "Till",
+      "workHoursNotice": "Arbetstiden är alltid densamma, 30 timmar i veckan.",
+      "startDateLabel": "Börjar",
+      "endDateLabel": "Slutar",
       "spotsLabel": "Arbetspraktikplatser",
 			"contactFirstName": "Förnamn",
 			"contactLastName": "Efternamn",
@@ -101,7 +100,7 @@
 			"contactLanguageSv": "Svenska",
 			"contactLanguageEn": "Engelska",
 			"validation": {
-				"required": "Uppgifter krävs",
+				"required": "Uppgiften är nödvändig",
 				"email": "Vänligen mata in e-post i rätt format",
 				"max": "Överskrider maximalt antal tecken",
 				"phone": "Vänligen mata in i rätt format",
@@ -110,7 +109,7 @@
     },
 		"classification": {
 			"classifications": "Klassificeringar",
-			"workMethod": "Arbetssättar",
+			"workMethod": "Arbetssätt",
 			"workFeature": "Arbetets karaktär",
 			"keywords": "Nyckelord",
 			"search": "Sök"
@@ -122,13 +121,13 @@
     }
   },
 	"postingTemplate": {
-		"spots": "TET-platser",
+		"spots": "PRAO-platser",
 		"contact": "Kontaktuppgifter",
 		"description": "Beskrivning",
 		"share": "Dela händelse",
 		"dateAndTime": "Datum och tid",
 		"location": "Plats",
-		"languages": "Språk som används på TET-platsen"
+		"languages": "Språk som används på PRAO-platsen"
 	},
   "footer": {
     "copyrightText": "Helsingfors stad",
@@ -137,7 +136,7 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
     "privacyPolicy": "Registerbeskrivning",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
-    "feedback": "Lämna feedback",
+    "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
   },
   "languages": {
@@ -159,21 +158,21 @@
   },
   "upload": {
 		"successMessage": "Uppgifterna sparades",
-    "isUploading": "Sänder...",
+    "isUploading": "Filen laddas upp...",
     "errorTitle": "Uppladdningen av filen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "delete": {
-		"deletePosting": "Ta bort TET-plats",
-		"confirmation": "Är du säker på att du vill ta bort TET-platsen {{posting}}?",
-		"successTitle": "TET-platsen togs bort",
+		"deletePosting": "Ta bort PRAO-plats",
+		"confirmation": "Är du säker på att du vill ta bort PRAO-platsen {{posting}}?",
+		"successTitle": "PRAO-platsen togs bort",
     "errorTitle": "Borttagningen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "publish": {
-		"publishPosting": "Publicera TET-plats",
-		"confirmation": "Är du säker på att du vill publicera TET-platsen {{posting}}?",
-		"successTitle": "TET-platsen publicerades",
+		"publishPosting": "Publicera PRAO-plats",
+		"confirmation": "Är du säker på att du vill publicera PRAO-platsen {{posting}}?",
+		"successTitle": "PRAO-platsen publicerades",
     "errorTitle": "Publicering misslyckades",
     "errorMessage": "Något gick snett. Vänligen försök igen senare."
   },
@@ -182,11 +181,11 @@
       "attachments": {
         "types": {
           "employment_contract": {
-            "title": "Arbetskontrakt",
+            "title": "PRAO-avtal",
             "message": ""
           },
           "payslip": {
-            "title": "Löneintyg",
+            "title": "PRAO-intyg",
             "message": ""
           }
         },
@@ -196,4 +195,3 @@
     }
   }
 }
- 

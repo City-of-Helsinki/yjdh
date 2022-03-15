@@ -24,7 +24,7 @@
     "infoLabel": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": {
-      "listHeading": "TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
+      "listHeading": "TET-paikkailmoituksen tekemistä varten Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
       "bullet1": "Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
       "bullet2": "Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
       "bullet3": "Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
@@ -60,9 +60,8 @@
     }
   },
   "editor": {
-		"companyInfo": "Työnantajan tiedot",
-    "helsinkiCity": "Helsingin kaupunki",
-		"companyInfoFetch": "Tiedot on haettu tunnistautumisen yhteydessä.",
+		"companyInfo": "Yrityksen tiedot",
+		"companyInfoFetch": "Yrityksen tiedot on haettu YTJS:stä",
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
 		"copyTitle": "Kopioi TET-paikka",
@@ -75,6 +74,7 @@
 		"requiredInfo": "merkityt kentät ovat pakollisia",
 		"preview": "Esikatselu",
     "loadingError": "Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
+    "language": "TET-paikan kielisyys",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
       "header": "Toimipisteen tiedot",
@@ -109,7 +109,7 @@
     },
 		"classification": {
 			"classifications": "Luokittelut",
-			"workMethod": "Työtavat",
+			"workMethod": "Työtapa",
 			"workFeature": "Työn ominaisuudet",
 			"keywords": "Avainsanat",
 			"search": "Hae"
@@ -185,7 +185,7 @@
             "message": ""
           },
           "payslip": {
-            "title": "Palkkatodistus",
+            "title": "TET-todistus",
             "message": ""
           }
         },
