@@ -1,3 +1,4 @@
+import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { Application } from 'benefit/handler/types/application';
 import { useTranslation } from 'next-i18next';
 import * as React from 'react';
@@ -30,6 +31,10 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
     data.calculation?.handlerDetails?.firstName,
     data.calculation?.handlerDetails?.lastName
   );
+
+  if (!data.applicationNumber || data.status === APPLICATION_STATUSES.DRAFT) {
+    return null;
+  }
 
   return (
     <$Wrapper>

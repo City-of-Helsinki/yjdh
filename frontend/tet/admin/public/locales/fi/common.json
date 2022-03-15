@@ -24,7 +24,7 @@
     "infoLabel": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": {
-      "listHeading": "TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
+      "listHeading": "TET-paikkailmoituksen tekemistä varten Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
       "bullet1": "Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
       "bullet2": "Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
       "bullet3": "Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
@@ -38,6 +38,8 @@
 	},
   "application": {
 		"backToFrontPage": "Takaisin etusivulle",
+		"createTerms": "Olen esihenkilöasemassa tai keskustellut esihenkilön kanssa ilmoituksen teosta.",
+		"accept": "Hyväksy",
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -72,6 +74,7 @@
 		"requiredInfo": "merkityt kentät ovat pakollisia",
 		"preview": "Esikatselu",
     "loadingError": "Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
+    "language": "TET-paikan kielisyys",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
       "header": "Toimipisteen tiedot",
@@ -182,7 +185,7 @@
             "message": ""
           },
           "payslip": {
-            "title": "Palkkatodistus",
+            "title": "TET-todistus",
             "message": ""
           }
         },
