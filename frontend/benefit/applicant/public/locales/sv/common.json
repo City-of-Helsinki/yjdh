@@ -28,7 +28,7 @@
       "created": "Luotu",
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
-      "edit": "Hakemus",
+      "edit": "Ansökan",
       "helperText": "Vänligen kontrollera ansökan innan du skickar in den.",
       "guideText": "Fälten märkta med * är obligatoriska"
     },

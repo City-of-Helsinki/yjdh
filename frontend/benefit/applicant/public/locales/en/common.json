@@ -28,7 +28,7 @@
       "created": "Luotu",
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
-      "edit": "Hakemus",
+      "edit": "Application",
       "helperText": "Please review the application before submitting.",
       "guideText": "All items marked with * are required"
     },
