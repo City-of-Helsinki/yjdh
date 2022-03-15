@@ -1,5 +1,5 @@
 {
-  "appName": "SV TET-paikat",
+  "appName": "PRAO-platser",
   "header": {
     "loginLabel": "Logga in i tjänsten",
     "logoutLabel": "Logga ut",
@@ -9,13 +9,13 @@
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
-    "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
-    "retry": "Ladda upp sidan på nytt.",
+    "message": "Något gick fel. Det kan hjälpa att ladda om sidan.",
+    "retry": "Ladda om sidan.",
     "logout": "Logga ut"
   },
   "404Page": {
     "pageNotFoundLabel": "Sidan kunde inte hittas",
-    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
+    "pageNotFoundContent": "Äsch, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
   "loginPage": {
     "logoutMessageLabel": "Du har loggat ut",
@@ -24,117 +24,119 @@
     "infoLabel": "Att använda tjänsten kräver stark autentisering",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
     "infoContent": {
-      "listHeading": "SV TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
-      "bullet1": "SV Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
-      "bullet2": "SV Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
-      "bullet3": "SV Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
-      "moreInfo": "SV Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>",
-      "registerRights1": "SV Rekisteröidyllä on oikeuksia liittyen henkilötietoihin ja niiden käsittelyyn Helsingin kaupungilla.",
-      "registerRights2": "SV Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>."
+      "listHeading": "Helsingfors stad behandlar följande nödvändiga uppgifter vid PRAO-platsannonsering:",
+      "bullet1": "Namn på den person som fyllt i ansökan (hämtas från suomi.fi i samband med identifiering)",
+      "bullet2": "Namn på, telefonnummer och e-postadress till den utsedda kontaktpersonen (matas in i tjänsten)",
+      "bullet3": "Namn på arbetsgivarorganisation, FO-nummer och adress (matas in i tjänsten)",
+      "moreInfo": "Mer information om hur personuppgifter behandlas (bland annat rättsliga grunder och lagringstider) i PRAO-platsernas annonstjänst finns <a>i studieförvaltningsregistret.</a>",
+      "registerRights1": "En registrerad har rättigheter med avseende på de personuppgifter som Helsingfors stad behandlar.",
+      "registerRights2": "Den registrerade kan bland annat kontrollera vilka uppgifter som samlats om hen. Ytterligare information om rättigheterna och om utövande av dem finns på Helsingfors stads webbsida om datasekretess."
     }
   },
 	"dialog": {
-		"cancel": "SV Peruuta"
+		"cancel": "Avbryt"
 	},
   "application": {
-		"backToFrontPage": "SV Takaisin etusivulle",
+		"backToFrontPage": "Tillbaka till startsidan",
+		"createTerms": "Jag är i positionen som arbetsledare eller har diskuterat tillkännagivandet med förmannen.",
+		"accept": "Acceptera",
     "jobPostings": {
-      "title": "SV TET-paikkailmoitukset",
-      "noPostingsFound": "SV Sinulla ei ole vielä yhtään TET-paikkaa.",
-      "addNewPosting": "SV Lisää uusi harjoittelupaikka",
-			"publishedPostings": "SV Työharjoittelupaikat",
-			"draftPostings": "SV Keskeneräiset ilmoitukset",
-			"openSpots_one": "SV {{count}} TET-paikka",
-			"openSpots_other": "SV {{count}} TET-paikkaa",
-			"published": "SV Julkaistu",
-			"notPublished": "SV Ei julkaistu",
-			"total": "SV kpl",
+      "title": "PRAO-platsannonser",
+      "noPostingsFound": "Du har ännu inga PRAO-platser.",
+      "addNewPosting": "Lägg till ny praktikplats",
+			"publishedPostings": "PRAO-platser",
+			"draftPostings": "Halvfärdiga annonser",
+			"openSpots_one": "{{count}} PRAO-plats",
+			"openSpots_other": "{{count}} PRAO-platser",
+			"published": "Publicerad",
+			"notPublished": "Ej publicerad",
+			"total": "st.",
 			"menu": {
-				"publishNow": "SV Julkaise nyt",
-				"edit": "SV Muokkaa",
-				"copy": "SV Tee kopio",
-				"delete": "SV Poista"
+				"publishNow": "Publicera nu",
+				"edit": "Redigera",
+				"copy": "Gör en kopia",
+				"delete": "Ta bort"
 			}
     }
   },
   "editor": {
-		"companyInfo": "SV Työnantajan tiedot",
-    "helsinkiCity": "Helsingfors stad",
-		"companyInfoFetch": "SV Tiedot on haettu tunnistautumisen yhteydessä.",
-    "newTitle": "SV Uusi TET-paikka",
-    "editTitle": "SV Muokkaa TET-paikkaa",
-		"copyTitle": "SV Kopioi TET-paikka",
-    "saveDraft": "SV Tallenna julkaisematta",
-    "deletePosting": "SV Poista ilmoitus",
-    "preview": "SV Siirry esikatseluun",
-    "publish": "SV Julkaise",
-    "notificationTitle": "SV Täytä puuttuvat tai virheelliset tiedot",
-		"backToEdit": "SV Takaisin lomakkeelle",
-		"requiredInfo": "SV merkityt kentät ovat pakollisia",
-		"preview": "SV Esikatselu",
-    "loadingError": "SV Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
+		"companyInfo": "Företagets uppgifter",
+		"companyInfoFetch": "Företagets uppgifter har hämtats från YTJ",
+    "newTitle": "Ny PRAO-plats",
+    "editTitle": "Redigera PRAO-plats",
+		"copyTitle": "Kopiera PRAO-plats",
+    "saveDraft": "Spara som opublicerad",
+    "deletePosting": "Ta bort annons",
+    "preview": "Gå till förhandsgranskning",
+    "publish": "Publicera",
+    "notificationTitle": "Vänligen fyll i bristfälliga eller felaktiga uppgifter",
+		"backToEdit": "Tillbaka till blanketten",
+		"requiredInfo": "Markerade fält är obligatoriska",
+		"preview": "Förhandsgranskning",
+    "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
+    "language": "PRAO-platsens språk",
     "employerInfo": {
-			"contactPerson": "SV Yhteyshenkilö",
-      "header": "SV Toimipisteen tiedot",
-      "addressNeededLabel": "SV Työharjoittelu suoritetaan eri osoitteessa",
-      "departmentLabel": "SV Toimipiste tai osasto",
-			"address": "SV Osoite",
-			"streetAddress": "SV Katuosoite"
+			"contactPerson": "Kontaktperson",
+      "header": "Uppgifter om verksamhetsställe",
+      "addressNeededLabel": "Arbetspraktiken genomförs på en annan adress",
+      "departmentLabel": "Verksamhetsställe eller avdelning",
+			"address": "Adress",
+			"streetAddress": "Gatuadress"
     },
     "posting": {
-      "header": "SV Työharjoittelupaikan tiedot",
-      "title": "SV Tehtävänimike",
-      "description": "SV Vapaa kuvaus työharjoittelupaikasta / -tehtävästä",
-      "workHoursNotice": "SV Työaika on aina sama 30h per viikko.",
-      "startDateLabel": "SV Alkaen",
-      "endDateLabel": "SV Päättyen",
-      "spotsLabel": "SV Työharjoittelupaikkoja",
-			"contactFirstName": "SV Etunimi",
-			"contactLastName": "SV Sukunimi",
-			"contactPhone": "SV Puhelin",
-			"contactEmail": "SV Sähköposti",
-			"contactLanguage": "SV Asiointikieli",
-			"contactLanguageFi": "SV Suomi",
-			"contactLanguageSv": "SV Ruotsi",
-			"contactLanguageEn": "SV Englanti",
+      "header": "Uppgifter om arbetspraktikplats",
+      "title": "Befattning",
+      "description": "Fri beskrivning av arbetspraktikplats/-uppgift",
+      "workHoursNotice": "Arbetstiden är alltid densamma, 30 timmar i veckan.",
+      "startDateLabel": "Börjar",
+      "endDateLabel": "Slutar",
+      "spotsLabel": "Arbetspraktikplatser",
+			"contactFirstName": "Förnamn",
+			"contactLastName": "Efternamn",
+			"contactPhone": "Telefon",
+			"contactEmail": "E-post",
+			"contactLanguage": "Kontaktspråk",
+			"contactLanguageFi": "Finska",
+			"contactLanguageSv": "Svenska",
+			"contactLanguageEn": "Engelska",
 			"validation": {
-				"required": "SV Tieto vaaditaan",
-				"email": "SV Syötä sähköposti oikeassa muodossa",
-				"max": "SV Maksimimerkkimäärä ylittyy",
-				"phone": "SV Syötä oikeassa muodossa",
-				"name": "SV Syötä nimi ilman erikoismerkkejä ja kirjaimia"
+				"required": "Uppgiften är nödvändig",
+				"email": "Vänligen mata in e-post i rätt format",
+				"max": "Överskrider maximalt antal tecken",
+				"phone": "Vänligen mata in i rätt format",
+				"name": "Mata in namn utan specialtecken och -bokstäver"
 			}
     },
 		"classification": {
-			"classifications": "SV Luokittelut",
-			"workMethod": "SV Työtapa",
-			"workFeature": "SV Työn ominaisuudet",
-			"keywords": "SV Avainsanat",
-			"search": "SV Hae"
+			"classifications": "Klassificeringar",
+			"workMethod": "Arbetssätt",
+			"workFeature": "Arbetets karaktär",
+			"keywords": "Nyckelord",
+			"search": "Sök"
   	},
     "combobox": {
-      "toggleButtonAriaLabel": "SV Näytä/piilota vaihtoehdot",
-      "clearButtonAriaLabel": "SV Tyhjennä valinnat",
-      "selectedItemRemoveButtonAriaLabel": "SV Poista valinta"
+      "toggleButtonAriaLabel": "Visa/dölj alternativ",
+      "clearButtonAriaLabel": "Rensa valen",
+      "selectedItemRemoveButtonAriaLabel": "Ta bort valet"
     }
   },
 	"postingTemplate": {
-		"spots": "SV TET-paikkoja",
-		"contact": "SV Yhteystiedot",
-		"description": "SV Kuvaus",
-		"share": "SV Jaa tapahtuma",
-		"dateAndTime": "SV Päivä ja aika",
-		"location": "SV Paikka",
-		"languages": "SV TET-paikassa käytettävät kielet"
+		"spots": "PRAO-platser",
+		"contact": "Kontaktuppgifter",
+		"description": "Beskrivning",
+		"share": "Dela händelse",
+		"dateAndTime": "Datum och tid",
+		"location": "Plats",
+		"languages": "Språk som används på PRAO-platsen"
 	},
   "footer": {
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
-    "privacyPolicy": "SV Rekisteriseloste",
+    "privacyPolicy": "Registerbeskrivning",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
-    "feedback": "SV Anna palautetta",
+    "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
   },
   "languages": {
@@ -155,35 +157,35 @@
     }
   },
   "upload": {
-		"successMessage": "SV Tiedot tallennettiin",
-    "isUploading": "Sänder...",
+		"successMessage": "Uppgifterna sparades",
+    "isUploading": "Filen laddas upp...",
     "errorTitle": "Uppladdningen av filen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "delete": {
-		"deletePosting": "SV Poista TET-paikka",
-		"confirmation": "SV Haluatko varmasti poistaa TET-paikan {{posting}}?",
-		"successTitle": "SV TETP-paikka poistettiin",
+		"deletePosting": "Ta bort PRAO-plats",
+		"confirmation": "Är du säker på att du vill ta bort PRAO-platsen {{posting}}?",
+		"successTitle": "PRAO-platsen togs bort",
     "errorTitle": "Borttagningen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
   },
   "publish": {
-		"publishPosting": "SV Julkaise TET-paikka",
-		"confirmation": "SV Haluatko varmasti julkaista TET-paikan {{posting}}?",
-		"successTitle": "SV TET-paikka julkaistiin",
-    "errorTitle": "SV Julkaiseminen epäonnistui",
-    "errorMessage": "SV Jotain meni pieleen. Yritä myöhemmin uudelleen."
+		"publishPosting": "Publicera PRAO-plats",
+		"confirmation": "Är du säker på att du vill publicera PRAO-platsen {{posting}}?",
+		"successTitle": "PRAO-platsen publicerades",
+    "errorTitle": "Publicering misslyckades",
+    "errorMessage": "Något gick snett. Vänligen försök igen senare."
   },
   "applications": {
     "sections": {
       "attachments": {
         "types": {
           "employment_contract": {
-            "title": "Arbetskontrakt",
+            "title": "PRAO-avtal",
             "message": ""
           },
           "payslip": {
-            "title": "Löneintyg",
+            "title": "PRAO-intyg",
             "message": ""
           }
         },
