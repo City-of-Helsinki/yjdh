@@ -36,6 +36,7 @@ export type HeaderProps = {
     userName?: string;
   };
   theme?: ThemeOption;
+  onTitleClick?: () => void;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -51,6 +52,7 @@ const Header: React.FC<HeaderProps> = ({
   onLanguageChange,
   login,
   theme,
+  onTitleClick,
 }) => {
   const {
     locale,
@@ -86,6 +88,7 @@ const Header: React.FC<HeaderProps> = ({
       title={title}
       titleUrl={titleUrl}
       titleAriaLabel={title}
+      onTitleClick={onTitleClick}
     >
       {isNavigationVisible && navigationItems && (
         <Navigation.Row variant={navigationVariant || 'default'}>

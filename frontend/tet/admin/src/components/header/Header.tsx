@@ -40,6 +40,10 @@ const Header: React.FC = () => {
   const isLoading = userQuery.isLoading;
   const isLoginPage = asPath?.startsWith('/login');
 
+  const titleClickHandler = () => {
+    void router.push('/');
+  };
+
   return (
     <BaseHeader
       title={t('common:appName')}
@@ -47,6 +51,7 @@ const Header: React.FC = () => {
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}
       onLanguageChange={handleLanguageChange}
+      onTitleClick={titleClickHandler}
       login={
         !isLoading
           ? {
