@@ -26,7 +26,7 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationFactory
+from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
@@ -1151,6 +1151,29 @@ def test_application_accept(
     )
     assert handling_application.application_step == ApplicationStep.STEP_2
     assert handling_application.calculation.granted_as_de_minimis_aid is True
+
+
+def test_application_with_batch_back_to_handling(
+    request,
+    handler_api_client,
+    decided_application,
+):
+    """
+    When application is moved back to handling, the application
+    needs to be remvoved from any batch.
+    """
+    decided_application.batch = ApplicationBatchFactory()
+    decided_application.save()
+    data = HandlerApplicationSerializer(decided_application).data
+    data["status"] = ApplicationStatus.HANDLING
+
+    response = handler_api_client.put(
+        get_handler_detail_url(decided_application),
+        data,
+    )
+    assert response.status_code == 200
+    decided_application.refresh_from_db()
+    assert decided_application.batch is None
 
 
 @pytest.mark.parametrize(
