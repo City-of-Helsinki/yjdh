@@ -264,7 +264,7 @@
           "workingHours": {
             "label": "Työaika tuntia viikossa",
             "placeholder": "Tunteja",
-            "view": "Työaika: {{workingHours}} t / viikko"
+            "view": "Työaika: {{workingHours}} tuntia viikossa"
           },
           "collectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
@@ -273,17 +273,17 @@
           "monthlyPay": {
             "label": "Bruttopalkka",
             "placeholder": "Palkka",
-            "view": "Bruttopalkka {{monthlyPay}} €/kk"
+            "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
           },
           "otherExpenses": {
             "label": "Sivukulut",
             "placeholder": "Sivukulut",
-            "view": "Sivukulut {{otherExpenses}} €/kk"
+            "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
           },
           "vacationMoney": {
             "label": "Lomaraha",
             "placeholder": "Lomaraha",
-            "view": "Lomaraha {{vacationMoney}} €"
+            "view": "Lomaraha {{vacationMoney}} euroa"
           },
           "commissionDescription": {
             "label": "Toimeksiannon kuvaus",

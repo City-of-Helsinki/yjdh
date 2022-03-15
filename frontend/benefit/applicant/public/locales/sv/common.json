@@ -264,7 +264,7 @@
           "workingHours": {
             "label": "Arbetstid timmar på vecka",
             "placeholder": "Timmar",
-            "view": "Työaika: {{workingHours}} t / viikko"
+            "view": "Arbetstid timmar: {{workingHours}} timmar på vecka"
           },
           "collectiveBargainingAgreement": {
             "label": "Kollektivavtal som tillämpas",
@@ -273,17 +273,17 @@
           "monthlyPay": {
             "label": "Bruttolön",
             "placeholder": "Bruttolön",
-            "view": "Bruttolön {{monthlyPay}} €/kk"
+            "view": "Bruttolön {{monthlyPay}} euro per månad"
           },
           "otherExpenses": {
             "label": "Bikostnader",
             "placeholder": "Bikostnader",
-            "view": "Bikostnader {{otherExpenses}} €/kk"
+            "view": "Bikostnader {{otherExpenses}} euro per månad"
           },
           "vacationMoney": {
             "label": "Semesterpenning",
             "placeholder": "Semesterpenning",
-            "view": "Semesterpenning {{vacationMoney}} €"
+            "view": "Semesterpenning {{vacationMoney}} euro"
           },
           "commissionDescription": {
             "label": "Beskrivning av uppdraget",

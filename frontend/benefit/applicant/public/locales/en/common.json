@@ -264,7 +264,7 @@
           "workingHours": {
             "label": "Working hours per week",
             "placeholder": "Hours",
-            "view": "Työaika: {{workingHours}} t / viikko"
+            "view": "Working hours: {{workingHours}} hours per week"
           },
           "collectiveBargainingAgreement": {
             "label": "Collective agreement applied",
@@ -273,17 +273,17 @@
           "monthlyPay": {
             "label": "Gross salary",
             "placeholder": "Gross salary",
-            "view": "Gross salary {{monthlyPay}} €/kk"
+            "view": "Gross salary {{monthlyPay}} EUR per month"
           },
           "otherExpenses": {
             "label": "Indirect labour costs",
             "placeholder": "Indirect labour costs",
-            "view": "Indirect labour costs {{otherExpenses}} €/kk"
+            "view": "Indirect labour costs {{otherExpenses}} EUR per month"
           },
           "vacationMoney": {
             "label": "Holiday bonus",
             "placeholder": "Holiday bonus",
-            "view": "Holiday bonus {{vacationMoney}} €"
+            "view": "Holiday bonus {{vacationMoney}} EUR"
           },
           "commissionDescription": {
             "label": "Description of the commission",
