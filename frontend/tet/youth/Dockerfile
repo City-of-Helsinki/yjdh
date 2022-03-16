@@ -87,6 +87,9 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-ser
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile --check-files
 
+# Copy public folder
+COPY --chown=appuser:appuser public /app/public
+
 # install lerna
 RUN yarn add -W lerna
 
