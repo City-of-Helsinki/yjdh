@@ -55,13 +55,9 @@ const Classification: React.FC = () => {
     return <EditorLoadingError error={error} />;
   }
 
-  const workMethodsList = React.useMemo(() => {
-    return workMethods.data?.map((k) => keywordToOptionType(k, i18n.language as Language)) || [];
-  }, [workMethods]);
+  const workMethodsList = workMethods.data?.map((k) => keywordToOptionType(k, i18n.language as Language)) || [];
 
-  const workFeaturesList = React.useMemo(() => {
-    return workFeatures.data?.map((k) => keywordToOptionType(k, i18n.language as Language)) || [];
-  }, [workMethods]);
+  const workFeaturesList = workFeatures.data?.map((k) => keywordToOptionType(k, i18n.language as Language)) || [];
 
   const isSetRule = () => {
     return getValues('keywords_working_methods').length > 0 ? true : 'Valitse yksi';
