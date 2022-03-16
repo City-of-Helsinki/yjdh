@@ -7,11 +7,13 @@ import { OptionType } from 'shared/types/common';
 import useLogin from 'tet/admin/hooks/backend/useLogin';
 import useUserQuery from 'tet/admin/hooks/backend/useUserQuery';
 import useLogout from 'tet/admin/hooks/backend/useLogout';
+import useGoToFrontPage from 'shared/hooks/useGoToFrontPage';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { asPath } = router;
+  const goToFrontPage = useGoToFrontPage();
 
   const languageOptions = React.useMemo(
     (): OptionType<string>[] =>
@@ -40,10 +42,6 @@ const Header: React.FC = () => {
   const isLoading = userQuery.isLoading;
   const isLoginPage = asPath?.startsWith('/login');
 
-  const titleClickHandler = () => {
-    void router.push('/');
-  };
-
   return (
     <BaseHeader
       title={t('common:appName')}
@@ -51,7 +49,7 @@ const Header: React.FC = () => {
       menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
       languages={languageOptions}
       onLanguageChange={handleLanguageChange}
-      onTitleClick={titleClickHandler}
+      onTitleClick={goToFrontPage}
       login={
         !isLoading
           ? {
