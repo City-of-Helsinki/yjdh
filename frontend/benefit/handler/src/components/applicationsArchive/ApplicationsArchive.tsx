@@ -105,14 +105,6 @@ const ApplicationsArchive: React.FC = () => {
     return cols.filter(Boolean);
   }, [t, getHeader, translationsBase]);
 
-  if (shouldShowSkeleton) {
-    return (
-      <Container>
-        <LoadingSkeleton width="100%" height="50px" />
-      </Container>
-    );
-  }
-
   const sortBy = React.useMemo(
     () => [
       {
@@ -122,6 +114,14 @@ const ApplicationsArchive: React.FC = () => {
     ],
     []
   );
+
+  if (shouldShowSkeleton) {
+    return (
+      <Container>
+        <LoadingSkeleton width="100%" height="50px" />
+      </Container>
+    );
+  }
 
   return (
     <Container>

@@ -391,6 +391,7 @@ const defaultProps = {
   onSortedColsChange: noop,
   minimizeAllText: 'Minimize all',
   noMatchesText: 'No matches',
+  sortBy: undefined,
 };
 
 Table.defaultProps = defaultProps;
