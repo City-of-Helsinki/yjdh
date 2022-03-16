@@ -43,7 +43,7 @@
     },
     "steps": {
       "company": "Arbetsgivare",
-      "hired": "Palkattava",
+      "hired": "Anställd",
       "attachments": "Bilagor",
       "summary": "Sammandrag",
       "credentials": "Behandling av personuppgifter",
@@ -63,18 +63,18 @@
     },
     "sections": {
       "company": {
-        "heading1": "Työnantajan tiedot",
+        "heading1": "Arbetsgivarinformation",
         "heading1Additional": "Postadress för beslutet",
         "heading2": "Kontaktperson",
         "heading2Short": "Kontaktperson",
         "heading3": "Sökandens de minimis-stöd",
         "heading4": "Situation med samarbetsförhandlingar",
-        "heading5": "YT-neuvottelut",
+        "heading5": "Samarbetsförhandlingar",
         "businessId": "FO-nummer: {{ businessId }}",
         "deMinimisAidsHeading": "Lista här samtliga de minimis-stöd som beviljats organisationen under det innevarande året eller under de två föregående skatteåren",
         "deMinimisAidsAdd": "Lägg till",
         "deMinimisAidsRemove": "Ta bort",
-        "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
+        "deMinimisAidsNo": "Har den sökande beviljats ​​ett deminimis-bidrag?",
         "notifications": {
           "companyInformation": {
             "label": "Uppgifterna har hämtats från Företags- och organisationsdatasystemet",
@@ -87,7 +87,7 @@
         },
         "tooltips": {
           "heading3": "De minimis-stöd är offentligt stöd av mindre betydelse som beviljas till företag, till exempel understöd, lån, räntestöd eller borgen. De minimis-stödet regleras av Europeiska kommissionens förordning 1407/2013.",
-          "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
+          "associationHasBusinessActivities": "På Helsingforstillägget tillämpas reglerna om statligt stöd när stödtagaren är ett företag eller en organisation som bedriver ekonomisk verksamhet, oavsett juridisk form eller finansieringsform. Med ekonomisk verksamhet avses försäljning av tjänster och produkter, som sker fortlöpande, i förvärvssyfte och i konkurrensomständigheter (alla tre villkoren ska uppfyllas samtidigt). Reglerna om statligt stöd kan också tillämpas på icke-vinstdrivande arbetsgivare. Ekonomisk verksamhet som skattemyndigheterna inte har ansett vara beskattningsbar anses i regel inte vara ekonomisk verksamhet."
         },
         "fields": {
           "useAlternativeAddress": {
@@ -172,10 +172,10 @@
       },
       "employee": {
         "heading1": "Person för vars anställning man ansöker om Helsingforstillägg",
-        "heading1Short": "Palkattava henkilö",
+        "heading1Short": "Person som ska anställas",
         "heading2": "Beslut om lönesubvention",
         "heading3": "Den stödform som söks",
-        "heading3Long": "Haettava tukimuoto ja ajankohta",
+        "heading3Long": "Form och datum för stöd som ska sökas",
         "heading4": "Ansöks för perioden",
         "heading5Employment": "Anställningsförhållande",
         "heading5Assignment": "Uppdrag",
@@ -233,7 +233,8 @@
             "label": "Personen som anställs bor i Helsingfors",
             "placeholder": "Ja, personen som anställs är skriven i Helsingfors senast när anställningsförhållandet inleds",
             "yes": "Ja",
-            "no": "Nej"
+            "no": "Nej",
+            "error": "Stöd kan beviljas endast om hemkommunen är Helsingfors."
           },
           "paySubsidyGranted": {
             "label": "Har lönesubvention beviljats för anställningsförhållandet?",
@@ -324,7 +325,7 @@
           },
           "helsinkiBenefitVoucher": {
             "title": "Sedel för Helsingforstillägg",
-            "message": "Lisää tämä mikäli sellainen on myönnetty"
+            "message": "Lägg till sedel för Helsingforstillägg om en har utfärdats"
           }
         },
         "add": "Bifoga fil",
@@ -335,7 +336,7 @@
       },
       "credentials": {
         "heading1": "Behandling av den anställdas personuppgifter",
-        "heading2": "Suostumus",
+        "heading2": "Samtycke",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",

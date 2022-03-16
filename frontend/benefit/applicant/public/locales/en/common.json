@@ -43,7 +43,7 @@
     },
     "steps": {
       "employer": "Employer",
-      "hired": "Palkattava",
+      "hired": "Employee",
       "attachments": "Attachments",
       "summary": "Summary",
       "credentials": "Processing personal data",
@@ -63,18 +63,18 @@
     },
     "sections": {
       "company": {
-        "heading1": "Työnantajan tiedot",
+        "heading1": "Employer information",
         "heading1Additional": "Postal address for delivering the decision",
         "heading2": "Contact person",
         "heading2Short": "Contact person",
         "heading3": "De minimis aid of the applicant",
         "heading4": "Co-determination negotiation situation",
-        "heading5": "YT-neuvottelut",
+        "heading5": "Co-determination negotiation",
         "businessId": "Business ID: {{ businessId }}",
         "deMinimisAidsHeading": "List here all forms of de minimis aid received by the organisation during the current year and the previous two tax years",
         "deMinimisAidsAdd": "Add",
         "deMinimisAidsRemove": "Delete",
-        "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
+        "deMinimisAidsNo": "Has the applicant been granted a deminimis-aid?",
         "notifications": {
           "companyInformation": {
             "label": "Data retrieved from the Business Information System",
@@ -87,7 +87,7 @@
         },
         "tooltips": {
           "heading3": "De minimis aid is minor public aid granted to companies, such as a grant, loan, interest subsidy or guarantee. De minimis aid is governed by Commission Regulation (EU) No 1407/2013.",
-          "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
+          "associationHasBusinessActivities": "The Helsinki benefit is subject to the rules for government grants when the beneficiary is a company or an association engaged in an economic activity, irrespective of its legal form or financing method. Economic activity refers to the sale of services and products that is continuous, for gainful purposes and under competitive conditions (all three conditions must be fulfilled at the same time). The rules for government grants can also be applied to non-profit employers. As a rule, any activities that the Tax Authority has not regarded as taxable economic activities are not considered to be economic activities."
         },
         "fields": {
           "useAlternativeAddress": {
@@ -172,10 +172,10 @@
       },
       "employee": {
         "heading1": "Person to be employed with the Helsinki benefit",
-        "heading1Short": "Palkattava henkilö",
+        "heading1Short": "Person to be hired",
         "heading2": "Pay subsidy decision",
         "heading3": "Type of aid applied for",
-        "heading3Long": "Haettava tukimuoto ja ajankohta",
+        "heading3Long": "Form and date of the applied benefit",
         "heading4": "Applied for the period",
         "heading5Employment": "Employment relationship",
         "heading5Assignment": "Commission",
@@ -233,7 +233,8 @@
             "label": "The subsidised employee’s municipality of residence is Helsinki",
             "placeholder": "Yes, the person to be employed is registered in Helsinki at the latest at the beginning of the employment relationship",
             "yes": "Yes",
-            "no": "No"
+            "no": "No",
+            "error": "To be eligible for the subsidy, the municipality of residence must be Helsinki."
           },
           "paySubsidyGranted": {
             "label": "Has pay subsidy been granted for the employment relationship?",
@@ -324,7 +325,7 @@
           },
           "helsinkiBenefitVoucher": {
             "title": "Helsinki benefit voucher",
-            "message": "Lisää tämä mikäli sellainen on myönnetty"
+            "message": "Add Helsinki benefit voucher if one has been issued"
           }
         },
         "add": "Attach the file",
@@ -335,7 +336,7 @@
       },
       "credentials": {
         "heading1": "Processing of the personal data of the person to be employed",
-        "heading2": "Suostumus",
+        "heading2": "Consent",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",

@@ -30,4 +30,5 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME = 'common:form.validation.string.time',
   TIME_MIN = 'common:form.validation.time.min',
   TIME_MAX = 'common:form.validation.time.max',
+  REQUIRED_IS_LIVING_IN_HELSINKI = 'common:applications.sections.employee.fields.isLivingInHelsinki.error',
 }

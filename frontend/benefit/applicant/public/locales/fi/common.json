@@ -43,7 +43,7 @@
     },
     "steps": {
       "employer": "Työnantaja",
-      "hired": "Palkattava",
+      "hired": "Työllistettävä",
       "attachments": "Liitteet",
       "summary": "Yhteenveto",
       "credentials": "Henkilötietojen käsittely",
@@ -87,7 +87,7 @@
         },
         "tooltips": {
           "heading3": "De minimis -tuki on vähämerkityksistä, yrityksille myönnettävää julkista tukea, kuten esimerkiksi avustusta, lainaa, korkotukea tai takausta. De minimis -tukea säätelee Euroopan komission asetus 1407/2013.",
-          "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
+          "associationHasBusinessActivities": "Helsinki-lisään sovelletaan valtiontukisääntöjä silloin, kun tuensaaja on yritys tai taloudellista toimintaa harjoittavaa yhteisö riippumatta sen oikeudellisesta muodosta tai rahoitustavasta. Taloudellisella toiminnalla tarkoitetaan palveluiden ja tuotteiden myyntiä, joka on jatkuvaa, ansiotarkoituksessa ja kilpailuolosuhteissa tapahtuvaa (kaikkien kolmen edellytyksen tulee täyttyä samanaikaisesti). Valtiontukisääntöjä voidaan soveltaa myös voittoa tavoittelemattomiin työnantajiin. Taloudellisena toimintana ei pääsääntöisesti pidetä toimintaa, jota verottaja ei ole katsonut verotettavaksi elinkeinotoiminnaksi."
         },
         "fields": {
           "useAlternativeAddress": {
@@ -233,7 +233,8 @@
             "label": "Työllistetyn kotikunta on Helsinki",
             "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
             "yes": "Kyllä",
-            "no": "Ei"
+            "no": "Ei",
+            "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty palkkatuki?",
@@ -324,7 +325,7 @@
           },
           "helsinkiBenefitVoucher": {
             "title": "Helsinki-lisä seteli",
-            "message": "Lisää tämä mikäli sellainen on myönnetty"
+            "message": "Lisää Helsinki-lisä -seteli, jos sellainen on myönnetty"
           }
         },
         "add": "Liitä tiedosto",
