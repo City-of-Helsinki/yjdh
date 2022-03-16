@@ -401,8 +401,8 @@
   "mainIngress": {
     "heading": "Hakemukset",
     "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
-    "description2": "Du kan spara en halvfärdig ansökan och komplettera den senare.",
-    "linkText": "Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
+    "description2": " Du kan spara en halvfärdig ansökan och komplettera den senare.",
+    "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
     "newApplicationBtnText": "Gör en ny ansökan"
   },
   "attachmentsIngress": {

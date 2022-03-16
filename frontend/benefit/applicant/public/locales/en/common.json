@@ -174,7 +174,7 @@
         "heading1": "Person to be employed with the Helsinki benefit",
         "heading1Short": "Person to be hired",
         "heading2": "Pay subsidy decision",
-        "heading3": "Type of aid applied for",
+        "heading3": "Type of benefit applied for",
         "heading3Long": "Form and date of the applied benefit",
         "heading4": "Applied for the period",
         "heading5Employment": "Employment relationship",
@@ -207,7 +207,7 @@
           }
         },
         "messages": {
-          "selectBenefitType": "First, select the type of aid above",
+          "selectBenefitType": "First, select the type of benefit above",
           "employmentBenefitSelected": "The Helsinki benefit is applied for for 1–12 months depending on the duration of the employment relationship.",
           "salaryBenefitSelected": "In the case of an apprenticeship, a new application must be submitted for the period in exceed of 12 months",
           "commissionBenefitSelected": "Please provide the duration of the commission here"
@@ -253,7 +253,7 @@
             "no": "No"
           },
           "benefitType": {
-            "label": "Type of aid applied for",
+            "label": "Type of benefit applied for",
             "employment": "The Helsinki benefit for employment",
             "salary": "The Helsinki benefit for salary",
             "commission": "The Helsinki benefit for a commission"
@@ -401,8 +401,8 @@
   "mainIngress": {
     "heading": "Hakemukset",
     "description1": "Welcome to the Helsinki benefit service.",
-    "description2": "You can save an incomplete application and continue to fill it in later.",
-    "linkText": "Please take a look at the required information and attachments before filling in the application.",
+    "description2": " You can save an incomplete application and continue to fill it in later.",
+    "linkText": " Please take a look at the required information and attachments before filling in the application.",
     "newApplicationBtnText": "Submit a new application"
   },
   "attachmentsIngress": {
