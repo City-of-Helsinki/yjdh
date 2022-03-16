@@ -5,6 +5,8 @@ import sentry_sdk
 from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from shared.service_bus.enums import YtjOrganizationCode
+
 checkout_dir = environ.Path(__file__) - 2
 assert os.path.exists(checkout_dir("manage.py"))
 
@@ -41,6 +43,12 @@ env = environ.Env(
     CSRF_TRUSTED_ORIGINS=(list, []),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
+    # Source: YTJ-rajapinnan koodiston kuvaus, available at https://liityntakatalogi.suomi.fi/dataset/xroadytj-services
+    # file: suomi_fi_palveluvayla_ytj_rajapinta_koodistot_v1_4.xlsx
+    ASSOCIATION_FORM_CODES=(
+        str,
+        "18,21,25,29,31,32,35,38,39,4,44,45,46,47,50,58,6,71,9,90,94999",
+    ),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     # Random 32 bytes AES key, for testing purpose only, DO NOT use the same value in staging/production
     # Always override this value from env variables
@@ -90,7 +98,10 @@ env = environ.Env(
     ENABLE_SEND_AUDIT_LOG=(bool, False),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DISABLE_AUTHENTICATION=(bool, False),
-    DUMMY_COMPANY_FORM=(str, "OY"),
+    DUMMY_COMPANY_FORM_CODE=(
+        int,
+        YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT,
+    ),
     TERMS_OF_SERVICE_SESSION_KEY=(str, "_tos_session"),
     ENABLE_DEBUG_ENV=(bool, False),
     TALPA_ROBOT_AUTH_CREDENTIAL=(str, "username:password"),
@@ -276,11 +287,15 @@ PHONENUMBER_DB_FORMAT = "NATIONAL"
 PHONENUMBER_DEFAULT_REGION = "FI"
 
 YTJ_BASE_URL = env.str("YTJ_BASE_URL")
+
+ASSOCIATION_FORM_CODES = [
+    int(value) for value in env.str("ASSOCIATION_FORM_CODES").split(",")
+]
 YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 
 # Mock flag for testing purposes
 NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
-DUMMY_COMPANY_FORM = env.str("DUMMY_COMPANY_FORM")
+DUMMY_COMPANY_FORM_CODE = env.int("DUMMY_COMPANY_FORM_CODE")
 ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
 
 # Authentication settings begin
