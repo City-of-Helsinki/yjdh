@@ -16,11 +16,12 @@ import SelectionGroup from 'tet/admin/components/editor/SelectionGroup';
 import { useFormContext } from 'react-hook-form';
 import TetPosting from 'tet-shared/types/tetposting';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
+import { Language } from 'shared/i18n/i18n';
 
 export type FilterFunction = (options: OptionType[], search: string) => OptionType[];
 
 const Classification: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
   const [search, setSearch] = React.useState('');
   const { getValues } = useFormContext<TetPosting>();
@@ -32,8 +33,11 @@ const Classification: React.FC = () => {
 
   const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search));
 
-  const keywords =
-    !keywordsResults.isLoading && keywordsResults.data ? keywordsResults.data.map((k) => keywordToOptionType(k)) : [];
+  const keywords = React.useMemo(() => {
+    return !keywordsResults.isLoading && keywordsResults.data
+      ? keywordsResults.data.map((k) => keywordToOptionType(k, i18n.language as Language))
+      : [];
+  }, [keywordsResults]);
 
   const [workMethods, workFeatures] = results;
 
@@ -51,8 +55,13 @@ const Classification: React.FC = () => {
     return <EditorLoadingError error={error} />;
   }
 
-  const workMethodsList = workMethods.data?.map((k) => keywordToOptionType(k)) || [];
-  const workFeaturesList = workFeatures.data?.map((k) => keywordToOptionType(k)) || [];
+  const workMethodsList = React.useMemo(() => {
+    return workMethods.data?.map((k) => keywordToOptionType(k, i18n.language as Language)) || [];
+  }, [workMethods]);
+
+  const workFeaturesList = React.useMemo(() => {
+    return workFeatures.data?.map((k) => keywordToOptionType(k, i18n.language as Language)) || [];
+  }, [workMethods]);
 
   const isSetRule = () => {
     return getValues('keywords_working_methods').length > 0 ? true : 'Valitse yksi';
