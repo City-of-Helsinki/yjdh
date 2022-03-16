@@ -71,6 +71,7 @@ USER appuser
 
 WORKDIR /app
 
+# Copy files needed by yarn install
 COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
 COPY --chown=appuser:appuser tet/admin/package.json tet/admin/package.json
 COPY --chown=appuser:appuser tet/shared/package.json tet/shared/package.json
