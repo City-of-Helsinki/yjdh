@@ -31,14 +31,14 @@ ASSOCIATION_ROLE_JSON = [
 
 @pytest.fixture()
 def mock_get_organisation_roles_and_create_company(requests_mock):
-    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
+    matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
     requests_mock.get(matcher, json=COMPANY_ROLE_JSON)
     return CompanyFactory(business_id=COMPANY_ROLE_JSON[0]["identifier"])
 
 
 @pytest.fixture()
 def mock_get_organisation_roles_and_create_association(requests_mock):
-    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
+    matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
     requests_mock.get(matcher, json=ASSOCIATION_ROLE_JSON)
     return CompanyFactory(
         business_id=ASSOCIATION_ROLE_JSON[0]["identifier"], company_form="association"

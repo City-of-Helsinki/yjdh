@@ -17,6 +17,10 @@ def has_whitespace(value):
     return value != value_without_whitespace
 
 
+def normalize_whitespace(value):
+    return " ".join(value.split())
+
+
 def is_uppercase(value):
     """
     Is the value all uppercase? Returns True also if there are no alphabetic characters.

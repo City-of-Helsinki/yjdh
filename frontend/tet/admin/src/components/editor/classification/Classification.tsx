@@ -71,7 +71,7 @@ const Classification: React.FC = () => {
           <SelectionGroup
             required={true}
             fieldId="keywords_working_methods"
-            label="Työtavat"
+            label={t('common:editor.classification.workMethod')}
             rules={isSetRule}
             options={workMethodsList}
           ></SelectionGroup>
@@ -80,7 +80,7 @@ const Classification: React.FC = () => {
           <SelectionGroup
             required={false}
             fieldId="keywords_attributes"
-            label="Työn ominaisuudet"
+            label={t('common:editor.classification.workFeature')}
             options={workFeaturesList}
           ></SelectionGroup>
         </$GridCell>
