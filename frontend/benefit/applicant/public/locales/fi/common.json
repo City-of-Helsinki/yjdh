@@ -367,7 +367,7 @@
     }
   },
   "footer": {
-    "copyrightText": "Copyright text",
+    "copyrightText": "Copyright {{currentYear}}",
     "allRightsReservedText": "Kaikki oikeudet pidätetään"
   },
   "notifications": {

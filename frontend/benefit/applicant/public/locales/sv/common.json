@@ -367,7 +367,7 @@
     }
   },
   "footer": {
-    "copyrightText": "Copyright text",
+    "copyrightText": "Copyright {{currentYear}}",
     "allRightsReservedText": "Alla rättigheter förbehållna"
   },
   "notifications": {
