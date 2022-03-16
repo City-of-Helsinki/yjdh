@@ -104,7 +104,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
           [true],
-          t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+          t(VALIDATION_MESSAGE_KEYS.REQUIRED_IS_LIVING_IN_HELSINKI)
         ),
       })
       .when(APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE, {
