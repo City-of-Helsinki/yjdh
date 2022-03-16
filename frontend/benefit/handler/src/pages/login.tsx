@@ -1,3 +1,4 @@
+import useLogin from 'benefit/handler/hooks/useLogin';
 import {
   Button,
   IconSignin,
@@ -12,8 +13,6 @@ import { useQueryClient } from 'react-query';
 import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
-
-import useLogin from '../hooks/useLogin';
 
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
