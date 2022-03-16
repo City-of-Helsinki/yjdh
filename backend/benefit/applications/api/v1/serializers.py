@@ -522,6 +522,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "company",
             "company_name",
             "company_form",
+            "company_form_code",
             "submitted_at",
             "bases",
             "available_bases",
@@ -580,6 +581,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "former_benefit_info",
             "company_name",
             "company_form",
+            "company_form_code",
             "official_company_street_address",
             "official_company_city",
             "official_company_postcode",
@@ -598,7 +600,10 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                 " application was created, to maintain historical accuracy.",
             },
             "company_form": {
-                "help_text": "Company city from official sources (YTJ) at the time the application was created",
+                "help_text": "Finnish company form from official sources (YTJ) at the time the application was created",
+            },
+            "company_form_code": {
+                "help_text": "Company form code from official sources (YTJ) at the time the application was created",
             },
             "official_company_street_address": {
                 "help_text": "Company street address from official sources (YTJ/other) at"
@@ -934,7 +939,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         NOTE: False is not allowed, and True is allowed only for associations.
         """
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
         ):
             if association_immediate_manager_check not in [None, True]:
@@ -969,7 +974,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
           (at this point, the individual dicts have been already valided by DeMinimisAidSerializer
         """
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
             and de_minimis_aid is not None
             and not association_has_business_activities
@@ -1109,7 +1114,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
         if (
             organization_type := OrganizationType.resolve_organization_type(
-                self.get_company(data).company_form
+                self.get_company(data).company_form_code
             )
         ) == OrganizationType.ASSOCIATION:
             required_fields.append("association_has_business_activities")
@@ -1141,7 +1146,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         self, company, association_has_business_activities
     ):
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.COMPANY
             and association_has_business_activities is not None
         ):
@@ -1201,7 +1206,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         """
 
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
             and not association_has_business_activities
         ):
@@ -1231,7 +1236,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             return
 
         if OrganizationType.resolve_organization_type(
-            company.company_form
+            company.company_form_code
         ) == OrganizationType.ASSOCIATION and self._field_value_changes(
             data, "association_has_business_activities", False
         ):
@@ -1470,6 +1475,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         de_minimis_data = validated_data.pop("de_minimis_aid_set")
         employee_data = validated_data.pop("employee", None)
         validated_data["company"] = self.get_company_for_new_application(validated_data)
+        validated_data["company_form_code"] = validated_data[
+            "company"
+        ].company_form_code
         application = super().create(validated_data)
         self.assign_default_fields_from_company(application, validated_data["company"])
         self._update_de_minimis_aid(application, de_minimis_data)
@@ -1491,6 +1499,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
     def assign_default_fields_from_company(self, application, company):
         application.company_name = company.name
         application.company_form = company.company_form
+        application.company_form_code = company.company_form_code
         application.official_company_street_address = company.street_address
         application.official_company_postcode = company.postcode
         application.official_company_city = company.city

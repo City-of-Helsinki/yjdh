@@ -3,8 +3,11 @@ from django.conf import settings
 
 def get_dummy_company_data():
     dummy_data = DUMMY_COMPANY_DATA.copy()
-    if hasattr(settings, "DUMMY_COMPANY_FORM") and settings.DUMMY_COMPANY_FORM:
-        dummy_data["company_form"] = settings.DUMMY_COMPANY_FORM
+    if (
+        hasattr(settings, "DUMMY_COMPANY_FORM_CODE")
+        and settings.DUMMY_COMPANY_FORM_CODE
+    ):
+        dummy_data["company_form_code"] = settings.DUMMY_COMPANY_FORM_CODE
     return dummy_data
 
 
@@ -13,6 +16,7 @@ DUMMY_COMPANY_DATA = {
     "name": "I. Haanpää Oy",
     "business_id": "0877830-0",
     "company_form": "OY",
+    "company_form_code": 16,
     "bank_account_number": "FI2112345600000785",
     "street_address": "Vasaratie 4 A 3",
     "postcode": "65350",
@@ -715,6 +719,7 @@ DUMMY_ASSOCIATION_DATA = {
     "name": "SIPOON NUORISOMUSIIKINYHDISTYS SUSIMUSA ry",
     "business_id": "2686723-5",
     "company_form": "association",
+    "company_form_code": 29,
     "bank_account_number": "FI2112345600000785",
     "street_address": "Vasaratie 4 A 3",
     "postcode": "65350",
