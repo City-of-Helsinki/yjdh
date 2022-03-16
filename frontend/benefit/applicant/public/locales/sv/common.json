@@ -367,8 +367,12 @@
     }
   },
   "footer": {
-    "copyrightText": "Copyright {{currentYear}}",
-    "allRightsReservedText": "Alla rättigheter förbehållna"
+    "copyrightText": "Copyright",
+    "allRightsReservedText": "Alla rättigheter förbehållna",
+    "accessibilityStatement": "Tillgänglighetsutlåtande",
+    "aboutTheService": "Information om tjänsten",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
+    "aboutTheServiceLink": "https://www.hel.fi/sv/foretag-och-arbete/arbetsgivare/arbetsgivarens-helsingforstillagg"
   },
   "notifications": {
     "applicationSubmitted": {

@@ -367,8 +367,12 @@
     }
   },
   "footer": {
-    "copyrightText": "Copyright {{currentYear}}",
-    "allRightsReservedText": "All rights reserved"
+    "copyrightText": "Copyright",
+    "allRightsReservedText": "All rights reserved",
+    "accessibilityStatement": "Accessibility statement",
+    "aboutTheService": "About the service",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
+    "aboutTheServiceLink": "https://www.hel.fi/en/business-and-work/employers/helsinki-benefit-for-employers"
   },
   "notifications": {
     "applicationSubmitted": {
