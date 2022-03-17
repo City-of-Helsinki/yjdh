@@ -40,7 +40,7 @@ CMD ["yarn", "te-yout:dev"]
 # ===================================
 FROM appbase as staticbuilder
 # ===================================
-# Set environmental variables for frontend (used in CI)
+# Set build arguments for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_MOCK_FLAG
 ARG NEXT_PUBLIC_SENTRY_DSN
@@ -88,6 +88,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-ser
 
 # Copy public directory
 COPY --chown=appuser:appuser tet/youth/public app/tet/youth/public
+COPY --chown=appuser:appuser tet/youth/public app/public
 
 # install lerna
 RUN yarn add -W lerna
