@@ -41,11 +41,13 @@ CMD ["yarn", "te-admn:dev"]
 # ===================================
 FROM appbase as staticbuilder
 # ===================================
-# Set environmental variables for frontend (used in CI)
+# Set build arguments for frontend (used in CI)
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_MOCK_FLAG
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT
+ARG NEXT_PUBLIC_LINKEDEVENTS_URL
+ARG NEXT_PUBLIC_KEYWORDS_DATA_SOURCE
 
 # Use non-root user
 USER appuser

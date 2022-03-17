@@ -93,9 +93,9 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
     def update_userinfo_from_graph_api(self, user, graph_api_access_token: str):
         userinfo = self.get_userinfo_from_graph_api(graph_api_access_token)
 
-        if "givenName" in userinfo:
+        if "givenName" in userinfo and userinfo["givenName"] is not None:
             user.first_name = userinfo["givenName"]
-        if "surname" in userinfo:
+        if "surname" in userinfo and userinfo["surname"] is not None:
             user.last_name = userinfo["surname"]
 
     def get_graph_api_access_token(self, access_token):
