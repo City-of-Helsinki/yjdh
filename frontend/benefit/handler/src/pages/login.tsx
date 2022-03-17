@@ -1,4 +1,4 @@
-import useLogin from 'benefit/applicant/hooks/useLogin';
+import useLogin from 'benefit/handler/hooks/useLogin';
 import {
   Button,
   IconSignin,
@@ -21,21 +21,18 @@ type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
 const Login: NextPage = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  const {
-    query: { logout, error, sessionExpired },
-  } = useRouter();
+  const router = useRouter();
   const login = useLogin();
-
   const theme = useTheme();
 
   const notificationProps = React.useMemo((): NotificationProps => {
-    if (error) {
+    if (router.query.error) {
       return { type: 'error', label: t('common:login.errorLabel') };
     }
-    if (sessionExpired) {
+    if (router.query.sessionExpired) {
       return { type: 'error', label: t('common:login.sessionExpiredLabel') };
     }
-    if (logout) {
+    if (router.query.logout) {
       return { type: 'info', label: t('common:login.logoutMessageLabel') };
     }
     return {
@@ -43,13 +40,13 @@ const Login: NextPage = () => {
       label: t('common:login.infoLabel'),
       content: t('common:login.infoContent'),
     };
-  }, [t, error, sessionExpired, logout]);
+  }, [t, router.query.error, router.query.sessionExpired, router.query.logout]);
 
   useEffect(() => {
-    if (logout) {
+    if (router.query.logout) {
       void queryClient.clear();
     }
-  }, [logout, queryClient]);
+  }, [router.query.logout, queryClient]);
 
   return (
     <Container>

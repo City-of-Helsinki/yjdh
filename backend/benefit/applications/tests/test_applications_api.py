@@ -26,7 +26,7 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationFactory
+from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
@@ -44,6 +44,7 @@ from terms.models import TermsOfServiceApproval
 from terms.tests.conftest import *  # noqa
 
 from shared.audit_log import models as audit_models
+from shared.service_bus.enums import YtjOrganizationCode
 
 
 def get_detail_url(application):
@@ -274,6 +275,9 @@ def test_application_post_success(api_client, application):
     # ensure that the current values for company info are filled in
     assert new_application.company_name == new_application.company.name
     assert new_application.company_form == new_application.company.company_form
+    assert (
+        new_application.company_form_code == new_application.company.company_form_code
+    )
     assert (
         new_application.official_company_street_address
         == new_application.company.street_address
@@ -652,6 +656,7 @@ def test_application_edit_benefit_type_business_association(
     data = ApplicantApplicationSerializer(association_application).data
     company = mock_get_organisation_roles_and_create_company
     company.company_form = "ry"
+    company.company_form_code = YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT
     company.save()
     association_application.company = company
     association_application.save()
@@ -858,27 +863,27 @@ def test_application_date_range_on_submit(
 
 
 @pytest.mark.parametrize(
-    "company_form,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
+    "company_form_code,de_minimis_aid,de_minimis_aid_set,association_has_business_activities,expected_result",
     [
-        ("ry", None, [], False, 200),
-        ("ry", False, [], False, 200),
-        ("ry", None, [], True, 200),
-        ("ry", False, [], True, 200),
-        ("oy", None, [], None, 400),
-        ("oy", False, [], None, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, None, [], False, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False, [], False, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, None, [], True, 200),
+        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False, [], True, 200),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, None, [], None, 400),
+        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, False, [], None, 200),
     ],
 )
 def test_submit_application_without_de_minimis_aid(
     request,
     api_client,
     application,
-    company_form,
+    company_form_code,
     de_minimis_aid,
     de_minimis_aid_set,
     association_has_business_activities,
     expected_result,
 ):
-    application.company.company_form = company_form
+    application.company.company_form_code = company_form_code
     application.company.save()
     add_attachments_to_application(request, application)
 
@@ -890,7 +895,7 @@ def test_submit_application_without_de_minimis_aid(
     data["pay_subsidy_percent"] = "50"
     data["pay_subsidy_granted"] = True
     data["association_has_business_activities"] = association_has_business_activities
-    if company_form == "ry":
+    if company_form_code == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT:
         data["association_immediate_manager_check"] = True
 
     response = api_client.put(
@@ -1151,6 +1156,29 @@ def test_application_accept(
     )
     assert handling_application.application_step == ApplicationStep.STEP_2
     assert handling_application.calculation.granted_as_de_minimis_aid is True
+
+
+def test_application_with_batch_back_to_handling(
+    request,
+    handler_api_client,
+    decided_application,
+):
+    """
+    When application is moved back to handling, the application
+    needs to be remvoved from any batch.
+    """
+    decided_application.batch = ApplicationBatchFactory()
+    decided_application.save()
+    data = HandlerApplicationSerializer(decided_application).data
+    data["status"] = ApplicationStatus.HANDLING
+
+    response = handler_api_client.put(
+        get_handler_detail_url(decided_application),
+        data,
+    )
+    assert response.status_code == 200
+    decided_application.refresh_from_db()
+    assert decided_application.batch is None
 
 
 @pytest.mark.parametrize(

@@ -33,7 +33,7 @@
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
-		"@hookform/devtools": "^4.0.2",
+    "@hookform/devtools": "^4.0.2",
     "@types/node": "^16.11.12",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.6",
