@@ -2,8 +2,10 @@ import { Headers } from 'shared/types/common';
 
 export const BackendEndpoint = {
   LOGIN: '/oidc/authenticate/',
+  OAUTH_LOGIN: '/oauth2/login',
   LOGOUT: '/oidc/logout/',
   USER: '/oidc/userinfo/',
+  USER_ME: 'v1/users/me',
   COMPANY: '/v1/company/',
   APPLICATIONS: '/v1/applications/',
   HANDLER_APPLICATIONS: '/v1/handlerapplications/',
