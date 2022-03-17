@@ -71,23 +71,23 @@ USER appuser
 
 WORKDIR /app
 
-# Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/.next tet/admin/.next
-
-# Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/next-i18next.config.js app/tet/admin/next.config.js tet/admin/
-
-# Copy package.json and yarn.lock files
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/public app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/package.json app/tet/admin/start.js tet/admin/
-COPY --from=staticbuilder --chown=appuser:appuser app/tet/shared/package.json tet/shared/
-
-# shared data
-COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
-COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
+# Copy files needed by yarn install
+COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
+COPY --chown=appuser:appuser tet/admin/package.json tet/admin/package.json
+COPY --chown=appuser:appuser tet/shared/package.json tet/shared/package.json
+COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 # Install production dependencies
-RUN yarn install --production --frozen-lockfile --check-files
+RUN yarn install --production --frozen-lockfile --check-files && yarn cache clean --force
+
+# Copy files needed by nextjs
+COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/.next tet/admin/.next
+COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/next-i18next.config.js app/tet/admin/next.config.js tet/admin/
+COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/package.json app/tet/admin/start.js tet/admin/
+COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
+
+# Copy public directory
+COPY --chown=appuser:appuser tet/admin/public app/tet/admin/public
 
 # install lerna
 RUN yarn add -W lerna
