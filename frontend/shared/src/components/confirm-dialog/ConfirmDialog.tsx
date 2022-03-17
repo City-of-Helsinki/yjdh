@@ -22,6 +22,12 @@ const ConfirmDialog: React.FC<Partial<ModalProps>> = (modalProps) => {
       {...modalProps}
     >
       {confirmState.content?.length ? confirmState.content : null}
+      {confirmState.link?.length && confirmState.linkText?.length ? (
+        <a target="_blank" rel="noopener noreferrer" href={confirmState.link}>
+          {' '}
+          {confirmState.linkText}
+        </a>
+      ) : null}
     </Modal>
   ) : null;
 };
