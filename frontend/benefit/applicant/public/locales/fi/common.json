@@ -55,7 +55,7 @@
       "deleteApplicationConfirm": "Haluatko varmasti poistaa luonnoksen?",
       "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
       "continue": "Jatka",
-      "send": "Skicka",
+      "send": "Lähetä",
       "back": "Takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
@@ -183,10 +183,10 @@
         "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
         "tooltips": {
           "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
-          "heading5EmploymentSub1": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
+          "heading5EmploymentSub1": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Jos tuella palkattavalle maksetaan palkan lisiä (esim. ilta-, yö- tai vuorotyölisä), ota niiden arvioitu määrä huomioon bruttopalkassa. Työnantajan lakisääteisiin sivukuluihin luetaan sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu. Sivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrä kuukaudessa. Lomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Arvioi tukijakson aikana maksettavan lomarahan määrä. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus.",
           "heading5Assignment": "Palkkauskustannukset tooltip text",
           "heading2": "Palkkatuki on työttömän työnhakijan työllistymisen edistämiseksi tarkoitettu rahallinen tuki, jonka TE-palvelut voi myöntää työnantajalle palkkauskustannuksiin.",
-          "heading3": "Työllistämisen Helsinki-lisä on tarkoitettuohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
+          "heading3": "Työllistämisen Helsinki-lisä on tarkoitettu ohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
         },
         "notifications": {
           "salaryBenefit": {
@@ -336,7 +336,7 @@
       },
       "credentials": {
         "heading1": "Työllistettävän henkilötietojen käsittely",
-        "heading2": "Suostumus",
+        "heading2": "Henkilötietojen käsittely",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",
