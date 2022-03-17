@@ -37,9 +37,9 @@
 		"cancel": "Avbryt"
 	},
   "application": {
-		"backToFrontPage": "SV Takaisin etusivulle",
-		"publishTerms": "SV Julkaisun yhteydessä hyväksyt",
-		"termsLink": "SV käyttöehdot",
+		"backToFrontPage": "Tillbaka till startsidan",
+		"publishTerms": "Genom att publicera godkänner du",
+		"termsLink": "villkoren",
 		"backToFrontPage": "Tillbaka till startsidan",
 		"createTerms": "Jag är i positionen som arbetsledare eller har diskuterat tillkännagivandet med förmannen.",
 		"accept": "Acceptera",
@@ -63,9 +63,9 @@
     }
   },
   "editor": {
-		"companyInfo": "SV Työnantajan tiedot",
+		"companyInfo": "Arbetsgivarinformation",
     "helsinkiCity": "Helsingfors stad",
-		"companyInfoFetch": "SV Tiedot on haettu tunnistautumisen yhteydessä.",
+		"companyInfoFetch": "Informationen har hämtats under autentiseringen.",
     "newTitle": "Ny PRAO-plats",
     "editTitle": "Redigera PRAO-plats",
 		"copyTitle": "Kopiera PRAO-plats",
@@ -99,7 +99,7 @@
 			"contactLastName": "Efternamn",
 			"contactPhone": "Telefon",
 			"contactEmail": "E-post",
-			"contactLanguage": "Kontaktspråk",
+			"contactLanguage": "Språket som används under PRAO-perioden",
 			"contactLanguageFi": "Finska",
 			"contactLanguageSv": "Svenska",
 			"contactLanguageEn": "Engelska",

@@ -37,9 +37,9 @@
 		"cancel": "Cancel"
 	},
   "application": {
-		"backToFrontPage": "ENG Takaisin etusivulle",
-		"publishTerms": "ENG Julkaisun yhteydessä hyväksyt",
-		"termsLink": "ENG käyttöehdot",
+		"backToFrontPage": "Back to front page",
+		"publishTerms": "By publishing, you accept",
+		"termsLink": "the terms and conditions",
 		"backToFrontPage": "Back to the front page",
 		"createTerms": "I am in a manager position or have discussed the announcement with my manager.",
 		"accept": "Accept",
@@ -63,9 +63,9 @@
     }
   },
   "editor": {
-		"companyInfo": "ENG Työnantajan tiedot",
+		"companyInfo": "Employer information",
     "helsinkiCity": "City of Helsinki",
-		"companyInfoFetch": "ENG Tiedot on haettu tunnistautumisen yhteydessä.",
+		"companyInfoFetch": "The information has been fetched during authentication.",
     "newTitle": "New TET advertisement",
     "editTitle": "Edit TET advertisement",
 		"copyTitle": "Copy TET advertisement",
@@ -99,7 +99,7 @@
 			"contactLastName": "Last name",
 			"contactPhone": "Telephone",
 			"contactEmail": "E-mail",
-			"contactLanguage": "Language of communication",
+			"contactLanguage": "The language used during TET-period",
 			"contactLanguageFi": "Finnish",
 			"contactLanguageSv": "Swedish",
 			"contactLanguageEn": "English",
