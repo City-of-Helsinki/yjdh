@@ -8,6 +8,8 @@ type Keyword = IdObject & {
   };
 };
 
+console.log(`NEXT_PUBLIC_LINKEDEVENTS_URL=${process.env.NEXT_PUBLIC_LINKEDEVENTS_URL!}`);
+
 export const linkedEventsUrl =
   process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/';
 
