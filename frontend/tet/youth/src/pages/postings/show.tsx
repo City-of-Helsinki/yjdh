@@ -24,7 +24,7 @@ const ShowPostingPage: NextPage = () => {
 
   if (error) {
     //TODO
-    return <div>virhe</div>;
+    return <PageNotFound />;
   }
 
   if (data) {

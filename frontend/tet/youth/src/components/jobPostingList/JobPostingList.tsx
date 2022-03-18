@@ -28,9 +28,7 @@ const JobPostingList: React.FC<Props> = ({ postings, onShowMore, isFetchingNextP
 
   return (
     <Container>
-      <h2>
-        {total} {t('common:postings.searchResults')}
-      </h2>
+      <h2>{t('common:postings.searchResults', { count: total })}</h2>
       {postings?.pages.map((group: LinkedEventsPagedResponse<TetEvent>, i: number) => {
         console.log('group', group);
         return (
@@ -46,7 +44,7 @@ const JobPostingList: React.FC<Props> = ({ postings, onShowMore, isFetchingNextP
           {isFetchingNextPage ? (
             <LoadingSpinner />
           ) : (
-            <Button onClick={onShowMore}>{t('common:postingsPage.showMore')}</Button>
+            <Button onClick={onShowMore}>{t('common:postings.showMore')}</Button>
           )}
         </$ButtonLoaderContainer>
       )}

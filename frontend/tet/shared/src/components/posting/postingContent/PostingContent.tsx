@@ -24,8 +24,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
   ];
   const contact = [posting.contact_phone, posting.contact_email];
 
-  const date =
-    posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
+  const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
   const languages = posting.languages.map((language) => language.label);
 
   return (

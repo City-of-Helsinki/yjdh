@@ -30,8 +30,7 @@ type Props = {
 const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const date =
-    posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
+  const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
   const street_address = posting.location.street_address
     ? `, ${posting.location.street_address}`
     : '';
@@ -85,7 +84,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               layout="responsive"
               objectFit="cover"
               src="/event_placeholder_B.jpg"
-              alt="canteen counter"
+              alt="event placeholder"
             />
           </$ImageContainer>
           <$HeroContentWrapper>
