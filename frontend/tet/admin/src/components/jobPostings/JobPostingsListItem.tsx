@@ -37,7 +37,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
           layout="responsive"
           objectFit="cover"
           src="/event_placeholder_B.jpg"
-          alt="canteen counter"
+          alt="event placeholder"
         />
       </$ImageContainer>
       <$PostingCardBody>

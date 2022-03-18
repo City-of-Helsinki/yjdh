@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-11 13:10+0200\n"
+"POT-Creation-Date: 2022-03-18 10:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,226 +18,208 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: applications/api/v1/application_batch_views.py:76
+#: applications/api/v1/application_batch_views.py:78
 msgid "Application status cannot be exported because of invalid status"
 msgstr ""
 
-#: applications/api/v1/application_batch_views.py:84
+#: applications/api/v1/application_batch_views.py:86
 msgid "Cannot export empty batch"
 msgstr ""
 
-#: applications/api/v1/application_batch_views.py:90
+#: applications/api/v1/application_batch_views.py:92
 #, python-brace-format
 msgid "Application batch {date}"
 msgstr ""
 
-#: applications/api/v1/application_batch_views.py:118
+#: applications/api/v1/application_batch_views.py:120
 msgid "There is no available application to export, please try again later"
 msgstr ""
 
-#: applications/api/v1/application_batch_views.py:126
+#: applications/api/v1/application_batch_views.py:128
 #, python-brace-format
 msgid "TALPA export {date}"
 msgstr ""
 
-#: applications/api/v1/serializers.py:125
-msgid "Can not add attachment to an application in this state"
-msgstr ""
-
-#: applications/api/v1/serializers.py:131
+#: applications/api/v1/serializers.py:151
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
 msgstr ""
 
-#: applications/api/v1/serializers.py:140
+#: applications/api/v1/serializers.py:160
 msgid "Too many attachments"
 msgstr ""
 
-#: applications/api/v1/serializers.py:143
+#: applications/api/v1/serializers.py:163
 msgid "Not a valid pdf file"
 msgstr ""
 
-#: applications/api/v1/serializers.py:147
+#: applications/api/v1/serializers.py:167
 msgid "Not a valid image file"
 msgstr ""
 
-#: applications/api/v1/serializers.py:189
+#: applications/api/v1/serializers.py:209
 msgid "Grant date too much in past"
 msgstr ""
 
-#: applications/api/v1/serializers.py:191
+#: applications/api/v1/serializers.py:211
 msgid "Grant date can not be in the future"
 msgstr ""
 
-#: applications/api/v1/serializers.py:290
+#: applications/api/v1/serializers.py:312
 msgid "Social security number invalid"
 msgstr ""
 
-#: applications/api/v1/serializers.py:297
+#: applications/api/v1/serializers.py:319
 msgid "Social security number checksum invalid"
 msgstr ""
 
-#: applications/api/v1/serializers.py:306
+#: applications/api/v1/serializers.py:328
 #, python-brace-format
 msgid "Working hour must be greater than {min_hour} per week"
 msgstr ""
 
-#: applications/api/v1/serializers.py:314
+#: applications/api/v1/serializers.py:336
 msgid "Monthly pay must be greater than 0"
 msgstr ""
 
-#: applications/api/v1/serializers.py:320
+#: applications/api/v1/serializers.py:342
 msgid "Vacation money must be a positive number"
 msgstr ""
 
-#: applications/api/v1/serializers.py:327
+#: applications/api/v1/serializers.py:349
 msgid "Other expenses must be a positive number"
 msgstr ""
 
-#: applications/api/v1/serializers.py:419
+#: applications/api/v1/serializers.py:441
 msgid "Applications in a batch can not be changed when batch is in this status"
 msgstr ""
 
-#: applications/api/v1/serializers.py:431
+#: applications/api/v1/serializers.py:453
 msgid "This application has invalid status and can not be added to this batch"
 msgstr ""
 
-#: applications/api/v1/serializers.py:819
+#: applications/api/v1/serializers.py:929
 msgid "This should be unreachable"
 msgstr ""
 
-#: applications/api/v1/serializers.py:839
+#: applications/api/v1/serializers.py:949
 msgid "Invalid value for association_immediate_manager_check"
 msgstr ""
 
-#: applications/api/v1/serializers.py:847
+#: applications/api/v1/serializers.py:957
 msgid "for companies, association_immediate_manager_check must always be null"
 msgstr ""
 
-#: applications/api/v1/serializers.py:875
+#: applications/api/v1/serializers.py:985
 msgid ""
 "This application has non-null de_minimis_aid but is applied by an association"
 msgstr ""
 
-#: applications/api/v1/serializers.py:884
+#: applications/api/v1/serializers.py:994
 msgid "This application has de_minimis_aid set but does not define any"
 msgstr ""
 
-#: applications/api/v1/serializers.py:893
+#: applications/api/v1/serializers.py:1003
 msgid "This application can not have de minimis aid"
 msgstr ""
 
-#: applications/api/v1/serializers.py:901
+#: applications/api/v1/serializers.py:1011
 msgid "Total amount of de minimis aid too large"
 msgstr ""
 
-#: applications/api/v1/serializers.py:907
+#: applications/api/v1/serializers.py:1017
 msgid "start_date must not be in a past year"
 msgstr ""
 
-#: applications/api/v1/serializers.py:911
+#: applications/api/v1/serializers.py:1021
 msgid "end_date must not be in a past year"
 msgstr ""
 
-#: applications/api/v1/serializers.py:922
+#: applications/api/v1/serializers.py:1032
 msgid "application end_date can not be less than start_date"
 msgstr ""
 
-#: applications/api/v1/serializers.py:936
+#: applications/api/v1/serializers.py:1046
 msgid "minimum duration of the benefit is one month"
 msgstr ""
 
-#: applications/api/v1/serializers.py:943
+#: applications/api/v1/serializers.py:1053
 msgid "maximum duration of the benefit is 12 months"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1011
-msgid "Benefit can not be granted before 24-month waiting period expires"
-msgstr ""
-
-#: applications/api/v1/serializers.py:1026
-msgid ""
-"There's already an accepted application with overlapping date range for this "
-"employee"
-msgstr ""
-
-#: applications/api/v1/serializers.py:1038
+#: applications/api/v1/serializers.py:1063
 msgid ""
 "This application can not have a description for co-operation negotiations"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1048
+#: applications/api/v1/serializers.py:1073
 msgid "Pay subsidy percent required"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1056
+#: applications/api/v1/serializers.py:1081
 #, python-brace-format
 msgid "This application can not have {key}"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1064
+#: applications/api/v1/serializers.py:1089
 msgid "This application can not have additional_pay_subsidy_percent"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1109
+#: applications/api/v1/serializers.py:1140
 msgid "This field is required before submitting the application"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1125
+#: applications/api/v1/serializers.py:1156
 msgid "This field can be set for associations only"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1162
+#: applications/api/v1/serializers.py:1193
 msgid "This benefit type can not be selected"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1342
+#: applications/api/v1/serializers.py:1376
 msgid "Application does not have the employee consent attachment"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1346
+#: applications/api/v1/serializers.py:1380
 msgid "Application cannot have more than one employee consent attachment"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1353 terms/api/v1/views.py:48
+#: applications/api/v1/serializers.py:1387 terms/api/v1/views.py:48
 msgid "Terms must be approved"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1408
+#: applications/api/v1/serializers.py:1442
 msgid "Application does not have required attachments"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1434
+#: applications/api/v1/serializers.py:1473
 msgid "Application initial state must be draft"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1470
+#: applications/api/v1/serializers.py:1513
 #, python-brace-format
 msgid "Reading de minimis data failed: {errors}"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1510
-#: applications/api/v1/serializers.py:1587
+#: applications/api/v1/serializers.py:1579
+#: applications/api/v1/serializers.py:1677
 msgid "Application can not be changed in this status"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1569
+#: applications/api/v1/serializers.py:1640
 msgid "create_application_for_company missing from request"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1610
+#: applications/api/v1/serializers.py:1703
 msgid "The calculation should be created when the application is submitted"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1615
-msgid "The calculation can not be updated in this status"
-msgstr ""
-
-#: applications/api/v1/serializers.py:1619
+#: applications/api/v1/serializers.py:1708
 msgid "The calculation id does not match existing id"
 msgstr ""
 
-#: applications/api/v1/serializers.py:1657
+#: applications/api/v1/serializers.py:1759
 #, python-brace-format
 msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr ""
@@ -252,407 +234,431 @@ msgstr ""
 msgid "Initial status must be {initial_status}"
 msgstr ""
 
-#: applications/api/v1/views.py:97 applications/api/v1/views.py:123
+#: applications/api/v1/views.py:125 applications/api/v1/views.py:162
 msgid "Operation not allowed for this application status."
 msgstr ""
 
-#: applications/api/v1/views.py:130
+#: applications/api/v1/views.py:149
 msgid "File not found."
 msgstr ""
 
-#: applications/enums.py:6 applications/enums.py:102
+#: applications/api/v1/views.py:326
+#, python-brace-format
+msgid "Helsinki-lisän hakemukset viety {date}"
+msgstr ""
+
+#: applications/benefit_aggregation.py:77
+msgid "Benefit can not be granted before 24-month waiting period expires"
+msgstr ""
+
+#: applications/benefit_aggregation.py:166
+#, python-brace-format
+msgid ""
+"There's already an accepted application or previous benefit with overlapping "
+"date range {start_date} - {end_date}"
+msgstr ""
+
+#: applications/enums.py:7 applications/enums.py:105
 msgid "Draft"
 msgstr ""
 
-#: applications/enums.py:7
+#: applications/enums.py:8
 msgid "Received"
 msgstr ""
 
-#: applications/enums.py:8
+#: applications/enums.py:9
 msgid "Handling"
 msgstr ""
 
-#: applications/enums.py:10
+#: applications/enums.py:11
 msgid "Additional information requested"
 msgstr ""
 
-#: applications/enums.py:12
+#: applications/enums.py:13
 msgid "Cancelled"
 msgstr ""
 
-#: applications/enums.py:13
+#: applications/enums.py:14
 msgid "Accepted"
 msgstr ""
 
-#: applications/enums.py:14
+#: applications/enums.py:15
 msgid "Rejected"
 msgstr ""
 
-#: applications/enums.py:28 applications/enums.py:40
+#: applications/enums.py:29 applications/enums.py:52
 msgid "Invalid application status"
 msgstr ""
 
-#: applications/enums.py:45
+#: applications/enums.py:31
+msgid "Invalid application status change"
+msgstr ""
+
+#: applications/enums.py:57
 msgid "Employment Benefit"
 msgstr ""
 
-#: applications/enums.py:46
+#: applications/enums.py:58
 msgid "Salary Benefit"
 msgstr ""
 
-#: applications/enums.py:47
+#: applications/enums.py:59
 msgid "Commission Benefit"
 msgstr ""
 
-#: applications/enums.py:51
+#: applications/enums.py:63
 msgid "Step 1 - company details"
 msgstr ""
 
-#: applications/enums.py:52
+#: applications/enums.py:64
 msgid "Step 2 - employee details"
 msgstr ""
 
-#: applications/enums.py:53
+#: applications/enums.py:65
 msgid "Step 3 - attachments"
 msgstr ""
 
-#: applications/enums.py:54
+#: applications/enums.py:66
 msgid "Step 4 - summary"
 msgstr ""
 
-#: applications/enums.py:55
+#: applications/enums.py:67
 msgid "Step 5 - power of attorney"
 msgstr ""
 
-#: applications/enums.py:56
+#: applications/enums.py:68
 msgid "Step 6 - terms and send"
 msgstr ""
 
-#: applications/enums.py:67
+#: applications/enums.py:76
 msgid "Company"
 msgstr ""
 
-#: applications/enums.py:68
+#: applications/enums.py:77
 msgid "Association"
 msgstr ""
 
-#: applications/enums.py:86
+#: applications/enums.py:89
 msgid "employment contract"
 msgstr ""
 
-#: applications/enums.py:87
+#: applications/enums.py:90
 msgid "pay subsidy decision"
 msgstr ""
 
-#: applications/enums.py:88
+#: applications/enums.py:91
 msgid "commission contract"
 msgstr ""
 
-#: applications/enums.py:90
+#: applications/enums.py:93
 msgid "education contract of the apprenticeship office"
 msgstr ""
 
-#: applications/enums.py:92 applications/enums.py:93
+#: applications/enums.py:95 applications/enums.py:96
 msgid "helsinki benefit voucher"
 msgstr ""
 
-#: applications/enums.py:97
+#: applications/enums.py:100
 msgid "attachment is required"
 msgstr ""
 
-#: applications/enums.py:98
+#: applications/enums.py:101
 msgid "attachment is optional"
 msgstr ""
 
-#: applications/enums.py:104
+#: applications/enums.py:107
 msgid "Ahjo report created, not yet sent to AHJO"
 msgstr ""
 
-#: applications/enums.py:107
+#: applications/enums.py:110
 msgid "Sent to Ahjo, decision pending"
 msgstr ""
 
-#: applications/enums.py:109
+#: applications/enums.py:112
 msgid "Accepted in Ahjo"
 msgstr ""
 
-#: applications/enums.py:110
+#: applications/enums.py:113
 msgid "Rejected in Ahjo"
 msgstr ""
 
-#: applications/enums.py:112
+#: applications/enums.py:115
 msgid "Returned from Ahjo without decision"
 msgstr ""
 
-#: applications/enums.py:114
+#: applications/enums.py:117
 msgid "Sent to Talpa"
 msgstr ""
 
-#: applications/enums.py:115
+#: applications/enums.py:118
 msgid "Processing is completed"
 msgstr ""
 
-#: applications/models.py:81 calculator/models.py:320 companies/models.py:17
+#: applications/models.py:109 calculator/models.py:337 companies/models.py:21
 #: terms/models.py:180
 msgid "company"
 msgstr ""
 
-#: applications/models.py:89
+#: applications/models.py:117
 msgid "status"
 msgstr ""
 
-#: applications/models.py:95
+#: applications/models.py:123
 msgid "application number"
 msgstr ""
 
-#: applications/models.py:98
+#: applications/models.py:126
 msgid "company name"
 msgstr ""
 
-#: applications/models.py:100
-msgid "company form"
+#: applications/models.py:129
+msgid "company form as user-readable text"
 msgstr ""
 
-#: applications/models.py:103
+#: applications/models.py:133 companies/models.py:13
+msgid "YTJ type code for company form"
+msgstr ""
+
+#: applications/models.py:137
 msgid "company department"
 msgstr ""
 
-#: applications/models.py:108 applications/models.py:120
+#: applications/models.py:142 applications/models.py:154
 msgid "company street address"
 msgstr ""
 
-#: applications/models.py:111 applications/models.py:123
+#: applications/models.py:145 applications/models.py:157
 msgid "company city"
 msgstr ""
 
-#: applications/models.py:114 applications/models.py:126
+#: applications/models.py:148 applications/models.py:160
 msgid "company post code"
 msgstr ""
 
-#: applications/models.py:138
+#: applications/models.py:172
 msgid "company bank account number"
 msgstr ""
 
-#: applications/models.py:143 applications/models.py:493
+#: applications/models.py:177 applications/models.py:546
 msgid "first name"
 msgstr ""
 
-#: applications/models.py:146 applications/models.py:496
+#: applications/models.py:180 applications/models.py:549
 msgid "last name"
 msgstr ""
 
-#: applications/models.py:150
+#: applications/models.py:184
 msgid "company contact person's phone number"
 msgstr ""
 
-#: applications/models.py:158
+#: applications/models.py:192
 msgid "company contact person's email"
 msgstr ""
 
-#: applications/models.py:193
+#: applications/models.py:227
 msgid "additional information about the ongoing co-operation negotiations"
 msgstr ""
 
-#: applications/models.py:203 calculator/models.py:213
+#: applications/models.py:237 calculator/models.py:233
 msgid "Pay subsidy percent"
 msgstr ""
 
-#: applications/models.py:210
+#: applications/models.py:244
 msgid "Pay subsidy percent for second pay subsidy grant"
 msgstr ""
 
-#: applications/models.py:236 calculator/models.py:89 calculator/models.py:333
+#: applications/models.py:270 calculator/models.py:91 calculator/models.py:350
 msgid "benefit start from date"
 msgstr ""
 
-#: applications/models.py:239 calculator/models.py:90 calculator/models.py:334
+#: applications/models.py:273 calculator/models.py:94 calculator/models.py:351
 msgid "benefit end date"
 msgstr ""
 
-#: applications/models.py:267
+#: applications/models.py:301
 msgid "ahjo batch"
 msgstr ""
 
-#: applications/models.py:322 applications/models.py:330
-#: applications/models.py:358 applications/models.py:487
-#: applications/models.py:593 calculator/models.py:204 calculator/models.py:364
+#: applications/models.py:375 applications/models.py:383
+#: applications/models.py:411 applications/models.py:540
+#: applications/models.py:654 calculator/models.py:220 calculator/models.py:381
 #: messages/models.py:30 terms/models.py:145
 msgid "application"
 msgstr ""
 
-#: applications/models.py:323
+#: applications/models.py:376
 msgid "applications"
 msgstr ""
 
-#: applications/models.py:335
+#: applications/models.py:388
 msgid "granter of the de minimis aid"
 msgstr ""
 
-#: applications/models.py:338
+#: applications/models.py:391
 msgid "amount of the de minimis aid"
 msgstr ""
 
-#: applications/models.py:340
+#: applications/models.py:393
 msgid "benefit granted at"
 msgstr ""
 
-#: applications/models.py:349
+#: applications/models.py:402
 msgid "de minimis aid"
 msgstr ""
 
-#: applications/models.py:350
+#: applications/models.py:403
 msgid "de minimis aids"
 msgstr ""
 
-#: applications/models.py:378
+#: applications/models.py:431
 msgid "application log entry"
 msgstr ""
 
-#: applications/models.py:379
+#: applications/models.py:432
 msgid "application log entries"
 msgstr ""
 
-#: applications/models.py:392
+#: applications/models.py:445
 msgid "status of batch"
 msgstr ""
 
-#: applications/models.py:399
+#: applications/models.py:452
 msgid "proposal for decision"
 msgstr ""
 
-#: applications/models.py:404
+#: applications/models.py:457
 msgid "decision maker's title in Ahjo"
 msgstr ""
 
-#: applications/models.py:407
+#: applications/models.py:460
 msgid "decision maker's name in Ahjo"
 msgstr ""
 
-#: applications/models.py:410
+#: applications/models.py:463
 msgid "section of the law in Ahjo decision"
 msgstr ""
 
-#: applications/models.py:413
+#: applications/models.py:466
 msgid "date of the decision in Ahjo"
 msgstr ""
 
-#: applications/models.py:416
+#: applications/models.py:469
 msgid "Expert inspector's name"
 msgstr ""
 
-#: applications/models.py:419
+#: applications/models.py:472
 msgid "Expert inspector's email address"
 msgstr ""
 
-#: applications/models.py:459
+#: applications/models.py:512
 msgid "application batch"
 msgstr ""
 
-#: applications/models.py:460
+#: applications/models.py:513
 msgid "application batches"
 msgstr ""
 
-#: applications/models.py:480
+#: applications/models.py:533
 msgid "application basis"
 msgstr ""
 
-#: applications/models.py:481
+#: applications/models.py:534
 msgid "application bases"
 msgstr ""
 
-#: applications/models.py:500 calculator/models.py:330
+#: applications/models.py:553 calculator/models.py:347
 msgid "social security number"
 msgstr ""
 
-#: applications/models.py:508
+#: applications/models.py:561
 msgid "phone number"
 msgstr ""
 
-#: applications/models.py:515
+#: applications/models.py:568
 msgid "email"
 msgstr ""
 
-#: applications/models.py:525
+#: applications/models.py:578
 msgid "job title"
 msgstr ""
 
-#: applications/models.py:528 calculator/models.py:72
+#: applications/models.py:581 calculator/models.py:73
 msgid "monthly pay"
 msgstr ""
 
-#: applications/models.py:535 calculator/models.py:79
+#: applications/models.py:588 calculator/models.py:80
 msgid "vacation money"
 msgstr ""
 
-#: applications/models.py:543 calculator/models.py:85
+#: applications/models.py:596 calculator/models.py:86
 msgid "other expenses"
 msgstr ""
 
-#: applications/models.py:550
+#: applications/models.py:603
 msgid "working hour"
 msgstr ""
 
-#: applications/models.py:557
+#: applications/models.py:610
 msgid "collective bargaining agreement"
 msgstr ""
 
-#: applications/models.py:560
+#: applications/models.py:613
 msgid "is living in helsinki"
 msgstr ""
 
-#: applications/models.py:564
+#: applications/models.py:617
 msgid "amount of the commission (eur)"
 msgstr ""
 
-#: applications/models.py:573
+#: applications/models.py:626
 msgid "Description of the commission"
 msgstr ""
 
-#: applications/models.py:582
+#: applications/models.py:643
 msgid "employee"
 msgstr ""
 
-#: applications/models.py:583
+#: applications/models.py:644
 msgid "employees"
 msgstr ""
 
-#: applications/models.py:599
+#: applications/models.py:660
 msgid "attachment type in business rules"
 msgstr ""
 
-#: applications/models.py:605
+#: applications/models.py:666
 msgid "technical content type of the attachment"
 msgstr ""
 
-#: applications/models.py:607
+#: applications/models.py:668
 msgid "application attachment content"
 msgstr ""
 
-#: applications/models.py:611
+#: applications/models.py:672
 msgid "attachment"
 msgstr ""
 
-#: applications/models.py:612
+#: applications/models.py:673
 msgid "attachments"
 msgstr ""
 
-#: calculator/api/v1/serializers.py:67
+#: calculator/api/v1/serializers.py:76
 msgid "Date range too large"
 msgstr ""
 
-#: calculator/api/v1/serializers.py:76
-msgid "This calculation can not have a override_benefit_amount_comment"
+#: calculator/api/v1/serializers.py:89
+msgid "This calculation can not have a override_monthly_benefit_amount_comment"
 msgstr ""
 
-#: calculator/api/v1/serializers.py:84
-msgid "This calculation needs override_benefit_amount_comment"
+#: calculator/api/v1/serializers.py:100
+msgid "This calculation needs override_monthly_benefit_amount_comment"
 msgstr ""
 
-#: calculator/api/v1/serializers.py:106
+#: calculator/api/v1/serializers.py:122
 msgid "Handler can not be unassigned in this status"
 msgstr ""
 
-#: calculator/api/v1/serializers.py:114
+#: calculator/api/v1/serializers.py:130
 msgid "Handler can not assigned in this status"
 msgstr ""
 
@@ -664,7 +670,7 @@ msgstr ""
 msgid "Salary costs"
 msgstr ""
 
-#: calculator/enums.py:8 calculator/models.py:92
+#: calculator/enums.py:8 calculator/models.py:97
 msgid "State aid maximum %"
 msgstr ""
 
@@ -692,144 +698,153 @@ msgstr ""
 msgid "Total amount of deductions monthly"
 msgstr ""
 
-#: calculator/models.py:33
+#: calculator/models.py:34
 msgid "Calculation already exists"
 msgstr ""
 
-#: calculator/models.py:56
+#: calculator/models.py:57
 msgid "handler"
 msgstr ""
 
-#: calculator/models.py:67 calculator/models.py:190 calculator/models.py:414
+#: calculator/models.py:68 calculator/models.py:206 calculator/models.py:426
 msgid "calculation"
 msgstr ""
 
-#: calculator/models.py:100
+#: calculator/models.py:107
 msgid "amount of the benefit granted, calculated by the system"
 msgstr ""
 
-#: calculator/models.py:108
-msgid "amount of the benefit manually entered by the application handler"
+#: calculator/models.py:115
+msgid ""
+"monthly amount of the benefit manually entered by the application handler"
 msgstr ""
 
 #: calculator/models.py:126
 msgid "reason for overriding the calculated benefit amount"
 msgstr ""
 
-#: calculator/models.py:152
+#: calculator/models.py:174
 msgid "Incomplete application"
 msgstr ""
 
-#: calculator/models.py:191
+#: calculator/models.py:207
 msgid "calculations"
 msgstr ""
 
-#: calculator/models.py:210 calculator/models.py:370
+#: calculator/models.py:227 calculator/models.py:387
 msgid "Pay subsidy start date"
 msgstr ""
 
-#: calculator/models.py:211 calculator/models.py:371
+#: calculator/models.py:230 calculator/models.py:388
 msgid "Pay subsidy end date"
 msgstr ""
 
-#: calculator/models.py:217
+#: calculator/models.py:239
 msgid "Work time percent"
 msgstr ""
 
-#: calculator/models.py:307
+#: calculator/models.py:324
 msgid "pay subsidy"
 msgstr ""
 
-#: calculator/models.py:308
+#: calculator/models.py:325
 msgid "pay subsidies"
 msgstr ""
 
-#: calculator/models.py:326
+#: calculator/models.py:343
 msgid "encrypted social security number"
 msgstr ""
 
-#: calculator/models.py:338
+#: calculator/models.py:355
 msgid "monthly amount of the previous benefit"
 msgstr ""
 
-#: calculator/models.py:343
+#: calculator/models.py:360
 msgid "total amount of the previous benefit"
 msgstr ""
 
-#: calculator/models.py:353
+#: calculator/models.py:370
 msgid "Previously granted benefit"
 msgstr ""
 
-#: calculator/models.py:354
+#: calculator/models.py:371
 msgid "Previously granted benefits"
 msgstr ""
 
-#: calculator/models.py:373
+#: calculator/models.py:390
 msgid "Monthly amount of compensation"
 msgstr ""
 
-#: calculator/models.py:390
+#: calculator/models.py:402
 msgid "training compensation"
 msgstr ""
 
-#: calculator/models.py:391
+#: calculator/models.py:403
 msgid "training compensations"
 msgstr ""
 
-#: calculator/models.py:424
+#: calculator/models.py:436
 msgid "Description of the row to be shown in handler UI"
 msgstr ""
 
-#: calculator/models.py:427
+#: calculator/models.py:439
 msgid "row amount"
 msgstr ""
 
-#: calculator/models.py:429
+#: calculator/models.py:441
 msgid "Start date"
 msgstr ""
 
-#: calculator/models.py:430
+#: calculator/models.py:442
 msgid "End date"
 msgstr ""
 
-#: calculator/models.py:463
+#: calculator/models.py:471
 msgid "calculation row"
 msgstr ""
 
-#: calculator/models.py:464
+#: calculator/models.py:472
 msgid "calculation rows"
 msgstr ""
 
-#: common/permissions.py:25
+#: common/permissions.py:37
 msgid "You have to accept Terms of Service before doing any action"
 msgstr ""
 
-#: common/permissions.py:44
+#: common/permissions.py:56
 msgid "Company information is not available"
 msgstr ""
 
-#: companies/models.py:9
+#: companies/models.py:10
 msgid "bank account number"
 msgstr ""
 
-#: companies/models.py:18
+#: companies/models.py:22
 msgid "companies"
 msgstr ""
 
-#: helsinkibenefit/settings.py:148
+#: helsinkibenefit/settings.py:162
 msgid "Finnish"
 msgstr ""
 
-#: helsinkibenefit/settings.py:148
+#: helsinkibenefit/settings.py:162
 msgid "English"
 msgstr ""
 
-#: helsinkibenefit/settings.py:148
+#: helsinkibenefit/settings.py:162
 msgid "Swedish"
 msgstr ""
 
 #: messages/admin.py:13
 msgid "Application number"
+msgstr ""
+
+#: messages/automatic_messages.py:7
+#, python-brace-format
+msgid ""
+"Your application has been opened for editing. Please make the corrections by "
+"{additional_information_needed_by}, otherwise the application cannot be "
+"processed."
 msgstr ""
 
 #: messages/models.py:16
@@ -872,23 +887,27 @@ msgstr ""
 msgid "You don't have permission to change this message"
 msgstr ""
 
-#: messages/serializers.py:33 messages/views.py:37
+#: messages/serializers.py:39 messages/views.py:41
 msgid "Application not found"
 msgstr ""
 
-#: messages/serializers.py:38
+#: messages/serializers.py:44
 msgid "You are not allowed to do this action"
 msgstr ""
 
-#: messages/serializers.py:42
-msgid "Cannot do this action because application is not in handling status"
+#: messages/serializers.py:49
+msgid "Cannot do this action because application is not in the correct status"
 msgstr ""
 
-#: messages/serializers.py:48
+#: messages/serializers.py:55
 msgid "Applicant is not allowed to do this action"
 msgstr ""
 
-#: messages/serializers.py:52
+#: messages/serializers.py:62
+msgid "Applicant can send messages only after handler has sent a message first"
+msgstr ""
+
+#: messages/serializers.py:68
 msgid "Handler is not allowed to do this action"
 msgstr ""
 

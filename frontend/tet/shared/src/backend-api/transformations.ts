@@ -75,7 +75,7 @@ export const eventToTetPosting = (
       value: event.location['@id'],
       street_address: getLocalizedString(event.location.street_address),
       city: getLocalizedString(event.location.address_locality),
-      postal_code: event.location.postal_code,
+      postal_code: event.location.postal_code ?? '',
     },
     start_date: isoDateToHdsFormat(event.start_time)!,
     end_date: isoDateToHdsFormat(event.end_time),

@@ -163,8 +163,7 @@ def _get_benefit_overlap_warnings(past_benefits, start_date, end_date):
             warnings.append(
                 format_lazy(
                     _(
-                        "There's already an accepted application or previous benefit with overlapping date "
-                        "range {start_date} - {end_date}"
+                        "There's already an accepted application with overlapping date range"
                     ),
                     start_date=benefit.start_date,
                     end_date=benefit.end_date,

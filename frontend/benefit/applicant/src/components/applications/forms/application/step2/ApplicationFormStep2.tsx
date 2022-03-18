@@ -378,19 +378,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             />
           </SelectionGroup>
         </$GridCell>
-
-        {formik.values.benefitType === BENEFIT_TYPES.SALARY &&
-          formik.values.apprenticeshipProgram === true && (
-            <$GridCell $colSpan={6}>
-              <$Notification
-                label={t(
-                  `${translationsBase}.notifications.salaryBenefit.label`
-                )}
-              >
-                {t(`${translationsBase}.notifications.salaryBenefit.content`)}
-              </$Notification>
-            </$GridCell>
-          )}
       </FormSection>
 
       <FormSection header={t(`${translationsBase}.heading4`)}>
