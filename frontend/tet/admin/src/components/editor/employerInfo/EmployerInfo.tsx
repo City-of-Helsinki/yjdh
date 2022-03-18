@@ -19,18 +19,7 @@ const EmployerInfo: React.FC = () => {
         `}
       >
         <$GridCell as={$Grid} $colSpan={12}>
-          <$GridCell $colSpan={6}>
-            <$GridCell as={$Grid} $colSpan={12}>
-              <$GridCell $colSpan={6}>
-                <div>Herkkulautanne Oy TEST</div>
-                <div>Y-tunnus: 2114560-2 TEST</div>
-              </$GridCell>
-              <$GridCell $colSpan={6}>
-                <div>Keskuskatu 13 A 11 TEST</div>
-                <div>00100 Helsinki TEST</div>
-              </$GridCell>
-            </$GridCell>
-          </$GridCell>
+          <$GridCell $colSpan={6}>{t('common:editor.helsinkiCity')}</$GridCell>
           <$GridCell $colSpan={6}>
             <Notification size="small">{t('common:editor.companyInfoFetch')}</Notification>
           </$GridCell>

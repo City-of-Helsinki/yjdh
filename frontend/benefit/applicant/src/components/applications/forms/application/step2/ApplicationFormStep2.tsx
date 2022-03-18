@@ -180,7 +180,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
       </FormSection>
-      <FormSection header={t(`${translationsBase}.heading2`)}>
+      <FormSection
+        header={t(`${translationsBase}.heading2`)}
+        tooltip={t(`${translationsBase}.tooltips.heading2`)}
+      >
         <$GridCell $colSpan={8}>
           <SelectionGroup
             id={fields.paySubsidyGranted.name}
@@ -338,7 +341,10 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </$GridCell>
         )}
       </FormSection>
-      <FormSection header={t(`${translationsBase}.heading3`)}>
+      <FormSection
+        header={t(`${translationsBase}.heading3`)}
+        tooltip={t(`${translationsBase}.tooltips.heading3`)}
+      >
         <$GridCell $colSpan={6}>
           <SelectionGroup
             label={fields.benefitType.label}
@@ -372,19 +378,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
             />
           </SelectionGroup>
         </$GridCell>
-
-        {formik.values.benefitType === BENEFIT_TYPES.SALARY &&
-          formik.values.apprenticeshipProgram === true && (
-            <$GridCell $colSpan={6}>
-              <$Notification
-                label={t(
-                  `${translationsBase}.notifications.salaryBenefit.label`
-                )}
-              >
-                {t(`${translationsBase}.notifications.salaryBenefit.content`)}
-              </$Notification>
-            </$GridCell>
-          )}
       </FormSection>
 
       <FormSection header={t(`${translationsBase}.heading4`)}>

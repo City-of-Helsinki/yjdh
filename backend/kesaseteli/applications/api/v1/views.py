@@ -34,6 +34,7 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
     SchoolSerializer,
     YouthApplicationSerializer,
+    YouthApplicationStatusSerializer,
 )
 from applications.enums import (
     EmployerApplicationStatus,
@@ -125,6 +126,15 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def destroy(self, request, *args, **kwargs):
         self._log_permission_denied()
         return Response(status=status.HTTP_403_FORBIDDEN)
+
+    @action(methods=["get"], detail=True)
+    def status(self, request, *args, **kwargs) -> HttpResponse:
+        with self.record_action(additional_information="status"):
+            serializer = YouthApplicationStatusSerializer(
+                self.get_object(),
+                context=self.get_serializer_context(),
+            )
+            return Response(serializer.data)
 
     @enforce_handler_view_adfs_login
     def retrieve(self, request, *args, **kwargs):

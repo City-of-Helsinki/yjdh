@@ -1,7 +1,9 @@
 import json
 import operator
+import re
 import uuid
 from datetime import datetime, timedelta
+from difflib import SequenceMatcher
 from enum import auto, Enum
 from functools import reduce
 from typing import List, Optional
@@ -15,6 +17,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.test import override_settings
 from django.utils import timezone
+from django.utils.html import strip_tags
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -35,11 +38,15 @@ from common.tests.conftest import (
     unauthenticated_api_client as unauth_api_client,
 )
 from common.tests.factories import (
+    AcceptableYouthApplicationFactory,
+    AcceptedYouthApplicationFactory,
     ActiveYouthApplicationFactory,
     InactiveYouthApplicationFactory,
+    RejectedYouthApplicationFactory,
     YouthApplicationFactory,
 )
 from common.urls import handler_403_url, handler_youth_application_processing_url
+from common.utils import normalize_whitespace
 
 
 def reverse_youth_application_action(action, pk):
@@ -172,6 +179,14 @@ def get_detail_url(pk):
 
 def get_processing_url(pk):
     return reverse_youth_application_action("process", pk)
+
+
+def get_accept_url(pk):
+    return reverse_youth_application_action("accept", pk)
+
+
+def get_reject_url(pk):
+    return reverse_youth_application_action("reject", pk)
 
 
 def get_django_adfs_login_url(redirect_url):
@@ -400,31 +415,55 @@ def test_youth_applications_adfs_login_enforced_action_unused_pk(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("mock_flag", [False, True])
+@pytest.mark.parametrize("action", ["activate", "status"])
 @pytest.mark.parametrize(
-    "mock_flag,client_fixture_func",
-    [
-        (mock_flag, client_fixture_func)
-        for mock_flag in [False, True]
-        for client_fixture_func in [
-            unauth_api_client,
-            api_client,
-            staff_client,
-            superuser_client,
-        ]
-    ],
+    "client_fixture_func",
+    [unauth_api_client, api_client, staff_client, superuser_client],
 )
-def test_youth_applications_activate_unused_pk(
+def test_youth_applications_public_action_unused_pk(
     request,
     settings,
     mock_flag,
+    action,
     client_fixture_func,
 ):
     unused_pk = get_random_pk()
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
-    endpoint_url = reverse_youth_application_action("activate", unused_pk)
+    endpoint_url = reverse_youth_application_action(action, unused_pk)
     response = client_fixture.get(endpoint_url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "youth_application_status",
+    [
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+    ],
+)
+@pytest.mark.parametrize("mock_flag", [False, True])
+@pytest.mark.parametrize(
+    "client_fixture_func",
+    [unauth_api_client, api_client, staff_client, superuser_client],
+)
+def test_youth_applications_status_valid_pk(
+    request,
+    settings,
+    youth_application_status,
+    mock_flag,
+    client_fixture_func,
+):
+    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    client_fixture = request.getfixturevalue(client_fixture_func.__name__)
+    youth_application = YouthApplicationFactory.create(status=youth_application_status)
+    endpoint_url = reverse_youth_application_action("status", youth_application.pk)
+    response = client_fixture.get(endpoint_url)
+    assert response.status_code == status.HTTP_200_OK
+    assert response["Content-Type"] == "application/json"
+    assert response.json() == {"status": youth_application_status}
 
 
 @pytest.mark.django_db
@@ -865,6 +904,23 @@ def test_youth_application_activation_email_language(api_client, language):
 
 
 @pytest.mark.django_db
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_application_activation_email_sending(api_client, language):
+    youth_application = YouthApplicationFactory.build(language=language)
+    data = YouthApplicationSerializer(youth_application).data
+    start_mail_count = len(mail.outbox)
+    api_client.post(reverse("v1:youthapplication-list"), data)
+    assert len(mail.outbox) == start_mail_count + 1
+    activation_email = mail.outbox[-1]
+    assert activation_email.from_email == "Test sender <testsender@hel.fi>"
+    assert activation_email.to == [youth_application.email]
+
+
+@pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_youth_application_activation_email_link_path(api_client):
     youth_application = YouthApplicationFactory.build()
@@ -886,6 +942,8 @@ def test_youth_application_activation_email_link_path(api_client):
 @override_settings(
     DISABLE_VTJ=True,
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
 )
 def test_youth_application_processing_email_sending_without_vtj(
     api_client,
@@ -895,6 +953,9 @@ def test_youth_application_processing_email_sending_without_vtj(
     start_mail_count = len(mail.outbox)
     api_client.get(get_activation_url(inactive_youth_application.pk))
     assert len(mail.outbox) == start_mail_count + 1
+    processing_email = mail.outbox[-1]
+    assert processing_email.from_email == "Test sender <testsender@hel.fi>"
+    assert processing_email.to == ["Test handler <testhandler@hel.fi>"]
 
 
 @pytest.mark.django_db
@@ -920,6 +981,122 @@ def test_youth_application_processing_email_language(
     processing_email = mail.outbox[-1]
     assert_email_subject_language(processing_email.subject, expected_email_language)
     assert_email_body_language(processing_email.body, expected_email_language)
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_summer_voucher_email_language(api_client, language):
+    acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
+    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    assert len(mail.outbox) > 0
+    youth_summer_voucher_email = mail.outbox[-1]
+    normalized_subject = normalize_whitespace(
+        re.sub(r"\d+", "", youth_summer_voucher_email.subject)  # Remove numbers
+    ).lower()
+    try:
+        assert_email_subject_language(normalized_subject, language)
+    except AssertionError:
+        # Try fallback detection for short subject lines
+        # as their language may not always be detected correctly
+        subject_fallbacks = {
+            "din sommarsedel": "sv",
+            "your summer job voucher": "en",
+        }
+        if not subject_fallbacks.get(normalized_subject) == language:
+            raise
+    assert_email_body_language(youth_summer_voucher_email.body, language)
+    assert youth_summer_voucher_email.alternatives, "Must have HTML message"
+    html_message_without_tags = strip_tags(
+        youth_summer_voucher_email.alternatives[0][0]
+    )
+    assert_email_body_language(html_message_without_tags, language)
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_summer_voucher_email_sending(api_client, language):
+    acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
+    start_mail_count = len(mail.outbox)
+    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    assert len(mail.outbox) == start_mail_count + 1
+    youth_summer_voucher_email = mail.outbox[-1]
+    assert youth_summer_voucher_email.from_email == "Test sender <testsender@hel.fi>"
+    assert youth_summer_voucher_email.to == [acceptable_youth_application.email]
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_summer_voucher_email_type(api_client, language):
+    acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
+    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    assert len(mail.outbox) > 0
+    youth_summer_voucher_email = mail.outbox[-1]
+    assert youth_summer_voucher_email.content_subtype == "plain"
+    assert youth_summer_voucher_email.mixed_subtype == "related"
+    assert youth_summer_voucher_email.alternatives, "Must have HTML message"
+    html_message, html_content_type = youth_summer_voucher_email.alternatives[0]
+    assert html_content_type == "text/html"
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_summer_voucher_email_plaintext_html_similarity(api_client, language):
+    acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
+    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    assert len(mail.outbox) > 0
+    youth_summer_voucher_email = mail.outbox[-1]
+    normalized_plaintext_message = normalize_whitespace(
+        re.sub(r"-{70,}", "", youth_summer_voucher_email.body)  # Remove long dashes
+    )
+    normalized_html_message = normalize_whitespace(
+        strip_tags(youth_summer_voucher_email.alternatives[0][0])
+    )
+    assert (
+        SequenceMatcher(
+            a=normalized_plaintext_message, b=normalized_html_message, autojunk=False
+        ).ratio()
+        >= 0.9
+    ), "Email's plaintext and HTML content should be very similar"
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=True,
+    EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend",
+    EMAIL_HOST="",  # Use inexistent email host to ensure emails will never go anywhere
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_applications_accept_acceptable_with_invalid_smtp_server(
+    api_client, language
+):
+    # Use an email address which uses a reserved domain name (See RFC 2606)
+    # so even if it'd be sent to an SMTP server it wouldn't go anywhere
+    acceptable_youth_application = AcceptableYouthApplicationFactory(
+        email="test@example.com", language=language
+    )
+    assert not acceptable_youth_application.is_accepted
+    assert acceptable_youth_application.can_accept(handler=AnonymousUser())
+    response = api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    acceptable_youth_application.refresh_from_db()
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert not acceptable_youth_application.is_accepted
 
 
 @pytest.mark.django_db
@@ -1185,6 +1362,14 @@ def test_youth_applications_accept_acceptable(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("handling_action", ["accept", "reject"])
+@pytest.mark.parametrize(
+    "handled_youth_application_factory",
+    [
+        AcceptedYouthApplicationFactory,
+        RejectedYouthApplicationFactory,
+    ],
+)
 @pytest.mark.parametrize(
     "mock_flag,client_fixture_func,expected_status_code,expected_redirect_to",
     [
@@ -1200,9 +1385,10 @@ def test_youth_applications_accept_acceptable(
         (True, superuser_client, 400, None),
     ],
 )
-def test_youth_applications_accept_accepted(
+def test_youth_applications_handle_handled(
     request,
-    accepted_youth_application,
+    handling_action,
+    handled_youth_application_factory,
     settings,
     mock_flag,
     client_fixture_func,
@@ -1214,23 +1400,23 @@ def test_youth_applications_accept_accepted(
     )
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
-    assert accepted_youth_application.status == YouthApplicationStatus.ACCEPTED
-    assert not accepted_youth_application.has_youth_summer_voucher
-    old_modified_at = accepted_youth_application.modified_at
+    handled_youth_application = handled_youth_application_factory()
+    assert handled_youth_application.status in YouthApplicationStatus.handled_values()
+    old_status = handled_youth_application.status
+    old_modified_at = handled_youth_application.modified_at
     response = client_fixture.patch(
-        reverse_youth_application_action("accept", accepted_youth_application.pk)
+        reverse_youth_application_action(handling_action, handled_youth_application.pk)
     )
     assert response.status_code == expected_status_code
 
-    accepted_youth_application.refresh_from_db()
-    assert accepted_youth_application.status == YouthApplicationStatus.ACCEPTED
-    assert not accepted_youth_application.has_youth_summer_voucher
-    assert accepted_youth_application.modified_at == old_modified_at
+    handled_youth_application.refresh_from_db()
+    assert handled_youth_application.status == old_status
+    assert handled_youth_application.modified_at == old_modified_at
     assert not AuditLogEntry.objects.exists()
 
     if response.status_code == status.HTTP_302_FOUND:
         assert response.url == RedirectTo.get_redirect_url(
-            expected_redirect_to, "accept", accepted_youth_application.pk
+            expected_redirect_to, handling_action, handled_youth_application.pk
         )
 
 
@@ -1304,54 +1490,4 @@ def test_youth_applications_reject_rejectable(
     if response.status_code == status.HTTP_302_FOUND:
         assert response.url == RedirectTo.get_redirect_url(
             expected_redirect_to, "reject", rejectable_youth_application.pk
-        )
-
-
-@pytest.mark.django_db
-@pytest.mark.parametrize(
-    "mock_flag,client_fixture_func,expected_status_code,expected_redirect_to",
-    [
-        # Without mock flag
-        (False, unauth_api_client, 302, RedirectTo.adfs_login),
-        (False, api_client, 302, RedirectTo.handler_403),
-        (False, staff_client, 400, None),
-        (False, superuser_client, 400, None),
-        # With mock flag
-        (True, unauth_api_client, 400, None),
-        (True, api_client, 400, None),
-        (True, staff_client, 400, None),
-        (True, superuser_client, 400, None),
-    ],
-)
-def test_youth_applications_reject_rejected(
-    request,
-    rejected_youth_application,
-    settings,
-    mock_flag,
-    client_fixture_func,
-    expected_status_code,
-    expected_redirect_to,
-):
-    assert (expected_status_code == status.HTTP_302_FOUND) == (
-        expected_redirect_to is not None
-    )
-    settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
-    client_fixture = request.getfixturevalue(client_fixture_func.__name__)
-    assert rejected_youth_application.status == YouthApplicationStatus.REJECTED
-    assert not rejected_youth_application.has_youth_summer_voucher
-    old_modified_at = rejected_youth_application.modified_at
-    response = client_fixture.patch(
-        reverse_youth_application_action("reject", rejected_youth_application.pk)
-    )
-    assert response.status_code == expected_status_code
-
-    rejected_youth_application.refresh_from_db()
-    assert rejected_youth_application.status == YouthApplicationStatus.REJECTED
-    assert not rejected_youth_application.has_youth_summer_voucher
-    assert rejected_youth_application.modified_at == old_modified_at
-    assert not AuditLogEntry.objects.exists()
-
-    if response.status_code == status.HTTP_302_FOUND:
-        assert response.url == RedirectTo.get_redirect_url(
-            expected_redirect_to, "reject", rejected_youth_application.pk
         )

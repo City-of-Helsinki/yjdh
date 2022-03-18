@@ -19,7 +19,7 @@ const useLinkedEventsErrorHandler = ({ errorTitle, errorMessage }: Props): Error
     if (!error.response) {
       // We didn't get anything back from the backend, display general error message
       showErrorToast(t('common:upload.errorTitle'), t('common:upload.errorMessage'));
-    } else if (error.response.status === 401 || error.response.status === 403) {
+    } else if (error.response.status === 401) {
       void router.push('/login');
       // TODO showErrorToast login expired?
     } else {

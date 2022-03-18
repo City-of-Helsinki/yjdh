@@ -125,7 +125,13 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
 
-    company_form = models.CharField(max_length=64, verbose_name=_("company form"))
+    company_form = models.CharField(
+        max_length=64, verbose_name=_("company form as user-readable text")
+    )
+
+    company_form_code = models.IntegerField(
+        verbose_name=_("YTJ type code for company form")
+    )
 
     company_department = models.CharField(
         max_length=256, blank=True, verbose_name=_("company department")
@@ -320,7 +326,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     def ahjo_application_number(self):
         # Adding prefix to application number before sending to AHJO based on the company form
         if (
-            OrganizationType.resolve_organization_type(self.company.company_form)
+            OrganizationType.resolve_organization_type(self.company.company_form_code)
             == OrganizationType.ASSOCIATION
         ):
             return "R{}".format(self.application_number)

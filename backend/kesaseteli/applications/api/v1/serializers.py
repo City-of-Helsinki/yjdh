@@ -512,3 +512,11 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             return {}
         else:
             return json.loads(obj.encrypted_vtj_json)
+
+
+class YouthApplicationStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YouthApplication
+        fields = read_only_fields = [
+            "status",
+        ]
