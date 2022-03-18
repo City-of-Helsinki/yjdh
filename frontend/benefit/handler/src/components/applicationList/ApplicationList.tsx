@@ -1,6 +1,6 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { ApplicationListItemData } from 'benefit/handler/types/application';
-import { StatusLabel } from 'hds-react';
+import { IconSpeechbubbleText, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
@@ -119,6 +119,25 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         width: COLUMN_WIDTH.M,
       });
     }
+
+    cols.push({
+      // eslint-disable-next-line react/display-name
+      Cell: ({
+        cell: {
+          row: {
+            original: { unreadMessagesCount },
+          },
+        },
+      }) => (
+        <div>
+          {Number(unreadMessagesCount) > 0 ? <IconSpeechbubbleText /> : null}
+        </div>
+      ),
+      Header: getHeader('unreadMessagesCount'),
+      accessor: 'unreadMessagesCount',
+      disableSortBy: true,
+      width: COLUMN_WIDTH.M,
+    });
 
     return cols.filter(Boolean);
   }, [t, getHeader, status]);

@@ -115,7 +115,8 @@
           "rejected": "Ei puolettu"
         },
         "additionalInformationNeededBy": "",
-        "additionalInformationNeededByVal": "Muokattava {{date}}"
+        "additionalInformationNeededByVal": "Muokattava {{date}}",
+        "unreadMessagesCount": ""
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"
