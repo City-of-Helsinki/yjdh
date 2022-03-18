@@ -30,7 +30,7 @@ const PdfViewver: React.FC<PdfViewerProps> = ({ file }) => {
   return (
     <$ViewerWrapper>
       <Document onLoadSuccess={handleDocumentLoadSuccess} file={file}>
-        <Page pageNumber={currentPage} />
+        <Page pageNumber={currentPage} scale={2.0} />
       </Document>
       <$Grid
         css={`
