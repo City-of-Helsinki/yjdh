@@ -183,7 +183,7 @@
         "salaryExpensesExplanation": "Bruttolön och bikostnader anges i euro per månad, semesterpenning som ett engångsbelopp",
         "tooltips": {
           "heading5Employment": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
-          "heading5EmploymentSub1": "Kollektivavtal som tillämpas: t.ex. kollektivavtal för handeln. Sätt streck om branschen inte har ett bindande kollektivavtal.",
+          "heading5EmploymentSub1": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen. Med bikostnader avses arbetsgivarens lagstadgade bikostnader per månad. Semesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg.",
           "heading5Assignment": "Med bruttolön avses lönen till den person som anställs med subventionen före innehållande av arbetsgivarens lagstadgade kostnader (arbetslöshets- och pensionsförsäkringspremier för arbetstagaren) och skatter. Om den person som anställs med subventionen får lönetillägg (t.ex. kvälls-, natt- eller skiftarbetstillägg), ska det uppskattade beloppet från dessa beaktas i bruttolönen. Till arbetsgivarens lagstadgade bikostnader räknas socialskyddsavgifterna och premierna för arbetspensionsförsäkringen, olycksfallsförsäkringen och arbetslöshetsförsäkringen samt den obligatoriska grupplivförsäkringen. Med bikostnader avses arbetsgivarens lagstadgade bikostnader per månad. Semesterpenning är en lönekostnad som kan täckas med subventionen till den del som semesterpenning betalas för semesterlön som används under subventionsperioden. Uppskatta semesterpenningen som betalas under subventionsperioden. Semesterpenning kan inte täckas med Helsingforstillägg.",
           "heading2": "Lönesubvention är ett ekonomiskt stöd för främjande av sysselsättningen av en arbetslös arbetssökande som arbets- och näringslivstjänsterna kan bevilja till arbetsgivaren för lönekostnader.",
           "heading3": "Helsingforstillägg för sysselsättning är avsett för kostnaderna för handledning, inskolning, arbetsredskap, arbetskläder och arbetslokaler då inga andra understöd utbetalas för dessa. Helsingforstillägg för lön är avsett för lönekostnaderna för den anställda (=bruttolön, lagstadgade bikostnader och semesterpenning). Helsingforstillägg för uppdrag är avsett för utförande av ett enskilt jobb eller projekt."
@@ -336,7 +336,7 @@
       },
       "credentials": {
         "heading1": "Behandling av den anställdas personuppgifter",
-        "heading2": "Samtycke",
+        "heading2": "Behandling av personuppgifter",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",
