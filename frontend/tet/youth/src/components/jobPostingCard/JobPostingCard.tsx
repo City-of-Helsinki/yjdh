@@ -3,7 +3,6 @@ import {
   $PostingCard,
   $ImageContainer,
   $PostingCardBody,
-  $PostingCardBodyWrapper,
   $PostingCardBodyFooter,
   $PostingTitle,
   $PostingSubtitle,
