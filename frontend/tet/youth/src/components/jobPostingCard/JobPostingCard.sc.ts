@@ -7,7 +7,7 @@ export const $PostingCard = styled.div`
   background-color: ${(props) => props.theme.colors.black5};
   margin-bottom: ${(props) => props.theme.spacing.m};
 
-  @media (min-width: ${(props) => props.theme.breakpoints.s}) {
+  @media (min-width: ${(props) => props.theme.breakpoints.m}) {
     flex-flow: row nowrap;
     align-items: stretch;
   }
@@ -15,7 +15,7 @@ export const $PostingCard = styled.div`
 
 export const $ImageContainer = styled.div`
   width: 100%;
-  height: 250px;
+  height: 300px;
   background-color: ${(props) => props.theme.colors.black10};
   display: flex;
   flex-flow: column nowrap;
@@ -24,7 +24,7 @@ export const $ImageContainer = styled.div`
     width: 100%;
   }
 
-  @media (min-width: ${(props) => props.theme.breakpoints.s}) {
+  @media (min-width: ${(props) => props.theme.breakpoints.m}) {
     width: 400px;
     height: 100%;
   }
@@ -37,7 +37,7 @@ export const $PostingCardBody = styled.div`
   justify-content: space-between;
   flex: 1;
 
-  @media (min-width: ${(props) => props.theme.breakpoints.s}) {
+  @media (min-width: ${(props) => props.theme.breakpoints.m}) {
     width: 100%;
   }
 `;

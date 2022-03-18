@@ -30,8 +30,7 @@ type Props = {
 const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const date =
-    posting.start_date + (posting.end_date ? ` - ${posting.end_date}` : '');
+  const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
   const street_address = posting.location.street_address
     ? `, ${posting.location.street_address}`
     : '';

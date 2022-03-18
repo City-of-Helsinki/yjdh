@@ -3,6 +3,7 @@ import {
   $PostingCard,
   $ImageContainer,
   $PostingCardBody,
+  $PostingCardBodyWrapper,
   $PostingCardBodyFooter,
   $PostingTitle,
   $PostingSubtitle,
@@ -29,7 +30,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const date = jobPosting.start_date + (jobPosting.end_date ? ` - ${jobPosting.end_date}` : '');
+  const date = `${jobPosting.start_date} - ${jobPosting.end_date ?? ''}`;
   const street_address = jobPosting.location.street_address ? `, ${jobPosting.location.street_address}` : '';
   const postal_code = jobPosting.location.postal_code ? `, ${jobPosting.location.postal_code}` : '';
   const city = jobPosting.location.city ? `, ${jobPosting.location.city}` : '';
