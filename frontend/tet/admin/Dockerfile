@@ -89,7 +89,7 @@ COPY --from=staticbuilder --chown=appuser:appuser app/tet/admin/package.json app
 COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
 
 # Copy public directory
-COPY --chown=appuser:appuser tet/admin/public app/tet/admin/public
+COPY --chown=appuser:appuser tet/admin/public tet/admin/public
 
 # install lerna
 RUN yarn add -W lerna
