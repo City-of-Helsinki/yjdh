@@ -4,6 +4,8 @@ import React from 'react';
 import Modal, { ModalProps } from 'shared/components/modal/Modal';
 import useConfirm from 'shared/hooks/useConfirm';
 
+// dummy change to trigger CI
+
 const ConfirmDialog: React.FC<Partial<ModalProps>> = (modalProps) => {
   const { onConfirm, onCancel, confirmState } = useConfirm();
   const { t } = useTranslation();
