@@ -5,7 +5,7 @@ export const $ViewerWrapper = styled.div<{
 }>`
   .Document {
     margin-left: ${(props) =>
-      props.documentMarginLeft ? props.documentMarginLeft : 0};
+      props.documentMarginLeft ? props.documentMarginLeft : '0'};
   }
 `;
 

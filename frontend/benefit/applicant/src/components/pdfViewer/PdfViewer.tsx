@@ -36,7 +36,7 @@ const PdfViewver: React.FC<PdfViewerProps> = ({ file, documentMarginLeft }) => {
         file={file}
         className="Document"
       >
-        <Page pageNumber={currentPage} scale={2.0} />
+        <Page pageNumber={currentPage} scale={2} />
       </Document>
       <$Grid
         css={`
@@ -72,5 +72,11 @@ const PdfViewver: React.FC<PdfViewerProps> = ({ file, documentMarginLeft }) => {
     </$ViewerWrapper>
   );
 };
+
+const defaultProps = {
+  documentMarginLeft: '0',
+};
+
+PdfViewver.defaultProps = defaultProps;
 
 export default PdfViewver;
