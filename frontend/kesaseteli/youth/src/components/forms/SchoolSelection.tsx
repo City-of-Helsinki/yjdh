@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import Checkbox from 'shared/components/forms/inputs/Checkbox';
-import Combobox from 'shared/components/forms/inputs/Combobox';
+import Dropdown from 'shared/components/forms/inputs/Dropdown';
 import TextInput from 'shared/components/forms/inputs/TextInput';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { NAMES_REGEX } from 'shared/constants';
@@ -49,7 +49,8 @@ const SchoolSelection: React.FC = () => {
 
   return (
     <>
-      <Combobox<YouthFormData, School>
+      <Dropdown<YouthFormData, School>
+        type="combobox"
         {...register('selectedSchool', { required: !schoolIsUnlisted })}
         optionLabelField="name"
         options={schools}

@@ -17,6 +17,7 @@ import { DialogContextProvider } from 'shared/contexts/DialogContext';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 type Props = {
   backendUrl: string;
@@ -78,7 +79,7 @@ const renderPage =
             </DialogContextProvider>
           </QueryClientProvider>
         </BackendAPIContext.Provider>,
-        { isReady: true, ...router }
+        { isReady: true, locale: DEFAULT_LANGUAGE, ...router }
       );
     });
     return queryClient;

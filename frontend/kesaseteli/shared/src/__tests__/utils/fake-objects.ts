@@ -1,12 +1,15 @@
+import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
+import { ADDITIONAL_INFO_REASON_TYPE } from 'kesaseteli-shared/constants/additional-info-reason-type';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
+import AdditionalInfoApplication from '../../types/additional-info-application';
 import CreatedYouthApplication from '../../types/created-youth-application';
 import YouthApplication from '../../types/youth-application';
 import YouthFormData from '../../types/youth-form-data';
@@ -134,3 +137,13 @@ export const fakeCreatedYouthApplication = (
     ...override,
   };
 };
+
+export const fakeAdditionalInfoApplication = (
+  override?: Partial<AdditionalInfoApplication>
+): AdditionalInfoApplication => ({
+  id: faker.datatype.uuid(),
+  additional_info_user_reasons: getRandomSubArray(ADDITIONAL_INFO_REASON_TYPE),
+  additional_info_description: faker.lorem.text(5),
+  additional_info_attachments: [],
+  ...override,
+});

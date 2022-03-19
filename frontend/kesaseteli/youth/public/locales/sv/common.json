@@ -82,16 +82,18 @@
     "paragraph_1": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "paragraph_2": "SWE Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     "form" : {
-      "exceptionType": "SWE Otsikko",
-      "exceptionTypePlaceholder": "SWE Valitse seuraavista vaihtoehdoista",
-      "message": "SWE Lisätiedot",
-      "attachments": "SWE Liitetiedostot",
-      "attachmentsHelper": "SWE Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB"
+      "reasons": "SWE Otsikko",
+      "reasonsPlaceholder": "SWE Valitse seuraavista vaihtoehdoista",
+      "additional_info_description": "SWE Lisätiedot",
+      "additional_info_attachments": "SWE Liitetiedostot",
+      "additional_info_attachmentsHelper": "SWE Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+      "sendButton": "Lähetä tiedot"
     },
-    "exceptions": {
-      "residence": "SWE En asu Helsingissä",
-      "age": "SWE Olen yli/ali-ikäinen",
-      "vtj": "SWE Henkilötiedot poikkeavat väestötietojärjestelmän tiedoista",
+    "reasons": {
+      "unlisted_school": "ENG Kouluani ei löytynyt listalta",
+      "living_outside_helsinki": "SWE En asu Helsingissä",
+      "underage_or_overage": "SWE Olen yli/ali-ikäinen",
+      "personal_info_differs_from_vtj": "SWE Henkilötiedot poikkeavat väestötietojärjestelmän tiedoista",
       "other": "SWE Muu, kerro alla"
     }
   },
@@ -103,7 +105,9 @@
     "validate": "Den inmatade uppgiftern är i fel format"
   },
   "assistive": {
-    "toggleMenu": "Öppna menyn"
+    "toggleMenu": "Öppna menyn",
+    "clearChoice": "SWE Tyhjennä valinta",
+    "clearAllChoices": "SWE Tyhjennä kaikki valinnat"
   },
   "thankyouPage" : {
     "title": "Tack!",

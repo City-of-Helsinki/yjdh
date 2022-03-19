@@ -1,5 +1,5 @@
 export const BackendEndpoint = {
-  ADDITIONAL_INFO: '/v1/additionalinfo/',
+  ADDITIONAL_INFO: '/v1/additional_info/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
   EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
   ATTACHMENTS: '/attachments/',

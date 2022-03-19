@@ -1,4 +1,4 @@
-import { Combobox as HdsCombobox } from 'hds-react';
+import { Combobox, Select } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -13,13 +13,17 @@ type Option = {
   name: string;
 };
 
-type Props<T, O extends Option> = InputProps<T, O> &
+type Props<T, O extends Option> = InputProps<T, O[]> &
   GridCellProps & {
+    type?: 'select' | 'combobox';
+    multiselect?: boolean;
     optionLabelField: keyof O;
     options: O[];
   };
 
-const Combobox = <T, O extends Option>({
+const MultiSelectDropdown = <T, O extends Option>({
+  type = 'select',
+  multiselect,
   id,
   registerOptions = {},
   initialValue,
@@ -35,6 +39,10 @@ const Combobox = <T, O extends Option>({
   const { t } = useTranslation();
   const { control } = useFormContext<T>();
   const required = Boolean(registerOptions.required);
+  const DropdownInput = React.useMemo(
+    () => (type === 'select' ? Select : Combobox),
+    [type]
+  );
 
   return (
     <$GridCell {...$gridCellProps}>
@@ -44,15 +52,20 @@ const Combobox = <T, O extends Option>({
         control={control}
         rules={registerOptions}
         render={({ field: { ref, value, ...field } }) => (
-          <HdsCombobox<O>
+          <DropdownInput<O>
             {...field}
-            value={value as O}
+            multiselect
+            value={value as O[]}
             id={id}
             required={required}
             label={label}
             defaultValue={initialValue}
             placeholder={placeholder}
             toggleButtonAriaLabel={t('common:assistive.toggleMenu')}
+            selectedItemRemoveButtonAriaLabel={t(
+              'common:assistive.clearChoice'
+            )}
+            clearButtonAriaLabel={t('common:assistive.clearChoices')}
             optionLabelField={optionLabelField as string}
             options={options}
             disabled={disabled}
@@ -70,6 +83,9 @@ const Combobox = <T, O extends Option>({
   );
 };
 
-Combobox.defaultProps = {};
+MultiSelectDropdown.defaultProps = {
+  type: 'select',
+  multiselect: false,
+};
 
-export default Combobox;
+export default MultiSelectDropdown;
