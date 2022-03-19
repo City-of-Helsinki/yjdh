@@ -471,23 +471,23 @@
   },
   "error": {
     "generic": {
-      "label": "Error occurred",
-      "text": "Please try again later."
+      "label": "Ett fel uppstod",
+      "text": "Vänligen försök igen senare."
     },
     "attachments": {
-      "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big.",
-      "fileType": "The attachment file type is not allowed."
+      "title": "Ett fel uppstod",
+      "tooBig": "Storleken på bilagan är för stor.",
+      "fileType": "Typen av bilaga är inte tillåten."
     }
   },
   "upload": {
-    "isUploading": "Uploading...",
-    "errorTitle": "Uploading failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "isUploading": "Ladar ner...",
+    "errorTitle": "Nedladdningen misslyckades",
+    "errorMessage": "Något gick fel. Vänligen försök igen senare."
   },
   "delete": {
-    "errorTitle": "Deleting failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "errorTitle": "Det gick inte att ta bort bilagan",
+    "errorMessage": "Något gick fel. Vänligen försök igen senare."
   },
   "pdfViewer": {
     "previous": "Previous",
@@ -512,12 +512,12 @@
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Ett fel uppstod",
+          "text": "Ett fel uppstod när meddelandet skapades. Vänligen försök igen senare."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Ett fel uppstod",
+          "text": "Ett fel uppstod när meddelandet skulle hämtas. Vänligen försök igen senare."
         }
       }
     },

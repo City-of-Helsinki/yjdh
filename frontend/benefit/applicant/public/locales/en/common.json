@@ -512,12 +512,12 @@
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Error occurred",
+          "text": "An error occurred when trying to create the message. Please try again later."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Error occurred",
+          "text": "An error occurred when trying to fetch the message. Please try again later."
         }
       }
     },
