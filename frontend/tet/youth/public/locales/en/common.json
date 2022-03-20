@@ -11,24 +11,24 @@
     "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
 	"frontPage": {
-		"heading": "ENG Muistathan etsiä TET-paikkasi ajoissa",
-		"search": "ENG Etsi",
-		"fetch": "ENG Hae",
-		"advancedSearch": "ENG Tarkennettu haku"
+		"heading": "Remember to find you TET job on time",
+		"search": "Search",
+		"fetch": "Search",
+		"advancedSearch": "Advanced search"
 	},
 	"filters": {
-		"searchPlaceholder": "ENG Kirjoita hakusana tai paikan nimi",
-		"workMethod": "ENG Valitse työtapa",
-		"startDate": "ENG Alkamispäivä",
-		"endDate": "ENG Päättymispäivä",
-		"language": "ENG Valitse kieli",
-		"clearFilters": "ENG Tyhjennä hakuehdot"
+		"searchPlaceholder": "Type search workd or location name",
+		"workMethod": "Choose working method",
+		"startDate": "Start date",
+		"endDate": "End date",
+		"language": "Choose language"
 	},
 	"postings": {
-		"searchResults": "ENG hakutulosta",
-		"readMore": "ENG Lue lisää",
-		"showMore": "ENG Näytä lisää tuloksia",
-		"languages": "ENG Kielisyys"
+		"searchResults_one": "{{count}} search result",
+		"searchResults_other": "{{count}} search results",
+		"readMore": "Read more",
+		"showMore": "Show more results",
+		"languages": "Language"
 	},
   "footer": {
     "copyrightText": "City of Helsinki",
@@ -37,7 +37,7 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
-    "feedback": "ENG Anna palautetta",
+    "feedback": "Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
   },
   "languages": {
@@ -45,9 +45,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-	"postingsPage": {
-		"showMore": "ENG Näytä lisää tuloksia"
-	},
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {
@@ -57,9 +54,18 @@
   },
 	"editor": {
 		"posting": {
-			"contactLanguageFi": "ENG Suomi",
-			"contactLanguageSv": "ENG Ruotsi",
-			"contactLanguageEn": "ENG Englanti"
+			"contactLanguageFi": "Finnish",
+			"contactLanguageSv": "Swedish",
+			"contactLanguageEn": "English"
 		}
+	},
+	"postingTemplate": {
+		"spots": "TET positions",
+		"contact": "Contact information",
+		"description": "Description",
+		"share": "Share event",
+		"dateAndTime": "Date and time",
+		"location": "Place",
+		"languages": "Languages used in the workplace"
 	}
 }

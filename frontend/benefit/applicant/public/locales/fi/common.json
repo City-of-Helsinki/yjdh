@@ -471,23 +471,23 @@
   },
   "error": {
     "generic": {
-      "label": "Error occurred",
-      "text": "Please try again later."
+      "label": "Tapahtui virhe",
+      "text": "Ole hyvä ja kokeile uudelleen myöhemmin."
     },
     "attachments": {
-      "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big.",
-      "fileType": "The attachment file type is not allowed."
+      "title": "Tapahtui virhe",
+      "tooBig": "Liite on liian suuri.",
+      "fileType": "Liite on väärässä muodossa."
     }
   },
   "upload": {
-    "isUploading": "Uploading...",
-    "errorTitle": "Uploading failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "isUploading": "Ladataan...",
+    "errorTitle": "Lataaminen epäonnistui",
+    "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "delete": {
-    "errorTitle": "Deleting failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "errorTitle": "Liitteen poistaminen epäonnistui",
+    "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "pdfViewer": {
     "previous": "Edellinen",
@@ -512,12 +512,12 @@
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": "Viestiä luotaessa tapahtui virhe. Ole hyvä ja kokeile uudelleen myöhemmin."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": "Viestiä noudettaessa tapahtui virhe. Ole hyvä ja kokeile uudelleen myöhemmin."
         }
       }
     },
