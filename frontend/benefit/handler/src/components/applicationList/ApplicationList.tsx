@@ -8,8 +8,9 @@ import { COLUMN_WIDTH } from 'shared/components/table/constants';
 import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { useTheme } from 'styled-components';
 
-import { $Empty, $Heading } from './ApplicationList.sc';
+import { $CellContent, $Empty, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
 type ColumnType = Column<ApplicationListItemData>;
@@ -31,6 +32,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     translationsBase,
     getHeader,
   } = useApplicationList(status);
+
+  const theme = useTheme();
 
   const columns: ColumnType[] = React.useMemo(() => {
     const cols: ColumnType[] = [
@@ -116,7 +119,6 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         Header: getHeader('additionalInformationNeededBy'),
         accessor: 'additionalInformationNeededBy',
         disableSortBy: true,
-        width: COLUMN_WIDTH.M,
       });
     }
 
@@ -129,18 +131,20 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
           },
         },
       }) => (
-        <div>
-          {Number(unreadMessagesCount) > 0 ? <IconSpeechbubbleText /> : null}
-        </div>
+        <$CellContent>
+          {Number(unreadMessagesCount) > 0 ? (
+            <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+          ) : null}
+        </$CellContent>
       ),
       Header: getHeader('unreadMessagesCount'),
       accessor: 'unreadMessagesCount',
       disableSortBy: true,
-      width: COLUMN_WIDTH.M,
+      width: COLUMN_WIDTH.XS,
     });
 
     return cols.filter(Boolean);
-  }, [t, getHeader, status]);
+  }, [t, getHeader, status, theme.colors.coatOfArms]);
 
   if (shouldShowSkeleton) {
     return (
