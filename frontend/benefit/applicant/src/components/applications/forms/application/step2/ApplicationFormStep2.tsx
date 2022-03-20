@@ -493,7 +493,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
             </$GridCell>
-            <$GridCell $colSpan={2}>
+            <$GridCell $colSpan={3}>
               <TextInput
                 id={fields.employee.workingHours.name}
                 name={fields.employee.workingHours.name}
