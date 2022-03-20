@@ -12,7 +12,10 @@ def get_or_create_company_using_company_data(company_data: dict) -> Company:
     Then update the latest YTJ data to the Company model instance
     """
     business_id = company_data.pop("business_id")
-    company, _ = Company.objects.get_or_create(business_id=business_id)
+    company, _ = Company.objects.get_or_create(
+        business_id=business_id,
+        defaults={"company_form_code": company_data["company_form_code"]},
+    )
     update_object(company, company_data)
 
     return company
