@@ -59,7 +59,10 @@ const ApplicationFormStep6: React.FC<
           {data && (
             <>
               <$GridCell $colSpan={12}>
-                <PdfViewver file={applicantTermsInEffectUrl} />
+                <PdfViewver
+                  file={applicantTermsInEffectUrl}
+                  documentMarginLeft="-80px"
+                />
               </$GridCell>
               <$GridCell
                 $colSpan={5}
