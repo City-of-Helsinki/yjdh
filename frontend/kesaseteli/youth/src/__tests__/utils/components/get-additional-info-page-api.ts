@@ -7,6 +7,7 @@ import AdditionalInfoApplication from 'kesaseteli-shared/types/additional-info-a
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonType from 'kesaseteli-shared/types/additional-info-reason-type';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
@@ -83,7 +84,7 @@ const getAdditionalInfoPageApi = (
         (application as AdditionalInfoApplication).additional_info_description =
           description;
       },
-      clickSendButton(returnCode?: 200 | 400 | 500) {
+      async clickSendButton(returnCode?: 200 | 400 | 500) {
         if (returnCode === 400 || returnCode === 500) {
           expectToReplyErrorWhenCreatingAdditionalInfo(returnCode);
         } else if (returnCode === 200) {
@@ -98,6 +99,7 @@ const getAdditionalInfoPageApi = (
           });
         }
         userEvent.click(screen.getByRole('button', { name: /lähetä tiedot/i }));
+        await waitForBackendRequestsToComplete();
       },
     },
   };

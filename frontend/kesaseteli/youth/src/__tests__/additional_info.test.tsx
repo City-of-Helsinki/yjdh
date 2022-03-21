@@ -82,7 +82,10 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     });
   }
 
-  for (const status of ['submitted', 'awaiting_manual_processing'] as YouthApplicationStatusType[]) {
+  for (const status of [
+    'submitted',
+    'awaiting_manual_processing',
+  ] as YouthApplicationStatusType[]) {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that application is not found', async () => {
         expectToGetYouthApplicationStatus('123-abc', { status });
@@ -104,7 +107,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       });
       const additionalInfoPageApi = getAdditionalInfoPageApi();
       await additionalInfoPageApi.expectations.formIsPresent();
-      additionalInfoPageApi.actions.clickSendButton();
+      await additionalInfoPageApi.actions.clickSendButton();
       await additionalInfoPageApi.expectations.exceptionTypeDropDownHasError(
         /tieto puuttuu/i
       );
@@ -134,7 +137,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         await additionalInfoPageApi.actions.inputDescription(
           additional_info_description
         );
-        additionalInfoPageApi.actions.clickSendButton(200);
+        await additionalInfoPageApi.actions.clickSendButton(200);
         await additionalInfoPageApi.expectations.applicationWasSent();
       });
 
@@ -159,7 +162,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
         await additionalInfoPageApi.actions.inputDescription(
           additional_info_description
         );
-        additionalInfoPageApi.actions.clickSendButton(200);
+        await additionalInfoPageApi.actions.clickSendButton(200);
         await additionalInfoPageApi.expectations.applicationWasSent();
       });
     });
