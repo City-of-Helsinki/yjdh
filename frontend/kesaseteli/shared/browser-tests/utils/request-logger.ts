@@ -1,10 +1,8 @@
-import { escapeRegExp } from '@frontend/shared/src/utils/regex.utils';
+import { isValidJsonString } from '@frontend/shared/src/utils/regex.utils';
 import { RequestLogger } from 'testcafe';
 
-import { getBackendDomain } from '../../src/backend-api/backend-api';
-
 const requestLogger = RequestLogger(
-  { url: escapeRegExp(getBackendDomain()), isAjax: true },
+  { url: /^https:\/\/(?:(?!_next).)*$/, isAjax: true },
   {
     logRequestHeaders: true,
     logResponseHeaders: true,
@@ -16,7 +14,7 @@ const requestLogger = RequestLogger(
 );
 
 const getShortenedBodyString = (body: string | Buffer): string => {
-  if (typeof body !== 'string') {
+  if (typeof body !== 'string' || !isValidJsonString(body)) {
     return '<Blob>';
   }
   if (body.length > 5000) {
