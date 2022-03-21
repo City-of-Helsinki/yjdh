@@ -311,3 +311,49 @@ export type Application = {
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';
 export type TermsProp = 'termsPdfFi' | 'termsPdfEn' | 'termsPdfSv';
+
+export type ApplicantConsentsData = {
+  id: string;
+  text_fi: string;
+  text_en: string;
+  text_sv: string;
+};
+
+export type TermsOfServiceInEffectData = {
+  id: string;
+  terms_pdf_fi: string;
+  terms_pdf_en: string;
+  terms_pdf_sv: string;
+  applicant_consents: ApplicantConsentsData[];
+};
+
+export type UserData = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  terms_of_service_approval_needed: boolean;
+  terms_of_service_in_effect: TermsOfServiceInEffectData;
+};
+
+export type ApplicantConsents = {
+  id: string;
+  textFi: string;
+  textEn: string;
+  textSv: string;
+};
+
+export type TermsOfServiceInEffect = {
+  id: string;
+  termsPdfFi: string;
+  termsPdfEn: string;
+  termsPdfSv: string;
+  applicantConsents: ApplicantConsentsData[];
+};
+
+export type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  termsOfServiceApprovalNeeded: boolean;
+  termsOfServiceInEffect: TermsOfServiceInEffectData;
+};
