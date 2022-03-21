@@ -9,6 +9,7 @@ import AdditionalInfoPage from 'kesaseteli/youth/pages/additional_info';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { fakeAdditionalInfoApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import YouthApplicationStatusType from 'kesaseteli-shared/types/youth-application-status-type';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
@@ -68,8 +69,8 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     'additional_information_provided',
     'accepted',
     'rejected',
-  ]) {
-    describe(`when application status is "${status}"`, () => {
+  ] as YouthApplicationStatusType[]) {
+    describe(`when application status is "${status as string}"`, () => {
       it('shows that additional info is sent', async () => {
         expectToGetYouthApplicationStatus('123-abc', { status });
         await renderPage(AdditionalInfoPage, {
@@ -81,8 +82,8 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
     });
   }
 
-  for (const status of ['submitted', 'awaiting_manual_processing']) {
-    describe(`when application status is "${status}"`, () => {
+  for (const status of ['submitted', 'awaiting_manual_processing'] as YouthApplicationStatusType[]) {
+    describe(`when application status is "${status as string}"`, () => {
       it('shows that application is not found', async () => {
         expectToGetYouthApplicationStatus('123-abc', { status });
         await renderPage(AdditionalInfoPage, {
@@ -131,7 +132,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           additional_info_user_reasons
         );
         await additionalInfoPageApi.actions.inputDescription(
-          additional_info_description as string
+          additional_info_description
         );
         additionalInfoPageApi.actions.clickSendButton(200);
         await additionalInfoPageApi.expectations.applicationWasSent();
@@ -156,7 +157,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           additional_info_user_reasons
         );
         await additionalInfoPageApi.actions.inputDescription(
-          additional_info_description as string
+          additional_info_description
         );
         additionalInfoPageApi.actions.clickSendButton(200);
         await additionalInfoPageApi.expectations.applicationWasSent();

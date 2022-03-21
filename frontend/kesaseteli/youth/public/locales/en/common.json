@@ -91,9 +91,9 @@
     },
     "reasons": {
       "unlisted_school": "ENG Kouluani ei löytynyt listalta",
-      "living_outside_helsinki": "ENG En asu Helsingissä",
-      "underage_or_overage": "ENG Olen yli/ali-ikäinen",
-      "personal_info_differs_from_vtj": "ENG Henkilötiedot poikkeavat väestötietojärjestelmän tiedoista",
+      "student_in_helsinki_but_not_resident": "ENG En asu Helsingissä, mutta käyn Helsinkiläistä koulua",
+      "moving_to_helsinki": "ENG En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin",
+      "underage_or_overage": "ENG En kuulu iän puolesta kohderyhmään, mutta vuosiluokan puolesta kyllä",
       "other": "ENG Muu, kerro alla"
     }
   },
