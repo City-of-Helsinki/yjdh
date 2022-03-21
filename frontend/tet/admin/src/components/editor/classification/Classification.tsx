@@ -60,11 +60,11 @@ const Classification: React.FC = () => {
   const workFeaturesList = workFeatures.data?.map((k) => keywordToOptionType(k, i18n.language as Language)) || [];
 
   const isSetRule = () => {
-    return getValues('keywords_working_methods').length > 0 ? true : 'Valitse yksi';
+    return getValues('keywords_working_methods').length > 0 ? true : t('common:editor.posting.validation.isSet');
   };
 
   return (
-    <FormSection header={'Luokittelut'}>
+    <FormSection header={t('common:editor.classification.classifications')}>
       <$GridCell
         as={$Grid}
         $colSpan={12}

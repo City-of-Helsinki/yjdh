@@ -28,10 +28,8 @@ type Place = {
   '@id': string;
 };
 
-console.log(`NEXT_PUBLIC_LINKEDEVENTS_URL=${process.env.NEXT_PUBLIC_LINKEDEVENTS_URL!}`);
-
 const linkedEvents = Axios.create({
-  baseURL: process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev',
+  baseURL: process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1',
   timeout: 4000,
   headers: {
     'Content-Type': 'application/json',

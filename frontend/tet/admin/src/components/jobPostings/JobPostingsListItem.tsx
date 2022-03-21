@@ -44,7 +44,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
         <$PostingHeader>
           <div>
             <$PostingTitle>
-              {posting.title} {posting.org_name}
+              {posting.title} - {posting.org_name}
             </$PostingTitle>
             <$PostingDescription>{posting.description}</$PostingDescription>
           </div>
