@@ -290,6 +290,7 @@ export type ApplicationData = {
   handled_at?: string;
   batch?: BatchData;
   latest_decision_comment?: string;
+  unread_messages_count?: number;
 };
 
 export type ApplicationListItemData = {
@@ -304,6 +305,7 @@ export type ApplicationListItemData = {
   additionalInformationNeededBy?: string;
   handledAt?: string;
   dataReceived?: string;
+  unreadMessagesCount?: number;
 };
 
 export interface Step1 {
@@ -463,6 +465,7 @@ export type Application = {
   batch?: Batch;
   handledAt?: string;
   latestDecisionComment?: string;
+  unreadMessagesCount?: number;
 } & Step1 &
   Step2;
 
