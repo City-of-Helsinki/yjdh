@@ -5,13 +5,14 @@ import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
-import User from 'shared/types/user';
+
+import { UserData } from '../types/application';
 
 // check that authentication is still alive in every 5 minutes
 const FIVE_MINUTES = 5 * 60 * 1000;
 
-const useUserQuery = <T = User>(
-  select?: (user: User) => T
+const useUserQuery = <T = UserData>(
+  select?: (user: UserData) => T
 ): UseQueryResult<T, Error> => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -19,6 +20,11 @@ const useUserQuery = <T = User>(
     router.route === '/login' && router.asPath.includes('logout=true'); // router.query doesn't always contain the logout parameter
   const locale = useLocale();
   const { axios, handleResponse } = useBackendAPI();
+
+  const checkTermsOfServiceApproval = (data: UserData): void => {
+    if (data?.terms_of_service_approval_needed)
+      void router.push(`${locale}/terms-of-service`);
+  };
 
   const handleError = (error: Error): void => {
     if (logout) {
@@ -35,8 +41,10 @@ const useUserQuery = <T = User>(
 
   return useQuery(
     `${BackendEndpoint.USER}`,
-    () => handleResponse<User>(axios.get(BackendEndpoint.USER)),
+    () => handleResponse<UserData>(axios.get(BackendEndpoint.USER_ME)),
     {
+      onSuccess: (data) =>
+        checkTermsOfServiceApproval(data as unknown as UserData),
       refetchInterval: FIVE_MINUTES,
       enabled: !logout,
       retry: false,

@@ -34,6 +34,8 @@ const Header: React.FC = () => {
 
   const isAuthenticated = !isLoginPage && isSuccess;
 
+  const name = `${data?.first_name ?? ''} ${data?.last_name ?? ''}`.trim();
+
   return (
     <>
       <BaseHeader
@@ -47,7 +49,7 @@ const Header: React.FC = () => {
           logoutLabel: t('common:header.logoutLabel'),
           onLogin: !isLoading ? login : noop,
           onLogout: !isLoading ? logout : noop,
-          userName: isSuccess ? data?.name : undefined,
+          userName: isSuccess ? name : undefined,
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}
         customItems={
