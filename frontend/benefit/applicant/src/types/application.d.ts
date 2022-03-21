@@ -347,7 +347,7 @@ export type TermsOfServiceInEffect = {
   termsPdfFi: string;
   termsPdfEn: string;
   termsPdfSv: string;
-  applicantConsents: ApplicantConsentsData[];
+  applicantConsents: ApplicantConsents[];
 };
 
 export type User = {
@@ -355,5 +355,5 @@ export type User = {
   firstName: string;
   lastName: string;
   termsOfServiceApprovalNeeded: boolean;
-  termsOfServiceInEffect: TermsOfServiceInEffectData;
+  termsOfServiceInEffect: TermsOfServiceInEffect;
 };

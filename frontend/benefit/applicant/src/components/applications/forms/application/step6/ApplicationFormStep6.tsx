@@ -1,5 +1,5 @@
 import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
-import PdfViewver from 'benefit/applicant/components/pdfViewer/PdfViewer';
+import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
 import { TextProp } from 'benefit/applicant/types/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button } from 'hds-react';
@@ -59,9 +59,10 @@ const ApplicationFormStep6: React.FC<
           {data && (
             <>
               <$GridCell $colSpan={12}>
-                <PdfViewver
+                <PdfViewer
                   file={applicantTermsInEffectUrl}
                   documentMarginLeft="-80px"
+                  scale={2}
                 />
               </$GridCell>
               <$GridCell

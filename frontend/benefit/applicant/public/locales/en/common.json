@@ -59,7 +59,9 @@
       "back": "Back",
       "edit": "Edit",
       "close": "Close",
-      "openTermsAsPDF": "Open the terms as a PDF file"
+      "openTermsAsPDF": "Open the terms as a PDF file",
+      "continueToService": "Continue to the service",
+      "pauseAndExit": "Cancel and exit"
     },
     "sections": {
       "company": {
@@ -356,6 +358,7 @@
       }
     }
   },
+  "serviceName": "Helsinki benefit service",
   "appName": "Helsinki benefit",
   "header": {
     "loginLabel": "Sign in to the service",

@@ -59,7 +59,9 @@
       "back": "Tillbaka",
       "edit": "Redigera",
       "close": "Stäng",
-      "openTermsAsPDF": "Öppna villkoren som PDF-fil"
+      "openTermsAsPDF": "Öppna villkoren som PDF-fil",
+      "continueToService": "Fortsätt till tjänsten",
+      "pauseAndExit": "Avbryt och lämna sidan"
     },
     "sections": {
       "company": {
@@ -356,6 +358,7 @@
       }
     }
   },
+  "serviceName": "E-tjänsten för Helsingforstillägg",
   "appName": "Helsingforstillägg",
   "header": {
     "loginLabel": "Logga in i tjänsten",

@@ -59,7 +59,9 @@
       "back": "Takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
-      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
+      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
+      "continueToService": "Jatka palveluun",
+      "pauseAndExit": "Keskeytä ja poistu"
     },
     "sections": {
       "company": {
@@ -356,6 +358,7 @@
       }
     }
   },
+  "serviceName": "Helsinki-lisän asiointipalvelu",
   "appName": "Helsinki-lisä",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
