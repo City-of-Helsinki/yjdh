@@ -342,7 +342,17 @@ def test_application_post_unfinished(api_client, application):
     )
 
 
-def test_application_post_invalid_data(api_client, application):
+@pytest.mark.parametrize(
+    "language,company_bank_account_number_validation_error",
+    [
+        ("en", "Invalid IBAN"),
+        ("fi", "Virheellinen IBAN-tilinumero"),
+        ("sv", "Felaktigt IBAN-kontonummer"),
+    ],
+)
+def test_application_post_invalid_data(
+    api_client, application, language, company_bank_account_number_validation_error
+):
     data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
@@ -352,10 +362,13 @@ def test_application_post_invalid_data(api_client, application):
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
+    data["company_bank_account_number"] = "FI91 4008 0282 0002 02"  # invalid number
 
     data[
         "company_contact_person_phone_number"
     ] = "+359505658789"  # Invalid country code
+
+    api_client.defaults["HTTP_ACCEPT_LANGUAGE"] = language
     response = api_client.post(
         reverse("v1:applicant-application-list"), data, format="json"
     )
@@ -366,7 +379,13 @@ def test_application_post_invalid_data(api_client, application):
         "applicant_language",
         "company_contact_person_phone_number",
         "de_minimis_aid_set",
+        "company_bank_account_number",
     }
+    assert (
+        str(response.data["company_bank_account_number"][0])
+        == company_bank_account_number_validation_error
+    )
+    assert len(response.data["company_bank_account_number"]) == 1
     assert response.data["de_minimis_aid_set"][0].keys() == {"amount"}
     assert len(response.data["de_minimis_aid_set"]) == 2
 

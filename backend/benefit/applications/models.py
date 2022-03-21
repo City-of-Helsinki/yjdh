@@ -9,6 +9,7 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
+from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
 from django.conf import settings
@@ -17,7 +18,6 @@ from django.db import connection, models
 from django.db.models import OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
-from localflavor.generic.models import IBANField
 from phonenumber_field.modelfields import PhoneNumberField
 from simple_history.models import HistoricalRecords
 
@@ -167,7 +167,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     effective_company_city = property(address_property("company_city"))
     effective_company_postcode = property(address_property("company_postcode"))
 
-    company_bank_account_number = IBANField(
+    company_bank_account_number = LocalizedIBANField(
         include_countries=("FI",),
         verbose_name=_("company bank account number"),
         blank=True,
