@@ -61,8 +61,8 @@ const ApplicationFormStep6: React.FC<
               <$GridCell $colSpan={12}>
                 <PdfViewer
                   file={applicantTermsInEffectUrl}
-                  documentMarginLeft="-80px"
-                  scale={2}
+                  scale={1.8}
+                  documentMarginLeft="-70px"
                 />
               </$GridCell>
               <$GridCell
