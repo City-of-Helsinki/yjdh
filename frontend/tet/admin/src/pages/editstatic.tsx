@@ -14,9 +14,10 @@ import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
+import { Language } from 'shared/i18n/i18n';
 
 const EditStaticPage: NextPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const id = router.query.id as string;
   const { isLoading, data, error } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
@@ -34,7 +35,7 @@ const EditStaticPage: NextPage = () => {
   }
 
   if (data) {
-    const posting = eventToTetPosting(data, keywordResult.getKeywordType, languageOptions);
+    const posting = eventToTetPosting(data, keywordResult.getKeywordType, languageOptions, i18n.language as Language);
     return (
       <EditById title={t('common:editor.editTitle')} data={posting} allowPublish={posting.date_published === null} />
     );

@@ -53,6 +53,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
           objectFit="cover"
           src="/event_placeholder_B.jpg"
           alt="event placeholder"
+          priority={true}
         />
       </$ImageContainer>
       <$PostingCardBody>
