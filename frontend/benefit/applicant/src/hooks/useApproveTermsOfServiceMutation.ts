@@ -2,8 +2,8 @@ import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useRouter } from 'next/router';
 import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
-import { ROUTES } from '../constants';
 
+import { ROUTES } from '../constants';
 import {
   ApproveTermsOfServiceRequestData,
   ApproveTermsOfServiceResponseData,

@@ -1,50 +1,22 @@
 import { $PageHeading } from 'benefit/applicant/components/applications/Applications.sc';
-import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
-import camelcaseKeys from 'camelcase-keys';
 import { Button, Logo, LogoLanguage } from 'hds-react';
 import { GetStaticProps, NextPage } from 'next';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
-import { capitalize } from 'shared/utils/string.utils';
-import { useTheme } from 'styled-components';
+import { openFileInNewTab } from 'shared/utils/file.utils';
 
 import PdfViewer from '../components/pdfViewer/PdfViewer';
 import useApproveTermsOfServiceMutation from '../hooks/useApproveTermsOfServiceMutation';
-import useLocale from '../hooks/useLocale';
 import useLogout from '../hooks/useLogout';
-import { ApplicantConsents, TermsProp } from '../types/application';
+import useTermsOfServiceData from '../hooks/useTermsOfServiceData';
+import { ApplicantConsents } from '../types/application';
 
 const TermsOfService: NextPage = () => {
-  const locale = useLocale();
-  const textLocale = capitalize(locale);
-
-  const theme = useTheme();
-
-  const { t } = useTranslation();
-
-  const userQuery = useUserQuery((data) => camelcaseKeys(data, { deep: true }));
-  const { data } = userQuery;
-
-  const termsInEffectUrl = React.useMemo(() => {
-    if (
-      data?.termsOfServiceInEffect &&
-      data?.termsOfServiceInEffect[`termsPdf${textLocale}` as TermsProp]
-    )
-      return data.termsOfServiceInEffect[`termsPdf${textLocale}` as TermsProp];
-    return '';
-  }, [data?.termsOfServiceInEffect, textLocale]);
-
-  const openTermsAsPDF = (): void => {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    const newTab = window.open(termsInEffectUrl, '_blank');
-    if (newTab) {
-      newTab.focus();
-    }
-  };
+  const { locale, theme, t, termsInEffectUrl, userData } =
+    useTermsOfServiceData();
 
   const { mutate: approveTermsOfService } = useApproveTermsOfServiceMutation();
 
@@ -77,7 +49,11 @@ const TermsOfService: NextPage = () => {
             margin-bottom: var(--spacing-l);
           `}
         >
-          <Button theme="black" variant="secondary" onClick={openTermsAsPDF}>
+          <Button
+            theme="black"
+            variant="secondary"
+            onClick={() => openFileInNewTab(termsInEffectUrl)}
+          >
             {t('common:applications.actions.openTermsAsPDF')}
           </Button>
         </$GridCell>
@@ -90,9 +66,9 @@ const TermsOfService: NextPage = () => {
             variant="primary"
             onClick={() =>
               approveTermsOfService({
-                terms: data?.termsOfServiceInEffect.id ?? '',
-                selected_applicant_consents: data
-                  ? data.termsOfServiceInEffect.applicantConsents.map(
+                terms: userData?.termsOfServiceInEffect.id ?? '',
+                selected_applicant_consents: userData
+                  ? userData.termsOfServiceInEffect.applicantConsents.map(
                       (item: ApplicantConsents) => item.id
                     )
                   : [''],

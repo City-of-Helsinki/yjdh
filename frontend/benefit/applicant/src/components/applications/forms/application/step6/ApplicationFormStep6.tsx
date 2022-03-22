@@ -9,6 +9,7 @@ import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
+import { openFileInNewTab } from 'shared/utils/file.utils';
 
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep6 } from './useApplicationFormStep6';
@@ -33,7 +34,6 @@ const ApplicationFormStep6: React.FC<
     textLocale,
     checkedArray,
     applicantTermsInEffectUrl,
-    openTermsAsPDF,
   } = useApplicationFormStep6(data, onSubmit);
 
   if (isSubmittedApplication) {
@@ -74,7 +74,7 @@ const ApplicationFormStep6: React.FC<
                 <Button
                   theme="black"
                   variant="secondary"
-                  onClick={openTermsAsPDF}
+                  onClick={() => openFileInNewTab(applicantTermsInEffectUrl)}
                 >
                   {t('common:applications.actions.openTermsAsPDF')}
                 </Button>
