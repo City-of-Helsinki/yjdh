@@ -388,16 +388,18 @@ const SalaryBenefitCalculatorView: React.FC<
 
       {!isManualCalculator && (
         <>
-          <$GridCell $colStart={1} $colSpan={11}>
-            <$CalculatorText
-              isBold
-              css={`
-                margin-top: ${theme.spacing.m};
-              `}
-            >
-              {t(`${translationsBase}.apprenticeshipCompensation`)}
-            </$CalculatorText>
-          </$GridCell>
+          {data.apprenticeshipProgram && (
+            <$GridCell $colStart={1} $colSpan={11}>
+              <$CalculatorText
+                isBold
+                css={`
+                  margin-top: ${theme.spacing.m};
+                `}
+              >
+                {t(`${translationsBase}.apprenticeshipCompensation`)}
+              </$CalculatorText>
+            </$GridCell>
+          )}
 
           {formik.values.trainingCompensations &&
             formik.values.trainingCompensations.length > 0 && (
@@ -472,88 +474,92 @@ const SalaryBenefitCalculatorView: React.FC<
             </React.Fragment>
           ))}
 
-          <$GridCell $colStart={1} $colSpan={2}>
-            <$CalculatorText>{fields.monthlyAmount.label}</$CalculatorText>
-          </$GridCell>
-
-          <$GridCell $colStart={3} $colSpan={5}>
-            <$CalculatorText>
-              {t(`${translationsBase}.apprenticeshipPeriodWithDiff`, {
-                period: diffMonths(
-                  parseDate(newTrainingCompensation.endDate),
-                  parseDate(newTrainingCompensation.startDate)
-                ),
-              })}
-            </$CalculatorText>
-          </$GridCell>
-          <$GridCell $colStart={1} $colSpan={1}>
-            <TextInput
-              id={fields.monthlyAmount.name}
-              name={fields.monthlyAmount.name}
-              onChange={(e) =>
-                setNewTrainingCompensation((prevValue) => ({
-                  ...prevValue,
-                  monthlyAmount: e.target.value,
-                }))
-              }
-              value={formatStringFloatValue(
-                newTrainingCompensation.monthlyAmount
-              )}
-              invalid={!!getErrorMessage(fields.monthlyAmount.name)}
-              aria-invalid={!!getErrorMessage(fields.monthlyAmount.name)}
-              errorText={getErrorMessage(fields.monthlyAmount.name)}
-            />
-          </$GridCell>
-
-          <$GridCell $colStart={3} $colSpan={3}>
-            <DateInputWithSeparator
-              id={fields.startDate.name}
-              name={fields.startDate.name}
-              placeholder={fields.startDate.placeholder}
-              language={language}
-              onChange={(value) =>
-                setNewTrainingCompensation((prevValue) => ({
-                  ...prevValue,
-                  startDate: value,
-                }))
-              }
-              value={convertToUIDateFormat(newTrainingCompensation.startDate)}
-              invalid={!!getErrorMessage(fields.startDate.name)}
-              aria-invalid={!!getErrorMessage(fields.startDate.name)}
-              errorText={getErrorMessage(fields.startDate.name)}
-            />
-          </$GridCell>
-
-          <$GridCell $colStart={6} $colSpan={3}>
-            <DateInput
-              id={fields.endDate.name}
-              name={fields.endDate.name}
-              placeholder={fields.endDate.placeholder}
-              language={language}
-              onChange={(value) =>
-                setNewTrainingCompensation((prevValue) => ({
-                  ...prevValue,
-                  endDate: getCorrectEndDate(prevValue.startDate, value) ?? '',
-                }))
-              }
-              value={convertToUIDateFormat(newTrainingCompensation.endDate)}
-              invalid={!!getErrorMessage(fields.endDate.name)}
-              aria-invalid={!!getErrorMessage(fields.endDate.name)}
-              errorText={getErrorMessage(fields.endDate.name)}
-              style={{ paddingRight: `${theme.spacing.s}` }}
-            />
-          </$GridCell>
-
-          <$GridCell $colStart={9} $colSpan={3}>
-            <Button
-              onClick={addNewTrainingCompensation}
-              theme="coat"
-              disabled={isDisabledAddTrainingCompensationButton}
-              iconLeft={<IconPlusCircle />}
-            >
-              {t(`${translationsBase}.add`)}
-            </Button>
-          </$GridCell>
+          {data.apprenticeshipProgram && (
+            <>
+              {' '}
+              <$GridCell $colStart={1} $colSpan={2}>
+                <$CalculatorText>{fields.monthlyAmount.label}</$CalculatorText>
+              </$GridCell>
+              <$GridCell $colStart={3} $colSpan={5}>
+                <$CalculatorText>
+                  {t(`${translationsBase}.apprenticeshipPeriodWithDiff`, {
+                    period: diffMonths(
+                      parseDate(newTrainingCompensation.endDate),
+                      parseDate(newTrainingCompensation.startDate)
+                    ),
+                  })}
+                </$CalculatorText>
+              </$GridCell>
+              <$GridCell $colStart={1} $colSpan={1}>
+                <TextInput
+                  id={fields.monthlyAmount.name}
+                  name={fields.monthlyAmount.name}
+                  onChange={(e) =>
+                    setNewTrainingCompensation((prevValue) => ({
+                      ...prevValue,
+                      monthlyAmount: e.target.value,
+                    }))
+                  }
+                  value={formatStringFloatValue(
+                    newTrainingCompensation.monthlyAmount
+                  )}
+                  invalid={!!getErrorMessage(fields.monthlyAmount.name)}
+                  aria-invalid={!!getErrorMessage(fields.monthlyAmount.name)}
+                  errorText={getErrorMessage(fields.monthlyAmount.name)}
+                />
+              </$GridCell>
+              <$GridCell $colStart={3} $colSpan={3}>
+                <DateInputWithSeparator
+                  id={fields.startDate.name}
+                  name={fields.startDate.name}
+                  placeholder={fields.startDate.placeholder}
+                  language={language}
+                  onChange={(value) =>
+                    setNewTrainingCompensation((prevValue) => ({
+                      ...prevValue,
+                      startDate: value,
+                    }))
+                  }
+                  value={convertToUIDateFormat(
+                    newTrainingCompensation.startDate
+                  )}
+                  invalid={!!getErrorMessage(fields.startDate.name)}
+                  aria-invalid={!!getErrorMessage(fields.startDate.name)}
+                  errorText={getErrorMessage(fields.startDate.name)}
+                />
+              </$GridCell>
+              <$GridCell $colStart={6} $colSpan={3}>
+                <DateInput
+                  id={fields.endDate.name}
+                  name={fields.endDate.name}
+                  placeholder={fields.endDate.placeholder}
+                  language={language}
+                  onChange={(value) =>
+                    setNewTrainingCompensation((prevValue) => ({
+                      ...prevValue,
+                      endDate:
+                        getCorrectEndDate(prevValue.startDate, value) ?? '',
+                    }))
+                  }
+                  value={convertToUIDateFormat(newTrainingCompensation.endDate)}
+                  invalid={!!getErrorMessage(fields.endDate.name)}
+                  aria-invalid={!!getErrorMessage(fields.endDate.name)}
+                  errorText={getErrorMessage(fields.endDate.name)}
+                  style={{ paddingRight: `${theme.spacing.s}` }}
+                />
+              </$GridCell>
+              <$GridCell $colStart={9} $colSpan={3}>
+                <Button
+                  onClick={addNewTrainingCompensation}
+                  theme="coat"
+                  disabled={isDisabledAddTrainingCompensationButton}
+                  iconLeft={<IconPlusCircle />}
+                >
+                  {t(`${translationsBase}.add`)}
+                </Button>
+              </$GridCell>
+            </>
+          )}
         </>
       )}
 
