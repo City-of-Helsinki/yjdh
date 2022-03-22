@@ -6,6 +6,7 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 
+import { ROUTES } from '../constants';
 import { UserData } from '../types/application';
 
 // check that authentication is still alive in every 5 minutes
@@ -23,7 +24,7 @@ const useUserQuery = <T = UserData>(
 
   const checkTermsOfServiceApproval = (data: UserData): void => {
     if (data?.terms_of_service_approval_needed)
-      void router.push(`${locale}/terms-of-service`);
+      void router.push(`${locale}${ROUTES.TERMS_OF_SERVICE}`);
   };
 
   const handleError = (error: Error): void => {

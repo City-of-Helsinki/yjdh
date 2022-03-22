@@ -10,6 +10,7 @@ import {
   getHeaders,
 } from 'benefit-shared/backend-api/backend-api';
 import { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
@@ -20,10 +21,13 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
+import { ROUTES } from '../constants';
+
 const queryClient = new QueryClient();
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const locale = useLocale();
+  const router = useRouter();
   return (
     <BackendAPIProvider
       baseURL={getBackendDomain()}
@@ -34,7 +38,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
           <ThemeProvider theme={theme}>
             <GlobalStyling />
             <Layout>
-              <Header />
+              {router.route !== ROUTES.TERMS_OF_SERVICE && <Header />}
               <ToastContainer />
               <Content>
                 <Component {...pageProps} />

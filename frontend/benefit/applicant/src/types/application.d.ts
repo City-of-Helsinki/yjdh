@@ -357,3 +357,16 @@ export type User = {
   termsOfServiceApprovalNeeded: boolean;
   termsOfServiceInEffect: TermsOfServiceInEffect;
 };
+
+export type ApproveTermsOfServiceRequestData = {
+  terms: string;
+  selected_applicant_consents: string[];
+};
+
+export type ApproveTermsOfServiceResponseData = {
+  id: string;
+  approved_at: string;
+  approved_by: string;
+  terms: string;
+  selected_applicant_consents: string[];
+};
