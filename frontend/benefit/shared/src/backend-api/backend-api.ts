@@ -9,6 +9,7 @@ export const BackendEndpoint = {
   COMPANY: '/v1/company/',
   APPLICATIONS: '/v1/applications/',
   HANDLER_APPLICATIONS: '/v1/handlerapplications/',
+  APPLICATION_BATCHES: '/v1/applicationbatches/',
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
