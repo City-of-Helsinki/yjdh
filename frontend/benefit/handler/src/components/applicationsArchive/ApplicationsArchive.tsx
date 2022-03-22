@@ -105,6 +105,16 @@ const ApplicationsArchive: React.FC = () => {
     return cols.filter(Boolean);
   }, [t, getHeader, translationsBase]);
 
+  const sortBy = React.useMemo(
+    () => [
+      {
+        id: 'handledAt',
+        desc: true,
+      },
+    ],
+    []
+  );
+
   if (shouldShowSkeleton) {
     return (
       <Container>
@@ -122,7 +132,7 @@ const ApplicationsArchive: React.FC = () => {
         })}`}</$ArchiveCount>
       )}
       {!shouldHideList ? (
-        <Table data={list} columns={columns} />
+        <Table data={list} columns={columns} sortBy={sortBy} />
       ) : (
         <$Empty>{t(`${translationsBase}.messages.empty`)}</$Empty>
       )}
