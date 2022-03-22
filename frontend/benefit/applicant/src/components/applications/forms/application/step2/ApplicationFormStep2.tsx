@@ -7,7 +7,6 @@ import {
 } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
-import application from 'benefit/applicant/pages/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
@@ -368,7 +367,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               disabled={
                 data?.company?.organizationType ===
                   ORGANIZATION_TYPES.ASSOCIATION &&
-                !Boolean(data?.associationHasBusinessActivities)
+                !data?.associationHasBusinessActivities
               }
             />
             <$RadioButton
