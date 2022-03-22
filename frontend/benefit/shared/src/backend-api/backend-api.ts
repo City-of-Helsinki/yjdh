@@ -10,6 +10,7 @@ export const BackendEndpoint = {
   APPLICATIONS: '/v1/applications/',
   HANDLER_APPLICATIONS: '/v1/handlerapplications/',
   APPROVE_TERMS_OF_SERVICE: '/v1/terms/approve_terms_of_service/',
+  APPLICATION_BATCHES: '/v1/applicationbatches/',
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);

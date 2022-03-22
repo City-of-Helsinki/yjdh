@@ -9,6 +9,7 @@ import {
   Column as ColumnType,
   HeaderProps,
   Row,
+  SortingRule,
   TableCellProps,
   TableOptions,
   TableState,
@@ -80,6 +81,7 @@ type TableProps<D extends Record<string, unknown>> = {
   onSortedColsChange?: (sortedCol: TableState<D>['sortBy']) => void;
   minimizeAllText?: string;
   noMatchesText?: string;
+  sortBy?: SortingRule<D>[];
 } & TableOptions<D>;
 
 const Table = <D extends { id: string }>({
@@ -106,6 +108,7 @@ const Table = <D extends { id: string }>({
   manualSortBy,
   minimizeAllText,
   noMatchesText,
+  sortBy,
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 TableProps<D>): React.ReactElement => {
   const selectorCol: Column<D> = React.useMemo(
@@ -251,7 +254,9 @@ TableProps<D>): React.ReactElement => {
       columns: tableColumns,
       data: dataState,
       globalFilter,
-      initialState,
+      initialState: {
+        ...(sortBy && { sortBy }),
+      },
       manualSortBy,
       autoResetSortBy: !skipPageResetRef.current,
       autoResetSelectedRows: !skipPageResetRef.current,
@@ -386,6 +391,7 @@ const defaultProps = {
   onSortedColsChange: noop,
   minimizeAllText: 'Minimize all',
   noMatchesText: 'No matches',
+  sortBy: undefined,
 };
 
 Table.defaultProps = defaultProps;
