@@ -40,8 +40,8 @@ type ExtendedComponentProps = {
     [key in EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS]: Field<EXPORT_APPLICATIONS_IN_TIME_RANGE_FORM_KEYS>;
   };
   exportApplicationsInTimeRange: () => void;
-  lastAcceptedApplicationsExportDate: string | undefined;
-  lastRejectedApplicationsExportDate: string | undefined;
+  lastAcceptedApplicationsExportDate: string;
+  lastRejectedApplicationsExportDate: string;
 };
 
 const useApplicationReports = (): ExtendedComponentProps => {
@@ -57,22 +57,24 @@ const useApplicationReports = (): ExtendedComponentProps => {
   const { data: lastAcceptedApplicationBatches } =
     useReportsApplicationBatchesQuery(PROPOSALS_FOR_DESISION.ACCEPTED);
   const lastAcceptedApplicationsExportDate =
-    lastAcceptedApplicationBatches &&
-    lastAcceptedApplicationBatches.length > 0 &&
-    convertToUIDateFormat(
-      lastAcceptedApplicationBatches[lastAcceptedApplicationBatches.length - 1]
-        .created_at
-    );
+    lastAcceptedApplicationBatches && lastAcceptedApplicationBatches.length > 0
+      ? convertToUIDateFormat(
+          lastAcceptedApplicationBatches[
+            lastAcceptedApplicationBatches.length - 1
+          ].created_at
+        )
+      : '';
 
   const { data: lastRejectedApplicationBatches } =
     useReportsApplicationBatchesQuery(PROPOSALS_FOR_DESISION.REJECTED);
   const lastRejectedApplicationsExportDate =
-    lastRejectedApplicationBatches &&
-    lastRejectedApplicationBatches.length > 0 &&
-    convertToUIDateFormat(
-      lastRejectedApplicationBatches[lastRejectedApplicationBatches.length - 1]
-        .created_at
-    );
+    lastRejectedApplicationBatches && lastRejectedApplicationBatches.length > 0
+      ? convertToUIDateFormat(
+          lastRejectedApplicationBatches[
+            lastRejectedApplicationBatches.length - 1
+          ].created_at
+        )
+      : '';
 
   const exportApplications = useCallback(
     async (

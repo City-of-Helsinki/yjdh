@@ -51,7 +51,7 @@ const ApplicationReports: React.FC = () => {
           <p style={{ margin: 0 }}>{`${t(
             `${translationsBase}.fields.lastDownloadDateText`,
             {
-              date: lastAcceptedApplicationsExportDate || '',
+              date: lastAcceptedApplicationsExportDate,
             }
           )}`}</p>
         </$GridCell>
@@ -76,7 +76,7 @@ const ApplicationReports: React.FC = () => {
           <p style={{ margin: 0 }}>{`${t(
             `${translationsBase}.fields.lastDownloadDateText`,
             {
-              date: lastRejectedApplicationsExportDate || '',
+              date: lastRejectedApplicationsExportDate,
             }
           )}`}</p>
         </$GridCell>
