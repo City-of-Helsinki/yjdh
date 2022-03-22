@@ -87,8 +87,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   const selectLabel = t('common:select');
 
   const isAbleToSelectEmploymentBenefit =
-    data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION &&
-    data?.associationHasBusinessActivities;
+    data?.company?.organizationType !== ORGANIZATION_TYPES.ASSOCIATION ||
+    (data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION &&
+      data?.associationHasBusinessActivities);
   const isAbleToSelectSalaryBenefit = formik.values.paySubsidyGranted === true;
 
   const isNoAvailableBenefitTypes =
