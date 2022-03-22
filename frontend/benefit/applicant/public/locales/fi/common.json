@@ -204,6 +204,10 @@
           "commissionBenefitSelected": {
             "label": "Ajanjakso",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "Ei haettavia tukimuotoja",
+            "content": "Yhteisö, joka ei harjoita taloudellista toimintaa voi hakea ainoastaan Palkan Helsinki-lisää. Palkan Helsinki-lisän edellytyksenä on työsuhteeseen myönnetty palkkatuki."
           }
         },
         "messages": {
