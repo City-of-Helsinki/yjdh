@@ -3,9 +3,11 @@ import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
+  ORGANIZATION_TYPES,
 } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
+import application from 'benefit/applicant/pages/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { DateInput, Select, SelectionGroup, TextInput } from 'hds-react';
 import camelCase from 'lodash/camelCase';
@@ -363,6 +365,11 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               checked={formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT}
+              disabled={
+                data?.company?.organizationType ===
+                  ORGANIZATION_TYPES.ASSOCIATION &&
+                !Boolean(data?.associationHasBusinessActivities)
+              }
             />
             <$RadioButton
               id={`${fields.benefitType.name}Salary`}
