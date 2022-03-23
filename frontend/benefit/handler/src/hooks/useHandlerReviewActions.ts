@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
-import { v4 as uuidv4 } from 'uuid';
 
 import { ROUTES } from '../constants';
 import AppContext from '../context/AppContext';
@@ -107,14 +106,12 @@ const useHandlerReviewActions = (
       endDate: convertToBackendDateFormat(item.endDate),
     }));
 
-    const trainingCompensations = values.trainingCompensations?.map((item) => {
-      return {
-        ...item,
-        monthlyAmount: stringToFloatValue(item.monthlyAmount),
-        startDate: convertToBackendDateFormat(item.startDate),
-        endDate: convertToBackendDateFormat(item.endDate),
-      };
-    });
+    const trainingCompensations = values.trainingCompensations?.map((item) => ({
+      ...item,
+      monthlyAmount: stringToFloatValue(item.monthlyAmount),
+      startDate: convertToBackendDateFormat(item.startDate),
+      endDate: convertToBackendDateFormat(item.endDate),
+    }));
 
     const {
       monthlyPay,

@@ -22,9 +22,9 @@ import {
   diffMonths,
   parseDate,
 } from 'shared/utils/date.utils';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getValidationSchema } from '../employmentAppliedMoreView/utils/validation';
-import { v4 as uuidv4 } from 'uuid';
 
 type ExtendedComponentProps = {
   formik: FormikProps<CalculationFormProps>;
