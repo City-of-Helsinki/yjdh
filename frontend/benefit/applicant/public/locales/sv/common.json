@@ -204,6 +204,10 @@
           "commissionBenefitSelected": {
             "label": "Tidsperiod",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "Inga ansökningsbara stödformer",
+            "content": "En sammanslutning som inte bedriver ekonomisk verksamhet kan endast ansöka om Helsingforstillägg för lön. Förutsättningen för att få Helsingforstillägg för lön är att lönesubvention har beviljats för anställningen."
           }
         },
         "messages": {
