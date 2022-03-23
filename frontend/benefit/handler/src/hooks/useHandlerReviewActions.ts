@@ -107,13 +107,14 @@ const useHandlerReviewActions = (
       endDate: convertToBackendDateFormat(item.endDate),
     }));
 
-    const trainingCompensations = values.trainingCompensations?.map((item) => ({
-      ...item,
-      id: uuidv4(),
-      monthlyAmount: stringToFloatValue(item.monthlyAmount),
-      startDate: convertToBackendDateFormat(item.startDate),
-      endDate: convertToBackendDateFormat(item.endDate),
-    }));
+    const trainingCompensations = values.trainingCompensations?.map((item) => {
+      return {
+        ...item,
+        monthlyAmount: stringToFloatValue(item.monthlyAmount),
+        startDate: convertToBackendDateFormat(item.startDate),
+        endDate: convertToBackendDateFormat(item.endDate),
+      };
+    });
 
     const {
       monthlyPay,

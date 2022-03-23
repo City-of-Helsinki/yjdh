@@ -24,6 +24,7 @@ import {
 } from 'shared/utils/date.utils';
 
 import { getValidationSchema } from '../employmentAppliedMoreView/utils/validation';
+import { v4 as uuidv4 } from 'uuid';
 
 type ExtendedComponentProps = {
   formik: FormikProps<CalculationFormProps>;
@@ -131,7 +132,10 @@ const useSalaryBenefitCalculatorData = (
       : [];
     void formik.setFieldValue(fields.trainingCompensations.name, [
       ...currentTrainingCompensations,
-      newTrainingCompensation,
+      {
+        ...newTrainingCompensation,
+        id: uuidv4(),
+      },
     ]);
   };
 
