@@ -1,16 +1,17 @@
 import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
 import useApplicationQuery from 'benefit/applicant/hooks/useApplicationQuery';
+import useLocale from 'benefit/applicant/hooks/useLocale';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { getLanguageOptions } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
-import useToggle from 'shared/hooks/useToggle';
 import { NavigationItem, OptionType } from 'shared/types/common';
 
 type ExtendedComponentProps = {
   t: TFunction;
   languageOptions: OptionType<string>[];
+  locale: string;
   navigationItems?: NavigationItem[];
   hasMessenger: boolean;
   handleLanguageChange: (
@@ -18,21 +19,14 @@ type ExtendedComponentProps = {
     newLanguage: OptionType<string>
   ) => void;
   handleNavigationItemClick: (url: string) => void;
-  unreadMessagesCount: number | undefined | null;
-  toggleMessagesDrawerVisiblity: () => void;
-  isMessagesDrawerVisible: boolean;
 };
 
 const useHeader = (): ExtendedComponentProps => {
   const { t } = useTranslation();
+  const locale = useLocale();
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
-  const [unreadMessagesCount, setUnredMessagesCount] = useState<
-    number | undefined | null
-  >(null);
-  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
-    useToggle(false);
   const { pathname, asPath, query } = router;
 
   const languageOptions = React.useMemo(
@@ -41,18 +35,6 @@ const useHeader = (): ExtendedComponentProps => {
   );
 
   const { data: application } = useApplicationQuery(id);
-
-  useEffect(() => {
-    if (application?.unread_messages_count) {
-      setUnredMessagesCount(application?.unread_messages_count);
-    }
-  }, [application?.unread_messages_count]);
-
-  useEffect(() => {
-    if (isMessagesDrawerVisible && Number(unreadMessagesCount) > 0) {
-      setUnredMessagesCount(null);
-    }
-  }, [isMessagesDrawerVisible, unreadMessagesCount]);
 
   const status = React.useMemo(
     (): APPLICATION_STATUSES =>
@@ -81,13 +63,11 @@ const useHeader = (): ExtendedComponentProps => {
 
   return {
     t,
+    languageOptions,
+    locale,
     handleLanguageChange,
     handleNavigationItemClick,
-    toggleMessagesDrawerVisiblity,
-    languageOptions,
     hasMessenger,
-    unreadMessagesCount,
-    isMessagesDrawerVisible,
   };
 };
 

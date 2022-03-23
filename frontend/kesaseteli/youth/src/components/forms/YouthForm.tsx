@@ -1,9 +1,9 @@
 import SchoolSelection from 'kesaseteli/youth/components/forms/SchoolSelection';
 import useCreateYouthApplicationQuery from 'kesaseteli/youth/hooks/backend/useCreateYouthApplicationQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
+import YouthApplication from 'kesaseteli/youth/types/youth-application';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { isYouthApplicationCreationError } from 'kesaseteli/youth/utils/type-guards';
-import YouthApplication from 'kesaseteli-shared/types/youth-application';
-import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { useRouter } from 'next/router';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';

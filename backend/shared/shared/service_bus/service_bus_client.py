@@ -33,9 +33,6 @@ class ServiceBusClient:
             "name": service_bus_data["TradeName"]["Name"],
             "business_id": service_bus_data["BusinessId"],
             "company_form": self._get_company_form(service_bus_data["LegalForm"]),
-            "company_form_code": self._get_company_form_code(
-                service_bus_data["LegalForm"]
-            ),
             "industry": self._get_industry(service_bus_data["BusinessLine"]),
             "street_address": address["StreetAddress"],
             "postcode": address["PostalCode"],
@@ -73,19 +70,6 @@ class ServiceBusClient:
             "PostalCode": address_json["PostalCode"],
             "City": address_json["City"],
         }
-
-    def _get_company_form_code(self, legal_form_json):
-        # return the YRMU code from the response
-        if "Type" not in legal_form_json:
-            raise ValueError("Cannot determine company form")
-        if legal_form_json["Type"].get("PrimaryCode") != "YRMU":
-            raise ValueError("Cannot determine company form - invalid PrimaryCode")
-        try:
-            return int(legal_form_json["Type"]["SecondaryCode"])
-        except (TypeError, ValueError) as e:
-            raise ValueError(
-                "Cannot determine company form - invalid SecondaryCode"
-            ) from e
 
     def _get_company_form(self, legal_form_json):
         # The LegalForm is a code, which is not human-readable.

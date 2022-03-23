@@ -1,12 +1,9 @@
-import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
 import SummarySection from 'benefit/applicant/components/summarySection/SummarySection';
 import { ATTACHMENT_TYPES, BENEFIT_TYPES } from 'benefit/applicant/constants';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button, IconPen } from 'hds-react';
 import isEmpty from 'lodash/isEmpty';
-import noop from 'lodash/noop';
 import React from 'react';
-import { getFullName } from 'shared/utils/application.utils';
 import { useTheme } from 'styled-components';
 
 import ConsentViewer from '../consentViewer/ConsentViewer';
@@ -16,15 +13,9 @@ import CompanyInfoView from './companyInfoView/CompanyInfoView';
 import EmployeeView from './employeeView/EmployeeView';
 import { useApplicationFormStep5 } from './useApplicationFormStep5';
 
-type ExtendedProps = {
-  isReadOnly?: boolean;
-  isSubmittedApplication?: boolean;
-  onSubmit?: () => void;
-};
-
-const ApplicationFormStep5: React.FC<
-  DynamicFormStepComponentProps & ExtendedProps
-> = ({ data, isReadOnly, isSubmittedApplication, onSubmit }) => {
+const ApplicationFormStep5: React.FC<DynamicFormStepComponentProps> = ({
+  data,
+}) => {
   const {
     t,
     handleBack,
@@ -32,58 +23,32 @@ const ApplicationFormStep5: React.FC<
     handleSubmit,
     handleDelete,
     handleStepChange,
-    handleClose,
     translationsBase,
     isSubmit,
-  } = useApplicationFormStep5(data, onSubmit);
+  } = useApplicationFormStep5(data);
 
   const theme = useTheme();
 
-  if (isSubmittedApplication) {
-    return (
-      <NotificationView
-        title={t('common:notifications.applicationSubmitted.label')}
-        message={t('common:notifications.applicationSubmitted.message', {
-          applicationNumber: data?.applicationNumber,
-          applicantName: getFullName(
-            data?.employee?.firstName,
-            data?.employee?.lastName
-          ),
-        })}
-      />
-    );
-  }
-
   return (
     <>
-      <CompanyInfoView
-        isReadOnly={isReadOnly}
-        data={data}
-        handleStepChange={handleStepChange}
-      />
+      <CompanyInfoView data={data} handleStepChange={handleStepChange} />
 
-      <EmployeeView
-        isReadOnly={isReadOnly}
-        data={data}
-        handleStepChange={handleStepChange}
-      />
+      <EmployeeView data={data} handleStepChange={handleStepChange} />
 
       <SummarySection
         header={t(`${translationsBase}.attachments.heading1`)}
         action={
-          !isReadOnly && (
-            <Button
-              theme="black"
-              css={`
-                margin-top: ${theme.spacing.s};
-              `}
-              onClick={() => handleStepChange(3)}
-              variant="supplementary"
-              iconLeft={<IconPen />}
-            >
-              {t(`common:applications.actions.edit`)}
-            </Button>
-          )
+          <Button
+            theme="black"
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
+            onClick={() => handleStepChange(3)}
+            variant="supplementary"
+            iconLeft={<IconPen />}
+          >
+            {t(`common:applications.actions.edit`)}
+          </Button>
         }
       >
         {(data.benefitType === BENEFIT_TYPES.EMPLOYMENT ||
@@ -133,19 +98,17 @@ const ApplicationFormStep5: React.FC<
         paddingBottom={isEmpty(data.applicantTermsApproval)}
         header={t(`${translationsBase}.credentials.heading2`)}
         action={
-          !isReadOnly && (
-            <Button
-              theme="black"
-              css={`
-                margin-top: ${theme.spacing.s};
-              `}
-              onClick={() => handleStepChange(4)}
-              variant="supplementary"
-              iconLeft={<IconPen />}
-            >
-              {t(`common:applications.actions.edit`)}
-            </Button>
-          )
+          <Button
+            theme="black"
+            css={`
+              margin-top: ${theme.spacing.s};
+            `}
+            onClick={() => handleStepChange(4)}
+            variant="supplementary"
+            iconLeft={<IconPen />}
+          >
+            {t(`common:applications.actions.edit`)}
+          </Button>
         }
       >
         <AttachmentsListView
@@ -161,29 +124,15 @@ const ApplicationFormStep5: React.FC<
           <ConsentViewer data={data} />
         </SummarySection>
       )}
-      {isReadOnly ? (
-        <Button theme="black" variant="secondary" onClick={handleClose}>
-          {t('common:utility.close')}
-        </Button>
-      ) : (
-        <StepperActions
-          lastStep={isSubmit}
-          handleSave={handleSave}
-          handleSubmit={handleSubmit}
-          handleBack={handleBack}
-          handleDelete={handleDelete}
-        />
-      )}
+      <StepperActions
+        lastStep={isSubmit}
+        handleSave={handleSave}
+        handleSubmit={handleSubmit}
+        handleBack={handleBack}
+        handleDelete={handleDelete}
+      />
     </>
   );
 };
-
-const defaultProps = {
-  isReadOnly: false,
-  isSubmittedApplication: false,
-  onSubmit: noop,
-};
-
-ApplicationFormStep5.defaultProps = defaultProps;
 
 export default ApplicationFormStep5;

@@ -94,7 +94,6 @@ class ApplicationsCsvService(CsvExportBase):
             ),
             CsvColumn("Työnantajan osasto", "company_department"),
             CsvColumn("Työnantajan yhtiömuoto", "company_form"),
-            CsvColumn("Työnantajan yhtiömuoto (YTJ-numero)", "company_form_code"),
             CsvDefaultColumn(
                 "Hyväksymisen/hylkäyksen/peruutuksen syy", "latest_decision_comment"
             ),
@@ -177,21 +176,17 @@ class ApplicationsCsvService(CsvExportBase):
             CsvDefaultColumn(
                 "Manuaalinen syöttö", "calculation.override_monthly_benefit_amount"
             ),
-            CsvDefaultColumn(
+            CsvColumn(
                 "Manuaalinen syöttö kommentti",
                 "calculation.override_monthly_benefit_amount_comment",
             ),
-            CsvDefaultColumn(
+            CsvColumn(
                 "Myönnetään de minimis -tukena?",
                 "calculation.granted_as_de_minimis_aid",
                 format_bool,
-                default_value=None,
             ),
-            CsvDefaultColumn(
-                "Kohderyhmätarkistus",
-                "calculation.target_group_check",
-                format_bool,
-                default_value=None,
+            CsvColumn(
+                "Kohderyhmätarkistus", "calculation.target_group_check", format_bool
             ),
             CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),
             CsvDefaultColumn("Päättäjän nimi", "batch.decision_maker_name"),

@@ -1,9 +1,6 @@
 import logging
 from datetime import date
 
-from django.conf import settings
-from rest_framework.exceptions import PermissionDenied
-
 from events.linkedevents import LinkedEventsClient
 from events.transformations import (
     enrich_create_event,
@@ -14,31 +11,6 @@ from events.transformations import (
 LOGGER = logging.getLogger(__name__)
 
 
-def is_published(posting):
-    return posting["publication_status"] == "public"
-
-
-def _user_matches(event, user):
-    if event["custom_data"] is None:
-        return False
-
-    email_matches = False
-    oid_matches = False
-
-    if user.email and "editor_email" in event["custom_data"]:
-        email_matches = event["custom_data"]["editor_email"] == user.email
-
-    # django-adfs places AD OID in `user.username`
-    if user.username and "editor_oid" in event["custom_data"]:
-        oid_matches = event["custom_data"]["editor_oid"] == user.username
-
-    return email_matches or oid_matches
-
-
-def _raise_permission_denied():
-    raise PermissionDenied(detail="User doesn't have permission to access this event")
-
-
 class ServiceClient:
     def __init__(self):
         self.client = LinkedEventsClient()
@@ -47,46 +19,32 @@ class ServiceClient:
     def _is_city_employee(self, user):
         return True
 
+    # TODO return 403 instead of warning
     def _get_event_and_raise_for_unauthorized(self, user, event_id):
-        """Raises PermissionDenied unless `user` is authorized to access event `event_id`
-        and also returns the event.
-
-        All operations that read, modify or delete events should call this method.
-
-        See `test_services.py` to understand the access logic better.
-        """
         event = self.client.get_event(event_id)
-
-        if settings.NEXT_PUBLIC_MOCK_FLAG:
-            return event
-
         if self._is_city_employee(user):
-            if not _user_matches(event, user):
-                # TODO audit log?
+            if event["custom_data"] is None:
                 LOGGER.warning(
-                    f"User {user.pk} was denied unauthorized access to event {event['id']}"
+                    f"Any city employee could update event {event['id']} because it has no custom_data"
                 )
-                _raise_permission_denied()
+            else:
+                if "editor_email" in event["custom_data"]:
+                    if event["custom_data"]["editor_email"] != user.email:
+                        # TODO raise
+                        LOGGER.warning(
+                            f"User {user.email} unauthorized access to event {event['id']}"
+                        )
+                else:
+                    LOGGER.warning(
+                        f"Any city employee could update event {event['id']}, editor_email is not set in custom_data"
+                    )
+
         else:
             LOGGER.warning(
                 "Authorization not implemented for company users (suomi.fi login)"
             )
-            _raise_permission_denied()
 
         return event
-
-    def _filter_events_for_user(self, all_events, user):
-        """Filters events that `user` is authorized to access"""
-        if self._is_city_employee(user):
-            if not settings.NEXT_PUBLIC_MOCK_FLAG:
-                return [e for e in all_events if _user_matches(e, user)]
-            else:
-                return all_events
-        else:
-            LOGGER.warning(
-                "Event filtering not implemented for company users (suomi.fi login)"
-            )
-            return []
 
     def _get_publisher(self, user):
         # In MVP phase just returning ahjo:00001 (Helsingin kaupunki) for all
@@ -95,17 +53,12 @@ class ServiceClient:
         return "ahjo:00001"
 
     def list_job_postings_for_user(self, user):
-        # Currently this fetches all events under the TET data source, but it's more efficient if we can
-        # filter by industry (toimiala) or company business id (Y-tunnus)
-        all_events = self.client.list_ongoing_events_authenticated(
-            self._get_publisher(user)
-        )
-        events = self._filter_events_for_user(all_events, user)
+        events = self.client.list_ongoing_events_authenticated()
         job_postings = [reduce_get_event(e) for e in events]
-
+        # TODO divide into published and drafts
         return {
-            "draft": [p for p in job_postings if not is_published(p)],
-            "published": [p for p in job_postings if is_published(p)],
+            "draft": job_postings,
+            "published": [],
         }
 
     # not MVP?
@@ -115,16 +68,21 @@ class ServiceClient:
     def get_tet_event(self, event_id, user):
         event = self._get_event_and_raise_for_unauthorized(user, event_id)
 
+        event["location"] = self.client.get_url(event["location"]["@id"])
+        event["keywords"] = [self.client.get_url(k["@id"]) for k in event["keywords"]]
+
         return reduce_get_event(event)
 
     def add_tet_event(self, validated_data, user):
-        event = enrich_create_event(validated_data, self._get_publisher(user), user)
+        event = enrich_create_event(
+            validated_data, self._get_publisher(user), user.email
+        )
         created_event = self.client.create_event(event)
         return reduce_get_event(created_event)
 
     def publish_job_posting(self, event_id, user):
         event = self._get_event_and_raise_for_unauthorized(user, event_id)
-        event["publication_status"] = "public"
+        # TODO do we also need to set event status?
         event["date_published"] = date.today().isoformat()
         updated_event = self.client.update_event(event_id, event)
 
@@ -132,7 +90,7 @@ class ServiceClient:
 
     def update_tet_event(self, event_id, validated_data, user):
         self._get_event_and_raise_for_unauthorized(user, event_id)
-        event = enrich_update_event(validated_data, user)
+        event = enrich_update_event(validated_data, user.email)
         updated_event = self.client.update_event(event_id, event)
 
         return reduce_get_event(updated_event)

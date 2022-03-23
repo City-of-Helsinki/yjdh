@@ -1,51 +1,25 @@
-import React, { useContext, useState, useEffect } from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
+import * as React from 'react';
+
+import { useQuery } from 'react-query';
+import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
+import { TetPostings } from 'tet/admin/types/tetposting';
 import Editor from 'tet/admin/components/editor/Editor';
-import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
-import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
-import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
-import { PreviewContext } from 'tet/admin/store/PreviewContext';
-import Container from 'shared/components/container/Container';
-import BackButton from 'tet/admin/components/BackButton';
+import { TetEvent } from 'tet/admin/types/linkedevents';
+import { eventToTetPosting } from 'tet/admin/backend-api/transformations';
 
 type EditByIdProps = {
-  title: string;
-  data: TetPosting;
-  allowDelete?: boolean;
-  allowPublish?: boolean;
+  id: string;
 };
 
-const EditById: React.FC<EditByIdProps> = ({ title, data, allowDelete = true, allowPublish = false }) => {
-  const { showPreview, tetPosting } = useContext(PreviewContext);
-  const [isInitialRender, setIsInitialRender] = useState(true);
+const EditById: React.FC<EditByIdProps> = ({ id }) => {
+  const { isLoading, data } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
 
-  useEffect(() => {
-    // If initial, use data from query and not from previewContext
-    if (isInitialRender) setIsInitialRender(false);
-  }, []);
-
-  if (showPreview) {
-    return (
-      <PreviewWrapper>
-        <PostingContainer posting={tetPosting} />
-      </PreviewWrapper>
-    );
+  if (isLoading) {
+    return <PageLoadingSpinner />;
   }
-  return (
-    <>
-      <Container>
-        <BackButton />
-        <$HeadingContainer>
-          <$Heading>{title}</$Heading>
-        </$HeadingContainer>
-        <Editor
-          initialValue={isInitialRender ? data : tetPosting}
-          allowDelete={allowDelete}
-          allowPublish={allowPublish}
-        />
-      </Container>
-    </>
-  );
+
+  return data ? <Editor initialValue={eventToTetPosting(data)} /> : <>Not found.</>;
 };
 
 export default EditById;

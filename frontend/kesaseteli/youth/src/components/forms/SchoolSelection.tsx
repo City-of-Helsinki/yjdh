@@ -1,7 +1,7 @@
 import useSchoolListQuery from 'kesaseteli/youth/hooks/backend/useSchoolListQuery';
 import useRegisterInput from 'kesaseteli/youth/hooks/useRegisterInput';
-import School from 'kesaseteli-shared/types/School';
-import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
+import School from 'kesaseteli/youth/types/School';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';

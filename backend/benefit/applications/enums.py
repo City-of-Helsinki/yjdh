@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -71,18 +70,27 @@ class ApplicationStep(models.TextChoices):
 class OrganizationType(models.TextChoices):
     """
     Coarse classification of the applicant organization type
+    e.g.
+    "oy", "oyj" -> COMPANY
+    "rekisteröity yhdistys", "säätiö" -> ASSOCIATION
     """
 
     COMPANY = "company", _("Company")
     ASSOCIATION = "association", _("Association")
 
     @classmethod
-    def resolve_organization_type(cls, company_form_code):
-        # company is the default organization type
-        if company_form_code in settings.ASSOCIATION_FORM_CODES:
-            return OrganizationType.ASSOCIATION
-        else:
+    def resolve_organization_type(cls, company_form):
+        # TODO: actual implementation when integration to YTJ/palveluväylä/PRH is implemented
+        if company_form.lower() in [
+            "oy",
+            "oyj",
+            "tmi",
+            "osakeyhtiö",
+            "ysityinen elinkeinonharjoittaja",
+        ]:
             return OrganizationType.COMPANY
+        else:
+            return OrganizationType.ASSOCIATION
 
 
 class AttachmentType(models.TextChoices):

@@ -9,8 +9,7 @@ import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 const useMessagesQuery = (
   applicationId: string,
-  messageType: MESSAGE_URLS,
-  isOpen: boolean
+  messageType: MESSAGE_URLS
 ): UseQueryResult<Message[], Error> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
@@ -34,7 +33,6 @@ const useMessagesQuery = (
       select: (data: MessageData[]) => mapMessages(data),
       onError: () => handleError(),
       refetchInterval: 30_000,
-      enabled: isOpen,
     }
   );
 };

@@ -6,14 +6,10 @@ import createAxiosTestContext from 'shared/__tests__/utils/create-axios-test-con
 import createReactQueryTestClient from 'shared/__tests__/utils/react-query/create-react-query-test-client';
 import { act, render } from 'shared/__tests__/utils/test-utils';
 import BackendAPIContext from 'shared/backend-api/BackendAPIContext';
-import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
-import Portal from 'shared/components/confirm-dialog/Portal';
 import Content from 'shared/components/content/Content';
 import HiddenLoadingIndicator from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator';
 import Layout from 'shared/components/layout/Layout';
 import HDSToastContainer from 'shared/components/toast/ToastContainer';
-import PORTAL_ID from 'shared/contants/portal-id';
-import { DialogContextProvider } from 'shared/contexts/DialogContext';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
@@ -21,9 +17,8 @@ import { ThemeProvider } from 'styled-components';
 type Props = {
   backendUrl: string;
   Header: React.FC;
-  Footer?: React.FC;
+  Footer: React.FC;
   AuthProvider?: React.FC;
-  confirmDialog?: boolean;
 };
 
 const renderPage =
@@ -32,7 +27,6 @@ const renderPage =
     Header,
     Footer,
     AuthProvider,
-    confirmDialog,
   }: Props) =>
   async (
     Page: NextPage,
@@ -49,7 +43,7 @@ const renderPage =
           <Content>
             <Page />
           </Content>
-          {Footer && <Footer />}
+          <Footer />
         </Layout>
       </ThemeProvider>
     );
@@ -60,25 +54,11 @@ const renderPage =
       render(
         <BackendAPIContext.Provider value={createAxiosTestContext(backendUrl)}>
           <QueryClientProvider client={queryClient}>
-            <DialogContextProvider>
-              {AuthProvider ? (
-                <AuthProvider>{children}</AuthProvider>
-              ) : (
-                children
-              )}
-              <HiddenLoadingIndicator />
-              {confirmDialog && (
-                <>
-                  <Portal>
-                    <ConfirmDialog />
-                  </Portal>
-                  <div id={PORTAL_ID} />
-                </>
-              )}
-            </DialogContextProvider>
+            {AuthProvider ? <AuthProvider>{children}</AuthProvider> : children}
+            <HiddenLoadingIndicator />
           </QueryClientProvider>
         </BackendAPIContext.Provider>,
-        { isReady: true, ...router }
+        router
       );
     });
     return queryClient;

@@ -1,7 +1,7 @@
-import YouthFormData from '@frontend/kesaseteli-shared/src/types/youth-form-data';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
+import YouthFormData from '../../src/types/youth-form-data';
 import { getIndexPageComponents } from '../index-page/indexPage.components';
 
 const sendYouthApplication = async (

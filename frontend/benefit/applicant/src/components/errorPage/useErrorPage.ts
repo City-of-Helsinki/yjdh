@@ -1,5 +1,5 @@
 import { ROUTES } from 'benefit/applicant/constants';
-import useLogout from 'benefit/applicant/hooks/useLogout';
+import useLogoutQuery from 'benefit/applicant/hooks/useLogoutQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
@@ -13,13 +13,13 @@ type ExtendedComponentProps = {
 const useErrorPage = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
-  const logout = useLogout();
+  const logoutQuery = useLogoutQuery();
 
   const handleBackClick = (): void => {
     void router.push(ROUTES.HOME);
   };
 
-  return { t, handleBackClick, handleLogout: () => logout() };
+  return { t, handleBackClick, handleLogout: () => logoutQuery.mutate({}) };
 };
 
 export { useErrorPage };

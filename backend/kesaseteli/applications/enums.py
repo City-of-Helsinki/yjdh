@@ -26,7 +26,7 @@ def get_supported_languages() -> Tuple[str]:
     return list(zip(*APPLICATION_LANGUAGE_CHOICES))[0]
 
 
-class EmployerApplicationStatus(models.TextChoices):
+class ApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")
     ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
@@ -38,63 +38,6 @@ class EmployerApplicationStatus(models.TextChoices):
     ACCEPTED = "accepted", _("Accepted")
     REJECTED = "rejected", _("Rejected")
     DELETED_BY_CUSTOMER = "deleted_by_customer", _("Deleted by customer")
-
-
-class YouthApplicationStatus(models.TextChoices):
-    SUBMITTED = "submitted", _("Submitted")
-    AWAITING_MANUAL_PROCESSING = "awaiting_manual_processing", _(
-        "Awaiting manual processing"
-    )
-    ADDITIONAL_INFORMATION_REQUESTED = "additional_information_requested", _(
-        "Additional information requested"
-    )
-    ADDITIONAL_INFORMATION_PROVIDED = "additional_information_provided", _(
-        "Additional information provided"
-    )
-    ACCEPTED = "accepted", _("Accepted")
-    REJECTED = "rejected", _("Rejected")
-
-    @staticmethod
-    def active_values():
-        """
-        Youth application statuses for youth application that have been activated.
-        """
-        return [
-            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
-            YouthApplicationStatus.ACCEPTED.value,
-            YouthApplicationStatus.REJECTED.value,
-        ]
-
-    @staticmethod
-    def acceptable_values():
-        """
-        Youth application statuses from which the youth application can be accepted.
-        """
-        return [
-            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
-        ]
-
-    @staticmethod
-    def rejectable_values():
-        """
-        Youth application statuses from which the youth application can be rejected.
-        """
-        return [
-            YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
-        ]
-
-    @staticmethod
-    def handled_values():
-        """
-        Youth application statuses which have been handled and require a handler.
-        """
-        return [YouthApplicationStatus.ACCEPTED, YouthApplicationStatus.REJECTED]
 
 
 class AttachmentType(models.TextChoices):

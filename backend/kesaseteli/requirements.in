@@ -5,7 +5,6 @@ django-environ
 django-extensions
 djangorestframework
 django-searchable-encrypted-fields
-django-sequences
 django-simple-history
 django-storages[azure]
 elasticsearch

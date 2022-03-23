@@ -40,7 +40,6 @@ env:
   HELM_BUFFER_TIME: 300
   NEXT_PUBLIC_BACKEND_URL: https://helsinkibenefit-bf-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_MOCK_FLAG: 1
-  APPLICANT_URL: https://helsinkibenefit-bf-appl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
 
 jobs:
   build:
@@ -70,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: Build ${{ matrix.service }}
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
@@ -111,7 +110,7 @@ jobs:
     needs: build
     name: Review
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
@@ -124,7 +123,6 @@ jobs:
           K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY: ${{ secrets.K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY_REVIEW }}
           K8S_SECRET_PREVIOUS_BENEFITS_SOCIAL_SECURITY_NUMBER_HASH_KEY: ${{ secrets.K8S_SECRET_SOCIAL_SECURITY_NUMBER_HASH_KEY_REVIEW }}
         run: |
-          echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.APPLICANT_URL }}/login?logout=true" >> $GITHUB_ENV
           echo "K8S_SECRET_ALLOWED_HOSTS=*" >> $GITHUB_ENV
           echo "K8S_SECRET_CREATE_SUPERUSER=${{ secrets.K8S_SECRET_CREATE_SUPERUSER_REVIEW }}" >> $GITHUB_ENV
           echo "K8S_SECRET_ADMIN_USER_PASSWORD=${{ secrets.K8S_SECRET_ADMIN_USER_PASSWORD_REVIEW }}" >> $GITHUB_ENV
@@ -171,7 +169,6 @@ jobs:
           SERVICE_PORT: ${{ matrix.port }}
           K8S_SECRET_ALLOWED_HOSTS: "*"
           APP_MIGRATE_COMMAND: ${{ matrix.database == 'true' && '/app/.prod/on_deploy.sh' || ''}}
-          LOGOUT_REDIRECT_URL: ${{ env.APPLICANT_URL }}/login?logout=true
       - name: Create PR comment for helsinkibenefit-V${{ matrix.service }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:

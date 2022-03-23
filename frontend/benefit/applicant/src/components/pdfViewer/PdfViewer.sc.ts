@@ -1,13 +1,6 @@
 import styled from 'styled-components';
 
-export const $ViewerWrapper = styled.div<{
-  documentMarginLeft: undefined | string;
-}>`
-  .Document {
-    margin-left: ${(props) =>
-      props.documentMarginLeft ? props.documentMarginLeft : '0'};
-  }
-`;
+export const $ViewerWrapper = styled.div``;
 
 export const $ActionsWrapper = styled.div`
   display: flex;

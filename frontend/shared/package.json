@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@sentry/browser": "^6.17.3",
-    "axios": "^0.26.0",
+    "axios": "^0.25.0",
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
     "dotenv": "^16.0.0",
@@ -30,12 +30,12 @@
     "path-browserify": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-hook-form": "^7.27.1",
+    "react-hook-form": "^7.25.3",
     "react-i18next": "^11.11.0",
     "react-loading-skeleton": "^3.0.2",
     "react-query": "^3.34.0",
     "react-table": "^7.7.0",
-    "react-toastify": "^8.2.0",
+    "react-toastify": "^8.1.1",
     "styled-components": "^5.3.1",
     "uuid": "^8.3.2"
   },

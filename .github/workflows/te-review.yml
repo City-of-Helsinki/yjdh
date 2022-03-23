@@ -54,7 +54,7 @@ jobs:
       matrix:
 #        Disable te-empl and te-yout due to YJDH-370
 #        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
-        service: [ 'te-bknd', 'te-admn', 'te-yout' ]
+        service: [ 'te-bknd', 'te-admn' ]
         include:
           - service: te-bknd
             context: ./backend
@@ -64,10 +64,10 @@ jobs:
 #            context: ./frontend
 #            dockerfile: ./frontend/tet/employer/Dockerfile
 #            port: 3000
-          - service: te-yout
-            context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
-            port: 3000
+#          - service: te-yout
+#            context: ./frontend
+#            dockerfile: ./frontend/tet/youth/Dockerfile
+#            port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: Build ${{ matrix.service }}
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
@@ -98,7 +98,7 @@ jobs:
       matrix:
 #        Disable te-empl and te-yout due to YJDH-370
 #        service: [ 'te-bknd', 'te-empl', 'te-yout', 'te-admn' ]
-        service: [ 'te-bknd', 'te-admn', 'te-yout' ]
+        service: [ 'te-bknd', 'te-admn' ]
         include:
           - service: te-bknd
             context: ./backend
@@ -110,11 +110,11 @@ jobs:
 #            dockerfile: ./frontend/tet/employer/Dockerfile
 #            database: false
 #            port: 3000
-          - service: te-yout
-            context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
-            database: false
-            port: 3000
+#          - service: te-yout
+#            context: ./frontend
+#            dockerfile: ./frontend/tet/youth/Dockerfile
+#            database: false
+#            port: 3000
           - service: te-admn
             context: ./frontend
             dockerfile: ./frontend/tet/admin/Dockerfile
@@ -127,7 +127,7 @@ jobs:
     needs: build
     name: Review
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
@@ -146,7 +146,6 @@ jobs:
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL=${{ env.ADMIN_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL_FAILURE=${{ env.ADMIN_URL }}/login?error=true" >> $GITHUB_ENV
-          echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.ADMIN_URL }}/login?logout=true" >> $GITHUB_ENV
           echo "K8S_SECRET_EAUTH_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_EAUTH_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
@@ -195,7 +194,6 @@ jobs:
           AD_LOGIN_REDIRECT_URL_FAILURE: ${{ env.ADMIN_URL }}/login?error=true
           EAUTH_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
           EAUTH_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
-          LOGOUT_REDIRECT_URL: ${{ env.ADMIN_URL }}/login?logout=true
 
       - name: Deploy Cronjobs
         if: matrix.database
@@ -234,7 +232,7 @@ jobs:
 #          - service: te-empl
 #            dir: kesaseteli/employer
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v2
 #      - name: Setup kubectl
 #        run: |
 #          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig

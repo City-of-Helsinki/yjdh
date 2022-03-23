@@ -15,8 +15,7 @@
   },
   "dependencies": {
     "@frontend/shared": "*",
-    "@frontend/tet-shared": "*",
-    "axios": "^0.26.0",
+    "axios": "^0.25.0",
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
     "esm": "^3.2.25",
@@ -28,12 +27,12 @@
     "next-transpile-modules": "^9.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "^7.27.1",
+    "react-hook-form": "^7.25.3",
     "react-query": "^3.34.0",
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
-    "@hookform/devtools": "^4.0.2",
+		"@hookform/devtools": "^4.0.2",
     "@types/node": "^16.11.12",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.6",

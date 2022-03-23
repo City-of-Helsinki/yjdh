@@ -1,10 +1,8 @@
 import pytest
-from django.conf import settings
 from django.shortcuts import reverse
 from django.test import RequestFactory
-from django.urls.exceptions import NoReverseMatch
 
-from applications.enums import EmployerApplicationStatus
+from applications.enums import ApplicationStatus
 from applications.exporters.excel_exporter import export_applications_as_xlsx_output
 from applications.models import EmployerSummerVoucher
 
@@ -21,23 +19,15 @@ def test_excel_view_get_with_authenticated_user(staff_client):
 
 @pytest.mark.django_db
 def test_excel_view_get_with_unauthenticated_user(user_client):
-    try:
-        response = user_client.get(excel_download_url())
-    except NoReverseMatch as e:
-        # If ENABLE_ADMIN is off redirecting to Django admin login will not work
-        assert not settings.ENABLE_ADMIN
-        assert str(e) == "'admin' is not a registered namespace"
-    else:
-        assert settings.ENABLE_ADMIN
-        assert response.status_code == 302
-        assert response.url == "/admin/login/?next=/excel-download/"
+    response = user_client.get(excel_download_url())
+    assert response.status_code == 302
 
 
 @pytest.mark.django_db
 def test_excel_view_download_unhandled(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
-    submitted_summer_voucher.application.status = EmployerApplicationStatus.SUBMITTED
+    submitted_summer_voucher.application.status = ApplicationStatus.SUBMITTED
     submitted_summer_voucher.application.save()
 
     response = staff_client.get(f"{excel_download_url()}?download=unhandled")
@@ -62,7 +52,7 @@ def test_excel_view_download_no_unhandled_applications(staff_client):
 def test_excel_view_download_annual(
     staff_client, submitted_summer_voucher, submitted_employment_contract_attachment
 ):
-    submitted_summer_voucher.application.status = EmployerApplicationStatus.SUBMITTED
+    submitted_summer_voucher.application.status = ApplicationStatus.SUBMITTED
     submitted_summer_voucher.application.save()
 
     response = staff_client.get(f"{excel_download_url()}?download=annual")

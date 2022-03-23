@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 13:53+0200\n"
-"PO-Revision-Date: 2022-03-07 09:05+0200\n"
+"POT-Creation-Date: 2022-02-08 14:51+0200\n"
+"PO-Revision-Date: 2022-02-08 14:52+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -61,15 +61,6 @@ msgstr ""
 msgid "Social security number must be set"
 msgstr ""
 
-msgid "Failed to send youth summer voucher email"
-msgstr ""
-
-msgid "Failed to send manual processing email to handler"
-msgstr ""
-
-msgid "VTJ integration is not implemented"
-msgstr ""
-
 msgid "Failed to send activation email"
 msgstr ""
 
@@ -98,9 +89,6 @@ msgid "Rejected"
 msgstr ""
 
 msgid "Deleted by customer"
-msgstr ""
-
-msgid "Awaiting manual processing"
 msgstr ""
 
 msgid "employment contract"
@@ -307,15 +295,6 @@ msgstr ""
 msgid "vtj json"
 msgstr ""
 
-msgid "status"
-msgstr ""
-
-msgid "handler"
-msgstr ""
-
-msgid "time handled"
-msgstr ""
-
 msgid "Aktivoi Kesäseteli"
 msgstr "Activate your Summer Job Voucher"
 
@@ -373,13 +352,6 @@ msgstr ""
 msgid "Special case of admitting the summer voucher."
 msgstr ""
 
-#, python-format
-msgid "Vuoden %(year)s Kesäsetelisi"
-msgstr "Your %(year)s Summer Job Voucher"
-
-msgid "Unable to send youth summer voucher email"
-msgstr ""
-
 msgid "youth summer voucher"
 msgstr ""
 
@@ -390,6 +362,9 @@ msgid "company"
 msgstr ""
 
 msgid "user"
+msgstr ""
+
+msgid "status"
 msgstr ""
 
 msgid "invoicer work address"
@@ -515,157 +490,11 @@ msgstr ""
 msgid "Lataa Excel tiedosto kaikista tämän vuoden hakemuksista"
 msgstr ""
 
-msgid "Kesäsetelisi ja ohjeet sen käyttämiseen"
-msgstr "Your Summer Job Voucher and instructions for its use"
-
-msgid "Helsinki, Kesäseteli, 325€"
-msgstr "Helsinki, Summer Job Voucher, 325€"
-
-msgid "Kesäsetelisi, ole hyvä"
-msgstr "Here is your Summer Job Voucher"
-
-msgid "Tässä henkilökohtainen Kesäsetelisi."
-msgstr "Here is your personal Summer Job Voucher."
-
-msgid ""
-"Tutustu Kesäsetelin nettisivuihin, jossa on tietoa Kesäsetelin käytöstä, "
-"kesätyönhausta sekä työpaikkoja."
-msgstr ""
-"Check out the Summer Job Voucher website, which includes information about "
-"using the Summer Job Voucher, summer job hunting and jobs available."
-
-msgid "Ystävällisin terveisin, Kesäseteli-tiimi"
-msgstr "Kind regards, the Summer Job Voucher Team"
-
-msgid "Kesäsetelinumero:"
-msgstr "Summer Job Voucher number:"
-
-msgid "Kesäsetelin summa:"
-msgstr "Summer Job Voucher’s amount:"
-
-msgid "325€"
-msgstr "€325"
-
-msgid "Postinumero:"
-msgstr "Postal code:"
-
-msgid "Koulu:"
-msgstr "School:"
-
-msgid "Puhelinnumero:"
-msgstr "Phone number:"
-
-msgid "Sähköpostiosoite:"
-msgstr "Email address:"
-
-msgid ""
-"Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän "
-"sähköpostiviestin työnantajalle tai antaa heille yllä olevan "
-"kesäsetelinumeron."
-msgstr ""
-"When you have found a summer job and signed an employment contract, you can "
-"forward this email to the employer or give them the above Summer Job Voucher "
-"number."
-
-msgid "Ohjeita työnhakijalle"
-msgstr "Instructions for job-seekers"
-
-msgid ""
-"Kesäseteli helpottaa sinua kesätyöpaikan löytämisessä: viime vuonna "
-"tyypillisiä työtehtäviä olivat kesäleirin ohjaaja, myymälän hyllyttäjä, "
-"ravintolan saliapulainen, puutarhatyöntekijä, lastenhoitaja, verkkosivujen "
-"ja somen sisällöntuottaja ja kioskimyyjä."
-msgstr ""
-"The summer job voucher helps you find a summer job: last year, common job "
-"titles included those of a summer camp instructor, shelf stacker, restaurant "
-"helper, garden worker, childminder, web content producer and kiosk "
-"salesperson."
-
-msgid ""
-"Erikoisia kesätöitä olivat esimerkiksi peliohjelmointi, äänitiedostojen "
-"editointi ja nahkapajan apulainen!"
-msgstr ""
-"Rarer summer jobs included game developing, audio editing and assisting at a "
-"leather workshop!"
-
-msgid "Työpäivät ja palkka:"
-msgstr "Working days and pay:"
-
-msgid "Kesäsetelillä tehdään 60 työtuntia."
-msgstr "You will work 60 hours with the summer job voucher."
-
-msgid "Työtunteja on vähintään 18h/viikko."
-msgstr "You must work at least 18 hours a week."
-
-msgid "Työnantaja maksaa sinulle palkkaa vähintään 400 euroa (60 työtunnilta)."
-msgstr "The employer will pay you a minimum of EUR 400 (for 60 working hours)."
-
-msgid "Summa pitää sisällään lomakorvauksen."
-msgstr "The sum includes holiday compensation."
-
-msgid "Lisäksi työnantaja maksaa normaalit työnantajamaksut."
-msgstr ""
-"In addition to this, the employer will pay normal employer’s contributions."
-
-msgid ""
-"Kesätyöjakso voi olla tuntimäärältään pidempi, tällöin 60 työtuntia "
-"ylittävän osuuden palkan on oltava vähintään alan työehtosopimuksen mukainen "
-"vähimmäispalkka."
-msgstr ""
-"The employment relationship may include more hours, in which case the pay "
-"for the hours exceeding 60 hours must be at least the minimum pay specified "
-"in the industry’s collective agreement."
-
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/"
-msgstr ""
-"https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-"
-"summer-job-seekers/"
-
-msgid "Lue lisää"
-msgstr "Read more"
-
-msgid "Ohjeita työnantajalle"
-msgstr "Instructions for employers"
-
-msgid ""
-"Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke."
-msgstr ""
-"The summer job voucher is a shared project of young people, entrepreneurs "
-"and the City of Helsinki."
-
-msgid ""
-"Kaupunki korvaa 325 euroa työnantajalle, joka palkkaa Kesäseteliin "
-"oikeutetun nuoren töihin 1.6.–15.8.2022 välisenä aikana."
-msgstr ""
-"The City of Helsinki will provide a reimbursement of EUR 325 to each "
-"employer who a young person with the summer job voucher between 1 June and "
-"15 August 2022."
-
-msgid ""
-"Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 400 euron palkka."
-msgstr ""
-"The minimum requirements for the summer job are a total working time of 60 "
-"hours and a salary of EUR 400."
-
-msgid "Muut käyttöehdot voit lukea täältä:"
-msgstr "Other terms of use can be read here:"
-
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
-msgstr ""
-"https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-"
-"employers/"
-
-msgid "Helsinki"
-msgstr "Helsinki"
-
-msgid "https://nuorten.helsinki/kesaseteli/"
-msgstr "https://nuorten.helsinki/studies-and-work/the-summer-job-voucher/"
-
-msgid "nuorten.helsinki/kesaseteli/"
-msgstr "nuorten.helsinki/studies-and-work/the-summer-job-voucher/"
-
 msgid "Ei uusia käsittelemättömiä hakemuksia."
 msgstr ""
 
 msgid "Hakemuksia ei löytynyt."
 msgstr ""
+
+#~ msgid "Vahvista sähköpostiosoitteesi"
+#~ msgstr "Confirm your email address"

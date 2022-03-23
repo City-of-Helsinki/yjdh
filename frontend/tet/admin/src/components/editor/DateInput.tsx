@@ -1,22 +1,19 @@
 import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
+import TetPosting from 'tet/admin/types/tetposting';
 import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { DateInput as HdsDateInput } from 'hds-react';
 import Id from 'shared/types/id';
-import { useTranslation } from 'next-i18next';
-import { Language } from 'shared/i18n/i18n';
 
 type Props = {
   id: Id<TetPosting>;
   label: string;
   registerOptions?: RegisterOptions;
   required: boolean;
-  minDate?: Date;
 };
 
-const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate }) => {
+const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false }) => {
   const { control } = useFormContext<TetPosting>();
-  const { i18n } = useTranslation();
+  console.log('date_rules', registerOptions);
   return (
     <Controller
       name={id}
@@ -29,9 +26,7 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
           value={value ? String(value) : ''}
           required={required}
           invalid={invalid}
-          language={i18n.language as Language}
           errorText={error ? error.message : ''}
-          minDate={minDate}
         />
       )}
       control={control}

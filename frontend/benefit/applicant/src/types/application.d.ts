@@ -215,7 +215,6 @@ export type ApplicationData = {
   applicant_terms_in_effect?: ApplicantTermsData;
   approve_terms?: ApproveTermsData;
   unread_messages_count?: number;
-  submitted_at?: string;
 };
 
 interface ApplicationAllowedAction {
@@ -305,9 +304,13 @@ export type Application = {
   applicantTermsInEffect?: ApplicantTerms;
   approveTerms?: ApproveTerms;
   unreadMessagesCount?: number;
-  submittedAt?: string | null;
 } & Step1 &
   Step2;
+
+export type SubmittedApplication = {
+  applicationNumber: number;
+  applicantName: string;
+};
 
 export type TextProp = 'textFi' | 'textEn' | 'textSv';
 export type TermsProp = 'termsPdfFi' | 'termsPdfEn' | 'termsPdfSv';

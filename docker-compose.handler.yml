@@ -40,21 +40,6 @@ services:
       - postgres
     container_name: kesaseteli-backend
 
-  kesaseteli-youth:
-    build:
-      context: ./frontend
-      dockerfile: kesaseteli/youth/Dockerfile
-      target: development
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
-    env_file:
-      - .env.kesaseteli
-    environment:
-      - PORT=3100
-    container_name: kesaseteli-youth
-
   kesaseteli-handler:
     build:
       context: ./frontend
@@ -75,15 +60,13 @@ services:
       - postgres
       - kesaseteli-backend
       - kesaseteli-handler
-      - kesaseteli-youth
     build:
       context: ./localdevelopment/handler/nginx
-    container_name: handler-local-proxy
+    container_name: kesaseteli-local-proxy
     volumes:
       - ./localdevelopment/handler/nginx/:/etc/nginx/
     ports:
       - 127.0.0.1:8000:8000
-      - 127.0.0.1:3100:3100
       - 127.0.0.1:3200:3200
 
 volumes:

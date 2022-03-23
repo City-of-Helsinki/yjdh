@@ -20,7 +20,7 @@ import { ThemeProvider } from 'styled-components';
 
 type Props = AppProps & {
   header: React.ReactNode;
-  footer?: React.ReactNode;
+  footer: React.ReactNode;
 };
 
 // Centralized logging with Sentry. See more:
@@ -83,10 +83,6 @@ const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
         process.env.TEST_CAFE !== 'true' && <ReactQueryDevtools />}
     </>
   );
-};
-
-BaseApp.defaultProps = {
-  footer: undefined,
 };
 
 export default initLocale(BaseApp);

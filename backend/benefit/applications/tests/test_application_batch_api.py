@@ -64,6 +64,7 @@ def test_applications_batch_list_with_filter(handler_api_client, application_bat
 @pytest.mark.parametrize(
     "status,batch_status,expected_decision",
     [
+        (ApplicationStatus.DRAFT, ApplicationBatchStatus.DRAFT, None),
         (
             ApplicationStatus.ACCEPTED,
             ApplicationBatchStatus.AWAITING_AHJO_DECISION,

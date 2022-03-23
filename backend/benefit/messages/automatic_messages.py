@@ -4,8 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from messages.models import Message, MessageType
 
 APPLICATION_REOPENED_MESSAGE = _(
-    "Your application has been opened for editing. Please make the corrections by "
-    "{additional_information_needed_by}, otherwise the application cannot be processed."
+    "Your application has been opened for editing. Please make the requested changes by "
+    "{additional_information_needed_by}, otherwise your application can not be processed."
 )
 
 

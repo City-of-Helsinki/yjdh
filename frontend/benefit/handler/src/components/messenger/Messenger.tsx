@@ -10,7 +10,6 @@ import { useMessenger } from './useMessenger';
 
 interface ComponentProps {
   isOpen: boolean;
-  isReadOnly?: boolean;
   onClose?: () => void;
   customItemsMessages?: React.ReactNode;
   customItemsNotes?: React.ReactNode;
@@ -18,7 +17,6 @@ interface ComponentProps {
 
 const Messenger: React.FC<ComponentProps> = ({
   isOpen,
-  isReadOnly,
   customItemsMessages,
   customItemsNotes,
   onClose,
@@ -45,16 +43,14 @@ const Messenger: React.FC<ComponentProps> = ({
           `}
         >
           <Messages data={messages} variant="message" withScroll />
-          {!isReadOnly && (
-            <Actions
-              customItems={customItemsMessages}
-              sendText={t('common:messenger.send')}
-              errorText={t('common:form.validation.string.max', { max: 1024 })}
-              placeholder={t('common:messenger.compose')}
-              onSend={handleSendMessage}
-              notification={t('common:messenger.showEveryone')}
-            />
-          )}
+          <Actions
+            customItems={customItemsMessages}
+            sendText={t('common:messenger.send')}
+            errorText={t('common:form.validation.string.max', { max: 1024 })}
+            placeholder={t('common:messenger.compose')}
+            onSend={handleSendMessage}
+            notification={t('common:messenger.showEveryone')}
+          />
         </TabPanel>
         <TabPanel
           css={`
@@ -63,16 +59,13 @@ const Messenger: React.FC<ComponentProps> = ({
             flex-grow: 1;
           `}
         >
-          {!isReadOnly && (
-            <Actions
-              customItems={customItemsNotes}
-              sendText={t('common:messenger.save')}
-              errorText={t('common:form.validation.string.max', { max: 1024 })}
-              placeholder={t('common:messenger.composeNote')}
-              onSend={handleCreateNote}
-            />
-          )}
-
+          <Actions
+            customItems={customItemsNotes}
+            sendText={t('common:messenger.save')}
+            errorText={t('common:form.validation.string.max', { max: 1024 })}
+            placeholder={t('common:messenger.composeNote')}
+            onSend={handleCreateNote}
+          />
           <Messages data={notes?.reverse()} variant="note" />
         </TabPanel>
       </Tabs>
@@ -84,7 +77,6 @@ Messenger.defaultProps = {
   customItemsMessages: [],
   customItemsNotes: [],
   onClose: () => noop,
-  isReadOnly: false,
 };
 
 export default Messenger;

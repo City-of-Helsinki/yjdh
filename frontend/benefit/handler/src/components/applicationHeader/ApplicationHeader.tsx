@@ -32,10 +32,6 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
     data.calculation?.handlerDetails?.lastName
   );
 
-  if (!data.applicationNumber || data.status === APPLICATION_STATUSES.DRAFT) {
-    return null;
-  }
-
   return (
     <$Wrapper>
       <Container>
@@ -76,7 +72,7 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
               <$ItemValue>{employeeName}</$ItemValue>
             </$ItemWrapper>
           </$Col>
-          {handlerName && (
+          {data.status === APPLICATION_STATUSES.HANDLING && (
             <$Col>
               <$HandlerWrapper>{getInitials(handlerName)}</$HandlerWrapper>
             </$Col>

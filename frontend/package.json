@@ -72,7 +72,7 @@
     "@commitlint/config-conventional": "^16.0.0",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@next/eslint-plugin-next": "^11.1.4",
-    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/testcafe": "^4.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -81,7 +81,7 @@
     "@types/jest-axe": "^3.5.3",
     "@types/pretty": "^2.0.1",
     "@types/slack-node": "^0.1.4",
-    "@types/styled-components": "^5.1.24",
+    "@types/styled-components": "^5.1.17",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.9.1",
     "audit-ci": "^5.1.2",
@@ -98,7 +98,7 @@
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-html": "^6.2.0",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jest": "^26.1.0",
+    "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-jest-async": "^1.0.3",
     "eslint-plugin-jest-dom": "^4.0.1",
     "eslint-plugin-json": "^3.1.0",
@@ -136,12 +136,9 @@
     "react-i18next": "^11.11.0",
     "slack-node": "^0.2.0",
     "testcafe": "^1.18.2",
-    "testcafe-reporter-custom": "^1.2.1",
+    "testcafe-reporter-custom": "^1.1.1",
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^27.1.3",
     "typescript": "^4.5.5"
-  },
-  "resolutions": {
-    "requestretry": "7.0.0"
   }
 }

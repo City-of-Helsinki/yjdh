@@ -1,4 +1,4 @@
-import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {

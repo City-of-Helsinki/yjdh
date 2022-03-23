@@ -1,157 +1,162 @@
-import {
-  expectToGetYouthApplication,
-  expectToPatchYouthApplication,
-  expectToPatchYouthApplicationError,
-} from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
-import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
-import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/status-constants';
-import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
-import { escapeRegExp } from 'shared/utils/regex.utils';
-import { assertUnreachable } from 'shared/utils/typescript.utils';
+import YouthApplication from 'kesaseteli/youth/types/youth-application';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
+import { convertFormDataToApplication } from 'kesaseteli/youth/utils/youth-form-data.utils';
+import nock from 'nock';
+import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+
+type SaveParams = {
+  backendExpectation?: (application: YouthApplication) => nock.Scope;
+  language?: Language;
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
-  expectations: {
-    pageIsLoaded: async () => {
-      await screen.findByRole('heading', {
-        name: /hakemuksen tiedot/i,
-      });
-    },
-    applicationWasNotFound: async () => {
-      await screen.findByRole('heading', {
-        name: /hakemusta ei löytynyt/i,
-      });
-    },
-    fieldValueIsPresent: async <K extends keyof CreatedYouthApplication>(
-      key: K,
-      transform?: (value: CreatedYouthApplication[K]) => string
-    ): Promise<void> => {
-      const field = await screen.findByTestId(`handlerApplication-${key}`);
-      if (!expectedApplication) {
-        throw new Error(
-          'you forgot to give expected application values for the test'
-        );
-      }
-      const value = transform
-        ? transform(expectedApplication[key])
-        : (expectedApplication[key] as string);
-      expect(field).toHaveTextContent(escapeRegExp(value));
-    },
-    nameIsPresent: async ({
-      first_name,
-      last_name,
-    }: CreatedYouthApplication): Promise<void> => {
-      const field = await screen.findByTestId(`handlerApplication-name`);
-      expect(field).toHaveTextContent(
-        escapeRegExp(`${first_name} ${last_name}`)
-      );
-    },
-    actionButtonsArePresent: async (): Promise<void> => {
-      await screen.findByRole('button', {
-        name: /hyväksy/i,
-      });
-      await screen.findByRole('button', {
-        name: /hylkää/i,
-      });
-    },
-    actionButtonsAreNotPresent: (): void => {
-      expect(
-        screen.queryByRole('button', {
-          name: /hyväksy/i,
-        })
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('button', {
-          name: /hylkää/i,
-        })
-      ).not.toBeInTheDocument();
-    },
-
-    statusNotificationIsPresent: async (
-      status: typeof YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED[number]
-      // eslint-disable-next-line consistent-return
-    ): Promise<HTMLElement | undefined> => {
-      switch (status) {
-        case 'submitted':
-          return screen.findByRole('heading', {
-            name: /nuori ei ole vielä aktivoinut hakemusta/i,
-          });
-
-        case 'additional_information_requested':
-          return screen.findByRole('heading', {
-            name: /nuori ei ole vielä täyttänyt lisätietohakemusta/i,
-          });
-
-        case 'accepted':
-          return screen.findByRole('heading', {
-            name: /hyväksytty/i,
-          });
-
-        case 'rejected':
-          return screen.findByRole('heading', {
-            name: /hylätty/i,
-          });
-
-        default:
-          assertUnreachable(status, 'Unknown status');
-      }
-    },
-    showsConfirmDialog: async (type: CompleteOperation) => {
-      const dialog = await screen.findByRole('dialog');
-      switch (type) {
-        case 'accept':
-          return within(dialog).findByText(
-            /^kesäseteli lähetetään sähköpostiin päätöksen jälkeen\. toimintoa ei voi peruuttaa\./i
-          );
-
-        case 'reject':
-          return within(dialog).findByText(/^toimintoa ei voi peruuttaa\./i);
-
-        default:
-          assertUnreachable(type);
-      }
-      return null;
-    },
-  },
-  actions: {
-    clickCompleteButton: (type: CompleteOperation): void => {
-      userEvent.click(screen.getByTestId(`${type}-button`));
-    },
-    clickConfirmButton: async (
-      type: CompleteOperation,
-      errorCode?: 400 | 500
-    ) => {
-      if (!expectedApplication) {
-        throw new Error(
-          'you forgot to give expected application values for the test'
-        );
-      }
-      if (errorCode) {
-        expectToPatchYouthApplicationError(
-          type,
-          expectedApplication.id,
-          errorCode
-        );
-      } else {
-        expectToPatchYouthApplication(type, expectedApplication.id);
-        expectToGetYouthApplication({
-          ...expectedApplication,
-          status: type === 'accept' ? 'accepted' : 'rejected',
+const getIndexPageApi = () => {
+  const youthFormData: Partial<YouthFormData> = {};
+  return {
+    expectations: {
+      pageIsLoaded: async () => {
+        await screen.findByRole('heading', {
+          name: /rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
         });
-      }
-      const dialog = await screen.findByRole('dialog');
-      userEvent.click(
-        within(dialog).getByRole('button', {
-          name: type === 'accept' ? /hyväksy/i : /hylkää/i,
-        })
-      );
+      },
+      inputIsPresent: async (key: keyof YouthFormData): Promise<void> => {
+        await screen.findByTestId(key);
+      },
+      inputIsNotPresent: async (key: keyof YouthFormData): Promise<void> => {
+        expect(screen.queryByTestId(key)).not.toBeInTheDocument();
+      },
+      schoolsDropdownIsDisabled: async (): Promise<void> => {
+        const input = await screen.findByRole('combobox', { name: /koulu/i });
+        expect(input).toBeDisabled();
+      },
+      schoolsDropdownIsEnabled: async (): Promise<void> => {
+        const input = await screen.findByRole('combobox', { name: /koulu/i });
+        expect(input).toBeEnabled();
+      },
+      textInputHasError: async (
+        key: keyof YouthFormData,
+        errorText: RegExp
+      ): Promise<void> => {
+        const input = await screen.findByTestId(key);
+        expect(input).toBeInvalid();
+        expect(
+          input.parentElement?.parentElement?.parentElement
+        ).toHaveTextContent(errorText);
+      },
+      textInputIsValid: async (key: keyof YouthFormData): Promise<void> => {
+        const input = await screen.findByTestId(key);
+        expect(input).toBeValid();
+      },
+      schoolsDropdownHasError: async (errorText: RegExp): Promise<void> => {
+        const input = await screen.findByRole('combobox', { name: /koulu/i });
+        expect(input).toBeInvalid();
+        const errorElement = await screen.findByTestId(`selectedSchool-error`);
+        expect(errorElement).toHaveTextContent(errorText);
+      },
+      schoolsDropdownIsValid: async (): Promise<void> => {
+        const input = await screen.findByRole('combobox', { name: /koulu/i });
+        expect(input).toBeValid();
+      },
+      checkboxHasError: async (
+        name: RegExp,
+        errorText: RegExp
+      ): Promise<void> => {
+        const checkbox = await screen.findByRole('checkbox', { name });
+        expect(checkbox.parentElement).toHaveTextContent(errorText);
+      },
     },
-    clickCancelButton: async () => {
-      const dialog = await screen.findByRole('dialog');
-      userEvent.click(within(dialog).getByRole('button', { name: /peruuta/i }));
+    actions: {
+      typeInput(key: keyof YouthFormData, value: string) {
+        const input = screen.getByTestId(key);
+        userEvent.clear(input);
+        if (value?.length > 0) {
+          userEvent.type(input, value);
+        }
+        if (key === 'social_security_number') {
+          youthFormData.social_security_number = value?.toUpperCase();
+        } else {
+          (youthFormData[key] as string) = value;
+        }
+        userEvent.click(document.body);
+      },
+      async typeAndSelectSchoolFromDropdown(
+        value: string,
+        expectedOption?: string
+      ) {
+        const input = await screen.findByRole('combobox', { name: /koulu/i });
+        await waitFor(
+          () => {
+            expect(input).toBeEnabled();
+          },
+          { timeout: 10_000 }
+        );
+        userEvent.clear(input);
+        userEvent.type(input, value);
+        const option = expectedOption ?? value;
+        const schoolOption = await screen.findByText(new RegExp(option, 'i'));
+        userEvent.click(schoolOption);
+        expect(input).toHaveValue(option);
+        youthFormData.selectedSchool = { name: option ?? value };
+      },
+      async toggleCheckbox(
+        key: keyof Pick<
+          YouthFormData,
+          'termsAndConditions' | 'is_unlisted_school'
+        >
+      ) {
+        const checkbox = screen.getByTestId(key);
+        userEvent.click(checkbox);
+        youthFormData[key] = Boolean(checkbox.getAttribute('value'));
+      },
+      async clickSaveButton({ language, backendExpectation }: SaveParams = {}) {
+        let response: nock.Scope;
+        if (backendExpectation) {
+          const application = {
+            ...convertFormDataToApplication(
+              youthFormData as YouthFormData,
+              language ?? DEFAULT_LANGUAGE
+            ),
+          };
+          response = backendExpectation(application);
+        }
+        const button = await screen.findByRole('button', {
+          name: /lähetä tiedot/i,
+        });
+        userEvent.click(button);
+
+        if (backendExpectation) {
+          await waitFor(() => {
+            response.done();
+          });
+        }
+      },
+      async fillTheFormWithListedSchoolAndSave(saveParams: SaveParams) {
+        this.typeInput('first_name', 'Helinä');
+        this.typeInput('last_name', "O'Hara");
+        this.typeInput('social_security_number', '111111-111c');
+        await this.typeAndSelectSchoolFromDropdown(
+          'Iidenkiven P',
+          'Hiidenkiven peruskoulu'
+        );
+        this.typeInput('phone_number', '+358-505-551-4995');
+        this.typeInput('email', 'aaaa@bbb.test.fi');
+        await this.toggleCheckbox('termsAndConditions');
+        await this.clickSaveButton(saveParams);
+      },
+      async fillTheFormWithUnlistedSchoolAndSave(saveParams: SaveParams) {
+        this.typeInput('first_name', 'Helinä');
+        this.typeInput('last_name', "O'Hara");
+        this.typeInput('social_security_number', '111111-111c');
+        await this.toggleCheckbox('is_unlisted_school');
+        this.typeInput('unlistedSchool', 'Erikoiskoulu');
+        this.typeInput('phone_number', '+358-505-551-4995');
+        this.typeInput('email', 'aaaa@bbb.test.fi');
+        await this.toggleCheckbox('termsAndConditions');
+        await this.clickSaveButton(saveParams);
+      },
     },
-  },
-});
+  };
+};
 
 export default getIndexPageApi;

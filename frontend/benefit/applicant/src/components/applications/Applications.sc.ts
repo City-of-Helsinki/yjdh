@@ -3,9 +3,9 @@ import styled from 'styled-components';
 export const $PageHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: start;
-  margin-bottom: ${(props) => props.theme.spacing.s};
-  margin-top: ${(props) => props.theme.spacing.m};
+  align-items: center;
+  margin-bottom: ${(props) => props.theme.spacing.m};
+  margin-top: ${(props) => props.theme.spacing.xs};
   & > div {
     flex: 1 0 50%;
   }

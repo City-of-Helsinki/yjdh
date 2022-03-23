@@ -24,7 +24,6 @@ env = environ.Env(
     MEDIA_URL=(str, "/media/"),
     STATIC_URL=(str, "/static/"),
     YOUTH_URL=(str, "https://localhost:3100"),
-    HANDLER_URL=(str, "https://localhost:3200"),
     ALLOWED_HOSTS=(list, ["*"]),
     USE_X_FORWARDED_HOST=(bool, False),
     DATABASE_URL=(
@@ -55,8 +54,6 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
-    LOGOUT_REDIRECT_URL=(str, "/"),
-    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/excel-download/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, ""),
@@ -89,7 +86,7 @@ env = environ.Env(
     ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
-    ENABLE_ADMIN=(bool, False),
+    ENABLE_ADMIN=(bool, True),
     DB_PREFIX=(str, ""),
     EMAIL_USE_TLS=(bool, False),
     EMAIL_HOST=(str, "ema.platta-net.hel.fi"),
@@ -153,7 +150,6 @@ STATIC_ROOT = env("STATIC_ROOT")
 MEDIA_URL = env.str("MEDIA_URL")
 STATIC_URL = env.str("STATIC_URL")
 YOUTH_URL = env.str("YOUTH_URL")
-HANDLER_URL = env.str("HANDLER_URL")
 
 ROOT_URLCONF = "kesaseteli.urls"
 WSGI_APPLICATION = "kesaseteli.wsgi.application"
@@ -177,7 +173,6 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_extensions",
     "django_auth_adfs",
-    "sequences.apps.SequencesConfig",
     # shared apps
     "shared.audit_log",
     "shared.oidc",
@@ -309,11 +304,9 @@ OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
 OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
-OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
-LOGOUT_REDIRECT_URL = env.str("LOGOUT_REDIRECT_URL")
 
 EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
 EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
@@ -332,7 +325,7 @@ AUTH_ADFS = {
     "AUDIENCE": ADFS_CLIENT_ID,
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
-    "CLAIM_MAPPING": {"email": "mail"},
+    "CLAIM_MAPPING": {"email": "email"},
     "USERNAME_CLAIM": "oid",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,

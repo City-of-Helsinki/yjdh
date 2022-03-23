@@ -185,12 +185,4 @@ export const MIN_PHONE_NUMBER_LENGTH = 7 as const;
 export const MAX_PHONE_NUMBER_LENGTH = 13 as const;
 
 // temporary consent file
-export const EMPLOYEE_CONSENT_FILE_PREFIX = 'employee_consent';
-
-export const SUBMITTED_STATUSES = [
-  'received',
-  'handling',
-  'cancelled',
-  'accepted',
-  'rejected',
-];
+export const EMPLOYEE_CONSENT_FILE = 'employee_consent.pdf';

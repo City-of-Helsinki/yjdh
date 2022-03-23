@@ -1,4 +1,3 @@
-import useLogin from 'benefit/applicant/hooks/useLogin';
 import {
   Button,
   IconSignin,
@@ -8,18 +7,18 @@ import {
 import { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import React, { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
+import React from 'react';
 import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
+
+import useLogin from '../hooks/useLogin';
 
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
 };
 
 const Login: NextPage = () => {
-  const queryClient = useQueryClient();
   const { t } = useTranslation();
   const {
     query: { logout, error, sessionExpired },
@@ -44,12 +43,6 @@ const Login: NextPage = () => {
       content: t('common:login.infoContent'),
     };
   }, [t, error, sessionExpired, logout]);
-
-  useEffect(() => {
-    if (logout) {
-      void queryClient.clear();
-    }
-  }, [logout, queryClient]);
 
   return (
     <Container>

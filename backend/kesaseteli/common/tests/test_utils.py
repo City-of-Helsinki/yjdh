@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from common.utils import (
     has_whitespace,
     is_uppercase,
-    normalize_whitespace,
     validate_finnish_social_security_number,
     validate_optional_finnish_social_security_number,
 )
@@ -46,23 +45,6 @@ def test_has_whitespace(test_value, expected_result):
 )
 def test_is_uppercase(test_value, expected_result):
     assert is_uppercase(test_value) == expected_result
-
-
-@pytest.mark.parametrize(
-    "test_value,expected_result",
-    [
-        ("Test", "Test"),
-        ("  Test", "Test"),
-        ("Test  ", "Test"),
-        ("  Test    ", "Test"),
-        ("Te   st", "Te st"),
-        ("T  e s    t", "T e s t"),
-        ("   T     e  s  t    ", "T e s t"),
-        ("\n \tT\tes\nt  \ni\nn\t\n   g  ", "T es t i n g"),
-    ],
-)
-def test_normalize_whitespace(test_value, expected_result):
-    assert normalize_whitespace(test_value) == expected_result
 
 
 @pytest.mark.parametrize("test_value", get_empty_values())

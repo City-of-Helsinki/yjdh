@@ -2,7 +2,7 @@ import { NumberInput as HdsNumberInput } from 'hds-react';
 import React from 'react';
 import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import Id from 'shared/types/id';
-import TetPosting from 'tet-shared/types/tetposting';
+import TetPosting from 'tet/admin/types/tetposting';
 
 type SpotsType = Pick<TetPosting, 'spots'>;
 

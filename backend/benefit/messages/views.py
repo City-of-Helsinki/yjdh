@@ -1,5 +1,5 @@
 from applications.models import Application
-from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
+from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
@@ -17,7 +17,7 @@ class ApplicantMessageViewSet(AuditLoggingModelViewSet):
 
     serializer_class = MessageSerializer
     permission_classes = [
-        BFIsApplicant,
+        BFIsAuthenticated,
         TermsOfServiceAccepted,
         HasMessagePermission,
     ]

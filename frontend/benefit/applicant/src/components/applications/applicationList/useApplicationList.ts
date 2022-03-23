@@ -10,6 +10,7 @@ import { IconPen } from 'hds-react';
 import camelCase from 'lodash/camelCase';
 // eslint-disable-next-line you-dont-need-lodash-underscore/find
 import find from 'lodash/find';
+import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import isServerSide from 'shared/server/is-server-side';
@@ -92,11 +93,8 @@ const useApplicationList = (status: string[]): ApplicationListProps => {
       default:
         return {
           label: t(`${translationListBase}.common.check`),
-          handleAction: (): void => {
-            void router.push(
-              `${ROUTES.APPLICATION_FORM}?id=${id}&isReadOnly=true`
-            );
-          },
+          // implement the action
+          handleAction: noop,
         };
     }
   };

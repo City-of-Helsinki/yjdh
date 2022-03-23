@@ -3,18 +3,18 @@ from typing import Optional
 from django.http import HttpRequest
 from rest_framework.permissions import BasePermission
 
-from applications.enums import EmployerApplicationStatus
+from applications.enums import ApplicationStatus
 from applications.models import EmployerApplication
 from companies.models import Company
 from companies.services import get_or_create_company_using_organization_roles
 
 ALLOWED_APPLICATION_VIEW_STATUSES = [
-    EmployerApplicationStatus.DRAFT,
-    EmployerApplicationStatus.SUBMITTED,
+    ApplicationStatus.DRAFT,
+    ApplicationStatus.SUBMITTED,
 ]
 
 ALLOWED_APPLICATION_UPDATE_STATUSES = [
-    EmployerApplicationStatus.DRAFT,
+    ApplicationStatus.DRAFT,
 ]
 
 

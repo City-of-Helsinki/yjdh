@@ -13,18 +13,6 @@ class BFIsAuthenticated(permissions.IsAuthenticated):
         return super().has_permission(request, view)
 
 
-class BFIsApplicant(BFIsAuthenticated):
-    def has_permission(self, request, view):
-        # FIXME: Remove this permission when FE implemented authentication
-        if settings.DISABLE_AUTHENTICATION:
-            return True
-        if request.user and request.user.is_staff:
-            # Handlers are never applicants. This restriction is needed in order to limit
-            # handler's access to draft applications.
-            return False
-        return super().has_permission(request, view)
-
-
 class BFIsHandler(permissions.IsAdminUser):
     def has_permission(self, request, view):
         # FIXME: Remove this permission when FE implemented authentication

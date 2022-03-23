@@ -3,7 +3,6 @@ import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
-  ORGANIZATION_TYPES,
 } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
@@ -85,15 +84,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   useAlertBeforeLeaving(formik.dirty);
 
   const selectLabel = t('common:select');
-
-  const isAbleToSelectEmploymentBenefit =
-    data?.company?.organizationType !== ORGANIZATION_TYPES.ASSOCIATION ||
-    (data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION &&
-      data?.associationHasBusinessActivities);
-  const isAbleToSelectSalaryBenefit = formik.values.paySubsidyGranted === true;
-
-  const isNoAvailableBenefitTypes =
-    !isAbleToSelectEmploymentBenefit && !isAbleToSelectSalaryBenefit;
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -190,10 +180,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           />
         </$GridCell>
       </FormSection>
-      <FormSection
-        header={t(`${translationsBase}.heading2`)}
-        tooltip={t(`${translationsBase}.tooltips.heading2`)}
-      >
+      <FormSection header={t(`${translationsBase}.heading2`)}>
         <$GridCell $colSpan={8}>
           <SelectionGroup
             id={fields.paySubsidyGranted.name}
@@ -351,10 +338,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
           </$GridCell>
         )}
       </FormSection>
-      <FormSection
-        header={t(`${translationsBase}.heading3`)}
-        tooltip={t(`${translationsBase}.tooltips.heading3`)}
-      >
+      <FormSection header={t(`${translationsBase}.heading3`)}>
         <$GridCell $colSpan={6}>
           <SelectionGroup
             label={fields.benefitType.label}
@@ -373,7 +357,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               checked={formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT}
-              disabled={!isAbleToSelectEmploymentBenefit}
             />
             <$RadioButton
               id={`${fields.benefitType.name}Salary`}
@@ -385,24 +368,23 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
-              disabled={!isAbleToSelectSalaryBenefit}
+              disabled={formik.values.paySubsidyGranted !== true}
             />
           </SelectionGroup>
         </$GridCell>
-        {isNoAvailableBenefitTypes && (
-          <$GridCell $colStart={7} $colSpan={6}>
-            <$Notification
-              type="error"
-              label={t(
-                `${translationsBase}.notifications.noAvailableBenefitTypes.label`
-              )}
-            >
-              {t(
-                `${translationsBase}.notifications.noAvailableBenefitTypes.content`
-              )}
-            </$Notification>
-          </$GridCell>
-        )}
+
+        {formik.values.benefitType === BENEFIT_TYPES.SALARY &&
+          formik.values.apprenticeshipProgram === true && (
+            <$GridCell $colSpan={6}>
+              <$Notification
+                label={t(
+                  `${translationsBase}.notifications.salaryBenefit.label`
+                )}
+              >
+                {t(`${translationsBase}.notifications.salaryBenefit.content`)}
+              </$Notification>
+            </$GridCell>
+          )}
       </FormSection>
 
       <FormSection header={t(`${translationsBase}.heading4`)}>
@@ -518,7 +500,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
                 required
               />
             </$GridCell>
-            <$GridCell $colSpan={3}>
+            <$GridCell $colSpan={2}>
               <TextInput
                 id={fields.employee.workingHours.name}
                 name={fields.employee.workingHours.name}
@@ -710,7 +692,6 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
-        disabledNext={isNoAvailableBenefitTypes}
       />
     </form>
   );

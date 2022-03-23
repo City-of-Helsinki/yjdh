@@ -1,6 +1,6 @@
-import YouthApplication from 'kesaseteli-shared/types/youth-application';
-import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
-import { convertFormDataToApplication } from 'kesaseteli-shared/utils/youth-form-data.utils';
+import YouthApplication from 'kesaseteli/youth/types/youth-application';
+import YouthFormData from 'kesaseteli/youth/types/youth-form-data';
+import { convertFormDataToApplication } from 'kesaseteli/youth/utils/youth-form-data.utils';
 import nock from 'nock';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';

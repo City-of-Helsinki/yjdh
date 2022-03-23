@@ -2,7 +2,7 @@ import ApplicationForm from 'kesaseteli/employer/components/application/Applicat
 import ActionButtons from 'kesaseteli/employer/components/application/form/ActionButtons';
 import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
 import ApplicationSummary from 'kesaseteli/employer/components/application/summary/ApplicationSummary';
-import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
+import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import { Trans, useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -11,7 +11,7 @@ import useGoToPage from 'shared/hooks/useGoToPage';
 const Step3Summary: React.FC = () => {
   const { t } = useTranslation();
   const goToPage = useGoToPage();
-  const { applicationId } = useApplicationApi();
+  const applicationId = useApplicationIdQueryParam();
   const goToThankYouPage = React.useCallback(() => {
     if (applicationId) {
       void goToPage(`/thankyou?id=${applicationId}`);

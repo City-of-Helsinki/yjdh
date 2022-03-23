@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@frontend/shared": "*",
-    "camelcase-keys": "^7.0.2",
+    "camelcase-keys": "^7.0.1",
     "hds-react": "^1.8.0",
     "styled-components": "^5.3.3"
   },

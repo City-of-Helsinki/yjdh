@@ -32,7 +32,7 @@ const useApplicationActions = (
         ...application,
         status,
         logEntryComment,
-        calculation: { ...application.calculation, grantedAsDeMinimisAid },
+        grantedAsDeMinimisAid,
         applicationStep: getApplicationStepString(1),
       },
       { deep: true }

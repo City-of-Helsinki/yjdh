@@ -17,8 +17,6 @@ from calculator.tests.factories import PaySubsidyFactory
 from companies.tests.factories import CompanyFactory
 from helsinkibenefit.tests.conftest import *  # noqa
 
-from shared.service_bus.enums import YtjOrganizationCode
-
 
 def _assert_html_content(html, include_keys=(), excluded_keys=()):
     for k in include_keys:
@@ -28,21 +26,19 @@ def _assert_html_content(html, include_keys=(), excluded_keys=()):
 
 
 @pytest.mark.parametrize(
-    "company_form_code, de_minimis_aid",
+    "company_type, de_minimis_aid",
     [
-        (YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT, False),
-        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, False),
-        (YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT, True),
+        ("ry", False),
+        ("oy", False),
+        ("oy", True),
     ],
 )
 @patch("applications.services.ahjo_integration.pdfkit.from_string")
 def test_generate_single_approved_template_html(
-    mock_pdf_convert, company_form_code, de_minimis_aid
+    mock_pdf_convert, company_type, de_minimis_aid
 ):
     mock_pdf_convert.return_value = {}
-    company = CompanyFactory(
-        company_form_code=YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
-    )
+    company = CompanyFactory(company_form=company_type)
     apps = DecidedApplicationFactory.create_batch(
         3,
         company=company,
@@ -183,7 +179,6 @@ def test_multiple_benefit_per_application(mock_pdf_convert):
     application = ApplicationFactory(
         association_has_business_activities=True,
         company__company_form="ry",
-        company__company_form_code=YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT,
         start_date=date(2021, 7, 10),
         end_date=date(2021, 11, 10),
         status=ApplicationStatus.RECEIVED,

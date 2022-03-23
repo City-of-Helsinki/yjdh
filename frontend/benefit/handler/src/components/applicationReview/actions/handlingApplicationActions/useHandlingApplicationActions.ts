@@ -1,6 +1,5 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import AppContext from 'benefit/handler/context/AppContext';
-import { useApplicationActions } from 'benefit/handler/hooks/useApplicationActions';
 import useHandlerReviewActions from 'benefit/handler/hooks/useHandlerReviewActions';
 import {
   Application,
@@ -14,7 +13,6 @@ type ExtendedComponentProps = {
   t: TFunction;
   onDone: () => void;
   onSaveAndClose: () => void;
-  onBackToHandling: () => void;
   onCommentsChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   toggleMessagesDrawerVisiblity: () => void;
   handleCancel: (application: HandledAplication) => void;
@@ -34,7 +32,6 @@ const useHandlingApplicationActions = (
   const { t } = useTranslation();
   const { onSaveAndClose, onDone, onCancel } =
     useHandlerReviewActions(application);
-  const { updateStatus } = useApplicationActions(application);
   const { handledApplication, setHandledApplication } =
     React.useContext(AppContext);
   const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
@@ -79,15 +76,11 @@ const useHandlingApplicationActions = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ): void => setCancelComments(event.target.value);
 
-  const onBackToHandling = (): void =>
-    updateStatus(APPLICATION_STATUSES.HANDLING);
-
   return {
     t,
     onDone,
     onSaveAndClose,
     onCommentsChange,
-    onBackToHandling,
     toggleMessagesDrawerVisiblity,
     handleCancel,
     openDialog,

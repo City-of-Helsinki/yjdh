@@ -18,8 +18,7 @@ import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
 const ThankYouPage: NextPage = () => {
   const { t } = useTranslation();
-  const { applicationQuery, isRouterLoading, applicationId } =
-    useApplicationApi();
+  const { applicationQuery, applicationId } = useApplicationApi();
   const queryClient = useQueryClient();
   const goToPage = useGoToPage();
 
@@ -28,14 +27,14 @@ const ThankYouPage: NextPage = () => {
     void goToPage('/');
   }, [queryClient, goToPage]);
 
-  if (!isRouterLoading && !applicationId) {
+  if (!applicationId) {
     void goToPage('/');
     return null;
   }
 
   if (applicationQuery.isSuccess) {
     const application = applicationQuery.data;
-    if (applicationId && application.status === 'draft') {
+    if (application.status === 'draft') {
       void goToPage(`/application?id=${applicationId}`, {
         operation: 'replace',
       });

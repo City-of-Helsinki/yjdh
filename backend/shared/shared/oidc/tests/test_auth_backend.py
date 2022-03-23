@@ -59,7 +59,7 @@ def test_authenticate(requests_mock):
         "email": "test_email",
     }
 
-    matcher = re.compile(re.escape(settings.OIDC_OP_USER_ENDPOINT))
+    matcher = re.compile(settings.OIDC_OP_USER_ENDPOINT)
     requests_mock.get(matcher, json=claims)
 
     state = "test"
@@ -158,7 +158,7 @@ def test_refresh_token(session_request, requests_mock):
         "refresh_expires_in": 1800,
     }
 
-    matcher = re.compile(re.escape(settings.OIDC_OP_TOKEN_ENDPOINT))
+    matcher = re.compile(settings.OIDC_OP_TOKEN_ENDPOINT)
     requests_mock.post(matcher, json=token_info)
 
     auth_backend.refresh_tokens(session_request)

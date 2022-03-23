@@ -60,7 +60,7 @@ services:
       - kesaseteli-employer
     build:
       context: ./localdevelopment/employer/nginx
-    container_name: employer-local-proxy
+    container_name: kesaseteli-local-proxy
     volumes:
       - ./localdevelopment/employer/nginx/:/etc/nginx/
     ports:

@@ -135,14 +135,9 @@ class Calculation(UUIDModel, TimeStampedModel, DurationMixin):
 
         if rows.count() > 0:
             return rows
-        if self.override_monthly_benefit_amount is not None:
-            return ManualOverrideTotalRow.objects.filter(
-                calculation=self, row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
-            )
-        else:
-            return SalaryBenefitTotalRow.objects.filter(
-                calculation=self, row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
-            )
+        return SalaryBenefitTotalRow.objects.filter(
+            calculation=self, row_type=RowType.HELSINKI_BENEFIT_TOTAL_EUR
+        )
 
     history = HistoricalRecords(table_name="bf_calculator_calculator_history")
 

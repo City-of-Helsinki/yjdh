@@ -1,3 +1,4 @@
+import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import {
   QueryKey,
@@ -13,9 +14,10 @@ const useUserQuery = <T = User>({
   refetchInterval,
   select,
 }: UseQueryOptions<T> = {}): UseQueryResult<T> => {
+  const logoutQuery = useLogoutQuery();
   const isRouting = useIsRouting();
   return useQuery(BackendEndpoint.USER as QueryKey, {
-    enabled: !isRouting,
+    enabled: logoutQuery.isIdle && !isRouting,
     onError: useErrorHandler(false),
     select,
     refetchInterval,

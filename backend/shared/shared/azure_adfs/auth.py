@@ -66,38 +66,6 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
             new_groups = [Group.objects.get_or_create(name=name)[0] for name in groups]
             user.groups.set(new_groups)
 
-    def get_userinfo_from_graph_api(self, graph_api_access_token: str):
-        """
-        Makes a call to https://docs.microsoft.com/en-us/graph/api/user-get to get more information
-        about the logged in user.
-
-        :returns dictionary of user's requested properties
-        """
-        url = "https://graph.microsoft.com/v1.0/me"
-        properties = (
-            "givenName",
-            "surname",
-        )
-
-        headers = {
-            "Authorization": f"Bearer {graph_api_access_token}",
-        }
-
-        response = requests.get(
-            url, headers=headers, params=f"$select={','.join(properties)}"
-        )
-
-        response.raise_for_status()
-        return response.json()
-
-    def update_userinfo_from_graph_api(self, user, graph_api_access_token: str):
-        userinfo = self.get_userinfo_from_graph_api(graph_api_access_token)
-
-        if "givenName" in userinfo and userinfo["givenName"] is not None:
-            user.first_name = userinfo["givenName"]
-        if "surname" in userinfo and userinfo["surname"] is not None:
-            user.last_name = userinfo["surname"]
-
     def get_graph_api_access_token(self, access_token):
         """
         Handles the Microsoft On-Behalf-Of flow to fetch an access token that can be
@@ -177,8 +145,6 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         self.update_user_groups_from_graph_api(
             user, claims["oid"], graph_api_access_token
         )
-
-        self.update_userinfo_from_graph_api(user, graph_api_access_token)
 
         # Users with groups that are defined in ADFS_CONTROLLER_GROUP_UUIDS
         # should be allowed the staff status so that they can access the

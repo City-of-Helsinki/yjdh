@@ -80,7 +80,6 @@ const StepperActions: React.FC<StepperActionsProps> = ({
           isOpen={isConfirmationModalOpen}
           title={t(`${translationsBase}.deleteApplicationConfirm`)}
           submitButtonLabel={t(`${translationsBase}.deleteApplication`)}
-          cancelButtonLabel={t(`${translationsBase}.close`)}
           handleToggle={() => setIsConfirmationModalOpen(false)}
           handleSubmit={handleDelete}
           variant="danger"

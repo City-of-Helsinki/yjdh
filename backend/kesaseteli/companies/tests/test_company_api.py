@@ -71,7 +71,7 @@ def test_get_company_organization_roles_error(api_client, requests_mock, user):
     session.pop("organization_roles")
     session.save()
 
-    matcher = re.compile(re.escape(settings.EAUTHORIZATIONS_BASE_URL))
+    matcher = re.compile(settings.EAUTHORIZATIONS_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=401)
 
     response = api_client.get(get_company_api_url())
@@ -130,7 +130,7 @@ def test_get_company_from_ytj(api_client, requests_mock):
     YTJ_BASE_URL="http://example.com",
 )
 def test_get_company_not_found_from_ytj(api_client, requests_mock, user):
-    matcher = re.compile(re.escape(settings.YTJ_BASE_URL))
+    matcher = re.compile(settings.YTJ_BASE_URL)
     requests_mock.get(matcher, text="Error", status_code=404)
 
     org_roles_json = {

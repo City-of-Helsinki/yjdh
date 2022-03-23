@@ -11,14 +11,13 @@ type ExtendedComponentProps = {
   handleSendMessage: (message: string) => void;
 };
 
-const useMessenger = (isOpen: boolean): ExtendedComponentProps => {
+const useMessenger = (): ExtendedComponentProps => {
   const { t } = useTranslation();
   const router = useRouter();
   const applicationId = router.query.id ?? '';
   const { data: messages } = useMessagesQuery(
     applicationId.toString(),
-    MESSAGE_URLS.MESSAGES,
-    isOpen
+    MESSAGE_URLS.MESSAGES
   );
 
   const { mutate: createMessage } = useCreateMessageQuery(

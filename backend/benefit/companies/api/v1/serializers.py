@@ -12,7 +12,6 @@ class CompanySerializer(serializers.ModelSerializer):
             "name",
             "business_id",
             "company_form",
-            "company_form_code",
             "street_address",
             "postcode",
             "city",
@@ -27,4 +26,4 @@ class CompanySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.ChoiceField(choices=OrganizationType.choices))
     def get_organization_type(self, obj):
-        return OrganizationType.resolve_organization_type(obj.company_form_code)
+        return OrganizationType.resolve_organization_type(obj.company_form)

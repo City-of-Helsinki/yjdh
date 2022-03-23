@@ -7,7 +7,6 @@ from django.db import transaction
 from django.db.models import F, Func
 from django.db.utils import ProgrammingError
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect
 from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -34,20 +33,15 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
     SchoolSerializer,
     YouthApplicationSerializer,
-    YouthApplicationStatusSerializer,
 )
-from applications.enums import (
-    EmployerApplicationStatus,
-    YouthApplicationRejectedReason,
-    YouthApplicationStatus,
-)
+from applications.enums import ApplicationStatus, YouthApplicationRejectedReason
 from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     School,
     YouthApplication,
 )
-from common.decorators import enforce_handler_view_adfs_login
+from common.permissions import DenyAll, HandlerPermission
 
 LOGGER = logging.getLogger(__name__)
 
@@ -107,88 +101,19 @@ class SchoolListView(ListAPIView):
 
 
 class YouthApplicationViewSet(AuditLoggingModelViewSet):
-    permission_classes = [AllowAny]  # Permissions are handled per function
     queryset = YouthApplication.objects.all()
     serializer_class = YouthApplicationSerializer
 
-    def list(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
-
-    def update(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
-
-    def partial_update(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
-
-    def destroy(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
-
     @action(methods=["get"], detail=True)
-    def status(self, request, *args, **kwargs) -> HttpResponse:
-        with self.record_action(additional_information="status"):
-            serializer = YouthApplicationStatusSerializer(
-                self.get_object(),
-                context=self.get_serializer_context(),
-            )
-            return Response(serializer.data)
+    def process(self, request, pk=None) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object()  # noqa: F841
 
-    @enforce_handler_view_adfs_login
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    @action(methods=["get"], detail=True)
-    @enforce_handler_view_adfs_login
-    def process(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object()
-        return redirect(youth_application.handler_processing_url())
-
-    @transaction.atomic
-    @action(methods=["patch"], detail=True)
-    @enforce_handler_view_adfs_login
-    def accept(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object().lock_for_update()
-
-        if not youth_application.is_accepted and youth_application.accept(
-            handler=request.user
-        ):
-            was_email_sent = (
-                youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
-                    language=youth_application.language
-                )
-            )
-            if not was_email_sent:
-                transaction.set_rollback(True)
-                with translation.override(youth_application.language):
-                    return HttpResponse(
-                        _("Failed to send youth summer voucher email"),
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    )
-            with self.record_action(additional_information="accept"):
-                return HttpResponse(status=status.HTTP_200_OK)
-        else:
-            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-
-    @transaction.atomic
-    @action(methods=["patch"], detail=True)
-    @enforce_handler_view_adfs_login
-    def reject(self, request, *args, **kwargs) -> HttpResponse:
-        youth_application: YouthApplication = self.get_object().lock_for_update()
-
-        if not youth_application.is_rejected and youth_application.reject(
-            handler=request.user
-        ):
-            with self.record_action(additional_information="reject"):
-                return HttpResponse(status=status.HTTP_200_OK)
-        else:
-            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+        # TODO: Implement
+        return HttpResponse(status=status.HTTP_501_NOT_IMPLEMENTED)
 
     @transaction.atomic
     @action(methods=["get"], detail=True)
-    def activate(self, request, *args, **kwargs) -> HttpResponse:
+    def activate(self, request, pk=None) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()
 
         # Lock same person's applications to prevent activation of more than one of them
@@ -207,32 +132,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                     f"Activated youth application {youth_application.pk}: "
                     "VTJ is disabled, sending application to be processed by a handler"
                 )
-                youth_application.status = (
-                    YouthApplicationStatus.AWAITING_MANUAL_PROCESSING
-                )
-                youth_application.save()
-                was_email_sent = youth_application.send_processing_email_to_handler(
-                    request
-                )
-                if not was_email_sent:
-                    transaction.set_rollback(True)
-                    with translation.override(youth_application.language):
-                        return HttpResponse(
-                            _("Failed to send manual processing email to handler"),
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        )
-            else:
-                # TODO: Implement VTJ integration
-                LOGGER.error(
-                    f"Tried to activate youth application {youth_application.pk}: "
-                    "Failed because VTJ integration is enabled but not implemented"
-                )
-                transaction.set_rollback(True)
-                return HttpResponse(
-                    _("VTJ integration is not implemented"),
-                    status=status.HTTP_501_NOT_IMPLEMENTED,
-                )
-
+                youth_application.send_processing_email_to_handler(request)
             return HttpResponseRedirect(youth_application.activated_page_url())
 
         return HttpResponse(
@@ -241,68 +141,60 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         )
 
     @classmethod
-    def error_response_with_logging(
-        cls, reason: YouthApplicationRejectedReason
-    ) -> JsonResponse:
-        response_status = status.HTTP_400_BAD_REQUEST
-        response_data = reason.json()
-        LOGGER.info(
-            f"Youth application submission rejected. "
-            f"Return HTTP status code: {response_status}. "
-            f"YouthApplicationRejectedReason: {response_data.get('code')}."
-        )
-        return JsonResponse(status=response_status, data=response_data)
+    def error_response(cls, reason: YouthApplicationRejectedReason):
+        return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=reason.json())
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        try:
-            # This function is based on CreateModelMixin class's create function.
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
+        # This function is based on CreateModelMixin class's create function.
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-            # Data is valid but let's check other criteria before creating the object
-            email = serializer.validated_data["email"]
-            social_security_number = serializer.validated_data["social_security_number"]
+        # Data is valid but let's check other criteria before creating the object
+        email = serializer.validated_data["email"]
+        social_security_number = serializer.validated_data["social_security_number"]
 
-            if YouthApplication.is_email_or_social_security_number_active(
-                email, social_security_number
-            ):
-                return self.error_response_with_logging(
-                    YouthApplicationRejectedReason.ALREADY_ASSIGNED
+        if YouthApplication.is_email_or_social_security_number_active(
+            email, social_security_number
+        ):
+            return self.error_response(YouthApplicationRejectedReason.ALREADY_ASSIGNED)
+        elif YouthApplication.is_email_used(email):
+            return self.error_response(YouthApplicationRejectedReason.EMAIL_IN_USE)
+
+        # Data was valid and other criteria passed too, so let's create the object
+        self.perform_create(serializer)
+
+        # Send the localized activation email
+        youth_application = serializer.instance
+        was_email_sent = youth_application.send_activation_email(
+            request, youth_application.language
+        )
+
+        if not was_email_sent:
+            transaction.set_rollback(True)
+            with translation.override(youth_application.language):
+                return HttpResponse(
+                    _("Failed to send activation email"),
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
-            elif YouthApplication.is_email_used(email):
-                return self.error_response_with_logging(
-                    YouthApplicationRejectedReason.EMAIL_IN_USE
-                )
 
-            # Data was valid and other criteria passed too, so let's create the object
-            self.perform_create(serializer)
+        # Return success creating the object
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
-            # Send the localized activation email
-            youth_application = serializer.instance
-            was_email_sent = youth_application.send_activation_email(
-                request, youth_application.language
-            )
-
-            if not was_email_sent:
-                transaction.set_rollback(True)
-                with translation.override(youth_application.language):
-                    return HttpResponse(
-                        _("Failed to send activation email"),
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    )
-
-            # Return success creating the object
-            headers = self.get_success_headers(serializer.data)
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED, headers=headers
-            )
-        except ValidationError as e:
-            LOGGER.error(
-                f"Youth application submission rejected because of validation error. "
-                f"Validation error codes: {str(e.get_codes())}"
-            )
-            raise
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ["activate", "create"]:
+            permission_classes = [AllowAny]
+        elif self.action in ["process", "retrieve"]:
+            permission_classes = [HandlerPermission]
+        else:
+            permission_classes = [DenyAll]
+        return [permission() for permission in permission_classes]
 
 
 class EmployerApplicationViewSet(AuditLoggingModelViewSet):
@@ -339,7 +231,7 @@ class EmployerApplicationViewSet(AuditLoggingModelViewSet):
         """
         Allow only 1 (DRAFT) application per user & company.
         """
-        if self.get_queryset().filter(status=EmployerApplicationStatus.DRAFT).exists():
+        if self.get_queryset().filter(status=ApplicationStatus.DRAFT).exists():
             raise ValidationError("Company & user can have only one draft application")
         return super().create(request, *args, **kwargs)
 

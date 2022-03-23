@@ -9,15 +9,14 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
-from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
-from django.db.models import OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
+from localflavor.generic.models import IBANField
 from phonenumber_field.modelfields import PhoneNumberField
 from simple_history.models import HistoricalRecords
 
@@ -64,28 +63,6 @@ def address_property(field_suffix):
     return _address_property_getter
 
 
-class ApplicationManager(models.Manager):
-
-    HANDLED_STATUSES = [
-        ApplicationStatus.REJECTED,
-        ApplicationStatus.ACCEPTED,
-        ApplicationStatus.CANCELLED,
-    ]
-
-    def _annotate_handled_at(self, qs):
-        subquery = (
-            ApplicationLogEntry.objects.filter(
-                application=OuterRef("pk"), to_status__in=self.HANDLED_STATUSES
-            )
-            .order_by("-created_at")
-            .values("created_at")[:1]
-        )
-        return qs.annotate(handled_at=Subquery(subquery))
-
-    def get_queryset(self):
-        return self._annotate_handled_at(super().get_queryset())
-
-
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
     """
     Data model for Helsinki benefit applications
@@ -97,8 +74,6 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     For additional descriptions of the fields, see the API documentation (serializers.py)
     """
-
-    objects = ApplicationManager()
 
     BENEFIT_MAX_MONTHS = 12
 
@@ -125,13 +100,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
 
-    company_form = models.CharField(
-        max_length=64, verbose_name=_("company form as user-readable text")
-    )
-
-    company_form_code = models.IntegerField(
-        verbose_name=_("YTJ type code for company form")
-    )
+    company_form = models.CharField(max_length=64, verbose_name=_("company form"))
 
     company_department = models.CharField(
         max_length=256, blank=True, verbose_name=_("company department")
@@ -167,7 +136,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     effective_company_city = property(address_property("company_city"))
     effective_company_postcode = property(address_property("company_postcode"))
 
-    company_bank_account_number = LocalizedIBANField(
+    company_bank_account_number = IBANField(
         include_countries=("FI",),
         verbose_name=_("company bank account number"),
         blank=True,
@@ -326,7 +295,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     def ahjo_application_number(self):
         # Adding prefix to application number before sending to AHJO based on the company form
         if (
-            OrganizationType.resolve_organization_type(self.company.company_form_code)
+            OrganizationType.resolve_organization_type(self.company.company_form)
             == OrganizationType.ASSOCIATION
         ):
             return "R{}".format(self.application_number)

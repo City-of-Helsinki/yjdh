@@ -1,4 +1,5 @@
-import { APPLICATION_STATUSES } from 'benefit/applicant/constants';
+import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useLocale from 'benefit/applicant/hooks/useLocale';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
@@ -6,11 +7,12 @@ import { useTranslation } from 'benefit/applicant/i18n';
 import {
   Application,
   ApplicationData,
-  TermsProp,
 } from 'benefit/applicant/types/application';
 import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
+import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import React, { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { getFullName } from 'shared/utils/application.utils';
 import { invertBooleanArray } from 'shared/utils/array.utils';
 import { capitalize } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
@@ -27,16 +29,15 @@ type ExtendedComponentProps = {
   cbPrefix: string;
   textLocale: string;
   checkedArray: boolean[];
-  applicantTermsInEffectUrl: string;
-  openTermsAsPDF: () => void;
 };
 
 const useApplicationFormStep6 = (
-  application: Application,
-  onSubmit?: () => void
+  application: Application
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections.send';
   const { t } = useTranslation();
+  const router = useRouter();
+
   const locale = useLocale();
   const textLocale = capitalize(locale);
   const cbPrefix = 'application_consent';
@@ -53,7 +54,33 @@ const useApplicationFormStep6 = (
 
   const { onSave, onBack, onDelete } = useFormActions(application);
 
-  const { mutate: updateApplicationStep6 } = useUpdateApplicationQuery();
+  const { setSubmittedApplication, submittedApplication } =
+    useContext(AppContext);
+
+  const { mutate: updateApplicationStep6, isSuccess: isApplicationUpdated } =
+    useUpdateApplicationQuery();
+
+  useEffect(() => {
+    if (
+      isApplicationUpdated &&
+      (application.status === APPLICATION_STATUSES.RECEIVED ||
+        application.status === APPLICATION_STATUSES.HANDLING)
+    ) {
+      setSubmittedApplication({
+        applicantName: getFullName(
+          application.employee?.firstName,
+          application.employee?.lastName
+        ),
+        applicationNumber: application.applicationNumber || 0,
+      });
+    }
+  }, [isApplicationUpdated, application, setSubmittedApplication]);
+
+  useEffect(() => {
+    if (submittedApplication) {
+      void router.push(ROUTES.HOME);
+    }
+  }, [router, submittedApplication]);
 
   const handleClick = (consentIndex: number): void => {
     const newValue = !checkedArray[consentIndex];
@@ -95,34 +122,12 @@ const useApplicationFormStep6 = (
         },
         { deep: true }
       );
-      if (onSubmit) {
-        onSubmit();
-      }
       updateApplicationStep6(currentApplicationData);
     }
   };
 
   const handleSave = (): void => onSave(application);
   const handleDelete = (): void => onDelete(application.id ?? '');
-
-  const applicantTermsInEffectUrl = React.useMemo(() => {
-    if (
-      application.applicantTermsInEffect &&
-      application.applicantTermsInEffect[`termsPdf${textLocale}` as TermsProp]
-    )
-      return application.applicantTermsInEffect[
-        `termsPdf${textLocale}` as TermsProp
-      ];
-    return '';
-  }, [application.applicantTermsInEffect, textLocale]);
-
-  const openTermsAsPDF = (): void => {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    const newTab = window.open(applicantTermsInEffectUrl, '_blank');
-    if (newTab) {
-      newTab.focus();
-    }
-  };
 
   return {
     t,
@@ -136,8 +141,6 @@ const useApplicationFormStep6 = (
     cbPrefix,
     textLocale,
     checkedArray,
-    applicantTermsInEffectUrl,
-    openTermsAsPDF,
   };
 };
 

@@ -6,14 +6,20 @@ import { Button, DateInput } from 'hds-react';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import DateFieldsSeparator from 'shared/components/forms/fields/dateFieldsSeparator/DateFieldsSeparator';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import {
+  $Grid,
+  $GridCell,
+} from 'shared/components/forms/section/FormSection.sc';
 import $Notification from 'shared/components/notification/Notification.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
 import { formatStringFloatValue } from 'shared/utils/string.utils';
 
-import { $CalculatorHr, $CalculatorText } from '../ApplicationReview.sc';
+import {
+  $CalculatorHr,
+  $CalculatorTableRow,
+  $CalculatorText,
+} from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
-import EmploymentCalculatorResults from './EmploymentCalculatorResults/EmploymentCalculatorResults';
 import { useEmploymentAppliedMoreView } from './useEmploymentAppliedMoreView';
 
 const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
@@ -128,7 +134,29 @@ const EmploymentAppliedMoreView: React.FC<ApplicationReviewViewProps> = ({
             </$Notification>
           </$GridCell>
         )}
-        <EmploymentCalculatorResults data={data} />
+
+        <$GridCell $colSpan={11}>
+          {data?.calculation?.rows &&
+            data?.calculation?.rows.map((row, i, { length }) => {
+              const isTotal = length - 1 === i;
+              return (
+                <$Grid key={row.id}>
+                  <$GridCell $colSpan={6}>
+                    <$CalculatorTableRow isTotal={isTotal}>
+                      <$ViewField isBold={isTotal}>
+                        {row.descriptionFi}
+                      </$ViewField>
+                      <$ViewField isBold={isTotal}>
+                        {t(`${translationsBase}.tableRowValue`, {
+                          amount: formatStringFloatValue(row.amount),
+                        })}
+                      </$ViewField>
+                    </$CalculatorTableRow>
+                  </$GridCell>
+                </$Grid>
+              );
+            })}
+        </$GridCell>
       </ReviewSection>
     </form>
   );

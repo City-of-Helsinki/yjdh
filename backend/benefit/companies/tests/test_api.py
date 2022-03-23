@@ -15,8 +15,6 @@ from django.test import override_settings
 from requests import HTTPError
 from terms.tests.factories import TermsOfServiceApprovalFactory
 
-from shared.service_bus.enums import YtjOrganizationCode
-
 
 def get_company_api_url(business_id=""):
     return "/v1/company/{id}".format(id=business_id)
@@ -73,7 +71,7 @@ def test_get_company_from_service_bus_invalid_response(
     response = deepcopy(DUMMY_SERVICE_BUS_RESPONSE)
     response["GetCompanyResult"]["Company"]["PostalAddress"] = {}
 
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(settings.SERVICE_BUS_INFO_PATH)
     requests_mock.post(matcher, json=response)
     response = api_client.get(get_company_api_url())
 
@@ -91,7 +89,7 @@ def test_get_organisation_from_service_bus(
     requests_mock,
     mock_get_organisation_roles_and_create_company,
 ):
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(settings.SERVICE_BUS_INFO_PATH)
     requests_mock.post(matcher, json=DUMMY_SERVICE_BUS_RESPONSE)
     response = api_client.get(get_company_api_url())
     assert response.status_code == 200
@@ -103,11 +101,6 @@ def test_get_organisation_from_service_bus(
     )
     company_data = CompanySerializer(company).data
     assert response.data == company_data
-    assert (
-        response.data["company_form_code"]
-        == YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
-    )
-    assert response.data["company_form"] == "Osakeyhtiö"
 
 
 @pytest.mark.django_db
@@ -124,9 +117,9 @@ def test_get_company_from_yrtti(
         company=mock_get_organisation_roles_and_create_association,
         terms=terms_of_service,
     )
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(settings.SERVICE_BUS_INFO_PATH)
     requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(settings.YRTTI_BASIC_INFO_PATH))
+    matcher = re.compile(settings.YRTTI_BASIC_INFO_PATH)
     requests_mock.post(matcher, json=DUMMY_YRTTI_RESPONSE)
     response = api_client.get(get_company_api_url())
     assert response.status_code == 200
@@ -136,14 +129,6 @@ def test_get_company_from_yrtti(
     )
     company_data = CompanySerializer(company).data
     assert response.data == company_data
-    assert (
-        response.data["company_form_code"]
-        == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT
-    )
-    assert (
-        response.data["company_form"]
-        == YtjOrganizationCode.ASSOCIATION_FORM_CODE_DEFAULT.label
-    )
 
 
 @pytest.mark.django_db
@@ -151,9 +136,9 @@ def test_get_company_from_yrtti(
 def test_get_company_from_service_bus_and_yrtti_results_in_error(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(settings.SERVICE_BUS_INFO_PATH)
     requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(settings.YRTTI_BASIC_INFO_PATH))
+    matcher = re.compile(settings.YRTTI_BASIC_INFO_PATH)
     requests_mock.post(matcher, text="Error", status_code=404)
     # Delete company so that API cannot return object from DB
     mock_get_organisation_roles_and_create_company.delete()
@@ -166,7 +151,7 @@ def test_get_company_from_service_bus_and_yrtti_results_in_error(
 def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
     api_client, requests_mock, mock_get_organisation_roles_and_create_company
 ):
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(settings.SERVICE_BUS_INFO_PATH)
     requests_mock.post(matcher, json=DUMMY_SERVICE_BUS_RESPONSE)
     response = api_client.get(get_company_api_url())
 
@@ -175,16 +160,11 @@ def test_get_company_from_service_bus_and_yrtti_with_fallback_data(
     assert Company.objects.count() == 1
 
     # Now assuming request to YTJ & YRTTI doesn't return any data
-    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    matcher = re.compile(settings.SERVICE_BUS_INFO_PATH)
     requests_mock.post(matcher, text="Error", status_code=404)
-    matcher = re.compile(re.escape(settings.YRTTI_BASIC_INFO_PATH))
+    matcher = re.compile(settings.YRTTI_BASIC_INFO_PATH)
     requests_mock.post(matcher, text="Error", status_code=404)
 
     response = api_client.get(get_company_api_url())
     # Still be able to query company data
     assert response.data["business_id"] == get_dummy_company_data()["business_id"]
-    assert (
-        response.data["company_form_code"]
-        == YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
-    )
-    assert response.data["company_form"] == "Osakeyhtiö"

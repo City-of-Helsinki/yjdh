@@ -9,12 +9,10 @@ from phonenumber_field.serializerfields import (
 )
 
 
-def update_object(obj, data, limit_to_fields=None):
+def update_object(obj, data):
     if not data:
         return
     for k, v in data.items():
-        if limit_to_fields is not None and k not in limit_to_fields:
-            continue
         if v is None and not obj.__class__._meta.get_field(k).null:
             raise ValueError(f"{k} cannot be null.")
         setattr(obj, k, v)

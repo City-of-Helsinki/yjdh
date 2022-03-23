@@ -14,35 +14,41 @@
     "pageNotFoundLabel": "Sivua ei löytynyt",
     "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> etusivun kautta takaisin hakemukseen."
   },
-  "403Page": {
-    "forbiddenPageLabel": "Sinulla ei ole oikeuksia",
-    "forbiddenPageContent": "Oikeutesi eivät riitä avaamaan hakemusta. Ota yhteyttä <a>helpdeskiin</a>."
+  "footer": {
+    "copyrightText": "Helsingin kaupunki",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "backToTop": "Takaisin ylös",
+    "registerInformation": "Rekisteriseloste",
+    "registerInformationLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kuva/Nuorisopalvelujen%20kesatyosetelirekisteri.pdf",
+    "jobOpenings": "Avoimet työpaikat",
+    "jobOpeningsLink": "https://nuorten.helsinki/avoimet-tyopaikat/",
+    "contactUs": "Ota yhteyttä",
+    "contactUsLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/ota-yhteytta/",
+    "accessibilityStatement": "Saavutettavuusseloste",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
+    "information": "Tietoa palvelusta",
+    "informationLink": "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/"
   },
+  "languages": {
+    "fi": "Suomeksi",
+    "sv": "På svenska",
+    "en": "In English"
+  },
+  "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {
       "label": "Tapahtui tuntematon virhe",
       "text": " Yritä myöhemmin uudelleen"
+    },
+    "attachments": {
+      "title": "Tiedoston latauksessa tapahtui virhe",
+      "tooBig": "Tiedosto on liian iso",
+      "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
   },
   "handlerApplication": {
-    "title": "Hakemuksen tiedot",
-    "name": "Nimi",
-    "social_security_number": "Hlö-tunnus",
-    "postcode": "Postinumero",
-    "school": "Koulu",
-    "is_unlisted_school": "(Koulua ei löytynyt listalta)",
-    "phone_number": "Puhelinnumero",
-    "email": "Sähköposti",
-    "notFound": "Hakemusta ei löytynyt",
-    "accept": "Hyväksy",
-    "reject": "Hylkää",
-    "saving": "Tallennetaan...",
-    "notification": {
-      "submitted": "Nuori ei ole vielä aktivoinut hakemusta",
-      "additional_information_requested": "Nuori ei ole vielä täyttänyt lisätietohakemusta",
-      "accepted": "Hyväksytty",
-      "rejected": "Hylätty"
-    }
+    "title": "Käsittelijän käyttöliittymä",
+    "paragraph_1": "Hello Käsittelijä!"
   },
   "errors": {
     "required": "Tieto puuttuu",
@@ -53,22 +59,37 @@
   "assistive": {
     "toggleMenu": "Avaa valikko"
   },
-  "dialog": {
-    "cancel": "Peruuta",
-    "accept": {
-      "title": "Oletko varma?",
-      "content": "Kesäseteli lähetetään sähköpostiin päätöksen jälkeen. Toimintoa ei voi peruuttaa.",
-      "submit": "Hyväksy"
-    },
-    "reject": {
-      "title": "Oletko varma?",
-      "content": "Toimintoa ei voi peruuttaa.",
-      "submit": "Hylkää"
-    }
+  "thankyouPage" : {
+    "title": "Kiitos",
+    "notificationTitle": "Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
+    "notificationMessage": "Huom! saat sähköpostiisi aktivointilinkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa",
+    "goToFrontendPage": "Kesäseteli etusivulle"
   },
-  "applications" : {
-    "actions": {
-      "close": "Sulje"
-    }
+  "activationErrorPage" : {
+    "goToFrontendPage": "Tarkista tiedot ja lähetä uudelleen"
+  },
+  "emailInUsePage" : {
+    "title": "Hups! Sähköposti on jo käytössä.",
+    "notificationMessage": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
+  },
+  "alreadyAssignedPage" : {
+    "title": "Hups! Antamallasi tiedoilla on jo myönnetty kesäseteli.",
+    "notificationMessage": "Kesäseteli on lähetetty sähköpostiin, jonka olet antanut edellisellä hakemuksella."
+  },
+  "activatedPage" : {
+    "title": "Kesäsetelisi on nyt aktivoitu",
+    "notificationTitle": "Vahvistus onnistui",
+    "notificationMessage": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "paragraph_1": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  },
+  "expiredPage" : {
+    "title": "Hups! Vahvistuslinkki on vanhentunut.",
+    "notificationMessage": "Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
+    "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
+  },
+  "alreadyActivatedPage" : {
+    "title": "Hups! Vahvistuslinkki on jo aktivoitu.",
+    "notificationMessage": "Kesäseteli on lähetetty sähköpostiisi.",
+    "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
   }
 }

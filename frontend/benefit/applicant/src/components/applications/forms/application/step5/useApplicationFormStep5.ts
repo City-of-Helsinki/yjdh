@@ -1,4 +1,5 @@
 import { APPLICATION_STATUSES, ROUTES } from 'benefit/applicant/constants';
+import AppContext from 'benefit/applicant/context/AppContext';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import useUpdateApplicationQuery from 'benefit/applicant/hooks/useUpdateApplicationQuery';
 import { useTranslation } from 'benefit/applicant/i18n';
@@ -9,8 +10,9 @@ import {
 import { getApplicationStepString } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import hdsToast from 'shared/components/toast/Toast';
+import { getFullName } from 'shared/utils/application.utils';
 import snakecaseKeys from 'snakecase-keys';
 
 type ExtendedComponentProps = {
@@ -20,23 +22,49 @@ type ExtendedComponentProps = {
   handleBack: () => void;
   handleDelete: () => void;
   handleStepChange: (step: number) => void;
-  handleClose: () => void;
   translationsBase: string;
   isSubmit: boolean;
 };
 
 const useApplicationFormStep5 = (
-  application: Application,
-  onSubmit?: () => void
+  application: Application
 ): ExtendedComponentProps => {
   const translationsBase = 'common:applications.sections';
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { mutate: updateApplicationStep5, error: updateApplicationErrorStep5 } =
-    useUpdateApplicationQuery();
+  const { setSubmittedApplication, submittedApplication } =
+    useContext(AppContext);
+
+  const {
+    mutate: updateApplicationStep5,
+    error: updateApplicationErrorStep5,
+    isSuccess: isApplicationUpdatedStep5,
+  } = useUpdateApplicationQuery();
 
   const isSubmit = !application?.applicantTermsApprovalNeeded;
+
+  useEffect(() => {
+    if (
+      isApplicationUpdatedStep5 &&
+      (application.status === APPLICATION_STATUSES.RECEIVED ||
+        application.status === APPLICATION_STATUSES.HANDLING)
+    ) {
+      setSubmittedApplication({
+        applicantName: getFullName(
+          application.employee?.firstName,
+          application.employee?.lastName
+        ),
+        applicationNumber: application.applicationNumber || 0,
+      });
+    }
+  }, [isApplicationUpdatedStep5, application, setSubmittedApplication]);
+
+  useEffect(() => {
+    if (submittedApplication) {
+      void router.push(ROUTES.HOME);
+    }
+  }, [router, submittedApplication]);
 
   useEffect(() => {
     // todo:custom error messages
@@ -82,13 +110,7 @@ const useApplicationFormStep5 = (
       },
       { deep: true }
     );
-    if (isSubmit && onSubmit) {
-      onSubmit();
-    }
     updateApplicationStep5(currentApplicationData);
-  };
-  const handleClose = (): void => {
-    void router.push(ROUTES.HOME);
   };
 
   return {
@@ -98,7 +120,6 @@ const useApplicationFormStep5 = (
     handleBack: onBack,
     handleDelete,
     handleStepChange,
-    handleClose,
     translationsBase,
     isSubmit,
   };

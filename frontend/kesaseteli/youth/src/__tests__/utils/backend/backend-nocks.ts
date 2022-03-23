@@ -1,11 +1,11 @@
 import faker from 'faker';
+import { fakeSchools } from 'kesaseteli/youth/__tests__/utils/fake-objects';
+import YouthApplication from 'kesaseteli/youth/types/youth-application';
 import { ErrorType } from 'kesaseteli/youth/types/youth-application-creation-error';
-import { fakeSchools } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import YouthApplication from 'kesaseteli-shared/types/youth-application';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 

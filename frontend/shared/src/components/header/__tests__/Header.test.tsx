@@ -9,6 +9,7 @@ test.skip('test for accessibility violations', async () => {
   const { container } = render(
     <Header
       title="Title"
+      locale="fi"
       languages={[{ label: 'Fi', value: 'fi' }]}
       onLanguageChange={() => null}
       menuToggleAriaLabel="menu"

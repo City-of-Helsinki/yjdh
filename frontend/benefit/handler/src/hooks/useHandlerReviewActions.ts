@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 import { convertToBackendDateFormat } from 'shared/utils/date.utils';
 import { stringToFloatValue } from 'shared/utils/string.utils';
 import snakecaseKeys from 'snakecase-keys';
-import { v4 as uuidv4 } from 'uuid';
 
 import { ROUTES } from '../constants';
 import AppContext from '../context/AppContext';
@@ -100,20 +99,14 @@ const useHandlerReviewActions = (
       ? values.overrideMonthlyBenefitAmountComment
       : '';
 
-    const paySubsidies = values.paySubsidies?.map((item) => ({
-      ...item,
-      workTimePercent: stringToFloatValue(item.workTimePercent),
-      startDate: convertToBackendDateFormat(item.startDate),
-      endDate: convertToBackendDateFormat(item.endDate),
-    }));
-
-    const trainingCompensations = values.trainingCompensations?.map((item) => ({
-      ...item,
-      id: uuidv4(),
-      monthlyAmount: stringToFloatValue(item.monthlyAmount),
-      startDate: convertToBackendDateFormat(item.startDate),
-      endDate: convertToBackendDateFormat(item.endDate),
-    }));
+    const paySubsidies = values.paySubsidies
+      ? values.paySubsidies.map((item) => ({
+          ...item,
+          workTimePercent: stringToFloatValue(item.workTimePercent),
+          startDate: convertToBackendDateFormat(item.startDate),
+          endDate: convertToBackendDateFormat(item.endDate),
+        }))
+      : undefined;
 
     const {
       monthlyPay,
@@ -140,7 +133,6 @@ const useHandlerReviewActions = (
           overrideMonthlyBenefitAmountComment,
         },
         paySubsidies,
-        trainingCompensations,
       },
       { deep: true }
     );

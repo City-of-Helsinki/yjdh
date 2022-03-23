@@ -522,7 +522,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "company",
             "company_name",
             "company_form",
-            "company_form_code",
             "submitted_at",
             "bases",
             "available_bases",
@@ -581,7 +580,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "former_benefit_info",
             "company_name",
             "company_form",
-            "company_form_code",
             "official_company_street_address",
             "official_company_city",
             "official_company_postcode",
@@ -600,10 +598,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                 " application was created, to maintain historical accuracy.",
             },
             "company_form": {
-                "help_text": "Finnish company form from official sources (YTJ) at the time the application was created",
-            },
-            "company_form_code": {
-                "help_text": "Company form code from official sources (YTJ) at the time the application was created",
+                "help_text": "Company city from official sources (YTJ) at the time the application was created",
             },
             "official_company_street_address": {
                 "help_text": "Company street address from official sources (YTJ/other) at"
@@ -871,7 +866,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         }
 
     def get_submitted_at(self, obj):
-        return obj.get_log_entry_field([ApplicationStatus.RECEIVED], "created_at")
+        return obj.get_log_entry_field(ApplicationStatus.RECEIVED, "created_at")
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
@@ -939,7 +934,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         NOTE: False is not allowed, and True is allowed only for associations.
         """
         if (
-            OrganizationType.resolve_organization_type(company.company_form_code)
+            OrganizationType.resolve_organization_type(company.company_form)
             == OrganizationType.ASSOCIATION
         ):
             if association_immediate_manager_check not in [None, True]:
@@ -974,7 +969,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
           (at this point, the individual dicts have been already valided by DeMinimisAidSerializer
         """
         if (
-            OrganizationType.resolve_organization_type(company.company_form_code)
+            OrganizationType.resolve_organization_type(company.company_form)
             == OrganizationType.ASSOCIATION
             and de_minimis_aid is not None
             and not association_has_business_activities
@@ -1114,7 +1109,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
         if (
             organization_type := OrganizationType.resolve_organization_type(
-                self.get_company(data).company_form_code
+                self.get_company(data).company_form
             )
         ) == OrganizationType.ASSOCIATION:
             required_fields.append("association_has_business_activities")
@@ -1146,7 +1141,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         self, company, association_has_business_activities
     ):
         if (
-            OrganizationType.resolve_organization_type(company.company_form_code)
+            OrganizationType.resolve_organization_type(company.company_form)
             == OrganizationType.COMPANY
             and association_has_business_activities is not None
         ):
@@ -1206,7 +1201,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         """
 
         if (
-            OrganizationType.resolve_organization_type(company.company_form_code)
+            OrganizationType.resolve_organization_type(company.company_form)
             == OrganizationType.ASSOCIATION
             and not association_has_business_activities
         ):
@@ -1236,7 +1231,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             return
 
         if OrganizationType.resolve_organization_type(
-            company.company_form_code
+            company.company_form
         ) == OrganizationType.ASSOCIATION and self._field_value_changes(
             data, "association_has_business_activities", False
         ):
@@ -1475,9 +1470,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         de_minimis_data = validated_data.pop("de_minimis_aid_set")
         employee_data = validated_data.pop("employee", None)
         validated_data["company"] = self.get_company_for_new_application(validated_data)
-        validated_data["company_form_code"] = validated_data[
-            "company"
-        ].company_form_code
         application = super().create(validated_data)
         self.assign_default_fields_from_company(application, validated_data["company"])
         self._update_de_minimis_aid(application, de_minimis_data)
@@ -1499,7 +1491,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
     def assign_default_fields_from_company(self, application, company):
         application.company_name = company.name
         application.company_form = company.company_form
-        application.company_form_code = company.company_form_code
         application.official_company_street_address = company.street_address
         application.official_company_postcode = company.postcode
         application.official_company_city = company.city
@@ -1589,7 +1580,6 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     * training compensations
     * batch
     * latest_decision_comment
-    * handled_at
     """
 
     # more status transitions
@@ -1641,17 +1631,6 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             )
         return Company.objects.get(validated_data["create_application_for_company"])
 
-    handled_at = serializers.SerializerMethodField(
-        "get_handled_at",
-        help_text="Timestamp when the application was handled (accepted/rejected/cancelled)",
-    )
-
-    def get_handled_at(self, obj):
-        if hasattr(obj, "handled_at"):
-            return obj.handled_at
-        else:
-            return None
-
     class Meta(BaseApplicationSerializer.Meta):
         fields = BaseApplicationSerializer.Meta.fields + [
             "calculation",
@@ -1660,11 +1639,9 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             "batch",
             "create_application_for_company",
             "latest_decision_comment",
-            "handled_at",
         ]
         read_only_fields = BaseApplicationSerializer.Meta.read_only_fields + [
-            "latest_decision_comment",
-            "handled_at",
+            "latest_decision_comment"
         ]
 
     @transaction.atomic
@@ -1679,19 +1656,16 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         calculation_data = validated_data.pop("calculation", None)
         pay_subsidy_data = validated_data.pop("pay_subsidies", None)
         training_compensation_data = validated_data.pop("training_compensations", None)
-        previous_status = instance.status
         application = self._base_update(instance, validated_data)
         if calculation_data is not None:
-            self._update_calculation(instance, calculation_data, previous_status)
+            self._update_calculation(instance, calculation_data)
         if pay_subsidy_data is not None:
             self._update_pay_subsidies(instance, pay_subsidy_data)
         if training_compensation_data is not None:
             self._update_training_compensations(instance, training_compensation_data)
         return application
 
-    UPDATE_CALCULATION_FIELDS_ON_ACCEPT = ["granted_as_de_minimis_aid"]
-
-    def _update_calculation(self, application, calculation_data, previous_status):
+    def _update_calculation(self, application, calculation_data):
         request = self.context.get("request")
         if not request or request.method != "PUT":
             return
@@ -1702,29 +1676,19 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             raise serializers.ValidationError(
                 _("The calculation should be created when the application is submitted")
             )
-        if calculation_data is not None:
+        if (
+            calculation_data is not None
+            and ApplicationStatus.is_handler_editable_status(application.status)
+        ):
             if application.calculation.id != calculation_data["id"]:
                 raise serializers.ValidationError(
                     _("The calculation id does not match existing id")
                 )
-            if ApplicationStatus.is_handler_editable_status(application.status):
-                call_now_or_later(
-                    application.calculation.calculate,
-                    duplicate_check=("calculation.calculate", application.pk),
-                )
-                update_object(application.calculation, calculation_data)
-            elif (
-                ApplicationStatus.is_handler_editable_status(previous_status)
-                and application.status == ApplicationStatus.ACCEPTED
-            ):
-                # When application is accepted, only certain fields that don't change the calculation
-                # result can be modified, otherwise the handled would be accepting a benefit amount that they've not
-                # seen.
-                update_object(
-                    application.calculation,
-                    calculation_data,
-                    self.UPDATE_CALCULATION_FIELDS_ON_ACCEPT,
-                )
+            call_now_or_later(
+                application.calculation.calculate,
+                duplicate_check=("calculation.calculate", application.pk),
+            )
+            update_object(application.calculation, calculation_data)
 
     def _update_training_compensations(self, application, training_compensation_data):
         return self._common_ordered_nested_update(
@@ -1781,10 +1745,6 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             instance, previous_status, approve_terms, log_entry_comment
         )
         # Extend from base class function.
-        self._assign_handler_if_needed(instance)
-        self._remove_batch_if_needed(instance)
-
-    def _assign_handler_if_needed(self, instance):
         # Assign current user to the application.calculation.handler
         # NOTE: This handler might be overridden if there is a handler pk included in the request post data
         handler = get_request_user_from_context(self)
@@ -1793,8 +1753,3 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         if instance.status in HandlerApplicationStatusValidator.ASSIGN_HANDLER_STATUSES:
             instance.calculation.handler = handler
             instance.calculation.save()
-
-    def _remove_batch_if_needed(self, instance):
-        if instance.status == ApplicationStatus.HANDLING and instance.batch:
-            instance.batch = None
-            instance.save()

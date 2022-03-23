@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { HeaderProps } from 'shared/components/header/Header';
-import useLocale from 'shared/hooks/useLocale';
-import { Language } from 'shared/i18n/i18n';
 
 type ExtendedComponentProps = {
-  locale: Language;
   menuOpen: boolean;
-  logoLang: Language;
+  logoLang: string;
   toggleMenu: () => void;
   closeMenu: () => void;
   handleLogin: (
@@ -17,13 +14,14 @@ type ExtendedComponentProps = {
   ) => void;
 };
 
-const useHeader = (login: HeaderProps['login']): ExtendedComponentProps => {
+const useHeader = (
+  locale: HeaderProps['locale'],
+  login: HeaderProps['login']
+): ExtendedComponentProps => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = (): void => setMenuOpen(!menuOpen);
   const closeMenu = (): void => setMenuOpen(false);
-
-  const locale = useLocale();
 
   const handleLogin = (event?: React.MouseEvent<HTMLAnchorElement>): void => {
     if (event) {
@@ -46,7 +44,6 @@ const useHeader = (login: HeaderProps['login']): ExtendedComponentProps => {
   const logoLang = locale === 'sv' ? 'sv' : 'fi';
 
   return {
-    locale,
     menuOpen,
     logoLang,
     toggleMenu,

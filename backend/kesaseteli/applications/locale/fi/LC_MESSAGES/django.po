@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 13:53+0200\n"
+"POT-Creation-Date: 2022-02-08 14:51+0200\n"
 "PO-Revision-Date: 2022-02-08 14:52+0200\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
@@ -61,19 +61,6 @@ msgstr ""
 msgid "Social security number must be set"
 msgstr ""
 
-#, fuzzy
-#| msgid "Failed to send activation email"
-msgid "Failed to send youth summer voucher email"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
-
-#, fuzzy
-#| msgid "Failed to send activation email"
-msgid "Failed to send manual processing email to handler"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
-
-msgid "VTJ integration is not implemented"
-msgstr ""
-
 msgid "Failed to send activation email"
 msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
 
@@ -102,9 +89,6 @@ msgid "Rejected"
 msgstr ""
 
 msgid "Deleted by customer"
-msgstr ""
-
-msgid "Awaiting manual processing"
 msgstr ""
 
 msgid "employment contract"
@@ -311,15 +295,6 @@ msgstr ""
 msgid "vtj json"
 msgstr ""
 
-msgid "status"
-msgstr ""
-
-msgid "handler"
-msgstr ""
-
-msgid "time handled"
-msgstr ""
-
 msgid "Aktivoi Kesäseteli"
 msgstr ""
 
@@ -371,13 +346,6 @@ msgstr ""
 msgid "Special case of admitting the summer voucher."
 msgstr ""
 
-#, python-format
-msgid "Vuoden %(year)s Kesäsetelisi"
-msgstr ""
-
-msgid "Unable to send youth summer voucher email"
-msgstr ""
-
 msgid "youth summer voucher"
 msgstr ""
 
@@ -388,6 +356,9 @@ msgid "company"
 msgstr ""
 
 msgid "user"
+msgstr ""
+
+msgid "status"
 msgstr ""
 
 msgid "invoicer work address"
@@ -511,129 +482,6 @@ msgid ""
 msgstr ""
 
 msgid "Lataa Excel tiedosto kaikista tämän vuoden hakemuksista"
-msgstr ""
-
-msgid "Kesäsetelisi ja ohjeet sen käyttämiseen"
-msgstr ""
-
-msgid "Helsinki, Kesäseteli, 325€"
-msgstr ""
-
-msgid "Kesäsetelisi, ole hyvä"
-msgstr ""
-
-msgid "Tässä henkilökohtainen Kesäsetelisi."
-msgstr ""
-
-msgid ""
-"Tutustu Kesäsetelin nettisivuihin, jossa on tietoa Kesäsetelin käytöstä, "
-"kesätyönhausta sekä työpaikkoja."
-msgstr ""
-
-msgid "Ystävällisin terveisin, Kesäseteli-tiimi"
-msgstr ""
-
-msgid "Kesäsetelinumero:"
-msgstr ""
-
-msgid "Kesäsetelin summa:"
-msgstr ""
-
-msgid "325€"
-msgstr ""
-
-msgid "Postinumero:"
-msgstr ""
-
-msgid "Koulu:"
-msgstr ""
-
-msgid "Puhelinnumero:"
-msgstr ""
-
-msgid "Sähköpostiosoite:"
-msgstr ""
-
-msgid ""
-"Kun olet löytänyt kesätyöpaikan ja tehnyt työsopimuksen, voit välittää tämän "
-"sähköpostiviestin työnantajalle tai antaa heille yllä olevan "
-"kesäsetelinumeron."
-msgstr ""
-
-msgid "Ohjeita työnhakijalle"
-msgstr ""
-
-msgid ""
-"Kesäseteli helpottaa sinua kesätyöpaikan löytämisessä: viime vuonna "
-"tyypillisiä työtehtäviä olivat kesäleirin ohjaaja, myymälän hyllyttäjä, "
-"ravintolan saliapulainen, puutarhatyöntekijä, lastenhoitaja, verkkosivujen "
-"ja somen sisällöntuottaja ja kioskimyyjä."
-msgstr ""
-
-msgid ""
-"Erikoisia kesätöitä olivat esimerkiksi peliohjelmointi, äänitiedostojen "
-"editointi ja nahkapajan apulainen!"
-msgstr ""
-
-msgid "Työpäivät ja palkka:"
-msgstr ""
-
-msgid "Kesäsetelillä tehdään 60 työtuntia."
-msgstr ""
-
-msgid "Työtunteja on vähintään 18h/viikko."
-msgstr ""
-
-msgid "Työnantaja maksaa sinulle palkkaa vähintään 400 euroa (60 työtunnilta)."
-msgstr ""
-
-msgid "Summa pitää sisällään lomakorvauksen."
-msgstr ""
-
-msgid "Lisäksi työnantaja maksaa normaalit työnantajamaksut."
-msgstr ""
-
-msgid ""
-"Kesätyöjakso voi olla tuntimäärältään pidempi, tällöin 60 työtuntia "
-"ylittävän osuuden palkan on oltava vähintään alan työehtosopimuksen mukainen "
-"vähimmäispalkka."
-msgstr ""
-
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/"
-msgstr ""
-
-msgid "Lue lisää"
-msgstr ""
-
-msgid "Ohjeita työnantajalle"
-msgstr ""
-
-msgid ""
-"Kesäseteli on nuorten, yrittäjien ja Helsingin kaupungin yhteinen hanke."
-msgstr ""
-
-msgid ""
-"Kaupunki korvaa 325 euroa työnantajalle, joka palkkaa Kesäseteliin "
-"oikeutetun nuoren töihin 1.6.–15.8.2022 välisenä aikana."
-msgstr ""
-
-msgid ""
-"Kesätyön vähimmäisvaatimuksina ovat 60 tunnin työaika ja 400 euron palkka."
-msgstr ""
-
-msgid "Muut käyttöehdot voit lukea täältä:"
-msgstr ""
-
-msgid "https://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/tyonantajalle-2/"
-msgstr ""
-
-msgid "Helsinki"
-msgstr ""
-
-msgid "https://nuorten.helsinki/kesaseteli/"
-msgstr ""
-
-msgid "nuorten.helsinki/kesaseteli/"
 msgstr ""
 
 msgid "Ei uusia käsittelemättömiä hakemuksia."

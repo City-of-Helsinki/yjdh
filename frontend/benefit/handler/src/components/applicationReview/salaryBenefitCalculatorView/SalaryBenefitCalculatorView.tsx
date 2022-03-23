@@ -1,18 +1,16 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import { CALCULATION_TYPES } from 'benefit/handler/constants';
+import {
+  CALCULATION_DESCRIPTION_ROW_TYPES,
+  CALCULATION_SUMMARY_ROW_TYPES,
+  CALCULATION_TOTAL_ROW_TYPE,
+  CALCULATION_TYPES,
+} from 'benefit/handler/constants';
 import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
 import {
   PaySubsidy,
   SalaryBenefitCalculatorViewProps,
 } from 'benefit/handler/types/application';
-import {
-  Button,
-  DateInput,
-  IconMinusCircle,
-  IconPlusCircle,
-  Select,
-  TextInput,
-} from 'hds-react';
+import { Button, DateInput, Select, TextArea, TextInput } from 'hds-react';
 import * as React from 'react';
 import { $ViewField } from 'shared/components/benefit/summaryView/SummaryView.sc';
 import DateInputWithSeparator from 'shared/components/forms/fields/dateInputWithSeparator/DateInputWithSeparator';
@@ -34,8 +32,6 @@ import {
   $CalculatorText,
 } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
-import SalaryBenefitManualCalculatorView from './SalaryBenefitManualCalculatorView';
-import SalaryCalculatorResults from './SalaryCalculatorResults/SalaryCalculatorResults';
 import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
 
 const SalaryBenefitCalculatorView: React.FC<
@@ -52,11 +48,6 @@ const SalaryBenefitCalculatorView: React.FC<
     getPaySubsidyPercentageSelectValue,
     isManualCalculator,
     changeCalculatorMode,
-    newTrainingCompensation,
-    setNewTrainingCompensation,
-    addNewTrainingCompensation,
-    removeTrainingCompensation,
-    isDisabledAddTrainingCompensationButton,
   } = useSalaryBenefitCalculatorData(data);
   const {
     t,
@@ -336,7 +327,6 @@ const SalaryBenefitCalculatorView: React.FC<
                       );
                     }}
                     value={convertToUIDateFormat(item.endDate)}
-                    style={{ paddingRight: `${theme.spacing.s}` }}
                   />
                 </$GridCell>
               </>
@@ -382,187 +372,46 @@ const SalaryBenefitCalculatorView: React.FC<
           invalid={!!getErrorMessage(fields.endDate.name)}
           aria-invalid={!!getErrorMessage(fields.endDate.name)}
           errorText={getErrorMessage(fields.endDate.name)}
-          style={{ paddingRight: `${theme.spacing.s}` }}
+          style={{ paddingRight: `${theme.spacing.xs}` }}
         />
       </$GridCell>
 
-      {!isManualCalculator && data.apprenticeshipProgram && (
+      {isManualCalculator && (
         <>
-          <$GridCell $colStart={1} $colSpan={11}>
-            <$CalculatorText
-              isBold
-              css={`
-                margin-top: ${theme.spacing.m};
-              `}
-            >
-              {t(`${translationsBase}.apprenticeshipCompensation`)}
-            </$CalculatorText>
-          </$GridCell>
-
-          {formik.values.trainingCompensations &&
-            formik.values.trainingCompensations.length > 0 && (
-              <>
-                <$GridCell $colStart={1} $colSpan={2}>
-                  <$CalculatorText>
-                    {fields.monthlyAmount.label}
-                  </$CalculatorText>
-                </$GridCell>
-
-                <$GridCell $colStart={3} $colSpan={3}>
-                  <$CalculatorText>
-                    {t(`${translationsBase}.apprenticeshipPeriod`)}
-                  </$CalculatorText>
-                </$GridCell>
-              </>
-            )}
-
-          {formik.values.trainingCompensations?.map((item) => (
-            <React.Fragment key={item.id}>
-              <$GridCell
-                $colStart={1}
-                $colSpan={2}
-                style={{ background: 'white' }}
-              >
-                <$CalculatorTableRow
-                  isTotal
-                  style={{ padding: '0 var(--spacing-xs)', height: '100%' }}
-                >
-                  <$ViewField>
-                    {formatStringFloatValue(item.monthlyAmount?.toString())}
-                  </$ViewField>
-                </$CalculatorTableRow>
-              </$GridCell>
-
-              <$GridCell
-                $colStart={3}
-                $colSpan={6}
-                style={{
-                  background: 'white',
-                  marginLeft: '-20px',
-                  paddingLeft: '20px',
-                }}
-              >
-                <$CalculatorTableRow
-                  isTotal
-                  style={{ padding: 0, height: '100%' }}
-                >
-                  <$ViewField>
-                    {t(`${translationsBase}.startEndDates`, {
-                      startDate: convertToUIDateFormat(item.startDate),
-                      endDate: convertToUIDateFormat(item.endDate),
-                      period: diffMonths(
-                        parseDate(item.endDate),
-                        parseDate(item.startDate)
-                      ),
-                    })}
-                  </$ViewField>
-                </$CalculatorTableRow>
-              </$GridCell>
-              <$GridCell $colStart={9} $colSpan={3}>
-                <Button
-                  onClick={() => removeTrainingCompensation(item.id)}
-                  theme="black"
-                  variant="secondary"
-                  iconLeft={<IconMinusCircle />}
-                  style={{ background: 'white' }}
-                >
-                  {t(`${translationsBase}.remove`)}
-                </Button>
-              </$GridCell>
-            </React.Fragment>
-          ))}
-
           <$GridCell $colStart={1} $colSpan={2}>
-            <$CalculatorText>{fields.monthlyAmount.label}</$CalculatorText>
-          </$GridCell>
-
-          <$GridCell $colStart={3} $colSpan={5}>
             <$CalculatorText>
-              {t(`${translationsBase}.apprenticeshipPeriodWithDiff`, {
-                period: diffMonths(
-                  parseDate(newTrainingCompensation.endDate),
-                  parseDate(newTrainingCompensation.startDate)
-                ),
-              })}
+              {fields.overrideMonthlyBenefitAmount.label}
             </$CalculatorText>
           </$GridCell>
           <$GridCell $colStart={1} $colSpan={1}>
             <TextInput
-              id={fields.monthlyAmount.name}
-              name={fields.monthlyAmount.name}
+              id={fields.overrideMonthlyBenefitAmount.name}
+              name={fields.overrideMonthlyBenefitAmount.name}
               onChange={(e) =>
-                setNewTrainingCompensation((prevValue) => ({
-                  ...prevValue,
-                  monthlyAmount: e.target.value,
-                }))
+                formik.setFieldValue(
+                  fields.overrideMonthlyBenefitAmount.name,
+                  e.target.value
+                )
               }
-              value={formatStringFloatValue(
-                newTrainingCompensation.monthlyAmount
+              value={
+                formik.values.overrideMonthlyBenefitAmount
+                  ? formatStringFloatValue(
+                      formik.values.overrideMonthlyBenefitAmount
+                    )
+                  : ''
+              }
+              invalid={
+                !!getErrorMessage(fields.overrideMonthlyBenefitAmount.name)
+              }
+              aria-invalid={
+                !!getErrorMessage(fields.overrideMonthlyBenefitAmount.name)
+              }
+              errorText={getErrorMessage(
+                fields.overrideMonthlyBenefitAmount.name
               )}
-              invalid={!!getErrorMessage(fields.monthlyAmount.name)}
-              aria-invalid={!!getErrorMessage(fields.monthlyAmount.name)}
-              errorText={getErrorMessage(fields.monthlyAmount.name)}
             />
-          </$GridCell>
-
-          <$GridCell $colStart={3} $colSpan={3}>
-            <DateInputWithSeparator
-              id={fields.startDate.name}
-              name={fields.startDate.name}
-              placeholder={fields.startDate.placeholder}
-              language={language}
-              onChange={(value) =>
-                setNewTrainingCompensation((prevValue) => ({
-                  ...prevValue,
-                  startDate: value,
-                }))
-              }
-              value={convertToUIDateFormat(newTrainingCompensation.startDate)}
-              invalid={!!getErrorMessage(fields.startDate.name)}
-              aria-invalid={!!getErrorMessage(fields.startDate.name)}
-              errorText={getErrorMessage(fields.startDate.name)}
-            />
-          </$GridCell>
-
-          <$GridCell $colStart={6} $colSpan={3}>
-            <DateInput
-              id={fields.endDate.name}
-              name={fields.endDate.name}
-              placeholder={fields.endDate.placeholder}
-              language={language}
-              onChange={(value) =>
-                setNewTrainingCompensation((prevValue) => ({
-                  ...prevValue,
-                  endDate: getCorrectEndDate(prevValue.startDate, value) ?? '',
-                }))
-              }
-              value={convertToUIDateFormat(newTrainingCompensation.endDate)}
-              invalid={!!getErrorMessage(fields.endDate.name)}
-              aria-invalid={!!getErrorMessage(fields.endDate.name)}
-              errorText={getErrorMessage(fields.endDate.name)}
-              style={{ paddingRight: `${theme.spacing.s}` }}
-            />
-          </$GridCell>
-
-          <$GridCell $colStart={9} $colSpan={3}>
-            <Button
-              onClick={addNewTrainingCompensation}
-              theme="coat"
-              disabled={isDisabledAddTrainingCompensationButton}
-              iconLeft={<IconPlusCircle />}
-            >
-              {t(`${translationsBase}.add`)}
-            </Button>
           </$GridCell>
         </>
-      )}
-
-      {isManualCalculator && (
-        <SalaryBenefitManualCalculatorView
-          formik={formik}
-          fields={fields}
-          getErrorMessage={getErrorMessage}
-        />
       )}
 
       <$GridCell $colStart={1}>
@@ -590,7 +439,53 @@ const SalaryBenefitCalculatorView: React.FC<
           </$Notification>
         </$GridCell>
       )}
-      <SalaryCalculatorResults data={data} />
+
+      <$GridCell $colSpan={7}>
+        {data?.calculation?.rows &&
+          data?.calculation?.rows.map((row) => {
+            const isSummaryRowType = CALCULATION_SUMMARY_ROW_TYPES.includes(
+              row.rowType
+            );
+            const isTotalRowType = CALCULATION_TOTAL_ROW_TYPE === row.rowType;
+            const isDescriptionRowType =
+              CALCULATION_DESCRIPTION_ROW_TYPES.includes(row.rowType);
+            return (
+              <div key={row.id}>
+                <$CalculatorTableRow isTotal={isSummaryRowType}>
+                  <$ViewField isBold={isTotalRowType || isDescriptionRowType}>
+                    {row.descriptionFi}
+                  </$ViewField>
+                  {!isDescriptionRowType && (
+                    <$ViewField isBold={isTotalRowType}>
+                      {t(`${translationsBase}.tableRowValue`, {
+                        amount: formatStringFloatValue(row.amount),
+                      })}
+                    </$ViewField>
+                  )}
+                </$CalculatorTableRow>
+              </div>
+            );
+          })}
+      </$GridCell>
+
+      {isManualCalculator && (
+        <$GridCell $colStart={1} $colSpan={6}>
+          <TextArea
+            id={fields.overrideMonthlyBenefitAmountComment.name}
+            name={fields.overrideMonthlyBenefitAmountComment.name}
+            label={fields.overrideMonthlyBenefitAmountComment.label}
+            placeholder={fields.overrideMonthlyBenefitAmountComment.placeholder}
+            value={formik.values.overrideMonthlyBenefitAmountComment}
+            onChange={(e) =>
+              formik.setFieldValue(
+                fields.overrideMonthlyBenefitAmountComment.name,
+                e.target.value
+              )
+            }
+            required
+          />
+        </$GridCell>
+      )}
     </ReviewSection>
   );
 };

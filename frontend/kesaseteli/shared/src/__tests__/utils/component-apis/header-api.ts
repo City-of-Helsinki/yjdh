@@ -1,4 +1,8 @@
 import {
+  expectToLogout,
+  expectUnauthorizedReply,
+} from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
+import {
   screen,
   userEvent,
   waitFor,
@@ -54,6 +58,8 @@ const actions = {
     );
   },
   clickLogoutButton: async (user: User): Promise<void> => {
+    const logout = expectToLogout(user);
+    const unauthorizedReply = expectUnauthorizedReply();
     userEvent.click(
       screen.getByRole('button', {
         name: new RegExp(
@@ -67,6 +73,9 @@ const actions = {
         name: /(kirjaudu ulos)|(header.logoutlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
+    await waitFor(() => logout.done());
+    await waitFor(() => unauthorizedReply.done());
+    await expectations.userIsLoggedOut();
   },
   changeLanguage: (fromLang: Language, toLang: Language): void => {
     userEvent.click(

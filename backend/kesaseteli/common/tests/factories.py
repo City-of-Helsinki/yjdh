@@ -6,16 +6,15 @@ import factory
 import factory.fuzzy
 import pytz
 from faker import Faker
-from shared.common.tests.factories import HandlerUserFactory, UserFactory
+from shared.common.tests.factories import UserFactory
 
 from applications.enums import (
+    ApplicationStatus,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
-    EmployerApplicationStatus,
     get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
-    YouthApplicationStatus,
 )
 from applications.models import (
     Attachment,
@@ -89,10 +88,10 @@ class SummerVoucherFactory(factory.django.DjangoModelFactory):
         model = EmployerSummerVoucher
 
 
-class EmployerApplicationFactory(factory.django.DjangoModelFactory):
+class ApplicationFactory(factory.django.DjangoModelFactory):
     company = factory.SubFactory(CompanyFactory)
     user = factory.SubFactory(UserFactory)
-    status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
+    status = factory.Faker("random_element", elements=ApplicationStatus.values)
     street_address = factory.Faker("street_address")
     contact_person_name = factory.Faker("name")
     contact_person_email = factory.Faker("email")
@@ -140,18 +139,6 @@ def copy_created_at(youth_application: YouthApplication) -> Optional[datetime]:
     return youth_application.created_at
 
 
-def determine_youth_application_handler(youth_application: YouthApplication):
-    if youth_application.status in YouthApplicationStatus.handled_values():
-        return HandlerUserFactory()
-    return None
-
-
-def determine_youth_application_handled_at(youth_application: YouthApplication):
-    if youth_application.status in YouthApplicationStatus.handled_values():
-        return youth_application.created_at
-    return None
-
-
 class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     created_at = factory.fuzzy.FuzzyDateTime(
         start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
@@ -166,8 +153,6 @@ class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     phone_number = factory.LazyFunction(get_test_phone_number)
     postcode = factory.Faker("postcode", locale="fi")
     language = factory.Faker("random_element", elements=get_supported_languages())
-    handler = factory.LazyAttribute(determine_youth_application_handler)
-    handled_at = factory.LazyAttribute(determine_youth_application_handled_at)
     _is_active = None
 
     class Meta:
@@ -182,44 +167,13 @@ class YouthApplicationFactory(BaseYouthApplicationFactory):
         factory.LazyAttribute(copy_created_at),
         None,
     )
-    status = factory.Maybe(
-        "_is_active",
-        factory.Faker(
-            "random_element", elements=YouthApplicationStatus.active_values()
-        ),
-        YouthApplicationStatus.SUBMITTED.value,
-    )
 
 
 class ActiveYouthApplicationFactory(BaseYouthApplicationFactory):
     _is_active = True
     receipt_confirmed_at = factory.LazyAttribute(copy_created_at)
-    status = factory.Faker(
-        "random_element", elements=YouthApplicationStatus.active_values()
-    )
 
 
 class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
     _is_active = False
     receipt_confirmed_at = None
-    status = YouthApplicationStatus.SUBMITTED.value
-
-
-class AcceptableYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = factory.Faker(
-        "random_element", elements=YouthApplicationStatus.acceptable_values()
-    )
-
-
-class AcceptedYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = YouthApplicationStatus.ACCEPTED
-
-
-class RejectableYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = factory.Faker(
-        "random_element", elements=YouthApplicationStatus.rejectable_values()
-    )
-
-
-class RejectedYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = YouthApplicationStatus.REJECTED

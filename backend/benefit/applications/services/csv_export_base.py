@@ -21,9 +21,7 @@ class CsvColumn:
 
 def get_organization_type(application):
     return str(
-        OrganizationType.resolve_organization_type(
-            application.company.company_form_code
-        )
+        OrganizationType.resolve_organization_type(application.company.company_form)
     )
 
 
@@ -43,10 +41,7 @@ def nested_queryset_attr(
         try:
             nested_obj = operator.attrgetter(related_name)(item).all()[queryset_idx]
             return operator.attrgetter(nested_attr_name)(nested_obj)
-        except (
-            AttributeError,
-            IndexError,
-        ):
+        except (AttributeError, IndexError):
             return default_value
 
     return getter

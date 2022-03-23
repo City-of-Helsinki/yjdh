@@ -16,18 +16,17 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 
 const ApplicationPage: NextPage = () => {
   const { t } = useTranslation();
-  const { applicationId, isRouterLoading, applicationQuery } =
-    useApplicationApi();
+  const { applicationId, applicationQuery } = useApplicationApi();
   const [initialStep] = useStepStorage('current');
   const goToPage = useGoToPage();
 
-  if (!isRouterLoading && !applicationId) {
+  if (!applicationId) {
     void goToPage('/', { operation: 'replace' });
     return null;
   }
 
   if (applicationQuery.isSuccess) {
-    if (applicationQuery.data.status !== 'draft' && applicationId) {
+    if (applicationQuery.data.status !== 'draft') {
       void goToPage(`/thankyou?id=${applicationId}`, { operation: 'replace' });
     }
 

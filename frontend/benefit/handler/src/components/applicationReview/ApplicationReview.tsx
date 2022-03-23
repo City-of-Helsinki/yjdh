@@ -1,9 +1,5 @@
 import ApplicationHeader from 'benefit/handler/components/applicationHeader/ApplicationHeader';
-import {
-  APPLICATION_STATUSES,
-  BENEFIT_TYPES,
-  HANDLED_STATUSES,
-} from 'benefit/handler/constants';
+import { APPLICATION_STATUSES, BENEFIT_TYPES } from 'benefit/handler/constants';
 import { LoadingSpinner, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import { ReactElement } from 'react';
@@ -25,7 +21,6 @@ import DeminimisView from './deminimisView/DeminimisView';
 import EmployeeView from './employeeView/EmployeeView';
 import EmploymenAppliedMoreView from './employmentAppliedMoreView/EmploymentAppliedMoreView';
 import EmploymentView from './employmentView/EmpoymentView';
-import HandledView from './handledView/HandledView';
 import NotificationView from './notificationView/NotificationView';
 import PaySubsidyView from './paySubsidyView/PaySubsidyView';
 import SalaryBenefitCalculatorView from './salaryBenefitCalculatorView/SalaryBenefitCalculatorView';
@@ -99,19 +94,13 @@ const ApplicationReview: React.FC = () => {
             <ApplicationProcessingView />
           </>
         )}
-        {application.status &&
-          HANDLED_STATUSES.includes(application.status) && (
-            <HandledView data={application} />
-          )}
       </Container>
       <StickyActionBar>
         {application.status === APPLICATION_STATUSES.RECEIVED && (
           <ReceivedApplicationActions application={application} />
         )}
         {(application.status === APPLICATION_STATUSES.HANDLING ||
-          application.status === APPLICATION_STATUSES.INFO_REQUIRED ||
-          (application.status &&
-            HANDLED_STATUSES.includes(application.status))) && (
+          application.status === APPLICATION_STATUSES.INFO_REQUIRED) && (
           <HandlingApplicationActions application={application} />
         )}
       </StickyActionBar>

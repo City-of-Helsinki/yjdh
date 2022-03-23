@@ -1,27 +1,26 @@
 import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
+import TetPosting from 'tet/admin/types/tetposting';
 import { Controller, useFormContext } from 'react-hook-form';
 import { SelectionGroup as HdsSelectionGroup, Checkbox } from 'hds-react';
 import Id from 'shared/types/id';
-import { OptionType } from 'tet-shared/types/classification';
+import { OptionType } from 'tet/admin/types/classification';
 
 type Props = {
   fieldId: Id<Pick<TetPosting, 'keywords_working_methods' | 'keywords_attributes'>>;
   label: string;
   options: OptionType[];
   required: boolean;
-  rules?: () => true | string;
 };
 
-const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, rules }) => {
+const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required }) => {
   const { control, setValue, getValues, clearErrors } = useFormContext<TetPosting>();
-  const checkboxChangeHandler = (option: OptionType) => {
+  const checkboxChangeHandler = (optionId: string) => {
     const values = getValues(fieldId);
     if (Array.isArray(values)) {
-      let list: OptionType[] = [...values];
-      const index = list.findIndex((item) => item.value === option.value);
+      let list = [...values];
+      const index = list.indexOf(optionId);
       if (index === -1) {
-        list = list.concat(option);
+        list = list.concat(optionId);
         if (required) {
           clearErrors(fieldId);
         }
@@ -36,17 +35,14 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, ru
     <Controller
       name={fieldId}
       control={control}
-      rules={{
-        validate: rules,
-      }}
       render={({ field: { ref, value, ...field }, fieldState: { error, invalid, ...fieldState } }) => (
         <HdsSelectionGroup label={label} errorText={error && error.message ? error.message : ''} required={required}>
           {options.map((option) => (
             <Checkbox
               id={option.value}
               label={option.label}
-              checked={value && Array.isArray(value) ? value.some((item) => item.value === option.value) : false}
-              onChange={() => checkboxChangeHandler(option)}
+              checked={value && Array.isArray(value) ? value.includes(option.value) : false}
+              onChange={() => checkboxChangeHandler(option.value)}
             />
           ))}
         </HdsSelectionGroup>

@@ -1,5 +1,5 @@
 import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
+import TetPosting from 'tet/admin/types/tetposting';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Combobox as HdsCombobox } from 'hds-react';
 import Id from 'shared/types/id';

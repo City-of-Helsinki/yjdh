@@ -9,7 +9,6 @@ from shared.oidc.views.hki_views import (
     HelsinkiOIDCAuthenticationCallbackView,
     HelsinkiOIDCAuthenticationRequestView,
     HelsinkiOIDCBackchannelLogoutView,
-    HelsinkiOIDCLogoutCallbackView,
     HelsinkiOIDCLogoutView,
     HelsinkiOIDCUserInfoView,
 )
@@ -19,7 +18,6 @@ urlpatterns = []
 if settings.NEXT_PUBLIC_MOCK_FLAG:
     from shared.oidc.views.mock_views import (
         MockAuthenticationRequestView,
-        MockLogoutCallbackView,
         MockLogoutView,
         MockUserInfoView,
     )
@@ -34,11 +32,6 @@ if settings.NEXT_PUBLIC_MOCK_FLAG:
             "logout/",
             MockLogoutView.as_view(),
             name="oidc_logout",
-        ),
-        path(
-            "logout_callback/",
-            MockLogoutCallbackView.as_view(),
-            name="oidc_logout_callback",
         ),
         path(
             "userinfo/",
@@ -62,11 +55,6 @@ else:
             "logout/",
             HelsinkiOIDCLogoutView.as_view(),
             name="oidc_logout",
-        ),
-        path(
-            "logout_callback/",
-            HelsinkiOIDCLogoutCallbackView.as_view(),
-            name="oidc_logout_callback",
         ),
         path(
             "userinfo/",

@@ -1,3 +1,4 @@
+import useApplicationIdQueryParam from 'kesaseteli/employer/hooks/application/useApplicationIdQueryParam';
 import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicationQuery';
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
@@ -7,13 +8,11 @@ import noop from 'lodash/noop';
 import React from 'react';
 import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
-import useRouterQueryParam from 'shared/hooks/useRouterQueryParam';
 import Application from 'shared/types/application';
 import DraftApplication from 'shared/types/draft-application';
 
 export type ApplicationApi<T> = {
   applicationId?: string;
-  isRouterLoading: boolean;
   applicationQuery: UseQueryResult<T>;
   updateApplicationQuery: UseMutationResult<
     Application,
@@ -47,7 +46,7 @@ export type Params = {
 const useApplicationApi = <T = Application>(
   select?: (application: Application) => T
 ): ApplicationApi<T> => {
-  const { value: applicationId, isRouterLoading } = useRouterQueryParam('id');
+  const applicationId = useApplicationIdQueryParam();
   const queryClient = useQueryClient();
   const onError = useErrorHandler();
 
@@ -129,7 +128,6 @@ const useApplicationApi = <T = Application>(
     );
 
   return {
-    isRouterLoading,
     applicationId,
     applicationQuery,
     updateApplicationQuery,

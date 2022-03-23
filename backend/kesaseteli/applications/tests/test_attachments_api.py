@@ -10,7 +10,7 @@ from PIL import Image
 from rest_framework.reverse import reverse
 
 from applications.api.v1.serializers import AttachmentSerializer
-from applications.enums import AttachmentType, EmployerApplicationStatus
+from applications.enums import ApplicationStatus, AttachmentType
 from applications.models import Attachment, EmployerSummerVoucher
 
 
@@ -116,10 +116,10 @@ def test_attachment_upload_too_big(api_client, summer_voucher: EmployerSummerVou
 @pytest.mark.parametrize(
     "status, response_code",
     [
-        (EmployerApplicationStatus.SUBMITTED, 400),
-        (EmployerApplicationStatus.ACCEPTED, 404),
-        (EmployerApplicationStatus.DELETED_BY_CUSTOMER, 404),
-        (EmployerApplicationStatus.REJECTED, 404),
+        (ApplicationStatus.SUBMITTED, 400),
+        (ApplicationStatus.ACCEPTED, 404),
+        (ApplicationStatus.DELETED_BY_CUSTOMER, 404),
+        (ApplicationStatus.REJECTED, 404),
     ],
 )
 def test_attachment_upload_invalid_status(
