@@ -27,7 +27,7 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPub
   const { t } = useTranslation();
   const {
     getValues,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = useFormContext<TetPosting>();
   const theme = useTheme();
   const posting = getValues();
