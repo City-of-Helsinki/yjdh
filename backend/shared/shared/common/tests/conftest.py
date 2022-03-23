@@ -4,7 +4,12 @@ import pytest
 from django.test import Client
 from django.utils import timezone
 
-from shared.common.tests.factories import UserFactory
+from shared.common.tests.factories import (
+    StaffSuperuserFactory,
+    StaffUserFactory,
+    SuperuserFactory,
+    UserFactory,
+)
 
 
 def store_tokens_in_session(client):
@@ -34,6 +39,12 @@ def store_tokens_in_session(client):
     s.save()
 
 
+def force_login_user(user) -> Client:
+    client = Client()
+    client.force_login(user)
+    return client
+
+
 @pytest.fixture()
 def user():
     return UserFactory()
@@ -41,12 +52,17 @@ def user():
 
 @pytest.fixture()
 def staff_user():
-    return UserFactory(is_staff=True)
+    return StaffUserFactory()
 
 
 @pytest.fixture()
 def superuser_user():
-    return UserFactory(is_superuser=True)
+    return SuperuserFactory()
+
+
+@pytest.fixture()
+def staff_superuser_user():
+    return StaffSuperuserFactory()
 
 
 @pytest.fixture()
@@ -62,21 +78,21 @@ def client():
 
 @pytest.fixture
 def staff_client(staff_user):
-    client = Client()
-    client.force_login(staff_user)
-    return client
+    return force_login_user(staff_user)
 
 
 @pytest.fixture
 def superuser_client(superuser_user):
-    client = Client()
-    client.force_login(superuser_user)
-    return client
+    return force_login_user(superuser_user)
+
+
+@pytest.fixture
+def staff_superuser_client(staff_superuser_user):
+    return force_login_user(staff_superuser_user)
 
 
 @pytest.fixture
 def user_client(user):
-    client = Client()
-    client.force_login(user)
+    client = force_login_user(user)
     store_tokens_in_session(client)
     return client

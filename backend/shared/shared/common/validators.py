@@ -1,7 +1,9 @@
 import json
+from typing import Type
 
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.db.models import Choices
 
 # These regular expressions should function similarly as the regular expressions in the
 # frontend's constants.ts:
@@ -76,3 +78,46 @@ def validate_optional_json(value) -> None:
     """
     if value is not None and value != "":
         validate_json(value)
+
+
+def validate_unique_comma_separated_choices(
+    values_string,
+    choices_class: Type[Choices],
+    allow_null: bool,
+    allow_blank: bool,
+) -> None:
+    """
+    Validate values_string as unique comma separated choices from choices_class.
+
+    :param values_string: Input string containing the comma separated choices
+    :param choices_class: Type, not an instance, of class derived from Choices
+    :param allow_null: Is values_string allowed to be None?
+    :param allow_blank: Is values_string allowed to be an empty string i.e. ""?
+
+    :raises ValidationError: If values_string is None and allow_null isn't True, or if
+    values_string is an empty string and allow_blank isn't True, otherwise if
+    values_string can't be split into parts on commas, or if the split parts aren't
+    unique, or if the split parts aren't values from choices_class.values.
+    """
+    if values_string is None:
+        if allow_null:
+            return
+        raise ValidationError("Forbidden None value")
+
+    if values_string == "":
+        if allow_blank:
+            return
+        raise ValidationError("Forbidden empty string value")
+
+    try:
+        values_list = values_string.split(",")
+    except (AttributeError, TypeError, ValueError):
+        raise ValidationError("Unable to split input value into parts on commas")
+
+    values_set = set(values_list)
+
+    if len(values_set) != len(values_list):
+        raise ValidationError("Duplicate values in comma separated values")
+
+    if not values_set.issubset(choices_class.values):
+        raise ValidationError("Invalid choices in comma separated values")

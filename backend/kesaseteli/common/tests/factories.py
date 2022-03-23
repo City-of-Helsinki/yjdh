@@ -9,6 +9,7 @@ from faker import Faker
 from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 from applications.enums import (
+    AdditionalInfoUserReason,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
     EmployerApplicationStatus,
@@ -126,7 +127,7 @@ def get_all_test_schools() -> List[str]:
     return get_listed_test_schools() + get_unlisted_test_schools()
 
 
-def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
+def uses_unlisted_test_school(youth_application) -> bool:
     return youth_application.school not in get_listed_test_schools()
 
 
@@ -136,23 +137,63 @@ def get_test_phone_number() -> str:
     return Faker(locale="fi").phone_number().replace("(+358)", "+358")
 
 
-def copy_created_at(youth_application: YouthApplication) -> Optional[datetime]:
+def copy_created_at(youth_application) -> Optional[datetime]:
     return youth_application.created_at
 
 
-def determine_youth_application_handler(youth_application: YouthApplication):
+def determine_handler(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
         return HandlerUserFactory()
     return None
 
 
-def determine_youth_application_handled_at(youth_application: YouthApplication):
+def determine_handled_at(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
         return youth_application.created_at
     return None
 
 
-class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
+def determine_receipt_confirmed_at(youth_application):
+    if youth_application.status in YouthApplicationStatus.active_values():
+        return youth_application.created_at
+    return None
+
+
+def determine_youth_application_has_additional_info(youth_application):
+    if (
+        youth_application.status
+        in YouthApplicationStatus.can_have_additional_info_values()
+    ):
+        if (
+            youth_application.status
+            in YouthApplicationStatus.must_have_additional_info_values()
+        ):
+            return True
+        return Faker().boolean()
+    return False
+
+
+def determine_additional_info_provided_at(youth_application):
+    if youth_application._has_additional_info:
+        return youth_application.created_at
+    return None
+
+
+def determine_additional_info_user_reasons(youth_application):
+    if youth_application._has_additional_info:
+        return list(
+            Faker().random_elements(AdditionalInfoUserReason.values, unique=True)
+        )
+    return []
+
+
+def determine_additional_info_description(youth_application):
+    if youth_application._has_additional_info:
+        return Faker().sentence()
+    return ""
+
+
+class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
     created_at = factory.fuzzy.FuzzyDateTime(
         start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
     )
@@ -166,60 +207,65 @@ class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     phone_number = factory.LazyFunction(get_test_phone_number)
     postcode = factory.Faker("postcode", locale="fi")
     language = factory.Faker("random_element", elements=get_supported_languages())
-    handler = factory.LazyAttribute(determine_youth_application_handler)
-    handled_at = factory.LazyAttribute(determine_youth_application_handled_at)
-    _is_active = None
+    receipt_confirmed_at = factory.LazyAttribute(determine_receipt_confirmed_at)
+    handler = factory.LazyAttribute(determine_handler)
+    handled_at = factory.LazyAttribute(determine_handled_at)
+    additional_info_provided_at = factory.LazyAttribute(
+        determine_additional_info_provided_at
+    )
+    additional_info_user_reasons = factory.LazyAttribute(
+        determine_additional_info_user_reasons
+    )
+    additional_info_description = factory.LazyAttribute(
+        determine_additional_info_description
+    )
+    _has_additional_info = factory.LazyAttribute(
+        determine_youth_application_has_additional_info
+    )
 
     class Meta:
+        abstract = True
         model = YouthApplication
-        exclude = ["_is_active"]
+        exclude = ["_has_additional_info"]
 
 
-class YouthApplicationFactory(BaseYouthApplicationFactory):
-    _is_active = factory.Faker("boolean")
-    receipt_confirmed_at = factory.Maybe(
-        "_is_active",
-        factory.LazyAttribute(copy_created_at),
-        None,
-    )
-    status = factory.Maybe(
-        "_is_active",
-        factory.Faker(
-            "random_element", elements=YouthApplicationStatus.active_values()
-        ),
-        YouthApplicationStatus.SUBMITTED.value,
-    )
+class YouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = factory.Faker("random_element", elements=YouthApplicationStatus.values)
 
 
-class ActiveYouthApplicationFactory(BaseYouthApplicationFactory):
-    _is_active = True
-    receipt_confirmed_at = factory.LazyAttribute(copy_created_at)
+class ActiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker(
         "random_element", elements=YouthApplicationStatus.active_values()
     )
 
 
-class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
-    _is_active = False
-    receipt_confirmed_at = None
+class InactiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = YouthApplicationStatus.SUBMITTED.value
 
 
-class AcceptableYouthApplicationFactory(ActiveYouthApplicationFactory):
+class AcceptableYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker(
         "random_element", elements=YouthApplicationStatus.acceptable_values()
     )
 
 
-class AcceptedYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = YouthApplicationStatus.ACCEPTED
+class AcceptedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.ACCEPTED.value
 
 
-class RejectableYouthApplicationFactory(ActiveYouthApplicationFactory):
+class AdditionalInfoRequestedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value
+
+
+class AdditionalInfoProvidedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value
+
+
+class RejectableYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker(
         "random_element", elements=YouthApplicationStatus.rejectable_values()
     )
 
 
-class RejectedYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = YouthApplicationStatus.REJECTED
+class RejectedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.REJECTED.value
