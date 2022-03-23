@@ -10,6 +10,7 @@ type CommonAccordionProps = React.PropsWithChildren<{
   hasError?: boolean;
 }>;
 
+
 type CardAccordionProps = Omit<CommonAccordionProps, 'card' | 'border'> & {
   border?: boolean;
   card: true;
