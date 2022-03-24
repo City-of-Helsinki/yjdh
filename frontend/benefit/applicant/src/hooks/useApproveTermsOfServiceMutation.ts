@@ -1,9 +1,7 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useRouter } from 'next/router';
-import { useMutation, UseMutationResult } from 'react-query';
+import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-import { ROUTES } from '../constants';
 import {
   ApproveTermsOfServiceRequestData,
   ApproveTermsOfServiceResponseData,
@@ -16,7 +14,7 @@ const useApproveTermsOfServiceMutation = (): UseMutationResult<
 > => {
   const { axios, handleResponse } = useBackendAPI();
 
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation<
     ApproveTermsOfServiceResponseData,
@@ -30,7 +28,8 @@ const useApproveTermsOfServiceMutation = (): UseMutationResult<
       ),
     {
       onSuccess: (data) => {
-        if (data.id) void router.push(ROUTES.HOME);
+        if (data.id)
+          void queryClient.invalidateQueries('checkTermsOfServiceApproval');
       },
     }
   );

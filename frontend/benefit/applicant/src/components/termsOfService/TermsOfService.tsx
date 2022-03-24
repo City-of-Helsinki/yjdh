@@ -1,6 +1,6 @@
 import { $PageHeading } from 'benefit/applicant/components/applications/Applications.sc';
 import { Button, Logo, LogoLanguage } from 'hds-react';
-import { GetStaticProps, NextPage } from 'next';
+import { GetStaticProps } from 'next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
 import FormSection from 'shared/components/forms/section/FormSection';
@@ -8,13 +8,13 @@ import { $GridCell, $Hr } from 'shared/components/forms/section/FormSection.sc';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { openFileInNewTab } from 'shared/utils/file.utils';
 
-import PdfViewer from '../components/pdfViewer/PdfViewer';
-import useApproveTermsOfServiceMutation from '../hooks/useApproveTermsOfServiceMutation';
-import useLogout from '../hooks/useLogout';
-import useTermsOfServiceData from '../hooks/useTermsOfServiceData';
-import { ApplicantConsents } from '../types/application';
+import useApproveTermsOfServiceMutation from '../../hooks/useApproveTermsOfServiceMutation';
+import useLogout from '../../hooks/useLogout';
+import useTermsOfServiceData from '../../hooks/useTermsOfServiceData';
+import { ApplicantConsents } from '../../types/application';
+import PdfViewer from '../pdfViewer/PdfViewer';
 
-const TermsOfService: NextPage = () => {
+const TermsOfService: React.FC = () => {
   const { locale, theme, t, termsInEffectUrl, userData } =
     useTermsOfServiceData();
 

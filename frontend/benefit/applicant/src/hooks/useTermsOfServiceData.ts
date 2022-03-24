@@ -25,7 +25,9 @@ const useTermsOfServiceData = (): ExtendedComponentProps => {
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const userQuery = useUserQuery((data) => camelcaseKeys(data, { deep: true }));
+  const userQuery = useUserQuery(undefined, (data) =>
+    camelcaseKeys(data, { deep: true })
+  );
   const { data: userData } = userQuery;
 
   const termsInEffectUrl = React.useMemo(() => {
