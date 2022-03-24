@@ -45,8 +45,10 @@ const useHeader = (): ExtendedComponentProps => {
   useEffect(() => {
     if (application?.unread_messages_count) {
       setUnredMessagesCount(application?.unread_messages_count);
+    } else {
+      setUnredMessagesCount(null);
     }
-  }, [application?.unread_messages_count]);
+  }, [application]);
 
   useEffect(() => {
     if (isMessagesDrawerVisible && Number(unreadMessagesCount) > 0) {
@@ -61,7 +63,10 @@ const useHeader = (): ExtendedComponentProps => {
   );
 
   useEffect(() => {
-    setHasMessenger(status === APPLICATION_STATUSES.INFO_REQUIRED);
+    setHasMessenger(
+      status === APPLICATION_STATUSES.INFO_REQUIRED ||
+        status === APPLICATION_STATUSES.HANDLING
+    );
   }, [status, setHasMessenger]);
 
   const handleLanguageChange = (
