@@ -14,7 +14,15 @@
 		"heading": "Kom ihåg att söka PRAO-plats i tid",
 		"search": "Sök",
 		"fetch": "Ansök",
-		"advancedSearch": "Detaljerad sökning"
+		"advancedSearch": "Detaljerad sökning",
+		"boxTitle": "Mikä TET-paikka?",
+		"boxContent": "Työelämään tutustuminen eli TET kuuluu jokaisen peruskoululaisen elämään. TET:n aikana pääsee näkemään, mitä erilaisissa ammateissa tehdään ja pääsee itse kokemaan työelämää.",
+		"announceLinkTitle": "Ilmoita TET-paikka",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Oletko työnantaja ja haluat tehdä ilmoituksen avoimesta TET-paikasta? Siirry tästä työnantajan palveluun.",
+		"askLinkTitle": "Kysyttävää",
+		"askLinkURL": "https://hel.fi",
+		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
 	},
 	"filters": {
 		"searchPlaceholder": "Uppge sökord eller platsnamn",

@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import { $ImageWrapper, $PageContent, $Textbox, $TextboxTitle } from './PageContent.sc';
+import { useTranslation } from 'next-i18next';
 
 const PageContent = () => {
+  const { t } = useTranslation();
   return (
     <$PageContent>
       <$ImageWrapper>
@@ -15,11 +17,8 @@ const PageContent = () => {
         />
       </$ImageWrapper>
       <$Textbox>
-        <$TextboxTitle>Mikä TET-paikka?</$TextboxTitle>
-        <div>
-          Työelämään tutustuminen eli TET kuuluu jokaisen peruskoululaisen elämään. TET:n aikana pääsee näkemään, mitä
-          erilaisissa ammateissa tehdään ja pääsee itse kokemaan työelämää
-        </div>
+        <$TextboxTitle>{t('common:frontPage.boxTitle')}</$TextboxTitle>
+        <div>{t('common:frontPage.boxContent')}</div>
       </$Textbox>
     </$PageContent>
   );
