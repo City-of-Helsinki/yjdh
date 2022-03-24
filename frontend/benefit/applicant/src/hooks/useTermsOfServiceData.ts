@@ -1,4 +1,5 @@
 import { useTranslation } from 'benefit/applicant/i18n';
+import { getBackendDomain } from 'benefit-shared/backend-api/backend-api';
 import camelcaseKeys from 'camelcase-keys';
 import { TFunction } from 'next-i18next';
 import React from 'react';
@@ -32,9 +33,9 @@ const useTermsOfServiceData = (): ExtendedComponentProps => {
       userData?.termsOfServiceInEffect &&
       userData?.termsOfServiceInEffect[`termsPdf${textLocale}` as TermsProp]
     )
-      return userData.termsOfServiceInEffect[
-        `termsPdf${textLocale}` as TermsProp
-      ];
+      return `${getBackendDomain()}${
+        userData.termsOfServiceInEffect[`termsPdf${textLocale}` as TermsProp]
+      }`;
     return '';
   }, [userData?.termsOfServiceInEffect, textLocale]);
 
