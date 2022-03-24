@@ -1,5 +1,5 @@
 import {
-  BackendEndpoint,
+  getAdditionalInfoQueryKey,
   getYouthApplicationStatusQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
@@ -26,7 +26,7 @@ const useCreateAdditionalInfoQuery = (
   return useMutation({
     mutationFn: (formData: AdditionalInfoFormData) =>
       handleResponse<CreatedYouthApplication>(
-        axios.post(BackendEndpoint.ADDITIONAL_INFO, {
+        axios.post(getAdditionalInfoQueryKey(applicationId), {
           ...convertFormDataToApplication(formData),
           language: getLanguage(),
         })

@@ -15,6 +15,8 @@ import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 
 describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
+  const APPLICATION_ID = 'abc-123';
+
   it('should not violate accessibility', async () => {
     const {
       renderResult: { container },
@@ -24,17 +26,17 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   });
 
   it(`shows error toast when backend returns bad request`, async () => {
-    expectToGetYouthApplicationStatusErrorFromBackend('123-abc', 400);
-    await renderPage(AdditionalInfoPage, { query: { id: '123-abc' } });
+    expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 400);
+    await renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
     await headerApi.expectations.errorToastIsShown();
   });
 
   it(`redirects to 500 -error page when backend returns unexpected error`, async () => {
-    expectToGetYouthApplicationStatusErrorFromBackend('123-abc', 500);
+    expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 500);
     const spyPush = jest.fn();
     await renderPage(AdditionalInfoPage, {
       push: spyPush,
-      query: { id: '123-abc' },
+      query: { id: APPLICATION_ID },
     });
     await waitFor(() =>
       expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
@@ -47,18 +49,18 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   });
 
   it(`shows that application is not found when backend returns 404`, async () => {
-    expectToGetYouthApplicationStatusErrorFromBackend('123-abc', 404);
-    await renderPage(AdditionalInfoPage, { query: { id: '123-abc' } });
+    expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 404);
+    await renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
     await getAdditionalInfoPageApi().expectations.applicationWasNotFound();
   });
 
   describe(`when application status is "additional_information_requested"`, () => {
     it('shows additional info form', async () => {
-      expectToGetYouthApplicationStatus('123-abc', {
+      expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
       await renderPage(AdditionalInfoPage, {
-        query: { id: '123-abc' },
+        query: { id: APPLICATION_ID },
       });
       const additionalInfoPageApi = getAdditionalInfoPageApi();
       await additionalInfoPageApi.expectations.formIsPresent();
@@ -72,9 +74,9 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   ] as YouthApplicationStatusType[]) {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that additional info is sent', async () => {
-        expectToGetYouthApplicationStatus('123-abc', { status });
+        expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
         await renderPage(AdditionalInfoPage, {
-          query: { id: '123-abc' },
+          query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
         await additionalInfoPageApi.expectations.applicationWasSent();
@@ -88,9 +90,9 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   ] as YouthApplicationStatusType[]) {
     describe(`when application status is "${status as string}"`, () => {
       it('shows that application is not found', async () => {
-        expectToGetYouthApplicationStatus('123-abc', { status });
+        expectToGetYouthApplicationStatus(APPLICATION_ID, { status });
         await renderPage(AdditionalInfoPage, {
-          query: { id: '123-abc' },
+          query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
         await additionalInfoPageApi.expectations.applicationWasNotFound();
@@ -99,13 +101,13 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
   }
   describe(`when submitting form`, () => {
     it(`shows errors if empty values`, async () => {
-      expectToGetYouthApplicationStatus('123-abc', {
+      expectToGetYouthApplicationStatus(APPLICATION_ID, {
         status: 'additional_information_requested',
       });
       await renderPage(AdditionalInfoPage, {
-        query: { id: '123-abc' },
+        query: { id: APPLICATION_ID },
       });
-      const additionalInfoPageApi = getAdditionalInfoPageApi();
+      const additionalInfoPageApi = getAdditionalInfoPageApi(APPLICATION_ID);
       await additionalInfoPageApi.expectations.formIsPresent();
       await additionalInfoPageApi.actions.clickSendButton();
       await additionalInfoPageApi.expectations.exceptionTypeDropDownHasError(
@@ -119,17 +121,15 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
     describe(`sends filled form data to the backend`, () => {
       it(`with default language`, async () => {
-        expectToGetYouthApplicationStatus('123-abc', {
+        expectToGetYouthApplicationStatus(APPLICATION_ID, {
           status: 'additional_information_requested',
         });
         await renderPage(AdditionalInfoPage, {
-          query: { id: '123-abc' },
+          query: { id: APPLICATION_ID },
         });
         const { additional_info_description, additional_info_user_reasons } =
           fakeAdditionalInfoApplication();
-        const additionalInfoPageApi = getAdditionalInfoPageApi({
-          id: '123-abc',
-        });
+        const additionalInfoPageApi = getAdditionalInfoPageApi(APPLICATION_ID);
         await additionalInfoPageApi.expectations.formIsPresent();
         await additionalInfoPageApi.actions.clickAndSelectReasonsFromDropdown(
           additional_info_user_reasons
@@ -142,18 +142,17 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
       });
 
       it(`with changed language`, async () => {
-        expectToGetYouthApplicationStatus('123-abc', {
+        expectToGetYouthApplicationStatus(APPLICATION_ID, {
           status: 'additional_information_requested',
         });
         await renderPage(AdditionalInfoPage, {
-          query: { id: '123-abc' },
+          query: { id: APPLICATION_ID },
           locale: 'sv',
         });
         const { additional_info_description, additional_info_user_reasons } =
           fakeAdditionalInfoApplication();
-        const additionalInfoPageApi = getAdditionalInfoPageApi({
+        const additionalInfoPageApi = getAdditionalInfoPageApi(APPLICATION_ID, {
           language: 'sv',
-          id: '123-abc',
         });
         await additionalInfoPageApi.expectations.formIsPresent();
         await additionalInfoPageApi.actions.clickAndSelectReasonsFromDropdown(

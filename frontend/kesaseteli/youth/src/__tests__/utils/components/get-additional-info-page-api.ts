@@ -15,11 +15,10 @@ import translations from '../../../../public/locales/fi/common.json';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
 const getAdditionalInfoPageApi = (
-  initialApplication: Partial<AdditionalInfoApplication> & {
-    id?: CreatedYouthApplication['id'];
-  } = {}
+  id?: CreatedYouthApplication['id'],
+  initialApplication?: Partial<AdditionalInfoApplication>
 ) => {
-  const { id, ...application } = {
+  const application = {
     language: DEFAULT_LANGUAGE,
     ...initialApplication,
   };
@@ -85,13 +84,18 @@ const getAdditionalInfoPageApi = (
           description;
       },
       async clickSendButton(returnCode?: 200 | 400 | 500) {
+        if (!id) {
+          throw new Error('you forgot to give application id');
+        }
         if (returnCode === 400 || returnCode === 500) {
-          expectToReplyErrorWhenCreatingAdditionalInfo(returnCode);
+          expectToReplyErrorWhenCreatingAdditionalInfo(
+            id,
+            application as AdditionalInfoApplication,
+            returnCode
+          );
         } else if (returnCode === 200) {
-          if (!id) {
-            throw new Error('you forgot to give id');
-          }
           expectToCreateAdditionalInfo(
+            id,
             application as AdditionalInfoApplication
           );
           expectToGetYouthApplicationStatus(id, {

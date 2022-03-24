@@ -3,6 +3,7 @@ import { ErrorType } from 'kesaseteli/youth/types/youth-application-creation-err
 import { fakeSchools } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   BackendEndpoint,
+  getAdditionalInfoQueryKey,
   getBackendDomain,
   getYouthApplicationStatusQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
@@ -100,24 +101,27 @@ export const expectToGetYouthApplicationStatusErrorFromBackend = (
 };
 
 export const expectToCreateAdditionalInfo = (
+  applicationId: CreatedYouthApplication['id'],
   additionalInfo: AdditionalInfoApplication
 ): nock.Scope =>
   nock(getBackendDomain())
-    .post(BackendEndpoint.ADDITIONAL_INFO, additionalInfo)
+    .post(getAdditionalInfoQueryKey(applicationId), additionalInfo)
     .reply(
       200,
       { ...additionalInfo, id: faker.datatype.uuid() },
       { 'Access-Control-Allow-Origin': '*' }
     );
 
-export const expectToReplyErrorWhenCreatingAdditionalInfo =
-  (errorCode: 400 | 404 | 500) =>
-  (additionalInfo: AdditionalInfoApplication): nock.Scope => {
-    consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-    return nock(getBackendDomain())
-      .post(BackendEndpoint.ADDITIONAL_INFO, additionalInfo)
-      .reply(
-        errorCode,
-        'This is a create youth application backend test error. Please ignore this error message.'
-      );
-  };
+export const expectToReplyErrorWhenCreatingAdditionalInfo = (
+  applicationId: CreatedYouthApplication['id'],
+  additionalInfo: AdditionalInfoApplication,
+  errorCode: 400 | 404 | 500
+): nock.Scope => {
+  consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+  return nock(getBackendDomain())
+    .post(getAdditionalInfoQueryKey(applicationId), additionalInfo)
+    .reply(
+      errorCode,
+      'This is a create youth application backend test error. Please ignore this error message.'
+    );
+};

@@ -25,3 +25,6 @@ export const getYouthApplicationQueryKey = (id: string): string =>
 
 export const getYouthApplicationStatusQueryKey = (id: string): string =>
   `${getYouthApplicationQueryKey(id)}status/`;
+
+export const getAdditionalInfoQueryKey = (id: string): string =>
+  `${getYouthApplicationQueryKey(id)}additional_info/`;
