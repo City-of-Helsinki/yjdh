@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 import withAuth from 'shared/components/hocs/withAuth';
 
+import SupportingContent from '../components/supportingContent/SupportingContent';
 import { SUBMITTED_STATUSES } from '../constants';
 import FrontPageProvider from '../context/FrontPageProvider';
 
@@ -27,6 +28,7 @@ const ApplicantIndex: NextPage = () => {
         heading={t('common:applications.list.submitted.heading')}
         status={SUBMITTED_STATUSES}
       />
+      <SupportingContent />
     </FrontPageProvider>
   );
 };
