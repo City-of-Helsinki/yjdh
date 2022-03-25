@@ -410,8 +410,7 @@
     "newApplicationBtnText": "Tee uusi hakemus"
   },
   "attachmentsIngress": {
-    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB."
   },
   "credentialsIngress": {
     "text": "Helsinki-lisällä työllistettävää henkilöä on tiedotettava hänen henkilötietojensa käsittelystä. Tulosta tiedoksianto ja pyydä siihen allekirjoitus työllistettävältä."
