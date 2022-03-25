@@ -15,13 +15,7 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
   );
   const { data: userData, isLoading } = userQuery;
 
-  if (isLoading)
-    return (
-      <>
-        <Header />
-        <Footer />
-      </>
-    );
+  if (isLoading) return null;
 
   return (
     <$Main {...rest}>
