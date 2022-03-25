@@ -6,7 +6,7 @@ import { useTheme } from 'styled-components';
 import { Checkbox } from 'hds-react';
 import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
 import { useQuery } from 'react-query';
-import { getAddressList } from 'tet/admin/backend-api/linked-events-api';
+import { getAddressList } from 'tet-shared/backend-api/linked-events-api';
 import debounce from 'lodash/debounce';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
