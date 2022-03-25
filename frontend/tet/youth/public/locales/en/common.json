@@ -21,8 +21,8 @@
 		"announceLinkURL": "https://hel.fi",
 		"announceLinkContent": "Are you an employer and want to make a TET-advertisement? Click here for the employer's service.",
 		"askLinkTitle": "Any questions?",
-		"askLinkURL": "https://hel.fi",
-		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Do you have any questions or did you notice something strange about the service? Reach out!"
 	},
 	"filters": {
 		"searchPlaceholder": "Type search workd or location name",

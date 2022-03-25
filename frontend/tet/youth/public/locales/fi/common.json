@@ -21,7 +21,7 @@
 		"announceLinkURL": "https://hel.fi",
 		"announceLinkContent": "Oletko työnantaja ja haluat tehdä ilmoituksen avoimesta TET-paikasta? Siirry tästä työnantajan palveluun.",
 		"askLinkTitle": "Kysyttävää",
-		"askLinkURL": "https://hel.fi",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
 		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
 	},
 	"filters": {

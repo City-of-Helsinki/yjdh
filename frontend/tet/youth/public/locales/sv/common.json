@@ -21,8 +21,8 @@
 		"announceLinkURL": "https://hel.fi",
 		"announceLinkContent": "Är du arbetsgivare och vill anmäla en ledig tjänst inom TET- platsannonsering? Gå till den arbetsgivartjänst här.",
 		"askLinkTitle": "Frågorna?",
-		"askLinkURL": "https://hel.fi",
-		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Har du några frågor om tjänsten eller märkte du något konstigt i annonserna? Ta kontakt!"
 	},
 	"filters": {
 		"searchPlaceholder": "Uppge sökord eller platsnamn",
