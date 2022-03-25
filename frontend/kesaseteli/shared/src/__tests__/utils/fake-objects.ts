@@ -1,3 +1,4 @@
+import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
@@ -7,10 +8,16 @@ import { FinnishSSN } from 'finnish-ssn';
  *  browser-tests which do not support tsconfig
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
+import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
+import ActivatedYouthApplication from '../../types/activated-youth-application';
+import AdditionalInfoApplication from '../../types/additional-info-application';
+import AdditionalInfoFormData from '../../types/additional-info-form-data';
+import AdditionalInfoReasonOption from '../../types/additional-info-reason-option';
 import CreatedYouthApplication from '../../types/created-youth-application';
 import YouthApplication from '../../types/youth-application';
 import YouthFormData from '../../types/youth-form-data';
-import { convertFormDataToApplication } from '../../utils/youth-form-data.utils';
+import { convertFormDataToApplication as convertAdditionalInfoFormDataToApplication } from '../../utils/additional-info-form-data.utils';
+import { convertFormDataToApplication as convertYouthFormDataToApplication } from '../../utils/youth-form-data.utils';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -114,7 +121,7 @@ export const fakeYouthFormData = (
 };
 
 export const fakeYouthApplication = (language?: Language): YouthApplication =>
-  convertFormDataToApplication(fakeYouthFormData(), language);
+  convertYouthFormDataToApplication(fakeYouthFormData(), language);
 
 export const fakeCreatedYouthApplication = (
   override?: Partial<CreatedYouthApplication>
@@ -126,11 +133,55 @@ export const fakeCreatedYouthApplication = (
   return {
     id: faker.datatype.uuid(),
     status,
-    receipt_confirmed_at:
-      override?.status !== 'submitted'
-        ? convertToBackendDateFormat(faker.date.past())
-        : undefined,
-    ...convertFormDataToApplication(fakeYouthFormData(override)),
+    ...convertYouthFormDataToApplication(fakeYouthFormData(override)),
     ...override,
   };
 };
+
+export const fakeAdditionalInfoFormData = (
+  override?: Partial<AdditionalInfoFormData>
+): AdditionalInfoFormData => ({
+  id: faker.datatype.uuid(),
+  additional_info_user_reasons: getRandomSubArray(
+    ADDITIONAL_INFO_REASON_TYPE
+  ).map((value) => ({
+    name: value,
+    label: value as string,
+  })) as AdditionalInfoReasonOption[],
+  additional_info_description: faker.lorem.paragraph(1),
+  additional_info_attachments: [],
+  ...override,
+});
+
+export const fakeAdditionalInfoApplication = (
+  language?: Language
+): AdditionalInfoApplication =>
+  convertAdditionalInfoFormDataToApplication(
+    fakeAdditionalInfoFormData(),
+    language
+  );
+
+export const fakeActivatedYouthApplication = (
+  override?: Partial<ActivatedYouthApplication>
+): ActivatedYouthApplication => ({
+  ...fakeCreatedYouthApplication(override),
+  ...convertAdditionalInfoFormDataToApplication(
+    fakeAdditionalInfoFormData({
+      ...override,
+      additional_info_user_reasons: (
+        override?.additional_info_user_reasons ?? []
+      ).map((reason) => ({ name: reason, label: '' })),
+    }),
+    override?.language
+  ),
+  ...override,
+  receipt_confirmed_at: convertToBackendDateFormat(
+    override?.receipt_confirmed_at ?? faker.date.past()
+  ),
+  additional_info_provided_at:
+    override?.status === 'additional_information_provided'
+      ? convertToBackendDateFormat(
+          override?.additional_info_provided_at ?? faker.date.past()
+        )
+      : undefined,
+});

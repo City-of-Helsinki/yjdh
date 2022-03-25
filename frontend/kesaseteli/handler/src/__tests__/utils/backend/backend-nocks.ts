@@ -5,6 +5,7 @@ import {
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
@@ -30,7 +31,7 @@ afterEach(async () => {
 nock.disableNetConnect();
 
 export const expectToGetYouthApplication = (
-  expectedApplication: CreatedYouthApplication
+  expectedApplication: CreatedYouthApplication | ActivatedYouthApplication
 ): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.YOUTH_APPLICATIONS}${expectedApplication.id}/`)
@@ -51,7 +52,7 @@ export const expectToGetYouthApplicationError = (
 
 export const expectToPatchYouthApplication = (
   operation: 'accept' | 'reject',
-  id: CreatedYouthApplication['id']
+  id: ActivatedYouthApplication['id']
 ): nock.Scope =>
   nock(getBackendDomain())
     .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
@@ -63,7 +64,7 @@ export const expectToPatchYouthApplication = (
 
 export const expectToPatchYouthApplicationError = (
   operation: 'accept' | 'reject',
-  id: CreatedYouthApplication['id'],
+  id: ActivatedYouthApplication['id'],
   errorCode: 400 | 404 | 500
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
