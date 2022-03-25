@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
 export const $Linkbox = styled.div`
-  max-width: 400px;
+  width: 100%;
+  @media (min-width: ${(props) => props.theme.breakpoints.s}) {
+    max-width: 400px;
+  }
 `;
 
 export const $TitleWrapper = styled.a`
