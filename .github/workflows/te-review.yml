@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build ${{ matrix.service }}
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
@@ -127,7 +127,7 @@ jobs:
     needs: build
     name: Review
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
@@ -234,7 +234,7 @@ jobs:
 #          - service: te-empl
 #            dir: kesaseteli/employer
 #    steps:
-#      - uses: actions/checkout@v2
+#      - uses: actions/checkout@v3
 #      - name: Setup kubectl
 #        run: |
 #          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
