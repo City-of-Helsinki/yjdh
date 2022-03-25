@@ -18,7 +18,7 @@
         "sent": "Skickad",
         "applicationNumber": "Ansökningsnummer",
         "status": "Status",
-        "check": "Tarkastele",
+        "check": "Recensioner",
         "editEndDate": "Redigera senast",
         "newMessages_one": "{{count}} ny",
         "newMessages_other": "{{count}} nya"
@@ -384,8 +384,8 @@
       "message": "Ansökan om Helsingforstillägg {{applicationNumber}} ({{applicantName}}) har skickats. Du får ett meddelande när ansökan har behandlats."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Applikationen sparas",
+      "message": "Helsinforstillägg applikationen {{applicationNumber}} {{applicantName}} sparas."
     },
     "applicationDeleted": {
       "label": "Utkast raderat",
@@ -527,7 +527,7 @@
     "compose": "Skriv ett meddelande",
     "send": "Skicka",
     "isSecure": "Meddelandena är skyddade",
-    "noMessages": "Ei viestejä",
+    "noMessages": "Inga meddelanden",
     "close": "Stäng"
   }
 }

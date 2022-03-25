@@ -18,7 +18,7 @@
         "sent": "Submitted",
         "applicationNumber": "Application number",
         "status": "Status",
-        "check": "Check",
+        "check": "Review",
         "editEndDate": "Edit by",
         "newMessages_one": "{{count}} new",
         "newMessages_other": "{{count}} new"
@@ -384,8 +384,8 @@
       "message": "Helsinki benefit application {{applicationNumber}} ({{applicantName}}) has been submitted. You will be notified once the application has been processed."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Application saved",
+      "message": "Helsinki-benefit application {{applicationNumber}} {{applicantName}} has been saved."
     },
     "applicationDeleted": {
       "label": "Draft deleted",
@@ -527,7 +527,7 @@
     "compose": "Write a message",
     "send": "Submit",
     "isSecure": "Messages are encrypted",
-    "noMessages": "Ei viestejä",
+    "noMessages": "No messages",
     "close": "Close"
   }
 }
