@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { TFunction, useTranslation } from 'next-i18next';
 import { HeaderProps } from 'shared/components/header/Header';
 import useLocale from 'shared/hooks/useLocale';
 import { Language } from 'shared/i18n/i18n';
@@ -15,6 +16,7 @@ type ExtendedComponentProps = {
   handleLogout: (
     event?: React.MouseEvent<HTMLAnchorElement, MouseEvent> | undefined
   ) => void;
+  t: TFunction;
 };
 
 const useHeader = (login: HeaderProps['login']): ExtendedComponentProps => {
@@ -24,6 +26,8 @@ const useHeader = (login: HeaderProps['login']): ExtendedComponentProps => {
   const closeMenu = (): void => setMenuOpen(false);
 
   const locale = useLocale();
+
+  const { t } = useTranslation();
 
   const handleLogin = (event?: React.MouseEvent<HTMLAnchorElement>): void => {
     if (event) {
@@ -53,6 +57,7 @@ const useHeader = (login: HeaderProps['login']): ExtendedComponentProps => {
     closeMenu,
     handleLogin,
     handleLogout,
+    t,
   };
 };
 

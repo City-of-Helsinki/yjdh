@@ -368,7 +368,8 @@
     "messages": "Messages",
     "drawer": {
       "title": "Application’s messages"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "footer": {
     "copyrightText": "Copyright",

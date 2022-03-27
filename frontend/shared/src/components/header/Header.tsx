@@ -1,4 +1,5 @@
 import { IconGlobe, IconSignout, LogoLanguage, Navigation } from 'hds-react';
+import { TFunction } from 'next-i18next';
 import React from 'react';
 import { MAIN_CONTENT_ID } from 'shared/constants';
 import useGoToPage from 'shared/hooks/useGoToPage';
@@ -62,6 +63,7 @@ const Header: React.FC<HeaderProps> = ({
     closeMenu,
     handleLogin,
     handleLogout,
+    t,
   } = useHeader(login);
 
   const goToPage = useGoToPage();
@@ -135,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({
         )}
         {languages && onLanguageChange && (
           <Navigation.LanguageSelector
-            buttonAriaLabel={locale?.toUpperCase()}
+            buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
             label={locale?.toUpperCase()}
             icon={<IconGlobe />}
             closeOnItemClick

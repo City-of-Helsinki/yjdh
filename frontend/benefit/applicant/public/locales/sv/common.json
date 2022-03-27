@@ -368,7 +368,8 @@
     "messages": "Meddelanden",
     "drawer": {
       "title": "Meddelanden om ansökan"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Ändra språk"
   },
   "footer": {
     "copyrightText": "Copyright",

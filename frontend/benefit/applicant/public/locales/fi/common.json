@@ -368,7 +368,8 @@
     "messages": "Viestit",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Valitse kieli"
   },
   "footer": {
     "copyrightText": "Copyright",
