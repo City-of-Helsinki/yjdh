@@ -5,7 +5,8 @@
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:",
     "linkSkipToContent": "Skip to content",
-    "menuToggleAriaLabel": "Menu"
+    "menuToggleAriaLabel": "Menu",
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "errorPage": {
     "title": "An unexpected error occured",
