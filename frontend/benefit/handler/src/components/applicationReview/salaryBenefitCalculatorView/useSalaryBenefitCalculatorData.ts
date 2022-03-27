@@ -22,6 +22,7 @@ import {
   diffMonths,
   parseDate,
 } from 'shared/utils/date.utils';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getValidationSchema } from '../employmentAppliedMoreView/utils/validation';
 
@@ -131,7 +132,10 @@ const useSalaryBenefitCalculatorData = (
       : [];
     void formik.setFieldValue(fields.trainingCompensations.name, [
       ...currentTrainingCompensations,
-      newTrainingCompensation,
+      {
+        ...newTrainingCompensation,
+        id: uuidv4(),
+      },
     ]);
   };
 

@@ -206,6 +206,10 @@
           "commissionBenefitSelected": {
             "label": "Period",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "No types of benefit available",
+            "content": "A company or an association that is not engaged in economic activity can only apply for the Helsinki benefit for salary. Pay subsidy granted for the employment relationship is a prerequisite for the Helsinki benefit for salary."
           }
         },
         "messages": {

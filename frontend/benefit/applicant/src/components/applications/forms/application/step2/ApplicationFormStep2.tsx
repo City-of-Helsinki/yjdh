@@ -3,6 +3,7 @@ import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_START_DATE,
   BENEFIT_TYPES,
+  ORGANIZATION_TYPES,
 } from 'benefit/applicant/constants';
 import { useAlertBeforeLeaving } from 'benefit/applicant/hooks/useAlertBeforeLeaving';
 import { useDependentFieldsEffect } from 'benefit/applicant/hooks/useDependentFieldsEffect';
@@ -84,6 +85,17 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   useAlertBeforeLeaving(formik.dirty);
 
   const selectLabel = t('common:select');
+
+  const isAbleToSelectEmploymentBenefit =
+    data?.company?.organizationType !== ORGANIZATION_TYPES.ASSOCIATION ||
+    (data?.company?.organizationType === ORGANIZATION_TYPES.ASSOCIATION &&
+      data?.associationHasBusinessActivities);
+  const isAbleToSelectSalaryBenefit = formik.values.paySubsidyGranted === true;
+
+  const isNoAvailableBenefitTypes =
+    formik.values.paySubsidyGranted !== null &&
+    !isAbleToSelectEmploymentBenefit &&
+    !isAbleToSelectSalaryBenefit;
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -363,6 +375,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               checked={formik.values.benefitType === BENEFIT_TYPES.EMPLOYMENT}
+              disabled={!isAbleToSelectEmploymentBenefit}
             />
             <$RadioButton
               id={`${fields.benefitType.name}Salary`}
@@ -374,10 +387,24 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               checked={formik.values.benefitType === BENEFIT_TYPES.SALARY}
-              disabled={formik.values.paySubsidyGranted !== true}
+              disabled={!isAbleToSelectSalaryBenefit}
             />
           </SelectionGroup>
         </$GridCell>
+        {isNoAvailableBenefitTypes && (
+          <$GridCell $colStart={7} $colSpan={6}>
+            <$Notification
+              type="error"
+              label={t(
+                `${translationsBase}.notifications.noAvailableBenefitTypes.label`
+              )}
+            >
+              {t(
+                `${translationsBase}.notifications.noAvailableBenefitTypes.content`
+              )}
+            </$Notification>
+          </$GridCell>
+        )}
       </FormSection>
 
       <FormSection header={t(`${translationsBase}.heading4`)}>
@@ -685,6 +712,7 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
         handleSave={handleSave}
         handleBack={handleBack}
         handleDelete={handleDelete}
+        disabledNext={isNoAvailableBenefitTypes}
       />
     </form>
   );

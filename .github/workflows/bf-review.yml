@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: Build ${{ matrix.service }}
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
@@ -111,7 +111,7 @@ jobs:
     needs: build
     name: Review
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
