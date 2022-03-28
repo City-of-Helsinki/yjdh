@@ -8,7 +8,9 @@ export const BackendEndpoint = {
   USER_ME: 'v1/users/me',
   COMPANY: '/v1/company/',
   APPLICATIONS: '/v1/applications/',
+  APPLICATIONS_SIMPLIFIED: '/v1/applications/simplified_list/',
   HANDLER_APPLICATIONS: '/v1/handlerapplications/',
+  HANDLER_APPLICATIONS_SIMPLIFIED: '/v1/handlerapplications/simplified_list/',
   APPLICATION_BATCHES: '/v1/applicationbatches/',
 } as const;
 

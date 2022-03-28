@@ -143,6 +143,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         youth_application: YouthApplication = self.get_object()
         return redirect(youth_application.handler_processing_url())
 
+    @transaction.atomic
     @action(methods=["post"], detail=True)
     def additional_info(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()

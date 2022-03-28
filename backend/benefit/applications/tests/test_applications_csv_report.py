@@ -221,7 +221,7 @@ def test_applications_csv_export_with_date_range(handler_api_client):
     )
 
 
-def test_applications_csv_output(applications_csv_service):
+def test_applications_csv_output(applications_csv_service):  # noqa: C901
     csv_lines = split_lines_at_semicolon(applications_csv_service.get_csv_string())
     assert csv_lines[0][0] == '"Hakemusnumero"'
     assert (
@@ -232,7 +232,32 @@ def test_applications_csv_output(applications_csv_service):
     application2 = applications_csv_service.get_applications()[1]
     for idx, col in enumerate(applications_csv_service.CSV_COLUMNS):
         assert csv_lines[0][idx] == f'"{col.heading}"'
-        if "Palkkatuki 1 / alkupäivä" in col.heading:
+
+        if "Työnantajan tyyppi" in col.heading:
+            assert csv_lines[1][idx] == '"Yritys"'
+        elif "Haettava lisä" in col.heading:
+            assert csv_lines[1][idx] == '"Työllistämisen Helsinki-lisä"'
+        elif "Siirrettävä Ahjo-rivi / teksti" in col.heading:
+            assert (
+                csv_lines[1][idx]
+                == f'"{application1.calculation.ahjo_rows[0].description_fi}"'
+            )
+            assert (
+                csv_lines[2][idx]
+                == f'"{application2.calculation.ahjo_rows[0].description_fi}"'
+            )
+        elif "Käsittelypäivä" in col.heading:
+            assert csv_lines[1][idx] == f'"{application1.handled_at.isoformat()}"'
+        elif "Siirrettävä Ahjo-rivi / määrä eur kk" in col.heading:
+            assert (
+                Decimal(csv_lines[1][idx])
+                == application1.calculation.ahjo_rows[0].monthly_amount
+            )
+            assert (
+                Decimal(csv_lines[2][idx])
+                == application2.calculation.ahjo_rows[0].monthly_amount
+            )
+        elif "Palkkatuki 1 / alkupäivä" in col.heading:
             assert (
                 csv_lines[1][idx]
                 == f'"{application1.pay_subsidies.all()[0].start_date.isoformat()}"'
@@ -304,8 +329,70 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
     assert int(csv_lines[1][1]) == 1
     assert int(csv_lines[2][0]) == application.application_number
     assert int(csv_lines[2][1]) == 2
-    assert csv_lines[1][2:] == csv_lines[2][2:]  # rest of the lines are equal
+
+    # the content of columns "Siirrettävä Ahjo-rivi / xxx" and "Hakemusrivi" change, rest of the lines are equal
+    current_ahjo_row_start = csv_lines[0].index('"Siirrettävä Ahjo-rivi / tyyppi"')
+    current_ahjo_row_end = csv_lines[0].index(
+        '"Siirrettävä Ahjo-rivi / päättymispäivä"'
+    )
+    assert (
+        csv_lines[1][2:current_ahjo_row_start] == csv_lines[2][2:current_ahjo_row_start]
+    )
+    assert (
+        csv_lines[1][current_ahjo_row_end + 1 :]
+        == csv_lines[2][current_ahjo_row_end + 1 :]
+    )
     assert len(csv_lines) == 3
+
+    # Validate the content of "Siirrettävä Ahjo-rivi" for the 1st ahjo row
+    assert (
+        csv_lines[1][current_ahjo_row_start] == f'"{application.ahjo_rows[0].row_type}"'
+    )
+    assert (
+        csv_lines[1][current_ahjo_row_start + 1]
+        == f'"{application.ahjo_rows[0].description_fi}"'
+    )
+    assert (
+        Decimal(csv_lines[1][current_ahjo_row_start + 2])
+        == application.ahjo_rows[0].amount
+    )
+    assert (
+        Decimal(csv_lines[1][current_ahjo_row_start + 3])
+        == application.ahjo_rows[0].monthly_amount
+    )
+    assert (
+        csv_lines[1][current_ahjo_row_start + 4]
+        == f'"{application.ahjo_rows[0].start_date.isoformat()}"'
+    )
+    assert (
+        csv_lines[1][current_ahjo_row_start + 5]
+        == f'"{application.ahjo_rows[0].end_date.isoformat()}"'
+    )
+
+    # Validate the content of "Siirrettävä Ahjo-rivi" for the 2nd ahjo row
+    assert (
+        csv_lines[2][current_ahjo_row_start] == f'"{application.ahjo_rows[1].row_type}"'
+    )
+    assert (
+        csv_lines[2][current_ahjo_row_start + 1]
+        == f'"{application.ahjo_rows[1].description_fi}"'
+    )
+    assert (
+        Decimal(csv_lines[2][current_ahjo_row_start + 2])
+        == application.ahjo_rows[1].amount
+    )
+    assert (
+        Decimal(csv_lines[2][current_ahjo_row_start + 3])
+        == application.ahjo_rows[1].monthly_amount
+    )
+    assert (
+        csv_lines[2][current_ahjo_row_start + 4]
+        == f'"{application.ahjo_rows[1].start_date.isoformat()}"'
+    )
+    assert (
+        csv_lines[2][current_ahjo_row_start + 5]
+        == f'"{application.ahjo_rows[1].end_date.isoformat()}"'
+    )
 
     column_1 = csv_lines[0].index('"Ahjo-rivi 1 / tyyppi"')
     column_2 = csv_lines[0].index('"Ahjo-rivi 2 / tyyppi"')
@@ -316,6 +403,7 @@ def test_applications_csv_two_ahjo_rows(applications_csv_service_with_one_applic
         assert Decimal(csv_lines[1][start_column + 3]) == ahjo_row.monthly_amount
         assert csv_lines[1][start_column + 4] == f'"{ahjo_row.start_date.isoformat()}"'
         assert csv_lines[1][start_column + 5] == f'"{ahjo_row.end_date.isoformat()}"'
+
     applications_csv_service_with_one_application.write_csv_file(
         "/tmp/two_ahjo_rows.csv"
     )
@@ -423,6 +511,11 @@ def test_applications_csv_monthly_amount_override(
     total_col = csv_lines[0].index('"Ahjo-rivi 1 / määrä eur yht"')
     assert csv_lines[1][monthly_col] == "100.00"
     assert csv_lines[1][total_col] == "200.00"
+
+    current_monthly_col = csv_lines[0].index('"Siirrettävä Ahjo-rivi / määrä eur kk"')
+    current_total_col = csv_lines[0].index('"Siirrettävä Ahjo-rivi / määrä eur yht"')
+    assert csv_lines[1][current_monthly_col] == "100.00"
+    assert csv_lines[1][current_total_col] == "200.00"
 
 
 def test_write_applications_csv_file(applications_csv_service, tmp_path):
