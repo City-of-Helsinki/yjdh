@@ -4,6 +4,7 @@ export enum ROUTES {
   HOME = '/',
   APPLICATION_FORM = '/application',
   LOGIN = '/login',
+  TERMS_OF_SERVICE = '/terms-of-service',
 }
 
 export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;

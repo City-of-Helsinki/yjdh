@@ -59,7 +59,9 @@
       "back": "Back",
       "edit": "Edit",
       "close": "Close",
-      "openTermsAsPDF": "Open the terms as a PDF file"
+      "openTermsAsPDF": "Open the terms as a PDF file",
+      "continueToService": "Continue to the service",
+      "pauseAndExit": "Cancel and exit"
     },
     "sections": {
       "company": {
@@ -360,6 +362,7 @@
       }
     }
   },
+  "serviceName": "Helsinki benefit service",
   "appName": "Helsinki benefit",
   "header": {
     "loginLabel": "Sign in to the service",
@@ -465,7 +468,8 @@
     "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires strong authentication",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
-    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself.",
+    "termsOfServiceHeader": "Information about the processing of the employer representatives’ personal data"
   },
   "errorPage": {
     "title": "An error has unfortunately occurred",

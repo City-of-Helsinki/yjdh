@@ -10,6 +10,7 @@ export const BackendEndpoint = {
   APPLICATIONS: '/v1/applications/',
   APPLICATIONS_SIMPLIFIED: '/v1/applications/simplified_list/',
   HANDLER_APPLICATIONS: '/v1/handlerapplications/',
+  APPROVE_TERMS_OF_SERVICE: '/v1/terms/approve_terms_of_service/',
   HANDLER_APPLICATIONS_SIMPLIFIED: '/v1/handlerapplications/simplified_list/',
   APPLICATION_BATCHES: '/v1/applicationbatches/',
 } as const;

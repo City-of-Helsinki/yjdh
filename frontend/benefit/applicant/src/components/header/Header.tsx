@@ -7,6 +7,7 @@ import noop from 'lodash/noop';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import BaseHeader from 'shared/components/header/Header';
+import { getFullName } from 'shared/utils/application.utils';
 
 import Messenger from '../messenger/Messenger';
 import { $CustomMessagesActions } from './Header.sc';
@@ -47,7 +48,9 @@ const Header: React.FC = () => {
           logoutLabel: t('common:header.logoutLabel'),
           onLogin: !isLoading ? login : noop,
           onLogout: !isLoading ? logout : noop,
-          userName: isSuccess ? data?.name : undefined,
+          userName: isSuccess
+            ? getFullName(data?.first_name, data?.last_name)
+            : undefined,
           userAriaLabelPrefix: t('common:header.userAriaLabelPrefix'),
         }}
         customItems={

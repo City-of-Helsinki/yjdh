@@ -1,5 +1,5 @@
 import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
-import PdfViewver from 'benefit/applicant/components/pdfViewer/PdfViewer';
+import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
 import { TextProp } from 'benefit/applicant/types/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
 import { Button } from 'hds-react';
@@ -9,6 +9,7 @@ import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
+import { openFileInNewTab } from 'shared/utils/file.utils';
 
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep6 } from './useApplicationFormStep6';
@@ -33,7 +34,6 @@ const ApplicationFormStep6: React.FC<
     textLocale,
     checkedArray,
     applicantTermsInEffectUrl,
-    openTermsAsPDF,
   } = useApplicationFormStep6(data, onSubmit);
 
   if (isSubmittedApplication) {
@@ -59,9 +59,10 @@ const ApplicationFormStep6: React.FC<
           {data && (
             <>
               <$GridCell $colSpan={12}>
-                <PdfViewver
+                <PdfViewer
                   file={applicantTermsInEffectUrl}
-                  documentMarginLeft="-80px"
+                  scale={1.8}
+                  documentMarginLeft="-70px"
                 />
               </$GridCell>
               <$GridCell
@@ -73,7 +74,7 @@ const ApplicationFormStep6: React.FC<
                 <Button
                   theme="black"
                   variant="secondary"
-                  onClick={openTermsAsPDF}
+                  onClick={() => openFileInNewTab(applicantTermsInEffectUrl)}
                 >
                   {t('common:applications.actions.openTermsAsPDF')}
                 </Button>

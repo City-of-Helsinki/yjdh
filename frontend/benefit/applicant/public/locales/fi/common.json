@@ -59,7 +59,9 @@
       "back": "Takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
-      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
+      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
+      "continueToService": "Jatka palveluun",
+      "pauseAndExit": "Keskeytä ja poistu"
     },
     "sections": {
       "company": {
@@ -360,6 +362,7 @@
       }
     }
   },
+  "serviceName": "Helsinki-lisän asiointipalvelu",
   "appName": "Helsinki-lisä",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
@@ -465,7 +468,8 @@
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi.",
+    "termsOfServiceHeader": "Tietoa työnantajan edustajien henkilötietojen käsittelystä"
   },
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",

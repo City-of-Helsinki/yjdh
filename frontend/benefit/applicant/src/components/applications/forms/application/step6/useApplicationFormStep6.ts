@@ -28,7 +28,6 @@ type ExtendedComponentProps = {
   textLocale: string;
   checkedArray: boolean[];
   applicantTermsInEffectUrl: string;
-  openTermsAsPDF: () => void;
 };
 
 const useApplicationFormStep6 = (
@@ -116,14 +115,6 @@ const useApplicationFormStep6 = (
     return '';
   }, [application.applicantTermsInEffect, textLocale]);
 
-  const openTermsAsPDF = (): void => {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    const newTab = window.open(applicantTermsInEffectUrl, '_blank');
-    if (newTab) {
-      newTab.focus();
-    }
-  };
-
   return {
     t,
     handleBack: onBack,
@@ -137,7 +128,6 @@ const useApplicationFormStep6 = (
     textLocale,
     checkedArray,
     applicantTermsInEffectUrl,
-    openTermsAsPDF,
   };
 };
 
