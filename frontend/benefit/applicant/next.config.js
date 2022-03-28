@@ -12,6 +12,7 @@ const { parsed: env } = require('dotenv').config({
 const nextConfig = {
   i18n,
   env,
+  poweredByHeader: false,
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
