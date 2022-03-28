@@ -84,7 +84,7 @@ export const keywordToOptionType = (
   return {
     label: keyword.name[language] ?? keyword.name['fi'],
     name: keyword.name[language] ?? keyword.name['fi'],
-    value: keyword[valueKey],
+    value: keyword[valueKey] ?? keyword['@id'],
   };
 };
 
