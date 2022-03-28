@@ -7,7 +7,7 @@ module.exports = (envPath) => {
     hooks: {
       test: {
         before: async (t) => {
-          await waitForReact(20_000, t);
+          await waitForReact(45_000, t);
         },
 
       },
@@ -25,7 +25,12 @@ module.exports = (envPath) => {
         customCompilerModulePath:  path.join(__dirname, '/node_modules/typescript')
       }
     },
-    pageRequestTimeout: 20_000
+    assertionTimeout: 5000,
+    selectorTimeout: 30_000,
+    pageLoadTimeout: 120_000,
+    ajaxRequestTimeout: 120_000,
+    pageRequestTimeout: 90_000,
+    browserInitTimeout: 240_000
   };
 };
 
