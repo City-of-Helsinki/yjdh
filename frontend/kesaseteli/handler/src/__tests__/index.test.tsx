@@ -72,6 +72,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     await indexPageApi.expectations.fieldValueIsPresent('school');
     await indexPageApi.expectations.fieldValueIsPresent('phone_number');
     await indexPageApi.expectations.fieldValueIsPresent('email');
+    indexPageApi.expectations.additionalInfoIsNotPresent();
   });
 
   it(`shows youth application data with unlisted school`, async () => {
@@ -89,6 +90,29 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     await indexPageApi.expectations.fieldValueIsPresent(
       'school',
       (school) => `${school ?? ''} (Koulua ei löytynyt listalta)`
+    );
+  });
+
+  it(`shows additional info fields`, async () => {
+    const application = fakeActivatedYouthApplication({
+      status: 'additional_information_provided',
+    });
+    expectToGetYouthApplication(application);
+    const spyPush = jest.fn();
+    await renderPage(HandlerIndex, {
+      push: spyPush,
+      query: { id: application.id },
+    });
+    const indexPageApi = getIndexPageApi(application);
+    await indexPageApi.expectations.pageIsLoaded();
+    await indexPageApi.expectations.additionalInfoIsPresent();
+    await indexPageApi.expectations.fieldValueIsPresent(
+      'additional_info_provided_at',
+      convertToUIDateAndTimeFormat
+    );
+    await indexPageApi.expectations.additionalInfoReasonsAreShown();
+    await indexPageApi.expectations.fieldValueIsPresent(
+      'additional_info_description'
     );
   });
 

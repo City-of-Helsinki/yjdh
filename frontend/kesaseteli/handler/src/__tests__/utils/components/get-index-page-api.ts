@@ -10,9 +10,11 @@ import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
 import { escapeRegExp } from 'shared/utils/regex.utils';
 import { assertUnreachable } from 'shared/utils/typescript.utils';
 
+import translations from '../../../../public/locales/fi/common.json';
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-const getIndexPageApi = (expectedApplication?: ActivatedYouthApplication) => ({
-  expectations: {
+const getIndexPageApi = (expectedApplication?: ActivatedYouthApplication) => {
+  const expectations = {
     pageIsLoaded: async () => {
       await screen.findByRole('heading', {
         name: /hakemuksen tiedot/i,
@@ -45,6 +47,23 @@ const getIndexPageApi = (expectedApplication?: ActivatedYouthApplication) => ({
       const field = await screen.findByTestId(`handlerApplication-name`);
       expect(field).toHaveTextContent(
         escapeRegExp(`${first_name} ${last_name}`)
+      );
+    },
+    additionalInfoIsPresent: async (): Promise<void> => {
+      await screen.findByRole('heading', { name: /lisätietohakemus/i });
+    },
+    additionalInfoIsNotPresent: (): void => {
+      expect(
+        screen.queryByRole('heading', { name: /lisätietohakemus/i })
+      ).not.toBeInTheDocument();
+    },
+    additionalInfoReasonsAreShown: async (): Promise<void> => {
+      await expectations.fieldValueIsPresent(
+        'additional_info_user_reasons',
+        (additional_info_user_reasons) =>
+          additional_info_user_reasons
+            ?.map((reason) => translations.reasons[reason])
+            .join('. ') ?? ''
       );
     },
     actionButtonsArePresent: async (): Promise<void> => {
@@ -113,8 +132,8 @@ const getIndexPageApi = (expectedApplication?: ActivatedYouthApplication) => ({
       }
       return null;
     },
-  },
-  actions: {
+  };
+  const actions = {
     clickCompleteButton: (type: CompleteOperation): void => {
       userEvent.click(screen.getByTestId(`${type}-button`));
     },
@@ -151,7 +170,11 @@ const getIndexPageApi = (expectedApplication?: ActivatedYouthApplication) => ({
       const dialog = await screen.findByRole('dialog');
       userEvent.click(within(dialog).getByRole('button', { name: /peruuta/i }));
     },
-  },
-});
+  };
+  return {
+    expectations,
+    actions,
+  };
+};
 
 export default getIndexPageApi;

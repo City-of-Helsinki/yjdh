@@ -1,5 +1,5 @@
 import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
-import { Language } from '@frontend/shared/src/i18n/i18n';
+import { Language, DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
@@ -11,12 +11,9 @@ import { FinnishSSN } from 'finnish-ssn';
 import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
 import ActivatedYouthApplication from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
-import AdditionalInfoFormData from '../../types/additional-info-form-data';
-import AdditionalInfoReasonOption from '../../types/additional-info-reason-option';
 import CreatedYouthApplication from '../../types/created-youth-application';
 import YouthApplication from '../../types/youth-application';
 import YouthFormData from '../../types/youth-form-data';
-import { convertFormDataToApplication as convertAdditionalInfoFormDataToApplication } from '../../utils/additional-info-form-data.utils';
 import { convertFormDataToApplication as convertYouthFormDataToApplication } from '../../utils/youth-form-data.utils';
 
 export const fakeSchools: string[] = [
@@ -138,42 +135,23 @@ export const fakeCreatedYouthApplication = (
   };
 };
 
-export const fakeAdditionalInfoFormData = (
-  override?: Partial<AdditionalInfoFormData>
-): AdditionalInfoFormData => ({
+export const fakeAdditionalInfoApplication = (
+  override?: Partial<AdditionalInfoApplication>
+): AdditionalInfoApplication => ({
   id: faker.datatype.uuid(),
-  additional_info_user_reasons: getRandomSubArray(
-    ADDITIONAL_INFO_REASON_TYPE
-  ).map((value) => ({
-    name: value,
-    label: value as string,
-  })) as AdditionalInfoReasonOption[],
+  additional_info_user_reasons: getRandomSubArray(ADDITIONAL_INFO_REASON_TYPE),
   additional_info_description: faker.lorem.paragraph(1),
   additional_info_attachments: [],
+  language: override?.language ?? DEFAULT_LANGUAGE,
   ...override,
 });
-
-export const fakeAdditionalInfoApplication = (
-  language?: Language
-): AdditionalInfoApplication =>
-  convertAdditionalInfoFormDataToApplication(
-    fakeAdditionalInfoFormData(),
-    language
-  );
 
 export const fakeActivatedYouthApplication = (
   override?: Partial<ActivatedYouthApplication>
 ): ActivatedYouthApplication => ({
   ...fakeCreatedYouthApplication(override),
-  ...convertAdditionalInfoFormDataToApplication(
-    fakeAdditionalInfoFormData({
-      ...override,
-      additional_info_user_reasons: (
-        override?.additional_info_user_reasons ?? []
-      ).map((reason) => ({ name: reason, label: '' })),
-    }),
-    override?.language
-  ),
+  ...(override?.status === 'additional_information_provided' &&
+    fakeAdditionalInfoApplication(override)),
   ...override,
   receipt_confirmed_at: convertToBackendDateFormat(
     override?.receipt_confirmed_at ?? faker.date.past()
