@@ -6,6 +6,7 @@ import {
   Translation,
 } from '@frontend/shared/browser-tests/components/header.components';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { waitForReact } from 'testcafe-react-selectors';
 
 import { getFrontendUrl } from '../utils/url.utils';
 
@@ -24,6 +25,7 @@ fixture('Frontpage')
   .requestHooks(requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
+    await waitForReact(30_000, t);
     headerComponents = getHeaderComponents(t, appTranslation);
   })
   .afterEach(async () =>

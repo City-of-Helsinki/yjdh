@@ -136,6 +136,7 @@
     "react-i18next": "^11.11.0",
     "slack-node": "^0.2.0",
     "testcafe": "^1.18.2",
+    "testcafe-react-selectors": "^4.1.5",
     "testcafe-reporter-custom": "^1.2.1",
     "testcafe-reporter-html": "^1.4.6",
     "ts-jest": "^27.1.3",
