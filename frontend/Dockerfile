@@ -54,6 +54,8 @@ ARG NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS
 ARG NEXT_PUBLIC_MOCK_FLAG
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG NEXT_PUBLIC_SENTRY_ENVIRONMENT
+ARG NEXT_PUBLIC_LINKEDEVENTS_URL
+ARG NEXT_PUBLIC_KEYWORDS_DATA_SOURCE
 ARG PROJECT
 ARG FOLDER
 
@@ -87,24 +89,24 @@ USER appuser
 
 WORKDIR /app
 
-# Copy build folder from stage 1
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
-
-# Copy next.js config
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/public app/next.config.js app/start.js ./
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
-
-# Copy package.json and yarn.lock files
-COPY --from=staticbuilder --chown=appuser:appuser app/package.json app/yarn.lock app/lerna.json ./
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/
-
-# shared data
-COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/shared/package.json* $PROJECT/shared/
-COPY --from=staticbuilder --chown=appuser:appuser app/shared/package.json shared/
-COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
+# Copy files needed by yarn install
+COPY --chown=appuser:appuser package.json yarn.lock lerna.json ./
+COPY --chown=appuser:appuser $PROJECT/$FOLDER/package.json $PROJECT/$FOLDER/package.json
+COPY --chown=appuser:appuser $PROJECT/shared/package.json $PROJECT/shared/package.json
+COPY --chown=appuser:appuser shared/package.json shared/package.json
 
 # Install production dependencies
-RUN yarn install --production --check-files --ignore-scripts --prefer-offline
+RUN yarn install --production --check-files --ignore-scripts --prefer-offline && yarn cache clean --force
+
+# Copy files needed by nextjs
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/.next $PROJECT/$FOLDER/.next
+COPY --from=staticbuilder --chown=appuser:appuser app/$PROJECT/$FOLDER/next-i18next.config.js app/$PROJECT/$FOLDER/next.config.js $PROJECT/$FOLDER/
+COPY --from=staticbuilder --chown=appuser:appuser app/next.config.js app/start.js ./
+COPY --from=staticbuilder --chown=appuser:appuser app/shared/src/server/next-server.js shared/src/server/
+
+# Copy public directory
+COPY --chown=appuser:appuser $PROJECT/$FOLDER/public $PROJECT/$FOLDER/public
+
 
 # install lerna
 RUN yarn add -W lerna
