@@ -8,7 +8,7 @@
         "heading": "Skickade ansökningar"
       },
       "moreInfo": {
-        "heading": "Lisätietoa tarvitaan"
+        "heading": "Ytterligare uppgifter behövs"
       },
       "common": {
         "created": "Luotu",
@@ -18,7 +18,7 @@
         "sent": "Skickad",
         "applicationNumber": "Ansökningsnummer",
         "status": "Status",
-        "check": "Tarkastele",
+        "check": "Recensioner",
         "editEndDate": "Redigera senast",
         "newMessages_one": "{{count}} ny",
         "newMessages_other": "{{count}} nya"
@@ -42,7 +42,7 @@
       "cancelled": "Peruuttu"
     },
     "steps": {
-      "company": "Arbetsgivare",
+      "employer": "Arbetsgivare",
       "hired": "Anställd",
       "attachments": "Bilagor",
       "summary": "Sammandrag",
@@ -387,8 +387,8 @@
       "message": "Ansökan om Helsingforstillägg {{applicationNumber}} ({{applicantName}}) har skickats. Du får ett meddelande när ansökan har behandlats."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Applikationen sparas",
+      "message": "Helsinforstillägg applikationen {{applicationNumber}} {{applicantName}} sparas."
     },
     "applicationDeleted": {
       "label": "Utkast raderat",
@@ -406,15 +406,14 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Hakemukset",
+    "heading": "Ansökningar",
     "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
     "description2": " Du kan spara en halvfärdig ansökan och komplettera den senare.",
     "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
     "newApplicationBtnText": "Gör en ny ansökan"
   },
   "attachmentsIngress": {
-    "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB."
   },
   "credentialsIngress": {
     "text": "Den person som anställs med Helsingforstillägg ska informeras om behandlingen av hens personuppgifter. Skriv ut informationen och be den anställda om underskrift."
@@ -532,7 +531,7 @@
     "compose": "Skriv ett meddelande",
     "send": "Skicka",
     "isSecure": "Meddelandena är skyddade",
-    "noMessages": "Ei viestejä",
+    "noMessages": "Inga meddelanden",
     "close": "Stäng"
   }
 }

@@ -8,24 +8,24 @@
         "heading": "Submitted applications"
       },
       "moreInfo": {
-        "heading": "Lisätietoa tarvitaan"
+        "heading": "Additional information is needed"
       },
       "common": {
-        "created": "Luotu",
+        "created": "Created",
         "employee": "Employee",
         "saved": "Tallennettu",
         "edit": "Edit",
         "sent": "Submitted",
         "applicationNumber": "Application number",
         "status": "Status",
-        "check": "Tarkastele",
+        "check": "Review",
         "editEndDate": "Edit by",
         "newMessages_one": "{{count}} new",
         "newMessages_other": "{{count}} new"
       }
     },
     "pageHeaders": {
-      "created": "Luotu",
+      "created": "Created",
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
       "edit": "Application",
@@ -387,8 +387,8 @@
       "message": "Helsinki benefit application {{applicationNumber}} ({{applicantName}}) has been submitted. You will be notified once the application has been processed."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Application saved",
+      "message": "Helsinki-benefit application {{applicationNumber}} {{applicantName}} has been saved."
     },
     "applicationDeleted": {
       "label": "Draft deleted",
@@ -406,15 +406,14 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Hakemukset",
+    "heading": "Applications",
     "description1": "Welcome to the Helsinki benefit service.",
     "description2": " You can save an incomplete application and continue to fill it in later.",
     "linkText": " Please take a look at the required information and attachments before filling in the application.",
     "newApplicationBtnText": "Submit a new application"
   },
   "attachmentsIngress": {
-    "text": "Add the following attachments to the application. All attachments marked with * are required. The accepted file formats are JPG, PNG and PDF and the maximum file size is 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Add the following attachments to the application. All attachments marked with * are required. The accepted file formats are JPG, PNG and PDF and the maximum file size is 10 MB."
   },
   "credentialsIngress": {
     "text": "A person to be employed with the Helsinki benefit must be informed of the processing of their personal data. Print the notification and request a signature from the person to be employed."
@@ -532,7 +531,7 @@
     "compose": "Write a message",
     "send": "Submit",
     "isSecure": "Messages are encrypted",
-    "noMessages": "Ei viestejä",
+    "noMessages": "No messages",
     "close": "Close"
   }
 }
