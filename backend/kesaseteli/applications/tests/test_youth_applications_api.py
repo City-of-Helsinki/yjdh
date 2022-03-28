@@ -1636,6 +1636,7 @@ def test_youth_applications_set_excess_additional_info(
     application does not matter and does not change anything.
     """
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    settings.DISABLE_VTJ = True
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -1714,6 +1715,7 @@ def test_youth_applications_set_valid_additional_info(
     additional_info_description,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    settings.DISABLE_VTJ = True
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -1780,6 +1782,7 @@ def test_youth_applications_set_invalid_additional_info(
     additional_info_description,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    settings.DISABLE_VTJ = True
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()
@@ -1827,6 +1830,7 @@ def test_youth_applications_set_partial_additional_info(
     missing_fields,
 ):
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
+    settings.DISABLE_VTJ = True
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
 
     source_app = AdditionalInfoRequestedYouthApplicationFactory()

@@ -165,6 +165,33 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
             youth_application.set_additional_info(**serializer.validated_data)
 
+            if settings.DISABLE_VTJ:
+                LOGGER.info(
+                    f"Set additional info to youth application {youth_application.pk}: "
+                    "VTJ is disabled, sending application to be processed by a handler"
+                )
+                was_email_sent = youth_application.send_processing_email_to_handler(
+                    request
+                )
+                if not was_email_sent:
+                    transaction.set_rollback(True)
+                    with translation.override(youth_application.language):
+                        return HttpResponse(
+                            _("Failed to send manual processing email to handler"),
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        )
+            else:
+                # TODO: Implement VTJ integration
+                LOGGER.error(
+                    f"Tried to set additional info to youth application {youth_application.pk}: "
+                    "Failed because VTJ integration is enabled but not implemented"
+                )
+                transaction.set_rollback(True)
+                return HttpResponse(
+                    _("VTJ integration is not implemented"),
+                    status=status.HTTP_501_NOT_IMPLEMENTED,
+                )
+
             # Return success setting the additional info
             headers = self.get_success_headers(serializer.data)
             return Response(
