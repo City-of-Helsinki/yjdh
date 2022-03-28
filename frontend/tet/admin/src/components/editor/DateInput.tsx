@@ -11,9 +11,10 @@ type Props = {
   label: string;
   registerOptions?: RegisterOptions;
   required: boolean;
+  minDate?: Date;
 };
 
-const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false }) => {
+const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = false, minDate }) => {
   const { control } = useFormContext<TetPosting>();
   const { i18n } = useTranslation();
   return (
@@ -30,6 +31,7 @@ const DateInput: React.FC<Props> = ({ id, label, registerOptions, required = fal
           invalid={invalid}
           language={i18n.language as Language}
           errorText={error ? error.message : ''}
+          minDate={minDate}
         />
       )}
       control={control}

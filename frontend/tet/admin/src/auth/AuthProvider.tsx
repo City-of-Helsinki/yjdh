@@ -5,7 +5,6 @@ import AuthContext from 'shared/auth/AuthContext';
 const FIVE_MINUTES = 5 * 60 * 1000;
 
 const AuthProvider = <P,>({ children }: React.PropsWithChildren<P>): JSX.Element => {
-  console.log('setting auth context');
   const userQuery = useUserQuery<boolean>({
     select: (user) => Boolean(user),
     // check that authentication is still alive in every 5 minutes

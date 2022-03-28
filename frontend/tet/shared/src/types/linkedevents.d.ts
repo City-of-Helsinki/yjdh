@@ -18,6 +18,7 @@ export type LocalizedObject = {
 };
 
 export type IdObject = {
+  id?: string;
   '@id': string;
   name?: LocalizedObject;
 };

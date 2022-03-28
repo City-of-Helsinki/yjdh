@@ -1,7 +1,7 @@
+import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { useQuery, UseQueryResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
-import { BackendEndpoint } from '../backend-api/backend-api';
 import { CompanyData } from '../types/company';
 
 const useCompanyQuery = (): UseQueryResult<CompanyData, Error> => {

@@ -38,6 +38,8 @@
 	},
   "application": {
 		"backToFrontPage": "Takaisin etusivulle",
+		"publishTerms": "Julkaisun yhteydessä hyväksyt",
+		"termsLink": "käyttöehdot",
 		"createTerms": "Olen esihenkilöasemassa tai keskustellut esihenkilön kanssa ilmoituksen teosta.",
 		"accept": "Hyväksy",
     "jobPostings": {
@@ -60,8 +62,9 @@
     }
   },
   "editor": {
-		"companyInfo": "Yrityksen tiedot",
-		"companyInfoFetch": "Yrityksen tiedot on haettu YTJS:stä",
+		"companyInfo": "Työnantajan tiedot",
+    "helsinkiCity": "Helsingin kaupunki",
+		"companyInfoFetch": "Tiedot on haettu tunnistautumisen yhteydessä.",
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
 		"copyTitle": "Kopioi TET-paikka",
@@ -95,7 +98,7 @@
 			"contactLastName": "Sukunimi",
 			"contactPhone": "Puhelin",
 			"contactEmail": "Sähköposti",
-			"contactLanguage": "Asiointikieli",
+			"contactLanguage": "TET-jaksolla käytetty kieli",
 			"contactLanguageFi": "Suomi",
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti",

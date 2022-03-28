@@ -114,7 +114,8 @@
           "rejected": "Ei puolettu"
         },
         "additionalInformationNeededBy": "",
-        "additionalInformationNeededByVal": "Muokattava {{date}}"
+        "additionalInformationNeededByVal": "Muokattava {{date}}",
+        "unreadMessagesCount": ""
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"
@@ -418,6 +419,15 @@
       "downloadAcceptedApplications": "Hyväksyt hakemukset CSV",
       "downloadRejectedApplications": "Hylätyt hakemukset CSV",
       "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
+    },
+    "login": {
+      "login": "Logga in i tjänsten",
+      "logoutMessageLabel": "Du har loggat ut",
+      "errorLabel": "Ett okänt fel inträffade. Logga in på nytt.",
+      "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
+      "infoLabel": "Att använda tjänsten kräver stark autentisering",
+      "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
+      "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
     }
   }
 }

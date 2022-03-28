@@ -33,6 +33,7 @@ from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
     EmployerSummerVoucherSerializer,
     SchoolSerializer,
+    YouthApplicationAdditionalInfoSerializer,
     YouthApplicationSerializer,
     YouthApplicationStatusSerializer,
 )
@@ -112,20 +113,16 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     serializer_class = YouthApplicationSerializer
 
     def list(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def update(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def partial_update(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def destroy(self, request, *args, **kwargs):
-        self._log_permission_denied()
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @action(methods=["get"], detail=True)
     def status(self, request, *args, **kwargs) -> HttpResponse:
@@ -145,6 +142,40 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def process(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object()
         return redirect(youth_application.handler_processing_url())
+
+    @transaction.atomic
+    @action(methods=["post"], detail=True)
+    def additional_info(self, request, *args, **kwargs) -> HttpResponse:
+        youth_application: YouthApplication = self.get_object().lock_for_update()
+
+        if not youth_application.can_set_additional_info:
+            return Response(
+                data={
+                    "detail": _("Invalid status %(status)s for setting additional info")
+                    % {"status": youth_application.status}
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            serializer = YouthApplicationAdditionalInfoSerializer(
+                data=request.data, context=self.get_serializer_context()
+            )
+            serializer.is_valid(raise_exception=True)
+
+            youth_application.set_additional_info(**serializer.validated_data)
+
+            # Return success setting the additional info
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                serializer.data, status=status.HTTP_201_CREATED, headers=headers
+            )
+        except ValidationError as e:
+            LOGGER.error(
+                f"Youth application additional info rejected because of "
+                f"validation error. Validation error codes: {str(e.get_codes())}"
+            )
+            raise
 
     @transaction.atomic
     @action(methods=["patch"], detail=True)

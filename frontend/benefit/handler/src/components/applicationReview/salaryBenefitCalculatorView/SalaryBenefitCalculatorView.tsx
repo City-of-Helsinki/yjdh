@@ -387,7 +387,7 @@ const SalaryBenefitCalculatorView: React.FC<
         />
       </$GridCell>
 
-      {!isManualCalculator && (
+      {!isManualCalculator && data.apprenticeshipProgram && (
         <>
           <$GridCell $colStart={1} $colSpan={11}>
             <$CalculatorText

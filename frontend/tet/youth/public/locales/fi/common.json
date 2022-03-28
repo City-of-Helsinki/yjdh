@@ -25,7 +25,8 @@
 		"clearFilters": "Tyhjennä hakuehdot"
 	},
 	"postings": {
-		"searchResults": "hakutulosta",
+		"searchResults_one": "{{count}} hakutulos",
+		"searchResults_other": "{{count}} hakutulosta",
 		"readMore": "Lue lisää",
 		"showMore": "Näytä lisää tuloksia",
 		"languages": "Kielisyys"
@@ -45,9 +46,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-	"postingsPage": {
-		"showMore": "Näytä lisää tuloksia"
-	},
   "termsAndConditionsLink": "https://kesaseteli.fi/etusivu/tyonantajalle/",
   "error": {
     "generic": {
@@ -61,5 +59,14 @@
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti"
 		}
+	},
+	"postingTemplate": {
+		"spots": "TET-paikkoja",
+		"contact": "Yhteystiedot",
+		"description": "Kuvaus",
+		"share": "Jaa tapahtuma",
+		"dateAndTime": "Päivä ja aika",
+		"location": "Paikka",
+		"languages": "TET-paikassa käytettävät kielet"
 	}
 }

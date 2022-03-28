@@ -17,6 +17,24 @@ class CalculationRowInline(admin.StackedInline):
     list_filter = ("calculation",)
 
 
+class CalculationInline(admin.StackedInline):
+    model = Calculation
+    inlines = (CalculationRowInline,)
+    list_display = (
+        "id",
+        "start_date",
+        "end_date",
+        "calculated_benefit_amount",
+        "override_monthly_benefit_amount",
+        "granted_as_de_minimis_aid",
+        "target_group_check",
+        "created_at",
+        "modified_at",
+        "__str__",
+    )
+    extra = 0
+
+
 class CalculationAdmin(admin.ModelAdmin):
     inlines = (CalculationRowInline,)
     list_filter = ("application", "application__status", "application__company")

@@ -9,7 +9,10 @@ import {
   MAX_SHORT_STRING_LENGTH,
   MIN_PHONE_NUMBER_LENGTH,
 } from 'benefit/applicant/constants';
-import { PAY_SUBSIDY_OPTIONS, VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
+import {
+  PAY_SUBSIDY_OPTIONS,
+  VALIDATION_MESSAGE_KEYS,
+} from 'benefit-shared/constants';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
@@ -41,7 +44,7 @@ export const getValidationSchema = (t: TFunction) =>
         is: true,
         then: Yup.mixed().oneOf(
           [null, ...PAY_SUBSIDY_OPTIONS],
-          t(VALIDATION_MESSAGE_KEYS.INVALID),
+          t(VALIDATION_MESSAGE_KEYS.INVALID)
         ),
       }),
     [APPLICATION_FIELDS_STEP2_KEYS.APPRENTICESHIP_PROGRAM]: Yup.boolean()
@@ -103,7 +106,7 @@ export const getValidationSchema = (t: TFunction) =>
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
           [true],
-          t(VALIDATION_MESSAGE_KEYS.REQUIRED)
+          t(VALIDATION_MESSAGE_KEYS.REQUIRED_IS_LIVING_IN_HELSINKI)
         ),
       })
       .when(APPLICATION_FIELDS_STEP2_KEYS.BENEFIT_TYPE, {

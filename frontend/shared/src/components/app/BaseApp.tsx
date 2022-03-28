@@ -61,7 +61,6 @@ setLogger({
 const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
   const { t } = useTranslation();
   const isRouting = useIsRouting();
-
   return (
     <>
       <ThemeProvider theme={theme}>

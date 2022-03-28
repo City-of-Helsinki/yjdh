@@ -9,3 +9,9 @@ export const $Empty = styled.div`
   color: ${(props) => props.theme.colors.black50};
   padding: ${(props) => props.theme.spacing.s};
 `;
+
+export const $CellContent = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

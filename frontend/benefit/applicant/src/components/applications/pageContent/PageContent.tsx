@@ -133,9 +133,16 @@ const PageContent: React.FC = () => {
               'common:applications.pageHeaders.created'
             )} ${convertToUIDateAndTimeFormat(application?.createdAt)}`}
           </$PageSubHeading>
-          <$PageHeadingHelperText>
-            {t('common:applications.pageHeaders.helperText')}
-          </$PageHeadingHelperText>
+          {(currentStep === 1 || currentStep === 2) && (
+            <$PageHeadingHelperText>
+              {t('common:applications.pageHeaders.guideText')}
+            </$PageHeadingHelperText>
+          )}
+          {currentStep === 5 && (
+            <$PageHeadingHelperText>
+              {t('common:applications.pageHeaders.helperText')}
+            </$PageHeadingHelperText>
+          )}
         </>
       )}
       {currentStep === 1 && <ApplicationFormStep1 data={application} />}

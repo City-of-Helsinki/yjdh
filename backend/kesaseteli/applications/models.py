@@ -24,6 +24,7 @@ from shared.common.validators import (
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
 
+from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
@@ -176,6 +177,21 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     )
     handled_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("time handled")
+    )
+    additional_info_provided_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("time additional info was provided")
+    )
+    additional_info_user_reasons = models.JSONField(
+        blank=True,  # Allow empty list i.e. []
+        default=list,
+        verbose_name=_("additional info user reasons"),
+        validators=[validate_additional_info_user_reasons],
+    )
+    additional_info_description = models.CharField(
+        blank=True,
+        default="",
+        max_length=4096,
+        verbose_name=_("additional info description"),
     )
     objects = YouthApplicationQuerySet.as_manager()
 
@@ -407,6 +423,31 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         if self.can_reject(handler=handler):
             self._handle(status=YouthApplicationStatus.REJECTED, handler=handler)
         return self.is_rejected
+
+    @property
+    def can_set_additional_info(self) -> bool:
+        """
+        Can additional info be set for this youth application?
+
+        :return: True if status is
+                 YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED, otherwise
+                 False.
+        """
+        return self.status == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+
+    def set_additional_info(
+        self, additional_info_user_reasons, additional_info_description
+    ):
+        """
+        Sets additional_info_user_reasons and additional_info_description to given
+        values, status to YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        additional_info_provided_at to current time and saves the youth application.
+        """
+        self.additional_info_provided_at = timezone.now()
+        self.additional_info_user_reasons = additional_info_user_reasons
+        self.additional_info_description = additional_info_description
+        self.status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+        self.save()
 
     @classmethod
     def is_email_or_social_security_number_active(

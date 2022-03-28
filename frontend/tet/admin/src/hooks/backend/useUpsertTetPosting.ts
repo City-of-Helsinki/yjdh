@@ -22,7 +22,9 @@ const useUpsertTetPosting = (): UseMutationResult<TetUpsert, AxiosError<LinkedEv
     'upsert',
     ({ id, event }: TetUpsert) =>
       handleResponse<TetUpsert>(
-        id ? axios.put(`${BackendEndpoint.TET_POSTINGS}${id}`, event) : axios.post(BackendEndpoint.TET_POSTINGS, event),
+        id
+          ? axios.put(`${BackendEndpoint.TET_POSTINGS}${id}/`, event)
+          : axios.post(BackendEndpoint.TET_POSTINGS, event),
       ),
     {
       onSuccess: () => {

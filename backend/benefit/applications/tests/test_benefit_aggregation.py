@@ -303,7 +303,7 @@ NO_WARNINGS = None
             ],
             BenefitType.EMPLOYMENT_BENEFIT,
             NO_APPRENTICESHIP,
-            "There's already an accepted application or previous benefit with overlapping date range",
+            "There's already an accepted application with overlapping date range",
             3,
             9,
         ),  # a benefit has been previously granted that overlaps the new application

@@ -5,6 +5,7 @@ import { getLanguageOptions } from 'benefit/applicant/utils/common';
 import { useRouter } from 'next/router';
 import { TFunction } from 'next-i18next';
 import React, { useEffect, useState } from 'react';
+import useToggle from 'shared/hooks/useToggle';
 import { NavigationItem, OptionType } from 'shared/types/common';
 
 type ExtendedComponentProps = {
@@ -17,6 +18,9 @@ type ExtendedComponentProps = {
     newLanguage: OptionType<string>
   ) => void;
   handleNavigationItemClick: (url: string) => void;
+  unreadMessagesCount: number | undefined | null;
+  toggleMessagesDrawerVisiblity: () => void;
+  isMessagesDrawerVisible: boolean;
 };
 
 const useHeader = (): ExtendedComponentProps => {
@@ -24,6 +28,11 @@ const useHeader = (): ExtendedComponentProps => {
   const router = useRouter();
   const id = router?.query?.id?.toString() ?? '';
   const [hasMessenger, setHasMessenger] = useState<boolean>(false);
+  const [unreadMessagesCount, setUnredMessagesCount] = useState<
+    number | undefined | null
+  >(null);
+  const [isMessagesDrawerVisible, toggleMessagesDrawerVisiblity] =
+    useToggle(false);
   const { pathname, asPath, query } = router;
 
   const languageOptions = React.useMemo(
@@ -33,6 +42,20 @@ const useHeader = (): ExtendedComponentProps => {
 
   const { data: application } = useApplicationQuery(id);
 
+  useEffect(() => {
+    if (application?.unread_messages_count) {
+      setUnredMessagesCount(application?.unread_messages_count);
+    } else {
+      setUnredMessagesCount(null);
+    }
+  }, [application]);
+
+  useEffect(() => {
+    if (isMessagesDrawerVisible && Number(unreadMessagesCount) > 0) {
+      setUnredMessagesCount(null);
+    }
+  }, [isMessagesDrawerVisible, unreadMessagesCount]);
+
   const status = React.useMemo(
     (): APPLICATION_STATUSES =>
       application?.status || APPLICATION_STATUSES.DRAFT,
@@ -40,7 +63,10 @@ const useHeader = (): ExtendedComponentProps => {
   );
 
   useEffect(() => {
-    setHasMessenger(status === APPLICATION_STATUSES.INFO_REQUIRED);
+    setHasMessenger(
+      status === APPLICATION_STATUSES.INFO_REQUIRED ||
+        status === APPLICATION_STATUSES.HANDLING
+    );
   }, [status, setHasMessenger]);
 
   const handleLanguageChange = (
@@ -60,10 +86,13 @@ const useHeader = (): ExtendedComponentProps => {
 
   return {
     t,
-    languageOptions,
     handleLanguageChange,
     handleNavigationItemClick,
+    toggleMessagesDrawerVisiblity,
+    languageOptions,
     hasMessenger,
+    unreadMessagesCount,
+    isMessagesDrawerVisible,
   };
 };
 

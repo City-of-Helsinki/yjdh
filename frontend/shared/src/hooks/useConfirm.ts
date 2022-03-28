@@ -13,6 +13,8 @@ type ReturnType = {
     submitButtonLabel,
     submitButtonIcon,
     content,
+    link,
+    linkText,
   }: DialogPayload) => Promise<unknown>;
   onConfirm: () => void;
   onCancel: () => void;
@@ -43,6 +45,8 @@ const useConfirm = (): ReturnType => {
     submitButtonLabel,
     submitButtonIcon,
     content,
+    link,
+    linkText,
   }: DialogPayload): Promise<unknown> => {
     dispatch({
       type: DialogActionKind.SHOW_CONFIRM,
@@ -51,6 +55,8 @@ const useConfirm = (): ReturnType => {
         submitButtonLabel,
         submitButtonIcon,
         content,
+        link,
+        linkText,
       },
     });
     return new Promise((resolve) => {

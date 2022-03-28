@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-11 13:10+0200\n"
+"POT-Creation-Date: 2022-03-21 08:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,224 +18,211 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: applications/api/v1/application_batch_views.py:76
+#: applications/api/v1/application_batch_views.py:78
 msgid "Application status cannot be exported because of invalid status"
 msgstr "Ansökans status kan inte exporteras på grund av felaktig status"
 
-#: applications/api/v1/application_batch_views.py:84
+#: applications/api/v1/application_batch_views.py:86
 msgid "Cannot export empty batch"
 msgstr "Kan inte exportera tom sats"
 
-#: applications/api/v1/application_batch_views.py:90
+#: applications/api/v1/application_batch_views.py:92
 #, python-brace-format
 msgid "Application batch {date}"
 msgstr "Ansökningssats {date}"
 
-#: applications/api/v1/application_batch_views.py:118
+#: applications/api/v1/application_batch_views.py:120
 msgid "There is no available application to export, please try again later"
-msgstr "Ingen ansökan finns tillgänglig för export, vänligen försök på nytt senare"
+msgstr ""
+"Ingen ansökan finns tillgänglig för export, vänligen försök på nytt senare"
 
-#: applications/api/v1/application_batch_views.py:126
+#: applications/api/v1/application_batch_views.py:128
 #, python-brace-format
 msgid "TALPA export {date}"
 msgstr "TALPA-export {date}"
 
-#: applications/api/v1/serializers.py:125
-msgid "Can not add attachment to an application in this state"
-msgstr "Kan inte bifoga bilaga till en ansökan i detta tillstånd"
-
-#: applications/api/v1/serializers.py:131
+#: applications/api/v1/serializers.py:151
 #, python-brace-format
 msgid "Upload file size cannot be greater than {size} bytes"
 msgstr "Den fil som laddas upp kan inte vara större än {size} byte"
 
-#: applications/api/v1/serializers.py:140
+#: applications/api/v1/serializers.py:160
 msgid "Too many attachments"
 msgstr "För många bilagor"
 
-#: applications/api/v1/serializers.py:143
+#: applications/api/v1/serializers.py:163
 msgid "Not a valid pdf file"
 msgstr "Ingen giltig PDF-fil"
 
-#: applications/api/v1/serializers.py:147
+#: applications/api/v1/serializers.py:167
 msgid "Not a valid image file"
 msgstr "Ingen giltig bildfil"
 
-#: applications/api/v1/serializers.py:189
-msgid "Grant date too far in past"
+#: applications/api/v1/serializers.py:209
+msgid "Grant date too much in past"
 msgstr "Beviljandedatum för tidigt"
 
-#: applications/api/v1/serializers.py:191
+#: applications/api/v1/serializers.py:211
 msgid "Grant date can not be in the future"
 msgstr "Beviljandedatum kan inte vara i framtiden"
 
-#: applications/api/v1/serializers.py:290
+#: applications/api/v1/serializers.py:312
 msgid "Social security number invalid"
 msgstr "Personbeteckning felaktig"
 
-#: applications/api/v1/serializers.py:297
+#: applications/api/v1/serializers.py:319
 msgid "Social security number checksum invalid"
 msgstr "Personbeteckning kontrollsumma felaktig"
 
-#: applications/api/v1/serializers.py:306
+#: applications/api/v1/serializers.py:328
 #, python-brace-format
 msgid "Working hour must be greater than {min_hour} per week"
 msgstr "Antalet arbetstimmar måste vara högre än {min_hour} per vecka"
 
-#: applications/api/v1/serializers.py:314
+#: applications/api/v1/serializers.py:336
 msgid "Monthly pay must be greater than 0"
 msgstr "Månatlig lön måste vara större än 0"
 
-#: applications/api/v1/serializers.py:320
+#: applications/api/v1/serializers.py:342
 msgid "Vacation money must be a positive number"
 msgstr "Semesterpenning måste vara ett positivt tal"
 
-#: applications/api/v1/serializers.py:327
+#: applications/api/v1/serializers.py:349
 msgid "Other expenses must be a positive number"
 msgstr "Andra kostnader måste vara ett positivt tal"
 
-#: applications/api/v1/serializers.py:419
+#: applications/api/v1/serializers.py:441
 msgid "Applications in a batch can not be changed when batch is in this status"
 msgstr "Ansökningar i en sats kan inte ändras när satsen har denna status"
 
-#: applications/api/v1/serializers.py:431
+#: applications/api/v1/serializers.py:453
 msgid "This application has invalid status and can not be added to this batch"
 msgstr "Denna ansökan har felaktig status och kan inte läggas till denna sats"
 
-#: applications/api/v1/serializers.py:819
+#: applications/api/v1/serializers.py:929
 msgid "This should be unreachable"
 msgstr "Detta bör vara onåbart"
 
-#: applications/api/v1/serializers.py:839
+#: applications/api/v1/serializers.py:949
 msgid "Invalid value for association_immediate_manager_check"
 msgstr "Felaktigt värde för association_immediate_manager_check"
 
-#: applications/api/v1/serializers.py:847
+#: applications/api/v1/serializers.py:957
 msgid "for companies, association_immediate_manager_check must always be null"
-msgstr "för företag, association_immediate_manager_check måste alltid vara noll"
+msgstr ""
+"för företag, association_immediate_manager_check måste alltid vara noll"
 
-#: applications/api/v1/serializers.py:875
+#: applications/api/v1/serializers.py:985
 msgid ""
 "This application has non-null de_minimis_aid but is applied by an association"
 msgstr ""
 "Denna ansökan har inte noll de_minimis_aid men ansöks av en sammanslutning"
 
-#: applications/api/v1/serializers.py:884
+#: applications/api/v1/serializers.py:994
 msgid "This application has de_minimis_aid set but does not define any"
 msgstr "Denna ansökan har de_minimis_aid men definierar inga"
 
-#: applications/api/v1/serializers.py:893
+#: applications/api/v1/serializers.py:1003
 msgid "This application can not have de minimis aid"
 msgstr "Denna ansökan kan inte ha de minimis-stöd"
 
-#: applications/api/v1/serializers.py:901
+#: applications/api/v1/serializers.py:1011
 msgid "Total amount of de minimis aid too large"
 msgstr "Totalt belopp av de minimis-stöd är för stort"
 
-#: applications/api/v1/serializers.py:907
+#: applications/api/v1/serializers.py:1017
 msgid "start_date must not be in a past year"
 msgstr "Startdatum får inte vara under föregående år"
 
-#: applications/api/v1/serializers.py:911
+#: applications/api/v1/serializers.py:1021
 msgid "end_date must not be in a past year"
 msgstr "Slutdatum får inte vara under föregående år"
 
-#: applications/api/v1/serializers.py:922
+#: applications/api/v1/serializers.py:1032
 msgid "application end_date can not be less than start_date"
 msgstr "end_date för ansökan kan inte vara tidigare än start_date"
 
-#: applications/api/v1/serializers.py:936
+#: applications/api/v1/serializers.py:1046
 msgid "minimum duration of the benefit is one month"
 msgstr "minsta varaktighet för understödet är en månad"
 
-#: applications/api/v1/serializers.py:943
+#: applications/api/v1/serializers.py:1053
 msgid "maximum duration of the benefit is 12 months"
 msgstr "längsta varaktighet för understödet är en månad"
 
-#: applications/api/v1/serializers.py:1011
-msgid "Benefit can not be granted before 24-month waiting period expires"
-msgstr "Understöd kan inte beviljas före utgång av väntetid på 24 månader"
-
-#: applications/api/v1/serializers.py:1026
-msgid "There's already an accepted application with overlapping date range for this employee"
-msgstr "Det finns redan en godkänd ansökan med överlappande tidsperiod för denna anställd"
-
-#: applications/api/v1/serializers.py:1038
-msgid "This application can not have a description for co-operation negotiations"
+#: applications/api/v1/serializers.py:1063
+msgid ""
+"This application can not have a description for co-operation negotiations"
 msgstr "Denna ansökan kan inte ha en beskrivning för samarbetsförhandlingar"
 
-#: applications/api/v1/serializers.py:1048
+#: applications/api/v1/serializers.py:1073
 msgid "Pay subsidy percent required"
 msgstr "Lönesubventionsprocent krävs"
 
-#: applications/api/v1/serializers.py:1056
+#: applications/api/v1/serializers.py:1081
 #, python-brace-format
 msgid "This application can not have {key}"
 msgstr "Denna ansökan kan inte ha {key}"
 
-#: applications/api/v1/serializers.py:1064
+#: applications/api/v1/serializers.py:1089
 msgid "This application can not have additional_pay_subsidy_percent"
 msgstr "Denna ansökan kan inte ha additional_pay_subsidy_percent"
 
-#: applications/api/v1/serializers.py:1109
+#: applications/api/v1/serializers.py:1140
 msgid "This field is required before submitting the application"
 msgstr "Detta fält måste fyllas i innan ansökan lämnas in"
 
-#: applications/api/v1/serializers.py:1125
+#: applications/api/v1/serializers.py:1156
 msgid "This field can be set for associations only"
 msgstr "Detta fält är tillgängligt endast för sammanslutningar"
 
-#: applications/api/v1/serializers.py:1162
+#: applications/api/v1/serializers.py:1193
 msgid "This benefit type can not be selected"
 msgstr "Denna understödstyp kan inte väljas"
 
-#: applications/api/v1/serializers.py:1342
+#: applications/api/v1/serializers.py:1376
 msgid "Application does not have the employee consent attachment"
 msgstr "Den anställdas samtycke har inte bifogats ansökan"
 
-#: applications/api/v1/serializers.py:1346
+#: applications/api/v1/serializers.py:1380
 msgid "Application cannot have more than one employee consent attachment"
 msgstr "Fler än ett samtycke av den anställda kan inte bifogas ansökan"
 
-#: applications/api/v1/serializers.py:1353 terms/api/v1/views.py:48
+#: applications/api/v1/serializers.py:1387 terms/api/v1/views.py:48
 msgid "Terms must be approved"
 msgstr "Villkor måste godkännas"
 
-#: applications/api/v1/serializers.py:1408
+#: applications/api/v1/serializers.py:1442
 msgid "Application does not have required attachments"
 msgstr "Ansökan har inte obligatoriska bilagor"
 
-#: applications/api/v1/serializers.py:1434
+#: applications/api/v1/serializers.py:1473
 msgid "Application initial state must be draft"
 msgstr "Ansökans initialtillstånd måste vara utkast"
 
-#: applications/api/v1/serializers.py:1470
+#: applications/api/v1/serializers.py:1513
 #, python-brace-format
 msgid "Reading de minimis data failed: {errors}"
 msgstr "De minimis-data kan inte läsas: {errors}"
 
-#: applications/api/v1/serializers.py:1510
-#: applications/api/v1/serializers.py:1587
+#: applications/api/v1/serializers.py:1579
+#: applications/api/v1/serializers.py:1677
 msgid "Application can not be changed in this status"
 msgstr "Ansökan kan inte ändras i denna status"
 
-#: applications/api/v1/serializers.py:1569
+#: applications/api/v1/serializers.py:1640
 msgid "create_application_for_company missing from request"
 msgstr "create_application_for_company saknas från begäran"
 
-#: applications/api/v1/serializers.py:1610
+#: applications/api/v1/serializers.py:1703
 msgid "The calculation should be created when the application is submitted"
 msgstr "Beräkningen bör skapas när ansökan skickas"
 
-#: applications/api/v1/serializers.py:1615
-msgid "The calculation can not be updated in this status"
-msgstr "Beräkningen kan inte uppdateras i denna status"
-
-#: applications/api/v1/serializers.py:1619
+#: applications/api/v1/serializers.py:1708
 msgid "The calculation id does not match existing id"
 msgstr "Beräkningens ID motsvarar inte befintlig ID."
 
-#: applications/api/v1/serializers.py:1657
+#: applications/api/v1/serializers.py:1759
 #, python-brace-format
 msgid "Reading {localized_model_name} data failed: {errors}"
 msgstr "Data {localized_model_name} kan inte läsas: {errors}"
@@ -250,407 +237,430 @@ msgstr "Tillståndsövergång tillåts inte: {status} till {value}"
 msgid "Initial status must be {initial_status}"
 msgstr "Initialstatus måste vara {initial_status}"
 
-#: applications/api/v1/views.py:97 applications/api/v1/views.py:123
+#: applications/api/v1/views.py:125 applications/api/v1/views.py:162
 msgid "Operation not allowed for this application status."
 msgstr "Åtgärd tillåts inte för denna ansökningsstatus"
 
-#: applications/api/v1/views.py:130
+#: applications/api/v1/views.py:149
 msgid "File not found."
 msgstr "Fil hittades inte."
 
-#: applications/enums.py:6 applications/enums.py:102
+#: applications/api/v1/views.py:326
+#, python-brace-format
+msgid "Helsinki-lisän hakemukset viety {date}"
+msgstr ""
+
+#: applications/benefit_aggregation.py:77
+msgid "Benefit can not be granted before 24-month waiting period expires"
+msgstr "Understöd kan inte beviljas före utgång av väntetid på 24 månader"
+
+#: applications/benefit_aggregation.py:166
+msgid "There's already an accepted application with overlapping date range"
+msgstr ""
+"Det finns redan en godkänd ansökan med överlappande tidsperiod för denna "
+"anställd"
+
+#: applications/enums.py:7 applications/enums.py:105
 msgid "Draft"
 msgstr "Utkast"
 
-#: applications/enums.py:7
+#: applications/enums.py:8
 msgid "Received"
 msgstr "Mottaget"
 
-#: applications/enums.py:8
+#: applications/enums.py:9
 msgid "Handling"
 msgstr "Handläggs"
 
-#: applications/enums.py:10
+#: applications/enums.py:11
 msgid "Additional information requested"
 msgstr "Ytterligare information har begärts"
 
-#: applications/enums.py:12
+#: applications/enums.py:13
 msgid "Cancelled"
 msgstr "Återkallad"
 
-#: applications/enums.py:13
+#: applications/enums.py:14
 msgid "Accepted"
 msgstr "Godkänd"
 
-#: applications/enums.py:14
+#: applications/enums.py:15
 msgid "Rejected"
 msgstr "Avvisad"
 
-#: applications/enums.py:28 applications/enums.py:40
+#: applications/enums.py:29 applications/enums.py:52
 msgid "Invalid application status"
 msgstr "Felaktig ansökningsstatus"
 
-#: applications/enums.py:45
+#: applications/enums.py:31
+msgid "Invalid application status change"
+msgstr "Felaktig ansökningsstatus"
+
+#: applications/enums.py:57
 msgid "Employment Benefit"
 msgstr "Tillägg för sysselsättning"
 
-#: applications/enums.py:46
+#: applications/enums.py:58
 msgid "Salary Benefit"
 msgstr "Tillägg för lön"
 
-#: applications/enums.py:47
+#: applications/enums.py:59
 msgid "Commission Benefit"
 msgstr "Tillägg för uppdrag"
 
-#: applications/enums.py:51
-msgid "Step 1 - employer details"
+#: applications/enums.py:63
+msgid "Step 1 - company details"
 msgstr "Steg 1 – arbetsgivaruppgifter"
 
-#: applications/enums.py:52
+#: applications/enums.py:64
 msgid "Step 2 - employee details"
 msgstr "Steg 2 – arbetstagaruppgifter"
 
-#: applications/enums.py:53
+#: applications/enums.py:65
 msgid "Step 3 - attachments"
 msgstr "Steg 3 – bilagor"
 
-#: applications/enums.py:54
+#: applications/enums.py:66
 msgid "Step 4 - summary"
 msgstr "Steg 4 – sammanfattning"
 
-#: applications/enums.py:55
+#: applications/enums.py:67
 msgid "Step 5 - power of attorney"
 msgstr "Steg 5 – fullmakt"
 
-#: applications/enums.py:56
+#: applications/enums.py:68
 msgid "Step 6 - terms and send"
 msgstr "Steg 6 – villkor och skicka"
 
-#: applications/enums.py:67
+#: applications/enums.py:76
 msgid "Company"
 msgstr "Företag"
 
-#: applications/enums.py:68
+#: applications/enums.py:77
 msgid "Association"
 msgstr "Sammanslutning"
 
-#: applications/enums.py:86
+#: applications/enums.py:89
 msgid "employment contract"
 msgstr "arbetsavtal"
 
-#: applications/enums.py:87
+#: applications/enums.py:90
 msgid "pay subsidy decision"
 msgstr "beslut om lönesubvention"
 
-#: applications/enums.py:88
+#: applications/enums.py:91
 msgid "commission contract"
 msgstr "uppdragsavtal"
 
-#: applications/enums.py:90
+#: applications/enums.py:93
 msgid "education contract of the apprenticeship office"
 msgstr "läroavtal"
 
-#: applications/enums.py:92 applications/enums.py:93
+#: applications/enums.py:95 applications/enums.py:96
 msgid "helsinki benefit voucher"
 msgstr "sedel för Helsingforstillägg"
 
-#: applications/enums.py:97
+#: applications/enums.py:100
 msgid "attachment is required"
 msgstr "bilaga är obligatorisk"
 
-#: applications/enums.py:98
+#: applications/enums.py:101
 msgid "attachment is optional"
 msgstr "bilaga är valfri"
 
-#: applications/enums.py:104
+#: applications/enums.py:107
 msgid "Ahjo report created, not yet sent to AHJO"
 msgstr "Ahjo-rapport har skapats, ännu inte skickad till Ahjo"
 
-#: applications/enums.py:107
+#: applications/enums.py:110
 msgid "Sent to Ahjo, decision pending"
 msgstr "Skickad till Ahjo, väntar på beslut"
 
-#: applications/enums.py:109
+#: applications/enums.py:112
 msgid "Accepted in Ahjo"
 msgstr "Godkänd i Ahjo"
 
-#: applications/enums.py:110
+#: applications/enums.py:113
 msgid "Rejected in Ahjo"
 msgstr "Avvisad i Ahjo"
 
-#: applications/enums.py:112
+#: applications/enums.py:115
 msgid "Returned from Ahjo without decision"
 msgstr "Återsänd från Ahjo utan beslut"
 
-#: applications/enums.py:114
+#: applications/enums.py:117
 msgid "Sent to Talpa"
 msgstr "Skickad till Talpa"
 
-#: applications/enums.py:115
+#: applications/enums.py:118
 msgid "Processing is completed"
 msgstr "Processen är slutförd"
 
-#: applications/models.py:81 calculator/models.py:320 companies/models.py:17
+#: applications/models.py:109 calculator/models.py:337 companies/models.py:21
 #: terms/models.py:180
 msgid "company"
 msgstr "företag"
 
-#: applications/models.py:89
+#: applications/models.py:117
 msgid "status"
 msgstr "status"
 
-#: applications/models.py:95
+#: applications/models.py:123
 msgid "application number"
 msgstr "ansökningsnummer"
 
-#: applications/models.py:98
+#: applications/models.py:126
 msgid "company name"
 msgstr "företagets namn"
 
-#: applications/models.py:100
-msgid "company form"
-msgstr "företagsform"
+#: applications/models.py:129
+msgid "company form as user-readable text"
+msgstr ""
 
-#: applications/models.py:103
+#: applications/models.py:133 companies/models.py:13
+msgid "YTJ type code for company form"
+msgstr ""
+
+#: applications/models.py:137
 msgid "company department"
 msgstr "företagsavdelning"
 
-#: applications/models.py:108 applications/models.py:120
+#: applications/models.py:142 applications/models.py:154
 msgid "company street address"
 msgstr "företagets gatuadress"
 
-#: applications/models.py:111 applications/models.py:123
+#: applications/models.py:145 applications/models.py:157
 msgid "company city"
 msgstr "företagets förläggningsort"
 
-#: applications/models.py:114 applications/models.py:126
+#: applications/models.py:148 applications/models.py:160
 msgid "company post code"
 msgstr "företagets postnummer"
 
-#: applications/models.py:138
+#: applications/models.py:172
 msgid "company bank account number"
 msgstr "företagets kontonummer"
 
-#: applications/models.py:143 applications/models.py:493
+#: applications/models.py:177 applications/models.py:546
 msgid "first name"
 msgstr "förnamn"
 
-#: applications/models.py:146 applications/models.py:496
+#: applications/models.py:180 applications/models.py:549
 msgid "last name"
 msgstr "efternamn"
 
-#: applications/models.py:150
+#: applications/models.py:184
 msgid "company contact person's phone number"
 msgstr "kontaktpersonens telefonnummer"
 
-#: applications/models.py:158
+#: applications/models.py:192
 msgid "company contact person's email"
 msgstr "kontaktpersonens e-postadress"
 
-#: applications/models.py:193
+#: applications/models.py:227
 msgid "additional information about the ongoing co-operation negotiations"
 msgstr "ytterligare information om de pågående samarbetsförhandlingarna"
 
-#: applications/models.py:203 calculator/models.py:213
+#: applications/models.py:237 calculator/models.py:233
 msgid "Pay subsidy percent"
 msgstr "Lönesubventionsprocent"
 
-#: applications/models.py:210
+#: applications/models.py:244
 msgid "Pay subsidy percent for second pay subsidy grant"
 msgstr "Lönesubventionsprocent för annan lönesubvention som beviljats"
 
-#: applications/models.py:236 calculator/models.py:89 calculator/models.py:333
+#: applications/models.py:270 calculator/models.py:91 calculator/models.py:350
 msgid "benefit start from date"
 msgstr "startdatum för understöd"
 
-#: applications/models.py:239 calculator/models.py:90 calculator/models.py:334
+#: applications/models.py:273 calculator/models.py:94 calculator/models.py:351
 msgid "benefit end date"
 msgstr "slutdatum för understöd"
 
-#: applications/models.py:267
+#: applications/models.py:301
 msgid "ahjo batch"
 msgstr "ahjo-sats"
 
-#: applications/models.py:322 applications/models.py:330
-#: applications/models.py:358 applications/models.py:487
-#: applications/models.py:593 calculator/models.py:204 calculator/models.py:364
+#: applications/models.py:375 applications/models.py:383
+#: applications/models.py:411 applications/models.py:540
+#: applications/models.py:654 calculator/models.py:220 calculator/models.py:381
 #: messages/models.py:30 terms/models.py:145
 msgid "application"
 msgstr "Ansökan"
 
-#: applications/models.py:323
+#: applications/models.py:376
 msgid "applications"
 msgstr "ansökningar"
 
-#: applications/models.py:335
+#: applications/models.py:388
 msgid "granter of the de minimis aid"
 msgstr "den som beviljat de minimis-stödet"
 
-#: applications/models.py:338
+#: applications/models.py:391
 msgid "amount of the de minimis aid"
 msgstr "belopp för de minimis-stödet"
 
-#: applications/models.py:340
+#: applications/models.py:393
 msgid "benefit granted at"
 msgstr "understöd beviljats av"
 
-#: applications/models.py:349
+#: applications/models.py:402
 msgid "de minimis aid"
 msgstr "de minimis-stöd"
 
-#: applications/models.py:350
+#: applications/models.py:403
 msgid "de minimis aids"
 msgstr "de minimis-stöd"
 
-#: applications/models.py:378
+#: applications/models.py:431
 msgid "application log entry"
 msgstr "registrering i ansökningslogg"
 
-#: applications/models.py:379
+#: applications/models.py:432
 msgid "application log entries"
 msgstr "registreringar i ansökningslogg"
 
-#: applications/models.py:392
+#: applications/models.py:445
 msgid "status of batch"
 msgstr "status av sats"
 
-#: applications/models.py:399
+#: applications/models.py:452
 msgid "proposal for decision"
 msgstr "beslutsförslag"
 
-#: applications/models.py:404
+#: applications/models.py:457
 msgid "decision maker's title in Ahjo"
 msgstr "titel för den som fattar beslut vid Ahjo"
 
-#: applications/models.py:407
+#: applications/models.py:460
 msgid "decision maker's name in Ahjo"
 msgstr "namn på den som fattar beslut vid Ahjo"
 
-#: applications/models.py:410
+#: applications/models.py:463
 msgid "section of the law in Ahjo decision"
 msgstr "lag som tillämpas i Ahjos beslut"
 
-#: applications/models.py:413
+#: applications/models.py:466
 msgid "date of the decision in Ahjo"
 msgstr "datum då beslut fattas vid Ahjo"
 
-#: applications/models.py:416
+#: applications/models.py:469
 msgid "Expert inspector's name"
 msgstr "Namn på sakkunnig inspektör"
 
-#: applications/models.py:419
+#: applications/models.py:472
 msgid "Expert inspector's email address"
 msgstr "E-postadress till sakkunnig inspektör"
 
-#: applications/models.py:459
+#: applications/models.py:512
 msgid "application batch"
 msgstr "ansökningssats"
 
-#: applications/models.py:460
+#: applications/models.py:513
 msgid "application batches"
 msgstr "ansökningssatser"
 
-#: applications/models.py:480
+#: applications/models.py:533
 msgid "application basis"
 msgstr "ansökningsgrund"
 
-#: applications/models.py:481
+#: applications/models.py:534
 msgid "application bases"
 msgstr "ansökningsgrunder"
 
-#: applications/models.py:500 calculator/models.py:330
+#: applications/models.py:553 calculator/models.py:347
 msgid "social security number"
 msgstr "personbeteckning"
 
-#: applications/models.py:508
+#: applications/models.py:561
 msgid "phone number"
 msgstr "telefonnummer"
 
-#: applications/models.py:515
+#: applications/models.py:568
 msgid "email"
 msgstr "e-postadress"
 
-#: applications/models.py:525
+#: applications/models.py:578
 msgid "job title"
 msgstr "titel"
 
-#: applications/models.py:528 calculator/models.py:72
+#: applications/models.py:581 calculator/models.py:73
 msgid "monthly pay"
 msgstr "månadslön"
 
-#: applications/models.py:535 calculator/models.py:79
+#: applications/models.py:588 calculator/models.py:80
 msgid "vacation money"
 msgstr "semesterersättning"
 
-#: applications/models.py:543 calculator/models.py:85
+#: applications/models.py:596 calculator/models.py:86
 msgid "other expenses"
 msgstr "övriga kostnader"
 
-#: applications/models.py:550
+#: applications/models.py:603
 msgid "working hour"
 msgstr "arbetstimme"
 
-#: applications/models.py:557
+#: applications/models.py:610
 msgid "collective bargaining agreement"
 msgstr "kollektivavtal"
 
-#: applications/models.py:560
+#: applications/models.py:613
 msgid "is living in helsinki"
 msgstr "bor i Helsingfors"
 
-#: applications/models.py:564
+#: applications/models.py:617
 msgid "amount of the commission (eur)"
 msgstr "uppdragets belopp (euro)"
 
-#: applications/models.py:573
+#: applications/models.py:626
 msgid "Description of the commission"
 msgstr "Beskrivning av uppdraget"
 
-#: applications/models.py:582
+#: applications/models.py:643
 msgid "employee"
 msgstr "anställd"
 
-#: applications/models.py:583
+#: applications/models.py:644
 msgid "employees"
 msgstr "anställda"
 
-#: applications/models.py:599
+#: applications/models.py:660
 msgid "attachment type in business rules"
 msgstr "bilagetyp i företagsregler"
 
-#: applications/models.py:605
+#: applications/models.py:666
 msgid "technical content type of the attachment"
 msgstr "typ av tekniskt innehåll i bilagan"
 
-#: applications/models.py:607
+#: applications/models.py:668
 msgid "application attachment content"
 msgstr "innehåll i bilaga till ansökan"
 
-#: applications/models.py:611
+#: applications/models.py:672
 msgid "attachment"
 msgstr "bilaga"
 
-#: applications/models.py:612
+#: applications/models.py:673
 msgid "attachments"
 msgstr "bilagor"
 
-#: calculator/api/v1/serializers.py:67
+#: calculator/api/v1/serializers.py:76
 msgid "Date range too large"
 msgstr "Tidsperiod för lång"
 
-#: calculator/api/v1/serializers.py:76
-msgid "This calculation can not have a override_benefit_amount_comment"
-msgstr "Denna beräkning kan inte ha en override_benefit_amount_comment"
+#: calculator/api/v1/serializers.py:89
+msgid "This calculation can not have a override_monthly_benefit_amount_comment"
+msgstr "Denna beräkning kan inte ha en override_monthly_benefit_amount_comment"
 
-#: calculator/api/v1/serializers.py:84
-msgid "This calculation needs override_benefit_amount_comment"
-msgstr "Denna beräkning behöver override_benefit_amount_comment"
+#: calculator/api/v1/serializers.py:100
+msgid "This calculation needs override_monthly_benefit_amount_comment"
+msgstr "Denna beräkning behöver override_monthly_benefit_amount_comment"
 
-#: calculator/api/v1/serializers.py:106
+#: calculator/api/v1/serializers.py:122
 msgid "Handler can not be unassigned in this status"
 msgstr "Handläggare kan inte avsättas i denna status"
 
-#: calculator/api/v1/serializers.py:114
+#: calculator/api/v1/serializers.py:130
 msgid "Handler can not assigned in this status"
 msgstr "Handläggare kan inte utses i denna status"
 
@@ -662,7 +672,7 @@ msgstr "Beskrivningsrad, belopp ignorerat"
 msgid "Salary costs"
 msgstr "Lönekostnader"
 
-#: calculator/enums.py:8 calculator/models.py:92
+#: calculator/enums.py:8 calculator/models.py:97
 msgid "State aid maximum %"
 msgstr "Maximalt statsunderstöd %"
 
@@ -690,145 +700,161 @@ msgstr "Utbildningsersättningens belopp per månad"
 msgid "Total amount of deductions monthly"
 msgstr "Totalbelopp av avdrag per månad"
 
-#: calculator/models.py:33
+#: calculator/models.py:34
 msgid "Calculation already exists"
 msgstr "Beräkning finns redan"
 
-#: calculator/models.py:56
+#: calculator/models.py:57
 msgid "handler"
 msgstr "handläggare"
 
-#: calculator/models.py:67 calculator/models.py:190 calculator/models.py:414
+#: calculator/models.py:68 calculator/models.py:206 calculator/models.py:426
 msgid "calculation"
 msgstr "beräkning"
 
-#: calculator/models.py:100
+#: calculator/models.py:107
 msgid "amount of the benefit granted, calculated by the system"
 msgstr "understödsbelopp som beviljats, beräknat av systemet"
 
-#: calculator/models.py:108
-msgid "amount of the benefit manually entered by the application handler"
+#: calculator/models.py:115
+msgid ""
+"monthly amount of the benefit manually entered by the application handler"
 msgstr "understödsbeloppet registrerats för hand av den som behandlat ansökan"
 
 #: calculator/models.py:126
 msgid "reason for overriding the calculated benefit amount"
 msgstr "orsak till att förbigå det beräknade understödsbeloppet"
 
-#: calculator/models.py:152
+#: calculator/models.py:174
 msgid "Incomplete application"
 msgstr "Ofullständig ansökan"
 
-#: calculator/models.py:191
+#: calculator/models.py:207
 msgid "calculations"
 msgstr "beräkningar"
 
-#: calculator/models.py:210 calculator/models.py:370
+#: calculator/models.py:227 calculator/models.py:387
 msgid "Pay subsidy start date"
 msgstr "Startdatum för lönesubvention "
 
-#: calculator/models.py:211 calculator/models.py:371
+#: calculator/models.py:230 calculator/models.py:388
 msgid "Pay subsidy end date"
 msgstr "Slutdatum för lönesubvention"
 
-#: calculator/models.py:217
+#: calculator/models.py:239
 msgid "Work time percent"
 msgstr "Arbetstidsprocent"
 
-#: calculator/models.py:307
+#: calculator/models.py:324
 msgid "pay subsidy"
 msgstr "lönesubvention"
 
-#: calculator/models.py:308
+#: calculator/models.py:325
 msgid "pay subsidies"
 msgstr "lönesubventioner"
 
-#: calculator/models.py:326
+#: calculator/models.py:343
 msgid "encrypted social security number"
 msgstr "skyddad personbeteckning"
 
-#: calculator/models.py:338
+#: calculator/models.py:355
 msgid "monthly amount of the previous benefit"
 msgstr "belopp på det tidigare understödet per månad"
 
-#: calculator/models.py:343
+#: calculator/models.py:360
 msgid "total amount of the previous benefit"
 msgstr "belopp på det tidigare understödet"
 
-#: calculator/models.py:353
+#: calculator/models.py:370
 msgid "Previously granted benefit"
 msgstr "Tidigare beviljat understöd"
 
-#: calculator/models.py:354
+#: calculator/models.py:371
 msgid "Previously granted benefits"
 msgstr "Tidigare beviljade understöd"
 
-#: calculator/models.py:373
+#: calculator/models.py:390
 msgid "Monthly amount of compensation"
 msgstr "Ersättningsbelopp per månad"
 
-#: calculator/models.py:390
+#: calculator/models.py:402
 msgid "training compensation"
 msgstr "utbildningsersättning"
 
-#: calculator/models.py:391
+#: calculator/models.py:403
 msgid "training compensations"
 msgstr "utbildningsersättningar"
 
-#: calculator/models.py:424
+#: calculator/models.py:436
 msgid "Description of the row to be shown in handler UI"
 msgstr "Radbeskrivning som visas i handläggarens användargränssnitt"
 
-#: calculator/models.py:427
+#: calculator/models.py:439
 msgid "row amount"
 msgstr "antal rader"
 
-#: calculator/models.py:429
+#: calculator/models.py:441
 msgid "Start date"
 msgstr "Startdatum"
 
-#: calculator/models.py:430
+#: calculator/models.py:442
 msgid "End date"
 msgstr "Slutdatum"
 
-#: calculator/models.py:463
+#: calculator/models.py:471
 msgid "calculation row"
 msgstr "beräkningsrad"
 
-#: calculator/models.py:464
+#: calculator/models.py:472
 msgid "calculation rows"
 msgstr "beräkningsrader"
 
-#: common/permissions.py:25
-msgid "You have to accept Terms of Service before doing any action"
-msgstr "Du måste godkänna användarvillkoren för tjänsten innan du kan göra något"
+#: common/iban_field.py:14
+msgid "Invalid IBAN"
+msgstr "Felaktigt IBAN-kontonummer"
 
-#: common/permissions.py:44
+#: common/permissions.py:37
+msgid "You have to accept Terms of Service before doing any action"
+msgstr ""
+"Du måste godkänna användarvillkoren för tjänsten innan du kan göra något"
+
+#: common/permissions.py:56
 msgid "Company information is not available"
 msgstr "Företagets uppgifter är inte tillgängliga"
 
-#: companies/models.py:9
+#: companies/models.py:10
 msgid "bank account number"
 msgstr "bankkontonummer"
 
-#: companies/models.py:18
+#: companies/models.py:22
 msgid "companies"
 msgstr "företag"
 
-#: helsinkibenefit/settings.py:148
+#: helsinkibenefit/settings.py:162
 msgid "Finnish"
 msgstr "Finska"
 
-#: helsinkibenefit/settings.py:148
+#: helsinkibenefit/settings.py:162
 msgid "English"
 msgstr "Engelska"
 
-#: helsinkibenefit/settings.py:148
+#: helsinkibenefit/settings.py:162
 msgid "Swedish"
 msgstr "Svenska"
 
 #: messages/admin.py:13
 msgid "Application number"
 msgstr "Ansökningsnummer"
+
+#: messages/automatic_messages.py:7
+#, python-brace-format
+msgid ""
+"Your application has been opened for editing. Please make the corrections by "
+"{additional_information_needed_by}, otherwise the application cannot be "
+"processed."
+msgstr ""
+"Din ansökan har öppnats för redigering. Gör ändringarna senast "
+"{additional_information_needed_by}, annars kan ansökan inte behandlas."
 
 #: messages/models.py:16
 msgid "Note"
@@ -870,23 +896,27 @@ msgstr "meddelanden"
 msgid "You don't have permission to change this message"
 msgstr "Du får inte ändra detta meddelande"
 
-#: messages/serializers.py:33 messages/views.py:37
+#: messages/serializers.py:39 messages/views.py:41
 msgid "Application not found"
 msgstr "Ansökan hittades inte"
 
-#: messages/serializers.py:38
+#: messages/serializers.py:44
 msgid "You are not allowed to do this action"
 msgstr "Du får inte utföra denna åtgärd"
 
-#: messages/serializers.py:42
-msgid "Cannot do this action because application is not in handling status"
+#: messages/serializers.py:49
+msgid "Cannot do this action because application is not in the correct status"
 msgstr "Kan inte utföra åtgärden eftersom ansökan inte har handläggningsstatus"
 
-#: messages/serializers.py:48
+#: messages/serializers.py:55
 msgid "Applicant is not allowed to do this action"
 msgstr "Sökande får inte utföra denna åtgärd"
 
-#: messages/serializers.py:52
+#: messages/serializers.py:62
+msgid "Applicant can send messages only after handler has sent a message first"
+msgstr ""
+
+#: messages/serializers.py:68
 msgid "Handler is not allowed to do this action"
 msgstr "Handläggare får inte utföra denna åtgärd"
 
@@ -895,12 +925,16 @@ msgid "Only the terms currently in effect can be approved"
 msgstr "Endast de villkor som för tillfället gäller kan godkännas"
 
 #: terms/api/v1/serializers.py:96
-msgid "User must explicitly select all the applicant consents required by the terms"
-msgstr "Användare måste uttryckligen välja samtliga samtycken för sökanden som krävs enligt villkoren"
+msgid ""
+"User must explicitly select all the applicant consents required by the terms"
+msgstr ""
+"Användare måste uttryckligen välja samtliga samtycken för sökanden som krävs "
+"enligt villkoren"
 
 #: terms/api/v1/views.py:42
 msgid "The user has no company, terms of service can not be accepted"
-msgstr "Användaren har inget företag, villkoren för tjänsten kan inte godkännas"
+msgstr ""
+"Användaren har inget företag, villkoren för tjänsten kan inte godkännas"
 
 #: terms/api/v1/views.py:66
 msgid "The terms of service should only be approved once"
@@ -975,7 +1009,7 @@ msgid "applicant terms approval"
 msgstr "samtycke till ansökningsvillkor"
 
 #: terms/models.py:168
-msgid "applicant terms approvals"
+msgid "Applicant terms approvals"
 msgstr "samtycken till ansökningsvillkor"
 
 #: terms/models.py:174

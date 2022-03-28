@@ -38,6 +38,9 @@
 	},
   "application": {
 		"backToFrontPage": "Tillbaka till startsidan",
+		"publishTerms": "Genom att publicera godkänner du",
+		"termsLink": "villkoren",
+		"backToFrontPage": "Tillbaka till startsidan",
 		"createTerms": "Jag är i positionen som arbetsledare eller har diskuterat tillkännagivandet med förmannen.",
 		"accept": "Acceptera",
     "jobPostings": {
@@ -60,8 +63,9 @@
     }
   },
   "editor": {
-		"companyInfo": "Företagets uppgifter",
-		"companyInfoFetch": "Företagets uppgifter har hämtats från YTJ",
+		"companyInfo": "Arbetsgivarinformation",
+    "helsinkiCity": "Helsingfors stad",
+		"companyInfoFetch": "Informationen har hämtats under autentiseringen.",
     "newTitle": "Ny PRAO-plats",
     "editTitle": "Redigera PRAO-plats",
 		"copyTitle": "Kopiera PRAO-plats",
@@ -95,7 +99,7 @@
 			"contactLastName": "Efternamn",
 			"contactPhone": "Telefon",
 			"contactEmail": "E-post",
-			"contactLanguage": "Kontaktspråk",
+			"contactLanguage": "Språket som används under PRAO-perioden",
 			"contactLanguageFi": "Finska",
 			"contactLanguageSv": "Svenska",
 			"contactLanguageEn": "Engelska",
