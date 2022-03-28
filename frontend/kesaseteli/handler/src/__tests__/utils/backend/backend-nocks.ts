@@ -2,10 +2,10 @@ import {
   BackendEndpoint,
   getBackendDomain,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
-import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests

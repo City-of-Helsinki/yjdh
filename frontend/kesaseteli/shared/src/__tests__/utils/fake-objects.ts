@@ -1,5 +1,5 @@
 import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
-import { Language, DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
+import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';

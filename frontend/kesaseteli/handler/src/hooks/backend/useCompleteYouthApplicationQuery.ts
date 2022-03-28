@@ -3,6 +3,7 @@ import {
   BackendEndpoint,
   getYouthApplicationQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import {
   useMutation,
   UseMutationOptions,
@@ -11,7 +12,6 @@ import {
 } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
-import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 
 const useCompleteYouthApplicationQuery = (
   id: ActivatedYouthApplication['id'],

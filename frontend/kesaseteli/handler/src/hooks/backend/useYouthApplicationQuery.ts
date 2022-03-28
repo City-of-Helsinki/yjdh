@@ -1,8 +1,8 @@
 import { getYouthApplicationQueryKey } from 'kesaseteli-shared/backend-api/backend-api';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 import { isError } from 'shared/utils/type-guards';
-import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 
 const useYouthApplicationQuery = (
   id?: string,
