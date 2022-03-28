@@ -17,6 +17,7 @@ from applications.api.v1.serializers import (
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
 )
+from applications.api.v1.views import BaseApplicationViewSet
 from applications.enums import (
     ApplicationStatus,
     ApplicationStep,
@@ -56,7 +57,13 @@ def get_handler_detail_url(application):
 
 
 @pytest.mark.parametrize(
-    "view_name", ["v1:applicant-application-list", "v1:handler-application-list"]
+    "view_name",
+    [
+        "v1:applicant-application-list",
+        "v1:handler-application-list",
+        "v1:applicant-application-simplified-application-list",
+        "v1:handler-application-simplified-application-list",
+    ],
 )
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
@@ -70,10 +77,20 @@ def test_applications_unauthenticated(anonymous_client, application, view_name):
     assert audit_event["target"]["type"] == "Application"
 
 
+@pytest.mark.parametrize(
+    "view_name",
+    [
+        "v1:applicant-application-list",
+        "v1:applicant-application-simplified-application-list",
+    ],
+)
 def test_applications_unauthorized(
-    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+    api_client,
+    anonymous_application,
+    view_name,
+    mock_get_organisation_roles_and_create_company,
 ):
-    response = api_client.get(reverse("v1:applicant-application-list"))
+    response = api_client.get(reverse(view_name))
     assert len(response.data) == 0
     assert response.status_code == 200
 
@@ -125,6 +142,72 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     response = api_client.get(url)
     assert len(response.data) == 1
     assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_applications_simple_list_as_handler(handler_api_client, received_application):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data[0]
+    for key in ["calculation", "handled_at"]:
+        # handler-only fields must still be found
+        assert key in response.data[0]
+
+
+def test_applications_simple_list_as_applicant(api_client, received_application):
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data
+    for key in ["calculation", "handled_at"]:
+        # handler-specific fields must not appear
+        assert key not in response.data[0]
+
+
+@pytest.mark.parametrize(
+    "exclude_fields",
+    [
+        ("status",),
+        (
+            "status",
+            "last_modified_at",
+        ),
+        ("status", "last_modified_at", "employee"),
+    ],
+)
+def test_applications_simple_list_exclude_more(
+    handler_api_client, received_application, exclude_fields
+):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+        + f"?exclude_fields={','.join(exclude_fields)}"
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in exclude_fields:
+        assert key not in response.data[0]
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data[0]
+
+
+def test_applications_simple_list_filter(
+    handler_api_client, received_application, handling_application
+):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+        + "?status=handling"
+    )
+    assert len(response.data) == 1
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data
+    assert response.data[0]["status"] == "handling"
     assert response.status_code == 200
 
 

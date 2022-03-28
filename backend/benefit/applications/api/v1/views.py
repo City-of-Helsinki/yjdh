@@ -105,8 +105,44 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if not settings.DISABLE_AUTHENTICATION:
             if not user.is_authenticated:
                 return Application.objects.none()
-        qs = Application.objects.all().select_related("company")
+        qs = Application.objects.all().select_related("company", "employee")
         return qs
+
+    EXCLUDE_FIELDS_FROM_SIMPLE_LIST = [
+        "applicant_terms_approval",
+        "bases",
+        "attachment_requirements",
+        "applicant_terms_approval_needed",
+        "applicant_terms_in_effect",
+        "former_benefit_info",
+        "available_benefit_types",
+        "status_last_changed_at",
+        "ahjo_decision",
+        "latest_decision_comment",
+        "training_compensations",
+        "pay_subsidies",
+        "warnings",
+        "attachments",
+        "de_minimis_aid_set",
+    ]
+
+    @action(methods=["get"], detail=False, url_path="simplified_list")
+    def simplified_application_list(self, request):
+        """
+        Convenience action for the frontends that by default excludes the fields that are not normally
+        needed in application listing pages.
+        """
+        qs = self.filter_queryset(self.get_queryset())
+        context = self.get_serializer_context()
+        fields = set(context.get("fields", []))
+        exclude_fields = set(context.get("exclude_fields", []))
+        extra_exclude_fields = set(self.EXCLUDE_FIELDS_FROM_SIMPLE_LIST)
+        context["exclude_fields"] = list(
+            exclude_fields | (extra_exclude_fields - fields)
+        )
+
+        serializer = self.serializer_class(qs, many=True, context=context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
         methods=("POST",),
@@ -274,8 +310,18 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             .get_queryset()
             .exclude(status=ApplicationStatus.DRAFT)
             .select_related("batch", "calculation")
-            .prefetch_related("pay_subsidies", "training_compensations")
+            .prefetch_related(
+                "pay_subsidies", "training_compensations", "calculation__rows"
+            )
         )
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if fields := self.request.query_params.get("fields", None):
+            context.update({"fields": fields.split(",")})
+        if exclude_fields := self.request.query_params.get("exclude_fields", None):
+            context.update({"exclude_fields": exclude_fields.split(",")})
+        return context
 
     @action(methods=["GET"], detail=False)
     def export_csv(self, request):
