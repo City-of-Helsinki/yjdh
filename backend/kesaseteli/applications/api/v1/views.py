@@ -229,11 +229,30 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         list(same_persons_apps)  # Force evaluation of queryset to lock its rows
 
         if same_persons_apps.active().exists():
-            return HttpResponseRedirect(youth_application.already_activated_page_url())
+            if youth_application.is_active and youth_application.need_additional_info:
+                return HttpResponseRedirect(
+                    youth_application.additional_info_page_url(pk=youth_application.pk)
+                )
+            else:  # not the active one or does not need additional info
+                return HttpResponseRedirect(
+                    youth_application.already_activated_page_url()
+                )
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
-            if settings.DISABLE_VTJ:
+            if youth_application.need_additional_info:
+                LOGGER.info(
+                    f"Activated youth application {youth_application.pk}: "
+                    "Additional info is needed, redirecting user to page to provide it"
+                )
+                youth_application.status = (
+                    YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+                )
+                youth_application.save()
+                return HttpResponseRedirect(
+                    youth_application.additional_info_page_url(pk=youth_application.pk)
+                )
+            elif settings.DISABLE_VTJ:
                 LOGGER.info(
                     f"Activated youth application {youth_application.pk}: "
                     "VTJ is disabled, sending application to be processed by a handler"
@@ -309,17 +328,23 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             # Data was valid and other criteria passed too, so let's create the object
             self.perform_create(serializer)
 
-            # Send the localized activation email
+            # Send the localized activation/additional info request email
             youth_application = serializer.instance
-            was_email_sent = youth_application.send_activation_email(
-                request, youth_application.language
-            )
+
+            if youth_application.need_additional_info:
+                was_email_sent = youth_application.send_additional_info_request_email(
+                    request, youth_application.language
+                )
+            else:
+                was_email_sent = youth_application.send_activation_email(
+                    request, youth_application.language
+                )
 
             if not was_email_sent:
                 transaction.set_rollback(True)
                 with translation.override(youth_application.language):
                     return HttpResponse(
-                        _("Failed to send activation email"),
+                        _("Failed to send activation/additional info request email"),
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     )
 

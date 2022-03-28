@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 13:53+0200\n"
-"PO-Revision-Date: 2022-03-07 09:05+0200\n"
+"POT-Creation-Date: 2022-03-28 16:15+0300\n"
+"PO-Revision-Date: 2022-03-28 16:22+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -58,7 +58,24 @@ msgstr ""
 msgid "Attachments missing with types: {attachment_types}"
 msgstr ""
 
-msgid "Social security number must be set"
+msgid "Must be set"
+msgstr ""
+
+#, python-format
+msgid "additional_info_user_reasons must be a list, was %(type)s"
+msgstr ""
+
+msgid "Invalid type input values for additional_info_user_reasons"
+msgstr ""
+
+#, python-format
+msgid ""
+"additional_info_user_reasons must contain only values from "
+"AdditionalInfoUserReason, contained invalid values %(invalid_values)s"
+msgstr ""
+
+#, python-format
+msgid "Invalid status %(status)s for setting additional info"
 msgstr ""
 
 msgid "Failed to send youth summer voucher email"
@@ -70,7 +87,7 @@ msgstr ""
 msgid "VTJ integration is not implemented"
 msgstr ""
 
-msgid "Failed to send activation email"
+msgid "Failed to send activation/additional info request email"
 msgstr ""
 
 msgid "File not found."
@@ -101,6 +118,26 @@ msgid "Deleted by customer"
 msgstr ""
 
 msgid "Awaiting manual processing"
+msgstr ""
+
+msgid "Student in Helsinki but not resident"
+msgstr ""
+
+#, fuzzy
+#| msgid "Helsinki"
+msgid "Moving to Helsinki"
+msgstr "Helsinki"
+
+msgid "Underage or overage"
+msgstr ""
+
+msgid "Personal info differs from VTJ"
+msgstr ""
+
+msgid "Unlisted school"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "employment contract"
@@ -316,6 +353,15 @@ msgstr ""
 msgid "time handled"
 msgstr ""
 
+msgid "time additional info was provided"
+msgstr ""
+
+msgid "additional info user reasons"
+msgstr ""
+
+msgid "additional info description"
+msgstr ""
+
 msgid "Aktivoi Kesäseteli"
 msgstr "Activate your Summer Job Voucher"
 
@@ -335,6 +381,24 @@ msgstr ""
 "\n"
 "Kind regards, the Summer Job Voucher Team"
 
+msgid "Lisätietopyyntö"
+msgstr "Request for additional information"
+
+#, python-format
+msgid ""
+"Täydennäthän kesäsetelihakemuksesi tietoja alla olevasta linkistä:\n"
+"\n"
+"%(activation_link)s\n"
+"\n"
+"Kiitos! Ystävällisin terveisin, Kesäseteli-tiimi"
+msgstr ""
+"Please complete your Summer Job Voucher application's information using the "
+"link below:\n"
+"\n"
+"%(activation_link)s\n"
+"\n"
+"Thank you! Kind regards, the Summer Job Voucher Team"
+
 #, python-format
 msgid "Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s"
 msgstr ""
@@ -350,6 +414,9 @@ msgid ""
 "Sähköposti: %(email)s\n"
 "\n"
 "%(processing_link)s"
+msgstr ""
+
+msgid "Unable to send youth application's additional info request email"
 msgstr ""
 
 msgid "Unable to send youth application's activation email"

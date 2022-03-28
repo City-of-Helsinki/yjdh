@@ -46,9 +46,10 @@ from common.tests.conftest import (
 from common.tests.factories import (
     AcceptableYouthApplicationFactory,
     AcceptedYouthApplicationFactory,
-    ActiveYouthApplicationFactory,
+    ActiveListedSchoolYouthApplicationFactory,
     AdditionalInfoRequestedYouthApplicationFactory,
-    InactiveYouthApplicationFactory,
+    InactiveListedSchoolYouthApplicationFactory,
+    InactiveUnlistedSchoolYouthApplicationFactory,
     RejectedYouthApplicationFactory,
     YouthApplicationFactory,
 )
@@ -532,7 +533,9 @@ def test_youth_applications_activate_unexpired_inactive(
     expected_status_code,
 ):
     settings.DISABLE_VTJ = disable_vtj
-    inactive_youth_application = InactiveYouthApplicationFactory(language=language)
+    inactive_youth_application = InactiveListedSchoolYouthApplicationFactory(
+        language=language
+    )
     assert not inactive_youth_application.has_youth_summer_voucher
     old_status = inactive_youth_application.status
 
@@ -579,7 +582,9 @@ def test_youth_applications_activate_unexpired_active(
     disable_vtj,
 ):
     settings.DISABLE_VTJ = disable_vtj
-    active_youth_application = ActiveYouthApplicationFactory(language=language)
+    active_youth_application = ActiveListedSchoolYouthApplicationFactory(
+        language=language
+    )
     assert not active_youth_application.has_youth_summer_voucher
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
@@ -619,7 +624,9 @@ def test_youth_applications_activate_expired_inactive(
     disable_vtj,
 ):
     settings.DISABLE_VTJ = disable_vtj
-    inactive_youth_application = InactiveYouthApplicationFactory(language=language)
+    inactive_youth_application = InactiveListedSchoolYouthApplicationFactory(
+        language=language
+    )
     assert not inactive_youth_application.has_youth_summer_voucher
     old_status = inactive_youth_application.status
 
@@ -657,7 +664,9 @@ def test_youth_applications_activate_expired_active(
     disable_vtj,
 ):
     settings.DISABLE_VTJ = disable_vtj
-    active_youth_application = ActiveYouthApplicationFactory(language=language)
+    active_youth_application = ActiveListedSchoolYouthApplicationFactory(
+        language=language
+    )
     assert not active_youth_application.has_youth_summer_voucher
     old_status = active_youth_application.status
     old_handler = active_youth_application.handler
@@ -686,8 +695,8 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     api_client,
     make_youth_application_activation_link_unexpired,
 ):
-    app_1 = InactiveYouthApplicationFactory()
-    app_2 = InactiveYouthApplicationFactory(
+    app_1 = InactiveListedSchoolYouthApplicationFactory()
+    app_2 = InactiveListedSchoolYouthApplicationFactory(
         social_security_number=app_1.social_security_number
     )
     app_2_old_status = app_2.status
@@ -940,7 +949,9 @@ def test_youth_application_post_valid_language(
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_application_activation_email_language(api_client, language):
-    youth_application = YouthApplicationFactory.build(language=language)
+    youth_application = InactiveListedSchoolYouthApplicationFactory.build(
+        language=language
+    )
     data = YouthApplicationSerializer(youth_application).data
     api_client.post(reverse("v1:youthapplication-list"), data)
     assert len(mail.outbox) > 0
@@ -950,26 +961,69 @@ def test_youth_application_activation_email_language(api_client, language):
 
 
 @pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_application_additional_info_request_email_language(api_client, language):
+    youth_application = InactiveUnlistedSchoolYouthApplicationFactory.build(
+        language=language
+    )
+    data = YouthApplicationSerializer(youth_application).data
+    api_client.post(reverse("v1:youthapplication-list"), data)
+    assert len(mail.outbox) > 0
+    additional_info_request_email = mail.outbox[-1]
+    assert_email_subject_language(additional_info_request_email.subject, language)
+    assert_email_body_language(additional_info_request_email.body, language)
+
+
+@pytest.mark.django_db
 @override_settings(
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
 )
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_application_activation_email_sending(api_client, language):
-    youth_application = YouthApplicationFactory.build(language=language)
+    youth_application = InactiveListedSchoolYouthApplicationFactory.build(
+        language=language
+    )
     data = YouthApplicationSerializer(youth_application).data
     start_mail_count = len(mail.outbox)
     api_client.post(reverse("v1:youthapplication-list"), data)
     assert len(mail.outbox) == start_mail_count + 1
     activation_email = mail.outbox[-1]
+    assert activation_email.subject == YouthApplication.activation_email_subject(
+        language=language
+    )
     assert activation_email.from_email == "Test sender <testsender@hel.fi>"
     assert activation_email.to == [youth_application.email]
 
 
 @pytest.mark.django_db
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+)
+@pytest.mark.parametrize("language", get_supported_languages())
+def test_youth_application_additional_info_request_email_sending(api_client, language):
+    youth_application = InactiveUnlistedSchoolYouthApplicationFactory.build(
+        language=language
+    )
+    data = YouthApplicationSerializer(youth_application).data
+    start_mail_count = len(mail.outbox)
+    api_client.post(reverse("v1:youthapplication-list"), data)
+    assert len(mail.outbox) == start_mail_count + 1
+    additional_info_request_email = mail.outbox[-1]
+    assert (
+        additional_info_request_email.subject
+        == YouthApplication.additional_info_request_email_subject(language=language)
+    )
+    assert additional_info_request_email.from_email == "Test sender <testsender@hel.fi>"
+    assert additional_info_request_email.to == [youth_application.email]
+
+
+@pytest.mark.django_db
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_youth_application_activation_email_link_path(api_client):
-    youth_application = YouthApplicationFactory.build()
+    youth_application = InactiveListedSchoolYouthApplicationFactory.build()
     data = YouthApplicationSerializer(youth_application).data
     response = api_client.post(reverse("v1:youthapplication-list"), data)
     assert len(mail.outbox) > 0
@@ -985,6 +1039,24 @@ def test_youth_application_activation_email_link_path(api_client):
 
 
 @pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_youth_application_additional_info_request_email_link_path(api_client):
+    youth_application = InactiveUnlistedSchoolYouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(reverse("v1:youthapplication-list"), data)
+    assert len(mail.outbox) > 0
+    additional_info_request_email = mail.outbox[-1]
+    assert "id" in response.data
+    assert response.data["id"]
+    assert YouthApplication.objects.filter(pk=response.data["id"]).exists()
+    # Check that the activation URL path
+    # i.e. without the hostname and port is found in the email body
+    activation_url = get_activation_url(pk=response.data["id"])
+    activation_url_with_path_only = urlparse(activation_url).path
+    assert activation_url_with_path_only in additional_info_request_email.body
+
+
+@pytest.mark.django_db
 @override_settings(
     DISABLE_VTJ=True,
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
@@ -993,9 +1065,9 @@ def test_youth_application_activation_email_link_path(api_client):
 )
 def test_youth_application_processing_email_sending_without_vtj(
     api_client,
-    inactive_youth_application,
     make_youth_application_activation_link_unexpired,
 ):
+    inactive_youth_application = InactiveListedSchoolYouthApplicationFactory()
     start_mail_count = len(mail.outbox)
     api_client.get(get_activation_url(inactive_youth_application.pk))
     assert len(mail.outbox) == start_mail_count + 1
@@ -1019,7 +1091,7 @@ def test_youth_application_processing_email_language(
     youth_application_language,
     expected_email_language,
 ):
-    inactive_youth_application = InactiveYouthApplicationFactory(
+    inactive_youth_application = InactiveListedSchoolYouthApplicationFactory(
         language=youth_application_language
     )
     api_client.get(get_activation_url(inactive_youth_application.pk))
