@@ -171,6 +171,7 @@ Header.defaultProps = {
   onLanguageChange: undefined,
   login: undefined,
   theme: undefined,
+  onTitleClick: undefined,
 };
 
 export default Header;
