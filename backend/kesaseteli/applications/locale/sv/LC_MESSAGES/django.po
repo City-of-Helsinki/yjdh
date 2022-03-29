@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-28 16:15+0300\n"
-"PO-Revision-Date: 2022-03-28 16:23+0300\n"
+"PO-Revision-Date: 2022-03-29 08:45+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: sv\n"
@@ -87,10 +87,8 @@ msgstr ""
 msgid "VTJ integration is not implemented"
 msgstr ""
 
-#, fuzzy
-#| msgid "Failed to send activation email"
 msgid "Failed to send activation/additional info request email"
-msgstr "Det gick inte att skicka aktiveringsmail"
+msgstr ""
 
 msgid "File not found."
 msgstr ""
@@ -125,10 +123,8 @@ msgstr ""
 msgid "Student in Helsinki but not resident"
 msgstr ""
 
-#, fuzzy
-#| msgid "Helsinki"
 msgid "Moving to Helsinki"
-msgstr "Helsingfors"
+msgstr ""
 
 msgid "Underage or overage"
 msgstr ""

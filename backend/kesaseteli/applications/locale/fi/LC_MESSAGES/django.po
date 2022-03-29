@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-28 16:15+0300\n"
-"PO-Revision-Date: 2022-02-08 14:52+0200\n"
+"PO-Revision-Date: 2022-03-29 08:43+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -78,23 +78,18 @@ msgstr ""
 msgid "Invalid status %(status)s for setting additional info"
 msgstr ""
 
-#, fuzzy
-#| msgid "Failed to send activation email"
 msgid "Failed to send youth summer voucher email"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
+msgstr "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
 
-#, fuzzy
-#| msgid "Failed to send activation email"
 msgid "Failed to send manual processing email to handler"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
+msgstr ""
+"Manuaaliprosessointisähköpostin lähettäminen käsittelijälle epäonnistui"
 
 msgid "VTJ integration is not implemented"
 msgstr ""
 
-#, fuzzy
-#| msgid "Failed to send activation email"
 msgid "Failed to send activation/additional info request email"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
+msgstr "Aktivointi/lisätietopyyntösähköpostin lähettäminen epäonnistui"
 
 msgid "File not found."
 msgstr ""

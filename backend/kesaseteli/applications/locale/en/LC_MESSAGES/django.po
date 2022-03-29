@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-28 16:15+0300\n"
-"PO-Revision-Date: 2022-03-28 16:22+0300\n"
+"PO-Revision-Date: 2022-03-29 08:40+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -123,10 +123,8 @@ msgstr ""
 msgid "Student in Helsinki but not resident"
 msgstr ""
 
-#, fuzzy
-#| msgid "Helsinki"
 msgid "Moving to Helsinki"
-msgstr "Helsinki"
+msgstr "Moving to Helsinki"
 
 msgid "Underage or overage"
 msgstr ""
@@ -168,22 +166,22 @@ msgid "Already assigned"
 msgstr ""
 
 msgid "Järjestys"
-msgstr ""
+msgstr "Order"
 
 msgid "Saatu pvm"
-msgstr ""
+msgstr "Received date"
 
 msgid "Hakemuksen kieli"
-msgstr ""
+msgstr "Application language"
 
 msgid "Setelin numero"
-msgstr ""
+msgstr "Voucher number"
 
 msgid "Erikoistapaus (esim yhdeksäsluokkalainen)"
-msgstr ""
+msgstr "Special case (e.g. 9th grader)"
 
 msgid "Nuoren nimi"
-msgstr ""
+msgstr "Youth's name"
 
 msgid "Henkilötunnus"
 msgstr ""
