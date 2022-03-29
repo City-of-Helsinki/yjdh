@@ -8,17 +8,17 @@ import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
 import { TetEvent } from 'tet-shared/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import { eventToTetPosting } from 'tet-shared/backend-api/transformations';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
-import { Language } from 'shared/i18n/i18n';
+import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 
 const EditStaticPage: NextPage = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const router = useRouter();
+  const { eventToTetPosting } = useEventPostingTransformation();
   const id = router.query.id as string;
   const { isLoading, data, error } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
 
@@ -35,7 +35,7 @@ const EditStaticPage: NextPage = () => {
   }
 
   if (data) {
-    const posting = eventToTetPosting(data, keywordResult.getKeywordType, languageOptions, i18n.language as Language);
+    const posting = eventToTetPosting(data, keywordResult.getKeywordType, languageOptions);
     return (
       <EditById title={t('common:editor.editTitle')} data={posting} allowPublish={posting.date_published === null} />
     );
