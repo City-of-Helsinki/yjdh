@@ -424,6 +424,7 @@
       "required": "Tämä kenttä on pakollinen",
       "invalid": "Virheellinen arvo",
       "number": {
+        "invalid": "Virheellinen arvo, ilmoita vain numeroita",
         "max": "Arvon tulee olla enintään {{max}}",
         "min": "Arvon tulee olla vähintään {{min}}"
       },
