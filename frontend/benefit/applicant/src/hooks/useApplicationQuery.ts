@@ -18,7 +18,6 @@ const useApplicationQuery = (
           ),
     {
       enabled: Boolean(id),
-      staleTime: Infinity,
     }
   );
 };

@@ -5,13 +5,15 @@ import { useQuery, UseQueryResult } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
-import User from 'shared/types/user';
+
+import { UserData } from '../types/application';
 
 // check that authentication is still alive in every 5 minutes
 const FIVE_MINUTES = 5 * 60 * 1000;
 
-const useUserQuery = <T = User>(
-  select?: (user: User) => T
+const useUserQuery = <T = UserData>(
+  queryKeys?: string | unknown[],
+  select?: (user: UserData) => T
 ): UseQueryResult<T, Error> => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -34,8 +36,8 @@ const useUserQuery = <T = User>(
   };
 
   return useQuery(
-    `${BackendEndpoint.USER}`,
-    () => handleResponse<User>(axios.get(BackendEndpoint.USER)),
+    queryKeys ?? `${BackendEndpoint.USER}`,
+    () => handleResponse<UserData>(axios.get(BackendEndpoint.USER_ME)),
     {
       refetchInterval: FIVE_MINUTES,
       enabled: !logout,

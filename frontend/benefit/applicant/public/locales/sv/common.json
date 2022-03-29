@@ -59,7 +59,9 @@
       "back": "Tillbaka",
       "edit": "Redigera",
       "close": "Stäng",
-      "openTermsAsPDF": "Öppna villkoren som PDF-fil"
+      "openTermsAsPDF": "Öppna villkoren som PDF-fil",
+      "continueToService": "Fortsätt till tjänsten",
+      "pauseAndExit": "Avbryt och lämna sidan"
     },
     "sections": {
       "company": {
@@ -360,6 +362,7 @@
       }
     }
   },
+  "serviceName": "E-tjänsten för Helsingforstillägg",
   "appName": "Helsingforstillägg",
   "header": {
     "loginLabel": "Logga in i tjänsten",
@@ -465,7 +468,8 @@
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
     "infoLabel": "Att använda tjänsten kräver stark autentisering",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
-    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
+    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig.",
+    "termsOfServiceHeader": "Information om behandlingen av arbetsgivarens representanters uppgifter"
   },
   "errorPage": {
     "title": "Tyvärr har det inträffat ett fel i tjänsten",
