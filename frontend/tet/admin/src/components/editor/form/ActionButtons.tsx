@@ -60,7 +60,7 @@ const ActionButtons: React.FC = () => {
     });
   };
 
-  const publishPostingHandler = async (validatedPosting: TetPosting): void => {
+  const publishPostingHandler = async (validatedPosting: TetPosting): Promise<void> => {
     const isConfirmed = await confirm({
       header: t('common:publish.confirmation', { posting: posting.title }),
       content: t('common:application.publishTerms'),
