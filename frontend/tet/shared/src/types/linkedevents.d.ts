@@ -76,12 +76,14 @@ export type TetEventPayload = {
   start_time: string;
   end_time: string | null;
   date_published: string | null;
+  publication_status?: string;
   in_language: IdObject[];
 };
 
 export type TetUpsert = {
   id?: string;
   event: TetEventPayload;
+  publish?: boolean;
 };
 
 export type TetEvents = {

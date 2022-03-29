@@ -162,13 +162,15 @@ export const eventsToTetPostings = (
   return postings;
 };
 
-export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
+export const tetPostingToEvent = (
+  posting: TetPosting,
+  publish = false
+): TetEventPayload => ({
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
   start_time: hdsDateToIsoFormat(posting.start_date)!,
   end_time: hdsDateToIsoFormat(posting.end_date),
-  date_published: posting.date_published || null,
   keywords: [
     ...posting.keywords_working_methods.map((option) => option.value),
     ...posting.keywords_attributes.map((option) => option.value),
@@ -186,4 +188,8 @@ export const tetPostingToEvent = (posting: TetPosting): TetEventPayload => ({
   in_language: posting.languages.map((lang) => ({
     '@id': `http://localhost:8080/v1/language/${lang.value}/`,
   })),
+  publication_status: publish ? 'public' : undefined,
+  date_published: publish
+    ? '2022-03-29T03:00:00Z'
+    : posting.date_published || null, // TODO fix
 });

@@ -36,7 +36,7 @@ const CopyStaticPage: NextPage = () => {
   if (data) {
     const posting = eventToTetPosting(data, keywordResult.getKeywordType, languageOptions);
     delete posting.id;
-    return <EditById title={t('common:editor.copyTitle')} data={posting} allowDelete={false} />;
+    return <EditById title={t('common:editor.copyTitle')} data={posting} />;
   } else {
     return <PageNotFound />;
   }
