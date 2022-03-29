@@ -182,7 +182,7 @@ export const EMPLOYEE_MAX_WORKING_HOURS = 168;
 export const MAX_SHORT_STRING_LENGTH = 64 as const;
 export const MAX_LONG_STRING_LENGTH = 256 as const;
 
-export const MIN_PHONE_NUMBER_LENGTH = 7 as const;
+export const MIN_PHONE_NUMBER_LENGTH = 3 as const;
 export const MAX_PHONE_NUMBER_LENGTH = 13 as const;
 
 // temporary consent file

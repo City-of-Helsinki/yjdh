@@ -99,8 +99,18 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.PHONE_NUMBER]: Yup.string()
           .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
-          .min(MIN_PHONE_NUMBER_LENGTH, t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN))
-          .max(MAX_PHONE_NUMBER_LENGTH, t(VALIDATION_MESSAGE_KEYS.NUMBER_MAX))
+          .min(
+            MIN_PHONE_NUMBER_LENGTH,
+            t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN, {
+              min: MIN_PHONE_NUMBER_LENGTH,
+            })
+          )
+          .max(
+            MAX_PHONE_NUMBER_LENGTH,
+            t(VALIDATION_MESSAGE_KEYS.NUMBER_MAX, {
+              max: MAX_PHONE_NUMBER_LENGTH,
+            })
+          )
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
           [true],
