@@ -122,18 +122,12 @@ export const fakeYouthApplication = (language?: Language): YouthApplication =>
 
 export const fakeCreatedYouthApplication = (
   override?: Partial<CreatedYouthApplication>
-): CreatedYouthApplication => {
-  const { status } = {
-    status: 'submitted' as CreatedYouthApplication['status'],
-    ...override,
-  };
-  return {
-    id: faker.datatype.uuid(),
-    status,
-    ...convertYouthFormDataToApplication(fakeYouthFormData(override)),
-    ...override,
-  };
-};
+): CreatedYouthApplication => ({
+  id: faker.datatype.uuid(),
+  status: 'submitted',
+  ...convertYouthFormDataToApplication(fakeYouthFormData(override)),
+  ...override,
+});
 
 export const fakeAdditionalInfoApplication = (
   override?: Partial<AdditionalInfoApplication>
