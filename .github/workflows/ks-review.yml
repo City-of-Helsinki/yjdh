@@ -9,6 +9,7 @@ on:
       - '.github/workflows/ks-review.yml'
       - '!frontend/**/__tests__'
       - '!**/README.md'
+
   workflow_dispatch:
     inputs:
       build_required:
