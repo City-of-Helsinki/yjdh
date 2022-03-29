@@ -61,6 +61,7 @@ const AdditionalInfoForm: React.FC<Props> = ({ applicationId }) => {
             type="textArea"
             {...register('additional_info_description', {
               required: true,
+              maxLength: 4096,
             })}
           />
           <$GridCell>
