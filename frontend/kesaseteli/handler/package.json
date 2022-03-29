@@ -20,7 +20,7 @@
     "@frontend/shared": "*",
     "@frontend/kesaseteli-shared": "*",
     "@sentry/browser": "^6.17.3",
-    "axios": "^0.26.0",
+    "axios": "^0.26.1",
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
     "hds-react": "^1.10.0",

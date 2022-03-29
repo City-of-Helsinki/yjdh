@@ -94,7 +94,6 @@ class YouthApplicationStatus(models.TextChoices):
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
         ]
 
