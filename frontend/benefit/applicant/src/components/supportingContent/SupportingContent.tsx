@@ -8,21 +8,11 @@ const SupportingContent: React.FC = () => {
   const { t } = useTranslation();
   const translationBase = 'common:supportingContent';
 
-  const sections = [
-    {
-      id: 'contact',
-      title: t(`${translationBase}.contact.title`),
-      text: t(`${translationBase}.contact.text`),
-    },
-  ];
-
   return (
     <Container>
-      {sections.map((section) => (
-        <$SupportingContentSection key={section.id}>
-          {section.text}
-        </$SupportingContentSection>
-      ))}
+      <$SupportingContentSection>
+        {t(`${translationBase}.contact.text`)}
+      </$SupportingContentSection>
     </Container>
   );
 };
