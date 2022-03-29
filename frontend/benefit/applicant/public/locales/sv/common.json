@@ -424,6 +424,7 @@
       "required": "Detta är ett obligatoriskt fält",
       "invalid": "Ogiltig värde",
       "number": {
+        "invalid": "Ogiltigt värde, ande endast siffror",
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
       },

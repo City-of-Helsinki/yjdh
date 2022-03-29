@@ -14,6 +14,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   INVALID = 'common:form.validation.invalid',
   EMAIL_INVALID = 'common:form.validation.email.invalid',
   IBAN_INVALID = 'common:form.validation.iban.invalid',
+  NUMBER_INVALID = 'common:form.validation.number.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
   PHONE_INVALID = 'common:form.validation.phone.invalid',

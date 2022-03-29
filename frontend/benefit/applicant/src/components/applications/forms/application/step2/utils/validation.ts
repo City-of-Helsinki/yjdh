@@ -117,7 +117,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .transform((_value, originalValue) =>
               Number(getNumberValue(originalValue))
             )
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }),
@@ -129,7 +129,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .transform((_value, originalValue) =>
               Number(getNumberValue(originalValue))
             )
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .min(EMPLOYEE_MIN_WORKING_HOURS, (param) => ({
               min: param.min,
@@ -142,17 +142,17 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
             .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
             .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
             .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }),
