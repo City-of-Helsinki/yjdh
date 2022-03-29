@@ -202,7 +202,7 @@ TableProps<D>): React.ReactElement => {
       ...(canSelectRows ? [selectorCol] : []),
       ...(canSelectOneRow ? [radioSelectorCol] : []),
       // fix to a hard ts problem: https://github.com/TanStack/react-table/discussions/2664
-      ...columns.map((col) => ({ ...col, accessor: 'id' as keyof D })),
+      ...columns.map((col) => ({ ...col, accessor: col.accessor as keyof D })),
       ...(renderSubComponent ? [expanderCol] : []),
     ];
 
