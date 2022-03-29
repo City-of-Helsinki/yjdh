@@ -1,4 +1,4 @@
-import AdditionalInfoReasonType from 'kesaseteli-shared/types/additional-info-reason-type';
+import AdditionalInfoReasonType from './additional-info-reason-type';
 
 type AdditionalInfoReasonOption = {
   name: AdditionalInfoReasonType;

@@ -1,4 +1,4 @@
-import { KesaseteliAttachment } from 'shared/types/attachment';
+import { KesaseteliAttachment } from '@frontend/shared/src/types/attachment';
 
 import AdditionalInfoReasonOption from './additional-info-reason-option';
 import CreatedYouthApplication from './created-youth-application';

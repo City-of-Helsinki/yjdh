@@ -5,6 +5,7 @@ export type DialogPayload = {
   header: string;
   submitButtonLabel: ModalProps['submitButtonLabel'];
   submitButtonIcon?: ModalProps['submitButtonIcon'];
+  submitButtonVariant?: ModalProps['variant'];
   content?: string;
   link?: string;
   linkText?: string;
@@ -54,6 +55,7 @@ const reducer = (
         header: action.payload.header,
         submitButtonLabel: action.payload.submitButtonLabel,
         submitButtonIcon: action.payload.submitButtonIcon,
+        submitButtonVariant: action.payload.submitButtonVariant,
         content,
         link,
         linkText,
@@ -73,6 +75,7 @@ export const DialogContext = React.createContext<
     header: '',
     content: '',
     submitButtonLabel: '',
+    submitButtonVariant: 'primary',
     link: '',
     linkText: '',
   },

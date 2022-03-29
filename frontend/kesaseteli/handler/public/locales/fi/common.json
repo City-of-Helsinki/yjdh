@@ -24,6 +24,9 @@
       "text": " Yritä myöhemmin uudelleen"
     }
   },
+  "vtj": {
+    "title": "Tiedot väestötietojärjestelmästä"
+  },
   "handlerApplication": {
     "title": "Hakemuksen tiedot",
     "name": "Nimi",
@@ -33,6 +36,9 @@
     "is_unlisted_school": "(Koulua ei löytynyt listalta)",
     "phone_number": "Puhelinnumero",
     "email": "Sähköposti",
+    "additionalInfoTitle": "Lisätietohakemus",
+    "additional_info_user_reasons": "Otsikko",
+    "additional_info_description": "Lisätiedot",
     "notFound": "Hakemusta ei löytynyt",
     "accept": "Hyväksy",
     "reject": "Hylkää",
@@ -43,6 +49,14 @@
       "accepted": "Hyväksytty",
       "rejected": "Hylätty"
     }
+  },
+  "reasons": {
+    "unlisted_school": "Kouluani ei löytynyt listalta",
+    "student_in_helsinki_but_not_resident": "En asu Helsingissä, mutta käyn Helsinkiläistä koulua",
+    "moving_to_helsinki": "En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin",
+    "underage_or_overage": "En kuulu iän puolesta kohderyhmään, mutta vuosiluokan puolesta kyllä",
+    "personal_info_differs_from_vtj": "Henkilötietoni poikkeavat väestötietojärjestelmän tiedoista",
+    "other": "Muu, kerro alla"
   },
   "errors": {
     "required": "Tieto puuttuu",
