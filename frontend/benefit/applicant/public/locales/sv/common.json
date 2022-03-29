@@ -533,5 +533,12 @@
     "isSecure": "Meddelandena är skyddade",
     "noMessages": "Inga meddelanden",
     "close": "Stäng"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Behöver du hjälp? Om något är oklart kan du ringa eller mejla oss. Tfn. 040 198 5891 och 040 183 3021 helsinkilisa@hel.fi",
+      "buttonText": ""
+    }
   }
 }

@@ -533,5 +533,12 @@
     "isSecure": "Viestit ovat salattuja",
     "noMessages": "Ei viestejä",
     "close": "Sulje"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Tarvitsetko apua? Jos jokin asia jäi epäselväksi, voit soittaa tai lähettää sähköpostia meille. Puh. 040 198 5891 ja 040 183 3021 helsinkilisa@hel.fi",
+      "buttonText": ""
+    }
   }
 }
