@@ -1,6 +1,5 @@
 import unicodedata
 
-
 EVENT_BASE_DATA = {
     "offers": [
         {
