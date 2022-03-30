@@ -70,7 +70,7 @@ if (!isRealIntegrationsEnabled()) {
     await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
     const indexPage = await getIndexPageComponents(t, 'sv');
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData, 'sv');
     const thankYouPage = await getThankYouPageComponents(t, 'sv');
     await thankYouPage.actions.clickActivationLink();
@@ -81,7 +81,7 @@ if (!isRealIntegrationsEnabled()) {
   test('If I send and activate application and then I try to activate it again, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     let thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
@@ -111,7 +111,7 @@ if (!isRealIntegrationsEnabled()) {
   test('If I send an application but it expires, I can send the same application again and activate it', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.expectations.isLoaded();
@@ -127,7 +127,7 @@ if (!isRealIntegrationsEnabled()) {
   test('If I have forgot that I already sent and activated an application, and then I send another application with same email, I see  "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
@@ -142,7 +142,7 @@ if (!isRealIntegrationsEnabled()) {
   test('If I have forgot that I already sent and activated an application, and then I send another application with same ssn, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
@@ -160,7 +160,7 @@ if (!isRealIntegrationsEnabled()) {
   test('If I accidentally send two applications with different emails, and then I activate first application and then second application, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     await getThankYouPageComponents(t);
     const firstThankYouPageUrl = await getCurrentUrl();
@@ -183,7 +183,7 @@ if (!isRealIntegrationsEnabled()) {
   test('As a handler I can open activated application in handler-ui and see correct application data', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
     const applicationId = await getUrlParam('id');
@@ -240,7 +240,7 @@ if (!isRealIntegrationsEnabled()) {
   test('As a handler I can accept an application', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
     const applicationId = await getUrlParam('id');
@@ -261,7 +261,7 @@ if (!isRealIntegrationsEnabled()) {
   test('As a handler I can reject an application', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
-    const formData = fakeYouthFormData();
+    const formData = fakeYouthFormData({ is_unlisted_school: false });
     await sendYouthApplication(t, formData);
     const thankYouPage = await getThankYouPageComponents(t);
     const applicationId = await getUrlParam('id');
