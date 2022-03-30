@@ -33,13 +33,13 @@
       "guideText": "Fälten märkta med * är obligatoriska"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Utkast",
       "additionalInformationNeeded": "Ytterligare uppgifter behövs",
       "received": "Mottagen",
       "approved": "Godkänd",
       "rejected": "Avvisad",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Behandling",
+      "cancelled": "Peruttu"
     },
     "steps": {
       "employer": "Arbetsgivare",
@@ -541,5 +541,10 @@
       "text": "Behöver du hjälp? Om något är oklart kan du ringa eller mejla oss. Tfn. 040 198 5891 och 040 183 3021 helsinkilisa@hel.fi",
       "buttonText": ""
     }
+  },
+  "pageTitles": {
+    "home": "Helsingforstillägg - Etusivu",
+    "login": "Helsingforstillägg - Logga",
+    "application": "Helsingforstillägg - Ansökan {{applicationNumber}}"
   }
 }

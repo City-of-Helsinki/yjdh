@@ -9,7 +9,9 @@ import {
   getHeaders,
 } from 'benefit-shared/backend-api/backend-api';
 import { AppProps } from 'next/app';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import Content from 'shared/components/content/Content';
@@ -18,10 +20,23 @@ import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 
+import { ROUTES } from '../constants';
+
 const queryClient = new QueryClient();
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const locale = useLocale();
+
+  const router = useRouter();
+
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (router.route === ROUTES.HOME)
+      document.title = t('common:pageTitles.home');
+    else if (router.route === ROUTES.LOGIN)
+      document.title = t('common:pageTitles.login');
+  }, [router, t]);
 
   return (
     <BackendAPIProvider

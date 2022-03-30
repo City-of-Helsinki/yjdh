@@ -40,6 +40,13 @@ const PageContent: React.FC = () => {
   const theme = useTheme();
 
   useEffect(() => {
+    if (application && application.applicationNumber)
+      document.title = t('common:pageTitles.application', {
+        applicationNumber: application.applicationNumber,
+      });
+  }, [application, t]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentStep]);
 

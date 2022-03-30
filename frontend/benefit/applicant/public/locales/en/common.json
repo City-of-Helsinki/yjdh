@@ -33,13 +33,13 @@
       "guideText": "All items marked with * are required"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Draft",
       "additionalInformationNeeded": "Additional information is needed",
       "received": "Received",
       "approved": "Accepted",
       "rejected": "Rejected",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Handling",
+      "cancelled": "Cancelled"
     },
     "steps": {
       "employer": "Employer",
@@ -541,5 +541,10 @@
       "text": "Do you need help? If anything is unclear, you can call or email us. Tel. +358 (0) 40 198 5891 and +358 (0) 40 183 3021 helsinkilisa@hel.fi ",
       "buttonText": ""
     }
+  },
+  "pageTitles": {
+    "home": "Helsinki benefit - Home",
+    "login": "Helsinki benefit - Login",
+    "application": "Helsinki benefit - Application {{applicationNumber}}"
   }
 }

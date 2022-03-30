@@ -39,7 +39,7 @@
       "approved": "Hyväksytty",
       "rejected": "Hylätty",
       "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "cancelled": "Peruttu"
     },
     "steps": {
       "employer": "Työnantaja",
@@ -541,5 +541,10 @@
       "text": "Tarvitsetko apua? Jos jokin asia jäi epäselväksi, voit soittaa tai lähettää sähköpostia meille. Puh. 040 198 5891 ja 040 183 3021 helsinkilisa@hel.fi",
       "buttonText": ""
     }
+  },
+  "pageTitles": {
+    "home": "Helsinki-lisä - Etusivu",
+    "login": "Helsinki-lisä - Kirjautuminen",
+    "application": "Helsinki-lisä - Hakemus {{applicationNumber}}"
   }
 }
