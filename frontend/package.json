@@ -93,7 +93,7 @@
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.9.1",
     "@typescript-eslint/typescript-estree": "^5.13.0",
-    "audit-ci": "^5.1.2",
+    "audit-ci": "^6.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.4.1",
     "eslint-config-adjunct": "^4.11.1",
