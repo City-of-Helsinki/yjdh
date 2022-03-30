@@ -32,6 +32,11 @@ COPY --chown=appuser:appuser . .
 # =============================
 FROM appbase as development
 # =============================
+
+# Set V8 max heap size to 2GB (default is 512MB)
+# This prevents Docker Compose from crashing due to out of memory errors
+ENV NODE_OPTIONS="--max_old_space_size=2048"
+
 ARG SERVICE
 # Use non-root user
 USER appuser
