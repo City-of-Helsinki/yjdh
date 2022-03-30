@@ -184,6 +184,7 @@ const SalaryBenefitCalculatorView: React.FC<
           </$GridCell>
 
           {formik.values.paySubsidies?.map(
+            // eslint-disable-next-line sonarjs/cognitive-complexity
             (item: PaySubsidy, index: number) => (
               <>
                 <$GridCell $colStart={1}>

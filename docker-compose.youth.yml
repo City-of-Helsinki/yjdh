@@ -43,8 +43,12 @@ services:
   kesaseteli-youth:
     build:
       context: ./frontend
-      dockerfile: kesaseteli/youth/Dockerfile
       target: development
+      args:
+        PORT: 3100
+        PROJECT: kesaseteli
+        FOLDER: youth
+        SERVICE: ks-youth
     volumes:
       - ./frontend:/app
       - /app/node_modules

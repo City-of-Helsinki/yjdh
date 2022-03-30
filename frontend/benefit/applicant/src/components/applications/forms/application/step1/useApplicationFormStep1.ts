@@ -107,11 +107,15 @@ const useApplicationFormStep1 = (
     });
   };
 
-  const handleSave = (): void => onSave(values);
+  const handleSave = (): void => {
+    void onSave(values);
+  };
 
   const applicationId = values?.id;
   const handleDelete = applicationId
-    ? (): void => onDelete(applicationId)
+    ? () => {
+        void onDelete(applicationId);
+      }
     : undefined;
 
   const clearDeminimisAids = React.useCallback((): void => {

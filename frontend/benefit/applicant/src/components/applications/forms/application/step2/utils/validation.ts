@@ -8,10 +8,11 @@ import {
   MAX_PHONE_NUMBER_LENGTH,
   MAX_SHORT_STRING_LENGTH,
   MIN_PHONE_NUMBER_LENGTH,
-  PAY_SUBSIDY_OPTIONS,
 } from 'benefit/applicant/constants';
-import { Step2 } from 'benefit/applicant/types/application';
-import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
+import {
+  PAY_SUBSIDY_OPTIONS,
+  VALIDATION_MESSAGE_KEYS,
+} from 'benefit-shared/constants';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
@@ -23,7 +24,8 @@ import {
 import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
-export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const getValidationSchema = (t: TFunction) =>
   Yup.object().shape({
     [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]: Yup.boolean()
       .nullable()

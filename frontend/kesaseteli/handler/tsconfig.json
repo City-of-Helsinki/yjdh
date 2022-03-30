@@ -2,13 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "../../",
-    "lib": [
-      "dom",
-      "es7"
-    ],
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "incremental": true
+    "paths": {
+      "kesaseteli/handler/*": ["kesaseteli/handler/src/*","kesaseteli/handler/browser-tests/*"],
+      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
+      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+    }
   },
   "include": [
     "next-env.d.ts",

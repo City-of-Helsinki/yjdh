@@ -72,4 +72,9 @@ const ReportsSection: React.FC<ReportsSectionProp> = ({
   );
 };
 
+ReportsSection.defaultProps = {
+  children: null,
+  withDivider: false,
+};
+
 export default ReportsSection;

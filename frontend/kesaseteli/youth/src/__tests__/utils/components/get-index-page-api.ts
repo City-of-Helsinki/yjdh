@@ -131,6 +131,7 @@ const getIndexPageApi = () => {
           });
         }
       },
+      /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
       async fillTheFormWithListedSchoolAndSave(saveParams: SaveParams) {
         this.typeInput('first_name', 'Helinä');
         this.typeInput('last_name', "O'Hara");
@@ -157,6 +158,7 @@ const getIndexPageApi = () => {
         await this.toggleCheckbox('termsAndConditions');
         await this.clickSaveButton(saveParams);
       },
+      /* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
     },
   };
 };

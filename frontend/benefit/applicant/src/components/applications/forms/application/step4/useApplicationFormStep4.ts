@@ -65,9 +65,15 @@ const useApplicationFormStep4 = (
     }
   }, [t, isRemovingError]);
 
-  const handleNext = (): void => onNext(application);
-  const handleSave = (): void => onSave(application);
-  const handleDelete = (): void => onDelete(application.id ?? '');
+  const handleNext = (): void => {
+    void onNext(application);
+  };
+  const handleSave = (): void => {
+    void onSave(application);
+  };
+  const handleDelete = (): void => {
+    void onDelete(application.id ?? '');
+  };
 
   const getEmployeeConsentAttachment = (): BenefitAttachment | undefined =>
     application.attachments?.find(

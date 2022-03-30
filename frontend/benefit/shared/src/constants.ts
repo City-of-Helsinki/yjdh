@@ -33,3 +33,5 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MAX = 'common:form.validation.time.max',
   REQUIRED_IS_LIVING_IN_HELSINKI = 'common:applications.sections.employee.fields.isLivingInHelsinki.error',
 }
+
+export const PAY_SUBSIDY_OPTIONS = [30, 40, 50, 100] as const;

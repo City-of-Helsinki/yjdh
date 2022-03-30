@@ -19,4 +19,9 @@ const Step = ({
   );
 };
 
+Step.defaultProps = {
+  index: undefined,
+  activeStep: undefined,
+};
+
 export default Step;
