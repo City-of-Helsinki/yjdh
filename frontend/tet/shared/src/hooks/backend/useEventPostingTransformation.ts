@@ -8,6 +8,10 @@ import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import { KeywordFn, ClassificationType } from 'tet-shared/types/keywords';
 import { OptionType } from 'tet-shared/types/classification';
 import useLocale from 'shared/hooks/useLocale';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
+import useKeywordType, {
+  UseKeywordResult,
+} from 'tet-shared/hooks/backend/useKeywordType';
 
 type Transformations = {
   eventToTetPosting: (
@@ -17,10 +21,15 @@ type Transformations = {
   ) => TetPosting;
   eventsToTetPostings: (events: TetEvents | undefined) => TetPostings;
   tetPostingToEvent: (posting: TetPosting) => TetEventPayload;
+  keywordResult: UseKeywordResult;
 };
 
 const useEventPostingTransformation = (): Transformations => {
   const locale = useLocale();
+  const keywordResult = useKeywordType();
+  const languageOptions = useLanguageOptions();
+
+  const keywordType = keywordResult.getKeywordType;
 
   const getLocalizedString = (obj: LocalizedObject | undefined): string => {
     if (obj) {
@@ -67,15 +76,8 @@ const useEventPostingTransformation = (): Transformations => {
    * Convert event read from Linked Events API to form data.
    *
    * @param event
-   * @param keywordType If this function is set, it is used to find classification data for the posting.
-   *    Othwerwise classification data is left empty, which is okay if we don't need to show it.
-   * @param languageOptions If this value is set, it is used to set language labels.
    */
-  const eventToTetPosting = (
-    event: TetEvent,
-    keywordType?: KeywordFn,
-    languageOptions?: OptionType[]
-  ): TetPosting => {
+  const eventToTetPosting = (event: TetEvent): TetPosting => {
     const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
     const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
@@ -204,7 +206,12 @@ const useEventPostingTransformation = (): Transformations => {
     })),
   });
 
-  return { eventToTetPosting, eventsToTetPostings, tetPostingToEvent };
+  return {
+    eventToTetPosting,
+    eventsToTetPostings,
+    tetPostingToEvent,
+    keywordResult,
+  };
 };
 
 export default useEventPostingTransformation;

@@ -7,23 +7,18 @@ import EditById from 'tet/admin/components/editor/EditById';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import { TetEvent } from 'tet-shared/types/linkedevents';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
-import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
 import { useQuery } from 'react-query';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
-import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 
 const CopyStaticPage: NextPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { eventToTetPosting } = useEventPostingTransformation();
+  const { eventToTetPosting, keywordResult } = useEventPostingTransformation();
   const id = router.query.id as string;
   const { isLoading, data, error } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
-
-  const keywordResult = useKeywordType();
-  const languageOptions = useLanguageOptions();
 
   if (isLoading || keywordResult.isLoading) {
     return <PageLoadingSpinner />;
@@ -35,7 +30,7 @@ const CopyStaticPage: NextPage = () => {
   }
 
   if (data) {
-    const posting = eventToTetPosting(data, keywordResult.getKeywordType, languageOptions);
+    const posting = eventToTetPosting(data);
     delete posting.id;
     posting.date_published = null;
     return <EditById title={t('common:editor.copyTitle')} data={posting} allowDelete={false} />;

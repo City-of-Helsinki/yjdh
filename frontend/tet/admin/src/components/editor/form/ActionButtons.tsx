@@ -10,6 +10,7 @@ import { useTheme } from 'styled-components';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import TetPosting from 'tet-shared/types/tetposting';
+import usePublishTetPosting from 'tet/admin/hooks/backend/usePublishTetPosting';
 
 type Props = {
   onSubmit: () => void;
@@ -17,10 +18,10 @@ type Props = {
   allowPublish: boolean;
 };
 
-const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
+const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPublish }) => {
   const { setPreviewVisibility, setTetPostingData } = useContext(PreviewContext);
   const deleteTetPosting = useDeleteTetPosting();
-  //const publishTetPosting = usePublishTetPosting();
+  const publishTetPosting = usePublishTetPosting();
   const { confirm } = useConfirm();
 
   const { t } = useTranslation();
@@ -52,21 +53,19 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
     }
   };
 
-  //Hide for now
+  const publishPostingHandler = async () => {
+    const isConfirmed = await confirm({
+      header: t('common:publish.confirmation', { posting: posting.title }),
+      content: t('common:application.publishTerms'),
+      linkText: t('common:application.termsLink'),
+      link: '/TET-alusta-kayttoehdot.pdf',
+      submitButtonLabel: t('common:publish.publishPosting'),
+    });
 
-  //const publishPostingHandler = async () => {
-  //const isConfirmed = await confirm({
-  //header: t('common:publish.confirmation', { posting: posting.title }),
-  //content: t('common:application.publishTerms'),
-  //linkText: t('common:application.termsLink'),
-  //link: '/TET-alusta-kayttoehdot.pdf',
-  //submitButtonLabel: t('common:publish.publishPosting'),
-  //});
-
-  //if (isConfirmed) {
-  //publishTetPosting.mutate(posting);
-  //}
-  //};
+    if (isConfirmed) {
+      publishTetPosting.mutate(posting);
+    }
+  };
 
   return (
     <FormSection withoutDivider>
@@ -108,6 +107,13 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true }) => {
             {t('common:editor.preview')}
           </Button>
         </$GridCell>
+        {allowPublish && (
+          <$GridCell $colSpan={3}>
+            <Button variant="success" disabled={isSubmitting} iconLeft={<IconUpload />} onClick={publishPostingHandler}>
+              {t('common:editor.publish')}
+            </Button>
+          </$GridCell>
+        )}
       </$GridCell>
     </FormSection>
   );

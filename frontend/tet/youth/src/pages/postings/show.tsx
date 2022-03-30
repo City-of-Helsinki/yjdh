@@ -5,36 +5,26 @@ import getServerSideTranslations from 'shared/i18n/get-server-side-translations'
 import { useRouter } from 'next/router';
 import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
 import useGetSingePosting from 'tet/youth/hooks/backend/useGetSingePosting';
-import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
-import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 
 const ShowPostingPage: NextPage = () => {
   const router = useRouter();
-  const { eventToTetPosting } = useEventPostingTransformation();
+  const { eventToTetPosting, keywordResult } = useEventPostingTransformation();
   const id = router.query.id as string;
   const { isLoading, data, error } = useGetSingePosting(id);
-  const keywordResult = useKeywordType();
-  const languageOptions = useLanguageOptions();
 
-  if (isLoading) {
+  if (isLoading || keywordResult.isLoading) {
     return <PageLoadingSpinner />;
   }
 
-  if (error) {
-    //TODO
+  if (error || keywordResult.error) {
     return <PageNotFound />;
   }
 
   if (data) {
-    return (
-      <PostingContainer
-        posting={eventToTetPosting(data, keywordResult.getKeywordType, languageOptions)}
-        showBackButton={true}
-      />
-    );
+    return <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} />;
   } else {
     return <PageNotFound />;
   }
