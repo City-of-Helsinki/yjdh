@@ -106,7 +106,6 @@
     "validate": "Syöttämäsi tieto on virheellistä muotoa"
   },
   "assistive": {
-    "toggleMenu": "Avaa valikko",
     "clearChoice": "Tyhjennä valinta",
     "clearAllChoices": "Tyhjennä kaikki valinnat"
   },

@@ -33,7 +33,7 @@ test('can change to languages', async (t) => {
   let headerComponents = getHeaderComponents(t, await getTranslations());
   await headerComponents.header().expectations.isPresent();
   await headerComponents.languageDropdown().actions.changeLanguage('fi', 'sv');
-  let headerComponents = getHeaderComponents(t, await getTranslations('sv'));
+  headerComponents = getHeaderComponents(t, await getTranslations('sv'));
   await headerComponents.header().expectations.isPresent();
   await headerComponents.languageDropdown().actions.changeLanguage('sv', 'en');
   headerComponents = getHeaderComponents(t, await getTranslations('en'));

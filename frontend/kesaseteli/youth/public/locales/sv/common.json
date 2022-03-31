@@ -106,7 +106,6 @@
     "validate": "Den inmatade uppgiftern är i fel format"
   },
   "assistive": {
-    "toggleMenu": "Öppna menyn",
     "clearChoice": "SWE Tyhjennä valinta",
     "clearAllChoices": "SWE Tyhjennä kaikki valinnat"
   },

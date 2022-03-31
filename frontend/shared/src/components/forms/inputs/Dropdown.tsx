@@ -1,5 +1,4 @@
 import { Combobox, Select } from 'hds-react';
-import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import FieldErrorMessage from 'shared/components/forms/fields/fieldErrorMessage/FieldErrorMessage';
@@ -36,7 +35,6 @@ const Dropdown = <T, O extends Option>({
   onChange,
   ...$gridCellProps
 }: Props<T, O>): React.ReactElement<T> => {
-  const { t } = useTranslation();
   const { control } = useFormContext<T>();
   const required = Boolean(registerOptions.required);
   const DropdownInput = React.useMemo(
@@ -60,7 +58,6 @@ const Dropdown = <T, O extends Option>({
             label={label}
             defaultValue={initialValue}
             placeholder={placeholder}
-            toggleButtonAriaLabel={t('common:assistive.toggleMenu')}
             optionLabelField={optionLabelField as string}
             options={options}
             disabled={disabled}

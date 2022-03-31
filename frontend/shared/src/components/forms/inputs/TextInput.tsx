@@ -58,7 +58,7 @@ const TextInput = <T,>({
       type === 'textArea' && registerOptions.maxLength && value?.length > 0
         ? `${value?.length}/${registerOptions.maxLength as number}`
         : undefined,
-    [registerOptions.maxLength, value?.length]
+    [registerOptions.maxLength, type, value?.length]
   );
 
   return (

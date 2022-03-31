@@ -61,7 +61,6 @@ const MultiSelectDropdown = <T, O extends Option>({
             label={label}
             defaultValue={initialValue}
             placeholder={placeholder}
-            toggleButtonAriaLabel={t('common:assistive.toggleMenu')}
             selectedItemRemoveButtonAriaLabel={t(
               'common:assistive.clearChoice'
             )}
