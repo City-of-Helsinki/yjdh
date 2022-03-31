@@ -14,7 +14,7 @@ import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 
 const ActionButtons: React.FC = () => {
-  const { setPreviewVisibility, setTetPostingData } = useContext(PreviewContext);
+  const { setPreviewVisibility, setTetPostingData, setFormValid } = useContext(PreviewContext);
   const deleteTetPosting = useDeleteTetPosting();
   const upsertTetPosting = useUpsertTetPosting();
   const { confirm } = useConfirm();
@@ -23,6 +23,7 @@ const ActionButtons: React.FC = () => {
   const {
     getValues,
     handleSubmit,
+    trigger,
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
   const theme = useTheme();
@@ -31,9 +32,11 @@ const ActionButtons: React.FC = () => {
   const allowPublish = posting.date_published === null;
   const allowDelete = !!posting.id;
 
-  const showPreview = () => {
+  const showPreview = async () => {
+    const isValid = await trigger();
     const values = getValues();
     setTetPostingData(cloneDeep(values));
+    setFormValid(isValid);
     setPreviewVisibility(true);
   };
 

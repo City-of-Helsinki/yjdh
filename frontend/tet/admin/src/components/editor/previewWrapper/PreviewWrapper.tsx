@@ -44,17 +44,17 @@ const PreviewBar: React.FC<BarProps> = ({ hasMargin, allowPublish, onPublish }) 
   );
 };
 
-const PreviewWrapper: React.FC<{ allowPublish?: boolean; posting?: TetPosting }> = ({
-  children,
-  allowPublish = false,
-  posting,
-}) => {
+const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }) => {
   const publishTetPosting = usePublishTetPosting();
   const { confirm } = useConfirm();
   const { t } = useTranslation();
+  const { formValid } = useContext(PreviewContext);
+
+  console.log(`formValid=${formValid}`);
+
+  const allowPublish = posting.date_published === null && formValid;
 
   const publishPostingHandler = async () => {
-    console.log(posting, 'posting');
     if (posting) {
       const isConfirmed = await confirm({
         header: t('common:publish.confirmation', { posting: posting.title }),

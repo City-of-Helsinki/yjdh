@@ -24,7 +24,7 @@ const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
 
   if (showPreview) {
     return (
-      <PreviewWrapper allowPublish={allowPublish} posting={isInitialRender ? data : tetPosting}>
+      <PreviewWrapper posting={isInitialRender ? data : tetPosting}>
         <PostingContainer posting={tetPosting} />
       </PreviewWrapper>
     );
