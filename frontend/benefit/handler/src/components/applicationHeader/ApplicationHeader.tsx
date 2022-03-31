@@ -5,11 +5,9 @@ import * as React from 'react';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import { formatDate } from 'shared/utils/date.utils';
-import { getInitials } from 'shared/utils/string.utils';
 
 import {
   $Col,
-  $HandlerWrapper,
   $InnerWrapper,
   $ItemHeader,
   $ItemValue,
@@ -75,12 +73,13 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
               <$ItemHeader>{t(`${translationBase}.employeeName`)}</$ItemHeader>
               <$ItemValue>{employeeName}</$ItemValue>
             </$ItemWrapper>
+            {handlerName && (
+              <$ItemWrapper>
+                <$ItemHeader>{t(`${translationBase}.handlerName`)}</$ItemHeader>
+                <$ItemValue>{handlerName}</$ItemValue>
+              </$ItemWrapper>
+            )}
           </$Col>
-          {handlerName && (
-            <$Col>
-              <$HandlerWrapper>{getInitials(handlerName)}</$HandlerWrapper>
-            </$Col>
-          )}
         </$InnerWrapper>
       </Container>
     </$Wrapper>
