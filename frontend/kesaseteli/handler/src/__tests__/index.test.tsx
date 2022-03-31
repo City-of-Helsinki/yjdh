@@ -8,12 +8,12 @@ import renderPage from 'kesaseteli/handler/__tests__/utils/components/render-pag
 import HandlerIndex from 'kesaseteli/handler/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
-import { fakeCreatedYouthApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import { fakeActivatedYouthApplication } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
-} from 'kesaseteli-shared/constants/status-constants';
+} from 'kesaseteli-shared/constants/youth-application-status';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
@@ -55,7 +55,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
   });
 
   it(`shows youth application data`, async () => {
-    const application = fakeCreatedYouthApplication();
+    const application = fakeActivatedYouthApplication();
     expectToGetYouthApplication(application);
     await renderPage(HandlerIndex, { query: { id: application.id } });
     const indexPageApi = getIndexPageApi(application);
@@ -72,10 +72,11 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     await indexPageApi.expectations.fieldValueIsPresent('school');
     await indexPageApi.expectations.fieldValueIsPresent('phone_number');
     await indexPageApi.expectations.fieldValueIsPresent('email');
+    indexPageApi.expectations.additionalInfoIsNotPresent();
   });
 
   it(`shows youth application data with unlisted school`, async () => {
-    const application = fakeCreatedYouthApplication({
+    const application = fakeActivatedYouthApplication({
       is_unlisted_school: true,
     });
     expectToGetYouthApplication(application);
@@ -92,10 +93,33 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     );
   });
 
+  it(`shows additional info fields`, async () => {
+    const application = fakeActivatedYouthApplication({
+      status: 'additional_information_provided',
+    });
+    expectToGetYouthApplication(application);
+    const spyPush = jest.fn();
+    await renderPage(HandlerIndex, {
+      push: spyPush,
+      query: { id: application.id },
+    });
+    const indexPageApi = getIndexPageApi(application);
+    await indexPageApi.expectations.pageIsLoaded();
+    await indexPageApi.expectations.additionalInfoIsPresent();
+    await indexPageApi.expectations.fieldValueIsPresent(
+      'additional_info_provided_at',
+      convertToUIDateAndTimeFormat
+    );
+    await indexPageApi.expectations.additionalInfoReasonsAreShown();
+    await indexPageApi.expectations.fieldValueIsPresent(
+      'additional_info_description'
+    );
+  });
+
   for (const status of YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION) {
     describe(`when application status is "${status}"`, () => {
       it('shows accept and reject buttons', async () => {
-        const application = fakeCreatedYouthApplication({ status });
+        const application = fakeActivatedYouthApplication({ status });
         expectToGetYouthApplication(application);
         await renderPage(HandlerIndex, {
           query: { id: application.id },
@@ -110,7 +134,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
   for (const status of YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED) {
     describe(`when application status is "${status}"`, () => {
       it('shows notification message and buttons are not present', async () => {
-        const application = fakeCreatedYouthApplication({ status });
+        const application = fakeActivatedYouthApplication({ status });
         expectToGetYouthApplication(application);
         await renderPage(HandlerIndex, {
           query: { id: application.id },
@@ -126,7 +150,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     const operationType = status === 'accepted' ? 'accept' : 'reject';
     describe(`when clicking cancel-button on ${operationType}-confirmation dialog`, () => {
       it(`cancels the operation ${operationType}`, async () => {
-        const application = fakeCreatedYouthApplication({
+        const application = fakeActivatedYouthApplication({
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);
@@ -143,7 +167,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     });
     describe(`when clicking confirm button on ${operationType}-confirmation dialog`, () => {
       it(`shows a message that application is ${status}`, async () => {
-        const application = fakeCreatedYouthApplication({
+        const application = fakeActivatedYouthApplication({
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);
@@ -158,7 +182,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         await indexPageApi.expectations.statusNotificationIsPresent(status);
       });
       it(`shows error toast when backend returns bad request`, async () => {
-        const application = fakeCreatedYouthApplication({
+        const application = fakeActivatedYouthApplication({
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);
@@ -174,7 +198,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       });
 
       it(`redirects to 500 -error page when backend returns unexpected error`, async () => {
-        const application = fakeCreatedYouthApplication({
+        const application = fakeActivatedYouthApplication({
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);

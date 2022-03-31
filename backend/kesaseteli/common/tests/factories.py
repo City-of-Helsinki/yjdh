@@ -9,6 +9,7 @@ from faker import Faker
 from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
 from applications.enums import (
+    AdditionalInfoUserReason,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
     AttachmentType,
     EmployerApplicationStatus,
@@ -109,9 +110,83 @@ class EmployerApplicationFactory(factory.django.DjangoModelFactory):
 
 def get_listed_test_schools() -> List[str]:
     return [
+        "Aleksis Kiven peruskoulu",
+        "Apollon yhteiskoulu",
         "Arabian peruskoulu",
+        "Aurinkolahden peruskoulu",
         "Botby grundskola",
+        "Elias-koulu",
+        "Englantilainen koulu",
+        "Grundskolan Norsen",
+        "Haagan peruskoulu",
+        "Helsingin Juutalainen Yhteiskoulu",
+        "Helsingin Kristillinen koulu",
+        "Helsingin Montessori-koulu",
+        "Helsingin Rudolf Steiner -koulu",
+        "Helsingin Saksalainen koulu",
+        "Helsingin Suomalainen yhteiskoulu",
+        "Helsingin Uusi yhteiskoulu",
+        "Helsingin eurooppalainen koulu",
+        "Helsingin normaalilyseo",
+        "Helsingin ranskalais-suomalainen koulu",
+        "Helsingin yhteislyseo",
+        "Helsingin yliopiston Viikin normaalikoulu",
+        "Herttoniemen yhteiskoulu",
+        "Hiidenkiven peruskoulu",
+        "Hoplaxskolan",
+        "International School of Helsinki",
+        "Itäkeskuksen peruskoulu",
+        "Jätkäsaaren peruskoulu",
+        "Kalasataman peruskoulu",
+        "Kankarepuiston peruskoulu",
+        "Kannelmäen peruskoulu",
+        "Karviaistien koulu",
+        "Kruununhaan yläasteen koulu",
+        "Kruunuvuorenrannan peruskoulu",
+        "Kulosaaren yhteiskoulu",
+        "Käpylän peruskoulu",
+        "Laajasalon peruskoulu",
+        "Latokartanon peruskoulu",
+        "Lauttasaaren yhteiskoulu",
+        "Maatullin peruskoulu",
+        "Malmin peruskoulu",
+        "Marjatta-koulu",
+        "Maunulan yhteiskoulu",
+        "Meilahden yläasteen koulu",
+        "Merilahden peruskoulu",
+        "Minervaskolan",
+        "Munkkiniemen yhteiskoulu",
+        "Myllypuron peruskoulu",
+        "Naulakallion koulu",
+        "Oulunkylän yhteiskoulu",
+        "Outamon koulu",
+        "Pakilan yläasteen koulu",
+        "Pasilan peruskoulu",
+        "Pitäjänmäen peruskoulu",
+        "Pohjois-Haagan yhteiskoulu",
+        "Porolahden peruskoulu",
+        "Puistolan peruskoulu",
+        "Puistopolun peruskoulu",
+        "Pukinmäenkaaren peruskoulu",
         "Ressu Comprehensive School",
+        "Ressun peruskoulu",
+        "Sakarinmäen peruskoulu",
+        "Solakallion koulu",
+        "Sophie Mannerheimin koulu",
+        "Suomalais-venäläinen koulu",
+        "Suutarinkylän peruskoulu",
+        "Taivallahden peruskoulu",
+        "Toivolan koulu",
+        "Torpparinmäen peruskoulu",
+        "Töölön yhteiskoulu",
+        "Valteri-koulu",
+        "Vartiokylän yläasteen koulu",
+        "Vesalan peruskoulu",
+        "Vuoniityn peruskoulu",
+        "Yhtenäiskoulu",
+        "Zacharias Topeliusskolan",
+        "Åshöjdens grundskola",
+        "Östersundom skola",
     ]
 
 
@@ -122,12 +197,12 @@ def get_unlisted_test_schools() -> List[str]:
     ]
 
 
-def get_all_test_schools() -> List[str]:
-    return get_listed_test_schools() + get_unlisted_test_schools()
-
-
-def uses_unlisted_test_school(youth_application: YouthApplication) -> bool:
-    return youth_application.school not in get_listed_test_schools()
+def determine_school(youth_application) -> str:
+    return Faker().random_element(
+        get_unlisted_test_schools()
+        if youth_application.is_unlisted_school
+        else get_listed_test_schools()
+    )
 
 
 def get_test_phone_number() -> str:
@@ -136,23 +211,63 @@ def get_test_phone_number() -> str:
     return Faker(locale="fi").phone_number().replace("(+358)", "+358")
 
 
-def copy_created_at(youth_application: YouthApplication) -> Optional[datetime]:
+def copy_created_at(youth_application) -> Optional[datetime]:
     return youth_application.created_at
 
 
-def determine_youth_application_handler(youth_application: YouthApplication):
+def determine_handler(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
         return HandlerUserFactory()
     return None
 
 
-def determine_youth_application_handled_at(youth_application: YouthApplication):
+def determine_handled_at(youth_application):
     if youth_application.status in YouthApplicationStatus.handled_values():
         return youth_application.created_at
     return None
 
 
-class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
+def determine_receipt_confirmed_at(youth_application):
+    if youth_application.status in YouthApplicationStatus.active_values():
+        return youth_application.created_at
+    return None
+
+
+def determine_youth_application_has_additional_info(youth_application):
+    if (
+        youth_application.status
+        in YouthApplicationStatus.can_have_additional_info_values()
+    ):
+        if (
+            youth_application.status
+            in YouthApplicationStatus.must_have_additional_info_values()
+        ):
+            return True
+        return Faker().boolean()
+    return False
+
+
+def determine_additional_info_provided_at(youth_application):
+    if youth_application._has_additional_info:
+        return youth_application.created_at
+    return None
+
+
+def determine_additional_info_user_reasons(youth_application):
+    if youth_application._has_additional_info:
+        return list(
+            Faker().random_elements(AdditionalInfoUserReason.values, unique=True)
+        )
+    return []
+
+
+def determine_additional_info_description(youth_application):
+    if youth_application._has_additional_info:
+        return Faker().sentence()
+    return ""
+
+
+class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
     created_at = factory.fuzzy.FuzzyDateTime(
         start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
     )
@@ -160,66 +275,87 @@ class BaseYouthApplicationFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
-    school = factory.Faker("random_element", elements=get_all_test_schools())
-    is_unlisted_school = factory.LazyAttribute(uses_unlisted_test_school)
+    school = factory.LazyAttribute(determine_school)
+    is_unlisted_school = factory.Faker("boolean")
     email = factory.Faker("email")
     phone_number = factory.LazyFunction(get_test_phone_number)
     postcode = factory.Faker("postcode", locale="fi")
     language = factory.Faker("random_element", elements=get_supported_languages())
-    handler = factory.LazyAttribute(determine_youth_application_handler)
-    handled_at = factory.LazyAttribute(determine_youth_application_handled_at)
-    _is_active = None
+    receipt_confirmed_at = factory.LazyAttribute(determine_receipt_confirmed_at)
+    handler = factory.LazyAttribute(determine_handler)
+    handled_at = factory.LazyAttribute(determine_handled_at)
+    additional_info_provided_at = factory.LazyAttribute(
+        determine_additional_info_provided_at
+    )
+    additional_info_user_reasons = factory.LazyAttribute(
+        determine_additional_info_user_reasons
+    )
+    additional_info_description = factory.LazyAttribute(
+        determine_additional_info_description
+    )
+    _has_additional_info = factory.LazyAttribute(
+        determine_youth_application_has_additional_info
+    )
 
     class Meta:
+        abstract = True
         model = YouthApplication
-        exclude = ["_is_active"]
+        exclude = ["_has_additional_info"]
 
 
-class YouthApplicationFactory(BaseYouthApplicationFactory):
-    _is_active = factory.Faker("boolean")
-    receipt_confirmed_at = factory.Maybe(
-        "_is_active",
-        factory.LazyAttribute(copy_created_at),
-        None,
-    )
-    status = factory.Maybe(
-        "_is_active",
-        factory.Faker(
-            "random_element", elements=YouthApplicationStatus.active_values()
-        ),
-        YouthApplicationStatus.SUBMITTED.value,
-    )
+class YouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = factory.Faker("random_element", elements=YouthApplicationStatus.values)
 
 
-class ActiveYouthApplicationFactory(BaseYouthApplicationFactory):
-    _is_active = True
-    receipt_confirmed_at = factory.LazyAttribute(copy_created_at)
+class ActiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker(
         "random_element", elements=YouthApplicationStatus.active_values()
     )
 
 
-class InactiveYouthApplicationFactory(BaseYouthApplicationFactory):
-    _is_active = False
-    receipt_confirmed_at = None
+class ActiveListedSchoolYouthApplicationFactory(ActiveYouthApplicationFactory):
+    is_unlisted_school = False
+
+
+class ActiveUnlistedSchoolYouthApplicationFactory(ActiveYouthApplicationFactory):
+    is_unlisted_school = True
+
+
+class InactiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = YouthApplicationStatus.SUBMITTED.value
 
 
-class AcceptableYouthApplicationFactory(ActiveYouthApplicationFactory):
+class InactiveListedSchoolYouthApplicationFactory(InactiveYouthApplicationFactory):
+    is_unlisted_school = False
+
+
+class InactiveUnlistedSchoolYouthApplicationFactory(InactiveYouthApplicationFactory):
+    is_unlisted_school = True
+
+
+class AcceptableYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker(
         "random_element", elements=YouthApplicationStatus.acceptable_values()
     )
 
 
-class AcceptedYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = YouthApplicationStatus.ACCEPTED
+class AcceptedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.ACCEPTED.value
 
 
-class RejectableYouthApplicationFactory(ActiveYouthApplicationFactory):
+class AdditionalInfoRequestedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value
+
+
+class AdditionalInfoProvidedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value
+
+
+class RejectableYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker(
         "random_element", elements=YouthApplicationStatus.rejectable_values()
     )
 
 
-class RejectedYouthApplicationFactory(ActiveYouthApplicationFactory):
-    status = YouthApplicationStatus.REJECTED
+class RejectedYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.REJECTED.value

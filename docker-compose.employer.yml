@@ -41,8 +41,12 @@ services:
   kesaseteli-employer:
     build:
       context: ./frontend
-      dockerfile: kesaseteli/employer/Dockerfile
       target: development
+      args:
+        PORT: 3100
+        PROJECT: kesaseteli
+        FOLDER: employer
+        SERVICE: bf-hdlr
     volumes:
       - ./frontend:/app
       - /app/node_modules

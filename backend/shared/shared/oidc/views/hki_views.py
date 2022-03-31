@@ -34,7 +34,15 @@ class HelsinkiOIDCAuthenticationRequestView(OIDCAuthenticationRequestView):
 
         response_redirect = super().get(request)
         response = HttpResponseRedirect(f"{response_redirect.url}&ui_locales={lang}")
-        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang, httponly=True)
+        if getattr(settings, "OIDC_DISABLE_LANGUAGE_COOKIE", False):
+            # if the language cookie is set, remove it, in case
+            # the user's browser has the cookie left over from a previous version.
+            # Having the cookie will result in accept-language header not being used
+            # in subsequent requests to the rest api, as the cookie takes precedence
+            # over the header.
+            response.delete_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        else:
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang, httponly=True)
 
         return response
 

@@ -17,6 +17,7 @@ from applications.api.v1.serializers import (
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
 )
+from applications.api.v1.views import BaseApplicationViewSet
 from applications.enums import (
     ApplicationStatus,
     ApplicationStep,
@@ -56,7 +57,13 @@ def get_handler_detail_url(application):
 
 
 @pytest.mark.parametrize(
-    "view_name", ["v1:applicant-application-list", "v1:handler-application-list"]
+    "view_name",
+    [
+        "v1:applicant-application-list",
+        "v1:handler-application-list",
+        "v1:applicant-application-simplified-application-list",
+        "v1:handler-application-simplified-application-list",
+    ],
 )
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
@@ -70,10 +77,20 @@ def test_applications_unauthenticated(anonymous_client, application, view_name):
     assert audit_event["target"]["type"] == "Application"
 
 
+@pytest.mark.parametrize(
+    "view_name",
+    [
+        "v1:applicant-application-list",
+        "v1:applicant-application-simplified-application-list",
+    ],
+)
 def test_applications_unauthorized(
-    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+    api_client,
+    anonymous_application,
+    view_name,
+    mock_get_organisation_roles_and_create_company,
 ):
-    response = api_client.get(reverse("v1:applicant-application-list"))
+    response = api_client.get(reverse(view_name))
     assert len(response.data) == 0
     assert response.status_code == 200
 
@@ -125,6 +142,72 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     response = api_client.get(url)
     assert len(response.data) == 1
     assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_applications_simple_list_as_handler(handler_api_client, received_application):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data[0]
+    for key in ["calculation", "handled_at"]:
+        # handler-only fields must still be found
+        assert key in response.data[0]
+
+
+def test_applications_simple_list_as_applicant(api_client, received_application):
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data
+    for key in ["calculation", "handled_at"]:
+        # handler-specific fields must not appear
+        assert key not in response.data[0]
+
+
+@pytest.mark.parametrize(
+    "exclude_fields",
+    [
+        ("status",),
+        (
+            "status",
+            "last_modified_at",
+        ),
+        ("status", "last_modified_at", "employee"),
+    ],
+)
+def test_applications_simple_list_exclude_more(
+    handler_api_client, received_application, exclude_fields
+):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+        + f"?exclude_fields={','.join(exclude_fields)}"
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in exclude_fields:
+        assert key not in response.data[0]
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data[0]
+
+
+def test_applications_simple_list_filter(
+    handler_api_client, received_application, handling_application
+):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+        + "?status=handling"
+    )
+    assert len(response.data) == 1
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data
+    assert response.data[0]["status"] == "handling"
     assert response.status_code == 200
 
 
@@ -342,7 +425,17 @@ def test_application_post_unfinished(api_client, application):
     )
 
 
-def test_application_post_invalid_data(api_client, application):
+@pytest.mark.parametrize(
+    "language,company_bank_account_number_validation_error",
+    [
+        ("en", "Invalid IBAN"),
+        ("fi", "Virheellinen IBAN-tilinumero"),
+        ("sv", "Felaktigt IBAN-kontonummer"),
+    ],
+)
+def test_application_post_invalid_data(
+    api_client, application, language, company_bank_account_number_validation_error
+):
     data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
@@ -352,10 +445,13 @@ def test_application_post_invalid_data(api_client, application):
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
+    data["company_bank_account_number"] = "FI91 4008 0282 0002 02"  # invalid number
 
     data[
         "company_contact_person_phone_number"
     ] = "+359505658789"  # Invalid country code
+
+    api_client.defaults["HTTP_ACCEPT_LANGUAGE"] = language
     response = api_client.post(
         reverse("v1:applicant-application-list"), data, format="json"
     )
@@ -366,7 +462,13 @@ def test_application_post_invalid_data(api_client, application):
         "applicant_language",
         "company_contact_person_phone_number",
         "de_minimis_aid_set",
+        "company_bank_account_number",
     }
+    assert (
+        str(response.data["company_bank_account_number"][0])
+        == company_bank_account_number_validation_error
+    )
+    assert len(response.data["company_bank_account_number"]) == 1
     assert response.data["de_minimis_aid_set"][0].keys() == {"amount"}
     assert len(response.data["de_minimis_aid_set"]) == 2
 

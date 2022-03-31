@@ -19,7 +19,7 @@ const Messenger: React.FC<ComponentProps> = ({
   onClose,
   customItemsMessages,
 }) => {
-  const { t, messages, handleSendMessage } = useMessenger();
+  const { t, messages, handleSendMessage } = useMessenger(isOpen);
 
   return (
     <Drawer

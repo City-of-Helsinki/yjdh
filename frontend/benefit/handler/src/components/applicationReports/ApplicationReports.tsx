@@ -1,4 +1,7 @@
-import { EXPORT_APPLICATIONS_ROUTES } from 'benefit/handler/constants';
+import {
+  EXPORT_APPLICATIONS_ROUTES,
+  PROPOSALS_FOR_DESISION,
+} from 'benefit/handler/constants';
 import { DateInput } from 'hds-react';
 import * as React from 'react';
 import Container from 'shared/components/container/Container';
@@ -21,8 +24,9 @@ const ApplicationReports: React.FC = () => {
     formik,
     fields,
     exportApplicationsInTimeRange,
+    lastAcceptedApplicationsExportDate,
+    lastRejectedApplicationsExportDate,
   } = useApplicationReports();
-  const today = convertToUIDateFormat(new Date());
 
   return (
     <Container>
@@ -30,7 +34,10 @@ const ApplicationReports: React.FC = () => {
 
       <ReportsSection
         onDownloadButtonClick={() =>
-          exportApplications(EXPORT_APPLICATIONS_ROUTES.ACCEPTED)
+          exportApplications(
+            EXPORT_APPLICATIONS_ROUTES.ACCEPTED,
+            PROPOSALS_FOR_DESISION.ACCEPTED
+          )
         }
         header={`${t(
           `${translationsBase}.headings.downloadAcceptedApplications`
@@ -44,7 +51,7 @@ const ApplicationReports: React.FC = () => {
           <p style={{ margin: 0 }}>{`${t(
             `${translationsBase}.fields.lastDownloadDateText`,
             {
-              date: today,
+              date: lastAcceptedApplicationsExportDate,
             }
           )}`}</p>
         </$GridCell>
@@ -52,7 +59,10 @@ const ApplicationReports: React.FC = () => {
 
       <ReportsSection
         onDownloadButtonClick={() =>
-          exportApplications(EXPORT_APPLICATIONS_ROUTES.REJECTED)
+          exportApplications(
+            EXPORT_APPLICATIONS_ROUTES.REJECTED,
+            PROPOSALS_FOR_DESISION.REJECTED
+          )
         }
         header={`${t(
           `${translationsBase}.headings.downloadRejectedApplications`
@@ -66,7 +76,7 @@ const ApplicationReports: React.FC = () => {
           <p style={{ margin: 0 }}>{`${t(
             `${translationsBase}.fields.lastDownloadDateText`,
             {
-              date: today,
+              date: lastRejectedApplicationsExportDate,
             }
           )}`}</p>
         </$GridCell>

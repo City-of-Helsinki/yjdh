@@ -8,7 +8,7 @@ import {
   getWorkFeatures,
   getWorkKeywords,
   keywordToOptionType,
-} from 'tet/admin/backend-api/linked-events-api';
+} from 'tet-shared/backend-api/linked-events-api';
 import { useQuery, useQueries } from 'react-query';
 import { OptionType } from 'tet-shared/types/classification';
 import Combobox from 'tet/admin/components/editor/Combobox';

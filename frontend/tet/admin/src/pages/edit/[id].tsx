@@ -26,7 +26,7 @@ const EditPostingPage: NextPage = () => {
 
 export const getStaticProps: GetStaticProps = getServerSideTranslations('common');
 
-export async function getStaticPaths(): Promise<{ paths: never[]; fallback: boolean }> {
+export async function getStaticPaths(): Promise<{ paths: unknown[]; fallback: boolean }> {
   return {
     paths: [],
     fallback: true,

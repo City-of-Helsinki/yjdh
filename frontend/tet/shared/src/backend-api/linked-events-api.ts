@@ -4,7 +4,8 @@ import { IdObject } from 'tet-shared/types/linkedevents';
 import { Language } from 'shared/i18n/i18n';
 
 // By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)
-export const keywordsDataSource = process.env.NEXT_PUBLIC_KEYWORDS_DATA_SOURCE || 'yso';
+export const keywordsDataSource =
+  process.env.NEXT_PUBLIC_KEYWORDS_DATA_SOURCE || 'yso';
 
 type Keyword = IdObject & {
   name: {
@@ -29,7 +30,9 @@ type Place = {
 };
 
 const linkedEvents = Axios.create({
-  baseURL: process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1',
+  baseURL:
+    process.env.NEXT_PUBLIC_LINKEDEVENTS_URL ||
+    'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1',
   timeout: 4000,
   headers: {
     'Content-Type': 'application/json',
@@ -39,10 +42,12 @@ const linkedEvents = Axios.create({
 async function query<T>(
   axiosInstance: AxiosInstance,
   path: string,
-  params: Record<string, string | number>,
+  params: Record<string, string | number>
 ): Promise<T[]> {
   try {
-    const result: AxiosResponse<{ data: T[] }> = await axiosInstance.get(path, { params });
+    const result: AxiosResponse<{ data: T[] }> = await axiosInstance.get(path, {
+      params,
+    });
     return result?.data?.data || [];
   } catch (error) {
     console.error(error);
@@ -53,10 +58,13 @@ async function query<T>(
 async function queryKeywordSet<T>(
   axiosInstance: AxiosInstance,
   path: string,
-  params: Record<string, string | number>,
+  params: Record<string, string | number>
 ): Promise<T[]> {
   try {
-    const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(path, { params });
+    const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(
+      path,
+      { params }
+    );
     return result?.data?.keywords || [];
   } catch (error) {
     console.error(error);
@@ -64,11 +72,15 @@ async function queryKeywordSet<T>(
   }
 }
 
-export const keywordToOptionType = (keyword: Keyword, language: Language = 'fi'): OptionType => {
+export const keywordToOptionType = (
+  keyword: Keyword,
+  language: Language = 'fi',
+  valueKey: 'id' | '@id' = '@id'
+): OptionType => {
   return {
     label: keyword.name[language] ?? keyword.name['fi'],
     name: keyword.name[language] ?? keyword.name['fi'],
-    value: keyword['@id'],
+    value: keyword[valueKey] ?? keyword['@id'],
   };
 };
 

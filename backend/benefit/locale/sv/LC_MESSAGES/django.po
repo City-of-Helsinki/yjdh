@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-18 11:21+0200\n"
+"POT-Creation-Date: 2022-03-21 08:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -808,6 +808,10 @@ msgstr "beräkningsrad"
 #: calculator/models.py:472
 msgid "calculation rows"
 msgstr "beräkningsrader"
+
+#: common/iban_field.py:14
+msgid "Invalid IBAN"
+msgstr "Felaktigt IBAN-kontonummer"
 
 #: common/permissions.py:37
 msgid "You have to accept Terms of Service before doing any action"

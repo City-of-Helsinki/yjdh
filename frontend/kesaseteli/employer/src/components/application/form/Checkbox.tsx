@@ -56,7 +56,7 @@ Checkbox.defaultProps = {
   validation: {},
   onChange: noop,
   initialValue: false,
-  label: undefined,
+  label: null,
 };
 
 export default Checkbox;

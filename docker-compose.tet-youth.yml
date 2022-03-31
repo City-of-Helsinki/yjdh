@@ -34,8 +34,12 @@ services:
   te-yout:
      build:
        context: ./frontend
-       dockerfile: tet/youth/Dockerfile
        target: development
+       args:
+         PORT: 3000
+         PROJECT: tet
+         FOLDER: youth
+         SERVICE: te-yout
      volumes:
        - ./frontend:/app
        - /app/node_modules

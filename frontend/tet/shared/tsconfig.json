@@ -1,7 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "skipLibCheck": true,
-    "jsx": "preserve"
+    "jsx": "react",
+    "baseUrl": "../../",
+    "paths": {
+      "tet-shared/*": ["tet/shared/src/*"],
+      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+    }
   }
 }

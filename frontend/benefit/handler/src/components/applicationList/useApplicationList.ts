@@ -37,6 +37,7 @@ const useApplicationList = (
         calculation,
         additional_information_needed_by,
         status: applicationStatus,
+        unread_messages_count,
       } = application;
 
       return {
@@ -56,6 +57,7 @@ const useApplicationList = (
             calculation?.handler_details?.first_name,
             calculation?.handler_details?.last_name
           ) || '-',
+        unreadMessagesCount: unread_messages_count ?? 0,
       };
     }
   );

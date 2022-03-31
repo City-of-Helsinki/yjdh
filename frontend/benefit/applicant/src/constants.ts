@@ -4,6 +4,7 @@ export enum ROUTES {
   HOME = '/',
   APPLICATION_FORM = '/application',
   LOGIN = '/login',
+  TERMS_OF_SERVICE = '/terms-of-service',
 }
 
 export const MAX_DEMINIMIS_AID_TOTAL_AMOUNT = 200_000;
@@ -173,15 +174,13 @@ export const APPLICATION_INITIAL_VALUES = {
   applicationStep: DEFAULT_APPLICATION_STEP,
 };
 
-export const PAY_SUBSIDY_OPTIONS = [30, 40, 50, 100] as const;
-
 export const EMPLOYEE_MIN_WORKING_HOURS = 18;
 export const EMPLOYEE_MAX_WORKING_HOURS = 168;
 
 export const MAX_SHORT_STRING_LENGTH = 64 as const;
 export const MAX_LONG_STRING_LENGTH = 256 as const;
 
-export const MIN_PHONE_NUMBER_LENGTH = 7 as const;
+export const MIN_PHONE_NUMBER_LENGTH = 3 as const;
 export const MAX_PHONE_NUMBER_LENGTH = 13 as const;
 
 // temporary consent file

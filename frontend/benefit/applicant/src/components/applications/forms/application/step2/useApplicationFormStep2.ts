@@ -2,13 +2,13 @@ import {
   APPLICATION_FIELDS_STEP2,
   APPLICATION_FIELDS_STEP2_KEYS,
   EMPLOYEE_KEYS,
-  PAY_SUBSIDY_OPTIONS,
   SUPPORTED_LANGUAGES,
 } from 'benefit/applicant/constants';
 import useFormActions from 'benefit/applicant/hooks/useFormActions';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { Application } from 'benefit/applicant/types/application';
 import { getErrorText } from 'benefit/applicant/utils/forms';
+import { PAY_SUBSIDY_OPTIONS } from 'benefit-shared/constants';
 import isAfter from 'date-fns/isAfter';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import { FormikProps, useFormik } from 'formik';
@@ -170,9 +170,13 @@ const useApplicationFormStep2 = (
     });
   };
 
-  const handleSave = (): void => onSave(values);
+  const handleSave = (): void => {
+    void onSave(values);
+  };
 
-  const handleDelete = (): void => onDelete(values.id ?? '');
+  const handleDelete = (): void => {
+    void onDelete(values.id ?? '');
+  };
 
   const clearCommissionValues = React.useCallback((): void => {
     void setFieldValue(fields.employee.commissionDescription.name, '');
