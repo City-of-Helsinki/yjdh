@@ -55,7 +55,7 @@ const TextInput = <T,>({
 
   const lengthIndicator = React.useMemo(
     () =>
-      registerOptions.maxLength && value?.length > 0
+      type === 'textArea' && registerOptions.maxLength && value?.length > 0
         ? `${value?.length}/${registerOptions.maxLength as number}`
         : undefined,
     [registerOptions.maxLength, value?.length]

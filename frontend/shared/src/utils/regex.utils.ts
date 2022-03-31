@@ -8,3 +8,6 @@ export const getDecimalNumberRegex = (decimals: number): RegExp =>
 export const escapeRegExp = (unescapedString: string, flags?: string): RegExp =>
   // eslint-disable-next-line security/detect-non-literal-regexp
   new RegExp(unescapedString.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&'), flags);
+
+export const stripHtmlTags = (html: string): string =>
+  html.replace(/<\/?[^>]+(>|$)/g, '');

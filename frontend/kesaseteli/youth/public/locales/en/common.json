@@ -94,6 +94,7 @@
       "student_in_helsinki_but_not_resident": "ENG En asu Helsingissä, mutta käyn Helsinkiläistä koulua",
       "moving_to_helsinki": "ENG En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin",
       "underage_or_overage": "ENG En kuulu iän puolesta kohderyhmään, mutta vuosiluokan puolesta kyllä",
+      "personal_info_differs_from_vtj": "ENG Henkilötietoni poikkeavat väestötietojärjestelmän tiedoista",
       "other": "ENG Muu, kerro alla"
     }
   },
