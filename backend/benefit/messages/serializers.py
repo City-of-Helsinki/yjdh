@@ -24,6 +24,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     # An applicant is only allowed to send a message if application is in one of these statuses
     APPLICANT_MESSAGE_ALLOWED_STATUSES = [
+        ApplicationStatus.RECEIVED,
         ApplicationStatus.HANDLING,
         ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED,
     ]
@@ -53,14 +54,6 @@ class MessageSerializer(serializers.ModelSerializer):
             if data["message_type"] != MessageType.APPLICANT_MESSAGE:
                 raise serializers.ValidationError(
                     _("Applicant is not allowed to do this action")
-                )
-            if not application.messages.filter(
-                message_type=MessageType.HANDLER_MESSAGE
-            ):
-                raise serializers.ValidationError(
-                    _(
-                        "Applicant can send messages only after handler has sent a message first"
-                    )
                 )
 
         elif data["message_type"] == MessageType.APPLICANT_MESSAGE:

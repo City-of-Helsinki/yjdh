@@ -4,15 +4,17 @@ import {
   expectToPatchYouthApplicationError,
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
-import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/status-constants';
-import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
+import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/youth-application-status';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
 import { escapeRegExp } from 'shared/utils/regex.utils';
 import { assertUnreachable } from 'shared/utils/typescript.utils';
 
+import translations from '../../../../public/locales/fi/common.json';
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
-  expectations: {
+const getIndexPageApi = (expectedApplication?: ActivatedYouthApplication) => {
+  const expectations = {
     pageIsLoaded: async () => {
       await screen.findByRole('heading', {
         name: /hakemuksen tiedot/i,
@@ -23,9 +25,9 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
         name: /hakemusta ei löytynyt/i,
       });
     },
-    fieldValueIsPresent: async <K extends keyof CreatedYouthApplication>(
+    fieldValueIsPresent: async <K extends keyof ActivatedYouthApplication>(
       key: K,
-      transform?: (value: CreatedYouthApplication[K]) => string
+      transform?: (value: ActivatedYouthApplication[K]) => string
     ): Promise<void> => {
       const field = await screen.findByTestId(`handlerApplication-${key}`);
       if (!expectedApplication) {
@@ -41,10 +43,27 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
     nameIsPresent: async ({
       first_name,
       last_name,
-    }: CreatedYouthApplication): Promise<void> => {
+    }: ActivatedYouthApplication): Promise<void> => {
       const field = await screen.findByTestId(`handlerApplication-name`);
       expect(field).toHaveTextContent(
         escapeRegExp(`${first_name} ${last_name}`)
+      );
+    },
+    additionalInfoIsPresent: async (): Promise<void> => {
+      await screen.findByRole('heading', { name: /lisätietohakemus/i });
+    },
+    additionalInfoIsNotPresent: (): void => {
+      expect(
+        screen.queryByRole('heading', { name: /lisätietohakemus/i })
+      ).not.toBeInTheDocument();
+    },
+    additionalInfoReasonsAreShown: async (): Promise<void> => {
+      await expectations.fieldValueIsPresent(
+        'additional_info_user_reasons',
+        (additional_info_user_reasons) =>
+          additional_info_user_reasons
+            ?.map((reason) => translations.reasons[reason])
+            .join('. ') ?? ''
       );
     },
     actionButtonsArePresent: async (): Promise<void> => {
@@ -113,8 +132,8 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
       }
       return null;
     },
-  },
-  actions: {
+  };
+  const actions = {
     clickCompleteButton: (type: CompleteOperation): void => {
       userEvent.click(screen.getByTestId(`${type}-button`));
     },
@@ -151,7 +170,11 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
       const dialog = await screen.findByRole('dialog');
       userEvent.click(within(dialog).getByRole('button', { name: /peruuta/i }));
     },
-  },
-});
+  };
+  return {
+    expectations,
+    actions,
+  };
+};
 
 export default getIndexPageApi;

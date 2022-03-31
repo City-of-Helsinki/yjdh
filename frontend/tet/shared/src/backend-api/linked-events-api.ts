@@ -29,10 +29,6 @@ type Place = {
   '@id': string;
 };
 
-console.log(
-  `NEXT_PUBLIC_LINKEDEVENTS_URL=${process.env.NEXT_PUBLIC_LINKEDEVENTS_URL!}`
-);
-
 const linkedEvents = Axios.create({
   baseURL:
     process.env.NEXT_PUBLIC_LINKEDEVENTS_URL ||

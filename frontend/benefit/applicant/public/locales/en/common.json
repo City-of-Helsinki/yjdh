@@ -424,6 +424,7 @@
       "required": "This field is required",
       "invalid": "Invalid value",
       "number": {
+        "invalid": "Invalid value, please enter numbers only",
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
       },
@@ -533,5 +534,15 @@
     "isSecure": "Messages are encrypted",
     "noMessages": "No messages",
     "close": "Close"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Do you need help? If anything is unclear, you can call or email us. Tel. +358 (0) 40 198 5891 and +358 (0) 40 183 3021 helsinkilisa@hel.fi ",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Show information"
   }
 }

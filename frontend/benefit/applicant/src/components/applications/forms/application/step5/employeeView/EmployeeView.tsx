@@ -21,6 +21,7 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
   data,
   isReadOnly,
   handleStepChange,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const theme = useTheme();
   const translationsBase = 'common:applications.sections';
@@ -195,6 +196,10 @@ const EmployeeView: React.FC<EmployeeViewProps> = ({
       )}
     </>
   );
+};
+
+EmployeeView.defaultProps = {
+  isReadOnly: undefined,
 };
 
 export default EmployeeView;

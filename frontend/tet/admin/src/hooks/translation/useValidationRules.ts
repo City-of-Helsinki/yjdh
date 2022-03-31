@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX } from 'shared/constants';
+import { EMAIL_REGEX, NAMES_REGEX, PHONE_NUMBER_REGEX, DATE_UI_REGEX } from 'shared/constants';
 
 const useValidationRules = () => {
   const { t } = useTranslation();
@@ -11,6 +11,12 @@ const useValidationRules = () => {
     required: {
       value: true,
       message: requiredMessage,
+    },
+    date: {
+      pattern: {
+        value: DATE_UI_REGEX,
+        message: t('common:editor.posting.validation.phone'),
+      },
     },
     maxLength: {
       message: t('common:editor.posting.validation.max'),

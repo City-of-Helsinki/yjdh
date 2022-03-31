@@ -43,31 +43,35 @@ services:
   kesaseteli-youth:
     build:
       context: ./frontend
-      dockerfile: kesaseteli/youth/Dockerfile
       target: development
+      args:
+        PORT: 3100
+        PROJECT: kesaseteli
+        FOLDER: youth
+        SERVICE: ks-youth
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
     env_file:
       - .env.kesaseteli
-    environment:
-      - PORT=3100
     container_name: kesaseteli-youth
 
   kesaseteli-handler:
     build:
       context: ./frontend
-      dockerfile: kesaseteli/handler/Dockerfile
       target: development
+      args:
+        PORT: 3200
+        PROJECT: kesaseteli
+        FOLDER: handler
+        SERVICE: ks-hdlr
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
     env_file:
       - .env.kesaseteli
-    environment:
-      - PORT=3200
     container_name: kesaseteli-handler
 
   kesaseteli-local-proxy:

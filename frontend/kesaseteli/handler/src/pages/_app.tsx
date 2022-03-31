@@ -16,9 +16,11 @@ import {
   DialogContextProvider,
 } from 'shared/contexts/DialogContext';
 
+const queryClient = createQueryClient();
+
 const App: React.FC<AppProps> = (appProps: AppProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
-    <QueryClientProvider client={createQueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <DialogContextProvider>
         <BaseApp header={<Header />} {...appProps} />
         <Portal>

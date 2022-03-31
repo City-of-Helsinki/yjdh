@@ -7,9 +7,20 @@ import {
 import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
 import { KeywordFn, ClassificationType } from 'tet-shared/types/keywords';
 import { OptionType } from 'tet-shared/types/classification';
+import { Language } from 'shared/i18n/i18n';
 
-export const getLocalizedString = (obj: LocalizedObject | undefined): string =>
-  obj ? obj.fi : '';
+export const getLocalizedString = (
+  obj: LocalizedObject | undefined,
+  uiLocale?: Language
+): string => {
+  if (!uiLocale) {
+    return obj ? obj.fi : '';
+  }
+  if (obj && obj.hasOwnProperty(uiLocale)) {
+    return obj[uiLocale] ?? obj.fi;
+  }
+  return '';
+};
 
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
@@ -57,7 +68,8 @@ export const isoDateToHdsFormat = (date: string | null): string => {
 export const eventToTetPosting = (
   event: TetEvent,
   keywordType?: KeywordFn,
-  languageOptions?: OptionType[]
+  languageOptions?: OptionType[],
+  uiLocale?: Language
 ): TetPosting => {
   const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
   const spots = parsedSpots >= 0 ? parsedSpots : 1;
@@ -70,11 +82,14 @@ export const eventToTetPosting = (
     // TODO label is what is shown in address field
     // note that with GET /event/ all but @id are empty
     location: {
-      name: getLocalizedString(event.location.name),
-      label: getLocalizedString(event.location.name),
+      name: getLocalizedString(event.location.name, uiLocale),
+      label: getLocalizedString(event.location.name, uiLocale),
       value: event.location['@id'],
-      street_address: getLocalizedString(event.location.street_address),
-      city: getLocalizedString(event.location.address_locality),
+      street_address: getLocalizedString(
+        event.location.street_address,
+        uiLocale
+      ),
+      city: getLocalizedString(event.location.address_locality, uiLocale),
       postal_code: event.location.postal_code ?? '',
     },
     start_date: isoDateToHdsFormat(event.start_time)!,
@@ -93,8 +108,8 @@ export const eventToTetPosting = (
           )
           // note that with GET /event/ all but @id are empty
           .map((keyword) => ({
-            name: getLocalizedString(keyword.name),
-            label: getLocalizedString(keyword.name),
+            name: getLocalizedString(keyword.name, uiLocale),
+            label: getLocalizedString(keyword.name, uiLocale),
             value: keyword['@id'],
           }))
       : [],

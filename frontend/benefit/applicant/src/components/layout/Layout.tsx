@@ -1,5 +1,6 @@
 import Footer from 'benefit/applicant/components/footer/Footer';
 import Header from 'benefit/applicant/components/header/Header';
+import SupportingContent from 'benefit/applicant/components/supportingContent/SupportingContent';
 import TermsOfService from 'benefit/applicant/components/termsOfService/TermsOfService';
 import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
 import camelcaseKeys from 'camelcase-keys';
@@ -27,6 +28,7 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
           {children}
         </>
       )}
+      <SupportingContent />
       <Footer />
     </$Main>
   );

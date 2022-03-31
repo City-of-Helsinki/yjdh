@@ -368,6 +368,7 @@
       "required": "This field is required",
       "invalid": "Invalid value",
       "number": {
+        "invalid": "Invalid value, please enter numbers only",
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
       },
