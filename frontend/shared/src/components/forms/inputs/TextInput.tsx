@@ -89,4 +89,9 @@ const TextInput = <T,>({
   );
 };
 
+TextInput.defaultProps = {
+  type: undefined,
+  placeholder: undefined,
+};
+
 export default TextInput;

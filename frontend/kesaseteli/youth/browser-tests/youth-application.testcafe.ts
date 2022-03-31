@@ -305,7 +305,7 @@ if (!isRealIntegrationsEnabled()) {
     await handlerFormPage.expectations.applicationIsNotYetActivated();
   });
 
-  test.only('As a handler I can open application with additional info required, but I will see "youth has not yet sent the additional info application" -error message ', async (t) => {
+  test('As a handler I can open application with additional info required, but I will see "youth has not yet sent the additional info application" -error message ', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthApplication({ is_unlisted_school: true });

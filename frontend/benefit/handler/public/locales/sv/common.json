@@ -365,41 +365,42 @@
   },
   "form": {
     "validation": {
-      "required": "This field is required",
-      "invalid": "Invalid value",
+      "required": "Detta är ett obligatoriskt fält",
+      "invalid": "Ogiltig värde",
       "number": {
-        "max": "Maximum value is {{max}}",
-        "min": "Value must be at least {{min}}"
+        "invalid": "Ogiltigt värde, ande endast siffror",
+        "max": "Maxvärdet är {{max}}",
+        "min": "Värdet måste vara minst {{min}}"
       },
       "string": {
-        "max": "This field can be up to {{max}} characters long",
-        "min": "This field must be at least {{min}} characters long",
-        "url": "This field must be a valid URL",
-        "date": "This field must be a valid date",
-        "time": "Time must be given in the following format hh:mm",
-        "positiveNumber": "This field must be a valid number"
+        "max": "Detta fält kan vara upp till {{max}} tecken långt",
+        "min": "Detta fält måste vara minst {{min}} tecken långt",
+        "url": "Detta fält måste vara en giltig URL",
+        "date": "Detta fält måste vara en giltig datum",
+        "time": "Tid måste ges i följande format hh:mm",
+        "positiveNumber": "Detta fält måste vara ett giltigt nummer"
       },
       "date": {
-        "mustNotInThePast": "This date must not be in the past",
-        "min": "This date must be earliest {{min}}",
-        "max": "This date must be latest {{max}}",
+        "mustNotInThePast": "Detta datum kan inte vara i förr",
+        "min": "Detta datum måste vara tidigast {{min}}",
+        "max": "Detta datum måste vara senast {{max}}",
         "format": "This date is incorrect"
       },
       "time": {
-        "min": "This time must be earliest {{min}}",
-        "max": "This time must be latest {{max}}"
+        "min": "Den här tiden måste vara tidigast {{min}}",
+        "max": "Den här tiden måste vara senast {{max}}"
       },
       "phone": {
-        "invalid": "The value must be a telephone number"
+        "invalid": "Felaktigt telefonnummer"
       },
       "email": {
-        "invalid": "This field must be a valid email"
+        "invalid": "Felaktig e-postadress"
       },
       "iban": {
-        "invalid": "Invalid IBAN value"
+        "invalid": "Felaktigt IBAN-kontonummer"
       },
       "ssn": {
-        "invalid": "Invalid SSN value"
+        "invalid": "Felaktig personbeteckning"
       }
     }
   },

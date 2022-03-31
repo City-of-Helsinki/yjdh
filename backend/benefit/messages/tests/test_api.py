@@ -228,15 +228,29 @@ def test_create_handler_message_invalid(handler_api_client, handling_application
     )
 
 
-def test_handler_must_message_first(
+@pytest.mark.parametrize(
+    "status,expected_result",
+    [
+        (ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.RECEIVED, 201),
+        (ApplicationStatus.HANDLING, 201),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
+        (ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.REJECTED, 400),
+        (ApplicationStatus.CANCELLED, 400),
+    ],
+)
+def test_applicant_send_first_message(
     api_client,
-    handler_api_client,
     handling_application,
     mock_get_organisation_roles_and_create_company,
+    status,
+    expected_result,
 ):
     msg = deepcopy(SAMPLE_MESSAGE_PAYLOAD)
     msg["message_type"] = MessageType.APPLICANT_MESSAGE
     handling_application.company = mock_get_organisation_roles_and_create_company
+    handling_application.status = status
     handling_application.save()
     result = api_client.post(
         reverse(
@@ -244,11 +258,7 @@ def test_handler_must_message_first(
         ),
         msg,
     )
-    assert result.status_code == 400
-    assert (
-        "Applicant can send messages only after handler has sent a message first"
-        in result.data["non_field_errors"][0]
-    )
+    assert result.status_code == expected_result
 
 
 @pytest.mark.parametrize(

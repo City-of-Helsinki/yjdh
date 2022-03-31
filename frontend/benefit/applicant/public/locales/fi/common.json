@@ -424,6 +424,7 @@
       "required": "Tämä kenttä on pakollinen",
       "invalid": "Virheellinen arvo",
       "number": {
+        "invalid": "Virheellinen arvo, ilmoita vain numeroita",
         "max": "Arvon tulee olla enintään {{max}}",
         "min": "Arvon tulee olla vähintään {{min}}"
       },
@@ -540,5 +541,8 @@
       "text": "Tarvitsetko apua? Jos jokin asia jäi epäselväksi, voit soittaa tai lähettää sähköpostia meille. Puh. 040 198 5891 ja 040 183 3021 helsinkilisa@hel.fi",
       "buttonText": ""
     }
+  },
+  "application": {
+    "tooltipShowInfo": "Näytä info"
   }
 }

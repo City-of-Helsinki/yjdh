@@ -21,7 +21,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<DeMinimisAid> =>
     [DE_MINIMIS_AID_KEYS.AMOUNT]: Yup.number()
       .transform((_value, originalValue) => getNumberValue(originalValue))
       .required(VALIDATION_MESSAGE_KEYS.REQUIRED)
-      .typeError(VALIDATION_MESSAGE_KEYS.INVALID)
+      .typeError(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID)
       .min(0, (param) => ({
         min: param.min,
         key: VALIDATION_MESSAGE_KEYS.NUMBER_MIN,

@@ -424,6 +424,7 @@
       "required": "Detta är ett obligatoriskt fält",
       "invalid": "Ogiltig värde",
       "number": {
+        "invalid": "Ogiltigt värde, ande endast siffror",
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
       },
@@ -540,5 +541,8 @@
       "text": "Behöver du hjälp? Om något är oklart kan du ringa eller mejla oss. Tfn. 040 198 5891 och 040 183 3021 helsinkilisa@hel.fi",
       "buttonText": ""
     }
+  },
+  "application": {
+    "tooltipShowInfo": "Visa information"
   }
 }

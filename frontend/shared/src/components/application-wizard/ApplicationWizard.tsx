@@ -40,7 +40,7 @@ const ApplicationWizard: React.FC<WizardProps> = ({
 
 ApplicationWizard.defaultProps = {
   initialStep: 0,
-  footer: undefined,
+  footer: null,
 };
 
 export default ApplicationWizard;

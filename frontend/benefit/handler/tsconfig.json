@@ -2,13 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "../../",
-    "lib": [
-      "dom",
-      "es7"
-    ],
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "incremental": true
+    "paths": {
+      "benefit/handler/*": ["benefit/handler/src/*"],
+      "benefit-shared/*": ["benefit/shared/src/*"],
+      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+    }
   },
   "include": [
     "next-env.d.ts",
