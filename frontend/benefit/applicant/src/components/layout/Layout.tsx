@@ -2,32 +2,44 @@ import Footer from 'benefit/applicant/components/footer/Footer';
 import Header from 'benefit/applicant/components/header/Header';
 import SupportingContent from 'benefit/applicant/components/supportingContent/SupportingContent';
 import TermsOfService from 'benefit/applicant/components/termsOfService/TermsOfService';
-import useUserQuery from 'benefit/applicant/hooks/useUserQuery';
-import camelcaseKeys from 'camelcase-keys';
+import { IS_CLIENT, LOCAL_STORAGE_KEYS } from 'benefit/applicant/constants';
 import * as React from 'react';
+import useAuth from 'shared/hooks/useAuth';
 
 import { $Main } from './Layout.sc';
 
 type Props = { children: React.ReactNode };
 
 const Layout: React.FC<Props> = ({ children, ...rest }) => {
-  const userQuery = useUserQuery('checkTermsOfServiceApproval', (data) =>
-    camelcaseKeys(data, { deep: true })
-  );
-  const { data: userData, isLoading } = userQuery;
+  const { isAuthenticated } = useAuth();
+  const [isTermsOfServiceApproved, setIsTermsOfSerivceApproved] =
+    React.useState(false);
 
-  if (isLoading) return null;
+  React.useEffect(() => {
+    if (IS_CLIENT) {
+      setIsTermsOfSerivceApproved(
+        // eslint-disable-next-line scanjs-rules/identifier_localStorage
+        localStorage.getItem(
+          LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED
+        ) === 'true'
+      );
+    }
+  }, []);
 
   return (
     <$Main {...rest}>
-      {userData?.termsOfServiceApprovalNeeded ? (
-        <TermsOfService />
+      {isAuthenticated && !isTermsOfServiceApproved ? (
+        <TermsOfService
+          setIsTermsOfSerivceApproved={setIsTermsOfSerivceApproved}
+        />
       ) : (
         <>
           <Header />
           {children}
         </>
       )}
+      {/* <Header />
+      {children} */}
       <SupportingContent />
       <Footer />
     </$Main>
