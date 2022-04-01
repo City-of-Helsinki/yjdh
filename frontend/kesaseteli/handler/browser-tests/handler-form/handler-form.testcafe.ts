@@ -1,9 +1,9 @@
 import { getHandlerFormPageComponents } from '@frontend/kesaseteli-shared/browser-tests/handler-form-page/handlerFormPage.components';
-import requestLogger, {
-  filterLoggedRequests,
-} from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import { getFrontendUrl } from '../utils/url.utils';

@@ -1,14 +1,15 @@
 import { getHandlerFormPageComponents } from '@frontend/kesaseteli-shared/browser-tests/handler-form-page/handlerFormPage.components';
-import requestLogger, {
-  filterLoggedRequests,
-} from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { fakeYouthFormData } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 import { convertFormDataToApplication } from '@frontend/kesaseteli-shared/src/utils/youth-form-data.utils';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import {
   getCurrentUrl,
   getUrlParam,
+  refreshPage,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
@@ -35,6 +36,7 @@ fixture('Youth Application')
   .page(url)
   .requestHooks(requestLogger)
   .beforeEach(async (t) => {
+    await refreshPage();
     clearDataToPrintOnFailure(t);
   })
   .afterEach(async () =>

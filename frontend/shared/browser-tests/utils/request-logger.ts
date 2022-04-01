@@ -1,5 +1,6 @@
-import { isValidJsonString } from '@frontend/shared/src/utils/regex.utils';
 import { RequestLogger } from 'testcafe';
+
+import { isValidJsonString } from '../../src/utils/regex.utils';
 
 const requestLogger = RequestLogger(
   { url: /^https:\/\/(?:(?!_next).)*$/, isAjax: true },

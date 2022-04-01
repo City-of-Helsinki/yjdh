@@ -1,18 +1,21 @@
 const path = require('path');
-const { filterLoggedRequests } = require('@frontend/kesaseteli-shared/browser-tests/utils/request-logger');
-const requestLogger = require('@frontend/kesaseteli-shared/browser-tests/utils/request-logger');
+
+// known javascript errors and warnings that can be ignored
+const whitelistMsgs = ['Warning: Prop `%s` did not match','downshift: A component has changed the uncontrolled prop', 'Using ReactElement as a label is against good usability and accessibility practices']
 
 module.exports = (envPath) => {
-  require('dotenv').config({ path: envPath });
+  require('dotenv').config({ path: envPath,  });
   return {
     hooks: {
       test: {
-        afterEach: async (t) => {
-          // eslint-disable-next-line no-console
-          console.log(filterLoggedRequests(requestLogger))
-          const { error, warn } = await t.getBrowserConsoleMessages();
-          t.expect(error.length).lt(0, JSON.stringify(error));
-          t.expect(warn.length).lt(0, JSON.stringify(error));
+        after: async (t) => {
+          const { error, warn,log, info } = await t.getBrowserConsoleMessages();
+          console.log(JSON.stringify(log, null, 2));
+          console.log(JSON.stringify(info, null, 2));
+          const filteredErrors = error.filter(err => whitelistMsgs.every(msg => !err.includes(msg)));
+          const filteredWarnings = warn.filter(err => whitelistMsgs.every(msg => !err.includes(msg)));
+          await t.expect(filteredErrors.length).eql(0, JSON.stringify(filteredErrors, null, 2));
+          await t.expect(filteredWarnings.length).eql(0, JSON.stringify(filteredWarnings, null, 2));
         }
 
       },

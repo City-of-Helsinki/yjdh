@@ -1,5 +1,6 @@
 import { ClientFunction } from 'testcafe';
 
+export const refreshPage = ClientFunction(() => document.location.reload());
 export const getCurrentUrl = ClientFunction(() => document.location.href);
 export const getCurrentPathname = ClientFunction(
   () => document.location.pathname
