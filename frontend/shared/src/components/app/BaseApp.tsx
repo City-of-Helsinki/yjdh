@@ -19,7 +19,7 @@ import { isError } from 'shared/utils/type-guards';
 import { ThemeProvider } from 'styled-components';
 
 type Props = AppProps & {
-  header: React.ReactNode;
+  header?: React.ReactNode;
   footer?: React.ReactNode;
 };
 
@@ -85,7 +85,8 @@ const BaseApp: React.FC<Props> = ({ Component, pageProps, header, footer }) => {
 };
 
 BaseApp.defaultProps = {
-  footer: undefined,
+  header: null,
+  footer: null,
 };
 
 export default initLocale(BaseApp);

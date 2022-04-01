@@ -59,7 +59,9 @@
       "back": "Takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
-      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
+      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
+      "continueToService": "Jatka palveluun",
+      "pauseAndExit": "Keskeytä ja poistu"
     },
     "sections": {
       "company": {
@@ -360,6 +362,7 @@
       }
     }
   },
+  "serviceName": "Helsinki-lisän asiointipalvelu",
   "appName": "Helsinki-lisä",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
@@ -411,8 +414,7 @@
     "newApplicationBtnText": "Tee uusi hakemus"
   },
   "attachmentsIngress": {
-    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB."
   },
   "credentialsIngress": {
     "text": "Helsinki-lisällä työllistettävää henkilöä on tiedotettava hänen henkilötietojensa käsittelystä. Tulosta tiedoksianto ja pyydä siihen allekirjoitus työllistettävältä."
@@ -423,6 +425,7 @@
       "required": "Tämä kenttä on pakollinen",
       "invalid": "Virheellinen arvo",
       "number": {
+        "invalid": "Virheellinen arvo, ilmoita vain numeroita",
         "max": "Arvon tulee olla enintään {{max}}",
         "min": "Arvon tulee olla vähintään {{min}}"
       },
@@ -466,7 +469,8 @@
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi.",
+    "termsOfServiceHeader": "Tietoa työnantajan edustajien henkilötietojen käsittelystä"
   },
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",
@@ -531,5 +535,15 @@
     "isSecure": "Viestit ovat salattuja",
     "noMessages": "Ei viestejä",
     "close": "Sulje"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Tarvitsetko apua? Jos jokin asia jäi epäselväksi, voit soittaa tai lähettää sähköpostia meille. Puh. 040 198 5891 ja 040 183 3021 helsinkilisa@hel.fi",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Näytä info"
   }
 }

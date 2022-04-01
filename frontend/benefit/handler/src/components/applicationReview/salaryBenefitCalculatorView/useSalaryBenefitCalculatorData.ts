@@ -1,4 +1,3 @@
-import { PAY_SUBSIDY_OPTIONS } from 'benefit/applicant/constants';
 import {
   CALCULATION_SALARY_KEYS,
   STATE_AID_MAX_PERCENTAGE_OPTIONS,
@@ -10,10 +9,11 @@ import {
   TrainingCompensation,
 } from 'benefit/handler/types/application';
 import { ErrorData } from 'benefit/handler/types/common';
+import { PAY_SUBSIDY_OPTIONS } from 'benefit-shared/constants';
 import { FormikProps, useFormik } from 'formik';
 import fromPairs from 'lodash/fromPairs';
+import { useTranslation } from 'next-i18next';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Field } from 'shared/components/forms/fields/types';
 import useToggle from 'shared/hooks/useToggle';
 import { OptionType } from 'shared/types/common';

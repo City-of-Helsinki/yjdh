@@ -13,13 +13,14 @@ import Dropdown from 'tet/admin/components/editor/Dropdown';
 import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
 import { useFormContext, useWatch } from 'react-hook-form';
 import TetPosting from 'tet-shared/types/tetposting';
-import { parseDate } from 'shared/utils/date.utils';
+import { parseDate, isValidDate } from 'shared/utils/date.utils';
+import { DATE_UI_REGEX } from 'shared/constants';
 import isBefore from 'date-fns/isBefore';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name, description } = useValidationRules();
+  const { required, name, description, date } = useValidationRules();
   const { control, setValue } = useFormContext<TetPosting>();
 
   const languageOptions = useLanguageOptions();
@@ -37,6 +38,8 @@ const PostingDetails: React.FC = () => {
       setValue('end_date', '');
     }
   }, [startDate, endDate]);
+
+  const minDate = DATE_UI_REGEX.test(startDate) ? parseDate(startDate) : undefined;
 
   return (
     <FormSection header={t('common:editor.posting.header')}>
@@ -60,7 +63,7 @@ const PostingDetails: React.FC = () => {
             id="start_date"
             label={t('common:editor.posting.startDateLabel')}
             required={true}
-            registerOptions={{ required: required }}
+            registerOptions={{ required: required, pattern: date.pattern }}
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
@@ -68,7 +71,8 @@ const PostingDetails: React.FC = () => {
             id="end_date"
             label={t('common:editor.posting.endDateLabel')}
             required={false}
-            minDate={parseDate(startDate)}
+            registerOptions={{ pattern: date.pattern }}
+            minDate={minDate}
           />
         </$GridCell>
         <$GridCell $colSpan={3}></$GridCell>

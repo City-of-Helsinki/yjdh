@@ -1,14 +1,5 @@
 import { OptionType } from 'tet-shared/types/classification';
-import { IdObject } from 'tet/youth/linkedevents';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-
-type Keyword = IdObject & {
-  name: {
-    fi: string;
-  };
-};
-
-console.log(`NEXT_PUBLIC_LINKEDEVENTS_URL=${process.env.NEXT_PUBLIC_LINKEDEVENTS_URL!}`);
 
 export const linkedEventsUrl =
   process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/';
@@ -22,11 +13,6 @@ export const BackendEndpoint = {
 export const singleEvent = (id: string) => {
   return `event/${id}?include=location,keywords`;
 };
-export const keywordToOptionType = (keyword: Keyword): OptionType => ({
-  label: keyword.name.fi,
-  name: keyword.name.fi,
-  value: keyword.id,
-});
 
 export const BackendEndPoints = Object.values(BackendEndpoint);
 

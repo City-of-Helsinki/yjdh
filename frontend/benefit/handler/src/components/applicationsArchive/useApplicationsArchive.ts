@@ -24,8 +24,12 @@ const useApplicationsArchive = (): ApplicationListProps => {
   const { t } = useTranslation();
   const query = useApplicationsQuery(['accepted', 'rejected', 'cancelled']);
 
-  const list = query.data?.map(
-    (application: ApplicationData): ApplicationListItemData => {
+  const list = query.data
+    ?.sort(
+      (a: ApplicationData, b: ApplicationData): number =>
+        Date.parse(b.handled_at ?? '') - Date.parse(a.handled_at ?? '')
+    )
+    .map((application: ApplicationData): ApplicationListItemData => {
       const {
         id = '',
         employee,
@@ -47,8 +51,7 @@ const useApplicationsArchive = (): ApplicationListProps => {
         dataReceived: getBatchDataReceived(status, batch?.created_at),
         applicationNum,
       };
-    }
-  );
+    });
 
   const shouldShowSkeleton = !isServerSide() && query.isLoading;
 

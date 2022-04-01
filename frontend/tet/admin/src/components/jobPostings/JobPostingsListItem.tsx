@@ -38,13 +38,14 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
           objectFit="cover"
           src="/event_placeholder_B.jpg"
           alt="event placeholder"
+          priority={true}
         />
       </$ImageContainer>
       <$PostingCardBody>
         <$PostingHeader>
           <div>
             <$PostingTitle>
-              {posting.title} {posting.org_name}
+              {posting.title} - {posting.org_name}
             </$PostingTitle>
             <$PostingDescription>{posting.description}</$PostingDescription>
           </div>

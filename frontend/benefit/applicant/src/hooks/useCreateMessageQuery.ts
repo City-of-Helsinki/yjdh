@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
 import { MESSAGE_URLS } from 'benefit-shared/constants';
 import { MessageData } from 'benefit-shared/types/application';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';

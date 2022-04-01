@@ -37,4 +37,8 @@ const Message: React.FC<MessageProps> = ({
   </$MessageContainer>
 );
 
+Message.defaultProps = {
+  isPrimary: undefined,
+};
+
 export default Message;

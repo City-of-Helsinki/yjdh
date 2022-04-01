@@ -201,7 +201,8 @@ TableProps<D>): React.ReactElement => {
     const headers = [
       ...(canSelectRows ? [selectorCol] : []),
       ...(canSelectOneRow ? [radioSelectorCol] : []),
-      ...columns,
+      // fix to a hard ts problem: https://github.com/TanStack/react-table/discussions/2664
+      ...columns.map((col) => ({ ...col, accessor: col.accessor as keyof D })),
       ...(renderSubComponent ? [expanderCol] : []),
     ];
 

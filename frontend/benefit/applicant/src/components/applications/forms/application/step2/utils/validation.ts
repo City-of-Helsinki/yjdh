@@ -8,10 +8,11 @@ import {
   MAX_PHONE_NUMBER_LENGTH,
   MAX_SHORT_STRING_LENGTH,
   MIN_PHONE_NUMBER_LENGTH,
-  PAY_SUBSIDY_OPTIONS,
 } from 'benefit/applicant/constants';
-import { Step2 } from 'benefit/applicant/types/application';
-import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
+import {
+  PAY_SUBSIDY_OPTIONS,
+  VALIDATION_MESSAGE_KEYS,
+} from 'benefit-shared/constants';
 import startOfYear from 'date-fns/startOfYear';
 import { FinnishSSN } from 'finnish-ssn';
 import { TFunction } from 'next-i18next';
@@ -23,7 +24,8 @@ import {
 import { getNumberValue } from 'shared/utils/string.utils';
 import * as Yup from 'yup';
 
-export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const getValidationSchema = (t: TFunction) =>
   Yup.object().shape({
     [APPLICATION_FIELDS_STEP2_KEYS.PAY_SUBSIDY_GRANTED]: Yup.boolean()
       .nullable()
@@ -99,8 +101,18 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.PHONE_NUMBER]: Yup.string()
           .matches(PHONE_NUMBER_REGEX, t(VALIDATION_MESSAGE_KEYS.PHONE_INVALID))
-          .min(MIN_PHONE_NUMBER_LENGTH, t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN))
-          .max(MAX_PHONE_NUMBER_LENGTH, t(VALIDATION_MESSAGE_KEYS.NUMBER_MAX))
+          .min(
+            MIN_PHONE_NUMBER_LENGTH,
+            t(VALIDATION_MESSAGE_KEYS.NUMBER_MIN, {
+              min: MIN_PHONE_NUMBER_LENGTH,
+            })
+          )
+          .max(
+            MAX_PHONE_NUMBER_LENGTH,
+            t(VALIDATION_MESSAGE_KEYS.NUMBER_MAX, {
+              max: MAX_PHONE_NUMBER_LENGTH,
+            })
+          )
           .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         [EMPLOYEE_KEYS.IS_LIVING_IN_HELSINKI]: Yup.boolean().oneOf(
           [true],
@@ -117,7 +129,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .transform((_value, originalValue) =>
               Number(getNumberValue(originalValue))
             )
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }),
@@ -129,7 +141,7 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .transform((_value, originalValue) =>
               Number(getNumberValue(originalValue))
             )
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .min(EMPLOYEE_MIN_WORKING_HOURS, (param) => ({
               min: param.min,
@@ -142,17 +154,17 @@ export const getValidationSchema = (t: TFunction): Yup.SchemaOf<Step2> =>
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.VACATION_MONEY]: Yup.number()
             .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.MONTHLY_PAY]: Yup.number()
             .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
           [EMPLOYEE_KEYS.OTHER_EXPENSES]: Yup.number()
             .transform((_value, originalValue) => getNumberValue(originalValue))
-            .typeError(t(VALIDATION_MESSAGE_KEYS.INVALID))
+            .typeError(t(VALIDATION_MESSAGE_KEYS.NUMBER_INVALID))
             .nullable()
             .required(t(VALIDATION_MESSAGE_KEYS.REQUIRED)),
         }),

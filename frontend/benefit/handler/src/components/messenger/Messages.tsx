@@ -2,8 +2,8 @@ import { MESSAGE_TYPES } from 'benefit-shared/constants';
 import { Message } from 'benefit-shared/types/application';
 import { IconSpeechbubble } from 'hds-react';
 import camelCase from 'lodash/camelCase';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import MessageComponent from 'shared/components/messaging/Message';
 import {
   $Empty,

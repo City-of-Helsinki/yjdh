@@ -109,7 +109,8 @@
 				"email": "Vänligen mata in e-post i rätt format",
 				"max": "Överskrider maximalt antal tecken",
 				"phone": "Vänligen mata in i rätt format",
-				"name": "Mata in namn utan specialtecken och -bokstäver"
+				"name": "Mata in namn utan specialtecken och -bokstäver",
+				"isSet": "Välj minst en"
 			}
     },
 		"classification": {
