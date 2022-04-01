@@ -428,6 +428,9 @@
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
       },
+      "phoneNumber": {
+        "max": "Maximal längd är {{max}}"
+      },
       "string": {
         "max": "Detta fält kan vara upp till {{max}} tecken långt",
         "min": "Detta fält måste vara minst {{min}} tecken långt",
