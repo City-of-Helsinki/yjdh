@@ -1,6 +1,6 @@
 import React from 'react';
 import TetPosting from 'tet-shared/types/tetposting';
-import Container from 'tet-shared//components/container/Container';
+import Container from 'tet-shared/components/container/Container';
 import {
   $PostingHero,
   $ImageContainer,
@@ -15,7 +15,7 @@ import {
   $ContactTitle,
   $BackButton,
   $ContactInfo,
-} from 'tet-shared//components/posting/postingHero/PostingHero.sc';
+} from 'tet-shared/components/posting/postingHero/PostingHero.sc';
 import { useTranslation } from 'next-i18next';
 import { OptionType } from 'tet-shared/types/classification';
 import { IconLocation, IconArrowLeft, Tag } from 'hds-react';
