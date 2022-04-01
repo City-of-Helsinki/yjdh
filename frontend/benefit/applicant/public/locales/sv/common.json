@@ -8,7 +8,7 @@
         "heading": "Skickade ansökningar"
       },
       "moreInfo": {
-        "heading": "Lisätietoa tarvitaan"
+        "heading": "Ytterligare uppgifter behövs"
       },
       "common": {
         "created": "Luotu",
@@ -18,7 +18,7 @@
         "sent": "Skickad",
         "applicationNumber": "Ansökningsnummer",
         "status": "Status",
-        "check": "Tarkastele",
+        "check": "Recensioner",
         "editEndDate": "Redigera senast",
         "newMessages_one": "{{count}} ny",
         "newMessages_other": "{{count}} nya"
@@ -42,7 +42,7 @@
       "cancelled": "Peruuttu"
     },
     "steps": {
-      "company": "Arbetsgivare",
+      "employer": "Arbetsgivare",
       "hired": "Anställd",
       "attachments": "Bilagor",
       "summary": "Sammandrag",
@@ -59,7 +59,9 @@
       "back": "Tillbaka",
       "edit": "Redigera",
       "close": "Stäng",
-      "openTermsAsPDF": "Öppna villkoren som PDF-fil"
+      "openTermsAsPDF": "Öppna villkoren som PDF-fil",
+      "continueToService": "Fortsätt till tjänsten",
+      "pauseAndExit": "Avbryt och lämna sidan"
     },
     "sections": {
       "company": {
@@ -360,6 +362,7 @@
       }
     }
   },
+  "serviceName": "E-tjänsten för Helsingforstillägg",
   "appName": "Helsingforstillägg",
   "header": {
     "loginLabel": "Logga in i tjänsten",
@@ -384,8 +387,8 @@
       "message": "Ansökan om Helsingforstillägg {{applicationNumber}} ({{applicantName}}) har skickats. Du får ett meddelande när ansökan har behandlats."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Applikationen sparas",
+      "message": "Helsinforstillägg applikationen {{applicationNumber}} {{applicantName}} sparas."
     },
     "applicationDeleted": {
       "label": "Utkast raderat",
@@ -403,15 +406,14 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Hakemukset",
+    "heading": "Ansökningar",
     "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
     "description2": " Du kan spara en halvfärdig ansökan och komplettera den senare.",
     "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
     "newApplicationBtnText": "Gör en ny ansökan"
   },
   "attachmentsIngress": {
-    "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB."
   },
   "credentialsIngress": {
     "text": "Den person som anställs med Helsingforstillägg ska informeras om behandlingen av hens personuppgifter. Skriv ut informationen och be den anställda om underskrift."
@@ -422,6 +424,7 @@
       "required": "Detta är ett obligatoriskt fält",
       "invalid": "Ogiltig värde",
       "number": {
+        "invalid": "Ogiltigt värde, ande endast siffror",
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
       },
@@ -465,7 +468,8 @@
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
     "infoLabel": "Att använda tjänsten kräver stark autentisering",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
-    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
+    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig.",
+    "termsOfServiceHeader": "Information om behandlingen av arbetsgivarens representanters uppgifter"
   },
   "errorPage": {
     "title": "Tyvärr har det inträffat ett fel i tjänsten",
@@ -528,7 +532,17 @@
     "compose": "Skriv ett meddelande",
     "send": "Skicka",
     "isSecure": "Meddelandena är skyddade",
-    "noMessages": "Ei viestejä",
+    "noMessages": "Inga meddelanden",
     "close": "Stäng"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Behöver du hjälp? Om något är oklart kan du ringa eller mejla oss. Tfn. 040 198 5891 och 040 183 3021 helsinkilisa@hel.fi",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Visa information"
   }
 }

@@ -24,7 +24,9 @@ const useApplicationsQuery = (
     ['applicationsList', ...status],
     async () => {
       const res = axios.get<ApplicationData[]>(
-        `${BackendEndpoint.HANDLER_APPLICATIONS}?status=${status.join(',')}`
+        `${
+          BackendEndpoint.HANDLER_APPLICATIONS_SIMPLIFIED
+        }?status=${status.join(',')}`
       );
       return handleResponse(res);
     },

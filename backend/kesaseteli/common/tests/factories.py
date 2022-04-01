@@ -110,9 +110,83 @@ class EmployerApplicationFactory(factory.django.DjangoModelFactory):
 
 def get_listed_test_schools() -> List[str]:
     return [
+        "Aleksis Kiven peruskoulu",
+        "Apollon yhteiskoulu",
         "Arabian peruskoulu",
+        "Aurinkolahden peruskoulu",
         "Botby grundskola",
+        "Elias-koulu",
+        "Englantilainen koulu",
+        "Grundskolan Norsen",
+        "Haagan peruskoulu",
+        "Helsingin Juutalainen Yhteiskoulu",
+        "Helsingin Kristillinen koulu",
+        "Helsingin Montessori-koulu",
+        "Helsingin Rudolf Steiner -koulu",
+        "Helsingin Saksalainen koulu",
+        "Helsingin Suomalainen yhteiskoulu",
+        "Helsingin Uusi yhteiskoulu",
+        "Helsingin eurooppalainen koulu",
+        "Helsingin normaalilyseo",
+        "Helsingin ranskalais-suomalainen koulu",
+        "Helsingin yhteislyseo",
+        "Helsingin yliopiston Viikin normaalikoulu",
+        "Herttoniemen yhteiskoulu",
+        "Hiidenkiven peruskoulu",
+        "Hoplaxskolan",
+        "International School of Helsinki",
+        "Itäkeskuksen peruskoulu",
+        "Jätkäsaaren peruskoulu",
+        "Kalasataman peruskoulu",
+        "Kankarepuiston peruskoulu",
+        "Kannelmäen peruskoulu",
+        "Karviaistien koulu",
+        "Kruununhaan yläasteen koulu",
+        "Kruunuvuorenrannan peruskoulu",
+        "Kulosaaren yhteiskoulu",
+        "Käpylän peruskoulu",
+        "Laajasalon peruskoulu",
+        "Latokartanon peruskoulu",
+        "Lauttasaaren yhteiskoulu",
+        "Maatullin peruskoulu",
+        "Malmin peruskoulu",
+        "Marjatta-koulu",
+        "Maunulan yhteiskoulu",
+        "Meilahden yläasteen koulu",
+        "Merilahden peruskoulu",
+        "Minervaskolan",
+        "Munkkiniemen yhteiskoulu",
+        "Myllypuron peruskoulu",
+        "Naulakallion koulu",
+        "Oulunkylän yhteiskoulu",
+        "Outamon koulu",
+        "Pakilan yläasteen koulu",
+        "Pasilan peruskoulu",
+        "Pitäjänmäen peruskoulu",
+        "Pohjois-Haagan yhteiskoulu",
+        "Porolahden peruskoulu",
+        "Puistolan peruskoulu",
+        "Puistopolun peruskoulu",
+        "Pukinmäenkaaren peruskoulu",
         "Ressu Comprehensive School",
+        "Ressun peruskoulu",
+        "Sakarinmäen peruskoulu",
+        "Solakallion koulu",
+        "Sophie Mannerheimin koulu",
+        "Suomalais-venäläinen koulu",
+        "Suutarinkylän peruskoulu",
+        "Taivallahden peruskoulu",
+        "Toivolan koulu",
+        "Torpparinmäen peruskoulu",
+        "Töölön yhteiskoulu",
+        "Valteri-koulu",
+        "Vartiokylän yläasteen koulu",
+        "Vesalan peruskoulu",
+        "Vuoniityn peruskoulu",
+        "Yhtenäiskoulu",
+        "Zacharias Topeliusskolan",
+        "Åshöjdens grundskola",
+        "Östersundom skola",
     ]
 
 
@@ -123,12 +197,12 @@ def get_unlisted_test_schools() -> List[str]:
     ]
 
 
-def get_all_test_schools() -> List[str]:
-    return get_listed_test_schools() + get_unlisted_test_schools()
-
-
-def uses_unlisted_test_school(youth_application) -> bool:
-    return youth_application.school not in get_listed_test_schools()
+def determine_school(youth_application) -> str:
+    return Faker().random_element(
+        get_unlisted_test_schools()
+        if youth_application.is_unlisted_school
+        else get_listed_test_schools()
+    )
 
 
 def get_test_phone_number() -> str:
@@ -201,8 +275,8 @@ class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
-    school = factory.Faker("random_element", elements=get_all_test_schools())
-    is_unlisted_school = factory.LazyAttribute(uses_unlisted_test_school)
+    school = factory.LazyAttribute(determine_school)
+    is_unlisted_school = factory.Faker("boolean")
     email = factory.Faker("email")
     phone_number = factory.LazyFunction(get_test_phone_number)
     postcode = factory.Faker("postcode", locale="fi")
@@ -239,8 +313,24 @@ class ActiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     )
 
 
+class ActiveListedSchoolYouthApplicationFactory(ActiveYouthApplicationFactory):
+    is_unlisted_school = False
+
+
+class ActiveUnlistedSchoolYouthApplicationFactory(ActiveYouthApplicationFactory):
+    is_unlisted_school = True
+
+
 class InactiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = YouthApplicationStatus.SUBMITTED.value
+
+
+class InactiveListedSchoolYouthApplicationFactory(InactiveYouthApplicationFactory):
+    is_unlisted_school = False
+
+
+class InactiveUnlistedSchoolYouthApplicationFactory(InactiveYouthApplicationFactory):
+    is_unlisted_school = True
 
 
 class AcceptableYouthApplicationFactory(AbstractYouthApplicationFactory):

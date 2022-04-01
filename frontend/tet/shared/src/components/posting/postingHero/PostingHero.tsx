@@ -85,6 +85,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               objectFit="cover"
               src="/event_placeholder_B.jpg"
               alt="event placeholder"
+              priority={true}
             />
           </$ImageContainer>
           <$HeroContentWrapper>

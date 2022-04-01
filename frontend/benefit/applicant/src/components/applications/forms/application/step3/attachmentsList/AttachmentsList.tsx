@@ -50,4 +50,10 @@ const AttachmentsList: React.FC<AttachmentsListProps> = ({
   );
 };
 
+AttachmentsList.defaultProps = {
+  showMessage: undefined,
+  attachments: undefined,
+  required: undefined,
+};
+
 export default AttachmentsList;

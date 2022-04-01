@@ -93,7 +93,9 @@ const ApplicationFormStep2: React.FC<DynamicFormStepComponentProps> = ({
   const isAbleToSelectSalaryBenefit = formik.values.paySubsidyGranted === true;
 
   const isNoAvailableBenefitTypes =
-    !isAbleToSelectEmploymentBenefit && !isAbleToSelectSalaryBenefit;
+    formik.values.paySubsidyGranted !== null &&
+    !isAbleToSelectEmploymentBenefit &&
+    !isAbleToSelectSalaryBenefit;
 
   return (
     <form onSubmit={handleSubmit} noValidate>

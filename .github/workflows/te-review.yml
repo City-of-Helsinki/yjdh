@@ -62,15 +62,21 @@ jobs:
             port: 8000
 #          - service: te-empl
 #            context: ./frontend
-#            dockerfile: ./frontend/tet/employer/Dockerfile
+#            dockerfile: ./frontend/Dockerfile
+#            project: tet
+#            folder: employer
 #            port: 3000
           - service: te-yout
             context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
+            dockerfile: ./frontend/Dockerfile
+            project: tet
+            folder: youth
             port: 3000
           - service: te-admn
             context: ./frontend
-            dockerfile: ./frontend/tet/admin/Dockerfile
+            dockerfile: ./frontend/Dockerfile
+            project: tet
+            folder: admin
             port: 3000
     concurrency:
       group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
@@ -78,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build ${{ matrix.service }}
         if: github.event_name == 'pull_request' || github.event.inputs.build_required == 'true'
@@ -87,6 +93,10 @@ jobs:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
+          DOCKER_BUILD_ARG_PROJECT: ${{ matrix.project }}
+          DOCKER_BUILD_ARG_FOLDER: ${{ matrix.folder }}
+          DOCKER_BUILD_ARG_SERVICE: ${{ matrix.service }}
+          DOCKER_BUILD_ARG_PORT: ${{ matrix.port }}
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
@@ -105,20 +115,26 @@ jobs:
             dockerfile: ./backend/docker/tet.Dockerfile
             database: true
             port: 8000
-#          - service: te-empl
-#            context: ./frontend
-#            dockerfile: ./frontend/tet/employer/Dockerfile
-#            database: false
-#            port: 3000
+          #          - service: te-empl
+          #            context: ./frontend
+          #            dockerfile: ./frontend/Dockerfile
+          #            database: false
+          #            project: tet
+          #            folder: employer
+          #            port: 3000
           - service: te-yout
             context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
+            dockerfile: ./frontend/Dockerfile
             database: false
+            project: tet
+            folder: youth
             port: 3000
           - service: te-admn
             context: ./frontend
-            dockerfile: ./frontend/tet/admin/Dockerfile
+            dockerfile: ./frontend/Dockerfile
             database: false
+            project: tet
+            folder: admin
             port: 3000
     concurrency:
       group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
@@ -127,7 +143,7 @@ jobs:
     needs: build
     name: Review
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: andersinno/kolga-setup-action@v2
         with:
           pr_number: ${{ github.event.inputs.pr_number }}
@@ -234,7 +250,7 @@ jobs:
 #          - service: te-empl
 #            dir: kesaseteli/employer
 #    steps:
-#      - uses: actions/checkout@v2
+#      - uses: actions/checkout@v3
 #      - name: Setup kubectl
 #        run: |
 #          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
