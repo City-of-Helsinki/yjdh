@@ -8,7 +8,7 @@ on:
       - 'frontend/shared/**'
       - 'frontend/kesaseteli/shared/**'
       - 'frontend/*'
-      - '.github/workflows/ks-shared-tests.yml'
+      - '.github/workflows/ks-shared-frontend-tests.yml'
       - "!**/browser-tests/**"
       - "!**/README.md"
   workflow_dispatch:

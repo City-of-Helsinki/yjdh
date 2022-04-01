@@ -14,6 +14,8 @@ import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
 
+import { IS_CLIENT, LOCAL_STORAGE_KEYS } from '../constants';
+
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
 };
@@ -50,6 +52,12 @@ const Login: NextPage = () => {
       void queryClient.clear();
     }
   }, [logout, queryClient]);
+
+  useEffect(() => {
+    if (IS_CLIENT)
+      // eslint-disable-next-line scanjs-rules/identifier_localStorage
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED);
+  }, []);
 
   return (
     <Container>

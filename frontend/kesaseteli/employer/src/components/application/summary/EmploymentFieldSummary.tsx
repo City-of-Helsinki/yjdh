@@ -34,7 +34,7 @@ const EmploymentFieldSummary: React.FC<Props> = ({
 };
 
 EmploymentFieldSummary.defaultProps = {
-  children: undefined,
+  children: null,
   select: undefined,
 };
 

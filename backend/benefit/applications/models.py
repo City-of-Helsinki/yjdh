@@ -72,6 +72,16 @@ class ApplicationManager(models.Manager):
         ApplicationStatus.CANCELLED,
     ]
 
+    def _annotate_with_log_timestamp(self, qs, field_name, to_statuses):
+        subquery = (
+            ApplicationLogEntry.objects.filter(
+                application=OuterRef("pk"), to_status__in=to_statuses
+            )
+            .order_by("-created_at")
+            .values("created_at")[:1]
+        )
+        return qs.annotate(**{field_name: Subquery(subquery)})
+
     def _annotate_handled_at(self, qs):
         subquery = (
             ApplicationLogEntry.objects.filter(
@@ -82,8 +92,43 @@ class ApplicationManager(models.Manager):
         )
         return qs.annotate(handled_at=Subquery(subquery))
 
+    def _annotate_additional_information_requested_at(self, qs):
+        subquery = (
+            ApplicationLogEntry.objects.filter(
+                application=OuterRef("pk"),
+                to_status__in=[ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED],
+            )
+            .order_by("-created_at")
+            .values("created_at")[:1]
+        )
+        return qs.annotate(additional_information_requested_at=Subquery(subquery))
+
+    def _annotate_submitted_at(self, qs):
+        subquery = (
+            ApplicationLogEntry.objects.filter(
+                application=OuterRef("pk"), to_status__in=[ApplicationStatus.RECEIVED]
+            )
+            .order_by("-created_at")
+            .values("created_at")[:1]
+        )
+        return qs.annotate(submitted_at=Subquery(subquery))
+
     def get_queryset(self):
-        return self._annotate_handled_at(super().get_queryset())
+        """
+        Annotate the queryset with information about timestamps of past status transitions.
+        If multiple transitions to the same status have occurred, then use the latest status transition timestamp.
+        """
+        qs = super().get_queryset()
+        qs = self._annotate_with_log_timestamp(qs, "handled_at", self.HANDLED_STATUSES)
+        qs = self._annotate_with_log_timestamp(
+            qs,
+            "additional_information_requested_at",
+            [ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED],
+        )
+        qs = self._annotate_with_log_timestamp(
+            qs, "submitted_at", [ApplicationStatus.RECEIVED]
+        )
+        return qs
 
 
 class Application(UUIDModel, TimeStampedModel, DurationMixin):

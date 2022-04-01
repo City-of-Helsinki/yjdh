@@ -22,7 +22,6 @@ const Postings: React.FC = () => {
     }
 
     if (data) {
-      console.log(data, 'data');
       return (
         <JobPostingList
           postings={data}

@@ -1,6 +1,7 @@
 import factory
 import pytest
 from applications.enums import BenefitType
+from applications.models import Application
 from applications.services.applications_csv_report import ApplicationsCsvService
 from applications.services.talpa_integration import TalpaService
 from applications.tests.factories import (
@@ -76,14 +77,21 @@ def talpa_service_with_one_application(talpa_service):
 
 @pytest.fixture
 def applications_csv_service():
+    # retrieve the objects through the default manager so that annotations are added
+    application1 = DecidedApplicationFactory(application_number=100001)
+    application2 = DecidedApplicationFactory(application_number=100002)
     return ApplicationsCsvService(
-        [DecidedApplicationFactory(), DecidedApplicationFactory()]
+        Application.objects.filter(pk__in=[application1.pk, application2.pk]).order_by(
+            "application_number"
+        )
     )
 
 
 @pytest.fixture
-def applications_csv_service_with_one_application():
-    return ApplicationsCsvService([DecidedApplicationFactory()])
+def applications_csv_service_with_one_application(applications_csv_service):
+    application1 = DecidedApplicationFactory(application_number=100001)
+    return ApplicationsCsvService(Application.objects.filter(pk=application1.pk))
+    return applications_csv_service
 
 
 @pytest.fixture

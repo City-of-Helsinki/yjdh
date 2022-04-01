@@ -13,7 +13,8 @@ const PageContent = () => {
           layout="responsive"
           objectFit="contain"
           src="/etela-haaga_kirjasto_230421_kuva_jussi_hellsten_0693.jpg"
-          alt="canteen counter"
+          alt="etela haaga kirjasto"
+          priority={true}
         />
       </$ImageWrapper>
       <$Textbox>

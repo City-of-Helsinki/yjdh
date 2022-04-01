@@ -9,10 +9,11 @@ import { useTranslation } from 'next-i18next';
 import { IconGroup, IconGlobe } from 'hds-react';
 import { convertToBackendDateFormat, convertToUIDateFormat } from 'shared/utils/date.utils';
 import PostingSearchTags from 'tet/youth/components/jobPostingSearch/jobPostingSearchTags/JobPostingSearchTags';
-import useGetKeywords from 'tet/youth/hooks/backend/useGetKeywords';
-import { keywordToOptionType } from 'tet/youth/backend-api/backend-api'; //TODO to shared
+import { keywordToOptionType } from 'tet-shared/backend-api/linked-events-api';
 import { Language } from 'shared/i18n/i18n';
 import { OptionType } from 'tet-shared/types/classification';
+import { useQuery } from 'react-query';
+import { getWorkMethods } from 'tet-shared/backend-api/linked-events-api';
 
 type Props = {
   initParams: QueryParams;
@@ -32,13 +33,10 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     { name: 'sv', value: 'sv', label: t('common:languages.sv') },
     { name: 'en', value: 'en', label: t('common:languages.en') },
   ];
-
-  const workMethodsResults = useGetKeywords();
+  const workMethodsResults = useQuery('methods', getWorkMethods);
 
   const workMethods =
-    !workMethodsResults.isLoading && workMethodsResults.data
-      ? workMethodsResults.data.data.map((k) => keywordToOptionType(k))
-      : [];
+    workMethodsResults.data?.map((k) => keywordToOptionType(k, i18n.language as Language, 'id')) || [];
 
   React.useEffect(() => {
     setStartTime(initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : '');

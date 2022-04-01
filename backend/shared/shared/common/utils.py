@@ -1,4 +1,5 @@
 import operator
+from datetime import date
 from functools import reduce
 from urllib.parse import urlparse
 
@@ -7,6 +8,10 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.db.models import Q, QuerySet
 from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url
+from stdnum.fi.hetu import (
+    compact as compact_finnish_social_security_number,
+    validate as validate_finnish_social_security_number,
+)
 
 _ALWAYS_FALSE_Q_FILTER = Q(pk=None)  # A hack but works as primary keys can't be null
 
@@ -94,3 +99,29 @@ def redirect_to_login_using_request(
     from django.contrib.auth.views import redirect_to_login
 
     return redirect_to_login(path, resolved_login_url, redirect_field_name)
+
+
+def social_security_number_birthdate(social_security_number) -> date:
+    """
+    Calculate birthdate based on the given Finnish social security number.
+
+    :raises stdnum.exceptions.ValidationError: If social_security_number is not a valid
+                                               Finnish social security number.
+    :return: Birthdate calculated from the social_security_number.
+    """
+    compacted_social_security_number = compact_finnish_social_security_number(
+        social_security_number
+    )
+    validate_finnish_social_security_number(
+        compacted_social_security_number, allow_temporary=True
+    )
+
+    # Unpack social security number into parts (D=Day, M=Month, Y=Year, C=Century):
+    # DDMMYYC
+    # 0123456
+    day = int(compacted_social_security_number[0:2])
+    month = int(compacted_social_security_number[2:4])
+    year_mod_100 = int(compacted_social_security_number[4:6])
+    century_char = compacted_social_security_number[6]
+    century = {"+": 1800, "-": 1900, "A": 2000}[century_char]
+    return date(year=century + year_mod_100, month=month, day=day)
