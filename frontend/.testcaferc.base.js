@@ -1,23 +1,20 @@
 const path = require('path');
 
-// known javascript errors and warnings that can be ignored
-const whitelistMsgs = ['Warning: Prop `%s` did not match','downshift: A component has changed the uncontrolled prop', 'Using ReactElement as a label is against good usability and accessibility practices']
-
 module.exports = (envPath) => {
   require('dotenv').config({ path: envPath,  });
   return {
     hooks: {
       test: {
+        before: async (t) => {
+          await t.eval(() => document.location.reload());
+        },
         after: async (t) => {
           const { error, warn,log, info } = await t.getBrowserConsoleMessages();
-          console.log(JSON.stringify(log, null, 2));
-          console.log(JSON.stringify(info, null, 2));
-          const filteredErrors = error.filter(err => whitelistMsgs.every(msg => !err.includes(msg)));
-          const filteredWarnings = warn.filter(err => whitelistMsgs.every(msg => !err.includes(msg)));
-          await t.expect(filteredErrors.length).eql(0, JSON.stringify(filteredErrors, null, 2));
-          await t.expect(filteredWarnings.length).eql(0, JSON.stringify(filteredWarnings, null, 2));
+          console.log('Console logs:', JSON.stringify(log, null, 2));
+          console.info('Console infos:', JSON.stringify(info, null, 2));
+          console.warn('Console warnings:', JSON.stringify(warn, null, 2));
+          console.error('Console errors:', JSON.stringify(error, null, 2));
         }
-
       },
     },
     clientScripts: [
