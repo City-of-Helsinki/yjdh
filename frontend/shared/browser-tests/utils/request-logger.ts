@@ -29,11 +29,11 @@ export const filterLoggedRequests = (logger: RequestLogger): LoggedRequest[] =>
     ...request,
     request: {
       ...request.request,
-      body: getShortenedBodyString(request.request.body),
+      body: getShortenedBodyString(request.request?.body),
     },
     response: {
       ...request.response,
-      body: getShortenedBodyString(request.response.body),
+      body: getShortenedBodyString(request.response?.body),
     },
   }));
 

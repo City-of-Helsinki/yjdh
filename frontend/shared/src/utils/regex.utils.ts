@@ -12,6 +12,7 @@ export const escapeRegExp = (unescapedString: string, flags?: string): RegExp =>
 // How to check if a string is a valid JSON string?
 // https://stackoverflow.com/questions/3710204/how-to-check-if-a-string-is-a-valid-json-string
 export const isValidJsonString = (str: string): boolean =>
+  typeof str === 'string' &&
   /^[\s,:\]{}]*$/.test(
     str
       .replace(/\\["/\\bfnrtu]/g, '@')
