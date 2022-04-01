@@ -10,9 +10,10 @@ import Container from 'tet/shared/src/components/container/Container';
 import { IconArrowLeft, IconUpload } from 'hds-react';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import { useTranslation } from 'next-i18next';
-import usePublishTetPosting from 'tet/admin/hooks/backend/usePublishTetPosting';
 import TetPosting from 'tet-shared/types/tetposting';
 import useConfirm from 'shared/hooks/useConfirm';
+import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
+import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 
 type BarProps = {
   hasMargin?: boolean;
@@ -45,12 +46,10 @@ const PreviewBar: React.FC<BarProps> = ({ hasMargin, allowPublish, onPublish }) 
 };
 
 const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }) => {
-  const publishTetPosting = usePublishTetPosting();
+  const upsertTetPosting = useUpsertTetPosting();
   const { confirm } = useConfirm();
   const { t } = useTranslation();
   const { formValid } = useContext(PreviewContext);
-
-  console.log(`formValid=${formValid}`);
 
   const allowPublish = posting.date_published === null && formValid;
 
@@ -62,7 +61,12 @@ const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }
       });
 
       if (isConfirmed) {
-        publishTetPosting.mutate(posting);
+        const event = tetPostingToEvent(posting, true);
+
+        upsertTetPosting.mutate({
+          id: posting.id,
+          event,
+        });
       }
     }
   };
