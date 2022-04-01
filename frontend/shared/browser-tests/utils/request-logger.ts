@@ -3,7 +3,7 @@ import { RequestLogger } from 'testcafe';
 import { isValidJsonString } from '../../src/utils/regex.utils';
 
 const requestLogger = RequestLogger(
-  { url: /^https:.*$/i },
+  { url: /^https:\/\/(?:(?!_next).)*$/, isAjax: true },
   {
     logRequestHeaders: true,
     logResponseHeaders: true,

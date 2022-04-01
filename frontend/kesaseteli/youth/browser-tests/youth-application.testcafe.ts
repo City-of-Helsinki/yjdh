@@ -44,7 +44,7 @@ fixture('Youth Application')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test.only('I can send application and return to front page', async (t) => {
+test('I can send application and return to front page', async (t) => {
   const indexPage = await getIndexPageComponents(t);
   await indexPage.expectations.isLoaded();
   const formData = fakeYouthFormData();
