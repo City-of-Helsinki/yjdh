@@ -428,6 +428,9 @@
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
       },
+      "phoneNumber": {
+        "max": "Maximum length is {{max}}"
+      },
       "string": {
         "max": "This field can be up to {{max}} characters long",
         "min": "This field must be at least {{min}} characters long",
