@@ -193,3 +193,7 @@ export const SUBMITTED_STATUSES = [
   'accepted',
   'rejected',
 ];
+
+export enum LOCAL_STORAGE_KEYS {
+  IS_TERMS_OF_SERVICE_APPROVED = 'isTermsOfServiceApproved',
+}

@@ -11,14 +11,19 @@ import { openFileInNewTab } from 'shared/utils/file.utils';
 import useApproveTermsOfServiceMutation from '../../hooks/useApproveTermsOfServiceMutation';
 import useLogout from '../../hooks/useLogout';
 import useTermsOfServiceData from '../../hooks/useTermsOfServiceData';
-import { ApplicantConsents } from '../../types/application';
 import PdfViewer from '../pdfViewer/PdfViewer';
 
-const TermsOfService: React.FC = () => {
-  const { locale, theme, t, termsInEffectUrl, userData } =
-    useTermsOfServiceData();
+type TermsOfServiceProps = {
+  setIsTermsOfSerivceApproved: (isTermsOfServiceApproved: boolean) => void;
+};
 
-  const { mutate: approveTermsOfService } = useApproveTermsOfServiceMutation();
+const TermsOfService: React.FC<TermsOfServiceProps> = ({
+  setIsTermsOfSerivceApproved,
+}) => {
+  const { locale, theme, t, termsInEffectUrl, user, approveTermsOfService } =
+    useTermsOfServiceData(setIsTermsOfSerivceApproved);
+
+  const { mutate } = useApproveTermsOfServiceMutation();
 
   const logout = useLogout();
 
@@ -65,14 +70,11 @@ const TermsOfService: React.FC = () => {
             theme="coat"
             variant="primary"
             onClick={() =>
-              approveTermsOfService({
-                terms: userData?.termsOfServiceInEffect.id ?? '',
-                selected_applicant_consents: userData
-                  ? userData.termsOfServiceInEffect.applicantConsents.map(
-                      (item: ApplicantConsents) => item.id
-                    )
-                  : [''],
-              })
+              user?.termsOfServiceApprovalNeeded
+                ? mutate(user, {
+                    onSuccess: () => approveTermsOfService(),
+                  })
+                : approveTermsOfService()
             }
             style={{ marginRight: theme.spacing.s }}
           >

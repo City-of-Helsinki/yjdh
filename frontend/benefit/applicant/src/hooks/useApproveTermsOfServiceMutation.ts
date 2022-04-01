@@ -1,37 +1,32 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
-import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
+import { useMutation, UseMutationResult } from 'react-query';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 
 import {
-  ApproveTermsOfServiceRequestData,
+  ApplicantConsents,
   ApproveTermsOfServiceResponseData,
+  User,
 } from '../types/application';
 
 const useApproveTermsOfServiceMutation = (): UseMutationResult<
   ApproveTermsOfServiceResponseData,
   unknown,
-  ApproveTermsOfServiceRequestData
+  User
 > => {
   const { axios, handleResponse } = useBackendAPI();
 
-  const queryClient = useQueryClient();
-
-  return useMutation<
-    ApproveTermsOfServiceResponseData,
-    unknown,
-    ApproveTermsOfServiceRequestData
-  >(
+  return useMutation<ApproveTermsOfServiceResponseData, unknown, User>(
     'approveTermsOfService',
-    (requestBody: ApproveTermsOfServiceRequestData) =>
+    (user: User) =>
       handleResponse<ApproveTermsOfServiceResponseData>(
-        axios.post(BackendEndpoint.APPROVE_TERMS_OF_SERVICE, requestBody)
-      ),
-    {
-      onSuccess: (data) => {
-        if (data.id)
-          void queryClient.invalidateQueries('checkTermsOfServiceApproval');
-      },
-    }
+        axios.post(BackendEndpoint.APPROVE_TERMS_OF_SERVICE, {
+          terms: user.termsOfServiceInEffect.id,
+          selected_applicant_consents:
+            user.termsOfServiceInEffect.applicantConsents.map(
+              (item: ApplicantConsents) => item.id
+            ),
+        })
+      )
   );
 };
 
