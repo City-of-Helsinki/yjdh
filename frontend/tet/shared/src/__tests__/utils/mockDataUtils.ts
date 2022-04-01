@@ -17,6 +17,8 @@ export const fakeLocalizedObject = (text?: string): LocalizedObject => ({
   fi: text || uniqueSentences(),
 });
 
+export const getPastDate = (): string => formatDate(faker.date.past());
+
 const sentences: string[] = [];
 const uniqueSentences = (): string => {
   const sentence = faker.random.words();

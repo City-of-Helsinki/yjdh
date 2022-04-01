@@ -1,4 +1,4 @@
-import { render, RenderResult, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import React from 'react';
@@ -28,5 +28,16 @@ describe('JobPostings', () => {
       const postingTitle = within(publishedList).getByText(new RegExp(title, 'i'));
       expect(postingTitle).toBeInTheDocument();
     });
+  });
+
+  it('should show correct postings total number in the lists', async () => {
+    expectToGetEventsFromBackend(events);
+    renderComponent(<JobPostings />);
+
+    const publishedList = await screen.findByTestId('published-list');
+    const draftList = await screen.findByTestId('draft-list');
+
+    expect(within(draftList).getByText(new RegExp(`${draftTitles.length} kpl`, 'i'))).toBeInTheDocument();
+    expect(within(publishedList).getByText(new RegExp(`${publishedTitles.length} kpl`, 'i'))).toBeInTheDocument();
   });
 });
