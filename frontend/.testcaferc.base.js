@@ -1,21 +1,18 @@
-const { waitForReact } = require('testcafe-react-selectors');
 const path = require('path');
+const { filterLoggedRequests } = require('@frontend/kesaseteli-shared/browser-tests/utils/request-logger');
+const requestLogger = require('@frontend/kesaseteli-shared/browser-tests/utils/request-logger');
 
 module.exports = (envPath) => {
   require('dotenv').config({ path: envPath });
   return {
     hooks: {
       test: {
-        before: async (t) => {
-          await waitForReact(45_000, t);
-        },
         afterEach: async (t) => {
-          const { error, warn, log, info } = await t.getBrowserConsoleMessages();
-          console.log('BROWSER CONSOLE MESSAGES:');
-          console.error(error);
-          console.warn(warn);
-          console.log(log);
-          console.info(info);
+          // eslint-disable-next-line no-console
+          console.log(filterLoggedRequests(requestLogger))
+          const { error, warn } = await t.getBrowserConsoleMessages();
+          t.expect(error.length).lt(0, JSON.stringify(error));
+          t.expect(warn.length).lt(0, JSON.stringify(error));
         }
 
       },
@@ -33,12 +30,6 @@ module.exports = (envPath) => {
         customCompilerModulePath:  path.join(__dirname, '/node_modules/typescript')
       }
     },
-    assertionTimeout: 5000,
-    selectorTimeout: 30_000,
-    pageLoadTimeout: 120_000,
-    ajaxRequestTimeout: 120_000,
-    pageRequestTimeout: 90_000,
-    browserInitTimeout: 240_000
   };
 };
 
