@@ -206,6 +206,15 @@ def test_pay_subsidy_maximum(handling_application, pay_subsidy_percent, max_subs
             None,
             True,
         ),
+        (
+            BenefitType.EMPLOYMENT_BENEFIT,
+            date(2022, 1, 1),
+            date(2022, 1, 16),
+            100,
+            date(2022, 1, 1),
+            None,
+            True,
+        ),
     ],
 )
 def test_calculation_required_fields(
@@ -232,6 +241,11 @@ def test_calculation_required_fields(
     if can_calculate:
         assert handling_application.calculation.calculated_benefit_amount is not None
         assert handling_application.calculation.rows.count() > 0
+        # The result must be rounded to full euros
+        assert (
+            int(handling_application.calculation.calculated_benefit_amount)
+            == handling_application.calculation.calculated_benefit_amount
+        )
     else:
         assert handling_application.calculation.calculated_benefit_amount is None
         assert handling_application.calculation.rows.count() == 0
