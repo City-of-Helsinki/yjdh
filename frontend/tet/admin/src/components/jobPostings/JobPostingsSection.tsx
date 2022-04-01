@@ -8,12 +8,13 @@ type JobPostingsSectionProps = {
   title: String;
   postingsTotal: number;
   postings: TetPosting[];
+  sectionId: string;
 };
 
-const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postingsTotal, postings }) => {
+const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postingsTotal, postings, sectionId }) => {
   const { t } = useTranslation();
   return (
-    <>
+    <div data-testid={`${sectionId}-list`}>
       <$HeadingContainer>
         <$Title>{title}</$Title>
         <$Total>
@@ -23,7 +24,7 @@ const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postings
       {postings.map((posting) => (
         <JobPostingsListItem posting={posting} />
       ))}
-    </>
+    </div>
   );
 };
 

@@ -16,11 +16,13 @@ const JobPostingsList: React.FC<JobPostingsListProps> = ({ draft, published }) =
         title={t('common:application.jobPostings.publishedPostings')}
         postingsTotal={published.length}
         postings={published}
+        sectionId="published"
       ></JobPostingsSection>
       <JobPostingsSection
         title={t('common:application.jobPostings.draftPostings')}
         postingsTotal={draft.length}
         postings={draft}
+        sectionId="draft"
       ></JobPostingsSection>
     </>
   );

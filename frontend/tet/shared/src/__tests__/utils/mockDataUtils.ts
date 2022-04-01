@@ -115,24 +115,15 @@ const fakePlace = (): Place => ({
 });
 
 export const fakeEventListAdmin = (
-  numberOfDraft: number,
-  numberOfPublished: number
+  draftTitles: string[],
+  publishedTitles: string[]
 ): TetEvents => {
-  const draft = [];
-  const published = [];
-  for (let i = 0; i <= numberOfDraft; i++) {
-    draft.push(
-      fakeTetEvent({ date_published: null, publication_status: 'draft' })
-    );
-  }
-  for (let i = 0; i <= numberOfPublished; i++) {
-    draft.push(
-      fakeTetEvent({
-        date_published: formatDate(faker.date.past()),
-        publication_status: 'published',
-      })
-    );
-  }
+  const draft = draftTitles.map((draftTitle) =>
+    fakeTetEvent({ name: fakeLocalizedObject(draftTitle) })
+  );
+  const published = publishedTitles.map((publishedTitle) =>
+    fakeTetEvent({ name: fakeLocalizedObject(publishedTitle) })
+  );
   return {
     draft,
     published,

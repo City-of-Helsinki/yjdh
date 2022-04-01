@@ -1,4 +1,5 @@
-import { render, RenderResult } from '@testing-library/react';
+import { render, RenderResult, screen } from '@testing-library/react';
+import { within } from '@testing-library/dom';
 import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import React from 'react';
 import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/mockDataUtils';
@@ -7,12 +8,25 @@ import { expectToGetEventsFromBackend } from 'tet/admin/__tests__/utils/backend/
 import JobPostings from '../JobPostings';
 
 describe('JobPostings', () => {
-  const events = fakeEventListAdmin(3, 4);
+  const draftTitles = ['draft-1', 'draft-2'];
+  const publishedTitles = ['published-1', 'published-2', 'published-3'];
+  const events = fakeEventListAdmin(draftTitles, publishedTitles);
 
-  it('should show list of published posting cards', async () => {
+  it('should list unpublished postings in unpublished list and published postings in published list', async () => {
     expectToGetEventsFromBackend(events);
     renderComponent(<JobPostings />);
 
-    expect(true).toBe(true);
+    const publishedList = await screen.findByTestId('published-list');
+    const draftList = await screen.findByTestId('draft-list');
+
+    draftTitles.forEach((title) => {
+      const postingTitle = within(draftList).getByText(new RegExp(title, 'i'));
+      expect(postingTitle).toBeInTheDocument();
+    });
+
+    publishedTitles.forEach((title) => {
+      const postingTitle = within(publishedList).getByText(new RegExp(title, 'i'));
+      expect(postingTitle).toBeInTheDocument();
+    });
   });
 });
