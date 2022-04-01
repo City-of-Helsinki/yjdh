@@ -36,6 +36,7 @@ from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
@@ -1145,6 +1146,7 @@ def test_application_status_change_as_applicant(
     ],
 )
 @pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_application_status_change_as_handler(
     request,
     handler_api_client,
@@ -1153,6 +1155,7 @@ def test_application_status_change_as_handler(
     to_status,
     expected_code,
     log_entry_comment,
+    mailoutbox,
 ):
     """
     modify existing application
@@ -1206,6 +1209,8 @@ def test_application_status_change_as_handler(
                 "Please make the corrections by 18.06.2021"
                 in application.messages.first().content
             )
+            assert len(mailoutbox) == 1
+            assert "You have received a new message" in mailoutbox[0].subject
 
         if to_status in [
             ApplicationStatus.CANCELLED,
