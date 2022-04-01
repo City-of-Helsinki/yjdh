@@ -9,6 +9,14 @@ module.exports = (envPath) => {
         before: async (t) => {
           await waitForReact(45_000, t);
         },
+        afterEach: async (t) => {
+          const { error, warn, log, info } = await t.getBrowserConsoleMessages();
+          console.log('BROWSER CONSOLE MESSAGES:');
+          console.error(error);
+          console.warn(warn);
+          console.log(log);
+          console.info(info);
+        }
 
       },
     },
