@@ -38,8 +38,6 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
           {children}
         </>
       )}
-      {/* <Header />
-      {children} */}
       <SupportingContent />
       <Footer />
     </$Main>
