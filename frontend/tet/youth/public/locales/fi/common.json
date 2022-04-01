@@ -14,7 +14,15 @@
 		"heading": "Muistathan etsiä TET-paikkasi ajoissa",
 		"search": "Etsi",
 		"fetch": "Hae",
-		"advancedSearch": "Tarkennettu haku"
+		"advancedSearch": "Tarkennettu haku",
+		"boxTitle": "Mikä TET-paikka?",
+		"boxContent": "Työelämään tutustuminen eli TET kuuluu jokaisen peruskoululaisen elämään. TET:n aikana pääsee näkemään, mitä erilaisissa ammateissa tehdään ja pääsee itse kokemaan työelämää.",
+		"announceLinkTitle": "Ilmoita TET-paikka",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Oletko työnantaja ja haluat tehdä ilmoituksen avoimesta TET-paikasta? Siirry tästä työnantajan palveluun.",
+		"askLinkTitle": "Kysyttävää",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
 	},
 	"filters": {
 		"searchPlaceholder": "Kirjoita hakusana tai paikan nimi",

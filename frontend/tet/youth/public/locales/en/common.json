@@ -14,7 +14,15 @@
 		"heading": "Remember to find you TET job on time",
 		"search": "Search",
 		"fetch": "Search",
-		"advancedSearch": "Advanced search"
+		"advancedSearch": "Advanced search",
+		"boxTitle": "What is TET?",
+		"boxContent": "Work life practice, or TET, is part of school work for elementary school pupils. During TET, one can learn about different professions and get to experience working life in practice.",
+		"announceLinkTitle": "Announce a TET-position",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Are you an employer and want to make a TET-advertisement? Click here for the employer's service.",
+		"askLinkTitle": "Any questions?",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Do you have any questions or did you notice something strange about the service? Reach out!"
 	},
 	"filters": {
 		"searchPlaceholder": "Type search workd or location name",
