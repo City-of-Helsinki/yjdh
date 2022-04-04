@@ -33,13 +33,13 @@
       "guideText": "All items marked with * are required"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Draft",
       "additionalInformationNeeded": "Additional information is needed",
       "received": "Received",
       "approved": "Accepted",
       "rejected": "Rejected",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Handling",
+      "cancelled": "Cancelled"
     },
     "steps": {
       "employer": "Employer",
@@ -547,5 +547,12 @@
   },
   "application": {
     "tooltipShowInfo": "Show information"
+  },
+  "pageTitles": {
+    "login": "Helsinki benefit - Log in",
+    "home": "Helsinki benefit - Frontpage",
+    "createApplication": "Helsinki benefit - Application - Create",
+    "editApplication": "Helsinki benefit - Application - Edit",
+    "viewApplication": "Helsinki benefit - Application - View"
   }
 }

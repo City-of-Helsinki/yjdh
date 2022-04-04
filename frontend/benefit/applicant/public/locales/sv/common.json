@@ -33,13 +33,13 @@
       "guideText": "Fälten märkta med * är obligatoriska"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Utkast",
       "additionalInformationNeeded": "Ytterligare uppgifter behövs",
       "received": "Mottagen",
       "approved": "Godkänd",
       "rejected": "Avvisad",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Behandling",
+      "cancelled": "Peruttu"
     },
     "steps": {
       "employer": "Arbetsgivare",
@@ -547,5 +547,12 @@
   },
   "application": {
     "tooltipShowInfo": "Visa information"
+  },
+  "pageTitles": {
+    "login": "Helsinforstillägg - Logga in",
+    "home": "Helsinforstillägg - Framsida",
+    "createApplication": "Helsinforstillägg - Ansökan - Skapa",
+    "editApplication": "Helsinforstillägg - Ansökan - Redigera",
+    "viewApplication": "Helsinforstillägg - Ansökan - Granska"
   }
 }

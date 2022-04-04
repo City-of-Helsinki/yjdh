@@ -39,7 +39,7 @@
       "approved": "Hyväksytty",
       "rejected": "Hylätty",
       "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "cancelled": "Peruttu"
     },
     "steps": {
       "employer": "Työnantaja",
@@ -547,5 +547,12 @@
   },
   "application": {
     "tooltipShowInfo": "Näytä info"
+  },
+  "pageTitles": {
+    "login": "Helsinki-lisä - Kirjautuminen",
+    "home": "Helsinki-lisä - Etusivu",
+    "createApplication": "Helsinki-lisä - Hakemus - Luo uusi",
+    "editApplication": "Helsinki-lisä - Hakemus - Muokkaa hakemusta",
+    "viewApplication": "Helsinki-lisä - Hakemus - Tarkastele hakemusta"
   }
 }
