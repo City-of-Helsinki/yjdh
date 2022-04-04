@@ -52,15 +52,15 @@ const expectations = {
   },
 };
 const actions = {
-  clickLoginButton: async (): Promise<void> => {
-    await userEvent.click(
+  clickLoginButton: (): void => {
+    userEvent.click(
       screen.getAllByRole('button', {
         name: /(kirjaudu palveluun)|(header.loginlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  clickLogoutButton: async (user: User): Promise<void> => {
-    await userEvent.click(
+  clickLogoutButton: (user: User): void => {
+    userEvent.click(
       screen.getByRole('button', {
         name: new RegExp(
           `(käyttäjä)|(header.userAriaLabelPrefix) ${user.name}`,
@@ -68,22 +68,19 @@ const actions = {
         ),
       })
     );
-    await userEvent.click(
+    userEvent.click(
       screen.getAllByRole('link', {
         name: /(kirjaudu ulos)|(header.logoutlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  changeLanguage: async (
-    fromLang: Language,
-    toLang: Language
-  ): Promise<void> => {
-    await userEvent.click(
+  changeLanguage: (fromLang: Language, toLang: Language): void => {
+    userEvent.click(
       screen.getAllByRole('button', {
         name: new RegExp(languageMenuButtonAriaLabels[fromLang], 'i'),
       })[0]
     );
-    await userEvent.click(
+    userEvent.click(
       screen.getAllByRole('link', {
         name: new RegExp(
           `(${defaultTranslations[toLang]})|(languages.${toLang})`,

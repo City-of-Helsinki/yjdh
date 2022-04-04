@@ -33,7 +33,7 @@ describe('frontend/kesaseteli/employer/src/components/header/Header.tsx', () => 
       push: spyRouterPush,
     });
     await headerApi.expectations.userIsLoggedIn(user);
-    await headerApi.actions.clickLogoutButton(user);
+    headerApi.actions.clickLogoutButton(user);
     await waitFor(() =>
       expect(spyRouterPush).toHaveBeenCalledWith(
         `${getBackendUrl('/oidc/logout/')}`
