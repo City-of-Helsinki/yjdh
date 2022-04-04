@@ -1,3 +1,4 @@
+import { setDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { ClientFunction } from 'testcafe';
 
 export const refreshPage = ClientFunction(() => document.location.reload());
@@ -20,3 +21,15 @@ export const SuomiFiAuthorizationUrls = [
 
 export const getFrontendUrl = (path = ''): string =>
   getUrl(process.env.FRONTEND_URL, path);
+
+export const goToUrl = async (
+  t: TestController,
+  baseUrl = '',
+  path?: string
+): Promise<void> => {
+  const url = getUrl(baseUrl, path);
+  setDataToPrintOnFailure(t, 'goToUrl', url);
+  await t.navigateTo(getUrl(baseUrl, path));
+  // due to CI envinronment problems it's better to reload page
+  await t.eval(() => document.location.reload());
+};

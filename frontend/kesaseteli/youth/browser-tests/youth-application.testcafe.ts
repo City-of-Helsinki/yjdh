@@ -9,7 +9,7 @@ import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/
 import {
   getCurrentUrl,
   getUrlParam,
-  refreshPage,
+  goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
@@ -36,8 +36,8 @@ fixture('Youth Application')
   .page(url)
   .requestHooks(requestLogger)
   .beforeEach(async (t) => {
-    await refreshPage();
     clearDataToPrintOnFailure(t);
+    await goToUrl(t, url);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -177,7 +177,7 @@ if (!isRealIntegrationsEnabled()) {
     let thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
     await getActivatedPageComponents(t);
-    await t.navigateTo(firstThankYouPageUrl);
+    await goToUrl(t, firstThankYouPageUrl);
     thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
     const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);

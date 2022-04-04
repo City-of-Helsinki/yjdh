@@ -6,6 +6,7 @@ import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { goToUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 
 import { getFrontendUrl } from '../utils/url.utils';
 
@@ -24,6 +25,7 @@ fixture('Frontpage')
   .requestHooks(requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
+    await goToUrl(t, url);
     headerComponents = getHeaderComponents(t, appTranslation);
   })
   .afterEach(async () =>

@@ -5,6 +5,7 @@ import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { goToUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 
 import { getFrontendUrl } from '../utils/url.utils';
 
@@ -15,6 +16,7 @@ fixture('Handler form')
   .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
+    await goToUrl(t, url);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
