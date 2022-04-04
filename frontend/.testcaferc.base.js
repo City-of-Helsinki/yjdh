@@ -27,6 +27,8 @@ module.exports = (envPath) => {
         customCompilerModulePath:  path.join(__dirname, '/node_modules/typescript')
       }
     },
+    retryTestPages: true,
+    hostname: 'localhost',
     assertionTimeout: 10_000,
     selectorTimeout: 30_000,
     pageLoadTimeout: 120_000,
