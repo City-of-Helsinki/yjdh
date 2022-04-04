@@ -37,7 +37,6 @@ fixture('Youth Application')
   .requestHooks(requestLogger)
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
-    await goToUrl(t, url);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console

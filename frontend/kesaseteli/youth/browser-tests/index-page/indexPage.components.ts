@@ -21,6 +21,7 @@ const translations = {
     termsAndConditionsCheckbox:
       /olen lukenut palvelun käyttöehdot ja hyväksyn ne/i,
     sendButton: /lähetä tiedot/i,
+    schoolsLoading: /ladataan vaihtoehtoja/i,
   },
   sv: {
     title: /registrera dig och få din personlig sommarsedel/i,
@@ -28,6 +29,7 @@ const translations = {
     unlistedSchoolCheckbox: /skolan finns inte i listan/i,
     termsAndConditionsCheckbox: /jag har läst och godkänner villkoren/i,
     sendButton: /skicka informationen/i,
+    schoolsLoading: /laddar upp alternativ/i,
   },
   en: {
     title: /sign up to receive your personal summer job voucher/i,
@@ -35,6 +37,7 @@ const translations = {
     unlistedSchoolCheckbox: /school not found on the list/i,
     termsAndConditionsCheckbox: /i have read and accept the terms of use/i,
     sendButton: /submit information/i,
+    schoolsLoading: /loading up options/i,
   },
 };
 
@@ -55,8 +58,13 @@ export const getIndexPageComponents = async (
     textInput(name: TextInputName) {
       return withinForm().findByTestId(name as string);
     },
+    schoolsLoading() {
+      return withinForm().queryByPlaceholderText(
+        translations[lang ?? DEFAULT_LANGUAGE].schoolsLoading
+      );
+    },
     schoolsDropdown() {
-      return withinForm().findByRole('combobox', {
+      return withinForm().queryByRole('combobox', {
         name: translations[lang ?? DEFAULT_LANGUAGE].schoolsDropdown,
       });
     },
@@ -82,6 +90,9 @@ export const getIndexPageComponents = async (
   const expectations = {
     async isLoaded() {
       await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
+      await t
+        .expect(selectors.schoolsLoading().exists)
+        .notOk(await getErrorMessage(t), { timeout: 60_000 });
     },
   };
   const actions = {

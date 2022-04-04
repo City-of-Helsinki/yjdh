@@ -5,7 +5,6 @@ import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { goToUrl } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import TestController from 'testcafe';
 
@@ -29,7 +28,6 @@ fixture('Application')
   .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
-    await goToUrl(t, url);
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
     step2Components = getStep2Components(t);
