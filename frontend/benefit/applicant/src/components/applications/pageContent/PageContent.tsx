@@ -23,6 +23,7 @@ import { useTheme } from 'styled-components';
 import ErrorPage from '../../errorPage/ErrorPage';
 import { usePageContent } from './usePageContent';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const PageContent: React.FC = () => {
   const {
     t,

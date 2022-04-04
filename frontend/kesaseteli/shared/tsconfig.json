@@ -1,7 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "skipLibCheck": true,
-    "jsx": "preserve"
+    "jsx": "react",
+    "baseUrl": "../../",
+    "paths": {
+      "kesaseteli-shared/*": ["kesaseteli/shared/src/*"],
+      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+    }
   }
 }

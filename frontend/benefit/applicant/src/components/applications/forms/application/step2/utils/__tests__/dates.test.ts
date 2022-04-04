@@ -26,7 +26,7 @@ describe('dates', () => {
     });
 
     it('should be the same as the start date when benefit type is empty or undefined', () => {
-      const minEndDate1 = getMinEndDate('1.12.2020', undefinedBenefit);
+      const minEndDate1 = getMinEndDate('1.12.2020', undefinedBenefit as '');
       const minEndDate2 = getMinEndDate('1.12.2020', emptyBenefit);
 
       expect(minEndDate1).toStrictEqual(new Date(2020, 11, 1));
@@ -54,7 +54,7 @@ describe('dates', () => {
     });
 
     it('should be undefined when benefit type is empty or undefined', () => {
-      const maxEndDate1 = getMaxEndDate('1.12.2020', undefinedBenefit);
+      const maxEndDate1 = getMaxEndDate('1.12.2020', undefinedBenefit as '');
       const maxEndDate2 = getMaxEndDate('1.12.2020', emptyBenefit);
 
       expect(maxEndDate1).toBeUndefined();

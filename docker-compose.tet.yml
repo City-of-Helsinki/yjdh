@@ -34,8 +34,12 @@ services:
   te-empl:
      build:
        context: ./frontend
-       dockerfile: tet/employer/Dockerfile
        target: development
+       args:
+         PORT: 3000
+         PROJECT: tet
+         FOLDER: employer
+         SERVICE: te-empl
      volumes:
        - ./frontend:/app
        - /app/node_modules
@@ -47,8 +51,12 @@ services:
   te-yout:
      build:
        context: ./frontend
-       dockerfile: tet/youth/Dockerfile
        target: development
+       args:
+         PORT: 3000
+         PROJECT: tet
+         FOLDER: youth
+         SERVICE: te-yout
      volumes:
        - ./frontend:/app
        - /app/node_modules
@@ -60,8 +68,12 @@ services:
   te-admn:
      build:
        context: ./frontend
-       dockerfile: tet/admin/Dockerfile
        target: development
+       args:
+         PORT: 3000
+         PROJECT: tet
+         FOLDER: admin
+         SERVICE: te-admn
      volumes:
        - ./frontend:/app
        - /app/node_modules

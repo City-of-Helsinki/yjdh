@@ -1,9 +1,9 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { HandledAplication } from 'benefit/handler/types/application';
 import { Button, Dialog, IconTrash, TextArea } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   $Grid,
   $GridCell,

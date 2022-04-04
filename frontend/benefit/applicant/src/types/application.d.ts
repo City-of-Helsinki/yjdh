@@ -358,11 +358,6 @@ export type User = {
   termsOfServiceInEffect: TermsOfServiceInEffect;
 };
 
-export type ApproveTermsOfServiceRequestData = {
-  terms: string;
-  selected_applicant_consents: string[];
-};
-
 export type ApproveTermsOfServiceResponseData = {
   id: string;
   approved_at: string;

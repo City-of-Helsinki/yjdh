@@ -428,6 +428,9 @@
         "max": "Arvon tulee olla enintään {{max}}",
         "min": "Arvon tulee olla vähintään {{min}}"
       },
+      "phoneNumber": {
+        "max": "Arvon enimmäispituus on {{max}}"
+      },
       "string": {
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
         "min": "Tämä kenttä tulee olla vähintään {{min}} merkkiä pitkä",
@@ -542,9 +545,7 @@
       "buttonText": ""
     }
   },
-  "pageTitles": {
-    "home": "Helsinki-lisä - Etusivu",
-    "login": "Helsinki-lisä - Kirjautuminen",
-    "application": "Helsinki-lisä - Hakemus {{applicationNumber}}"
+  "application": {
+    "tooltipShowInfo": "Näytä info"
   }
 }

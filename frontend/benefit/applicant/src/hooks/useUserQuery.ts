@@ -1,4 +1,5 @@
 import { BackendEndpoint } from 'benefit-shared/backend-api/backend-api';
+import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useQuery, UseQueryResult } from 'react-query';
@@ -6,15 +7,15 @@ import showErrorToast from 'shared/components/toast/show-error-toast';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useLocale from 'shared/hooks/useLocale';
 
-import { UserData } from '../types/application';
+import { LOCAL_STORAGE_KEYS } from '../constants';
+import { User, UserData } from '../types/application';
 
 // check that authentication is still alive in every 5 minutes
 const FIVE_MINUTES = 5 * 60 * 1000;
 
-const useUserQuery = <T = UserData>(
-  queryKeys?: string | unknown[],
-  select?: (user: UserData) => T
-): UseQueryResult<T, Error> => {
+const useUserQuery = (
+  queryKeys?: string | unknown[]
+): UseQueryResult<User, Error> => {
   const { t } = useTranslation();
   const router = useRouter();
   const logout =
@@ -42,8 +43,16 @@ const useUserQuery = <T = UserData>(
       refetchInterval: FIVE_MINUTES,
       enabled: !logout,
       retry: false,
-      select,
+      select: (data) => camelcaseKeys(data, { deep: true }),
       onError: (error) => handleError(error),
+      onSuccess: (data) => {
+        if (data.id && data.termsOfServiceApprovalNeeded)
+          // eslint-disable-next-line scanjs-rules/identifier_localStorage
+          localStorage.setItem(
+            LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED,
+            'false'
+          );
+      },
     }
   );
 };

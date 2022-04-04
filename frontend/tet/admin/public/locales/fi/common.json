@@ -107,7 +107,8 @@
 				"email": "Syötä sähköposti oikeassa muodossa",
 				"max": "Maksimimerkkimäärä ylittyy",
 				"phone": "Syötä oikeassa muodossa",
-				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia"
+				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia",
+				"isSet": "Valitse vähintään yksi"
 			}
     },
 		"classification": {

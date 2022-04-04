@@ -1,9 +1,10 @@
 const sharedConfig = require('../../jest.config.js');
+
 module.exports = {
   ...sharedConfig,
   globals: {
     'ts-jest': {
-      tsconfig: '<rootDir>/../../tsconfig.json',
+      tsconfig: '<rootDir>/tsconfig.jest.json',
     },
   },
   moduleNameMapper: {
