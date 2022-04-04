@@ -11,7 +11,7 @@
         "heading": "Ytterligare uppgifter behövs"
       },
       "common": {
-        "created": "Luotu",
+        "created": "Skapats",
         "employee": "Anställd",
         "saved": "Tallennettu",
         "edit": "Redigera",
@@ -25,7 +25,7 @@
       }
     },
     "pageHeaders": {
-      "created": "Luotu",
+      "created": "Skapats",
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Ansökan",
@@ -424,7 +424,7 @@
       "required": "Detta är ett obligatoriskt fält",
       "invalid": "Ogiltig värde",
       "number": {
-        "invalid": "Ogiltigt värde, ande endast siffror",
+        "invalid": "Ogiltigt värde, ange endast siffror",
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
       },
