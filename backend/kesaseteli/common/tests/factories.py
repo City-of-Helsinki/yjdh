@@ -5,6 +5,7 @@ from typing import List, Optional
 import factory
 import factory.fuzzy
 import pytz
+from django.db.models.signals import post_save
 from faker import Faker
 from shared.common.tests.factories import HandlerUserFactory, UserFactory
 
@@ -23,6 +24,7 @@ from applications.models import (
     EmployerApplication,
     EmployerSummerVoucher,
     YouthApplication,
+    YouthSummerVoucher,
 )
 from companies.models import Company
 
@@ -53,7 +55,7 @@ class AttachmentFactory(factory.django.DjangoModelFactory):
         model = Attachment
 
 
-class SummerVoucherFactory(factory.django.DjangoModelFactory):
+class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
     summer_voucher_serial_number = factory.Faker("md5")
     summer_voucher_exception_reason = factory.Faker(
         "random_element", elements=SummerVoucherExceptionReason.values
@@ -233,6 +235,26 @@ def determine_receipt_confirmed_at(youth_application):
     return None
 
 
+def determine_is_unlisted_school(youth_application):
+    # Used for changing return value of youth_application.need_additional_info
+    if youth_application._has_additional_info or youth_application.status in [
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED,
+        YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+    ]:
+        return True
+    elif (
+        youth_application.status
+        in YouthApplicationStatus.can_have_additional_info_values()
+    ):
+        return Faker().boolean()
+    else:
+        return False
+
+
+def determine_is_accepted(youth_application):
+    return youth_application.status == YouthApplicationStatus.ACCEPTED.value
+
+
 def determine_youth_application_has_additional_info(youth_application):
     if (
         youth_application.status
@@ -267,6 +289,7 @@ def determine_additional_info_description(youth_application):
     return ""
 
 
+@factory.django.mute_signals(post_save)
 class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
     created_at = factory.fuzzy.FuzzyDateTime(
         start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
@@ -276,7 +299,7 @@ class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker("last_name")
     social_security_number = factory.Faker("ssn", locale="fi")  # Must be Finnish
     school = factory.LazyAttribute(determine_school)
-    is_unlisted_school = factory.Faker("boolean")
+    is_unlisted_school = factory.LazyAttribute(determine_is_unlisted_school)
     email = factory.Faker("email")
     phone_number = factory.LazyFunction(get_test_phone_number)
     postcode = factory.Faker("postcode", locale="fi")
@@ -293,18 +316,40 @@ class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
     additional_info_description = factory.LazyAttribute(
         determine_additional_info_description
     )
+
+    youth_summer_voucher = factory.Maybe(
+        "_is_accepted",
+        # We pass in "youth_application" to link the generated YouthSummerVoucher to our
+        # just-generated YouthApplication. This will call
+        # YouthSummerVoucherFactory(youth_application=<generated youth application>),
+        # thus skipping the SubFactory.
+        factory.RelatedFactory(
+            "common.tests.factories.YouthSummerVoucherFactory",
+            factory_related_name="youth_application",
+        ),
+        None,
+    )
+
+    # Excluded parameters
     _has_additional_info = factory.LazyAttribute(
         determine_youth_application_has_additional_info
     )
+    _is_accepted = factory.LazyAttribute(determine_is_accepted)
 
     class Meta:
         abstract = True
         model = YouthApplication
-        exclude = ["_has_additional_info"]
+        exclude = ["_has_additional_info", "_is_accepted"]
 
 
 class YouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker("random_element", elements=YouthApplicationStatus.values)
+
+
+class UnhandledYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = factory.Faker(
+        "random_element", elements=YouthApplicationStatus.unhandled_values()
+    )
 
 
 class ActiveYouthApplicationFactory(AbstractYouthApplicationFactory):
@@ -313,23 +358,25 @@ class ActiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     )
 
 
-class ActiveListedSchoolYouthApplicationFactory(ActiveYouthApplicationFactory):
-    is_unlisted_school = False
-
-
-class ActiveUnlistedSchoolYouthApplicationFactory(ActiveYouthApplicationFactory):
-    is_unlisted_school = True
+class ActiveUnhandledYouthApplicationFactory(ActiveYouthApplicationFactory):
+    status = factory.Faker(
+        "random_element", elements=YouthApplicationStatus.active_unhandled_values()
+    )
 
 
 class InactiveYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = YouthApplicationStatus.SUBMITTED.value
 
 
-class InactiveListedSchoolYouthApplicationFactory(InactiveYouthApplicationFactory):
+class InactiveNoNeedAdditionalInfoYouthApplicationFactory(
+    InactiveYouthApplicationFactory
+):
     is_unlisted_school = False
 
 
-class InactiveUnlistedSchoolYouthApplicationFactory(InactiveYouthApplicationFactory):
+class InactiveNeedAdditionalInfoYouthApplicationFactory(
+    InactiveYouthApplicationFactory
+):
     is_unlisted_school = True
 
 
@@ -351,6 +398,10 @@ class AdditionalInfoProvidedYouthApplicationFactory(AbstractYouthApplicationFact
     status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value
 
 
+class AwaitingManualProcessingYouthApplicationFactory(AbstractYouthApplicationFactory):
+    status = YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value
+
+
 class RejectableYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = factory.Faker(
         "random_element", elements=YouthApplicationStatus.rejectable_values()
@@ -359,3 +410,22 @@ class RejectableYouthApplicationFactory(AbstractYouthApplicationFactory):
 
 class RejectedYouthApplicationFactory(AbstractYouthApplicationFactory):
     status = YouthApplicationStatus.REJECTED.value
+
+
+@factory.django.mute_signals(post_save)
+class YouthSummerVoucherFactory(factory.django.DjangoModelFactory):
+    # Passing in youth_summer_voucher=None here disables RelatedFactory in
+    # AcceptedYouthApplicationFactory and prevents it from creating another
+    # YouthSummerVoucher.
+    youth_application = factory.SubFactory(
+        AcceptedYouthApplicationFactory, youth_summer_voucher=None
+    )
+    # NOTE: Difference from production use:
+    # - This does not generate a gapless sequence
+    summer_voucher_serial_number = factory.Faker(
+        "pyint", min_value=1, max_value=(2 ** 63) - 1
+    )
+    summer_voucher_exception_reason = ""
+
+    class Meta:
+        model = YouthSummerVoucher

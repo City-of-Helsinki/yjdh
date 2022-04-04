@@ -274,7 +274,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 "Kiitos! Ystävällisin terveisin, Kesäseteli-tiimi"
             ) % {"activation_link": activation_link}
 
-    def _processing_email_subject(self):
+    def processing_email_subject(self):
         with translation.override("fi"):
             return gettext("Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s") % {
                 "first_name": self.first_name,
@@ -352,7 +352,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :return: True if email was sent, otherwise False.
         """
         return send_mail_with_error_logging(
-            subject=self._processing_email_subject(),
+            subject=self.processing_email_subject(),
             message=self._processing_email_message(self._processing_link(request)),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[settings.HANDLER_EMAIL],
@@ -597,7 +597,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     def year(self) -> int:
         return self.youth_application.created_at.year
 
-    def _email_subject(self, language):
+    def email_subject(self, language):
         with translation.override(language):
             return gettext("Vuoden %(year)s Kesäsetelisi") % {"year": self.year}
 
@@ -641,7 +641,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                 "year": self.year,
             }
             return send_mail_with_error_logging(
-                subject=self._email_subject(language),
+                subject=self.email_subject(language),
                 message=get_template("youth_summer_voucher_email.txt").render(context),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[self.youth_application.email],
