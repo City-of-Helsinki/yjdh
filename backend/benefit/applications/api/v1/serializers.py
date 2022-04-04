@@ -823,8 +823,8 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
     ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=14)
 
     def get_additional_information_needed_by(self, obj):
-        if info_asked_timestamp := getattr_safe(
-            obj, "additional_information_requested_at"
+        if info_asked_timestamp := getattr(
+            obj, "additional_information_requested_at", None
         ):
             return info_asked_timestamp.date() + self.ADDITIONAL_INFORMATION_DEADLINE
         else:
@@ -868,7 +868,7 @@ class BaseApplicationSerializer(DynamicFieldsModelSerializer):
         }
 
     def get_submitted_at(self, obj):
-        return getattr_safe(obj, "submitted_at")
+        return getattr(obj, "submitted_at", None)
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
@@ -1642,7 +1642,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     )
 
     def get_handled_at(self, obj):
-        return getattr_safe(obj, "handled_at")
+        return getattr(obj, "handled_at", None)
 
     class Meta(BaseApplicationSerializer.Meta):
         fields = BaseApplicationSerializer.Meta.fields + [
@@ -1790,10 +1790,3 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         if instance.status == ApplicationStatus.HANDLING and instance.batch:
             instance.batch = None
             instance.save()
-
-
-def getattr_safe(obj, param_name):
-    if hasattr(obj, param_name):
-        return getattr(obj, param_name)
-    else:
-        return None
