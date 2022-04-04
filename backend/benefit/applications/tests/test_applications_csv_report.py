@@ -230,6 +230,12 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
     )
     application1 = applications_csv_service.get_applications()[0]
     application2 = applications_csv_service.get_applications()[1]
+
+    for application in [application1, application2]:
+        assert len(application.ahjo_rows) == 1
+        assert application.ahjo_rows[0].start_date == application.calculation.start_date
+        assert application.ahjo_rows[0].end_date == application.calculation.end_date
+
     for idx, col in enumerate(applications_csv_service.CSV_COLUMNS):
         assert csv_lines[0][idx] == f'"{col.heading}"'
 
@@ -245,6 +251,24 @@ def test_applications_csv_output(applications_csv_service):  # noqa: C901
             assert (
                 csv_lines[2][idx]
                 == f'"{application2.calculation.ahjo_rows[0].description_fi}"'
+            )
+        elif "Siirrettävä Ahjo-rivi / alkupäivä" in col.heading:
+            assert (
+                csv_lines[1][idx]
+                == f'"{application1.calculation.ahjo_rows[0].start_date.isoformat()}"'
+            )
+            assert (
+                csv_lines[2][idx]
+                == f'"{application2.calculation.ahjo_rows[0].start_date.isoformat()}"'
+            )
+        elif "Siirrettävä Ahjo-rivi / päättymispäivä" in col.heading:
+            assert (
+                csv_lines[1][idx]
+                == f'"{application1.calculation.ahjo_rows[0].end_date.isoformat()}"'
+            )
+            assert (
+                csv_lines[2][idx]
+                == f'"{application2.calculation.ahjo_rows[0].end_date.isoformat()}"'
             )
         elif "Käsittelypäivä" in col.heading:
             assert csv_lines[1][idx] == f'"{application1.handled_at.isoformat()}"'

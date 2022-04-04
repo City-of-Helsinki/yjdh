@@ -39,6 +39,12 @@ def test_override_monthly_benefit_amount(
         handling_application.calculation.rows.first().row_type
         == RowType.HELSINKI_BENEFIT_TOTAL_EUR
     )
-    assert handling_application.calculation.rows.first().start_date is None
-    assert handling_application.calculation.rows.first().end_date is None
+    assert (
+        handling_application.calculation.rows.first().start_date
+        == handling_application.calculation.start_date
+    )
+    assert (
+        handling_application.calculation.rows.first().end_date
+        == handling_application.calculation.end_date
+    )
     assert handling_application.calculation.rows.first().amount == expected_amount
