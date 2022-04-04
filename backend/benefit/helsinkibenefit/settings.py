@@ -393,6 +393,8 @@ SERVICE_BUS_INFO_PATH = env("SERVICE_BUS_INFO_PATH")
 SERVICE_BUS_AUTH_USERNAME = env("SERVICE_BUS_AUTH_USERNAME")
 SERVICE_BUS_AUTH_PASSWORD = env("SERVICE_BUS_AUTH_PASSWORD")
 
+HANDLERS_GROUP_NAME = "Application handlers"
+
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
 local_settings_path = os.path.join(checkout_dir(), "local_settings.py")
