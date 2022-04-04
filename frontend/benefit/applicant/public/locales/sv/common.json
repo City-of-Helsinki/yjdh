@@ -547,5 +547,12 @@
   },
   "application": {
     "tooltipShowInfo": "Visa information"
+  },
+  "pageTitles": {
+    "login": "Helsinforstillägg - Logga in",
+    "home": "Helsinforstillägg - Framsida",
+    "createApplication": "Helsinforstillägg - Ansökan - Skapa",
+    "editApplication": "Helsinforstillägg - Ansökan - Redigera",
+    "viewApplication": "Helsinforstillägg - Ansökan - Granska"
   }
 }

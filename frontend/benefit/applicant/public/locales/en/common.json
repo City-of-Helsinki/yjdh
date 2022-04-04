@@ -547,5 +547,12 @@
   },
   "application": {
     "tooltipShowInfo": "Show information"
+  },
+  "pageTitles": {
+    "login": "Helsinki benefit - Log in",
+    "home": "Helsinki benefit - Frontpage",
+    "createApplication": "Helsinki benefit - Application - Create",
+    "editApplication": "Helsinki benefit - Application - Edit",
+    "viewApplication": "Helsinki benefit - Application - View"
   }
 }
