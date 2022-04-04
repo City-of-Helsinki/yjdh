@@ -47,6 +47,7 @@ django_env = environ.Env(
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
+    CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 3600 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
@@ -183,6 +184,7 @@ CORS_ALLOWED_ORIGINS = django_env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = django_env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = django_env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = django_env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_COOKIE_NAME = django_env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
 # Audit log

@@ -23,7 +23,7 @@ const BackendAPIProvider: React.FC<BackendAPIProviderProps> = ({
           ...headers,
         },
         withCredentials: true,
-        xsrfCookieName: 'csrftoken',
+        xsrfCookieName: 'yjdhcsrftoken',
         xsrfHeaderName: 'X-CSRFToken',
       }),
     [baseURL, headers]
