@@ -5,9 +5,6 @@ module.exports = (envPath) => {
   return {
     hooks: {
       test: {
-        before: async (t) => {
-          await t.eval(() => document.location.reload());
-        },
         after: async (t) => {
           const { error, warn,log, info } = await t.getBrowserConsoleMessages();
           console.log('Console logs:', JSON.stringify(log, null, 2));
@@ -30,6 +27,12 @@ module.exports = (envPath) => {
         customCompilerModulePath:  path.join(__dirname, '/node_modules/typescript')
       }
     },
+    assertionTimeout: 10_000,
+    selectorTimeout: 30_000,
+    pageLoadTimeout: 120_000,
+    ajaxRequestTimeout: 60_000,
+    pageRequestTimeout: 240_000,
+    browserInitTimeout: 240_000
   };
 };
 
