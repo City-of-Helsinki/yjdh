@@ -234,79 +234,86 @@ jobs:
           header: deployment-te-${{ matrix.service }}
           message: |
             **${{ matrix.service }} is deployed to: ${{ env.ENVIRONMENT_URL }}** :rocket::rocket::rocket:
-# TODO Commented out because we're trying to find a more lightweight testing solution
-#  acceptance-tests:
-#    name: KS Acceptance tests
-#    runs-on: ubuntu-latest
-#    needs: Review
-#    defaults:
-#      run:
-#        working-directory: ./frontend
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        service: [ 'te-empl' ]
-#        include:
-#          - service: te-empl
-#            dir: kesaseteli/employer
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Setup kubectl
-#        run: |
-#          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
-#          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
-#        shell: bash
-#      - name: Setup Node.js environment
-#        uses: actions/setup-node@v2.5.0
-#        with:
-#          node-version: '14'
-#      - name: Get yarn cache directory path
-#        id: yarn-cache-dir-path
-#        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-#      - uses: actions/cache@v2
-#        id: yarn-cache
-#        with:
-#          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-#          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-#          restore-keys: |
-#            ${{ runner.os }}-yarn-
-#      - name: Install dependencies
-#        run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
-#      - name: Service with ingress
-#        run: |
-#          echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
-#      - name: Run Acceptance Tests for ${{ matrix.service }}
-#        id: testcafe
-#        run: yarn --cwd ${{matrix.dir}} browser-test:ci -q attemptLimit=3,successThreshold=1
-#        env:
-#          GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
-#          GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-#      - name: Upload Acceptance Test results for ${{ matrix.service }}
-#        run: |
-#          zip -r report.zip ${{matrix.dir}}/report > no_output 2>&1
-#          curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
-#          echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
-#        if: always() && steps.testcafe.outcome == 'failure'
-#      - name: Create/update PR comment for Acceptance Test results
-#        uses: marocchino/sticky-pull-request-comment@v2
-#        with:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          header: testcafe-results-kesaseteli
-#          message: |
-#            ## TestCafe result is __${{ steps.testcafe.outcome }}__ for ${{ env.ENVIRONMENT_URL }}! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
-#        if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
-#      - name: Create/update PR comment for Acceptance Test results
-#        uses: marocchino/sticky-pull-request-comment@v2
-#        with:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          header: testcafe-results-kesaseteli
-#          append: true
-#          message: |
-#            **Check the report on: [${{ env.REPORT_URL }}](${{ env.REPORT_URL }})**
-#        if: always() && steps.testcafe.outcome == 'failure'
-#      - name: Upload screenshots and videos of failed tests to artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: report
-#          path: ./frontend/${{matrix.dir}}/report
-#        if: always() && steps.testcafe.outcome == 'failure'
+  acceptance-tests:
+    name: TET Acceptance tests
+    runs-on: ubuntu-latest
+    needs: Review
+    defaults:
+      run:
+        working-directory: ./frontend
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ 'te-admn' ]
+        include:
+          - service: te-admn
+            dir: tet/admin
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup kubectl
+        run: |
+          echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
+          echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
+        shell: bash
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        run: yarn --prefer-offline --frozen-lockfile --check-files --production=false
+      - name: Service with ingress
+        run: |
+          echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
+      - name: Run Acceptance Tests for ${{ matrix.service }}
+        id: testcafe
+        run: yarn --cwd ${{matrix.dir}} browser-test:ci -q attemptLimit=3,successThreshold=1
+        env:
+          GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
+          GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          FRONTEND_URL: ${{ env.ENVIRONMENT_URL }}
+          EMPLOYER_URL: ${{ env.EMPLOYER_URL }}
+          YOUTH_URL: ${{ env.YOUTH_URL }}
+          ADMIN_URL: ${{ env.ADMIN_URL }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
+          NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
+          NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: ${{ env.NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS }}
+
+      - name: Upload Acceptance Test results for ${{ matrix.service }}
+        run: |
+          zip -r report.zip ${{matrix.dir}}/report > no_output 2>&1
+          curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
+          echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
+        if: always() && steps.testcafe.outcome == 'failure'
+      - name: Create/update PR comment for Acceptance Test results
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: testcafe-results-${{ matrix.service }}
+          message: |
+            ## TestCafe result is __${{ steps.testcafe.outcome }}__ for ${{ env.ENVIRONMENT_URL }}! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
+        if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
+      - name: Create/update PR comment for Acceptance Test results
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: testcafe-results-${{ matrix.service }}
+          append: true
+          message: |
+            **Check the report on: [${{ env.REPORT_URL }}](${{ env.REPORT_URL }})**
+        if: always() && steps.testcafe.outcome == 'failure'
+      - name: Upload screenshots and videos of failed tests to artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: report
+          path: ./frontend/${{matrix.dir}}/report
+        if: always() && steps.testcafe.outcome == 'failure'
