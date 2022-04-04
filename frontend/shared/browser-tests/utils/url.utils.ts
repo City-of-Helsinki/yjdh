@@ -1,5 +1,6 @@
-import { setDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { ClientFunction } from 'testcafe';
+
+import { setDataToPrintOnFailure } from './testcafe.utils';
 
 export const refreshPage = ClientFunction(() => document.location.reload());
 export const getCurrentUrl = ClientFunction(() => document.location.href);
