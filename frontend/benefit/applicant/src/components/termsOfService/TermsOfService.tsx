@@ -1,5 +1,5 @@
 import { $PageHeading } from 'benefit/applicant/components/applications/Applications.sc';
-import { Button, Logo, LogoLanguage } from 'hds-react';
+import { Button } from 'hds-react';
 import { GetStaticProps } from 'next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
@@ -11,28 +11,34 @@ import { openFileInNewTab } from 'shared/utils/file.utils';
 import useApproveTermsOfServiceMutation from '../../hooks/useApproveTermsOfServiceMutation';
 import useLogout from '../../hooks/useLogout';
 import useTermsOfServiceData from '../../hooks/useTermsOfServiceData';
-import { ApplicantConsents } from '../../types/application';
 import PdfViewer from '../pdfViewer/PdfViewer';
 
-const TermsOfService: React.FC = () => {
-  const { locale, theme, t, termsInEffectUrl, userData } =
-    useTermsOfServiceData();
+type TermsOfServiceProps = {
+  setIsTermsOfSerivceApproved: (isTermsOfServiceApproved: boolean) => void;
+};
 
-  const { mutate: approveTermsOfService } = useApproveTermsOfServiceMutation();
+const TermsOfService: React.FC<TermsOfServiceProps> = ({
+  setIsTermsOfSerivceApproved,
+}) => {
+  const { theme, t, termsInEffectUrl, user, approveTermsOfService } =
+    useTermsOfServiceData(setIsTermsOfSerivceApproved);
+
+  const { mutate } = useApproveTermsOfServiceMutation();
 
   const logout = useLogout();
 
   return (
     <Container>
       <FormSection withoutDivider>
-        <$GridCell $colSpan={3} style={{ marginTop: theme.spacingLayout.l }}>
-          <Logo language={locale as LogoLanguage} size="large" />
-        </$GridCell>
-        <$GridCell $colStart={1} $colSpan={12}>
+        <$GridCell
+          $colStart={1}
+          $colSpan={12}
+          css={{ marginTop: theme.spacingLayout.l }}
+        >
           <$PageHeading>{t('common:serviceName')}</$PageHeading>
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <h2 style={{ marginBottom: 0 }}>
+          <h2 css={{ marginBottom: 0 }}>
             {t('common:login.termsOfServiceHeader')}
           </h2>
         </$GridCell>
@@ -60,21 +66,18 @@ const TermsOfService: React.FC = () => {
         <$GridCell $colSpan={12}>
           <$Hr />
         </$GridCell>
-        <$GridCell $colSpan={7} style={{ display: 'flex' }}>
+        <$GridCell $colSpan={7} css={{ display: 'flex' }}>
           <Button
             theme="coat"
             variant="primary"
             onClick={() =>
-              approveTermsOfService({
-                terms: userData?.termsOfServiceInEffect.id ?? '',
-                selected_applicant_consents: userData
-                  ? userData.termsOfServiceInEffect.applicantConsents.map(
-                      (item: ApplicantConsents) => item.id
-                    )
-                  : [''],
-              })
+              user?.termsOfServiceApprovalNeeded
+                ? mutate(user, {
+                    onSuccess: () => approveTermsOfService(),
+                  })
+                : approveTermsOfService()
             }
-            style={{ marginRight: theme.spacing.s }}
+            css={{ marginRight: theme.spacing.s }}
           >
             {t('common:applications.actions.continueToService')}
           </Button>

@@ -135,7 +135,7 @@ class ApplicationsCsvService(CsvExportBase):
                 str,
             ),
             CsvColumn(
-                "Yhdistys jolla yritystoimintaa?",
+                "Yhdistys jolla taloudellista toimintaa?",
                 "association_has_business_activities",
                 format_bool,
             ),

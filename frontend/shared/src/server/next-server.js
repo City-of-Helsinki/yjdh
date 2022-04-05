@@ -29,6 +29,8 @@ const checkIsServerReady = (response) => {
 
   const server = express();
 
+  server.disable('x-powered-by');
+
   server.get('/healthz', (req, res) => {
     checkIsServerReady(res);
   });

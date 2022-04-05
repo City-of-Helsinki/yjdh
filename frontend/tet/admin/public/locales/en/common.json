@@ -5,7 +5,8 @@
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:",
     "linkSkipToContent": "Skip to content",
-    "menuToggleAriaLabel": "Menu"
+    "menuToggleAriaLabel": "Menu",
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "errorPage": {
     "title": "An unexpected error occured",
@@ -108,7 +109,8 @@
 				"email": "Enter e-mail in the correct format",
 				"max": "The maximum number of characters is exceeded",
 				"phone": "Enter the correct format",
-				"name": "Enter the name without special characters or letters"
+				"name": "Enter the name without special characters or letters",
+				"isSet": "Choose at least one"
 			}
     },
 		"classification": {
@@ -140,7 +142,7 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
-    "feedback": "ENG Give feedback",
+    "feedback": "Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
   },
   "languages": {
@@ -161,7 +163,7 @@
     }
   },
   "upload": {
-		"successMessage": "ENG Information saved",
+		"successMessage": "Information saved",
     "isUploading": "Sending...",
     "errorTitle": "File upload failed",
     "errorMessage": "Something went wrong. Please try again later."

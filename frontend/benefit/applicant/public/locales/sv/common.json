@@ -11,7 +11,7 @@
         "heading": "Ytterligare uppgifter behövs"
       },
       "common": {
-        "created": "Luotu",
+        "created": "Skapats",
         "employee": "Anställd",
         "saved": "Tallennettu",
         "edit": "Redigera",
@@ -25,7 +25,7 @@
       }
     },
     "pageHeaders": {
-      "created": "Luotu",
+      "created": "Skapats",
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Ansökan",
@@ -33,13 +33,13 @@
       "guideText": "Fälten märkta med * är obligatoriska"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Utkast",
       "additionalInformationNeeded": "Ytterligare uppgifter behövs",
       "received": "Mottagen",
       "approved": "Godkänd",
       "rejected": "Avvisad",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Behandling",
+      "cancelled": "Peruttu"
     },
     "steps": {
       "employer": "Arbetsgivare",
@@ -371,7 +371,8 @@
     "messages": "Meddelanden",
     "drawer": {
       "title": "Meddelanden om ansökan"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Ändra språk"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -424,9 +425,12 @@
       "required": "Detta är ett obligatoriskt fält",
       "invalid": "Ogiltig värde",
       "number": {
-        "invalid": "Ogiltigt värde, ande endast siffror",
+        "invalid": "Ogiltigt värde, ange endast siffror",
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
+      },
+      "phoneNumber": {
+        "max": "Maximal längd är {{max}}"
       },
       "string": {
         "max": "Detta fält kan vara upp till {{max}} tecken långt",
@@ -544,5 +548,12 @@
   },
   "application": {
     "tooltipShowInfo": "Visa information"
+  },
+  "pageTitles": {
+    "login": "Helsinforstillägg - Logga in",
+    "home": "Helsinforstillägg - Framsida",
+    "createApplication": "Helsinforstillägg - Ansökan - Skapa",
+    "editApplication": "Helsinforstillägg - Ansökan - Redigera",
+    "viewApplication": "Helsinforstillägg - Ansökan - Granska"
   }
 }

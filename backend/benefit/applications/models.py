@@ -82,37 +82,6 @@ class ApplicationManager(models.Manager):
         )
         return qs.annotate(**{field_name: Subquery(subquery)})
 
-    def _annotate_handled_at(self, qs):
-        subquery = (
-            ApplicationLogEntry.objects.filter(
-                application=OuterRef("pk"), to_status__in=self.HANDLED_STATUSES
-            )
-            .order_by("-created_at")
-            .values("created_at")[:1]
-        )
-        return qs.annotate(handled_at=Subquery(subquery))
-
-    def _annotate_additional_information_requested_at(self, qs):
-        subquery = (
-            ApplicationLogEntry.objects.filter(
-                application=OuterRef("pk"),
-                to_status__in=[ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED],
-            )
-            .order_by("-created_at")
-            .values("created_at")[:1]
-        )
-        return qs.annotate(additional_information_requested_at=Subquery(subquery))
-
-    def _annotate_submitted_at(self, qs):
-        subquery = (
-            ApplicationLogEntry.objects.filter(
-                application=OuterRef("pk"), to_status__in=[ApplicationStatus.RECEIVED]
-            )
-            .order_by("-created_at")
-            .values("created_at")[:1]
-        )
-        return qs.annotate(submitted_at=Subquery(subquery))
-
     def get_queryset(self):
         """
         Annotate the queryset with information about timestamps of past status transitions.

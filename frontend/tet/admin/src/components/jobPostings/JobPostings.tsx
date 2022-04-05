@@ -10,12 +10,13 @@ import { useRouter } from 'next/router';
 import JobPostingsList from 'tet/admin/components/jobPostings/JobPostingsList';
 import { TetEvents } from 'tet-shared/types/linkedevents';
 import theme from 'shared/styles/theme';
-import { eventsToTetPostings } from 'tet-shared/backend-api/transformations';
 import useConfirm from 'shared/hooks/useConfirm';
+import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
   const { confirm } = useConfirm();
+  const { eventsToTetPostings } = useEventPostingTransformation();
   const { isLoading, data, error } = useQuery<TetEvents, Error>(BackendEndpoint.TET_POSTINGS);
   const router = useRouter();
 

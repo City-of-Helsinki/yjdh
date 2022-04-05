@@ -11,7 +11,8 @@
     "notes": "Muistiinpanot",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "notifications": {
     "accepted": {
@@ -23,8 +24,8 @@
       "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
     },
     "cancelled": {
-      "title": "Hakemus on peruuttu",
-      "message": "Hakemus {{applicationNum}} on peruuttu onnistuneesti ja siirretty arkistoon."
+      "title": "Hakemus on peruttu",
+      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti ja siirretty arkistoon."
     },
     "error": {
       "title": "Tapahtui tuntematon virhe",

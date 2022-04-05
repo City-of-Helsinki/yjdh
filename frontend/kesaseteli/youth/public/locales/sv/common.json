@@ -2,7 +2,8 @@
   "appName": "Sommarsedel för unga",
   "header": {
     "linkSkipToContent": "Gå till innehållet",
-    "menuToggleAriaLabel": "Menyn"
+    "menuToggleAriaLabel": "Menyn",
+    "languageMenuButtonAriaLabel": "Ändra språk"
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
