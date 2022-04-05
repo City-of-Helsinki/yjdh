@@ -162,6 +162,12 @@
       "fileType": "The file type is not allowed."
     }
   },
+  "api": {
+    "saveErrorTitle": "Error saving the TET advertisement",
+    "saveErrorMessage": "Saving the TET advertisement did not succeed.",
+    "publishErrorTitle": "Error publishing TET advertisement",
+    "publishErrorMessage": "Publishing the TET advertisement did not succeed."
+  },
   "upload": {
 		"successMessage": "TET advertisement saved",
     "isUploading": "Sending...",

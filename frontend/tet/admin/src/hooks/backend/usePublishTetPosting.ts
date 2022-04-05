@@ -15,8 +15,8 @@ const usePublishTetPosting = (): UseMutationResult<TetPosting, AxiosError<Linked
   const router = useRouter();
   const queryClient = useQueryClient();
   const handleError = useLinkedEventsErrorHandler({
-    errorTitle: 'Virhe julkaisussa', // TODO translations
-    errorMessage: 'TET-paikan julkaisu ei onnistunut', // TODO translations
+    errorTitle: t('common:api.publishErrorTitle'),
+    errorMessage: t('common:api.publishErrorMessage'),
   });
 
   return useMutation<TetPosting, AxiosError<LinkedEventsError>, TetPosting>(

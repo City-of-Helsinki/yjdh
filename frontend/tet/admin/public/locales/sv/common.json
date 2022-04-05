@@ -162,6 +162,12 @@
       "fileType": "Filtypen är inte tillåten"
     }
   },
+  "api": {
+    "saveErrorTitle": "Sparning PRAO-platsen misslyckades",
+    "saveErrorMessage": "Något gick fel.",
+    "publishErrorTitle": "Publicering misslyckades",
+    "publishErrorMessage": "Något gick snett. Vänligen försök igen senare."
+  },
   "upload": {
 		"successMessage": "PRAO-platsen sparades",
     "isUploading": "Filen laddas upp...",

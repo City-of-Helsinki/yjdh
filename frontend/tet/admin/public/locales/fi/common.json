@@ -161,6 +161,12 @@
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
   },
+  "api": {
+    "saveErrorTitle": "Virhe TET-paikan tallentamisesssa",
+    "saveErrorMessage": "TET-paikan luonti tai päivitys ei onnistunut.",
+    "publishErrorTitle": "Virhe TET-paikan julkaisemisessa",
+    "publishErrorMessage": "TET-paikan julkaisu ei onnistunut."
+  },
   "upload": {
 		"successMessage": "TET-paikka tallennettiin",
     "isUploading": "Lähetetään...",
