@@ -13,7 +13,6 @@ class CustomDataSerializer(Serializer):
     org_name = CharField(max_length=250)
     contact_email = EmailField()
     contact_phone = CharField(max_length=30)
-    contact_language = CharField(max_length=5)
     contact_last_name = CharField(max_length=250)
     contact_first_name = CharField(max_length=250)
 
