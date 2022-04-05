@@ -71,6 +71,7 @@
     "editTitle": "Redigera PRAO-plats",
 		"copyTitle": "Kopiera PRAO-plats",
     "saveDraft": "Spara som opublicerad",
+    "savePublished": "Spara och publicera",
     "deletePosting": "Ta bort annons",
     "preview": "Gå till förhandsgranskning",
     "publish": "Publicera",
@@ -162,8 +163,14 @@
       "fileType": "Filtypen är inte tillåten"
     }
   },
+  "api": {
+    "saveErrorTitle": "Sparning PRAO-platsen misslyckades",
+    "saveErrorMessage": "Något gick fel.",
+    "publishErrorTitle": "Publicering misslyckades",
+    "publishErrorMessage": "Något gick snett. Vänligen försök igen senare."
+  },
   "upload": {
-		"successMessage": "Uppgifterna sparades",
+		"successMessage": "PRAO-platsen sparades",
     "isUploading": "Filen laddas upp...",
     "errorTitle": "Uppladdningen av filen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
@@ -179,6 +186,7 @@
 		"publishPosting": "Publicera PRAO-plats",
 		"confirmation": "Är du säker på att du vill publicera PRAO-platsen {{posting}}?",
 		"successTitle": "PRAO-platsen publicerades",
+    "saveSuccessMessage": "PRAO-platsen sparades och publicerades",
     "errorTitle": "Publicering misslyckades",
     "errorMessage": "Något gick snett. Vänligen försök igen senare."
   },

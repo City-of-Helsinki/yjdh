@@ -36,7 +36,7 @@ const NewPostingPage: NextPage = () => {
       <$HeadingContainer>
         <$Heading>{t('common:editor.newTitle')}</$Heading>
       </$HeadingContainer>
-      <Editor allowDelete={false} initialValue={isInitialRender ? undefined : tetPosting} />
+      <Editor initialValue={isInitialRender ? undefined : tetPosting} />
     </Container>
   );
 };
