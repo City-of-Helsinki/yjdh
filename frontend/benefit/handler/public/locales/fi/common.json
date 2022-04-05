@@ -11,7 +11,8 @@
     "notes": "Muistiinpanot",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Valitse kieli"
   },
   "notifications": {
     "accepted": {
