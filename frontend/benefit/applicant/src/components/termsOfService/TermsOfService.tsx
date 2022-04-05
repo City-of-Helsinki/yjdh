@@ -1,5 +1,5 @@
 import { $PageHeading } from 'benefit/applicant/components/applications/Applications.sc';
-import { Button, Logo, LogoLanguage } from 'hds-react';
+import { Button } from 'hds-react';
 import { GetStaticProps } from 'next';
 import React from 'react';
 import Container from 'shared/components/container/Container';
@@ -20,7 +20,7 @@ type TermsOfServiceProps = {
 const TermsOfService: React.FC<TermsOfServiceProps> = ({
   setIsTermsOfSerivceApproved,
 }) => {
-  const { locale, theme, t, termsInEffectUrl, user, approveTermsOfService } =
+  const { theme, t, termsInEffectUrl, user, approveTermsOfService } =
     useTermsOfServiceData(setIsTermsOfSerivceApproved);
 
   const { mutate } = useApproveTermsOfServiceMutation();
@@ -30,14 +30,15 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
   return (
     <Container>
       <FormSection withoutDivider>
-        <$GridCell $colSpan={3} style={{ marginTop: theme.spacingLayout.l }}>
-          <Logo language={locale as LogoLanguage} size="large" />
-        </$GridCell>
-        <$GridCell $colStart={1} $colSpan={12}>
+        <$GridCell
+          $colStart={1}
+          $colSpan={12}
+          css={{ marginTop: theme.spacingLayout.l }}
+        >
           <$PageHeading>{t('common:serviceName')}</$PageHeading>
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <h2 style={{ marginBottom: 0 }}>
+          <h2 css={{ marginBottom: 0 }}>
             {t('common:login.termsOfServiceHeader')}
           </h2>
         </$GridCell>
@@ -65,7 +66,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
         <$GridCell $colSpan={12}>
           <$Hr />
         </$GridCell>
-        <$GridCell $colSpan={7} style={{ display: 'flex' }}>
+        <$GridCell $colSpan={7} css={{ display: 'flex' }}>
           <Button
             theme="coat"
             variant="primary"
@@ -76,7 +77,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
                   })
                 : approveTermsOfService()
             }
-            style={{ marginRight: theme.spacing.s }}
+            css={{ marginRight: theme.spacing.s }}
           >
             {t('common:applications.actions.continueToService')}
           </Button>

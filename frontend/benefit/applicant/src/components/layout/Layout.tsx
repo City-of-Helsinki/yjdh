@@ -28,17 +28,17 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
 
   return (
     <$Main {...rest}>
+      <Header />
       {isAuthenticated && !isTermsOfServiceApproved ? (
         <TermsOfService
           setIsTermsOfSerivceApproved={setIsTermsOfSerivceApproved}
         />
       ) : (
         <>
-          <Header />
           {children}
+          <SupportingContent />
         </>
       )}
-      <SupportingContent />
       <Footer />
     </$Main>
   );
