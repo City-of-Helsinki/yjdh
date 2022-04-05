@@ -12,7 +12,6 @@ import Classification from 'tet/admin/components/editor/classification/Classific
 import { DevTool } from '@hookform/devtools';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
-import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
@@ -26,7 +25,6 @@ export type EditorSectionProps = {
 // add new posting / edit existing
 const Editor: React.FC<EditorProps> = ({ initialValue }) => {
   const { t } = useTranslation();
-  const { tetPostingToEvent } = useEventPostingTransformation();
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
     mode: 'onBlur',
