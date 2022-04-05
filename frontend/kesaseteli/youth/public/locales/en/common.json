@@ -2,7 +2,8 @@
   "appName": "Summer Job Voucher for youth",
   "header": {
     "linkSkipToContent": "Skip to content",
-    "menuToggleAriaLabel": "Menu"
+    "menuToggleAriaLabel": "Menu",
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "errorPage": {
     "title": "An unexpected error occured",

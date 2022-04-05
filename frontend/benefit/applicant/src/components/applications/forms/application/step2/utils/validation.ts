@@ -109,7 +109,7 @@ export const getValidationSchema = (t: TFunction) =>
           )
           .max(
             MAX_PHONE_NUMBER_LENGTH,
-            t(VALIDATION_MESSAGE_KEYS.NUMBER_MAX, {
+            t(VALIDATION_MESSAGE_KEYS.PHONE_NUMBER_LENGTH_MAX, {
               max: MAX_PHONE_NUMBER_LENGTH,
             })
           )

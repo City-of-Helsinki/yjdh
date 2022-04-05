@@ -33,13 +33,13 @@
       "guideText": "All items marked with * are required"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Draft",
       "additionalInformationNeeded": "Additional information is needed",
       "received": "Received",
       "approved": "Accepted",
       "rejected": "Rejected",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Handling",
+      "cancelled": "Cancelled"
     },
     "steps": {
       "employer": "Employer",
@@ -371,7 +371,8 @@
     "messages": "Messages",
     "drawer": {
       "title": "Application’s messages"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -427,6 +428,9 @@
         "invalid": "Invalid value, please enter numbers only",
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
+      },
+      "phoneNumber": {
+        "max": "Maximum length is {{max}}"
       },
       "string": {
         "max": "This field can be up to {{max}} characters long",
@@ -544,5 +548,12 @@
   },
   "application": {
     "tooltipShowInfo": "Show information"
+  },
+  "pageTitles": {
+    "login": "Helsinki benefit - Log in",
+    "home": "Helsinki benefit - Frontpage",
+    "createApplication": "Helsinki benefit - Application - Create",
+    "editApplication": "Helsinki benefit - Application - Edit",
+    "viewApplication": "Helsinki benefit - Application - View"
   }
 }

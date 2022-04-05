@@ -7,6 +7,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from unittest import mock
 
+import faker
 import pytest
 import pytz
 from applications.api.v1.serializers import (
@@ -27,7 +28,13 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
+from applications.tests.factories import (
+    ApplicationBatchFactory,
+    ApplicationFactory,
+    DecidedApplicationFactory,
+    HandlingApplicationFactory,
+    ReceivedApplicationFactory,
+)
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
@@ -36,6 +43,7 @@ from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
@@ -1114,6 +1122,12 @@ def test_application_status_change_as_applicant(
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+        if to_status == ApplicationStatus.RECEIVED:
+            assert response.data["submitted_at"] == datetime.now().replace(
+                tzinfo=pytz.utc
+            )
+        else:
+            assert response.data["submitted_at"] is None
     else:
         assert application.log_entries.all().count() == 0
 
@@ -1145,6 +1159,7 @@ def test_application_status_change_as_applicant(
     ],
 )
 @pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_application_status_change_as_handler(
     request,
     handler_api_client,
@@ -1153,6 +1168,7 @@ def test_application_status_change_as_handler(
     to_status,
     expected_code,
     log_entry_comment,
+    mailoutbox,
 ):
     """
     modify existing application
@@ -1206,6 +1222,8 @@ def test_application_status_change_as_handler(
                 "Please make the corrections by 18.06.2021"
                 in application.messages.first().content
             )
+            assert len(mailoutbox) == 1
+            assert "You have received a new message" in mailoutbox[0].subject
 
         if to_status in [
             ApplicationStatus.CANCELLED,
@@ -2035,3 +2053,52 @@ def test_application_status_last_changed_at(api_client, handling_application):
     assert response.data["status_last_changed_at"] == datetime(
         2021, 12, 1, tzinfo=pytz.UTC
     )
+
+
+def test_handler_application_default_ordering(handler_api_client):
+    f = faker.Faker()
+    combos = [
+        (ReceivedApplicationFactory, ApplicationStatus.RECEIVED),
+        (HandlingApplicationFactory, ApplicationStatus.HANDLING),
+        (DecidedApplicationFactory, ApplicationStatus.ACCEPTED),
+    ]
+    for _ in range(5):
+        for class_name, status in combos:
+            application = class_name()
+            random_datetime = f.past_datetime()
+            application.log_entries.filter(to_status=status).update(
+                created_at=random_datetime
+            )
+            Calculation.objects.filter(application__id=application.pk).update(
+                modified_at=random_datetime
+            )
+
+    def _expected_sort_key(obj):
+        handled_at_key = None
+        if (
+            log_entry := obj.log_entries.filter(
+                to_status__in=[
+                    ApplicationStatus.REJECTED,
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.CANCELLED,
+                ]
+            )
+            .order_by("-created_at")
+            .first()
+        ):
+            handled_at_key = log_entry.created_at.timestamp()
+
+        return (
+            -handled_at_key if handled_at_key else float("-inf"),
+            -obj.calculation.modified_at.timestamp(),
+        )
+
+    # in-memory sort using _expected_sort_key and the database sort must be the same
+    expected_sorting = sorted(Application.objects.all(), key=_expected_sort_key)
+    expected_application_ids = [str(elem.pk) for elem in expected_sorting]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    returned_application_ids = [elem["id"] for elem in response.data]
+    assert expected_application_ids == returned_application_ids

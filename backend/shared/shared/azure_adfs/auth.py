@@ -147,6 +147,19 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
 
         return response_json["access_token"]
 
+    def assign_local_groups(self, user):
+        if handlers_group_name := getattr(django_settings, "HANDLERS_GROUP_NAME", None):
+            try:
+                handler_group = Group.objects.get(name=handlers_group_name)
+            except Group.DoesNotExist:
+                return
+            else:
+                if user.is_staff:
+                    user.groups.add(handler_group)
+                else:
+                    # safety - shouldn't be ever needed
+                    user.groups.remove(handler_group)
+
     def authenticate(self, request=None, authorization_code=None, **kwargs):
         """
         Override the authenticate method to fetch the user groups from Microsoft Graph API
@@ -177,7 +190,6 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         self.update_user_groups_from_graph_api(
             user, claims["oid"], graph_api_access_token
         )
-
         self.update_userinfo_from_graph_api(user, graph_api_access_token)
 
         # Users with groups that are defined in ADFS_CONTROLLER_GROUP_UUIDS
@@ -189,5 +201,6 @@ class HelsinkiAdfsAuthCodeBackend(AdfsAuthCodeBackend):
         ]
         user.is_staff = user.groups.filter(name__in=controller_group_uuids).exists()
         user.save()
+        self.assign_local_groups(user)
 
         return user

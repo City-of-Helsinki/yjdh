@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.test import override_settings
 from django.urls import reverse
 
@@ -130,10 +131,13 @@ def test_get_graph_api_access_token(requests_mock):
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
+    HANDLERS_GROUP_NAME="Application handlers",
+    ADFS_CONTROLLER_GROUP_UUIDS=["testgroup"],
 )
 def test_authenticate(user):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
-
+    # if helsinkibenefit fixture django_db_setup has been done, then the group has been already created
+    Group.objects.get_or_create(name=settings.HANDLERS_GROUP_NAME)
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
             "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
@@ -141,12 +145,16 @@ def test_authenticate(user):
             validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
             process_access_token=mock.MagicMock(return_value=user),
             get_graph_api_access_token=mock.MagicMock,
-            update_user_groups_from_graph_api=mock.MagicMock,
+            get_member_objects_from_graph_api=mock.MagicMock(
+                return_value=["adfs-testgroup"]
+            ),
             update_userinfo_from_graph_api=mock.MagicMock,
         ):
             auth_user = auth_backend.authenticate(authorization_code="test")
 
     assert auth_user == user
+    assert auth_user.is_staff
+    assert user.groups.filter(name=settings.HANDLERS_GROUP_NAME).exists()
 
 
 @override_settings(

@@ -11,7 +11,8 @@
     "notes": "Muistiinpanot",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Ändra språk"
   },
   "notifications": {
     "accepted": {
@@ -23,8 +24,8 @@
       "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
     },
     "cancelled": {
-      "title": "Hakemus on peruuttu",
-      "message": "Hakemus {{applicationNum}} on peruuttu onnistuneesti ja siirretty arkistoon."
+      "title": "Hakemus on peruttu",
+      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti ja siirretty arkistoon."
     },
     "error": {
       "title": "Tapahtui tuntematon virhe",
@@ -368,7 +369,7 @@
       "required": "Detta är ett obligatoriskt fält",
       "invalid": "Ogiltig värde",
       "number": {
-        "invalid": "Ogiltigt värde, ande endast siffror",
+        "invalid": "Ogiltigt värde, ange endast siffror",
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
       },

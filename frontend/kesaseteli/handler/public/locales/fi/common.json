@@ -2,7 +2,8 @@
   "appName": "Kesäsetelin käsittelijäliittymä",
   "header": {
     "linkSkipToContent": "Siirry sisältöön",
-    "menuToggleAriaLabel": "Valikko"
+    "menuToggleAriaLabel": "Valikko",
+    "languageMenuButtonAriaLabel": "Valitse kieli"
   },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
