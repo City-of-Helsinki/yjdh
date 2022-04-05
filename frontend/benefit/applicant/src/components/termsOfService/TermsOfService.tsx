@@ -20,7 +20,7 @@ type TermsOfServiceProps = {
 const TermsOfService: React.FC<TermsOfServiceProps> = ({
   setIsTermsOfSerivceApproved,
 }) => {
-  const { theme, t, termsInEffectUrl, user, approveTermsOfService } =
+  const { t, termsInEffectUrl, user, approveTermsOfService } =
     useTermsOfServiceData(setIsTermsOfSerivceApproved);
 
   const { mutate } = useApproveTermsOfServiceMutation();
@@ -33,12 +33,18 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
         <$GridCell
           $colStart={1}
           $colSpan={12}
-          style={{ marginTop: theme.spacingLayout.l }}
+          css={`
+            margin-top: var(--spacing-layout-l);
+          `}
         >
           <$PageHeading>{t('common:serviceName')}</$PageHeading>
         </$GridCell>
         <$GridCell $colSpan={12}>
-          <h2 style={{ marginBottom: 0 }}>
+          <h2
+            css={`
+              margin-bottom: 0;
+            `}
+          >
             {t('common:login.termsOfServiceHeader')}
           </h2>
         </$GridCell>
@@ -66,7 +72,12 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
         <$GridCell $colSpan={12}>
           <$Hr />
         </$GridCell>
-        <$GridCell $colSpan={7} style={{ display: 'flex' }}>
+        <$GridCell
+          $colSpan={7}
+          css={`
+            display: flex;
+          `}
+        >
           <Button
             theme="coat"
             variant="primary"
@@ -77,7 +88,9 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
                   })
                 : approveTermsOfService()
             }
-            style={{ marginRight: theme.spacing.s }}
+            css={`
+              margin-right: var(--spacing-s);
+            `}
           >
             {t('common:applications.actions.continueToService')}
           </Button>
