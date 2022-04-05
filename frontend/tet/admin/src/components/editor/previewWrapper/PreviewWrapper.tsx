@@ -71,6 +71,10 @@ const PreviewWrapper: React.FC<{ posting: TetPosting }> = ({ children, posting }
     }
   };
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <PreviewBar allowPublish={allowPublish} onPublish={publishPostingHandler} />
