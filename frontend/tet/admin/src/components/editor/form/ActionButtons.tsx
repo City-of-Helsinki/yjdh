@@ -56,7 +56,6 @@ const ActionButtons: React.FC = () => {
   };
 
   const saveHandler = (validatedPosting: TetPosting): void => {
-    console.dir(`saved posting: ${JSON.stringify(validatedPosting)}`);
     const event = tetPostingToEvent(validatedPosting);
     upsertTetPosting.mutate({
       id: validatedPosting.id,
