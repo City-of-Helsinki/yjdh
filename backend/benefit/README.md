@@ -29,10 +29,19 @@ Allow user to create test database
 Load test fixtures
 
     python manage.py loaddata default_terms.json
+    python manage.py loaddata groups.json
 
 This creates terms of service and applicant terms in the database. The attachment PDF files are not actually
 created by loading the fixture. In order to actually download the PDF files, log in via the django admin
 and upload the files manually.
+
+Set default permissions
+
+    python manage.py set_group_permissions
+
+This creates permissions for the handler's group so they have access to the Terms in
+the django admin.
+
 
 ### Configure docker environment
 

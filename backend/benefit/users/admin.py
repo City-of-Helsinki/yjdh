@@ -6,6 +6,8 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ("groups",)
     list_display = (
         "id",
+        "first_name",
+        "last_name",
         "__str__",
     )
     readonly_fields = ("password",)
