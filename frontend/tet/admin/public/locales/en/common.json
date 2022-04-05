@@ -70,6 +70,7 @@
     "editTitle": "Edit TET advertisement",
 		"copyTitle": "Copy TET advertisement",
     "saveDraft": "Save without publishing",
+    "savePublished": "Save and publish",
     "deletePosting": "Delete advertisement",
     "preview": "Move to preview",
     "publish": "Publish",
@@ -162,7 +163,7 @@
     }
   },
   "upload": {
-		"successMessage": "Information saved",
+		"successMessage": "TET advertisement saved",
     "isUploading": "Sending...",
     "errorTitle": "File upload failed",
     "errorMessage": "Something went wrong. Please try again later."
@@ -178,6 +179,7 @@
 		"publishPosting": "Publish TET advertisement",
 		"confirmation": "Are you sure you want to publish the TET advertisement {{posting}}?",
 		"successTitle": "TET advertisement was published",
+		"saveSuccessMessage": "TET advertisement was saved and published",
     "errorTitle": "Publishing failed",
     "errorMessage": "Something went wrong. Please try again later."
   },

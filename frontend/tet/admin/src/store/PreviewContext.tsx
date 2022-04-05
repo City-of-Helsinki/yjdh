@@ -29,7 +29,6 @@ export const initialPosting: TetPosting = {
   contact_first_name: '',
   contact_last_name: '',
   date_published: null,
-  contact_language: 'fi',
   contact_phone: '',
   keywords: [],
   keywords_working_methods: [],

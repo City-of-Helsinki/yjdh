@@ -27,10 +27,13 @@ const useUpsertTetPosting = (): UseMutationResult<TetUpsert, AxiosError<LinkedEv
           : axios.post(BackendEndpoint.TET_POSTINGS, event),
       ),
     {
-      onSuccess: () => {
+      onSuccess: (data, variables) => {
+        const successMessage = variables.event.date_published
+          ? t('common:publish.saveSuccessMessage')
+          : t('common:upload.successMessage');
         void queryClient.removeQueries();
         void router.push('/');
-        showSuccessToast(t('common:upload.successMessage'), '');
+        showSuccessToast(successMessage, '');
       },
       onError: (error) => handleError(error),
     },

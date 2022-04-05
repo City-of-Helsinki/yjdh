@@ -56,6 +56,7 @@ const ActionButtons: React.FC = () => {
   };
 
   const saveHandler = (validatedPosting: TetPosting): void => {
+    console.dir(`saved posting: ${JSON.stringify(validatedPosting)}`);
     const event = tetPostingToEvent(validatedPosting);
     upsertTetPosting.mutate({
       id: validatedPosting.id,
@@ -96,7 +97,7 @@ const ActionButtons: React.FC = () => {
               border: ${theme.colors.black90} !important;
             `}
           >
-            {t('common:editor.saveDraft')}
+            {allowPublish ? t('common:editor.saveDraft') : t('common:editor.savePublished')}
           </Button>
         </$GridCell>
         {allowDelete ? (
