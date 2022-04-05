@@ -34,9 +34,11 @@ const Layout: React.FC<Props> = ({ children, ...rest }) => {
           setIsTermsOfSerivceApproved={setIsTermsOfSerivceApproved}
         />
       ) : (
-        children
+        <>
+          {children}
+          <SupportingContent />
+        </>
       )}
-      <SupportingContent />
       <Footer />
     </$Main>
   );
