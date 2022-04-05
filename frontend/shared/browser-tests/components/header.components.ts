@@ -173,11 +173,6 @@ export const getHeaderComponents = (
           .expect(selectors.loginButton(asLang).exists)
           .ok(await getErrorMessage(t));
       },
-      async loginButtonIsTranslatedAs(asLang: Language) {
-        await t
-          .expect(selectors.loginButton(asLang).exists)
-          .ok(await getErrorMessage(t));
-      },
     };
     const actions = {
       async clickloginButton(asLang = DEFAULT_LANGUAGE) {
