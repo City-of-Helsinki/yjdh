@@ -3,6 +3,7 @@ from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepte
 from django.conf import settings
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
+from messages.automatic_messages import notify_applicant_by_email_about_new_message
 from messages.models import Message
 from messages.permissions import HasMessagePermission
 from messages.serializers import MessageSerializer, NoteSerializer
@@ -45,6 +46,10 @@ class ApplicantMessageViewSet(AuditLoggingModelViewSet):
 class HandlerMessageViewSet(ApplicantMessageViewSet):
     serializer_class = MessageSerializer
     permission_classes = [BFIsHandler, HasMessagePermission]
+
+    def perform_create(self, serializer):
+        message = serializer.save()
+        notify_applicant_by_email_about_new_message(message.application)
 
     def get_queryset(self):
         try:

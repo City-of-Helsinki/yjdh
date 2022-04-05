@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-21 08:20+0200\n"
+"POT-Creation-Date: 2022-03-31 13:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -852,7 +852,22 @@ msgid ""
 "processed."
 msgstr ""
 "Hakemuksesi on avattu muokattavaksi. Tee korjaukset viimeistään "
-"{additional_information_needed_by} mennessä, muuten hakemusta ei voida käsitellä."
+"{additional_information_needed_by} mennessä, muuten hakemusta ei voida "
+"käsitellä."
+
+#: messages/automatic_messages.py:44
+msgid "You have received a new message from Helsinki benefit"
+msgstr "Olet saanut uuden viestin Helsinki-lisä -hakemukseen"
+
+#: messages/automatic_messages.py:55
+#, python-format
+msgid ""
+"A new message has been added to the Helsinki-benefit application "
+"%(application_number)s (%(submitted_at_fmt)s). Open that application to see "
+"the message."
+msgstr ""
+"Helsinki-lisä hakemukseen %(application_number)s (%(submitted_at_fmt)s) on tullut uusi viesti. "
+"Avaa kyseinen hakemus nähdäksesi viestin."
 
 #: messages/models.py:16
 msgid "Note"

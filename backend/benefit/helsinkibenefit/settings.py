@@ -97,6 +97,13 @@ env = environ.Env(
     ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
+    EMAIL_USE_TLS=(bool, False),
+    EMAIL_HOST=(str, "ema.platta-net.hel.fi"),
+    EMAIL_HOST_USER=(str, ""),
+    EMAIL_HOST_PASSWORD=(str, ""),
+    EMAIL_PORT=(int, 25),
+    EMAIL_TIMEOUT=(int, 15),
+    DEFAULT_FROM_EMAIL=(str, "Helsinki-lisä <helsinkilisa@hel.fi>"),
     WKHTMLTOPDF_BIN=(str, "/usr/bin/wkhtmltopdf"),
     DISABLE_AUTHENTICATION=(bool, False),
     DUMMY_COMPANY_FORM_CODE=(
@@ -229,6 +236,14 @@ TEMPLATES = [
     }
 ]
 
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_HOST = env.str("EMAIL_HOST")
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env.int("EMAIL_PORT")
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT")
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
@@ -300,6 +315,11 @@ YTJ_TIMEOUT = env.int("YTJ_TIMEOUT")
 NEXT_PUBLIC_MOCK_FLAG = env.bool("NEXT_PUBLIC_MOCK_FLAG")
 DUMMY_COMPANY_FORM_CODE = env.int("DUMMY_COMPANY_FORM_CODE")
 ENABLE_DEBUG_ENV = env.bool("ENABLE_DEBUG_ENV")
+
+if NEXT_PUBLIC_MOCK_FLAG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # Authentication settings begin
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE")
