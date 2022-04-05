@@ -31,15 +31,4 @@ export const goToUrl = async (
   const url = getUrl(baseUrl, path);
   setDataToPrintOnFailure(t, 'goToUrl', url);
   await t.navigateTo(url);
-  /* eslint-disable no-await-in-loop */
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < 60; i++) {
-    await t.wait(1000);
-    await t.navigateTo(getUrl(baseUrl, path));
-    const currentUrl = await getCurrentUrl();
-    if (currentUrl.startsWith(url)) {
-      return;
-    }
-  }
-  /* eslint-enable no-await-in-loop */
 };
