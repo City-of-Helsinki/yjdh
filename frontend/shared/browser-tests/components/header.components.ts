@@ -15,6 +15,7 @@ const translations = {
     login: 'Kirjaudu palveluun',
     logout: 'Kirjaudu ulos',
     language: 'Suomeksi',
+    languageMenuButtonAriaLabel: 'Valitse kieli',
     userInfo: (user?: User) =>
       new RegExp(
         `Käyttäjä: ${
@@ -27,6 +28,7 @@ const translations = {
     login: 'Logga in i tjänsten',
     logout: 'Logga ut',
     language: 'På svenska',
+    languageMenuButtonAriaLabel: 'Ändra språk',
     userInfo: (user?: User) =>
       new RegExp(
         `Användare: ${
@@ -38,6 +40,7 @@ const translations = {
     login: 'Sign in to the service',
     logout: 'Log out',
     language: 'In English',
+    languageMenuButtonAriaLabel: 'Select language',
     userInfo: (user?: User) =>
       new RegExp(
         `User: ${
@@ -69,7 +72,7 @@ export const getHeaderComponents = (
       languageSelector(lang = DEFAULT_LANGUAGE): SelectorPromise {
         setDataToPrintOnFailure(t, 'lang', lang);
         return withinNavigationActions().findByRole('button', {
-          name: new RegExp(lang, 'i'),
+          name: translations[lang].languageMenuButtonAriaLabel,
         });
       },
       languageSelectorItem(toLang: Language): SelectorPromise {
