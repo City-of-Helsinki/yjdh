@@ -92,7 +92,7 @@ export const getIndexPageComponents = async (
       await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
       await t
         .expect(selectors.schoolsLoading().exists)
-        .notOk(await getErrorMessage(t), { timeout: 60_000 });
+        .notOk(await getErrorMessage(t));
     },
   };
   const actions = {
