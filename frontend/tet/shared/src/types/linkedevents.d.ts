@@ -43,7 +43,6 @@ export type CustomData = {
   org_name: string;
   contact_email: string;
   contact_phone: string;
-  contact_language: string;
   contact_first_name: string;
   contact_last_name: string;
   editor_email?: string;

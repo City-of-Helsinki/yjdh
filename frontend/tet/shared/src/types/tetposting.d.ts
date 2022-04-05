@@ -12,7 +12,6 @@ type TetPosting = {
   contact_email: string;
   contact_first_name: string;
   contact_last_name: string;
-  contact_language: string;
   contact_phone: string;
   date_published: string | null;
   keywords: OptionType[];

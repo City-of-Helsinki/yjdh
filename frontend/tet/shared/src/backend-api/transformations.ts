@@ -98,7 +98,6 @@ export const eventToTetPosting = (
     contact_email: event.custom_data?.contact_email || '',
     contact_first_name: event.custom_data?.contact_first_name || '',
     contact_last_name: event.custom_data?.contact_last_name || '',
-    contact_language: event.custom_data?.contact_language || 'fi',
     contact_phone: event.custom_data?.contact_phone || '',
     keywords: keywordType
       ? event.keywords
@@ -196,7 +195,6 @@ export const tetPostingToEvent = (
     org_name: posting.org_name,
     contact_email: posting.contact_email,
     contact_phone: posting.contact_phone,
-    contact_language: posting.contact_language,
     contact_first_name: posting.contact_first_name,
     contact_last_name: posting.contact_last_name,
   },
@@ -205,6 +203,6 @@ export const tetPostingToEvent = (
   })),
   publication_status: publish ? 'public' : undefined,
   date_published: publish
-    ? '2022-03-29T03:00:00Z'
-    : posting.date_published || null, // TODO fix
+    ? new Date().toISOString()
+    : posting.date_published || null,
 });

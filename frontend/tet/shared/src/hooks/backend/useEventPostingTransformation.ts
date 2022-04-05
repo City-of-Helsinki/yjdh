@@ -101,7 +101,6 @@ const useEventPostingTransformation = (): Transformations => {
       contact_email: event.custom_data?.contact_email || '',
       contact_first_name: event.custom_data?.contact_first_name || '',
       contact_last_name: event.custom_data?.contact_last_name || '',
-      contact_language: event.custom_data?.contact_language || 'fi',
       contact_phone: event.custom_data?.contact_phone || '',
       keywords: keywordType
         ? event.keywords
