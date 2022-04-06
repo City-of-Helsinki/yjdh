@@ -22,7 +22,7 @@ export const getSuomiFiAuthenticationComponents = (t: TestController) => {
       async isPresent() {
         await t
           .expect(selectors.authenticationSelector().exists)
-          .ok(await getErrorMessage(t), { timeout: 10_000 });
+          .ok(await getErrorMessage(t));
       },
     };
     const actions = {

@@ -3,7 +3,11 @@ import { RequestHook } from 'testcafe';
 // Based on this idea
 // https://stackoverflow.com/questions/61116376/set-referrer-for-firefox-on-test-cafe
 type Event = {
-  requestOptions: { headers: Record<string, string> };
+  requestOptions: {
+    headers: Record<string, string>;
+    body: string;
+    url: string;
+  };
 };
 
 export class HttpRequestHook extends RequestHook {

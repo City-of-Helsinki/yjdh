@@ -45,9 +45,7 @@ export const getStep2Components = (t: TestController) => {
     };
     const expectations = {
       async isPresent() {
-        await t
-          .expect(selectors.title().exists)
-          .ok(await getErrorMessage(t), { timeout: 10_000 });
+        await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
       },
     };
     const actions = {
@@ -209,17 +207,15 @@ export const getStep2Components = (t: TestController) => {
     };
     const expectations = {
       async isPresent(isOpen = true) {
-        await t
-          .expect(formSelector().exists)
-          .ok(await getErrorMessage(t), { timeout: 10_000 });
+        await t.expect(formSelector().exists).ok(await getErrorMessage(t));
         await t
           .expect(accordionSelector(isOpen, employeeIndex).exists)
-          .ok(await getErrorMessage(t), { timeout: 10_000 });
+          .ok(await getErrorMessage(t));
       },
       async isAttachmentUploaded(attachment: KesaseteliAttachment) {
         return t
           .expect(selectors.attachmentLink(attachment).exists)
-          .ok(await getErrorMessage(t), { timeout: 10_000 });
+          .ok(await getErrorMessage(t));
       },
     };
 
@@ -386,7 +382,7 @@ export const getStep2Components = (t: TestController) => {
       async isPresent() {
         return t
           .expect(selectors.addButton().exists)
-          .ok(await getErrorMessage(t), { timeout: 10_000 });
+          .ok(await getErrorMessage(t));
       },
     };
     const actions = {

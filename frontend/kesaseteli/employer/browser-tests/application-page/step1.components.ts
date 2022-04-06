@@ -108,9 +108,7 @@ export const getStep1Components = (t: TestController) => {
     };
     const expectations = {
       async isPresent() {
-        await t
-          .expect(formSelector().exists)
-          .ok(await getErrorMessage(t), { timeout: 10_000 });
+        await t.expect(formSelector().exists).ok(await getErrorMessage(t));
       },
       async isFulFilledWith({
         contact_person_name,

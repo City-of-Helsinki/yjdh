@@ -1,15 +1,18 @@
 import { getHandlerFormPageComponents } from '@frontend/kesaseteli-shared/browser-tests/handler-form-page/handlerFormPage.components';
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import {
   fakeActivatedYouthApplication,
   fakeAdditionalInfoApplication,
   fakeYouthApplication,
 } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import {
   getCurrentUrl,
   getUrlParam,
+  goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
@@ -43,7 +46,7 @@ fixture('Youth Application')
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 test('I can send application and return to front page', async (t) => {
@@ -64,10 +67,7 @@ test('If I send two applications with same email, I will see "email is in use" -
   const thankYouPage = await getThankYouPageComponents(t);
   await thankYouPage.actions.clickGoToFrontPageButton();
   await indexPage.expectations.isLoaded();
-  const secondApplication = {
-    ...fakeYouthApplication(),
-    email: application.email,
-  };
+  const secondApplication = fakeYouthApplication({ email: application.email });
   await sendYouthApplication(t, secondApplication);
   const emailInUsePage = await getEmailInUsePageComponents(t);
   await emailInUsePage.expectations.isLoaded();
@@ -205,7 +205,7 @@ if (!isRealIntegrationsEnabled()) {
     let thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
     await getActivatedPageComponents(t);
-    await t.navigateTo(firstThankYouPageUrl);
+    await goToUrl(t, firstThankYouPageUrl);
     thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
     const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);

@@ -59,7 +59,7 @@
       "social_security_number": "Personal identity code",
       "postcode": "Postal code",
       "schoolsDropdown": "School",
-      "schoolsLoading": "Loading up options ...",
+      "schoolsLoading": "Loading up options...",
       "schoolsPlaceholder": "Choose your school from the list",
       "is_unlisted_school": "School not found on the list",
       "schoolName": "Name of the school",
