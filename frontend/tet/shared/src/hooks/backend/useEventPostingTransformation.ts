@@ -1,0 +1,154 @@
+import {
+  LocalizedObject,
+  TetEvent,
+  TetEvents,
+} from 'tet-shared/types/linkedevents';
+import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
+import { KeywordFn, ClassificationType } from 'tet-shared/types/keywords';
+import { OptionType } from 'tet-shared/types/classification';
+import useLocale from 'shared/hooks/useLocale';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
+import useKeywordType, {
+  UseKeywordResult,
+} from 'tet-shared/hooks/backend/useKeywordType';
+import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
+
+type Transformations = {
+  eventToTetPosting: (
+    event: TetEvent,
+    keywordType?: KeywordFn,
+    languageOptions?: OptionType[]
+  ) => TetPosting;
+  eventsToTetPostings: (events: TetEvents | undefined) => TetPostings;
+  keywordResult: UseKeywordResult;
+};
+
+const useEventPostingTransformation = (): Transformations => {
+  const locale = useLocale();
+  const keywordResult = useKeywordType();
+  const languageOptions = useLanguageOptions();
+
+  const keywordType = keywordResult.getKeywordType;
+
+  const getLocalizedString = (obj: LocalizedObject | undefined): string => {
+    if (obj) {
+      return obj[locale] ?? obj.fi;
+    }
+    return '';
+  };
+
+  /**
+   * Convert event read from Linked Events API to form data.
+   *
+   * @param event
+   */
+  const eventToTetPosting = (event: TetEvent): TetPosting => {
+    const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
+    const spots = parsedSpots >= 0 ? parsedSpots : 1;
+
+    return {
+      id: event.id,
+      title: getLocalizedString(event.name),
+      description: getLocalizedString(event.description),
+      org_name: event.custom_data?.org_name || '',
+      // note that with GET /event/ all but @id are empty
+      location: {
+        name: getLocalizedString(event.location.name),
+        label: getLocalizedString(event.location.name),
+        value: event.location['@id'],
+        street_address: getLocalizedString(event.location.street_address),
+        city: getLocalizedString(event.location.address_locality),
+        postal_code: event.location.postal_code ?? '',
+      },
+      start_date: isoDateToHdsFormat(event.start_time)!,
+      end_date: isoDateToHdsFormat(event.end_time),
+      date_published: event.date_published,
+      contact_email: event.custom_data?.contact_email || '',
+      contact_first_name: event.custom_data?.contact_first_name || '',
+      contact_last_name: event.custom_data?.contact_last_name || '',
+      contact_phone: event.custom_data?.contact_phone || '',
+      keywords: keywordType
+        ? event.keywords
+            .filter(
+              (keyword) =>
+                keywordType(keyword['@id']) === ClassificationType.KEYWORD
+            )
+            // note that with GET /event/ all but @id are empty
+            .map((keyword) => ({
+              name: getLocalizedString(keyword.name),
+              label: getLocalizedString(keyword.name),
+              value: keyword['@id'],
+            }))
+        : [],
+      keywords_working_methods: keywordType
+        ? event.keywords
+            .filter(
+              (keyword) =>
+                keywordType(keyword['@id']) ===
+                ClassificationType.WORKING_METHOD
+            )
+            .map((keyword) => ({
+              name: getLocalizedString(keyword.name),
+              label: getLocalizedString(keyword.name),
+              value: keyword['@id'],
+            }))
+        : [],
+      keywords_attributes: keywordType
+        ? event.keywords
+            .filter(
+              (keyword) =>
+                keywordType(keyword['@id']) ===
+                ClassificationType.WORKING_FEATURE
+            )
+            .map((keyword) => ({
+              name: getLocalizedString(keyword.name),
+              label: getLocalizedString(keyword.name),
+              value: keyword['@id'],
+            }))
+        : [],
+      languages: languageOptions
+        ? event.in_language.map((obj) => {
+            const splits = obj['@id'].split('/');
+            const lang = splits[splits.length - 2];
+            return (
+              languageOptions.find((option) => option.value === lang) || {
+                name: '',
+                value: lang,
+                label: '',
+              }
+            );
+          })
+        : [],
+      spots,
+    };
+  };
+
+  const eventsToTetPostings = (events: TetEvents | undefined): TetPostings => {
+    const postings: TetPostings = {
+      draft: [],
+      published: [],
+    };
+
+    if (!events) {
+      return postings;
+    }
+
+    if (events.draft.length > 0) {
+      postings.draft = events.draft.map((e) => eventToTetPosting(e));
+    }
+
+    if (events.published.length > 0) {
+      postings.published = events.published.map((e) => eventToTetPosting(e));
+    }
+
+    return postings;
+  };
+
+  return {
+    eventToTetPosting,
+    eventsToTetPostings,
+    keywordResult,
+  };
+};
+
+export default useEventPostingTransformation;

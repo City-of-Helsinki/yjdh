@@ -6,7 +6,7 @@ from applications.models import YouthSummerVoucher
 from common.tests.factories import AcceptedYouthApplicationFactory
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_sequentiality():
     assert YouthSummerVoucher.objects.count() == 0
     for ordinal_number in range(1, 10):
@@ -16,7 +16,7 @@ def test_youth_summer_voucher_sequentiality():
         assert summer_voucher.summer_voucher_serial_number == ordinal_number
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_sequentiality_duplicate_create():
     assert YouthSummerVoucher.objects.count() == 0
 
@@ -41,7 +41,7 @@ def test_youth_summer_voucher_sequentiality_duplicate_create():
     ) == list(range(1, 3))
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_sequentiality_failing_transaction():
     assert YouthSummerVoucher.objects.count() == 0
 
@@ -68,7 +68,7 @@ def test_youth_summer_voucher_sequentiality_failing_transaction():
     ) == list(range(1, 3))
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_sequentiality_failing_nested_transaction():
     assert YouthSummerVoucher.objects.count() == 0
 
@@ -97,7 +97,7 @@ def test_youth_summer_voucher_sequentiality_failing_nested_transaction():
     ) == list(range(1, 4))
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_sequentiality_failing_nested_transactions():
     assert YouthSummerVoucher.objects.count() == 0
 
@@ -127,7 +127,7 @@ def test_youth_summer_voucher_sequentiality_failing_nested_transactions():
     ) == list(range(1, 3))
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True, reset_sequences=True)
 def test_youth_summer_voucher_sequentiality_complex_transaction_nesting():
     assert YouthSummerVoucher.objects.count() == 0
 

@@ -3,7 +3,7 @@ import { useQueries } from 'react-query';
 import {
   getWorkFeatures,
   getWorkMethods,
-} from 'tet/admin/backend-api/linked-events-api';
+} from 'tet-shared/backend-api/linked-events-api';
 
 export type UseKeywordResult = {
   getKeywordType?: KeywordFn;

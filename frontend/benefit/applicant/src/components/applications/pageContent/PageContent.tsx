@@ -14,6 +14,7 @@ import ApplicationFormStep5 from 'benefit/applicant/components/applications/form
 import ApplicationFormStep6 from 'benefit/applicant/components/applications/forms/application/step6/ApplicationFormStep6';
 import { SUBMITTED_STATUSES } from 'benefit/applicant/constants';
 import { LoadingSpinner } from 'hds-react';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Container from 'shared/components/container/Container';
 import Stepper from 'shared/components/stepper/Stepper';
@@ -23,6 +24,7 @@ import { useTheme } from 'styled-components';
 import ErrorPage from '../../errorPage/ErrorPage';
 import { usePageContent } from './usePageContent';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const PageContent: React.FC = () => {
   const {
     t,
@@ -38,6 +40,16 @@ const PageContent: React.FC = () => {
   } = usePageContent();
 
   const theme = useTheme();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.isReadOnly)
+      document.title = t('common:pageTitles.viewApplication');
+    else if (router.query.id)
+      document.title = t('common:pageTitles.editApplication');
+    else document.title = t('common:pageTitles.createApplication');
+  }, [router.query.id, router.query.isReadOnly, t]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

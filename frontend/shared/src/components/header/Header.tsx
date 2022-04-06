@@ -62,6 +62,7 @@ const Header: React.FC<HeaderProps> = ({
     closeMenu,
     handleLogin,
     handleLogout,
+    t,
   } = useHeader(login);
 
   const goToPage = useGoToPage();
@@ -135,7 +136,7 @@ const Header: React.FC<HeaderProps> = ({
         )}
         {languages && onLanguageChange && (
           <Navigation.LanguageSelector
-            buttonAriaLabel={locale?.toUpperCase()}
+            buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
             label={locale?.toUpperCase()}
             icon={<IconGlobe />}
             closeOnItemClick
@@ -156,6 +157,22 @@ const Header: React.FC<HeaderProps> = ({
       </Navigation.Actions>
     </Navigation>
   );
+};
+
+Header.defaultProps = {
+  title: undefined,
+  titleUrl: undefined,
+  skipToContentLabel: undefined,
+  menuToggleAriaLabel: undefined,
+  languages: undefined,
+  isNavigationVisible: undefined,
+  navigationItems: undefined,
+  customItems: null,
+  navigationVariant: undefined,
+  onLanguageChange: undefined,
+  login: undefined,
+  theme: undefined,
+  onTitleClick: undefined,
 };
 
 export default Header;

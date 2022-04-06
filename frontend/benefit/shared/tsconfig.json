@@ -1,7 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "skipLibCheck": true,
-    "jsx": "preserve"
+    "jsx": "react",
+    "baseUrl": "../../",
+    "paths": {
+      "benefit-shared/*": ["benefit/shared/src/*"],
+      "shared/*": ["shared/src/*","shared/browser-tests/*"]
+    }
   }
 }

@@ -8,24 +8,24 @@
         "heading": "Submitted applications"
       },
       "moreInfo": {
-        "heading": "Lisätietoa tarvitaan"
+        "heading": "Additional information is needed"
       },
       "common": {
-        "created": "Luotu",
+        "created": "Created",
         "employee": "Employee",
         "saved": "Tallennettu",
         "edit": "Edit",
         "sent": "Submitted",
         "applicationNumber": "Application number",
         "status": "Status",
-        "check": "Tarkastele",
+        "check": "Review",
         "editEndDate": "Edit by",
         "newMessages_one": "{{count}} new",
         "newMessages_other": "{{count}} new"
       }
     },
     "pageHeaders": {
-      "created": "Luotu",
+      "created": "Created",
       "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
       "new": "New application",
       "edit": "Application",
@@ -33,13 +33,13 @@
       "guideText": "All items marked with * are required"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Draft",
       "additionalInformationNeeded": "Additional information is needed",
       "received": "Received",
       "approved": "Accepted",
       "rejected": "Rejected",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Handling",
+      "cancelled": "Cancelled"
     },
     "steps": {
       "employer": "Employer",
@@ -59,7 +59,9 @@
       "back": "Back",
       "edit": "Edit",
       "close": "Close",
-      "openTermsAsPDF": "Open the terms as a PDF file"
+      "openTermsAsPDF": "Open the terms as a PDF file",
+      "continueToService": "Continue to the service",
+      "pauseAndExit": "Cancel and exit"
     },
     "sections": {
       "company": {
@@ -204,6 +206,10 @@
           "commissionBenefitSelected": {
             "label": "Period",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "No types of benefit available",
+            "content": "A company or an association that is not engaged in economic activity can only apply for the Helsinki benefit for salary. Pay subsidy granted for the employment relationship is a prerequisite for the Helsinki benefit for salary."
           }
         },
         "messages": {
@@ -356,6 +362,7 @@
       }
     }
   },
+  "serviceName": "Helsinki benefit service",
   "appName": "Helsinki benefit",
   "header": {
     "loginLabel": "Sign in to the service",
@@ -364,7 +371,8 @@
     "messages": "Messages",
     "drawer": {
       "title": "Application’s messages"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -380,8 +388,8 @@
       "message": "Helsinki benefit application {{applicationNumber}} ({{applicantName}}) has been submitted. You will be notified once the application has been processed."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Application saved",
+      "message": "Helsinki-benefit application {{applicationNumber}} {{applicantName}} has been saved."
     },
     "applicationDeleted": {
       "label": "Draft deleted",
@@ -399,15 +407,14 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Hakemukset",
+    "heading": "Applications",
     "description1": "Welcome to the Helsinki benefit service.",
     "description2": " You can save an incomplete application and continue to fill it in later.",
     "linkText": " Please take a look at the required information and attachments before filling in the application.",
     "newApplicationBtnText": "Submit a new application"
   },
   "attachmentsIngress": {
-    "text": "Add the following attachments to the application. All attachments marked with * are required. The accepted file formats are JPG, PNG and PDF and the maximum file size is 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Add the following attachments to the application. All attachments marked with * are required. The accepted file formats are JPG, PNG and PDF and the maximum file size is 10 MB."
   },
   "credentialsIngress": {
     "text": "A person to be employed with the Helsinki benefit must be informed of the processing of their personal data. Print the notification and request a signature from the person to be employed."
@@ -418,8 +425,12 @@
       "required": "This field is required",
       "invalid": "Invalid value",
       "number": {
+        "invalid": "Invalid value, please enter numbers only",
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
+      },
+      "phoneNumber": {
+        "max": "Maximum length is {{max}}"
       },
       "string": {
         "max": "This field can be up to {{max}} characters long",
@@ -461,7 +472,8 @@
     "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires strong authentication",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
-    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself.",
+    "termsOfServiceHeader": "Information about the processing of the employer representatives’ personal data"
   },
   "errorPage": {
     "title": "An error has unfortunately occurred",
@@ -512,19 +524,36 @@
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Error occurred",
+          "text": "An error occurred when trying to create the message. Please try again later."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Error occurred",
+          "text": "An error occurred when trying to fetch the message. Please try again later."
         }
       }
     },
     "compose": "Write a message",
     "send": "Submit",
     "isSecure": "Messages are encrypted",
-    "noMessages": "Ei viestejä",
+    "noMessages": "No messages",
     "close": "Close"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Do you need help? If anything is unclear, you can call or email us. Tel. +358 (0) 40 198 5891 and +358 (0) 40 183 3021 helsinkilisa@hel.fi ",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Show information"
+  },
+  "pageTitles": {
+    "login": "Helsinki benefit - Log in",
+    "home": "Helsinki benefit - Frontpage",
+    "createApplication": "Helsinki benefit - Application - Create",
+    "editApplication": "Helsinki benefit - Application - Edit",
+    "viewApplication": "Helsinki benefit - Application - View"
   }
 }

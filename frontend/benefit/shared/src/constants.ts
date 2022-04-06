@@ -14,6 +14,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   INVALID = 'common:form.validation.invalid',
   EMAIL_INVALID = 'common:form.validation.email.invalid',
   IBAN_INVALID = 'common:form.validation.iban.invalid',
+  NUMBER_INVALID = 'common:form.validation.number.invalid',
   NUMBER_MIN = 'common:form.validation.number.min',
   NUMBER_MAX = 'common:form.validation.number.max',
   PHONE_INVALID = 'common:form.validation.phone.invalid',
@@ -31,4 +32,7 @@ export enum VALIDATION_MESSAGE_KEYS {
   TIME_MIN = 'common:form.validation.time.min',
   TIME_MAX = 'common:form.validation.time.max',
   REQUIRED_IS_LIVING_IN_HELSINKI = 'common:applications.sections.employee.fields.isLivingInHelsinki.error',
+  PHONE_NUMBER_LENGTH_MAX = 'common:form.validation.phoneNumber.max',
 }
+
+export const PAY_SUBSIDY_OPTIONS = [30, 40, 50, 100] as const;

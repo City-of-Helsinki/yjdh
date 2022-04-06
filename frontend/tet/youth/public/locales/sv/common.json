@@ -14,7 +14,15 @@
 		"heading": "Kom ihåg att söka PRAO-plats i tid",
 		"search": "Sök",
 		"fetch": "Ansök",
-		"advancedSearch": "Detaljerad sökning"
+		"advancedSearch": "Detaljerad sökning",
+		"boxTitle": "Vad är PRAO?",
+		"boxContent": "Arbetslivspraktik, eller PRAO, är en del av skolan för grundskoleelever. Under PRAO kan man lära sig om olika yrken och få uppleva arbetslivet i praktiken.",
+		"announceLinkTitle": "Meddela en PRAO-platsannonsering",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Är du arbetsgivare och vill anmäla en ledig tjänst inom TET- platsannonsering? Gå till den arbetsgivartjänst här.",
+		"askLinkTitle": "Frågorna?",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Har du några frågor om tjänsten eller märkte du något konstigt i annonserna? Ta kontakt!"
 	},
 	"filters": {
 		"searchPlaceholder": "Uppge sökord eller platsnamn",

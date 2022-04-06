@@ -9,6 +9,7 @@ from common.tests.factories import (
     AcceptableYouthApplicationFactory,
     AcceptedYouthApplicationFactory,
     ActiveYouthApplicationFactory,
+    AdditionalInfoRequestedYouthApplicationFactory,
     AttachmentFactory,
     CompanyFactory,
     EmployerApplicationFactory,
@@ -119,6 +120,11 @@ def acceptable_youth_application():
 @pytest.fixture
 def accepted_youth_application():
     return AcceptedYouthApplicationFactory()
+
+
+@pytest.fixture
+def additional_info_requested_youth_application():
+    return AdditionalInfoRequestedYouthApplicationFactory()
 
 
 @pytest.fixture

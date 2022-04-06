@@ -7,6 +7,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from unittest import mock
 
+import faker
 import pytest
 import pytz
 from applications.api.v1.serializers import (
@@ -17,6 +18,7 @@ from applications.api.v1.serializers import (
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
 )
+from applications.api.v1.views import BaseApplicationViewSet
 from applications.enums import (
     ApplicationStatus,
     ApplicationStep,
@@ -26,7 +28,13 @@ from applications.enums import (
 )
 from applications.models import Application, ApplicationLogEntry, Attachment, Employee
 from applications.tests.conftest import *  # noqa
-from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
+from applications.tests.factories import (
+    ApplicationBatchFactory,
+    ApplicationFactory,
+    DecidedApplicationFactory,
+    HandlingApplicationFactory,
+    ReceivedApplicationFactory,
+)
 from calculator.models import Calculation
 from calculator.tests.conftest import fill_empty_calculation_fields
 from common.tests.conftest import *  # noqa
@@ -35,6 +43,7 @@ from common.utils import duration_in_months
 from companies.tests.conftest import *  # noqa
 from companies.tests.factories import CompanyFactory
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from freezegun import freeze_time
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE
 from helsinkibenefit.tests.conftest import *  # noqa
@@ -56,7 +65,13 @@ def get_handler_detail_url(application):
 
 
 @pytest.mark.parametrize(
-    "view_name", ["v1:applicant-application-list", "v1:handler-application-list"]
+    "view_name",
+    [
+        "v1:applicant-application-list",
+        "v1:handler-application-list",
+        "v1:applicant-application-simplified-application-list",
+        "v1:handler-application-simplified-application-list",
+    ],
 )
 def test_applications_unauthenticated(anonymous_client, application, view_name):
     response = anonymous_client.get(reverse(view_name))
@@ -70,10 +85,20 @@ def test_applications_unauthenticated(anonymous_client, application, view_name):
     assert audit_event["target"]["type"] == "Application"
 
 
+@pytest.mark.parametrize(
+    "view_name",
+    [
+        "v1:applicant-application-list",
+        "v1:applicant-application-simplified-application-list",
+    ],
+)
 def test_applications_unauthorized(
-    api_client, anonymous_application, mock_get_organisation_roles_and_create_company
+    api_client,
+    anonymous_application,
+    view_name,
+    mock_get_organisation_roles_and_create_company,
 ):
-    response = api_client.get(reverse("v1:applicant-application-list"))
+    response = api_client.get(reverse(view_name))
     assert len(response.data) == 0
     assert response.status_code == 200
 
@@ -125,6 +150,72 @@ def test_applications_filter_by_ssn(api_client, application, association_applica
     response = api_client.get(url)
     assert len(response.data) == 1
     assert response.data[0]["id"] == str(application.id)
+    assert response.status_code == 200
+
+
+def test_applications_simple_list_as_handler(handler_api_client, received_application):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data[0]
+    for key in ["calculation", "handled_at"]:
+        # handler-only fields must still be found
+        assert key in response.data[0]
+
+
+def test_applications_simple_list_as_applicant(api_client, received_application):
+    response = api_client.get(
+        reverse("v1:applicant-application-simplified-application-list")
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data
+    for key in ["calculation", "handled_at"]:
+        # handler-specific fields must not appear
+        assert key not in response.data[0]
+
+
+@pytest.mark.parametrize(
+    "exclude_fields",
+    [
+        ("status",),
+        (
+            "status",
+            "last_modified_at",
+        ),
+        ("status", "last_modified_at", "employee"),
+    ],
+)
+def test_applications_simple_list_exclude_more(
+    handler_api_client, received_application, exclude_fields
+):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+        + f"?exclude_fields={','.join(exclude_fields)}"
+    )
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    for key in exclude_fields:
+        assert key not in response.data[0]
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data[0]
+
+
+def test_applications_simple_list_filter(
+    handler_api_client, received_application, handling_application
+):
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+        + "?status=handling"
+    )
+    assert len(response.data) == 1
+    for key in BaseApplicationViewSet.EXCLUDE_FIELDS_FROM_SIMPLE_LIST:
+        assert key not in response.data
+    assert response.data[0]["status"] == "handling"
     assert response.status_code == 200
 
 
@@ -342,7 +433,17 @@ def test_application_post_unfinished(api_client, application):
     )
 
 
-def test_application_post_invalid_data(api_client, application):
+@pytest.mark.parametrize(
+    "language,company_bank_account_number_validation_error",
+    [
+        ("en", "Invalid IBAN"),
+        ("fi", "Virheellinen IBAN-tilinumero"),
+        ("sv", "Felaktigt IBAN-kontonummer"),
+    ],
+)
+def test_application_post_invalid_data(
+    api_client, application, language, company_bank_account_number_validation_error
+):
     data = ApplicantApplicationSerializer(application).data
     application.delete()
     assert len(Application.objects.all()) == 0
@@ -352,10 +453,13 @@ def test_application_post_invalid_data(api_client, application):
     data["status"] = "foo"  # invalid value
     data["bases"] = ["something_completely_different"]  # invalid value
     data["applicant_language"] = None  # non-null required
+    data["company_bank_account_number"] = "FI91 4008 0282 0002 02"  # invalid number
 
     data[
         "company_contact_person_phone_number"
     ] = "+359505658789"  # Invalid country code
+
+    api_client.defaults["HTTP_ACCEPT_LANGUAGE"] = language
     response = api_client.post(
         reverse("v1:applicant-application-list"), data, format="json"
     )
@@ -366,7 +470,13 @@ def test_application_post_invalid_data(api_client, application):
         "applicant_language",
         "company_contact_person_phone_number",
         "de_minimis_aid_set",
+        "company_bank_account_number",
     }
+    assert (
+        str(response.data["company_bank_account_number"][0])
+        == company_bank_account_number_validation_error
+    )
+    assert len(response.data["company_bank_account_number"]) == 1
     assert response.data["de_minimis_aid_set"][0].keys() == {"amount"}
     assert len(response.data["de_minimis_aid_set"]) == 2
 
@@ -1012,6 +1122,12 @@ def test_application_status_change_as_applicant(
         assert application.log_entries.all().count() == 1
         assert application.log_entries.all().first().from_status == from_status
         assert application.log_entries.all().first().to_status == to_status
+        if to_status == ApplicationStatus.RECEIVED:
+            assert response.data["submitted_at"] == datetime.now().replace(
+                tzinfo=pytz.utc
+            )
+        else:
+            assert response.data["submitted_at"] is None
     else:
         assert application.log_entries.all().count() == 0
 
@@ -1043,6 +1159,7 @@ def test_application_status_change_as_applicant(
     ],
 )
 @pytest.mark.parametrize("log_entry_comment", [None, "", "comment"])
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_application_status_change_as_handler(
     request,
     handler_api_client,
@@ -1051,6 +1168,7 @@ def test_application_status_change_as_handler(
     to_status,
     expected_code,
     log_entry_comment,
+    mailoutbox,
 ):
     """
     modify existing application
@@ -1104,6 +1222,8 @@ def test_application_status_change_as_handler(
                 "Please make the corrections by 18.06.2021"
                 in application.messages.first().content
             )
+            assert len(mailoutbox) == 1
+            assert "You have received a new message" in mailoutbox[0].subject
 
         if to_status in [
             ApplicationStatus.CANCELLED,
@@ -1933,3 +2053,52 @@ def test_application_status_last_changed_at(api_client, handling_application):
     assert response.data["status_last_changed_at"] == datetime(
         2021, 12, 1, tzinfo=pytz.UTC
     )
+
+
+def test_handler_application_default_ordering(handler_api_client):
+    f = faker.Faker()
+    combos = [
+        (ReceivedApplicationFactory, ApplicationStatus.RECEIVED),
+        (HandlingApplicationFactory, ApplicationStatus.HANDLING),
+        (DecidedApplicationFactory, ApplicationStatus.ACCEPTED),
+    ]
+    for _ in range(5):
+        for class_name, status in combos:
+            application = class_name()
+            random_datetime = f.past_datetime()
+            application.log_entries.filter(to_status=status).update(
+                created_at=random_datetime
+            )
+            Calculation.objects.filter(application__id=application.pk).update(
+                modified_at=random_datetime
+            )
+
+    def _expected_sort_key(obj):
+        handled_at_key = None
+        if (
+            log_entry := obj.log_entries.filter(
+                to_status__in=[
+                    ApplicationStatus.REJECTED,
+                    ApplicationStatus.ACCEPTED,
+                    ApplicationStatus.CANCELLED,
+                ]
+            )
+            .order_by("-created_at")
+            .first()
+        ):
+            handled_at_key = log_entry.created_at.timestamp()
+
+        return (
+            -handled_at_key if handled_at_key else float("-inf"),
+            -obj.calculation.modified_at.timestamp(),
+        )
+
+    # in-memory sort using _expected_sort_key and the database sort must be the same
+    expected_sorting = sorted(Application.objects.all(), key=_expected_sort_key)
+    expected_application_ids = [str(elem.pk) for elem in expected_sorting]
+
+    response = handler_api_client.get(
+        reverse("v1:handler-application-simplified-application-list")
+    )
+    returned_application_ids = [elem["id"] for elem in response.data]
+    assert expected_application_ids == returned_application_ids

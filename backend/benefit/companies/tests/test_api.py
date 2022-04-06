@@ -112,6 +112,35 @@ def test_get_organisation_from_service_bus(
 
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
+def test_get_organisation_from_service_bus_missing_business_line(
+    api_client,
+    bf_user,
+    requests_mock,
+    mock_get_organisation_roles_and_create_company,
+):
+    dummy_copy = deepcopy(DUMMY_SERVICE_BUS_RESPONSE)
+    dummy_copy["GetCompanyResult"]["Company"]["BusinessLine"] = None
+    matcher = re.compile(re.escape(settings.SERVICE_BUS_INFO_PATH))
+    requests_mock.post(matcher, json=dummy_copy)
+    response = api_client.get(get_company_api_url())
+    assert response.status_code == 200
+
+    company = Company.objects.get(
+        business_id=DUMMY_SERVICE_BUS_RESPONSE["GetCompanyResult"]["Company"][
+            "BusinessId"
+        ]
+    )
+    company_data = CompanySerializer(company).data
+    assert response.data == company_data
+    assert (
+        response.data["company_form_code"]
+        == YtjOrganizationCode.COMPANY_FORM_CODE_DEFAULT
+    )
+    assert response.data["company_form"] == "Osakeyhtiö"
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=False)
 def test_get_company_from_yrtti(
     api_client,
     bf_user,

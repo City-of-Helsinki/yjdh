@@ -3,7 +3,7 @@
     "model": "auth.group",
     "pk": 0,
     "fields": {
-      "name": "Applicant",
+      "name": "Applicants",
       "permissions": []
     }
   },
@@ -11,7 +11,7 @@
     "model": "auth.group",
     "pk": 1,
     "fields": {
-      "name": "Employee",
+      "name": "Employees",
       "permissions": []
     }
   },
@@ -19,7 +19,7 @@
     "model": "auth.group",
     "pk": 2,
     "fields": {
-      "name": "Application handler",
+      "name": "Application handlers",
       "permissions": []
     }
   }

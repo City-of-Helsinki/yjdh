@@ -20,6 +20,7 @@ class CalculationRowInline(admin.StackedInline):
 class CalculationInline(admin.StackedInline):
     model = Calculation
     inlines = (CalculationRowInline,)
+    show_change_link = True
     list_display = (
         "id",
         "start_date",
@@ -52,8 +53,9 @@ class CalculationAdmin(admin.ModelAdmin):
     )
     search_fields = (
         "id",
-        "application__company__id",
+        "application__id",
         "application__application_number",
+        "application__company__id",
         "application__company_name",
         "application__company_contact_person_email",
     )

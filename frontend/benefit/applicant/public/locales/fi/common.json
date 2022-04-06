@@ -39,7 +39,7 @@
       "approved": "Hyväksytty",
       "rejected": "Hylätty",
       "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "cancelled": "Peruttu"
     },
     "steps": {
       "employer": "Työnantaja",
@@ -59,7 +59,9 @@
       "back": "Takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
-      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
+      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
+      "continueToService": "Jatka palveluun",
+      "pauseAndExit": "Keskeytä ja poistu"
     },
     "sections": {
       "company": {
@@ -204,6 +206,10 @@
           "commissionBenefitSelected": {
             "label": "Ajanjakso",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "Ei haettavia tukimuotoja",
+            "content": "Yhteisö, joka ei harjoita taloudellista toimintaa voi hakea ainoastaan Palkan Helsinki-lisää. Palkan Helsinki-lisän edellytyksenä on työsuhteeseen myönnetty palkkatuki."
           }
         },
         "messages": {
@@ -356,6 +362,7 @@
       }
     }
   },
+  "serviceName": "Helsinki-lisän asiointipalvelu",
   "appName": "Helsinki-lisä",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
@@ -364,7 +371,8 @@
     "messages": "Viestit",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Valitse kieli"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -406,8 +414,7 @@
     "newApplicationBtnText": "Tee uusi hakemus"
   },
   "attachmentsIngress": {
-    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB."
   },
   "credentialsIngress": {
     "text": "Helsinki-lisällä työllistettävää henkilöä on tiedotettava hänen henkilötietojensa käsittelystä. Tulosta tiedoksianto ja pyydä siihen allekirjoitus työllistettävältä."
@@ -418,8 +425,12 @@
       "required": "Tämä kenttä on pakollinen",
       "invalid": "Virheellinen arvo",
       "number": {
+        "invalid": "Virheellinen arvo, ilmoita vain numeroita",
         "max": "Arvon tulee olla enintään {{max}}",
         "min": "Arvon tulee olla vähintään {{min}}"
+      },
+      "phoneNumber": {
+        "max": "Arvon enimmäispituus on {{max}}"
       },
       "string": {
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
@@ -461,7 +472,8 @@
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi.",
+    "termsOfServiceHeader": "Tietoa työnantajan edustajien henkilötietojen käsittelystä"
   },
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",
@@ -471,23 +483,23 @@
   },
   "error": {
     "generic": {
-      "label": "Error occurred",
-      "text": "Please try again later."
+      "label": "Tapahtui virhe",
+      "text": "Ole hyvä ja kokeile uudelleen myöhemmin."
     },
     "attachments": {
-      "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big.",
-      "fileType": "The attachment file type is not allowed."
+      "title": "Tapahtui virhe",
+      "tooBig": "Liite on liian suuri.",
+      "fileType": "Liite on väärässä muodossa."
     }
   },
   "upload": {
-    "isUploading": "Uploading...",
-    "errorTitle": "Uploading failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "isUploading": "Ladataan...",
+    "errorTitle": "Lataaminen epäonnistui",
+    "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "delete": {
-    "errorTitle": "Deleting failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "errorTitle": "Liitteen poistaminen epäonnistui",
+    "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "pdfViewer": {
     "previous": "Edellinen",
@@ -512,12 +524,12 @@
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": "Viestiä luotaessa tapahtui virhe. Ole hyvä ja kokeile uudelleen myöhemmin."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": "Viestiä noudettaessa tapahtui virhe. Ole hyvä ja kokeile uudelleen myöhemmin."
         }
       }
     },
@@ -526,5 +538,22 @@
     "isSecure": "Viestit ovat salattuja",
     "noMessages": "Ei viestejä",
     "close": "Sulje"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Tarvitsetko apua? Jos jokin asia jäi epäselväksi, voit soittaa tai lähettää sähköpostia meille. Puh. 040 198 5891 ja 040 183 3021 helsinkilisa@hel.fi",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Näytä info"
+  },
+  "pageTitles": {
+    "login": "Helsinki-lisä - Kirjautuminen",
+    "home": "Helsinki-lisä - Etusivu",
+    "createApplication": "Helsinki-lisä - Hakemus - Luo uusi",
+    "editApplication": "Helsinki-lisä - Hakemus - Muokkaa hakemusta",
+    "viewApplication": "Helsinki-lisä - Hakemus - Tarkastele hakemusta"
   }
 }

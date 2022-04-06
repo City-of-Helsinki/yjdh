@@ -28,7 +28,7 @@ jobs:
           python-version: '3.8'
 
       - name: Cache pip packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-pip-modules
         with:

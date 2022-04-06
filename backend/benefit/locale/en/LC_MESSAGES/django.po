@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-18 10:46+0200\n"
+"POT-Creation-Date: 2022-03-31 13:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -807,6 +807,10 @@ msgstr ""
 msgid "calculation rows"
 msgstr ""
 
+#: common/iban_field.py:14
+msgid "Invalid IBAN"
+msgstr ""
+
 #: common/permissions.py:37
 msgid "You have to accept Terms of Service before doing any action"
 msgstr ""
@@ -845,6 +849,18 @@ msgid ""
 "Your application has been opened for editing. Please make the corrections by "
 "{additional_information_needed_by}, otherwise the application cannot be "
 "processed."
+msgstr ""
+
+#: messages/automatic_messages.py:44
+msgid "You have received a new message from Helsinki benefit"
+msgstr ""
+
+#: messages/automatic_messages.py:55
+#, python-format
+msgid ""
+"A new message has been added to the Helsinki-benefit application "
+"%(application_number)s (%(submitted_at_fmt)s). Open that application to see "
+"the message."
 msgstr ""
 
 #: messages/models.py:16

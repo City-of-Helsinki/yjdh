@@ -13,7 +13,6 @@ class CustomDataSerializer(Serializer):
     org_name = CharField(max_length=250)
     contact_email = EmailField()
     contact_phone = CharField(max_length=30)
-    contact_language = CharField(max_length=5)
     contact_last_name = CharField(max_length=250)
     contact_first_name = CharField(max_length=250)
 
@@ -26,6 +25,7 @@ class TetUpsertEventSerializer(Serializer):
     start_time = CharField(max_length=30)
     end_time = CharField(max_length=30, allow_null=True)
     date_published = CharField(max_length=30, allow_null=True)
+    publication_status = CharField(max_length=30, allow_null=True, required=False)
     custom_data = CustomDataSerializer()
     in_language = ListField(
         child=DictField(child=URLField()), min_length=1, max_length=30

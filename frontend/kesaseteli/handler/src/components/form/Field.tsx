@@ -17,7 +17,6 @@ const Field: React.FC<Props> = ({ id, type, value, ...gridCellProps }) => {
   return (
     <$GridCell
       data-testid={dataTestId && `handlerApplication-${dataTestId}`}
-      $colSpan={2}
       {...gridCellProps}
     >
       {type && (

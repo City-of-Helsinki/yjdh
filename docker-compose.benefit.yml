@@ -1,12 +1,16 @@
 version: "3.8"
 services:
   postgres:
-    image: postgres:12
+    build:
+      context: ./backend
+      dockerfile: ./docker/finnish_postgres.Dockerfile
     restart: on-failure
     environment:
       POSTGRES_USER: benefit
       POSTGRES_PASSWORD: benefit
       POSTGRES_DB: benefit
+      LC_COLLATE: 'fi_FI.UTF-8'
+      LC_CTYPE: 'fi_FI.UTF-8'
     ports:
       - 5434:5432
     volumes:
@@ -38,8 +42,12 @@ services:
   applicant:
     build:
       context: ./frontend
-      dockerfile: benefit/applicant/Dockerfile
       target: development
+      args:
+        PORT: 3000
+        PROJECT: benefit
+        FOLDER: applicant
+        SERVICE: bf-appl
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -51,8 +59,12 @@ services:
   handler:
     build:
       context: ./frontend
-      dockerfile: benefit/handler/Dockerfile
       target: development
+      args:
+        PORT: 3100
+        PROJECT: benefit
+        FOLDER: handler
+        SERVICE: bf-hdlr
     volumes:
       - ./frontend:/app
       - /app/node_modules

@@ -46,7 +46,9 @@ class UserSerializer(serializers.ModelSerializer):
     def get_terms_of_service_in_effect(self, obj):
         terms = Terms.objects.get_terms_in_effect(TermsType.TERMS_OF_SERVICE)
         if terms:
-            return TermsSerializer(terms).data
+            # If given the request in context, DRF will output the URL for FileFields
+            context = {"request": self.context.get("request")}
+            return TermsSerializer(terms, context=context).data
         else:
             return None
 

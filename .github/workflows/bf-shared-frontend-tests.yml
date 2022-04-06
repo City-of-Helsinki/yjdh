@@ -8,7 +8,7 @@ on:
       - "frontend/shared/**"
       - "frontend/benefit/shared/**"
       - "frontend/*"
-      - ".github/workflows/ks-shared-tests.yml"
+      - ".github/workflows/bf-shared-frontend-tests.yml"
       - "!**/browser-tests/**"
       - "!**/README.md"
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}

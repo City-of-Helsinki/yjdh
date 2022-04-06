@@ -5,7 +5,8 @@
     "logoutLabel": "Logga ut",
     "userAriaLabelPrefix": "Användaren:",
     "linkSkipToContent": "Gå till innehållet",
-    "menuToggleAriaLabel": "Menyn"
+    "menuToggleAriaLabel": "Menyn",
+    "languageMenuButtonAriaLabel": "Ändra språk"
   },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
@@ -70,6 +71,7 @@
     "editTitle": "Redigera PRAO-plats",
 		"copyTitle": "Kopiera PRAO-plats",
     "saveDraft": "Spara som opublicerad",
+    "savePublished": "Spara och publicera",
     "deletePosting": "Ta bort annons",
     "preview": "Gå till förhandsgranskning",
     "publish": "Publicera",
@@ -108,7 +110,8 @@
 				"email": "Vänligen mata in e-post i rätt format",
 				"max": "Överskrider maximalt antal tecken",
 				"phone": "Vänligen mata in i rätt format",
-				"name": "Mata in namn utan specialtecken och -bokstäver"
+				"name": "Mata in namn utan specialtecken och -bokstäver",
+				"isSet": "Välj minst en"
 			}
     },
 		"classification": {
@@ -160,8 +163,14 @@
       "fileType": "Filtypen är inte tillåten"
     }
   },
+  "api": {
+    "saveErrorTitle": "Sparning PRAO-platsen misslyckades",
+    "saveErrorMessage": "Något gick fel.",
+    "publishErrorTitle": "Publicering misslyckades",
+    "publishErrorMessage": "Något gick snett. Vänligen försök igen senare."
+  },
   "upload": {
-		"successMessage": "Uppgifterna sparades",
+		"successMessage": "PRAO-platsen sparades",
     "isUploading": "Filen laddas upp...",
     "errorTitle": "Uppladdningen av filen misslyckades",
     "errorMessage": "Något gick fel. Försök igen senare."
@@ -177,6 +186,7 @@
 		"publishPosting": "Publicera PRAO-plats",
 		"confirmation": "Är du säker på att du vill publicera PRAO-platsen {{posting}}?",
 		"successTitle": "PRAO-platsen publicerades",
+    "saveSuccessMessage": "PRAO-platsen sparades och publicerades",
     "errorTitle": "Publicering misslyckades",
     "errorMessage": "Något gick snett. Vänligen försök igen senare."
   },

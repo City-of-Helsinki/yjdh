@@ -22,9 +22,15 @@ const useApplicationFormStep3 = (
 ): ExtendedComponentProps => {
   const { onNext, onSave, onBack, onDelete } = useFormActions(application);
 
-  const handleNext = (): void => onNext(application);
-  const handleSave = (): void => onSave(application);
-  const handleDelete = (): void => onDelete(application.id ?? '');
+  const handleNext = (): void => {
+    void onNext(application);
+  };
+  const handleSave = (): void => {
+    void onSave(application);
+  };
+  const handleDelete = (): void => {
+    void onDelete(application.id ?? '');
+  };
 
   const isRequiredAttachmentsUploaded = (): boolean => {
     if (

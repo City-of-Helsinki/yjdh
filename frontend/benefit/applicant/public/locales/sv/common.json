@@ -8,24 +8,24 @@
         "heading": "Skickade ansökningar"
       },
       "moreInfo": {
-        "heading": "Lisätietoa tarvitaan"
+        "heading": "Ytterligare uppgifter behövs"
       },
       "common": {
-        "created": "Luotu",
+        "created": "Skapats",
         "employee": "Anställd",
         "saved": "Tallennettu",
         "edit": "Redigera",
         "sent": "Skickad",
         "applicationNumber": "Ansökningsnummer",
         "status": "Status",
-        "check": "Tarkastele",
+        "check": "Recensioner",
         "editEndDate": "Redigera senast",
         "newMessages_one": "{{count}} ny",
         "newMessages_other": "{{count}} nya"
       }
     },
     "pageHeaders": {
-      "created": "Luotu",
+      "created": "Skapats",
       "sent": "Ansökningsnummer: {{applicationNumber}}  |  Skickad {{submittedAt}}",
       "new": "Ny ansökan",
       "edit": "Ansökan",
@@ -33,16 +33,16 @@
       "guideText": "Fälten märkta med * är obligatoriska"
     },
     "statuses": {
-      "draft": "Luonnos",
+      "draft": "Utkast",
       "additionalInformationNeeded": "Ytterligare uppgifter behövs",
       "received": "Mottagen",
       "approved": "Godkänd",
       "rejected": "Avvisad",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "handling": "Behandling",
+      "cancelled": "Peruttu"
     },
     "steps": {
-      "company": "Arbetsgivare",
+      "employer": "Arbetsgivare",
       "hired": "Anställd",
       "attachments": "Bilagor",
       "summary": "Sammandrag",
@@ -59,7 +59,9 @@
       "back": "Tillbaka",
       "edit": "Redigera",
       "close": "Stäng",
-      "openTermsAsPDF": "Öppna villkoren som PDF-fil"
+      "openTermsAsPDF": "Öppna villkoren som PDF-fil",
+      "continueToService": "Fortsätt till tjänsten",
+      "pauseAndExit": "Avbryt och lämna sidan"
     },
     "sections": {
       "company": {
@@ -204,6 +206,10 @@
           "commissionBenefitSelected": {
             "label": "Tidsperiod",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "Inga ansökningsbara stödformer",
+            "content": "En sammanslutning som inte bedriver ekonomisk verksamhet kan endast ansöka om Helsingforstillägg för lön. Förutsättningen för att få Helsingforstillägg för lön är att lönesubvention har beviljats för anställningen."
           }
         },
         "messages": {
@@ -356,6 +362,7 @@
       }
     }
   },
+  "serviceName": "E-tjänsten för Helsingforstillägg",
   "appName": "Helsingforstillägg",
   "header": {
     "loginLabel": "Logga in i tjänsten",
@@ -364,7 +371,8 @@
     "messages": "Meddelanden",
     "drawer": {
       "title": "Meddelanden om ansökan"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Ändra språk"
   },
   "footer": {
     "copyrightText": "Copyright",
@@ -380,8 +388,8 @@
       "message": "Ansökan om Helsingforstillägg {{applicationNumber}} ({{applicantName}}) har skickats. Du får ett meddelande när ansökan har behandlats."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Applikationen sparas",
+      "message": "Helsinforstillägg applikationen {{applicationNumber}} {{applicantName}} sparas."
     },
     "applicationDeleted": {
       "label": "Utkast raderat",
@@ -399,15 +407,14 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Hakemukset",
+    "heading": "Ansökningar",
     "description1": "Välkommen till e-tjänsten för Helsingforstillägg.",
     "description2": " Du kan spara en halvfärdig ansökan och komplettera den senare.",
     "linkText": " Se vilka uppgifter och bilagor som krävs innan du fyller i ansökan.",
     "newApplicationBtnText": "Gör en ny ansökan"
   },
   "attachmentsIngress": {
-    "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Bifoga följande bilagor till ansökan. Alla bilagor märkta med * är obligatoriska. Filformatet kan vara JPG, PNG eller PDF och den maximala filstorleken får vara 10 MB."
   },
   "credentialsIngress": {
     "text": "Den person som anställs med Helsingforstillägg ska informeras om behandlingen av hens personuppgifter. Skriv ut informationen och be den anställda om underskrift."
@@ -418,8 +425,12 @@
       "required": "Detta är ett obligatoriskt fält",
       "invalid": "Ogiltig värde",
       "number": {
+        "invalid": "Ogiltigt värde, ange endast siffror",
         "max": "Maxvärdet är {{max}}",
         "min": "Värdet måste vara minst {{min}}"
+      },
+      "phoneNumber": {
+        "max": "Maximal längd är {{max}}"
       },
       "string": {
         "max": "Detta fält kan vara upp till {{max}} tecken långt",
@@ -461,7 +472,8 @@
     "sessionExpiredLabel": "Användarsessionen föråldrades. Logga in på nytt.",
     "infoLabel": "Att använda tjänsten kräver stark autentisering",
     "logoutInfoContent": "Du har nu loggats ut. Om du vill fortsätta använda tjänsten, logga in på nytt genom att klicka på knappen nedan.",
-    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig. "
+    "infoContent": "Du bör identifiera dig för att kunna avancera till tjänsten. Du kan själv välja det identifieringssätt du vill använda. Identifieringsuppgifterna rör sig i en säker anslutning. Klicka på nedanstående knapp för att identifiera dig.",
+    "termsOfServiceHeader": "Information om behandlingen av arbetsgivarens representanters uppgifter"
   },
   "errorPage": {
     "title": "Tyvärr har det inträffat ett fel i tjänsten",
@@ -471,23 +483,23 @@
   },
   "error": {
     "generic": {
-      "label": "Error occurred",
-      "text": "Please try again later."
+      "label": "Ett fel uppstod",
+      "text": "Vänligen försök igen senare."
     },
     "attachments": {
-      "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big.",
-      "fileType": "The attachment file type is not allowed."
+      "title": "Ett fel uppstod",
+      "tooBig": "Storleken på bilagan är för stor.",
+      "fileType": "Typen av bilaga är inte tillåten."
     }
   },
   "upload": {
-    "isUploading": "Uploading...",
-    "errorTitle": "Uploading failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "isUploading": "Ladar ner...",
+    "errorTitle": "Nedladdningen misslyckades",
+    "errorMessage": "Något gick fel. Vänligen försök igen senare."
   },
   "delete": {
-    "errorTitle": "Deleting failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "errorTitle": "Det gick inte att ta bort bilagan",
+    "errorMessage": "Något gick fel. Vänligen försök igen senare."
   },
   "pdfViewer": {
     "previous": "Previous",
@@ -512,19 +524,36 @@
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Ett fel uppstod",
+          "text": "Ett fel uppstod när meddelandet skapades. Vänligen försök igen senare."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Ett fel uppstod",
+          "text": "Ett fel uppstod när meddelandet skulle hämtas. Vänligen försök igen senare."
         }
       }
     },
     "compose": "Skriv ett meddelande",
     "send": "Skicka",
     "isSecure": "Meddelandena är skyddade",
-    "noMessages": "Ei viestejä",
+    "noMessages": "Inga meddelanden",
     "close": "Stäng"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Behöver du hjälp? Om något är oklart kan du ringa eller mejla oss. Tfn. 040 198 5891 och 040 183 3021 helsinkilisa@hel.fi",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Visa information"
+  },
+  "pageTitles": {
+    "login": "Helsinforstillägg - Logga in",
+    "home": "Helsinforstillägg - Framsida",
+    "createApplication": "Helsinforstillägg - Ansökan - Skapa",
+    "editApplication": "Helsinforstillägg - Ansökan - Redigera",
+    "viewApplication": "Helsinforstillägg - Ansökan - Granska"
   }
 }

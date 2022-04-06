@@ -29,12 +29,37 @@ Allow user to create test database
 Load test fixtures
 
     python manage.py loaddata default_terms.json
+    python manage.py loaddata groups.json
 
 This creates terms of service and applicant terms in the database. The attachment PDF files are not actually
 created by loading the fixture. In order to actually download the PDF files, log in via the django admin
 and upload the files manually.
 
-### Daily running
+Set default permissions
+
+    python manage.py set_group_permissions
+
+This creates permissions for the handler's group so they have access to the Terms in
+the django admin.
+
+
+### Configure docker environment
+
+In the yjdh project root, set up the .env.benefit-backend file: `cp .env.benefit-backend.example .env.benefit-backend`
+Edit the file, and add the missing passwords/client ids/secrets. The values can be retrieved from Azure key vault
+at the Azure portal. Use the values from the key vault of the dev or test environment.
+
+### Daily running with Docker
+
+In the project root folder, run:
+
+`docker-compose -f docker-compose.benefit.yml up`
+
+This will bring up Postgres, backend, as well as the handler and applicant UIs.
+Note - in order to run the handler and applicant UIs, you need to set up
+also their .env files, see instructions in the frontend folder
+
+### Daily running without Docker
 
 * Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
 * Set the `DEBUG` environment variable to `1`.

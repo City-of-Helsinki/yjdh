@@ -28,7 +28,6 @@ type ExtendedComponentProps = {
   textLocale: string;
   checkedArray: boolean[];
   applicantTermsInEffectUrl: string;
-  openTermsAsPDF: () => void;
 };
 
 const useApplicationFormStep6 = (
@@ -102,8 +101,12 @@ const useApplicationFormStep6 = (
     }
   };
 
-  const handleSave = (): void => onSave(application);
-  const handleDelete = (): void => onDelete(application.id ?? '');
+  const handleSave = (): void => {
+    void onSave(application);
+  };
+  const handleDelete = (): void => {
+    void onDelete(application.id ?? '');
+  };
 
   const applicantTermsInEffectUrl = React.useMemo(() => {
     if (
@@ -115,14 +118,6 @@ const useApplicationFormStep6 = (
       ];
     return '';
   }, [application.applicantTermsInEffect, textLocale]);
-
-  const openTermsAsPDF = (): void => {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    const newTab = window.open(applicantTermsInEffectUrl, '_blank');
-    if (newTab) {
-      newTab.focus();
-    }
-  };
 
   return {
     t,
@@ -137,7 +132,6 @@ const useApplicationFormStep6 = (
     textLocale,
     checkedArray,
     applicantTermsInEffectUrl,
-    openTermsAsPDF,
   };
 };
 

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from email.mime.image import MIMEImage
 from pathlib import Path
 from urllib.parse import quote, urljoin
@@ -14,7 +14,7 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
-from shared.common.utils import MatchesAnyOfQuerySet
+from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
 from shared.common.validators import (
     validate_name,
     validate_optional_json,
@@ -24,6 +24,7 @@ from shared.common.validators import (
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
 
+from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
     APPLICATION_LANGUAGE_CHOICES,
     ATTACHMENT_CONTENT_TYPE_CHOICES,
@@ -177,15 +178,36 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     handled_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("time handled")
     )
+    additional_info_provided_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("time additional info was provided")
+    )
+    additional_info_user_reasons = models.JSONField(
+        blank=True,  # Allow empty list i.e. []
+        default=list,
+        verbose_name=_("additional info user reasons"),
+        validators=[validate_additional_info_user_reasons],
+    )
+    additional_info_description = models.CharField(
+        blank=True,
+        default="",
+        max_length=4096,
+        verbose_name=_("additional info description"),
+    )
     objects = YouthApplicationQuerySet.as_manager()
 
     def handler_processing_url(self):
         return handler_youth_application_processing_url(self.pk)
 
-    def _localized_frontend_page_url(self, page_name):
-        return urljoin(
+    def _localized_frontend_page_url(self, page_name, id_query_param=None):
+        result = urljoin(
             settings.YOUTH_URL, f"/{quote(self.language)}/{quote(page_name)}"
         )
+        if id_query_param is not None:
+            result += f"?id={quote(str(id_query_param))}"
+        return result
+
+    def additional_info_page_url(self, pk):
+        return self._localized_frontend_page_url("additional_info", id_query_param=pk)
 
     def activated_page_url(self):
         return self._localized_frontend_page_url("activated")
@@ -224,7 +246,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         )
 
     @staticmethod
-    def _activation_email_subject(language):
+    def activation_email_subject(language):
         with translation.override(language):
             return gettext("Aktivoi Kesäseteli")
 
@@ -236,6 +258,20 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 "klikkaamalla alla olevaa linkkiä:\n\n"
                 "%(activation_link)s\n\n"
                 "Ystävällisin terveisin, Kesäseteli-tiimi"
+            ) % {"activation_link": activation_link}
+
+    @staticmethod
+    def additional_info_request_email_subject(language):
+        with translation.override(language):
+            return gettext("Lisätietopyyntö")
+
+    @staticmethod
+    def _additional_info_request_email_message(language, activation_link):
+        with translation.override(language):
+            return gettext(
+                "Täydennäthän kesäsetelihakemuksesi tietoja alla olevasta linkistä:\n\n"
+                "%(activation_link)s\n\n"
+                "Kiitos! Ystävällisin terveisin, Kesäseteli-tiimi"
             ) % {"activation_link": activation_link}
 
     def _processing_email_subject(self):
@@ -267,6 +303,28 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 "processing_link": processing_link,
             }
 
+    def send_additional_info_request_email(self, request, language) -> bool:
+        """
+        Send youth application's additional info request email with given language to
+        the applicant.
+
+        :param request: Request used for generating the activation link
+        :param language: The language to be used in the email
+        :return: True if email was sent, otherwise False.
+        """
+        return send_mail_with_error_logging(
+            subject=YouthApplication.additional_info_request_email_subject(language),
+            message=YouthApplication._additional_info_request_email_message(
+                language=language,
+                activation_link=self._activation_link(request),
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.email],
+            error_message=_(
+                "Unable to send youth application's additional info request email"
+            ),
+        )
+
     def send_activation_email(self, request, language) -> bool:
         """
         Send youth application's activation email with given language to the applicant.
@@ -276,7 +334,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :return: True if email was sent, otherwise False.
         """
         return send_mail_with_error_logging(
-            subject=YouthApplication._activation_email_subject(language),
+            subject=YouthApplication.activation_email_subject(language),
             message=YouthApplication._activation_email_message(
                 language=language,
                 activation_link=self._activation_link(request),
@@ -407,6 +465,58 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         if self.can_reject(handler=handler):
             self._handle(status=YouthApplicationStatus.REJECTED, handler=handler)
         return self.is_rejected
+
+    @property
+    def birthdate(self) -> date:
+        """
+        Applicant's birthdate based on their social security number.
+        """
+        return social_security_number_birthdate(self.social_security_number)
+
+    @property
+    def need_additional_info(self) -> bool:
+        """
+        Does the youth application initially need additional info to be processed?
+
+        :return: True if youth application initially needs additional info be processed,
+                 otherwise False. Note that this value does NOT change based on whether
+                 additional info has been provided or not.
+        """
+        return self.is_unlisted_school
+
+    @property
+    def has_additional_info(self) -> bool:
+        """
+        Has additional info been provided for this youth application?
+
+        :return: True if additional info has been provided, otherwise False.
+        """
+        return self.additional_info_provided_at is not None
+
+    @property
+    def can_set_additional_info(self) -> bool:
+        """
+        Can additional info be set for this youth application?
+
+        :return: True if status is
+                 YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED, otherwise
+                 False.
+        """
+        return self.status == YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+
+    def set_additional_info(
+        self, additional_info_user_reasons, additional_info_description
+    ):
+        """
+        Sets additional_info_user_reasons and additional_info_description to given
+        values, status to YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED,
+        additional_info_provided_at to current time and saves the youth application.
+        """
+        self.additional_info_provided_at = timezone.now()
+        self.additional_info_user_reasons = additional_info_user_reasons
+        self.additional_info_description = additional_info_description
+        self.status = YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED
+        self.save()
 
     @classmethod
     def is_email_or_social_security_number_active(

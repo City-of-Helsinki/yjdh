@@ -67,21 +67,24 @@ from terms.models import ApplicantTermsApproval, Terms
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
-class ApplicationBasisSerializer(serializers.ModelSerializer):
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
-    Only the unique identifier is exposed through the API.
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed and exclude_fields parameter argument that controls
+    which fields should not be displayed and exclude_fields parameter argument that controls which
+    fields should not be displayed.
     """
 
-    class Meta:
-        model = ApplicationBasis
-        fields = [
-            "identifier",
-        ]
-        extra_kwargs = {
-            "identifier": {
-                "help_text": "Unique slug that identifies the basis",
-            }
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Empty "fields" argument is treated the same as no argument at all
+        fields = self.context.get("fields", []) or self.fields.keys()
+        exclude_fields = self.context.get("exclude_fields", [])
+
+        existing = set(self.fields)
+        allowed = set(fields) - set(exclude_fields)
+        for field_name in existing - allowed:
+            self.fields.pop(field_name)
 
 
 class AttachmentField(FileField):
@@ -458,7 +461,7 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
         application_batch.applications.set(applications)
 
 
-class BaseApplicationSerializer(serializers.ModelSerializer):
+class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     """
     Fields in the Company model come from YTJ/other source and are not editable by user, and are listed
@@ -525,7 +528,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "company_form_code",
             "submitted_at",
             "bases",
-            "available_bases",
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
@@ -574,7 +576,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "submitted_at",
             "application_number",
-            "available_bases",
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
@@ -724,10 +725,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         "get_status_last_changed_at"
     )
 
-    available_bases = serializers.SerializerMethodField(
-        "get_available_bases", help_text="List of available application basis slugs"
-    )
-
     attachment_requirements = serializers.SerializerMethodField(
         "get_attachment_requirements", help_text="get the attachment requirements"
     )
@@ -826,8 +823,8 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
     ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=14)
 
     def get_additional_information_needed_by(self, obj):
-        if info_asked_timestamp := self._get_status_change_timestamp(
-            obj, ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED
+        if info_asked_timestamp := getattr(
+            obj, "additional_information_requested_at", None
         ):
             return info_asked_timestamp.date() + self.ADDITIONAL_INFORMATION_DEADLINE
         else:
@@ -871,19 +868,12 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         }
 
     def get_submitted_at(self, obj):
-        return obj.get_log_entry_field([ApplicationStatus.RECEIVED], "created_at")
+        return getattr(obj, "submitted_at", None)
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
-
-    @extend_schema_field(ApplicationBasisSerializer(many=True))
-    def get_available_bases(self, obj):
-        return [
-            basis.identifier
-            for basis in ApplicationBasis.objects.filter(is_active=True)
-        ]
 
     def _get_pay_subsidy_attachment_requirements(self, application):
         req = []
@@ -1361,6 +1351,11 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         )
         if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             # Create an automatic message for the applicant
+            # self.instance.additional_information_requested_at is not updated at this point as
+            # it's a queryset annotation, so need to refresh
+            self.instance.additional_information_requested_at = Application.objects.get(
+                pk=instance.pk
+            ).additional_information_requested_at
             send_application_reopened_message(
                 get_request_user_from_context(self),
                 instance,
@@ -1647,10 +1642,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     )
 
     def get_handled_at(self, obj):
-        if hasattr(obj, "handled_at"):
-            return obj.handled_at
-        else:
-            return None
+        return getattr(obj, "handled_at", None)
 
     class Meta(BaseApplicationSerializer.Meta):
         fields = BaseApplicationSerializer.Meta.fields + [
