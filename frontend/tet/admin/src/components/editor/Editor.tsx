@@ -30,13 +30,13 @@ export type EditorSectionProps = {
 // add new posting / edit existing
 const Editor: React.FC<EditorProps> = ({ initialValue, allowDelete = true, allowPublish = false }) => {
   const { t } = useTranslation();
-  useLeaveConfirm(true);
   const methods = useForm<TetPosting>({
     reValidateMode: 'onChange',
     mode: 'onBlur',
     criteriaMode: 'all',
     defaultValues: initialValue || initialPosting,
   });
+  useLeaveConfirm(methods.formState.isDirty);
 
   const upsertTetPosting = useUpsertTetPosting();
 

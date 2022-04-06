@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
 const useWarnIfUnsavedChanges = (unsavedChanges: boolean) => {
-  const message = 'Do you want to leave?';
+  const message = 'Haluatko poistua?';
 
   useEffect(() => {
     const routeChangeStart = (url) => {
       if (Router.asPath !== url && unsavedChanges && !confirm(message)) {
         Router.events.emit('routeChangeError');
-        Router.replace(Router, Router.asPath, { shallow: true });
         throw 'Abort route change. Please ignore this error.';
       }
     };
 
     const beforeunload = (e) => {
-      console.log('beforeunload');
       if (unsavedChanges) {
         e.preventDefault();
         e.returnValue = message;
