@@ -31,9 +31,7 @@ const EditStaticPage: NextPage = () => {
 
   if (data) {
     const posting = eventToTetPosting(data);
-    return (
-      <EditById title={t('common:editor.editTitle')} data={posting} allowPublish={posting.date_published === null} />
-    );
+    return <EditById title={t('common:editor.editTitle')} data={posting} />;
   } else {
     return <PageNotFound />;
   }

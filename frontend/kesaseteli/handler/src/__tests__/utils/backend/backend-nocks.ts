@@ -1,6 +1,7 @@
 import {
   BackendEndpoint,
   getBackendDomain,
+  getYouthApplicationQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
@@ -34,7 +35,7 @@ export const expectToGetYouthApplication = (
   expectedApplication: CreatedYouthApplication | ActivatedYouthApplication
 ): nock.Scope =>
   nock(getBackendDomain())
-    .get(`${BackendEndpoint.YOUTH_APPLICATIONS}${expectedApplication.id}/`)
+    .get(getYouthApplicationQueryKey(expectedApplication.id))
     .reply(200, expectedApplication, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectToGetYouthApplicationError = (
@@ -43,7 +44,7 @@ export const expectToGetYouthApplicationError = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .get(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/`)
+    .get(getYouthApplicationQueryKey(id))
     .reply(
       errorCode,
       'This is a youthapplications backend test error. Please ignore this error message.'

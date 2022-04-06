@@ -1,5 +1,5 @@
 import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
-import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
+import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
@@ -13,8 +13,6 @@ import ActivatedYouthApplication from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
 import CreatedYouthApplication from '../../types/created-youth-application';
 import YouthApplication from '../../types/youth-application';
-import YouthFormData from '../../types/youth-form-data';
-import { convertFormDataToApplication as convertYouthFormDataToApplication } from '../../utils/youth-form-data.utils';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -96,9 +94,9 @@ export const fakeSchools: string[] = [
   'Östersundom skola',
 ];
 
-export const fakeYouthFormData = (
+export const fakeYouthApplication = (
   override?: Partial<YouthApplication>
-): YouthFormData => {
+): YouthApplication => {
   const { isUnlistedSchool } = { isUnlistedSchool: false, ...override };
   return {
     first_name: faker.name.findName(),
@@ -107,25 +105,22 @@ export const fakeYouthFormData = (
       faker.datatype.number({ min: 15, max: 16 })
     ),
     postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
-    selectedSchool: { name: faker.random.arrayElement(fakeSchools) },
-    unlistedSchool: isUnlistedSchool ? faker.commerce.department() : undefined,
+    school: isUnlistedSchool
+      ? faker.commerce.department()
+      : faker.random.arrayElement(fakeSchools),
     is_unlisted_school: isUnlistedSchool,
     phone_number: faker.phone.phoneNumber('+358#########'),
     email: faker.internet.email(),
-    termsAndConditions: true,
+    language: DEFAULT_LANGUAGE,
     ...override,
   };
 };
-
-export const fakeYouthApplication = (language?: Language): YouthApplication =>
-  convertYouthFormDataToApplication(fakeYouthFormData(), language);
-
 export const fakeCreatedYouthApplication = (
   override?: Partial<CreatedYouthApplication>
 ): CreatedYouthApplication => ({
   id: faker.datatype.uuid(),
   status: 'submitted',
-  ...convertYouthFormDataToApplication(fakeYouthFormData(override)),
+  ...fakeYouthApplication(override),
   ...override,
 });
 

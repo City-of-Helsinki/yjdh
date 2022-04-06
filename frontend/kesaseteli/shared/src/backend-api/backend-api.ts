@@ -1,4 +1,5 @@
 export const BackendEndpoint = {
+  ADDITIONAL_INFO: '/v1/additional_info/',
   EMPLOYER_APPLICATIONS: '/v1/employerapplications/',
   EMPLOYER_SUMMER_VOUCHERS: '/v1/employersummervouchers/',
   ATTACHMENTS: '/attachments/',
@@ -21,3 +22,9 @@ export const getBackendUrl = (path: BackendPath): string =>
 
 export const getYouthApplicationQueryKey = (id: string): string =>
   `${BackendEndpoint.YOUTH_APPLICATIONS}${id}/`;
+
+export const getYouthApplicationStatusQueryKey = (id: string): string =>
+  `${getYouthApplicationQueryKey(id)}status/`;
+
+export const getAdditionalInfoQueryKey = (id: string): string =>
+  `${getYouthApplicationQueryKey(id)}additional_info/`;

@@ -14,6 +14,7 @@ import Layout from 'shared/components/layout/Layout';
 import HDSToastContainer from 'shared/components/toast/ToastContainer';
 import PORTAL_ID from 'shared/contants/portal-id';
 import { DialogContextProvider } from 'shared/contexts/DialogContext';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import GlobalStyling from 'shared/styles/globalStyling';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
@@ -78,7 +79,7 @@ const renderPage =
             </DialogContextProvider>
           </QueryClientProvider>
         </BackendAPIContext.Provider>,
-        { isReady: true, ...router }
+        { isReady: true, locale: DEFAULT_LANGUAGE, ...router }
       );
     });
     return queryClient;

@@ -8,6 +8,7 @@ import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import TestController from 'testcafe';
 
+import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
 import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
@@ -31,7 +32,7 @@ fixture('Application')
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
     step2Components = getStep2Components(t);
-    headerComponents = getHeaderComponents(t);
+    headerComponents = getHeaderComponents(t, await getTranslations());
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -45,7 +46,7 @@ if (isRealIntegrationsEnabled()) {
       id: applicationId,
       ...application
     } = await loginAndfillApplication(t, 1);
-    const headerUser = await headerComponents.headerUser();
+    const headerUser = headerComponents.headerUser();
     await headerUser.actions.clicklogoutButton();
     await doEmployerLogin(t, 'fi', user);
     await urlUtils.expectations.urlChangedToApplicationPage(

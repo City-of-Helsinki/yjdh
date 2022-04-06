@@ -1,24 +1,15 @@
-import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
+import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
+import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
 import { getNotificationPageComponents } from './notificationPage.components';
-
-const translations = {
-  fi: {
-    headerText: /vahvistus onnistui/i,
-  },
-  sv: {
-    headerText: /bekräftelsen lyckades/i,
-  },
-  en: {
-    headerText: /confirmation succeeded/i,
-  },
-};
 
 export const getActivatedPageComponents = async (
   t: TestController,
   lang?: Language
-) =>
-  getNotificationPageComponents(t, {
-    headerText: translations[lang ?? DEFAULT_LANGUAGE].headerText,
+) => {
+  const translations = await getTranslations(lang);
+  return getNotificationPageComponents(t, {
+    headerText: translations.activatedPage.notificationTitle,
   });
+};
