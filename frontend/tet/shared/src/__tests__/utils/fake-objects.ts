@@ -12,25 +12,12 @@ import { formatDate } from 'shared/utils/date.utils';
 import { OptionType, LocationType } from 'tet-shared/types/classification';
 
 export const fakeLocalizedObject = (text?: string): LocalizedObject => ({
-  en: text || uniqueSentences(),
-  sv: text || uniqueSentences(),
-  fi: text || uniqueSentences(),
+  en: text || faker.lorem.paragraph(),
+  sv: text || faker.lorem.paragraph(),
+  fi: text || faker.lorem.paragraph(),
 });
 
 export const getPastDate = (): string => formatDate(faker.date.past());
-
-const sentences: string[] = [];
-const uniqueSentences = (): string => {
-  const sentence = faker.random.words();
-
-  if (sentences.includes(sentence)) {
-    return uniqueSentences();
-  } else {
-    sentences.push(sentence);
-  }
-
-  return sentence;
-};
 
 export const fakeLocation = (
   overrides?: Partial<LocationType>
@@ -38,10 +25,10 @@ export const fakeLocation = (
   return merge<LocationType, typeof overrides>(
     {
       city: faker.address.city(),
-      label: uniqueSentences(),
-      name: uniqueSentences(),
+      label: faker.lorem.paragraph(),
+      name: faker.lorem.paragraph(),
       postal_code: faker.address.zipCode(),
-      street_address: uniqueSentences(),
+      street_address: faker.lorem.paragraph(),
       value: faker.internet.url(),
     },
     overrides
@@ -64,15 +51,14 @@ export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting => {
   return merge<TetPosting, typeof overrides>(
     {
       id: faker.datatype.uuid(),
-      title: uniqueSentences(),
-      description: uniqueSentences(),
-      org_name: uniqueSentences(),
+      title: faker.lorem.paragraph(),
+      description: faker.lorem.paragraph(),
+      org_name: faker.lorem.paragraph(),
       spots: 1,
       start_date: '10-10-2022',
       contact_email: faker.internet.email(),
       contact_first_name: faker.name.firstName(),
       contact_last_name: faker.name.lastName(),
-      contact_language: 'fi',
       contact_phone: faker.phone.phoneNumber(),
       date_published: null,
       location: fakeLocation(),
@@ -89,10 +75,9 @@ export const fakeCustomData = (overrides?: Partial<CustomData>): CustomData => {
   return merge<CustomData, typeof overrides>(
     {
       spots: '2',
-      org_name: uniqueSentences(),
+      org_name: faker.lorem.paragraph(),
       contact_email: faker.internet.email(),
       contact_phone: faker.phone.phoneNumber(),
-      contact_language: 'fi',
       contact_first_name: faker.name.firstName(),
       contact_last_name: faker.name.lastName(),
       editor_email: faker.internet.email(),

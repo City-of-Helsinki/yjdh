@@ -8,7 +8,7 @@ import merge from 'lodash/merge';
 import TetPosting from 'tet-shared/types/tetposting';
 import { OptionType } from 'tet-shared/types/classification';
 
-// TODO import from frontend/tet/shared/src/__tests__/utils/mockDataUtils.ts when it's merged
+// TODO import from frontend/tet/shared/src/__tests__/utils/fake-objects.ts when it's merged
 const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting => {
   return merge<TetPosting, typeof overrides>(
     {

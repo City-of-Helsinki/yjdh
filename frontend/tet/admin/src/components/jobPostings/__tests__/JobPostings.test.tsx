@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import React from 'react';
-import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/mockDataUtils';
+import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/fake-objects';
 import { expectToGetEventsFromBackend } from 'tet/admin/__tests__/utils/backend/backend-nocks';
 
 import JobPostings from '../JobPostings';
@@ -37,7 +37,7 @@ describe('JobPostings', () => {
     const publishedList = await screen.findByTestId('published-list');
     const draftList = await screen.findByTestId('draft-list');
 
-    expect(within(draftList).getByText(new RegExp(`${draftTitles.length} kpl`, 'i'))).toBeInTheDocument();
-    expect(within(publishedList).getByText(new RegExp(`${publishedTitles.length} kpl`, 'i'))).toBeInTheDocument();
+    await within(draftList).findByText(new RegExp(`${draftTitles.length} kpl`, 'i'));
+    await within(publishedList).findByText(new RegExp(`${publishedTitles.length} kpl`, 'i'));
   });
 });

@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { fakeTetPosting } from 'tet-shared/__tests__/utils/mockDataUtils';
+import { fakeTetPosting } from 'tet-shared/__tests__/utils/fake-objects';
 import TetPosting from 'tet-shared/types/tetposting';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-import { fakeOptions } from 'tet-shared/__tests__/utils/mockDataUtils';
+import { fakeOptions } from 'tet-shared/__tests__/utils/fake-objects';
 
 import PostingHero from '../PostingHero';
 
@@ -41,10 +41,10 @@ const renderComponent = (props?: Partial<Props>) => {
   );
 };
 
-test('should render title, organization name ', () => {
+test('should render title, organization name ', async () => {
   renderComponent();
-  expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
-  expect(screen.getByRole('heading', { name: org_name })).toBeInTheDocument();
+  await screen.findByRole('heading', { name: title });
+  await screen.findByRole('heading', { name: org_name });
 });
 
 test('should render keywords, working methods and attributes', () => {
