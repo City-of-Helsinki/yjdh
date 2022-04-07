@@ -59,7 +59,7 @@ const actions = {
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  clickLogoutButton: async (user: User): Promise<void> => {
+  clickLogoutButton: (user: User): void => {
     userEvent.click(
       screen.getByRole('button', {
         name: new RegExp(
