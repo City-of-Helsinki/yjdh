@@ -13,10 +13,10 @@ from common.tests.factories import (
     AttachmentFactory,
     CompanyFactory,
     EmployerApplicationFactory,
+    EmployerSummerVoucherFactory,
     InactiveYouthApplicationFactory,
     RejectableYouthApplicationFactory,
     RejectedYouthApplicationFactory,
-    SummerVoucherFactory,
     YouthApplicationFactory,
 )
 
@@ -49,7 +49,7 @@ def submitted_application(company, user):
 
 @pytest.fixture
 def summer_voucher(application):
-    summer_voucher = SummerVoucherFactory(application=application)
+    summer_voucher = EmployerSummerVoucherFactory(application=application)
     yield summer_voucher
     for attachment in summer_voucher.attachments.all():
         attachment.attachment_file.delete(save=False)
@@ -57,7 +57,7 @@ def summer_voucher(application):
 
 @pytest.fixture
 def submitted_summer_voucher(submitted_application):
-    summer_voucher = SummerVoucherFactory(application=submitted_application)
+    summer_voucher = EmployerSummerVoucherFactory(application=submitted_application)
     yield summer_voucher
     for attachment in summer_voucher.attachments.all():
         attachment.attachment_file.delete(save=False)
