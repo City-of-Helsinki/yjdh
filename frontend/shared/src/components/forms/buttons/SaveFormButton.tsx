@@ -14,7 +14,7 @@ type Props<FormData, BackendResponseData> = Omit<
   'onClick' | 'onError'
 > & {
   saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;
-  onSuccess: (response: BackendResponseData) => void | Promise<void>;
+  onSuccess?: (response: BackendResponseData) => void | Promise<void>;
   onError?: (error: Error | unknown) => void;
   onInvalidForm?: SubmitErrorHandler<FormData>;
 };
@@ -70,6 +70,7 @@ const SaveFormButton = <
 
 SaveFormButton.defaultProps = {
   onInvalidForm: noop,
+  onSuccess: undefined,
   onError: undefined,
 };
 

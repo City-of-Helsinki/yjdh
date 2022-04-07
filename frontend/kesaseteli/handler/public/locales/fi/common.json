@@ -65,9 +65,6 @@
     "pattern": "Syöttämäsi tieto on virheellistä muotoa",
     "validate": "Syöttämäsi tieto on virheellistä muotoa"
   },
-  "assistive": {
-    "toggleMenu": "Avaa valikko"
-  },
   "dialog": {
     "cancel": "Peruuta",
     "accept": {

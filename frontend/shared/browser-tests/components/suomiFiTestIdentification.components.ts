@@ -11,7 +11,7 @@ export const getSuomiFiTestIdentificationComponents = (t: TestController) => {
   const screen = screenContext(t);
 
   const withinPage = (): ReturnType<typeof within> =>
-    within(screen.findByRole('main'));
+    within(screen.getByRole('main'));
 
   const withinForm = (): ReturnType<typeof within> => within('#login-form');
 

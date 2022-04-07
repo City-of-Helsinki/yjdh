@@ -5,6 +5,7 @@ import pytest
 from django.contrib.auth.models import Permission
 from django.utils.translation import activate
 from freezegun import freeze_time
+from langdetect import DetectorFactory
 from rest_framework.test import APIClient
 
 from shared.common.tests.conftest import *  # noqa
@@ -18,6 +19,7 @@ def _api_client():
 @pytest.fixture(autouse=True)
 def setup_test_environment(settings):
     factory.random.reseed_random("777")
+    DetectorFactory.seed = 0
     random.seed(777)
     activate("en")
     with freeze_time("2021-06-04"):

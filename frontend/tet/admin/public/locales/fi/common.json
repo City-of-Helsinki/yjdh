@@ -70,6 +70,7 @@
     "editTitle": "Muokkaa TET-paikkaa",
 		"copyTitle": "Kopioi TET-paikka",
     "saveDraft": "Tallenna julkaisematta",
+    "savePublished": "Tallenna ja julkaise",
     "deletePosting": "Poista ilmoitus",
     "preview": "Siirry esikatseluun",
     "publish": "Julkaise",
@@ -161,8 +162,14 @@
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
   },
+  "api": {
+    "saveErrorTitle": "Virhe TET-paikan tallentamisesssa",
+    "saveErrorMessage": "TET-paikan luonti tai päivitys ei onnistunut.",
+    "publishErrorTitle": "Virhe TET-paikan julkaisemisessa",
+    "publishErrorMessage": "TET-paikan julkaisu ei onnistunut."
+  },
   "upload": {
-		"successMessage": "Tiedot tallennettiin",
+		"successMessage": "TET-paikka tallennettiin",
     "isUploading": "Lähetetään...",
     "errorTitle": "Lähetys epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
@@ -178,6 +185,7 @@
 		"publishPosting": "Julkaise TET-paikka",
 		"confirmation": "Haluatko varmasti julkaista TET-paikan {{posting}}?",
 		"successTitle": "TET-paikka julkaistiin",
+    "saveSuccessMessage": "TET-paikka tallennettiin ja julkaistiin",
     "errorTitle": "Julkaiseminen epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },

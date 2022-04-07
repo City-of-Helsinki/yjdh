@@ -6,10 +6,7 @@ import TestController from 'testcafe';
 
 export const getNotificationPageComponents = async (
   t: TestController,
-  {
-    headerText,
-    buttonText,
-  }: { headerText: string | RegExp; buttonText?: string }
+  { headerText, buttonText }: { headerText: string; buttonText?: string }
 ) => {
   const screen = screenContext(t);
   const selectors = {
@@ -19,16 +16,17 @@ export const getNotificationPageComponents = async (
       });
     },
     goToFrontPageButton() {
+      if (!buttonText) {
+        throw new Error('You forgot to give button text');
+      }
       return screen.findByRole('button', {
-        name: buttonText ?? 'Kesäseteli etusivulle',
+        name: buttonText,
       });
     },
   };
   const expectations = {
     async isLoaded() {
-      await t
-        .expect(selectors.header().exists)
-        .ok(await getErrorMessage(t), { timeout: 20_000 });
+      await t.expect(selectors.header().exists).ok(await getErrorMessage(t));
     },
   };
   const actions = {

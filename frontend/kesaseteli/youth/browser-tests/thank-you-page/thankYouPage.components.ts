@@ -1,44 +1,25 @@
 import {
-  getErrorMessage,
   screenContext,
   setDataToPrintOnFailure,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
+import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
-const translations = {
-  fi: {
-    headerText: /hienoa! olet lähettänyt tietosi kesäsetelijärjestelmään/i,
-    buttonText: /siirry kesäsetelin etusivulle/i,
-  },
-  sv: {
-    headerText:
-      /fint! du har skickat dina uppgifter till sommarsedelns digitala system./i,
-    buttonText: /gå till sommarsedelns förstasida/i,
-  },
-  en: {
-    headerText:
-      /excellent! you sent your information to the summer job vouchers´ digital system./i,
-    buttonText: /go to the summer job voucher front page/i,
-  },
-};
+import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import { getNotificationPageComponents } from '../notification-page/notificationPage.components';
 
 export const getThankYouPageComponents = async (
   t: TestController,
   lang?: Language
 ) => {
+  const translations = await getTranslations(lang);
   const screen = screenContext(t);
+  const notificationPage = await getNotificationPageComponents(t, {
+    headerText: translations.thankyouPage.notificationTitle,
+    buttonText: translations.thankyouPage.goToFrontendPage,
+  });
   const selectors = {
-    header() {
-      return screen.findByRole('heading', {
-        name: translations[lang ?? DEFAULT_LANGUAGE].headerText,
-      });
-    },
-    goToFrontPageButton() {
-      return screen.findByRole('button', {
-        name: translations[lang ?? DEFAULT_LANGUAGE].buttonText,
-      });
-    },
+    ...notificationPage.selectors,
     activationLink() {
       return screen.findByRole('link', {
         name: /aktivoi/i,
@@ -46,16 +27,10 @@ export const getThankYouPageComponents = async (
     },
   };
   const expectations = {
-    async isLoaded() {
-      await t
-        .expect(selectors.header().exists)
-        .ok(await getErrorMessage(t), { timeout: 20_000 });
-    },
+    ...notificationPage.expectations,
   };
   const actions = {
-    async clickGoToFrontPageButton() {
-      await t.click(selectors.goToFrontPageButton());
-    },
+    ...notificationPage.actions,
     async clickActivationLink() {
       const href = await selectors.activationLink().getAttribute('href');
       setDataToPrintOnFailure(t, 'activationLink', href);
@@ -64,7 +39,7 @@ export const getThankYouPageComponents = async (
       await t.click(selectors.activationLink());
     },
   };
-  await expectations.isLoaded();
+  await notificationPage.expectations.isLoaded();
   return {
     selectors,
     expectations,

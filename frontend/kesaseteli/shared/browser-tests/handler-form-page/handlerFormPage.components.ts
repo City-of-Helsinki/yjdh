@@ -5,11 +5,13 @@ import {
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import TestController from 'testcafe';
 
-import YouthApplication from '../../src/types/youth-application';
+import ActivatedYouthApplication from '../../src/types/activated-youth-application';
 
-export const getHandlerFormPageComponents = async (
+export const getHandlerFormPageComponents = async <
+  A extends ActivatedYouthApplication
+>(
   t: TestController,
-  expectedApplication?: YouthApplication
+  expectedApplication?: A
 ) => {
   const screen = screenContext(t);
   const within = withinContext(t);
@@ -25,8 +27,8 @@ export const getHandlerFormPageComponents = async (
         name: /hakemusta ei löytynyt/i,
       });
     },
-    applicationField(id: keyof YouthApplication | 'name') {
-      return screen.findByTestId(`handlerApplication-${id}`);
+    applicationField(id: keyof A | 'name') {
+      return screen.findByTestId(`handlerApplication-${id as string}`);
     },
     acceptButton() {
       return screen.findByRole('button', {
@@ -37,7 +39,7 @@ export const getHandlerFormPageComponents = async (
       return screen.findByRole('dialog');
     },
     confirmAcceptButton() {
-      return within(screen.findByRole('dialog')).findByRole('button', {
+      return within(screen.getByRole('dialog')).findByRole('button', {
         name: /hyväksy/i,
       });
     },
@@ -47,7 +49,7 @@ export const getHandlerFormPageComponents = async (
       });
     },
     confirmRejectButton() {
-      return within(screen.findByRole('dialog')).findByRole('button', {
+      return within(screen.getByRole('dialog')).findByRole('button', {
         name: /hylkää/i,
       });
     },
@@ -82,7 +84,7 @@ export const getHandlerFormPageComponents = async (
         .ok(await getErrorMessage(t));
     },
     async applicationFieldHasValue(
-      key: keyof YouthApplication | 'name',
+      key: keyof A | 'name',
       expectedValue?: string
     ) {
       if (!expectedValue && !expectedApplication) {
@@ -90,13 +92,11 @@ export const getHandlerFormPageComponents = async (
           'you need either expected application or value to test'
         );
       }
-      const value =
-        expectedValue ??
-        (expectedApplication?.[key as keyof YouthApplication] as string);
+      const value = expectedValue ?? expectedApplication?.[key as keyof A];
 
       await t
         .expect(selectors.applicationField(key).textContent)
-        .contains(value, await getErrorMessage(t));
+        .contains(value as string, await getErrorMessage(t));
     },
     async applicationIsNotYetActivated() {
       await t

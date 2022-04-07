@@ -17,6 +17,7 @@ if [[ "$LOAD_FIXTURES" = "1" ]]; then
     echo "Loading fixtures..."
     ./manage.py loaddata groups.json
     ./manage.py loaddata default_terms.json
+    ./manage.py set_group_permissions
 fi
 
 # Create admin user. Generate password if there isn't one in the

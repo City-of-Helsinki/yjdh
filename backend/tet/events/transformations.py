@@ -14,7 +14,6 @@ EVENT_BASE_DATA = {
 CREATE_EVENT_BASE_DATA = {
     "event_status": "EventScheduled",
     "type_id": "General",
-    "publication_status": "draft",
     "data_source": "tet",
     "in_language": [{"@id": "http://localhost:8080/v1/language/fi/"}],
 }
@@ -44,6 +43,10 @@ def _shorten_description(descobj):
 def enrich_create_event(event, publisher, user):
     event.update(EVENT_BASE_DATA)
     event.update(CREATE_EVENT_BASE_DATA)
+
+    if "publication_status" not in event or event["publication_status"] is None:
+        event["publication_status"] = "draft"
+
     event["publisher"] = publisher
     event["short_description"] = _shorten_description(event["description"])
     if user.email:

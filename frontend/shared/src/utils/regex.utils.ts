@@ -8,3 +8,22 @@ export const getDecimalNumberRegex = (decimals: number): RegExp =>
 export const escapeRegExp = (unescapedString: string, flags?: string): RegExp =>
   // eslint-disable-next-line security/detect-non-literal-regexp
   new RegExp(unescapedString.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&'), flags);
+
+export const stripHtmlTags = (html: string): string =>
+  html.replace(/<\/?[^>]+(>|$)/g, '');
+
+// How to check if a string is a valid JSON string?
+// https://stackoverflow.com/questions/3710204/how-to-check-if-a-string-is-a-valid-json-string
+export const isValidJsonString = (str: string): boolean =>
+  typeof str === 'string' &&
+  /^[\s,:\]{}]*$/.test(
+    str
+      .replace(/\\["/\\bfnrtu]/g, '@')
+      .replace(
+        // eslint-disable-next-line security/detect-unsafe-regex
+        /"[^\n\r"\\]*"|true|false|null|-?\d+(?:\.\d*)?(?:[Ee][+-]?\d+)?/g,
+        ']'
+      )
+      // eslint-disable-next-line security/detect-unsafe-regex
+      .replace(/(?:^|:|,)(?:\s*\[)+/g, '')
+  );

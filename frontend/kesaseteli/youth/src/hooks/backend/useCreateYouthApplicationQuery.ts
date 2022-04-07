@@ -13,7 +13,7 @@ const useCreateYouthApplicationQuery = (): UseMutationResult<
 > => {
   const { axios, handleResponse } = useBackendAPI();
   const getLanguage = useGetLanguage();
-  return useMutation('createApplication', (formData) =>
+  return useMutation(BackendEndpoint.YOUTH_APPLICATIONS, (formData) =>
     handleResponse<CreatedYouthApplication>(
       axios.post(BackendEndpoint.YOUTH_APPLICATIONS, {
         ...convertFormDataToApplication(formData),

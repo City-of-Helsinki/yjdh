@@ -11,7 +11,6 @@ from typing import List, Optional
 from urllib.parse import urlparse
 
 import factory.random
-import langdetect
 import pytest
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.models import AnonymousUser
@@ -23,6 +22,10 @@ from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
 from shared.audit_log.models import AuditLogEntry
+from shared.common.lang_test_utils import (
+    assert_email_body_language,
+    assert_email_subject_language,
+)
 from shared.common.tests.conftest import (
     staff_client,
     staff_superuser_client,
@@ -214,24 +217,6 @@ def get_django_adfs_login_url(redirect_url):
 
 def get_test_vtj_json() -> dict:
     return {"first_name": "Maija", "last_name": "Meikäläinen"}
-
-
-def assert_email_subject_language(email_subject, expected_language):
-    detected_language = langdetect.detect(email_subject)
-    assert (
-        detected_language == expected_language
-    ), "Email subject '{}' used language {} instead of expected {}".format(
-        email_subject, detected_language, expected_language
-    )
-
-
-def assert_email_body_language(email_body, expected_language):
-    detected_language = langdetect.detect(email_body)
-    assert (
-        detected_language == expected_language
-    ), "Email body '{}' used language {} instead of expected {}".format(
-        email_body, detected_language, expected_language
-    )
 
 
 @pytest.mark.django_db

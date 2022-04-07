@@ -1,4 +1,3 @@
-import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -16,10 +15,9 @@ type InputProps<T> = {
   registerOptions?: RegisterOptions<T, Id<T>>;
 };
 
-const useRegisterInput = <T = YouthFormData>(): ((
-  id: Id<T>,
-  registerOptions?: RegisterOptions<T>
-) => InputProps<T>) => {
+const useRegisterInput = <T>(
+  formKey: 'youthApplication' | 'additionalInfo'
+): ((id: Id<T>, registerOptions?: RegisterOptions<T>) => InputProps<T>) => {
   const { t } = useTranslation();
   const { formState } = useFormContext<T>();
 
@@ -35,10 +33,10 @@ const useRegisterInput = <T = YouthFormData>(): ((
     (id, registerOptions) => ({
       id,
       errorText: getErrorText(id),
-      label: t(`common:youthApplication.form.${id as string}`),
+      label: t(`common:${formKey}.form.${id as string}`),
       registerOptions,
     }),
-    [t, getErrorText]
+    [t, formKey, getErrorText]
   );
 };
 
