@@ -20,6 +20,7 @@
     "babel-plugin-import": "^1.13.3",
     "dotenv": "^16.0.0",
     "hds-react": "^1.10.0",
+    "leaflet": "^1.7.1",
     "next": "^11.1.4",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^10.5.0",
@@ -28,6 +29,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.27.1",
+    "react-leaflet": "^3.2.5",
     "react-query": "^3.34.0",
     "styled-components": "^5.3.1"
   },

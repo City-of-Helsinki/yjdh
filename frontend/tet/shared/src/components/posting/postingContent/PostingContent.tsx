@@ -10,6 +10,7 @@ import {
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
 import { useTranslation } from 'next-i18next';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 type Props = {
   posting: TetPosting;
@@ -26,6 +27,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
 
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
   const languages = posting.languages.map((language) => language.label);
+  const position = [51.505, -0.09];
 
   return (
     <Container>
@@ -33,6 +35,17 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
         <$Body>
           <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
+          <MapContainer center={position} zoom={13} style={{ height: '400px' }}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={position}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          </MapContainer>
         </$Body>
         <$InfoWrapper>
           <PostingInfoItem
