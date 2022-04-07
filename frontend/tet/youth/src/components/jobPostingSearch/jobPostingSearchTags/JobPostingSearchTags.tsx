@@ -29,10 +29,12 @@ const PostingSearchTags: React.FC<Props> = ({
   const { t } = useTranslation();
 
   return (
-    <$Tags>
+    <$Tags id="searchTags">
       {initParams?.text && (
         <li>
-          <Tag onDelete={() => onRemoveFilter('text')}>{initParams.text}</Tag>
+          <Tag className="searchTag" onDelete={() => onRemoveFilter('text')}>
+            {initParams.text}
+          </Tag>
         </li>
       )}
       {initKeywords.length > 0 &&
@@ -54,6 +56,7 @@ const PostingSearchTags: React.FC<Props> = ({
         <li>
           <Tag
             onDelete={() => onRemoveFilter(['start', 'end'])}
+            className="searchTag"
             theme={{
               '--tag-background': `var(--color-summer-medium-light)`,
               '--tag-color': 'theme.colors.black90',
@@ -68,6 +71,7 @@ const PostingSearchTags: React.FC<Props> = ({
         <li>
           <Tag
             onDelete={() => onRemoveFilter('language')}
+            className="searchTag"
             theme={{
               '--tag-background': `var(--color-coat-of-arms-light)`,
               '--tag-color': 'theme.colors.black90',
@@ -80,7 +84,9 @@ const PostingSearchTags: React.FC<Props> = ({
       )}
       {Object.keys(initParams).length > 0 && (
         <li>
-          <$RemoveButton onClick={() => onRemoveFilter('all')}>{t('common:filters.clearFilters')}</$RemoveButton>
+          <$RemoveButton id="removeAllSearches" onClick={() => onRemoveFilter('all')}>
+            {t('common:filters.clearFilters')}
+          </$RemoveButton>
         </li>
       )}
     </$Tags>

@@ -67,7 +67,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
       <Container>
         <$HeroWrapper>
           {showBackButton && (
-            <$BackButton onClick={backButtonHandler}>
+            <$BackButton id="backButton" onClick={backButtonHandler}>
               <IconArrowLeft size="m" />
             </$BackButton>
           )}
@@ -92,7 +92,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               {keywordList(posting.keywords, 'engel-medium-light')}
             </$Keywords>
             <$Title>{posting.org_name}</$Title>
-            <$Subtitle>{posting.title}</$Subtitle>
+            <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
             <$Date>{date}</$Date>
             <$Spots>
               {t('common:postingTemplate.spots')}: {posting.spots}
