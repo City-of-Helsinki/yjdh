@@ -37,6 +37,7 @@ const CompanyInfo: React.FC = () => {
               street_address: getLocalizedString(keyword.street_address, locale),
               postal_code: keyword.postal_code ?? '',
               city: getLocalizedString(keyword.address_locality, locale),
+              position: keyword.position,
             } as LocationType),
         )
       : [];

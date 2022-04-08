@@ -40,7 +40,12 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={position}>
+            <Marker
+              position={[
+                posting.location.position.coordinates[1],
+                posting.location.position.coordinates[0],
+              ]}
+            >
               <Popup>
                 A pretty CSS3 popup. <br /> Easily customizable.
               </Popup>
