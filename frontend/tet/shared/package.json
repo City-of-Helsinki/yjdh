@@ -8,6 +8,7 @@
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
+    "test:debug-nock": "cross-env DEBUG=nock.* yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests --pass-with-no-tests",
     "test:coverage": "yarn test --verbose --coverage --pass-with-no-tests"
   },
