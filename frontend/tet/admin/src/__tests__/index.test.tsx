@@ -15,10 +15,6 @@ import { screen } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 
 describe('frontend/tet/admin/src/pages/index.tsx', () => {
-  const draftTitles = ['draft-1', 'draft-2'];
-  const publishedTitles = ['published-1', 'published-2', 'published-3'];
-  const events = fakeEventListAdmin(draftTitles, publishedTitles);
-
   it('should have no accessibility violations', async () => {
     const {
       renderResult: { container },
@@ -37,23 +33,11 @@ describe('frontend/tet/admin/src/pages/index.tsx', () => {
   describe('when authorized', () => {
     it('should show TET postings from backend', async () => {
       expectAuthorizedReply();
-      expectToGetEventsFromBackend(events);
+      expectToGetEventsFromBackend(fakeEventListAdmin([], []));
 
       await renderPage(IndexPage);
 
-      // copy-pasted from JobPostings.test.tsx
-      const publishedList = await screen.findByTestId('published-list');
-      const draftList = await screen.findByTestId('draft-list');
-
-      draftTitles.forEach((title) => {
-        const postingTitle = within(draftList).getByText(new RegExp(title, 'i'));
-        expect(postingTitle).toBeInTheDocument();
-      });
-
-      publishedTitles.forEach((title) => {
-        const postingTitle = within(publishedList).getByText(new RegExp(title, 'i'));
-        expect(postingTitle).toBeInTheDocument();
-      });
+      await screen.findByText(/Sinulla ei ole vielä yhtään TET-paikkaa/);
     });
   });
 });

@@ -20,15 +20,13 @@ describe('JobPostings', () => {
     const publishedList = await screen.findByTestId('published-list');
     const draftList = await screen.findByTestId('draft-list');
 
-    draftTitles.forEach((title) => {
-      const postingTitle = within(draftList).getByText(new RegExp(title, 'i'));
-      expect(postingTitle).toBeInTheDocument();
-    });
+    for (const title of draftTitles) {
+      await within(draftList).findByText(new RegExp(title, 'i'));
+    }
 
-    publishedTitles.forEach((title) => {
-      const postingTitle = within(publishedList).getByText(new RegExp(title, 'i'));
-      expect(postingTitle).toBeInTheDocument();
-    });
+    for (const title of publishedTitles) {
+      await within(publishedList).findByText(new RegExp(title, 'i'));
+    }
   });
 
   it('should show correct postings total number in the lists', async () => {
