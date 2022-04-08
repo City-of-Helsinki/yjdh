@@ -53,7 +53,7 @@ export const tetPostingToEvent = (
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
-  start_time: hdsDateToIsoFormat(posting.start_date)!,
+  start_time: hdsDateToIsoFormat(posting.start_date) ?? '',
   end_time: hdsDateToIsoFormat(posting.end_date),
   keywords: [
     ...posting.keywords_working_methods.map((option) => option.value),

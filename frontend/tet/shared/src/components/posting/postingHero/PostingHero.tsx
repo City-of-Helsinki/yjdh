@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { IconArrowLeft, IconLocation, Tag } from 'hds-react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
