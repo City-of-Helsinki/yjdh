@@ -16,8 +16,8 @@ const ErrorPageApi = {
     },
   },
   actions: {
-    clickToRefreshPage: (): void => {
-      userEvent.click(
+    clickToRefreshPage: async (): Promise<void> => {
+     userEvent.click(
         screen.getByRole('button', {
           name: /(lataa sivu uudelleen)|(errorpage.retry)/i,
         })
@@ -25,7 +25,7 @@ const ErrorPageApi = {
     },
     clickLogoutButton: async (): Promise<void> => {
       const logout = expectToLogout();
-      userEvent.click(
+     userEvent.click(
         screen.getByRole('button', {
           name: /(kirjaudu ulos)|(errorpage.logout)/i,
         })
