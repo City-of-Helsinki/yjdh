@@ -59,6 +59,7 @@ const useEventPostingTransformation = (): Transformations => {
         street_address: getLocalizedString(event.location.street_address),
         city: getLocalizedString(event.location.address_locality),
         postal_code: event.location.postal_code ?? '',
+        position: event.location.position,
       },
       start_date: isoDateToHdsFormat(event.start_time)!,
       end_date: isoDateToHdsFormat(event.end_time),
