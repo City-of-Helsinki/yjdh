@@ -27,6 +27,11 @@ nock.disableNetConnect();
 export const expectAuthorizedReply = (expectedUser = fakeUser()): nock.Scope =>
   nock(getBackendDomain()).get(BackendEndpoint.USER).reply(200, expectedUser, { 'Access-Control-Allow-Origin': '*' });
 
+export const expectUnauthorizedReply = (): nock.Scope => {
+  consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+  return nock(getBackendDomain()).get(BackendEndpoint.USER).replyWithError('401 Unauthorized');
+};
+
 export const expectToGetEventsFromBackend = (events: TetEvents): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.TET_POSTINGS}`)
