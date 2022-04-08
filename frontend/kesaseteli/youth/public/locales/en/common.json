@@ -69,7 +69,13 @@
       "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
       "termsAndConditionsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-summer-job-seekers/",
       "sendButton": "Submit information",
-      "requiredInfo": "All fields marked with * are required"
+      "requiredInfo": "All fields marked with * are required",
+      "sendItAnyway": "ENG Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
+      "forceSubmitLink": "ENG Lähetä"
+    },
+    "checkNotification" : {
+      "label" : "ENG Hups! Jokin tiedoista ei ole oikein",
+      "message" : "ENG Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi."
     }
   },
   "additionalInfo": {

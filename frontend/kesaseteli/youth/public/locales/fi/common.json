@@ -69,7 +69,13 @@
       "termsAndConditions": "Olen lukenut palvelun <a>käyttöehdot</a> ja hyväksyn ne.",
       "termsAndConditionsLink": "https://kesasethttps://nuorten.helsinki/opiskelu-ja-tyo/kesaseteli/nuorelle/",
       "sendButton": "Lähetä tiedot",
-      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia"
+      "requiredInfo": "Kaikki * merkityt kentät ovat pakollisia",
+      "sendItAnyway": "Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
+      "forceSubmitLink": "Lähetä"
+    },
+    "checkNotification" : {
+      "label" : "Hups! Jokin tiedoista ei ole oikein",
+      "message" : "Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi."
     }
   },
   "additionalInfo": {

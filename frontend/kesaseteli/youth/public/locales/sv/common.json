@@ -69,7 +69,13 @@
       "termsAndConditions": "Jag har läst och godkänner <a>villkoren</a>.",
       "termsAndConditionsLink": "https://nuorten.helsinki/sv/studier-och-jobb/sommarsedeln/kesatyonhakijalle/",
       "sendButton": "Skicka informationen",
-      "requiredInfo": "Alla fält som är märkta med * är obligatoriska"
+      "requiredInfo": "Alla fält som är märkta med * är obligatoriska",
+      "sendItAnyway": "SWE Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
+      "forceSubmitLink": "SWE Lähetä"
+    },
+    "checkNotification" : {
+      "label" : "SWE Hups! Jokin tiedoista ei ole oikein",
+      "message" : "SWE Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi."
     }
   },
   "additionalInfo": {
