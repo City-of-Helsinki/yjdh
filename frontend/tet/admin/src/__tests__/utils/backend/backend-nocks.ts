@@ -36,3 +36,17 @@ export const expectToGetEventsFromBackend = (events: TetEvents): nock.Scope =>
   nock(getBackendDomain())
     .get(`${BackendEndpoint.TET_POSTINGS}`)
     .reply(200, events, { 'Access-Control-Allow-Origin': '*' });
+
+// TODO don't hardcode url
+// this is needed when testing the Editor form and can be refactored then
+export const expectWorkingMethodsFromLinkedEvents = (): nock.Scope =>
+  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+    .get('/keyword_set/tet:wm/?include=keywords')
+    .reply(200, { keywords: [] }, { 'Access-Control-Allow-Origin': '*' });
+
+// TODO don't hardcode url
+// this is needed when testing the Editor form and can be refactored then
+export const expectAttributesFromLinkedEvents = (): nock.Scope =>
+  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+    .get('/keyword_set/tet:attr/?include=keywords')
+    .reply(200, { keywords: [] }, { 'Access-Control-Allow-Origin': '*' });
