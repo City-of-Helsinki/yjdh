@@ -16,7 +16,7 @@ import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPost
 const JobPostings: React.FC = () => {
   const { t } = useTranslation();
   const { confirm } = useConfirm();
-  const { eventsToTetPostings } = useEventPostingTransformation(false);
+  const { eventsToTetPostings } = useEventPostingTransformation();
   const { isLoading, data, error } = useQuery<TetEvents, Error>(BackendEndpoint.TET_POSTINGS);
   const router = useRouter();
 

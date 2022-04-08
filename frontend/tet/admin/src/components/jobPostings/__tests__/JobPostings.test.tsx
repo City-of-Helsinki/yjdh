@@ -2,7 +2,11 @@
 import { within } from '@testing-library/dom';
 import { screen } from '@testing-library/react';
 import React from 'react';
-import { expectToGetEventsFromBackend } from 'tet/admin/__tests__/utils/backend/backend-nocks';
+import {
+  expectAttributesFromLinkedEvents,
+  expectToGetEventsFromBackend,
+  expectWorkingMethodsFromLinkedEvents,
+} from 'tet/admin/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
 import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/fake-objects';
 
@@ -15,6 +19,9 @@ describe('JobPostings', () => {
 
   it('should list unpublished postings in unpublished list and published postings in published list', async () => {
     expectToGetEventsFromBackend(events);
+    expectWorkingMethodsFromLinkedEvents();
+    expectAttributesFromLinkedEvents();
+
     renderComponent(<JobPostings />);
 
     const publishedList = await screen.findByTestId('published-list');
@@ -31,6 +38,9 @@ describe('JobPostings', () => {
 
   it('should show correct postings total number in the lists', async () => {
     expectToGetEventsFromBackend(events);
+    expectWorkingMethodsFromLinkedEvents();
+    expectAttributesFromLinkedEvents();
+
     renderComponent(<JobPostings />);
 
     const publishedList = await screen.findByTestId('published-list');

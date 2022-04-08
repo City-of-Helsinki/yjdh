@@ -1,15 +1,10 @@
-// TODO move under shared
-
+import { fakeTetPosting } from 'tet-shared/__tests__/utils/fake-objects';
 import {
   hdsDateToIsoFormat,
   isoDateToHdsFormat,
   tetPostingToEvent,
 } from 'tet-shared/backend-api/transformations';
-
 import { OptionType } from 'tet-shared/types/classification';
-import { fakeTetPosting } from 'tet-shared/__tests__/utils/fake-objects';
-
-// TODO import from frontend/tet/shared/src/__tests__/utils/fake-objects.ts when it's merged
 
 const optionTypeForId = (id: string): OptionType => ({
   name: 'not needed by test',

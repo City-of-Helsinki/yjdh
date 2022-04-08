@@ -25,14 +25,12 @@ type Transformations = {
   getLocalizedString: (obj: LocalizedObject | undefined) => string;
 };
 
-const useEventPostingTransformation = (
-  queryKeywords = true
-): Transformations => {
+const useEventPostingTransformation = (): Transformations => {
   const locale = useLocale();
-  const keywordResult = queryKeywords ? useKeywordType() : undefined;
+  const keywordResult = useKeywordType();
   const languageOptions = useLanguageOptions();
 
-  const keywordType = keywordResult?.getKeywordType;
+  const keywordType = keywordResult.getKeywordType;
 
   const getLocalizedString = (obj: LocalizedObject | undefined): string => {
     if (obj) {

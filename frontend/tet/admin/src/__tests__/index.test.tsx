@@ -4,9 +4,11 @@ import { axe } from 'jest-axe';
 import React from 'react';
 import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/fake-objects';
 import {
+  expectAttributesFromLinkedEvents,
   expectAuthorizedReply,
   expectToGetEventsFromBackend,
   expectUnauthorizedReply,
+  expectWorkingMethodsFromLinkedEvents,
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
 import renderPage from 'tet/admin/__tests__/utils/components/render-page';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
@@ -34,6 +36,8 @@ describe('frontend/tet/admin/src/pages/index.tsx', () => {
     it('should show TET postings from backend', async () => {
       expectAuthorizedReply();
       expectToGetEventsFromBackend(fakeEventListAdmin([], []));
+      expectWorkingMethodsFromLinkedEvents();
+      expectAttributesFromLinkedEvents();
 
       await renderPage(IndexPage);
 
