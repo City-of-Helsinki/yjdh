@@ -1,9 +1,10 @@
-import { screen } from '@testing-library/react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { within } from '@testing-library/dom';
-import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
+import { screen } from '@testing-library/react';
 import React from 'react';
-import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/fake-objects';
 import { expectToGetEventsFromBackend } from 'tet/admin/__tests__/utils/backend/backend-nocks';
+import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
+import { fakeEventListAdmin } from 'tet-shared/__tests__/utils/fake-objects';
 
 import JobPostings from '../JobPostings';
 

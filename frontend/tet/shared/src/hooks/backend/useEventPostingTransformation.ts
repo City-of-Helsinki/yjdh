@@ -1,17 +1,18 @@
+import useLocale from 'shared/hooks/useLocale';
+import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
+import useKeywordType, {
+  UseKeywordResult,
+} from 'tet-shared/hooks/backend/useKeywordType';
+import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
+import { OptionType } from 'tet-shared/types/classification';
+import { ClassificationType, KeywordFn } from 'tet-shared/types/keywords';
 import {
+  IdObject,
   LocalizedObject,
   TetEvent,
   TetEvents,
 } from 'tet-shared/types/linkedevents';
 import TetPosting, { TetPostings } from 'tet-shared/types/tetposting';
-import { KeywordFn, ClassificationType } from 'tet-shared/types/keywords';
-import { OptionType } from 'tet-shared/types/classification';
-import useLocale from 'shared/hooks/useLocale';
-import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
-import useKeywordType, {
-  UseKeywordResult,
-} from 'tet-shared/hooks/backend/useKeywordType';
-import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
 
 type Transformations = {
   eventToTetPosting: (
@@ -21,6 +22,7 @@ type Transformations = {
   ) => TetPosting;
   eventsToTetPostings: (events: TetEvents | undefined) => TetPostings;
   keywordResult: UseKeywordResult;
+  getLocalizedString: (obj: LocalizedObject | undefined) => string;
 };
 
 const useEventPostingTransformation = (): Transformations => {
@@ -37,6 +39,11 @@ const useEventPostingTransformation = (): Transformations => {
     return '';
   };
 
+  const keywordToOptionType = (keyword: IdObject): OptionType => ({
+    name: getLocalizedString(keyword.name),
+    label: getLocalizedString(keyword.name),
+    value: keyword['@id'],
+  });
   /**
    * Convert event read from Linked Events API to form data.
    *
@@ -74,11 +81,7 @@ const useEventPostingTransformation = (): Transformations => {
                 keywordType(keyword['@id']) === ClassificationType.KEYWORD
             )
             // note that with GET /event/ all but @id are empty
-            .map((keyword) => ({
-              name: getLocalizedString(keyword.name),
-              label: getLocalizedString(keyword.name),
-              value: keyword['@id'],
-            }))
+            .map((keyword) => keywordToOptionType(keyword))
         : [],
       keywords_working_methods: keywordType
         ? event.keywords
@@ -87,11 +90,7 @@ const useEventPostingTransformation = (): Transformations => {
                 keywordType(keyword['@id']) ===
                 ClassificationType.WORKING_METHOD
             )
-            .map((keyword) => ({
-              name: getLocalizedString(keyword.name),
-              label: getLocalizedString(keyword.name),
-              value: keyword['@id'],
-            }))
+            .map((keyword) => keywordToOptionType(keyword))
         : [],
       keywords_attributes: keywordType
         ? event.keywords
@@ -100,11 +99,7 @@ const useEventPostingTransformation = (): Transformations => {
                 keywordType(keyword['@id']) ===
                 ClassificationType.WORKING_FEATURE
             )
-            .map((keyword) => ({
-              name: getLocalizedString(keyword.name),
-              label: getLocalizedString(keyword.name),
-              value: keyword['@id'],
-            }))
+            .map((keyword) => keywordToOptionType(keyword))
         : [],
       languages: languageOptions
         ? event.in_language.map((obj) => {
@@ -148,6 +143,7 @@ const useEventPostingTransformation = (): Transformations => {
     eventToTetPosting,
     eventsToTetPostings,
     keywordResult,
+    getLocalizedString,
   };
 };
 

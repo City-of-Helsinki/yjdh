@@ -1,31 +1,29 @@
+import { IconFacebook, IconLink, IconLinkedin, IconTwitter } from 'hds-react';
 import React from 'react';
 import {
-  $ShareTitle,
   $Links,
   $ShareButton,
+  $ShareTitle,
 } from 'tet-shared//components/posting/postingShareLinks/PostingShareLinks.sc';
-import { IconLink, IconFacebook, IconTwitter, IconLinkedin } from 'hds-react';
 
-const PostingShareLinks: React.FC = () => {
-  return (
-    <>
-      <$ShareTitle>Jaa Tapahtuma</$ShareTitle>
-      <$Links>
-        <$ShareButton>
-          <IconLink />
-        </$ShareButton>
-        <$ShareButton>
-          <IconFacebook />
-        </$ShareButton>
-        <$ShareButton>
-          <IconTwitter />
-        </$ShareButton>
-        <$ShareButton>
-          <IconLinkedin />
-        </$ShareButton>
-      </$Links>
-    </>
-  );
-};
+const PostingShareLinks: React.FC = () => (
+  <>
+    <$ShareTitle>Jaa Tapahtuma</$ShareTitle>
+    <$Links>
+      <$ShareButton>
+        <IconLink />
+      </$ShareButton>
+      <$ShareButton>
+        <IconFacebook />
+      </$ShareButton>
+      <$ShareButton>
+        <IconTwitter />
+      </$ShareButton>
+      <$ShareButton>
+        <IconLinkedin />
+      </$ShareButton>
+    </$Links>
+  </>
+);
 
 export default PostingShareLinks;

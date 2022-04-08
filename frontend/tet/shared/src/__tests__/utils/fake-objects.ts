@@ -1,15 +1,16 @@
-import TetPosting from 'tet-shared/types/tetposting';
-import merge from 'lodash/merge';
 import faker from 'faker';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import merge from 'lodash/merge';
+import { formatDate } from 'shared/utils/date.utils';
+import { LocationType, OptionType } from 'tet-shared/types/classification';
 import {
-  LocalizedObject,
-  TetEvent,
   CustomData,
+  LocalizedObject,
   Place,
+  TetEvent,
   TetEvents,
 } from 'tet-shared/types/linkedevents';
-import { formatDate } from 'shared/utils/date.utils';
-import { OptionType, LocationType } from 'tet-shared/types/classification';
+import TetPosting from 'tet-shared/types/tetposting';
 
 export const fakeLocalizedObject = (text?: string): LocalizedObject => ({
   en: text || faker.lorem.paragraph(),
@@ -19,10 +20,8 @@ export const fakeLocalizedObject = (text?: string): LocalizedObject => ({
 
 export const getPastDate = (): string => formatDate(faker.date.past());
 
-export const fakeLocation = (
-  overrides?: Partial<LocationType>
-): LocationType => {
-  return merge<LocationType, typeof overrides>(
+export const fakeLocation = (overrides?: Partial<LocationType>): LocationType =>
+  merge<LocationType, typeof overrides>(
     {
       city: faker.address.city(),
       label: faker.lorem.paragraph(),
@@ -33,22 +32,18 @@ export const fakeLocation = (
     },
     overrides
   );
-};
 
-export const fakeOptions = (options: string[]) => {
-  return options.map((option) => fakeOptionType(option));
-};
+export const fakeOptionType = (optionName: string): OptionType => ({
+  name: optionName,
+  label: optionName,
+  value: optionName.split(' ').join('-').toLocaleLowerCase(),
+});
 
-export const fakeOptionType = (optionName: string): OptionType => {
-  return {
-    name: optionName,
-    label: optionName,
-    value: optionName.split(' ').join('-').toLocaleLowerCase(),
-  };
-};
+export const fakeOptions = (options: string[]): OptionType[] =>
+  options.map((option) => fakeOptionType(option));
 
-export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting => {
-  return merge<TetPosting, typeof overrides>(
+export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting =>
+  merge<TetPosting, typeof overrides>(
     {
       id: faker.datatype.uuid(),
       title: faker.lorem.paragraph(),
@@ -69,10 +64,9 @@ export const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting => {
     },
     overrides
   );
-};
 
-export const fakeCustomData = (overrides?: Partial<CustomData>): CustomData => {
-  return merge<CustomData, typeof overrides>(
+export const fakeCustomData = (overrides?: Partial<CustomData>): CustomData =>
+  merge<CustomData, typeof overrides>(
     {
       spots: '2',
       org_name: faker.lorem.paragraph(),
@@ -84,7 +78,6 @@ export const fakeCustomData = (overrides?: Partial<CustomData>): CustomData => {
     },
     overrides
   );
-};
 
 const fakePlace = (): Place => ({
   '@id': faker.internet.url(),
@@ -101,24 +94,8 @@ const fakePlace = (): Place => ({
   },
 });
 
-export const fakeEventListAdmin = (
-  draftTitles: string[],
-  publishedTitles: string[]
-): TetEvents => {
-  const draft = draftTitles.map((draftTitle) =>
-    fakeTetEvent({ name: fakeLocalizedObject(draftTitle) })
-  );
-  const published = publishedTitles.map((publishedTitle) =>
-    fakeTetEvent({ name: fakeLocalizedObject(publishedTitle) })
-  );
-  return {
-    draft,
-    published,
-  };
-};
-
-export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent => {
-  return merge<TetEvent, typeof overrides>(
+export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent =>
+  merge<TetEvent, typeof overrides>(
     {
       id: faker.datatype.uuid(),
       name: fakeLocalizedObject(),
@@ -138,4 +115,19 @@ export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent => {
     },
     overrides
   );
+
+export const fakeEventListAdmin = (
+  draftTitles: string[],
+  publishedTitles: string[]
+): TetEvents => {
+  const draft = draftTitles.map((draftTitle) =>
+    fakeTetEvent({ name: fakeLocalizedObject(draftTitle) })
+  );
+  const published = publishedTitles.map((publishedTitle) =>
+    fakeTetEvent({ name: fakeLocalizedObject(publishedTitle) })
+  );
+  return {
+    draft,
+    published,
+  };
 };

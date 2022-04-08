@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { useTranslation } from 'next-i18next';
 import { OptionType } from 'tet-shared/types/classification';
 
