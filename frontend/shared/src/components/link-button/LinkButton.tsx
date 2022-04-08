@@ -1,4 +1,4 @@
-import { SupplementaryButtonProps, ButtonProps } from 'hds-react';
+import { SupplementaryButtonProps } from 'hds-react';
 import React from 'react';
 
 import $LinkButton from './LinkButton.sc';

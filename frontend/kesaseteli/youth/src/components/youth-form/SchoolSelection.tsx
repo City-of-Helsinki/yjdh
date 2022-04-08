@@ -73,8 +73,10 @@ const SchoolSelection: React.FC = () => {
             pattern: NAMES_REGEX,
           })}
           $colSpan={2}
-          label={t('common:youthApplication.form.schoolName')}
-          placeholder={t('common:youthApplication.form.schoolNamePlaceholder')}
+          label={t('common:youthApplication.form.unlistedSchool')}
+          placeholder={t(
+            'common:youthApplication.form.unlistedSchoolPlaceholder'
+          )}
         />
       )}
     </>

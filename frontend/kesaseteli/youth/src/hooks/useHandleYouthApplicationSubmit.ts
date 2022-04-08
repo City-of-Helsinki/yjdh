@@ -21,7 +21,7 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
   const handleDefaultError = useErrorHandler(false);
 
   const [showErrorNotification, setShowErrorNotification] =
-    React.useState(true);
+    React.useState(false);
 
   return {
     handleSaveSuccess: (application: CreatedYouthApplication): void => {
@@ -34,7 +34,6 @@ const useHandleYouthApplicationSubmit = (): ReturnType => {
     handleErrorResponse: (error: Error | unknown): void => {
       if (isYouthApplicationCreationError(error)) {
         const errorCode = error.response.data.code;
-        console.log('errorCode', errorCode);
         switch (errorCode) {
           case 'already_assigned':
           case 'email_in_use':
