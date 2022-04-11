@@ -64,6 +64,7 @@
     }
   },
   "editor": {
+		"formLabel": "Ny PRAO-plats eller regidera",
 		"companyInfo": "Arbetsgivarinformation",
     "helsinkiCity": "Helsingfors stad",
 		"companyInfoFetch": "Informationen har hämtats under autentiseringen.",
@@ -97,6 +98,8 @@
       "startDateLabel": "Börjar",
       "endDateLabel": "Slutar",
       "spotsLabel": "Arbetspraktikplatser",
+			"spotsIncrease": "Öka med en",
+			"spotsDecrease": "Minska med en",
 			"contactFirstName": "Förnamn",
 			"contactLastName": "Efternamn",
 			"contactPhone": "Telefon",

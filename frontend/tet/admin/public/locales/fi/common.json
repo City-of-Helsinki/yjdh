@@ -63,6 +63,7 @@
     }
   },
   "editor": {
+		"formLabel": "Lisää TET-paikka tai muokkaa",
 		"companyInfo": "Työnantajan tiedot",
     "helsinkiCity": "Helsingin kaupunki",
 		"companyInfoFetch": "Tiedot on haettu tunnistautumisen yhteydessä.",
@@ -96,6 +97,8 @@
       "startDateLabel": "Alkaen",
       "endDateLabel": "Päättyen",
       "spotsLabel": "Työharjoittelupaikkoja",
+			"spotsIncrease": "Lisää yhdellä",
+			"spotsDecrease": "Vähennä yhdellä",
 			"contactFirstName": "Etunimi",
 			"contactLastName": "Sukunimi",
 			"contactPhone": "Puhelin",
