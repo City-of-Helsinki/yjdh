@@ -13,20 +13,6 @@ import {
   TetEventPayload,
 } from 'tet-shared/types/linkedevents';
 import TetPosting from 'tet-shared/types/tetposting';
-import { Language } from 'shared/i18n/i18n';
-
-export const getLocalizedString = (
-  obj: LocalizedObject | undefined,
-  uiLocale?: Language
-): string => {
-  if (!uiLocale) {
-    return obj ? obj.fi : '';
-  }
-  if (obj && obj.hasOwnProperty(uiLocale)) {
-    return obj[uiLocale] ?? obj.fi;
-  }
-  return '';
-};
 
 export const setLocalizedString = (str: string): LocalizedObject => ({
   fi: str,
@@ -67,7 +53,7 @@ export const tetPostingToEvent = (
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
-  start_time: hdsDateToIsoFormat(posting.start_date)!,
+  start_time: hdsDateToIsoFormat(posting.start_date) ?? '',
   end_time: hdsDateToIsoFormat(posting.end_date),
   keywords: [
     ...posting.keywords_working_methods.map((option) => option.value),

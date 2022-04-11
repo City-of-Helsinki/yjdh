@@ -1,15 +1,18 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { IconCalendarClock, IconInfoCircle, IconLocation } from 'hds-react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useTranslation } from 'next-i18next';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
 import Container from 'shared/components/container/Container';
-import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import {
-  $ContentWrapper,
   $Body,
+  $ContentWrapper,
   $InfoWrapper,
   $Title,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
-import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
-import { useTranslation } from 'next-i18next';
+import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;

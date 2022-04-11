@@ -1,7 +1,7 @@
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { Language } from 'shared/i18n/i18n';
 import { OptionType } from 'tet-shared/types/classification';
 import { IdObject } from 'tet-shared/types/linkedevents';
-import { Language } from 'shared/i18n/i18n';
 
 // By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)
 export const keywordsDataSource =
@@ -44,15 +44,10 @@ async function query<T>(
   path: string,
   params: Record<string, string | number>
 ): Promise<T[]> {
-  try {
-    const result: AxiosResponse<{ data: T[] }> = await axiosInstance.get(path, {
-      params,
-    });
-    return result?.data?.data || [];
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const result: AxiosResponse<{ data: T[] }> = await axiosInstance.get(path, {
+    params,
+  });
+  return result?.data?.data || [];
 }
 
 async function queryKeywordSet<T>(
@@ -60,29 +55,22 @@ async function queryKeywordSet<T>(
   path: string,
   params: Record<string, string | number>
 ): Promise<T[]> {
-  try {
-    const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(
-      path,
-      { params }
-    );
-    return result?.data?.keywords || [];
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(
+    path,
+    { params }
+  );
+  return result?.data?.keywords || [];
 }
 
 export const keywordToOptionType = (
   keyword: Keyword,
   language: Language = 'fi',
   valueKey: 'id' | '@id' = '@id'
-): OptionType => {
-  return {
-    label: keyword.name[language] ?? keyword.name['fi'],
-    name: keyword.name[language] ?? keyword.name['fi'],
-    value: keyword[valueKey] ?? keyword['@id'],
-  };
-};
+): OptionType => ({
+  label: keyword.name[language] ?? keyword.name.fi,
+  name: keyword.name[language] ?? keyword.name.fi,
+  value: keyword[valueKey] ?? keyword['@id'],
+});
 
 export const getWorkMethods = (): Promise<Keyword[]> =>
   queryKeywordSet<Keyword>(linkedEvents, 'keyword_set/tet:wm/', {

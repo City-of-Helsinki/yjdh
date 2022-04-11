@@ -1,31 +1,49 @@
+import { IconArrowLeft, IconLocation, Tag } from 'hds-react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import Container from 'tet-shared//components/container/Container';
+import Container from 'tet-shared/components/container/Container';
 import {
-  $PostingHero,
-  $ImageContainer,
-  $HeroWrapper,
-  $HeroContentWrapper,
-  $Keywords,
-  $Title,
-  $Subtitle,
-  $Date,
-  $Spots,
   $Address,
-  $ContactTitle,
   $BackButton,
   $ContactInfo,
-} from 'tet-shared//components/posting/postingHero/PostingHero.sc';
-import { useTranslation } from 'next-i18next';
+  $ContactTitle,
+  $Date,
+  $HeroContentWrapper,
+  $HeroWrapper,
+  $ImageContainer,
+  $Keywords,
+  $PostingHero,
+  $Spots,
+  $Subtitle,
+  $Title,
+} from 'tet-shared/components/posting/postingHero/PostingHero.sc';
 import { OptionType } from 'tet-shared/types/classification';
-import { IconLocation, IconArrowLeft, Tag } from 'hds-react';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
   showBackButton: boolean;
 };
+
+const keywordList = (list: OptionType[], color: string): JSX.Element => (
+  <>
+    {list.map((keyword: OptionType) => (
+      <li>
+        <Tag
+          theme={{
+            '--tag-background': `var(--color-${color})`,
+            '--tag-color': 'var(--color-black-90)',
+            '--tag-focus-outline-color': 'var(--color-black-90)',
+          }}
+        >
+          {keyword.name}
+        </Tag>
+      </li>
+    ))}
+  </>
+);
 
 const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const { t } = useTranslation();
@@ -40,28 +58,8 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const city = posting.location.city ? `, ${posting.location.city}` : '';
   const address = posting.location.name + street_address + postal_code + city;
 
-  const backButtonHandler = () => {
+  const backButtonHandler = (): void => {
     void router.push('/postings');
-  };
-
-  const keywordList = (list: OptionType[], color: string) => {
-    return (
-      <>
-        {list.map((keyword: OptionType) => (
-          <li>
-            <Tag
-              theme={{
-                '--tag-background': `var(--color-${color})`,
-                '--tag-color': 'var(--color-black-90)',
-                '--tag-focus-outline-color': 'var(--color-black-90)',
-              }}
-            >
-              {keyword.name}
-            </Tag>
-          </li>
-        ))}
-      </>
-    );
   };
 
   return (
@@ -73,11 +71,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               <IconArrowLeft size="m" />
             </$BackButton>
           )}
-          <$ImageContainer
-            imageUrl={
-              'https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg'
-            }
-          >
+          <$ImageContainer imageUrl="https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg">
             <Image
               width="100%"
               height="100%"
@@ -85,7 +79,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               objectFit="cover"
               src="/event_placeholder_B.jpg"
               alt="event placeholder"
-              priority={true}
+              priority
             />
           </$ImageContainer>
           <$HeroContentWrapper>
