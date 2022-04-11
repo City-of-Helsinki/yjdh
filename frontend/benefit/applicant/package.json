@@ -18,7 +18,7 @@
     "@frontend/shared": "*",
     "@frontend/benefit-shared": "*",
     "@react-pdf/renderer": "^2.1.1",
-    "@testing-library/react-hooks": "^7.0.2",
+    "@testing-library/react-hooks": "^8.0.0",
     "axios": "^0.26.1",
     "babel-plugin-import": "^1.13.3",
     "camelcase-keys": "^7.0.2",
