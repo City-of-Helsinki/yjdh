@@ -12,7 +12,7 @@ import {
 } from '@frontend/shared/src/utils/regex.utils';
 import TestController from 'testcafe';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 
 type TextInputName = keyof Omit<
   YouthFormData,
@@ -28,7 +28,7 @@ export const getIndexPageComponents = async (
   t: TestController,
   lang?: Language
 ) => {
-  const translations = await getTranslations(lang);
+  const translations = await getYouthTranslations(lang);
   const screen = screenContext(t);
   const within = withinContext(t);
   const withinForm = (): ReturnType<typeof within> =>

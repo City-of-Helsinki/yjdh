@@ -7,9 +7,7 @@ import {
 } from 'kesaseteli/youth/__tests__/utils/backend/backend-nocks';
 import getIndexPageApi from 'kesaseteli/youth/__tests__/utils/components/get-index-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
-import {
-  REDIRECT_ERROR_TYPES,
-} from 'kesaseteli/youth/components/constants/creation-error-types';
+import { REDIRECT_ERROR_TYPES } from 'kesaseteli/youth/components/constants/creation-error-types';
 import YouthIndex from 'kesaseteli/youth/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
@@ -47,7 +45,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('shows required validation errors', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
       await indexPageApi.actions.clickSaveButton();
 
@@ -78,7 +76,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('shows min length too short validation errors', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
       indexPageApi.actions.typeInput('postcode', '0123'); // min limit is 5
       await indexPageApi.actions.clickSaveButton();
@@ -92,7 +90,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('shows max length exceeded validation errors', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
       indexPageApi.actions.typeInput('first_name', 'a'.repeat(129)); // max limit is 128
@@ -124,7 +122,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('shows invalid format errors', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
       indexPageApi.actions.typeInput('first_name', '!#$%&()*+/:;<=>?@');
@@ -157,7 +155,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('shows error messages for unlisted school', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
       await indexPageApi.expectations.inputIsNotPresent('unlistedSchool');
       await indexPageApi.actions.clickSaveButton();
@@ -198,7 +196,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('saves the application with listed school', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
         backendExpectation: expectToCreateYouthApplication,
@@ -208,7 +206,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('saves the application with unlisted school', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
       await indexPageApi.actions.fillTheFormWithUnlistedSchoolAndSave({
         backendExpectation: expectToCreateYouthApplication,
@@ -220,7 +218,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       const language: Language = 'sv';
       const spyPush = jest.fn();
       await renderPage(YouthIndex, { locale: language, push: spyPush });
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -235,7 +233,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
     it('shows error toaster when backend gives unknown bad request -error', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -248,7 +246,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       expectToGetSchoolsFromBackend();
       const spyPush = jest.fn();
       await renderPage(YouthIndex, { push: spyPush });
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -264,7 +262,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         expectToGetSchoolsFromBackend();
         const spyPush = jest.fn();
         await renderPage(YouthIndex, { push: spyPush });
-        const indexPageApi = await getIndexPageApi();
+        const indexPageApi = getIndexPageApi();
         await indexPageApi.expectations.pageIsLoaded();
 
         await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -285,7 +283,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         expectToGetSchoolsFromBackend();
         const spyPush = jest.fn();
         await renderPage(YouthIndex, { push: spyPush });
-        const indexPageApi = await getIndexPageApi();
+        const indexPageApi = getIndexPageApi();
         await indexPageApi.expectations.pageIsLoaded();
 
         await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -307,7 +305,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       expectToGetSchoolsFromBackend();
       const spyPush = jest.fn();
       await renderPage(YouthIndex, { push: spyPush });
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -324,7 +322,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       expectToGetSchoolsFromBackend();
       const spyPush = jest.fn();
       await renderPage(YouthIndex, { push: spyPush });
-      const indexPageApi = await getIndexPageApi();
+      const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -344,7 +342,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         const language: Language = 'sv';
         const spyPush = jest.fn();
         await renderPage(YouthIndex, { locale: language, push: spyPush });
-        const indexPageApi = await getIndexPageApi();
+        const indexPageApi = getIndexPageApi();
         await indexPageApi.expectations.pageIsLoaded();
 
         await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -366,7 +364,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       it('shows error toaster when backend gives unknown bad request -error', async () => {
         expectToGetSchoolsFromBackend();
         await renderPage(YouthIndex);
-        const indexPageApi = await getIndexPageApi();
+        const indexPageApi = getIndexPageApi();
         await indexPageApi.expectations.pageIsLoaded();
 
         await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -386,7 +384,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         expectToGetSchoolsFromBackend();
         const spyPush = jest.fn();
         await renderPage(YouthIndex, { push: spyPush });
-        const indexPageApi = await getIndexPageApi();
+        const indexPageApi = getIndexPageApi();
         await indexPageApi.expectations.pageIsLoaded();
 
         await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
@@ -409,7 +407,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
           expectToGetSchoolsFromBackend();
           const spyPush = jest.fn();
           await renderPage(YouthIndex, { push: spyPush });
-          const indexPageApi = await getIndexPageApi();
+          const indexPageApi = getIndexPageApi();
           await indexPageApi.expectations.pageIsLoaded();
 
           await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({

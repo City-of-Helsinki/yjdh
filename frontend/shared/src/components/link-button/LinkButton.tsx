@@ -6,8 +6,7 @@ import $LinkButton from './LinkButton.sc';
 type Props = Omit<SupplementaryButtonProps, 'size' | 'variant' | 'disabled'>;
 
 /**
- * LinkText for NextJs link which is inside Trans-component.
- * See more: https://github.com/i18next/react-i18next/issues/1090#issuecomment-884927848
+ * LinkButton is a button that looks like a link.
  */
 const LinkButton: React.FC<Props> = ({
   children,

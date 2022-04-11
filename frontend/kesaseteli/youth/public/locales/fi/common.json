@@ -116,33 +116,41 @@
     "clearChoice": "Tyhjennä valinta",
     "clearAllChoices": "Tyhjennä kaikki valinnat"
   },
-  "thankyouPage" : {
-    "title": "Kiitos",
-    "notificationTitle": "Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
-    "notificationMessage": "Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa.",
-    "goToFrontendPage": "Siirry kesäsetelin etusivulle"
-  },
-  "activationErrorPage" : {
-    "goToFrontendPage": "Tarkista tiedot ja lähetä uudelleen"
-  },
-  "emailInUsePage" : {
-    "title": "Hups! Sähköposti on jo käytössä.",
-    "notificationMessage": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen."
-  },
-  "alreadyAssignedPage" : {
-    "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä."
-  },
-  "activatedPage" : {
-    "title": "Kesäsetelisi on nyt aktivoitu!",
-    "notificationTitle": "Vahvistus onnistui",
-    "notificationMessage": "Hienoa! Olet lähettänyt tietosi järjestelmään ja hakemuksesi käsitellään mahdollisimman pian - viimeistään kuukauden kuluessa. Saat Kesäsetelin ja käyttöohjeet sähköpostiisi kun hakemuksesi on tarkastettu!"
-  },
-  "expiredPage" : {
-    "title": "Hups! Vahvistuslinkki on vanhentunut.",
-    "notificationMessage": "Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
-    "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
-  },
-  "alreadyActivatedPage" : {
-    "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä."
+  "notificationPages": {
+    "thankyou" : {
+      "title": "Hienoa! Olet lähettänyt tietosi kesäsetelijärjestelmään",
+      "message": "Sait sähköpostiin Kesäsetelin aktivointi-linkin, joka täytyy aktivoida {{ expirationHours }} tunnin kuluessa.",
+      "goToFrontendPage": "Siirry kesäsetelin etusivulle"
+    },
+    "emailInUse" : {
+      "title": "Hups! Sähköposti on jo käytössä.",
+      "message": "Jos kyseessä on virhe, odota {{ expirationHours }} tuntia ja yritä uudelleen.",
+      "goToFrontendPage": "Tarkista tiedot ja lähetä uudelleen"
+    },
+    "alreadyAssigned" : {
+      "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "activated" : {
+      "title": "Vahvistus onnistui",
+      "message": "Hienoa! Olet lähettänyt tietosi järjestelmään ja hakemuksesi käsitellään mahdollisimman pian - viimeistään kuukauden kuluessa. Saat Kesäsetelin ja käyttöohjeet sähköpostiisi kun hakemuksesi on tarkastettu!",
+      "goToFrontendPage": ""
+    },
+    "expired" : {
+      "title": "Hups! Vahvistuslinkki on vanhentunut.",
+      "message": "Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",
+      "goToFrontendPage": "Rekisteröidy ja lähetä kesäseteli uudelleen"
+    },
+    "alreadyActivated" : {
+      "title": "Hups! Olet jo aikaisemmin lähettänyt Kesäsetelihakemuksen ja se on nyt käsittelyssä.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "inadmissibleData" : {
+      "title": "Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
+      "message": "Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
+      "goToFrontendPage": "Tarkista tiedot ja lähetä kesäseteli uudelleen"
+    }
   }
 }

@@ -1,14 +1,14 @@
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import { getNotificationPageComponents } from './notificationPage.components';
 
 export const getAlreadyAssignedPageComponents = async (
   t: TestController,
   lang?: Language
 ) => {
-  const translations = await getTranslations(lang);
+  const translations = await getYouthTranslations(lang);
   return getNotificationPageComponents(t, {
     headerText: translations.alreadyAssignedPage.title,
   });

@@ -4,7 +4,7 @@ import requestLogger, {
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
@@ -21,15 +21,18 @@ fixture('Frontpage')
   );
 
 test('can change to languages', async (t) => {
-  let headerComponents = getHeaderComponents(t, await getTranslations('fi'));
+  let headerComponents = getHeaderComponents(
+    t,
+    await getYouthTranslations('fi')
+  );
   await headerComponents.header().expectations.isPresent();
   await headerComponents.languageDropdown().actions.changeLanguage('fi', 'sv');
-  headerComponents = getHeaderComponents(t, await getTranslations('sv'));
+  headerComponents = getHeaderComponents(t, await getYouthTranslations('sv'));
   await headerComponents.header().expectations.isPresent();
   await headerComponents.languageDropdown().actions.changeLanguage('sv', 'en');
-  headerComponents = getHeaderComponents(t, await getTranslations('en'));
+  headerComponents = getHeaderComponents(t, await getYouthTranslations('en'));
   await headerComponents.header().expectations.isPresent();
   await headerComponents.languageDropdown().actions.changeLanguage('en', 'fi');
-  headerComponents = getHeaderComponents(t, await getTranslations('fi'));
+  headerComponents = getHeaderComponents(t, await getYouthTranslations('fi'));
   await headerComponents.header().expectations.isPresent();
 });

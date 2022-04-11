@@ -116,33 +116,41 @@
     "clearChoice": "ENG Tyhjennä valinta",
     "clearAllChoices": "ENG Tyhjennä kaikki valinnat"
   },
-  "thankyouPage" : {
-    "title": "Thank You!",
-    "notificationTitle": "Excellent! You sent your information to the Summer Job Vouchers´ digital system.",
-    "notificationMessage": "You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
-    "goToFrontendPage": "Go to the Summer Job Voucher front page"
-  },
-  "activationErrorPage" : {
-    "goToFrontendPage": "Check your information and send again"
-  },
-  "emailInUsePage" : {
-    "title": "Oops! The email is already in use.",
-    "notificationMessage": " If you made a mistake, please wait {{ expirationHours }} hours and try again."
-  },
-  "alreadyAssignedPage" : {
-    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
-  },
-  "activatedPage" : {
-    "title": "Your Summer Job Voucher has been activated!",
-    "notificationTitle": "Confirmation succeeded",
-    "notificationMessage": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!"
-  },
-  "expiredPage" : {
-    "title": "Oops! The confirmation link has expired",
-    "notificationMessage": "Unfortunately, it has been more than {{ expirationHours }} hours since your registration was confirmed. Please fill in the registration form again.",
-    "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
-  },
-  "alreadyActivatedPage" : {
-    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
+  "notificationPages": {
+    "thankyou" : {
+      "title": "Excellent! You sent your information to the Summer Job Vouchers´ digital system.",
+      "message": "You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
+      "goToFrontendPage": "Go to the Summer Job Voucher front page"
+    },
+    "emailInUse" : {
+      "title": "Oops! The email is already in use.",
+      "message": " If you made a mistake, please wait {{ expirationHours }} hours and try again.",
+      "goToFrontendPage": "ENG Tarkista tiedot ja lähetä kesäseteli uudelleen"
+    },
+    "alreadyAssigned" : {
+      "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "activated" : {
+      "title": "Confirmation succeeded",
+      "message": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!",
+      "goToFrontendPage": ""
+    },
+    "expired" : {
+      "title": "Oops! The confirmation link has expired",
+      "message": "Unfortunately, it has been more than {{ expirationHours }} hours since your registration was confirmed. Please fill in the registration form again.",
+      "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
+    },
+    "alreadyActivated" : {
+      "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "inadmissibleData" : {
+      "title": "ENG Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
+      "message": "ENG Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
+      "goToFrontendPage": "ENG Tarkista tiedot ja lähetä kesäseteli uudelleen"
+    }
   }
 }

@@ -116,33 +116,41 @@
     "clearChoice": "SWE Tyhjennä valinta",
     "clearAllChoices": "SWE Tyhjennä kaikki valinnat"
   },
-  "thankyouPage" : {
-    "title": "Tack!",
-    "notificationTitle": "Fint! Du har skickat dina uppgifter till Sommarsedelns digitala system.",
-    "notificationMessage": "Du fick en aktiveringslänk för Sommarsedeln per e-post. Den måste aktiveras inom {{ expirationHours }} timmar.",
-    "goToFrontendPage": "Gå till Sommarsedelns förstasida"
-  },
-  "activationErrorPage" : {
-    "goToFrontendPage": "Kolla din information och skicka på nytt"
-  },
-  "emailInUsePage" : {
-    "title": "Hoppsan! E-postadressen används redan.",
-    "notificationMessage": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen."
-  },
-  "alreadyAssignedPage" : {
-    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
-  },
-  "activatedPage" : {
-    "title": "Din Sommarsedel är nu aktiverad!",
-    "notificationTitle": "Bekräftelsen lyckades",
-    "notificationMessage": "Bra! Du har lämnat in dina uppgifter till systemet och din ansökan kommer att behandlas så snart som möjligt – senast inom en månad. Du får sommarsedeln och bruksanvisningar via e-post när din ansökan har kontrollerats!"
-  },
-  "expiredPage" : {
-    "title": "Hoppsan! Bekräftelselänken har gått ut.",
-    "notificationMessage": " Det har tyvärr gått mer än {{ expirationHours }} timmar sedan registreringsbekräftelsen. Fyll i registreringsblanketten igen.",
-    "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
-  },
-  "alreadyActivatedPage" : {
-    "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst."
+  "notificationPages": {
+    "thankyou" : {
+      "title": "Fint! Du har skickat dina uppgifter till Sommarsedelns digitala system.",
+      "message": "Du fick en aktiveringslänk för Sommarsedeln per e-post. Den måste aktiveras inom {{ expirationHours }} timmar.",
+      "goToFrontendPage": "Gå till Sommarsedelns förstasida"
+    },
+    "emailInUse" : {
+      "title": "Hoppsan! E-postadressen används redan.",
+      "message": "Om det handlar om ett fel, vänta i {{ expirationHours }} timmar och försöka igen.",
+      "goToFrontendPage": "SV Tarkista tiedot ja lähetä uudelleen"
+    },
+    "alreadyAssigned" : {
+      "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "activated" : {
+      "title": "Bekräftelsen lyckades",
+      "message": "Bra! Du har lämnat in dina uppgifter till systemet och din ansökan kommer att behandlas så snart som möjligt – senast inom en månad. Du får sommarsedeln och bruksanvisningar via e-post när din ansökan har kontrollerats!",
+      "goToFrontendPage": ""
+    },
+    "expired" : {
+      "title": "Hoppsan! Bekräftelselänken har gått ut.",
+      "message": " Det har tyvärr gått mer än {{ expirationHours }} timmar sedan registreringsbekräftelsen. Fyll i registreringsblanketten igen.",
+      "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
+    },
+    "alreadyActivated" : {
+      "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "inadmissibleData" : {
+      "title": "SV Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
+      "message": "SV Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
+      "goToFrontendPage": "SV Tarkista tiedot ja lähetä kesäseteli uudelleen"
+    }
   }
 }

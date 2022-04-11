@@ -1,11 +1,11 @@
 import { axe } from 'jest-axe';
-import getEmailInUseApi from 'kesaseteli/youth/__tests__/utils/components/get-email-in-use-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import EmailInUsePage from 'kesaseteli/youth/pages/email_in_use';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import getNotificationPageApi from 'kesaseteli/youth/__tests__/utils/components/get-notification-page-api';
 
 describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
   it('should not violate accessibility', async () => {
@@ -19,7 +19,7 @@ describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
   it('redirects to main page when clicking the button', async () => {
     const spyPush = jest.fn();
     await renderPage(EmailInUsePage, { push: spyPush });
-    const emailInUseApi = getEmailInUseApi();
+    const emailInUseApi = getNotificationPageApi('emailInUse');
     await emailInUseApi.expectations.pageIsLoaded();
     await emailInUseApi.actions.clickGoToFrontPageButton();
     await waitFor(() =>
@@ -29,7 +29,7 @@ describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
 
   it('shows default activation link expiration time (12 hours)', async () => {
     await renderPage(EmailInUsePage);
-    const thankYouPageApi = getEmailInUseApi();
+    const thankYouPageApi = getNotificationPageApi('emailInUse');
     await thankYouPageApi.expectations.pageIsLoaded();
     await thankYouPageApi.expectations.notificationMessageIsPresent(12);
   });
@@ -46,7 +46,7 @@ describe('frontend/kesaseteli/youth/src/pages/email_in_use.tsx', () => {
         NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: String(3600 * 2),
       };
       await renderPage(EmailInUsePage);
-      const emailInUseApi = getEmailInUseApi();
+      const emailInUseApi = getNotificationPageApi('emailInUse');
       await emailInUseApi.expectations.pageIsLoaded();
       await emailInUseApi.expectations.notificationMessageIsPresent(2);
     });

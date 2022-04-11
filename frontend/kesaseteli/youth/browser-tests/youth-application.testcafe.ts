@@ -17,7 +17,7 @@ import {
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 
-import getTranslations from '../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import getActivationLinkExpirationSeconds from '../src/utils/get-activation-link-expiration-seconds';
 import sendAdditionalInfoApplication from './actions/send-additional-info-application';
 import sendYouthApplication from './actions/send-youth-application';
@@ -75,7 +75,7 @@ test('If I send two applications with same email, I will see "email is in use" -
 
 if (!isRealIntegrationsEnabled()) {
   test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async (t) => {
-    const translations = await getTranslations();
+    const translations = await getYouthTranslations();
     const languageDropdown = getHeaderComponents(
       t,
       translations
@@ -91,7 +91,7 @@ if (!isRealIntegrationsEnabled()) {
     await activatedPage.expectations.isLoaded();
   });
   test('If I fill application with unlisted school in english, send it and activate it, I will see additional info form in english', async (t) => {
-    const translations = await getTranslations();
+    const translations = await getYouthTranslations();
     const languageDropdown = getHeaderComponents(
       t,
       translations
@@ -277,7 +277,7 @@ if (!isRealIntegrationsEnabled()) {
       activatedApplication
     );
     await handlerFormPage.expectations.isLoaded();
-    const translations = await getTranslations();
+    const translations = await getYouthTranslations();
     await handlerFormPage.expectations.applicationFieldHasValue(
       'additional_info_user_reasons',
       activatedApplication.additional_info_user_reasons

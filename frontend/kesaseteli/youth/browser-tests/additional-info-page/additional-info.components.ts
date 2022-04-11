@@ -8,21 +8,16 @@ import {
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { MAIN_CONTENT_ID } from '@frontend/shared/src/constants';
-import { Language } from '@frontend/shared/src/i18n/i18n';
-import { escapeRegExp } from '@frontend/shared/src/utils/regex.utils';
+import getYouthTranslationsApi from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
+import YouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/youth-translations';
 import TestController from 'testcafe';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
-
-export const getAdditionalInfoPageComponents = async (
-  t: TestController,
-  lang?: Language
-) => {
+export const getAdditionalInfoPageComponents = async (t: TestController) => {
   const screen = screenContext(t);
   const within = withinContext(t);
-  const translations = await getTranslations(lang);
+  const { getText, getRegexp } = getYouthTranslationsApi();
   type NotificationType = Extract<
-    keyof typeof translations.additionalInfo.notification,
+    keyof YouthTranslations['additionalInfo']['notification'],
     'confirmed' | 'sent' | 'notFound'
   >;
 
@@ -34,30 +29,27 @@ export const getAdditionalInfoPageComponents = async (
   const selectors = {
     title() {
       return withinMain().findByRole('heading', {
-        name: translations.additionalInfo.title,
+        name: getText('additionalInfo.title'),
       });
     },
     reasonOption(reason: AdditionalInfoReasonType) {
       return withinForm().findByRole('option', {
-        name: escapeRegExp(translations.additionalInfo.reasons[reason], 'i'),
+        name: getRegexp(`additionalInfo.reasons.${reason}`),
       });
     },
     additionalInfoDescription() {
       return withinForm().findByRole('textbox', {
-        name: escapeRegExp(
-          translations.additionalInfo.form.additional_info_description,
-          'i'
-        ),
+        name: getRegexp(`additionalInfo.form.additional_info_description`),
       });
     },
     sendButton() {
       return withinForm().findByRole('button', {
-        name: translations.additionalInfo.form.sendButton,
+        name: getText('additionalInfo.form.sendButton'),
       });
     },
     notification(type: NotificationType) {
       return withinMain().findByRole('heading', {
-        name: translations.additionalInfo.notification[type],
+        name: getText(`additionalInfo.notification.${type}`),
       });
     },
   };

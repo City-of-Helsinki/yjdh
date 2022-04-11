@@ -5,17 +5,17 @@ import {
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import { getNotificationPageComponents } from '../notification-page/notificationPage.components';
 
 export const getThankYouPageComponents = async (
   t: TestController,
   lang?: Language
 ) => {
-  const translations = await getTranslations(lang);
+  const translations = await getYouthTranslations(lang);
   const screen = screenContext(t);
   const notificationPage = await getNotificationPageComponents(t, {
-    headerText: translations.thankyouPage.notificationTitle,
+    headerText: translations.notificationPages.thankyou.notificationTitle,
     buttonText: translations.thankyouPage.goToFrontendPage,
   });
   const selectors = {

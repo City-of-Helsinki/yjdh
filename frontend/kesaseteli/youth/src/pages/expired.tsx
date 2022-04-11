@@ -10,11 +10,11 @@ const ExpiredPage: React.FC = () => {
   return (
     <NotificationPage
       type="error"
-      title={t(`common:expiredPage.title`)}
-      message={t(`common:expiredPage.notificationMessage`, {
+      title={t(`common:notificationPages.expired.title`)}
+      message={t(`common:notificationPages.expired.message`, {
         expirationHours: useActivationLinkExpirationHours(),
       })}
-      goToFrontPageText={t('common:expiredPage.goToFrontendPage')}
+      goToFrontPageText={t('common:notificationPages.expired.goToFrontendPage')}
     />
   );
 };

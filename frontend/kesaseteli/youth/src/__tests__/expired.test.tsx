@@ -1,11 +1,11 @@
 import { axe } from 'jest-axe';
-import getExpiredPageApi from 'kesaseteli/youth/__tests__/utils/components/get-expired-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import ExpiredPage from 'kesaseteli/youth/pages/expired';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import getNotificationPageApi from 'kesaseteli/youth/__tests__/utils/components/get-notification-page-api';
 
 describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
   it('should not violate accessibility', async () => {
@@ -19,7 +19,7 @@ describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
   it('redirects to main page when clicking the button', async () => {
     const spyPush = jest.fn();
     await renderPage(ExpiredPage, { push: spyPush });
-    const expiredPageApi = getExpiredPageApi();
+    const expiredPageApi = getNotificationPageApi('expired');
     await expiredPageApi.expectations.pageIsLoaded();
     await expiredPageApi.actions.clickGoToFrontPageButton();
     await waitFor(() =>
@@ -29,7 +29,7 @@ describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
 
   it('shows default activation link expiration time (12 hours)', async () => {
     await renderPage(ExpiredPage);
-    const expiredPageApi = getExpiredPageApi();
+    const expiredPageApi = getNotificationPageApi('expired');
     await expiredPageApi.expectations.pageIsLoaded();
     await expiredPageApi.expectations.notificationMessageIsPresent(12);
   });
@@ -46,7 +46,7 @@ describe('frontend/kesaseteli/youth/src/pages/expired.tsx', () => {
         NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: String(3600 * 2),
       };
       await renderPage(ExpiredPage);
-      const expiredPageApi = getExpiredPageApi();
+      const expiredPageApi = getNotificationPageApi('expired');
       await expiredPageApi.expectations.pageIsLoaded();
       await expiredPageApi.expectations.notificationMessageIsPresent(2);
     });
