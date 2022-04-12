@@ -17,6 +17,7 @@ type Props = {
   height?: string;
   zoom?: number;
   zoomToPosition?: boolean;
+  showLink?: boolean;
 };
 
 const Map: React.FC<Props> = ({
@@ -25,6 +26,7 @@ const Map: React.FC<Props> = ({
   height,
   zoom,
   zoomToPosition,
+  showLink,
 }) => {
   const { t } = useTranslation();
   const getDateString = (posting: TetPosting): string =>
@@ -73,9 +75,11 @@ const Map: React.FC<Props> = ({
               <$Subtitle>{posting.title}</$Subtitle>
               <$Date>{getDateString(posting)}</$Date>
               <$Address>{getAddressString(posting)}</$Address>
-              <Link href={`/postings/show?id=${posting.id}`} size="L">
-                {t(`common:map.readMore`)}
-              </Link>
+              {showLink && (
+                <Link href={`/postings/show?id=${posting.id}`} size="L">
+                  {t(`common:map.readMore`)}
+                </Link>
+              )}
             </Popup>
           </Marker>
         ))}
@@ -89,6 +93,7 @@ Map.defaultProps = {
   height: '400px',
   zoom: 11,
   zoomToPosition: false,
+  showLink: false,
 };
 
 export default Map;
