@@ -7,6 +7,7 @@ import {
   $Body,
   $InfoWrapper,
   $Title,
+  $Hr,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
 import { useTranslation } from 'next-i18next';
@@ -38,6 +39,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
         <$Body>
           <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
+          <$Hr />
           <Map postings={[posting]} zoom={12} zoomToPosition={true} />
         </$Body>
         <$InfoWrapper>
