@@ -155,7 +155,7 @@ if (!isRealIntegrationsEnabled()) {
     await activatedPage.expectations.isLoaded();
   });
 
-  test.only('If I have forgot that I already sent and activated an application, and then I send another application with same email, I see  "You already sent a Summer Job Voucher application" -message', async (t) => {
+  test('If I have forgot that I already sent and activated an application, and then I send another application with same email, I see  "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const application = fakeYouthApplication({ is_unlisted_school: false });

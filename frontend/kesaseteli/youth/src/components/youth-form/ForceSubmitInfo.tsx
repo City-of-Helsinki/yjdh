@@ -17,7 +17,6 @@ const ForceSubmitInfo: React.FC = () => {
 
   return (
     <p>
-      {' '}
       {t(`common:youthApplication.form.sendItAnyway`)}
       <SaveFormButton
         asLink
