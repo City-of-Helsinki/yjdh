@@ -75,5 +75,11 @@
 		"dateAndTime": "Date and time",
 		"location": "Place",
 		"languages": "Languages used in the workplace"
+	},
+	"map": {
+		"readMore": "Read more",
+		"showList": "Show results in a list",
+		"showMap": "Show results on a map",
+    "helsinkiCity": "City of Helsinki"
 	}
 }

@@ -207,5 +207,11 @@
         "remove": "Ta bort filen"
       }
     }
-  }
+  },
+	"map": {
+		"readMore": "Läs mer",
+		"showList": "visa resultat i en lista",
+		"showMap": "Visa resultat på en karta",
+    "helsinkiCity": "Helsingfors stad"
+	}
 }

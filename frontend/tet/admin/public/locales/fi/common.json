@@ -210,6 +210,7 @@
 	"map": {
 		"readMore": "Lue lisää",
 		"showList": "Näytä tulokset listana",
-		"showMap": "Näytä tulokset kartalla"
+		"showMap": "Näytä tulokset kartalla",
+    "helsinkiCity": "Helsingin kaupunki"
 	}
 }

@@ -27,9 +27,9 @@ const JobPostingList: React.FC<Props> = ({ postings, onShowMore, hasNextPage }) 
   return (
     <Container>
       {showMap ? (
-        <Button onClick={() => setShowMap(false)}>Näytä lista</Button>
+        <Button onClick={() => setShowMap(false)}>{t('common:map.showList')}</Button>
       ) : (
-        <Button onClick={() => setShowMap(true)}>Näytä kartta</Button>
+        <Button onClick={() => setShowMap(true)}>{t('common:map.showMap')}</Button>
       )}
       <h2>{t('common:postings.searchResults', { count: total })}</h2>
       {showMap ? (

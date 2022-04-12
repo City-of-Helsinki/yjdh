@@ -43,12 +43,13 @@ const Map: React.FC<Props> = ({ postings, center, height }) => {
         {postings.map((posting) => (
           <Marker position={posting.location.position.coordinates.reverse()}>
             <Popup>
+              <$Subtitle>{t(`common:map.helsinkiCity`)}</$Subtitle>
               <$Title>{posting.org_name}</$Title>
               <$Subtitle>{posting.title}</$Subtitle>
               <$Date>{getDateString(posting)}</$Date>
               <$Address>{getAddressString(posting)}</$Address>
-              <Link href="https://hel.fi" size="L">
-                Lue lisää
+              <Link href={`/postings/show?id=${posting.id}`} size="L">
+                {t(`common:map.readMore`)}
               </Link>
             </Popup>
           </Marker>
