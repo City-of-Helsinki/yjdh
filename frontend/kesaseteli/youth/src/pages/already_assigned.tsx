@@ -9,8 +9,10 @@ const AlreadyAssignedPage: React.FC = () => {
   return (
     <NotificationPage
       type="error"
-      title={t(`common:alreadyAssignedPage.title`)}
-      goToFrontPageText={t(`common:alreadyAssignedPage.goToFrontendPage`)}
+      title={t(`common:notificationPages.alreadyAssigned.title`)}
+      goToFrontPageText={t(
+        `common:notificationPages.alreadyAssigned.goToFrontendPage`
+      )}
     />
   );
 };
