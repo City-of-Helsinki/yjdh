@@ -30,6 +30,7 @@ const EditStaticPage: NextPage = () => {
     return <EditorLoadingError error={err} />;
   }
 
+  //TODO Change to use HeaderLinks
   if (data) {
     const posting = eventToTetPosting(data);
     return (

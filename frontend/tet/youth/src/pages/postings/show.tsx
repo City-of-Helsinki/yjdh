@@ -8,6 +8,7 @@ import useGetSingePosting from 'tet/youth/hooks/backend/useGetSingePosting';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import PageNotFound from 'shared/components/pages/PageNotFound';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import HeaderLinks from 'tet-shared/components/HeaderLinks';
 
 const ShowPostingPage: NextPage = () => {
   const router = useRouter();
@@ -24,7 +25,12 @@ const ShowPostingPage: NextPage = () => {
   }
 
   if (data) {
-    return <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} />;
+    return (
+      <>
+        <HeaderLinks />
+        <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} />;
+      </>
+    );
   } else {
     return <PageNotFound />;
   }

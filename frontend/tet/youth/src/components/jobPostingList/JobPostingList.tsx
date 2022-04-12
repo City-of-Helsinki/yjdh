@@ -6,42 +6,44 @@ import Container from 'shared/components/container/Container';
 import { Button } from 'hds-react';
 import { $ButtonLoaderContainer } from './JobPostingList.sc';
 import { TetEvent, LinkedEventsPagedResponse } from 'tet-shared/types/linkedevents';
-import { InfiniteData } from 'react-query';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('tet-shared/components/map/Map'), { ssr: false });
 
 type Props = {
-  postings: InfiniteData<LinkedEventsPagedResponse<TetEvent>>;
+  postings: LinkedEventsPagedResponse<TetEvent>;
   onShowMore: () => void;
-  isFetchingNextPage: Boolean;
   hasNextPage?: Boolean;
 };
 
-const JobPostingList: React.FC<Props> = ({ postings, onShowMore, isFetchingNextPage, hasNextPage }) => {
+const JobPostingList: React.FC<Props> = ({ postings, onShowMore, hasNextPage }) => {
   const { t } = useTranslation();
   const { eventToTetPosting } = useEventPostingTransformation();
   const eventsToPostings = (events: TetEvent[]) => events.map((event) => eventToTetPosting(event));
-  const total = postings?.pages[0].meta.count;
+  const total = postings?.meta.count;
+  const [showMap, setShowMap] = React.useState(false);
 
   return (
     <Container>
+      {showMap ? (
+        <Button onClick={() => setShowMap(false)}>Näytä lista</Button>
+      ) : (
+        <Button onClick={() => setShowMap(true)}>Näytä kartta</Button>
+      )}
       <h2>{t('common:postings.searchResults', { count: total })}</h2>
-      {postings?.pages.map((group: LinkedEventsPagedResponse<TetEvent>, i: number) => {
-        console.log('group', group);
-        return (
-          <Fragment key={i}>
-            {eventsToPostings(group.data).map((posting) => (
-              <JobPostingCard jobPosting={posting} />
-            ))}
-          </Fragment>
-        );
-      })}
-      {hasNextPage && (
+      {showMap ? (
+        <Map height={'1000px'} postings={eventsToPostings(postings.data)} />
+      ) : (
+        <Fragment>
+          {eventsToPostings(postings.data).map((posting) => (
+            <JobPostingCard jobPosting={posting} />
+          ))}
+        </Fragment>
+      )}
+      {hasNextPage && !showMap && (
         <$ButtonLoaderContainer>
-          {isFetchingNextPage ? (
-            <LoadingSpinner />
-          ) : (
-            <Button onClick={onShowMore}>{t('common:postings.showMore')}</Button>
-          )}
+          <Button onClick={onShowMore}>{t('common:postings.showMore')}</Button>
         </$ButtonLoaderContainer>
       )}
     </Container>

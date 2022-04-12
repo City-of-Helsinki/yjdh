@@ -206,5 +206,10 @@
         "remove": "Poista tiedosto"
       }
     }
-  }
+  },
+	"map": {
+		"readMore": "Lue lisää",
+		"showList": "Näytä tulokset listana",
+		"showMap": "Näytä tulokset kartalla"
+	}
 }

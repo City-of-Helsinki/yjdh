@@ -9,9 +9,11 @@ import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
 const Postings: React.FC = () => {
   const router = useRouter();
   const params = router.query;
-  const { isLoading, data, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useGetPostings(params);
+  const { isLoading, data, error } = useGetPostings(params);
 
   const postings = () => {
+    const fetchNextPage = () => {};
+    const hasNextPage = false;
     if (isLoading) {
       return <PageLoadingSpinner />;
     }
@@ -22,14 +24,7 @@ const Postings: React.FC = () => {
     }
 
     if (data) {
-      return (
-        <JobPostingList
-          postings={data}
-          isFetchingNextPage={isFetchingNextPage}
-          onShowMore={() => fetchNextPage()}
-          hasNextPage={hasNextPage}
-        />
-      );
+      return <JobPostingList postings={data} onShowMore={() => fetchNextPage()} hasNextPage={hasNextPage} />;
     } else {
       //TODO
       return <div>Ei hakutuloksia</div>;

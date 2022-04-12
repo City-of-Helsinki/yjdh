@@ -76,5 +76,10 @@
 		"dateAndTime": "Päivä ja aika",
 		"location": "Paikka",
 		"languages": "TET-paikassa käytettävät kielet"
+	},
+	"map": {
+		"readMore": "Lue lisää",
+		"showList": "Näytä tulokset listana",
+		"showMap": "Näytä tulokset kartalla"
 	}
 }
