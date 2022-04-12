@@ -10,11 +10,15 @@ import {
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import { IconCalendarClock, IconLocation, IconInfoCircle } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import Map from 'tet-shared/components/map/Map';
+import dynamic from 'next/dynamic';
 
 type Props = {
   posting: TetPosting;
 };
+
+const Map = dynamic(() => import('tet-shared/components/map/Map'), {
+  ssr: false,
+});
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
@@ -34,7 +38,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
         <$Body>
           <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
-          <Map postings={[posting]} />
+          <Map postings={[posting]} zoom={12} zoomToPosition={true} />
         </$Body>
         <$InfoWrapper>
           <PostingInfoItem

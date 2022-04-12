@@ -15,9 +15,17 @@ type Props = {
   postings: TetPosting[];
   center?: number[];
   height?: string;
+  zoom?: number;
+  zoomToPosition?: boolean;
 };
 
-const Map: React.FC<Props> = ({ postings, center, height }) => {
+const Map: React.FC<Props> = ({
+  postings,
+  center,
+  height,
+  zoom,
+  zoomToPosition,
+}) => {
   const { t } = useTranslation();
   const getDateString = (posting: TetPosting): string =>
     `${posting.start_date} - ${posting.end_date ?? ''}`;
@@ -33,15 +41,32 @@ const Map: React.FC<Props> = ({ postings, center, height }) => {
     return posting.location.name + street_address + postal_code + city;
   };
 
+  const centerPosition =
+    postings.length === 1 && zoomToPosition
+      ? [
+          postings[0].location.position.coordinates[1],
+          postings[0].location.position.coordinates[0],
+        ]
+      : center;
+
   return (
     <$MapWrapper>
-      <MapContainer center={center} zoom={10} style={{ height: height }}>
+      <MapContainer
+        center={centerPosition}
+        zoom={zoom}
+        style={{ height: height }}
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {postings.map((posting) => (
-          <Marker position={posting.location.position.coordinates.reverse()}>
+          <Marker
+            position={[
+              posting.location.position.coordinates[1],
+              posting.location.position.coordinates[0],
+            ]}
+          >
             <Popup>
               <$Subtitle>{t(`common:map.helsinkiCity`)}</$Subtitle>
               <$Title>{posting.org_name}</$Title>
@@ -62,6 +87,8 @@ const Map: React.FC<Props> = ({ postings, center, height }) => {
 Map.defaultProps = {
   center: [60.1699, 24.9384], //Helsinki location
   height: '400px',
+  zoom: 11,
+  zoomToPosition: false,
 };
 
 export default Map;
