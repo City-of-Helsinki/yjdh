@@ -23,6 +23,7 @@ export const escKeyPressHelper = (): boolean =>
   fireEvent.keyDown(document, { code: 27, key: 'Escape' });
 
 const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   <>{children}</>
 );
 

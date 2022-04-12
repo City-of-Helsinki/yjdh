@@ -1,11 +1,11 @@
 import { axe } from 'jest-axe';
+import getNotificationPageApi from 'kesaseteli/youth/__tests__/utils/components/get-notification-page-api';
 import renderPage from 'kesaseteli/youth/__tests__/utils/components/render-page';
 import InadmissibleDataPage from 'kesaseteli/youth/pages/inadmissible_data';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
-import getNotificationPageApi from 'kesaseteli/youth/__tests__/utils/components/get-notification-page-api';
 
 describe('frontend/kesaseteli/youth/src/pages/inadmissible_data.tsx', () => {
   it('should not violate accessibility', async () => {

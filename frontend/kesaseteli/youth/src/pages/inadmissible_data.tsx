@@ -1,4 +1,3 @@
-import useActivationLinkExpirationHours from 'kesaseteli/youth/hooks/useActivationLinkExpirationHours';
 import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import React from 'react';

@@ -28,15 +28,23 @@ type HeaderTranslations = {
   };
 };
 
-export const getHeaderComponents = <T extends HeaderTranslations>(
+type Translations = {
+  fi: HeaderTranslations;
+  sv: HeaderTranslations;
+  en: HeaderTranslations;
+};
+
+export const getHeaderComponents = <T extends Translations>(
   t: TestController,
-  translations: T
+  translations: T,
+  lang?: Language
 ) => {
   const within = withinContext(t);
   const screen = screenContext(t);
+  let currentLang = lang ?? DEFAULT_LANGUAGE;
 
   const getUserInfo = (user?: User) =>
-    `${translations.header.userAriaLabelPrefix ?? ''} ${
+    `${translations[currentLang].header.userAriaLabelPrefix ?? ''} ${
       isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
     }`;
 
@@ -48,16 +56,16 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
 
   const languageDropdown = () => {
     const selectors = {
-      languageSelector(lang = DEFAULT_LANGUAGE): SelectorPromise {
+      languageSelector(): SelectorPromise {
         setDataToPrintOnFailure(t, 'lang', lang);
         return withinNavigationActions().findByRole('button', {
-          name: translations.header.languageMenuButtonAriaLabel,
+          name: translations[currentLang].header.languageMenuButtonAriaLabel,
         });
       },
       languageSelectorItem(toLang: Language): SelectorPromise {
         setDataToPrintOnFailure(t, 'expectedLanguage', toLang);
         return withinNavigationActions().findByRole('link', {
-          name: translations.languages[toLang],
+          name: translations[currentLang].languages[toLang],
         });
       },
     };
@@ -69,11 +77,12 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
       },
     };
     const actions = {
-      async changeLanguage(fromLang: Language, toLang: Language) {
-        if (fromLang !== toLang) {
+      async changeLanguage(toLang: Language) {
+        if (currentLang !== toLang) {
           await t
-            .click(selectors.languageSelector(fromLang))
+            .click(selectors.languageSelector())
             .click(selectors.languageSelectorItem(toLang));
+          currentLang = toLang;
         }
       },
     };
@@ -86,7 +95,7 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
     const selectors = {
       headerTitle() {
         return withinHeader()
-          .findAllByText(new RegExp(`^${translations.appName}$`, 'i'), {})
+          .findAllByText(translations[currentLang].appName)
           .nth(0);
       },
     };
@@ -110,7 +119,7 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
       },
       loginButton(): SelectorPromise {
         return withinNavigationActions().findByRole('button', {
-          name: translations.header?.loginLabel,
+          name: translations[currentLang].header?.loginLabel,
         });
       },
       userInfoDropdown(user?: User): SelectorPromise {
@@ -120,7 +129,10 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
       },
       logoutButton(): SelectorPromise {
         return withinNavigationActions().findByRole('link', {
-          name: escapeRegExp(translations.header?.logoutLabel ?? '', 'i'),
+          name: escapeRegExp(
+            translations[currentLang].header?.logoutLabel ?? '',
+            'i'
+          ),
         });
       },
     };

@@ -16,8 +16,11 @@ type InputKey = keyof YouthTranslations['youthApplication']['form'];
 type ErrorType = keyof YouthTranslations['errors'];
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-const getIndexPageApi = () => {
-  const { translations, regexp } = getYouthTranslationsApi();
+const getIndexPageApi = (lang?: Language) => {
+  const {
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+    regexp,
+  } = getYouthTranslationsApi();
 
   const youthFormData: Partial<YouthFormData> = {};
   return {

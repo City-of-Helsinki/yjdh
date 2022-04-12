@@ -8,14 +8,22 @@ import {
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { MAIN_CONTENT_ID } from '@frontend/shared/src/constants';
-import getYouthTranslationsApi from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
-import YouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/youth-translations';
+import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
-export const getAdditionalInfoPageComponents = async (t: TestController) => {
+import getYouthTranslationsApi from '../../src/__tests__/utils/i18n/get-youth-translations-api';
+import YouthTranslations from '../../src/__tests__/utils/i18n/youth-translations';
+
+export const getAdditionalInfoPageComponents = async (
+  t: TestController,
+  lang?: Language
+) => {
   const screen = screenContext(t);
   const within = withinContext(t);
-  const { getText, getRegexp } = getYouthTranslationsApi();
+  const {
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+    regexp,
+  } = getYouthTranslationsApi();
   type NotificationType = Extract<
     keyof YouthTranslations['additionalInfo']['notification'],
     'confirmed' | 'sent' | 'notFound'
@@ -29,27 +37,29 @@ export const getAdditionalInfoPageComponents = async (t: TestController) => {
   const selectors = {
     title() {
       return withinMain().findByRole('heading', {
-        name: getText('additionalInfo.title'),
+        name: translations.additionalInfo.title,
       });
     },
     reasonOption(reason: AdditionalInfoReasonType) {
       return withinForm().findByRole('option', {
-        name: getRegexp(`additionalInfo.reasons.${reason}`),
+        name: regexp(translations.additionalInfo.reasons[reason]),
       });
     },
     additionalInfoDescription() {
       return withinForm().findByRole('textbox', {
-        name: getRegexp(`additionalInfo.form.additional_info_description`),
+        name: regexp(
+          translations.additionalInfo.form.additional_info_description
+        ),
       });
     },
     sendButton() {
       return withinForm().findByRole('button', {
-        name: getText('additionalInfo.form.sendButton'),
+        name: regexp(translations.additionalInfo.form.sendButton),
       });
     },
     notification(type: NotificationType) {
       return withinMain().findByRole('heading', {
-        name: getText(`additionalInfo.notification.${type}`),
+        name: regexp(translations.additionalInfo.notification[type]),
       });
     },
   };

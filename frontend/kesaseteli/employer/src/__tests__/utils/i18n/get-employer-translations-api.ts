@@ -7,16 +7,17 @@ import {
 import en from '../../../../public/locales/en/common.json';
 import fi from '../../../../public/locales/fi/common.json';
 import sv from '../../../../public/locales/sv/common.json';
-import YouthTranslations from './youth-translations';
+import EmployerTranslations from './employer-translations';
 
-const getYouthTranslationsApi = (): TranslationsApi<YouthTranslations> => ({
-  translations: {
-    fi,
-    sv,
-    en,
-  },
-  replaced: replaceValues,
-  regexp: containsRegexp,
-});
+const getEmployerTranslationsApi =
+  (): TranslationsApi<EmployerTranslations> => ({
+    translations: {
+      fi,
+      sv,
+      en,
+    },
+    replaced: replaceValues,
+    regexp: containsRegexp,
+  });
 
-export default getYouthTranslationsApi;
+export default getEmployerTranslationsApi;

@@ -1,10 +1,6 @@
-export type Language = 'fi' | 'sv' | 'en';
 export type I18nNamespace = 'common';
+export const SUPPORTED_LANGUAGES = ['fi', 'sv', 'en'] as const;
 
-export const DEFAULT_LANGUAGE: Language = 'fi';
+export type Language = typeof SUPPORTED_LANGUAGES[number];
 
-export const SUPPORTED_LANGUAGES: readonly Language[] = [
-  'fi',
-  'sv',
-  'en',
-] as const;
+export const DEFAULT_LANGUAGE: Language = 'fi' as const;

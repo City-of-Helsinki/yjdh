@@ -1,10 +1,14 @@
 import getNotificationPageApi from 'kesaseteli/youth/__tests__/utils/components/get-notification-page-api';
 import getYouthTranslationsApi from 'kesaseteli/youth/__tests__/utils/i18n/get-youth-translations-api';
 import { screen } from 'shared/__tests__/utils/test-utils';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-const getThankYouPageApi = () => {
-  const { translations, replaced } = getYouthTranslationsApi();
+const getThankYouPageApi = (lang?: Language) => {
+  const {
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+    replaced,
+  } = getYouthTranslationsApi();
   const notificationPageApi = getNotificationPageApi('thankyou');
   return {
     expectations: {

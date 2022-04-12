@@ -6,7 +6,7 @@ import requestLogger, {
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getFrontendUrl } from '../utils/url.utils';
 
@@ -24,23 +24,22 @@ fixture('Frontpage')
   );
 
 test('user can authenticate and logout', async (t) => {
+  const { translations } = getEmployerTranslationsApi();
   await doEmployerLogin(t, 'fi');
-  const headerComponents = getHeaderComponents(t, await getTranslations());
+  const headerComponents = getHeaderComponents(t, translations);
   const headerUser = headerComponents.headerUser();
   await headerUser.actions.clicklogoutButton();
   await headerUser.expectations.userIsLoggedOut();
 });
 
 test('can change to languages', async (t) => {
-  let headerComponents = getHeaderComponents(t, await getTranslations());
+  const { translations } = getEmployerTranslationsApi();
+  const headerComponents = getHeaderComponents(t, translations);
   await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('fi', 'sv');
-  headerComponents = getHeaderComponents(t, await getTranslations('sv'));
+  await headerComponents.languageDropdown().actions.changeLanguage('sv');
   await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('sv', 'en');
-  headerComponents = getHeaderComponents(t, await getTranslations('en'));
+  await headerComponents.languageDropdown().actions.changeLanguage('en');
   await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('en', 'fi');
-  headerComponents = getHeaderComponents(t, await getTranslations('fi'));
+  await headerComponents.languageDropdown().actions.changeLanguage('fi');
   await headerComponents.header().expectations.isPresent();
 });
