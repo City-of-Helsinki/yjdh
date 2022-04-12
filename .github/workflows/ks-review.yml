@@ -311,7 +311,7 @@ jobs:
             **Check the report on: [${{ env.REPORT_URL }}](${{ env.REPORT_URL }})**
         if: always() && steps.testcafe.outcome == 'failure'
       - name: Upload screenshots and videos of failed tests to artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: report
           path: ./frontend/${{matrix.dir}}/report
