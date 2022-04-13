@@ -15,20 +15,6 @@ type Keyword = IdObject & {
   };
 };
 
-//type Place = {
-//name: {
-//fi: string;
-//};
-//street_address: {
-//fi: string;
-//};
-//address_locality: {
-//fi: string;
-//};
-//postal_code: string;
-//'@id': string;
-//};
-
 const linkedEvents = Axios.create({
   baseURL:
     process.env.NEXT_PUBLIC_LINKEDEVENTS_URL ||
@@ -44,15 +30,10 @@ async function query<T>(
   path: string,
   params: Record<string, string | number>
 ): Promise<T[]> {
-  try {
-    const result: AxiosResponse<{ data: T[] }> = await axiosInstance.get(path, {
-      params,
-    });
-    return result?.data?.data || [];
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const result: AxiosResponse<{ data: T[] }> = await axiosInstance.get(path, {
+    params,
+  });
+  return result?.data?.data || [];
 }
 
 async function queryKeywordSet<T>(
@@ -60,29 +41,22 @@ async function queryKeywordSet<T>(
   path: string,
   params: Record<string, string | number>
 ): Promise<T[]> {
-  try {
-    const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(
-      path,
-      { params }
-    );
-    return result?.data?.keywords || [];
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const result: AxiosResponse<{ keywords: T[] }> = await axiosInstance.get(
+    path,
+    { params }
+  );
+  return result?.data?.keywords || [];
 }
 
 export const keywordToOptionType = (
   keyword: Keyword,
   language: Language = 'fi',
   valueKey: 'id' | '@id' = '@id'
-): OptionType => {
-  return {
-    label: keyword.name[language] ?? keyword.name['fi'],
-    name: keyword.name[language] ?? keyword.name['fi'],
-    value: keyword[valueKey] ?? keyword['@id'],
-  };
-};
+): OptionType => ({
+  label: keyword.name[language] ?? keyword.name.fi,
+  name: keyword.name[language] ?? keyword.name.fi,
+  value: keyword[valueKey] ?? keyword['@id'],
+});
 
 export const getWorkMethods = (): Promise<Keyword[]> =>
   queryKeywordSet<Keyword>(linkedEvents, 'keyword_set/tet:wm/', {

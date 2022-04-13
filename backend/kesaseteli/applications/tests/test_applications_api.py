@@ -9,7 +9,10 @@ from applications.api.v1.serializers import (
 )
 from applications.enums import EmployerApplicationStatus
 from applications.models import EmployerApplication
-from common.tests.factories import EmployerApplicationFactory, SummerVoucherFactory
+from common.tests.factories import (
+    EmployerApplicationFactory,
+    EmployerSummerVoucherFactory,
+)
 
 
 def get_list_url():
@@ -156,7 +159,7 @@ def test_update_summer_voucher_with_invalid_data(
 
 @pytest.mark.django_db
 def test_remove_single_summer_voucher(api_client, application, summer_voucher):
-    SummerVoucherFactory(application=application)  # Add a second voucher
+    EmployerSummerVoucherFactory(application=application)  # Add a second voucher
     application.refresh_from_db()
     original_summer_voucher_count = application.summer_vouchers.count()
 
@@ -179,7 +182,7 @@ def test_remove_single_summer_voucher(api_client, application, summer_voucher):
 
 @pytest.mark.django_db
 def test_remove_all_summer_vouchers(api_client, application):
-    SummerVoucherFactory.create_batch(size=3, application=application)
+    EmployerSummerVoucherFactory.create_batch(size=3, application=application)
     data = EmployerApplicationSerializer(application).data
     data.pop("summer_vouchers")
     response = api_client.put(

@@ -16,6 +16,7 @@ const nextConfig = (override) => ({
   //  styledComponents: true,
   },
   experimental: {
+    reactRoot: true
    // externalDir: true,
    // outputStandalone: true
   },

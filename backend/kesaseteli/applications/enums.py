@@ -115,6 +115,26 @@ class YouthApplicationStatus(models.TextChoices):
         """
         return [YouthApplicationStatus.ACCEPTED, YouthApplicationStatus.REJECTED]
 
+    @staticmethod
+    def unhandled_values():
+        """
+        Youth application statuses which have not been handled.
+        """
+        return sorted(
+            set(YouthApplicationStatus.values)
+            - set(YouthApplicationStatus.handled_values())
+        )
+
+    @staticmethod
+    def active_unhandled_values():
+        """
+        Active youth application statuses which have not been handled.
+        """
+        return sorted(
+            set(YouthApplicationStatus.unhandled_values())
+            - {YouthApplicationStatus.SUBMITTED.value}
+        )
+
 
 class AdditionalInfoUserReason(models.TextChoices):
     STUDENT_IN_HELSINKI_BUT_NOT_RESIDENT = "student_in_helsinki_but_not_resident", _(

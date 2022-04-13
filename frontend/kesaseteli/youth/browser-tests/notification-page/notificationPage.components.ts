@@ -26,9 +26,7 @@ export const getNotificationPageComponents = async (
   };
   const expectations = {
     async isLoaded() {
-      await t
-        .expect(selectors.header().exists)
-        .ok(await getErrorMessage(t), { timeout: 20_000 });
+      await t.expect(selectors.header().exists).ok(await getErrorMessage(t));
     },
   };
   const actions = {

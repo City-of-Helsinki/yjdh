@@ -8,6 +8,7 @@
     "lint": "eslint --ext js,ts,tsx src",
     "pre-commit": "lint-staged -c ../../.lintstagedrc.js",
     "test": "jest --passWithNoTests",
+    "test:debug-nock": "cross-env DEBUG=nock.* yarn test",
     "test:staged": "yarn test --watchAll=false --findRelatedTests --pass-with-no-tests",
     "test:coverage": "yarn test --verbose --coverage --pass-with-no-tests"
   },
@@ -15,7 +16,12 @@
   "dependencies": {
     "@frontend/shared": "*",
     "axios": "^0.24.0",
-    "react-query": "^3.34.0"
+    "hds-react": "^1.10.0",
+    "next": "^11.1.4",
+    "next-i18next": "^10.5.0",
+    "react-query": "^3.34.0",
+    "react": "17.0.2",
+    "styled-components": "^5.3.1"
   },
   "devDependencies": {
     "eslint-config-adjunct": "^4.11.1",

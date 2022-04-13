@@ -31,4 +31,4 @@ jobs:
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile --check-files
       - name: Run audit
-        run: yarn audit-ci --high
+        run: yarn audit-ci

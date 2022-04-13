@@ -1,5 +1,7 @@
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
 import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
@@ -15,7 +17,7 @@ fixture('Frontpage')
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 test('can change to languages', async (t) => {

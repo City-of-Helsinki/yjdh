@@ -1,44 +1,10 @@
-// TODO move under shared
-
-import { hdsDateToIsoFormat, isoDateToHdsFormat, tetPostingToEvent } from 'tet-shared/backend-api/transformations';
-
-// TODO remove imports
-import faker from 'faker';
-import merge from 'lodash/merge';
-import TetPosting from 'tet-shared/types/tetposting';
+import { fakeTetPosting } from 'tet-shared/__tests__/utils/fake-objects';
+import {
+  hdsDateToIsoFormat,
+  isoDateToHdsFormat,
+  tetPostingToEvent,
+} from 'tet-shared/backend-api/transformations';
 import { OptionType } from 'tet-shared/types/classification';
-
-// TODO import from frontend/tet/shared/src/__tests__/utils/mockDataUtils.ts when it's merged
-const fakeTetPosting = (overrides?: Partial<TetPosting>): TetPosting => {
-  return merge<TetPosting, typeof overrides>(
-    {
-      id: faker.datatype.uuid(),
-      title: faker.random.words(),
-      description: faker.random.words(),
-      org_name: faker.random.words(),
-      spots: 1,
-      start_date: '10-10-2022',
-      contact_email: faker.internet.email(),
-      contact_first_name: faker.name.firstName(),
-      contact_last_name: faker.name.lastName(),
-      contact_phone: faker.phone.phoneNumber(),
-      date_published: null,
-      location: {
-        city: faker.address.city(),
-        label: faker.random.words(),
-        name: faker.random.words(),
-        postal_code: faker.address.zipCode(),
-        street_address: faker.random.words(),
-        value: faker.internet.url(),
-      },
-      keywords: [],
-      keywords_working_methods: [],
-      keywords_attributes: [],
-      languages: [{ label: 'Suomi', name: 'fi', value: 'fi' }],
-    },
-    overrides,
-  );
-};
 
 const optionTypeForId = (id: string): OptionType => ({
   name: 'not needed by test',
@@ -59,9 +25,17 @@ describe('transformations', () => {
 
   it('can transform draft posting to event', () => {
     const posting = fakeTetPosting({
-      keywords: [optionTypeForId('yso:1'), optionTypeForId('yso:2'), optionTypeForId('yso:3')],
+      keywords: [
+        optionTypeForId('yso:1'),
+        optionTypeForId('yso:2'),
+        optionTypeForId('yso:3'),
+      ],
       keywords_working_methods: [optionTypeForId('tet:1')],
-      keywords_attributes: [optionTypeForId('yso:4'), optionTypeForId('yso:5'), optionTypeForId('yso:6')],
+      keywords_attributes: [
+        optionTypeForId('yso:4'),
+        optionTypeForId('yso:5'),
+        optionTypeForId('yso:6'),
+      ],
     });
 
     const event = tetPostingToEvent(posting);
@@ -77,9 +51,13 @@ describe('transformations', () => {
     // Function `tetPostingToEvent` places the classifications in this order inside `keywords`.
     // Changing the order would break no functionality but it would break this test.
     expect(event.keywords).toStrictEqual(
-      [...posting.keywords_working_methods, ...posting.keywords_attributes, ...posting.keywords].map((o) => ({
+      [
+        ...posting.keywords_working_methods,
+        ...posting.keywords_attributes,
+        ...posting.keywords,
+      ].map((o) => ({
         '@id': o.value,
-      })),
+      }))
     );
 
     expect(event.custom_data).toStrictEqual({
@@ -95,7 +73,9 @@ describe('transformations', () => {
     expect(event.end_time).toBeNull();
 
     expect(event.in_language).toStrictEqual(
-      posting.languages.map((l) => ({ '@id': `http://localhost:8080/v1/language/${l.value}/` })),
+      posting.languages.map((l) => ({
+        '@id': `http://localhost:8080/v1/language/${l.value}/`,
+      }))
     );
   });
 

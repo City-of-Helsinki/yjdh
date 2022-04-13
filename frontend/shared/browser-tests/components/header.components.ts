@@ -3,6 +3,7 @@ import TestController, { Selector } from 'testcafe';
 import isRealIntegrationsEnabled from '../../src/flags/is-real-integrations-enabled';
 import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import User from '../../src/types/user';
+import { escapeRegExp } from '../../src/utils/regex.utils';
 import {
   getErrorMessage,
   screenContext,
@@ -18,6 +19,7 @@ type HeaderTranslations = {
     userAriaLabelPrefix?: string;
     linkSkipToContent: string;
     menuToggleAriaLabel: string;
+    languageMenuButtonAriaLabel: string;
   };
   languages: {
     fi: string;
@@ -34,7 +36,7 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
   const screen = screenContext(t);
 
   const getUserInfo = (user?: User) =>
-    `${translations.header?.userAriaLabelPrefix ?? ''} ${
+    `${translations.header.userAriaLabelPrefix ?? ''} ${
       isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
     }`;
 
@@ -49,7 +51,7 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
       languageSelector(lang = DEFAULT_LANGUAGE): SelectorPromise {
         setDataToPrintOnFailure(t, 'lang', lang);
         return withinNavigationActions().findByRole('button', {
-          name: new RegExp(lang, 'i'),
+          name: translations.header.languageMenuButtonAriaLabel,
         });
       },
       languageSelectorItem(toLang: Language): SelectorPromise {
@@ -113,12 +115,12 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
       },
       userInfoDropdown(user?: User): SelectorPromise {
         return withinNavigationActions().findByRole('button', {
-          name: getUserInfo(user),
+          name: escapeRegExp(getUserInfo(user), 'i'),
         });
       },
       logoutButton(): SelectorPromise {
         return withinNavigationActions().findByRole('link', {
-          name: translations.header?.logoutLabel,
+          name: escapeRegExp(translations.header?.logoutLabel ?? '', 'i'),
         });
       },
     };
@@ -131,14 +133,9 @@ export const getHeaderComponents = <T extends HeaderTranslations>(
       async userIsLoggedIn(user: User) {
         await t
           .expect(selectors.userInfoDropdown(user).exists)
-          .ok(await getErrorMessage(t), { timeout: 60_000 });
+          .ok(await getErrorMessage(t));
       },
       async userIsLoggedOut() {
-        await t
-          .expect(selectors.loginButton().exists)
-          .ok(await getErrorMessage(t), { timeout: 60_000 });
-      },
-      async loginButtonIsTranslatedAs() {
         await t
           .expect(selectors.loginButton().exists)
           .ok(await getErrorMessage(t));

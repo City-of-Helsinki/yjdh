@@ -42,8 +42,13 @@ export const getIndexPageComponents = async (
     textInput(name: TextInputName) {
       return withinForm().findByTestId(name as string);
     },
+    schoolsLoading() {
+      return withinForm().queryByPlaceholderText(
+        translations.youthApplication.form.schoolsLoading
+      );
+    },
     schoolsDropdown() {
-      return withinForm().findByRole('combobox', {
+      return withinForm().queryByRole('combobox', {
         name: escapeRegExp(
           translations.youthApplication.form.schoolsDropdown,
           'i'
@@ -70,6 +75,9 @@ export const getIndexPageComponents = async (
   const expectations = {
     async isLoaded() {
       await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
+      await t
+        .expect(selectors.schoolsLoading().exists)
+        .notOk(await getErrorMessage(t));
     },
   };
   const actions = {
