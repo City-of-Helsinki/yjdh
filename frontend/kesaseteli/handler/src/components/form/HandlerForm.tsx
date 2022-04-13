@@ -1,6 +1,7 @@
 import { NotificationType } from 'hds-react';
 import ActionButtons from 'kesaseteli/handler/components/form/ActionButtons';
 import Field from 'kesaseteli/handler/components/form/Field';
+import VtjInfo from 'kesaseteli/handler/components/form/VtjInfo';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
   YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION,
@@ -41,27 +42,17 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
     status,
   } = application;
 
-  const waitingForUserAction = React.useMemo(
-    () =>
-      (
-        YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION as ReadonlyArray<string>
-      ).includes(status),
-    [status]
-  );
-  const waitingForHandlerAction = React.useMemo(
-    () =>
-      (
-        YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION as ReadonlyArray<string>
-      ).includes(status),
-    [status]
-  );
-  const isCompleted = React.useMemo(
-    () =>
-      (YOUTH_APPLICATION_STATUS_COMPLETED as ReadonlyArray<string>).includes(
-        status
-      ),
-    [status]
-  );
+  const waitingForUserAction = (
+    YOUTH_APPLICATION_STATUS_WAITING_FOR_YOUTH_ACTION as ReadonlyArray<string>
+  ).includes(status);
+
+  const waitingForHandlerAction = (
+    YOUTH_APPLICATION_STATUS_WAITING_FOR_HANDLER_ACTION as ReadonlyArray<string>
+  ).includes(status);
+
+  const isCompleted = (
+    YOUTH_APPLICATION_STATUS_COMPLETED as ReadonlyArray<string>
+  ).includes(status);
 
   // eslint-disable-next-line consistent-return
   const notificationType: MessageType = React.useMemo(() => {
@@ -98,23 +89,7 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
       />
       <$GridCell $colSpan={1} $rowSpan={additionalInfoProvided ? 11 : 7}>
-        <$Notification
-          data-testid="vtj-info"
-          label={t(`common:vtj.title`)}
-          type="info"
-        >
-          <pre>
-            {JSON.stringify(
-              {
-                name: 'Anneli kulmala',
-                hetu: '010105-T123',
-                address: '12345 Vantaa',
-              },
-              null,
-              2
-            )}
-          </pre>
-        </$Notification>
+        <VtjInfo />
       </$GridCell>
       <Field type="name" value={`${first_name} ${last_name}`} />
       <Field type="social_security_number" value={social_security_number} />
