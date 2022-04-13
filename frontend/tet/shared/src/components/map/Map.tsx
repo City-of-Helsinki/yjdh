@@ -9,6 +9,7 @@ import {
   $Date,
   $Address,
 } from 'tet-shared/components/map/Map.sc';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { Link } from 'hds-react';
 
 type Props = {
@@ -62,27 +63,29 @@ const Map: React.FC<Props> = ({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {postings.map((posting) => (
-          <Marker
-            position={[
-              posting.location.position.coordinates[1],
-              posting.location.position.coordinates[0],
-            ]}
-          >
-            <Popup>
-              <$Subtitle>{t(`common:map.helsinkiCity`)}</$Subtitle>
-              <$Title>{posting.org_name}</$Title>
-              <$Subtitle>{posting.title}</$Subtitle>
-              <$Date>{getDateString(posting)}</$Date>
-              <$Address>{getAddressString(posting)}</$Address>
-              {showLink && (
-                <Link href={`/postings/show?id=${posting.id}`} size="L">
-                  {t(`common:map.readMore`)}
-                </Link>
-              )}
-            </Popup>
-          </Marker>
-        ))}
+        <MarkerClusterGroup>
+          {postings.map((posting) => (
+            <Marker
+              position={[
+                posting.location.position.coordinates[1],
+                posting.location.position.coordinates[0],
+              ]}
+            >
+              <Popup>
+                <$Subtitle>{t(`common:map.helsinkiCity`)}</$Subtitle>
+                <$Title>{posting.org_name}</$Title>
+                <$Subtitle>{posting.title}</$Subtitle>
+                <$Date>{getDateString(posting)}</$Date>
+                <$Address>{getAddressString(posting)}</$Address>
+                {showLink && (
+                  <Link href={`/postings/show?id=${posting.id}`} size="L">
+                    {t(`common:map.readMore`)}
+                  </Link>
+                )}
+              </Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
     </$MapWrapper>
   );
