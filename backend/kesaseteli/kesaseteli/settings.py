@@ -46,6 +46,7 @@ env = environ.Env(
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
+    CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
@@ -235,6 +236,7 @@ CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
 # Audit logging
