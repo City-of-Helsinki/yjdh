@@ -1,5 +1,10 @@
 {
   "appName": "TET Job Search",
+  "header": {
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu",
+    "languageMenuButtonAriaLabel": "Select language"
+  },
   "errorPage": {
     "title": "An unexpected error occured",
     "message": "Something went wrong. Refreshing the page might help.",

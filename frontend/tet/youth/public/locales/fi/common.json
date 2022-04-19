@@ -1,5 +1,10 @@
 {
   "appName": "TET-paikat",
+  "header": {
+    "linkSkipToContent": "Siirry sisältöön",
+    "menuToggleAriaLabel": "Valikko",
+    "languageMenuButtonAriaLabel": "Valitse kieli"
+  },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
     "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
