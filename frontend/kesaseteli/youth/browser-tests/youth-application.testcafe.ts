@@ -15,19 +15,14 @@ import {
   goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 
-import getTranslations from '../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslationsApi from '../src/__tests__/utils/i18n/get-youth-translations-api';
 import getActivationLinkExpirationSeconds from '../src/utils/get-activation-link-expiration-seconds';
 import sendAdditionalInfoApplication from './actions/send-additional-info-application';
 import sendYouthApplication from './actions/send-youth-application';
 import { getAdditionalInfoPageComponents } from './additional-info-page/additional-info.components';
 import { getIndexPageComponents } from './index-page/indexPage.components';
-import { getActivatedPageComponents } from './notification-page/activatedPage.components';
-import { getAlreadyActivatedPageComponents } from './notification-page/alreadyActivatedPage.components';
-import { getAlreadyAssignedPageComponents } from './notification-page/alreadyAssignedPage.components';
-import { getEmailInUsePageComponents } from './notification-page/emailInUsePage.components';
-import { getExpiredPageComponents } from './notification-page/expiredPage.components';
+import { getNotificationPageComponents } from './notification-page/notificationPage.components';
 import { getThankYouPageComponents } from './thank-you-page/thankYouPage.components';
 import {
   clickBrowserBackButton,
@@ -69,34 +64,38 @@ test('If I send two applications with same email, I will see "email is in use" -
   await indexPage.expectations.isLoaded();
   const secondApplication = fakeYouthApplication({ email: application.email });
   await sendYouthApplication(t, secondApplication);
-  const emailInUsePage = await getEmailInUsePageComponents(t);
+  const emailInUsePage = await getNotificationPageComponents(t, 'emailInUse');
   await emailInUsePage.expectations.isLoaded();
 });
 
 if (!isRealIntegrationsEnabled()) {
   test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async (t) => {
-    const translations = await getTranslations();
+    const { translations } = getYouthTranslationsApi();
     const languageDropdown = getHeaderComponents(
       t,
       translations
     ).languageDropdown();
-    await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'sv');
+    await languageDropdown.actions.changeLanguage('sv');
     const indexPage = await getIndexPageComponents(t, 'sv');
     await indexPage.expectations.isLoaded();
     const application = fakeYouthApplication({ is_unlisted_school: false });
     await sendYouthApplication(t, application, 'sv');
     const thankYouPage = await getThankYouPageComponents(t, 'sv');
     await thankYouPage.actions.clickActivationLink();
-    const activatedPage = await getActivatedPageComponents(t, 'sv');
+    const activatedPage = await getNotificationPageComponents(
+      t,
+      'activated',
+      'sv'
+    );
     await activatedPage.expectations.isLoaded();
   });
   test('If I fill application with unlisted school in english, send it and activate it, I will see additional info form in english', async (t) => {
-    const translations = await getTranslations();
+    const { translations } = getYouthTranslationsApi();
     const languageDropdown = getHeaderComponents(
       t,
       translations
     ).languageDropdown();
-    await languageDropdown.actions.changeLanguage(DEFAULT_LANGUAGE, 'en');
+    await languageDropdown.actions.changeLanguage('en');
     const indexPage = await getIndexPageComponents(t, 'en');
     await indexPage.expectations.isLoaded();
     const application = fakeYouthApplication({ is_unlisted_school: true });
@@ -114,14 +113,17 @@ if (!isRealIntegrationsEnabled()) {
     await sendYouthApplication(t, application);
     let thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
-    const activatedPage = await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
     await activatedPage.expectations.isLoaded();
 
     // reactivating fails
     await clickBrowserBackButton();
     thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
-    const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);
+    const alreadyActivatedPage = await getNotificationPageComponents(
+      t,
+      'alreadyActivated'
+    );
     await alreadyActivatedPage.expectations.isLoaded();
   });
 
@@ -133,7 +135,7 @@ if (!isRealIntegrationsEnabled()) {
     const thankYouPage = await getThankYouPageComponents(t);
     await t.wait((getActivationLinkExpirationSeconds() + 1) * 1000);
     await thankYouPage.actions.clickActivationLink();
-    const expiredPage = await getExpiredPageComponents(t);
+    const expiredPage = await getNotificationPageComponents(t, 'expired');
     await expiredPage.expectations.isLoaded();
   });
 
@@ -149,7 +151,7 @@ if (!isRealIntegrationsEnabled()) {
     await sendYouthApplication(t, application);
     const thankYouPage2 = await getThankYouPageComponents(t);
     await thankYouPage2.actions.clickActivationLink();
-    const activatedPage = await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
     await activatedPage.expectations.isLoaded();
   });
 
@@ -160,14 +162,18 @@ if (!isRealIntegrationsEnabled()) {
     await sendYouthApplication(t, application);
     const thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
-    await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
+    await activatedPage.expectations.isLoaded();
     await goToFrontPage(t);
     const secondApplication = {
       ...fakeYouthApplication(),
       email: application.email,
     };
     await sendYouthApplication(t, secondApplication);
-    const alreadyAssignedPage = await getAlreadyAssignedPageComponents(t);
+    const alreadyAssignedPage = await getNotificationPageComponents(
+      t,
+      'alreadyAssigned'
+    );
     await alreadyAssignedPage.expectations.isLoaded();
   });
 
@@ -178,14 +184,18 @@ if (!isRealIntegrationsEnabled()) {
     await sendYouthApplication(t, application);
     const thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
-    await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
+    await activatedPage.expectations.isLoaded();
     await goToFrontPage(t);
     const secondApplication = {
       ...fakeYouthApplication(),
       social_security_number: application.social_security_number,
     };
     await sendYouthApplication(t, secondApplication);
-    const alreadyAssignedPage = await getAlreadyAssignedPageComponents(t);
+    const alreadyAssignedPage = await getNotificationPageComponents(
+      t,
+      'alreadyAssigned'
+    );
     await alreadyAssignedPage.expectations.isLoaded();
   });
 
@@ -204,11 +214,15 @@ if (!isRealIntegrationsEnabled()) {
     await sendYouthApplication(t, secondApplication);
     let thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
-    await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
+    await activatedPage.expectations.isLoaded();
     await goToUrl(t, firstThankYouPageUrl);
     thankYouPage = await getThankYouPageComponents(t);
     await thankYouPage.actions.clickActivationLink();
-    const alreadyActivatedPage = await getAlreadyActivatedPageComponents(t);
+    const alreadyActivatedPage = await getNotificationPageComponents(
+      t,
+      'alreadyActivated'
+    );
     await alreadyActivatedPage.expectations.isLoaded();
   });
 
@@ -226,7 +240,7 @@ if (!isRealIntegrationsEnabled()) {
       throw new Error('cannot complete test without application id');
     }
     await thankYouPage.actions.clickActivationLink();
-    const activatedPage = await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
     await activatedPage.expectations.isLoaded();
     await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
     const { first_name, last_name, is_unlisted_school } = application;
@@ -277,11 +291,13 @@ if (!isRealIntegrationsEnabled()) {
       activatedApplication
     );
     await handlerFormPage.expectations.isLoaded();
-    const translations = await getTranslations();
+    const {
+      translations: { fi },
+    } = getYouthTranslationsApi();
     await handlerFormPage.expectations.applicationFieldHasValue(
       'additional_info_user_reasons',
       activatedApplication.additional_info_user_reasons
-        ?.map((reason) => translations.additionalInfo.reasons[reason])
+        ?.map((reason) => fi.additionalInfo.reasons[reason])
         .join('. ') ?? ''
     );
     await handlerFormPage.expectations.applicationFieldHasValue(
@@ -334,7 +350,7 @@ if (!isRealIntegrationsEnabled()) {
       throw new Error('cannot complete test without application id');
     }
     await thankYouPage.actions.clickActivationLink();
-    const activatedPage = await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
     await activatedPage.expectations.isLoaded();
     await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
     const handlerFormPage = await getHandlerFormPageComponents(t);
@@ -355,7 +371,7 @@ if (!isRealIntegrationsEnabled()) {
       throw new Error('cannot complete test without application id');
     }
     await thankYouPage.actions.clickActivationLink();
-    const activatedPage = await getActivatedPageComponents(t);
+    const activatedPage = await getNotificationPageComponents(t, 'activated');
     await activatedPage.expectations.isLoaded();
     await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
     const handlerFormPage = await getHandlerFormPageComponents(t);

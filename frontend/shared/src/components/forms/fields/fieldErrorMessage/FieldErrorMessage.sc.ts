@@ -6,4 +6,9 @@ export const $FieldErrorMessage = styled.div`
   font-size: ${(props) => props.theme.fontSize.body.m};
   margin-top: ${(props) => props.theme.spacing.xs3};
   padding-left: calc(var(--icon-size) + ${(props) => props.theme.spacing.xs2});
+  & > svg {
+    position: relative;
+    top: 6px;
+    margin-right: ${(props) => props.theme.spacing.xs2};
+  }
 `;

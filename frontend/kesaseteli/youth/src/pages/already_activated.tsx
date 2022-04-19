@@ -9,7 +9,7 @@ const AlreadyActivatedPage: React.FC = () => {
   return (
     <NotificationPage
       type="error"
-      title={t(`common:alreadyActivatedPage.title`)}
+      title={t(`common:notificationPages.alreadyActivated.title`)}
     />
   );
 };

@@ -1,4 +1,4 @@
-import YouthForm from 'kesaseteli/youth/components/forms/YouthForm';
+import YouthForm from 'kesaseteli/youth/components/youth-form/YouthForm';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
@@ -28,7 +28,6 @@ const YouthIndex: NextPage = () => {
       <FormProvider {...methods}>
         <YouthForm />
       </FormProvider>
-      <p>{t(`common:youthApplication.form.requiredInfo`)}</p>
     </Container>
   );
 };

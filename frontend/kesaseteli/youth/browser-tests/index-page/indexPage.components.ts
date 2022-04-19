@@ -5,14 +5,10 @@ import {
   screenContext,
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { Language } from '@frontend/shared/src/i18n/i18n';
-import {
-  escapeRegExp,
-  stripHtmlTags,
-} from '@frontend/shared/src/utils/regex.utils';
+import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslations from '../../src/__tests__/utils/i18n/get-youth-translations-api';
 
 type TextInputName = keyof Omit<
   YouthFormData,
@@ -28,7 +24,10 @@ export const getIndexPageComponents = async (
   t: TestController,
   lang?: Language
 ) => {
-  const translations = await getTranslations(lang);
+  const {
+    regexp,
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+  } = getYouthTranslations();
   const screen = screenContext(t);
   const within = withinContext(t);
   const withinForm = (): ReturnType<typeof within> =>
@@ -49,18 +48,12 @@ export const getIndexPageComponents = async (
     },
     schoolsDropdown() {
       return withinForm().queryByRole('combobox', {
-        name: escapeRegExp(
-          translations.youthApplication.form.schoolsDropdown,
-          'i'
-        ),
+        name: regexp(translations.youthApplication.form.schoolsDropdown),
       });
     },
     checkbox(name: CheckboxName) {
       return withinForm().findByRole('checkbox', {
-        name: escapeRegExp(
-          stripHtmlTags(translations.youthApplication.form[name]),
-          'i'
-        ),
+        name: regexp(translations.youthApplication.form[name]),
       });
     },
     sendButton() {
