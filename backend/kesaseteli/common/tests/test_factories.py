@@ -1,6 +1,9 @@
 import pytest
+from django.test import override_settings
+from freezegun import freeze_time
+from requests.exceptions import ReadTimeout
 
-from applications.enums import YouthApplicationStatus
+from applications.enums import VtjTestCase, YouthApplicationStatus
 from applications.models import YouthApplication
 from applications.tests.conftest import *  # noqa
 from common.tests.factories import (
@@ -13,6 +16,7 @@ from common.tests.factories import (
     AwaitingManualProcessingYouthApplicationFactory,
     InactiveNeedAdditionalInfoYouthApplicationFactory,
     InactiveNoNeedAdditionalInfoYouthApplicationFactory,
+    InactiveVtjTestCaseYouthApplicationFactory,
     InactiveYouthApplicationFactory,
     RejectableYouthApplicationFactory,
     RejectedYouthApplicationFactory,
@@ -22,6 +26,8 @@ from common.tests.factories import (
 )
 
 
+@freeze_time()
+@override_settings(DISABLE_VTJ=False, NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "youth_application_factory,expected_statuses,expected_attribute_values",
@@ -76,7 +82,7 @@ from common.tests.factories import (
         (
             AwaitingManualProcessingYouthApplicationFactory,
             [YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value],
-            {"need_additional_info": False},
+            {},
         ),
         (
             InactiveNoNeedAdditionalInfoYouthApplicationFactory,
@@ -88,9 +94,14 @@ from common.tests.factories import (
             [YouthApplicationStatus.SUBMITTED.value],
             {"need_additional_info": True},
         ),
+        (
+            InactiveVtjTestCaseYouthApplicationFactory,
+            [YouthApplicationStatus.SUBMITTED.value],
+            {},
+        ),
     ],
 )
-def test_youth_application_factory(
+def test_youth_application_factory(  # noqa: C901
     make_youth_application_activation_link_unexpired,
     youth_application_factory,
     expected_statuses,
@@ -133,6 +144,37 @@ def test_youth_application_factory(
             assert youth_application.need_additional_info
             assert not youth_application.can_set_additional_info
             assert youth_application.has_additional_info
+
+        # Test VTJ test cases
+        if youth_application.is_vtj_test_case:
+            vtj_test_case = youth_application.vtj_test_case
+
+            if vtj_test_case == VtjTestCase.NO_ANSWER:
+                with pytest.raises(ReadTimeout):
+                    youth_application.encrypted_vtj_json = (
+                        youth_application.fetch_vtj_json()
+                    )
+            else:
+                youth_application.encrypted_vtj_json = (
+                    youth_application.fetch_vtj_json()
+                )
+
+            if vtj_test_case == VtjTestCase.DEAD:
+                assert youth_application.is_applicant_dead_according_to_vtj
+            elif vtj_test_case == VtjTestCase.WRONG_LAST_NAME:
+                assert not youth_application.is_last_name_as_in_vtj
+            elif vtj_test_case == VtjTestCase.NOT_FOUND:
+                assert (
+                    not youth_application.is_social_security_number_valid_according_to_vtj
+                )
+            elif vtj_test_case == VtjTestCase.NO_ANSWER:
+                assert youth_application.encrypted_vtj_json in [None, ""]
+            elif vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI:
+                assert youth_application.vtj_home_municipality == "Helsinki"
+                assert youth_application.is_helsinkian
+            elif vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_UTSJOKI:
+                assert youth_application.vtj_home_municipality == "Utsjoki"
+                assert not youth_application.is_helsinkian
 
         # If additional info has been provided it must have been initially needed
         if youth_application.has_additional_info:
