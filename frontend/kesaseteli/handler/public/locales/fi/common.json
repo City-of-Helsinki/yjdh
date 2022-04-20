@@ -25,9 +25,6 @@
       "text": " Yritä myöhemmin uudelleen"
     }
   },
-  "vtj": {
-    "title": "Tiedot väestötietojärjestelmästä"
-  },
   "handlerApplication": {
     "title": "Hakemuksen tiedot",
     "name": "Nimi",
@@ -49,6 +46,22 @@
       "additional_information_requested": "Nuori ei ole vielä täyttänyt lisätietohakemusta",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty"
+    },
+    "vtjInfo": {
+      "title": "Tiedot väestötietojärjestelmästä",
+      "name": "Nimi",
+      "ssn": "Henkilötunnus",
+      "address": "Osoite",
+      "showRawData": "Näytä kaikki raakadata"
+    },
+    "vtjException": {
+      "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella!",
+      "differentLastName": "Sukunimi poikkeaa hakemukselle syötetystä sukunimestä",
+      "notInTargetAgeGroup": "Henkilö ei kuulu iän puolesta kohderyhmään: ({{ age }}-vuotias)",
+      "addressNotFound": "Osoitetietoja ei löytynyt!",
+      "differentPostCode": "Postikoodi poikkeaa hakemukselle syötetystä postikoodista",
+      "outsideHelsinki": "Henkilö ei asu Helsingissä",
+      "isDead": "Henkilö on kuollut!"
     }
   },
   "reasons": {

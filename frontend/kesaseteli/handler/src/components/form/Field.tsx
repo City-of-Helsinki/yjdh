@@ -9,9 +9,16 @@ type Props = GridCellProps & {
   id?: string;
   type?: string;
   value?: string;
+  children?: React.ReactNode;
 };
 
-const Field: React.FC<Props> = ({ id, type, value, ...gridCellProps }) => {
+const Field: React.FC<Props> = ({
+  id,
+  type,
+  value,
+  children,
+  ...gridCellProps
+}) => {
   const { t } = useTranslation();
   const dataTestId = type ?? id;
   return (
@@ -25,6 +32,7 @@ const Field: React.FC<Props> = ({ id, type, value, ...gridCellProps }) => {
         </>
       )}
       {value || '-'}
+      {children}
     </$GridCell>
   );
 };
@@ -33,6 +41,7 @@ Field.defaultProps = {
   id: undefined,
   type: undefined,
   value: '-',
+  children: null,
 };
 
 export default Field;

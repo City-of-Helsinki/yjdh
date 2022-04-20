@@ -1,8 +1,17 @@
 import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
-import { convertToBackendDateFormat } from '@frontend/shared/src/utils/date.utils';
+import {
+  convertDateFormat,
+  convertToBackendDateFormat,
+  convertToUIDateAndTimeFormat,
+  DATE_FORMATS,
+} from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
+import VtjAddress from 'kesaseteli-shared/types/vtj-address';
+import VtjData from 'kesaseteli-shared/types/vtj-data';
+import merge from 'lodash/merge';
+import DeepPartial from 'shared/types/common/deep-partial';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -95,12 +104,12 @@ export const fakeSchools: string[] = [
 ];
 
 export const fakeYouthApplication = (
-  override?: Partial<YouthApplication>
+  override?: DeepPartial<YouthApplication>
 ): YouthApplication => {
   const { isUnlistedSchool } = { isUnlistedSchool: false, ...override };
   return {
-    first_name: faker.name.findName(),
-    last_name: faker.name.findName(),
+    first_name: faker.name.firstName(),
+    last_name: faker.name.lastName(),
     social_security_number: FinnishSSN.createWithAge(
       faker.datatype.number({ min: 15, max: 16 })
     ),
@@ -116,39 +125,140 @@ export const fakeYouthApplication = (
   };
 };
 export const fakeCreatedYouthApplication = (
-  override?: Partial<CreatedYouthApplication>
-): CreatedYouthApplication => ({
-  id: faker.datatype.uuid(),
-  status: 'submitted',
-  ...fakeYouthApplication(override),
-  ...override,
-});
+  override?: DeepPartial<CreatedYouthApplication>
+): CreatedYouthApplication =>
+  merge(
+    {
+      id: faker.datatype.uuid(),
+      status: 'submitted',
+      ...fakeYouthApplication(override),
+    },
+    override
+  );
 
 export const fakeAdditionalInfoApplication = (
-  override?: Partial<AdditionalInfoApplication>
-): AdditionalInfoApplication => ({
-  id: faker.datatype.uuid(),
-  additional_info_user_reasons: getRandomSubArray(ADDITIONAL_INFO_REASON_TYPE),
-  additional_info_description: faker.lorem.paragraph(1),
-  additional_info_attachments: [],
-  language: override?.language ?? DEFAULT_LANGUAGE,
-  ...override,
-});
+  override?: DeepPartial<AdditionalInfoApplication>
+): AdditionalInfoApplication =>
+  merge(
+    {
+      id: faker.datatype.uuid(),
+      additional_info_user_reasons: getRandomSubArray(
+        ADDITIONAL_INFO_REASON_TYPE
+      ),
+      additional_info_description: faker.lorem.paragraph(1),
+      additional_info_attachments: [],
+      language: override?.language ?? DEFAULT_LANGUAGE,
+    },
+    override
+  );
+
+export const fakeValidVtjAddress = (
+  override?: DeepPartial<VtjAddress>
+): VtjAddress =>
+  merge(
+    {
+      LahiosoiteS: faker.address.streetAddress(),
+      Postinumero: String(faker.datatype.number(99_999)),
+      PostitoimipaikkaS: faker.address.cityName(),
+      AsuminenAlkupvm: convertDateFormat(faker.date.past(), DATE_FORMATS.VTJ),
+      AsuminenLoppupvm: convertDateFormat(
+        faker.date.future(),
+        DATE_FORMATS.VTJ
+      ),
+    },
+    override
+  );
+
+export const fakeExpiredVtjAddress = (
+  override?: DeepPartial<VtjAddress>
+): VtjAddress => {
+  const pastDate = faker.date.past();
+  return fakeValidVtjAddress(
+    merge(override, {
+      AsuminenAlkupvm: convertDateFormat(
+        faker.date.past(1, pastDate),
+        DATE_FORMATS.VTJ
+      ),
+      AsuminenLoppupvm: convertDateFormat(pastDate, DATE_FORMATS.VTJ),
+    })
+  );
+};
+export const fakeFutureVtjAddress = (
+  override?: DeepPartial<VtjAddress>
+): VtjAddress => {
+  const futureDate = faker.date.future();
+  return fakeValidVtjAddress(
+    merge(override, {
+      AsuminenAlkupvm: convertDateFormat(futureDate, DATE_FORMATS.VTJ),
+      AsuminenLoppupvm: convertDateFormat(
+        faker.date.future(1, futureDate),
+        DATE_FORMATS.VTJ
+      ),
+    })
+  );
+};
+
+export const fakeVtjData = (
+  override?: DeepPartial<ActivatedYouthApplication>
+): VtjData =>
+  merge<VtjData, DeepPartial<VtjData>>(
+    {
+      Asiakasinfo: {
+        InfoS: convertToUIDateAndTimeFormat(faker.date.recent()),
+      },
+      Henkilo: {
+        Henkilotunnus: {
+          '@voimassaolokoodi': '1',
+          '#text':
+            override?.social_security_number ??
+            FinnishSSN.createWithAge(
+              faker.datatype.number({ min: 15, max: 16 })
+            ),
+        },
+        NykyinenSukunimi: {
+          Sukunimi: override?.last_name ?? faker.name.lastName(),
+        },
+        NykyisetEtunimet: {
+          Etunimet: override?.first_name ?? faker.name.firstName(),
+        },
+        VakinainenKotimainenLahiosoite: fakeValidVtjAddress({
+          Postinumero: override?.postcode,
+          PostitoimipaikkaS: 'Helsinki',
+          ...override,
+        }),
+        TilapainenKotimainenLahiosoite: fakeValidVtjAddress({
+          Postinumero: override?.postcode,
+          PostitoimipaikkaS: 'Helsinki',
+          ...override,
+        }),
+        Kuolintiedot: {
+          Kuollut: null,
+        },
+      },
+    },
+    override?.vtj_data
+  );
 
 export const fakeActivatedYouthApplication = (
-  override?: Partial<ActivatedYouthApplication>
-): ActivatedYouthApplication => ({
-  ...fakeCreatedYouthApplication(override),
-  ...(override?.status === 'additional_information_provided' &&
-    fakeAdditionalInfoApplication(override)),
-  ...override,
-  receipt_confirmed_at: convertToBackendDateFormat(
-    override?.receipt_confirmed_at ?? faker.date.past()
-  ),
-  additional_info_provided_at:
-    override?.status === 'additional_information_provided'
-      ? convertToBackendDateFormat(
-          override?.additional_info_provided_at ?? faker.date.past()
-        )
-      : undefined,
-});
+  override?: DeepPartial<ActivatedYouthApplication>
+): ActivatedYouthApplication => {
+  const application = merge(fakeCreatedYouthApplication(override), override);
+  return merge(
+    application,
+    {
+      ...(override?.status === 'additional_information_provided' &&
+        fakeAdditionalInfoApplication(override)),
+      receipt_confirmed_at: convertToBackendDateFormat(
+        override?.receipt_confirmed_at ?? faker.date.recent()
+      ),
+      additional_info_provided_at:
+        override?.status === 'additional_information_provided'
+          ? convertToBackendDateFormat(
+              override?.additional_info_provided_at ?? faker.date.past()
+            )
+          : undefined,
+      vtj_data: fakeVtjData(application),
+    },
+    override
+  );
+};

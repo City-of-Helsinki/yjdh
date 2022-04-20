@@ -1,13 +1,14 @@
 type CommonAccordionProps = React.PropsWithChildren<{
   border?: false;
   card?: false;
-  heading?: React.ReactElement;
+  heading?: React.ReactNode;
   headingLevel?: number;
   headerBackgroundColor?: string;
   id: string;
   initiallyOpen?: boolean;
-  onToggle: (isOpen: boolean) => void;
+  onToggle?: (isOpen: boolean) => void;
   hasError?: boolean;
+  style?: React.CSSProperties;
 }>;
 
 type CardAccordionProps = Omit<CommonAccordionProps, 'card' | 'border'> & {

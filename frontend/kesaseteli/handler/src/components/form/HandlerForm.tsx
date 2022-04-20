@@ -88,8 +88,8 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         id="receipt_confirmed_at"
         value={convertToUIDateAndTimeFormat(receipt_confirmed_at)}
       />
-      <$GridCell $colSpan={1} $rowSpan={additionalInfoProvided ? 11 : 7}>
-        <VtjInfo />
+      <$GridCell $colSpan={1} $rowSpan={additionalInfoProvided ? 12 : 8}>
+        <VtjInfo application={application} />
       </$GridCell>
       <Field type="name" value={`${first_name} ${last_name}`} />
       <Field type="social_security_number" value={social_security_number} />
@@ -135,9 +135,9 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         </>
       )}
       {waitingForHandlerAction ? (
-        <ActionButtons id={id} />
+        <ActionButtons id={id} $rowSpan={additionalInfoProvided ? 12 : 8} />
       ) : (
-        <$GridCell $colSpan={2}>
+        <$GridCell>
           <$Notification
             data-testid={`status-notification-${statusId}`}
             label={t(`common:handlerApplication.notification.${statusId}`)}

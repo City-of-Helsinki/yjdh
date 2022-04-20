@@ -11,8 +11,8 @@ const masked = (str?: string): string => '*'.repeat(str?.length ?? 0);
 describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
   it('masks youth application', () => {
     const youthApplication = {
-      first_name: faker.name.findName(),
-      last_name: faker.name.findName(),
+      first_name: faker.name.firstName(),
+      last_name: faker.name.lastName(),
       social_security_number: FinnishSSN.createWithAge(
         faker.datatype.number({ min: 15, max: 16 })
       ),
