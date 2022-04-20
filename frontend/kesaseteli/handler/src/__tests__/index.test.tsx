@@ -26,6 +26,7 @@ import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
   it('should not violate accessibility', async () => {
     const {

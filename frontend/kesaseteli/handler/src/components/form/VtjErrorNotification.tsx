@@ -1,8 +1,9 @@
-import React from 'react';
-import $VtjException from './VtjErrorNotification.sc';
+import { NotificationProps } from 'hds-react';
 import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
 import { useTranslation } from 'next-i18next';
-import { NotificationProps } from 'hds-react';
+import React from 'react';
+
+import $VtjException from './VtjErrorNotification.sc';
 
 type Props = {
   reason: VtjExceptionType;

@@ -10,7 +10,6 @@ import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import { isWithinInterval } from 'shared/utils/date.utils';
-import VtjData from 'kesaseteli-shared/types/vtj-data';
 
 type Props = {
   application: ActivatedYouthApplication;
@@ -24,7 +23,7 @@ const addressIsValid = (address: VtjAddress): boolean =>
 
 const VtjInfo: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
-  const { vtj_data, social_security_number } = application;
+  const { vtj_data, social_security_number, last_name, postcode } = application;
 
   // TODO: Remove example data when backend part is implemented
 
@@ -166,7 +165,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
   const fullName = `${vtj_data.Henkilo.NykyisetEtunimet.Etunimet} ${vtj_data.Henkilo.NykyinenSukunimi.Sukunimi}`;
   const differentLastName =
     vtj_data.Henkilo.NykyinenSukunimi.Sukunimi.toLowerCase() !==
-    application.last_name.toLowerCase();
+    last_name.toLowerCase();
 
   const socialSecurityNumber = vtj_data.Henkilo.Henkilotunnus['#text'] ?? '-';
 
@@ -188,7 +187,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
     ? `${LahiosoiteS} ${Postinumero} ${PostitoimipaikkaS}`
     : '-';
   const outsideHelsinki = PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
-  const differentPostCode = Postinumero !== application.postcode;
+  const differentPostCode = Postinumero !== postcode;
 
   const { ageInYears: age } = FinnishSSN.parse(
     vtj_data.Henkilo.Henkilotunnus['#text']

@@ -1,5 +1,6 @@
+import Nullable from '@frontend/shared/src/types/common/nullable';
+
 import VtjAddress from './vtj-address';
-import Nullable from 'shared/types/common/nullable';
 
 type VtjData = Nullable<{
   Asiakasinfo: {

@@ -1,6 +1,4 @@
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-
-import VtjData from 'kesaseteli-shared/types/vtj-data';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Accordion from 'shared/components/accordion/Accordion';
@@ -17,12 +15,13 @@ const VtjRawDataAccordion: React.FC<Props> = ({ data }) => {
     () =>
       JSON.stringify(
         data,
-        (key, value) => (key.startsWith('@') || !value ? undefined : value),
+        (key: string, value: unknown) =>
+          key.startsWith('@') || !value ? undefined : value,
         2
       ),
     [data]
   );
-
+  // eslint-disable no-secrets/no-secrets
   return (
     <Accordion
       id="vtj-info-accordion"
@@ -47,6 +46,7 @@ const VtjRawDataAccordion: React.FC<Props> = ({ data }) => {
       </pre>
     </Accordion>
   );
+  // eslint-enable no-secrets/no-secrets
 };
 
 export default VtjRawDataAccordion;

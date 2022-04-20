@@ -5,12 +5,19 @@ import {
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
 import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/get-handler-translations-api';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
+import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
-import { screen, userEvent, within } from 'shared/__tests__/utils/test-utils';
-import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
+import {
+  screen,
+  userEvent,
+  within,
+  BoundFunctions,
+  queries,
+} from 'shared/__tests__/utils/test-utils';
 
-const withinVtjInfo = (): ReturnType<typeof within> =>
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const withinVtjInfo = (): BoundFunctions<typeof queries> =>
   within(screen.getByTestId('vtj-info'));
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types

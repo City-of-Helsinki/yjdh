@@ -1,5 +1,6 @@
 import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
+import DeepPartial from '@frontend/shared/src/types/common/deep-partial';
 import {
   convertDateFormat,
   convertToBackendDateFormat,
@@ -8,10 +9,7 @@ import {
 } from '@frontend/shared/src/utils/date.utils';
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
-import VtjAddress from 'kesaseteli-shared/types/vtj-address';
-import VtjData from 'kesaseteli-shared/types/vtj-data';
 import merge from 'lodash/merge';
-import DeepPartial from 'shared/types/common/deep-partial';
 
 /* These are relatively resolved paths because fake-objects is used from
  *  browser-tests which do not support tsconfig
@@ -21,6 +19,8 @@ import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-rea
 import ActivatedYouthApplication from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
 import CreatedYouthApplication from '../../types/created-youth-application';
+import VtjAddress from '../../types/vtj-address';
+import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
 
 export const fakeSchools: string[] = [

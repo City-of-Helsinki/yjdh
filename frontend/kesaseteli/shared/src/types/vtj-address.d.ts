@@ -1,4 +1,4 @@
-import Nullable from 'shared/types/common/nullable';
+import Nullable from '@frontend/shared/src/types/common/nullable';
 
 type VtjAddress = Nullable<{
   LahiosoiteS: string;

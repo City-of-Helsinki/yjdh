@@ -207,8 +207,8 @@ export const isWithinInterval = (
   currDate: AnyDate,
   { startDate, endDate }: { startDate?: AnyDate; endDate?: AnyDate }
 ): boolean => {
-  const curr = parseDate(currDate);
-  const start = parseDate(startDate);
-  const end = parseDate(endDate);
+  const curr = parseDate(currDate) ?? 0;
+  const start = parseDate(startDate) ?? 0;
+  const end = parseDate(endDate) ?? 0;
   return (!start || start <= curr) && (curr <= end || !end);
 };
