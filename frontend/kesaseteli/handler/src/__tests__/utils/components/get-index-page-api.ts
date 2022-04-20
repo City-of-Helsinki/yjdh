@@ -9,11 +9,11 @@ import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import {
+  BoundFunctions,
+  queries,
   screen,
   userEvent,
   within,
-  BoundFunctions,
-  queries,
 } from 'shared/__tests__/utils/test-utils';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

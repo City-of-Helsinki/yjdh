@@ -83,7 +83,7 @@ describe('dates', () => {
     });
   });
 
-  describe.only('Date conversions', () => {
+  describe('Date conversions', () => {
     it('should convert date object to given format', () => {
       const date = new Date(2020, 0, 1, 15, 10, 25);
       expect(convertToBackendDateFormat(date)).toBe('2020-01-01');
@@ -134,7 +134,7 @@ describe('dates', () => {
     });
   });
 
-  describe.only('isWithinDates when', () => {
+  describe('isWithinDates when', () => {
     const dateObj = new Date(2020, 5, 5, 15, 10, 25);
     for (const currDate of [
       dateObj,
