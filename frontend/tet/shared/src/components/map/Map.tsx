@@ -1,4 +1,6 @@
 import { Link } from 'hds-react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { LatLngExpression } from 'leaflet';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -13,7 +15,6 @@ import {
   $Title,
 } from 'tet-shared/components/map/Map.sc';
 import TetPosting from 'tet-shared/types/tetposting';
-import { LatLngExpression } from 'leaflet';
 
 type Props = {
   postings: TetPosting[];

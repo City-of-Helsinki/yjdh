@@ -12,7 +12,6 @@ const Postings: React.FC = () => {
   const { isLoading, data, error } = useGetPostings(params);
 
   const postings = () => {
-    const fetchNextPage = () => {};
     const hasNextPage = false;
     if (isLoading) {
       return <PageLoadingSpinner />;
@@ -24,7 +23,7 @@ const Postings: React.FC = () => {
     }
 
     if (data) {
-      return <JobPostingList postings={data} onShowMore={() => fetchNextPage()} hasNextPage={hasNextPage} />;
+      return <JobPostingList postings={data} hasNextPage={hasNextPage} />;
     } else {
       //TODO
       return <div>Ei hakutuloksia</div>;
