@@ -55,7 +55,7 @@
       "showRawData": "Näytä kaikki raakadata"
     },
     "vtjException": {
-      "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella!",
+      "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella {{ social_security_number }}!",
       "differentLastName": "Sukunimi poikkeaa hakemukselle syötetystä sukunimestä",
       "notInTargetAgeGroup": "Henkilö ei kuulu iän puolesta kohderyhmään: ({{ age }}-vuotias)",
       "addressNotFound": "Osoitetietoja ei löytynyt!",

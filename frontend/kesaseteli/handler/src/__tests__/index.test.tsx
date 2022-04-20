@@ -124,8 +124,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
   describe('vtj data', () => {
     it(`shows vtjData without errors`, async () => {
       const age = 15;
+      const social_security_number = FinnishSSN.createWithAge(age);
       const application = fakeActivatedYouthApplication({
-        social_security_number: FinnishSSN.createWithAge(age),
+        social_security_number,
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
@@ -153,12 +154,15 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       for (const exception of VTJ_EXCEPTIONS) {
         await indexPageApi.expectations.vtjErrorMessageIsNotPresent(exception, {
           age,
+          social_security_number,
         });
       }
     });
 
     it(`shows error when vtjData is not found`, async () => {
+      const social_security_number = FinnishSSN.createWithAge(16);
       const application = fakeActivatedYouthApplication({
+        social_security_number,
         vtj_data: { Henkilo: { Henkilotunnus: { '@voimassaolokoodi': '0' } } },
       });
       expectToGetYouthApplication(application);
@@ -168,7 +172,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const indexPageApi = await getIndexPageApi(application);
       await indexPageApi.expectations.pageIsLoaded();
 
-      await indexPageApi.expectations.vtjErrorMessageIsPresent('notFound');
+      await indexPageApi.expectations.vtjErrorMessageIsPresent('notFound', {
+        social_security_number,
+      });
     });
 
     it(`shows warning when vtjData has different last name`, async () => {

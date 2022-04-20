@@ -10,6 +10,7 @@ import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Notification } from 'shared/components/notification/Notification.sc';
 import { isWithinInterval } from 'shared/utils/date.utils';
+import VtjData from 'kesaseteli-shared/types/vtj-data';
 
 type Props = {
   application: ActivatedYouthApplication;
@@ -23,7 +24,141 @@ const addressIsValid = (address: VtjAddress): boolean =>
 
 const VtjInfo: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
-  const { vtj_data } = application;
+  const { vtj_data, social_security_number } = application;
+
+  // TODO: Remove example data when backend part is implemented
+
+  // const vtj_data: VtjData = JSON.parse(`{
+  //   "@xmlns": "http://xml.vrk.fi/schema/vtjkysely",
+  //   "@xmlns:vtj": "http://xml.vrk.fi/schema/vtj/henkilotiedot/1",
+  //   "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+  //   "@sanomatunnus": "PERUSSANOMA 1",
+  //   "@tietojenPoimintaaika": "20220407090956",
+  //   "@versio": "1.0",
+  //   "@xsi:schemaLocation": "http://xml.vrk.fi/schema/vtjkysely PERUSSANOMA 1.xsd",
+  //   "Asiakasinfo": {
+  //     "InfoS": "07.04.2022 09:09",
+  //     "InfoR": "07.04.2022 09:09",
+  //     "InfoE": "07.04.2022 09:09"
+  //   },
+  //   "Paluukoodi": {
+  //     "@koodi": "0000",
+  //     "#text": "Haku onnistui"
+  //   },
+  //   "Hakuperusteet": {
+  //     "Henkilotunnus": {
+  //       "@hakuperustePaluukoodi": "1",
+  //       "@hakuperusteTekstiE": "Found",
+  //       "@hakuperusteTekstiR": "Hittades",
+  //       "@hakuperusteTekstiS": "Löytyi",
+  //       "#text": "010170-999R"
+  //     }
+  //   },
+  //   "Henkilo": {
+  //     "Henkilotunnus": {
+  //       "@voimassaolokoodi": "1",
+  //       "#text": "010170-999R"
+  //     },
+  //     "NykyinenSukunimi": {
+  //       "Sukunimi": "Äyrämö"
+  //     },
+  //     "NykyisetEtunimet": {
+  //       "Etunimet": "Tero Testi"
+  //     },
+  //     "VakinainenKotimainenLahiosoite": {
+  //       "LahiosoiteS": "Kauppa Puistikko 6 B 15",
+  //       "LahiosoiteR": "Handels Esplanaden 6 B 15",
+  //       "Postinumero": "65100",
+  //       "PostitoimipaikkaS": "VAASA",
+  //       "PostitoimipaikkaR": "VASA",
+  //       "AsuminenAlkupvm": "20260515",
+  //       "AsuminenLoppupvm": null
+  //     },
+  //     "VakinainenAsuinpaikka": {
+  //       "Asuinpaikantunnus": "90000009871B015 "
+  //     },
+  //     "VakinainenUlkomainenLahiosoite": {
+  //       "UlkomainenLahiosoite": null,
+  //       "UlkomainenPaikkakuntaJaValtioS": null,
+  //       "UlkomainenPaikkakuntaJaValtioR": null,
+  //       "UlkomainenPaikkakuntaJaValtioSelvakielinen": null,
+  //       "Valtiokoodi3": null,
+  //       "AsuminenAlkupvm": null,
+  //       "AsuminenLoppupvm": null
+  //     },
+  //     "TilapainenKotimainenLahiosoite": {
+  //       "LahiosoiteS": "Sepänkatu 11 A 2",
+  //       "LahiosoiteR": null,
+  //       "Postinumero": "70100",
+  //       "PostitoimipaikkaS": "KUOPIO",
+  //       "PostitoimipaikkaR": "KUOPIO",
+  //       "AsuminenAlkupvm": "20181118",
+  //       "AsuminenLoppupvm": "20200601"
+  //     },
+  //     "TilapainenUlkomainenLahiosoite": {
+  //       "UlkomainenLahiosoite": null,
+  //       "UlkomainenPaikkakuntaJaValtioS": null,
+  //       "UlkomainenPaikkakuntaJaValtioR": null,
+  //       "UlkomainenPaikkakuntaJaValtioSelvakielinen": null,
+  //       "Valtiokoodi3": null,
+  //       "AsuminenAlkupvm": null,
+  //       "AsuminenLoppupvm": null
+  //     },
+  //     "KotimainenPostiosoite": {
+  //       "PostiosoiteS": "PL 808",
+  //       "PostiosoiteR": "PB 808",
+  //       "Postinumero": "70101",
+  //       "PostitoimipaikkaS": "KUOPIO",
+  //       "PostitoimipaikkaR": "KUOPIO",
+  //       "PostiosoiteAlkupvm": "20181201",
+  //       "PostiosoiteLoppupvm": null
+  //     },
+  //     "UlkomainenPostiosoite": {
+  //       "UlkomainenLahiosoite": null,
+  //       "UlkomainenPaikkakunta": null,
+  //       "Valtiokoodi3": null,
+  //       "ValtioS": null,
+  //       "ValtioR": null,
+  //       "ValtioSelvakielinen": null,
+  //       "PostiosoiteAlkupvm": null,
+  //       "PostiosoiteLoppupvm": null
+  //     },
+  //     "Kotikunta": {
+  //       "Kuntanumero": "905",
+  //       "KuntaS": "Vaasa",
+  //       "KuntaR": "Vasa",
+  //       "KuntasuhdeAlkupvm": "20060515"
+  //     },
+  //     "Kuolintiedot": {
+  //       "Kuollut": "1",
+  //       "Kuolinpvm": null
+  //     },
+  //     "Kuolleeksijulistamistiedot": {
+  //       "Kuolleeksijulistamispvm": null
+  //     },
+  //     "Aidinkieli": {
+  //       "Kielikoodi": "da",
+  //       "KieliS": "tanska",
+  //       "KieliR": "danska",
+  //       "KieliSelvakielinen": null
+  //     },
+  //     "Sukupuoli": {
+  //       "Sukupuolikoodi": "1",
+  //       "SukupuoliS": "Mies",
+  //       "SukupuoliR": "Man"
+  //     }
+  //   }
+  // }`);
+
+  if (!vtj_data) {
+    return (
+      <VtjErrorNotification
+        reason="notFound"
+        type="error"
+        params={{ social_security_number }}
+      />
+    );
+  }
 
   const notFound =
     vtj_data?.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
@@ -67,7 +202,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
       {!notFound && (
         <$Notification
           label={t(`common:handlerApplication.vtjInfo.title`)}
-          type={notFound ? 'alert' : 'info'}
+          type="info"
         >
           <FormSection columns={1} withoutDivider>
             <Field id="vtjInfo.providedAt" value={providedAt} />
@@ -97,7 +232,13 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
           </FormSection>
         </$Notification>
       )}
-      {notFound && <VtjErrorNotification reason="notFound" type="error" />}
+      {notFound && (
+        <VtjErrorNotification
+          reason="notFound"
+          type="error"
+          params={{ social_security_number }}
+        />
+      )}
       {isDead && <VtjErrorNotification reason="isDead" type="error" />}
     </span>
   );
