@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { IconCalendarClock, IconInfoCircle, IconLocation } from 'hds-react';
+import dynamic from 'next/dynamic';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useTranslation } from 'next-i18next';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -8,11 +9,10 @@ import Container from 'shared/components/container/Container';
 import {
   $Body,
   $ContentWrapper,
+  $Hr,
   $InfoWrapper,
   $Title,
-  $Hr,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
-import dynamic from 'next/dynamic';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import TetPosting from 'tet-shared/types/tetposting';
 
@@ -43,7 +43,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
           <$Hr />
-          <Map postings={[posting]} zoom={12} zoomToPosition={true} />
+          <Map postings={[posting]} zoom={12} zoomToPosition />
         </$Body>
         <$InfoWrapper>
           <PostingInfoItem

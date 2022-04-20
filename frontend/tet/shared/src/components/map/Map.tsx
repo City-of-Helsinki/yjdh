@@ -1,16 +1,19 @@
-import React from 'react';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import TetPosting from 'tet-shared/types/tetposting';
-import { useTranslation } from 'next-i18next';
-import {
-  $MapWrapper,
-  $Title,
-  $Subtitle,
-  $Date,
-  $Address,
-} from 'tet-shared/components/map/Map.sc';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { Link } from 'hds-react';
+import { useTranslation } from 'next-i18next';
+import React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import MarkerClusterGroup from 'react-leaflet-markercluster';
+import {
+  $Address,
+  $Date,
+  $MapWrapper,
+  $Subtitle,
+  $Title,
+} from 'tet-shared/components/map/Map.sc';
+import TetPosting from 'tet-shared/types/tetposting';
+import { LatLngExpression } from 'leaflet';
 
 type Props = {
   postings: TetPosting[];
@@ -19,6 +22,19 @@ type Props = {
   zoom?: number;
   zoomToPosition?: boolean;
   showLink?: boolean;
+};
+const getDateString = (posting: TetPosting): string =>
+  `${posting.start_date} - ${posting.end_date ?? ''}`;
+
+const getAddressString = (posting: TetPosting): string => {
+  const street_address = posting.location.street_address
+    ? `, ${posting.location.street_address}`
+    : '';
+  const postal_code = posting.location.postal_code
+    ? `, ${posting.location.postal_code}`
+    : '';
+  const city = posting.location.city ? `, ${posting.location.city}` : '';
+  return posting.location.name + street_address + postal_code + city;
 };
 
 const Map: React.FC<Props> = ({
@@ -30,19 +46,6 @@ const Map: React.FC<Props> = ({
   showLink,
 }) => {
   const { t } = useTranslation();
-  const getDateString = (posting: TetPosting): string =>
-    `${posting.start_date} - ${posting.end_date ?? ''}`;
-
-  const getAddressString = (posting: TetPosting): string => {
-    const street_address = posting.location.street_address
-      ? `, ${posting.location.street_address}`
-      : '';
-    const postal_code = posting.location.postal_code
-      ? `, ${posting.location.postal_code}`
-      : '';
-    const city = posting.location.city ? `, ${posting.location.city}` : '';
-    return posting.location.name + street_address + postal_code + city;
-  };
 
   const centerPosition =
     postings.length === 1 && zoomToPosition
@@ -55,9 +58,9 @@ const Map: React.FC<Props> = ({
   return (
     <$MapWrapper>
       <MapContainer
-        center={centerPosition}
+        center={centerPosition as LatLngExpression}
         zoom={zoom}
-        style={{ height: height }}
+        style={{ height }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -92,7 +95,7 @@ const Map: React.FC<Props> = ({
 };
 
 Map.defaultProps = {
-  center: [60.1699, 24.9384], //Helsinki location
+  center: [60.1699, 24.9384], // Helsinki location
   height: '400px',
   zoom: 11,
   zoomToPosition: false,

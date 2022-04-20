@@ -1,7 +1,7 @@
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { Language } from 'shared/i18n/i18n';
 import { OptionType } from 'tet-shared/types/classification';
 import { IdObject, Place } from 'tet-shared/types/linkedevents';
-import { Language } from 'shared/i18n/i18n';
 
 // By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)
 export const keywordsDataSource =
