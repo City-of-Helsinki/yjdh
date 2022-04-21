@@ -16,7 +16,6 @@ import {
   within,
 } from 'shared/__tests__/utils/test-utils';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const withinVtjInfo = (): BoundFunctions<typeof queries> =>
   within(screen.getByTestId('vtj-info'));
 
@@ -117,8 +116,10 @@ const getIndexPageApi = async (
     ): Promise<void> => {
       expect(
         screen.queryByText(
-          translations.handlerApplication.vtjException[key],
-          params ?? {}
+          replaced(
+            translations.handlerApplication.vtjException[key],
+            params ?? {}
+          )
         )
       ).not.toBeInTheDocument();
     },
@@ -146,8 +147,7 @@ const getIndexPageApi = async (
 
     statusNotificationIsPresent: async (
       status: keyof typeof translations.handlerApplication.notification
-      // eslint-disable-next-line consistent-return
-    ): Promise<HTMLElement | undefined> =>
+    ): Promise<HTMLElement> =>
       screen.findByRole('heading', {
         name: translations.handlerApplication.notification[status],
       }),

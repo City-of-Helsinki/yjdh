@@ -135,9 +135,8 @@ describe('dates', () => {
   });
 
   describe('isWithinDates when', () => {
-    const dateObj = new Date(2020, 5, 5, 15, 10, 25);
     for (const currDate of [
-      dateObj,
+      new Date(2020, 5, 5, 15, 10, 25),
       '2020-06-05',
       '20200605',
       '5.6.2020',
