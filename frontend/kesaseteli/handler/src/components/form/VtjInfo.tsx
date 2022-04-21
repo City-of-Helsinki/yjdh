@@ -207,7 +207,10 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
             <Field id="vtjInfo.providedAt" value={providedAt} />
             <Field type="vtjInfo.name" value={fullName}>
               {differentLastName && (
-                <VtjErrorMessage reason="differentLastName" />
+                <VtjErrorMessage
+                  reason="differentLastName"
+                  params={{ last_name }}
+                />
               )}
             </Field>
             <Field type="vtjInfo.ssn" value={socialSecurityNumber}>
@@ -221,7 +224,10 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
             <Field type="vtjInfo.address" value={fullAddress}>
               {addressNotFound && <VtjErrorMessage reason="addressNotFound" />}
               {!addressNotFound && differentPostCode && (
-                <VtjErrorMessage reason="differentPostCode" />
+                <VtjErrorMessage
+                  reason="differentPostCode"
+                  params={{ postcode }}
+                />
               )}
               {!addressNotFound && outsideHelsinki && (
                 <VtjErrorMessage reason="outsideHelsinki" />

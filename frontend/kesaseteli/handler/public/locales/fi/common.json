@@ -55,11 +55,11 @@
       "showRawData": "Näytä kaikki raakadata"
     },
     "vtjException": {
-      "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella {{ social_security_number }}!",
-      "differentLastName": "Sukunimi poikkeaa hakemukselle syötetystä sukunimestä",
-      "notInTargetAgeGroup": "Henkilö ei kuulu iän puolesta kohderyhmään: ({{ age }}-vuotias)",
+      "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella: {{ social_security_number }}!",
+      "differentLastName": "Sukunimi poikkeaa hakemukselle syötetystä sukunimestä ({{ last_name }})",
+      "notInTargetAgeGroup": "Henkilö ei kuulu iän puolesta kohderyhmään ({{ age }}-vuotias)",
       "addressNotFound": "Osoitetietoja ei löytynyt!",
-      "differentPostCode": "Postikoodi poikkeaa hakemukselle syötetystä postikoodista",
+      "differentPostCode": "Postikoodi poikkeaa hakemukselle syötetystä postikoodista ({{ postcode }})",
       "outsideHelsinki": "Henkilö ei asu Helsingissä",
       "isDead": "Henkilö on kuollut!"
     }

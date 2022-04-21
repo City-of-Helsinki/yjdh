@@ -129,6 +129,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const application = fakeActivatedYouthApplication({
         social_security_number,
       });
+      const { last_name, postcode } = application;
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
         query: { id: application.id },
@@ -155,7 +156,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       for (const exception of VTJ_EXCEPTIONS) {
         await indexPageApi.expectations.vtjErrorMessageIsNotPresent(exception, {
           age,
+          last_name,
           social_security_number,
+          postcode,
         });
       }
     });
@@ -191,7 +194,8 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       await indexPageApi.expectations.pageIsLoaded();
 
       await indexPageApi.expectations.vtjErrorMessageIsPresent(
-        'differentLastName'
+        'differentLastName',
+        { last_name: 'Nieminen' }
       );
     });
 
@@ -304,7 +308,8 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const indexPageApi = await getIndexPageApi(application);
       await indexPageApi.expectations.pageIsLoaded();
       await indexPageApi.expectations.vtjErrorMessageIsPresent(
-        'differentPostCode'
+        'differentPostCode',
+        { postcode: '00100' }
       );
     });
 
@@ -322,7 +327,8 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const indexPageApi = await getIndexPageApi(application);
       await indexPageApi.expectations.pageIsLoaded();
       await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
-        'differentPostCode'
+        'differentPostCode',
+        { postcode: '00100' }
       );
     });
 
