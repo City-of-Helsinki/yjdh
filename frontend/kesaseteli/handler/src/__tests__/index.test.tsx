@@ -129,7 +129,6 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const application = fakeActivatedYouthApplication({
         social_security_number,
       });
-      const { last_name, postcode } = application;
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
         query: { id: application.id },
@@ -156,9 +155,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       for (const exception of VTJ_EXCEPTIONS) {
         await indexPageApi.expectations.vtjErrorMessageIsNotPresent(exception, {
           age,
-          last_name,
+          last_name: application.last_name,
           social_security_number,
-          postcode,
+          postcode: application.postcode,
         });
       }
     });
