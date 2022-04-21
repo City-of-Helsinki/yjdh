@@ -70,6 +70,7 @@ const Map: React.FC<Props> = ({
         <MarkerClusterGroup>
           {postings.map((posting) => (
             <Marker
+              key={posting.id}
               position={[
                 posting.location.position.coordinates[1],
                 posting.location.position.coordinates[0],

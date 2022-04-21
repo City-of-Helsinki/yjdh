@@ -20,9 +20,12 @@ type Props = {
   posting: TetPosting;
 };
 
-const Map = dynamic(() => import('tet-shared/components/map/Map'), {
-  ssr: false,
-});
+const LocationMap = dynamic(
+  () => import('tet-shared/components/map/LocationMap'),
+  {
+    ssr: false,
+  }
+);
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
@@ -43,7 +46,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
           <$Hr />
-          <Map postings={[posting]} zoom={12} zoomToPosition />
+          <LocationMap posting={posting} zoom={14} />
         </$Body>
         <$InfoWrapper>
           <PostingInfoItem
