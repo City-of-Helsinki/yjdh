@@ -7,9 +7,9 @@
   "scripts": {
     "lint": "eslint --ext js,ts,tsx src browser-tests",
     "pre-commit": "lint-staged -c ../.lintstagedrc.js",
-    "test": "jest",
-    "test:staged": "yarn test --watchAll=false --findRelatedTests",
-    "test:coverage": "yarn test --verbose --coverage"
+    "test": "cross-env TZ=Europe/Helsinki jest",
+    "test:staged": "cross-env TZ=Europe/Helsinki yarn test --watchAll=false --findRelatedTests",
+    "test:coverage": "cross-env TZ=Europe/Helsinki yarn test --verbose --coverage"
   },
   "license": "MIT",
   "dependencies": {
