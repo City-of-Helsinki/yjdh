@@ -1,17 +1,25 @@
 import { useQueries } from 'react-query';
+import useLocale from 'shared/hooks/useLocale';
 import {
   getWorkFeatures,
   getWorkMethods,
+  keywordToOptionType,
 } from 'tet-shared/backend-api/linked-events-api';
 import { ClassificationType, KeywordFn } from 'tet-shared/types/keywords';
+import { OptionType } from 'tet-shared/types/classification';
 
 export type UseKeywordResult = {
   getKeywordType?: KeywordFn;
   isLoading: boolean;
   error?: Error;
+  workMethodsList?: OptionType[];
+  workFeaturesList?: OptionType[];
 };
 
-const useKeywordType = (): UseKeywordResult => {
+type valueKey = 'id' | '@id';
+
+const useKeywordType = (valueKey: valueKey = '@id'): UseKeywordResult => {
+  const locale = useLocale();
   const results = useQueries([
     { queryKey: 'workMethods', queryFn: getWorkMethods },
     { queryKey: 'workFeatures', queryFn: getWorkFeatures },
@@ -39,6 +47,14 @@ const useKeywordType = (): UseKeywordResult => {
     };
   }
 
+  const workMethodsList =
+    workMethods.data?.map((k) => keywordToOptionType(k, locale, valueKey)) ||
+    [];
+
+  const workFeaturesList =
+    workFeatures.data?.map((k) => keywordToOptionType(k, locale, valueKey)) ||
+    [];
+
   const getKeywordType: KeywordFn = (url: string) => {
     if (workMethods.data.some((keyword) => keyword['@id'] === url)) {
       return ClassificationType.WORKING_METHOD;
@@ -53,6 +69,8 @@ const useKeywordType = (): UseKeywordResult => {
   return {
     isLoading: false,
     getKeywordType,
+    workMethodsList,
+    workFeaturesList,
   };
 };
 

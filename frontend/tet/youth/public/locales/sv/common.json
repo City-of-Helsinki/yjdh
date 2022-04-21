@@ -27,6 +27,7 @@
 	"filters": {
 		"searchPlaceholder": "Uppge sökord eller platsnamn",
 		"workMethod": "Välj arbetssätt",
+		"workFeatures": "Arbetets karaktär",
 		"startDate": "Startdatum",
 		"endDate": "Slutdatum",
 		"language": "Välj språk",

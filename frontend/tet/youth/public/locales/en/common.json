@@ -27,6 +27,7 @@
 	"filters": {
 		"searchPlaceholder": "Type search workd or location name",
 		"workMethod": "Choose working method",
+		"workFeatures": "Characteristics of work",
 		"startDate": "Start date",
 		"endDate": "End date",
 		"language": "Choose language"

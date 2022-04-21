@@ -27,6 +27,7 @@
 	"filters": {
 		"searchPlaceholder": "Kirjoita hakusana tai paikan nimi",
 		"workMethod": "Valitse työtapa",
+		"workFeatures": "Valitse työn ominaisuudet",
 		"startDate": "Alkamispäivä",
 		"endDate": "Päättymispäivä",
 		"language": "Valitse kieli",

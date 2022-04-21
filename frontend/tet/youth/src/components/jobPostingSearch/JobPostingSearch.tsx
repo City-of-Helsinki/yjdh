@@ -13,7 +13,8 @@ import { keywordToOptionType } from 'tet-shared/backend-api/linked-events-api';
 import { Language } from 'shared/i18n/i18n';
 import { OptionType } from 'tet-shared/types/classification';
 import { useQuery } from 'react-query';
-import { getWorkMethods } from 'tet-shared/backend-api/linked-events-api';
+import { getWorkMethods, getWorkFeatures } from 'tet-shared/backend-api/linked-events-api';
+import useKeywordType from 'tet-shared/hooks/backend/useKeywordType';
 
 type Props = {
   initParams: QueryParams;
@@ -27,16 +28,14 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
   const [chosenLanguage, setChosenLanguage] = React.useState('');
 
   const [workMethod, setWorkMethod] = React.useState<string>();
+  const [workFeature, setWorkFeature] = React.useState<string>();
   const { t, i18n } = useTranslation();
   const languageOptions = [
     { name: 'fi', value: 'fi', label: t('common:languages.fi') },
     { name: 'sv', value: 'sv', label: t('common:languages.sv') },
     { name: 'en', value: 'en', label: t('common:languages.en') },
   ];
-  const workMethodsResults = useQuery('methods', getWorkMethods);
-
-  const workMethods =
-    workMethodsResults.data?.map((k) => keywordToOptionType(k, i18n.language as Language, 'id')) || [];
+  const { isLoading, error, workMethodsList, workFeaturesList } = useKeywordType('id');
 
   React.useEffect(() => {
     setStartTime(initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : '');
@@ -68,6 +67,9 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     onSearchByFilters(searchObj);
   };
 
+  const workMethods = isLoading || error ? [] : workMethodsList;
+  const workFeatures = isLoading || error ? [] : workFeaturesList;
+
   return (
     <$Search>
       <Container>
@@ -91,6 +93,20 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               value={workMethods.find((method) => method.value === workMethod) as OptionType}
               icon={<IconGroup />}
               options={workMethods}
+              optionLabelField={'label'}
+              clearButtonAriaLabel=""
+              selectedItemRemoveButtonAriaLabel=""
+            ></Select>
+          </$GridCell>
+          <$GridCell $colSpan={3}>
+            <Select<OptionType>
+              id="workFeature"
+              label=""
+              placeholder={t('common:filters.workFeatures')}
+              onChange={(val: OptionType) => setWorkMethod(val.value)}
+              value={workFeatures.find((method) => method.value === workMethod) as OptionType}
+              icon={<IconGroup />}
+              options={workFeatures}
               optionLabelField={'label'}
               clearButtonAriaLabel=""
               selectedItemRemoveButtonAriaLabel=""
