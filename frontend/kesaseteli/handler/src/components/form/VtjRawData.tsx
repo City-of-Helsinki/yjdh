@@ -33,6 +33,7 @@ const VtjRawDataAccordion: React.FC<Props> = ({ data }) => {
         fontSize: theme.fontSize.body.s,
         background: theme.colors.infoLight,
       }}
+      onToggle={() => {}}
     >
       <pre
         style={{
