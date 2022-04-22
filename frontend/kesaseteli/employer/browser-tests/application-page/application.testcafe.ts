@@ -1,11 +1,14 @@
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
+import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import TestController from 'testcafe';
 
+import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 import { loginAndfillApplication } from '../actions/application.actions';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
@@ -29,11 +32,12 @@ fixture('Application')
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
     step2Components = getStep2Components(t);
-    headerComponents = getHeaderComponents(t);
+    const { translations } = getEmployerTranslationsApi();
+    headerComponents = getHeaderComponents(t, translations);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 if (isRealIntegrationsEnabled()) {
@@ -43,7 +47,7 @@ if (isRealIntegrationsEnabled()) {
       id: applicationId,
       ...application
     } = await loginAndfillApplication(t, 1);
-    const headerUser = await headerComponents.headerUser();
+    const headerUser = headerComponents.headerUser();
     await headerUser.actions.clicklogoutButton();
     await doEmployerLogin(t, 'fi', user);
     await urlUtils.expectations.urlChangedToApplicationPage(

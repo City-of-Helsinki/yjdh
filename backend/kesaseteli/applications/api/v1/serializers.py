@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image, UnidentifiedImageError
 from rest_framework import serializers
 
+from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
     AttachmentType,
     EmployerApplicationStatus,
@@ -448,7 +449,7 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
     def validate_social_security_number(self, value):
         if value is None or str(value).strip() == "":
             raise serializers.ValidationError(
-                {"social_security_number": _("Social security number must be set")}
+                {"social_security_number": _("Must be set")}
             )
         return value
 
@@ -457,12 +458,35 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         self.validate_social_security_number(data.get("social_security_number", None))
         return data
 
+    def to_internal_value(self, data):
+        """
+        Dict of native values <- Dict of primitive datatypes.
+
+        NOTE: Overridden to remove non-conforming read-only field handler from result.
+        """
+        result = super().to_internal_value(data)
+        if "handler" in result and "handler" in self.Meta.read_only_fields:
+            # FIXME: Why is handler field in result? It shouldn't be as it's read-only.
+            #        Maybe something to do with it using PrimaryKeyRelatedField?
+            del result["handler"]  # Remove non-conforming read-only field from result
+        return result
+
     class Meta:
         model = YouthApplication
-        fields = [
+        read_only_fields = [
             "id",
             "created_at",
             "modified_at",
+            "receipt_confirmed_at",
+            "encrypted_vtj_json",
+            "status",
+            "handler",
+            "handled_at",
+            "additional_info_user_reasons",
+            "additional_info_description",
+            "additional_info_provided_at",
+        ]
+        fields = read_only_fields + [
             "first_name",
             "last_name",
             "social_security_number",
@@ -472,19 +496,6 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "phone_number",
             "postcode",
             "language",
-            "receipt_confirmed_at",
-            "encrypted_vtj_json",
-            "status",
-            "handler",
-            "handled_at",
-        ]
-        read_only_fields = [
-            "id",
-            "created_at",
-            "encrypted_vtj_json",
-            "status",
-            "handler",
-            "handled_at",
         ]
 
     encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")
@@ -505,3 +516,41 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             return {}
         else:
             return json.loads(obj.encrypted_vtj_json)
+
+
+class YouthApplicationStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YouthApplication
+        fields = read_only_fields = [
+            "status",
+        ]
+
+
+class YouthApplicationAdditionalInfoSerializer(serializers.ModelSerializer):
+    def validate_additional_info_user_reasons(self, value):
+        validate_additional_info_user_reasons(value, allow_empty_list=False)
+        return value
+
+    def validate_additional_info_description(self, value):
+        if value is None or str(value).strip() == "":
+            raise serializers.ValidationError(
+                {"additional_info_description": _("Must be set")}
+            )
+        return value
+
+    def validate(self, data):
+        data = super().validate(data)
+        self.validate_additional_info_user_reasons(
+            data.get("additional_info_user_reasons", None)
+        )
+        self.validate_additional_info_description(
+            data.get("additional_info_description", None)
+        )
+        return data
+
+    class Meta:
+        model = YouthApplication
+        fields = [
+            "additional_info_user_reasons",
+            "additional_info_description",
+        ]

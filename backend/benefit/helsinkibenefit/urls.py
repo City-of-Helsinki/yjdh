@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
+from django.views.decorators.http import require_GET
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -83,10 +84,12 @@ if settings.ENABLE_DEBUG_ENV:
 # Kubernetes liveness & readiness probes
 
 
+@require_GET
 def healthz(*args, **kwargs):
     return HttpResponse(status=200)
 
 
+@require_GET
 def readiness(*args, **kwargs):
     return HttpResponse(status=200)
 

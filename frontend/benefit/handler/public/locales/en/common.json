@@ -11,7 +11,8 @@
     "notes": "Muistiinpanot",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "notifications": {
     "accepted": {
@@ -23,8 +24,8 @@
       "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
     },
     "cancelled": {
-      "title": "Hakemus on peruuttu",
-      "message": "Hakemus {{applicationNum}} on peruuttu onnistuneesti ja siirretty arkistoon."
+      "title": "Hakemus on peruttu",
+      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti ja siirretty arkistoon."
     },
     "error": {
       "title": "Tapahtui tuntematon virhe",
@@ -114,7 +115,8 @@
           "rejected": "Ei puolettu"
         },
         "additionalInformationNeededBy": "",
-        "additionalInformationNeededByVal": "Muokattava {{date}}"
+        "additionalInformationNeededByVal": "Muokattava {{date}}",
+        "unreadMessagesCount": ""
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"
@@ -143,6 +145,7 @@
       "handle": "Ota käsittelyyn",
       "close": "Sulje",
       "done": "Valmis",
+      "backToHandling": "Palauta käsittelyyn",
       "saveAndContinue": "Tallenna ja sulje",
       "handlingPanel": "Käsittelypaneeli",
       "cancel": "Peruuta hakemus",
@@ -203,6 +206,30 @@
       "support": "Puolletaan",
       "reason": "Perustelu",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
+    },
+    "summary": {
+      "accepted": {
+        "title": "Käsittely valmis",
+        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}}–{{endDate}}",
+        "row1": "Myönnetty Helsinki-lisä per kuukausi",
+        "row2": "Myönnetty Helsinki-lisä yhteensä",
+        "deMinimis": "Myönnetään de minimis-tukena",
+        "commentsTitle": "Tiedot"
+      },
+      "rejected": {
+        "description": "Hakemusta ei hyväksytä.",
+        "title": "Käsittely valmis",
+        "commentsTitle": "Perustelu"
+      },
+      "cancelled": {
+        "title": "Peruutustiedot",
+        "description": "",
+        "commentsTitle": "Syy peruutukseen"
+      },
+      "common": {
+        "handler": "Käsittelijä",
+        "handledAt": "Käsittelypäivämäärä"
+      }
     }
   },
   "calculators": {
@@ -342,6 +369,7 @@
       "required": "This field is required",
       "invalid": "Invalid value",
       "number": {
+        "invalid": "Invalid value, please enter numbers only",
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
       },
@@ -394,5 +422,14 @@
       "downloadRejectedApplications": "Hylätyt hakemukset CSV",
       "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
     }
+  },
+  "login": {
+    "login": "Sign in to the service",
+    "logoutMessageLabel": "You have logged out",
+    "errorLabel": "An unexpected error occurred. Please, sign in again. ",
+    "sessionExpiredLabel": "User session expired. Sign in again",
+    "infoLabel": "Using the service requires strong authentication",
+    "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
+    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
   }
 }

@@ -3,28 +3,47 @@ import {
   expectToPatchYouthApplication,
   expectToPatchYouthApplicationError,
 } from 'kesaseteli/handler/__tests__/utils/backend/backend-nocks';
-import { YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED } from 'kesaseteli-shared/constants/status-constants';
-import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
-import { escapeRegExp } from 'shared/utils/regex.utils';
-import { assertUnreachable } from 'shared/utils/typescript.utils';
+import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/get-handler-translations-api';
+import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
+import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import {
+  BoundFunctions,
+  queries,
+  screen,
+  userEvent,
+  within,
+} from 'shared/__tests__/utils/test-utils';
+
+const withinVtjInfo = (): BoundFunctions<typeof queries> =>
+  within(screen.getByTestId('vtj-info'));
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
-  expectations: {
+const getIndexPageApi = async (
+  expectedApplication?: ActivatedYouthApplication
+) => {
+  const {
+    translations: { fi: translations },
+    regexp,
+    replaced,
+  } = getHandlerTranslationsApi();
+
+  const expectations = {
     pageIsLoaded: async () => {
       await screen.findByRole('heading', {
-        name: /hakemuksen tiedot/i,
+        name: translations.handlerApplication.title,
       });
+      await waitForBackendRequestsToComplete();
     },
     applicationWasNotFound: async () => {
       await screen.findByRole('heading', {
-        name: /hakemusta ei löytynyt/i,
+        name: translations.handlerApplication.notFound,
       });
     },
-    fieldValueIsPresent: async <K extends keyof CreatedYouthApplication>(
+    fieldValueIsPresent: async <K extends keyof ActivatedYouthApplication>(
       key: K,
-      transform?: (value: CreatedYouthApplication[K]) => string
+      transform?: (value: ActivatedYouthApplication[K]) => string
     ): Promise<void> => {
       const field = await screen.findByTestId(`handlerApplication-${key}`);
       if (!expectedApplication) {
@@ -35,70 +54,116 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
       const value = transform
         ? transform(expectedApplication[key])
         : (expectedApplication[key] as string);
-      expect(field).toHaveTextContent(escapeRegExp(value));
+      expect(field).toHaveTextContent(regexp(value));
     },
     nameIsPresent: async ({
       first_name,
       last_name,
-    }: CreatedYouthApplication): Promise<void> => {
+    }: ActivatedYouthApplication): Promise<void> => {
       const field = await screen.findByTestId(`handlerApplication-name`);
-      expect(field).toHaveTextContent(
-        escapeRegExp(`${first_name} ${last_name}`)
+      expect(field).toHaveTextContent(regexp(`${first_name} ${last_name}`));
+    },
+    additionalInfoIsPresent: async (): Promise<void> => {
+      await screen.findByRole('heading', {
+        name: translations.handlerApplication.additionalInfoTitle,
+      });
+    },
+    additionalInfoIsNotPresent: (): void => {
+      expect(
+        screen.queryByRole('heading', {
+          name: translations.handlerApplication.additionalInfoTitle,
+        })
+      ).not.toBeInTheDocument();
+    },
+    additionalInfoReasonsAreShown: async (): Promise<void> => {
+      await expectations.fieldValueIsPresent(
+        'additional_info_user_reasons',
+        (additional_info_user_reasons) =>
+          additional_info_user_reasons
+            ?.map((reason) => translations.reasons[reason])
+            .join('. ') ?? ''
       );
     },
+    vtjInfoIsPresent: async (): Promise<void> => {
+      await screen.findByRole('heading', {
+        name: translations.handlerApplication.vtjInfo.title,
+      });
+    },
+    vtjFieldValueIsPresent: async (
+      key: keyof typeof translations.handlerApplication.vtjInfo,
+      value: string
+    ): Promise<void> => {
+      const field = await withinVtjInfo().findByTestId(
+        `handlerApplication-vtjInfo.${key}`
+      );
+      expect(field).toHaveTextContent(regexp(value));
+    },
+
+    vtjErrorMessageIsPresent: async (
+      key: VtjExceptionType,
+      params?: Record<string, string | number>
+    ): Promise<void> => {
+      await screen.findByText(
+        replaced(
+          translations.handlerApplication.vtjException[key],
+          params ?? {}
+        )
+      );
+    },
+    vtjErrorMessageIsNotPresent: async (
+      key: VtjExceptionType,
+      params?: Record<string, string | number>
+    ): Promise<void> => {
+      expect(
+        screen.queryByText(
+          replaced(
+            translations.handlerApplication.vtjException[key],
+            params ?? {}
+          )
+        )
+      ).not.toBeInTheDocument();
+    },
+
     actionButtonsArePresent: async (): Promise<void> => {
       await screen.findByRole('button', {
-        name: /hyväksy/i,
+        name: translations.handlerApplication.accept,
       });
       await screen.findByRole('button', {
-        name: /hylkää/i,
+        name: translations.handlerApplication.reject,
       });
     },
     actionButtonsAreNotPresent: (): void => {
       expect(
         screen.queryByRole('button', {
-          name: /hyväksy/i,
+          name: translations.handlerApplication.accept,
         })
       ).not.toBeInTheDocument();
       expect(
         screen.queryByRole('button', {
-          name: /hylkää/i,
+          name: translations.handlerApplication.reject,
         })
       ).not.toBeInTheDocument();
     },
 
     statusNotificationIsPresent: async (
-      status: typeof YOUTH_APPLICATION_STATUS_HANDLER_CANNOT_PROCEED[number]
-      // eslint-disable-next-line consistent-return
-    ): Promise<HTMLElement | undefined> => {
-      switch (status) {
-        case 'submitted':
-          return screen.findByRole('heading', {
-            name: /nuori ei ole vielä aktivoinut hakemusta/i,
-          });
-
-        case 'additional_information_requested':
-          return screen.findByRole('heading', {
-            name: /nuori ei ole vielä täyttänyt lisätietohakemusta/i,
-          });
-
-        case 'accepted':
-          return screen.findByRole('heading', {
-            name: /hyväksytty/i,
-          });
-
-        case 'rejected':
-          return screen.findByRole('heading', {
-            name: /hylätty/i,
-          });
-
-        default:
-          assertUnreachable(status, 'Unknown status');
-      }
+      status: keyof typeof translations.handlerApplication.notification
+    ): Promise<HTMLElement> =>
+      screen.findByRole('heading', {
+        name: translations.handlerApplication.notification[status],
+      }),
+    showsConfirmDialog: async (type: CompleteOperation) => {
+      const dialog = await screen.findByRole('dialog');
+      return within(dialog).findByText(translations.dialog[type].content);
     },
-  },
-  actions: {
-    clickButton: (type: 'accept' | 'reject', errorCode?: 400 | 500): void => {
+  };
+  const actions = {
+    clickCompleteButton: (type: CompleteOperation): void => {
+      userEvent.click(screen.getByTestId(`${type}-button`));
+    },
+    clickConfirmButton: async (
+      type: CompleteOperation,
+      errorCode?: 400 | 500
+    ) => {
       if (!expectedApplication) {
         throw new Error(
           'you forgot to give expected application values for the test'
@@ -117,9 +182,26 @@ const getIndexPageApi = (expectedApplication?: CreatedYouthApplication) => ({
           status: type === 'accept' ? 'accepted' : 'rejected',
         });
       }
-      userEvent.click(screen.getByTestId(`${type}-button`));
+      const dialog = await screen.findByRole('dialog');
+      userEvent.click(
+        within(dialog).getByRole('button', {
+          name: translations.dialog[type].submit,
+        })
+      );
+      await waitForBackendRequestsToComplete();
     },
-  },
-});
+    clickCancelButton: async () => {
+      const dialog = await screen.findByRole('dialog');
+      userEvent.click(
+        within(dialog).getByRole('button', { name: translations.dialog.cancel })
+      );
+    },
+  };
+  await expectations.pageIsLoaded();
+  return {
+    expectations,
+    actions,
+  };
+};
 
 export default getIndexPageApi;

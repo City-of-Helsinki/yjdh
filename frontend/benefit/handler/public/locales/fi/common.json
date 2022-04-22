@@ -11,7 +11,8 @@
     "notes": "Muistiinpanot",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Valitse kieli"
   },
   "notifications": {
     "accepted": {
@@ -23,8 +24,8 @@
       "message": "Hakemus {{applicationNum}} on tallennettu onnistuneesti ja siirretty arkistoon."
     },
     "cancelled": {
-      "title": "Hakemus on peruuttu",
-      "message": "Hakemus {{applicationNum}} on peruuttu onnistuneesti ja siirretty arkistoon."
+      "title": "Hakemus on peruttu",
+      "message": "Hakemus {{applicationNum}} on peruttu onnistuneesti ja siirretty arkistoon."
     },
     "error": {
       "title": "Tapahtui tuntematon virhe",
@@ -115,7 +116,8 @@
           "rejected": "Ei puolettu"
         },
         "additionalInformationNeededBy": "",
-        "additionalInformationNeededByVal": "Muokattava {{date}}"
+        "additionalInformationNeededByVal": "Muokattava {{date}}",
+        "unreadMessagesCount": ""
       },
       "messages": {
         "empty": "Ei eriä tällä hetkellä"
@@ -145,6 +147,7 @@
       "close": "Sulje",
       "done": "Valmis",
       "saveAndContinue": "Tallenna ja sulje",
+      "backToHandling": "Palauta käsittelyyn",
       "handlingPanel": "Käsittelypaneeli",
       "cancel": "Peruuta hakemus",
       "addAttachment": "Liitä uusi tiedosto",
@@ -204,6 +207,30 @@
       "support": "Puolletaan",
       "reason": "Perustelu",
       "editEndDate": "Hakemusta muokattava viimeistään {{date}}"
+    },
+    "summary": {
+      "accepted": {
+        "title": "Käsittely valmis",
+        "description": "Hakemus on hyväksytty ja Työllistämisen Helsinki-lisää on myönnetty ({{months}} kuukaudelle) aikavälille {{startDate}}–{{endDate}}",
+        "row1": "Myönnetty Helsinki-lisä per kuukausi",
+        "row2": "Myönnetty Helsinki-lisä yhteensä",
+        "deMinimis": "Myönnetään de minimis-tukena",
+        "commentsTitle": "Tiedot"
+      },
+      "rejected": {
+        "description": "Hakemusta ei hyväksytä.",
+        "title": "Käsittely valmis",
+        "commentsTitle": "Perustelu"
+      },
+      "cancelled": {
+        "title": "Peruutustiedot",
+        "description": "",
+        "commentsTitle": "Syy peruutukseen"
+      },
+      "common": {
+        "handler": "Käsittelijä",
+        "handledAt": "Käsittelypäivämäärä"
+      }
     }
   },
   "calculators": {
@@ -340,41 +367,42 @@
   },
   "form": {
     "validation": {
-      "required": "This field is required",
-      "invalid": "Invalid value",
+      "required": "Tämä kenttä on pakollinen",
+      "invalid": "Virheellinen arvo",
       "number": {
-        "max": "Maximum value is {{max}}",
-        "min": "Value must be at least {{min}}"
+        "invalid": "Virheellinen arvo, ilmoita vain numeroita",
+        "max": "Arvon tulee olla enintään {{max}}",
+        "min": "Arvon tulee olla vähintään {{min}}"
       },
       "string": {
-        "max": "This field can be up to {{max}} characters long",
-        "min": "This field must be at least {{min}} characters long",
-        "url": "This field must be a valid URL",
-        "date": "This field must be a valid date",
-        "time": "Time must be given in the following format hh:mm",
-        "positiveNumber": "This field must be a valid number"
+        "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
+        "min": "Tämä kenttä tulee olla vähintään {{min}} merkkiä pitkä",
+        "url": "Tämän kentän on oltava kelvollinen URL-osoite",
+        "date": "Tämän kentän on oltava kelvollinen päivämäärä",
+        "time": "Ajan tulee olla muotoa hh:mm",
+        "positiveNumber": "Tämän kentän on oltava kelvollinen numero"
       },
       "date": {
-        "mustNotInThePast": "This date must not be in the past",
-        "min": "This date must be earliest {{min}}",
-        "max": "This date must be latest {{max}}",
+        "mustNotInThePast": "Päivämäärä ei voi olla menneisyydessä",
+        "min": "Päivämäärän on oltava aikaisintaan {{min}}",
+        "max": "Päivämäärän on oltava viimeistään {{max}}",
         "format": "This date is incorrect"
       },
       "time": {
-        "min": "This time must be earliest {{min}}",
-        "max": "This time must be latest {{max}}"
+        "min": "Arvon tulee olla aikaisintaan {{min}}",
+        "max": "Arvon tulee olla viimeistään {{max}}"
       },
       "phone": {
-        "invalid": "The value must be a telephone number"
+        "invalid": "Virheellinen puhelinnumero"
       },
       "email": {
-        "invalid": "This field must be a valid email"
+        "invalid": "Virheellinen sähköpostiosoite"
       },
       "iban": {
-        "invalid": "Invalid IBAN value"
+        "invalid": "Virheellinen IBAN-tilinumero"
       },
       "ssn": {
-        "invalid": "Invalid SSN value"
+        "invalid": "Virheellinen henkilötunnus"
       }
     }
   },
@@ -395,5 +423,14 @@
       "downloadRejectedApplications": "Hylätyt hakemukset CSV",
       "downloadApplicationsInTimeRange": "Kaikki hakemukset valitulta ajalta CSV"
     }
+  },
+  "login": {
+    "login": "Kirjaudu palveluun",
+    "logoutMessageLabel": "Olet kirjautunut ulos",
+    "errorLabel": "Tapahtui tuntematon virhe. Kirjaudu uudelleen sisään",
+    "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
+    "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
+    "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
   }
 }

@@ -1,10 +1,5 @@
 import ReviewSection from 'benefit/handler/components/reviewSection/ReviewSection';
-import {
-  CALCULATION_DESCRIPTION_ROW_TYPES,
-  CALCULATION_SUMMARY_ROW_TYPES,
-  CALCULATION_TOTAL_ROW_TYPE,
-  CALCULATION_TYPES,
-} from 'benefit/handler/constants';
+import { CALCULATION_TYPES } from 'benefit/handler/constants';
 import { useCalculatorData } from 'benefit/handler/hooks/useCalculatorData';
 import {
   PaySubsidy,
@@ -40,6 +35,7 @@ import {
 } from '../ApplicationReview.sc';
 import CalculatorErrors from '../calculatorErrors/CalculatorErrors';
 import SalaryBenefitManualCalculatorView from './SalaryBenefitManualCalculatorView';
+import SalaryCalculatorResults from './SalaryCalculatorResults/SalaryCalculatorResults';
 import { useSalaryBenefitCalculatorData } from './useSalaryBenefitCalculatorData';
 
 const SalaryBenefitCalculatorView: React.FC<
@@ -188,6 +184,7 @@ const SalaryBenefitCalculatorView: React.FC<
           </$GridCell>
 
           {formik.values.paySubsidies?.map(
+            // eslint-disable-next-line sonarjs/cognitive-complexity
             (item: PaySubsidy, index: number) => (
               <>
                 <$GridCell $colStart={1}>
@@ -390,7 +387,7 @@ const SalaryBenefitCalculatorView: React.FC<
         />
       </$GridCell>
 
-      {!isManualCalculator && (
+      {!isManualCalculator && data.apprenticeshipProgram && (
         <>
           <$GridCell $colStart={1} $colSpan={11}>
             <$CalculatorText
@@ -594,34 +591,7 @@ const SalaryBenefitCalculatorView: React.FC<
           </$Notification>
         </$GridCell>
       )}
-
-      <$GridCell $colSpan={7}>
-        {data?.calculation?.rows &&
-          data?.calculation?.rows.map((row) => {
-            const isSummaryRowType = CALCULATION_SUMMARY_ROW_TYPES.includes(
-              row.rowType
-            );
-            const isTotalRowType = CALCULATION_TOTAL_ROW_TYPE === row.rowType;
-            const isDescriptionRowType =
-              CALCULATION_DESCRIPTION_ROW_TYPES.includes(row.rowType);
-            return (
-              <div key={row.id}>
-                <$CalculatorTableRow isTotal={isSummaryRowType}>
-                  <$ViewField isBold={isTotalRowType || isDescriptionRowType}>
-                    {row.descriptionFi}
-                  </$ViewField>
-                  {!isDescriptionRowType && (
-                    <$ViewField isBold={isTotalRowType}>
-                      {t(`${translationsBase}.tableRowValue`, {
-                        amount: formatStringFloatValue(row.amount),
-                      })}
-                    </$ViewField>
-                  )}
-                </$CalculatorTableRow>
-              </div>
-            );
-          })}
-      </$GridCell>
+      <SalaryCalculatorResults data={data} />
     </ReviewSection>
   );
 };

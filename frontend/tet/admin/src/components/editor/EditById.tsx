@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import Editor from 'tet/admin/components/editor/Editor';
 import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
@@ -14,7 +14,7 @@ type EditByIdProps = {
 };
 
 const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
-  const { showPreview, tetPosting, getTemplateData } = useContext(PreviewContext);
+  const { showPreview, tetPosting } = useContext(PreviewContext);
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
@@ -22,12 +22,10 @@ const EditById: React.FC<EditByIdProps> = ({ title, data }) => {
     if (isInitialRender) setIsInitialRender(false);
   }, []);
 
-  const templateData = getTemplateData();
-
   if (showPreview) {
     return (
-      <PreviewWrapper>
-        <PostingContainer posting={templateData} />
+      <PreviewWrapper posting={isInitialRender ? data : tetPosting}>
+        <PostingContainer posting={tetPosting} />
       </PreviewWrapper>
     );
   }

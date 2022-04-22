@@ -1,10 +1,9 @@
 import React from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { TextInput as HdsTextInput } from 'hds-react';
 import Id from 'shared/types/id';
 
-// TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
   id: Id<TetPosting>;
   label: string;

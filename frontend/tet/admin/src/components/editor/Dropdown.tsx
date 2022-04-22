@@ -1,9 +1,9 @@
 import React from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import { useFormContext, Controller, RegisterOptions, NestedValue } from 'react-hook-form';
 import { Select as HdsSelect } from 'hds-react';
 import Id from 'shared/types/id';
-import { OptionType } from 'tet/admin/types/classification';
+import { OptionType } from 'tet-shared/types/classification';
 
 type LanguagesType = Pick<TetPosting, 'languages'>;
 
@@ -16,7 +16,7 @@ type Props<O extends OptionType> = {
   options: O[];
   initialValue: O[];
   label: string;
-  registerOptions: RegisterOptions<DropdownFields<O>>;
+  registerOptions: RegisterOptions;
 };
 
 const Dropdown = <O extends OptionType>({
@@ -30,7 +30,7 @@ const Dropdown = <O extends OptionType>({
   return (
     <Controller
       name={id}
-      render={({ field: { value, onChange }, fieldState: { error } }) => (
+      render={({ field: { value, onChange }, fieldState: { error, invalid } }) => (
         <HdsSelect<O>
           multiselect
           required
@@ -39,15 +39,16 @@ const Dropdown = <O extends OptionType>({
           label={label}
           optionLabelField="label"
           onChange={(val: OptionType[] | null) => {
-            console.log(`onChange got ${JSON.stringify(val)}`);
             // onChange(val == null ? val : val.map(v => v.value))
             onChange(val);
           }}
+          invalid={invalid}
           error={error ? error.message : ''}
           clearButtonAriaLabel=""
           selectedItemRemoveButtonAriaLabel=""
         />
       )}
+      rules={registerOptions}
       control={control}
     ></Controller>
   );

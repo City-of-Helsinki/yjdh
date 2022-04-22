@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { TetData } from 'tet-shared/types/TetData';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type PreviewContextObj = {
   showPreview: boolean;
   tetPosting: TetPosting;
+  formValid: boolean;
   setPreviewVisibility: (visibility: boolean) => void;
   setTetPostingData: (data: TetPosting) => void;
-  getTemplateData: () => TetData;
+  setFormValid: (isValid: boolean) => void;
 };
 
 export const initialPosting: TetPosting = {
@@ -28,30 +29,6 @@ export const initialPosting: TetPosting = {
   contact_first_name: '',
   contact_last_name: '',
   date_published: null,
-  contact_language: 'fi',
-  contact_phone: '',
-  keywords: [],
-  keywords_working_methods: [],
-  keywords_attributes: [],
-  languages: [],
-};
-const initialTemplateData: TetData = {
-  title: '',
-  description: '',
-  location: {
-    name: '',
-    street_address: '',
-    postal_code: '',
-    city: '',
-  },
-  org_name: '',
-  spots: 1,
-  start_date: '',
-  contact_email: '',
-  contact_first_name: '',
-  contact_last_name: '',
-  date_published: null,
-  contact_language: '',
   contact_phone: '',
   keywords: [],
   keywords_working_methods: [],
@@ -62,53 +39,28 @@ const initialTemplateData: TetData = {
 export const PreviewContext = React.createContext<PreviewContextObj>({
   showPreview: false,
   tetPosting: initialPosting,
+  formValid: false,
   setPreviewVisibility: (visibility: boolean) => {},
   setTetPostingData: (data: TetPosting) => {},
-  getTemplateData: () => initialTemplateData,
+  setFormValid: (isValid: boolean) => {},
 });
 
 const PreviewContextProvider: React.FC = (props) => {
   const [showPreview, setShowPreview] = useState(false);
   const [tetPosting, setTetPosting] = useState<TetPosting>(initialPosting);
+  const [formValid, setFormValid] = useState(false);
 
   const setTetPostingData = (posting: TetPosting) => {
     setTetPosting(posting);
   };
 
-  const getTemplateData = (): TetData => {
-    console.log(tetPosting, 'previewContext posting');
-    return {
-      title: tetPosting.title,
-      description: tetPosting.description,
-      location: {
-        name: tetPosting.location?.name ? tetPosting.location.name : '',
-        street_address: tetPosting?.location?.street_address ? tetPosting.location.street_address : '',
-        postal_code: tetPosting?.location?.postal_code ? tetPosting.location.postal_code : '',
-        city: tetPosting?.location?.city ? tetPosting.location.city : '',
-      },
-      org_name: tetPosting.org_name,
-      spots: tetPosting.spots,
-      start_date: tetPosting.start_date,
-      end_date: tetPosting.end_date,
-      contact_email: tetPosting.contact_email,
-      contact_first_name: tetPosting.contact_first_name,
-      contact_last_name: tetPosting.contact_last_name,
-      contact_phone: tetPosting.contact_phone,
-      date_published: null,
-      contact_language: tetPosting.contact_language,
-      keywords: tetPosting.keywords.map((item) => item.name),
-      keywords_working_methods: tetPosting.keywords_working_methods.map((item) => item.name),
-      keywords_attributes: tetPosting.keywords_attributes.map((item) => item.name),
-      languages: tetPosting.languages.map((lang) => lang.label),
-    };
-  };
-
   const contextValue: PreviewContextObj = {
     showPreview,
     tetPosting,
+    formValid,
     setPreviewVisibility: setShowPreview,
     setTetPostingData,
-    getTemplateData,
+    setFormValid,
   };
 
   return <PreviewContext.Provider value={contextValue}>{props.children}</PreviewContext.Provider>;

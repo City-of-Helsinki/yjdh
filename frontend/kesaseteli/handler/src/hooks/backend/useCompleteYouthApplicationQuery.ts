@@ -1,8 +1,9 @@
+import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import {
   BackendEndpoint,
   getYouthApplicationQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
-import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import {
   useMutation,
   UseMutationOptions,
@@ -12,18 +13,20 @@ import {
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
-type Operation = 'accept' | 'reject';
-
 const useCompleteYouthApplicationQuery = (
-  id: CreatedYouthApplication['id'],
-  options?: UseMutationOptions<CreatedYouthApplication, unknown, Operation>
-): UseMutationResult<CreatedYouthApplication, unknown, Operation> => {
+  id: ActivatedYouthApplication['id'],
+  options?: UseMutationOptions<
+    ActivatedYouthApplication,
+    unknown,
+    CompleteOperation
+  >
+): UseMutationResult<ActivatedYouthApplication, unknown, CompleteOperation> => {
   const { axios, handleResponse } = useBackendAPI();
   const queryClient = useQueryClient();
   const { onSuccess, ...restOptions } = options ?? {};
   return useMutation({
-    mutationFn: (operation: Operation) =>
-      handleResponse<CreatedYouthApplication>(
+    mutationFn: (operation: CompleteOperation) =>
+      handleResponse<ActivatedYouthApplication>(
         axios.patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
       ),
     onSuccess: (data, operation, context) => {

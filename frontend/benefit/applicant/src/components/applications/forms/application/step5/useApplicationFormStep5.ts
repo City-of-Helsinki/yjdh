@@ -63,8 +63,12 @@ const useApplicationFormStep5 = (
     updateApplicationStep5(currentApplicationData);
   };
 
-  const handleSave = (): void => onSave(application);
-  const handleDelete = (): void => onDelete(application.id ?? '');
+  const handleSave = (): void => {
+    void onSave(application);
+  };
+  const handleDelete = (): void => {
+    void onDelete(application.id ?? '');
+  };
 
   const handleSubmit = (): void => {
     const submitFields = isSubmit

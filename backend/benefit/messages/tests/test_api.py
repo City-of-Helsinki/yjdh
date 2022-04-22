@@ -4,12 +4,22 @@ from copy import deepcopy
 import pytest
 from applications.enums import ApplicationStatus
 from applications.tests.factories import HandlingApplicationFactory
-from applications.tests.test_applications_api import get_detail_url
+from applications.tests.test_applications_api import (
+    get_detail_url,
+    get_handler_detail_url,
+)
 from common.tests.conftest import get_client_user
 from companies.tests.factories import CompanyFactory
+from django.conf import settings
+from django.test import override_settings
 from messages.models import Message, MessageType
 from messages.tests.factories import MessageFactory
 from rest_framework.reverse import reverse
+
+from shared.common.lang_test_utils import (
+    assert_email_body_language,
+    assert_email_subject_language,
+)
 
 SAMPLE_MESSAGE_PAYLOAD = {
     "content": "Sample message",
@@ -218,21 +228,36 @@ def test_create_handler_message_invalid(handler_api_client, handling_application
         ),
         msg,
     )
-    assert result.status_code == 400
-    assert "Handler is not allowed to do this action" in str(
-        result.data["non_field_errors"]
+    assert result.status_code == 403
+
+    assert "You do not have permission to perform this action." in str(
+        result.data["detail"]
     )
 
 
-def test_handler_must_message_first(
+@pytest.mark.parametrize(
+    "status,expected_result",
+    [
+        (ApplicationStatus.DRAFT, 400),
+        (ApplicationStatus.RECEIVED, 201),
+        (ApplicationStatus.HANDLING, 201),
+        (ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED, 201),
+        (ApplicationStatus.ACCEPTED, 400),
+        (ApplicationStatus.REJECTED, 400),
+        (ApplicationStatus.CANCELLED, 400),
+    ],
+)
+def test_applicant_send_first_message(
     api_client,
-    handler_api_client,
     handling_application,
     mock_get_organisation_roles_and_create_company,
+    status,
+    expected_result,
 ):
     msg = deepcopy(SAMPLE_MESSAGE_PAYLOAD)
     msg["message_type"] = MessageType.APPLICANT_MESSAGE
     handling_application.company = mock_get_organisation_roles_and_create_company
+    handling_application.status = status
     handling_application.save()
     result = api_client.post(
         reverse(
@@ -240,21 +265,20 @@ def test_handler_must_message_first(
         ),
         msg,
     )
-    assert result.status_code == 400
-    assert (
-        "Applicant can send messages only after handler has sent a message first"
-        in result.data["non_field_errors"][0]
-    )
+    assert result.status_code == expected_result
 
 
 @pytest.mark.parametrize(
-    "view_name,msg_type",
+    "view_name,msg_type,email_language",
     [
-        ("applicant-message-list", MessageType.APPLICANT_MESSAGE),
-        ("handler-message-list", MessageType.HANDLER_MESSAGE),
-        ("handler-note-list", MessageType.NOTE),
+        ("applicant-message-list", MessageType.APPLICANT_MESSAGE, None),
+        ("handler-message-list", MessageType.HANDLER_MESSAGE, "fi"),
+        ("handler-message-list", MessageType.HANDLER_MESSAGE, "en"),
+        ("handler-message-list", MessageType.HANDLER_MESSAGE, "sv"),
+        ("handler-note-list", MessageType.NOTE, None),
     ],
 )
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
 def test_create_message(
     api_client,
     handler_api_client,
@@ -262,6 +286,8 @@ def test_create_message(
     mock_get_organisation_roles_and_create_company,
     view_name,
     msg_type,
+    email_language,
+    mailoutbox,
 ):
     msg = deepcopy(SAMPLE_MESSAGE_PAYLOAD)
     msg["message_type"] = msg_type
@@ -276,13 +302,28 @@ def test_create_message(
             reverse(view_name, kwargs={"application_pk": handling_application.pk}),
             msg,
         )
-        assert result.status_code == 201
+        assert len(mailoutbox) == 0
     else:
         user = get_client_user(handler_api_client)
+        if email_language:
+            handling_application.applicant_language = email_language
+            handling_application.save()
         result = handler_api_client.post(
             reverse(view_name, kwargs={"application_pk": handling_application.pk}),
             msg,
         )
+        assert result.status_code == 201
+        if email_language:
+            assert len(mailoutbox) == 1
+            assert_email_subject_language(str(mailoutbox[0].subject), email_language)
+            assert_email_body_language(str(mailoutbox[0].body), email_language)
+            if email_language == "fi":
+                assert "Olet saanut uuden viestin" in mailoutbox[0].subject
+                assert "on tullut uusi viesti" in mailoutbox[0].body
+                assert mailoutbox[0].to == [
+                    handling_application.company_contact_person_email
+                ]
+                assert mailoutbox[0].from_email == settings.DEFAULT_FROM_EMAIL
 
     assert result.status_code == 201
     message_qs = Message.objects.filter(message_type=msg_type)
@@ -468,22 +509,22 @@ def test_delete_message(
 
 
 def test_applications_list_with_message_count(
-    api_client, application, handler_api_client
+    api_client, handling_application, handler_api_client
 ):
-    msg = MessageFactory(application=application)
+    msg = MessageFactory(application=handling_application)
     response = api_client.get(reverse("v1:applicant-application-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
     assert response.data[0]["unread_messages_count"] == 1
-    response = api_client.get(get_detail_url(application))
+    response = api_client.get(get_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 1
 
-    response = handler_api_client.get(reverse("v1:applicant-application-list"))
+    response = handler_api_client.get(reverse("v1:handler-application-list"))
     assert len(response.data) == 1
     assert response.status_code == 200
     assert response.data[0]["unread_messages_count"] == 1
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 1
 
@@ -493,13 +534,13 @@ def test_applications_list_with_message_count(
 
     response = api_client.get(reverse("v1:applicant-application-list"))
     assert response.data[0]["unread_messages_count"] == 0
-    response = api_client.get(get_detail_url(application))
+    response = api_client.get(get_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 0
 
-    response = handler_api_client.get(reverse("v1:applicant-application-list"))
+    response = handler_api_client.get(reverse("v1:handler-application-list"))
     assert response.data[0]["unread_messages_count"] == 0
-    response = handler_api_client.get(get_detail_url(application))
+    response = handler_api_client.get(get_handler_detail_url(handling_application))
     assert "unread_messages_count" in response.data
     assert response.data["unread_messages_count"] == 0
 
@@ -546,3 +587,21 @@ def test_list_messages_read_receipt(
         assert result.status_code == 200
         assert Message.objects.filter(seen_by_applicant=True).count() == 0
         assert Message.objects.filter(seen_by_handler=True).count() == 2
+
+
+def test_applications_list_with_message_count_multiple_messages(
+    api_client, handling_application, handler_api_client
+):
+    MessageFactory(
+        application=handling_application, message_type=MessageType.HANDLER_MESSAGE
+    )
+    MessageFactory(
+        application=handling_application, message_type=MessageType.HANDLER_MESSAGE
+    )
+    response = api_client.get(reverse("v1:applicant-application-list"))
+    assert len(response.data) == 1
+    assert response.status_code == 200
+    assert response.data[0]["unread_messages_count"] == 2
+    response = api_client.get(get_detail_url(handling_application))
+    assert "unread_messages_count" in response.data
+    assert response.data["unread_messages_count"] == 2

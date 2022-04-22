@@ -1,11 +1,10 @@
 import useLogin from 'kesaseteli/employer/hooks/backend/useLogin';
-import useLogoutQuery from 'kesaseteli/employer/hooks/backend/useLogoutQuery';
+import useLogout from 'kesaseteli/employer/hooks/backend/useLogout';
 import useUserQuery from 'kesaseteli/employer/hooks/backend/useUserQuery';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import BaseHeader from 'shared/components/header/Header';
-import useErrorHandler from 'shared/hooks/useErrorHandler';
 import { Language, SUPPORTED_LANGUAGES } from 'shared/i18n/i18n';
 import { OptionType } from 'shared/types/common';
 
@@ -36,17 +35,10 @@ const Header: React.FC = () => {
     [router, asPath]
   );
 
-  const onError = useErrorHandler(false);
-
   const login = useLogin();
   const userQuery = useUserQuery();
-  const logoutQuery = useLogoutQuery();
-  const logout = React.useCallback(
-    () => logoutQuery.mutate({}, { onError }),
-    [logoutQuery, onError]
-  );
+  const logout = useLogout();
 
-  const isLoading = userQuery.isLoading || logoutQuery.isLoading;
   const isLoginPage = asPath?.includes('/login');
 
   return (
@@ -57,7 +49,7 @@ const Header: React.FC = () => {
       languages={languageOptions}
       onLanguageChange={handleLanguageChange}
       login={
-        !isLoading
+        !userQuery.isLoading
           ? {
               isAuthenticated: !isLoginPage && userQuery.isSuccess,
               loginLabel: t('common:header.loginLabel'),

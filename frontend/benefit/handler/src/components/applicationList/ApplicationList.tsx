@@ -1,6 +1,6 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { ApplicationListItemData } from 'benefit/handler/types/application';
-import { StatusLabel } from 'hds-react';
+import { IconSpeechbubbleText, StatusLabel } from 'hds-react';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';
@@ -8,8 +8,9 @@ import { COLUMN_WIDTH } from 'shared/components/table/constants';
 import Table, { Column } from 'shared/components/table/Table';
 import { $Link } from 'shared/components/table/Table.sc';
 import { convertToUIDateFormat } from 'shared/utils/date.utils';
+import { useTheme } from 'styled-components';
 
-import { $Empty, $Heading } from './ApplicationList.sc';
+import { $CellContent, $Empty, $Heading } from './ApplicationList.sc';
 import { useApplicationList } from './useApplicationList';
 
 type ColumnType = Column<ApplicationListItemData>;
@@ -31,6 +32,8 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
     translationsBase,
     getHeader,
   } = useApplicationList(status);
+
+  const theme = useTheme();
 
   const columns: ColumnType[] = React.useMemo(() => {
     const cols: ColumnType[] = [
@@ -116,12 +119,32 @@ const ApplicationList: React.FC<ApplicationListProps> = ({
         Header: getHeader('additionalInformationNeededBy'),
         accessor: 'additionalInformationNeededBy',
         disableSortBy: true,
-        width: COLUMN_WIDTH.M,
       });
     }
 
+    cols.push({
+      // eslint-disable-next-line react/display-name
+      Cell: ({
+        cell: {
+          row: {
+            original: { unreadMessagesCount },
+          },
+        },
+      }) => (
+        <$CellContent>
+          {Number(unreadMessagesCount) > 0 ? (
+            <IconSpeechbubbleText color={theme.colors.coatOfArms} />
+          ) : null}
+        </$CellContent>
+      ),
+      Header: getHeader('unreadMessagesCount'),
+      accessor: 'unreadMessagesCount',
+      disableSortBy: true,
+      width: COLUMN_WIDTH.XS,
+    });
+
     return cols.filter(Boolean);
-  }, [t, getHeader, status]);
+  }, [t, getHeader, status, theme.colors.coatOfArms]);
 
   if (shouldShowSkeleton) {
     return (

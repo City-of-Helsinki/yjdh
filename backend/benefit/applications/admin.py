@@ -7,6 +7,7 @@ from applications.models import (
     DeMinimisAid,
     Employee,
 )
+from calculator.admin import CalculationInline
 from django.contrib import admin
 
 
@@ -41,6 +42,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         DeMinimisAidInline,
         ApplicationBasisInline,
         AttachmentInline,
+        CalculationInline,
     )
     list_filter = ("status", "company")
     list_display = (

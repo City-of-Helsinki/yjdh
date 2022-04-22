@@ -7,6 +7,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { UseMutationResult } from 'react-query';
+import LinkButton from 'shared/components/link-button/LinkButton';
 import useErrorHandler from 'shared/hooks/useErrorHandler';
 
 type Props<FormData, BackendResponseData> = Omit<
@@ -14,9 +15,10 @@ type Props<FormData, BackendResponseData> = Omit<
   'onClick' | 'onError'
 > & {
   saveQuery: UseMutationResult<BackendResponseData, unknown, FormData>;
-  onSuccess: (response: BackendResponseData) => void | Promise<void>;
+  onSuccess?: (response: BackendResponseData) => void | Promise<void>;
   onError?: (error: Error | unknown) => void;
   onInvalidForm?: SubmitErrorHandler<FormData>;
+  asLink?: boolean;
 };
 
 const SaveFormButton = <
@@ -31,6 +33,7 @@ const SaveFormButton = <
   disabled,
   isLoading,
   theme,
+  asLink,
   ...buttonProps
 }: Props<FormData, BackendResponseData>): React.ReactElement => {
   const { handleSubmit, formState } = useFormContext<FormData>();
@@ -54,9 +57,10 @@ const SaveFormButton = <
     },
     [saveQuery, onError, onDefaultError, onSuccess]
   );
+  const ButtonComponent = asLink ? LinkButton : Button;
 
   return (
-    <Button
+    <ButtonComponent
       {...buttonProps}
       theme={theme || 'coat'}
       onClick={handleSubmit(handleSaving, onInvalidForm)}
@@ -64,13 +68,15 @@ const SaveFormButton = <
       isLoading={isLoading || isSaving}
     >
       {children}
-    </Button>
+    </ButtonComponent>
   );
 };
 
 SaveFormButton.defaultProps = {
   onInvalidForm: noop,
+  onSuccess: undefined,
   onError: undefined,
+  asLink: false,
 };
 
 export default SaveFormButton;

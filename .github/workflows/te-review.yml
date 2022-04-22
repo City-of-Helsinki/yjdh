@@ -62,15 +62,21 @@ jobs:
             port: 8000
 #          - service: te-empl
 #            context: ./frontend
-#            dockerfile: ./frontend/tet/employer/Dockerfile
+#            dockerfile: ./frontend/Dockerfile
+#            project: tet
+#            folder: employer
 #            port: 3000
           - service: te-yout
             context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
+            dockerfile: ./frontend/Dockerfile
+            project: tet
+            folder: youth
             port: 3000
           - service: te-admn
             context: ./frontend
-            dockerfile: ./frontend/tet/admin/Dockerfile
+            dockerfile: ./frontend/Dockerfile
+            project: tet
+            folder: admin
             port: 3000
     concurrency:
       group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
@@ -87,6 +93,10 @@ jobs:
           DOCKER_BUILD_ARG_NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
           DOCKER_BUILD_ARG_NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
+          DOCKER_BUILD_ARG_PROJECT: ${{ matrix.project }}
+          DOCKER_BUILD_ARG_FOLDER: ${{ matrix.folder }}
+          DOCKER_BUILD_ARG_SERVICE: ${{ matrix.service }}
+          DOCKER_BUILD_ARG_PORT: ${{ matrix.port }}
           DOCKER_BUILD_SOURCE: ${{ matrix.dockerfile }}
           DOCKER_BUILD_CONTEXT: ${{ matrix.context }}
           DOCKER_IMAGE_NAME: ${{ matrix.service }}
@@ -105,20 +115,26 @@ jobs:
             dockerfile: ./backend/docker/tet.Dockerfile
             database: true
             port: 8000
-#          - service: te-empl
-#            context: ./frontend
-#            dockerfile: ./frontend/tet/employer/Dockerfile
-#            database: false
-#            port: 3000
+          #          - service: te-empl
+          #            context: ./frontend
+          #            dockerfile: ./frontend/Dockerfile
+          #            database: false
+          #            project: tet
+          #            folder: employer
+          #            port: 3000
           - service: te-yout
             context: ./frontend
-            dockerfile: ./frontend/tet/youth/Dockerfile
+            dockerfile: ./frontend/Dockerfile
             database: false
+            project: tet
+            folder: youth
             port: 3000
           - service: te-admn
             context: ./frontend
-            dockerfile: ./frontend/tet/admin/Dockerfile
+            dockerfile: ./frontend/Dockerfile
             database: false
+            project: tet
+            folder: admin
             port: 3000
     concurrency:
       group: ${{ github.event.pull_request.number }}-${{ matrix.service }}
@@ -146,6 +162,7 @@ jobs:
           echo "K8S_SECRET_CSRF_TRUSTED_ORIGINS=.test.kuva.hel.ninja" >> $GITHUB_ENV
           echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL=${{ env.ADMIN_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_AD_LOGIN_REDIRECT_URL_FAILURE=${{ env.ADMIN_URL }}/login?error=true" >> $GITHUB_ENV
+          echo "K8S_SECRET_LOGOUT_REDIRECT_URL=${{ env.ADMIN_URL }}/login?logout=true" >> $GITHUB_ENV
           echo "K8S_SECRET_EAUTH_REDIRECT_URL=${{ env.EMPLOYER_URL }}" >> $GITHUB_ENV
           echo "K8S_SECRET_EAUTH_REDIRECT_URL_FAILURE=${{ env.EMPLOYER_URL }}/login?error=true" >> $GITHUB_ENV
           echo "K8S_SECRET_DATABASE_DB=${{ github.event.repository.name }}-${{ matrix.service }}-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
@@ -194,6 +211,7 @@ jobs:
           AD_LOGIN_REDIRECT_URL_FAILURE: ${{ env.ADMIN_URL }}/login?error=true
           EAUTH_REDIRECT_URL: ${{ env.EMPLOYER_URL }}
           EAUTH_REDIRECT_URL_FAILURE: ${{ env.EMPLOYER_URL }}/login?error=true
+          LOGOUT_REDIRECT_URL: ${{ env.ADMIN_URL }}/login?logout=true
 
       - name: Deploy Cronjobs
         if: matrix.database
@@ -259,7 +277,7 @@ jobs:
 #          echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
 #      - name: Run Acceptance Tests for ${{ matrix.service }}
 #        id: testcafe
-#        run: yarn --cwd ${{matrix.dir}} browser-test:ci
+#        run: yarn --cwd ${{matrix.dir}} browser-test:ci -q attemptLimit=3,successThreshold=1
 #        env:
 #          GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
 #          GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

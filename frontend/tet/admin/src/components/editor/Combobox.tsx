@@ -1,10 +1,11 @@
 import React from 'react';
-import TetPosting from 'tet/admin/types/tetposting';
+import TetPosting from 'tet-shared/types/tetposting';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Combobox as HdsCombobox } from 'hds-react';
 import Id from 'shared/types/id';
 import { RegisterOptions, NestedValue } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+import { Option } from 'tet-shared/types/classification';
 
 type ComboboxFields<O extends Option> = {
   keywords: NestedValue<O[]>;
@@ -22,10 +23,6 @@ type Props<O extends Option> = {
   optionLabelField: keyof O;
   disabled?: boolean;
   required: boolean;
-};
-
-export type Option = {
-  name: string;
 };
 
 const Combobox = <O extends Option>({

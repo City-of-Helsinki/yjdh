@@ -46,6 +46,7 @@ env = environ.Env(
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
+    CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
@@ -55,6 +56,8 @@ env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    LOGOUT_REDIRECT_URL=(str, "/"),
+    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/excel-download/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, ""),
@@ -87,7 +90,7 @@ env = environ.Env(
     ELASTICSEARCH_PASSWORD=(str, ""),
     CLEAR_AUDIT_LOG_ENTRIES=(bool, False),
     ENABLE_SEND_AUDIT_LOG=(bool, False),
-    ENABLE_ADMIN=(bool, True),
+    ENABLE_ADMIN=(bool, False),
     DB_PREFIX=(str, ""),
     EMAIL_USE_TLS=(bool, False),
     EMAIL_HOST=(str, "ema.platta-net.hel.fi"),
@@ -175,6 +178,7 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_extensions",
     "django_auth_adfs",
+    "sequences.apps.SequencesConfig",
     # shared apps
     "shared.audit_log",
     "shared.oidc",
@@ -232,6 +236,7 @@ CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
 # Audit logging
@@ -306,9 +311,11 @@ OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
 OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
+OIDC_OP_LOGOUT_CALLBACK_URL = env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
 
 LOGIN_REDIRECT_URL = env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = env.str("LOGIN_REDIRECT_URL_FAILURE")
+LOGOUT_REDIRECT_URL = env.str("LOGOUT_REDIRECT_URL")
 
 EAUTHORIZATIONS_BASE_URL = env.str("EAUTHORIZATIONS_BASE_URL")
 EAUTHORIZATIONS_CLIENT_ID = env.str("EAUTHORIZATIONS_CLIENT_ID")
@@ -327,7 +334,7 @@ AUTH_ADFS = {
     "AUDIENCE": ADFS_CLIENT_ID,
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
-    "CLAIM_MAPPING": {"email": "email"},
+    "CLAIM_MAPPING": {"email": "mail"},
     "USERNAME_CLAIM": "oid",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,

@@ -5,7 +5,8 @@
     "logoutLabel": "Kirjaudu ulos",
     "userAriaLabelPrefix": "Käyttäjä:",
     "linkSkipToContent": "Siirry sisältöön",
-    "menuToggleAriaLabel": "Valikko"
+    "menuToggleAriaLabel": "Valikko",
+    "languageMenuButtonAriaLabel": "Valitse kieli"
   },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
@@ -24,7 +25,7 @@
     "infoLabel": "Tietoa työnantajan edustajien henkilötietojen käsittelystä",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
     "infoContent": {
-      "listHeading": "TET-paikkailmoituksen tekemistä varter Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
+      "listHeading": "TET-paikkailmoituksen tekemistä varten Helsingin kaupunki käsittelee seuraavia tarpeellisia tietoja:",
       "bullet1": "Hakemuksen täyttäjän nimi (haetaan suomi.fi:stä tunnistautumisen yhteydessä)",
       "bullet2": "Nimeämänne yhteyshenkilön nimi, puhelinnumero ja sähköpostiosoite (syötetään asiointipalveluun)",
       "bullet3": "Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
@@ -38,6 +39,10 @@
 	},
   "application": {
 		"backToFrontPage": "Takaisin etusivulle",
+		"publishTerms": "Julkaisun yhteydessä hyväksyt",
+		"termsLink": "käyttöehdot",
+		"createTerms": "Olen esihenkilöasemassa tai keskustellut esihenkilön kanssa ilmoituksen teosta.",
+		"accept": "Hyväksy",
     "jobPostings": {
       "title": "TET-paikkailmoitukset",
       "noPostingsFound": "Sinulla ei ole vielä yhtään TET-paikkaa.",
@@ -58,12 +63,14 @@
     }
   },
   "editor": {
-		"companyInfo": "Yrityksen tiedot",
-		"companyInfoFetch": "Yrityksen tiedot on haettu YTJS:stä",
+		"companyInfo": "Työnantajan tiedot",
+    "helsinkiCity": "Helsingin kaupunki",
+		"companyInfoFetch": "Tiedot on haettu tunnistautumisen yhteydessä.",
     "newTitle": "Uusi TET-paikka",
     "editTitle": "Muokkaa TET-paikkaa",
 		"copyTitle": "Kopioi TET-paikka",
     "saveDraft": "Tallenna julkaisematta",
+    "savePublished": "Tallenna ja julkaise",
     "deletePosting": "Poista ilmoitus",
     "preview": "Siirry esikatseluun",
     "publish": "Julkaise",
@@ -72,6 +79,7 @@
 		"requiredInfo": "merkityt kentät ovat pakollisia",
 		"preview": "Esikatselu",
     "loadingError": "Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
+    "language": "TET-paikan kielisyys",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
       "header": "Toimipisteen tiedot",
@@ -92,7 +100,7 @@
 			"contactLastName": "Sukunimi",
 			"contactPhone": "Puhelin",
 			"contactEmail": "Sähköposti",
-			"contactLanguage": "Asiointikieli",
+			"contactLanguage": "TET-jaksolla käytetty kieli",
 			"contactLanguageFi": "Suomi",
 			"contactLanguageSv": "Ruotsi",
 			"contactLanguageEn": "Englanti",
@@ -101,7 +109,8 @@
 				"email": "Syötä sähköposti oikeassa muodossa",
 				"max": "Maksimimerkkimäärä ylittyy",
 				"phone": "Syötä oikeassa muodossa",
-				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia"
+				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia",
+				"isSet": "Valitse vähintään yksi"
 			}
     },
 		"classification": {
@@ -153,8 +162,14 @@
       "fileType": "Tiedoston tyyppi ei ole sallittu."
     }
   },
+  "api": {
+    "saveErrorTitle": "Virhe TET-paikan tallentamisesssa",
+    "saveErrorMessage": "TET-paikan luonti tai päivitys ei onnistunut.",
+    "publishErrorTitle": "Virhe TET-paikan julkaisemisessa",
+    "publishErrorMessage": "TET-paikan julkaisu ei onnistunut."
+  },
   "upload": {
-		"successMessage": "Tiedot tallennettiin",
+		"successMessage": "TET-paikka tallennettiin",
     "isUploading": "Lähetetään...",
     "errorTitle": "Lähetys epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
@@ -170,6 +185,7 @@
 		"publishPosting": "Julkaise TET-paikka",
 		"confirmation": "Haluatko varmasti julkaista TET-paikan {{posting}}?",
 		"successTitle": "TET-paikka julkaistiin",
+    "saveSuccessMessage": "TET-paikka tallennettiin ja julkaistiin",
     "errorTitle": "Julkaiseminen epäonnistui",
     "errorMessage": "Jotain meni pieleen. Yritä myöhemmin uudelleen."
   },
@@ -182,7 +198,7 @@
             "message": ""
           },
           "payslip": {
-            "title": "Palkkatodistus",
+            "title": "TET-todistus",
             "message": ""
           }
         },

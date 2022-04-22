@@ -1,15 +1,13 @@
 import { APPLICATION_STATUSES } from 'benefit/handler/constants';
 import { Application } from 'benefit/handler/types/application';
+import { useTranslation } from 'next-i18next';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import Container from 'shared/components/container/Container';
 import { getFullName } from 'shared/utils/application.utils';
 import { formatDate } from 'shared/utils/date.utils';
-import { getInitials } from 'shared/utils/string.utils';
 
 import {
   $Col,
-  $HandlerWrapper,
   $InnerWrapper,
   $ItemHeader,
   $ItemValue,
@@ -31,6 +29,10 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
     data.calculation?.handlerDetails?.firstName,
     data.calculation?.handlerDetails?.lastName
   );
+
+  if (!data.applicationNumber || data.status === APPLICATION_STATUSES.DRAFT) {
+    return null;
+  }
 
   return (
     <$Wrapper>
@@ -71,12 +73,13 @@ const ApplicationHeader: React.FC<ApplicationReviewProps> = ({ data }) => {
               <$ItemHeader>{t(`${translationBase}.employeeName`)}</$ItemHeader>
               <$ItemValue>{employeeName}</$ItemValue>
             </$ItemWrapper>
+            {handlerName && (
+              <$ItemWrapper>
+                <$ItemHeader>{t(`${translationBase}.handlerName`)}</$ItemHeader>
+                <$ItemValue>{handlerName}</$ItemValue>
+              </$ItemWrapper>
+            )}
           </$Col>
-          {data.status === APPLICATION_STATUSES.HANDLING && (
-            <$Col>
-              <$HandlerWrapper>{getInitials(handlerName)}</$HandlerWrapper>
-            </$Col>
-          )}
         </$InnerWrapper>
       </Container>
     </$Wrapper>

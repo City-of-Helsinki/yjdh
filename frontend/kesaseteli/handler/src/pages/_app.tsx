@@ -9,11 +9,26 @@ import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import BackendAPIProvider from 'shared/backend-api/BackendAPIProvider';
 import BaseApp from 'shared/components/app/BaseApp';
+import ConfirmDialog from 'shared/components/confirm-dialog/ConfirmDialog';
+import Portal from 'shared/components/confirm-dialog/Portal';
+import {
+  DialogContext,
+  DialogContextProvider,
+} from 'shared/contexts/DialogContext';
+
+const queryClient = createQueryClient();
 
 const App: React.FC<AppProps> = (appProps: AppProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
-    <QueryClientProvider client={createQueryClient()}>
-      <BaseApp header={<Header />} {...appProps} />
+    <QueryClientProvider client={queryClient}>
+      <DialogContextProvider>
+        <BaseApp header={<Header />} {...appProps} />
+        <Portal>
+          <DialogContext.Consumer>
+            {([state]) => <ConfirmDialog {...state} />}
+          </DialogContext.Consumer>
+        </Portal>
+      </DialogContextProvider>
     </QueryClientProvider>
   </BackendAPIProvider>
 );

@@ -68,13 +68,32 @@ class YouthApplicationStatus(models.TextChoices):
         ]
 
     @staticmethod
+    def can_have_additional_info_values():
+        """
+        Youth application statuses in which additional info may have been provided.
+        """
+        return [
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+            YouthApplicationStatus.ACCEPTED.value,
+            YouthApplicationStatus.REJECTED.value,
+        ]
+
+    @staticmethod
+    def must_have_additional_info_values():
+        """
+        Youth application statuses in which additional info must have been provided.
+        """
+        return [
+            YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
+        ]
+
+    @staticmethod
     def acceptable_values():
         """
         Youth application statuses from which the youth application can be accepted.
         """
         return [
             YouthApplicationStatus.AWAITING_MANUAL_PROCESSING.value,
-            YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED.value,
             YouthApplicationStatus.ADDITIONAL_INFORMATION_PROVIDED.value,
         ]
 
@@ -95,6 +114,39 @@ class YouthApplicationStatus(models.TextChoices):
         Youth application statuses which have been handled and require a handler.
         """
         return [YouthApplicationStatus.ACCEPTED, YouthApplicationStatus.REJECTED]
+
+    @staticmethod
+    def unhandled_values():
+        """
+        Youth application statuses which have not been handled.
+        """
+        return sorted(
+            set(YouthApplicationStatus.values)
+            - set(YouthApplicationStatus.handled_values())
+        )
+
+    @staticmethod
+    def active_unhandled_values():
+        """
+        Active youth application statuses which have not been handled.
+        """
+        return sorted(
+            set(YouthApplicationStatus.unhandled_values())
+            - {YouthApplicationStatus.SUBMITTED.value}
+        )
+
+
+class AdditionalInfoUserReason(models.TextChoices):
+    STUDENT_IN_HELSINKI_BUT_NOT_RESIDENT = "student_in_helsinki_but_not_resident", _(
+        "Student in Helsinki but not resident"
+    )
+    MOVING_TO_HELSINKI = "moving_to_helsinki", _("Moving to Helsinki")
+    UNDERAGE_OR_OVERAGE = "underage_or_overage", _("Underage or overage")
+    PERSONAL_INFO_DIFFERS_FROM_VTJ = "personal_info_differs_from_vtj", _(
+        "Personal info differs from VTJ"
+    )
+    UNLISTED_SCHOOL = "unlisted_school", _("Unlisted school")
+    OTHER = "other", _("Other")
 
 
 class AttachmentType(models.TextChoices):

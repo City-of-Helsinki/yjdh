@@ -779,20 +779,19 @@ class EmployeeBenefitMonthlyRow(CalculationRow):
 
 class EmployeeBenefitTotalRow(CalculationRow, TotalRowMixin):
     """
-    SalaryBenefitTotalRow for the simple cases where
-    * there is a single pay subsidy decision for the duration of the benefit
-    * or there is no pay subsidy decision
+    Calculate the total based on the monthly amount and the duration
     """
 
     proxy_row_type = RowType.HELSINKI_BENEFIT_TOTAL_EUR
     description_fi_template = "Helsinki-lisä yhteensä"
 
     def calculate_amount(self):
-        return (
+        return to_decimal(
             self.calculation.duration_in_months
             * self.calculation.calculator.get_amount(
                 RowType.HELSINKI_BENEFIT_MONTHLY_EUR
-            )
+            ),
+            0,
         )
 
     class Meta:

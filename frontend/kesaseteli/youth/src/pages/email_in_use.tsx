@@ -10,11 +10,13 @@ const EmailInUsePage: React.FC = () => {
   return (
     <NotificationPage
       type="error"
-      title={t(`common:emailInUsePage.title`)}
-      message={t(`common:emailInUsePage.notificationMessage`, {
+      title={t(`common:notificationPages.emailInUse.title`)}
+      message={t(`common:notificationPages.emailInUse.message`, {
         expirationHours: useActivationLinkExpirationHours(),
       })}
-      goToFrontPageText={t(`common:activationErrorPage.goToFrontendPage`)}
+      goToFrontPageText={t(
+        `common:notificationPages.emailInUse.goToFrontendPage`
+      )}
     />
   );
 };

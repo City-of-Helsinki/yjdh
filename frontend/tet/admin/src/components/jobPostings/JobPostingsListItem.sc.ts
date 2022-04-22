@@ -14,13 +14,15 @@ export const $PostingCard = styled.div`
 `;
 
 export const $ImageContainer = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
   width: 100%;
   height: 250px;
-  align-items: center;
   background-color: ${(props) => props.theme.colors.black10};
+  display: flex;
+  flex-flow: column nowrap;
+
+  img {
+    width: 100%;
+  }
 
   @media (min-width: ${(props) => props.theme.breakpoints.s}) {
     width: 195px;
@@ -33,6 +35,7 @@ export const $PostingCardBody = styled.div`
   display: inline-flex;
   flex-flow: column nowrap;
   justify-content: space-between;
+  background-color: ${(props) => props.theme.colors.white};
   flex: 1;
 
   @media (min-width: ${(props) => props.theme.breakpoints.s}) {
@@ -64,6 +67,10 @@ export const $PostingDescription = styled.p`
   font-size: ${(props) => props.theme.fontSize.body.s};
   margin-top: 0;
   margin-bottom: ${(props) => props.theme.spacing.xs3};
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 `;
 
 export const $PostingTitle = styled.h4`
@@ -73,11 +80,15 @@ export const $PostingTitle = styled.h4`
 `;
 
 export const $PostingDates = styled.div`
-  width: 180px;
+  width: 200px;
 `;
 
 export const $MenuContainer = styled.div`
   display: inline-flex;
   position: relative;
   align-self: flex-start;
+
+  button {
+    all: unset;
+  }
 `;

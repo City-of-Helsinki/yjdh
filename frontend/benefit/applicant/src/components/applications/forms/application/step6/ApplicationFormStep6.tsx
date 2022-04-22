@@ -1,13 +1,15 @@
 import NotificationView from 'benefit/applicant/components/notificationView/NotificationView';
-import PdfViewver from 'benefit/applicant/components/pdfViewer/PdfViewer';
-import { TermsProp, TextProp } from 'benefit/applicant/types/application';
+import PdfViewer from 'benefit/applicant/components/pdfViewer/PdfViewer';
+import { TextProp } from 'benefit/applicant/types/application';
 import { DynamicFormStepComponentProps } from 'benefit/applicant/types/common';
+import { Button } from 'hds-react';
 import noop from 'lodash/noop';
 import * as React from 'react';
 import { $Checkbox } from 'shared/components/forms/fields/Fields.sc';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { getFullName } from 'shared/utils/application.utils';
+import { openFileInNewTab } from 'shared/utils/file.utils';
 
 import StepperActions from '../stepperActions/StepperActions';
 import { useApplicationFormStep6 } from './useApplicationFormStep6';
@@ -31,6 +33,7 @@ const ApplicationFormStep6: React.FC<
     cbPrefix,
     textLocale,
     checkedArray,
+    applicantTermsInEffectUrl,
   } = useApplicationFormStep6(data, onSubmit);
 
   if (isSubmittedApplication) {
@@ -54,17 +57,29 @@ const ApplicationFormStep6: React.FC<
       <FormSection>
         <>
           {data && (
-            <$GridCell $colSpan={12}>
-              <PdfViewver
-                file={
-                  (data.applicantTermsInEffect &&
-                    data.applicantTermsInEffect[
-                      `termsPdf${textLocale}` as TermsProp
-                    ]) ||
-                  ''
-                }
-              />
-            </$GridCell>
+            <>
+              <$GridCell $colSpan={12}>
+                <PdfViewer
+                  file={applicantTermsInEffectUrl}
+                  scale={1.8}
+                  documentMarginLeft="-70px"
+                />
+              </$GridCell>
+              <$GridCell
+                $colSpan={5}
+                css={`
+                  margin-bottom: var(--spacing-l);
+                `}
+              >
+                <Button
+                  theme="black"
+                  variant="secondary"
+                  onClick={() => openFileInNewTab(applicantTermsInEffectUrl)}
+                >
+                  {t('common:applications.actions.openTermsAsPDF')}
+                </Button>
+              </$GridCell>
+            </>
           )}
           {data?.applicantTermsInEffect?.applicantConsents.map((consent, i) => (
             <$GridCell $colSpan={12} key={consent.id}>

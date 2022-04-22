@@ -33,7 +33,10 @@ class ServiceBusClient:
             "name": service_bus_data["TradeName"]["Name"],
             "business_id": service_bus_data["BusinessId"],
             "company_form": self._get_company_form(service_bus_data["LegalForm"]),
-            "industry": self._get_industry(service_bus_data["BusinessLine"]),
+            "company_form_code": self._get_company_form_code(
+                service_bus_data["LegalForm"]
+            ),
+            "industry": self._get_industry(service_bus_data.get("BusinessLine")),
             "street_address": address["StreetAddress"],
             "postcode": address["PostalCode"],
             "city": address["City"],
@@ -71,6 +74,19 @@ class ServiceBusClient:
             "City": address_json["City"],
         }
 
+    def _get_company_form_code(self, legal_form_json):
+        # return the YRMU code from the response
+        if "Type" not in legal_form_json:
+            raise ValueError("Cannot determine company form")
+        if legal_form_json["Type"].get("PrimaryCode") != "YRMU":
+            raise ValueError("Cannot determine company form - invalid PrimaryCode")
+        try:
+            return int(legal_form_json["Type"]["SecondaryCode"])
+        except (TypeError, ValueError) as e:
+            raise ValueError(
+                "Cannot determine company form - invalid SecondaryCode"
+            ) from e
+
     def _get_company_form(self, legal_form_json):
         # The LegalForm is a code, which is not human-readable.
         # We'll try to get the description of the code in Finnish
@@ -81,15 +97,24 @@ class ServiceBusClient:
             raise ValueError("Cannot get company form data")
         return company_form["Description"]
 
+    UNKNOWN_INDUSTRY = "n/a"
+
     def _get_industry(self, business_line_json):
         # The BusinessLine value is a code, which is not human-readable.
         # We'll try to get the description of the code in Finnish
-        business_line = self._get_finnish_description(
-            business_line_json["Type"]["Descriptions"]["CodeDescription"]
-        )
+        # In suomi.fi test env, some companies do not have this data, so assuming production
+        # env might have companies with missing data, too
+        try:
+            code_description = business_line_json["Type"]["Descriptions"][
+                "CodeDescription"
+            ]
+        except (KeyError, TypeError):
+            return self.UNKNOWN_INDUSTRY
+
+        business_line = self._get_finnish_description(code_description)
         if not business_line:
             raise ValueError("Cannot get company form data")
-        return business_line["Description"]
+        return business_line.get("Description", self.UNKNOWN_INDUSTRY)
 
     def _get_finnish_description(self, descriptions):
         return next((desc for desc in descriptions if desc["Language"] == "fi"), None)

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { GetStaticProps, NextPage } from 'next';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
@@ -13,14 +14,18 @@ import withAuth from 'shared/components/hocs/withAuth';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
-  const { showPreview, getTemplateData } = useContext(PreviewContext);
+  const { showPreview, tetPosting } = useContext(PreviewContext);
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
-  const data = getTemplateData();
+  useEffect(() => {
+    // If initial, use data from query and not from previewContext
+    if (isInitialRender) setIsInitialRender(false);
+  }, []);
 
   if (showPreview) {
     return (
-      <PreviewWrapper>
-        <PostingContainer posting={data} />
+      <PreviewWrapper posting={isInitialRender ? undefined : tetPosting}>
+        <PostingContainer posting={tetPosting} />
       </PreviewWrapper>
     );
   }
@@ -31,7 +36,7 @@ const NewPostingPage: NextPage = () => {
       <$HeadingContainer>
         <$Heading>{t('common:editor.newTitle')}</$Heading>
       </$HeadingContainer>
-      <Editor allowDelete={false} />
+      <Editor initialValue={isInitialRender ? undefined : tetPosting} />
     </Container>
   );
 };

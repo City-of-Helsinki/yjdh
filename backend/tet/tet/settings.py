@@ -47,6 +47,7 @@ django_env = environ.Env(
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
+    CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
     SESSION_COOKIE_AGE=(int, 3600 * 2),
     OIDC_RP_CLIENT_ID=(str, ""),
@@ -54,6 +55,8 @@ django_env = environ.Env(
     OIDC_OP_BASE_URL=(str, ""),
     LOGIN_REDIRECT_URL=(str, "/"),
     LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
+    LOGOUT_REDIRECT_URL=(str, "/"),
+    OIDC_OP_LOGOUT_CALLBACK_URL=(str, "/"),
     ADFS_LOGIN_REDIRECT_URL=(str, "/set-this-later/"),
     ADFS_LOGIN_REDIRECT_URL_FAILURE=(str, "/"),
     EAUTHORIZATIONS_BASE_URL=(str, ""),
@@ -103,6 +106,7 @@ if DEBUG and not SECRET_KEY:
 DEBUG = False
 
 ALLOWED_HOSTS = django_env.list("ALLOWED_HOSTS")
+USE_X_FORWARDED_HOST = django_env.bool("USE_X_FORWARDED_HOST")
 
 DATABASES = {"default": django_env.db()}
 
@@ -180,6 +184,7 @@ CORS_ALLOWED_ORIGINS = django_env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = django_env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = django_env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = django_env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_COOKIE_NAME = django_env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
 # Audit log
@@ -250,6 +255,8 @@ OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/token"
 OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/userinfo"
 OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/certs"
 OIDC_OP_LOGOUT_ENDPOINT = f"{OIDC_OP_BASE_URL}/logout"
+OIDC_OP_LOGOUT_CALLBACK_URL = django_env.str("OIDC_OP_LOGOUT_CALLBACK_URL")
+LOGOUT_REDIRECT_URL = django_env.str("LOGOUT_REDIRECT_URL")
 
 LOGIN_REDIRECT_URL = django_env.str("LOGIN_REDIRECT_URL")
 LOGIN_REDIRECT_URL_FAILURE = django_env.str("LOGIN_REDIRECT_URL_FAILURE")
@@ -261,7 +268,7 @@ EAUTHORIZATIONS_API_OAUTH_SECRET = django_env.str("EAUTHORIZATIONS_API_OAUTH_SEC
 
 LINKEDEVENTS_URL = django_env.str("LINKEDEVENTS_URL")
 LINKEDEVENTS_API_KEY = django_env.str("LINKEDEVENTS_API_KEY")
-LINKEDEVENTS_TIMEOUT = django_env.str("LINKEDEVENTS_TIMEOUT")
+LINKEDEVENTS_TIMEOUT = django_env.int("LINKEDEVENTS_TIMEOUT")
 
 # Azure ADFS
 LOGIN_URL = "django_auth_adfs:login"
@@ -275,7 +282,7 @@ AUTH_ADFS = {
     "AUDIENCE": ADFS_CLIENT_ID,
     "CLIENT_ID": ADFS_CLIENT_ID,
     "CLIENT_SECRET": ADFS_CLIENT_SECRET,
-    "CLAIM_MAPPING": {"email": "email"},
+    "CLAIM_MAPPING": {"email": "mail"},
     "USERNAME_CLAIM": "oid",
     "TENANT_ID": ADFS_TENANT_ID,
     "RELYING_PARTY_ID": ADFS_CLIENT_ID,

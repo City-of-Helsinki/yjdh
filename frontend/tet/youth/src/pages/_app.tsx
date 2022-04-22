@@ -9,8 +9,10 @@ import BaseApp from 'shared/components/app/BaseApp';
 import Header from 'tet/youth/components/header/Header';
 import Footer from 'tet/youth/components/footer/Footer';
 
+const queryClient = createQueryClient();
+
 const App: React.FC<AppProps> = (appProps) => (
-  <QueryClientProvider client={createQueryClient()}>
+  <QueryClientProvider client={queryClient}>
     <BaseApp header={<Header />} footer={<Footer />} {...appProps} />
   </QueryClientProvider>
 );

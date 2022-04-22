@@ -2,3 +2,4 @@ node_modules
 jest.config.js
 .eslintrc.js
 setupTests.ts
+**/*.sc.ts

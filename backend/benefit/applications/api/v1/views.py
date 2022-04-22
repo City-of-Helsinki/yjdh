@@ -6,11 +6,11 @@ from applications.api.v1.serializers import (
 from applications.enums import ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.services.applications_csv_report import ApplicationsCsvService
-from common.permissions import BFIsAuthenticated, BFIsHandler, TermsOfServiceAccepted
+from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.http import FileResponse, HttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
@@ -23,6 +23,7 @@ from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
+from sql_util.aggregates import SubqueryCount
 from users.utils import get_company_from_request
 
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
@@ -104,8 +105,52 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
         if not settings.DISABLE_AUTHENTICATION:
             if not user.is_authenticated:
                 return Application.objects.none()
-        qs = Application.objects.all().select_related("company")
+        qs = Application.objects.all().select_related("company", "employee")
         return qs
+
+    EXCLUDE_FIELDS_FROM_SIMPLE_LIST = [
+        "applicant_terms_approval",
+        "bases",
+        "attachment_requirements",
+        "applicant_terms_approval_needed",
+        "applicant_terms_in_effect",
+        "former_benefit_info",
+        "available_benefit_types",
+        "status_last_changed_at",
+        "ahjo_decision",
+        "latest_decision_comment",
+        "training_compensations",
+        "pay_subsidies",
+        "warnings",
+        "attachments",
+        "de_minimis_aid_set",
+    ]
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        # In case new AuditLogEntry objects were created during the
+        # processing of the update, then the annotation value for handled_at
+        # in the serializer.instance might have become stale.
+        # Update the object.
+        serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
+
+    @action(methods=["get"], detail=False, url_path="simplified_list")
+    def simplified_application_list(self, request):
+        """
+        Convenience action for the frontends that by default excludes the fields that are not normally
+        needed in application listing pages.
+        """
+        qs = self.filter_queryset(self.get_queryset())
+        context = self.get_serializer_context()
+        fields = set(context.get("fields", []))
+        exclude_fields = set(context.get("exclude_fields", []))
+        extra_exclude_fields = set(self.EXCLUDE_FIELDS_FROM_SIMPLE_LIST)
+        context["exclude_fields"] = list(
+            exclude_fields | (extra_exclude_fields - fields)
+        )
+
+        serializer = self.serializer_class(qs, many=True, context=context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
         methods=("POST",),
@@ -212,15 +257,16 @@ class BaseApplicationViewSet(AuditLoggingModelViewSet):
 )
 class ApplicantApplicationViewSet(BaseApplicationViewSet):
     serializer_class = ApplicantApplicationSerializer
-    permission_classes = [BFIsAuthenticated, TermsOfServiceAccepted]
+    permission_classes = [BFIsApplicant, TermsOfServiceAccepted]
     filterset_class = ApplicantApplicationFilter
 
     def _annotate_unread_messages_count(self, qs):
+        # since there other annotations added elsewhere, use subquery to avoid wrong results.
+        # also, using a subquery is more performant
         return qs.annotate(
-            unread_messages_count=Count(
+            unread_messages_count=SubqueryCount(
                 "messages",
-                filter=Q(messages__seen_by_applicant=False)
-                & ~Q(messages__message_type=MessageType.NOTE),
+                filter=Q(seen_by_applicant=False) & ~Q(message_type=MessageType.NOTE),
             )
         )
 
@@ -246,10 +292,9 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     def _annotate_unread_messages_count(self, qs):
         return qs.annotate(
-            unread_messages_count=Count(
+            unread_messages_count=SubqueryCount(
                 "messages",
-                filter=Q(messages__seen_by_handler=False)
-                & ~Q(messages__message_type=MessageType.NOTE),
+                filter=Q(seen_by_handler=False) & ~Q(message_type=MessageType.NOTE),
             )
         )
 
@@ -259,21 +304,35 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         ApplicationStatus.CANCELLED,
     ]
 
-    def perform_update(self, serializer):
-        super().perform_update(serializer)
-        # In case new AuditLogEntry objects were created during the
-        # processing of the update, then the annotation value for handled_at
-        # in the serializer.instance might have become stale.
-        # Update the object.
-        serializer.instance = self.get_queryset().get(pk=serializer.instance.pk)
-
     def get_queryset(self):
+        # The default ordering in the handling views:
+        # * In the "received" table, ordering should be by the send time, most recent first
+        # * In the "handling" table, ordering should be by the calculation modification
+        #   time, most recent first
+        # * In the archive page, ordering should be by handled_at, most recent first.
+        # All these goals are achieved by ordering by first handled_at, then
+        # calculation.modified_at.
+        # * in the "received" and "handling" table, no application has handled_at set yet,
+        #   so applications will compare as equals
+        # * For received applications, the send time is the same as calculation
+        #   modification time
         return self._annotate_unread_messages_count(
             super()
             .get_queryset()
+            .exclude(status=ApplicationStatus.DRAFT)
             .select_related("batch", "calculation")
-            .prefetch_related("pay_subsidies", "training_compensations")
-        )
+            .prefetch_related(
+                "pay_subsidies", "training_compensations", "calculation__rows"
+            )
+        ).order_by("-handled_at", "-calculation__modified_at")
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if fields := self.request.query_params.get("fields", None):
+            context.update({"fields": fields.split(",")})
+        if exclude_fields := self.request.query_params.get("exclude_fields", None):
+            context.update({"exclude_fields": exclude_fields.split(",")})
+        return context
 
     @action(methods=["GET"], detail=False)
     def export_csv(self, request):

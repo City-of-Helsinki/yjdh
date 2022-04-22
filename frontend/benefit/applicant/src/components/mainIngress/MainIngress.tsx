@@ -9,14 +9,12 @@ import {
   $Container,
   $Description,
   $Heading,
-  $Link,
   $TextContainer,
 } from './MainIngress.sc';
 import { useMainIngress } from './useMainIngress';
 
 const MainIngress: React.FC = () => {
-  const { errors, handleNewApplicationClick, handleMoreInfoClick, t } =
-    useMainIngress();
+  const { errors, handleNewApplicationClick, t } = useMainIngress();
 
   const notificationItems = errors?.map(({ message, name }, i) => (
     // eslint-disable-next-line react/no-array-index-key
@@ -33,9 +31,11 @@ const MainIngress: React.FC = () => {
         <$TextContainer>
           <$Description>
             {t('common:mainIngress.description1')}
-            <$Link onClick={handleMoreInfoClick}>
+            {/* TODO: uncomment once having link to redirect to more info url,
+            handleMoreInfoClick is from useMainIngress */}
+            {/* <$Link onClick={handleMoreInfoClick}>
               {t('common:mainIngress.linkText')}
-            </$Link>
+            </$Link> */}
             {t('common:mainIngress.description2')}
           </$Description>
           <$ActionContainer>

@@ -2,33 +2,40 @@ import { useMutation, UseMutationResult, useQueryClient } from 'react-query';
 import { BackendEndpoint } from 'tet/admin/backend-api/backend-api';
 import useBackendAPI from 'shared/hooks/useBackendAPI';
 import { AxiosError } from 'axios';
-import { ErrorData } from 'benefit/applicant/types/common';
 import { useRouter } from 'next/router';
-import { TetUpsert } from 'tet/admin/types/linkedevents';
-import showErrorToast from 'shared/components/toast/show-error-toast';
+import { LinkedEventsError, TetUpsert } from 'tet-shared/types/linkedevents';
 import showSuccessToast from 'shared/components/toast/show-success-toast';
 import { useTranslation } from 'next-i18next';
+import useLinkedEventsErrorHandler from 'tet/admin/hooks/backend/useLinkedEventsErrorHandler';
 
-const useUpsertTetPosting = (): UseMutationResult<TetUpsert, AxiosError<ErrorData>, TetUpsert> => {
+const useUpsertTetPosting = (): UseMutationResult<TetUpsert, AxiosError<LinkedEventsError>, TetUpsert> => {
   const { axios, handleResponse } = useBackendAPI();
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  return useMutation<TetUpsert, AxiosError<ErrorData>, TetUpsert>(
+  const handleError = useLinkedEventsErrorHandler({
+    errorTitle: t('common:api.saveErrorTitle'),
+    errorMessage: t('common:api.saveErrorTitle'),
+  });
+
+  return useMutation<TetUpsert, AxiosError<LinkedEventsError>, TetUpsert>(
     'upsert',
     ({ id, event }: TetUpsert) =>
       handleResponse<TetUpsert>(
-        id ? axios.put(`${BackendEndpoint.TET_POSTINGS}${id}`, event) : axios.post(BackendEndpoint.TET_POSTINGS, event),
+        id
+          ? axios.put(`${BackendEndpoint.TET_POSTINGS}${id}/`, event)
+          : axios.post(BackendEndpoint.TET_POSTINGS, event),
       ),
     {
-      onSuccess: () => {
+      onSuccess: (data, variables) => {
+        const successMessage = variables.event.date_published
+          ? t('common:publish.saveSuccessMessage')
+          : t('common:upload.successMessage');
         void queryClient.removeQueries();
         void router.push('/');
-        showSuccessToast(t('common:upload.successMessage'), '');
+        showSuccessToast(successMessage, '');
       },
-      onError: () => {
-        showErrorToast(t('common:upload.errorTitle'), t('common:upload.errorMessage'));
-      },
+      onError: (error) => handleError(error),
     },
   );
 };

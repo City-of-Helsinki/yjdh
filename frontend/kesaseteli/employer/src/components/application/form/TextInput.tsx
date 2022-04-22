@@ -68,4 +68,11 @@ const TextInput: React.FC<TextInputProps> = ({
   );
 };
 
+TextInput.defaultProps = {
+  validation: undefined,
+  type: undefined,
+  placeholder: undefined,
+  helperFormat: undefined,
+};
+
 export default TextInput;

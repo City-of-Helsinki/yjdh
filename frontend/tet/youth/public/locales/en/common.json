@@ -10,6 +10,34 @@
     "pageNotFoundLabel": "Page was not found",
     "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
+	"frontPage": {
+		"heading": "Remember to find you TET job on time",
+		"search": "Search",
+		"fetch": "Search",
+		"advancedSearch": "Advanced search",
+		"boxTitle": "What is TET?",
+		"boxContent": "Work life practice, or TET, is part of school work for elementary school pupils. During TET, one can learn about different professions and get to experience working life in practice.",
+		"announceLinkTitle": "Announce a TET-position",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Are you an employer and want to make a TET-advertisement? Click here for the employer's service.",
+		"askLinkTitle": "Any questions?",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Do you have any questions or did you notice something strange about the service? Reach out!"
+	},
+	"filters": {
+		"searchPlaceholder": "Type search workd or location name",
+		"workMethod": "Choose working method",
+		"startDate": "Start date",
+		"endDate": "End date",
+		"language": "Choose language"
+	},
+	"postings": {
+		"searchResults_one": "{{count}} search result",
+		"searchResults_other": "{{count}} search results",
+		"readMore": "Read more",
+		"showMore": "Show more results",
+		"languages": "Language"
+	},
   "footer": {
     "copyrightText": "City of Helsinki",
     "allRightsReservedText": "All rights reserved",
@@ -17,7 +45,7 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
-    "feedback": "ENG Anna palautetta",
+    "feedback": "Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
   },
   "languages": {
@@ -31,5 +59,21 @@
       "label": "An unexpected error occurred",
       "text": "Try again later."
     }
-  }
+  },
+	"editor": {
+		"posting": {
+			"contactLanguageFi": "Finnish",
+			"contactLanguageSv": "Swedish",
+			"contactLanguageEn": "English"
+		}
+	},
+	"postingTemplate": {
+		"spots": "TET positions",
+		"contact": "Contact information",
+		"description": "Description",
+		"share": "Share event",
+		"dateAndTime": "Date and time",
+		"location": "Place",
+		"languages": "Languages used in the workplace"
+	}
 }

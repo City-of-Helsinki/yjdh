@@ -10,6 +10,35 @@
     "pageNotFoundLabel": "Sivua ei löytynyt",
     "pageNotFoundContent": "Voi ei, jokin meni nyt valitettavasti vikaan. Kokeile mennä <lnk>tästä</lnk> takaisin etusivulle."
   },
+	"frontPage": {
+		"heading": "Muistathan etsiä TET-paikkasi ajoissa",
+		"search": "Etsi",
+		"fetch": "Hae",
+		"advancedSearch": "Tarkennettu haku",
+		"boxTitle": "Mikä TET-paikka?",
+		"boxContent": "Työelämään tutustuminen eli TET kuuluu jokaisen peruskoululaisen elämään. TET:n aikana pääsee näkemään, mitä erilaisissa ammateissa tehdään ja pääsee itse kokemaan työelämää.",
+		"announceLinkTitle": "Ilmoita TET-paikka",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Oletko työnantaja ja haluat tehdä ilmoituksen avoimesta TET-paikasta? Siirry tästä työnantajan palveluun.",
+		"askLinkTitle": "Kysyttävää",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
+	},
+	"filters": {
+		"searchPlaceholder": "Kirjoita hakusana tai paikan nimi",
+		"workMethod": "Valitse työtapa",
+		"startDate": "Alkamispäivä",
+		"endDate": "Päättymispäivä",
+		"language": "Valitse kieli",
+		"clearFilters": "Tyhjennä hakuehdot"
+	},
+	"postings": {
+		"searchResults_one": "{{count}} hakutulos",
+		"searchResults_other": "{{count}} hakutulosta",
+		"readMore": "Lue lisää",
+		"showMore": "Näytä lisää tuloksia",
+		"languages": "Kielisyys"
+	},
   "footer": {
     "copyrightText": "Helsingin kaupunki",
     "allRightsReservedText": "Kaikki oikeudet pidätetään",
@@ -31,5 +60,21 @@
       "label": "Tapahtui tuntematon virhe",
       "text": " Yritä myöhemmin uudelleen"
     }
-  }
+  },
+	"editor": {
+		"posting": {
+			"contactLanguageFi": "Suomi",
+			"contactLanguageSv": "Ruotsi",
+			"contactLanguageEn": "Englanti"
+		}
+	},
+	"postingTemplate": {
+		"spots": "TET-paikkoja",
+		"contact": "Yhteystiedot",
+		"description": "Kuvaus",
+		"share": "Jaa tapahtuma",
+		"dateAndTime": "Päivä ja aika",
+		"location": "Paikka",
+		"languages": "TET-paikassa käytettävät kielet"
+	}
 }

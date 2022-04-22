@@ -7,6 +7,7 @@ import Document, {
   NextScript,
 } from 'next/document';
 import React from 'react';
+import PORTAL_ID from 'shared/constants/portal-id';
 
 process.on('unhandledRejection', (err) => {
   Sentry.captureException(err);
@@ -23,6 +24,7 @@ class ServerDocument extends Document<DocumentProps> {
         <Head />
         <body>
           <Main />
+          <div id={PORTAL_ID} />
           <NextScript />
         </body>
       </Html>

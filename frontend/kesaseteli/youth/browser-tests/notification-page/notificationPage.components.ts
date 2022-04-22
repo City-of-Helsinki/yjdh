@@ -2,33 +2,38 @@ import {
   getErrorMessage,
   screenContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
+
+import getYouthTranslationsApi from '../../src/__tests__/utils/i18n/get-youth-translations-api';
+import YouthTranslations from '../../src/__tests__/utils/i18n/youth-translations';
+
+type NotificationPage = keyof YouthTranslations['notificationPages'];
 
 export const getNotificationPageComponents = async (
   t: TestController,
-  {
-    headerText,
-    buttonText,
-  }: { headerText: string | RegExp; buttonText?: string }
+  page: NotificationPage,
+  lang?: Language
 ) => {
+  const {
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+  } = getYouthTranslationsApi();
   const screen = screenContext(t);
   const selectors = {
     header() {
       return screen.findByRole('heading', {
-        name: headerText,
+        name: translations.notificationPages[page].title,
       });
     },
     goToFrontPageButton() {
       return screen.findByRole('button', {
-        name: buttonText ?? 'Kesäseteli etusivulle',
+        name: translations.notificationPages[page].goToFrontendPage,
       });
     },
   };
   const expectations = {
     async isLoaded() {
-      await t
-        .expect(selectors.header().exists)
-        .ok(await getErrorMessage(t), { timeout: 20_000 });
+      await t.expect(selectors.header().exists).ok(await getErrorMessage(t));
     },
   };
   const actions = {

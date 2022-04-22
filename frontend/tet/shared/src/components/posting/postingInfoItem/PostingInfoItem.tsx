@@ -1,7 +1,8 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import React from 'react';
 import {
-  $InfoItem,
   $Header,
+  $InfoItem,
   $List,
 } from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem.sc';
 

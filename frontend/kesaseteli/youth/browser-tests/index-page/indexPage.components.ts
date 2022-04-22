@@ -8,71 +8,57 @@ import {
 import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
+import getYouthTranslations from '../../src/__tests__/utils/i18n/get-youth-translations-api';
+
 type TextInputName = keyof Omit<
   YouthFormData,
   'selectedSchool' | 'is_unlisted_school' | 'termsAndConditions'
 >;
 
-const translations = {
-  fi: {
-    title: /rekisteröidy ja saat henkilökohtaisen kesäsetelin käyttöösi/i,
-    schoolsDropdown: /koulu/i,
-    unlistedSchoolCheckbox: /koulua ei löydy listalta/i,
-    termsAndConditionsCheckbox:
-      /olen lukenut palvelun käyttöehdot ja hyväksyn ne/i,
-    sendButton: /lähetä tiedot/i,
-  },
-  sv: {
-    title: /registrera dig och få din personlig sommarsedel/i,
-    schoolsDropdown: /skola/i,
-    unlistedSchoolCheckbox: /skolan finns inte i listan/i,
-    termsAndConditionsCheckbox: /jag har läst och godkänner villkoren/i,
-    sendButton: /skicka informationen/i,
-  },
-  en: {
-    title: /sign up to receive your personal summer job voucher/i,
-    schoolsDropdown: /school/i,
-    unlistedSchoolCheckbox: /school not found on the list/i,
-    termsAndConditionsCheckbox: /i have read and accept the terms of use/i,
-    sendButton: /submit information/i,
-  },
-};
+type CheckboxName = keyof Pick<
+  YouthFormData,
+  'is_unlisted_school' | 'termsAndConditions'
+>;
 
 export const getIndexPageComponents = async (
   t: TestController,
   lang?: Language
 ) => {
+  const {
+    regexp,
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+  } = getYouthTranslations();
   const screen = screenContext(t);
   const within = withinContext(t);
   const withinForm = (): ReturnType<typeof within> =>
-    within(screen.findByTestId('youth-form'));
+    within(screen.getByTestId('youth-form'));
   const selectors = {
     title() {
       return screen.findByRole('heading', {
-        name: translations[lang ?? DEFAULT_LANGUAGE].title,
+        name: translations.youthApplication.title,
       });
     },
     textInput(name: TextInputName) {
       return withinForm().findByTestId(name as string);
     },
+    schoolsLoading() {
+      return withinForm().queryByPlaceholderText(
+        translations.youthApplication.form.schoolsLoading
+      );
+    },
     schoolsDropdown() {
-      return withinForm().findByRole('combobox', {
-        name: translations[lang ?? DEFAULT_LANGUAGE].schoolsDropdown,
+      return withinForm().queryByRole('combobox', {
+        name: regexp(translations.youthApplication.form.schoolsDropdown),
       });
     },
-    unlistedSchoolCheckbox() {
+    checkbox(name: CheckboxName) {
       return withinForm().findByRole('checkbox', {
-        name: translations[lang ?? DEFAULT_LANGUAGE].unlistedSchoolCheckbox,
-      });
-    },
-    termsAndConditionsCheckbox() {
-      return withinForm().findByRole('checkbox', {
-        name: translations[lang ?? DEFAULT_LANGUAGE].termsAndConditionsCheckbox,
+        name: regexp(translations.youthApplication.form[name]),
       });
     },
     sendButton() {
       return withinForm().findByRole('button', {
-        name: translations[lang ?? DEFAULT_LANGUAGE].sendButton,
+        name: translations.youthApplication.form.sendButton,
       });
     },
     result() {
@@ -82,6 +68,9 @@ export const getIndexPageComponents = async (
   const expectations = {
     async isLoaded() {
       await t.expect(selectors.title().exists).ok(await getErrorMessage(t));
+      await t
+        .expect(selectors.schoolsLoading().exists)
+        .notOk(await getErrorMessage(t));
     },
   };
   const actions = {
@@ -98,11 +87,8 @@ export const getIndexPageComponents = async (
       await fillInput<YouthFormData>(t, 'selectedSchool', dropdown, schoolName);
       await t.click(screen.findByRole('option', { name: schoolName }));
     },
-    async toggleUnlistedSchoolCheckbox() {
-      await t.click(selectors.unlistedSchoolCheckbox());
-    },
-    async toggleAcceptTermsAndConditions() {
-      await t.click(selectors.termsAndConditionsCheckbox());
+    async toggleCheckbox(name: CheckboxName) {
+      await t.click(selectors.checkbox(name));
     },
     async clickSendButton() {
       await t.click(selectors.sendButton());

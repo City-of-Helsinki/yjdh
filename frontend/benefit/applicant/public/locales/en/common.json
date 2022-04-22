@@ -2,336 +2,347 @@
   "applications": {
     "list": {
       "drafts": {
-        "heading": "Luonnokset"
+        "heading": "Drafts"
       },
       "submitted": {
-        "heading": "Lähetetyt"
+        "heading": "Submitted applications"
       },
       "moreInfo": {
-        "heading": "Lisätietoa tarvitaan"
+        "heading": "Additional information is needed"
       },
       "common": {
-        "created": "Luotu",
-        "employee": "Työllistetty",
+        "created": "Created",
+        "employee": "Employee",
         "saved": "Tallennettu",
-        "edit": "Muokkaa",
-        "sent": "Lähetetty",
-        "applicationNumber": "Hakemusnumero",
-        "status": "Tila",
-        "check": "Tarkastele",
-        "editEndDate": "Muokkaa viimeistään",
-        "newMessages_one": "{{count}} uusi viesti",
-        "newMessages_other": "{{count}} uutta viestiä"
+        "edit": "Edit",
+        "sent": "Submitted",
+        "applicationNumber": "Application number",
+        "status": "Status",
+        "check": "Review",
+        "editEndDate": "Edit by",
+        "newMessages_one": "{{count}} new",
+        "newMessages_other": "{{count}} new"
       }
     },
     "pageHeaders": {
-      "created": "Luotu",
-      "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
-      "new": "Uusi hakemus",
-      "edit": "Hakemus",
-      "helperText": "Ole hyvä ja tarkista hakemus. Tarvittaessa voit vielä muokata tietoja ennen kuin siirryt eteenpäin."
+      "created": "Created",
+      "sent": "Application number: {{applicationNumber}}  |  Submitted {{submittedAt}}",
+      "new": "New application",
+      "edit": "Application",
+      "helperText": "Please review the application before submitting.",
+      "guideText": "All items marked with * are required"
     },
     "statuses": {
-      "draft": "Luonnos",
-      "additionalInformationNeeded": "Lisätietoja tarvitaan",
-      "received": "Vastaanotettu",
-      "approved": "Hyväksytty",
-      "rejected": "Hylätty",
-      "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "draft": "Draft",
+      "additionalInformationNeeded": "Additional information is needed",
+      "received": "Received",
+      "approved": "Accepted",
+      "rejected": "Rejected",
+      "handling": "Handling",
+      "cancelled": "Cancelled"
     },
     "steps": {
-      "employer": "Työnantaja",
-      "hired": "Palkattava",
-      "attachments": "Liittet",
-      "summary": "Yhteenveto",
-      "credentials": "Valtakirja",
-      "send": "Lähetä"
+      "employer": "Employer",
+      "hired": "Employee",
+      "attachments": "Attachments",
+      "summary": "Summary",
+      "credentials": "Processing personal data",
+      "send": "Submit"
     },
     "actions": {
-      "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
-      "deleteApplication": "Poista hakemus",
-      "deleteApplicationConfirm": "Haluatko varmasti poistaa?",
-      "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
-      "continue": "Jatka",
+      "saveAndContinueLater": "Save and close",
+      "deleteApplication": "Delete the application",
+      "deleteApplicationConfirm": "Are you sure you want to delete the draft?",
+      "deleteApplicationDescription": "The application will be permanently deleted and cannot be recovered.",
+      "continue": "Continue",
       "send": "Send application",
       "back": "Back",
-      "edit": "Muokkaa",
-      "close": "Sulje"
+      "edit": "Edit",
+      "close": "Close",
+      "openTermsAsPDF": "Open the terms as a PDF file",
+      "continueToService": "Continue to the service",
+      "pauseAndExit": "Cancel and exit"
     },
     "sections": {
       "company": {
-        "heading1": "Työnantajan tiedot",
-        "heading1Additional": "Postiosoite päätöstä varten",
-        "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
-        "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis-tuet",
-        "heading4": "YT-tilanne",
-        "heading5": "YT-neuvottelut",
-        "businessId": "Y-tunnus: {{ businessId }}",
-        "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
-        "deMinimisAidsAdd": "Lisää",
-        "deMinimisAidsRemove": "Poista",
-        "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
+        "heading1": "Employer information",
+        "heading1Additional": "Postal address for delivering the decision",
+        "heading2": "Contact person",
+        "heading2Short": "Contact person",
+        "heading3": "De minimis aid of the applicant",
+        "heading4": "Co-determination negotiation situation",
+        "heading5": "Co-determination negotiation",
+        "businessId": "Business ID: {{ businessId }}",
+        "deMinimisAidsHeading": "List here all forms of de minimis aid received by the organisation during the current year and the previous two tax years",
+        "deMinimisAidsAdd": "Add",
+        "deMinimisAidsRemove": "Delete",
+        "deMinimisAidsNo": "Has the applicant been granted a deminimis-aid?",
         "notifications": {
           "companyInformation": {
-            "label": "Tiedot haettu YTJ:stä",
-            "content": "Työnantajan perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+            "label": "Data retrieved from the Business Information System",
+            "content": "Your organisation’s basic information has been retrieved from the Business Information System. If you wish, you can change the postal address to which the Helsinki benefit decision will be sent."
           },
           "deMinimisAidMaxAmount": {
-            "label": "Enimmäismäärä ylitetty",
-            "content": "De minimis-tuen enimmäismäärä on ylitetty. Tuki voi olla enintään 200 000 euroa, joka myönnetään yritykselle kuluvan vuoden ja kahden edellisen verovuoden kuluessa. Enimmäismäärässä huomioidaan kaikkien eri viranomaisten kyseisenä ajanjaksona de minimis -tukena myöntämä rahoitus."
+            "label": "Maximum amount exceeded",
+            "content": "The maximum amount of de minimis aid has been exceeded. Under the EU Regulation, a company may receive a maximum EUR 200,000 of de minimis aid during the current year and the previous two tax years. All forms of de minimis aid granted by various authorities during this period will be taken into account in the maximum amount."
           }
         },
         "tooltips": {
-          "heading3": "Hakijan de minimis-tuet tooltip text",
-          "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
+          "heading3": "De minimis aid is minor public aid granted to companies, such as a grant, loan, interest subsidy or guarantee. De minimis aid is governed by Commission Regulation (EU) No 1407/2013.",
+          "associationHasBusinessActivities": "The Helsinki benefit is subject to the rules for government grants when the beneficiary is a company or an association engaged in an economic activity, irrespective of its legal form or financing method. Economic activity refers to the sale of services and products that is continuous, for gainful purposes and under competitive conditions (all three conditions must be fulfilled at the same time). The rules for government grants can also be applied to non-profit employers. As a rule, any activities that the Tax Authority has not regarded as taxable economic activities are not considered to be economic activities."
         },
         "fields": {
           "useAlternativeAddress": {
-            "label": "Työnantajalle on toinen postiosoite"
+            "label": "Use a different postal address"
           },
           "alternativeCompanyStreetAddress": {
-            "label": "Osoite",
-            "placeholder": "Katuosoite"
+            "label": "Street address",
+            "placeholder": "Street address"
           },
           "alternativeCompanyPostcode": {
-            "label": "Postinumero",
-            "placeholder": "Postinumero"
+            "label": "Postal code",
+            "placeholder": "Postal code"
           },
           "alternativeCompanyCity": {
-            "label": "Postitoimipaikka",
-            "placeholder": "Postitoimipaikka"
+            "label": "City",
+            "placeholder": "City"
           },
           "companyDepartment": {
-            "label": "Toimipiste tai osasto (valinnainen)",
-            "placeholder": "Toimipiste / osasto"
+            "label": "Office or department (optional)",
+            "placeholder": "Office / department"
           },
           "companyBankAccountNumber": {
-            "label": "Tilinumero",
-            "placeholder": "IBAN muodossa"
+            "label": "Bank account number",
+            "placeholder": "In IBAN format"
           },
           "companyContactPersonFirstName": {
-            "label": "Etunimi",
-            "placeholder": "Etunimi"
+            "label": "First name",
+            "placeholder": "First name"
           },
           "companyContactPersonLastName": {
-            "label": "Sukunimi",
-            "placeholder": "Sukunimi"
+            "label": "Last name",
+            "placeholder": "Last name"
           },
           "companyContactPersonPhoneNumber": {
-            "label": "Puhelin",
+            "label": "Telephone",
             "placeholder": "040 1234567"
           },
           "companyContactPersonEmail": {
-            "label": "Sähköposti",
-            "placeholder": "Sähköpostiosoite"
+            "label": "Email address for communications",
+            "placeholder": "Email address"
           },
           "applicantLanguage": {
-            "label": "Asiointikieli"
+            "label": "Language of communication"
           },
           "associationHasBusinessActivities": {
-            "label": "Harjoittaako työnantaja elinkeinotoimintaa?",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "Is the employer engaged in economic activity?",
+            "yes": "Yes",
+            "no": "No"
           },
           "associationImmediateManagerCheck": {
-            "label": "Lähiesihenkilö palkattavalle henkilölle",
-            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen. ei palkkatuettu esihenkilö palkattavalle henkilölle."
+            "label": "Immediate manager for the person to be hired",
+            "placeholder": "The employer has a proper workspace and a manager (who has supervisory responsibility and is not pay-subsidised) for the person to be hired."
           },
           "deMinimisAid": {
-            "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "Has the applicant received de minimis aid during the current year or the previous two tax years?",
+            "yes": "Yes",
+            "no": "No"
           },
           "deMinimisAidGranter": {
-            "label": "Tuen myöntäjä",
-            "placeholder": "Myöntävä taho"
+            "label": "Aid granted by",
+            "placeholder": "Issuing party"
           },
           "deMinimisAidAmount": {
-            "label": "Tuen määrä (euro)",
+            "label": "Amount of aid (EUR)",
             "placeholder": "€"
           },
           "deMinimisAidGrantedAt": {
-            "label": "Myöntämispäivämääärä",
-            "labelShort": "Myönnetty",
-            "placeholder": "Valitse"
+            "label": "Date of issue",
+            "labelShort": "Date of issue",
+            "placeholder": "Select"
           },
           "coOperationNegotiations": {
-            "label": "Onko työnantajalla menossa YT-neuvottelut?",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "Is the organisation undergoing co-determination negotiations?",
+            "yes": "Yes",
+            "no": "No"
           },
           "coOperationNegotiationsDescription": {
-            "label": "Anna tarkempi selvitys YT-tilanteesta:",
-            "placeholder": "Kuvaile tilanne"
+            "label": "Provide a more detailed account of the co-determination negotiation situation:",
+            "placeholder": "Describe the situation"
           }
         }
       },
       "employee": {
-        "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
-        "heading1Short": "Palkattava henkilö",
-        "heading2": "Palkkatukipäätös",
-        "heading3": "Haettava tukimuoto",
-        "heading3Long": "Haettava tukimuoto ja ajankohta",
-        "heading4": "Haetaan ajalle",
-        "heading5Employment": "Työsuhde",
-        "heading5Assignment": "Toimeksianto",
-        "heading5EmploymentSub1": "Palkkauskustannukset",
-        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana ",
+        "heading1": "Person to be employed with the Helsinki benefit",
+        "heading1Short": "Person to be hired",
+        "heading2": "Pay subsidy decision",
+        "heading3": "Type of benefit applied for",
+        "heading3Long": "Form and date of the applied benefit",
+        "heading4": "Applied for the period",
+        "heading5Employment": "Employment relationship",
+        "heading5Assignment": "Commission",
+        "heading5EmploymentSub1": "Salary costs",
+        "salaryExpensesExplanation": "The gross salary and indirect labour costs are indicated in EUR per month, holiday bonus as a lump sum",
         "tooltips": {
-          "heading5Employment": "Työsuhde tooltip text",
-          "heading5EmploymentSub1": "Työsuhde sub header tooltip message 1",
-          "heading5Assignment": "Palkkauskustannukset tooltip text"
+          "heading5Employment": "Collective agreement applied: e.g. Collective Agreement for the Commercial Sector. If there is no binding collective agreement in the sector, put in a dash.",
+          "heading5EmploymentSub1": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee’s statutory contributions (the employee’s unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers’ statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium. Indirect labour costs refer to the amount of the employer’s statutory indirect labour costs paid for the salary per month. The holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
+          "heading5Assignment": "The gross salary is the salary paid to the subsidised employee before the deduction of the employee's statutory contributions (the employee's unemployment insurance and pension insurance contributions) and taxes. If the subsidised employee is paid remuneration bonuses (e.g. evening, night or shift work bonus), take the estimated amount into account in the gross salary. The employers' statutory indirect labour costs include social security expenses, pension insurance, accident insurance and unemployment insurance premiums as well as the mandatory group life insurance premium. Indirect labour costs refer to the amount of the employer's statutory indirect labour costs paid for the salary per month. The holiday bonus is a salary cost to be covered by the subsidy when it is paid for holiday pay during the subsidy period. Estimate the amount of holiday bonus to be paid during the subsidy period. Holiday compensation is not covered by the Helsinki benefit.",
+          "heading2": "Pay subsidy is a financial subsidy intended to promote the employment of an unemployed jobseeker, which TE Services can grant to the employer for salary costs.",
+          "heading3": "The Helsinki benefit for employment is intended for guidance, orientation, tools, work clothing and workspace costs when no other support is paid for these. The Helsinki benefit for salary is intended for the cost of employing a subsidised employee (= gross salary, statutory indirect labour costs and holiday bonus). The Helsinki benefit for a commission is intended for the performance of an individual job or project."
         },
         "notifications": {
           "salaryBenefit": {
-            "label": "Palkkatuettu oppisopimus",
-            "content": "Palkkatuettuun oppisopimukseen voi hakea joko työllistämisen tai palkan Helsinki-lisää"
+            "label": "Pay-subsidised apprenticeship",
+            "content": "You can apply for the Helsinki benefit for employment or salary for a pay-subsidised apprenticeship"
           },
           "employmentBenefitSelected": {
-            "label": "Ajanjakso",
-            "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+            "label": "Period",
+            "content": "Make sure that the period indicated in the application corresponds to the validity of the employment contract/pay subsidy."
           },
           "salaryBenefitSelected": {
-            "label": "Ajanjakso",
-            "content": "Varmista, että haettava ajankohta vastaa työsopimuksen/palkkatuen voimassaoloa."
+            "label": "Period",
+            "content": "Make sure that the period indicated in the application corresponds to the validity of the employment contract/pay subsidy."
           },
           "commissionBenefitSelected": {
-            "label": "Ajanjakso",
+            "label": "Period",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "No types of benefit available",
+            "content": "A company or an association that is not engaged in economic activity can only apply for the Helsinki benefit for salary. Pay subsidy granted for the employment relationship is a prerequisite for the Helsinki benefit for salary."
           }
         },
         "messages": {
-          "selectBenefitType": "Valitse ensi tukimuoto yllä",
-          "employmentBenefitSelected": "Helsinki-lisä haetaan työsuhteen keston mukaan 1–12 kk",
-          "salaryBenefitSelected": "Oppisopimuksessa 12 kk ylittävältä jaksolta on tehtävä uusi hakemus",
-          "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
+          "selectBenefitType": "First, select the type of benefit above",
+          "employmentBenefitSelected": "The Helsinki benefit is applied for for 1–12 months depending on the duration of the employment relationship.",
+          "salaryBenefitSelected": "In the case of an apprenticeship, a new application must be submitted for the period in exceed of 12 months",
+          "commissionBenefitSelected": "Please provide the duration of the commission here"
         },
         "fields": {
           "firstName": {
-            "label": "Etunimi",
-            "placeholder": "Etunimi"
+            "label": "First name",
+            "placeholder": "First name"
           },
           "lastName": {
-            "label": "Sukunimi",
-            "placeholder": "Sukunimi"
+            "label": "Last name",
+            "placeholder": "Last name"
           },
           "socialSecurityNumber": {
-            "label": "Henkilötunnus",
-            "placeholder": "Henkilötunnus"
+            "label": "Personal identity code",
+            "placeholder": "Personal identity code"
           },
           "phoneNumber": {
-            "label": "Puhelin",
+            "label": "Telephone",
             "placeholder": "040 1234567"
           },
           "isLivingInHelsinki": {
-            "label": "Helsinki kotikuntana",
-            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "The subsidised employee’s municipality of residence is Helsinki",
+            "placeholder": "Yes, the person to be employed is registered in Helsinki at the latest at the beginning of the employment relationship",
+            "yes": "Yes",
+            "no": "No",
+            "error": "To be eligible for the subsidy, the municipality of residence must be Helsinki."
           },
           "paySubsidyGranted": {
-            "label": "Onko työsuhteeseen myönnetty palkkatuki?",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "Has pay subsidy been granted for the employment relationship?",
+            "yes": "Yes",
+            "no": "No"
           },
           "paySubsidyPercent": {
-            "label": "Päätöksessä oleva palkkatukiprosentti"
+            "label": "Pay subsidy percent in the decision"
           },
           "additionalPaySubsidyPercent": {
-            "label": "Jos työsuhteeseen on myönnetty toinen palkkatuki,\nanna siinä oleva palkkatukiprosentti"
+            "label": "If another pay subsidy has been granted for the employment relationship, please provide the pay subsidy percent"
           },
           "apprenticeshipProgram": {
-            "label": "Onko kyseessä oppisopimus?",
-            "yes": "Kyllä",
-            "no": "Ei"
+            "label": "Is this an apprenticeship?",
+            "yes": "Yes",
+            "no": "No"
           },
           "benefitType": {
-            "label": "Tukimuoto",
-            "employment": "Työllistämisen Helsinki-lisä",
-            "salary": "Palkan Helsinki-lisä",
-            "commission": "Toimeksiannon Helsinki-lisä"
+            "label": "Type of benefit applied for",
+            "employment": "The Helsinki benefit for employment",
+            "salary": "The Helsinki benefit for salary",
+            "commission": "The Helsinki benefit for a commission"
           },
           "jobTitle": {
-            "label": "Tehtävänimike",
-            "placeholder": "Tehtävänimike"
+            "label": "Job title",
+            "placeholder": "Job title"
           },
           "workingHours": {
-            "label": "Työaika t/viikko",
-            "placeholder": "Tunteja",
-            "view": "Työaika: {{workingHours}} t / viikko"
+            "label": "Working hours per week",
+            "placeholder": "Hours",
+            "view": "Working hours: {{workingHours}} hours per week"
           },
           "collectiveBargainingAgreement": {
-            "label": "Sovellettava työehtosopimus",
-            "placeholder": "Työehtosopimus"
+            "label": "Collective agreement applied",
+            "placeholder": "Collective agreement applied"
           },
           "monthlyPay": {
-            "label": "Bruttopalkka",
-            "placeholder": "Palkka",
-            "view": "Bruttopalkka {{monthlyPay}} €/kk"
+            "label": "Gross salary",
+            "placeholder": "Gross salary",
+            "view": "Gross salary {{monthlyPay}} EUR per month"
           },
           "otherExpenses": {
-            "label": "Sivukulut",
-            "placeholder": "Sivukulut",
-            "view": "Sivukulut {{otherExpenses}} €/kk"
+            "label": "Indirect labour costs",
+            "placeholder": "Indirect labour costs",
+            "view": "Indirect labour costs {{otherExpenses}} EUR per month"
           },
           "vacationMoney": {
-            "label": "Lomaraha",
-            "placeholder": "Lomaraha",
-            "view": "Lomaraha {{vacationMoney}} €"
+            "label": "Holiday bonus",
+            "placeholder": "Holiday bonus",
+            "view": "Holiday bonus {{vacationMoney}} EUR"
           },
           "commissionDescription": {
-            "label": "Toimeksiannon kuvaus",
-            "placeholder": "Kuvaus"
+            "label": "Description of the commission",
+            "placeholder": "Description"
           },
           "commissionAmount": {
-            "label": "Palkkio €",
-            "placeholder": "Palkkio"
+            "label": "Remuneration in EUR",
+            "placeholder": "Remuneration"
           },
           "startDate": {
-            "label": "Alkaen",
-            "placeholder": "Alkaen"
+            "label": "Start date",
+            "placeholder": "Start date"
           },
           "endDate": {
-            "label": "Päättyen",
-            "placeholder": "Päättyen"
+            "label": "End date",
+            "placeholder": "End date"
           }
         }
       },
       "attachments": {
-        "heading1": "Liittet",
+        "heading1": "Attachments",
         "types": {
           "employmentContract": {
-            "title": "Työsopimus",
+            "title": "Employment contract",
             "message": ""
           },
           "paySubsidyDecision": {
-            "title": "Palkkatukipäätös",
-            "message": "Liitä molemmat myönnetyt palkkatukipäätökset"
+            "title": "Pay subsidy decision",
+            "message": "Attach both issued pay subsidy decisions"
           },
           "commissionContract": {
             "title": "Toimeksiantosopimus",
             "message": ""
           },
           "educationContract": {
-            "title": "Sopimus oppisopimuskoulutuksen järjestämisestä",
+            "title": "Agreement on the organisation of an apprenticeship",
             "message": ""
           },
           "helsinkiBenefitVoucher": {
-            "title": "Helsinki-lisä seteli",
-            "message": "Lisää tämä mikäli sellainen on myönnetty"
+            "title": "Helsinki benefit voucher",
+            "message": "Add Helsinki benefit voucher if one has been issued"
           }
         },
-        "add": "Liitä tiedosto",
-        "remove": "Poista liite"
+        "add": "Attach the file",
+        "remove": "Delete the attachment"
       },
       "summary": {
-        "heading1": "Ole hyvä ja tarkista hakemus"
+        "heading1": "Please review the application before submitting."
       },
       "credentials": {
-        "heading1": "Valtakirja",
-        "heading2": "Suostumus",
+        "heading1": "Processing of the personal data of the person to be employed",
+        "heading2": "Processing personal data",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",
@@ -339,44 +350,50 @@
             "action1": "Pyydä sähköistä valtakirjaa"
           },
           "uploadPowerOfAttorney": {
-            "title": "Liitä valtakirja",
-            "description": "Voit myös tulostaa valtakirjapohjan, pyytää siihen allekirjoitus ja liittää se hakemukseen.",
-            "action1": "Tulosta",
-            "action2": "Liitä valtakirja"
+            "title": "Attach the notification",
+            "description": "The accepted file formats are JPG, PNG and PDF.",
+            "action1": "Print",
+            "action2": "Attach the notification"
           }
         }
       },
       "send": {
-        "heading1": "Ehdot"
+        "heading1": "Terms"
       }
     }
   },
-  "appName": "Helsinki-benefit EN",
+  "serviceName": "Helsinki benefit service",
+  "appName": "Helsinki benefit",
   "header": {
     "loginLabel": "Sign in to the service",
     "logoutLabel": "Log out",
     "userAriaLabelPrefix": "User:",
     "messages": "Messages",
     "drawer": {
-      "title": "EN: Hakemuksen viestit"
-    }
+      "title": "Application’s messages"
+    },
+    "languageMenuButtonAriaLabel": "Select language"
   },
   "footer": {
-    "copyrightText": "Copyright text",
-    "allRightsReservedText": "All rights reserved text"
+    "copyrightText": "Copyright",
+    "allRightsReservedText": "All rights reserved",
+    "accessibilityStatement": "Accessibility statement",
+    "aboutTheService": "About the service",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
+    "aboutTheServiceLink": "https://www.hel.fi/en/business-and-work/employers/helsinki-benefit-for-employers"
   },
   "notifications": {
     "applicationSubmitted": {
-      "label": "Hakemus lähetty onnistuneesti",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen kun hakemus on käsitelty."
+      "label": "Application submitted successfully",
+      "message": "Helsinki benefit application {{applicationNumber}} ({{applicantName}}) has been submitted. You will be notified once the application has been processed."
     },
     "applicationSaved": {
-      "label": "Hakemus tallennettu",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
+      "label": "Application saved",
+      "message": "Helsinki-benefit application {{applicationNumber}} {{applicantName}} has been saved."
     },
     "applicationDeleted": {
-      "label": "Hakemus poistettu",
-      "message": "Helsinki-lisä hakemus on poistettu."
+      "label": "Draft deleted",
+      "message": "Application has been deleted. "
     }
   },
   "languages": {
@@ -390,18 +407,17 @@
     "en": "In English"
   },
   "mainIngress": {
-    "heading": "Hakemukset",
-    "description1": "Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä ",
-    "description2": ". Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
-    "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
-    "newApplicationBtnText": "Tee uusi hakemus"
+    "heading": "Applications",
+    "description1": "Welcome to the Helsinki benefit service.",
+    "description2": " You can save an incomplete application and continue to fill it in later.",
+    "linkText": " Please take a look at the required information and attachments before filling in the application.",
+    "newApplicationBtnText": "Submit a new application"
   },
   "attachmentsIngress": {
-    "text": "Lisää hakemukselle seuraavat liitteet. Liitteet ovat pakollisia, ellei toisin sanota. Tiedostomuoto voi olla JPG, PNG tai PDF. Suurin sallittu koko 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Add the following attachments to the application. All attachments marked with * are required. The accepted file formats are JPG, PNG and PDF and the maximum file size is 10 MB."
   },
   "credentialsIngress": {
-    "text": "Valitse yksi alla olevista tavoista. Hakemus on valmis lähetettäväksi vasta, kun palkattava henkilö on tehnyt sähköisen valtakirjan tai olet liittänyt allekirjoitetun valtakirjan. Huomoithan, että tämän jälkeen hakemusta ei voi enää muokata."
+    "text": "A person to be employed with the Helsinki benefit must be informed of the processing of their personal data. Print the notification and request a signature from the person to be employed."
   },
   "menuToggleAriaLabel": "Menu",
   "form": {
@@ -409,8 +425,12 @@
       "required": "This field is required",
       "invalid": "Invalid value",
       "number": {
+        "invalid": "Invalid value, please enter numbers only",
         "max": "Maximum value is {{max}}",
         "min": "Value must be at least {{min}}"
+      },
+      "phoneNumber": {
+        "max": "Maximum length is {{max}}"
       },
       "string": {
         "max": "This field can be up to {{max}} characters long",
@@ -431,20 +451,20 @@
         "max": "This time must be latest {{max}}"
       },
       "phone": {
-        "invalid": "The value must be a telephone number"
+        "invalid": "Invalid phone number"
       },
       "email": {
-        "invalid": "This field must be a valid email"
+        "invalid": "Invalid email address"
       },
       "iban": {
-        "invalid": "Invalid IBAN value"
+        "invalid": "Invalid IBAN"
       },
       "ssn": {
-        "invalid": "Invalid SSN value"
+        "invalid": "Invalid personal identity code"
       }
     }
   },
-  "select": "Valitse",
+  "select": "Select",
   "login": {
     "login": "Sign in to the service",
     "logoutMessageLabel": "You have logged out",
@@ -452,13 +472,14 @@
     "sessionExpiredLabel": "User session expired. Sign in again",
     "infoLabel": "Using the service requires strong authentication",
     "logoutInfoContent": "You have been logged out. If you want to continue to use the service, you have to log in again click the button here below.",
-    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself."
+    "infoContent": "You should identify yourself to be able to advance to the service. You can choose yourself which identification method you want to use. Click on the bottom below to identify yourself.",
+    "termsOfServiceHeader": "Information about the processing of the employer representatives’ personal data"
   },
   "errorPage": {
-    "title": "Palvelussa on valitettavsti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
-    "home": "Palaa etusivulle",
-    "logout": "Kirjaudu ulos"
+    "title": "An error has unfortunately occurred",
+    "message": "We are probably already trying to fix the problem. Please try again later.",
+    "home": "Return to the front page",
+    "logout": "Log out"
   },
   "error": {
     "generic": {
@@ -488,34 +509,51 @@
   },
   "utility": {
     "and": "ja",
-    "yes": "Kyllä",
-    "no": "Ei",
-    "close": "Sulje",
-    "home": "Palaa etusivulle"
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "home": "Return to the front page"
   },
   "messenger": {
-    "messages": "Hakemuksen viestit",
+    "messages": "Application’s messages",
     "titles": {
-      "applicantMessage": "Hakija",
-      "handlerMessage": "Käsittelijä",
+      "applicantMessage": "Applicant",
+      "handlerMessage": "Handler",
       "note": ""
     },
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Error occurred",
+          "text": "An error occurred when trying to create the message. Please try again later."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Error occurred",
+          "text": "An error occurred when trying to fetch the message. Please try again later."
         }
       }
     },
-    "compose": "Kirjoita viesti",
-    "send": "Lähetä",
-    "isSecure": "Viestit ovat salattuja",
-    "noMessages": "Ei viestejä",
-    "close": "Sulje"
+    "compose": "Write a message",
+    "send": "Submit",
+    "isSecure": "Messages are encrypted",
+    "noMessages": "No messages",
+    "close": "Close"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Do you need help? If anything is unclear, you can call or email us. Tel. +358 (0) 40 198 5891 and +358 (0) 40 183 3021 helsinkilisa@hel.fi ",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Show information"
+  },
+  "pageTitles": {
+    "login": "Helsinki benefit - Log in",
+    "home": "Helsinki benefit - Frontpage",
+    "createApplication": "Helsinki benefit - Application - Create",
+    "editApplication": "Helsinki benefit - Application - Edit",
+    "viewApplication": "Helsinki benefit - Application - View"
   }
 }

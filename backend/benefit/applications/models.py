@@ -9,15 +9,15 @@ from applications.enums import (
     BenefitType,
     OrganizationType,
 )
+from common.localized_iban_field import LocalizedIBANField
 from common.utils import DurationMixin
 from companies.models import Company
 from django.conf import settings
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import connection, models
-from django.db.models import Max, Q
+from django.db.models import OuterRef, Subquery
 from django.utils.translation import gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
-from localflavor.generic.models import IBANField
 from phonenumber_field.modelfields import PhoneNumberField
 from simple_history.models import HistoricalRecords
 
@@ -72,16 +72,32 @@ class ApplicationManager(models.Manager):
         ApplicationStatus.CANCELLED,
     ]
 
-    def _annotate_handled_at(self, qs):
-        return qs.annotate(
-            handled_at=Max(
-                "log_entries__created_at",
-                filter=Q(log_entries__to_status__in=self.HANDLED_STATUSES),
+    def _annotate_with_log_timestamp(self, qs, field_name, to_statuses):
+        subquery = (
+            ApplicationLogEntry.objects.filter(
+                application=OuterRef("pk"), to_status__in=to_statuses
             )
+            .order_by("-created_at")
+            .values("created_at")[:1]
         )
+        return qs.annotate(**{field_name: Subquery(subquery)})
 
     def get_queryset(self):
-        return self._annotate_handled_at(super().get_queryset())
+        """
+        Annotate the queryset with information about timestamps of past status transitions.
+        If multiple transitions to the same status have occurred, then use the latest status transition timestamp.
+        """
+        qs = super().get_queryset()
+        qs = self._annotate_with_log_timestamp(qs, "handled_at", self.HANDLED_STATUSES)
+        qs = self._annotate_with_log_timestamp(
+            qs,
+            "additional_information_requested_at",
+            [ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED],
+        )
+        qs = self._annotate_with_log_timestamp(
+            qs, "submitted_at", [ApplicationStatus.RECEIVED]
+        )
+        return qs
 
 
 class Application(UUIDModel, TimeStampedModel, DurationMixin):
@@ -123,7 +139,13 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
 
     company_name = models.CharField(max_length=256, verbose_name=_("company name"))
 
-    company_form = models.CharField(max_length=64, verbose_name=_("company form"))
+    company_form = models.CharField(
+        max_length=64, verbose_name=_("company form as user-readable text")
+    )
+
+    company_form_code = models.IntegerField(
+        verbose_name=_("YTJ type code for company form")
+    )
 
     company_department = models.CharField(
         max_length=256, blank=True, verbose_name=_("company department")
@@ -159,7 +181,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     effective_company_city = property(address_property("company_city"))
     effective_company_postcode = property(address_property("company_postcode"))
 
-    company_bank_account_number = IBANField(
+    company_bank_account_number = LocalizedIBANField(
         include_countries=("FI",),
         verbose_name=_("company bank account number"),
         blank=True,
@@ -318,7 +340,7 @@ class Application(UUIDModel, TimeStampedModel, DurationMixin):
     def ahjo_application_number(self):
         # Adding prefix to application number before sending to AHJO based on the company form
         if (
-            OrganizationType.resolve_organization_type(self.company.company_form)
+            OrganizationType.resolve_organization_type(self.company.company_form_code)
             == OrganizationType.ASSOCIATION
         ):
             return "R{}".format(self.application_number)
