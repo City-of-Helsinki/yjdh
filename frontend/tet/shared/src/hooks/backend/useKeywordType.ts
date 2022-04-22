@@ -5,8 +5,8 @@ import {
   getWorkMethods,
   keywordToOptionType,
 } from 'tet-shared/backend-api/linked-events-api';
-import { ClassificationType, KeywordFn } from 'tet-shared/types/keywords';
 import { OptionType } from 'tet-shared/types/classification';
+import { ClassificationType, KeywordFn } from 'tet-shared/types/keywords';
 
 export type UseKeywordResult = {
   getKeywordType?: KeywordFn;
@@ -55,17 +55,16 @@ const useKeywordType = (valueKey: valueKey = '@id'): UseKeywordResult => {
     workFeatures.data?.map((k) => keywordToOptionType(k, locale, valueKey)) ||
     [];
 
-  const getKeywordType: KeywordFn = (value, selector = '@id') => {
-    if (workMethods.data.some((keyword) => keyword[selector] === value)) {
+  const getKeywordType: KeywordFn = (url: string) => {
+    if (workMethods.data.some((keyword) => keyword['@id'] === url)) {
       return ClassificationType.WORKING_METHOD;
     }
-    if (workFeatures.data.some((keyword) => keyword[selector] === value)) {
+    if (workFeatures.data.some((keyword) => keyword['@id'] === url)) {
       return ClassificationType.WORKING_FEATURE;
     }
 
     return ClassificationType.KEYWORD;
   };
-
   return {
     isLoading: false,
     getKeywordType,
