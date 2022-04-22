@@ -1,4 +1,4 @@
-import { t, Selector } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 class ApplicationsList {
   newApplicationButton = Selector('button').withAttribute(
@@ -6,7 +6,7 @@ class ApplicationsList {
     'newApplicationButton'
   );
 
-  async createNewApplication() {
+  async createNewApplication(): Promise<void> {
     await t.click(this.newApplicationButton);
   }
 }

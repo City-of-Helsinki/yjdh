@@ -1,24 +1,33 @@
+import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
+import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { Selector } from 'testcafe';
+
 import applicationsList from '../page-modal/applicationsList';
 import step1 from '../page-modal/step1';
 import step2 from '../page-modal/step2';
 import step3 from '../page-modal/step3';
 import company from '../roles/company';
 import { getFrontendUrl } from '../utils/url.utils';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
-import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/shared/browser-tests/utils/request-logger';
 
 const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
 
 const url = getFrontendUrl('/');
+console.log('url', url);
 
-fixture('Company: New application')
+fixture('Frontpage')
   .page(url)
-  .requestHooks(new HttpRequestHook(url, getBackendDomain()))
+  .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
-  });
+  })
+  .afterEach(async () =>
+    // eslint-disable-next-line no-console
+    console.log(filterLoggedRequests(requestLogger))
+  );
 
 test('Oppisopimus', async (t) => {
   await t.useRole(company);

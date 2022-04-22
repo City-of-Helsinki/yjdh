@@ -42,7 +42,6 @@ env:
   HANDLER_URL: https://helsinkibenefit-bf-hndl-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_BACKEND_URL: https://helsinkibenefit-bf-bknd-${{ github.event.pull_request.number }}.${{ secrets.BASE_DOMAIN_STAGING }}
   NEXT_PUBLIC_MOCK_FLAG: 1
-  MOCK_FLAG: 1
   DISABLE_AUTHENTICATION: 1
   CORS_ALLOW_ALL_ORIGINS: 1
 jobs:
@@ -217,20 +216,20 @@ jobs:
           - service: bf-appl
             dir: benefit/applicant
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup kubectl
         run: |
           echo "${{ env.KUBECONFIG_RAW }}" > $(pwd)/kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
         shell: bash
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v3
         with:
           node-version: "14"
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -244,9 +243,14 @@ jobs:
           echo "ENVIRONMENT_URL=https://helsinkibenefit-${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
-        run: yarn --cwd ${{ matrix.dir }} browser-test:ci
+        run: yarn --cwd ${{matrix.dir}} browser-test:ci -q attemptLimit=3,successThreshold=1
         env:
+          GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
+          GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          FRONTEND_URL: ${{ env.ENVIRONMENT_URL }}
           APPLICANT_URL: ${{ env.ENVIRONMENT_URL }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
+          NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
       - name: Create/update PR comment for Acceptance Test results
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -255,8 +259,17 @@ jobs:
           message: |
             ## TestCafe result is __${{ steps.testcafe.outcome }}__ for ${{ env.ENVIRONMENT_URL }}! ${{steps.testcafe.outcome == 'success' && ':laughing::tada::tada::tada:' || ':crying_cat_face::anger::boom::boom:' }}
         if: always() && (steps.testcafe.outcome == 'success' || steps.testcafe.outcome == 'failure')
+      - name: Create/update PR comment for Acceptance Test results
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: testcafe-results-${{ matrix.service }}
+          append: true
+          message: |
+            **Check the report on: [${{ env.REPORT_URL }}](${{ env.REPORT_URL }})**
+        if: always() && steps.testcafe.outcome == 'failure'
       - name: Upload screenshots and videos of failed tests to artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: report
           path: ./frontend/${{matrix.dir}}/report
