@@ -55,11 +55,11 @@ const useKeywordType = (valueKey: valueKey = '@id'): UseKeywordResult => {
     workFeatures.data?.map((k) => keywordToOptionType(k, locale, valueKey)) ||
     [];
 
-  const getKeywordType: KeywordFn = (url: string) => {
-    if (workMethods.data.some((keyword) => keyword['@id'] === url)) {
+  const getKeywordType: KeywordFn = (value, selector = '@id') => {
+    if (workMethods.data.some((keyword) => keyword[selector] === value)) {
       return ClassificationType.WORKING_METHOD;
     }
-    if (workFeatures.data.some((keyword) => keyword['@id'] === url)) {
+    if (workFeatures.data.some((keyword) => keyword[selector] === value)) {
       return ClassificationType.WORKING_FEATURE;
     }
 

@@ -5,4 +5,7 @@ export enum ClassificationType {
   KEYWORD = 'KEYWORD',
 }
 
-export type KeywordFn = (keywordUrl: string) => ClassificationType;
+export type KeywordFn = (
+  value: string,
+  selector: '@id' | 'id'
+) => ClassificationType;
