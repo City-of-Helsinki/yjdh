@@ -4,7 +4,6 @@ from typing import List, Optional
 
 import factory
 import factory.fuzzy
-import pytz
 from django.db.models.signals import post_save
 from faker import Faker
 from shared.common.tests.factories import HandlerUserFactory, UserFactory
@@ -17,6 +16,7 @@ from applications.enums import (
     get_supported_languages,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
+    VtjTestCase,
     YouthApplicationStatus,
 )
 from applications.models import (
@@ -26,6 +26,7 @@ from applications.models import (
     YouthApplication,
     YouthSummerVoucher,
 )
+from applications.tests.data.mock_vtj import mock_vtj_person_id_query_found_content
 from companies.models import Company
 
 
@@ -289,11 +290,33 @@ def determine_additional_info_description(youth_application):
     return ""
 
 
+def determine_automatically_acceptable_vtj_json(youth_application):
+    return mock_vtj_person_id_query_found_content(
+        first_name=youth_application.first_name,
+        last_name=youth_application.last_name,
+        social_security_number=youth_application.social_security_number,
+        is_alive=True,
+        is_home_municipality_helsinki=True,
+    )
+
+
+def determine_need_additional_info_vtj_json(youth_application):
+    return mock_vtj_person_id_query_found_content(
+        first_name=youth_application.first_name,
+        last_name=youth_application.last_name,
+        social_security_number=youth_application.social_security_number,
+        is_alive=True,
+        is_home_municipality_helsinki=False,
+    )
+
+
+def determine_target_group_social_security_number(youth_application):
+    return Faker(locale="fi").ssn(min_age=16, max_age=17)
+
+
 @factory.django.mute_signals(post_save)
 class AbstractYouthApplicationFactory(factory.django.DjangoModelFactory):
-    created_at = factory.fuzzy.FuzzyDateTime(
-        start_dt=datetime(2021, 1, 1, tzinfo=pytz.UTC),
-    )
+    created_at = datetime.now()
     modified_at = factory.LazyAttribute(copy_created_at)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
@@ -371,13 +394,28 @@ class InactiveYouthApplicationFactory(AbstractYouthApplicationFactory):
 class InactiveNoNeedAdditionalInfoYouthApplicationFactory(
     InactiveYouthApplicationFactory
 ):
+    social_security_number = factory.LazyAttribute(
+        determine_target_group_social_security_number
+    )
     is_unlisted_school = False
+    encrypted_vtj_json = factory.LazyAttribute(
+        determine_automatically_acceptable_vtj_json
+    )
 
 
 class InactiveNeedAdditionalInfoYouthApplicationFactory(
     InactiveYouthApplicationFactory
 ):
+    social_security_number = factory.LazyAttribute(
+        determine_target_group_social_security_number
+    )
     is_unlisted_school = True
+    encrypted_vtj_json = factory.LazyAttribute(determine_need_additional_info_vtj_json)
+
+
+class InactiveVtjTestCaseYouthApplicationFactory(InactiveYouthApplicationFactory):
+    first_name = VtjTestCase.first_name()
+    last_name = factory.Faker("random_element", elements=VtjTestCase.values)
 
 
 class AcceptableYouthApplicationFactory(AbstractYouthApplicationFactory):
