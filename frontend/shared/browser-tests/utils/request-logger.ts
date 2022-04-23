@@ -14,6 +14,19 @@ const requestLogger = RequestLogger(
   }
 );
 
+const getShortenedHeadersString = (
+  headers: Record<string, string> | string
+): string => {
+  const headersJson =
+    typeof headers === 'string' ? headers : JSON.stringify(headers, null, 2);
+  if (headersJson.length > 5000) {
+    return `${headersJson.slice(0, 5000)}...${
+      headers === 'string' ? '' : '\n}'
+    }`;
+  }
+  return headersJson;
+};
+
 const getShortenedBodyString = (body: string | Buffer): string => {
   if (typeof body !== 'string' || !isValidJsonString(body)) {
     return '<Blob>';
@@ -24,15 +37,28 @@ const getShortenedBodyString = (body: string | Buffer): string => {
   return body;
 };
 
-export const filterLoggedRequests = (logger: RequestLogger): LoggedRequest[] =>
-  logger.requests.map((request) => ({
+type FilteredLoggedRequest = Omit<LoggedRequest, 'request' | 'response'> & {
+  request: {
+    headers: string;
+  };
+  response: {
+    headers: string;
+  };
+};
+
+export const filterLoggedRequests = (
+  logger: RequestLogger
+): FilteredLoggedRequest[] =>
+  logger.requests.map((request: LoggedRequest) => ({
     ...request,
     request: {
       ...request.request,
+      headers: getShortenedHeadersString(request.request?.headers),
       body: getShortenedBodyString(request.request?.body),
     },
     response: {
       ...request.response,
+      headers: getShortenedHeadersString(request.response?.headers),
       body: getShortenedBodyString(request.response?.body),
     },
   }));
