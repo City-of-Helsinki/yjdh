@@ -63,6 +63,7 @@ const CompanyInfo: React.FC = () => {
           <$GridCell $colSpan={6}>
             <TextInput
               id="org_name"
+              data-testid="posting-form-org_name"
               label={t('common:editor.employerInfo.departmentLabel')}
               placeholder={t('common:editor.employerInfo.departmentLabel')}
               registerOptions={name}
