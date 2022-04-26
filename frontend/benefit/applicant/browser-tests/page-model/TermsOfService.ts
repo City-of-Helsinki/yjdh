@@ -8,7 +8,7 @@ class TermsOfService extends ApplicantPageComponent {
   }
 
   continueButton = this.component.findByRole('button', {
-    name: this.regexp(this.translations.applications.actions.continueToService),
+    name: this.translations.applications.actions.continueToService,
   });
 
   public async clickContinueButton(): Promise<void> {

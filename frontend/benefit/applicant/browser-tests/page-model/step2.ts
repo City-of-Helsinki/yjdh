@@ -1,6 +1,11 @@
 import { t, Selector } from 'testcafe';
+import ApplicantPageComponent from './ApplicantPageComponent';
 
-class Step2 {
+class Step2 extends ApplicantPageComponent {
+  constructor() {
+    super({ datatestId: 'step-2' });
+  }
+
   currentStep = Selector('div')
     .withAttribute('data-testid', 'currentStep')
     .withText('2');
@@ -60,52 +65,53 @@ class Step2 {
     'employee.vacationMoney'
   );
 
-  async fillEmployeeInfo(
+  public async fillEmployeeInfo(
     firstName: string,
     lastName: string,
     ssn: string,
     phoneNumber: string
-  ) {
-    await t
-      .typeText(this.firstName, firstName)
-      .typeText(this.lastName, lastName)
-      .typeText(this.ssn, ssn)
-      .typeText(this.phoneNumber, phoneNumber)
-      .click(this.isLivingInHelsinkiCheckbox);
+  ): Promise<void> {
+    await Step2.fillInput(this.firstName, firstName);
+    await Step2.fillInput(this.lastName, lastName);
+    await Step2.fillInput(this.ssn, ssn);
+    await Step2.fillInput(this.phoneNumber, phoneNumber);
+    await Step2.clickSelectRadioButton(this.isLivingInHelsinkiCheckbox);
   }
 
-  async fillPaidSubsidyGrant() {
-    await t
-      .click(this.paidSubsidyTrue)
-      .click(this.paidSubsidySelect)
-      .click(this.paidSubsidyFiftyPercent)
-      .click(this.additionalPaidSubsidySelect)
-      .click(this.additionalPaidSubsidyThirtyPercent)
-      .click(this.apprenticeshipProgramFalse);
+  public async fillPaidSubsidyGrant(): Promise<void> {
+    await Step2.clickSelectRadioButton(this.paidSubsidyTrue);
+    await Step2.clickSelectRadioButton(this.paidSubsidySelect);
+    await Step2.clickSelectRadioButton(this.paidSubsidyFiftyPercent);
+    await Step2.clickSelectRadioButton(this.additionalPaidSubsidySelect);
+    await Step2.clickSelectRadioButton(this.additionalPaidSubsidyThirtyPercent);
+    await Step2.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 
-  async selectBenefitType(benefitType: 'employment' | 'salary' | 'commission') {
+  public async selectBenefitType(
+    benefitType: 'employment' | 'salary' | 'commission'
+  ): Promise<void> {
     switch (benefitType) {
       case 'employment':
-        await t.click(this.benefitTypeEmployment);
+        await Step2.clickSelectRadioButton(this.benefitTypeEmployment);
         break;
       case 'salary':
-        await t.click(this.benefitTypeSalary);
+        await Step2.clickSelectRadioButton(this.benefitTypeSalary);
         break;
       case 'commission':
-        await t.click(this.benefitTypeCommission);
+        await Step2.clickSelectRadioButton(this.benefitTypeCommission);
         break;
     }
   }
 
-  async fillBenefitPeriod(startDate: string, endDate: string) {
-    await t
-      .typeText(this.startDate, startDate)
-      .wait(500)
-      .typeText(this.endDate, endDate);
+  public async fillBenefitPeriod(
+    startDate: string,
+    endDate: string
+  ): Promise<void> {
+    await Step2.fillInput(this.startDate, startDate);
+    await Step2.fillInput(this.endDate, endDate);
   }
 
-  async fillEmploymentInfo(
+  public async fillEmploymentInfo(
     jobTitle: string,
     workingHours: string,
     collectiveBargainingAgreement: string,
@@ -113,16 +119,15 @@ class Step2 {
     otherExpenses: string,
     vacationMoney: string
   ) {
-    await t
-      .typeText(this.jobTitle, jobTitle)
-      .typeText(this.workingHours, workingHours)
-      .typeText(
-        this.collectiveBargainingAgreement,
-        collectiveBargainingAgreement
-      )
-      .typeText(this.monthlyPay, monthlyPay)
-      .typeText(this.otherExpenses, otherExpenses)
-      .typeText(this.vacationMoney, vacationMoney);
+    await Step2.fillInput(this.jobTitle, jobTitle);
+    await Step2.fillInput(this.workingHours, workingHours);
+    await Step2.fillInput(
+      this.collectiveBargainingAgreement,
+      collectiveBargainingAgreement
+    );
+    await Step2.fillInput(this.monthlyPay, monthlyPay);
+    await Step2.fillInput(this.otherExpenses, otherExpenses);
+    await Step2.fillInput(this.vacationMoney, vacationMoney);
   }
 
   async submit() {
@@ -130,4 +135,4 @@ class Step2 {
   }
 }
 
-export default new Step2();
+export default Step2;

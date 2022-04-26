@@ -1,9 +1,7 @@
 import { respondAbove } from 'shared/styles/mediaQueries';
 import styled from 'styled-components';
 
-interface ContainerProps {
-  backgroundColor?: string;
-}
+export type ContainerProps = HTMLDivElement & { backgroundColor?: string };
 
 export const $Container = styled.div<ContainerProps>`
   display: grid;

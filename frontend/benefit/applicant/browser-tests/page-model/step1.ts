@@ -1,6 +1,12 @@
-import { t, Selector } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
-class Step1 {
+import ApplicantPageComponent from './ApplicantPageComponent';
+
+class Step1 extends ApplicantPageComponent {
+  constructor() {
+    super({ datatestId: 'step-1' });
+  }
+
   newApplicationHeading = Selector('h1').withText('Uusi hakemus');
 
   bankAccountNumber = Selector('input').withAttribute(
@@ -28,29 +34,28 @@ class Step1 {
 
   nextButton = Selector('button').withAttribute('data-testid', 'nextButton');
 
-  async fillEmployerInfo(iban: string) {
-    await t.typeText(this.bankAccountNumber, iban);
+  public fillEmployerInfo(iban: string): Promise<void> {
+    return Step1.fillInput(this.bankAccountNumber, iban);
   }
 
-  async fillContactPerson(
+  public async fillContactPerson(
     firstName: string,
     lastName: string,
     phoneNumber: string,
     email: string
-  ) {
-    await t
-      .typeText(this.firstName, firstName)
-      .typeText(this.lastName, lastName)
-      .typeText(this.phoneNumber, phoneNumber)
-      .typeText(this.email, email);
+  ): Promise<void> {
+    await Step1.fillInput(this.firstName, firstName);
+    await Step1.fillInput(this.lastName, lastName);
+    await Step1.fillInput(this.phoneNumber, phoneNumber);
+    return Step1.fillInput(this.email, email);
   }
 
-  async selectNoDeMinimis() {
-    await t.click(this.deMinimisAidFalse);
+  public selectNoDeMinimis(): Promise<void> {
+    return Step1.clickSelectRadioButton(this.deMinimisAidFalse);
   }
 
-  async selectNocoOperationNegotiations() {
-    await t.click(this.coOperationNegotiationsFalse);
+  public selectNocoOperationNegotiations(): Promise<void> {
+    return Step1.clickSelectRadioButton(this.coOperationNegotiationsFalse);
   }
 
   async submit() {
@@ -58,4 +63,4 @@ class Step1 {
   }
 }
 
-export default new Step1();
+export default Step1;

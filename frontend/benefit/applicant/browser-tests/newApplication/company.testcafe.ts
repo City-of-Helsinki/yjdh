@@ -1,16 +1,15 @@
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
-import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
-import { Selector } from 'testcafe';
-
-import step1 from '../page-model/step1';
-import step2 from '../page-model/step2';
-import step3 from '../page-model/step3';
-import { getFrontendUrl } from '../utils/url.utils';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
-import TermsOfService from '../page-model/TermsOfService';
+import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+
 import MainIngress from '../page-model/MainIngress';
+import Step1 from '../page-model/step1';
+import Step2 from '../page-model/step2';
+import Step3 from '../page-model/step3';
+import TermsOfService from '../page-model/TermsOfService';
+import { getFrontendUrl } from '../utils/url.utils';
 
 const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
@@ -37,7 +36,8 @@ test('Oppisopimus', async (t) => {
   await mainIngress.isLoaded();
   await mainIngress.clickCreateNewApplicationButton();
 
-  await t.expect(step1.newApplicationHeading.exists).ok();
+  const step1 = new Step1();
+  await step1.isLoaded(60_000);
 
   await step1.fillEmployerInfo('6051437344779954');
   await step1.fillContactPerson(
@@ -50,7 +50,8 @@ test('Oppisopimus', async (t) => {
   await step1.selectNocoOperationNegotiations();
   await step1.submit();
 
-  await t.expect(step2.currentStep.exists).ok();
+  const step2 = new Step2();
+  await step2.isLoaded();
 
   await step2.fillEmployeeInfo('Larry', 'Blick', '010101-150J', '040444321');
   await step2.fillPaidSubsidyGrant();
@@ -70,8 +71,8 @@ test('Oppisopimus', async (t) => {
   );
   await step2.submit();
 
-  await t.expect(Selector('h1').withText('Hakemus').exists).ok();
-
+  const step3 = new Step3();
+  await step3.isLoaded();
   await step3.employmentContractNeeded();
   await step3.paySubsidyDecisionNeeded();
   await step3.helsinkiBenefitVoucherNeeded();

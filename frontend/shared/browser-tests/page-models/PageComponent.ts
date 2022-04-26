@@ -1,5 +1,5 @@
 import { WithinSelectors } from '@testing-library/testcafe';
-import { t } from 'testcafe';
+import { t, Selector } from 'testcafe';
 
 import { TranslationsApi } from '../../src/__tests__/types/translations';
 import {
@@ -11,6 +11,7 @@ import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import {
   getErrorMessage,
   screenContext,
+  setDataToPrintOnFailure,
   withinContext,
 } from '../utils/testcafe.utils';
 
@@ -54,20 +55,50 @@ abstract class PageComponent<Translations> {
 
   loadingSpinners = this.screen.queryAllByTestId('hidden-loading-indicator');
 
-  public async isLoadingSpinnerNoMorePresent(): Promise<void> {
-    await t.expect(this.loadingSpinners.exists).notOk(await getErrorMessage(t));
+  public async isLoadingSpinnerNoMorePresent(timeout?: number): Promise<void> {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    return t
+      .expect(this.loadingSpinners.exists)
+      .notOk(await getErrorMessage(t), { timeout });
   }
 
   /**
    * Waits until component is loaded to the screen. Please call this instantly after
    * calling the constructor to make sure the component is present before proceeding with other actions
    */
-  public async isLoaded(): Promise<void> {
-    await this.isLoadingSpinnerNoMorePresent();
+  public async isLoaded(timeout?: number): Promise<void> {
+    await this.isLoadingSpinnerNoMorePresent(timeout);
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    await t
+    return t
       .expect(this.screen.findByTestId(this.dataTestId).exists)
       .ok(await getErrorMessage(t));
+  }
+
+  /**
+   * Utility that clears the possible previous value from input and
+   * types a new one
+   * @param selector
+   * @param value
+   * @protected
+   */
+  protected static fillInput(
+    selector: Selector | SelectorPromise,
+    value?: string
+  ): Promise<void> {
+    return t
+      .click(selector)
+      .pressKey('ctrl+a delete')
+      .typeText(selector, value ?? '');
+  }
+
+  /**
+   * Utility to click radio button without waiting timeout
+   * https://stackoverflow.com/questions/66246885/slow-performance-with-testcafe-and-ids-and-custom-radio-buttons
+   */
+  protected static clickSelectRadioButton(
+    selector: Selector | SelectorPromise
+  ): Promise<void> {
+    return t.click(Selector(selector, { timeout: 0 }));
   }
 }
 

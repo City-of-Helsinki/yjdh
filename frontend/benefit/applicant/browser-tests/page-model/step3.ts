@@ -1,6 +1,12 @@
-import { t, Selector } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
-class Step3 {
+import ApplicantPageComponent from './ApplicantPageComponent';
+
+class Step3 extends ApplicantPageComponent {
+  constructor() {
+    super({ datatestId: 'step-3' });
+  }
+
   employmentContract = Selector('input').withAttribute(
     'name',
     'employment_contract'
@@ -59,4 +65,4 @@ class Step3 {
   }
 }
 
-export default new Step3();
+export default Step3;
