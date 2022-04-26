@@ -23,7 +23,7 @@ class WizardStep extends ApplicantPageComponent {
   });
 
   protected dialogConfirmDeleteButton = this.within(
-    this.component.getByRole('dialog')
+    this.screen.getByRole('dialog')
   ).findByRole('button', {
     name: this.translations.applications.actions.deleteApplication,
   });
@@ -34,7 +34,7 @@ class WizardStep extends ApplicantPageComponent {
   public clickSaveAndClose() {
     return t.click(this.saveAndCloseButton);
   }
-  public clickDeleteApplication() {
+  public async clickDeleteApplication() {
     return t.click(this.deleteButton);
   }
   public confirmDeleteApplication() {
