@@ -2,9 +2,9 @@ import ApplicationsList from 'benefit/applicant/components/applications/applicat
 import MainIngress from 'benefit/applicant/components/mainIngress/MainIngress';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { GetStaticProps, NextPage } from 'next';
-import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import * as React from 'react';
 import withAuth from 'shared/components/hocs/withAuth';
+import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 import { SUBMITTED_STATUSES } from '../constants';
 import FrontPageProvider from '../context/FrontPageProvider';

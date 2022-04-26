@@ -2,6 +2,7 @@ from datetime import date
 
 from applications.models import Application
 from companies.models import Company
+from companies.api.v1.serializers import CompanySerializer
 from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -17,9 +18,9 @@ class TermsManager(models.Manager):
     def get_terms_in_effect(self, terms_type):
         return (
             self.get_queryset()
-                .filter(terms_type=terms_type, effective_from__lte=date.today())
-                .order_by("-effective_from")
-                .first()
+            .filter(terms_type=terms_type, effective_from__lte=date.today())
+            .order_by("-effective_from")
+            .first()
         )  # unique constraint in ensures there's at most only one
 
 
@@ -192,7 +193,10 @@ class TermsOfServiceApproval(AbstractTermsApproval):
         if user is None:
             raise Exception("valid user needed")
         if company is None:
-            if hasattr(settings, "DUMMY_COMPANY_FORM_CODE") and settings.DUMMY_COMPANY_FORM_CODE:
+            if (
+                hasattr(settings, "DUMMY_COMPANY_FORM_CODE")
+                and settings.DUMMY_COMPANY_FORM_CODE
+            ):
                 dummy_data = get_dummy_company_data()
                 dummy_company = Company.objects.filter(
                     business_id=dummy_data["business_id"]

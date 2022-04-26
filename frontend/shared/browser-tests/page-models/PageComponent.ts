@@ -1,5 +1,5 @@
 import { WithinSelectors } from '@testing-library/testcafe';
-import { t, Selector } from 'testcafe';
+import { Selector, t } from 'testcafe';
 
 import { TranslationsApi } from '../../src/__tests__/types/translations';
 import {
@@ -55,10 +55,12 @@ abstract class PageComponent<Translations> {
   loadingSpinners = this.screen.queryAllByTestId('hidden-loading-indicator');
 
   public async isLoadingSpinnerNoMorePresent(timeout?: number): Promise<void> {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    return t
-      .expect(this.loadingSpinners.exists)
-      .notOk(await getErrorMessage(t), { timeout });
+    return (
+      t
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        .expect(this.loadingSpinners.exists)
+        .notOk(await getErrorMessage(t), { timeout })
+    );
   }
 
   /**
@@ -67,10 +69,12 @@ abstract class PageComponent<Translations> {
    */
   public async isLoaded(timeout?: number): Promise<void> {
     await this.isLoadingSpinnerNoMorePresent(timeout);
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    return t
-      .expect(this.screen.findByTestId(this.dataTestId).exists)
-      .ok(await getErrorMessage(t));
+    return (
+      t
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        .expect(this.screen.findByTestId(this.dataTestId).exists)
+        .ok(await getErrorMessage(t))
+    );
   }
 
   /**

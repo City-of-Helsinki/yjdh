@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { $Container, $Inner, ContainerProps } from './Container.sc';
 
-type Props = ContainerProps & { children: React.ReactNode };
+type Props = React.PropsWithChildren<ContainerProps>;
 
 const Container: React.FC<Props> = ({ children, ...props }) => (
   <$Container {...props}>
