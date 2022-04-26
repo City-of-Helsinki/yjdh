@@ -11,18 +11,34 @@ class WizardStep extends ApplicantPageComponent {
     super({ datatestId: `step-${step}`, ...options });
   }
 
-  nextButton = this.component.findByRole('button', {
+  protected nextButton = this.component.findByRole('button', {
     name: this.translations.applications.actions.continue,
   });
-  saveAndCloseButton = this.component.findByRole('button', {
-    name: this.translations.applications.actions.continue,
+  protected saveAndCloseButton = this.component.findByRole('button', {
+    name: this.translations.applications.actions.saveAndContinueLater,
   });
 
-  public async clickSubmit() {
-    await t.click(this.nextButton);
+  protected deleteButton = this.component.findByRole('button', {
+    name: this.translations.applications.actions.deleteApplication,
+  });
+
+  protected dialogConfirmDeleteButton = this.within(
+    this.component.getByRole('dialog')
+  ).findByRole('button', {
+    name: this.translations.applications.actions.deleteApplication,
+  });
+
+  public clickSubmit() {
+    return t.click(this.nextButton);
   }
-  public async clickSaveAndClose() {
-    await t.click(this.saveAndCloseButton);
+  public clickSaveAndClose() {
+    return t.click(this.saveAndCloseButton);
+  }
+  public clickDeleteApplication() {
+    return t.click(this.deleteButton);
+  }
+  public confirmDeleteApplication() {
+    return t.click(this.dialogConfirmDeleteButton);
   }
 }
 

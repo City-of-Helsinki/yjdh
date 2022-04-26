@@ -73,7 +73,7 @@ abstract class PageComponent<Translations> {
       t
         // eslint-disable-next-line security/detect-non-literal-fs-filename
         .expect(this.screen.findByTestId(this.dataTestId).exists)
-        .ok(await getErrorMessage(t))
+        .ok(await getErrorMessage(t), { timeout })
     );
   }
 

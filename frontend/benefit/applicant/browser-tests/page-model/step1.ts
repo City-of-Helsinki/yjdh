@@ -1,5 +1,3 @@
-import { Selector, t } from 'testcafe';
-
 import WizardStep from './WizardStep';
 
 class Step1 extends WizardStep {
@@ -7,40 +5,40 @@ class Step1 extends WizardStep {
     super(1);
   }
 
-  bankAccountNumber = this.component.findByRole('textbox', {
+  private bankAccountNumber = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
         .companyBankAccountNumber.label
     ),
   });
 
-  firstName = this.component.findByRole('textbox', {
+  private firstName = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
         .companyContactPersonFirstName.label
     ),
   });
-  lastName = this.component.findByRole('textbox', {
+  private lastName = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
         .companyContactPersonLastName.label
     ),
   });
 
-  phoneNumber = this.component.findByRole('textbox', {
+  private phoneNumber = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
         .companyContactPersonPhoneNumber.label
     ),
   });
-  email = this.component.findByRole('textbox', {
+  private email = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.company.fields
         .companyContactPersonEmail.label
     ),
   });
 
-  deMinimisAidFalse = this.within(
+  private deMinimisAidFalse = this.within(
     this.component.getByRole('group', {
       name: this.regexp(
         this.translations.applications.sections.company.fields.deMinimisAid
@@ -52,7 +50,7 @@ class Step1 extends WizardStep {
       .no,
   });
 
-  coOperationNegotiationsFalse = this.within(
+  private coOperationNegotiationsFalse = this.within(
     this.component.getByRole('group', {
       name: this.regexp(
         this.translations.applications.sections.company.fields

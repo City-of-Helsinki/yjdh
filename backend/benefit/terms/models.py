@@ -1,17 +1,17 @@
 from datetime import date
 
-from applications.models import Application
-from companies.models import Company
-from companies.api.v1.serializers import CompanySerializer
-from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
+
+from applications.models import Application
+from companies.api.v1.serializers import CompanySerializer
+from companies.models import Company
+from companies.tests.data.company_data import get_dummy_company_data
 from terms.enums import TermsType
 from users.models import User
-
-from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 
 class TermsManager(models.Manager):

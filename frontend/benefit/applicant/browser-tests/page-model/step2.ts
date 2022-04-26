@@ -7,23 +7,23 @@ class Step2 extends WizardStep {
     super(2);
   }
 
-  firstName = this.component.findByRole('textbox', {
+  private firstName = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.firstName.label
     ),
   });
-  lastName = this.component.findByRole('textbox', {
+  private lastName = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.lastName.label
     ),
   });
-  ssn = this.component.findByRole('textbox', {
+  private ssn = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields
         .socialSecurityNumber.label
     ),
   });
-  phoneNumber = this.component.findByRole('textbox', {
+  private phoneNumber = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.phoneNumber.label
     ),
@@ -36,7 +36,7 @@ class Step2 extends WizardStep {
     ),
   });
 
-  paidSubsidyTrue = this.within(
+  private paidSubsidyTrue = this.within(
     this.component.getByRole('group', {
       name: this.regexp(
         this.translations.applications.sections.employee.fields
@@ -48,27 +48,27 @@ class Step2 extends WizardStep {
       .paySubsidyGranted.yes,
   });
 
-  paidSubsidySelect = this.component.findByRole('button', {
+  private paidSubsidySelect = this.component.findByRole('button', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.paySubsidyPercent
         .label
     ),
   });
-  fiftyPercent = this.component.findByRole('option', {
+  private fiftyPercent = this.component.findByRole('option', {
     name: '50%',
   });
 
-  additionalPaidSubsidySelect = this.component.findByRole('button', {
+  private additionalPaidSubsidySelect = this.component.findByRole('button', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields
         .additionalPaySubsidyPercent.label
     ),
   });
-  thirtyPercent = this.component.findByRole('option', {
+  private thirtyPercent = this.component.findByRole('option', {
     name: '50%',
   });
 
-  apprenticeshipProgramFalse = this.within(
+  private apprenticeshipProgramFalse = this.within(
     this.component.getByRole('group', {
       name: this.regexp(
         this.translations.applications.sections.employee.fields
@@ -80,59 +80,59 @@ class Step2 extends WizardStep {
       .apprenticeshipProgram.no,
   });
 
-  benefitTypeEmployment = this.component.findByRole('radio', {
+  private benefitTypeEmployment = this.component.findByRole('radio', {
     name: this.translations.applications.sections.employee.fields.benefitType
       .employment,
   });
-  benefitTypeSalary = this.component.findByRole('radio', {
+  private benefitTypeSalary = this.component.findByRole('radio', {
     name: this.translations.applications.sections.employee.fields.benefitType
       .salary,
   });
-  benefitTypeCommission = this.component.findByRole('radio', {
+  private benefitTypeCommission = this.component.findByRole('radio', {
     name: this.translations.applications.sections.employee.fields.benefitType
       .commission,
   });
 
-  startDate = this.component.findByRole('textbox', {
+  private startDate = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.startDate.label
     ),
   });
-  endDate = this.component.findByRole('textbox', {
+  private endDate = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.endDate.label
     ),
   });
 
-  jobTitle = this.component.findByRole('textbox', {
+  private jobTitle = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.jobTitle.label
     ),
   });
-  workingHours = this.component.findByRole('textbox', {
+  private workingHours = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.workingHours.label
     ),
   });
-  collectiveBargainingAgreement = this.component.findByRole('textbox', {
+  private collectiveBargainingAgreement = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields
         .collectiveBargainingAgreement.label
     ),
   });
 
-  monthlyPay = this.component.findByRole('textbox', {
+  private monthlyPay = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.monthlyPay.label
     ),
   });
-  otherExpenses = this.component.findByRole('textbox', {
+  private otherExpenses = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.otherExpenses
         .label
     ),
   });
-  vacationMoney = this.component.findByRole('textbox', {
+  private vacationMoney = this.component.findByRole('textbox', {
     name: this.regexp(
       this.translations.applications.sections.employee.fields.vacationMoney
         .label

@@ -7,35 +7,16 @@ class Step3 extends WizardStep {
     super(3);
   }
 
-  employmentContract = Selector('input').withAttribute(
-    'name',
+  private employmentContract = this.component.findByTestId(
     'employment_contract'
   );
-
-  paySubsidyDecision = Selector('input').withAttribute(
-    'name',
+  private paySubsidyDecision = this.component.findByTestId(
     'pay_subsidy_decision'
   );
-
-  helsinkiBenefitVoucher = Selector('input').withAttribute(
-    'name',
+  private helsinkiBenefitVoucher = this.component.findByTestId(
     'helsinki_benefit_voucher'
   );
-
-  educationContract = Selector('input').withAttribute(
-    'name',
-    'education_contract'
-  );
-
-  deleteButton = Selector('button').withAttribute(
-    'data-testid',
-    'deleteButton'
-  );
-
-  confirmDeleteButton = Selector('button').withAttribute(
-    'data-testid',
-    'modalSubmit'
-  );
+  private educationContract = this.component.findByTestId('education_contract');
 
   async employmentContractNeeded() {
     await t.expect(this.employmentContract.exists).ok();
@@ -45,17 +26,12 @@ class Step3 extends WizardStep {
     await t.expect(this.paySubsidyDecision.exists).ok();
   }
 
-  async educationContractNeeded() {
-    await t.expect(this.educationContract.exists).ok();
-  }
-
   async helsinkiBenefitVoucherNeeded() {
     await t.expect(this.helsinkiBenefitVoucher.exists).ok();
   }
 
-  async delete() {
-    await t.click(this.deleteButton);
-    await t.click(this.confirmDeleteButton);
+  async educationContractNeeded() {
+    await t.expect(this.educationContract.exists).ok();
   }
 }
 

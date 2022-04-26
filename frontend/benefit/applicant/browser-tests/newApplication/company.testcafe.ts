@@ -77,5 +77,6 @@ test('Oppisopimus', async () => {
   await step3.paySubsidyDecisionNeeded();
   await step3.helsinkiBenefitVoucherNeeded();
 
-  await step3.delete();
+  await step3.clickDeleteApplication();
+  await step3.confirmDeleteApplication();
 });
