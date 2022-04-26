@@ -251,6 +251,13 @@ jobs:
           APPLICANT_URL: ${{ env.ENVIRONMENT_URL }}
           NEXT_PUBLIC_BACKEND_URL: ${{ env.NEXT_PUBLIC_BACKEND_URL }}
           NEXT_PUBLIC_MOCK_FLAG: ${{ env.NEXT_PUBLIC_MOCK_FLAG }}
+
+      - name: Upload Acceptance Test results for ${{ matrix.service }}
+        run: |
+          zip -r report.zip ${{matrix.dir}}/report > no_output 2>&1
+          curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" --data-binary "@report.zip" https://api.netlify.com/api/v1/sites > response.json
+          echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
+        if: always() && steps.testcafe.outcome == 'failure'
       - name: Create/update PR comment for Acceptance Test results
         uses: marocchino/sticky-pull-request-comment@v2
         with:
