@@ -24,7 +24,10 @@ const MainIngress: React.FC = () => {
   ));
 
   return (
-    <Container backgroundColor={theme.colors.silverLight}>
+    <Container
+      backgroundColor={theme.colors.silverLight}
+      data-testid="main-ingress"
+    >
       <$Container>
         <$Heading>{t('common:mainIngress.heading')}</$Heading>
         {notificationItems}

@@ -1,5 +1,6 @@
 import { Role } from 'testcafe';
-import login from '../page-modal/login';
+
+import login from '../page-model/login';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');

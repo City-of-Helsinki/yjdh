@@ -17,6 +17,7 @@ const CompanyInfoView: React.FC<ApplicationReviewViewProps> = ({ data }) => {
   const translationsBase = 'common:review';
   const { t } = useTranslation();
   const theme = useTheme();
+  theme.colors.black80;
   return (
     <ReviewSection
       header={t(`${translationsBase}.headings.heading1`)}

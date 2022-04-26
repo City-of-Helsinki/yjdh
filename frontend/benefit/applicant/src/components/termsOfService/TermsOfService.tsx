@@ -29,7 +29,7 @@ const TermsOfService: React.FC<TermsOfServiceProps> = ({
 
   return (
     <Container>
-      <FormSection withoutDivider>
+      <FormSection withoutDivider data-testid="terms-of-service">
         <$GridCell
           $colStart={1}
           $colSpan={12}

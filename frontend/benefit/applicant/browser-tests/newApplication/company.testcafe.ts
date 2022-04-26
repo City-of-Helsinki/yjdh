@@ -2,15 +2,15 @@ import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { Selector } from 'testcafe';
 
-import applicationsList from '../page-modal/applicationsList';
-import step1 from '../page-modal/step1';
-import step2 from '../page-modal/step2';
-import step3 from '../page-modal/step3';
-import company from '../roles/company';
+import step1 from '../page-model/step1';
+import step2 from '../page-model/step2';
+import step3 from '../page-model/step3';
 import { getFrontendUrl } from '../utils/url.utils';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
+import TermsOfService from '../page-model/TermsOfService';
+import MainIngress from '../page-model/MainIngress';
 
 const getBackendDomain = (): string =>
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://localhost:8000';
@@ -29,9 +29,13 @@ fixture('Frontpage')
   );
 
 test('Oppisopimus', async (t) => {
-  await t.useRole(company);
+  const termsAndConditions = new TermsOfService();
+  await termsAndConditions.isLoaded();
+  await termsAndConditions.clickContinueButton();
 
-  await applicationsList.createNewApplication();
+  const mainIngress = new MainIngress();
+  await mainIngress.isLoaded();
+  await mainIngress.clickCreateNewApplicationButton();
 
   await t.expect(step1.newApplicationHeading.exists).ok();
 

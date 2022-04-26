@@ -1,14 +1,14 @@
 import * as React from 'react';
 
-import { $Container, $Inner } from './Container.sc';
+import { $Container, $Inner, ContainerProps } from './Container.sc';
 
 type ContainerProps = { children: React.ReactNode; backgroundColor?: string };
 
 const Container: React.FC<ContainerProps> = ({
   children,
-  backgroundColor = '',
+  ...props
 }: ContainerProps) => (
-  <$Container backgroundColor={backgroundColor}>
+  <$Container {...props}>
     <$Inner>{children}</$Inner>
   </$Container>
 );
