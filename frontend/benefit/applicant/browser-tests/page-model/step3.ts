@@ -1,10 +1,10 @@
 import { Selector, t } from 'testcafe';
 
-import ApplicantPageComponent from './ApplicantPageComponent';
+import WizardStep from './WizardStep';
 
-class Step3 extends ApplicantPageComponent {
+class Step3 extends WizardStep {
   constructor() {
-    super({ datatestId: 'step-3' });
+    super(3);
   }
 
   employmentContract = Selector('input').withAttribute(
@@ -26,8 +26,6 @@ class Step3 extends ApplicantPageComponent {
     'name',
     'education_contract'
   );
-
-  nextButton = Selector('button').withAttribute('data-testid', 'nextButton');
 
   deleteButton = Selector('button').withAttribute(
     'data-testid',
@@ -53,10 +51,6 @@ class Step3 extends ApplicantPageComponent {
 
   async helsinkiBenefitVoucherNeeded() {
     await t.expect(this.helsinkiBenefitVoucher.exists).ok();
-  }
-
-  async submit() {
-    await t.click(this.nextButton);
   }
 
   async delete() {

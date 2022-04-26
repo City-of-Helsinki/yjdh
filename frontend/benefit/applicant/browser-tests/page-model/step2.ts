@@ -1,69 +1,143 @@
-import { t, Selector } from 'testcafe';
-import ApplicantPageComponent from './ApplicantPageComponent';
+import { t } from 'testcafe';
 
-class Step2 extends ApplicantPageComponent {
+import WizardStep from './WizardStep';
+
+class Step2 extends WizardStep {
   constructor() {
-    super({ datatestId: 'step-2' });
+    super(2);
   }
 
-  currentStep = Selector('div')
-    .withAttribute('data-testid', 'currentStep')
-    .withText('2');
+  firstName = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.firstName.label
+    ),
+  });
+  lastName = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.lastName.label
+    ),
+  });
+  ssn = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields
+        .socialSecurityNumber.label
+    ),
+  });
+  phoneNumber = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.phoneNumber.label
+    ),
+  });
 
-  firstName = Selector('input').withAttribute('name', 'employee.firstName');
-  lastName = Selector('input').withAttribute('name', 'employee.lastName');
-  ssn = Selector('input').withAttribute(
-    'name',
-    'employee.socialSecurityNumber'
-  );
-  phoneNumber = Selector('input').withAttribute('name', 'employee.phoneNumber');
-  isLivingInHelsinkiCheckbox = Selector('input').withAttribute(
-    'name',
-    'employee.isLivingInHelsinki'
-  );
+  isLivingInHelsinkiCheckbox = this.component.findByRole('checkbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.isLivingInHelsinki
+        .placeholder
+    ),
+  });
 
-  nextButton = Selector('button').withAttribute('data-testid', 'nextButton');
+  paidSubsidyTrue = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.employee.fields
+          .paySubsidyGranted.label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.employee.fields
+      .paySubsidyGranted.yes,
+  });
 
-  paidSubsidyTrue = Selector('#paySubsidyGrantedTrue');
-  paidSubsidySelect = Selector('#paySubsidyPercent-toggle-button');
-  paidSubsidyFiftyPercent = Selector('#paySubsidyPercent-menu li').withText(
-    '50%'
-  );
+  paidSubsidySelect = this.component.findByRole('button', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.paySubsidyPercent
+        .label
+    ),
+  });
+  fiftyPercent = this.component.findByRole('option', {
+    name: '50%',
+  });
 
-  additionalPaidSubsidySelect = Selector(
-    '#additionalPaySubsidyPercent-toggle-button'
-  );
-  additionalPaidSubsidyThirtyPercent = Selector(
-    '#additionalPaySubsidyPercent-menu li'
-  ).withText('30%');
+  additionalPaidSubsidySelect = this.component.findByRole('button', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields
+        .additionalPaySubsidyPercent.label
+    ),
+  });
+  thirtyPercent = this.component.findByRole('option', {
+    name: '50%',
+  });
 
-  apprenticeshipProgramFalse = Selector('#apprenticeshipProgramFalse');
+  apprenticeshipProgramFalse = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.employee.fields
+          .apprenticeshipProgram.label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.employee.fields
+      .apprenticeshipProgram.no,
+  });
 
-  benefitTypeEmployment = Selector('#benefitTypeEmployment');
-  benefitTypeSalary = Selector('#benefitTypeSalary');
-  benefitTypeCommission = Selector('#benefitTypeCommission');
+  benefitTypeEmployment = this.component.findByRole('radio', {
+    name: this.translations.applications.sections.employee.fields.benefitType
+      .employment,
+  });
+  benefitTypeSalary = this.component.findByRole('radio', {
+    name: this.translations.applications.sections.employee.fields.benefitType
+      .salary,
+  });
+  benefitTypeCommission = this.component.findByRole('radio', {
+    name: this.translations.applications.sections.employee.fields.benefitType
+      .commission,
+  });
 
-  startDate = Selector('input').withAttribute('name', 'startDate');
-  endDate = Selector('input').withAttribute('name', 'endDate');
+  startDate = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.startDate.label
+    ),
+  });
+  endDate = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.endDate.label
+    ),
+  });
 
-  jobTitle = Selector('input').withAttribute('name', 'employee.jobTitle');
-  workingHours = Selector('input').withAttribute(
-    'name',
-    'employee.workingHours'
-  );
-  collectiveBargainingAgreement = Selector('input').withAttribute(
-    'name',
-    'employee.collectiveBargainingAgreement'
-  );
-  monthlyPay = Selector('input').withAttribute('name', 'employee.monthlyPay');
-  otherExpenses = Selector('input').withAttribute(
-    'name',
-    'employee.otherExpenses'
-  );
-  vacationMoney = Selector('input').withAttribute(
-    'name',
-    'employee.vacationMoney'
-  );
+  jobTitle = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.jobTitle.label
+    ),
+  });
+  workingHours = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.workingHours.label
+    ),
+  });
+  collectiveBargainingAgreement = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields
+        .collectiveBargainingAgreement.label
+    ),
+  });
+
+  monthlyPay = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.monthlyPay.label
+    ),
+  });
+  otherExpenses = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.otherExpenses
+        .label
+    ),
+  });
+  vacationMoney = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.employee.fields.vacationMoney
+        .label
+    ),
+  });
 
   public async fillEmployeeInfo(
     firstName: string,
@@ -80,10 +154,10 @@ class Step2 extends ApplicantPageComponent {
 
   public async fillPaidSubsidyGrant(): Promise<void> {
     await Step2.clickSelectRadioButton(this.paidSubsidyTrue);
-    await Step2.clickSelectRadioButton(this.paidSubsidySelect);
-    await Step2.clickSelectRadioButton(this.paidSubsidyFiftyPercent);
-    await Step2.clickSelectRadioButton(this.additionalPaidSubsidySelect);
-    await Step2.clickSelectRadioButton(this.additionalPaidSubsidyThirtyPercent);
+    await t.click(this.paidSubsidySelect);
+    await t.click(this.fiftyPercent);
+    await t.click(this.additionalPaidSubsidySelect);
+    await t.click(this.thirtyPercent);
     await Step2.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 
@@ -98,6 +172,7 @@ class Step2 extends ApplicantPageComponent {
         await Step2.clickSelectRadioButton(this.benefitTypeSalary);
         break;
       case 'commission':
+      default:
         await Step2.clickSelectRadioButton(this.benefitTypeCommission);
         break;
     }
@@ -128,10 +203,6 @@ class Step2 extends ApplicantPageComponent {
     await Step2.fillInput(this.monthlyPay, monthlyPay);
     await Step2.fillInput(this.otherExpenses, otherExpenses);
     await Step2.fillInput(this.vacationMoney, vacationMoney);
-  }
-
-  async submit() {
-    await t.click(this.nextButton);
   }
 }
 

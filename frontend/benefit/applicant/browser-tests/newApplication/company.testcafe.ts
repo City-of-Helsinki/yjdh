@@ -27,7 +27,7 @@ fixture('Frontpage')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('Oppisopimus', async (t) => {
+test('Oppisopimus', async () => {
   const termsAndConditions = new TermsOfService();
   await termsAndConditions.isLoaded();
   await termsAndConditions.clickContinueButton();
@@ -48,7 +48,7 @@ test('Oppisopimus', async (t) => {
   );
   await step1.selectNoDeMinimis();
   await step1.selectNocoOperationNegotiations();
-  await step1.submit();
+  await step1.clickSubmit();
 
   const step2 = new Step2();
   await step2.isLoaded();
@@ -69,7 +69,7 @@ test('Oppisopimus', async (t) => {
     '300',
     '500'
   );
-  await step2.submit();
+  await step2.clickSubmit();
 
   const step3 = new Step3();
   await step3.isLoaded();

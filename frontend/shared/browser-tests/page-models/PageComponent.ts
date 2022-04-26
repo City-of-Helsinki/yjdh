@@ -11,11 +11,10 @@ import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import {
   getErrorMessage,
   screenContext,
-  setDataToPrintOnFailure,
   withinContext,
 } from '../utils/testcafe.utils';
 
-type Options = {
+export type Options = {
   datatestId?: string;
   lang?: Language;
 };

@@ -1,38 +1,68 @@
 import { Selector, t } from 'testcafe';
 
-import ApplicantPageComponent from './ApplicantPageComponent';
+import WizardStep from './WizardStep';
 
-class Step1 extends ApplicantPageComponent {
+class Step1 extends WizardStep {
   constructor() {
-    super({ datatestId: 'step-1' });
+    super(1);
   }
 
-  newApplicationHeading = Selector('h1').withText('Uusi hakemus');
+  bankAccountNumber = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .companyBankAccountNumber.label
+    ),
+  });
 
-  bankAccountNumber = Selector('input').withAttribute(
-    'name',
-    'companyBankAccountNumber'
-  );
+  firstName = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .companyContactPersonFirstName.label
+    ),
+  });
+  lastName = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .companyContactPersonLastName.label
+    ),
+  });
 
-  firstName = Selector('input').withAttribute(
-    'name',
-    'companyContactPersonFirstName'
-  );
-  lastName = Selector('input').withAttribute(
-    'name',
-    'companyContactPersonLastName'
-  );
-  phoneNumber = Selector('input').withAttribute(
-    'name',
-    'companyContactPersonPhoneNumber'
-  );
-  email = Selector('input').withAttribute('name', 'companyContactPersonEmail');
+  phoneNumber = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .companyContactPersonPhoneNumber.label
+    ),
+  });
+  email = this.component.findByRole('textbox', {
+    name: this.regexp(
+      this.translations.applications.sections.company.fields
+        .companyContactPersonEmail.label
+    ),
+  });
 
-  deMinimisAidFalse = Selector('#deMinimisAidFalse');
+  deMinimisAidFalse = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.company.fields.deMinimisAid
+          .label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.company.fields.deMinimisAid
+      .no,
+  });
 
-  coOperationNegotiationsFalse = Selector('#coOperationNegotiationsFalse');
-
-  nextButton = Selector('button').withAttribute('data-testid', 'nextButton');
+  coOperationNegotiationsFalse = this.within(
+    this.component.getByRole('group', {
+      name: this.regexp(
+        this.translations.applications.sections.company.fields
+          .coOperationNegotiations.label
+      ),
+    })
+  ).findByRole('radio', {
+    name: this.translations.applications.sections.company.fields
+      .coOperationNegotiations.no,
+  });
 
   public fillEmployerInfo(iban: string): Promise<void> {
     return Step1.fillInput(this.bankAccountNumber, iban);
@@ -56,10 +86,6 @@ class Step1 extends ApplicantPageComponent {
 
   public selectNocoOperationNegotiations(): Promise<void> {
     return Step1.clickSelectRadioButton(this.coOperationNegotiationsFalse);
-  }
-
-  async submit() {
-    await t.click(this.nextButton);
   }
 }
 
