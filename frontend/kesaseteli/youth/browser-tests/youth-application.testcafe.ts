@@ -89,7 +89,7 @@ if (!isRealIntegrationsEnabled()) {
     );
     await activatedPage.expectations.isLoaded();
   });
-  test('If I fill application with unlisted school in english, send it and activate it, I will see additional info form in english', async (t) => {
+  test.skip('If I fill application with unlisted school in english, send it and activate it, I will see additional info form in english', async (t) => {
     const { translations } = getYouthTranslationsApi();
     const languageDropdown = getHeaderComponents(
       t,
@@ -265,7 +265,7 @@ if (!isRealIntegrationsEnabled()) {
     await handlerFormPage.expectations.applicationFieldHasValue('email');
   });
 
-  test('As a handler I can open additional information provided application in handler-ui and see correct additional info data', async (t) => {
+  test.skip('As a handler I can open additional information provided application in handler-ui and see correct additional info data', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const application = fakeYouthApplication({ is_unlisted_school: true });
@@ -321,7 +321,7 @@ if (!isRealIntegrationsEnabled()) {
     await handlerFormPage.expectations.applicationIsNotYetActivated();
   });
 
-  test('As a handler I can open application with additional info required, but I will see "youth has not yet sent the additional info application" -error message ', async (t) => {
+  test.skip('As a handler I can open application with additional info required, but I will see "youth has not yet sent the additional info application" -error message ', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const formData = fakeYouthApplication({ is_unlisted_school: true });
