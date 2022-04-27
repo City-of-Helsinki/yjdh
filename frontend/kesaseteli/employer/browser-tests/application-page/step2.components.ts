@@ -25,7 +25,7 @@ export const getStep2Components = async (t: TestController) => {
   const within = withinContext(t);
 
   const selector = () =>
-    screen.findByRole('header', {
+    screen.findByRole('heading', {
       name: /selvitys työsuhteesta/i,
     });
 
