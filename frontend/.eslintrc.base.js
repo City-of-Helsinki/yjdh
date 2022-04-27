@@ -13,6 +13,7 @@ module.exports = {
     'unicorn/prefer-node-protocol': 'off',
     'no-void': 'off',
     'react/function-component-definition': 'off',
+    'testing-library/await-async-query': 'off',
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
