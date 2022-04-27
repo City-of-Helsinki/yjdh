@@ -45,8 +45,8 @@ export const fillStep1Form = async (
 export const removeStep2ExistingForms = async (
   t: TestController
 ): Promise<void> => {
-  const step2 = getStep2Components(t);
-  const form = await step2.form();
+  const step2 = await getStep2Components(t);
+  const form = step2.form();
   await form.actions.openAllClosedAccordions();
   await form.actions.removeAllAccordions();
 };
@@ -55,8 +55,7 @@ export const fillStep2EmployeeForm = async (
   employment: Employment,
   index = 0
 ): Promise<void> => {
-  const step2 = getStep2Components(t);
-
+  const step2 = await getStep2Components(t);
   const addButton = await step2.addEmploymentButton();
   await addButton.actions.click();
   const step2Employment = await step2.employmentAccordion(index);

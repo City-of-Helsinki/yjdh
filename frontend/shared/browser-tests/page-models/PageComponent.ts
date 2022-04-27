@@ -20,13 +20,13 @@ export type Options = {
 };
 
 abstract class PageComponent<Translations> {
-  protected dataTestId: string;
-
   protected lang: Language;
 
   protected translations!: Translations;
 
-  protected component: WithinSelectors;
+  private readonly componentSelector: Selector;
+
+  protected readonly component: WithinSelectors;
 
   protected screen = screenContext(t);
 
@@ -39,8 +39,10 @@ abstract class PageComponent<Translations> {
   protected abstract getTranslationsApi(): TranslationsApi<Translations>;
 
   protected constructor(options?: Options) {
-    this.dataTestId = options?.datatestId ?? MAIN_CONTENT_ID;
-    this.component = this.within(this.screen.getByTestId(this.dataTestId));
+    this.componentSelector = this.screen.findByTestId(
+      options?.datatestId ?? MAIN_CONTENT_ID
+    );
+    this.component = this.within(this.componentSelector);
     this.lang = options?.lang ?? DEFAULT_LANGUAGE;
     this.setTranslations(this.lang);
   }
@@ -52,7 +54,7 @@ abstract class PageComponent<Translations> {
     this.translations = translations;
   }
 
-  loadingSpinners = this.screen.queryAllByTestId('hidden-loading-indicator');
+  loadingSpinners = this.screen.findAllByTestId('hidden-loading-indicator');
 
   public async isLoadingSpinnerNoMorePresent(timeout?: number): Promise<void> {
     return (
@@ -72,7 +74,7 @@ abstract class PageComponent<Translations> {
     return (
       t
         // eslint-disable-next-line security/detect-non-literal-fs-filename
-        .expect(this.screen.findByTestId(this.dataTestId).exists)
+        .expect(this.componentSelector.exists)
         .ok(await getErrorMessage(t), { timeout })
     );
   }
