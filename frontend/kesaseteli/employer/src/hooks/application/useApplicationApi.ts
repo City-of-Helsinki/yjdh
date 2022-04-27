@@ -95,9 +95,6 @@ const useApplicationApi = <T = Application>(
   const updateApplication: ApplicationApi<T>['updateApplication'] =
     React.useCallback(
       (draftApplication: DraftApplication, onSuccess = noop) => {
-        if (isEmpty(draftApplication.summer_vouchers)) {
-          return addEmployment(draftApplication, onSuccess);
-        }
         return updateApplicationQuery.mutate(
           { ...draftApplication, status: 'draft' },
           {
