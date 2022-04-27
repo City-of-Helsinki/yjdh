@@ -106,7 +106,7 @@ if (!isRealIntegrationsEnabled()) {
     await sendAdditionalInfoApplication(t, additionalInfo, 'en');
   });
 
-  test('If I send and activate application and then I try to activate it again, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
+  test.skip('If I send and activate application and then I try to activate it again, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
     const indexPage = await getIndexPageComponents(t);
     await indexPage.expectations.isLoaded();
     const application = fakeYouthApplication({ is_unlisted_school: false });
