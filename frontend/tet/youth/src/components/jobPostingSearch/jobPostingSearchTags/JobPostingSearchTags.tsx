@@ -42,7 +42,7 @@ const PostingSearchTags: React.FC<Props> = ({
               onDelete={() => onRemoveKeyword(keyword)}
               theme={{
                 '--tag-background': `var(--color-engel-medium-light)`,
-                '--tag-color': 'var(--color-black-80)',
+                '--tag-color': 'theme.colors.black80',
                 '--tag-focus-outline-color': 'var(--color-black-80)',
               }}
             >
@@ -56,7 +56,7 @@ const PostingSearchTags: React.FC<Props> = ({
             onDelete={() => onRemoveFilter(['start', 'end'])}
             theme={{
               '--tag-background': `var(--color-summer-medium-light)`,
-              '--tag-color': 'var(--color-black-90)',
+              '--tag-color': 'theme.colors.black90',
               '--tag-focus-outline-color': 'var(--color-black-90)',
             }}
           >
@@ -70,7 +70,7 @@ const PostingSearchTags: React.FC<Props> = ({
             onDelete={() => onRemoveFilter('language')}
             theme={{
               '--tag-background': `var(--color-coat-of-arms-light)`,
-              '--tag-color': 'var(--color-black-90)',
+              '--tag-color': 'theme.colors.black90',
               '--tag-focus-outline-color': 'var(--color-black-90)',
             }}
           >

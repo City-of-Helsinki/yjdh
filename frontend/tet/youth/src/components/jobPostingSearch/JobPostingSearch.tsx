@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, Select, DateInput, IconGroup, IconGlobe } from 'hds-react';
+import { SearchInput, Select, DateInput, IconGroup, IconGlobe } from 'hds-react';
 import { Button } from 'hds-react';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import Container from 'shared/components/container/Container';
@@ -97,21 +97,26 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
     setChosenWorkFeatures(features.map((feature) => feature.value));
   };
 
+  const searchSubmitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+    searchHandler();
+  };
+
   const workMethods = isLoading || error ? [] : workMethodsList;
   const workFeatures = isLoading || error ? [] : workFeaturesList;
 
   return (
-    <$Search>
+    <$Search onSubmit={searchSubmitHandler}>
       <Container>
         <$GridCell as={$Grid} $colSpan={12}>
           <$GridCell $colSpan={12}>
             <$GridCell $colSpan={10}>
-              <TextInput
-                onChange={(e) => setSearchText(e.target.value)}
-                value={searchText}
-                id="searchText"
+              <SearchInput
+                label={t('common:filters.searchJobs')}
+                onSubmit={() => searchHandler()}
+                onChange={(value) => setSearchText(value)}
                 placeholder={t('common:filters.searchPlaceholder')}
-              ></TextInput>
+              ></SearchInput>
             </$GridCell>
           </$GridCell>
           <$GridCell $colSpan={3}>
@@ -124,8 +129,6 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               icon={<IconGroup />}
               options={workMethods}
               optionLabelField={'label'}
-              clearButtonAriaLabel=""
-              selectedItemRemoveButtonAriaLabel=""
             ></Select>
           </$GridCell>
           <$GridCell $colSpan={3}>
@@ -140,8 +143,8 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
               icon={<IconGroup />}
               options={workFeatures}
               optionLabelField={'label'}
-              clearButtonAriaLabel=""
-              selectedItemRemoveButtonAriaLabel=""
+              clearButtonAriaLabel={t('common:filters.combobox.clearButtonAriaLabel')}
+              selectedItemRemoveButtonAriaLabel={t('common:filters.combobox.selectedItemRemoveButtonAriaLabel')}
             ></Select>
           </$GridCell>
           <$GridCell $colSpan={3}>
@@ -176,7 +179,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
           </$GridCell>
           <$GridCell $colSpan={3}>
             <Button
-              onClick={searchHandler}
+              type="submit"
               css={`
                 background-color: #008567;
                 border-color: #008567 !important;
