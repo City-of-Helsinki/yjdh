@@ -496,7 +496,12 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             "phone_number",
             "postcode",
             "language",
+            "request_additional_information",
         ]
+
+    request_additional_information = serializers.BooleanField(
+        required=False, default=False, write_only=True
+    )
 
     encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")
     handler = serializers.PrimaryKeyRelatedField(
@@ -504,6 +509,11 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         allow_null=True,
         queryset=HandlerPermission.get_handler_users_queryset(),
     )
+
+    def create(self, validated_data):
+        if "request_additional_information" in validated_data:
+            del validated_data["request_additional_information"]
+        return super().create(validated_data)
 
     def get_encrypted_vtj_json(self, obj):
         """

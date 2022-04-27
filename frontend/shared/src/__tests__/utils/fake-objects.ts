@@ -52,8 +52,8 @@ export const getRandomSubArray = <T>(
 };
 
 export const fakeUser = (): User => ({
-  given_name: faker.name.findName(),
-  family_name: faker.name.findName(),
+  given_name: faker.name.firstName(),
+  family_name: faker.name.lastName(),
   name: faker.name.findName(),
 });
 

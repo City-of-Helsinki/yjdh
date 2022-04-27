@@ -18,6 +18,7 @@ from applications.enums import get_supported_languages
         )
         for page_name, url_function_name, url_function_kwargs in [
             ("activated", "activated_page_url", {}),
+            ("accepted", "accepted_page_url", {}),
             ("already_activated", "already_activated_page_url", {}),
             ("expired", "expired_page_url", {}),
             ("additional_info?id=10", "additional_info_page_url", {"pk": 10}),

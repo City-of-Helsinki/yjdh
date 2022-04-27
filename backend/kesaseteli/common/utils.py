@@ -28,6 +28,32 @@ def is_uppercase(value):
     return value == value.upper()
 
 
+def normalize_for_string_comparison(text):
+    """
+    Normalize text for string comparison. Converts None to an empty string, strips
+    leading and trailing whitespace, and makes result case-insensitive by folding case.
+    """
+    return "" if text is None else str(text).strip().casefold()
+
+
+def are_same_texts(a, b) -> bool:
+    """
+    Are the two given values same when compared after first normalizing them using
+    normalize_for_string_comparison?
+    """
+    return normalize_for_string_comparison(a) == normalize_for_string_comparison(b)
+
+
+def are_same_text_lists(a, b) -> bool:
+    """
+    Are the two given value lists same when compared after first normalizing their
+    values using normalize_for_string_comparison?
+    """
+    return list(map(normalize_for_string_comparison, a)) == list(
+        map(normalize_for_string_comparison, b)
+    )
+
+
 def send_mail_with_error_logging(
     subject,
     message,

@@ -15,7 +15,7 @@ type Props = GridCellProps & {
   id: CreatedYouthApplication['id'];
 };
 
-const HandlerForm: React.FC<Props> = ({ id, ...gridCellprops }) => {
+const ActionButtons: React.FC<Props> = ({ id, ...gridCellprops }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { confirm } = useConfirm();
@@ -78,4 +78,4 @@ const HandlerForm: React.FC<Props> = ({ id, ...gridCellprops }) => {
   );
 };
 
-export default HandlerForm;
+export default ActionButtons;
