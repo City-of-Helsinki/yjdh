@@ -20,19 +20,9 @@ import {
   getSelectionGroupTranslation,
 } from '../utils/application.utils';
 
-export const getStep2Components = async (t: TestController) => {
+export const getStep2Components = (t: TestController) => {
   const screen = screenContext(t);
   const within = withinContext(t);
-
-  const selector = () =>
-    screen.findByRole('heading', {
-      name: /selvitys työsuhteesta/i,
-    });
-
-  const isPresent = async () => {
-    await t.expect(selector().exists).ok(await getErrorMessage(t));
-  };
-  await isPresent();
 
   const formSelector = () =>
     screen.findByRole('form', {
@@ -47,8 +37,7 @@ export const getStep2Components = async (t: TestController) => {
     index = 0
   ): ReturnType<typeof within> => within(accordionSelector(isOpen, index));
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  const form = () => {
+  const form = async () => {
     const selectors = {
       title() {
         return formSelector();
@@ -73,25 +62,21 @@ export const getStep2Components = async (t: TestController) => {
         /* eslint-enable no-await-in-loop */
       },
       async removeAllAccordions() {
-        if (await formSelector().exists) {
-          /* eslint-disable no-await-in-loop */
-          for (;;) {
-            const removeButtons = within(formSelector()).findAllByRole(
-              'button',
-              {
-                name: /poista tiedot/i,
-              }
-            );
-            if (await removeButtons.exists) {
-              await t.click(removeButtons.nth(0));
-            } else {
-              break;
-            }
+        /* eslint-disable no-await-in-loop */
+        for (;;) {
+          const removeButtons = within(formSelector()).findAllByRole('button', {
+            name: /poista tiedot/i,
+          });
+          if (await removeButtons.exists) {
+            await t.click(removeButtons.nth(0));
+          } else {
+            break;
           }
-          /* eslint-enable no-await-in-loop */
         }
+        /* eslint-enable no-await-in-loop */
       },
     };
+    await expectations.isPresent();
     return {
       expectations,
       actions,

@@ -18,6 +18,7 @@ import { getStep2Components } from './step2.components';
 import { getWizardComponents } from './wizard.components';
 
 let step1Components: ReturnType<typeof getStep1Components>;
+let step2Components: ReturnType<typeof getStep2Components>;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
 const url = getFrontendUrl('/');
@@ -30,6 +31,7 @@ fixture('Application')
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
+    step2Components = getStep2Components(t);
     const { translations } = getEmployerTranslationsApi();
     headerComponents = getHeaderComponents(t, translations);
   })
@@ -65,7 +67,6 @@ if (isRealIntegrationsEnabled()) {
     );
     const wizard = await getWizardComponents(t);
     await wizard.expectations.isPresent();
-    const step2Components = await getStep2Components(t);
     const step2Accordion = await step2Components.employmentAccordion(0);
     await step2Accordion.expectations.isPresent();
     await urlUtils.actions.refreshPage();
