@@ -15,6 +15,7 @@ import {
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import TetPosting from 'tet-shared/types/tetposting';
+import MapScripts from 'tet-shared/components/MapScripts';
 
 type Props = {
   posting: TetPosting;
@@ -71,6 +72,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           />
         </$InfoWrapper>
       </$ContentWrapper>
+      <MapScripts />
     </Container>
   );
 };
