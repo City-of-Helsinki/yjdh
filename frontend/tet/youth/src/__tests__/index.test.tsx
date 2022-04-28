@@ -6,9 +6,18 @@ import renderComponent from 'tet/youth/__tests__/utils/components/render-compone
 import renderPage from 'tet/youth/__tests__/utils/components/render-page';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 
+import getYouthTranslationsApi from './utils/i18n/get-youth-translations';
+import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import faker from 'faker';
+import { isoDateToHdsFormat } from 'tet-shared/backend-api/transformations';
+
 jest.mock('next/router');
 
 describe('frontend/tet/youth/src/pages/index.tsx', () => {
+  const {
+    translations: { [DEFAULT_LANGUAGE]: translations },
+  } = getYouthTranslationsApi();
+
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
@@ -38,8 +47,8 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
       const spyPush = jest.fn();
       await renderPage(IndexPage, { push: spyPush });
 
-      const text = 'testsearch';
-      const start = '1.1.2022';
+      const text = faker.lorem.paragraph();
+      const start = isoDateToHdsFormat(faker.date.soon().toISOString());
       const searchField = screen.getByTestId('quickSearchInput');
       const startField = screen.getByTestId('startInput');
 
@@ -47,7 +56,7 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
       userEvent.type(startField, start);
       userEvent.click(
         screen.getByRole('button', {
-          name: /hae/i,
+          name: new RegExp(translations.frontPage.fetch, 'i'),
         }),
       );
 
@@ -68,7 +77,7 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
 
       userEvent.click(
         screen.getByRole('button', {
-          name: /hae/i,
+          name: new RegExp(translations.frontPage.fetch, 'i'),
         }),
       );
 

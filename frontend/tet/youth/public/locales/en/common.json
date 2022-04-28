@@ -34,7 +34,8 @@
 		"workMethod": "Choose working method",
 		"startDate": "Start date",
 		"endDate": "End date",
-		"language": "Choose language"
+		"language": "Choose language",
+		"clearFilters": "Clear filters"
 	},
 	"postings": {
 		"searchResults_one": "{{count}} search result",
