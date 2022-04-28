@@ -25,12 +25,19 @@
 		"askLinkContent": "Har du några frågor om tjänsten eller märkte du något konstigt i annonserna? Ta kontakt!"
 	},
 	"filters": {
-		"searchPlaceholder": "Uppge sökord eller platsnamn",
+		"searchJobs": "Sök efter PRAO-platser",
+		"searchPlaceholder": "Uppge sökord",
 		"workMethod": "Välj arbetssätt",
+		"workFeatures": "Arbetets karaktär",
 		"startDate": "Startdatum",
 		"endDate": "Slutdatum",
 		"language": "Välj språk",
-		"clearFilters": "Töm sökkriterier"
+		"clearFilters": "Töm sökkriterier",
+    "combobox": {
+      "toggleButtonAriaLabel": "Visa/dölj alternativ",
+      "clearButtonAriaLabel": "Rensa valen",
+      "selectedItemRemoveButtonAriaLabel": "Ta bort valet"
+    }
 	},
 	"postings": {
 		"searchResults_one": "{{count}} sökresultat",
