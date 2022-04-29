@@ -5,4 +5,4 @@ export enum ClassificationType {
   KEYWORD = 'KEYWORD',
 }
 
-export type KeywordFn = (keywordUrl: string) => ClassificationType;
+export type KeywordFn = (url: string) => ClassificationType;
