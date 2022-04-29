@@ -4,9 +4,9 @@ import { containsRegexp, replaceValues } from '@frontend/shared/src/__tests__/ut
 import en from '../../../../public/locales/en/common.json';
 import fi from '../../../../public/locales/fi/common.json';
 import sv from '../../../../public/locales/sv/common.json';
-import EmployerTranslations from './youth-translations';
+import TetYouthTranslations from './youth-translations';
 
-const getEmployerTranslationsApi = (): TranslationsApi<EmployerTranslations> => ({
+const getTetYouthTranslationsApi = (): TranslationsApi<TetYouthTranslations> => ({
   translations: {
     fi,
     sv,
@@ -16,4 +16,4 @@ const getEmployerTranslationsApi = (): TranslationsApi<EmployerTranslations> => 
   regexp: containsRegexp,
 });
 
-export default getEmployerTranslationsApi;
+export default getTetYouthTranslationsApi;
