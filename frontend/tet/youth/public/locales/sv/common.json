@@ -1,5 +1,10 @@
 {
   "appName": "PRAO-platser",
+  "header": {
+    "linkSkipToContent": "Gå till innehållet",
+    "menuToggleAriaLabel": "Menyn",
+    "languageMenuButtonAriaLabel": "Ändra språk"
+  },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
     "message": "Något gick fel. Det kan hjälpa att ladda sidan på nytt.",
@@ -67,7 +72,7 @@
       "label": "Ett okänt fel inträffade.",
       "text": "Försök igen senare."
     }
-  },	
+  },
 	"editor": {
 		"posting": {
 			"contactLanguageFi": "Finska",

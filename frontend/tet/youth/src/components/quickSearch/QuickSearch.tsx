@@ -46,12 +46,14 @@ const QuickSearch = () => {
               onChange={(e) => setSearchText(e.target.value)}
               value={searchText}
               id="searchText"
+              data-testid="quickSearchInput"
               placeholder={t('common:filters.searchPlaceholder')}
             ></TextInput>
           </$SearchField>
           <$DateField>
             <DateInput
               id="start_time"
+              data-testid="startInput"
               onChange={(value) => setStartTime(value)}
               value={startTime}
               language={i18n.language as Language}
@@ -76,7 +78,7 @@ const QuickSearch = () => {
       </$SearchBarWrapper>
       <Link href="/postings" passHref>
         <$FiltersLink>
-          {t('common:frontPage.advancedSearch')} <IconAngleRight />
+          {t('common:frontPage.advancedSearch')} <IconAngleRight aria-hidden />
         </$FiltersLink>
       </Link>
     </$SearchBar>
