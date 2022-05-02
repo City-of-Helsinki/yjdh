@@ -1,22 +1,13 @@
 import * as React from 'react';
 
-import { $Container, $Inner } from './Container.sc';
+import { $Container, $Inner, ContainerProps } from './Container.sc';
 
-type ContainerProps = { children: React.ReactNode; backgroundColor?: string };
+type Props = React.PropsWithChildren<ContainerProps>;
 
-const Container: React.FC<ContainerProps> = ({
-  children,
-  backgroundColor = '',
-}: ContainerProps) => (
-  <$Container backgroundColor={backgroundColor}>
+const Container: React.FC<Props> = ({ children, ...props }) => (
+  <$Container {...props}>
     <$Inner>{children}</$Inner>
   </$Container>
 );
-
-const defaultProps = {
-  backgroundColor: '',
-};
-
-Container.defaultProps = defaultProps;
 
 export default Container;

@@ -1,5 +1,10 @@
 {
   "appName": "TET Job Search",
+  "header": {
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu",
+    "languageMenuButtonAriaLabel": "Select language"
+  },
   "errorPage": {
     "title": "An unexpected error occured",
     "message": "Something went wrong. Refreshing the page might help.",
@@ -25,11 +30,19 @@
 		"askLinkContent": "Do you have any questions or did you notice something strange about the service? Reach out!"
 	},
 	"filters": {
-		"searchPlaceholder": "Type search workd or location name",
+		"searchJobs": "Search for TET jobs",
+		"searchPlaceholder": "Type search word",
 		"workMethod": "Choose working method",
+		"workFeatures": "Characteristics of work",
 		"startDate": "Start date",
 		"endDate": "End date",
-		"language": "Choose language"
+		"language": "Choose language",
+		"clearFilters": "Clear filters",
+    "combobox": {
+      "toggleButtonAriaLabel": "Show/hide options",
+      "clearButtonAriaLabel": "Clear selection",
+      "selectedItemRemoveButtonAriaLabel": "Deselect"
+    }
 	},
 	"postings": {
 		"searchResults_one": "{{count}} search result",

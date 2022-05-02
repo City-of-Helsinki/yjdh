@@ -68,6 +68,7 @@ const StepperActions: React.FC<StepperActionsProps> = ({
               variant="supplementary"
               iconLeft={<IconCross />}
               onClick={() => setIsConfirmationModalOpen(true)}
+              data-testid="deleteButton"
             >
               {t(`${translationsBase}.deleteApplication`)}
             </Button>

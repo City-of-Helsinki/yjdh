@@ -10,6 +10,7 @@ type YouthApplication = {
   phone_number: string;
   email: string;
   language: Language;
+  request_additional_information?: boolean;
 };
 
 export default YouthApplication;

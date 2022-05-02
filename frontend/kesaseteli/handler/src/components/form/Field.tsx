@@ -4,19 +4,29 @@ import {
   $GridCell,
   GridCellProps,
 } from 'shared/components/forms/section/FormSection.sc';
+import { useTheme } from 'styled-components';
 
 type Props = GridCellProps & {
   id?: string;
   type?: string;
   value?: string;
+  children?: React.ReactNode;
 };
 
-const Field: React.FC<Props> = ({ id, type, value, ...gridCellProps }) => {
+const Field: React.FC<Props> = ({
+  id,
+  type,
+  value,
+  children,
+  ...gridCellProps
+}) => {
   const { t } = useTranslation();
   const dataTestId = type ?? id;
+  const theme = useTheme();
   return (
     <$GridCell
       data-testid={dataTestId && `handlerApplication-${dataTestId}`}
+      css={{ fontSize: theme.fontSize.body.l }}
       {...gridCellProps}
     >
       {type && (
@@ -25,6 +35,7 @@ const Field: React.FC<Props> = ({ id, type, value, ...gridCellProps }) => {
         </>
       )}
       {value || '-'}
+      {children}
     </$GridCell>
   );
 };
@@ -33,6 +44,7 @@ Field.defaultProps = {
   id: undefined,
   type: undefined,
   value: '-',
+  children: null,
 };
 
 export default Field;

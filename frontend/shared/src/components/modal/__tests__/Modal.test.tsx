@@ -30,7 +30,7 @@ describe('Modal', () => {
 
   it('should call handleSubmit & handleToggle when the submit button is clicked', () => {
     const { getByTestId } = getComponent();
-    const submitButton = getByTestId('submit');
+    const submitButton = getByTestId('modalSubmit');
 
     submitButton.click();
 
@@ -40,7 +40,7 @@ describe('Modal', () => {
 
   it('should call handleToggle when the cancel button is clicked', () => {
     const { getByTestId } = getComponent();
-    const cancelButton = getByTestId('cancel');
+    const cancelButton = getByTestId('modalCancel');
 
     cancelButton.click();
 

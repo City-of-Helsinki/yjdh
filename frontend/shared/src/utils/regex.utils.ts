@@ -7,7 +7,10 @@ export const getDecimalNumberRegex = (decimals: number): RegExp =>
 // Read more: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 export const escapeRegExp = (unescapedString: string, flags?: string): RegExp =>
   // eslint-disable-next-line security/detect-non-literal-regexp
-  new RegExp(unescapedString.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&'), flags);
+  new RegExp(
+    unescapedString.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&'),
+    flags ?? 'i'
+  );
 
 export const stripHtmlTags = (html: string): string =>
   html.replace(/<\/?[^>]+(>|$)/g, '');

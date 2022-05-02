@@ -1,4 +1,4 @@
-import AdditionalInfoForm from 'kesaseteli/youth/components/forms/AdditionalInfoForm';
+import AdditionalInfoForm from 'kesaseteli/youth/components/additional-info-form/AdditionalInfoForm';
 import useYouthApplicationStatusQuery from 'kesaseteli/youth/hooks/backend/useYouthApplicationStatusQuery';
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import { GetStaticProps, NextPage } from 'next';

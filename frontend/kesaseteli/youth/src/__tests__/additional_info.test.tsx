@@ -45,13 +45,17 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
 
   it(`shows that application is not found when id query param is not present`, async () => {
     await renderPage(AdditionalInfoPage, { query: {} });
-    await getAdditionalInfoPageApi().expectations.applicationWasNotFound();
+    await getAdditionalInfoPageApi().expectations.notificationIsPresent(
+      'notFound'
+    );
   });
 
   it(`shows that application is not found when backend returns 404`, async () => {
     expectToGetYouthApplicationStatusErrorFromBackend(APPLICATION_ID, 404);
     await renderPage(AdditionalInfoPage, { query: { id: APPLICATION_ID } });
-    await getAdditionalInfoPageApi().expectations.applicationWasNotFound();
+    await getAdditionalInfoPageApi().expectations.notificationIsPresent(
+      'notFound'
+    );
   });
 
   describe(`when application status is "additional_information_requested"`, () => {
@@ -79,7 +83,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
-        await additionalInfoPageApi.expectations.applicationWasSent();
+        await additionalInfoPageApi.expectations.notificationIsPresent('sent');
       });
     });
   }
@@ -95,7 +99,9 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           query: { id: APPLICATION_ID },
         });
         const additionalInfoPageApi = getAdditionalInfoPageApi();
-        await additionalInfoPageApi.expectations.applicationWasNotFound();
+        await additionalInfoPageApi.expectations.notificationIsPresent(
+          'notFound'
+        );
       });
     });
   }
@@ -138,7 +144,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           additional_info_description
         );
         await additionalInfoPageApi.actions.clickSendButton(200);
-        await additionalInfoPageApi.expectations.applicationWasSent();
+        await additionalInfoPageApi.expectations.notificationIsPresent('sent');
       });
 
       it(`with changed language`, async () => {
@@ -162,7 +168,7 @@ describe('frontend/kesaseteli/youth/src/pages/additional_info.tsx', () => {
           additional_info_description
         );
         await additionalInfoPageApi.actions.clickSendButton(200);
-        await additionalInfoPageApi.expectations.applicationWasSent();
+        await additionalInfoPageApi.expectations.notificationIsPresent('sent');
       });
     });
   });

@@ -8,11 +8,11 @@ import {
   withinContext,
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import { MAIN_CONTENT_ID } from '@frontend/shared/src/constants';
-import { Language } from '@frontend/shared/src/i18n/i18n';
-import { escapeRegExp } from '@frontend/shared/src/utils/regex.utils';
+import { DEFAULT_LANGUAGE, Language } from '@frontend/shared/src/i18n/i18n';
 import TestController from 'testcafe';
 
-import getTranslations from '../../src/__tests__/utils/i18n/get-translations';
+import getYouthTranslationsApi from '../../src/__tests__/utils/i18n/get-youth-translations-api';
+import YouthTranslations from '../../src/__tests__/utils/i18n/youth-translations';
 
 export const getAdditionalInfoPageComponents = async (
   t: TestController,
@@ -20,9 +20,12 @@ export const getAdditionalInfoPageComponents = async (
 ) => {
   const screen = screenContext(t);
   const within = withinContext(t);
-  const translations = await getTranslations(lang);
+  const {
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+    regexp,
+  } = getYouthTranslationsApi();
   type NotificationType = Extract<
-    keyof typeof translations.additionalInfo.notification,
+    keyof YouthTranslations['additionalInfo']['notification'],
     'confirmed' | 'sent' | 'notFound'
   >;
 
@@ -39,25 +42,24 @@ export const getAdditionalInfoPageComponents = async (
     },
     reasonOption(reason: AdditionalInfoReasonType) {
       return withinForm().findByRole('option', {
-        name: escapeRegExp(translations.additionalInfo.reasons[reason], 'i'),
+        name: regexp(translations.additionalInfo.reasons[reason]),
       });
     },
     additionalInfoDescription() {
       return withinForm().findByRole('textbox', {
-        name: escapeRegExp(
-          translations.additionalInfo.form.additional_info_description,
-          'i'
+        name: regexp(
+          translations.additionalInfo.form.additional_info_description
         ),
       });
     },
     sendButton() {
       return withinForm().findByRole('button', {
-        name: translations.additionalInfo.form.sendButton,
+        name: regexp(translations.additionalInfo.form.sendButton),
       });
     },
     notification(type: NotificationType) {
       return withinMain().findByRole('heading', {
-        name: translations.additionalInfo.notification[type],
+        name: regexp(translations.additionalInfo.notification[type]),
       });
     },
   };

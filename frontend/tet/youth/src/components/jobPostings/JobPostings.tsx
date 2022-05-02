@@ -35,7 +35,7 @@ const Postings: React.FC = () => {
       ...(queryParams.text && queryParams.text.length > 0 && { text: queryParams.text }),
       ...(queryParams.start && queryParams.start.length > 0 && { start: queryParams.start }),
       ...(queryParams.end && queryParams.end.length > 0 && { end: queryParams.end }),
-      ...(queryParams.keyword && queryParams.keyword.length > 0 && { keyword: queryParams.keyword }),
+      ...(queryParams.keyword && queryParams.keyword.length > 0 && { ['keyword_AND']: queryParams.keyword }),
       ...(queryParams.language && queryParams.language.length > 0 && { language: queryParams.language }),
     };
     router.push(
@@ -52,12 +52,15 @@ const Postings: React.FC = () => {
     );
   };
 
+  const searchParams = { ...params };
+  searchParams['keyword'] = searchParams['keyword_AND'];
+  delete searchParams['keyword_AND'];
+
   return (
     <div>
-      <JobPostingSearch initParams={params} onSearchByFilters={searchHandler}></JobPostingSearch>
+      <JobPostingSearch initParams={searchParams} onSearchByFilters={searchHandler}></JobPostingSearch>
       {postings()}
     </div>
   );
 };
-
 export default Postings;

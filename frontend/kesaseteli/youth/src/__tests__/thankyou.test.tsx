@@ -33,7 +33,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
     await renderPage(ThankYouPage);
     const thankYouPageApi = getThankYouPageApi();
     await thankYouPageApi.expectations.pageIsLoaded();
-    await thankYouPageApi.expectations.activationInfoTextIsPresent(12);
+    await thankYouPageApi.expectations.activationInfoTextIsPresent('12');
   });
 
   describe('When different activation link expiration time', () => {
@@ -50,7 +50,7 @@ describe('frontend/kesaseteli/youth/src/pages/thankyou.tsx', () => {
       await renderPage(ThankYouPage);
       const thankYouPageApi = getThankYouPageApi();
       await thankYouPageApi.expectations.pageIsLoaded();
-      await thankYouPageApi.expectations.activationInfoTextIsPresent(2);
+      await thankYouPageApi.expectations.activationInfoTextIsPresent('2');
     });
     afterEach(() => {
       process.env = originalEnv;
