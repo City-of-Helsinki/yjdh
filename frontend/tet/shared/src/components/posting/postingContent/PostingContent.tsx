@@ -14,8 +14,8 @@ import {
   $Title,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
-import TetPosting from 'tet-shared/types/tetposting';
 import MapScripts from 'tet-shared/components/MapScripts';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
@@ -47,7 +47,9 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
           <$Hr />
-          <LocationMap posting={posting} zoom={14} />
+          {posting?.location?.position?.coordinates.length > 1 && (
+            <LocationMap posting={posting} zoom={14} />
+          )}
         </$Body>
         <$InfoWrapper>
           <PostingInfoItem

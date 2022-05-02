@@ -11,6 +11,7 @@ import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWr
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import BackButton from 'tet/admin/components/BackButton';
 import withAuth from 'shared/components/hocs/withAuth';
+import HeaderLinks from 'tet-shared/components/HeaderLinks';
 
 const NewPostingPage: NextPage = () => {
   const { t } = useTranslation();
@@ -24,20 +25,26 @@ const NewPostingPage: NextPage = () => {
 
   if (showPreview) {
     return (
-      <PreviewWrapper posting={isInitialRender ? undefined : tetPosting}>
-        <PostingContainer posting={tetPosting} />
-      </PreviewWrapper>
+      <>
+        <HeaderLinks />
+        <PreviewWrapper posting={isInitialRender ? undefined : tetPosting}>
+          <PostingContainer posting={tetPosting} />
+        </PreviewWrapper>
+      </>
     );
   }
 
   return (
-    <Container>
-      <BackButton />
-      <$HeadingContainer>
-        <$Heading>{t('common:editor.newTitle')}</$Heading>
-      </$HeadingContainer>
-      <Editor initialValue={isInitialRender ? undefined : tetPosting} />
-    </Container>
+    <>
+      <HeaderLinks />
+      <Container>
+        <BackButton />
+        <$HeadingContainer>
+          <$Heading>{t('common:editor.newTitle')}</$Heading>
+        </$HeadingContainer>
+        <Editor initialValue={isInitialRender ? undefined : tetPosting} />
+      </Container>
+    </>
   );
 };
 

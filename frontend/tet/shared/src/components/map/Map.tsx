@@ -15,6 +15,7 @@ import {
   $Title,
 } from 'tet-shared/components/map/Map.sc';
 import TetPosting from 'tet-shared/types/tetposting';
+import { Icon } from './MapIcon';
 
 type Props = {
   postings: TetPosting[];
@@ -65,7 +66,7 @@ const Map: React.FC<Props> = ({
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url="https://tiles.hel.ninja/styles/hel-osm-bright/{z}/{x}/{y}{r}.png"
         />
         <MarkerClusterGroup>
           {postings.map((posting) => (
@@ -75,6 +76,7 @@ const Map: React.FC<Props> = ({
                 posting.location.position.coordinates[1],
                 posting.location.position.coordinates[0],
               ]}
+              icon={Icon}
             >
               <Popup>
                 <$Subtitle>{t(`common:map.helsinkiCity`)}</$Subtitle>
