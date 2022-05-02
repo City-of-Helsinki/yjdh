@@ -117,6 +117,12 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         """
         return self.filter(self._active_q_filter())
 
+    def non_rejected(self):
+        """
+        Return non-rejected youth applications
+        """
+        return self.exclude(status=YouthApplicationStatus.REJECTED.value)
+
 
 class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
@@ -701,29 +707,38 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         cls, email, social_security_number
     ) -> bool:
         """
-        Is there an active youth application created that uses the same email or social
-        security number as this youth application?
+        Is there an active non-rejected youth application created that uses the same
+        email or social security number as this youth application?
 
         :return: True if this youth application's email or social security number are
-                 used by at least one active youth application, otherwise False.
+                 used by at least one active non-rejected youth application, otherwise
+                 False.
         """
         return (
             cls.objects.matches_email_or_social_security_number(
                 email, social_security_number
             )
             .active()
+            .non_rejected()
             .exists()
         )
 
     @classmethod
     def is_email_used(cls, email) -> bool:
         """
-        Is this youth application's email used by unexpired or active youth application?
+        Is this youth application's email used by unexpired or active youth application
+        which has not been rejected?
 
         :return: True if this youth application's email is used by at least one
-                 unexpired or active youth application, otherwise False.
+                 unexpired or active youth application which has not been rejected,
+                 otherwise False.
         """
-        return cls.objects.filter(email=email).unexpired_or_active().exists()
+        return (
+            cls.objects.filter(email=email)
+            .unexpired_or_active()
+            .non_rejected()
+            .exists()
+        )
 
     @property
     def name(self):

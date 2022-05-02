@@ -55,6 +55,7 @@ from common.tests.factories import (
     InactiveNeedAdditionalInfoYouthApplicationFactory,
     InactiveNoNeedAdditionalInfoYouthApplicationFactory,
     RejectedYouthApplicationFactory,
+    UnhandledYouthApplicationFactory,
     YouthApplicationFactory,
 )
 from common.urls import handler_403_url, handler_youth_application_processing_url
@@ -1527,8 +1528,11 @@ def get_expected_reason(
     same_social_security_number,
     is_existing_active,
     is_existing_expired,
+    is_existing_rejected,
 ) -> Optional[YouthApplicationRejectedReason]:
-    if (same_email or same_social_security_number) and is_existing_active:
+    if is_existing_rejected:
+        return None
+    elif (same_email or same_social_security_number) and is_existing_active:
         return YouthApplicationRejectedReason.ALREADY_ASSIGNED
     elif same_email and (is_existing_active or not is_existing_expired):
         return YouthApplicationRejectedReason.EMAIL_IN_USE
@@ -1548,6 +1552,7 @@ def get_expected_reason(
     "same_social_security_number,"
     "is_existing_active,"
     "is_existing_expired,"
+    "is_existing_rejected,"
     "expected_reason",
     [
         (
@@ -1555,17 +1560,20 @@ def get_expected_reason(
             same_social_security_number,
             is_existing_active,
             is_existing_expired,
+            is_existing_rejected,
             get_expected_reason(
                 same_email,
                 same_social_security_number,
                 is_existing_active,
                 is_existing_expired,
+                is_existing_rejected,
             ),
         )
         for same_email in [False, True]
         for same_social_security_number in [False, True]
         for is_existing_active in [False, True]
         for is_existing_expired in [False, True]
+        for is_existing_rejected in [False, True]
     ],
 )
 def test_youth_application_post_error_codes(
@@ -1574,12 +1582,17 @@ def test_youth_application_post_error_codes(
     same_social_security_number,
     is_existing_active,
     is_existing_expired,
+    is_existing_rejected,
     expected_reason,
 ):
     now = timezone.now()
 
     # Create the existing youth application
-    existing_app = YouthApplicationFactory.create()
+    existing_app = (
+        RejectedYouthApplicationFactory.create()
+        if is_existing_rejected
+        else UnhandledYouthApplicationFactory.create()
+    )
     existing_app.receipt_confirmed_at = now if is_existing_active else None
     if is_existing_expired:
         # Make the saved youth application expired
