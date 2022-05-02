@@ -165,32 +165,18 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
             youth_application.set_additional_info(**serializer.validated_data)
 
-            if settings.DISABLE_VTJ:
-                LOGGER.info(
-                    f"Set additional info to youth application {youth_application.pk}: "
-                    "VTJ is disabled, sending application to be processed by a handler"
-                )
-                was_email_sent = youth_application.send_processing_email_to_handler(
-                    request
-                )
-                if not was_email_sent:
-                    transaction.set_rollback(True)
-                    with translation.override(youth_application.language):
-                        return HttpResponse(
-                            _("Failed to send manual processing email to handler"),
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        )
-            else:
-                # TODO: Implement VTJ integration
-                LOGGER.error(
-                    f"Tried to set additional info to youth application {youth_application.pk}: "
-                    "Failed because VTJ integration is enabled but not implemented"
-                )
+            LOGGER.info(
+                f"Set additional info to youth application {youth_application.pk}: "
+                "Sending application to be processed by a handler"
+            )
+            was_email_sent = youth_application.send_processing_email_to_handler(request)
+            if not was_email_sent:
                 transaction.set_rollback(True)
-                return HttpResponse(
-                    _("VTJ integration is not implemented"),
-                    status=status.HTTP_501_NOT_IMPLEMENTED,
-                )
+                with translation.override(youth_application.language):
+                    return HttpResponse(
+                        _("Failed to send manual processing email to handler"),
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    )
 
             # Return success setting the additional info
             headers = self.get_success_headers(serializer.data)
@@ -210,7 +196,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def accept(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        if not youth_application.is_accepted and youth_application.accept(
+        if not youth_application.is_accepted and youth_application.accept_manually(
             handler=request.user
         ):
             was_email_sent = (
@@ -267,19 +253,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         elif youth_application.has_activation_link_expired:
             return HttpResponseRedirect(youth_application.expired_page_url())
         elif youth_application.activate():
-            if youth_application.need_additional_info:
-                LOGGER.info(
-                    f"Activated youth application {youth_application.pk}: "
-                    "Additional info is needed, redirecting user to page to provide it"
-                )
-                youth_application.status = (
-                    YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
-                )
-                youth_application.save()
-                return HttpResponseRedirect(
-                    youth_application.additional_info_page_url(pk=youth_application.pk)
-                )
-            elif settings.DISABLE_VTJ:
+            if settings.DISABLE_VTJ:
                 LOGGER.info(
                     f"Activated youth application {youth_application.pk}: "
                     "VTJ is disabled, sending application to be processed by a handler"
@@ -298,16 +272,33 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
                             _("Failed to send manual processing email to handler"),
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                         )
-            else:
-                # TODO: Implement VTJ integration
-                LOGGER.error(
-                    f"Tried to activate youth application {youth_application.pk}: "
-                    "Failed because VTJ integration is enabled but not implemented"
+            elif youth_application.accept_automatically():
+                LOGGER.info(
+                    f"Activated youth application {youth_application.pk}: "
+                    "Youth application was accepted automatically using data from VTJ"
                 )
-                transaction.set_rollback(True)
-                return HttpResponse(
-                    _("VTJ integration is not implemented"),
-                    status=status.HTTP_501_NOT_IMPLEMENTED,
+                was_email_sent = youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
+                    language=youth_application.language
+                )
+                if not was_email_sent:
+                    transaction.set_rollback(True)
+                    with translation.override(youth_application.language):
+                        return HttpResponse(
+                            _("Failed to send youth summer voucher email"),
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        )
+                return HttpResponseRedirect(youth_application.accepted_page_url())
+            elif youth_application.need_additional_info:
+                LOGGER.info(
+                    f"Activated youth application {youth_application.pk}: "
+                    "Additional info is needed, redirecting user to page to provide it"
+                )
+                youth_application.status = (
+                    YouthApplicationStatus.ADDITIONAL_INFORMATION_REQUESTED
+                )
+                youth_application.save()
+                return HttpResponseRedirect(
+                    youth_application.additional_info_page_url(pk=youth_application.pk)
                 )
 
             return HttpResponseRedirect(youth_application.activated_page_url())
@@ -331,7 +322,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         return JsonResponse(status=response_status, data=response_data)
 
     @transaction.atomic
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):  # noqa: C901
         try:
             # This function is based on CreateModelMixin class's create function.
             serializer = self.get_serializer(data=request.data)
@@ -358,14 +349,50 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             # Send the localized activation/additional info request email
             youth_application = serializer.instance
 
-            if youth_application.need_additional_info:
-                was_email_sent = youth_application.send_additional_info_request_email(
-                    request, youth_application.language
-                )
-            else:
+            if settings.DISABLE_VTJ:
                 was_email_sent = youth_application.send_activation_email(
                     request, youth_application.language
                 )
+            else:  # VTJ integration is enabled
+                request_additional_info = serializer.validated_data.get(
+                    "request_additional_information", False
+                )
+                if (
+                    request_additional_info
+                    and not youth_application.need_additional_info
+                ):
+                    transaction.set_rollback(True)
+                    with translation.override(youth_application.language):
+                        return HttpResponse(
+                            _("Send anyway was used needlessly"),
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+
+                if not request_additional_info:
+                    if (
+                        not youth_application.is_social_security_number_valid_according_to_vtj
+                        or youth_application.is_applicant_dead_according_to_vtj
+                    ):
+                        transaction.set_rollback(True)
+                        return self.error_response_with_logging(
+                            YouthApplicationRejectedReason.INADMISSIBLE_DATA
+                        )
+                    elif not youth_application.is_last_name_as_in_vtj:
+                        transaction.set_rollback(True)
+                        return self.error_response_with_logging(
+                            YouthApplicationRejectedReason.PLEASE_RECHECK_DATA
+                        )
+
+                if youth_application.need_additional_info:
+                    was_email_sent = (
+                        youth_application.send_additional_info_request_email(
+                            request, youth_application.language
+                        )
+                    )
+                else:
+                    was_email_sent = youth_application.send_activation_email(
+                        request, youth_application.language
+                    )
 
             if not was_email_sent:
                 transaction.set_rollback(True)

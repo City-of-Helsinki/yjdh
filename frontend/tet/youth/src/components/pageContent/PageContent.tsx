@@ -1,3 +1,4 @@
+import React from 'react';
 import Image from 'next/image';
 import { $ImageWrapper, $PageContent, $Textbox, $TextboxTitle } from './PageContent.sc';
 import { useTranslation } from 'next-i18next';

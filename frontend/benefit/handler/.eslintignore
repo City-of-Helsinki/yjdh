@@ -3,4 +3,4 @@ next.config.js
 next-i18next.config.js
 .eslintrc.js
 jest.config.js
-testcafe.config.js
+.testcaferc.js

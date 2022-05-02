@@ -87,7 +87,7 @@ certificates which are ignored:
 
    - on Mac Os, run command:
    
-    `open -a Google\ Chrome --args --ignore-certificate-errors-spki-list="8sg/cl7YabrOFqSqH+Bu0e+P27Av33gWgi8Lq28DW1I=,gJt+wt/T3afCRkxtMMSjXcl/99sgzWc2kk1c1PC9tG0=,zrQI2/1q8i2SRPmMZ1sMntIkG+lMW0legPFokDo3nrY="`
+    open -a Google\ Chrome --args --ignore-certificate-errors-spki-list="8sg/cl7YabrOFqSqH+Bu0e+P27Av33gWgi8Lq28DW1I=,gJt+wt/T3afCRkxtMMSjXcl/99sgzWc2kk1c1PC9tG0=,zrQI2/1q8i2SRPmMZ1sMntIkG+lMW0legPFokDo3nrY="
 
    - on Linux: # TODO
    - on windows: # TODO

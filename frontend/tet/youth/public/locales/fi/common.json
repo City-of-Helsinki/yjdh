@@ -1,5 +1,10 @@
 {
   "appName": "TET-paikat",
+  "header": {
+    "linkSkipToContent": "Siirry sisältöön",
+    "menuToggleAriaLabel": "Valikko",
+    "languageMenuButtonAriaLabel": "Valitse kieli"
+  },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
     "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
@@ -25,12 +30,19 @@
 		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
 	},
 	"filters": {
-		"searchPlaceholder": "Kirjoita hakusana tai paikan nimi",
-		"workMethod": "Valitse työtapa",
+		"searchJobs": "Hae TET-paikkoja",
+		"searchPlaceholder": "Kirjoita hakusana",
+		"workMethod": "Työtapa",
+		"workFeatures": "Työn ominaisuudet",
 		"startDate": "Alkamispäivä",
 		"endDate": "Päättymispäivä",
 		"language": "Valitse kieli",
-		"clearFilters": "Tyhjennä hakuehdot"
+		"clearFilters": "Tyhjennä hakuehdot",
+    "combobox": {
+      "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "Poista valinta"
+    }
 	},
 	"postings": {
 		"searchResults_one": "{{count}} hakutulos",

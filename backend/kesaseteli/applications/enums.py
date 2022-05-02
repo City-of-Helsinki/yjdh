@@ -170,9 +170,24 @@ class HiredWithoutVoucherAssessment(models.TextChoices):
 class YouthApplicationRejectedReason(models.TextChoices):
     EMAIL_IN_USE = "email_in_use", _("Email in use")
     ALREADY_ASSIGNED = "already_assigned", _("Already assigned")
+    INADMISSIBLE_DATA = "inadmissible_data", _("Inadmissible data")
+    PLEASE_RECHECK_DATA = "please_recheck_data", _("Please recheck data")
 
     def json(self):
         return {
             "code": str(self.value),
             "message": str(self.label),
         }
+
+
+class VtjTestCase(models.TextChoices):
+    DEAD = "Kuollut", _("Kuollut")
+    WRONG_LAST_NAME = "Väärä sukunimi", _("Väärä sukunimi")
+    NOT_FOUND = "Ei löydy", _("Ei löydy")
+    NO_ANSWER = "Ei vastaa", _("Ei vastaa")
+    HOME_MUNICIPALITY_HELSINKI = "Kotikunta Helsinki", _("Kotikunta Helsinki")
+    HOME_MUNICIPALITY_UTSJOKI = "Kotikunta Utsjoki", _("Kotikunta Utsjoki")
+
+    @staticmethod
+    def first_name():
+        return "VTJ-testi"
