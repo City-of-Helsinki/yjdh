@@ -9,9 +9,10 @@ type Props = {
   label: string;
   placeholder: string;
   registerOptions: RegisterOptions;
+  testId?: string;
 };
 
-const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions }) => {
+const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions, testId }) => {
   const { control } = useFormContext<TetPosting>();
   return (
     <Controller
@@ -19,6 +20,7 @@ const TextInput: React.FC<Props> = ({ id, label, placeholder, registerOptions })
       render={({ field: { onChange, value }, fieldState: { error, invalid } }) => (
         <HdsTextInput
           id={id}
+          data-testid={testId}
           label={label}
           placeholder={placeholder}
           onChange={onChange}

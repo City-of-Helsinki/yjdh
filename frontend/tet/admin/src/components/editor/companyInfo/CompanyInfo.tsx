@@ -63,7 +63,7 @@ const CompanyInfo: React.FC = () => {
           <$GridCell $colSpan={6}>
             <TextInput
               id="org_name"
-              data-testid="posting-form-org_name"
+              testId={'posting-form-org_name'}
               label={t('common:editor.employerInfo.departmentLabel')}
               placeholder={t('common:editor.employerInfo.departmentLabel')}
               registerOptions={name}
@@ -72,6 +72,7 @@ const CompanyInfo: React.FC = () => {
           <$GridCell $colSpan={6}>
             <ComboboxSingleSelect<TetPosting, LocationType>
               id="location"
+              testId={'posting-form-location'}
               required={true}
               label={t('common:editor.employerInfo.address')}
               placeholder={t('common:editor.employerInfo.streetAddress')}
