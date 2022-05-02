@@ -6,6 +6,7 @@ import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { $MapWrapper } from 'tet-shared/components/map/Map.sc';
 import TetPosting from 'tet-shared/types/tetposting';
+
 import { Icon } from './MapIcon';
 
 type Props = {

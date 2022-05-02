@@ -15,6 +15,7 @@ import {
   $Title,
 } from 'tet-shared/components/map/Map.sc';
 import TetPosting from 'tet-shared/types/tetposting';
+
 import { Icon } from './MapIcon';
 
 type Props = {
