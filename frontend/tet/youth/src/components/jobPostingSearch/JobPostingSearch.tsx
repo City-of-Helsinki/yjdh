@@ -116,7 +116,7 @@ const PostingSearch: React.FC<Props> = ({ initParams, onSearchByFilters }) => {
                 onSubmit={() => searchHandler()}
                 onChange={(value) => setSearchText(value)}
                 placeholder={t('common:filters.searchPlaceholder')}
-              ></SearchInput>
+              />
             </$GridCell>
           </$GridCell>
           <$GridCell $colSpan={3}>
