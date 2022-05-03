@@ -325,7 +325,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def create(self, request, *args, **kwargs):  # noqa: C901
         try:
             # This function is based on CreateModelMixin class's create function.
-            serializer = self.get_serializer(data=request.data)
+            serializer = self.get_serializer(data=request.data, hide_vtj_data=True)
             serializer.is_valid(raise_exception=True)
 
             # Data is valid but let's check other criteria before creating the object
