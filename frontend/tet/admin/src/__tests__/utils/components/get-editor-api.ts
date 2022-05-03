@@ -4,13 +4,27 @@ import { escapeRegExp } from 'shared/utils/regex.utils';
 
 const getEditorApi = (expectedPosting?: TetPosting) => {
   const expectations = {
-    fieldValueIsPresent: async <K extends keyof TetPosting>(key: K): Promise<void> => {
+    inputValueIsPresent: async <K extends keyof TetPosting>(key: K): Promise<void> => {
       const field = await screen.findByTestId(`posting-form-${key}`);
       if (!expectedPosting) {
         throw new Error('you forgot to give expected application values for the test');
       }
       const value = expectedPosting[key] as string;
       expect(field).toHaveValue(value);
+    },
+    languageValuesArePresent: async (): Promise<void> => {
+      const select = await screen.findByText(/Tet-jaksolla käytetty kieli/i);
+      const parent = select?.parentElement;
+      await within(parent).findByText(/Suomi/i);
+      await within(parent).findByText(/Ruotsi/i);
+    },
+    keywordsArePresent: async (): Promise<void> => {
+      const field = await screen.findByText(/Avainsanat/i);
+      //const field = await screen.findByRole('combobox', {
+      //name: /Avainsanat/i,
+      //});
+      //const parent = field?.parentElement;
+      //await within(parent).findByText(new RegExp(expectedPosting.keywords[0].label, 'i'));
     },
     textInputHasError: async <K extends keyof TetPosting>(key: K): Promise<void> => {
       const field = await screen.findByTestId(`posting-form-${key}`);

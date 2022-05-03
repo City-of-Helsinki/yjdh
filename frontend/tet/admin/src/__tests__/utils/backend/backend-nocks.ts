@@ -37,6 +37,30 @@ export const expectToGetEventsFromBackend = (events: TetEvents): nock.Scope =>
     .get(`${BackendEndpoint.TET_POSTINGS}`)
     .reply(200, events, { 'Access-Control-Allow-Origin': '*' });
 
+export const expectToGetEventssErrorFromBackend = (errorCode: 400 | 404 | 500): nock.Scope => {
+  consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+  return nock(getBackendDomain())
+    .get(BackendEndpoint.TET_POSTINGS)
+    .reply(errorCode, 'This is a event list backend test error. Please ignore this error message.');
+};
+export const expectKeyWordsFromLinkedEvents = (keyword): nock.Scope =>
+  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+    .get('/keyword')
+    .reply(
+      200,
+      {
+        data: [
+          {
+            name: {
+              fi: keyword.label,
+            },
+            ['@id']: keyword.label,
+          },
+        ],
+      },
+      { 'Access-Control-Allow-Origin': '*' },
+    );
+
 // TODO don't hardcode url
 // this is needed when testing the Editor form and can be refactored then
 export const expectWorkingMethodsFromLinkedEvents = (): nock.Scope =>
