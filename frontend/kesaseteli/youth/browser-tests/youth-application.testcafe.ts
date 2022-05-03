@@ -436,7 +436,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   for (const age of [12, 99]) {
-    test.only(`If I'm not in target age group (${age}-years old), I have to give additional information and handler can see warning about the age`, async (t) => {
+    test(`If I'm not in target age group (${age}-years old), I have to give additional information and handler can see warning about the age`, async (t) => {
       const indexPage = await getIndexPageComponents(t);
       await indexPage.expectations.isLoaded();
       const application = applicationLivesInHelsinkiAccordingToVtj({
