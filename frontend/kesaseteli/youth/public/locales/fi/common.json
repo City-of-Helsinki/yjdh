@@ -137,6 +137,11 @@
       "message": "Hienoa! Olet lähettänyt tietosi järjestelmään ja hakemuksesi käsitellään mahdollisimman pian - viimeistään kuukauden kuluessa. Saat Kesäsetelin ja käyttöohjeet sähköpostiisi kun hakemuksesi on tarkastettu!",
       "goToFrontendPage": ""
     },
+    "accepted" : {
+      "title": "Hienoa! Olet lähettänyt tietosi järjestelmään",
+      "message": " Saat pian kesäsetelin ohjeineen sähköpostiisi",
+      "goToFrontendPage": ""
+    },
     "expired" : {
       "title": "Hups! Vahvistuslinkki on vanhentunut.",
       "message": "Ikävä kyllä rekisteröinnin vahvistukseen on kulunut yli {{ expirationHours }} tuntia. Täytäthän rekisteröintikomakkeen uudelleen.",

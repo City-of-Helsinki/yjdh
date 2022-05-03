@@ -1,29 +1,18 @@
 import { WithinSelectors } from '@testing-library/testcafe';
 import { Selector, t } from 'testcafe';
 
-import { TranslationsApi } from '../../src/__tests__/types/translations';
 import {
   containsRegexp,
   replaceValues,
 } from '../../src/__tests__/utils/translation-utils';
 import { MAIN_CONTENT_ID } from '../../src/constants';
-import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
 import {
   getErrorMessage,
   screenContext,
   withinContext,
 } from '../utils/testcafe.utils';
 
-export type Options = {
-  datatestId?: string;
-  lang?: Language;
-};
-
-abstract class PageComponent<Translations> {
-  protected lang: Language;
-
-  protected translations!: Translations;
-
+abstract class PageComponent {
   private readonly componentSelector: Selector;
 
   protected readonly component: WithinSelectors;
@@ -36,22 +25,11 @@ abstract class PageComponent<Translations> {
 
   protected replaced = replaceValues;
 
-  protected abstract getTranslationsApi(): TranslationsApi<Translations>;
-
-  protected constructor(options?: Options) {
+  protected constructor(datatestId?: string) {
     this.componentSelector = this.screen.findByTestId(
-      options?.datatestId ?? MAIN_CONTENT_ID
+      datatestId ?? MAIN_CONTENT_ID
     );
     this.component = this.within(this.componentSelector);
-    this.lang = options?.lang ?? DEFAULT_LANGUAGE;
-    this.setTranslations(this.lang);
-  }
-
-  public setTranslations(lang: Language): void {
-    const {
-      translations: { [lang]: translations },
-    } = this.getTranslationsApi();
-    this.translations = translations;
   }
 
   loadingSpinners = this.screen.findAllByTestId('hidden-loading-indicator');

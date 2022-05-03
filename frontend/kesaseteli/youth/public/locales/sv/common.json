@@ -142,6 +142,11 @@
       "message": " Det har tyvärr gått mer än {{ expirationHours }} timmar sedan registreringsbekräftelsen. Fyll i registreringsblanketten igen.",
       "goToFrontendPage": "Registrera dig och skicka Sommarsedeln på nytt"
     },
+    "accepted" : {
+      "title": "SV Hienoa! Olet lähettänyt tietosi järjestelmään",
+      "message": "SV Saat pian kesäsetelin ohjeineen sähköpostiisi",
+      "goToFrontendPage": ""
+    },
     "alreadyActivated" : {
       "title": "Hoppsan! Du har redan ansökt om en Sommarsedel, som behandlats som bäst.",
       "message": "",

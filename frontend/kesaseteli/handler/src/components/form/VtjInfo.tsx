@@ -23,11 +23,12 @@ const addressIsValid = (address: VtjAddress): boolean =>
 
 const VtjInfo: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
-  const { vtj_data, social_security_number, last_name, postcode } = application;
+  const { encrypted_vtj_json, social_security_number, last_name, postcode } =
+    application;
 
   // TODO: Remove example data when backend part is implemented
 
-  // const vtj_data: VtjData = JSON.parse(`{
+  // const encrypted_vtj_json: VtjData = JSON.parse(`{
   //   "@xmlns": "http://xml.vrk.fi/schema/vtjkysely",
   //   "@xmlns:vtj": "http://xml.vrk.fi/schema/vtj/henkilotiedot/1",
   //   "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
@@ -149,7 +150,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
   //   }
   // }`);
 
-  if (!vtj_data) {
+  if (!encrypted_vtj_json) {
     return (
       <VtjErrorNotification
         reason="notFound"
@@ -160,24 +161,25 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
   }
 
   const notFound =
-    vtj_data?.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
-  const providedAt = vtj_data.Asiakasinfo.InfoS;
-  const fullName = `${vtj_data.Henkilo.NykyisetEtunimet.Etunimet} ${vtj_data.Henkilo.NykyinenSukunimi.Sukunimi}`;
+    encrypted_vtj_json?.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
+  const providedAt = encrypted_vtj_json.Asiakasinfo.InfoS;
+  const fullName = `${encrypted_vtj_json.Henkilo.NykyisetEtunimet.Etunimet} ${encrypted_vtj_json.Henkilo.NykyinenSukunimi.Sukunimi}`;
   const differentLastName =
-    vtj_data.Henkilo.NykyinenSukunimi.Sukunimi.toLowerCase() !==
+    encrypted_vtj_json.Henkilo.NykyinenSukunimi.Sukunimi.toLowerCase() !==
     last_name.toLowerCase();
 
-  const socialSecurityNumber = vtj_data.Henkilo.Henkilotunnus['#text'] ?? '-';
+  const socialSecurityNumber =
+    encrypted_vtj_json.Henkilo.Henkilotunnus['#text'] ?? '-';
 
   const permanentAddress = addressIsValid(
-    vtj_data.Henkilo.VakinainenKotimainenLahiosoite
+    encrypted_vtj_json.Henkilo.VakinainenKotimainenLahiosoite
   )
-    ? vtj_data.Henkilo.VakinainenKotimainenLahiosoite
+    ? encrypted_vtj_json.Henkilo.VakinainenKotimainenLahiosoite
     : undefined;
   const temporaryAddress = addressIsValid(
-    vtj_data.Henkilo.TilapainenKotimainenLahiosoite
+    encrypted_vtj_json.Henkilo.TilapainenKotimainenLahiosoite
   )
-    ? vtj_data.Henkilo.TilapainenKotimainenLahiosoite
+    ? encrypted_vtj_json.Henkilo.TilapainenKotimainenLahiosoite
     : undefined;
   const addressNotFound = !permanentAddress && !temporaryAddress;
 
@@ -190,11 +192,11 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
   const differentPostCode = Postinumero !== postcode;
 
   const { ageInYears: age } = FinnishSSN.parse(
-    vtj_data.Henkilo.Henkilotunnus['#text']
+    encrypted_vtj_json.Henkilo.Henkilotunnus['#text']
   );
   const notInTargetAgeGroup = ![15, 16].includes(age);
 
-  const isDead = vtj_data.Henkilo.Kuolintiedot.Kuollut === '1';
+  const isDead = encrypted_vtj_json.Henkilo.Kuolintiedot.Kuollut === '1';
 
   return (
     <span data-testid="vtj-info">
@@ -233,7 +235,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
                 <VtjErrorMessage reason="outsideHelsinki" />
               )}
             </Field>
-            <VtjRawDataAccordion data={vtj_data} />
+            <VtjRawDataAccordion data={encrypted_vtj_json} />
           </FormSection>
         </$Notification>
       )}

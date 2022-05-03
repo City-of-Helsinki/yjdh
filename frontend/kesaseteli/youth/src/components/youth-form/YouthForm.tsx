@@ -24,6 +24,7 @@ const YouthForm: React.FC = () => {
   return (
     <>
       <Heading header={t('common:youthApplication.form.title')} />
+      <pre>{JSON.stringify(formState, null, 2)}</pre>
       <form data-testid="youth-form">
         <FormSection columns={2}>
           <$GridCell $colSpan={2}>

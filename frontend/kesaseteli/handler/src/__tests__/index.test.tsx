@@ -137,7 +137,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       await indexPageApi.expectations.pageIsLoaded();
 
       const { LahiosoiteS, PostitoimipaikkaS } =
-        application.vtj_data.Henkilo.VakinainenKotimainenLahiosoite;
+        application.encrypted_vtj_json.Henkilo.VakinainenKotimainenLahiosoite;
 
       await indexPageApi.expectations.vtjInfoIsPresent();
       await indexPageApi.expectations.vtjFieldValueIsPresent(
@@ -166,7 +166,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const social_security_number = FinnishSSN.createWithAge(16);
       const application = fakeActivatedYouthApplication({
         social_security_number,
-        vtj_data: { Henkilo: { Henkilotunnus: { '@voimassaolokoodi': '0' } } },
+        encrypted_vtj_json: {
+          Henkilo: { Henkilotunnus: { '@voimassaolokoodi': '0' } },
+        },
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
@@ -183,7 +185,9 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     it(`shows warning when vtjData has different last name`, async () => {
       const application = fakeActivatedYouthApplication({
         last_name: 'Nieminen',
-        vtj_data: { Henkilo: { NykyinenSukunimi: { Sukunimi: 'Virtanen' } } },
+        encrypted_vtj_json: {
+          Henkilo: { NykyinenSukunimi: { Sukunimi: 'Virtanen' } },
+        },
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {
@@ -228,7 +232,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const permanentAddress = fakeValidVtjAddress();
       const temporaryAddress = fakeValidVtjAddress();
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: permanentAddress,
             TilapainenKotimainenLahiosoite: temporaryAddress,
@@ -252,7 +256,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       const permanentAddress = fakeExpiredVtjAddress();
       const temporaryAddress = fakeValidVtjAddress();
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: permanentAddress,
             TilapainenKotimainenLahiosoite: temporaryAddress,
@@ -275,7 +279,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     it(`shows 'address not found' -error when both addresses are currently invalid`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: fakeExpiredVtjAddress(),
             TilapainenKotimainenLahiosoite: fakeFutureVtjAddress(),
@@ -296,7 +300,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     it(`shows 'different postcode' -error when application has different post code`, async () => {
       const application = fakeActivatedYouthApplication({
         postcode: '00100',
-        vtj_data: {
+        encrypted_vtj_json: {
           Henkilo: { VakinainenKotimainenLahiosoite: { Postinumero: '00540' } },
         },
       });
@@ -315,7 +319,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     it(`doesn't show 'different postcode' -error when application has same post code`, async () => {
       const application = fakeActivatedYouthApplication({
         postcode: '00100',
-        vtj_data: {
+        encrypted_vtj_json: {
           Henkilo: { VakinainenKotimainenLahiosoite: { Postinumero: '00100' } },
         },
       });
@@ -333,7 +337,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     it(`shows 'outside Helsinki' -error when city is not Helsinki`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: { PostitoimipaikkaS: 'Vaasa' },
           },
@@ -352,7 +356,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     it(`doesn't show 'outside Helsinki' -error when city is Helsinki`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: {
+        encrypted_vtj_json: {
           Henkilo: {
             VakinainenKotimainenLahiosoite: { PostitoimipaikkaS: 'Helsinki' },
           },
@@ -371,7 +375,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
     it(`shows 'is dead' -error when applicant has died`, async () => {
       const application = fakeActivatedYouthApplication({
-        vtj_data: { Henkilo: { Kuolintiedot: { Kuollut: '1' } } },
+        encrypted_vtj_json: { Henkilo: { Kuolintiedot: { Kuollut: '1' } } },
       });
       expectToGetYouthApplication(application);
       await renderPage(HandlerIndex, {

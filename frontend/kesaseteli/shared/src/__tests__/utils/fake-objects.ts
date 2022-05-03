@@ -22,6 +22,7 @@ import CreatedYouthApplication from '../../types/created-youth-application';
 import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
+import AdditionalInfoReasonType from '../../types/additional-info-reason-type';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -207,9 +208,10 @@ export const fakeAdditionalInfoApplication = (
   merge(
     {
       id: faker.datatype.uuid(),
-      additional_info_user_reasons: getRandomSubArray(
-        ADDITIONAL_INFO_REASON_TYPE
-      ),
+      additional_info_user_reasons:
+        (override &&
+          (override.additional_info_user_reasons as AdditionalInfoReasonType[])) ||
+        getRandomSubArray(ADDITIONAL_INFO_REASON_TYPE),
       additional_info_description: faker.lorem.paragraph(1),
       additional_info_attachments: [],
       language: override?.language ?? DEFAULT_LANGUAGE,
@@ -301,7 +303,7 @@ export const fakeVtjData = (
         },
       },
     },
-    override?.vtj_data
+    override?.encrypted_vtj_json ?? {}
   );
 
 export const fakeActivatedYouthApplication = (
@@ -322,7 +324,7 @@ export const fakeActivatedYouthApplication = (
               override?.additional_info_provided_at ?? faker.date.past()
             )
           : undefined,
-      vtj_data: fakeVtjData(application),
+      encrypted_vtj_json: fakeVtjData(application),
     },
     override
   );
