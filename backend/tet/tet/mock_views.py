@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import auth
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
@@ -15,7 +15,7 @@ class MockLogoutView(View):
     def handle_logout(self, request):
         if request.user.is_authenticated:
             auth.logout(request)
-        return HttpResponse("OK", status=200)
+        return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
     def get(self, request):
         return self.handle_logout(request)

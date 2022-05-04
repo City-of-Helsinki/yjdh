@@ -1,4 +1,3 @@
-import { OptionType } from 'tet-shared/types/classification';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 export const linkedEventsUrl =
