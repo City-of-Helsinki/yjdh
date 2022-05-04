@@ -1,7 +1,6 @@
-import PageComponent from 'shared/page-models/PageComponent';
-
 import { TranslationsApi } from '../../src/__tests__/types/translations';
 import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
+import PageComponent from './PageComponent';
 
 export type Options = {
   datatestId?: string;

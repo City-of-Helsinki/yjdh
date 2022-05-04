@@ -1,7 +1,7 @@
 import { t } from 'testcafe';
 
 import ApplicantPageComponent from './ApplicantPageComponent';
-import { Options } from '@frontend/shared/browser-tests/page-models/PageComponent';
+import { Options } from '@frontend/shared/browser-tests/page-models/TranslatedComponent';
 
 class WizardStep extends ApplicantPageComponent {
   constructor(

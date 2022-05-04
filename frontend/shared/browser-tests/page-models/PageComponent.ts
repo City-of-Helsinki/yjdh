@@ -49,25 +49,41 @@ abstract class PageComponent {
    */
   public async isLoaded(timeout?: number): Promise<void> {
     await this.isLoadingSpinnerNoMorePresent(timeout);
+    return PageComponent.expect(this.componentSelector);
+  }
+
+  protected static async expect(
+    selector: Selector | SelectorPromise,
+    timeout?: number
+  ): Promise<void> {
     return (
       t
         // eslint-disable-next-line security/detect-non-literal-fs-filename
-        .expect(this.componentSelector.exists)
+        .expect(selector.exists)
         .ok(await getErrorMessage(t), { timeout })
+    );
+  }
+
+  protected static async expectNotPresent(
+    selector: Selector | SelectorPromise,
+    timeout?: number
+  ): Promise<void> {
+    return (
+      t
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        .expect(selector.exists)
+        .notOk(await getErrorMessage(t), { timeout })
     );
   }
 
   /**
    * Utility that clears the possible previous value from input and
    * types a new one
-   * @param selector
-   * @param value
-   * @protected
    */
   protected static fillInput(
     selector: Selector | SelectorPromise,
     value?: string
-  ): Promise<void> {
+  ): TestControllerPromise {
     return t
       .click(selector)
       .pressKey('ctrl+a delete')
@@ -80,7 +96,7 @@ abstract class PageComponent {
    */
   protected static clickSelectRadioButton(
     selector: Selector | SelectorPromise
-  ): Promise<void> {
+  ): TestControllerPromise {
     return t.click(Selector(selector, { timeout: 0 }));
   }
 }

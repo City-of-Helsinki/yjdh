@@ -126,7 +126,7 @@ export const fakeYouthApplication = (
   };
 };
 
-export const fakeYouthApplicationIsdeadAccordingToVtj = (
+export const fakeYouthApplicationIsDeadAccordingToVtj = (
   override?: DeepPartial<Omit<YouthApplication, 'first_name' | 'last_name'>>
 ): YouthApplication =>
   fakeYouthApplication({

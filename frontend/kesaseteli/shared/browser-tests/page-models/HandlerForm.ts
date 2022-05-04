@@ -72,6 +72,14 @@ export default class HandlerForm<
     );
   }
 
+  public applicantsLastnameMismatches() {
+    return this.component.findByRole(
+      this.regexp(
+        `Sukunimi poikkeaa hakemukselle syötetystä sukunimestä (Väärä sukunimi)`
+      )
+    );
+  }
+
   public async applicationNotFound() {
     return t.expect(this.notFound.exists).ok(await getErrorMessage(t));
   }
