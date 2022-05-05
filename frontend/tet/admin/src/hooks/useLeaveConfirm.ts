@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
-const useWarnIfUnsavedChanges = (unsavedChanges: boolean) => {
-  const message = 'Haluatko poistua?';
+import { useTranslation } from 'next-i18next';
+const useLeaveConfirm = (unsavedChanges: boolean) => {
+  const { t } = useTranslation();
+  const message = t('common:editor.leaveConfirm');
 
   useEffect(() => {
     const routeChangeStart = (url) => {
@@ -29,4 +31,4 @@ const useWarnIfUnsavedChanges = (unsavedChanges: boolean) => {
   }, [unsavedChanges]);
 };
 
-export default useWarnIfUnsavedChanges;
+export default useLeaveConfirm;

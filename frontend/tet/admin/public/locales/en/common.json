@@ -81,6 +81,7 @@
 		"preview": "Preview",
     "loadingError": "Error while loading the event. Please try again later.",
     "language": "Language of the TET workplace",
+		"leaveConfirm": "EN Muutoksia ei ole tallennettu. Haluatko silti poistua?",
     "employerInfo": {
 			"contactPerson": "Contact person",
       "header": "Unit details",
