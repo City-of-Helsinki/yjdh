@@ -1,12 +1,3 @@
-from applications.api.v1.serializers import (
-    ApplicantApplicationSerializer,
-    AttachmentSerializer,
-    HandlerApplicationSerializer,
-)
-from applications.enums import ApplicationBatchStatus, ApplicationStatus
-from applications.models import Application, ApplicationBatch
-from applications.services.applications_csv_report import ApplicationsCsvService
-from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
 from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
@@ -18,15 +9,24 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import DateFromToRangeFilter, rest_framework as filters
 from django_filters.widgets import CSVWidget
 from drf_spectacular.utils import extend_schema
-from messages.models import MessageType
 from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from sql_util.aggregates import SubqueryCount
-from users.utils import get_company_from_request
-
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
+from sql_util.aggregates import SubqueryCount
+
+from applications.api.v1.serializers import (
+    ApplicantApplicationSerializer,
+    AttachmentSerializer,
+    HandlerApplicationSerializer,
+)
+from applications.enums import ApplicationBatchStatus, ApplicationStatus
+from applications.models import Application, ApplicationBatch
+from applications.services.applications_csv_report import ApplicationsCsvService
+from common.permissions import BFIsApplicant, BFIsHandler, TermsOfServiceAccepted
+from messages.models import MessageType
+from users.utils import get_company_from_request
 
 
 class BaseApplicationFilter(filters.FilterSet):

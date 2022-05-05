@@ -2,6 +2,7 @@ import datetime
 import decimal
 
 import pytest
+
 from applications.services.talpa_integration import TalpaService
 from applications.tests.common import (
     check_csv_cell_list_lines_generator,

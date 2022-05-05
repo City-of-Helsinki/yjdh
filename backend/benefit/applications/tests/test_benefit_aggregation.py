@@ -3,6 +3,8 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
+from django.utils import translation
+
 from applications.api.v1.serializers import ApplicantApplicationSerializer
 from applications.enums import BenefitType
 from applications.models import Application
@@ -14,7 +16,6 @@ from calculator.tests.factories import PreviousBenefitFactory
 from common.tests.conftest import *  # noqa
 from common.utils import duration_in_months, to_decimal
 from companies.tests.conftest import *  # noqa
-from django.utils import translation
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.tests.conftest import *  # noqa
 

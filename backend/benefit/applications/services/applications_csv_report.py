@@ -1,3 +1,5 @@
+from django.utils import translation
+
 from applications.enums import BenefitType
 from applications.services.csv_export_base import (
     CsvColumn,
@@ -5,7 +7,6 @@ from applications.services.csv_export_base import (
     get_organization_type,
     nested_queryset_attr,
 )
-from django.utils import translation
 
 
 def CsvDefaultColumn(*args, **kwargs):

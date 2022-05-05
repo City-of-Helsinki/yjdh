@@ -1,7 +1,3 @@
-from applications.api.v1 import application_batch_views, views as application_views
-from calculator.api.v1 import views as calculator_views
-from common.debug_util import debug_env
-from companies.api.v1.views import GetCompanyView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -13,12 +9,17 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework_nested import routers
+
+from applications.api.v1 import application_batch_views, views as application_views
+from calculator.api.v1 import views as calculator_views
+from common.debug_util import debug_env
+from companies.api.v1.views import GetCompanyView
 from messages.views import (
     ApplicantMessageViewSet,
     HandlerMessageViewSet,
     HandlerNoteViewSet,
 )
-from rest_framework_nested import routers
 from terms.api.v1.views import ApproveTermsOfServiceView
 from users.api.v1.views import CurrentUserView
 

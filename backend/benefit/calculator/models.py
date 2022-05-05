@@ -2,8 +2,15 @@ import decimal
 import operator
 from datetime import timedelta
 
-from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
 from babel.dates import format_date
+from django.conf import settings
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from encrypted_fields.fields import EncryptedCharField, SearchField
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
+from simple_history.models import HistoricalRecords
+
+from applications.models import Application, PAY_SUBSIDY_PERCENT_CHOICES
 from calculator.enums import RowType
 from common.exceptions import BenefitAPIException
 from common.utils import (
@@ -14,13 +21,6 @@ from common.utils import (
     to_decimal,
 )
 from companies.models import Company
-from django.conf import settings
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-from encrypted_fields.fields import EncryptedCharField, SearchField
-from simple_history.models import HistoricalRecords
-
-from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 STATE_AID_MAX_PERCENTAGE_CHOICES = (
     (50, "50%"),
