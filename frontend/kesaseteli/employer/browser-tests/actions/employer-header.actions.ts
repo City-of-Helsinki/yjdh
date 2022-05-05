@@ -2,7 +2,7 @@ import {
   doLogin,
   SuomiFiData,
 } from '@frontend/shared/browser-tests/actions/login-action';
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
+import Header from '@frontend/shared/browser-tests/page-models/Header';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import User from '@frontend/shared/src/types/user';
 import TestController from 'testcafe';
@@ -14,9 +14,8 @@ export const doEmployerLogin = async (
   lang = DEFAULT_LANGUAGE,
   cachedUser?: User
 ): Promise<SuomiFiData> => {
-  const { translations } = getEmployerTranslationsApi();
-  const headerUser = getHeaderComponents(t, translations).headerUser();
-  await headerUser.expectations.userIsLoggedOut();
-  await headerUser.actions.clickloginButton();
+  const header = new Header(getEmployerTranslationsApi());
+  await header.userIsLoggedOut();
+  await header.clickLoginButton();
   return doLogin(t, lang, cachedUser);
 };

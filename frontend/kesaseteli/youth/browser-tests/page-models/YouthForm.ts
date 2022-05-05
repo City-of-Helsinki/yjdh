@@ -60,21 +60,21 @@ class YouthForm extends YouthPageComponent {
 
   public async isLoaded(): Promise<void> {
     await super.isLoaded();
-    return YouthForm.expectNotPresent(this.schoolsLoading);
+    return this.expectNotPresent(this.schoolsLoading);
   }
 
   public showsCheckNotification(): Promise<void> {
-    return YouthForm.expect(this.checkNotification);
+    return this.expect(this.checkNotification);
   }
 
   public typeInput(name: TextInputName, value?: string): TestControllerPromise {
-    return YouthForm.fillInput(this.textInput(name), value);
+    return this.fillInput(this.textInput(name), value);
   }
 
   public async typeAndSelectSchoolFromDropdown(
     schoolName: string
   ): Promise<TestControllerPromise> {
-    await YouthForm.fillInput(this.schoolsDropdown, schoolName);
+    await this.fillInput(this.schoolsDropdown, schoolName);
     return t.click(this.school(schoolName));
   }
 

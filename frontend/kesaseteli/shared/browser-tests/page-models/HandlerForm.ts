@@ -34,7 +34,7 @@ export default class HandlerForm<
     name: /hylkää/i,
   });
 
-  private confirmDialog = this.component.findByRole('dialog');
+  private confirmDialog = this.screen.findByRole('dialog');
 
   private confirmAcceptButton = this.within(this.confirmDialog).findByRole(
     'button',
@@ -67,21 +67,39 @@ export default class HandlerForm<
   });
 
   public applicantIsNotInTargetGroup(age: number) {
-    return this.component.findByRole(
-      this.regexp(`henkilö ei kuulu iän puolesta kohderyhmään (${age}-vuotias)`)
+    return this.expect(
+      this.component.findByText(
+        this.regexp(
+          `henkilö ei kuulu iän puolesta kohderyhmään (${age}-vuotias)`
+        )
+      )
     );
   }
 
   public applicantsLastnameMismatches() {
-    return this.component.findByRole(
-      this.regexp(
+    return this.expect(
+      this.component.findByText(
         `Sukunimi poikkeaa hakemukselle syötetystä sukunimestä (Väärä sukunimi)`
       )
     );
   }
 
+  public applicantsPostcodeMismatches(postcode: string) {
+    return this.expect(
+      this.component.findByText(
+        this.regexp(
+          `Postikoodi poikkeaa hakemukselle syötetystä postikoodista (${postcode})`
+        )
+      )
+    );
+  }
+
+  public applicantLivesOutsideHelsinki() {
+    return t.expect(this.component.findByText('Henkilö ei asu Helsingissä'));
+  }
+
   public async applicationNotFound() {
-    return t.expect(this.notFound.exists).ok(await getErrorMessage(t));
+    return this.expect(this.notFound);
   }
 
   public async applicationFieldHasValue(
@@ -98,41 +116,55 @@ export default class HandlerForm<
       .contains(value as string, await getErrorMessage(t));
   }
 
-  async applicationIsNotYetActivated() {
-    return t.expect(this.notYetActivated.exists).ok(await getErrorMessage(t));
+  applicationIsNotYetActivated() {
+    return this.expect(this.notYetActivated);
   }
 
-  async additionalInformationRequested() {
-    return t
-      .expect(this.additionalInfoRequested.exists)
-      .ok(await getErrorMessage(t));
+  additionalInformationRequested() {
+    return this.expect(this.additionalInfoRequested);
   }
 
-  async confirmationDialogIsPresent() {
-    return t.expect(this.confirmDialog.exists).ok(await getErrorMessage(t));
+  confirmationDialogIsPresent() {
+    return this.expect(this.confirmDialog);
   }
 
-  async applicationIsAccepted() {
-    return t.expect(this.isAccepted.exists).ok(await getErrorMessage(t));
+  applicationIsAccepted() {
+    return this.expect(this.isAccepted);
   }
 
-  async applicationIsRejected() {
-    return t.expect(this.isRejected.exists).ok(await getErrorMessage(t));
+  applicationIsRejected() {
+    return this.expect(this.isRejected);
   }
 
-  clickAcceptButton() {
+  public async clickAcceptButton() {
     return t.click(this.acceptButton);
   }
 
-  clickConfirmAcceptButton() {
+  public async clickConfirmAcceptButton() {
     return t.click(this.confirmAcceptButton);
   }
 
-  clickRejectButton() {
+  public async clickRejectButton() {
     return t.click(this.rejectButton);
   }
 
-  clickConfirmRejectButton() {
+  public async clickConfirmRejectButton() {
     return t.click(this.confirmRejectButton);
+  }
+
+  public async acceptApplication() {
+    await this.isLoaded();
+    await this.clickAcceptButton();
+    await this.confirmationDialogIsPresent();
+    await this.clickConfirmAcceptButton();
+    await this.applicationIsAccepted();
+  }
+
+  public async rejectApplication() {
+    await this.isLoaded();
+    await this.clickRejectButton();
+    await this.confirmationDialogIsPresent();
+    await this.clickConfirmRejectButton();
+    await this.applicationIsRejected();
   }
 }

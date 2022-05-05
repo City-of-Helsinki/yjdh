@@ -107,7 +107,10 @@ export const fakeSchools: string[] = [
 export const fakeYouthApplication = (
   override?: DeepPartial<YouthApplication>
 ): YouthApplication => {
-  const { isUnlistedSchool } = { isUnlistedSchool: false, ...override };
+  const { isUnlistedSchool } = {
+    isUnlistedSchool: faker.random.boolean(),
+    ...override,
+  };
   return {
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
@@ -177,16 +180,6 @@ export const fakeYouthApplicationLivesOutsideHelsinkiAccordingToVtj = (
   fakeYouthApplication({
     first_name: 'VTJ-testi',
     last_name: 'Kotikunta Utsjoki',
-    ...override,
-  });
-
-export const fakeYouthApplicationUnlistedSchool = (
-  override?: DeepPartial<
-    Omit<YouthApplication, 'first_name' | 'last_name' | 'is_unlisted_school'>
-  >
-): YouthApplication =>
-  fakeYouthApplicationLivesOutsideHelsinkiAccordingToVtj({
-    is_unlisted_school: true,
     ...override,
   });
 

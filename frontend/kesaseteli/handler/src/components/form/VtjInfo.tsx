@@ -161,8 +161,8 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
   }
 
   const notFound =
-    encrypted_vtj_json?.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
-  const providedAt = encrypted_vtj_json.Asiakasinfo.InfoS;
+    encrypted_vtj_json.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
+  const providedAt = encrypted_vtj_json.Asiakasinfo?.InfoS ?? '';
   const fullName = `${encrypted_vtj_json.Henkilo.NykyisetEtunimet.Etunimet} ${encrypted_vtj_json.Henkilo.NykyinenSukunimi.Sukunimi}`;
   const differentLastName =
     encrypted_vtj_json.Henkilo.NykyinenSukunimi.Sukunimi.toLowerCase() !==

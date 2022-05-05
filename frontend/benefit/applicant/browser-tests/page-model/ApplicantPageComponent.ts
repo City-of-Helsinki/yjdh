@@ -1,5 +1,5 @@
+import { Options } from '@frontend/shared/browser-tests/page-models/PageComponent';
 import TranslatedComponent from '@frontend/shared/browser-tests/page-models/TranslatedComponent';
-import { TranslationsApi } from '@frontend/shared/src/__tests__/types/translations';
 import {
   containsRegexp,
   replaceValues,
@@ -11,17 +11,19 @@ import sv from '../../public/locales/sv/common.json';
 import ApplicantTranslations from '../../test/i18n/applicant-translations';
 
 abstract class ApplicantPageComponent extends TranslatedComponent<ApplicantTranslations> {
-  // eslint-disable-next-line class-methods-use-this
-  getTranslationsApi(): TranslationsApi<ApplicantTranslations> {
-    return {
-      translations: {
-        fi,
-        sv,
-        en,
+  protected constructor(options?: Options) {
+    super(
+      {
+        translations: {
+          fi,
+          sv,
+          en,
+        },
+        replaced: replaceValues,
+        regexp: containsRegexp,
       },
-      replaced: replaceValues,
-      regexp: containsRegexp,
-    };
+      options
+    );
   }
 }
 export default ApplicantPageComponent;

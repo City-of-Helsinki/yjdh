@@ -1,11 +1,11 @@
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
+import Header from 'shared/page-models/Header';
 import TestController from 'testcafe';
 
 import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
@@ -22,7 +22,7 @@ let step2Components: ReturnType<typeof getStep2Components>;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
 const url = getFrontendUrl('/');
-let headerComponents: ReturnType<typeof getHeaderComponents>;
+let header;
 
 fixture('Application')
   .page(url)
@@ -32,8 +32,7 @@ fixture('Application')
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
     step2Components = getStep2Components(t);
-    const { translations } = getEmployerTranslationsApi();
-    headerComponents = getHeaderComponents(t, translations);
+    header = new Header(getEmployerTranslationsApi());
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -47,8 +46,7 @@ if (isRealIntegrationsEnabled()) {
       id: applicationId,
       ...application
     } = await loginAndfillApplication(t, 1);
-    const headerUser = headerComponents.headerUser();
-    await headerUser.actions.clicklogoutButton();
+    await header.clickLogoutButton();
     await doEmployerLogin(t, 'fi', user);
     await urlUtils.expectations.urlChangedToApplicationPage(
       'fi',

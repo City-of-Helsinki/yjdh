@@ -11,7 +11,7 @@ class ErrorPage extends YouthPageComponent {
 
   public async isLoaded(): Promise<void> {
     await super.isLoaded();
-    return ErrorPage.expect(this.heading);
+    return this.expect(this.heading);
   }
 }
 
