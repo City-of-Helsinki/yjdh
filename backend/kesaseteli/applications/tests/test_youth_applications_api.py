@@ -526,14 +526,16 @@ def test_youth_applications_detail_encrypted_vtj_json(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,expected_status_code",
+    "language,disable_vtj,rejected_application_exists,expected_status_code",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             status.HTTP_302_FOUND if disable_vtj else status.HTTP_501_NOT_IMPLEMENTED,
         )
         for language in get_supported_languages()
+        for rejected_application_exists in [False, True]
         for disable_vtj in [True]
     ],
 )
@@ -543,6 +545,7 @@ def test_youth_applications_activate_unexpired_inactive(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     expected_status_code,
 ):
     settings.DISABLE_VTJ = disable_vtj
@@ -555,6 +558,12 @@ def test_youth_applications_activate_unexpired_inactive(
     assert not inactive_youth_application.is_active
     assert not inactive_youth_application.has_activation_link_expired
     assert inactive_youth_application.language == language
+
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=inactive_youth_application.email,
+            social_security_number=inactive_youth_application.social_security_number,
+        )
 
     response = api_client.get(get_activation_url(inactive_youth_application.pk))
 
@@ -580,14 +589,16 @@ def test_youth_applications_activate_unexpired_inactive(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,youth_application_factory",
+    "language,disable_vtj,rejected_application_exists,youth_application_factory",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             youth_application_factory,
         )
         for language in get_supported_languages()
+        for rejected_application_exists in [False, True]
         for disable_vtj in [True]
         for youth_application_factory in [
             AwaitingManualProcessingYouthApplicationFactory,
@@ -601,6 +612,7 @@ def test_youth_applications_activate_unexpired_active(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     youth_application_factory,
 ):
     settings.DISABLE_VTJ = disable_vtj
@@ -615,6 +627,12 @@ def test_youth_applications_activate_unexpired_active(
     assert active_youth_application.language == language
     assert not active_youth_application.has_additional_info
     assert not active_youth_application.has_youth_summer_voucher
+
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=active_youth_application.email,
+            social_security_number=active_youth_application.social_security_number,
+        )
 
     response = api_client.get(get_activation_url(active_youth_application.pk))
 
@@ -637,16 +655,18 @@ def test_youth_applications_activate_unexpired_active(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,youth_application_factory,need_additional_info",
+    "language,disable_vtj,rejected_application_exists,youth_application_factory,need_additional_info",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             youth_application_factory,
             need_additional_info,
         )
         for language in get_supported_languages()
         for disable_vtj in [True]
+        for rejected_application_exists in [False, True]
         for youth_application_factory, need_additional_info in [
             (InactiveNoNeedAdditionalInfoYouthApplicationFactory, False),
             (InactiveNeedAdditionalInfoYouthApplicationFactory, True),
@@ -659,6 +679,7 @@ def test_youth_applications_activate_expired_inactive(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     youth_application_factory,
     need_additional_info,
 ):
@@ -675,6 +696,12 @@ def test_youth_applications_activate_expired_inactive(
     assert not inactive_youth_application.has_additional_info
     assert not inactive_youth_application.has_youth_summer_voucher
 
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=inactive_youth_application.email,
+            social_security_number=inactive_youth_application.social_security_number,
+        )
+
     response = api_client.get(get_activation_url(inactive_youth_application.pk))
 
     assert response.status_code == status.HTTP_302_FOUND
@@ -690,15 +717,17 @@ def test_youth_applications_activate_expired_inactive(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,youth_application_factory",
+    "language,disable_vtj,rejected_application_exists,youth_application_factory",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             youth_application_factory,
         )
         for language in get_supported_languages()
         for disable_vtj in [True]
+        for rejected_application_exists in [False, True]
         for youth_application_factory in [
             AwaitingManualProcessingYouthApplicationFactory,
             AdditionalInfoRequestedYouthApplicationFactory,
@@ -711,6 +740,7 @@ def test_youth_applications_activate_expired_active(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     youth_application_factory,
 ):
     settings.DISABLE_VTJ = disable_vtj
@@ -725,6 +755,12 @@ def test_youth_applications_activate_expired_active(
     assert active_youth_application.language == language
     assert not active_youth_application.has_additional_info
     assert not active_youth_application.has_youth_summer_voucher
+
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=active_youth_application.email,
+            social_security_number=active_youth_application.social_security_number,
+        )
 
     response = api_client.get(get_activation_url(active_youth_application.pk))
 
