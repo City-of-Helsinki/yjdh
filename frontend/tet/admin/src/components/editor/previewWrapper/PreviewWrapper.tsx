@@ -6,7 +6,7 @@ import {
   $PreviewText,
 } from 'tet/admin/components/editor/previewWrapper/PreviewWrapper.sc';
 import { Button } from 'hds-react';
-import Container from 'tet/shared/src/components/container/Container';
+import Container from 'tet-shared/components/container/Container';
 import { IconArrowLeft, IconUpload } from 'hds-react';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import { useTranslation } from 'next-i18next';

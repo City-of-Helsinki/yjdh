@@ -6,7 +6,7 @@ import Container from 'shared/components/container/Container';
 import { $Heading, $HeadingContainer } from 'tet/admin/components/jobPostings/JobPostings.sc';
 import Editor from 'tet/admin/components/editor/Editor';
 import { useTranslation } from 'next-i18next';
-import PostingContainer from 'tet/shared/src/components/posting/PostingContainer';
+import PostingContainer from 'tet-shared/components/posting/PostingContainer';
 import PreviewWrapper from 'tet/admin/components/editor/previewWrapper/PreviewWrapper';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import BackButton from 'tet/admin/components/BackButton';

@@ -1,6 +1,6 @@
 import { BackendEndpoint, getBackendDomain } from 'tet/admin/backend-api/backend-api';
 import nock from 'nock';
-import { TetEvents } from 'tet-shared/types/linkedevents';
+import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import { fakeUser } from 'shared/__tests__/utils/fake-objects';
 
@@ -37,26 +37,33 @@ export const expectToGetEventsFromBackend = (events: TetEvents): nock.Scope =>
     .get(`${BackendEndpoint.TET_POSTINGS}`)
     .reply(200, events, { 'Access-Control-Allow-Origin': '*' });
 
+export const expectToGetSingleEventFromBackend = (event: TetEvent): nock.Scope =>
+  nock(getBackendDomain())
+    .get(`${BackendEndpoint.TET_POSTINGS}${event.id}`)
+    .reply(200, event, { 'Access-Control-Allow-Origin': '*' });
+
 export const expectToGetEventssErrorFromBackend = (errorCode: 400 | 404 | 500): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
     .get(BackendEndpoint.TET_POSTINGS)
     .reply(errorCode, 'This is a event list backend test error. Please ignore this error message.');
 };
-export const expectKeyWordsFromLinkedEvents = (keyword): nock.Scope =>
+
+export const expectPlacesFromLinkedEvents = (): nock.Scope =>
+  nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
+    .get('/place')
+    .reply(200, { data: [], meta: { count: 0 } }, { 'Access-Control-Allow-Origin': '*' });
+
+export const expectKeyWordsFromLinkedEvents = (): nock.Scope =>
   nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
     .get('/keyword')
     .reply(
       200,
       {
-        data: [
-          {
-            name: {
-              fi: keyword.label,
-            },
-            ['@id']: keyword.label,
-          },
-        ],
+        data: [],
+        meta: {
+          count: 0,
+        },
       },
       { 'Access-Control-Allow-Origin': '*' },
     );

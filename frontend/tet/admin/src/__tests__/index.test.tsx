@@ -14,7 +14,6 @@ import renderPage from 'tet/admin/__tests__/utils/components/render-page';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import { screen } from '@testing-library/react';
-import { within } from '@testing-library/dom';
 
 describe('frontend/tet/admin/src/pages/index.tsx', () => {
   it('should have no accessibility violations', async () => {

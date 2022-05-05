@@ -1,11 +1,31 @@
 import renderComponent from 'tet/admin/__tests__/utils/components/render-component';
-import EditStaticPage from 'tet/admin/pages';
+import EditStaticPage from 'tet/admin/pages/editstatic';
 import { axe } from 'jest-axe';
 import React from 'react';
-import { expectUnauthorizedReply } from 'tet/admin/__tests__/utils/backend/backend-nocks';
+import {
+  expectUnauthorizedReply,
+  expectAuthorizedReply,
+  expectAttributesFromLinkedEvents,
+  expectWorkingMethodsFromLinkedEvents,
+  expectKeyWordsFromLinkedEvents,
+  expectToGetSingleEventFromBackend,
+  expectPlacesFromLinkedEvents,
+} from 'tet/admin/__tests__/utils/backend/backend-nocks';
 import renderPage from 'tet/admin/__tests__/utils/components/render-page';
-import { waitFor } from 'shared/__tests__/utils/test-utils';
+import getTetAdminTranslationsApi from 'tet/admin/__tests__/utils/i18n/get-tet-admin-translations-api';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
+import getFormPageApi from 'tet/admin/__tests__/utils/components/get-form-page-api';
+import { fakeTetEvent } from 'tet-shared/__tests__/utils/fake-objects';
+import { screen, userEvent, within, waitFor } from 'shared/__tests__/utils/test-utils';
+
+const {
+  translations: { [DEFAULT_LANGUAGE]: translations },
+  regexp,
+} = getTetAdminTranslationsApi();
+
+const event = fakeTetEvent({
+  id: '22',
+});
 
 describe('frontend/tet/admin/src/pages/editstatic.tsx', () => {
   it('should have no accessibility violations', async () => {
@@ -21,5 +41,18 @@ describe('frontend/tet/admin/src/pages/editstatic.tsx', () => {
     const spyPush = jest.fn();
     await renderPage(EditStaticPage, { push: spyPush });
     await waitFor(() => expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`));
+  });
+
+  it('should render page', async () => {
+    //expectAuthorizedReply();
+    //expectToGetSingleEventFromBackend(event);
+    //expectAttributesFromLinkedEvents();
+    //expectWorkingMethodsFromLinkedEvents();
+    //expectKeyWordsFromLinkedEvents();
+    //expectPlacesFromLinkedEvents();
+    //const spyPush = jest.fn();
+    //await renderPage(EditStaticPage, { push: spyPush, query: { id: event.id } });
+    //const formApi = getFormPageApi();
+    //await formApi.expectations.pageIsLoaded('Testing');
   });
 });

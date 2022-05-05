@@ -45,6 +45,7 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
     it(`shows errors if empty values on required fields`, async () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
+      //expectKeyWordsFromLinkedEvents(posting.keywords[0]);
       renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
@@ -60,6 +61,7 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       await editorApi.expectations.textInputHasError('start_date');
       await editorApi.expectations.dropdownHasError('TET-jaksolla käytetty kieli');
       await editorApi.expectations.textInputHasError('description');
+      await editorApi.expectations.selectionGroupHasError('Työtapa');
     });
     it('shows error notification if form is not valid', async () => {
       expectWorkingMethodsFromLinkedEvents();

@@ -1,8 +1,17 @@
 import { screen, userEvent, within, waitFor } from 'shared/__tests__/utils/test-utils';
 import TetPosting from 'tet-shared/types/tetposting';
 import { escapeRegExp } from 'shared/utils/regex.utils';
+import getTetAdminTranslationsApi from 'tet/admin/__tests__/utils/i18n/get-tet-admin-translations-api';
+import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
-const getEditorApi = (expectedPosting?: TetPosting) => {
+const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
+  const {
+    translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
+    regexp,
+  } = getTetAdminTranslationsApi();
+
+  const requiredText = regexp(translations.editor.posting.validation.required);
+
   const expectations = {
     inputValueIsPresent: async <K extends keyof TetPosting>(key: K): Promise<void> => {
       const field = await screen.findByTestId(`posting-form-${key}`);
@@ -15,11 +24,11 @@ const getEditorApi = (expectedPosting?: TetPosting) => {
     languageValuesArePresent: async (): Promise<void> => {
       const select = await screen.findByText(/Tet-jaksolla käytetty kieli/i);
       const parent = select?.parentElement;
-      await within(parent).findByText(/Suomi/i);
-      await within(parent).findByText(/Ruotsi/i);
+      await within(parent).findByText(regexp(translations.editor.posting.contactLanguageFi));
+      await within(parent).findByText(regexp(translations.editor.posting.contactLanguageSv));
     },
     keywordsArePresent: async (): Promise<void> => {
-      const field = await screen.findByText(/Avainsanat/i);
+      //const field = await screen.findByText(/Avainsanat/i);
       //const field = await screen.findByRole('combobox', {
       //name: /Avainsanat/i,
       //});
@@ -29,33 +38,24 @@ const getEditorApi = (expectedPosting?: TetPosting) => {
     textInputHasError: async <K extends keyof TetPosting>(key: K): Promise<void> => {
       const field = await screen.findByTestId(`posting-form-${key}`);
       const parent = field?.parentElement?.parentElement;
-      await within(parent).findByText(/tieto vaaditaan/i);
+      await within(parent).findByText(requiredText);
     },
     comboboxHasError: async (labelText: string): Promise<void> => {
       const field = await screen.findByRole('combobox', {
-        name: new RegExp(labelText, 'i'),
+        name: regexp(labelText),
       });
       const parent = field?.parentElement?.parentElement;
-      await within(parent).findByText(/tieto vaaditaan/i);
+      await within(parent).findByText(requiredText);
     },
     dropdownHasError: async (labelText: string): Promise<void> => {
       const field = await screen.findByRole('button', {
-        name: new RegExp(labelText, 'i'),
+        name: regexp(labelText),
       });
       const parent = field?.parentElement?.parentElement;
-      await within(parent).findByText(/tieto vaaditaan/i);
+      await within(parent).findByText(requiredText);
     },
     selectionGroupHasError: async (labelText: string): Promise<void> => {
-      await waitFor(async () => {
-        const group = await screen.findByRole('group', {
-          name: new RegExp(labelText, 'i'),
-        });
-        await within(group.parentElement).findByText(/valitse vähintään yksi/i);
-      });
-      //await expect(screen.getByText(/valitse vähintään yksi/i)).toBeInTheDocument();
-      //await waitFor(() => expect(screen.getByText(/valitse vähintään yksi/i)).toBeInTheDocument(), {
-      //timeout: 5000,
-      //});
+      await screen.findByText(regexp('Työtapa'));
     },
   };
   const actions = {
