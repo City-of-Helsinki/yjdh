@@ -14,9 +14,15 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 type PdfViewerProps = {
   file: string;
+  documentMarginLeft?: string; // FIXME: A way to crop pdf white margins will be better because not all pdf have same margins
+  scale?: number;
 };
 
-const PdfViewver: React.FC<PdfViewerProps> = ({ file }) => {
+const PdfViewer: React.FC<PdfViewerProps> = ({
+  file,
+  documentMarginLeft,
+  scale,
+}) => {
   const {
     t,
     handleDocumentLoadSuccess,
@@ -27,10 +33,15 @@ const PdfViewver: React.FC<PdfViewerProps> = ({ file }) => {
   } = usePdfViewer();
 
   const theme = useTheme();
+
   return (
-    <$ViewerWrapper>
-      <Document onLoadSuccess={handleDocumentLoadSuccess} file={file}>
-        <Page pageNumber={currentPage} />
+    <$ViewerWrapper documentMarginLeft={documentMarginLeft}>
+      <Document
+        onLoadSuccess={handleDocumentLoadSuccess}
+        file={file}
+        className="Document"
+      >
+        <Page pageNumber={currentPage} scale={scale} />
       </Document>
       <$Grid
         css={`
@@ -67,4 +78,11 @@ const PdfViewver: React.FC<PdfViewerProps> = ({ file }) => {
   );
 };
 
-export default PdfViewver;
+const defaultProps = {
+  documentMarginLeft: '0',
+  scale: undefined,
+};
+
+PdfViewer.defaultProps = defaultProps;
+
+export default PdfViewer;

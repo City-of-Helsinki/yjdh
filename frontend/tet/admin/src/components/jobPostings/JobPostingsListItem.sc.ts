@@ -87,4 +87,8 @@ export const $MenuContainer = styled.div`
   display: inline-flex;
   position: relative;
   align-self: flex-start;
+
+  button {
+    all: unset;
+  }
 `;

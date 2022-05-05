@@ -6,6 +6,7 @@ import { OptionType } from 'shared/types/common';
 
 import { IconGlobe, LogoLanguage, Navigation } from 'hds-react';
 import useLocale from 'shared/hooks/useLocale';
+import { MAIN_CONTENT_ID } from 'shared/constants';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
@@ -42,16 +43,16 @@ const Header: React.FC = () => {
   return (
     <Navigation
       title={t('common:appName')}
-      menuToggleAriaLabel={''}
-      skipTo={''}
-      skipToContentLabel={''}
+      menuToggleAriaLabel={t('common:header.menuToggleAriaLabel')}
+      skipTo={`#${MAIN_CONTENT_ID}`}
+      skipToContentLabel={t('common:header.linkSkipToContent')}
       logoLanguage={logoLang as LogoLanguage}
       onTitleClick={titleClickHandler}
     >
       <Navigation.Actions>
         {languages && onLanguageChange && (
           <Navigation.LanguageSelector
-            buttonAriaLabel={locale?.toUpperCase()}
+            buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
             label={locale?.toUpperCase()}
             icon={<IconGlobe />}
             closeOnItemClick

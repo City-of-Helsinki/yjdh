@@ -16,7 +16,7 @@ const ErrorPageApi = {
     },
   },
   actions: {
-    clickToRefreshPage: (): void => {
+    clickToRefreshPage: async (): Promise<void> => {
       userEvent.click(
         screen.getByRole('button', {
           name: /(lataa sivu uudelleen)|(errorpage.retry)/i,

@@ -93,7 +93,7 @@ def generate_single_approved_file(company, apps):
     # FIXME: Need to change the logic later when we have multiple benefit per application
     # Association without business activity
     if (
-        OrganizationType.resolve_organization_type(company.company_form)
+        OrganizationType.resolve_organization_type(company.company_form_code)
         == OrganizationType.ASSOCIATION
         and not apps[0].association_has_business_activities
     ):

@@ -1,53 +1,71 @@
 {
-  "appName": "SV TET-paikat",
+  "appName": "PRAO-platser",
+  "header": {
+    "linkSkipToContent": "Gå till innehållet",
+    "menuToggleAriaLabel": "Menyn",
+    "languageMenuButtonAriaLabel": "Ändra språk"
+  },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
-    "message": "Något gick fel. Det kan hjälpa, ladda upp sidan på nytt.",
-    "retry": "Ladda upp sidan på nytt.",
+    "message": "Något gick fel. Det kan hjälpa att ladda sidan på nytt.",
+    "retry": "Ladda sidan på nytt.",
     "logout": "Logga ut"
   },
   "404Page": {
     "pageNotFoundLabel": "Sidan kunde inte hittas",
-    "pageNotFoundContent": "Voi nei, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
+    "pageNotFoundContent": "Äsch, något gick fel. Pröva med att gå tillbaka till framsidan <lnk>här</lnk>"
   },
 	"frontPage": {
-		"heading": "SV Muistathan etsiä TET-paikkasi ajoissa",
-		"search": "SV Etsi",
-		"fetch": "SV Hae",
-		"advancedSearch": "SV Tarkennettu haku"
+		"heading": "Kom ihåg att söka PRAO-plats i tid",
+		"search": "Sök",
+		"fetch": "Ansök",
+		"advancedSearch": "Detaljerad sökning",
+		"boxTitle": "Vad är PRAO?",
+		"boxContent": "Arbetslivspraktik, eller PRAO, är en del av skolan för grundskoleelever. Under PRAO kan man lära sig om olika yrken och få uppleva arbetslivet i praktiken.",
+		"announceLinkTitle": "Meddela en PRAO-platsannonsering",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Är du arbetsgivare och vill anmäla en ledig tjänst inom TET- platsannonsering? Gå till den arbetsgivartjänst här.",
+		"askLinkTitle": "Frågorna?",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Har du några frågor om tjänsten eller märkte du något konstigt i annonserna? Ta kontakt!"
 	},
 	"filters": {
-		"searchPlaceholder": "SV Kirjoita hakusana tai paikan nimi",
-		"workMethod": "SV Valitse työtapa",
-		"startDate": "SV Alkamispäivä",
-		"endDate": "SV Päättymispäivä",
-		"language": "SV Valitse kieli",
-		"clearFilters": "SV Tyhjennä hakuehdot"
+		"searchJobs": "Sök efter PRAO-platser",
+		"searchPlaceholder": "Uppge sökord",
+		"workMethod": "Välj arbetssätt",
+		"workFeatures": "Arbetets karaktär",
+		"startDate": "Startdatum",
+		"endDate": "Slutdatum",
+		"language": "Välj språk",
+		"clearFilters": "Töm sökkriterier",
+    "combobox": {
+      "toggleButtonAriaLabel": "Visa/dölj alternativ",
+      "clearButtonAriaLabel": "Rensa valen",
+      "selectedItemRemoveButtonAriaLabel": "Ta bort valet"
+    }
 	},
 	"postings": {
-		"searchResults": "SV hakutulosta",
-		"readMore": "SV Lue lisää",
-		"showMore": "SV Näytä lisää tuloksia",
-		"languages": "SV Kielisyys"
+		"searchResults_one": "{{count}} sökresultat",
+		"searchResults_other": "{{count}} sökresultat",
+		"readMore": "Läs mer",
+		"showMore": "Visa fler resultat",
+		"languages": "Språk"
 	},
   "footer": {
     "copyrightText": "Helsingfors stad",
     "allRightsReservedText": "Med ensamrätt",
     "accessibilityStatement": "Tillgänglighetsutlåtande",
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/information/information/tillganglighet",
-    "privacyPolicy": "SV Rekisteriseloste",
+    "privacyPolicy": "Registerbeskrivning",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
-    "feedback": "SV Anna palautetta",
+    "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
   },
   "languages": {
-    "fi": "Suomeksi",
+    "fi": "På finska",
     "sv": "På svenska",
-    "en": "In English"
+    "en": "På engelska"
   },
-	"postingsPage": {
-		"showMore": "SV Näytä lisää tuloksia"
-	},
   "termsAndConditionsLink": "https://kesaseteli.fi/sv/med-sommarsedeln-i-handen-ar-du-ett-steg-narmare-dina-drommars-sommarjobb/at-arbetsgivaren/",
   "error": {
     "generic": {
@@ -57,9 +75,18 @@
   },
 	"editor": {
 		"posting": {
-			"contactLanguageFi": "SV Suomi",
-			"contactLanguageSv": "SV Ruotsi",
-			"contactLanguageEn": "SV Englanti"
+			"contactLanguageFi": "Finska",
+			"contactLanguageSv": "Svenska",
+			"contactLanguageEn": "Engelska"
 		}
+	},
+	"postingTemplate": {
+		"spots": "PRAO-platser",
+		"contact": "Kontaktuppgifter",
+		"description": "Beskrivning",
+		"share": "Dela händelse",
+		"dateAndTime": "Datum och tid",
+		"location": "Plats",
+		"languages": "Språk som används på PRAO-platsen"
 	}
 }

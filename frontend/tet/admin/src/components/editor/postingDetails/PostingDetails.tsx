@@ -3,24 +3,43 @@ import FormSection from 'shared/components/forms/section/FormSection';
 import { $Grid, $GridCell } from 'shared/components/forms/section/FormSection.sc';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'styled-components';
-import { $CompanyInfoRow } from 'tet/admin/components/editor/companyInfo/CompanyInfo.sc';
 import DateInput from 'tet/admin/components/editor/DateInput';
 import TextInput from 'tet/admin/components/editor/TextInput';
 import TextArea from 'tet/admin/components/editor/TextArea';
 import NumberInput from 'tet/admin/components/editor/NumberInput';
 import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import { Notification } from 'hds-react';
-import { OptionType } from 'tet-shared/types/classification';
 import Dropdown from 'tet/admin/components/editor/Dropdown';
-import Combobox from 'tet/admin/components/editor/Combobox';
 import useLanguageOptions from 'tet-shared/hooks/translation/useLanguageOptions';
+import { useFormContext, useWatch } from 'react-hook-form';
+import TetPosting from 'tet-shared/types/tetposting';
+import { parseDate, isValidDate } from 'shared/utils/date.utils';
+import { DATE_UI_REGEX } from 'shared/constants';
+import isBefore from 'date-fns/isBefore';
 
 const PostingDetails: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { required, name, description } = useValidationRules();
+  const { required, name, description, date } = useValidationRules();
+  const { control, setValue } = useFormContext<TetPosting>();
 
   const languageOptions = useLanguageOptions();
+  const startDate = useWatch({
+    control: control,
+    name: 'start_date',
+  });
+  const endDate = useWatch({
+    control: control,
+    name: 'end_date',
+  });
+
+  React.useEffect(() => {
+    if (isBefore(parseDate(endDate) as Date, parseDate(startDate) as Date)) {
+      setValue('end_date', '');
+    }
+  }, [startDate, endDate]);
+
+  const minDate = DATE_UI_REGEX.test(startDate) ? parseDate(startDate) : undefined;
 
   return (
     <FormSection header={t('common:editor.posting.header')}>
@@ -44,11 +63,17 @@ const PostingDetails: React.FC = () => {
             id="start_date"
             label={t('common:editor.posting.startDateLabel')}
             required={true}
-            registerOptions={{ required: required }}
+            registerOptions={{ required: required, pattern: date.pattern }}
           />
         </$GridCell>
         <$GridCell $colSpan={3}>
-          <DateInput id="end_date" label={t('common:editor.posting.endDateLabel')} required={false} />
+          <DateInput
+            id="end_date"
+            label={t('common:editor.posting.endDateLabel')}
+            required={false}
+            registerOptions={{ pattern: date.pattern }}
+            minDate={minDate}
+          />
         </$GridCell>
         <$GridCell $colSpan={3}></$GridCell>
       </$GridCell>

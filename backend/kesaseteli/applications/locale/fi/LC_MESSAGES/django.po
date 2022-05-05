@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 13:53+0200\n"
-"PO-Revision-Date: 2022-02-08 14:52+0200\n"
+"POT-Creation-Date: 2022-03-28 16:15+0300\n"
+"PO-Revision-Date: 2022-03-29 08:43+0300\n"
 "Last-Translator: Kari Salminen <kari.salminen@anders.com>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -58,24 +58,38 @@ msgstr ""
 msgid "Attachments missing with types: {attachment_types}"
 msgstr ""
 
-msgid "Social security number must be set"
+msgid "Must be set"
 msgstr ""
 
-#, fuzzy
-#| msgid "Failed to send activation email"
-msgid "Failed to send youth summer voucher email"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
+#, python-format
+msgid "additional_info_user_reasons must be a list, was %(type)s"
+msgstr ""
 
-#, fuzzy
-#| msgid "Failed to send activation email"
+msgid "Invalid type input values for additional_info_user_reasons"
+msgstr ""
+
+#, python-format
+msgid ""
+"additional_info_user_reasons must contain only values from "
+"AdditionalInfoUserReason, contained invalid values %(invalid_values)s"
+msgstr ""
+
+#, python-format
+msgid "Invalid status %(status)s for setting additional info"
+msgstr ""
+
+msgid "Failed to send youth summer voucher email"
+msgstr "Nuoren kesäsetelisähköpostin lähettäminen epäonnistui"
+
 msgid "Failed to send manual processing email to handler"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
+msgstr ""
+"Manuaaliprosessointisähköpostin lähettäminen käsittelijälle epäonnistui"
 
 msgid "VTJ integration is not implemented"
 msgstr ""
 
-msgid "Failed to send activation email"
-msgstr "Aktivointisähköpostin lähettäminen epäonnistui"
+msgid "Failed to send activation/additional info request email"
+msgstr "Aktivointi/lisätietopyyntösähköpostin lähettäminen epäonnistui"
 
 msgid "File not found."
 msgstr ""
@@ -105,6 +119,24 @@ msgid "Deleted by customer"
 msgstr ""
 
 msgid "Awaiting manual processing"
+msgstr ""
+
+msgid "Student in Helsinki but not resident"
+msgstr ""
+
+msgid "Moving to Helsinki"
+msgstr ""
+
+msgid "Underage or overage"
+msgstr ""
+
+msgid "Personal info differs from VTJ"
+msgstr ""
+
+msgid "Unlisted school"
+msgstr ""
+
+msgid "Other"
 msgstr ""
 
 msgid "employment contract"
@@ -320,6 +352,15 @@ msgstr ""
 msgid "time handled"
 msgstr ""
 
+msgid "time additional info was provided"
+msgstr ""
+
+msgid "additional info user reasons"
+msgstr ""
+
+msgid "additional info description"
+msgstr ""
+
 msgid "Aktivoi Kesäseteli"
 msgstr ""
 
@@ -331,6 +372,18 @@ msgid ""
 "%(activation_link)s\n"
 "\n"
 "Ystävällisin terveisin, Kesäseteli-tiimi"
+msgstr ""
+
+msgid "Lisätietopyyntö"
+msgstr ""
+
+#, python-format
+msgid ""
+"Täydennäthän kesäsetelihakemuksesi tietoja alla olevasta linkistä:\n"
+"\n"
+"%(activation_link)s\n"
+"\n"
+"Kiitos! Ystävällisin terveisin, Kesäseteli-tiimi"
 msgstr ""
 
 #, python-format
@@ -348,6 +401,9 @@ msgid ""
 "Sähköposti: %(email)s\n"
 "\n"
 "%(processing_link)s"
+msgstr ""
+
+msgid "Unable to send youth application's additional info request email"
 msgstr ""
 
 msgid "Unable to send youth application's activation email"

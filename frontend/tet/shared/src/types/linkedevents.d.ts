@@ -18,6 +18,7 @@ export type LocalizedObject = {
 };
 
 export type IdObject = {
+  id?: string;
   '@id': string;
   name?: LocalizedObject;
 };
@@ -42,7 +43,6 @@ export type CustomData = {
   org_name: string;
   contact_email: string;
   contact_phone: string;
-  contact_language: string;
   contact_first_name: string;
   contact_last_name: string;
   editor_email?: string;
@@ -75,12 +75,14 @@ export type TetEventPayload = {
   start_time: string;
   end_time: string | null;
   date_published: string | null;
+  publication_status?: string;
   in_language: IdObject[];
 };
 
 export type TetUpsert = {
   id?: string;
   event: TetEventPayload;
+  publish?: boolean;
 };
 
 export type TetEvents = {

@@ -1,5 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
 
+import AuthProvider from 'benefit/handler/auth/AuthProvider';
 import Footer from 'benefit/handler/components/footer/Footer';
 import Header from 'benefit/handler/components/header/Header';
 import Layout from 'benefit/handler/components/layout/Layout';
@@ -31,17 +32,19 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     >
       <AppContextProvider>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={theme}>
-            <GlobalStyling />
-            <Layout>
-              <Header />
-              <HDSToastContainer />
-              <Content>
-                <Component {...pageProps} />
-              </Content>
-              <Footer />
-            </Layout>
-          </ThemeProvider>
+          <AuthProvider>
+            <ThemeProvider theme={theme}>
+              <GlobalStyling />
+              <Layout>
+                <Header />
+                <HDSToastContainer />
+                <Content>
+                  <Component {...pageProps} />
+                </Content>
+                <Footer />
+              </Layout>
+            </ThemeProvider>
+          </AuthProvider>
         </QueryClientProvider>
       </AppContextProvider>
     </BackendAPIProvider>

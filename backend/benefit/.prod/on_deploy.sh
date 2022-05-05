@@ -1,6 +1,8 @@
 #!/bin/bash
 
 python /app/manage.py migrate --noinput
+python /app/manage.py loaddata groups.json
+python /app/manage.py set_group_permissions
 
 # Generate the admin user using the password given in the environment variables.
 # If no password is set, the admin user gets a generated password. Password is

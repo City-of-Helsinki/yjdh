@@ -5,7 +5,10 @@ export type DialogPayload = {
   header: string;
   submitButtonLabel: ModalProps['submitButtonLabel'];
   submitButtonIcon?: ModalProps['submitButtonIcon'];
+  submitButtonVariant?: ModalProps['variant'];
   content?: string;
+  link?: string;
+  linkText?: string;
 };
 
 export type DialogState = {
@@ -34,6 +37,8 @@ const initialState: DialogState = {
   header: '',
   submitButtonLabel: '',
   content: '',
+  link: '',
+  linkText: '',
 };
 
 const reducer = (
@@ -41,6 +46,8 @@ const reducer = (
   action: DialogActionTypes
 ): DialogState => {
   const content = action?.payload?.content ?? '';
+  const link = action?.payload?.link ?? '';
+  const linkText = action?.payload?.linkText ?? '';
   switch (action.type) {
     case DialogActionKind.SHOW_CONFIRM:
       return {
@@ -48,7 +55,10 @@ const reducer = (
         header: action.payload.header,
         submitButtonLabel: action.payload.submitButtonLabel,
         submitButtonIcon: action.payload.submitButtonIcon,
+        submitButtonVariant: action.payload.submitButtonVariant,
         content,
+        link,
+        linkText,
       };
 
     case DialogActionKind.HIDE_CONFIRM:
@@ -59,7 +69,18 @@ const reducer = (
 
 export const DialogContext = React.createContext<
   [DialogState, React.Dispatch<DialogActionTypes>]
->([{ show: false, header: '', content: '', submitButtonLabel: '' }, () => {}]);
+>([
+  {
+    show: false,
+    header: '',
+    content: '',
+    submitButtonLabel: '',
+    submitButtonVariant: 'primary',
+    link: '',
+    linkText: '',
+  },
+  () => {},
+]);
 
 export const DialogContextProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);

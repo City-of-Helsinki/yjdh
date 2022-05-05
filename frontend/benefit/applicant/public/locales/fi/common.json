@@ -5,7 +5,7 @@
         "heading": "Luonnokset"
       },
       "submitted": {
-        "heading": "Lähetetyt"
+        "heading": "Lähetetyt hakemukset"
       },
       "moreInfo": {
         "heading": "Lisätietoa tarvitaan"
@@ -20,8 +20,8 @@
         "status": "Tila",
         "check": "Tarkastele",
         "editEndDate": "Muokkaa viimeistään",
-        "newMessages_one": "{{count}} uusi viesti",
-        "newMessages_other": "{{count}} uutta viestiä"
+        "newMessages_one": "{{count}} uusi",
+        "newMessages_other": "{{count}} uutta"
       }
     },
     "pageHeaders": {
@@ -29,7 +29,8 @@
       "sent": "Hakemusnumero: {{applicationNumber}}  |  Lähetetty {{submittedAt}}",
       "new": "Uusi hakemus",
       "edit": "Hakemus",
-      "helperText": "Ole hyvä ja tarkista hakemus. Tarvittaessa voit vielä muokata tietoja ennen kuin siirryt eteenpäin."
+      "helperText": "Ole hyvä ja tarkista hakemus ennen lähetystä.",
+      "guideText": "Kaikki *-merkityt kohdat ovat pakollisia"
     },
     "statuses": {
       "draft": "Luonnos",
@@ -38,46 +39,48 @@
       "approved": "Hyväksytty",
       "rejected": "Hylätty",
       "handling": "Käsittelyssä",
-      "cancelled": "Peruuttu"
+      "cancelled": "Peruttu"
     },
     "steps": {
       "employer": "Työnantaja",
-      "hired": "Palkattava",
-      "attachments": "Liittet",
+      "hired": "Työllistettävä",
+      "attachments": "Liitteet",
       "summary": "Yhteenveto",
-      "credentials": "Valtakirja",
+      "credentials": "Henkilötietojen käsittely",
       "send": "Lähetä"
     },
     "actions": {
-      "saveAndContinueLater": "Tallenna ja jatka myöhemmin",
+      "saveAndContinueLater": "Tallenna ja sulje",
       "deleteApplication": "Poista hakemus",
-      "deleteApplicationConfirm": "Haluatko varmasti poistaa?",
+      "deleteApplicationConfirm": "Haluatko varmasti poistaa luonnoksen?",
       "deleteApplicationDescription": "Hakemus poistetaan lopullisesti eikä sitä voida enää palauttaa.",
       "continue": "Jatka",
-      "send": "Lähetä hakemus",
-      "back": "Back",
+      "send": "Lähetä",
+      "back": "Takaisin",
       "edit": "Muokkaa",
       "close": "Sulje",
-      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona"
+      "openTermsAsPDF": "Avaa ehdot PDF-tiedostona",
+      "continueToService": "Jatka palveluun",
+      "pauseAndExit": "Keskeytä ja poistu"
     },
     "sections": {
       "company": {
         "heading1": "Työnantajan tiedot",
         "heading1Additional": "Postiosoite päätöstä varten",
-        "heading2": "Yhteyshenkilö Helsinki-lisä asioissa",
+        "heading2": "Yhteyshenkilö",
         "heading2Short": "Yhteyshenkilö",
-        "heading3": "Hakijan de minimis-tuet",
+        "heading3": "Hakijan de minimis -tuet",
         "heading4": "YT-tilanne",
         "heading5": "YT-neuvottelut",
         "businessId": "Y-tunnus: {{ businessId }}",
-        "deMinimisAidsHeading": "Ole hyvä ja listaa kaikki myönnetyt tuet:",
+        "deMinimisAidsHeading": "Listaa tähän kaikki organisaatiolle kuluvan vuoden ja kahden edellisen verovuoden aikana myönnetyt de minimis -tuet",
         "deMinimisAidsAdd": "Lisää",
         "deMinimisAidsRemove": "Poista",
         "deMinimisAidsNo": "Onko hakijalle myönnetty deminimis-tukea?",
         "notifications": {
           "companyInformation": {
-            "label": "Tiedot haettu YTJ:stä",
-            "content": "Työnantajan perustiedot on haettu YTJ:stä. Tarvittaessa voit antaa toisen postiosoitteen."
+            "label": "Tiedot haettu Yritys- ja yhteisötietojärjestelmästä",
+            "content": "Organisaatiosi perustiedot on haettu Yritys- ja yhteisötietojärjestelmästä. Halutessasi voit vaihtaa tilalle toisen postiosoitteen, johon Helsinki-lisä-päätös toimitetaan."
           },
           "deMinimisAidMaxAmount": {
             "label": "Enimmäismäärä ylitetty",
@@ -85,12 +88,12 @@
           }
         },
         "tooltips": {
-          "heading3": "Hakijan de minimis-tuet tooltip text",
-          "associationHasBusinessActivities": "associationHasBusinessActivities tooltip text"
+          "heading3": "De minimis -tuki on vähämerkityksistä, yrityksille myönnettävää julkista tukea, kuten esimerkiksi avustusta, lainaa, korkotukea tai takausta. De minimis -tukea säätelee Euroopan komission asetus 1407/2013.",
+          "associationHasBusinessActivities": "Helsinki-lisään sovelletaan valtiontukisääntöjä silloin, kun tuensaaja on yritys tai taloudellista toimintaa harjoittavaa yhteisö riippumatta sen oikeudellisesta muodosta tai rahoitustavasta. Taloudellisella toiminnalla tarkoitetaan palveluiden ja tuotteiden myyntiä, joka on jatkuvaa, ansiotarkoituksessa ja kilpailuolosuhteissa tapahtuvaa (kaikkien kolmen edellytyksen tulee täyttyä samanaikaisesti). Valtiontukisääntöjä voidaan soveltaa myös voittoa tavoittelemattomiin työnantajiin. Taloudellisena toimintana ei pääsääntöisesti pidetä toimintaa, jota verottaja ei ole katsonut verotettavaksi elinkeinotoiminnaksi."
         },
         "fields": {
           "useAlternativeAddress": {
-            "label": "Työnantajalle on toinen postiosoite"
+            "label": "Käytä toista postiosoitetta"
           },
           "alternativeCompanyStreetAddress": {
             "label": "Osoite",
@@ -125,23 +128,23 @@
             "placeholder": "040 1234567"
           },
           "companyContactPersonEmail": {
-            "label": "Sähköposti",
+            "label": "Sähköposti asiointia varten",
             "placeholder": "Sähköpostiosoite"
           },
           "applicantLanguage": {
             "label": "Asiointikieli"
           },
           "associationHasBusinessActivities": {
-            "label": "Harjoittaako työnantaja elinkeinotoimintaa?",
+            "label": "Harjoittaako työnantaja taloudellista toimintaa?",
             "yes": "Kyllä",
             "no": "Ei"
           },
           "associationImmediateManagerCheck": {
             "label": "Lähiesihenkilö palkattavalle henkilölle",
-            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen. ei palkkatuettu esihenkilö palkattavalle henkilölle."
+            "placeholder": "Työnantajalla on asianmukaiset työtilat ja työnjohdollinen, ei-palkkatuettu esihenkilö palkattavalle henkilölle."
           },
           "deMinimisAid": {
-            "label": "Onko työnantajalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis-tukea?",
+            "label": "Onko hakijalle myönnetty kuluvan vuoden ja kahden edellisen verovuoden aikana de minimis -tukea?",
             "yes": "Kyllä",
             "no": "Ei"
           },
@@ -150,27 +153,27 @@
             "placeholder": "Myöntävä taho"
           },
           "deMinimisAidAmount": {
-            "label": "Tuen määrä (euro)",
+            "label": "Tuen määrä (euroina)",
             "placeholder": "€"
           },
           "deMinimisAidGrantedAt": {
-            "label": "Myöntämispäivämääärä",
-            "labelShort": "Myönnetty",
+            "label": "Myöntämispäivämäärä",
+            "labelShort": "Myöntämispäivämäärä",
             "placeholder": "Valitse"
           },
           "coOperationNegotiations": {
-            "label": "Onko työnantajalla menossa YT-neuvottelut?",
+            "label": "Onko organisaatiolla käynnissä YT-neuvottelut?",
             "yes": "Kyllä",
             "no": "Ei"
           },
           "coOperationNegotiationsDescription": {
             "label": "Anna tarkempi selvitys YT-tilanteesta:",
-            "placeholder": "Kuvaile tilanne"
+            "placeholder": "Kuvaile tilannetta"
           }
         }
       },
       "employee": {
-        "heading1": "Työllistetty henkilö, josta haetaan Helsinki-lisää",
+        "heading1": "Henkilö, jonka työllistämiseen Helsinki-lisää haetaan",
         "heading1Short": "Palkattava henkilö",
         "heading2": "Palkkatukipäätös",
         "heading3": "Haettava tukimuoto",
@@ -179,11 +182,13 @@
         "heading5Employment": "Työsuhde",
         "heading5Assignment": "Toimeksianto",
         "heading5EmploymentSub1": "Palkkauskustannukset",
-        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana ",
+        "salaryExpensesExplanation": "Bruttopalkka ja sivukulut ilmoitetaan euroina kuukaudessa, lomaraha kertasummana",
         "tooltips": {
-          "heading5Employment": "Työsuhde tooltip text",
-          "heading5EmploymentSub1": "Työsuhde sub header tooltip message 1",
-          "heading5Assignment": "Palkkauskustannukset tooltip text"
+          "heading5Employment": "Sovellettava työehtosopimus: esim. Kaupan työehtosopimus. Jos alalla ei ole velvoittavaa työehtosopimusta, merkitse viiva.",
+          "heading5EmploymentSub1": "Bruttopalkalla tarkoitetaan tuella palkattavalle maksettavaa palkkaa ennen työntekijän lakisääteisten maksujen (työntekijän työttömyysvakuutus- ja eläkevakuutusmaksu) ja verojen pidätystä. Jos tuella palkattavalle maksetaan palkan lisiä (esim. ilta-, yö- tai vuorotyölisä), ota niiden arvioitu määrä huomioon bruttopalkassa. Työnantajan lakisääteisiin sivukuluihin luetaan sosiaaliturva-, työeläkevakuutus-, tapaturmavakuutus- ja työttömyysvakuutusmaksu sekä pakollinen ryhmähenkivakuutusmaksu. Sivukulut tarkoittavat palkasta maksettavien työnantajan lakisääteisten sivukulujen määrä kuukaudessa. Lomaraha on tuella katettava palkkauskustannus silloin, kun se maksetaan tukijakson aikana pidetystä vuosilomapalkasta. Arvioi tukijakson aikana maksettavan lomarahan määrä. Lomakorvaus ei ole Helsinki-lisällä katettava korvaus.",
+          "heading5Assignment": "Palkkauskustannukset tooltip text",
+          "heading2": "Palkkatuki on työttömän työnhakijan työllistymisen edistämiseksi tarkoitettu rahallinen tuki, jonka TE-palvelut voi myöntää työnantajalle palkkauskustannuksiin.",
+          "heading3": "Työllistämisen Helsinki-lisä on tarkoitettu ohjaus-, perehdytys-, työväline-, työvaate- ja työtilakustannuksiin silloin, kun niihin ei makseta muuta tukea. Palkan Helsinki-lisä on tarkoitettu työllistetyn henkilön palkkauskustannuksiin (=bruttopalkka, lakisääteiset sivukulut ja lomaraha). Toimeksiannon Helsinki-lisä on tarkoitettu yksittäisen työn tai projektin suorittamiseen."
         },
         "notifications": {
           "salaryBenefit": {
@@ -201,12 +206,16 @@
           "commissionBenefitSelected": {
             "label": "Ajanjakso",
             "content": "Varmista, että haettava kesto on sama kuin toimeksiantosopimuksessa."
+          },
+          "noAvailableBenefitTypes": {
+            "label": "Ei haettavia tukimuotoja",
+            "content": "Yhteisö, joka ei harjoita taloudellista toimintaa voi hakea ainoastaan Palkan Helsinki-lisää. Palkan Helsinki-lisän edellytyksenä on työsuhteeseen myönnetty palkkatuki."
           }
         },
         "messages": {
-          "selectBenefitType": "Valitse ensi tukimuoto yllä",
-          "employmentBenefitSelected": "Helsinki-lisä haetaan työsuhteen keston mukaan 1–12 kk",
-          "salaryBenefitSelected": "Oppisopimuksessa 12 kk ylittävältä jaksolta on tehtävä uusi hakemus",
+          "selectBenefitType": "Valitse ensin tukimuoto yllä",
+          "employmentBenefitSelected": "Helsinki-lisää haetaan työsuhteen keston mukaisesti 1–12 kuukaudeksi.",
+          "salaryBenefitSelected": "Oppisopimuksessa 12 kuukautta ylittävältä jaksolta on tehtävä uusi hakemus",
           "commissionBenefitSelected": "Merkitse tähän toimeksiannon kesto"
         },
         "fields": {
@@ -227,10 +236,11 @@
             "placeholder": "040 1234567"
           },
           "isLivingInHelsinki": {
-            "label": "Helsinki kotikuntana",
-            "placeholder": "Kyllä, työllistetty on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
+            "label": "Työllistetyn kotikunta on Helsinki",
+            "placeholder": "Kyllä, työllistettävä on kirjoilla Helsingissä viimeistään työsuhteen alkaessa",
             "yes": "Kyllä",
-            "no": "Ei"
+            "no": "Ei",
+            "error": "Jotta tukea voidaan myöntää, kotikunnan tulee olla Helsinki."
           },
           "paySubsidyGranted": {
             "label": "Onko työsuhteeseen myönnetty palkkatuki?",
@@ -259,9 +269,9 @@
             "placeholder": "Tehtävänimike"
           },
           "workingHours": {
-            "label": "Työaika t/viikko",
+            "label": "Työaika tuntia viikossa",
             "placeholder": "Tunteja",
-            "view": "Työaika: {{workingHours}} t / viikko"
+            "view": "Työaika: {{workingHours}} tuntia viikossa"
           },
           "collectiveBargainingAgreement": {
             "label": "Sovellettava työehtosopimus",
@@ -270,24 +280,24 @@
           "monthlyPay": {
             "label": "Bruttopalkka",
             "placeholder": "Palkka",
-            "view": "Bruttopalkka {{monthlyPay}} €/kk"
+            "view": "Bruttopalkka {{monthlyPay}} euroa kuukaudessa"
           },
           "otherExpenses": {
             "label": "Sivukulut",
             "placeholder": "Sivukulut",
-            "view": "Sivukulut {{otherExpenses}} €/kk"
+            "view": "Sivukulut {{otherExpenses}} euroa kuukaudessa"
           },
           "vacationMoney": {
             "label": "Lomaraha",
             "placeholder": "Lomaraha",
-            "view": "Lomaraha {{vacationMoney}} €"
+            "view": "Lomaraha {{vacationMoney}} euroa"
           },
           "commissionDescription": {
             "label": "Toimeksiannon kuvaus",
             "placeholder": "Kuvaus"
           },
           "commissionAmount": {
-            "label": "Palkkio €",
+            "label": "Palkkio euroina",
             "placeholder": "Palkkio"
           },
           "startDate": {
@@ -301,7 +311,7 @@
         }
       },
       "attachments": {
-        "heading1": "Liittet",
+        "heading1": "Liitteet",
         "types": {
           "employmentContract": {
             "title": "Työsopimus",
@@ -321,18 +331,18 @@
           },
           "helsinkiBenefitVoucher": {
             "title": "Helsinki-lisä seteli",
-            "message": "Lisää tämä mikäli sellainen on myönnetty"
+            "message": "Lisää Helsinki-lisä -seteli, jos sellainen on myönnetty"
           }
         },
         "add": "Liitä tiedosto",
         "remove": "Poista liite"
       },
       "summary": {
-        "heading1": "Ole hyvä ja tarkista hakemus"
+        "heading1": "Vänligen kontrollera ansökan innan du skickar in den."
       },
       "credentials": {
-        "heading1": "Valtakirja",
-        "heading2": "Suostumus",
+        "heading1": "Työllistettävän henkilötietojen käsittely",
+        "heading2": "Henkilötietojen käsittely",
         "sections": {
           "electronicPowerOfAttorney": {
             "title": "Sähköinen valtakirja",
@@ -340,10 +350,10 @@
             "action1": "Pyydä sähköistä valtakirjaa"
           },
           "uploadPowerOfAttorney": {
-            "title": "Liitä valtakirja",
-            "description": "Voit myös tulostaa valtakirjapohjan, pyytää siihen allekirjoitus ja liittää se hakemukseen.",
+            "title": "Liitä tiedoksianto",
+            "description": "Tiedostomuoto voi olla JPG, PNG tai PDF.",
             "action1": "Tulosta",
-            "action2": "Liitä valtakirja"
+            "action2": "Liitä tiedoksianto"
           }
         }
       },
@@ -352,7 +362,8 @@
       }
     }
   },
-  "appName": "Helsinki-benefit FI",
+  "serviceName": "Helsinki-lisän asiointipalvelu",
+  "appName": "Helsinki-lisä",
   "header": {
     "loginLabel": "Kirjaudu palveluun",
     "logoutLabel": "Kirjaudu ulos",
@@ -360,24 +371,29 @@
     "messages": "Viestit",
     "drawer": {
       "title": "Hakemuksen viestit"
-    }
+    },
+    "languageMenuButtonAriaLabel": "Valitse kieli"
   },
   "footer": {
-    "copyrightText": "Copyright text",
-    "allRightsReservedText": "All rights reserved text"
+    "copyrightText": "Copyright",
+    "allRightsReservedText": "Kaikki oikeudet pidätetään",
+    "accessibilityStatement": "Saavutettavuusseloste",
+    "aboutTheService": "Tietoa palvelusta",
+    "accessibilityStatementLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/tietoa-helsingista/tietoa-hel-fista/saavutettavuus/saavutettavuusselosteet",
+    "aboutTheServiceLink": "https://www.hel.fi/fi/yritykset-ja-tyo/tyonantajat/taloudelliset-tuet/tyonantajan-helsinki-lisa"
   },
   "notifications": {
     "applicationSubmitted": {
       "label": "Hakemus lähetty onnistuneesti",
-      "message": "Helsinki-lisä hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen kun hakemus on käsitelty."
+      "message": "Helsinki-lisä-hakemus {{applicationNumber}} ({{applicantName}}) on lähetetty. Saat ilmoituksen, kun hakemus on käsitelty."
     },
     "applicationSaved": {
       "label": "Hakemus tallennettu",
       "message": "Helsinki-lisä hakemus {{applicationNumber}} {{applicantName}} on tallennettu."
     },
     "applicationDeleted": {
-      "label": "Hakemus poistettu",
-      "message": "Helsinki-lisä hakemus on poistettu."
+      "label": "Luonnos poistettu",
+      "message": "Hakemus on poistettu."
     }
   },
   "languages": {
@@ -392,17 +408,16 @@
   },
   "mainIngress": {
     "heading": "Hakemukset",
-    "description1": "Tästä voit hakea Helsinki-lisää. Tutustu ennen lomakkeen täyttämistä ",
-    "description2": ". Hakemuksen voi myös tallentaa keskenräisenä ja jatkaa sen täyttämistä myöhemmin.",
-    "linkText": "hakemiseen vaadittaviin tietoihin ja tarvittaviin liitteisiin",
+    "description1": "Tervetuloa Helsinki-lisän asiointipalveluun.",
+    "description2": " Voit tallentaa hakemuksen keskeneräisenä ja jatkaa täyttämistä myöhemmin.",
+    "linkText": " Tutustu vaadittaviin tietoihin ja tarvittaviin liitteisiin ennen hakemuksen täyttämistä.",
     "newApplicationBtnText": "Tee uusi hakemus"
   },
   "attachmentsIngress": {
-    "text": "Lisää hakemukselle seuraavat liitteet. Liitteet ovat pakollisia, ellei toisin sanota. Tiedostomuoto voi olla JPG, PNG tai PDF. Suurin sallittu koko 10 MB.",
-    "warningText": "Valtakirjaa ei liitetä tässä, sitä kysytään myöhemmin"
+    "text": "Lisää hakemukselle seuraavat liitteet. Kaikki *-merkityt liitteet ovat pakollisia. Tiedostomuoto voi olla JPG, PNG tai PDF ja kooltaan maksimissaan 10 MB."
   },
   "credentialsIngress": {
-    "text": "Valitse yksi alla olevista tavoista. Hakemus on valmis lähetettäväksi vasta, kun palkattava henkilö on tehnyt sähköisen valtakirjan tai olet liittänyt allekirjoitetun valtakirjan. Huomoithan, että tämän jälkeen hakemusta ei voi enää muokata."
+    "text": "Helsinki-lisällä työllistettävää henkilöä on tiedotettava hänen henkilötietojensa käsittelystä. Tulosta tiedoksianto ja pyydä siihen allekirjoitus työllistettävältä."
   },
   "menuToggleAriaLabel": "Menu",
   "form": {
@@ -410,8 +425,12 @@
       "required": "Tämä kenttä on pakollinen",
       "invalid": "Virheellinen arvo",
       "number": {
+        "invalid": "Virheellinen arvo, ilmoita vain numeroita",
         "max": "Arvon tulee olla enintään {{max}}",
         "min": "Arvon tulee olla vähintään {{min}}"
+      },
+      "phoneNumber": {
+        "max": "Arvon enimmäispituus on {{max}}"
       },
       "string": {
         "max": "Tämä kenttä voi olla korkeintaan {{max}} merkkiä pitkä",
@@ -432,10 +451,10 @@
         "max": "Arvon tulee olla viimeistään {{max}}"
       },
       "phone": {
-        "invalid": "Arvon pitää olla puhelinnumero"
+        "invalid": "Virheellinen puhelinnumero"
       },
       "email": {
-        "invalid": "Tämän kentän on oltava kelvollinen sähköpostiosoite"
+        "invalid": "Virheellinen sähköpostiosoite"
       },
       "iban": {
         "invalid": "Virheellinen IBAN-tilinumero"
@@ -453,33 +472,34 @@
     "sessionExpiredLabel": "Käyttäjäsessio vanhentui. Kirjaudu uudelleen sisään",
     "infoLabel": "Palvelun käyttäminen edellyttää vahvaa tunnistautumista",
     "logoutInfoContent": "Sinut on kirjattu ulos. Jos haluat jatkaa asiointia palvelussa, kirjaudu uudelleen sisään klikkaamalla alla olevasta painikkeesta.",
-    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi."
+    "infoContent": "Jotta voit edetä palvelussa, sinun täytyy tunnistautua. Voit valita itse, mitä tunnistustapaa haluat käyttää. Tunnistustietosi kulkevat suojatussa yhteydessä. Klikkaa alla olevasta painikkeesta tunnistautuaksesi.",
+    "termsOfServiceHeader": "Tietoa työnantajan edustajien henkilötietojen käsittelystä"
   },
   "errorPage": {
     "title": "Palvelussa on valitettavsti tapahtunut virhe",
-    "message": "Yritämme todennäköisesti jo parhaillaan korjata ongelmaa. Yritä myöhemmin uudelleen.",
+    "message": "Yritämme todennäköisesti jo korjata ongelmaa. Yritä myöhemmin uudelleen.",
     "home": "Palaa etusivulle",
     "logout": "Kirjaudu ulos"
   },
   "error": {
     "generic": {
-      "label": "Error occurred",
-      "text": "Please try again later."
+      "label": "Tapahtui virhe",
+      "text": "Ole hyvä ja kokeile uudelleen myöhemmin."
     },
     "attachments": {
-      "title": "Error occurred",
-      "tooBig": "The attachemnt size is too big.",
-      "fileType": "The attachment file type is not allowed."
+      "title": "Tapahtui virhe",
+      "tooBig": "Liite on liian suuri.",
+      "fileType": "Liite on väärässä muodossa."
     }
   },
   "upload": {
-    "isUploading": "Uploading...",
-    "errorTitle": "Uploading failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "isUploading": "Ladataan...",
+    "errorTitle": "Lataaminen epäonnistui",
+    "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "delete": {
-    "errorTitle": "Deleting failed",
-    "errorMessage": "Something went wrong. Please try again later."
+    "errorTitle": "Liitteen poistaminen epäonnistui",
+    "errorMessage": "Jotakin meni vikaan. Ole hyvä ja kokeile uudelleen myöhemmin."
   },
   "pdfViewer": {
     "previous": "Edellinen",
@@ -504,12 +524,12 @@
     "list": {
       "errors": {
         "create": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying create the message. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": "Viestiä luotaessa tapahtui virhe. Ole hyvä ja kokeile uudelleen myöhemmin."
         },
         "fetch": {
-          "label": "The error occurred",
-          "text": "The error occurred when trying fetch messages. Please try again later."
+          "label": "Tapahtui virhe",
+          "text": "Viestiä noudettaessa tapahtui virhe. Ole hyvä ja kokeile uudelleen myöhemmin."
         }
       }
     },
@@ -518,5 +538,22 @@
     "isSecure": "Viestit ovat salattuja",
     "noMessages": "Ei viestejä",
     "close": "Sulje"
+  },
+  "supportingContent": {
+    "contact": {
+      "title": "",
+      "text": "Tarvitsetko apua? Jos jokin asia jäi epäselväksi, voit soittaa tai lähettää sähköpostia meille. Puh. 040 198 5891 ja 040 183 3021 helsinkilisa@hel.fi",
+      "buttonText": ""
+    }
+  },
+  "application": {
+    "tooltipShowInfo": "Näytä info"
+  },
+  "pageTitles": {
+    "login": "Helsinki-lisä - Kirjautuminen",
+    "home": "Helsinki-lisä - Etusivu",
+    "createApplication": "Helsinki-lisä - Hakemus - Luo uusi",
+    "editApplication": "Helsinki-lisä - Hakemus - Muokkaa hakemusta",
+    "viewApplication": "Helsinki-lisä - Hakemus - Tarkastele hakemusta"
   }
 }

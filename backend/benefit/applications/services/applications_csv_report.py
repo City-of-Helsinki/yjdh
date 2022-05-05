@@ -1,3 +1,4 @@
+from applications.enums import BenefitType
 from applications.services.csv_export_base import (
     CsvColumn,
     CsvExportBase,
@@ -5,7 +6,6 @@ from applications.services.csv_export_base import (
     nested_queryset_attr,
 )
 from django.utils import translation
-from django.utils.translation import gettext
 
 
 def CsvDefaultColumn(*args, **kwargs):
@@ -34,6 +34,13 @@ def get_export_notes(application):
     return ", ".join(notes)
 
 
+def format_datetime(value):
+    if value:
+        return value.isoformat()
+    else:
+        return ""
+
+
 def format_bool(value):
     if value is None:
         return "ei valintaa"
@@ -43,6 +50,21 @@ def format_bool(value):
         return "ei"
     else:
         raise ValueError(f"Invalid value: {value}")
+
+
+def current_ahjo_row_field_getter(field_name):
+    def getter(item):
+        if rows := list(item.ahjo_rows):
+            if item.application_row_idx - 1 < len(rows):
+                # application_row_idx is 1-based
+                return getattr(rows[item.application_row_idx - 1], field_name)
+        return ""
+
+    return getter
+
+
+def get_benefit_type_label(benefit_type):
+    return str(BenefitType(benefit_type).label)
 
 
 class ApplicationsCsvService(CsvExportBase):
@@ -64,7 +86,7 @@ class ApplicationsCsvService(CsvExportBase):
             CsvColumn("Hakemusnumero", "application_number"),
             CsvColumn("Hakemusrivi", "application_row_idx"),
             CsvColumn("Hakemuksen tila", "status"),
-            CsvDefaultColumn("Haettava lisä", "benefit_type", gettext),
+            CsvDefaultColumn("Haettava lisä", "benefit_type", get_benefit_type_label),
             CsvDefaultColumn("Haettu alkupäivä", "start_date"),
             CsvDefaultColumn("Haettu päättymispäivä", "end_date"),
             CsvColumn("Työnantajan tyyppi", get_organization_type),
@@ -94,9 +116,7 @@ class ApplicationsCsvService(CsvExportBase):
             ),
             CsvColumn("Työnantajan osasto", "company_department"),
             CsvColumn("Työnantajan yhtiömuoto", "company_form"),
-            CsvDefaultColumn(
-                "Hyväksymisen/hylkäyksen/peruutuksen syy", "latest_decision_comment"
-            ),
+            CsvColumn("Työnantajan yhtiömuoto (YTJ-numero)", "company_form_code"),
             CsvColumn(
                 "Työnantajan yhteyshenkilön etunimi",
                 "company_contact_person_first_name",
@@ -115,7 +135,7 @@ class ApplicationsCsvService(CsvExportBase):
                 str,
             ),
             CsvColumn(
-                "Yhdistys jolla yritystoimintaa?",
+                "Yhdistys jolla taloudellista toimintaa?",
                 "association_has_business_activities",
                 format_bool,
             ),
@@ -160,13 +180,15 @@ class ApplicationsCsvService(CsvExportBase):
                 format_bool,
             ),
             CsvDefaultColumn(
-                "Helsinki-lisän määrä lopullinen", "calculation.benefit_amount"
+                "Helsinki-lisän määrä lopullinen",
+                "calculation.calculated_benefit_amount",
             ),
             CsvDefaultColumn("Kuukausipalkka laskelmassa", "calculation.monthly_pay"),
             CsvDefaultColumn("Lomaraha laskelmassa", "calculation.vacation_money"),
             CsvDefaultColumn("Muut kulut laskelmassa", "calculation.other_expenses"),
             CsvDefaultColumn("Laskelman alkupäivä", "calculation.start_date"),
             CsvDefaultColumn("Laskelman päättymispäivä", "calculation.end_date"),
+            CsvDefaultColumn("Käsittelypäivä", "handled_at", format_datetime),
             CsvDefaultColumn(
                 "Valtiotukimaksimi", "calculation.state_aid_max_percentage"
             ),
@@ -192,13 +214,44 @@ class ApplicationsCsvService(CsvExportBase):
                 format_bool,
                 default_value=None,
             ),
+            CsvDefaultColumn(
+                "Hyväksymisen/hylkäyksen/peruutuksen syy", "latest_decision_comment"
+            ),
             CsvDefaultColumn("Päättäjän nimike", "batch.decision_maker_title"),
             CsvDefaultColumn("Päättäjän nimi", "batch.decision_maker_name"),
             CsvDefaultColumn("Päätöspykälä", "batch.section_of_the_law"),
             CsvDefaultColumn("Päätöspäivä", "batch.decision_date"),
             CsvDefaultColumn("Asiantarkastajan nimi", "batch.expert_inspector_name"),
             CsvDefaultColumn("Asiantarkastajan email", "batch.expert_inspector_email"),
+            # In case there are multiple rows per application, always have the nth ahjo row
+            # in the same column.
+            # The row data here comes from calculation.ahjo_rows[application_row_idx - 1]
+            CsvColumn(
+                "Siirrettävä Ahjo-rivi / tyyppi",
+                current_ahjo_row_field_getter("row_type"),
+            ),
+            CsvColumn(
+                "Siirrettävä Ahjo-rivi / teksti",
+                current_ahjo_row_field_getter("description_fi"),
+            ),
+            CsvDefaultColumn(
+                "Siirrettävä Ahjo-rivi / määrä eur yht",
+                current_ahjo_row_field_getter("amount"),
+            ),
+            CsvDefaultColumn(
+                "Siirrettävä Ahjo-rivi / määrä eur kk",
+                current_ahjo_row_field_getter("monthly_amount"),
+            ),
+            CsvDefaultColumn(
+                "Siirrettävä Ahjo-rivi / alkupäivä",
+                current_ahjo_row_field_getter("start_date"),
+            ),
+            CsvDefaultColumn(
+                "Siirrettävä Ahjo-rivi / päättymispäivä",
+                current_ahjo_row_field_getter("end_date"),
+            ),
         ]
+        # Include all the application rows in the same line for easier processing
         for idx in range(self.MAX_AHJO_ROWS):
             columns.extend(
                 [
@@ -290,13 +343,16 @@ class ApplicationsCsvService(CsvExportBase):
     def get_row_items(self):
         with translation.override("fi"):
             for application in self.get_applications():
-                # for applicatins with multiple ahjo rows, output the same number of rows.
+                # for applications with multiple ahjo rows, output the same number of rows.
                 # If no Ahjo rows (calculation incomplete), always output just one row.
                 for application_row_idx, unused in enumerate(
                     application.ahjo_rows or [None]
                 ):
-                    # The CSV output is easier to process for Ahjo output is easier to process
-                    # if application is listed
+                    # The CSV output is easier to process in PowerBI
+                    # if the rows belonging to the same application are numbered.
+                    # application_row_idx is also used for storing the "current" ahjo row.
+                    # application_row_idx starts at 1, which must be taken into account
+                    # when indexing application.ahjo_rows
                     application.application_row_idx = application_row_idx + 1
                     yield application
 

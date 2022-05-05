@@ -1,5 +1,3 @@
-import 'react-toastify/dist/ReactToastify.css';
-
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
 import React from 'react';
@@ -16,9 +14,11 @@ import Header from 'tet/admin/components/header/Header';
 import createQueryClient from 'tet/admin/query-client/create-query-client';
 import PreviewContextProvider from 'tet/admin/store/PreviewContext';
 
+const queryClient = createQueryClient();
+
 const App: React.FC<AppProps> = (appProps) => (
   <BackendAPIProvider baseURL={getBackendDomain()}>
-    <QueryClientProvider client={createQueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <DialogContextProvider>
         <PreviewContextProvider>
           <AuthProvider>

@@ -4,7 +4,6 @@ import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
 import { TextArea as HdsTextArea } from 'hds-react';
 import Id from 'shared/types/id';
 
-// TODO add minusStepButtonAriaLabel and plusStepButtonAriaLabel
 type Props = {
   id: Id<TetPosting>;
   label: string;

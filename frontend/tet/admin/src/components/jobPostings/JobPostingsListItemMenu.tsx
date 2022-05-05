@@ -67,6 +67,9 @@ const JobPostingsListItemMenu: React.FC<JobPostingsListItemMenuProps> = (props) 
   const publishPostingHandler = async () => {
     const isConfirmed = await confirm({
       header: t('common:publish.confirmation', { posting: posting.title }),
+      content: t('common:application.publishTerms'),
+      linkText: t('common:application.termsLink'),
+      link: '/TET-alusta-kayttoehdot.pdf',
       submitButtonLabel: t('common:publish.publishPosting'),
     });
 

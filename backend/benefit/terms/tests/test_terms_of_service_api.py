@@ -47,6 +47,9 @@ def test_terms_of_service_in_effect(
         == mock_get_organisation_roles_and_create_company
     )
     assert response.data["terms_of_service_in_effect"]["id"] == str(current_terms.pk)
+    assert response.data["terms_of_service_in_effect"]["terms_pdf_fi"].startswith(
+        "http"
+    )
 
     assert {
         obj["id"]

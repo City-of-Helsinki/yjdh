@@ -10,7 +10,7 @@ const createAxios = (): AxiosInstance =>
       'Content-Type': 'application/json',
     },
     withCredentials: true,
-    xsrfCookieName: 'csrftoken',
+    xsrfCookieName: 'yjdhcsrftoken',
     xsrfHeaderName: 'X-CSRFToken',
   });
 

@@ -184,6 +184,7 @@ const SalaryBenefitCalculatorView: React.FC<
           </$GridCell>
 
           {formik.values.paySubsidies?.map(
+            // eslint-disable-next-line sonarjs/cognitive-complexity
             (item: PaySubsidy, index: number) => (
               <>
                 <$GridCell $colStart={1}>
@@ -386,7 +387,7 @@ const SalaryBenefitCalculatorView: React.FC<
         />
       </$GridCell>
 
-      {!isManualCalculator && (
+      {!isManualCalculator && data.apprenticeshipProgram && (
         <>
           <$GridCell $colStart={1} $colSpan={11}>
             <$CalculatorText
@@ -533,7 +534,9 @@ const SalaryBenefitCalculatorView: React.FC<
               onChange={(value) =>
                 setNewTrainingCompensation((prevValue) => ({
                   ...prevValue,
-                  endDate: getCorrectEndDate(prevValue.startDate, value) ?? '',
+                  endDate:
+                    getCorrectEndDate(prevValue.startDate, value).toString() ??
+                    '',
                 }))
               }
               value={convertToUIDateFormat(newTrainingCompensation.endDate)}

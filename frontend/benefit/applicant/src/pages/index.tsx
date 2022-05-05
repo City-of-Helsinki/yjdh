@@ -2,9 +2,9 @@ import ApplicationsList from 'benefit/applicant/components/applications/applicat
 import MainIngress from 'benefit/applicant/components/mainIngress/MainIngress';
 import { useTranslation } from 'benefit/applicant/i18n';
 import { GetStaticProps, NextPage } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import * as React from 'react';
 import withAuth from 'shared/components/hocs/withAuth';
+import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 
 import { SUBMITTED_STATUSES } from '../constants';
 import FrontPageProvider from '../context/FrontPageProvider';
@@ -31,10 +31,7 @@ const ApplicantIndex: NextPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-  props: {
-    ...(await serverSideTranslations(locale || '', ['common'])),
-  },
-});
+export const getStaticProps: GetStaticProps =
+  getServerSideTranslations('common');
 
 export default withAuth(ApplicantIndex);

@@ -7,7 +7,7 @@ import Document, {
   NextScript,
 } from 'next/document';
 import React from 'react';
-import PORTAL_ID from 'shared/contants/portal-id';
+import PORTAL_ID from 'shared/constants/portal-id';
 
 process.on('unhandledRejection', (err) => {
   Sentry.captureException(err);

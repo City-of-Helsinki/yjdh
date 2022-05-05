@@ -67,21 +67,24 @@ from terms.models import ApplicantTermsApproval, Terms
 from users.utils import get_company_from_request, get_request_user_from_context
 
 
-class ApplicationBasisSerializer(serializers.ModelSerializer):
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
-    Only the unique identifier is exposed through the API.
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed and exclude_fields parameter argument that controls
+    which fields should not be displayed and exclude_fields parameter argument that controls which
+    fields should not be displayed.
     """
 
-    class Meta:
-        model = ApplicationBasis
-        fields = [
-            "identifier",
-        ]
-        extra_kwargs = {
-            "identifier": {
-                "help_text": "Unique slug that identifies the basis",
-            }
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Empty "fields" argument is treated the same as no argument at all
+        fields = self.context.get("fields", []) or self.fields.keys()
+        exclude_fields = self.context.get("exclude_fields", [])
+
+        existing = set(self.fields)
+        allowed = set(fields) - set(exclude_fields)
+        for field_name in existing - allowed:
+            self.fields.pop(field_name)
 
 
 class AttachmentField(FileField):
@@ -458,7 +461,7 @@ class ApplicationBatchSerializer(serializers.ModelSerializer):
         application_batch.applications.set(applications)
 
 
-class BaseApplicationSerializer(serializers.ModelSerializer):
+class BaseApplicationSerializer(DynamicFieldsModelSerializer):
 
     """
     Fields in the Company model come from YTJ/other source and are not editable by user, and are listed
@@ -522,9 +525,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             "company",
             "company_name",
             "company_form",
+            "company_form_code",
             "submitted_at",
             "bases",
-            "available_bases",
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
@@ -573,13 +576,13 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "submitted_at",
             "application_number",
-            "available_bases",
             "attachment_requirements",
             "applicant_terms_approval_needed",
             "applicant_terms_in_effect",
             "former_benefit_info",
             "company_name",
             "company_form",
+            "company_form_code",
             "official_company_street_address",
             "official_company_city",
             "official_company_postcode",
@@ -598,7 +601,10 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
                 " application was created, to maintain historical accuracy.",
             },
             "company_form": {
-                "help_text": "Company city from official sources (YTJ) at the time the application was created",
+                "help_text": "Finnish company form from official sources (YTJ) at the time the application was created",
+            },
+            "company_form_code": {
+                "help_text": "Company form code from official sources (YTJ) at the time the application was created",
             },
             "official_company_street_address": {
                 "help_text": "Company street address from official sources (YTJ/other) at"
@@ -719,10 +725,6 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         "get_status_last_changed_at"
     )
 
-    available_bases = serializers.SerializerMethodField(
-        "get_available_bases", help_text="List of available application basis slugs"
-    )
-
     attachment_requirements = serializers.SerializerMethodField(
         "get_attachment_requirements", help_text="get the attachment requirements"
     )
@@ -821,8 +823,8 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
     ADDITIONAL_INFORMATION_DEADLINE = timedelta(days=14)
 
     def get_additional_information_needed_by(self, obj):
-        if info_asked_timestamp := self._get_status_change_timestamp(
-            obj, ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED
+        if info_asked_timestamp := getattr(
+            obj, "additional_information_requested_at", None
         ):
             return info_asked_timestamp.date() + self.ADDITIONAL_INFORMATION_DEADLINE
         else:
@@ -866,19 +868,12 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         }
 
     def get_submitted_at(self, obj):
-        return obj.get_log_entry_field([ApplicationStatus.RECEIVED], "created_at")
+        return getattr(obj, "submitted_at", None)
 
     def get_last_modified_at(self, obj):
         if not self.logged_in_user_is_admin() and obj.status != ApplicationStatus.DRAFT:
             return None
         return obj.modified_at
-
-    @extend_schema_field(ApplicationBasisSerializer(many=True))
-    def get_available_bases(self, obj):
-        return [
-            basis.identifier
-            for basis in ApplicationBasis.objects.filter(is_active=True)
-        ]
 
     def _get_pay_subsidy_attachment_requirements(self, application):
         req = []
@@ -934,7 +929,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         NOTE: False is not allowed, and True is allowed only for associations.
         """
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
         ):
             if association_immediate_manager_check not in [None, True]:
@@ -969,7 +964,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
           (at this point, the individual dicts have been already valided by DeMinimisAidSerializer
         """
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
             and de_minimis_aid is not None
             and not association_has_business_activities
@@ -1109,7 +1104,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         required_fields = self.REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS[:]
         if (
             organization_type := OrganizationType.resolve_organization_type(
-                self.get_company(data).company_form
+                self.get_company(data).company_form_code
             )
         ) == OrganizationType.ASSOCIATION:
             required_fields.append("association_has_business_activities")
@@ -1141,7 +1136,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         self, company, association_has_business_activities
     ):
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.COMPANY
             and association_has_business_activities is not None
         ):
@@ -1201,7 +1196,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         """
 
         if (
-            OrganizationType.resolve_organization_type(company.company_form)
+            OrganizationType.resolve_organization_type(company.company_form_code)
             == OrganizationType.ASSOCIATION
             and not association_has_business_activities
         ):
@@ -1231,7 +1226,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
             return
 
         if OrganizationType.resolve_organization_type(
-            company.company_form
+            company.company_form_code
         ) == OrganizationType.ASSOCIATION and self._field_value_changes(
             data, "association_has_business_activities", False
         ):
@@ -1356,6 +1351,11 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         )
         if instance.status == ApplicationStatus.ADDITIONAL_INFORMATION_NEEDED:
             # Create an automatic message for the applicant
+            # self.instance.additional_information_requested_at is not updated at this point as
+            # it's a queryset annotation, so need to refresh
+            self.instance.additional_information_requested_at = Application.objects.get(
+                pk=instance.pk
+            ).additional_information_requested_at
             send_application_reopened_message(
                 get_request_user_from_context(self),
                 instance,
@@ -1470,6 +1470,9 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
         de_minimis_data = validated_data.pop("de_minimis_aid_set")
         employee_data = validated_data.pop("employee", None)
         validated_data["company"] = self.get_company_for_new_application(validated_data)
+        validated_data["company_form_code"] = validated_data[
+            "company"
+        ].company_form_code
         application = super().create(validated_data)
         self.assign_default_fields_from_company(application, validated_data["company"])
         self._update_de_minimis_aid(application, de_minimis_data)
@@ -1491,6 +1494,7 @@ class BaseApplicationSerializer(serializers.ModelSerializer):
     def assign_default_fields_from_company(self, application, company):
         application.company_name = company.name
         application.company_form = company.company_form
+        application.company_form_code = company.company_form_code
         application.official_company_street_address = company.street_address
         application.official_company_postcode = company.postcode
         application.official_company_city = company.city
@@ -1638,10 +1642,7 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
     )
 
     def get_handled_at(self, obj):
-        if hasattr(obj, "handled_at"):
-            return obj.handled_at
-        else:
-            return None
+        return getattr(obj, "handled_at", None)
 
     class Meta(BaseApplicationSerializer.Meta):
         fields = BaseApplicationSerializer.Meta.fields + [
@@ -1772,6 +1773,10 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
             instance, previous_status, approve_terms, log_entry_comment
         )
         # Extend from base class function.
+        self._assign_handler_if_needed(instance)
+        self._remove_batch_if_needed(instance)
+
+    def _assign_handler_if_needed(self, instance):
         # Assign current user to the application.calculation.handler
         # NOTE: This handler might be overridden if there is a handler pk included in the request post data
         handler = get_request_user_from_context(self)
@@ -1780,3 +1785,8 @@ class HandlerApplicationSerializer(BaseApplicationSerializer):
         if instance.status in HandlerApplicationStatusValidator.ASSIGN_HANDLER_STATUSES:
             instance.calculation.handler = handler
             instance.calculation.save()
+
+    def _remove_batch_if_needed(self, instance):
+        if instance.status == ApplicationStatus.HANDLING and instance.batch:
+            instance.batch = None
+            instance.save()

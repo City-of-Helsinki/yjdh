@@ -33,14 +33,27 @@ const attachmentFilePaths = fs
   .readdirSync(attachmentPath)
   .map((fileName) => attachmentPath + fileName);
 
-const generateNodeArray = <T, F extends (...args: unknown[]) => T>(
-  fakeFunc: F,
+export const generateArray = <T, F extends (...args: unknown[]) => T>(
+  generator: F,
   count: number
-): T[] => Array.from({ length: count }, (_, i) => fakeFunc(i));
+): T[] => Array.from({ length: count }, (_, i) => generator(i));
+
+// https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
+export const getRandomSubArray = <T>(
+  array: readonly T[],
+  minLength?: number,
+  maxLength?: number
+): T[] => {
+  const size = faker.datatype.number({
+    min: minLength ?? 1,
+    max: maxLength ?? array.length,
+  });
+  return [...array].sort(() => 0.5 - Math.random()).slice(0, size);
+};
 
 export const fakeUser = (): User => ({
-  given_name: faker.name.findName(),
-  family_name: faker.name.findName(),
+  given_name: faker.name.firstName(),
+  family_name: faker.name.lastName(),
   name: faker.name.findName(),
 });
 
@@ -83,8 +96,7 @@ export const fakeAttachment = (
 export const fakeAttachments = (
   type: AttachmentType,
   count = faker.datatype.number(4) + 1
-): KesaseteliAttachment[] =>
-  generateNodeArray(() => fakeAttachment(type), count);
+): KesaseteliAttachment[] => generateArray(() => fakeAttachment(type), count);
 
 export const fakeEmployment = (): Required<Employment> => ({
   id: faker.datatype.uuid(),
@@ -122,7 +134,7 @@ export const fakeEmployment = (): Required<Employment> => ({
 
 export const fakeEmployments = (
   count = faker.datatype.number({ min: 2, max: 10 })
-): Required<Employment>[] => generateNodeArray(() => fakeEmployment(), count);
+): Required<Employment>[] => generateArray(() => fakeEmployment(), count);
 
 export const fakeApplication = (
   id: string,
@@ -146,4 +158,4 @@ export const fakeApplication = (
 export const fakeApplications = (
   count = faker.datatype.number(10)
 ): Application[] =>
-  generateNodeArray(() => fakeApplication(faker.datatype.uuid()), count);
+  generateArray(() => fakeApplication(faker.datatype.uuid()), count);

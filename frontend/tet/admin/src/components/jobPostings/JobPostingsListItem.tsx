@@ -12,7 +12,7 @@ import {
   $MenuContainer,
   $PostingDates,
 } from 'tet/admin/components/jobPostings/JobPostingsListItem.sc';
-import { IconMenuDots, IconCalendar, IconGroup, IconEye, IconEyeCrossed, IconPhoto } from 'hds-react';
+import { IconMenuDots, IconCalendar, IconGroup, IconEye, IconEyeCrossed } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import JobPostingsListItemMenu from 'tet/admin/components/jobPostings/JobPostingsListItemMenu';
 import Image from 'next/image';
@@ -37,25 +37,27 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
           layout="responsive"
           objectFit="cover"
           src="/event_placeholder_B.jpg"
-          alt="canteen counter"
+          alt="event placeholder"
+          priority={true}
         />
       </$ImageContainer>
       <$PostingCardBody>
         <$PostingHeader>
           <div>
             <$PostingTitle>
-              {posting.title} {posting.org_name}
+              {posting.title} - {posting.org_name}
             </$PostingTitle>
             <$PostingDescription>{posting.description}</$PostingDescription>
           </div>
           <$MenuContainer>
-            <IconMenuDots
-              aria-hidden="true"
-              css={`
-                cursor: pointer;
-              `}
-              onClick={() => setShowMenu(true)}
-            />
+            <button type="button" onClick={() => setShowMenu(true)}>
+              <IconMenuDots
+                aria-hidden="true"
+                css={`
+                  cursor: pointer;
+                `}
+              />
+            </button>
             {posting.id && (
               <JobPostingsListItemMenu posting={posting} show={showMenu} onClickOutside={() => setShowMenu(false)} />
             )}

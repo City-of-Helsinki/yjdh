@@ -1,3 +1,4 @@
+import useLogin from 'benefit/applicant/hooks/useLogin';
 import {
   Button,
   IconSignin,
@@ -13,7 +14,7 @@ import Container from 'shared/components/container/Container';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';
 import { useTheme } from 'styled-components';
 
-import useLogin from '../hooks/useLogin';
+import { IS_CLIENT, LOCAL_STORAGE_KEYS } from '../constants';
 
 type NotificationProps = Pick<HDSNotificationProps, 'type' | 'label'> & {
   content?: string;
@@ -52,6 +53,12 @@ const Login: NextPage = () => {
     }
   }, [logout, queryClient]);
 
+  useEffect(() => {
+    if (IS_CLIENT)
+      // eslint-disable-next-line scanjs-rules/identifier_localStorage
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_TERMS_OF_SERVICE_APPROVED);
+  }, []);
+
   return (
     <Container>
       <Notification
@@ -64,7 +71,12 @@ const Login: NextPage = () => {
       >
         {notificationProps.content}
       </Notification>
-      <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
+      <Button
+        theme="coat"
+        iconLeft={<IconSignin />}
+        onClick={login}
+        data-testid="loginButton"
+      >
         {t('common:login.login')}
       </Button>
     </Container>

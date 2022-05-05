@@ -5,15 +5,16 @@ import JobPostingsListItem from 'tet/admin/components/jobPostings/JobPostingsLis
 import { $HeadingContainer, $Title, $Total } from 'tet/admin/components/jobPostings/JobPostingsSectio.sc';
 
 type JobPostingsSectionProps = {
-  title: String;
+  title: string;
   postingsTotal: number;
   postings: TetPosting[];
+  sectionId: string;
 };
 
-const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postingsTotal, postings }) => {
+const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postingsTotal, postings, sectionId }) => {
   const { t } = useTranslation();
   return (
-    <>
+    <div data-testid={`${sectionId}-list`}>
       <$HeadingContainer>
         <$Title>{title}</$Title>
         <$Total>
@@ -21,9 +22,9 @@ const JobPostingsSection: React.FC<JobPostingsSectionProps> = ({ title, postings
         </$Total>
       </$HeadingContainer>
       {postings.map((posting) => (
-        <JobPostingsListItem posting={posting} />
+        <JobPostingsListItem key={posting.id} posting={posting} />
       ))}
-    </>
+    </div>
   );
 };
 

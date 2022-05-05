@@ -9,8 +9,8 @@ const ActivatedPage: NextPage = () => {
   return (
     <NotificationPage
       type="success"
-      title={t(`common:activatedPage.notificationTitle`)}
-      message={t(`common:activatedPage.notificationMessage`)}
+      title={t(`common:notificationPages.activated.title`)}
+      message={t(`common:notificationPages.activated.message`)}
     />
   );
 };

@@ -97,6 +97,8 @@ class HelsinkiBenefitCalculator:
                     training_compensation,
                 )
             )
+        assert ranges[0].start_date == self.calculation.start_date
+        assert ranges[-1].end_date == self.calculation.end_date
         return ranges
 
     def get_amount(self, row_type, default=None):
@@ -172,7 +174,11 @@ class DummyBenefitCalculator(HelsinkiBenefitCalculator):
 
 class ManualOverrideCalculator(HelsinkiBenefitCalculator):
     def create_rows(self):
-        self._create_row(ManualOverrideTotalRow)
+        self._create_row(
+            ManualOverrideTotalRow,
+            start_date=self.calculation.start_date,
+            end_date=self.calculation.end_date,
+        )
 
 
 class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
@@ -278,13 +284,21 @@ class SalaryBenefitCalculator2021(HelsinkiBenefitCalculator):
         if len(date_ranges) > 1:
             self._create_row(
                 DateRangeDescriptionRow,
-                start_date=date_ranges[0].start_date,
-                end_date=date_ranges[-1].end_date,
+                start_date=self.calculation.start_date,
+                end_date=self.calculation.end_date,
                 prefix_text="Koko ajalta",
             )
-            self._create_row(SalaryBenefitSumSubTotalsRow)
+            self._create_row(
+                SalaryBenefitSumSubTotalsRow,
+                start_date=self.calculation.start_date,
+                end_date=self.calculation.end_date,
+            )
         else:
-            self._create_row(SalaryBenefitTotalRow)
+            self._create_row(
+                SalaryBenefitTotalRow,
+                start_date=self.calculation.start_date,
+                end_date=self.calculation.end_date,
+            )
 
 
 class EmployeeBenefitCalculator2021(HelsinkiBenefitCalculator):
@@ -296,4 +310,8 @@ class EmployeeBenefitCalculator2021(HelsinkiBenefitCalculator):
 
     def create_rows(self):
         self._create_row(EmployeeBenefitMonthlyRow)
-        self._create_row(EmployeeBenefitTotalRow)
+        self._create_row(
+            EmployeeBenefitTotalRow,
+            start_date=self.calculation.start_date,
+            end_date=self.calculation.end_date,
+        )

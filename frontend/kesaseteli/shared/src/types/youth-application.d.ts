@@ -1,7 +1,6 @@
 import { Language } from '@frontend/shared/src/i18n/i18n';
 
 type YouthApplication = {
-  id?: string;
   first_name: string;
   last_name: string;
   social_security_number: string;
@@ -11,6 +10,7 @@ type YouthApplication = {
   phone_number: string;
   email: string;
   language: Language;
+  request_additional_information?: boolean;
 };
 
 export default YouthApplication;

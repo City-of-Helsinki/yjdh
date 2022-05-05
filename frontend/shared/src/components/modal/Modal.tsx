@@ -65,7 +65,7 @@ const Modal: React.FC<ModalProps> = ({
               theme="black"
               variant="secondary"
               onClick={handleToggle}
-              data-testid="cancel"
+              data-testid="modalCancel"
             >
               {cancelButtonLabel}
             </Button>
@@ -74,7 +74,7 @@ const Modal: React.FC<ModalProps> = ({
               variant={variant}
               onClick={onAccept}
               disabled={actionDisabled}
-              data-testid="submit"
+              data-testid="modalSubmit"
               iconLeft={submitButtonIcon}
             >
               {submitButtonLabel}
@@ -84,6 +84,18 @@ const Modal: React.FC<ModalProps> = ({
       )}
     </Dialog>
   );
+};
+
+Modal.defaultProps = {
+  submitButtonIcon: null,
+  headerIcon: null,
+  actionDisabled: undefined,
+  title: undefined,
+  className: undefined,
+  scrollable: undefined,
+  variant: undefined,
+  children: null,
+  customContent: null,
 };
 
 export default Modal;

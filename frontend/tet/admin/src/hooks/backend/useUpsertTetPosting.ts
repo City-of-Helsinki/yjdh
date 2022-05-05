@@ -14,21 +14,26 @@ const useUpsertTetPosting = (): UseMutationResult<TetUpsert, AxiosError<LinkedEv
   const router = useRouter();
   const queryClient = useQueryClient();
   const handleError = useLinkedEventsErrorHandler({
-    errorTitle: 'Virhe tapahtuman tallentamisesssa', // TODO translations
-    errorMessage: 'Tapahtuman luonti tai päivitys ei onnistunut', // TODO translations
+    errorTitle: t('common:api.saveErrorTitle'),
+    errorMessage: t('common:api.saveErrorTitle'),
   });
 
   return useMutation<TetUpsert, AxiosError<LinkedEventsError>, TetUpsert>(
     'upsert',
     ({ id, event }: TetUpsert) =>
       handleResponse<TetUpsert>(
-        id ? axios.put(`${BackendEndpoint.TET_POSTINGS}${id}`, event) : axios.post(BackendEndpoint.TET_POSTINGS, event),
+        id
+          ? axios.put(`${BackendEndpoint.TET_POSTINGS}${id}/`, event)
+          : axios.post(BackendEndpoint.TET_POSTINGS, event),
       ),
     {
-      onSuccess: () => {
+      onSuccess: (data, variables) => {
+        const successMessage = variables.event.date_published
+          ? t('common:publish.saveSuccessMessage')
+          : t('common:upload.successMessage');
         void queryClient.removeQueries();
         void router.push('/');
-        showSuccessToast(t('common:upload.successMessage'), '');
+        showSuccessToast(successMessage, '');
       },
       onError: (error) => handleError(error),
     },

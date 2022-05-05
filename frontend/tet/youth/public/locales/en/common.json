@@ -1,5 +1,10 @@
 {
   "appName": "TET Job Search",
+  "header": {
+    "linkSkipToContent": "Skip to content",
+    "menuToggleAriaLabel": "Menu",
+    "languageMenuButtonAriaLabel": "Select language"
+  },
   "errorPage": {
     "title": "An unexpected error occured",
     "message": "Something went wrong. Refreshing the page might help.",
@@ -11,24 +16,40 @@
     "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
 	"frontPage": {
-		"heading": "ENG Muistathan etsiä TET-paikkasi ajoissa",
-		"search": "ENG Etsi",
-		"fetch": "ENG Hae",
-		"advancedSearch": "ENG Tarkennettu haku"
+		"heading": "Remember to find you TET job on time",
+		"search": "Search",
+		"fetch": "Search",
+		"advancedSearch": "Advanced search",
+		"boxTitle": "What is TET?",
+		"boxContent": "Work life practice, or TET, is part of school work for elementary school pupils. During TET, one can learn about different professions and get to experience working life in practice.",
+		"announceLinkTitle": "Announce a TET-position",
+		"announceLinkURL": "https://hel.fi",
+		"announceLinkContent": "Are you an employer and want to make a TET-advertisement? Click here for the employer's service.",
+		"askLinkTitle": "Any questions?",
+		"askLinkURL": "mailto:antti.varto@hel.fi",
+		"askLinkContent": "Do you have any questions or did you notice something strange about the service? Reach out!"
 	},
 	"filters": {
-		"searchPlaceholder": "ENG Kirjoita hakusana tai paikan nimi",
-		"workMethod": "ENG Valitse työtapa",
-		"startDate": "ENG Alkamispäivä",
-		"endDate": "ENG Päättymispäivä",
-		"language": "ENG Valitse kieli",
-		"clearFilters": "ENG Tyhjennä hakuehdot"
+		"searchJobs": "Search for TET jobs",
+		"searchPlaceholder": "Type search word",
+		"workMethod": "Choose working method",
+		"workFeatures": "Characteristics of work",
+		"startDate": "Start date",
+		"endDate": "End date",
+		"language": "Choose language",
+		"clearFilters": "Clear filters",
+    "combobox": {
+      "toggleButtonAriaLabel": "Show/hide options",
+      "clearButtonAriaLabel": "Clear selection",
+      "selectedItemRemoveButtonAriaLabel": "Deselect"
+    }
 	},
 	"postings": {
-		"searchResults": "ENG hakutulosta",
-		"readMore": "ENG Lue lisää",
-		"showMore": "ENG Näytä lisää tuloksia",
-		"languages": "ENG Kielisyys"
+		"searchResults_one": "{{count}} search result",
+		"searchResults_other": "{{count}} search results",
+		"readMore": "Read more",
+		"showMore": "Show more results",
+		"languages": "Language"
 	},
   "footer": {
     "copyrightText": "City of Helsinki",
@@ -37,7 +58,7 @@
     "accessibilityStatementLink": "https://www.hel.fi/helsinki/en/administration/information/information/accessibility",
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
-    "feedback": "ENG Anna palautetta",
+    "feedback": "Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
   },
   "languages": {
@@ -45,9 +66,6 @@
     "sv": "På svenska",
     "en": "In English"
   },
-	"postingsPage": {
-		"showMore": "ENG Näytä lisää tuloksia"
-	},
   "termsAndConditionsLink": "https://kesaseteli.fi/en/the-summer-job-voucher/for-employers/",
   "error": {
     "generic": {
@@ -57,9 +75,18 @@
   },
 	"editor": {
 		"posting": {
-			"contactLanguageFi": "ENG Suomi",
-			"contactLanguageSv": "ENG Ruotsi",
-			"contactLanguageEn": "ENG Englanti"
+			"contactLanguageFi": "Finnish",
+			"contactLanguageSv": "Swedish",
+			"contactLanguageEn": "English"
 		}
+	},
+	"postingTemplate": {
+		"spots": "TET positions",
+		"contact": "Contact information",
+		"description": "Description",
+		"share": "Share event",
+		"dateAndTime": "Date and time",
+		"location": "Place",
+		"languages": "Languages used in the workplace"
 	}
 }

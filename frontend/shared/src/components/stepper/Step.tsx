@@ -10,13 +10,24 @@ const Step = ({
   index = 0,
 }: StepProps): React.ReactElement => {
   const isActive = index < activeStep;
+  const isCurrent = activeStep === index + 1;
 
   return (
     <$StepContainer>
-      <$StepCircle isActive={isActive}>{index + 1}</$StepCircle>
+      <$StepCircle
+        isActive={isActive}
+        data-testid={isCurrent ? 'currentStep' : undefined}
+      >
+        {index + 1}
+      </$StepCircle>
       <$StepTitle isActive={isActive}>{title}</$StepTitle>
     </$StepContainer>
   );
+};
+
+Step.defaultProps = {
+  index: undefined,
+  activeStep: undefined,
 };
 
 export default Step;

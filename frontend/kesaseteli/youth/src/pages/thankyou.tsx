@@ -35,11 +35,13 @@ const ThankYouPage: NextPage = () => {
   return (
     <NotificationPage
       type="success"
-      title={t(`common:thankyouPage.notificationTitle`)}
-      message={t(`common:thankyouPage.notificationMessage`, {
+      title={t(`common:notificationPages.thankyou.title`)}
+      message={t(`common:notificationPages.thankyou.message`, {
         expirationHours: useActivationLinkExpirationHours(),
       })}
-      goToFrontPageText={t('common:thankyouPage.goToFrontendPage')}
+      goToFrontPageText={t(
+        'common:notificationPages.thankyou.goToFrontendPage'
+      )}
     >
       {showActivationLink && (
         <FormSection columns={1} paddingBottom withoutDivider>

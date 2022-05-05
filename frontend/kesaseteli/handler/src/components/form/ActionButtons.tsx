@@ -4,15 +4,18 @@ import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { $GridCell } from 'shared/components/forms/section/FormSection.sc';
+import {
+  $GridCell,
+  GridCellProps,
+} from 'shared/components/forms/section/FormSection.sc';
 import useConfirm from 'shared/hooks/useConfirm';
 import { useTheme } from 'styled-components';
 
-type Props = {
+type Props = GridCellProps & {
   id: CreatedYouthApplication['id'];
 };
 
-const HandlerForm: React.FC<Props> = ({ id }) => {
+const ActionButtons: React.FC<Props> = ({ id, ...gridCellprops }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { confirm } = useConfirm();
@@ -33,6 +36,7 @@ const HandlerForm: React.FC<Props> = ({ id }) => {
         content: t(`common:dialog.${type}.content`),
         submitButtonLabel: t(`common:dialog.${type}.submit`),
         submitButtonIcon: icon[type],
+        submitButtonVariant: type === 'reject' ? 'danger' : 'primary',
       });
       if (isConfirmed) {
         mutate(type);
@@ -45,7 +49,7 @@ const HandlerForm: React.FC<Props> = ({ id }) => {
   const reject = React.useCallback(() => complete('reject'), [complete]);
 
   return (
-    <$GridCell>
+    <$GridCell {...gridCellprops}>
       <Button
         theme="coat"
         data-testid="accept-button"
@@ -60,8 +64,7 @@ const HandlerForm: React.FC<Props> = ({ id }) => {
         {t(`common:handlerApplication.accept`)}
       </Button>
       <Button
-        variant="secondary"
-        theme="black"
+        variant="danger"
         data-testid="reject-button"
         iconLeft={icon.reject}
         onClick={reject}
@@ -75,4 +78,4 @@ const HandlerForm: React.FC<Props> = ({ id }) => {
   );
 };
 
-export default HandlerForm;
+export default ActionButtons;

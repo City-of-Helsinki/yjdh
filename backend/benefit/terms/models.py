@@ -1,15 +1,17 @@
 from datetime import date
 
-from applications.models import Application
-from companies.models import Company
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from shared.models.abstract_models import TimeStampedModel, UUIDModel
+
+from applications.models import Application
+from companies.api.v1.serializers import CompanySerializer
+from companies.models import Company
+from companies.tests.data.company_data import get_dummy_company_data
 from terms.enums import TermsType
 from users.models import User
-
-from shared.models.abstract_models import TimeStampedModel, UUIDModel
 
 
 class TermsManager(models.Manager):
@@ -23,7 +25,6 @@ class TermsManager(models.Manager):
 
 
 class Terms(UUIDModel, TimeStampedModel):
-
     objects = TermsManager()
 
     terms_type = models.CharField(
@@ -139,7 +140,6 @@ class AbstractTermsApproval(UUIDModel, TimeStampedModel):
 
 
 class ApplicantTermsApproval(AbstractTermsApproval):
-
     application = models.OneToOneField(
         Application,
         verbose_name=_("application"),
@@ -193,7 +193,21 @@ class TermsOfServiceApproval(AbstractTermsApproval):
         if user is None:
             raise Exception("valid user needed")
         if company is None:
-            raise Exception("valid company needed")
+            if (
+                hasattr(settings, "DUMMY_COMPANY_FORM_CODE")
+                and settings.DUMMY_COMPANY_FORM_CODE
+            ):
+                dummy_data = get_dummy_company_data()
+                dummy_company = Company.objects.filter(
+                    business_id=dummy_data["business_id"]
+                ).first()
+                if not dummy_company:
+                    del dummy_data["id"]
+                    dummy_company = Company(**dummy_data)
+                    dummy_company.save()
+                company = CompanySerializer(dummy_company).data
+            else:
+                raise Exception("valid company needed")
 
         terms_in_effect = Terms.objects.get_terms_in_effect(TermsType.TERMS_OF_SERVICE)
         if not terms_in_effect:

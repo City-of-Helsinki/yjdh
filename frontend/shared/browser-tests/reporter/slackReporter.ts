@@ -31,7 +31,7 @@ type Reporter = {
 };
 
 const getTestDoneMessage = (name: string, testRunInfo: TestRunInfo): string => {
-  let message;
+  let message = '';
   if (testRunInfo.skipped) {
     message = `${emojis.fastForward} ${italics(name)} - ${bold('skipped')}`;
   } else if (testRunInfo.errs.length > 0) {

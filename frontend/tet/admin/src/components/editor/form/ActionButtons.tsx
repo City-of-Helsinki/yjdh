@@ -10,37 +10,41 @@ import { useTheme } from 'styled-components';
 import useDeleteTetPosting from 'tet/admin/hooks/backend/useDeleteTetPosting';
 import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import TetPosting from 'tet-shared/types/tetposting';
+import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
+import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
 
-type Props = {
-  onSubmit: () => void;
-  allowDelete: boolean;
-  allowPublish: boolean;
-};
-
-const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPublish }) => {
-  const { setPreviewVisibility, setTetPostingData } = useContext(PreviewContext);
+const ActionButtons: React.FC = () => {
+  const { setPreviewVisibility, setTetPostingData, setFormValid } = useContext(PreviewContext);
   const deleteTetPosting = useDeleteTetPosting();
+  const upsertTetPosting = useUpsertTetPosting();
   const { confirm } = useConfirm();
 
   const { t } = useTranslation();
   const {
     getValues,
+    handleSubmit,
+    trigger,
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
   const theme = useTheme();
   const posting = getValues();
 
-  const showPreview = () => {
+  const allowPublish = posting.date_published === null;
+  const allowDelete = !!posting.id;
+
+  const showPreview = async () => {
+    const isValid = await trigger();
     const values = getValues();
     setTetPostingData(cloneDeep(values));
+    setFormValid(isValid);
     setPreviewVisibility(true);
   };
 
   const deletePostingHandler = async () => {
-    await showConfirm();
+    await showDeleteConfirm();
   };
 
-  const showConfirm = async () => {
+  const showDeleteConfirm = async () => {
     const isConfirmed = await confirm({
       header: t('common:delete.confirmation', { posting: posting.title }),
       submitButtonLabel: t('common:delete.deletePosting'),
@@ -51,12 +55,39 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPub
     }
   };
 
+  const saveHandler = (validatedPosting: TetPosting): void => {
+    const event = tetPostingToEvent(validatedPosting);
+    upsertTetPosting.mutate({
+      id: validatedPosting.id,
+      event,
+    });
+  };
+
+  const publishPostingHandler = async (validatedPosting: TetPosting): Promise<void> => {
+    const isConfirmed = await confirm({
+      header: t('common:publish.confirmation', { posting: posting.title }),
+      content: t('common:application.publishTerms'),
+      linkText: t('common:application.termsLink'),
+      link: '/TET-alusta-kayttoehdot.pdf',
+      submitButtonLabel: t('common:publish.publishPosting'),
+    });
+
+    if (isConfirmed) {
+      const event = tetPostingToEvent(validatedPosting, true);
+
+      upsertTetPosting.mutate({
+        id: validatedPosting.id,
+        event,
+      });
+    }
+  };
+
   return (
     <FormSection withoutDivider>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={3}>
           <Button
-            onClick={onSubmit}
+            onClick={handleSubmit(saveHandler)}
             disabled={isSubmitting}
             iconLeft={<IconSaveDiskette />}
             css={`
@@ -65,7 +96,7 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPub
               border: ${theme.colors.black90} !important;
             `}
           >
-            {t('common:editor.saveDraft')}
+            {allowPublish ? t('common:editor.saveDraft') : t('common:editor.savePublished')}
           </Button>
         </$GridCell>
         {allowDelete ? (
@@ -97,7 +128,7 @@ const ActionButtons: React.FC<Props> = ({ onSubmit, allowDelete = true, allowPub
               variant="success"
               disabled={isSubmitting}
               iconLeft={<IconUpload />}
-              onClick={() => alert('Not implemented')}
+              onClick={handleSubmit(publishPostingHandler)}
             >
               {t('common:editor.publish')}
             </Button>

@@ -1,5 +1,8 @@
+from functools import partial
+
 import pytest
 from django.core.exceptions import ValidationError
+from django.db import models
 
 from shared.common.validators import (
     validate_json,
@@ -7,7 +10,19 @@ from shared.common.validators import (
     validate_optional_json,
     validate_phone_number,
     validate_postcode,
+    validate_unique_comma_separated_choices,
 )
+
+
+class TestChoices(models.TextChoices):
+    CHOICE_1 = "test_value", "label_1"
+    CHOICE_2 = "CamelCase", "label_2"
+    CHOICE_3 = "something else", "label_3"
+
+
+# Remove TestChoices from pytest test collection to prevent PytestCollectionWarning:
+# "cannot collect test class 'TestChoices' because it has a __new__ constructor"
+TestChoices.__test__ = False
 
 
 def get_invalid_postcode_values():
@@ -209,3 +224,103 @@ def test_validate_optional_json_with_valid_input(value):
 def test_validate_optional_json_with_invalid_input(value):
     with pytest.raises(ValidationError):
         validate_optional_json(value)
+
+
+@pytest.mark.parametrize(
+    "values_string,allow_null,allow_blank,expect_validation_error",
+    [
+        # Normal valid cases
+        ("test_value", False, False, False),
+        ("CamelCase", False, False, False),
+        ("something else", False, False, False),
+        ("test_value,CamelCase", False, False, False),
+        ("something else,CamelCase,test_value", False, False, False),
+        ("test_value,something else,CamelCase", False, False, False),
+        ("CamelCase,test_value,something else", False, False, False),
+        # Whitespace/empty string cases without allow_blank
+        (" ", False, False, True),
+        ("test_value,", False, False, True),
+        (",", False, False, True),
+        (" something else", False, False, True),
+        ("something else ", False, False, True),
+        ("something  else", False, False, True),
+        ("test_value ", False, False, True),
+        (" test_value", False, False, True),
+        (" test_value ", False, False, True),
+        ("\tCamelCase\n  \n", False, False, True),
+        ("test_value,,CamelCase", False, False, True),
+        # Value not in choices
+        ("invalid_value", False, False, True),
+        ("test_value,invalid_value,CamelCase", False, False, True),
+        # Duplicates
+        ("test_value,test_value", False, False, True),
+        ("test_value,CamelCase,something else,CamelCase", False, False, True),
+        ("test_value,something else,something else,CamelCase", False, False, True),
+        ("test_value,test_value,CamelCase,CamelCase", False, False, True),
+        ("test_value,test_value,CamelCase,test_value,CamelCase", False, False, True),
+        # Wrong types
+        (1, False, False, True),
+        (None, False, False, True),
+        (3.14, False, False, True),
+        (TestChoices, False, False, True),
+        (["test_value"], False, False, True),
+        ({"test_value"}, False, False, True),
+        ({"test_value": True}, False, False, True),
+        (("test_value",), False, False, True),
+        (("test_value,CamelCase",), False, False, True),
+        (("test_value", "CamelCase"), False, False, True),
+        # Testing allow_null and allow_blank combinations
+        ("", False, False, True),
+        ("", False, True, False),
+        ("", True, False, True),
+        ("", True, True, False),
+        (None, False, False, True),
+        (None, False, True, True),
+        (None, True, False, False),
+        (None, True, True, False),
+        (" ", False, False, True),
+        (" ", False, True, True),
+        (" ", True, False, True),
+        (" ", True, True, True),
+        ("\n", False, False, True),
+        ("\n", False, True, True),
+        ("\n", True, False, True),
+        ("\n", True, True, True),
+        ([], False, False, True),
+        ([], False, True, True),
+        ([], True, False, True),
+        ([], True, True, True),
+        (",", False, False, True),
+        (",", False, True, True),
+        (",", True, False, True),
+        (",", True, True, True),
+        (" ,", False, False, True),
+        (" ,", False, True, True),
+        (" ,", True, False, True),
+        (" ,", True, True, True),
+        ("test_value,,CamelCase", False, False, True),
+        ("test_value,,CamelCase", False, True, True),
+        ("test_value,,CamelCase", True, False, True),
+        ("test_value,,CamelCase", True, True, True),
+        ("test_value, ,CamelCase", False, False, True),
+        ("test_value, ,CamelCase", False, True, True),
+        ("test_value, ,CamelCase", True, False, True),
+        ("test_value, ,CamelCase", True, True, True),
+    ],
+)
+def test_validate_unique_comma_separated_choices(
+    values_string, allow_null, allow_blank, expect_validation_error
+):
+    test_func = partial(
+        validate_unique_comma_separated_choices,
+        values_string=values_string,
+        choices_class=TestChoices,
+        allow_null=allow_null,
+        allow_blank=allow_blank,
+    )
+
+    if expect_validation_error:
+        with pytest.raises(ValidationError):
+            test_func()
+    else:
+        test_func()

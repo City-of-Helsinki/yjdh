@@ -4,6 +4,7 @@ from unittest import mock
 
 import pytest
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.test import override_settings
 from django.urls import reverse
 
@@ -30,7 +31,7 @@ def test_get_member_objects(requests_mock):
         ],
     }
 
-    matcher = re.compile("https://graph.microsoft.com/")
+    matcher = re.compile(re.escape("https://graph.microsoft.com/"))
     requests_mock.post(matcher, json=member_objects_response)
 
     groups = auth_backend.get_member_objects_from_graph_api("test", "test")
@@ -59,7 +60,7 @@ def test_update_user_groups_from_graph_api(requests_mock, user):
         ],
     }
 
-    matcher = re.compile("https://graph.microsoft.com/")
+    matcher = re.compile(re.escape("https://graph.microsoft.com/"))
     requests_mock.post(matcher, json=member_objects_response)
 
     auth_backend.update_user_groups_from_graph_api(user, "test", "test")
@@ -69,6 +70,31 @@ def test_update_user_groups_from_graph_api(requests_mock, user):
     assert sorted(list(user.groups.all().values_list("name", flat=True))) == sorted(
         user_groups
     )
+
+
+@pytest.mark.django_db
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+)
+def test_update_userinfo_from_graph_api(requests_mock, user):
+    """
+    Docs: https://docs.microsoft.com/en-us/graph/api/user-get
+    """
+    auth_backend = HelsinkiAdfsAuthCodeBackend()
+
+    user_get_response = {
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users(givenName,surname)/$entity",
+        "givenName": "Ad",
+        "surname": "Tester",
+    }
+
+    matcher = re.compile(re.escape("https://graph.microsoft.com/"))
+    requests_mock.get(matcher, json=user_get_response)
+
+    auth_backend.update_userinfo_from_graph_api(user, "test")
+
+    assert user.first_name == "Ad"
+    assert user.last_name == "Tester"
 
 
 @override_settings(
@@ -89,7 +115,7 @@ def test_get_graph_api_access_token(requests_mock):
         "refresh_token": "OAQABAAAAAABnfiG-mA6NTae7CdWW7QfdAALzDWjw6qSn4GUDfxWzJDZ6lk9qRw4An",
     }
 
-    matcher = re.compile("https://login.microsoftonline.com/")
+    matcher = re.compile(re.escape("https://login.microsoftonline.com/"))
     requests_mock.post(matcher, json=token_endpoint_response)
 
     with mock.patch.object(
@@ -105,10 +131,13 @@ def test_get_graph_api_access_token(requests_mock):
 @pytest.mark.django_db
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
+    HANDLERS_GROUP_NAME="Application handlers",
+    ADFS_CONTROLLER_GROUP_UUIDS=["testgroup"],
 )
 def test_authenticate(user):
     auth_backend = HelsinkiAdfsAuthCodeBackend()
-
+    # if helsinkibenefit fixture django_db_setup has been done, then the group has been already created
+    Group.objects.get_or_create(name=settings.HANDLERS_GROUP_NAME)
     with mock.patch("shared.azure_adfs.auth.provider_config"):
         with mock.patch.multiple(
             "shared.azure_adfs.auth.HelsinkiAdfsAuthCodeBackend",
@@ -116,11 +145,16 @@ def test_authenticate(user):
             validate_access_token=mock.MagicMock(return_value={"oid": "test"}),
             process_access_token=mock.MagicMock(return_value=user),
             get_graph_api_access_token=mock.MagicMock,
-            update_user_groups_from_graph_api=mock.MagicMock,
+            get_member_objects_from_graph_api=mock.MagicMock(
+                return_value=["adfs-testgroup"]
+            ),
+            update_userinfo_from_graph_api=mock.MagicMock,
         ):
             auth_user = auth_backend.authenticate(authorization_code="test")
 
     assert auth_user == user
+    assert auth_user.is_staff
+    assert user.groups.filter(name=settings.HANDLERS_GROUP_NAME).exists()
 
 
 @override_settings(
@@ -147,6 +181,7 @@ def test_adfs_callback(client, user):
             process_access_token=mock.MagicMock(return_value=user),
             get_graph_api_access_token=mock.MagicMock,
             update_user_groups_from_graph_api=mock.MagicMock,
+            update_userinfo_from_graph_api=mock.MagicMock,
         ):
             callback_url = f"{reverse('callback')}?code=test"
             response = client.get(callback_url)
@@ -176,6 +211,7 @@ def test_adfs_callback_original_redirect(client, user, original_redirect_url):
             process_access_token=mock.MagicMock(return_value=user),
             get_graph_api_access_token=mock.MagicMock,
             update_user_groups_from_graph_api=mock.MagicMock,
+            update_userinfo_from_graph_api=mock.MagicMock,
         ):
             session = client.session  # Client.session property generates a new session
             session["USE_ORIGINAL_REDIRECT_URL"] = True

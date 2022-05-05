@@ -4,6 +4,7 @@ import {
   getCurrentPathname,
   getUrl,
   getUrlParam,
+  goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController, { ClientFunction } from 'testcafe';
@@ -19,15 +20,15 @@ export const getUrlUtils = (t: TestController) => {
 
   const actions = {
     async navigateToIndexPage() {
-      await t.navigateTo(getFrontendUrl(`/`));
+      await goToUrl(t, getFrontendUrl(`/`));
       await pageIsLoaded();
     },
     async navigateToLoginPage() {
-      await t.navigateTo(getFrontendUrl(`/login`));
+      await goToUrl(t, getFrontendUrl(`/login`));
       await pageIsLoaded();
     },
     async navigateToCompanyPage() {
-      await t.navigateTo(getFrontendUrl(`/company`));
+      await goToUrl(t, getFrontendUrl(`/company`));
       await pageIsLoaded();
     },
     async refreshPage() {

@@ -9,48 +9,57 @@ import { OptionType } from 'tet-shared/types/classification';
 type Props = {
   initParams: QueryParams;
   onRemoveFilter: (removeKeys: keyof QueryParams | Array<keyof QueryParams> | 'all') => void;
-  workMethods: OptionType[];
+  onRemoveKeyword: (keyword: OptionType) => void;
+  initKeywords: OptionType[];
+  languageOptions: OptionType[];
 };
 
-const PostingSearchTags: React.FC<Props> = ({ initParams, onRemoveFilter, workMethods }) => {
+const PostingSearchTags: React.FC<Props> = ({
+  initParams,
+  onRemoveFilter,
+  initKeywords,
+  onRemoveKeyword,
+  languageOptions,
+}) => {
   const startText = `${initParams.hasOwnProperty('start') ? convertToUIDateFormat(initParams.start as string) : ''}`;
   const endText = `${initParams.hasOwnProperty('end') ? convertToUIDateFormat(initParams.end as string) : ''}`;
   const dateText = startText + (startText.length || endText.length ? '-' : '') + endText;
+  const chosenLanguage = languageOptions.find((language) => language.value === initParams?.language);
+
   const { t } = useTranslation();
 
-  const getWorkMethodLabel = () => {
-    const workMethod = workMethods.find((item) => item.value === initParams.keyword);
-    return workMethod ? workMethod.label : '';
-  };
-
   return (
-    <$Tags>
+    <$Tags id="searchTags">
       {initParams?.text && (
         <li>
-          <Tag onDelete={() => onRemoveFilter('text')}>{initParams.text}</Tag>
-        </li>
-      )}
-      {initParams?.keyword && (
-        <li>
-          <Tag
-            onDelete={() => onRemoveFilter('keyword')}
-            theme={{
-              '--tag-background': `var(--color-engel-medium-light)`,
-              '--tag-color': 'var(--color-black-90)',
-              '--tag-focus-outline-color': 'var(--color-black-90)',
-            }}
-          >
-            {getWorkMethodLabel()}
+          <Tag className="searchTag" onDelete={() => onRemoveFilter('text')}>
+            {initParams.text}
           </Tag>
         </li>
       )}
+      {initKeywords.length > 0 &&
+        initKeywords.map((keyword) => (
+          <li>
+            <Tag
+              onDelete={() => onRemoveKeyword(keyword)}
+              theme={{
+                '--tag-background': `var(--color-engel-medium-light)`,
+                '--tag-color': 'theme.colors.black80',
+                '--tag-focus-outline-color': 'var(--color-black-80)',
+              }}
+            >
+              {keyword.label}
+            </Tag>
+          </li>
+        ))}
       {dateText.length > 0 && (
         <li>
           <Tag
             onDelete={() => onRemoveFilter(['start', 'end'])}
+            className="searchTag"
             theme={{
-              '--tag-background': `var(--color-engel-medium-light)`,
-              '--tag-color': 'var(--color-black-90)',
+              '--tag-background': `var(--color-summer-medium-light)`,
+              '--tag-color': 'theme.colors.black90',
               '--tag-focus-outline-color': 'var(--color-black-90)',
             }}
           >
@@ -58,9 +67,26 @@ const PostingSearchTags: React.FC<Props> = ({ initParams, onRemoveFilter, workMe
           </Tag>
         </li>
       )}
+      {chosenLanguage && (
+        <li>
+          <Tag
+            onDelete={() => onRemoveFilter('language')}
+            className="searchTag"
+            theme={{
+              '--tag-background': `var(--color-coat-of-arms-light)`,
+              '--tag-color': 'theme.colors.black90',
+              '--tag-focus-outline-color': 'var(--color-black-90)',
+            }}
+          >
+            {chosenLanguage.label}
+          </Tag>
+        </li>
+      )}
       {Object.keys(initParams).length > 0 && (
         <li>
-          <$RemoveButton onClick={() => onRemoveFilter('all')}>{t('common:filters.clearFilters')}</$RemoveButton>
+          <$RemoveButton id="removeAllSearches" onClick={() => onRemoveFilter('all')}>
+            {t('common:filters.clearFilters')}
+          </$RemoveButton>
         </li>
       )}
     </$Tags>

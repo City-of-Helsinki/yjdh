@@ -17,11 +17,17 @@ const ConfirmDialog: React.FC<Partial<ModalProps>> = (modalProps) => {
       cancelButtonLabel={t('common:dialog.cancel')}
       handleToggle={onCancel}
       handleSubmit={onConfirm}
-      variant="primary"
+      variant={confirmState.submitButtonVariant}
       headerIcon={<IconQuestionCircle aria-hidden="true" />}
       {...modalProps}
     >
       {confirmState.content?.length ? confirmState.content : null}
+      {confirmState.link?.length && confirmState.linkText?.length ? (
+        <a target="_blank" rel="noopener noreferrer" href={confirmState.link}>
+          {' '}
+          {confirmState.linkText}
+        </a>
+      ) : null}
     </Modal>
   ) : null;
 };

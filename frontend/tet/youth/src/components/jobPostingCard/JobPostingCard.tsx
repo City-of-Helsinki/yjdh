@@ -13,12 +13,12 @@ import {
 } from 'tet/youth/components/jobPostingCard/JobPostingCard.sc';
 import JobPostingCardKeywords from './JobPostingCardKeywords';
 import { useRouter } from 'next/router';
-import { IconPhoto } from 'hds-react';
 import { Button } from 'hds-react';
 import { useTheme } from 'styled-components';
 import { OptionType } from 'tet-shared/types/classification';
 import { useTranslation } from 'next-i18next';
 import JobPosting from 'tet-shared/types/tetposting';
+import Image from 'next/image';
 
 type Props = {
   jobPosting: JobPosting;
@@ -29,7 +29,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const date = jobPosting.start_date + (jobPosting.end_date ? ` - ${jobPosting.end_date}` : '');
+  const date = `${jobPosting.start_date} - ${jobPosting.end_date ?? ''}`;
   const street_address = jobPosting.location.street_address ? `, ${jobPosting.location.street_address}` : '';
   const postal_code = jobPosting.location.postal_code ? `, ${jobPosting.location.postal_code}` : '';
   const city = jobPosting.location.city ? `, ${jobPosting.location.city}` : '';
@@ -46,7 +46,15 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   return (
     <$PostingCard>
       <$ImageContainer>
-        <IconPhoto />
+        <Image
+          width="100%"
+          height="100%"
+          layout="responsive"
+          objectFit="cover"
+          src="/event_placeholder_B.jpg"
+          alt="event placeholder"
+          priority={true}
+        />
       </$ImageContainer>
       <$PostingCardBody>
         <JobPostingCardKeywords jobPosting={jobPosting} />
@@ -65,6 +73,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
               backgroundColor: `${theme.colors.black60}`,
               borderColor: `${theme.colors.black60}`,
             }}
+            role="link"
             onClick={readMoreHandler}
             size="small"
             type="button"
