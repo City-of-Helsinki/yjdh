@@ -1,10 +1,10 @@
 import AdditionalInfoApplication from '@frontend/kesaseteli-shared/src/types/additional-info-application';
 import AdditionalInfoReasonType from '@frontend/kesaseteli-shared/src/types/additional-info-reason-type';
+import { Language } from '@frontend/shared/src/i18n/i18n';
 import { t } from 'testcafe';
 
 import YouthTranslations from '../../src/__tests__/utils/i18n/youth-translations';
 import YouthPageComponent from './YouthPageComponent';
-import { Language } from '@frontend/shared/src/i18n/i18n';
 
 type NotificationType =
   keyof YouthTranslations['additionalInfo']['notification'];

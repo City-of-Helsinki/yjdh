@@ -12,11 +12,11 @@
     "youth": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.youth.yml up",
     "tet-admin": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.tet-admin.yml up",
     "tet-youth": "cross-env COMPOSE_HTTP_TIMEOUT=200 docker compose -f docker-compose.tet-youth.yml up",
-    "benefit:rebuild": "yarn benefit --build --renew-anon-volumes",
-    "employer:rebuild": "yarn employer --build --renew-anon-volumes",
-    "handler:rebuild": "yarn handler --build --renew-anon-volumes",
-    "youth:rebuild": "yarn youth --build --renew-anon-volumes",
-    "tet-admin:rebuild": "yarn tet-admin --build --renew-anon-volumes",
-    "tet-youth:rebuild": "yarn tet-youth --build --renew-anon-volumes"
+    "benefit:rebuild": "yarn clean && yarn benefit --build --renew-anon-volumes",
+    "employer:rebuild": "yarn clean && yarn employer --build --renew-anon-volumes",
+    "handler:rebuild": "yarn clean && yarn handler --build --renew-anon-volumes",
+    "youth:rebuild": "yarn clean && yarn youth --build --renew-anon-volumes",
+    "tet-admin:rebuild": "yarn clean && yarn tet-admin --build --renew-anon-volumes",
+    "tet-youth:rebuild": "yarn clean && yarn tet-youth --build --renew-anon-volumes"
   }
 }

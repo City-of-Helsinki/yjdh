@@ -58,9 +58,7 @@ export const fillStep2EmployeeForm = async (
   const step2 = getStep2Components(t);
 
   const addButton = await step2.addEmploymentButton();
-  if (index > 0) {
-    await addButton.actions.click();
-  }
+  await addButton.actions.click();
   const step2Employment = await step2.employmentAccordion(index);
   await step2Employment.actions.fillEmployeeName(employment.employee_name);
   await step2Employment.actions.fillSsn(employment.employee_ssn);

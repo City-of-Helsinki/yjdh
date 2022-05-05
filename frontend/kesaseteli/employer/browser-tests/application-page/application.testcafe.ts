@@ -65,12 +65,11 @@ if (isRealIntegrationsEnabled()) {
     );
     const wizard = await getWizardComponents(t);
     await wizard.expectations.isPresent();
-    const step2Accordion = await step2Components.employmentAccordion(0);
-    await step2Accordion.expectations.isPresent();
     await urlUtils.actions.refreshPage();
-    await step2Accordion.expectations.isPresent();
     await wizard.actions.clickGoToPreviousStepButton();
     const step1Form = await step1Components.form();
+    await step1Form.expectations.isPresent();
+    await urlUtils.actions.refreshPage();
     await step1Form.expectations.isPresent();
     await step1Form.expectations.isFulFilledWith(step1FormData);
   });
