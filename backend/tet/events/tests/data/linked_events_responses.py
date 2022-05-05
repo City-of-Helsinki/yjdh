@@ -476,10 +476,10 @@ EVENT_RESPONSE_OTHERUSER = json.loads(
 )
 
 
-EVENT_RESPONSE_NO_USER = json.loads(
+EVENT_RESPONSE_TEST_COMPANY = json.loads(
     """
         {
-            "id": "tet:nouser",
+            "id": "tet:companyuser",
             "location": {
                 "@id": "https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/place/tprek:352/"
             },
@@ -523,14 +523,14 @@ EVENT_RESPONSE_NO_USER = json.loads(
             "audience": [],
             "created_time": "2022-02-22T11:44:17.966052Z",
             "last_modified_time": "2022-03-07T14:00:01.981206Z",
-            "date_published": null,
+            "date_published": "2022-03-07T14:00:01.981206Z",
             "start_time": "2022-04-11",
             "end_time": "2022-04-15",
             "created_by": " - ",
             "last_modified_by": " - ",
             "custom_data": {
                 "spots": "4",
-                "org_name": "Päiväkoti Susanna",
+                "org_name": "Test Company",
                 "contact_email": "yrjo@ef.fi",
                 "contact_phone": "040585766832",
                 "contact_language": "fi",
@@ -551,7 +551,8 @@ EVENT_RESPONSE_NO_USER = json.loads(
             "search_vector_sv": "",
             "replaced_by": null,
             "provider": {
-                "fi": "Päiväkoti"
+                "fi": "Test company",
+                "sv": "654321-5"
             },
             "name": {
                 "fi": "Avustaja"
@@ -668,7 +669,7 @@ SAMPLE_EVENTS = {
         EVENT_RESPONSE_TESTUSER_EMAIL,
         EVENT_RESPONSE_TESTUSER_OID,
         EVENT_RESPONSE_OTHERUSER,
-        EVENT_RESPONSE_NO_USER,
+        EVENT_RESPONSE_TEST_COMPANY,
         EVENT_RESPONSE_NO_CUSTOM_DATA,
     ],
 }
