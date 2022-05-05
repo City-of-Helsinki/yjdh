@@ -21,6 +21,10 @@ export const initialPosting: TetPosting = {
     street_address: '',
     postal_code: '',
     city: '',
+    position: {
+      type: 'Point',
+      coordinates: [],
+    },
   },
   org_name: '',
   spots: 1,

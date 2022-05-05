@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { IconCalendarClock, IconInfoCircle, IconLocation } from 'hds-react';
+import dynamic from 'next/dynamic';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useTranslation } from 'next-i18next';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -8,15 +9,24 @@ import Container from 'shared/components/container/Container';
 import {
   $Body,
   $ContentWrapper,
+  $Hr,
   $InfoWrapper,
   $Title,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
+import MapScripts from 'tet-shared/components/MapScripts';
 import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
 };
+
+const LocationMap = dynamic(
+  () => import('tet-shared/components/map/LocationMap'),
+  {
+    ssr: false,
+  }
+);
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
@@ -36,6 +46,10 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
         <$Body>
           <$Title>{posting.title}</$Title>
           <div>{posting.description}</div>
+          <$Hr />
+          {posting?.location?.position?.coordinates.length > 1 && (
+            <LocationMap posting={posting} zoom={14} />
+          )}
         </$Body>
         <$InfoWrapper>
           <PostingInfoItem
@@ -60,6 +74,7 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           />
         </$InfoWrapper>
       </$ContentWrapper>
+      <MapScripts />
     </Container>
   );
 };

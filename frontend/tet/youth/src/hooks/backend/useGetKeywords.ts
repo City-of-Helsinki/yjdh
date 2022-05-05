@@ -21,7 +21,7 @@ const useGetKeywords = (): UseQueryResult<LinkedEventsPagedResponse<Keyword>, Er
   };
 
   return useQuery<LinkedEventsPagedResponse<Keyword>, Error>(
-    ['postings'],
+    ['keywords'],
     async () => {
       const res = axios.get<LinkedEventsPagedResponse<Keyword>>(`${BackendEndpoint.KEYWORD}`, {
         params: {

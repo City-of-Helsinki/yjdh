@@ -12,6 +12,7 @@ import PageNotFound from 'shared/components/pages/PageNotFound';
 import withAuth from 'shared/components/hocs/withAuth';
 import EditorLoadingError from 'tet/admin/components/editor/EditorLoadingError';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import HeaderLinks from 'tet-shared/components/HeaderLinks';
 
 const EditStaticPage: NextPage = () => {
   const { t } = useTranslation();
@@ -31,7 +32,12 @@ const EditStaticPage: NextPage = () => {
 
   if (data) {
     const posting = eventToTetPosting(data);
-    return <EditById title={t('common:editor.editTitle')} data={posting} />;
+    return (
+      <>
+        <HeaderLinks />
+        <EditById title={t('common:editor.editTitle')} data={posting} />;
+      </>
+    );
   } else {
     return <PageNotFound />;
   }

@@ -59,7 +59,9 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const address = posting.location.name + street_address + postal_code + city;
 
   const backButtonHandler = (): void => {
-    void router.push('/postings');
+    // TODO we should know that the user hasn't navigated to this page via a
+    // link from another site
+    void router.back();
   };
 
   return (
