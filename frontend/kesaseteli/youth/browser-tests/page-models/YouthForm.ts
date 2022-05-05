@@ -100,11 +100,12 @@ class YouthForm extends YouthPageComponent {
       'social_security_number',
       application.social_security_number
     );
-    await this.typeAndSelectSchoolFromDropdown(application.school ?? '');
     await this.typeInput('postcode', application.postcode);
     if (application.is_unlisted_school) {
       await this.toggleCheckbox('is_unlisted_school');
       await this.typeInput('unlistedSchool', application.school);
+    } else {
+      await this.typeAndSelectSchoolFromDropdown(application.school ?? '');
     }
     await this.typeInput('phone_number', application.phone_number);
     await this.typeInput('email', application.email);

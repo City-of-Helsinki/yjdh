@@ -1,7 +1,6 @@
-import VtjData from '@frontend/kesaseteli-shared/src/types/vtj-data';
-
 import AdditionalInfoApplication from './additional-info-application';
 import CreatedYouthApplication from './created-youth-application';
+import VtjData from './vtj-data';
 
 type ActivatedYouthApplication = CreatedYouthApplication &
   Partial<AdditionalInfoApplication> & {

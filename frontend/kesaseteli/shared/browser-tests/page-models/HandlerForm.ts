@@ -95,7 +95,7 @@ export default class HandlerForm<
   }
 
   public applicantLivesOutsideHelsinki() {
-    return t.expect(this.component.findByText('Henkilö ei asu Helsingissä'));
+    return this.expect(this.component.findByText('Henkilö ei asu Helsingissä'));
   }
 
   public async applicationNotFound() {

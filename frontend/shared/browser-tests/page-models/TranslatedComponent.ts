@@ -1,5 +1,5 @@
 import TranslationsApi from '../../src/__tests__/types/translations';
-import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
+import { DEFAULT_LANGUAGE } from '../../src/i18n/i18n';
 import PageComponent, { Options } from './PageComponent';
 
 export type CommonTranslations = {

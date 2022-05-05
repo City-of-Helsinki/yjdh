@@ -7,12 +7,10 @@ import User from '../../src/types/user';
 import TranslatedComponent, { CommonTranslations } from './TranslatedComponent';
 
 class Header<
-  Translations extends CommonTranslations
+  Translations extends CommonTranslations,
+  Api extends TranslationsApi<Translations>
 > extends TranslatedComponent<Translations> {
-  public constructor(
-    translationsApi: TranslationsApi<Translations>,
-    lang?: Language
-  ) {
+  public constructor(translationsApi: Api, lang?: Language) {
     super(translationsApi, { lang, datatestId: 'header' });
   }
 
@@ -49,7 +47,7 @@ class Header<
     name: this.translations.header?.loginLabel,
   });
 
-  private userInfoDropdown(user?: User) {
+  private userInfoDropdown(user?: User): SelectorPromise {
     return this.withinNavigationActions.findByRole('button', {
       name: this.regexp(this.getUserInfo(user)),
     });
@@ -59,25 +57,25 @@ class Header<
     name: this.regexp(this.translations.header?.logoutLabel ?? ''),
   });
 
-  public userIsLoggedIn(user: User) {
+  public userIsLoggedIn(user: User): Promise<void> {
     return this.expect(this.userInfoDropdown(user));
   }
 
-  public userIsLoggedOut() {
+  public userIsLoggedOut(): Promise<void> {
     return this.expect(this.loginButton);
   }
 
-  public async changeLanguage(toLang: Language) {
+  public async changeLanguage(toLang: Language): Promise<void> {
     return t
       .click(this.languageSelector)
       .click(this.languageSelectorItem(toLang));
   }
 
-  public clickLoginButton() {
+  public clickLoginButton(): Promise<void> {
     return t.click(this.loginButton);
   }
 
-  public async clickLogoutButton(user?: User) {
+  public async clickLogoutButton(user?: User): Promise<void> {
     return t.click(this.userInfoDropdown(user)).click(this.logoutButton);
   }
 }

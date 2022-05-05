@@ -18,11 +18,11 @@ import merge from 'lodash/merge';
 import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
 import ActivatedYouthApplication from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
+import AdditionalInfoReasonType from '../../types/additional-info-reason-type';
 import CreatedYouthApplication from '../../types/created-youth-application';
 import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
-import AdditionalInfoReasonType from '../../types/additional-info-reason-type';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -107,8 +107,8 @@ export const fakeSchools: string[] = [
 export const fakeYouthApplication = (
   override?: DeepPartial<YouthApplication>
 ): YouthApplication => {
-  const { isUnlistedSchool } = {
-    isUnlistedSchool: faker.random.boolean(),
+  const { is_unlisted_school } = {
+    is_unlisted_school: faker.datatype.boolean(),
     ...override,
   };
   return {
@@ -118,10 +118,10 @@ export const fakeYouthApplication = (
       faker.datatype.number({ min: 15, max: 16 })
     ),
     postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
-    school: isUnlistedSchool
+    school: is_unlisted_school
       ? faker.commerce.department()
       : faker.random.arrayElement(fakeSchools),
-    is_unlisted_school: isUnlistedSchool,
+    is_unlisted_school,
     phone_number: faker.phone.phoneNumber('+358#########'),
     email: faker.internet.email(),
     language: DEFAULT_LANGUAGE,
@@ -202,8 +202,7 @@ export const fakeAdditionalInfoApplication = (
     {
       id: faker.datatype.uuid(),
       additional_info_user_reasons:
-        (override &&
-          (override.additional_info_user_reasons as AdditionalInfoReasonType[])) ||
+        (override && override.additional_info_user_reasons) ||
         getRandomSubArray(ADDITIONAL_INFO_REASON_TYPE),
       additional_info_description: faker.lorem.paragraph(1),
       additional_info_attachments: [],
