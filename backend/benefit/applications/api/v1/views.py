@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.db import transaction
 from django.db.models import Q
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, StreamingHttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -335,7 +335,7 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
         return context
 
     @action(methods=["GET"], detail=False)
-    def export_csv(self, request):
+    def export_csv(self, request) -> StreamingHttpResponse:
         queryset = self.get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
         return self._csv_response(filtered_queryset)
@@ -344,14 +344,14 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_new_accepted_applications(self, request):
+    def export_new_accepted_applications(self, request) -> StreamingHttpResponse:
         return self._csv_response(
             self._create_application_batch(ApplicationStatus.ACCEPTED)
         )
 
     @action(methods=["GET"], detail=False)
     @transaction.atomic
-    def export_new_rejected_applications(self, request):
+    def export_new_rejected_applications(self, request) -> StreamingHttpResponse:
         return self._csv_response(
             self._create_application_batch(ApplicationStatus.REJECTED)
         )
@@ -376,14 +376,15 @@ class HandlerApplicationViewSet(BaseApplicationViewSet):
             queryset.update(batch=batch)
         return self.get_queryset().filter(pk__in=application_ids)
 
-    def _csv_response(self, queryset):
+    def _csv_response(self, queryset) -> StreamingHttpResponse:
         csv_service = ApplicationsCsvService(queryset.order_by(self.CSV_ORDERING))
-        csv_file = csv_service.get_csv_string()
         file_name = format_lazy(
             _("Helsinki-lisän hakemukset viety {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
-        response = HttpResponse(csv_file, content_type="text/csv")
+        response = StreamingHttpResponse(
+            csv_service.get_csv_string_lines_generator(), content_type="text/csv"
+        )
         response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
             file_name=file_name
         )

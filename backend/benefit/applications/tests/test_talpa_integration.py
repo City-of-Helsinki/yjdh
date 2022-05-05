@@ -3,6 +3,10 @@ import decimal
 
 import pytest
 from applications.services.talpa_integration import TalpaService
+from applications.tests.common import (
+    check_csv_cell_list_lines_generator,
+    check_csv_string_lines_generator,
+)
 from applications.tests.conftest import *  # noqa
 from applications.tests.conftest import split_lines_at_semicolon
 from common.tests.conftest import *  # noqa
@@ -10,7 +14,7 @@ from helsinkibenefit.tests.conftest import *  # noqa
 
 
 def test_talpa_lines(talpa_service):
-    csv_lines = talpa_service.get_csv_lines()
+    csv_lines = list(talpa_service.get_csv_cell_list_lines_generator())
     assert talpa_service.get_applications().count() == 2
     assert len(csv_lines) == 3
     assert csv_lines[0][0] == "Application number"
@@ -18,6 +22,14 @@ def test_talpa_lines(talpa_service):
         csv_lines[1][0] == talpa_service.get_applications().first().application_number
     )
     assert csv_lines[2][0] == talpa_service.get_applications()[1].application_number
+
+
+def test_talpa_csv_cell_list_lines_generator(talpa_service):
+    check_csv_cell_list_lines_generator(talpa_service, expected_row_count_with_header=3)
+
+
+def test_talpa_csv_string_lines_generator(talpa_service):
+    check_csv_string_lines_generator(talpa_service, expected_row_count_with_header=3)
 
 
 def test_talpa_csv_output(talpa_service):

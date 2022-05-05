@@ -356,13 +356,12 @@ class ApplicationsCsvService(CsvExportBase):
                     application.application_row_idx = application_row_idx + 1
                     yield application
 
-    def get_csv_lines(self):
+    def get_csv_cell_list_lines_generator(self):
         if self.get_applications():
-            return super().get_csv_lines()
+            yield from super().get_csv_cell_list_lines_generator()
         else:
             header_row = self._get_header_row()
-            return [
-                header_row,
-                ["Ei löytynyt ehdot täyttäviä hakemuksia"]
-                + [""] * (len(header_row) - 1),
-            ]
+            yield header_row
+            yield ["Ei löytynyt ehdot täyttäviä hakemuksia"] + [""] * (
+                len(header_row) - 1
+            )

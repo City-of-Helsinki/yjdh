@@ -6,7 +6,7 @@ from applications.services.talpa_integration import TalpaService
 from common.authentications import RobotBasicAuthentication
 from common.permissions import BFIsHandler
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -106,7 +106,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         permission_classes=[AllowAny],
     )
     @transaction.atomic
-    def talpa_export_batch(self, request, *args, **kwargs):
+    def talpa_export_batch(self, request, *args, **kwargs) -> StreamingHttpResponse:
         """
         Export ApplicationBatch to CSV format for Talpa Robot
         """
@@ -123,12 +123,13 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         talpa_service = TalpaService(approved_batches)
-        csv_file = talpa_service.get_csv_string()
         file_name = format_lazy(
             _("TALPA export {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
-        response = HttpResponse(csv_file, content_type="text/csv")
+        response = StreamingHttpResponse(
+            talpa_service.get_csv_string_lines_generator(), content_type="text/csv"
+        )
         response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
             file_name=file_name
         )
