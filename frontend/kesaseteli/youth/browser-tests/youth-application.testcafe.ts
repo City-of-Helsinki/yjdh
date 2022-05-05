@@ -55,14 +55,14 @@ fixture('Youth Application')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('I can send application and return to front page', async (t) => {
+test('I can send application and return to front page', async () => {
   await youthForm.sendYouthApplication(validApplication());
   await thankYouPage.isLoaded();
   await thankYouPage.clickGoToFrontPageButton();
   await youthForm.isLoaded();
 });
 
-test('If I send two applications with same email, I will see "email is in use" -message', async (t) => {
+test('If I send two applications with same email, I will see "email is in use" -message', async () => {
   const application = validApplication();
   await youthForm.sendYouthApplication(application);
   await thankYouPage.isLoaded();
@@ -77,7 +77,7 @@ test('If I send two applications with same email, I will see "email is in use" -
 });
 
 if (!isRealIntegrationsEnabled()) {
-  test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async (t) => {
+  test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async () => {
     const header = new Header(translationsApi);
     await header.isLoaded();
     await header.changeLanguage('sv');
@@ -351,6 +351,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   for (const age of [12, 99]) {
+    // eslint-disable-next-line @typescript-eslint/no-loop-func
     test(`If I'm not in target age group (${age}-years old), I have to give additional information and handler can see warning about the age`, async (t) => {
       await new YouthForm().sendYouthApplication(
         validApplication({
@@ -374,12 +375,12 @@ if (!isRealIntegrationsEnabled()) {
     });
   }
 
-  test(`if I send the application but according to VTJ I'm dead, so I see that the data is inadmissible`, async (t) => {
+  test(`if I send the application but according to VTJ I'm dead, so I see that the data is inadmissible`, async () => {
     await youthForm.sendYouthApplication(isDeadAccordingToVtj());
     await new NotificationPage('inadmissibleData').isLoaded();
   });
 
-  test(`if I send the application but my ssn is not found from VTJ, so I see that the data is inadmissible`, async (t) => {
+  test(`if I send the application but my ssn is not found from VTJ, so I see that the data is inadmissible`, async () => {
     await youthForm.sendYouthApplication(notFoundFromVtj());
     await new NotificationPage('inadmissibleData').isLoaded();
   });
@@ -389,7 +390,7 @@ if (!isRealIntegrationsEnabled()) {
     await new ErrorPage().isLoaded();
   });
 
-  test(`if I typo my last name, I'm asked to recheck data. Then I can fix the name and activate application.`, async (t) => {
+  test(`if I typo my last name, I'm asked to recheck data. Then I can fix the name and activate application.`, async () => {
     await youthForm.sendYouthApplication(vtjLastNameMismatches());
     await youthForm.showsCheckNotification();
     await youthForm.typeInput('last_name', validApplication().last_name);

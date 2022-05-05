@@ -158,7 +158,7 @@ class Step2 extends WizardStep {
     await t.click(this.fiftyPercent);
     await t.click(this.additionalPaidSubsidySelect);
     await t.click(this.thirtyPercent);
-    await Step2.clickSelectRadioButton(this.apprenticeshipProgramFalse);
+    await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 
   public async selectBenefitType(
@@ -182,8 +182,8 @@ class Step2 extends WizardStep {
     startDate: string,
     endDate: string
   ): Promise<void> {
-    await Step2.fillInput(this.startDate, startDate);
-    await Step2.fillInput(this.endDate, endDate);
+    await this.fillInput(this.startDate, startDate);
+    await this.fillInput(this.endDate, endDate);
   }
 
   public async fillEmploymentInfo(

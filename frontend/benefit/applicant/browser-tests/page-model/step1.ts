@@ -83,7 +83,7 @@ class Step1 extends WizardStep {
   }
 
   public selectNocoOperationNegotiations(): Promise<void> {
-    return Step1.clickSelectRadioButton(this.coOperationNegotiationsFalse);
+    return this.clickSelectRadioButton(this.coOperationNegotiationsFalse);
   }
 }
 

@@ -8,7 +8,9 @@ import { Language } from '@frontend/shared/src/i18n/i18n';
 
 type NotificationType =
   keyof YouthTranslations['additionalInfo']['notification'];
+
 type Reason = keyof YouthTranslations['additionalInfo']['reasons'];
+
 class AdditionalInfoPage extends YouthPageComponent {
   public constructor(lang?: Language) {
     super({ lang, datatestId: 'additional-info' });
@@ -22,7 +24,7 @@ class AdditionalInfoPage extends YouthPageComponent {
     name: this.translations.additionalInfo.title,
   });
 
-  private reasonOption(reason: Reason) {
+  private reasonOption(reason: Reason): SelectorPromise {
     return this.withinForm.findByRole('option', {
       name: this.regexp(this.translations.additionalInfo.reasons[reason]),
     });
@@ -38,7 +40,7 @@ class AdditionalInfoPage extends YouthPageComponent {
     name: this.regexp(this.translations.additionalInfo.form.sendButton),
   });
 
-  private notification(type: NotificationType) {
+  private notification(type: NotificationType): SelectorPromise {
     return this.component.findByRole('heading', {
       name: this.regexp(this.translations.additionalInfo.notification[type]),
     });
@@ -49,13 +51,13 @@ class AdditionalInfoPage extends YouthPageComponent {
     return this.expect(this.title);
   }
 
-  public showsNotification(type: NotificationType) {
+  public showsNotification(type: NotificationType): Promise<void> {
     return this.expect(this.notification(type));
   }
 
   public async clickAndSelectReasonsFromDropdown(
     reasons: AdditionalInfoReasonType[]
-  ) {
+  ): Promise<void> {
     await this.htmlElementClick('#additional_info_user_reasons-toggle-button');
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-restricted-syntax
@@ -66,17 +68,17 @@ class AdditionalInfoPage extends YouthPageComponent {
     await this.htmlElementClick('#additional_info_user_reasons-toggle-button');
   }
 
-  public async typeAdditionalInfoDescription(text: string) {
+  public async typeAdditionalInfoDescription(text: string): Promise<void> {
     await this.fillInput(this.additionalInfoDescription, text);
   }
 
-  public async clickSendButton() {
+  public async clickSendButton(): Promise<void> {
     await t.click(this.sendButton);
   }
 
   public async sendAdditionalInfoApplication(
     application: AdditionalInfoApplication
-  ) {
+  ): Promise<void> {
     await this.isLoaded();
     await this.clickAndSelectReasonsFromDropdown(
       application.additional_info_user_reasons
