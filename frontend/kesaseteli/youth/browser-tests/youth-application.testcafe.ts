@@ -23,7 +23,6 @@ import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integr
 import { FinnishSSN } from 'finnish-ssn';
 
 import getYouthTranslationsApi from '../src/__tests__/utils/i18n/get-youth-translations-api';
-import YouthTranslations from '../src/__tests__/utils/i18n/youth-translations';
 import getActivationLinkExpirationSeconds from '../src/utils/get-activation-link-expiration-seconds';
 import AdditionalInfoPage from './page-models/AdditionalInfoPage';
 import ErrorPage from './page-models/ErrorPage';
@@ -42,7 +41,6 @@ let youthForm: YouthForm;
 let thankYouPage: ThankYouPage;
 
 const translationsApi = getYouthTranslationsApi();
-let header: Header<YouthTranslations>;
 
 fixture('Youth Application')
   .page(url)
@@ -51,7 +49,6 @@ fixture('Youth Application')
     clearDataToPrintOnFailure(t);
     youthForm = new YouthForm();
     thankYouPage = new ThankYouPage();
-    header = new Header(translationsApi);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -81,6 +78,7 @@ test('If I send two applications with same email, I will see "email is in use" -
 
 if (!isRealIntegrationsEnabled()) {
   test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async (t) => {
+    const header = new Header(translationsApi);
     await header.isLoaded();
     await header.changeLanguage('sv');
     await new YouthForm('sv').sendYouthApplication(validApplication());
@@ -89,7 +87,8 @@ if (!isRealIntegrationsEnabled()) {
     await thankYouPageSv.clickActivationLink();
     await new NotificationPage('accepted', 'sv').isLoaded();
   });
-  test('If I live outside Helsinki and fill the application in english, send it and activate it, I will see additional info form in english', async (t) => {
+  test('If I live outside Helsinki and fill the application in english, send it and activate it, I will see additional info form in english', async () => {
+    const header = new Header(translationsApi);
     await header.isLoaded();
     await header.changeLanguage('en');
     await new YouthForm('en').sendYouthApplication(outsideHelsinki());
@@ -99,7 +98,7 @@ if (!isRealIntegrationsEnabled()) {
     await new AdditionalInfoPage('en').isLoaded();
   });
 
-  test('If I send and activate application and then I try to activate it again, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
+  test('If I send and activate application and then I try to activate it again, I see "You already sent a Summer Job Voucher application" -message', async () => {
     await youthForm.sendYouthApplication(validApplication());
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();

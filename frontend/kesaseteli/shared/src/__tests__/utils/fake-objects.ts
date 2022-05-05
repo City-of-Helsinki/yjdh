@@ -202,7 +202,8 @@ export const fakeAdditionalInfoApplication = (
     {
       id: faker.datatype.uuid(),
       additional_info_user_reasons:
-        (override && override.additional_info_user_reasons) ||
+        (override &&
+          (override.additional_info_user_reasons as AdditionalInfoReasonType[])) ||
         getRandomSubArray(ADDITIONAL_INFO_REASON_TYPE),
       additional_info_description: faker.lorem.paragraph(1),
       additional_info_attachments: [],

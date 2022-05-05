@@ -22,7 +22,6 @@ let step2Components: ReturnType<typeof getStep2Components>;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
 const url = getFrontendUrl('/');
-let header;
 
 fixture('Application')
   .page(url)
@@ -32,7 +31,6 @@ fixture('Application')
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
     step2Components = getStep2Components(t);
-    header = new Header(getEmployerTranslationsApi());
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
@@ -46,6 +44,8 @@ if (isRealIntegrationsEnabled()) {
       id: applicationId,
       ...application
     } = await loginAndfillApplication(t, 1);
+    const header = new Header(getEmployerTranslationsApi());
+    await header.isLoaded();
     await header.clickLogoutButton();
     await doEmployerLogin(t, 'fi', user);
     await urlUtils.expectations.urlChangedToApplicationPage(
