@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from common.permissions import BFIsApplicant
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -8,6 +7,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from common.permissions import BFIsApplicant
 from terms.api.v1.serializers import (
     ApproveTermsSerializer,
     TermsOfServiceApprovalSerializer,

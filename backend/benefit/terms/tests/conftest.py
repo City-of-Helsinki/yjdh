@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+
 from common.tests.conftest import *  # noqa
 from terms.enums import TermsType
 from terms.tests.factories import (

@@ -1,3 +1,5 @@
+from django.utils import translation
+
 from applications.enums import BenefitType
 from applications.services.csv_export_base import (
     CsvColumn,
@@ -5,7 +7,6 @@ from applications.services.csv_export_base import (
     get_organization_type,
     nested_queryset_attr,
 )
-from django.utils import translation
 
 
 def CsvDefaultColumn(*args, **kwargs):
@@ -356,13 +357,12 @@ class ApplicationsCsvService(CsvExportBase):
                     application.application_row_idx = application_row_idx + 1
                     yield application
 
-    def get_csv_lines(self):
+    def get_csv_cell_list_lines_generator(self):
         if self.get_applications():
-            return super().get_csv_lines()
+            yield from super().get_csv_cell_list_lines_generator()
         else:
             header_row = self._get_header_row()
-            return [
-                header_row,
-                ["Ei löytynyt ehdot täyttäviä hakemuksia"]
-                + [""] * (len(header_row) - 1),
-            ]
+            yield header_row
+            yield ["Ei löytynyt ehdot täyttäviä hakemuksia"] + [""] * (
+                len(header_row) - 1
+            )

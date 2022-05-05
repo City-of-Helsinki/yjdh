@@ -1,10 +1,11 @@
 import decimal
 
+from rest_framework.reverse import reverse
+
 from applications.tests.conftest import *  # noqa
 from calculator.api.v1.serializers import PreviousBenefitSerializer
 from calculator.models import PreviousBenefit
 from calculator.tests.factories import PreviousBenefitFactory
-from rest_framework.reverse import reverse
 
 
 def get_previous_benefits_detail_url(previous_benefit):

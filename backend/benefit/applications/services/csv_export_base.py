@@ -4,7 +4,7 @@ import decimal
 import operator
 from dataclasses import dataclass
 from io import StringIO
-from typing import Any, Callable, Union
+from typing import Any, Callable, Generator, List, Union
 
 from applications.enums import OrganizationType
 
@@ -59,24 +59,28 @@ class CsvExportBase:
     Classes deriving from CsvExportBase need to define:
     * CSV_COLUMNS: a list of CsvColumn objects
     * get_row_items: a function that returns a sequence of any objects. These objects
-      must be compatible with the CsvColumn.cell_data_source (see get_csv_lines)
+      must be compatible with the CsvColumn.cell_data_source (see get_csv_cell_list_lines_generator)
     """
 
     CSV_DELIMITER = ";"
     FILE_ENCODING = "utf-8"
 
-    def _get_header_row(self):
+    def _get_header_row(self) -> List[str]:
         return [col.heading for col in self.CSV_COLUMNS]
 
-    def write_csv_file(self, path):
+    def write_csv_file(self, path) -> None:
         csv_string = self.get_csv_string()
         with open(path, encoding=self.FILE_ENCODING, mode="w") as f:
             f.write(csv_string)
 
-    def get_csv_string(self):
-        return self._make_csv(self.get_csv_lines())
+    def get_csv_string(self) -> str:
+        return "".join(  # Lines end with '\r\n' already so no need to add newlines here
+            self.get_csv_string_lines_generator()
+        )
 
-    def get_csv_lines(self):
+    def get_csv_cell_list_lines_generator(
+        self,
+    ) -> Generator[List[Union[str, int, decimal.Decimal, datetime.date]], None, None]:
         """
         Iterate through the objects returned by get_row_items. Use the CsvColumn objects in CSV_COLUMNS to
         construct a CSV row from each item. Notes:
@@ -85,7 +89,7 @@ class CsvExportBase:
         * if cell_data_source is a string, then it is treated as a dotted attribute reference (like "x" or "a.b")
           and the corresponding attribute should be found in the item
         """
-        lines = [self._get_header_row()]
+        yield self._get_header_row()
         for item in self.get_row_items():
             line = []
             for column in self.CSV_COLUMNS:
@@ -110,20 +114,24 @@ class CsvExportBase:
                 ):
                     raise ValueError("Invalid type in CSV export")
                 line.append(cell_value)
-            lines.append(line)
-        return lines
+            yield line
 
-    def _make_csv(self, lines):
-        if len(lines) == 0:
-            return ""
-        first_length = len(lines[0])
-        assert all([len(line) == first_length for line in lines])
+    def get_csv_string_lines_generator(self) -> Generator[str, None, None]:
+        """
+        Generate CSV's string lines using self.get_csv_cell_list_lines_generator().
 
+        :return: Generator which generates list of strings that each end with '\r\n'.
+        """
         io = StringIO()
         csv_writer = csv.writer(
             io, delimiter=self.CSV_DELIMITER, quoting=csv.QUOTE_NONNUMERIC
         )
-        for line in lines:
+        line_length_set = set()
+        for line in self.get_csv_cell_list_lines_generator():
+            line_length_set.add(len(line))
+            assert len(line_length_set) == 1, "Each CSV line must have same colum count"
             csv_writer.writerow(line)
-
-        return io.getvalue()
+            yield io.getvalue()
+            # Reset StringIO object
+            io.truncate(0)
+            io.seek(0)

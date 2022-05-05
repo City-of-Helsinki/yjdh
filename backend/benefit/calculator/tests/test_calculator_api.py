@@ -3,6 +3,7 @@ import decimal
 from unittest import mock
 
 import pytest
+
 from applications.api.v1.serializers import (
     ApplicantApplicationSerializer,
     HandlerApplicationSerializer,
