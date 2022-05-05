@@ -3395,9 +3395,9 @@
     "@types/react" "*"
 
 "@types/react-pdf@^5.0.9":
-  version "5.0.9"
-  resolved "https://registry.yarnpkg.com/@types/react-pdf/-/react-pdf-5.0.9.tgz#db1db3af62103b29c01b796d9aefc42aabbf98d9"
-  integrity sha512-sDK48DwAnha8nf74cavp1g1a8oCLI3F4hBQZm+DHZmgGYOnBm0UuAKwVu84cL2By0MkiCrGv0KSJDVSv+tN6KA==
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/@types/react-pdf/-/react-pdf-5.7.1.tgz#cf72bd9170e7e157f03f74a4d28e430c5bf48a86"
+  integrity sha512-c62RYvnwM8GGiikzJBFYecKpOS8aWKNu6BXHTqmBCNu0r5GungGJFLkW+V0kM/W3HgfPylmXvqqUQ/efSw/Ojg==
   dependencies:
     "@types/react" "*"
     pdfjs-dist "^2.10.377"
@@ -3409,16 +3409,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
-  version "17.0.43"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.43.tgz#4adc142887dd4a2601ce730bc56c3436fdb07a55"
-  integrity sha512-8Q+LNpdxf057brvPu1lMtC5Vn7J119xrP1aq4qiaefNioQUYANF/CYeK4NsKorSZyUGJ66g0IM+4bbjwx45o2A==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^17":
+"@types/react@*", "@types/react@^17":
   version "17.0.44"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.44.tgz#c3714bd34dd551ab20b8015d9d0dbec812a51ec7"
   integrity sha512-Ye0nlw09GeMp2Suh8qoOv0odfgCoowfM/9MG6WeRD60Gq9wS90bdkdRtYbRkNhXOpG4H+YXGvj4wOWhAC0LJ1g==
