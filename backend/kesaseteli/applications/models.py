@@ -178,6 +178,22 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         verbose_name=_("vtj json"),
         validators=[validate_optional_json],
     )
+    encrypted_original_vtj_json = EncryptedCharField(
+        null=True,
+        blank=True,
+        max_length=1024 * 1024,
+        verbose_name=_("original vtj json"),
+        help_text=_("VTJ JSON used for automatic processing of new youth application"),
+        validators=[validate_optional_json],
+    )
+    encrypted_handler_vtj_json = EncryptedCharField(
+        null=True,
+        blank=True,
+        max_length=1024 * 1024,
+        verbose_name=_("handler vtj json"),
+        help_text=_("VTJ JSON used for accepting/rejecting by human or machine"),
+        validators=[validate_optional_json],
+    )
     status = models.CharField(
         max_length=64,
         verbose_name=_("status"),
