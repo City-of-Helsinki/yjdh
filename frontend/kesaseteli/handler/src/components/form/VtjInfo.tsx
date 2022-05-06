@@ -1,25 +1,17 @@
-import { FinnishSSN } from 'finnish-ssn';
 import Field from 'kesaseteli/handler/components/form/Field';
 import VtjErrorMessage from 'kesaseteli/handler/components/form/VtjErrorMessage';
 import VtjErrorNotification from 'kesaseteli/handler/components/form/VtjErrorNotification';
 import VtjRawDataAccordion from 'kesaseteli/handler/components/form/VtjRawData';
+import { mapVtjData } from 'kesaseteli/handler/utils/map-vtj-data';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-import VtjAddress from 'kesaseteli-shared/types/vtj-address';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import FormSection from 'shared/components/forms/section/FormSection';
 import { $Notification } from 'shared/components/notification/Notification.sc';
-import { isWithinInterval } from 'shared/utils/date.utils';
 
 type Props = {
   application: ActivatedYouthApplication;
 };
-
-const addressIsValid = (address: VtjAddress): boolean =>
-  isWithinInterval(new Date(), {
-    startDate: address.AsuminenAlkupvm,
-    endDate: address.AsuminenLoppupvm,
-  });
 
 const VtjInfo: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
@@ -160,43 +152,20 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
     );
   }
 
-  const notFound =
-    encrypted_vtj_json.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
-  const providedAt = encrypted_vtj_json.Asiakasinfo?.InfoS ?? '';
-  const fullName = `${encrypted_vtj_json.Henkilo.NykyisetEtunimet.Etunimet} ${encrypted_vtj_json.Henkilo.NykyinenSukunimi.Sukunimi}`;
-  const differentLastName =
-    encrypted_vtj_json.Henkilo.NykyinenSukunimi.Sukunimi.toLowerCase() !==
-    last_name.toLowerCase();
-
-  const socialSecurityNumber =
-    encrypted_vtj_json.Henkilo.Henkilotunnus['#text'] ?? '-';
-
-  const permanentAddress = addressIsValid(
-    encrypted_vtj_json.Henkilo.VakinainenKotimainenLahiosoite
-  )
-    ? encrypted_vtj_json.Henkilo.VakinainenKotimainenLahiosoite
-    : undefined;
-  const temporaryAddress = addressIsValid(
-    encrypted_vtj_json.Henkilo.TilapainenKotimainenLahiosoite
-  )
-    ? encrypted_vtj_json.Henkilo.TilapainenKotimainenLahiosoite
-    : undefined;
-  const addressNotFound = !permanentAddress && !temporaryAddress;
-
-  const { LahiosoiteS, Postinumero, PostitoimipaikkaS } =
-    permanentAddress ?? temporaryAddress ?? {};
-  const fullAddress = !addressNotFound
-    ? `${LahiosoiteS} ${Postinumero} ${PostitoimipaikkaS}`
-    : '-';
-  const outsideHelsinki = PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
-  const differentPostCode = Postinumero !== postcode;
-
-  const { ageInYears: age } = FinnishSSN.parse(
-    encrypted_vtj_json.Henkilo.Henkilotunnus['#text']
-  );
-  const notInTargetAgeGroup = ![15, 16].includes(age);
-
-  const isDead = encrypted_vtj_json.Henkilo.Kuolintiedot.Kuollut === '1';
+  const {
+    notFound,
+    providedAt,
+    fullName,
+    differentLastName,
+    socialSecurityNumber,
+    addressNotFound,
+    fullAddress,
+    outsideHelsinki,
+    differentPostCode,
+    age,
+    notInTargetAgeGroup,
+    isDead,
+  } = mapVtjData(application);
 
   return (
     <span data-testid="vtj-info">

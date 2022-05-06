@@ -14,11 +14,9 @@ import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getThankYouPageComponents } from '../thankyou-page/thank-you.components';
 import { getFrontendUrl, getUrlUtils } from '../utils/url.utils';
 import { getStep1Components } from './step1.components';
-import { getStep2Components } from './step2.components';
 import { getWizardComponents } from './wizard.components';
 
 let step1Components: ReturnType<typeof getStep1Components>;
-let step2Components: ReturnType<typeof getStep2Components>;
 let urlUtils: ReturnType<typeof getUrlUtils>;
 
 const url = getFrontendUrl('/');
@@ -30,7 +28,6 @@ fixture('Application')
     clearDataToPrintOnFailure(t);
     urlUtils = getUrlUtils(t);
     step1Components = getStep1Components(t);
-    step2Components = getStep2Components(t);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console

@@ -93,15 +93,14 @@ const useApplicationApi = <T = Application>(
 
   const updateApplication: ApplicationApi<T>['updateApplication'] =
     React.useCallback(
-      (draftApplication: DraftApplication, onSuccess = noop) => {
-        return updateApplicationQuery.mutate(
+      (draftApplication: DraftApplication, onSuccess = noop) =>
+        updateApplicationQuery.mutate(
           { ...draftApplication, status: 'draft' },
           {
             onSuccess,
             onError,
           }
-        );
-      },
+        ),
       [updateApplicationQuery, onError]
     );
 
