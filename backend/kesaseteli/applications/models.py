@@ -171,13 +171,6 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     receipt_confirmed_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("timestamp of receipt confirmation")
     )
-    encrypted_vtj_json = EncryptedCharField(
-        null=True,
-        blank=True,
-        max_length=1024 * 1024,
-        verbose_name=_("vtj json"),
-        validators=[validate_optional_json],
-    )
     encrypted_original_vtj_json = EncryptedCharField(
         null=True,
         blank=True,
