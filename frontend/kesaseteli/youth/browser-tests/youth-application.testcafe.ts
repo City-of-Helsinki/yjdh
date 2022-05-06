@@ -90,7 +90,11 @@ test('If I send two applications with same email, I will see "email is in use" -
 if (!isRealIntegrationsEnabled()) {
   test("If I'm 9th grader and attend helsinkian school, then application is automatically accepted", async () => {
     await youthForm.sendYouthApplication(
-      fakeYouthApplication({ ...is9thGraderAge(), ...attendsHelsinkianSchool })
+      fakeYouthApplication({
+        ...is9thGraderAge(),
+        ...livesInHelsinki,
+        ...attendsHelsinkianSchool,
+      })
     );
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
@@ -453,7 +457,7 @@ if (!isRealIntegrationsEnabled()) {
     // eslint-disable-next-line @typescript-eslint/no-loop-func
     test(`If I'm not in target age group (${age}-years old), I have to give additional information and handler can see warning about the age`, async (t) => {
       await new YouthForm().sendYouthApplication(
-        fakeYouthApplication(hasAge(age))
+        fakeYouthApplication({ ...hasAge(age), ...livesInHelsinki })
       );
       await thankYouPage.isLoaded();
       const applicationId = await thankYouPage.clickActivationLink();

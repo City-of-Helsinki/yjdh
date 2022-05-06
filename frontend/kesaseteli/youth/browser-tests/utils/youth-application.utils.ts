@@ -65,4 +65,5 @@ export const autoAcceptedApplication = (
 // invalid application which needs additional info given
 export const applicationNeedsAdditionalInfo = (
   override?: DeepPartial<YouthApplication>
-): YouthApplication => fakeYouthApplication({ ...hasAge(99), ...override });
+): YouthApplication =>
+  fakeYouthApplication({ ...hasAge(99), ...livesInHelsinki, ...override });
