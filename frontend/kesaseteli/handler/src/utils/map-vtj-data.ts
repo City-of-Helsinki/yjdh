@@ -59,7 +59,7 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   const { ageInYears: age } = FinnishSSN.parse(
     vtjData.Henkilo.Henkilotunnus['#text']
   );
-  const notInTargetAgeGroup = ![15, 16].includes(age);
+  const notInTargetAgeGroup = ![16, 17].includes(age);
 
   const isDead = vtjData.Henkilo.Kuolintiedot.Kuollut === '1';
   return {

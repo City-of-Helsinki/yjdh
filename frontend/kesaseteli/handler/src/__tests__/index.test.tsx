@@ -124,7 +124,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
   describe('vtj data', () => {
     it(`shows vtjData without errors`, async () => {
-      const age = 15;
+      const age = 17;
       const social_security_number = FinnishSSN.createWithAge(age);
       const application = fakeActivatedYouthApplication({
         social_security_number,
@@ -202,7 +202,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       );
     });
 
-    for (const age of [1, 14, 15, 16, 17, 99]) {
+    for (const age of [1, 15, 16, 17, 18, 99]) {
       it(`shows warning when applicant is not in target age group, age: ${age}`, async () => {
         const application = fakeActivatedYouthApplication({
           social_security_number: FinnishSSN.createWithAge(age),
@@ -214,7 +214,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.pageIsLoaded();
         // eslint-disable-next-line unicorn/prefer-ternary
-        if ([15, 16].includes(age)) {
+        if ([16, 17].includes(age)) {
           await indexPageApi.expectations.vtjErrorMessageIsNotPresent(
             'notInTargetAgeGroup',
             { age }

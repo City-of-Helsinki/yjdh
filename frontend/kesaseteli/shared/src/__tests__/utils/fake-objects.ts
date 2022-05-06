@@ -115,7 +115,7 @@ export const fakeYouthApplication = (
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
     social_security_number: FinnishSSN.createWithAge(
-      faker.datatype.number({ min: 15, max: 16 })
+      faker.datatype.number({ min: 16, max: 17 })
     ),
     postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
     school: is_unlisted_school
@@ -128,60 +128,6 @@ export const fakeYouthApplication = (
     ...override,
   };
 };
-
-export const fakeYouthApplicationIsDeadAccordingToVtj = (
-  override?: DeepPartial<Omit<YouthApplication, 'first_name' | 'last_name'>>
-): YouthApplication =>
-  fakeYouthApplication({
-    first_name: 'VTJ-testi',
-    last_name: 'Kuollut',
-    ...override,
-  });
-
-export const fakeYouthApplicationVtjLastNameMismatches = (
-  override?: DeepPartial<Omit<YouthApplication, 'first_name' | 'last_name'>>
-): YouthApplication =>
-  fakeYouthApplication({
-    first_name: 'VTJ-testi',
-    last_name: 'Väärä sukunimi',
-    ...override,
-  });
-
-export const fakeYouthApplicationNotFoundFromVtj = (
-  override?: DeepPartial<Omit<YouthApplication, 'first_name' | 'last_name'>>
-): YouthApplication =>
-  fakeYouthApplication({
-    first_name: 'VTJ-testi',
-    last_name: 'Ei löydy',
-    ...override,
-  });
-
-export const fakeYouthApplicationVtjTimeouts = (
-  override?: DeepPartial<Omit<YouthApplication, 'first_name' | 'last_name'>>
-): YouthApplication =>
-  fakeYouthApplication({
-    first_name: 'VTJ-testi',
-    last_name: 'Ei vastaa',
-    ...override,
-  });
-
-export const fakeYouthApplicationLivesInHelsinkiAccordingToVtj = (
-  override?: DeepPartial<Omit<YouthApplication, 'first_name' | 'last_name'>>
-): YouthApplication =>
-  fakeYouthApplication({
-    first_name: 'VTJ-testi',
-    last_name: 'Kotikunta Helsinki',
-    ...override,
-  });
-
-export const fakeYouthApplicationLivesOutsideHelsinkiAccordingToVtj = (
-  override?: DeepPartial<Omit<YouthApplication, 'first_name' | 'last_name'>>
-): YouthApplication =>
-  fakeYouthApplication({
-    first_name: 'VTJ-testi',
-    last_name: 'Kotikunta Utsjoki',
-    ...override,
-  });
 
 export const fakeCreatedYouthApplication = (
   override?: DeepPartial<CreatedYouthApplication>

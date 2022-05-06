@@ -29,15 +29,11 @@ module.exports = (envPath) => {
     },
     retryTestPages: true,
     hostname: 'localhost',
-    assertionTimeout: 60_000,
-    selectorTimeout: 60_000,
-    pageLoadTimeout: 120_000,
+    assertionTimeout: 5_000,
+    selectorTimeout: 15_000,
+    pageLoadTimeout: 60_000,
     ajaxRequestTimeout: 60_000,
     pageRequestTimeout: 240_000,
     browserInitTimeout: 240_000
   };
 };
-
-{
-
-}

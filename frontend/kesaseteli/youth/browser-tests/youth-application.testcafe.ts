@@ -2,12 +2,8 @@ import HandlerForm from '@frontend/kesaseteli-shared/browser-tests/page-models/H
 import {
   fakeActivatedYouthApplication,
   fakeAdditionalInfoApplication,
-  fakeYouthApplicationIsDeadAccordingToVtj as isDeadAccordingToVtj,
-  fakeYouthApplicationLivesInHelsinkiAccordingToVtj as validApplication,
-  fakeYouthApplicationLivesOutsideHelsinkiAccordingToVtj as outsideHelsinki,
-  fakeYouthApplicationNotFoundFromVtj as notFoundFromVtj,
-  fakeYouthApplicationVtjLastNameMismatches as vtjLastNameMismatches,
-  fakeYouthApplicationVtjTimeouts as vtjTimeouts,
+  fakeYouthApplication,
+  fakeYouthApplication as getApplication,
 } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, {
@@ -20,7 +16,6 @@ import {
   goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
-import { FinnishSSN } from 'finnish-ssn';
 
 import getYouthTranslationsApi from '../src/__tests__/utils/i18n/get-youth-translations-api';
 import getActivationLinkExpirationSeconds from '../src/utils/get-activation-link-expiration-seconds';
@@ -35,6 +30,21 @@ import {
   goToBackendUrl,
   goToFrontPage,
 } from './utils/url.utils';
+import {
+  applicationNeedsAdditionalInfo,
+  attendsHelsinkianSchool,
+  attendsUnlistedSchool,
+  autoAcceptedApplication,
+  hasAge,
+  is9thGraderAge,
+  isDead,
+  isUpperSecondaryEducation1stYearStudentAge,
+  livesInHelsinki,
+  livesOutsideHelsinki,
+  vtjDifferentLastName,
+  vtjNotFound,
+  vtjTimeout,
+} from './utils/youth-application.utils';
 
 const url = getFrontendUrl('/');
 let youthForm: YouthForm;
@@ -56,20 +66,21 @@ fixture('Youth Application')
   );
 
 test('I can send application and return to front page', async () => {
-  await youthForm.sendYouthApplication(validApplication());
+  await youthForm.sendYouthApplication(autoAcceptedApplication());
   await thankYouPage.isLoaded();
   await thankYouPage.clickGoToFrontPageButton();
   await youthForm.isLoaded();
 });
 
 test('If I send two applications with same email, I will see "email is in use" -message', async () => {
-  const application = validApplication();
+  const application = getApplication(autoAcceptedApplication());
   await youthForm.sendYouthApplication(application);
   await thankYouPage.isLoaded();
   await thankYouPage.clickGoToFrontPageButton();
   await youthForm.isLoaded();
   await youthForm.sendYouthApplication(
-    validApplication({
+    getApplication({
+      ...is9thGraderAge(),
       email: application.email,
     })
   );
@@ -77,21 +88,85 @@ test('If I send two applications with same email, I will see "email is in use" -
 });
 
 if (!isRealIntegrationsEnabled()) {
+  test("If I'm 9th grader and attend helsinkian school, then application is automatically accepted", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({ ...is9thGraderAge(), ...attendsHelsinkianSchool })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new NotificationPage('accepted', 'sv').isLoaded();
+  });
+
+  test("If I'm 9th grader and live in Helsinki but I attend other unlisted school, then application is automatically accepted", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({
+        ...is9thGraderAge(),
+        ...livesInHelsinki,
+        ...attendsUnlistedSchool,
+      })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new NotificationPage('accepted').isLoaded();
+  });
+
+  test("If I'm upper secondary education first year and I live in Helsinki but I attend other unlisted school, then application is automatically accepted", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({
+        ...isUpperSecondaryEducation1stYearStudentAge(),
+        ...livesInHelsinki,
+        ...attendsUnlistedSchool,
+      })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new NotificationPage('accepted').isLoaded();
+  });
+
   test('If I fill application in swedish, send it and activate it, I will see activation message in swedish', async () => {
     const header = new Header(translationsApi);
     await header.isLoaded();
     await header.changeLanguage('sv');
-    await new YouthForm('sv').sendYouthApplication(validApplication());
+    await new YouthForm('sv').sendYouthApplication(autoAcceptedApplication());
     const thankYouPageSv = new ThankYouPage('sv');
     await thankYouPageSv.isLoaded();
     await thankYouPageSv.clickActivationLink();
     await new NotificationPage('accepted', 'sv').isLoaded();
   });
-  test('If I live outside Helsinki and fill the application in english, send it and activate it, I will see additional info form in english', async () => {
+
+  test("If I'm 9th grader and live outside Helsinki and I attend other unlisted school, then application is automatically accepted", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({
+        ...is9thGraderAge(),
+        ...livesOutsideHelsinki,
+        ...attendsUnlistedSchool,
+      })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new AdditionalInfoPage().isLoaded();
+  });
+
+  test("If I'm upper secondary education first year and I live outside Helsinki, then I need to also give additional info application", async () => {
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication({
+        ...isUpperSecondaryEducation1stYearStudentAge(),
+        ...livesOutsideHelsinki,
+        ...attendsHelsinkianSchool,
+      })
+    );
+    await thankYouPage.isLoaded();
+    await thankYouPage.clickActivationLink();
+    await new NotificationPage('accepted').isLoaded();
+  });
+
+  test('If I fill the application in english, I will see additional info form also in english', async () => {
     const header = new Header(translationsApi);
     await header.isLoaded();
     await header.changeLanguage('en');
-    await new YouthForm('en').sendYouthApplication(outsideHelsinki());
+    await new YouthForm('en').sendYouthApplication(
+      applicationNeedsAdditionalInfo()
+    );
     const thankYouPageEn = new ThankYouPage('en');
     await thankYouPageEn.isLoaded();
     await thankYouPageEn.clickActivationLink();
@@ -99,7 +174,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('If I send and activate application and then I try to activate it again, I see "You already sent a Summer Job Voucher application" -message', async () => {
-    await youthForm.sendYouthApplication(validApplication());
+    await youthForm.sendYouthApplication(autoAcceptedApplication());
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
     await new NotificationPage('accepted').isLoaded();
@@ -112,7 +187,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('If I send application, but then I activate it too late, I see "confirmation link has expired" -message', async (t) => {
-    await youthForm.sendYouthApplication(validApplication());
+    await youthForm.sendYouthApplication(autoAcceptedApplication());
     await thankYouPage.isLoaded();
     await t.wait((getActivationLinkExpirationSeconds() + 1) * 1000);
     await thankYouPage.clickActivationLink();
@@ -120,7 +195,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('If I send an application but it expires, I can send the same application again and activate it', async (t) => {
-    const application = validApplication();
+    const application = autoAcceptedApplication();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     await t.wait((getActivationLinkExpirationSeconds() + 1) * 1000);
@@ -132,7 +207,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('If I have forgot that I already sent and activated an application, and then I send another application with same email, I see  "You already sent a Summer Job Voucher application" -message', async (t) => {
-    const application = validApplication();
+    const application = autoAcceptedApplication();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
@@ -140,7 +215,7 @@ if (!isRealIntegrationsEnabled()) {
     await acceptedPage.isLoaded();
     await goToFrontPage(t);
     await youthForm.sendYouthApplication(
-      validApplication({
+      autoAcceptedApplication({
         email: application.email,
       })
     );
@@ -148,14 +223,14 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('If I have forgot that I already sent and activated an application, and then I send another application with same ssn, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
-    const application = validApplication();
+    const application = autoAcceptedApplication();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
     await new NotificationPage('accepted').isLoaded();
     await goToFrontPage(t);
     await youthForm.sendYouthApplication(
-      validApplication({
+      autoAcceptedApplication({
         social_security_number: application.social_security_number,
       })
     );
@@ -163,13 +238,13 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('If I accidentally send two applications with different emails, and then I activate first application and then second application, I see "You already sent a Summer Job Voucher application" -message', async (t) => {
-    const application = validApplication();
+    const application = autoAcceptedApplication();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     const firstThankYouPageUrl = await getCurrentUrl();
     await goToFrontPage(t);
     await youthForm.sendYouthApplication(
-      validApplication({
+      autoAcceptedApplication({
         social_security_number: application.social_security_number,
       })
     );
@@ -183,7 +258,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('As a handler I can open automatically accepted application in handler-ui and see correct application data', async (t) => {
-    const application = validApplication();
+    const application = autoAcceptedApplication();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
@@ -213,8 +288,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('As a handler I can open additional information provided application in handler-ui and see correct additional info data', async (t) => {
-    const wrongPostcode = '00100';
-    const application = outsideHelsinki({ postcode: wrongPostcode });
+    const application = applicationNeedsAdditionalInfo();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     const applicationId = await getUrlParam('id');
@@ -247,12 +321,37 @@ if (!isRealIntegrationsEnabled()) {
     await handlerFormPage.applicationFieldHasValue(
       'additional_info_description'
     );
+  });
+
+  test('As a handler I can see notification when applicant lives outside helsinki and typed diffrent postcode than given in vtj', async (t) => {
+    const wrongPostcode = '00100';
+    await youthForm.sendYouthApplication(
+      applicationNeedsAdditionalInfo({
+        ...livesOutsideHelsinki,
+        postcode: wrongPostcode,
+      })
+    );
+    await thankYouPage.isLoaded();
+    const applicationId = await getUrlParam('id');
+    if (!applicationId) {
+      // eslint-disable-next-line sonarjs/no-duplicate-string
+      throw new Error('cannot complete test without application id');
+    }
+    await thankYouPage.clickActivationLink();
+    const additionalInfo = fakeAdditionalInfoApplication();
+    await new AdditionalInfoPage().sendAdditionalInfoApplication(
+      additionalInfo
+    );
+
+    await goToBackendUrl(t, `/v1/youthapplications/${applicationId}/process/`);
+    const handlerFormPage = new HandlerForm();
+    await handlerFormPage.isLoaded();
     await handlerFormPage.applicantsPostcodeMismatches(wrongPostcode);
     await handlerFormPage.applicantLivesOutsideHelsinki();
   });
 
   test('As a handler I can open non-activated application, but I will see "youth has not yet activated the application" -error message ', async (t) => {
-    await youthForm.sendYouthApplication(validApplication());
+    await youthForm.sendYouthApplication(autoAcceptedApplication());
     await thankYouPage.isLoaded();
     const applicationId = await getUrlParam('id');
     if (!applicationId) {
@@ -265,7 +364,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('As a handler I can open automatically accepted application, but I will see "application is activated"-message', async (t) => {
-    await youthForm.sendYouthApplication(validApplication());
+    await youthForm.sendYouthApplication(autoAcceptedApplication());
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
     await new NotificationPage('accepted').isLoaded();
@@ -276,7 +375,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test('As a handler I can open application with additional info required, but I will see "youth has not yet sent the additional info application" -error message ', async (t) => {
-    await youthForm.sendYouthApplication(outsideHelsinki());
+    await youthForm.sendYouthApplication(applicationNeedsAdditionalInfo());
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
     await new AdditionalInfoPage().isLoaded();
@@ -286,8 +385,8 @@ if (!isRealIntegrationsEnabled()) {
     await handlerForm.additionalInformationRequested();
   });
 
-  test('As a handler I can accept an application with additional info', async (t) => {
-    await youthForm.sendYouthApplication(outsideHelsinki());
+  test('As a handler I can accept an application', async (t) => {
+    await youthForm.sendYouthApplication(applicationNeedsAdditionalInfo());
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
     await new AdditionalInfoPage().sendAdditionalInfoApplication(
@@ -297,8 +396,8 @@ if (!isRealIntegrationsEnabled()) {
     await new HandlerForm().acceptApplication();
   });
 
-  test('As a handler I can reject an application with additional info', async (t) => {
-    await youthForm.sendYouthApplication(outsideHelsinki());
+  test('As a handler I can reject an application', async (t) => {
+    await youthForm.sendYouthApplication(applicationNeedsAdditionalInfo());
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
     await new AdditionalInfoPage().sendAdditionalInfoApplication(
@@ -309,7 +408,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test.skip('If I accidentally register application with wrong information, handler can reject it and I can sen another application with same ssn', async (t) => {
-    const application = outsideHelsinki();
+    const application = applicationNeedsAdditionalInfo();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
@@ -321,7 +420,7 @@ if (!isRealIntegrationsEnabled()) {
     // youth sends another application with same ssn
     await goToFrontPage(t);
     await youthForm.sendYouthApplication(
-      validApplication({
+      autoAcceptedApplication({
         social_security_number: application.social_security_number,
       })
     );
@@ -330,7 +429,7 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test.skip('If I accidentally register application with wrong information, handler can reject it and I can sen another application with same email', async (t) => {
-    const application = outsideHelsinki();
+    const application = applicationNeedsAdditionalInfo();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
@@ -342,7 +441,7 @@ if (!isRealIntegrationsEnabled()) {
     // youth sends another application with same ssn
     await goToFrontPage(t);
     await youthForm.sendYouthApplication(
-      validApplication({
+      autoAcceptedApplication({
         email: application.email,
       })
     );
@@ -354,9 +453,7 @@ if (!isRealIntegrationsEnabled()) {
     // eslint-disable-next-line @typescript-eslint/no-loop-func
     test(`If I'm not in target age group (${age}-years old), I have to give additional information and handler can see warning about the age`, async (t) => {
       await new YouthForm().sendYouthApplication(
-        validApplication({
-          social_security_number: FinnishSSN.createWithAge(age),
-        })
+        fakeYouthApplication(hasAge(age))
       );
       await thankYouPage.isLoaded();
       const applicationId = await thankYouPage.clickActivationLink();
@@ -376,24 +473,26 @@ if (!isRealIntegrationsEnabled()) {
   }
 
   test(`if I send the application but according to VTJ I'm dead, so I see that the data is inadmissible`, async () => {
-    await youthForm.sendYouthApplication(isDeadAccordingToVtj());
+    await youthForm.sendYouthApplication(fakeYouthApplication(isDead));
     await new NotificationPage('inadmissibleData').isLoaded();
   });
 
   test(`if I send the application but my ssn is not found from VTJ, so I see that the data is inadmissible`, async () => {
-    await youthForm.sendYouthApplication(notFoundFromVtj());
+    await youthForm.sendYouthApplication(fakeYouthApplication(vtjNotFound));
     await new NotificationPage('inadmissibleData').isLoaded();
   });
 
   test(`If I send the application but VTJ timeouts, I see error page`, async () => {
-    await youthForm.sendYouthApplication(vtjTimeouts());
+    await youthForm.sendYouthApplication(fakeYouthApplication(vtjTimeout));
     await new ErrorPage().isLoaded();
   });
 
   test(`if I typo my last name, I'm asked to recheck data. Then I can fix the name and activate application.`, async () => {
-    await youthForm.sendYouthApplication(vtjLastNameMismatches());
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication(vtjDifferentLastName)
+    );
     await youthForm.showsCheckNotification();
-    await youthForm.typeInput('last_name', validApplication().last_name);
+    await youthForm.typeInput('last_name', autoAcceptedApplication().last_name);
     await youthForm.clickSendButton();
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
@@ -401,7 +500,9 @@ if (!isRealIntegrationsEnabled()) {
   });
 
   test(`if I fill different last name as in VTJ, I'm asked to recheck data. I can still send it by clicking "send it anyway" -link. Then I have to apply additional info application. Handler is informed about the mismatching last name`, async (t) => {
-    await youthForm.sendYouthApplication(vtjLastNameMismatches());
+    await youthForm.sendYouthApplication(
+      fakeYouthApplication(vtjDifferentLastName)
+    );
     await youthForm.showsCheckNotification();
     await youthForm.clickSendItAnywayLink();
     await thankYouPage.isLoaded();
