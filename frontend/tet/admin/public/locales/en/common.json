@@ -19,6 +19,14 @@
     "pageNotFoundContent": "Oh no, something went wrong. Click <lnk>here</lnk> to go back to the front page."
   },
   "loginPage": {
+		"pageHeading": "TET-position advertisements",
+		"pageText": "Welcome to the TET-positions service. The service allows you to report and manage your organisation's TET-positions. Select below if you want to report a new TET-position as a representative of a private company or the City of Helsinki.",
+		"companyLoginHeading": "Private organisation",
+		"companyLoginText": "I am a representative for a private organisation",
+		"companyLoginButton": "Suomi.fi authentication",
+		"cityLoginHeading": "City of Helsinki",
+		"cityLoginText": "I am a representative for the City of Helsinki",
+		"cityLoginButton": "Log in for the City of Helsinki",
     "logoutMessageLabel": "You have logged out",
     "errorLabel": "An unexpected error occurred. Please sign in again. ",
     "sessionExpiredLabel": "User session expired. Sign in again",
