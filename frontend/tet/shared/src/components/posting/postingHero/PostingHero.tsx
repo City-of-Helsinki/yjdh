@@ -56,8 +56,8 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
     ? `, ${posting.location.postal_code}`
     : '';
   const city = posting?.location?.city ? `, ${posting.location.city}` : '';
-  const address =
-    posting?.location?.name ?? '' + street_address + postal_code + city;
+  const name = posting?.location?.name ?? '';
+  const address = name + street_address + postal_code + city;
 
   const backButtonHandler = (): void => {
     // TODO we should know that the user hasn't navigated to this page via a
