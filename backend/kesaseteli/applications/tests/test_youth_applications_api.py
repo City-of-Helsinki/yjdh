@@ -90,7 +90,7 @@ def get_random_pk() -> uuid.UUID:
     return uuid.uuid4()
 
 
-def test_additional_info() -> dict:
+def get_test_additional_info() -> dict:
     return {
         "additional_info_user_reasons": [AdditionalInfoUserReason.UNDERAGE_OR_OVERAGE],
         "additional_info_description": "Test text",
@@ -1261,7 +1261,7 @@ def test_youth_application_processing_email_sending_after_additional_info(
     start_mail_count = len(mail.outbox)
     api_client.post(
         get_additional_info_url(youth_application.pk),
-        data=json.dumps(test_additional_info()),
+        data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
     if expect_success:
@@ -1350,7 +1350,7 @@ def test_youth_application_processing_email_language_after_additional_info(
     start_mail_count = len(mail.outbox)
     api_client.post(
         get_additional_info_url(youth_application.pk),
-        data=json.dumps(test_additional_info()),
+        data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
     if expect_success:
@@ -1942,7 +1942,7 @@ def test_youth_applications_set_excess_additional_info(
     assert source_app.can_set_additional_info
     old_extra_field_value = getattr(source_app, extra_field_name, None)
 
-    post_data = test_additional_info()
+    post_data = get_test_additional_info()
     post_data[extra_field_name] = extra_field_value
 
     response = client_fixture.post(
@@ -2170,7 +2170,7 @@ def test_youth_applications_set_partial_additional_info(
     old_additional_info_provided_at = source_app.additional_info_provided_at
     old_modified_at = source_app.modified_at
 
-    post_data = test_additional_info()
+    post_data = get_test_additional_info()
 
     for missing_field in missing_fields:
         del post_data[missing_field]
