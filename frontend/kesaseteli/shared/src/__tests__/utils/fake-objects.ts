@@ -1,4 +1,7 @@
-import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
+import {
+  fakeSSN,
+  getRandomSubArray,
+} from '@frontend/shared/src/__tests__/utils/fake-objects';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import DeepPartial from '@frontend/shared/src/types/common/deep-partial';
 import {
@@ -23,6 +26,7 @@ import CreatedYouthApplication from '../../types/created-youth-application';
 import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
+import { isUpperSecondaryEducation1stYearStudentAge } from '@frontend/youth/browser-tests/utils/youth-application.utils';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -114,9 +118,7 @@ export const fakeYouthApplication = (
   return {
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
-    social_security_number: FinnishSSN.createWithAge(
-      faker.datatype.number({ min: 16, max: 17 })
-    ),
+    social_security_number: fakeYouthTargetGroupAgeSSN(),
     postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
     school: is_unlisted_school
       ? faker.commerce.department()
@@ -217,10 +219,7 @@ export const fakeVtjData = (
         Henkilotunnus: {
           '@voimassaolokoodi': '1',
           '#text':
-            override?.social_security_number ??
-            FinnishSSN.createWithAge(
-              faker.datatype.number({ min: 15, max: 16 })
-            ),
+            override?.social_security_number ?? fakeYouthTargetGroupAgeSSN(),
         },
         NykyinenSukunimi: {
           Sukunimi: override?.last_name ?? faker.name.lastName(),
@@ -268,4 +267,33 @@ export const fakeActivatedYouthApplication = (
     },
     override
   );
+};
+
+const ninethGraderYear = new Date().getFullYear() - 16;
+const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
+
+export const fakeNinethGraderSSN = () => {
+  return fakeSSN(ninethGraderYear);
+};
+
+export const fakeUpperSecondaryEducation1stYearStudentSSN = () => {
+  return fakeSSN(upperSecondaryEducation1stYearStudentYear);
+};
+
+export const fakeYouthTargetGroupAgeSSN = () => {
+  return fakeSSN(
+    faker.datatype.number({
+      min: upperSecondaryEducation1stYearStudentYear,
+      max: ninethGraderYear,
+    })
+  );
+};
+
+export const fakeYouthTargetGroupAge = () => {
+  const social_security_number = fakeYouthTargetGroupAgeSSN();
+  const { ageInYears } = FinnishSSN.parse(social_security_number);
+  return {
+    social_security_number,
+    age: ageInYears,
+  };
 };

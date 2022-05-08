@@ -92,13 +92,13 @@ if (!isRealIntegrationsEnabled()) {
     await youthForm.sendYouthApplication(
       fakeYouthApplication({
         ...is9thGraderAge(),
-        ...livesInHelsinki,
+        ...livesOutsideHelsinki,
         ...attendsHelsinkianSchool,
       })
     );
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
-    await new NotificationPage('accepted', 'sv').isLoaded();
+    await new NotificationPage('accepted').isLoaded();
   });
 
   test("If I'm 9th grader and live in Helsinki but I attend other unlisted school, then application is automatically accepted", async () => {
@@ -161,7 +161,7 @@ if (!isRealIntegrationsEnabled()) {
     );
     await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
-    await new NotificationPage('accepted').isLoaded();
+    await new AdditionalInfoPage().isLoaded();
   });
 
   test('If I fill the application in english, I will see additional info form also in english', async () => {

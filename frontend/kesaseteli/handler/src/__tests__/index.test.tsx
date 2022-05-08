@@ -15,6 +15,8 @@ import {
   fakeExpiredVtjAddress,
   fakeFutureVtjAddress,
   fakeValidVtjAddress,
+  fakeYouthTargetGroupAge,
+  fakeYouthTargetGroupAgeSSN,
 } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   YOUTH_APPLICATION_STATUS_COMPLETED,
@@ -25,6 +27,7 @@ import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
+import { fakeSSN } from 'shared/__tests__/utils/fake-objects';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
@@ -124,8 +127,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
   describe('vtj data', () => {
     it(`shows vtjData without errors`, async () => {
-      const age = 17;
-      const social_security_number = FinnishSSN.createWithAge(age);
+      const { age, social_security_number } = fakeYouthTargetGroupAge();
       const application = fakeActivatedYouthApplication({
         social_security_number,
       });
@@ -163,7 +165,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
     });
 
     it(`shows error when vtjData is not found`, async () => {
-      const social_security_number = FinnishSSN.createWithAge(16);
+      const social_security_number = fakeYouthTargetGroupAgeSSN();
       const application = fakeActivatedYouthApplication({
         social_security_number,
         encrypted_vtj_json: {
@@ -202,10 +204,11 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       );
     });
 
-    for (const age of [1, 15, 16, 17, 18, 99]) {
+    for (const age of [2, 15, 16, 17, 18, 110]) {
+      const classYear = new Date().getFullYear() - age;
       it(`shows warning when applicant is not in target age group, age: ${age}`, async () => {
         const application = fakeActivatedYouthApplication({
-          social_security_number: FinnishSSN.createWithAge(age),
+          social_security_number: fakeSSN(classYear),
         });
         expectToGetYouthApplication(application);
         await renderPage(HandlerIndex, {

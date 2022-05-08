@@ -56,9 +56,10 @@ export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
   const outsideHelsinki = PostitoimipaikkaS?.toLowerCase() !== 'helsinki';
   const differentPostCode = Postinumero !== postcode;
 
-  const { ageInYears: age } = FinnishSSN.parse(
+  const { dateOfBirth } = FinnishSSN.parse(
     vtjData.Henkilo.Henkilotunnus['#text']
   );
+  const age = new Date().getFullYear() - dateOfBirth.getFullYear();
   const notInTargetAgeGroup = ![16, 17].includes(age);
 
   const isDead = vtjData.Henkilo.Kuolintiedot.Kuollut === '1';

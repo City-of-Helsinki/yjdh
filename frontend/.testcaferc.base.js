@@ -29,10 +29,10 @@ module.exports = (envPath) => {
     },
     retryTestPages: true,
     hostname: 'localhost',
-    assertionTimeout: 5_000,
-    selectorTimeout: 15_000,
-    pageLoadTimeout: 60_000,
-    ajaxRequestTimeout: 60_000,
+    assertionTimeout: 60_000,
+    selectorTimeout: 30_000,
+    pageLoadTimeout: 90_000,
+    ajaxRequestTimeout: 90_000,
     pageRequestTimeout: 240_000,
     browserInitTimeout: 240_000
   };

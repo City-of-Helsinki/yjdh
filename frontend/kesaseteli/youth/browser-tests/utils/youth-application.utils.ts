@@ -1,7 +1,12 @@
-import { fakeYouthApplication } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
+import {
+  fakeNinethGraderSSN,
+  fakeUpperSecondaryEducation1stYearStudentSSN,
+  fakeYouthApplication,
+  fakeYouthTargetGroupAgeSSN,
+} from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 import YouthApplication from '@frontend/kesaseteli-shared/src/types/youth-application';
+import { fakeSSN } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import DeepPartial from '@frontend/shared/src/types/common/deep-partial';
-import { FinnishSSN } from 'finnish-ssn';
 
 /* Firstname/lastname combinations that cause different replies from VTJ when NEXT_PUBLIC_MOCK_FLAG is on */
 export const isDead = {
@@ -43,14 +48,26 @@ export const attendsUnlistedSchool = {
 
 export const hasAge = (
   age: number
-): Pick<YouthApplication, 'social_security_number'> => ({
-  social_security_number: FinnishSSN.createWithAge(age),
+): Pick<YouthApplication, 'social_security_number'> => {
+  const classYear = new Date().getFullYear() - age;
+  return { social_security_number: fakeSSN(classYear) };
+};
+
+export const is9thGraderAge = (): Pick<
+  YouthApplication,
+  'social_security_number'
+> => ({ social_security_number: fakeNinethGraderSSN() });
+export const isUpperSecondaryEducation1stYearStudentAge = (): Pick<
+  YouthApplication,
+  'social_security_number'
+> => ({
+  social_security_number: fakeUpperSecondaryEducation1stYearStudentSSN(),
 });
 
-export const is9thGraderAge = (): ReturnType<typeof hasAge> => hasAge(16);
-export const isUpperSecondaryEducation1stYearStudentAge = (): ReturnType<
-  typeof hasAge
-> => hasAge(17);
+export const isYouthTargetGroupAge = (): Pick<
+  YouthApplication,
+  'social_security_number'
+> => ({ social_security_number: fakeYouthTargetGroupAgeSSN() });
 
 // valid application which is automatically accepted by default (when no override values)
 export const autoAcceptedApplication = (
