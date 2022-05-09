@@ -18,24 +18,23 @@ class Header<
     Selector('div[class*="NavigationActions"]')
   );
 
-  public getUserInfo(user?: User): string {
+  private getUserInfo(user?: User): string {
     return `${this.translations.header.userAriaLabelPrefix ?? ''} ${
       isRealIntegrationsEnabled() ? 'Mika Hietanen' : user?.name ?? ''
     }`;
   }
 
-  private headerTitle = this.within(this.component.findByRole('banner'))
-    .findAllByText(this.translations.appName)
-    .nth(0);
-
-  public async isLoaded(timeout?: number): Promise<void> {
-    await super.isLoaded(timeout);
-    return this.expect(this.headerTitle);
+  private headerTitle(): Selector {
+    return this.within(this.component.findByRole('banner'))
+      .findAllByText(this.translations.appName)
+      .nth(0);
   }
 
-  private languageSelector = this.withinNavigationActions.findByRole('button', {
-    name: this.translations.header.languageMenuButtonAriaLabel,
-  });
+  private languageSelector(): SelectorPromise {
+    return this.withinNavigationActions.findByRole('button', {
+      name: this.translations.header.languageMenuButtonAriaLabel,
+    });
+  }
 
   private languageSelectorItem(toLang: Language): SelectorPromise {
     return this.withinNavigationActions.findByRole('link', {
@@ -43,9 +42,16 @@ class Header<
     });
   }
 
-  private loginButton = this.withinNavigationActions.findByRole('button', {
-    name: this.translations.header?.loginLabel,
-  });
+  public async isLoaded(timeout?: number): Promise<void> {
+    await super.isLoaded(timeout);
+    return this.expect(this.headerTitle());
+  }
+
+  private loginButton(): SelectorPromise {
+    return this.withinNavigationActions.findByRole('button', {
+      name: this.translations.header?.loginLabel,
+    });
+  }
 
   private userInfoDropdown(user?: User): SelectorPromise {
     return this.withinNavigationActions.findByRole('button', {
@@ -53,30 +59,32 @@ class Header<
     });
   }
 
-  private logoutButton = this.withinNavigationActions.findByRole('link', {
-    name: this.regexp(this.translations.header?.logoutLabel ?? ''),
-  });
+  private logoutButton(): SelectorPromise {
+    return this.withinNavigationActions.findByRole('link', {
+      name: this.regexp(this.translations.header?.logoutLabel ?? ''),
+    });
+  }
 
   public userIsLoggedIn(user: User): Promise<void> {
     return this.expect(this.userInfoDropdown(user));
   }
 
   public userIsLoggedOut(): Promise<void> {
-    return this.expect(this.loginButton);
+    return this.expect(this.loginButton());
   }
 
   public async changeLanguage(toLang: Language): Promise<void> {
     return t
-      .click(this.languageSelector)
+      .click(this.languageSelector())
       .click(this.languageSelectorItem(toLang));
   }
 
   public clickLoginButton(): Promise<void> {
-    return t.click(this.loginButton);
+    return t.click(this.loginButton());
   }
 
   public async clickLogoutButton(user?: User): Promise<void> {
-    return t.click(this.userInfoDropdown(user)).click(this.logoutButton);
+    return t.click(this.userInfoDropdown(user)).click(this.logoutButton());
   }
 }
 
