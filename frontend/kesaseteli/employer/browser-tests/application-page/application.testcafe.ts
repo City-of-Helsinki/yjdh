@@ -45,10 +45,6 @@ if (isRealIntegrationsEnabled()) {
     await header.isLoaded();
     await header.clickLogoutButton();
     await doEmployerLogin(t, 'fi', user);
-    await urlUtils.expectations.urlChangedToApplicationPage(
-      'fi',
-      applicationId
-    );
     const step1Form = await step1Components.form();
     await step1Form.expectations.isFulFilledWith(application);
   });
@@ -56,10 +52,6 @@ if (isRealIntegrationsEnabled()) {
   test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
     const { id: applicationId, ...step1FormData } =
       await loginAndfillApplication(t, 1);
-    await urlUtils.expectations.urlChangedToApplicationPage(
-      'fi',
-      applicationId
-    );
     const wizard = await getWizardComponents(t);
     await wizard.expectations.isPresent();
     await urlUtils.actions.refreshPage();
@@ -82,7 +74,6 @@ test('can fill and send application and create another', async (t: TestControlle
   const createNewApplicationButton =
     await thankYouPage.createNewApplicationButton();
   await createNewApplicationButton.actions.clickButton();
-  await urlUtils.expectations.urlChangedToApplicationPage();
   await getWizardComponents(t);
   await urlUtils.expectations.urlHasNewApplicationId(application.id);
 });
