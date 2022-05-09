@@ -1,19 +1,23 @@
-import { useEffect } from 'react';
 import Router from 'next/router';
-const useLeaveConfirm = (unsavedChanges: boolean, message: string) => {
+import { useEffect } from 'react';
+
+const useLeaveConfirm = (unsavedChanges: boolean, message: string): void => {
   useEffect(() => {
-    const routeChangeStart = (url: string) => {
-      if (Router.asPath !== url && unsavedChanges && !confirm(message)) {
+    const routeChangeStart = (url: string): void => {
+      // eslint-disable-next-line no-alert
+      if (Router.asPath !== url && unsavedChanges && !window.confirm(message)) {
         Router.events.emit('routeChangeError');
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw 'Abort route change. Please ignore this error.';
       }
     };
 
-    const beforeunload = (e: Event) => {
+    const beforeunload = (e: Event): string | null => {
       if (unsavedChanges) {
         e.preventDefault();
         return message;
       }
+      return null;
     };
 
     window.addEventListener('beforeunload', beforeunload);
@@ -23,7 +27,7 @@ const useLeaveConfirm = (unsavedChanges: boolean, message: string) => {
       window.removeEventListener('beforeunload', beforeunload);
       Router.events.off('routeChangeStart', routeChangeStart);
     };
-  }, [unsavedChanges]);
+  }, [message, unsavedChanges]);
 };
 
 export default useLeaveConfirm;
