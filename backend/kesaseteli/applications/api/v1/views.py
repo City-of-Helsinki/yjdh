@@ -34,6 +34,7 @@ from applications.api.v1.serializers import (
     EmployerSummerVoucherSerializer,
     SchoolSerializer,
     YouthApplicationAdditionalInfoSerializer,
+    YouthApplicationHandlingSerializer,
     YouthApplicationSerializer,
     YouthApplicationStatusSerializer,
 )
@@ -135,6 +136,14 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
     @enforce_handler_view_adfs_login
     def retrieve(self, request, *args, **kwargs):
+        youth_application: YouthApplication = self.get_object()
+        # Update unhandled youth applications' encrypted_handler_vtj_json so
+        # handlers can accept/reject using it
+        if not youth_application.is_handled:
+            youth_application.encrypted_handler_vtj_json = (
+                youth_application.fetch_vtj_json()
+            )
+            youth_application.save(update_fields=["encrypted_handler_vtj_json"])
         return super().retrieve(request, *args, **kwargs)
 
     @action(methods=["get"], detail=True)
@@ -196,8 +205,24 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def accept(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
+        try:
+            serializer = YouthApplicationHandlingSerializer(
+                data=request.data, context=self.get_serializer_context()
+            )
+            serializer.is_valid(raise_exception=True)
+        except ValidationError as e:
+            LOGGER.error(
+                f"Youth application was not changed to accepted state because of "
+                f"validation error. Validation error codes: {str(e.get_codes())}"
+            )
+            raise
+
+        encrypted_handler_vtj_json = serializer.validated_data[
+            "encrypted_handler_vtj_json"
+        ]
+
         if not youth_application.is_accepted and youth_application.accept_manually(
-            handler=request.user
+            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
         ):
             was_email_sent = (
                 youth_application.youth_summer_voucher.send_youth_summer_voucher_email(
@@ -222,8 +247,24 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def reject(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
+        try:
+            serializer = YouthApplicationHandlingSerializer(
+                data=request.data, context=self.get_serializer_context()
+            )
+            serializer.is_valid(raise_exception=True)
+        except ValidationError as e:
+            LOGGER.error(
+                f"Youth application was not changed to rejected state because of "
+                f"validation error. Validation error codes: {str(e.get_codes())}"
+            )
+            raise
+
+        encrypted_handler_vtj_json = serializer.validated_data[
+            "encrypted_handler_vtj_json"
+        ]
+
         if not youth_application.is_rejected and youth_application.reject(
-            handler=request.user
+            handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
         ):
             with self.record_action(additional_information="reject"):
                 return HttpResponse(status=status.HTTP_200_OK)
@@ -348,6 +389,20 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
             # Send the localized activation/additional info request email
             youth_application = serializer.instance
+
+            # Fetch the VTJ JSON data and save it
+            youth_application.encrypted_original_vtj_json = (
+                youth_application.fetch_vtj_json()
+            )
+            youth_application.encrypted_handler_vtj_json = (
+                youth_application.encrypted_original_vtj_json
+            )
+            youth_application.save(
+                update_fields=[
+                    "encrypted_original_vtj_json",
+                    "encrypted_handler_vtj_json",
+                ]
+            )
 
             if settings.DISABLE_VTJ:
                 was_email_sent = youth_application.send_activation_email(

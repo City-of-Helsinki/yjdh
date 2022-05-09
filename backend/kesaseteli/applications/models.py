@@ -7,7 +7,7 @@ from urllib.parse import quote, urljoin
 import jsonpath_ng
 import sequences
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
@@ -19,6 +19,7 @@ from encrypted_fields.fields import EncryptedCharField, SearchField
 from requests.exceptions import ReadTimeout
 from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
 from shared.common.validators import (
+    validate_json,
     validate_name,
     validate_optional_json,
     validate_phone_number,
@@ -238,6 +239,29 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 return vtj_test_case
         return ""
 
+    @staticmethod
+    def get_mocked_vtj_json_for_vtj_test_case(
+        vtj_test_case, first_name, last_name, social_security_number
+    ):
+        if vtj_test_case == VtjTestCase.NOT_FOUND.value:
+            return mock_vtj_person_id_query_not_found_content()
+        elif vtj_test_case == VtjTestCase.NO_ANSWER.value:
+            return None
+        else:
+            return mock_vtj_person_id_query_found_content(
+                first_name=first_name,
+                last_name=(
+                    "VTJ-palvelun palauttama eri sukunimi"
+                    if vtj_test_case == VtjTestCase.WRONG_LAST_NAME.value
+                    else last_name
+                ),
+                social_security_number=social_security_number,
+                is_alive=vtj_test_case != VtjTestCase.DEAD.value,
+                is_home_municipality_helsinki=(
+                    vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI.value
+                ),
+            )
+
     def fetch_vtj_json(self):
         if settings.DISABLE_VTJ:
             # Not fetching data because VTJ integration is disabled and not mocked
@@ -245,23 +269,14 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         elif settings.NEXT_PUBLIC_MOCK_FLAG:
             # VTJ integration enabled and mocked
             if self.is_vtj_test_case:
-                if self.vtj_test_case == VtjTestCase.NOT_FOUND:
-                    return mock_vtj_person_id_query_not_found_content()
-                elif self.vtj_test_case == VtjTestCase.NO_ANSWER:
+                if self.vtj_test_case == VtjTestCase.NO_ANSWER.value:
                     raise ReadTimeout()
                 else:
-                    return mock_vtj_person_id_query_found_content(
+                    return YouthApplication.get_mocked_vtj_json_for_vtj_test_case(
+                        vtj_test_case=self.vtj_test_case,
                         first_name=self.first_name,
-                        last_name=(
-                            "VTJ-palvelun palauttama eri sukunimi"
-                            if self.vtj_test_case == VtjTestCase.WRONG_LAST_NAME
-                            else self.last_name
-                        ),
+                        last_name=self.last_name,
                         social_security_number=self.social_security_number,
-                        is_alive=self.vtj_test_case != VtjTestCase.DEAD,
-                        is_home_municipality_helsinki=(
-                            self.vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI
-                        ),
                     )
             else:
                 return mock_vtj_person_id_query_not_found_content()
@@ -272,10 +287,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             )
 
     def _vtj_values(self, jsonpath_expression) -> list:
-        if self.encrypted_vtj_json in [None, ""]:
-            self.encrypted_vtj_json = self.fetch_vtj_json()
         try:
-            vtj_json = json.loads(self.encrypted_vtj_json)
+            vtj_json = json.loads(self.encrypted_original_vtj_json)
         except (json.decoder.JSONDecodeError, TypeError):
             return []
 
@@ -483,12 +496,21 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 raise ValueError("Forbidden empty handler")
 
     @transaction.atomic
-    def _handle(self, status: YouthApplicationStatus, handler, automatic_handling):
+    def _handle(
+        self,
+        status: YouthApplicationStatus,
+        handler,
+        encrypted_handler_vtj_json,
+        automatic_handling,
+    ):
         """
-        Handle the youth application by setting the status, handler and handled_at.
+        Handle the youth application by setting the status, encrypted_handler_vtj_json,
+        handler and handled_at.
 
         :param status: The target status
         :type status: YouthApplicationStatus
+        :param encrypted_handler_vtj_json: The VTJ JSON the handler used for handling
+        :type encrypted_handler_vtj_json: str
         :param handler: Handler user
         :type handler: None | AnonymousUser | User
         """
@@ -496,6 +518,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             raise ValueError(f"Invalid handle status: {status}")
         self.status = status
         self._set_handler(handler, automatic_handling)
+        self.encrypted_handler_vtj_json = encrypted_handler_vtj_json
         self.handled_at = timezone.now()
         self.save()
 
@@ -515,13 +538,18 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         )
 
     @property
+    def is_handled(self) -> bool:
+        return self.status in YouthApplicationStatus.handled_values()
+
+    @property
     def is_accepted(self) -> bool:
         return self.status == YouthApplicationStatus.ACCEPTED
 
-    def can_accept_manually(self, handler) -> bool:
+    def can_accept_manually(self, handler, encrypted_handler_vtj_json) -> bool:
         return (
             self.status in YouthApplicationStatus.acceptable_values()
             and HandlerPermission.has_user_permission(handler)
+            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
             and not self.has_youth_summer_voucher
         )
 
@@ -537,23 +565,38 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             self._handle(
                 status=YouthApplicationStatus.ACCEPTED,
                 handler=None,
+                encrypted_handler_vtj_json=self.encrypted_original_vtj_json,
                 automatic_handling=True,
             )
             self.create_youth_summer_voucher()
         return self.is_accepted
 
+    @classmethod
+    def is_valid_encrypted_handler_vtj_json(cls, encrypted_handler_vtj_json):
+        try:
+            validate_json(encrypted_handler_vtj_json)
+        except ValidationError:
+            return False
+        vtj_json_dict = json.loads(encrypted_handler_vtj_json)
+        return (
+            "@xmlns" in vtj_json_dict and "vtjkysely" in vtj_json_dict["@xmlns"]
+        ) or (vtj_json_dict == {} and settings.DISABLE_VTJ)
+
     @transaction.atomic
-    def accept_manually(self, handler) -> bool:
+    def accept_manually(self, handler, encrypted_handler_vtj_json) -> bool:
         """
-        Accept this youth application manually using given handler user if possible.
-        Create related YouthSummerVoucher if changed to accepted.
+        Accept this youth application manually using given handler user and handler VTJ
+        JSON if possible. Create related YouthSummerVoucher if changed to accepted.
 
         :return: self.is_accepted
         """
-        if self.can_accept_manually(handler=handler):
+        if self.can_accept_manually(
+            handler=handler, encrypted_handler_vtj_json=encrypted_handler_vtj_json
+        ):
             self._handle(
                 status=YouthApplicationStatus.ACCEPTED,
                 handler=handler,
+                encrypted_handler_vtj_json=encrypted_handler_vtj_json,
                 automatic_handling=False,
             )
             self.create_youth_summer_voucher()
@@ -563,23 +606,28 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     def is_rejected(self) -> bool:
         return self.status == YouthApplicationStatus.REJECTED
 
-    def can_reject(self, handler) -> bool:
+    def can_reject(self, handler, encrypted_handler_vtj_json) -> bool:
         return (
             self.status in YouthApplicationStatus.rejectable_values()
             and HandlerPermission.has_user_permission(handler)
+            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
         )
 
     @transaction.atomic
-    def reject(self, handler) -> bool:
+    def reject(self, handler, encrypted_handler_vtj_json) -> bool:
         """
-        Reject youth application using given handler user if possible.
+        Reject youth application using given handler user and handler VTJ JSON if
+        possible.
 
         :return: self.is_rejected
         """
-        if self.can_reject(handler=handler):
+        if self.can_reject(
+            handler=handler, encrypted_handler_vtj_json=encrypted_handler_vtj_json
+        ):
             self._handle(
                 status=YouthApplicationStatus.REJECTED,
                 handler=handler,
+                encrypted_handler_vtj_json=encrypted_handler_vtj_json,
                 automatic_handling=False,
             )
         return self.is_rejected
@@ -655,8 +703,8 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     @property
     def can_accept_automatically(self) -> bool:
         return (
-            self.status not in YouthApplicationStatus.handled_values()
-            and self.is_active
+            self.is_active
+            and not self.is_handled
             and not self.need_additional_info
             and not self.has_youth_summer_voucher
         )
