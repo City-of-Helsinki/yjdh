@@ -12,7 +12,7 @@ import Classification from 'tet/admin/components/editor/classification/Classific
 import { DevTool } from '@hookform/devtools';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
-import useLeaveConfirm from 'tet/admin/hooks/useLeaveConfirm';
+import useLeaveConfirm from 'shared/hooks/useLeaveConfirm';
 
 type EditorProps = {
   // eslint-disable-next-line react/require-default-props
@@ -32,7 +32,8 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
     criteriaMode: 'all',
     defaultValues: initialValue || initialPosting,
   });
-  useLeaveConfirm(methods.formState.isDirty);
+  const message = t('common:editor.leaveConfirm');
+  useLeaveConfirm(methods.formState.isDirty, message);
 
   return (
     <>

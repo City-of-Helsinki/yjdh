@@ -1,22 +1,17 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
-import { useTranslation } from 'next-i18next';
-const useLeaveConfirm = (unsavedChanges: boolean) => {
-  const { t } = useTranslation();
-  const message = t('common:editor.leaveConfirm');
-
+const useLeaveConfirm = (unsavedChanges: boolean, message: string) => {
   useEffect(() => {
-    const routeChangeStart = (url) => {
+    const routeChangeStart = (url: string) => {
       if (Router.asPath !== url && unsavedChanges && !confirm(message)) {
         Router.events.emit('routeChangeError');
         throw 'Abort route change. Please ignore this error.';
       }
     };
 
-    const beforeunload = (e) => {
+    const beforeunload = (e: Event) => {
       if (unsavedChanges) {
         e.preventDefault();
-        e.returnValue = message;
         return message;
       }
     };
