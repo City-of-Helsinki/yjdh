@@ -1,11 +1,11 @@
 import {
   fakeNinethGraderSSN,
+  fakeSSN,
   fakeUpperSecondaryEducation1stYearStudentSSN,
   fakeYouthApplication,
   fakeYouthTargetGroupAgeSSN,
 } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 import YouthApplication from '@frontend/kesaseteli-shared/src/types/youth-application';
-import { fakeSSN } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import DeepPartial from '@frontend/shared/src/types/common/deep-partial';
 
 /* Firstname/lastname combinations that cause different replies from VTJ when NEXT_PUBLIC_MOCK_FLAG is on */
