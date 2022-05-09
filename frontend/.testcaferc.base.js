@@ -31,7 +31,7 @@ module.exports = (envPath) => {
     hostname: 'localhost',
     assertionTimeout: 60_000,
     selectorTimeout: 30_000,
-    pageLoadTimeout: 90_000,
+    pageLoadTimeout: 120_000,
     ajaxRequestTimeout: 90_000,
     pageRequestTimeout: 240_000,
     browserInitTimeout: 240_000
