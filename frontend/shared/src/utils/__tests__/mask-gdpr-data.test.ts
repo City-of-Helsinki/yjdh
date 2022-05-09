@@ -5,7 +5,6 @@ import {
   fakeCompany,
 } from 'shared/__tests__/utils/fake-objects';
 import maskGDPRData from 'shared/utils/mask-gdpr-data';
-import { fakeYouthTargetGroupAgeSSN } from '@frontend/kesaseteli-shared/src/__tests__/utils/fake-objects';
 
 const masked = (str?: string): string => '*'.repeat(str?.length ?? 0);
 
@@ -14,7 +13,9 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
     const youthApplication = {
       first_name: faker.name.firstName(),
       last_name: faker.name.lastName(),
-      social_security_number: fakeYouthTargetGroupAgeSSN(),
+      social_security_number: FinnishSSN.createWithAge(
+        faker.datatype.number({ min: 16, max: 17 })
+      ),
       postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
       unlistedSchool: faker.commerce.department(),
       is_unlisted_school: true,

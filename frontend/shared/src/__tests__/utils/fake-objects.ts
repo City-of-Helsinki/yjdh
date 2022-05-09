@@ -1,5 +1,4 @@
 import faker from 'faker';
-import { FinnishSSN } from 'finnish-ssn';
 import fs from 'fs';
 import path from 'path';
 
@@ -160,27 +159,3 @@ export const fakeApplications = (
   count = faker.datatype.number(10)
 ): Application[] =>
   generateArray(() => fakeApplication(faker.datatype.uuid()), count);
-
-/**
- * A bit complicated algorithm that tries to find ssn with certain year of birth using `FinnishSSN.createWithAge` function.
- * We use FinnishSSN library because it's easier and less error-prone than build a custom ssn function.
- * The problem with the function is that if today is 01.06.22 and
- * - we use value `FinnishSSN.createWithAge(16)` then valid birthdays would be 2.6.2005-31.5.2006
- * - we use value `FinnishSSN.createWithAge(15)` then valid birthdays would be 1.6.2006-31.5.2007
- * The idea is to generate ssns with `FinnishSSN.createWithAge` function for 15-16 year old
- * multiple times until we find first SSN with birth year of 2006
- */
-export const fakeSSN = (yearOfBirth: number): string => {
-  const yearOfBirthAge = new Date().getFullYear() - yearOfBirth;
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < 100; i++) {
-    const ssn = FinnishSSN.createWithAge(
-      faker.datatype.number({ min: yearOfBirthAge - 1, max: yearOfBirthAge })
-    );
-    const { dateOfBirth } = FinnishSSN.parse(ssn);
-    if (dateOfBirth.getFullYear() === yearOfBirth) {
-      return ssn;
-    }
-  }
-  throw new Error("Something went wrong, couldn't find any suitable ssn!");
-};

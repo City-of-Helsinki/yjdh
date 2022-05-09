@@ -1,4 +1,3 @@
-import { FinnishSSN } from 'finnish-ssn';
 import { axe } from 'jest-axe';
 import {
   expectToGetYouthApplication,
@@ -14,6 +13,7 @@ import {
   fakeActivatedYouthApplication,
   fakeExpiredVtjAddress,
   fakeFutureVtjAddress,
+  fakeSSN,
   fakeValidVtjAddress,
   fakeYouthTargetGroupAge,
   fakeYouthTargetGroupAgeSSN,
@@ -27,7 +27,6 @@ import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import { convertToUIDateAndTimeFormat } from 'shared/utils/date.utils';
-import { fakeSSN } from 'shared/__tests__/utils/fake-objects';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {

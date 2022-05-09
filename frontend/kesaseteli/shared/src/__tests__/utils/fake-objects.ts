@@ -1,7 +1,4 @@
-import {
-  fakeSSN,
-  getRandomSubArray,
-} from '@frontend/shared/src/__tests__/utils/fake-objects';
+import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import DeepPartial from '@frontend/shared/src/types/common/deep-partial';
 import {
@@ -26,7 +23,6 @@ import CreatedYouthApplication from '../../types/created-youth-application';
 import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
-import { isUpperSecondaryEducation1stYearStudentAge } from '@frontend/youth/browser-tests/utils/youth-application.utils';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -107,6 +103,60 @@ export const fakeSchools: string[] = [
   'Åshöjdens grundskola',
   'Östersundom skola',
 ];
+
+const ninethGraderYear = new Date().getFullYear() - 16;
+const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
+
+/**
+ * A bit complicated algorithm that tries to find ssn with certain year of birth using `FinnishSSN.createWithAge` function.
+ * We use FinnishSSN library because it's easier and less error-prone than build a custom ssn function.
+ * The problem with the function is that if today is 01.06.22 and
+ * - we use value `FinnishSSN.createWithAge(16)` then valid birthdays would be 2.6.2005-31.5.2006
+ * - we use value `FinnishSSN.createWithAge(15)` then valid birthdays would be 1.6.2006-31.5.2007
+ * The idea is to generate ssns with `FinnishSSN.createWithAge` function for 15-16 year old
+ * multiple times until we find first SSN with birth year of 2006
+ */
+export const fakeSSN = (yearOfBirth: number): string => {
+  const yearOfBirthAge = new Date().getFullYear() - yearOfBirth;
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < 100; i++) {
+    const ssn = FinnishSSN.createWithAge(
+      faker.datatype.number({ min: yearOfBirthAge - 1, max: yearOfBirthAge })
+    );
+    const { dateOfBirth } = FinnishSSN.parse(ssn);
+    if (dateOfBirth.getFullYear() === yearOfBirth) {
+      return ssn;
+    }
+  }
+  throw new Error("Something went wrong, couldn't find any suitable ssn!");
+};
+
+export const fakeNinethGraderSSN = (): string => fakeSSN(ninethGraderYear);
+
+export const fakeUpperSecondaryEducation1stYearStudentSSN = (): string =>
+  fakeSSN(upperSecondaryEducation1stYearStudentYear);
+
+export const fakeYouthTargetGroupAgeSSN = (): string =>
+  fakeSSN(
+    faker.datatype.number({
+      min: upperSecondaryEducation1stYearStudentYear,
+      max: ninethGraderYear,
+    })
+  );
+
+type TargetGroupData = {
+  social_security_number: string;
+  age: number;
+};
+
+export const fakeYouthTargetGroupAge = (): TargetGroupData => {
+  const social_security_number = fakeYouthTargetGroupAgeSSN();
+  const { ageInYears } = FinnishSSN.parse(social_security_number);
+  return {
+    social_security_number,
+    age: ageInYears,
+  };
+};
 
 export const fakeYouthApplication = (
   override?: DeepPartial<YouthApplication>
@@ -267,33 +317,4 @@ export const fakeActivatedYouthApplication = (
     },
     override
   );
-};
-
-const ninethGraderYear = new Date().getFullYear() - 16;
-const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
-
-export const fakeNinethGraderSSN = () => {
-  return fakeSSN(ninethGraderYear);
-};
-
-export const fakeUpperSecondaryEducation1stYearStudentSSN = () => {
-  return fakeSSN(upperSecondaryEducation1stYearStudentYear);
-};
-
-export const fakeYouthTargetGroupAgeSSN = () => {
-  return fakeSSN(
-    faker.datatype.number({
-      min: upperSecondaryEducation1stYearStudentYear,
-      max: ninethGraderYear,
-    })
-  );
-};
-
-export const fakeYouthTargetGroupAge = () => {
-  const social_security_number = fakeYouthTargetGroupAgeSSN();
-  const { ageInYears } = FinnishSSN.parse(social_security_number);
-  return {
-    social_security_number,
-    age: ageInYears,
-  };
 };
