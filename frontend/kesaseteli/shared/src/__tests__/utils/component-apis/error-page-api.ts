@@ -16,21 +16,20 @@ const ErrorPageApi = {
     },
   },
   actions: {
-    clickToRefreshPage: async (): Promise<void> => {
+    clickToRefreshPage: async (): Promise<void> =>
       userEvent.click(
         screen.getByRole('button', {
           name: /(lataa sivu uudelleen)|(errorpage.retry)/i,
         })
-      );
-    },
+      ),
     clickLogoutButton: async (): Promise<void> => {
       const logout = expectToLogout();
-      userEvent.click(
+      await userEvent.click(
         screen.getByRole('button', {
           name: /(kirjaudu ulos)|(errorpage.logout)/i,
         })
       );
-      await waitFor(() => logout.done());
+      return waitFor(() => logout.done());
     },
   },
 };

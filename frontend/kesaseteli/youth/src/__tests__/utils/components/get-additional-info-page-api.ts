@@ -71,7 +71,7 @@ const getAdditionalInfoPageApi = (
           const option = await screen.findByText(
             translations.additionalInfo.reasons[reason]
           );
-          userEvent.click(option);
+          await userEvent.click(option);
         }
         application.additional_info_user_reasons = reasons;
       },
@@ -81,9 +81,9 @@ const getAdditionalInfoPageApi = (
             translations.additionalInfo.form.additional_info_description
           ),
         });
-        userEvent.clear(textArea);
+        await userEvent.clear(textArea);
         if (description?.length > 0) {
-          userEvent.type(textArea, description);
+          await userEvent.type(textArea, description);
         }
         (application as AdditionalInfoApplication).additional_info_description =
           description;
@@ -107,7 +107,7 @@ const getAdditionalInfoPageApi = (
             status: 'additional_information_provided',
           });
         }
-        userEvent.click(
+        await userEvent.click(
           screen.getByRole('button', {
             name: translations.additionalInfo.form.sendButton,
           })

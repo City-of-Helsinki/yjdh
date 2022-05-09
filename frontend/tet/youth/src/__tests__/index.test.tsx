@@ -52,9 +52,9 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
       const searchField = screen.getByTestId('quickSearchInput');
       const startField = screen.getByTestId('startInput');
 
-      userEvent.type(searchField, text);
-      userEvent.type(startField, start);
-      userEvent.click(
+      await userEvent.type(searchField, text);
+      await userEvent.type(startField, start);
+      await userEvent.click(
         screen.getByRole('button', {
           name: new RegExp(translations.frontPage.fetch, 'i'),
         }),
@@ -75,7 +75,7 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
       const spyPush = jest.fn();
       await renderPage(IndexPage, { push: spyPush });
 
-      userEvent.click(
+      await userEvent.click(
         screen.getByRole('button', {
           name: new RegExp(translations.frontPage.fetch, 'i'),
         }),

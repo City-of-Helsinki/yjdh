@@ -157,9 +157,7 @@ const getIndexPageApi = async (
     },
   };
   const actions = {
-    clickCompleteButton: (type: CompleteOperation['type']): void => {
-      userEvent.click(screen.getByTestId(`${type}-button`));
-    },
+    clickCompleteButton: (type: CompleteOperation['type']): Promise<void> => userEvent.click(screen.getByTestId(`${type}-button`)),
     clickConfirmButton: async (
       type: CompleteOperation['type'],
       errorCode?: 400 | 500
@@ -183,16 +181,16 @@ const getIndexPageApi = async (
         });
       }
       const dialog = await screen.findByRole('dialog');
-      userEvent.click(
+      await userEvent.click(
         within(dialog).getByRole('button', {
           name: translations.dialog[type].submit,
         })
       );
       await waitForBackendRequestsToComplete();
     },
-    clickCancelButton: async () => {
+    clickCancelButton: async (): Promise<void> => {
       const dialog = await screen.findByRole('dialog');
-      userEvent.click(
+      return userEvent.click(
         within(dialog).getByRole('button', { name: translations.dialog.cancel })
       );
     },

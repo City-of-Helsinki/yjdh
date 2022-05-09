@@ -142,20 +142,20 @@ const getIndexPageApi = (lang?: Language) => {
       },
     },
     actions: {
-      typeInput(key: YouthFormFields, value: string): void {
+      typeInput(key: YouthFormFields, value: string): Promise<void> {
         const input = screen.getByRole('textbox', {
           name: regexp(translations.youthApplication.form[key as InputKey]),
         });
-        userEvent.clear(input);
+        await userEvent.clear(input);
         if (value?.length > 0) {
-          userEvent.type(input, value);
+          await userEvent.type(input, value);
         }
         if (key === 'social_security_number') {
           youthFormData.social_security_number = value?.toUpperCase();
         } else {
           (youthFormData[key] as string) = value;
         }
-        userEvent.click(document.body);
+        return userEvent.click(document.body);
       },
       async typeAndSelectSchoolFromDropdown(
         value: string,
@@ -170,11 +170,11 @@ const getIndexPageApi = (lang?: Language) => {
           },
           { timeout: 10_000 }
         );
-        userEvent.clear(input);
-        userEvent.type(input, value);
+        await userEvent.clear(input);
+        await userEvent.type(input, value);
         const option = expectedOption ?? value;
         const schoolOption = await screen.findByText(new RegExp(option, 'i'));
-        userEvent.click(schoolOption);
+        await userEvent.click(schoolOption);
         expect(input).toHaveValue(option);
         youthFormData.selectedSchool = { name: option ?? value };
       },
@@ -187,7 +187,7 @@ const getIndexPageApi = (lang?: Language) => {
         const checkbox = screen.getByRole('checkbox', {
           name: regexp(translations.youthApplication.form[key as InputKey]),
         });
-        userEvent.click(checkbox);
+        await userEvent.click(checkbox);
         youthFormData[key] = Boolean(checkbox.getAttribute('value'));
       },
       async clickSaveButton({
@@ -207,7 +207,7 @@ const getIndexPageApi = (lang?: Language) => {
         const button = await screen.findByRole('button', {
           name: regexp(translations.youthApplication.form.sendButton),
         });
-        userEvent.click(button);
+        await userEvent.click(button);
 
         if (backendExpectation) {
           await waitFor(() => {
@@ -233,7 +233,7 @@ const getIndexPageApi = (lang?: Language) => {
         const link = await screen.findByRole('button', {
           name: translations.youthApplication.form.forceSubmitLink,
         });
-        userEvent.click(link);
+        await userEvent.click(link);
         if (backendExpectation) {
           await waitFor(() => {
             response.done();

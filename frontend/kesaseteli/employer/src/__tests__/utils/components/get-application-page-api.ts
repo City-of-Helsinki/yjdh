@@ -28,10 +28,10 @@ type Step1Api = {
     inputHasError: (key: keyof Application, errorText: RegExp) => Promise<void>;
   };
   actions: StepActions & {
-    typeContactPersonName: (name: string) => void;
-    typeContactPersonEmail: (email: string) => void;
-    typeStreetAddress: (streetAddress: string) => void;
-    typeContactPersonPhone: (phoneNumber: string) => void;
+    typeContactPersonName: (name: string) => Promise<void>;
+    typeContactPersonEmail: (email: string) => Promise<void>;
+    typeStreetAddress: (streetAddress: string) => Promise<void>;
+    typeContactPersonPhone: (phoneNumber: string) => Promise<void>;
   };
 };
 
@@ -94,7 +94,7 @@ const waitForPreviousButtonIsEnabled = async (): Promise<void> => {
 
 const clickPreviousButton = async (): Promise<void> => {
   await waitForPreviousButtonIsEnabled();
-  userEvent.click(
+  return userEvent.click(
     screen.getByRole('button', {
       name: /(palaa edelliseen)|(application.buttons.previous)/i,
     })
@@ -106,21 +106,25 @@ const getApplicationPageApi = (
 ): ApplicationPageApi => {
   const application = { ...initialApplication };
 
-  const typeInput = (
+  const typeInput = async (
     key: keyof ContactPerson,
     inputLabel: RegExp,
     value: string
-  ): void => {
-    const input = screen.getByRole('textbox', {
+  ): Promise<void> => {
+    const input = screen.getByRole<HTMLInputElement>('textbox', {
       name: inputLabel,
     });
-    userEvent.clear(input);
-    if (value?.length > 0) {
-      userEvent.type(input, value);
+    // for some reason userEvent.clear(input) doesnt work
+    // eslint-disable-next-line no-plusplus
+    for (let i=0; i < application[key]?.length ?? 0; i++) {
+      await userEvent.type(input, '{backspace}');
     }
-    expect(input).toHaveValue(value);
+    if (value?.length > 0) {
+      await userEvent.type(input, value);
+    }
+    expect(input).toHaveValue(value ?? '');
     application[key] = value ?? '';
-    userEvent.click(document.body);
+    return userEvent.click(document.body);
   };
 
   const clickNextButton = async (): Promise<nock.Scope[]> => {
@@ -128,7 +132,7 @@ const getApplicationPageApi = (
     await waitForNextButtonIsEnabled();
     const put = expectToSaveApplication(application);
     const get = expectToGetApplicationFromBackend(application);
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', {
         name: /(tallenna ja jatka)|(application.buttons.next)/i,
       })

@@ -84,7 +84,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
-      indexPageApi.actions.typeInput('postcode', '0123'); // min limit is 5
+      await indexPageApi.actions.typeInput('postcode', '0123'); // min limit is 5
       await indexPageApi.actions.clickSaveButton();
 
       await indexPageApi.expectations.textInputHasError(
@@ -99,11 +99,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
-      indexPageApi.actions.typeInput('first_name', 'a'.repeat(129)); // max limit is 128
-      indexPageApi.actions.typeInput('last_name', 'a'.repeat(129)); // max limit is 128
-      indexPageApi.actions.typeInput('postcode', '123456'); // max limit is 5
-      indexPageApi.actions.typeInput('phone_number', 'a'.repeat(65)); // max limit is 254
-      indexPageApi.actions.typeInput('email', 'a'.repeat(255)); // max limit is 254
+      await indexPageApi.actions.typeInput('first_name', 'a'.repeat(129)); // max limit is 128
+      await indexPageApi.actions.typeInput('last_name', 'a'.repeat(129)); // max limit is 128
+      await indexPageApi.actions.typeInput('postcode', '123456'); // max limit is 5
+      await indexPageApi.actions.typeInput('phone_number', 'a'.repeat(65)); // max limit is 254
+      await indexPageApi.actions.typeInput('email', 'a'.repeat(255)); // max limit is 254
       await indexPageApi.actions.clickSaveButton();
 
       await indexPageApi.expectations.textInputHasError(
@@ -131,14 +131,14 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       const indexPageApi = getIndexPageApi();
       await indexPageApi.expectations.pageIsLoaded();
 
-      indexPageApi.actions.typeInput('first_name', '!#$%&()*+/:;<=>?@');
-      indexPageApi.actions.typeInput('last_name', '~¡¿÷ˆ]+$');
+      await indexPageApi.actions.typeInput('first_name', '!#$%&()*+/:;<=>?@');
+      await indexPageApi.actions.typeInput('last_name', '~¡¿÷ˆ]+$');
       // Note! 170915-915L is a fake ssn. See more info (in finnish only):
       // https://www.tuomas.salste.net/doc/tunnus/henkilotunnus.html#keinotunnus
-      indexPageApi.actions.typeInput('social_security_number', '170915-915L');
-      indexPageApi.actions.typeInput('postcode', 'abcde');
-      indexPageApi.actions.typeInput('phone_number', '+44-20-7011-5555');
-      indexPageApi.actions.typeInput('email', 'aaaa@bbb');
+      await indexPageApi.actions.typeInput('social_security_number', '170915-915L');
+      await indexPageApi.actions.typeInput('postcode', 'abcde');
+      await indexPageApi.actions.typeInput('phone_number', '+44-20-7011-5555');
+      await indexPageApi.actions.typeInput('email', 'aaaa@bbb');
       await indexPageApi.actions.clickSaveButton();
 
       await indexPageApi.expectations.textInputHasError(
@@ -176,13 +176,13 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         'required'
       );
 
-      indexPageApi.actions.typeInput('unlistedSchool', 'a'.repeat(257)); // max limit is 257
+      await indexPageApi.actions.typeInput('unlistedSchool', 'a'.repeat(257)); // max limit is 257
       await indexPageApi.expectations.textInputHasError(
         'unlistedSchool',
         'maxLength'
       );
 
-      indexPageApi.actions.typeInput('unlistedSchool', '!#$%&()*+/:;<=>?@');
+      await indexPageApi.actions.typeInput('unlistedSchool', '!#$%&()*+/:;<=>?@');
       await indexPageApi.expectations.textInputHasError(
         'unlistedSchool',
         'pattern'
@@ -316,7 +316,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         ),
       });
       await indexPageApi.expectations.forceSubmitLinkIsPresent();
-      indexPageApi.actions.typeInput('email', 'other@mail.com');
+      await indexPageApi.actions.typeInput('email', 'other@mail.com');
       indexPageApi.expectations.forceSubmitLinkIsNotPresent();
     });
 
