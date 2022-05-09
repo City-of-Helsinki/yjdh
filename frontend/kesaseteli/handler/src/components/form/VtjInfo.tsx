@@ -15,8 +15,12 @@ type Props = {
 
 const VtjInfo: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
-  const { encrypted_vtj_json, social_security_number, last_name, postcode } =
-    application;
+  const {
+    encrypted_vtj_json: vtjData,
+    social_security_number,
+    last_name,
+    postcode,
+  } = application;
 
   // TODO: Remove example data when backend part is implemented
 
@@ -142,7 +146,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
   //   }
   // }`);
 
-  if (!encrypted_vtj_json) {
+  if (!vtjData || !('Henkilo' in vtjData)) {
     return (
       <VtjErrorNotification
         reason="notFound"
@@ -204,7 +208,7 @@ const VtjInfo: React.FC<Props> = ({ application }) => {
                 <VtjErrorMessage reason="outsideHelsinki" />
               )}
             </Field>
-            <VtjRawDataAccordion data={encrypted_vtj_json} />
+            <VtjRawDataAccordion data={vtjData} />
           </FormSection>
         </$Notification>
       )}
