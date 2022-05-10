@@ -19,6 +19,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
+from shared.vtj.vtj_client import VTJClient
 
 from applications.api.v1.permissions import (
     ALLOWED_APPLICATION_UPDATE_STATUSES,
@@ -141,7 +142,9 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         # handlers can accept/reject using it
         if not youth_application.is_handled:
             youth_application.encrypted_handler_vtj_json = (
-                youth_application.fetch_vtj_json()
+                youth_application.fetch_vtj_json(
+                    end_user=VTJClient.get_end_user(request)
+                )
             )
             youth_application.save(update_fields=["encrypted_handler_vtj_json"])
         return super().retrieve(request, *args, **kwargs)
@@ -392,7 +395,7 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
 
             # Fetch the VTJ JSON data and save it
             youth_application.encrypted_original_vtj_json = (
-                youth_application.fetch_vtj_json()
+                youth_application.fetch_vtj_json(end_user="")
             )
             youth_application.encrypted_handler_vtj_json = (
                 youth_application.encrypted_original_vtj_json
