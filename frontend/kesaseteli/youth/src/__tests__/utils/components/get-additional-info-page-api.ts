@@ -10,7 +10,7 @@ import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form
 import AdditionalInfoReasonType from 'kesaseteli-shared/types/additional-info-reason-type';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
-import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
+import { fireEvent,screen, userEvent } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 type NotificationType =
@@ -66,12 +66,12 @@ const getAdditionalInfoPageApi = (
         const dropdownToggle = await screen.findByRole('button', {
           name: regexp(translations.additionalInfo.form.reasons),
         });
-        dropdownToggle.click();
+        await userEvent.click(dropdownToggle);
         for (const reason of reasons) {
           const option = await screen.findByText(
             translations.additionalInfo.reasons[reason]
           );
-          await userEvent.click(option);
+          option.click();
         }
         application.additional_info_user_reasons = reasons;
       },

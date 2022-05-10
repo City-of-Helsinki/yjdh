@@ -48,7 +48,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
   });
 
   describe('validating application', () => {
-    it('shows required validation errors', async () => {
+    it.only('shows required validation errors', async () => {
       expectToGetSchoolsFromBackend();
       await renderPage(YouthIndex);
       const indexPageApi = getIndexPageApi();
