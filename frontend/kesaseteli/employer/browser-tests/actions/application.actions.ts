@@ -116,9 +116,6 @@ export const loginAndfillApplication = async (
   const applicationId = await urlUtils.expectations.urlChangedToApplicationPage(
     'fi'
   );
-  if (!applicationId) {
-    throw new Error('application id is missing');
-  }
   const application = fakeApplication(
     applicationId,
     suomiFiData?.company,

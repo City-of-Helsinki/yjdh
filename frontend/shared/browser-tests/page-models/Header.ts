@@ -65,7 +65,7 @@ class Header<
     });
   }
 
-  public userIsLoggedIn(user: User): Promise<void> {
+  public userIsLoggedIn(user?: User): Promise<void> {
     return this.expect(this.userInfoDropdown(user));
   }
 

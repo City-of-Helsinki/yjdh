@@ -17,5 +17,7 @@ export const doEmployerLogin = async (
   const header = new Header(getEmployerTranslationsApi());
   await header.userIsLoggedOut();
   await header.clickLoginButton();
-  return doLogin(t, lang, cachedUser);
+  const suomiFiData = await doLogin(t, lang, cachedUser);
+  await header.userIsLoggedIn(suomiFiData.user ?? cachedUser);
+  return suomiFiData;
 };
