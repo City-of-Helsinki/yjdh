@@ -434,7 +434,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.actionButtonsArePresent();
-        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.actions.clickCompleteButton(operationType);
         await indexPageApi.expectations.showsConfirmDialog(operationType);
         await indexPageApi.actions.clickCancelButton();
         await indexPageApi.expectations.actionButtonsArePresent();
@@ -451,7 +451,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.actionButtonsArePresent();
-        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.actions.clickCompleteButton(operationType);
         await indexPageApi.expectations.showsConfirmDialog(operationType);
         await indexPageApi.actions.clickConfirmButton(operationType);
         await indexPageApi.expectations.statusNotificationIsPresent(status);
@@ -467,7 +467,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.actionButtonsArePresent();
-        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.actions.clickCompleteButton(operationType);
         await indexPageApi.expectations.showsConfirmDialog(operationType);
         await indexPageApi.actions.clickConfirmButton(operationType, 400);
         await headerApi.expectations.errorToastIsShown();
@@ -485,7 +485,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         const indexPageApi = await getIndexPageApi(application);
         await indexPageApi.expectations.actionButtonsArePresent();
-        indexPageApi.actions.clickCompleteButton(operationType);
+        await indexPageApi.actions.clickCompleteButton(operationType);
         await indexPageApi.expectations.showsConfirmDialog(operationType);
         await indexPageApi.actions.clickConfirmButton(operationType, 500);
         await waitFor(() =>
