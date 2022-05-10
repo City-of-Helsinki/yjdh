@@ -153,11 +153,11 @@ def test_youth_application_factory(  # noqa: C901
             if vtj_test_case == VtjTestCase.NO_ANSWER:
                 with pytest.raises(ReadTimeout):
                     youth_application.encrypted_original_vtj_json = (
-                        youth_application.fetch_vtj_json()
+                        youth_application.fetch_vtj_json(end_user="")
                     )
             else:
                 youth_application.encrypted_original_vtj_json = (
-                    youth_application.fetch_vtj_json()
+                    youth_application.fetch_vtj_json(end_user="")
                 )
             youth_application.encrypted_handler_vtj_json = (
                 youth_application.encrypted_original_vtj_json

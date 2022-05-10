@@ -262,7 +262,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 ),
             )
 
-    def fetch_vtj_json(self):
+    def fetch_vtj_json(self, end_user: str):
         if settings.DISABLE_VTJ:
             # Not fetching data because VTJ integration is disabled and not mocked
             return None
@@ -283,7 +283,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         else:
             # VTJ integration is enabled and not mocked
             return json.dumps(
-                VTJClient().get_personal_info(self.social_security_number)
+                VTJClient().get_personal_info(self.social_security_number, end_user)
             )
 
     def _vtj_values(self, jsonpath_expression) -> list:

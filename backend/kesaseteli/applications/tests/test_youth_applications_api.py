@@ -32,6 +32,7 @@ from shared.common.tests.conftest import (
     staff_superuser_client,
     superuser_client,
 )
+from shared.common.tests.factories import UserFactory
 from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
@@ -594,6 +595,61 @@ def test_youth_applications_detail_update_encrypted_handler_vtj_json(
             youth_application.encrypted_handler_vtj_json
             == old_encrypted_handler_vtj_json
         )
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+@pytest.mark.parametrize(
+    "username,user_pk,expected_end_user",
+    [
+        parameter_values
+        for user_pk in ["1234"]
+        for ad_login_uuid in [str(uuid.uuid4())]
+        for parameter_values in [
+            # Username is not a UUID
+            ("", user_pk, user_pk),
+            ("test@example.com", user_pk, user_pk),
+            ("Matti Meikäläinen", user_pk, user_pk),
+            (ad_login_uuid + "5", user_pk, user_pk),
+            (ad_login_uuid[:-1], user_pk, user_pk),
+            # Username is a UUID
+            (ad_login_uuid, user_pk, ad_login_uuid),
+        ]
+    ],
+)
+def test_youth_applications_detail_fetch_vtj_json_end_user(
+    api_client, username, user_pk, expected_end_user
+):
+    user = UserFactory(pk=user_pk, username=username)
+    user.refresh_from_db()
+    assert str(user.pk) == user_pk
+    api_client.force_authenticate(user=user)
+
+    youth_application = AwaitingManualProcessingYouthApplicationFactory.create()
+
+    with mock.patch(
+        "applications.models.YouthApplication.fetch_vtj_json",
+        return_value='{"test": "override"}',
+    ) as mock_fetch_vtj_json:
+        api_client.get(get_detail_url(pk=youth_application.pk))
+        mock_fetch_vtj_json.assert_called_once_with(end_user=expected_end_user)
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    DISABLE_VTJ=False,
+)
+@pytest.mark.django_db
+def test_youth_application_post_fetch_vtj_json_empty_end_user(api_client):
+    youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    with mock.patch(
+        "applications.models.YouthApplication.fetch_vtj_json",
+        return_value=youth_application.encrypted_original_vtj_json,
+    ) as mock_fetch_vtj_json:
+        response = api_client.post(get_list_url(), data)
+        assert response.status_code == status.HTTP_201_CREATED
+        mock_fetch_vtj_json.assert_called_once_with(end_user="")
 
 
 @pytest.mark.django_db
