@@ -113,16 +113,14 @@ export const loginAndfillApplication = async (
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
   const suomiFiData = await doEmployerLogin(t);
-  const applicationId = await urlUtils.expectations.urlChangedToApplicationPage(
-    'fi'
-  );
+  const wizard = await getWizardComponents(t);
+  const applicationId =
+    await urlUtils.expectations.urlChangedToApplicationPage();
   const application = fakeApplication(
     applicationId,
     suomiFiData?.company,
     true
   );
-
-  const wizard = await getWizardComponents(t);
   // if there is existing draft application on step 2 or 3, then move to step 1.
   await wizard.actions.clickGoToStep1Button();
   if (toStep >= 1) {

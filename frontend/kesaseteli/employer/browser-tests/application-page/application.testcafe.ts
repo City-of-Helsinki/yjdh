@@ -61,6 +61,7 @@ if (isRealIntegrationsEnabled()) {
     await urlUtils.actions.refreshPage();
     await step1Form.expectations.isPresent();
     await step1Form.expectations.isFulFilledWith(step1FormData);
+    await urlUtils.expectations.urlChangedToApplicationPage(applicationId);
   });
 }
 
