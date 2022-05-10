@@ -30,11 +30,13 @@ const LocationMap = dynamic(
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
-  const addressList = [
-    posting.location.name,
-    posting.location.street_address,
-    `${posting.location.postal_code} ${posting.location.city}`,
-  ];
+  const addressList = posting.location
+    ? [
+        posting.location.name,
+        posting.location.street_address,
+        `${posting.location.postal_code} ${posting.location.city}`,
+      ]
+    : null;
   const contact = [posting.contact_phone, posting.contact_email];
 
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
@@ -57,11 +59,13 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
             body={date}
             icon={<IconCalendarClock />}
           />
-          <PostingInfoItem
-            title={t('common:postingTemplate.location')}
-            body={addressList}
-            icon={<IconLocation />}
-          />
+          {posting.location && (
+            <PostingInfoItem
+              title={t('common:postingTemplate.location')}
+              body={addressList}
+              icon={<IconLocation />}
+            />
+          )}
           <PostingInfoItem
             title={t('common:postingTemplate.contact')}
             body={contact}
