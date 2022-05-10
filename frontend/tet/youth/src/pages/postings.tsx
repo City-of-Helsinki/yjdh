@@ -11,7 +11,7 @@ const Postings: NextPage = () => {
   return (
     <>
       <HeaderLinks />
-      <JobPostings />;
+      <JobPostings />
       <MapScripts />
       <Script
         src="https://unpkg.com/react-leaflet-markercluster/src/react-leaflet-markercluster.js"

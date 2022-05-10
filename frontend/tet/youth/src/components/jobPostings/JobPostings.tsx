@@ -53,8 +53,10 @@ const Postings: React.FC = () => {
   };
 
   const searchParams = { ...params };
-  searchParams['keyword'] = searchParams['keyword_AND'];
-  delete searchParams['keyword_AND'];
+  if (Object.prototype.hasOwnProperty.call(params, 'keyword_AND')) {
+    searchParams['keyword'] = searchParams['keyword_AND'];
+    delete searchParams['keyword_AND'];
+  }
 
   return (
     <div>
