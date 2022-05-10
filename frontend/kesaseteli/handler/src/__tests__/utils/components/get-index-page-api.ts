@@ -157,7 +157,7 @@ const getIndexPageApi = async (
     },
   };
   const actions = {
-    clickCompleteButton: (type: CompleteOperation['type']): Promise<void> => userEvent.click(screen.getByTestId(`${type}-button`)),
+    clickCompleteButton: (type: CompleteOperation['type']) => userEvent.click(screen.getByTestId(`${type}-button`)),
     clickConfirmButton: async (
       type: CompleteOperation['type'],
       errorCode?: 400 | 500
