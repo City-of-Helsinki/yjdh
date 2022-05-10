@@ -13,37 +13,17 @@ import {
   $HeroContentWrapper,
   $HeroWrapper,
   $ImageContainer,
-  $Keywords,
   $PostingHero,
   $Spots,
   $Subtitle,
   $Title,
 } from 'tet-shared/components/posting/postingHero/PostingHero.sc';
-import { OptionType } from 'tet-shared/types/classification';
 import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
   showBackButton: boolean;
 };
-
-const keywordList = (list: OptionType[], color: string): JSX.Element => (
-  <>
-    {list.map((keyword: OptionType) => (
-      <li>
-        <Tag
-          theme={{
-            '--tag-background': `var(--color-${color})`,
-            '--tag-color': 'var(--color-black-90)',
-            '--tag-focus-outline-color': 'var(--color-black-90)',
-          }}
-        >
-          {keyword.name}
-        </Tag>
-      </li>
-    ))}
-  </>
-);
 
 const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const { t } = useTranslation();
@@ -85,14 +65,6 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
             />
           </$ImageContainer>
           <$HeroContentWrapper>
-            <$Keywords>
-              {keywordList(posting.keywords_working_methods, 'success-light')}
-              {keywordList(
-                posting.keywords_attributes,
-                'coat-of-arms-medium-light'
-              )}
-              {keywordList(posting.keywords, 'engel-medium-light')}
-            </$Keywords>
             <$Title>{posting.org_name}</$Title>
             <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
             <$Date>{date}</$Date>

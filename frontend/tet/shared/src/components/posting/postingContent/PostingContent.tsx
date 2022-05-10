@@ -1,5 +1,11 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { IconCalendarClock, IconInfoCircle, IconLocation } from 'hds-react';
+import {
+  IconCalendarClock,
+  IconInfoCircle,
+  IconLocation,
+  IconGlobe,
+  Tag,
+} from 'hds-react';
 import dynamic from 'next/dynamic';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useTranslation } from 'next-i18next';
@@ -12,10 +18,12 @@ import {
   $Hr,
   $InfoWrapper,
   $Title,
+  $Keywords,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import MapScripts from 'tet-shared/components/MapScripts';
 import TetPosting from 'tet-shared/types/tetposting';
+import { OptionType } from 'tet-shared/types/classification';
 
 type Props = {
   posting: TetPosting;
@@ -26,6 +34,24 @@ const LocationMap = dynamic(
   {
     ssr: false,
   }
+);
+
+const keywordList = (list: OptionType[], color: string): JSX.Element => (
+  <>
+    {list.map((keyword: OptionType) => (
+      <li>
+        <Tag
+          theme={{
+            '--tag-background': `var(--color-${color})`,
+            '--tag-color': 'var(--color-black-90)',
+            '--tag-focus-outline-color': 'var(--color-black-90)',
+          }}
+        >
+          {keyword.name}
+        </Tag>
+      </li>
+    ))}
+  </>
 );
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
@@ -70,8 +96,16 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           <PostingInfoItem
             title={t('common:postingTemplate.languages')}
             body={languages}
-            icon={<IconInfoCircle />}
+            icon={<IconGlobe />}
           />
+          <$Keywords>
+            {keywordList(posting.keywords_working_methods, 'success-light')}
+            {keywordList(
+              posting.keywords_attributes,
+              'coat-of-arms-medium-light'
+            )}
+            {keywordList(posting.keywords, 'engel-medium-light')}
+          </$Keywords>
         </$InfoWrapper>
       </$ContentWrapper>
       <MapScripts />
