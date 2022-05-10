@@ -275,7 +275,7 @@ jobs:
           echo "ENVIRONMENT_URL=https://${{ matrix.service }}-${{ github.event.pull_request.number }}.${{ env.BASE_DOMAIN }}" >> $GITHUB_ENV
       - name: Run Acceptance Tests for ${{ matrix.service }}
         id: testcafe
-        run: yarn --cwd ${{matrix.dir}} browser-test:ci -q attemptLimit=5,successThreshold=1
+        run: yarn --cwd ${{matrix.dir}} browser-test:ci -q attemptLimit=3,successThreshold=1
         env:
           GITHUB_WORKFLOW_NAME: ${{ github.workflow }}
           GITHUB_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
