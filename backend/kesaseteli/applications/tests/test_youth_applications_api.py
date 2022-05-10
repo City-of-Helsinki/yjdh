@@ -90,7 +90,7 @@ def get_random_pk() -> uuid.UUID:
     return uuid.uuid4()
 
 
-def test_additional_info() -> dict:
+def get_test_additional_info() -> dict:
     return {
         "additional_info_user_reasons": [AdditionalInfoUserReason.UNDERAGE_OR_OVERAGE],
         "additional_info_description": "Test text",
@@ -157,6 +157,38 @@ def get_handler_fields() -> List[str]:
     Fields that should be viewable by a youth application's handler.
     """
     return get_required_fields() + get_optional_fields() + get_read_only_fields()
+
+
+def test_youth_application_encrypted_fields():
+    """
+    Test that YouthApplication's encrypted fields are categorized correctly.
+
+    If this test breaks then check and update the following:
+     - YouthApplication's fields
+     - This test itself if YouthApplication's fields change
+     - YouthApplicationSerializer.Meta.read_only_fields
+     - YouthApplicationSerializer.Meta.vtj_data_fields
+    """
+    # Explicitly make sure "encrypted_vtj_json" is in vtj_data_fields
+    assert "encrypted_vtj_json" in YouthApplicationSerializer.Meta.vtj_data_fields
+
+    for field in YouthApplication._meta.get_fields():
+        field_type = field.get_internal_type()
+        # Check all encrypted fields of YouthApplication
+        if (
+            "encrypted" in field_type.lower()  # e.g. "EncryptedCharField"
+            or "encrypted" in field.name.lower()  # e.g. "encrypted_vtj_json"
+        ):
+            # YouthApplication's encrypted read-only fields should be in vtj_data_fields
+            if field.name in YouthApplicationSerializer.Meta.read_only_fields:
+                assert field.name in YouthApplicationSerializer.Meta.vtj_data_fields
+            else:
+                # Because the applicant gives the social security number it can be
+                # returned to them
+                assert field.name in [
+                    "encrypted_social_security_number",
+                    "social_security_number",
+                ]
 
 
 def test_youth_application_serializer_fields():
@@ -815,6 +847,22 @@ def test_youth_application_post_valid_social_security_number(api_client, test_va
     assert "social_security_number" in response.data
 
 
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    DISABLE_VTJ=True,
+)
+@pytest.mark.django_db
+def test_youth_application_post_response_excludes_vtj_data_fields(api_client):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+    for vtj_data_field in YouthApplicationSerializer.Meta.vtj_data_fields:
+        assert vtj_data_field not in response.data
+
+
 @freeze_time()
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
@@ -882,7 +930,8 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
                 datetime.fromisoformat(response.data["modified_at"]) == timezone.now()
             )
         elif manually_checked_field == "encrypted_vtj_json":
-            assert response.data["encrypted_vtj_json"] == {}
+            # VTJ data should not be shown to the applicant
+            assert "encrypted_vtj_json" not in response.data
         else:
             assert False, f"Please add manual check for field {manually_checked_field}"
 
@@ -915,7 +964,9 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
         elif manually_checked_field == "modified_at":
             assert created_app.modified_at == timezone.now()
         elif manually_checked_field == "encrypted_vtj_json":
-            assert created_app.encrypted_vtj_json is None
+            assert created_app.encrypted_vtj_json is None or isinstance(
+                json.loads(created_app.encrypted_vtj_json), dict
+            )
         else:
             assert False, f"Please add manual check for field {manually_checked_field}"
 
@@ -1210,7 +1261,7 @@ def test_youth_application_processing_email_sending_after_additional_info(
     start_mail_count = len(mail.outbox)
     api_client.post(
         get_additional_info_url(youth_application.pk),
-        data=json.dumps(test_additional_info()),
+        data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
     if expect_success:
@@ -1299,7 +1350,7 @@ def test_youth_application_processing_email_language_after_additional_info(
     start_mail_count = len(mail.outbox)
     api_client.post(
         get_additional_info_url(youth_application.pk),
-        data=json.dumps(test_additional_info()),
+        data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
     if expect_success:
@@ -1891,7 +1942,7 @@ def test_youth_applications_set_excess_additional_info(
     assert source_app.can_set_additional_info
     old_extra_field_value = getattr(source_app, extra_field_name, None)
 
-    post_data = test_additional_info()
+    post_data = get_test_additional_info()
     post_data[extra_field_name] = extra_field_value
 
     response = client_fixture.post(
@@ -2119,7 +2170,7 @@ def test_youth_applications_set_partial_additional_info(
     old_additional_info_provided_at = source_app.additional_info_provided_at
     old_modified_at = source_app.modified_at
 
-    post_data = test_additional_info()
+    post_data = get_test_additional_info()
 
     for missing_field in missing_fields:
         del post_data[missing_field]
