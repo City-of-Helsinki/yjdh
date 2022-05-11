@@ -7,7 +7,12 @@ from rest_framework.exceptions import PermissionDenied
 from shared.oidc.utils import get_organization_roles
 
 # TET service uses Linked Events `provider` field to store data that needs to be searchable
-# We can then filter events with the `text` criterion to reduced matches
+# We can then filter events with the `text` criterion to reduce matches
+#
+# Normally we use the field `custom_data` for this, but this field is not searchable.
+# `provider` is a localized object with keys like "fi" or "sv". Here we use them to store
+# different data, which can be very counterintuitive. This is why the code always refers
+# to the fields by these constants.
 PROVIDER_NAME_FIELD = "fi"
 PROVIDER_BUSINESS_ID_FIELD = "sv"
 
