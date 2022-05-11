@@ -9,6 +9,7 @@ import {
   expectKeyWordsFromLinkedEvents,
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
 import { screen } from 'shared/__tests__/utils/test-utils';
+import { prettyDOM, logRoles } from '@testing-library/react';
 
 const posting = fakeTetPosting({
   end_date: '12-12-2022',
@@ -45,12 +46,15 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
     it(`shows errors if empty values on required fields`, async () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
-      //expectKeyWordsFromLinkedEvents(posting.keywords[0]);
-      renderComponent(<Editor />);
+      //expectKeyWordsFromLinkedEvents();
+      const {
+        renderResult: { container },
+      } = renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
       //Location details
       await editorApi.expectations.textInputHasError('title');
+      //await editorApi.expectations.comboboxHasError('Osoite');
       //Contact details
       await editorApi.expectations.textInputHasError('contact_first_name');
       await editorApi.expectations.textInputHasError('contact_last_name');
@@ -59,9 +63,9 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       //Posting details
       await editorApi.expectations.textInputHasError('org_name');
       await editorApi.expectations.textInputHasError('start_date');
-      await editorApi.expectations.dropdownHasError('TET-jaksolla käytetty kieli');
+      await editorApi.expectations.languageSelectorHasError();
       await editorApi.expectations.textInputHasError('description');
-      await editorApi.expectations.selectionGroupHasError('Työtapa');
+      console.log(prettyDOM(container, 50000));
     });
     it('shows error notification if form is not valid', async () => {
       expectWorkingMethodsFromLinkedEvents();

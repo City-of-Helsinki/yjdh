@@ -27,14 +27,6 @@ const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
       await within(parent).findByText(regexp(translations.editor.posting.contactLanguageFi));
       await within(parent).findByText(regexp(translations.editor.posting.contactLanguageSv));
     },
-    keywordsArePresent: async (): Promise<void> => {
-      //const field = await screen.findByText(/Avainsanat/i);
-      //const field = await screen.findByRole('combobox', {
-      //name: /Avainsanat/i,
-      //});
-      //const parent = field?.parentElement;
-      //await within(parent).findByText(new RegExp(expectedPosting.keywords[0].label, 'i'));
-    },
     textInputHasError: async <K extends keyof TetPosting>(key: K): Promise<void> => {
       const field = await screen.findByTestId(`posting-form-${key}`);
       const parent = field?.parentElement?.parentElement;
@@ -47,9 +39,9 @@ const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
       const parent = field?.parentElement?.parentElement;
       await within(parent).findByText(requiredText);
     },
-    dropdownHasError: async (labelText: string): Promise<void> => {
+    languageSelectorHasError: async (): Promise<void> => {
       const field = await screen.findByRole('button', {
-        name: regexp(labelText),
+        name: regexp(translations.editor.posting.contactLanguage),
       });
       const parent = field?.parentElement?.parentElement;
       await within(parent).findByText(requiredText);
@@ -62,7 +54,7 @@ const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
     async clickSendButton() {
       userEvent.click(
         screen.getByRole('button', {
-          name: /tallenna julkaisematta/i,
+          name: regexp(translations.editor.saveDraft),
         }),
       );
     },
