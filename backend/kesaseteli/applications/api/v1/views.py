@@ -135,9 +135,10 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
             )
             return Response(serializer.data)
 
+    @transaction.atomic
     @enforce_handler_view_adfs_login
     def retrieve(self, request, *args, **kwargs):
-        youth_application: YouthApplication = self.get_object()
+        youth_application: YouthApplication = self.get_object().lock_for_update()
         # Update unhandled youth applications' encrypted_handler_vtj_json so
         # handlers can accept/reject using it
         if not youth_application.is_handled:
