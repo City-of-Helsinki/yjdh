@@ -12,6 +12,7 @@ import { LocationType, OptionType } from 'tet-shared/types/classification';
 import ComboboxSingleSelect from 'tet/admin/components/editor/ComboboxSingleSelect';
 import TetPosting from 'tet-shared/types/tetposting';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import { useFormContext } from 'react-hook-form';
 
 const CompanyInfo: React.FC = () => {
   const { t } = useTranslation();
@@ -19,6 +20,7 @@ const CompanyInfo: React.FC = () => {
   const [addressSearch, setAddressSearch] = React.useState('');
   const { name } = useValidationRules();
   const { getLocalizedString } = useEventPostingTransformation();
+  const { getValues } = useFormContext<TetPosting>();
 
   const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
 
@@ -34,6 +36,7 @@ const CompanyInfo: React.FC = () => {
               value: keyword['@id'],
               street_address: getLocalizedString(keyword.street_address),
               postal_code: keyword.postal_code ?? '',
+              position: keyword.position,
               city: getLocalizedString(keyword.address_locality),
             } as LocationType),
         )
@@ -48,6 +51,10 @@ const CompanyInfo: React.FC = () => {
   const addressFilterHandler = (options: OptionType[], search: string): OptionType[] => {
     filterSetter(search);
     return options;
+  };
+
+  const locationRequired = () => {
+    return getValues('location')?.value.length > 0 ? true : t('common:editor.posting.validation.required');
   };
 
   return (
@@ -79,7 +86,7 @@ const CompanyInfo: React.FC = () => {
               options={keywords}
               optionLabelField={'label'}
               filter={addressFilterHandler}
-              validation={{ required: { value: true, message: t('common:editor.posting.validation.required') } }}
+              validation={{ validate: locationRequired }}
             ></ComboboxSingleSelect>
           </$GridCell>
         </$GridCell>

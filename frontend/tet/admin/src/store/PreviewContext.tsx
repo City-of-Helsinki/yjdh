@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { TetData } from 'tet-shared/types/TetData';
 import TetPosting from 'tet-shared/types/tetposting';
 
 type PreviewContextObj = {
@@ -21,6 +20,10 @@ export const initialPosting: TetPosting = {
     street_address: '',
     postal_code: '',
     city: '',
+    position: {
+      type: 'Point',
+      coordinates: [],
+    },
   },
   org_name: '',
   spots: 1,

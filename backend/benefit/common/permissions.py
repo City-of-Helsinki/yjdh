@@ -2,6 +2,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
+
 from users.utils import get_company_from_request
 
 

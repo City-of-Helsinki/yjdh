@@ -4,13 +4,14 @@ from decimal import Decimal
 from itertools import chain
 from typing import List, Optional, Union
 
+from dateutil.relativedelta import relativedelta
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+
 from applications.enums import ApplicationStatus
 from applications.models import Application
 from calculator.models import PreviousBenefit
 from common.utils import date_range_overlap, duration_in_months, pairwise
-from dateutil.relativedelta import relativedelta
-from django.utils.text import format_lazy
-from django.utils.translation import gettext_lazy as _
 
 
 @dataclass

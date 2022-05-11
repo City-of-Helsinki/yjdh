@@ -1,4 +1,5 @@
 import pytest
+
 from applications.enums import AhjoDecision, ApplicationBatchStatus
 from applications.models import Application, ApplicationBatch, Employee
 from helsinkibenefit.tests.conftest import *  # noqa

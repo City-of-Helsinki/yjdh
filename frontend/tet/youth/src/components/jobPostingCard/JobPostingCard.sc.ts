@@ -84,6 +84,10 @@ export const $PostingDate = styled.div`
   font-weight: normal;
 `;
 
+export const $ButtonLink = styled.a`
+  text-decoration: none;
+`;
+
 export const $PostingAddress = styled.div`
   margin-top: 0;
   margin-bottom: ${(props) => props.theme.spacing.xs3};

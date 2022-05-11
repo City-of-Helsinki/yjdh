@@ -9,10 +9,10 @@ import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
 const Postings: React.FC = () => {
   const router = useRouter();
   const params = router.query;
-
-  const { isLoading, data, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useGetPostings(params);
+  const { isLoading, data, error } = useGetPostings(params);
 
   const postings = () => {
+    const hasNextPage = false;
     if (isLoading) {
       return <PageLoadingSpinner />;
     }
@@ -23,14 +23,7 @@ const Postings: React.FC = () => {
     }
 
     if (data) {
-      return (
-        <JobPostingList
-          postings={data}
-          isFetchingNextPage={isFetchingNextPage}
-          onShowMore={() => fetchNextPage()}
-          hasNextPage={hasNextPage}
-        />
-      );
+      return <JobPostingList postings={data} hasNextPage={hasNextPage} />;
     } else {
       //TODO
       return <div>Ei hakutuloksia</div>;
@@ -60,8 +53,10 @@ const Postings: React.FC = () => {
   };
 
   const searchParams = { ...params };
-  searchParams['keyword'] = searchParams['keyword_AND'];
-  delete searchParams['keyword_AND'];
+  if (Object.prototype.hasOwnProperty.call(params, 'keyword_AND')) {
+    searchParams['keyword'] = searchParams['keyword_AND'];
+    delete searchParams['keyword_AND'];
+  }
 
   return (
     <div>

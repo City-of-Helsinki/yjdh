@@ -31,3 +31,11 @@ export const $InfoWrapper = styled.div`
 export const $Title = styled.h3`
   font-size: ${(props) => props.theme.fontSize.heading.m};
 `;
+
+export const $Hr = styled.hr`
+  border: none;
+  border-top: 1px solid ${(props) => props.theme.colors.black20};
+  margin-top: ${(props) => props.theme.spacing.xl};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
+  width: 100%;
+`;

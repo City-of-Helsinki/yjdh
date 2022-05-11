@@ -4,7 +4,6 @@ import environ
 import sentry_sdk
 from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
-
 from shared.service_bus.enums import YtjOrganizationCode
 
 checkout_dir = environ.Path(__file__) - 2

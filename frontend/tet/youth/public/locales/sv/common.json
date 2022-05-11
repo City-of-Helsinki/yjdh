@@ -88,5 +88,11 @@
 		"dateAndTime": "Datum och tid",
 		"location": "Plats",
 		"languages": "Språk som används på PRAO-platsen"
+	},
+	"map": {
+		"readMore": "Läs mer",
+		"showList": "visa resultat i en lista",
+		"showMap": "Visa resultat på en karta",
+    "helsinkiCity": "Helsingfors stad"
 	}
 }

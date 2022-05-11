@@ -207,5 +207,11 @@
         "remove": "Remove file"
       }
     }
-  }
+  },
+	"map": {
+		"readMore": "Read more",
+		"showList": "Show results in a list",
+		"showMap": "Show results on a map",
+    "helsinkiCity": "City of Helsinki"
+	}
 }

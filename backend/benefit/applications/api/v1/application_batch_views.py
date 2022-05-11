@@ -1,12 +1,5 @@
-from applications.api.v1.serializers import ApplicationBatchSerializer
-from applications.enums import ApplicationBatchStatus
-from applications.models import ApplicationBatch
-from applications.services.ahjo_integration import export_application_batch
-from applications.services.talpa_integration import TalpaService
-from common.authentications import RobotBasicAuthentication
-from common.permissions import BFIsHandler
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -17,8 +10,15 @@ from rest_framework import filters as drf_filters, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
 from shared.audit_log.viewsets import AuditLoggingModelViewSet
+
+from applications.api.v1.serializers import ApplicationBatchSerializer
+from applications.enums import ApplicationBatchStatus
+from applications.models import ApplicationBatch
+from applications.services.ahjo_integration import export_application_batch
+from applications.services.talpa_integration import TalpaService
+from common.authentications import RobotBasicAuthentication
+from common.permissions import BFIsHandler
 
 
 class ApplicationBatchFilter(filters.FilterSet):
@@ -106,7 +106,7 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
         permission_classes=[AllowAny],
     )
     @transaction.atomic
-    def talpa_export_batch(self, request, *args, **kwargs):
+    def talpa_export_batch(self, request, *args, **kwargs) -> StreamingHttpResponse:
         """
         Export ApplicationBatch to CSV format for Talpa Robot
         """
@@ -123,12 +123,13 @@ class ApplicationBatchViewSet(AuditLoggingModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         talpa_service = TalpaService(approved_batches)
-        csv_file = talpa_service.get_csv_string()
         file_name = format_lazy(
             _("TALPA export {date}"),
             date=timezone.now().strftime("%Y%m%d_%H%M%S"),
         )
-        response = HttpResponse(csv_file, content_type="text/csv")
+        response = StreamingHttpResponse(
+            talpa_service.get_csv_string_lines_generator(), content_type="text/csv"
+        )
         response["Content-Disposition"] = "attachment; filename={file_name}.csv".format(
             file_name=file_name
         )

@@ -3,6 +3,19 @@ from datetime import date, datetime, timedelta
 from typing import Dict, List
 
 import filetype
+from dateutil.relativedelta import relativedelta
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
+from django.db import transaction
+from django.forms import ImageField, ValidationError as DjangoFormsValidationError
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
+from rest_framework.fields import FileField
+from rest_framework.reverse import reverse
+
 from applications.api.v1.status_transition_validator import (
     ApplicantApplicationStatusValidator,
     ApplicationBatchStatusValidator,
@@ -43,20 +56,8 @@ from common.utils import (
 )
 from companies.api.v1.serializers import CompanySerializer
 from companies.models import Company
-from dateutil.relativedelta import relativedelta
-from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
-from django.db import transaction
-from django.forms import ImageField, ValidationError as DjangoFormsValidationError
-from django.utils.text import format_lazy
-from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema_field
 from helsinkibenefit.settings import MAX_UPLOAD_SIZE, MINIMUM_WORKING_HOURS_PER_WEEK
 from messages.automatic_messages import send_application_reopened_message
-from rest_framework import serializers
-from rest_framework.fields import FileField
-from rest_framework.reverse import reverse
 from terms.api.v1.serializers import (
     ApplicantTermsApprovalSerializer,
     ApproveTermsSerializer,
