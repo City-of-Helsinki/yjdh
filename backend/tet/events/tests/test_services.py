@@ -17,11 +17,9 @@ from events.tests.data.linked_events_responses import (
     EVENT_RESPONSE_TESTUSER_OID,
     SAMPLE_EVENTS,
 )
+from events.utils import PROVIDER_BUSINESS_ID_FIELD
 
 LOGGER = logging.getLogger(__name__)
-TEST_COMPANY_BUSINESS_ID = (
-    "654321-5"  # Needs to match linked_events_responses.EVENT_RESPONSE_TEST_COMPANY
-)
 
 
 def mock_django_request(is_staff=True, email=None, username=None):
@@ -36,7 +34,11 @@ def mock_django_request(is_staff=True, email=None, username=None):
         # We need to set organization_roles in session
         # Otherwise the code tries to fetch them from the eauthorizations API
         request.session = {
-            "organization_roles": {"identifier": TEST_COMPANY_BUSINESS_ID}
+            "organization_roles": {
+                "identifier": EVENT_RESPONSE_TEST_COMPANY["provider"][
+                    PROVIDER_BUSINESS_ID_FIELD
+                ]
+            }
         }
 
     if email:

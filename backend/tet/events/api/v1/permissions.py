@@ -18,7 +18,7 @@ class TetAPIPermission(BasePermission):
          the postings of their company.
       3. Users logged in via AD NOT belonging to a group listed in `settings.ADFS_CONTROLLER_GROUP_UUIDS`.
          This could be anyone with a Microsoft account. The ADFS setup might prevent these logins,
-         but we cannot be sure about this, so we need to check that not anyone is allowed to creating
+         but we cannot be sure about this, so we need to check that they aren't allowed to create
          a TET posting as an employee of the city of Helsinki.
 
          This permission prevents case 3 from accessing the service.

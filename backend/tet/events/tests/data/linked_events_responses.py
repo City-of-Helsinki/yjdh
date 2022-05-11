@@ -1,5 +1,7 @@
 import json
 
+from events.utils import PROVIDER_BUSINESS_ID_FIELD, PROVIDER_NAME_FIELD
+
 ADD_EVENT_PAYLOAD = json.loads(
     """
 {
@@ -550,10 +552,7 @@ EVENT_RESPONSE_TEST_COMPANY = json.loads(
             "search_vector_en": "",
             "search_vector_sv": "",
             "replaced_by": null,
-            "provider": {
-                "fi": "Test company",
-                "sv": "654321-5"
-            },
+            "provider": {},
             "name": {
                 "fi": "Avustaja"
             },
@@ -572,6 +571,11 @@ EVENT_RESPONSE_TEST_COMPANY = json.loads(
         }
 """
 )
+
+EVENT_RESPONSE_TEST_COMPANY["provider"] = {
+    PROVIDER_NAME_FIELD: "Test company",
+    PROVIDER_BUSINESS_ID_FIELD: "654321-5",
+}
 
 
 EVENT_RESPONSE_NO_CUSTOM_DATA = json.loads(

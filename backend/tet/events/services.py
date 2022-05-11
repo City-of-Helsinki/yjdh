@@ -37,17 +37,17 @@ def _user_matches(event, user):
     return email_matches or oid_matches
 
 
-def _business_id_matches(event, business_id):
-    if event["provider"] is None or PROVIDER_BUSINESS_ID_FIELD not in event["provider"]:
-        return False
-
-    return event["provider"][PROVIDER_BUSINESS_ID_FIELD] == business_id
-
-
 def _business_id_is_set(event):
     return (
         event["provider"] is not None
         and PROVIDER_BUSINESS_ID_FIELD in event["provider"]
+    )
+
+
+def _business_id_matches(event, business_id):
+    return (
+        _business_id_is_set(event)
+        and event["provider"][PROVIDER_BUSINESS_ID_FIELD] == business_id
     )
 
 
@@ -60,7 +60,7 @@ class ServiceClient:
         self.client = LinkedEventsClient()
 
     def _get_event_and_raise_for_unauthorized(self, request: HttpRequest, event_id):
-        """Raises PermissionDenied unless `user` is authorized to access event `event_id`
+        """Raises PermissionDenied unless `request.user` is authorized to access event `event_id`
         and also returns the event.
 
         All operations that read, modify or delete events should call this method.
@@ -106,8 +106,6 @@ class ServiceClient:
         return "ahjo:00001"
 
     def list_job_postings_for_user(self, request: HttpRequest):
-        # Currently this fetches all events under the TET data source, but it's more efficient if we can
-        # filter by industry (toimiala) or company business id (Y-tunnus)
         if request.user.is_staff:
             all_events = self.client.list_ongoing_events_authenticated(
                 self._get_publisher(request.user)
