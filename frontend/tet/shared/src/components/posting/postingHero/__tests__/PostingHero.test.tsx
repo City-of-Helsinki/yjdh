@@ -3,8 +3,12 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
-import { fakeTetPosting } from 'tet-shared/__tests__/utils/fake-objects';
+import {
+  fakeTetPosting,
+  fakeLocation,
+} from 'tet-shared/__tests__/utils/fake-objects';
 import TetPosting from 'tet-shared/types/tetposting';
+import { containsRegexp } from '@frontend/shared/src/__tests__/utils/translation-utils';
 
 import PostingHero from '../PostingHero';
 
@@ -13,21 +17,31 @@ type Props = {
   showBackButton: boolean;
 };
 
-const title = 'Posting title';
-const org_name = 'Organization name';
+const location = fakeLocation({
+  name: 'Harjoittelu',
+  city: 'Helsinki',
+  street_address: 'Siltasaarenkatu 18',
+  postal_code: '00530',
+});
 
-const getFakePosting = (overrides?: Partial<TetPosting>): TetPosting =>
-  fakeTetPosting({
-    title,
-    org_name,
-    ...overrides,
-  });
+const testPosting = {
+  title: 'Test title',
+  org_name: 'Test organization',
+  spots: 4,
+  start_date: '3.5.2022',
+  end_date: '10.5.2022',
+  contact_first_name: 'Etunimi',
+  contact_last_name: 'Sukunimi',
+  contact_phone: '0455548885',
+  contact_email: 'tester@mail.com',
+  location: location,
+};
 
 const renderComponent = (props?: Partial<Props>): ReturnType<typeof render> =>
   render(
     <ThemeProvider theme={theme}>
       <PostingHero
-        posting={getFakePosting()}
+        posting={fakeTetPosting(testPosting)}
         showBackButton={false}
         {...props}
       />
@@ -36,6 +50,23 @@ const renderComponent = (props?: Partial<Props>): ReturnType<typeof render> =>
 
 test('should render title, organization name ', async () => {
   renderComponent();
-  await screen.findByRole('heading', { name: title });
-  await screen.findByRole('heading', { name: org_name });
+  await screen.findByRole('heading', { name: testPosting.title });
+  await screen.findByRole('heading', { name: testPosting.org_name });
+});
+
+test('should render date, spots and contact information', async () => {
+  renderComponent();
+  await screen.findByText(
+    containsRegexp(
+      `${location.name}, ${location.street_address}, ${location.postal_code}, ${location.city}`
+    )
+  );
+  await screen.findByText(
+    containsRegexp(`common:postingTemplate.spots: ${testPosting.spots}`)
+  );
+  await screen.findByText(
+    `${testPosting.contact_first_name} ${testPosting.contact_last_name}`
+  );
+  await screen.findByText(testPosting.contact_phone);
+  await screen.findByText(testPosting.contact_email);
 });
