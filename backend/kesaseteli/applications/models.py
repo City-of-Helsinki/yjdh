@@ -16,6 +16,7 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
+from localflavor.generic.models import IBANField
 from requests.exceptions import ReadTimeout
 from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
 from shared.common.validators import (
@@ -934,6 +935,10 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         max_length=256,
         blank=True,
         verbose_name=_("invoicer work address"),
+    )
+    bank_account_number = IBANField(
+        verbose_name=_("bank account number"),
+        blank=True,
     )
 
     # contact information
