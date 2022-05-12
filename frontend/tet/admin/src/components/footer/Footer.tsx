@@ -18,6 +18,7 @@ const FooterSection: React.FC = () => {
           target="_blank"
           href={t('common:footer.accessibilityStatementLink')}
           label={t('common:footer.accessibilityStatement')}
+          aria-label={`${t('common:footer.accessibilityStatement')} - ${t('common:footer.newTab')}`}
         />
         <Footer.Item
           as="a"
@@ -25,6 +26,7 @@ const FooterSection: React.FC = () => {
           target="_blank"
           href={t('common:footer.privacyPolicyLink')}
           label={t('common:footer.privacyPolicy')}
+          aria-label={`${t('common:footer.privacyPolicy')} - ${t('common:footer.newTab')}`}
         />
         <Footer.Item
           as="a"
@@ -32,6 +34,7 @@ const FooterSection: React.FC = () => {
           target="_blank"
           href={t('common:footer.feedbackLink')}
           label={t('common:footer.feedback')}
+          aria-label={`${t('common:footer.feedback')} - ${t('common:footer.newTab')}`}
         />
       </Footer.Base>
     </Footer>
