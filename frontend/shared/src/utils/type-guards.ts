@@ -1,7 +1,9 @@
+import axios from 'axios';
+
 export const isError = (error: unknown): error is Error =>
   Boolean(
     error && typeof error === 'object' && 'stack' in error && 'message' in error
-  );
+  ) || axios.isAxiosError(error);
 
 export const isString = (value: unknown): value is string =>
   typeof value === 'string';

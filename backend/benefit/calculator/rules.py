@@ -3,6 +3,8 @@ import datetime
 import decimal
 import logging
 
+from django.db import transaction
+
 from applications.enums import ApplicationStatus, BenefitType
 from calculator.enums import RowType
 from calculator.models import (
@@ -23,7 +25,6 @@ from calculator.models import (
     TrainingCompensationMonthlyRow,
 )
 from common.utils import pairwise
-from django.db import transaction
 
 LOGGER = logging.getLogger(__name__)
 BenefitSubRange = collections.namedtuple(

@@ -3,13 +3,14 @@ import os
 from datetime import date
 
 import pytest
+from dateutil.relativedelta import relativedelta
+
 from common.utils import (
     date_range_overlap,
     days360,
     duration_in_months,
     get_date_range_end_with_days360,
 )
-from dateutil.relativedelta import relativedelta
 
 
 @pytest.mark.parametrize(

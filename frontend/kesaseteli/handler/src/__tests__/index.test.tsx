@@ -447,6 +447,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         await indexPageApi.actions.clickConfirmButton(operationType);
         await indexPageApi.expectations.statusNotificationIsPresent(status);
       });
+
       it(`shows error toast when backend returns bad request`, async () => {
         const application = fakeActivatedYouthApplication({
           status: 'awaiting_manual_processing',

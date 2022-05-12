@@ -3,6 +3,7 @@ from datetime import date, timedelta
 import pytest
 from django.db import transaction
 from django.db.utils import IntegrityError
+
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.enums import TermsType
 from terms.models import Terms

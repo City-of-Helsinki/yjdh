@@ -1,7 +1,7 @@
 import factory
-from companies.models import Company
-
 from shared.service_bus.enums import YtjOrganizationCode
+
+from companies.models import Company
 
 
 class CompanyFactory(factory.django.DjangoModelFactory):

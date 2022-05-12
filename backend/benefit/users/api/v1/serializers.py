@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+
 from terms.api.v1.serializers import TermsOfServiceApprovalSerializer, TermsSerializer
 from terms.enums import TermsType
 from terms.models import Terms, TermsOfServiceApproval

@@ -1,4 +1,5 @@
 import factory
+
 from applications.enums import ApplicationStatus
 from applications.tests.factories import ApplicationFactory
 from companies.tests.factories import CompanyFactory

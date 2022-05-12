@@ -49,14 +49,15 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
-  const street_address = posting.location.street_address
+  const street_address = posting?.location?.street_address
     ? `, ${posting.location.street_address}`
     : '';
-  const postal_code = posting.location.postal_code
+  const postal_code = posting?.location?.postal_code
     ? `, ${posting.location.postal_code}`
     : '';
-  const city = posting.location.city ? `, ${posting.location.city}` : '';
-  const address = posting.location.name + street_address + postal_code + city;
+  const city = posting?.location?.city ? `, ${posting.location.city}` : '';
+  const name = posting?.location?.name ?? '';
+  const address = name + street_address + postal_code + city;
 
   const backButtonHandler = (): void => {
     // TODO we should know that the user hasn't navigated to this page via a

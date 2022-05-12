@@ -1,4 +1,5 @@
 import pytest
+
 from companies.models import Company
 from companies.tests.factories import CompanyFactory
 

@@ -1,3 +1,5 @@
+from django.contrib import admin
+
 from calculator.models import (
     Calculation,
     CalculationRow,
@@ -5,7 +7,6 @@ from calculator.models import (
     PreviousBenefit,
     TrainingCompensation,
 )
-from django.contrib import admin
 
 
 class CalculationRowInline(admin.StackedInline):

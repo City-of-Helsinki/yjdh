@@ -1,11 +1,12 @@
 from datetime import date, timedelta
 
 import pytest
+from django.conf import settings
+from django.urls import reverse
+
 from common.tests.conftest import *  # noqa
 from common.tests.conftest import get_client_user
 from companies.tests.conftest import *  # noqa
-from django.conf import settings
-from django.urls import reverse
 from helsinkibenefit.tests.conftest import *  # noqa
 from terms.enums import TermsType
 from terms.models import Terms

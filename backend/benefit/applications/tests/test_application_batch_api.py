@@ -6,14 +6,16 @@ from unittest.mock import patch
 
 import pytest
 import pytz
+from django.conf import settings
+from django.http import StreamingHttpResponse
+from rest_framework.reverse import reverse
+
 from applications.api.v1.serializers import ApplicationBatchSerializer
 from applications.enums import AhjoDecision, ApplicationBatchStatus, ApplicationStatus
 from applications.models import Application, ApplicationBatch
 from applications.tests.conftest import *  # noqa
 from applications.tests.factories import ApplicationBatchFactory, ApplicationFactory
 from applications.tests.test_applications_api import get_handler_detail_url
-from django.conf import settings
-from rest_framework.reverse import reverse
 
 
 def get_batch_detail_url(application_batch):
@@ -486,13 +488,7 @@ def test_application_batch_export(mock_export, handler_api_client, application_b
     assert response.status_code == 400
 
 
-@patch("applications.services.talpa_integration.TalpaService")
-def test_application_batches_talpa_export(
-    mock_talpa_service, anonymous_client, application_batch
-):
-    # Mock export pdf function to reduce test time, the unittest for the export feature will be run separately
-    mock_talpa_service.get_csv_string.return_value = ""
-
+def test_application_batches_talpa_export(anonymous_client, application_batch):
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
     assert response.status_code == 401
 
@@ -517,10 +513,12 @@ def test_application_batches_talpa_export(
     )
     # Export accepted batches then change it status
     response = anonymous_client.get(reverse("v1:applicationbatch-talpa-export-batch"))
+
     application_batch.refresh_from_db()
     app_batch_2.refresh_from_db()
     assert application_batch.status == ApplicationBatchStatus.SENT_TO_TALPA
     assert app_batch_2.status == ApplicationBatchStatus.SENT_TO_TALPA
 
+    assert isinstance(response, StreamingHttpResponse)
     assert response.headers["Content-Type"] == "text/csv"
     assert response.status_code == 200

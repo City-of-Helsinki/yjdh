@@ -6,8 +6,9 @@ from django.core.mail import send_mail
 from django.utils import translation
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-from messages.models import Message, MessageType
 from sentry_sdk import capture_message
+
+from messages.models import Message, MessageType
 
 LOGGER = logging.getLogger(__name__)
 

@@ -1,5 +1,14 @@
 import unicodedata
 
+from django.http import HttpRequest
+
+from events.utils import (
+    get_business_id,
+    get_organization_name,
+    PROVIDER_BUSINESS_ID_FIELD,
+    PROVIDER_NAME_FIELD,
+)
+
 EVENT_BASE_DATA = {
     "offers": [
         {
@@ -40,7 +49,9 @@ def _shorten_description(descobj):
     return shortened_obj
 
 
-def enrich_create_event(event, publisher, user):
+def enrich_create_event(event, publisher, request: HttpRequest):
+    user = request.user
+
     event.update(EVENT_BASE_DATA)
     event.update(CREATE_EVENT_BASE_DATA)
 
@@ -49,15 +60,22 @@ def enrich_create_event(event, publisher, user):
 
     event["publisher"] = publisher
     event["short_description"] = _shorten_description(event["description"])
-    if user.email:
-        event["custom_data"]["editor_email"] = user.email
-    # In TET settings we specify `USERNAME_CLAIM = "oid"`, which sets the user's object identifier as
-    # Django username. This is added to provide "event ownership info" in case user.email is empty.
-    # TODO When suomi.fi auth is added, we need to revisit this implementation.
-    event["custom_data"]["editor_oid"] = user.username
-    event["provider"] = {
-        "fi": event["custom_data"]["org_name"]
-    }  # TODO org name from AD/Suomi.fi
+
+    if user.is_staff:
+        if user.email:
+            event["custom_data"]["editor_email"] = user.email
+        # In TET settings we specify `USERNAME_CLAIM = "oid"`, which sets the user's object identifier as
+        # Django username. This is added to provide "event ownership info" in case user.email is empty.
+        event["custom_data"]["editor_oid"] = user.username
+
+        event["provider"] = {
+            PROVIDER_NAME_FIELD: get_organization_name(request),
+        }
+    else:  # user is logged in via suomi.fi
+        event["provider"] = {
+            PROVIDER_NAME_FIELD: get_organization_name(request),
+            PROVIDER_BUSINESS_ID_FIELD: get_business_id(request),
+        }
 
     return event
 
@@ -65,9 +83,12 @@ def enrich_create_event(event, publisher, user):
 def enrich_update_event(event, user):
     event.update(EVENT_BASE_DATA)
     event["short_description"] = _shorten_description(event["description"])
-    if user.email:
-        event["custom_data"]["editor_email"] = user.email
-    event["custom_data"]["editor_oid"] = user.username
+
+    if user.is_staff:
+        if user.email:
+            event["custom_data"]["editor_email"] = user.email
+        event["custom_data"]["editor_oid"] = user.username
+
     # Not sure why it resets publication status from draft to public without the following line
     # This is not a problem because we keep the two in sync
     # publication_status is what decides whether the event is shown in Youth UI

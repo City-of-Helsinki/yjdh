@@ -446,6 +446,10 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class YouthApplicationSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        self.hide_vtj_data = kwargs.pop("hide_vtj_data", False)
+        super().__init__(*args, **kwargs)
+
     def validate_social_security_number(self, value):
         if value is None or str(value).strip() == "":
             raise serializers.ValidationError(
@@ -471,21 +475,34 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             del result["handler"]  # Remove non-conforming read-only field from result
         return result
 
+    def to_representation(self, instance):
+        """
+        Object instance -> Dict of primitive datatypes.
+        """
+        result = super().to_representation(instance)
+        if self.hide_vtj_data:
+            for vtj_data_field in self.Meta.vtj_data_fields:
+                if vtj_data_field in result:
+                    del result[vtj_data_field]
+        return result
+
     class Meta:
         model = YouthApplication
+        vtj_data_fields = [
+            "encrypted_vtj_json",
+        ]
         read_only_fields = [
             "id",
             "created_at",
             "modified_at",
             "receipt_confirmed_at",
-            "encrypted_vtj_json",
             "status",
             "handler",
             "handled_at",
             "additional_info_user_reasons",
             "additional_info_description",
             "additional_info_provided_at",
-        ]
+        ] + vtj_data_fields
         fields = read_only_fields + [
             "first_name",
             "last_name",

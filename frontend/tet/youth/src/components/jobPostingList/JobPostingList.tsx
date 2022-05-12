@@ -26,8 +26,9 @@ const JobPostingList: React.FC<Props> = ({ postings, hasNextPage }) => {
   const [currentPage, setCurrentPage] = React.useState(1);
 
   const allPostings = eventsToPostings(postings.data);
-  const lastShown = currentPage * 10 <= allPostings.length - 1 ? currentPage * 10 : allPostings.length - 1;
+  const lastShown = currentPage * 10 <= allPostings.length - 1 ? currentPage * 10 : allPostings.length;
 
+  console.log(lastShown, allPostings.length);
   const shownPostings = (): TetPosting[] => {
     return allPostings.slice(0, lastShown);
   };
@@ -53,7 +54,7 @@ const JobPostingList: React.FC<Props> = ({ postings, hasNextPage }) => {
           ))}
         </Fragment>
       )}
-      {lastShown !== allPostings.length - 1 && !showMap && (
+      {lastShown !== allPostings.length && !showMap && (
         <$ButtonLoaderContainer>
           <Button onClick={onShowMore}>{t('common:postings.showMore')}</Button>
         </$ButtonLoaderContainer>
