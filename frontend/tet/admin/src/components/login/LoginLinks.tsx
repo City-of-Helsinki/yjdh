@@ -24,7 +24,7 @@ const LoginLinks = () => {
           '--padding-vertical': 'var(--spacing-m)',
         }}
       >
-        <Button role="link" onClick={loginOidc}>
+        <Button role="link" onClick={loginOidc} data-testid="oidcLoginButton">
           {t('common:loginPage.companyLoginButton')}
         </Button>
       </Card>
@@ -41,7 +41,7 @@ const LoginLinks = () => {
           '--padding-vertical': 'var(--spacing-m)',
         }}
       >
-        <Button role="link" onClick={loginAdfs}>
+        <Button role="link" onClick={loginAdfs} data-testid="adfsLoginButton">
           {t('common:loginPage.cityLoginButton')}
         </Button>
       </Card>
