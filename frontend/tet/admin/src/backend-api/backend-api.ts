@@ -1,9 +1,8 @@
 export const BackendEndpoint = {
   TET_POSTINGS: '/v1/events/',
   LOGIN_ADFS: '/oauth2/login',
-  LOGOUT_ADFS: '/oauth2/logout',
   LOGIN_OIDC: '/oidc/authenticate/',
-  LOGOUT_OIDC: '/oidc/logout/',
+  LOGOUT: '/logout/', // Backend redirects to correct logout endpoint based on login type
   USER: '/userinfo/',
 } as const;
 

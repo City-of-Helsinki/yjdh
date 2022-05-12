@@ -22,7 +22,6 @@ const Login: NextPage = () => {
   const {
     query: { logout, error, sessionExpired },
   } = useRouter();
-  const login = useLogin();
 
   const notificationLabelKey = React.useMemo((): string => {
     if (logout) {

@@ -34,17 +34,14 @@ const Header: React.FC = () => {
     [router, asPath],
   );
 
-  // TODO login should probably be replaced with router.push('/login')
+  // TODO login should probably be replaced with router.push('/login')`
   const login = useLogin('adfs');
   const userQuery = useUserQuery();
 
-  const logoutAdfs = useLogout('adfs');
-  const logoutOidc = useLogout('oidc');
+  const logout: () => void = useLogout();
 
   const isLoading = userQuery.isLoading;
   const isLoginPage = asPath?.startsWith('/login');
-
-  const logout: () => void = userQuery.isSuccess ? (userQuery.data.is_ad_login ? logoutAdfs : logoutOidc) : () => {};
 
   return (
     <BaseHeader
