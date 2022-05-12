@@ -101,6 +101,7 @@ class EmployerApplicationFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     status = factory.Faker("random_element", elements=EmployerApplicationStatus.values)
     street_address = factory.Faker("street_address")
+    bank_account_number = factory.Faker("iban")
     contact_person_name = factory.Faker("name")
     contact_person_email = factory.Faker("email")
     contact_person_phone_number = factory.Faker("phone_number")
