@@ -61,7 +61,8 @@
     "feedback": "Anna palautetta",
     "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute",
 		"moreInfo": "Lisää tietoa",
-		"moreInfoLink": "https://nuorten.hel.fi/"
+		"moreInfoLink": "https://nuorten.hel.fi/",
+		"newTab": "linkki avautuu uuteen välilehteen"
   },
   "languages": {
     "fi": "Suomeksi",

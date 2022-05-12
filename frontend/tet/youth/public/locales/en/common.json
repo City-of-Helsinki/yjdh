@@ -61,7 +61,8 @@
     "feedback": "Give feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback",
 		"moreInfo": "More information",
-		"moreInfoLink": "https://nuorten.hel.fi/en/"
+		"moreInfoLink": "https://nuorten.hel.fi/en/",
+		"newTab": "link opens in a new tab"
   },
   "languages": {
     "fi": "Suomeksi",

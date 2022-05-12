@@ -61,7 +61,8 @@
     "feedback": "Ge feedback",
     "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
 		"moreInfo": "Mer information",
-		"moreInfoLink": "https://nuorten.hel.fi/sv/"
+		"moreInfoLink": "https://nuorten.hel.fi/sv/",
+		"newTab": "länken öppnas i en ny flik"
   },
   "languages": {
     "fi": "På finska",
