@@ -112,6 +112,10 @@
 				"phone": "Vänligen mata in i rätt format",
 				"name": "Mata in namn utan specialtecken och -bokstäver",
 				"isSet": "Välj minst en"
+			},
+			"imageUpload": {
+				"label": "Ladda ner en bild av en arbetsplats eller uppgift genom att dra den nedan",
+				"helperText": "Bredd min 400px, max 2000px. Storlek max 4MB*.jpg*.png"
 			}
     },
 		"classification": {

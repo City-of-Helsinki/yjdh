@@ -11,6 +11,7 @@ import HiddenIdInput from 'tet/admin/components/editor/HiddenIdInput';
 import Classification from 'tet/admin/components/editor/classification/Classification';
 import { DevTool } from '@hookform/devtools';
 import EmployerInfo from 'tet/admin/components/editor/employerInfo/EmployerInfo';
+import ImageUpload from 'tet/admin/components/editor/imageUpload/ImageUpload';
 import { initialPosting } from 'tet/admin/store/PreviewContext';
 
 type EditorProps = {
@@ -41,6 +42,7 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
           <p>* {t('common:editor.requiredInfo')}</p>
           <EmployerInfo />
           <CompanyInfo />
+          <ImageUpload />
           <ContactPerson />
           <PostingDetails />
           <Classification />

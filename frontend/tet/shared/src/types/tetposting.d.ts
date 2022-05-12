@@ -18,6 +18,7 @@ type TetPosting = {
   keywords_working_methods: OptionType[];
   keywords_attributes: OptionType[];
   languages: OptionType[];
+  image: any;
 };
 
 export type TetPostings = {

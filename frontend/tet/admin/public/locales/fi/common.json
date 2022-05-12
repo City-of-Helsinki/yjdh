@@ -31,7 +31,7 @@
       "bullet3": "Työnantajaorganisaation nimi, Y-tunnus ja osoite (syötetään asiointipalveluun)",
       "moreInfo": "Lisätietoja henkilötietojen käsittelystä (mm. oikeusperusteet ja säilytysajat) TET-paikkojen ilmoituspalvelussa löydät <a>opintohallintorekisteristä</a>",
       "registerRights1": "Rekisteröidyllä on oikeuksia liittyen henkilötietoihin ja niiden käsittelyyn Helsingin kaupungilla.",
-      "registerRights2": "Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta <a>Helsingin kaupungin tietosuojasivulla</a>."
+      "registerRights2": "Rekisteröity voi muun muassa tarkistaa mitä tietoja hänestä on kerätty. Lisätietoja oikeuksista ja niiden toteuttamisesta ax 2000<a>Helsingin kaupungin tietosuojasivulla</a>."
     }
   },
 	"dialog": {
@@ -111,6 +111,10 @@
 				"phone": "Syötä oikeassa muodossa",
 				"name": "Syötä nimi ilman erikoismerkkejä ja kirjaimia",
 				"isSet": "Valitse vähintään yksi"
+			},
+			"imageUpload": {
+				"label": "Lataa kuva toimipisteestä tai työtehtävästä raahaamalla se alle",
+				"helperText": "Leveys min 400px, max 2000px. Koko max 4MB*.jpg*.png"
 			}
     },
 		"classification": {

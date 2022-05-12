@@ -112,6 +112,10 @@
 				"phone": "Enter the correct format",
 				"name": "Enter the name without special characters or letters",
 				"isSet": "Choose at least one"
+			},
+			"imageUpload": {
+				"label": "Upload an image of a workplace or task by dragging it below",
+				"helperText": "Width min 400px, max 2000px. Size max 4MB*.jpg*.png"
 			}
     },
 		"classification": {

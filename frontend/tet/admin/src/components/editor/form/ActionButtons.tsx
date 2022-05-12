@@ -56,11 +56,12 @@ const ActionButtons: React.FC = () => {
   };
 
   const saveHandler = (validatedPosting: TetPosting): void => {
-    const event = tetPostingToEvent(validatedPosting);
-    upsertTetPosting.mutate({
-      id: validatedPosting.id,
-      event,
-    });
+    console.log(validatedPosting);
+    //const event = tetPostingToEvent(validatedPosting);
+    //upsertTetPosting.mutate({
+    //id: validatedPosting.id,
+    //event,
+    //});
   };
 
   const publishPostingHandler = async (validatedPosting: TetPosting): Promise<void> => {
