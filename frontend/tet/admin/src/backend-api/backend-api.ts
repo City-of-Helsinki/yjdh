@@ -1,7 +1,9 @@
 export const BackendEndpoint = {
   TET_POSTINGS: '/v1/events/',
-  LOGIN: '/oauth2/login',
-  LOGOUT: '/oauth2/logout',
+  LOGIN_ADFS: '/oauth2/login',
+  LOGOUT_ADFS: '/oauth2/logout',
+  LOGIN_OIDC: '/oidc/authenticate/',
+  LOGOUT_OIDC: '/oidc/logout/',
   USER: '/userinfo/',
 } as const;
 

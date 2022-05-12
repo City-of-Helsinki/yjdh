@@ -109,9 +109,6 @@ const Login: NextPage = () => {
         <$Notification label={t(notificationLabelKey)} type={notificationType} size="large">
           {notificationContent}
         </$Notification>
-        <Button theme="coat" iconLeft={<IconSignin />} onClick={login}>
-          {t(`common:header.loginLabel`)}
-        </Button>
       </Container>
     </>
   );
