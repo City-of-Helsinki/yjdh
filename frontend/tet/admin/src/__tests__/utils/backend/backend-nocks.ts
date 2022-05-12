@@ -51,8 +51,15 @@ export const expectToGetEventssErrorFromBackend = (errorCode: 400 | 404 | 500): 
 
 export const expectPlacesFromLinkedEvents = (): nock.Scope =>
   nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
-    .get('/place')
-    .reply(200, { data: [], meta: { count: 0 } }, { 'Access-Control-Allow-Origin': '*' });
+    .get('/place/?show_all_places=true&nocache=true&text=')
+    .reply(
+      200,
+      {
+        data: [],
+        meta: { count: 0 },
+      },
+      { 'Access-Control-Allow-Origin': '*' },
+    );
 
 export const expectKeyWordsFromLinkedEvents = (): nock.Scope =>
   nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
@@ -62,7 +69,7 @@ export const expectKeyWordsFromLinkedEvents = (): nock.Scope =>
       {
         data: [],
         meta: {
-          count: 0,
+          count: 1,
         },
       },
       { 'Access-Control-Allow-Origin': '*' },
@@ -73,11 +80,37 @@ export const expectKeyWordsFromLinkedEvents = (): nock.Scope =>
 export const expectWorkingMethodsFromLinkedEvents = (): nock.Scope =>
   nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
     .get('/keyword_set/tet:wm/?include=keywords')
-    .reply(200, { keywords: [] }, { 'Access-Control-Allow-Origin': '*' });
+    .reply(
+      200,
+      {
+        keywords: [
+          {
+            '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:4/',
+            name: {
+              fi: 'Tee oikeita töitä',
+            },
+          },
+        ],
+      },
+      { 'Access-Control-Allow-Origin': '*' },
+    );
 
 // TODO don't hardcode url
 // this is needed when testing the Editor form and can be refactored then
 export const expectAttributesFromLinkedEvents = (): nock.Scope =>
   nock('https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1')
     .get('/keyword_set/tet:attr/?include=keywords')
-    .reply(200, { keywords: [] }, { 'Access-Control-Allow-Origin': '*' });
+    .reply(
+      200,
+      {
+        keywords: [
+          {
+            '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/keyword/tet:1/',
+            name: {
+              fi: 'Soveltuu näkövammaisille',
+            },
+          },
+        ],
+      },
+      { 'Access-Control-Allow-Origin': '*' },
+    );

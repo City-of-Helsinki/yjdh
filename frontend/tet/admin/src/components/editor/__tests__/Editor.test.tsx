@@ -7,6 +7,7 @@ import {
   expectAttributesFromLinkedEvents,
   expectWorkingMethodsFromLinkedEvents,
   expectKeyWordsFromLinkedEvents,
+  expectPlacesFromLinkedEvents,
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
 import { screen } from 'shared/__tests__/utils/test-utils';
 import { prettyDOM, logRoles } from '@testing-library/react';
@@ -22,7 +23,10 @@ const posting = fakeTetPosting({
 
 describe('frontend/tet/admin/src/components/editor/Editor', () => {
   it('should show field values in form components', async () => {
-    //expectKeyWordsFromLinkedEvents(posting.keywords[0]);
+    expectWorkingMethodsFromLinkedEvents();
+    expectAttributesFromLinkedEvents();
+    //expectKeyWordsFromLinkedEvents();
+    expectPlacesFromLinkedEvents();
     renderComponent(<Editor initialValue={posting} />);
     const editorApi = getEditorApi(posting);
     //Location details
@@ -47,6 +51,7 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
       //expectKeyWordsFromLinkedEvents();
+      expectPlacesFromLinkedEvents();
       const {
         renderResult: { container },
       } = renderComponent(<Editor />);
@@ -65,11 +70,12 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       await editorApi.expectations.textInputHasError('start_date');
       await editorApi.expectations.languageSelectorHasError();
       await editorApi.expectations.textInputHasError('description');
-      console.log(prettyDOM(container, 50000));
     });
     it('shows error notification if form is not valid', async () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
+      //expectKeyWordsFromLinkedEvents();
+      expectPlacesFromLinkedEvents();
       renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
