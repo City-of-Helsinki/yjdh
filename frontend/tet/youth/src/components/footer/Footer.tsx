@@ -33,6 +33,13 @@ const FooterSection: React.FC = () => {
           href={t('common:footer.feedbackLink')}
           label={t('common:footer.feedback')}
         />
+        <Footer.Item
+          as="a"
+          rel="noopener noreferrer"
+          target="_blank"
+          href={t('common:footer.moreInfoLink')}
+          label={t('common:footer.moreInfo')}
+        />
       </Footer.Base>
     </Footer>
   );
