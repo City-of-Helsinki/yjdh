@@ -12,13 +12,14 @@ import { REDIRECT_ERROR_TYPES } from 'kesaseteli/youth/components/constants/crea
 import YouthIndex from 'kesaseteli/youth/pages';
 import headerApi from 'kesaseteli-shared/__tests__/utils/component-apis/header-api';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
+import { fakeBackendValidationErrorResponse } from 'kesaseteli-shared/__tests__/utils/fake-objects';
+import YOUTH_FORM_FIELDS from 'kesaseteli-shared/constants/youth-form-fields';
+import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';
+import { collectErrorFieldsFromResponse } from 'kesaseteli-shared/utils/youth-form-data.utils';
 import React from 'react';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
-import YOUTH_FORM_FIELDS from 'kesaseteli-shared/constants/youth-form-fields';
-import { fakeBackendValidationErrorResponse } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import { difference } from 'shared/utils/array.utils';
-import { collectErrorFieldsFromResponse } from 'kesaseteli-shared/utils/youth-form-data.utils';
 
 describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
   it('should not violate accessibility', async () => {
@@ -165,7 +166,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
       await indexPageApi.actions.clickSaveButton();
       await indexPageApi.expectations.selectedSchoolHasError('required');
 
-      await indexPageApi.actions.toggleCheckbox('is_unlisted_school');
+      indexPageApi.actions.toggleCheckbox('is_unlisted_school');
       await indexPageApi.expectations.selectedSchoolIsDisabled();
       await indexPageApi.expectations.selectedSchoolIsValid();
       await indexPageApi.expectations.inputIsPresent('unlistedSchool');
@@ -187,7 +188,7 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         'pattern'
       );
 
-      await indexPageApi.actions.toggleCheckbox('is_unlisted_school');
+      indexPageApi.actions.toggleCheckbox('is_unlisted_school');
       await indexPageApi.expectations.selectedSchoolIsEnabled();
 
       await indexPageApi.actions.clickSaveButton();
@@ -425,10 +426,11 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         randomValidationError,
         false
       );
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const validFields = difference(
         YOUTH_FORM_FIELDS,
-        invalidFields.concat('unlistedSchool')
-      );
+        [...invalidFields, 'unlistedSchool']
+      ) as YouthFormFields[];
       await indexPageApi.actions.fillTheFormWithListedSchoolAndSave({
         backendExpectation:
           expectToReplyValidationErrorWhenCreatingYouthApplication(
@@ -439,11 +441,9 @@ describe('frontend/kesaseteli/youth/src/pages/index.tsx', () => {
         invalidFields
       );
       for (const field of invalidFields) {
-        console.log('should be invalid', field);
         await indexPageApi.expectations.textInputHasError(field, 'pattern');
       }
       for (const field of validFields) {
-        console.log('should be valid', field);
         await indexPageApi.expectations.textInputIsValid(field);
       }
     });

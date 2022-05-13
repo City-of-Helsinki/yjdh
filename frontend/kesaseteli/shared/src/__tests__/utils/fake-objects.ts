@@ -25,7 +25,6 @@ import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
 import YouthApplicationValidationError from '../../types/youth-application-validation-error';
-import YouthApplicationFields from 'kesaseteli-shared/types/youth-application-fields';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',

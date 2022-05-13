@@ -13,6 +13,7 @@ type SaveParams = {
   language?: Language;
 };
 
+type InputKey = keyof YouthTranslations['youthApplication']['form'];
 type ErrorType = keyof YouthTranslations['errors'];
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
@@ -31,15 +32,15 @@ const getIndexPageApi = (lang?: Language) => {
           name: translations.youthApplication.title,
         });
       },
-      async inputIsPresent(key: YouthFormFields): Promise<void> {
+      async inputIsPresent (key: YouthFormFields): Promise<void> {
         await screen.findByRole('textbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
       },
       async inputIsNotPresent(key: YouthFormFields): Promise<void> {
         expect(
           screen.queryByRole('textbox', {
-            name: regexp(translations.youthApplication.form[key]),
+            name: regexp(translations.youthApplication.form[key as InputKey]),
           })
         ).not.toBeInTheDocument();
       },
@@ -60,11 +61,11 @@ const getIndexPageApi = (lang?: Language) => {
         errorType: ErrorType
       ): Promise<void> {
         if (key === 'selectedSchool') {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
           await this.selectedSchoolHasError(errorType);
         } else {
           const input = await screen.findByRole('textbox', {
-            name: regexp(translations.youthApplication.form[key]),
+            name: regexp(translations.youthApplication.form[key as InputKey]),
           });
           expect(input).toBeInvalid();
           expect(
@@ -82,11 +83,11 @@ const getIndexPageApi = (lang?: Language) => {
       },
       async textInputIsValid(key: YouthFormFields): Promise<void> {
         if (key === 'selectedSchool') {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
           await this.selectedSchoolIsValid();
         } else {
           const input = await screen.findByRole('textbox', {
-            name: regexp(translations.youthApplication.form[key]),
+            name: regexp(translations.youthApplication.form[key as InputKey]),
           });
           expect(input).toBeValid();
         }
@@ -105,7 +106,7 @@ const getIndexPageApi = (lang?: Language) => {
         errorType: ErrorType
       ): Promise<void> {
         const checkbox = await screen.findByRole('checkbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
         expect(checkbox.parentElement).toHaveTextContent(
           translations.errors[errorType]
@@ -120,7 +121,7 @@ const getIndexPageApi = (lang?: Language) => {
         fields: YouthFormFields[]
       ): Promise<void> {
         const fieldNamesList = fields
-          .map((name) => translations.youthApplication.form[name])
+          .map((name) => translations.youthApplication.form[name as InputKey])
           .join(', ');
         await screen.findByText(
           replaced(translations.youthApplication.checkNotification.validation, {
@@ -143,7 +144,7 @@ const getIndexPageApi = (lang?: Language) => {
     actions: {
       typeInput(key: YouthFormFields, value: string): void {
         const input = screen.getByRole('textbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
         userEvent.clear(input);
         if (value?.length > 0) {
@@ -184,7 +185,7 @@ const getIndexPageApi = (lang?: Language) => {
         >
       ): void {
         const checkbox = screen.getByRole('checkbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
         userEvent.click(checkbox);
         youthFormData[key] = Boolean(checkbox.getAttribute('value'));

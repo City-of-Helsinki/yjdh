@@ -5,6 +5,7 @@ import {
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';
+import { collectErrorFieldsFromResponse } from 'kesaseteli-shared/utils/youth-form-data.utils';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -14,7 +15,7 @@ import useGdprMaskedFormValues from 'shared/hooks/useGdprMaskedFormValues';
 import useGoToPage from 'shared/hooks/useGoToPage';
 import useLocale from 'shared/hooks/useLocale';
 import { assertUnreachable } from 'shared/utils/typescript.utils';
-import { collectErrorFieldsFromResponse } from 'kesaseteli-shared/utils/youth-form-data.utils';
+
 type ErrorNotificationType = 'please_recheck_data' | 'validation_error' | null;
 
 export type SubmitError = {

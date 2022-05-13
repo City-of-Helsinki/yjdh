@@ -1,4 +1,4 @@
-import YouthApplication from 'kesaseteli-shared/types/youth-application';
+import YouthApplication from '../types/youth-application';
 
 const YOUTH_APPLICATION_FIELDS: Array<keyof YouthApplication> = [
   'first_name',

@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import CREATION_ERROR_TYPES from 'kesaseteli/youth/components/constants/creation-error-types';
 import YOUTH_FORM_FIELDS from 'kesaseteli-shared/constants/youth-form-fields';
-import YouthApplicationValidationError from 'kesaseteli-shared/types/youth-application-validation-error';
 import YouthApplicationCreationError from 'kesaseteli-shared/types/youth-application-creation-error';
+import YouthApplicationValidationError from 'kesaseteli-shared/types/youth-application-validation-error';
 
 export const isYouthApplicationCreationError = (
   error: unknown
