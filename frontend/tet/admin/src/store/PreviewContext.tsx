@@ -26,6 +26,7 @@ export const initialPosting: TetPosting = {
     },
   },
   org_name: '',
+  organization_name: '',
   spots: 1,
   start_date: '',
   contact_email: '',

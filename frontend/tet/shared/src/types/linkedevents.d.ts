@@ -64,6 +64,7 @@ export type TetEvent = {
   event_status: string;
   publication_status: string;
   in_language: IdObject[];
+  provider: LocalizedObject;
 };
 
 export type TetEventPayload = {

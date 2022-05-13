@@ -58,6 +58,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
       </$ImageContainer>
       <$PostingCardBody>
         <JobPostingCardKeywords jobPosting={jobPosting} />
+        <$PostingSubtitle>{jobPosting.organization_name}</$PostingSubtitle>
         <$PostingTitle>{jobPosting.org_name}</$PostingTitle>
         <$PostingSubtitle>{jobPosting.title}</$PostingSubtitle>
         <$PostingDate>{date}</$PostingDate>

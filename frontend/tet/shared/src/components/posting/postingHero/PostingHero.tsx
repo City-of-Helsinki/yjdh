@@ -94,8 +94,9 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               )}
               {keywordList(posting.keywords, 'engel-medium-light')}
             </$Keywords>
-            <$Title>{posting.org_name}</$Title>
+            <$Title>{posting.organization_name}</$Title>
             <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
+            <$Title>{posting.org_name}</$Title>
             <$Date>{date}</$Date>
             <$Spots>
               {t('common:postingTemplate.spots')}: {posting.spots}
