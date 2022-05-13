@@ -1,6 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 
+from events.utils import get_organization_name
+
 
 class UserInfoView(View):
     """Get userinfo of the logged in user"""
@@ -15,9 +17,8 @@ class UserInfoView(View):
                 "family_name": user.last_name,
                 "email": user.email,
                 "name": f"{user.first_name} {user.last_name}",
-                "industry": "",
-                "username": user.username,  # TODO check if this can be removed
                 "is_ad_login": user.is_staff,
+                "organization_name": get_organization_name(request),
             }
 
             if not (userinfo["given_name"] or userinfo["family_name"]):

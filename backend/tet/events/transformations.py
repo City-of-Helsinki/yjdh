@@ -49,17 +49,8 @@ def _shorten_description(descobj):
     return shortened_obj
 
 
-def enrich_create_event(event, publisher, request: HttpRequest):
+def _set_event_owner(event, request):
     user = request.user
-
-    event.update(EVENT_BASE_DATA)
-    event.update(CREATE_EVENT_BASE_DATA)
-
-    if "publication_status" not in event or event["publication_status"] is None:
-        event["publication_status"] = "draft"
-
-    event["publisher"] = publisher
-    event["short_description"] = _shorten_description(event["description"])
 
     if user.is_staff:
         if user.email:
@@ -77,17 +68,27 @@ def enrich_create_event(event, publisher, request: HttpRequest):
             PROVIDER_BUSINESS_ID_FIELD: get_business_id(request),
         }
 
+
+def enrich_create_event(event, publisher, request: HttpRequest):
+    event.update(EVENT_BASE_DATA)
+    event.update(CREATE_EVENT_BASE_DATA)
+
+    if "publication_status" not in event or event["publication_status"] is None:
+        event["publication_status"] = "draft"
+
+    event["publisher"] = publisher
+    event["short_description"] = _shorten_description(event["description"])
+
+    _set_event_owner(event, request)
+
     return event
 
 
-def enrich_update_event(event, user):
+def enrich_update_event(event, request):
     event.update(EVENT_BASE_DATA)
     event["short_description"] = _shorten_description(event["description"])
 
-    if user.is_staff:
-        if user.email:
-            event["custom_data"]["editor_email"] = user.email
-        event["custom_data"]["editor_oid"] = user.username
+    _set_event_owner(event, request)
 
     # Not sure why it resets publication status from draft to public without the following line
     # This is not a problem because we keep the two in sync
@@ -111,14 +112,8 @@ def reduce_get_event(event):
             "custom_data",
             "publication_status",
             "in_language",
+            "provider",
         ),
     )
-
-    # Do we need this? For published events, these are publicly visible anyway
-    if tetevent["custom_data"] is not None:
-        if "editor_email" in tetevent["custom_data"]:
-            del tetevent["custom_data"]["editor_email"]
-        if "editor_oid" in tetevent["custom_data"]:
-            del tetevent["custom_data"]["editor_oid"]
 
     return tetevent

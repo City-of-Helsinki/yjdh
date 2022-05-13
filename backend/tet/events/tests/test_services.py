@@ -17,9 +17,13 @@ from events.tests.data.linked_events_responses import (
     EVENT_RESPONSE_TESTUSER_OID,
     SAMPLE_EVENTS,
 )
-from events.utils import PROVIDER_BUSINESS_ID_FIELD
+from events.utils import PROVIDER_BUSINESS_ID_FIELD, PROVIDER_NAME_FIELD
 
 LOGGER = logging.getLogger(__name__)
+TEST_COMPANY_BUSINESS_ID = EVENT_RESPONSE_TEST_COMPANY["provider"][
+    PROVIDER_BUSINESS_ID_FIELD
+]
+TEST_COMPANY_NAME = EVENT_RESPONSE_TEST_COMPANY["provider"][PROVIDER_NAME_FIELD]
 
 
 def mock_django_request(is_staff=True, email=None, username=None):
@@ -35,9 +39,8 @@ def mock_django_request(is_staff=True, email=None, username=None):
         # Otherwise the code tries to fetch them from the eauthorizations API
         request.session = {
             "organization_roles": {
-                "identifier": EVENT_RESPONSE_TEST_COMPANY["provider"][
-                    PROVIDER_BUSINESS_ID_FIELD
-                ]
+                "identifier": TEST_COMPANY_BUSINESS_ID,
+                "name": TEST_COMPANY_NAME,
             }
         }
 
@@ -118,9 +121,7 @@ def test_add_posting(requests_mock):
     event = ServiceClient().add_tet_event(ADD_EVENT_PAYLOAD, request_with_adfs_auth)
     assert event["id"] == "tet:af7w5v5m6e"
 
-    # Adding TET postings for suomi.fi logged in users is not yet implemented when mock flag is False
-    with pytest.raises(PermissionDenied):
-        ServiceClient().add_tet_event(ADD_EVENT_PAYLOAD, request_with_oidc_auth)
+    ServiceClient().add_tet_event(ADD_EVENT_PAYLOAD, request_with_oidc_auth)
 
 
 @pytest.mark.django_db
