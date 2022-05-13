@@ -57,7 +57,7 @@ const SchoolSelection: React.FC = () => {
         disabled={schoolIsUnlisted || !schoolListQuery.isSuccess}
         placeholder={schoolsPlaceholderText}
         $colSpan={2}
-        label={t('common:youthApplication.form.schoolsDropdown')}
+        label={t('common:youthApplication.form.selectedSchool')}
       />
       <$GridCell $colSpan={2}>
         <Checkbox<YouthFormData>

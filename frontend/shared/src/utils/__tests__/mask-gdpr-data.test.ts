@@ -26,7 +26,6 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
 
     expect(maskGDPRData(youthApplication)).toEqual({
       ...youthApplication,
-      first_name: masked(youthApplication.first_name),
       last_name: masked(youthApplication.last_name),
       social_security_number: masked(youthApplication.social_security_number),
       phone_number: masked(youthApplication.phone_number),
@@ -40,7 +39,6 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
       ...application,
       company: {
         ...application.company,
-        name: masked(application.company.name),
         street_address: masked(application.company.street_address),
       },
       contact_person_name: masked(application.contact_person_name),

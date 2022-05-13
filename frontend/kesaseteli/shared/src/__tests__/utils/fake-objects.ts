@@ -16,6 +16,7 @@ import merge from 'lodash/merge';
  *  https://github.com/DevExpress/testcafe/issues/4144
  */
 import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
+import YOUTH_APPLICATION_FIELDS from '../../constants/youth-application-fields';
 import ActivatedYouthApplication from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
 import AdditionalInfoReasonType from '../../types/additional-info-reason-type';
@@ -23,6 +24,8 @@ import CreatedYouthApplication from '../../types/created-youth-application';
 import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
+import YouthApplicationValidationError from '../../types/youth-application-validation-error';
+import YouthApplicationFields from 'kesaseteli-shared/types/youth-application-fields';
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',
@@ -318,3 +321,12 @@ export const fakeActivatedYouthApplication = (
     override
   );
 };
+
+export const fakeBackendValidationErrorResponse =
+  (): YouthApplicationValidationError['response']['data'] =>
+    Object.fromEntries(
+      getRandomSubArray(YOUTH_APPLICATION_FIELDS).map((field) => [
+        field,
+        [faker.lorem.paragraph(1)],
+      ])
+    ) as YouthApplicationValidationError['response']['data'];

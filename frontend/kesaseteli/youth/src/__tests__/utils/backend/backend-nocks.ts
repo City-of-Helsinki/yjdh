@@ -1,5 +1,4 @@
 import faker from 'faker';
-import { ErrorType } from 'kesaseteli/youth/types/youth-application-creation-error';
 import { fakeSchools } from 'kesaseteli-shared/__tests__/utils/fake-objects';
 import {
   BackendEndpoint,
@@ -13,6 +12,7 @@ import YouthApplication from 'kesaseteli-shared/types/youth-application';
 import YouthApplicationStatus from 'kesaseteli-shared/types/youth-application-status';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { ErrorType } from 'kesaseteli-shared/types/youth-application-creation-error';
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
@@ -77,6 +77,41 @@ export const expectToReplyErrorWhenCreatingYouthApplication =
           ? () => ({ code: errorType })
           : 'This is a create youth application backend test error. Please ignore this error message.'
       );
+  };
+/**
+ * Example reply from backend
+ * {
+ *     "first_name": [
+ *         "Enter a valid value."
+ *     ],
+ *     "last_name": [
+ *         "Enter a valid value."
+ *     ],
+ *     "social_security_number": [
+ *         "ABCDE is not a valid Finnish social security number. Make sure to have it in uppercase and without whitespace."
+ *     ],
+ *     "school": [
+ *         "Enter a valid value."
+ *     ],
+ *     "email": [
+ *         "Enter a valid email address."
+ *     ],
+ *     "phone_number": [
+ *         "Enter a valid value."
+ *     ],
+ *     "postcode": [
+ *         "Enter a valid value."
+ *     ]
+ * }
+ * @param backendErrorObject
+ */
+export const expectToReplyValidationErrorWhenCreatingYouthApplication =
+  (backendErrorObject: Record<string, string[]>) =>
+  (application: YouthApplication): nock.Scope => {
+    consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    return nock(getBackendDomain())
+      .post(BackendEndpoint.YOUTH_APPLICATIONS, application)
+      .reply(400, () => backendErrorObject);
   };
 
 export const expectToGetYouthApplicationStatus = (
