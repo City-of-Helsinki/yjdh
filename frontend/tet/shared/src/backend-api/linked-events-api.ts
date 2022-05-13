@@ -2,6 +2,10 @@ import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { Language } from 'shared/i18n/i18n';
 import { OptionType } from 'tet-shared/types/classification';
 import { IdObject, Place } from 'tet-shared/types/linkedevents';
+import {
+  LinkedEventsPagedResponse,
+  TetEvent,
+} from 'tet-shared/types/linkedevents';
 
 // By using an environment variable we can set this to yso-helsinki in prod, but keep yso in dev (if needed)
 export const keywordsDataSource =
@@ -48,6 +52,22 @@ async function queryKeywordSet<T>(
   return result?.data?.keywords || [];
 }
 
+async function queryEvents(
+  axiosInstance: AxiosInstance,
+  path: string,
+  params: Record<string, string | number>
+): Promise<LinkedEventsPagedResponse<TetEvent>> {
+  const result: AxiosResponse<LinkedEventsPagedResponse<TetEvent>> =
+    await axiosInstance.get(path, {
+      params: {
+        data_source: 'tet',
+        show_all: true,
+        ...params,
+      },
+    });
+  return result?.data;
+}
+
 export const keywordToOptionType = (
   keyword: Keyword,
   language: Language = 'fi',
@@ -79,4 +99,11 @@ export const getAddressList = (search: string): Promise<Place[]> =>
     show_all_places: 'true',
     nocache: 'true',
     text: search,
+  });
+
+export const getEvents = (
+  page_size: number
+): Promise<LinkedEventsPagedResponse<TetEvent>> =>
+  queryEvents(linkedEvents, 'event/', {
+    page_size: page_size,
   });

@@ -5,30 +5,34 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { useRouter } from 'next/router';
 import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
+import { getEvents, getWorkFeatures } from 'tet-shared/backend-api/linked-events-api';
+import { useQueries, useQuery } from 'react-query';
 
 const Postings: React.FC = () => {
   const router = useRouter();
   const params = router.query;
-  const { isLoading, data, error } = useGetPostings(params);
+  const results = useGetPostings({ page_size: 10, ...params });
+  const all = useGetPostings({ ...params });
 
   const postings = () => {
     const hasNextPage = false;
-    if (isLoading) {
+    if (results.isLoading) {
       return <PageLoadingSpinner />;
     }
 
-    if (error) {
+    if (results.error) {
       //TODO
       return <div>Virhe datan latauksessa</div>;
     }
 
-    if (data) {
-      return <JobPostingList postings={data} hasNextPage={hasNextPage} />;
+    if (results.data) {
+      return <JobPostingList postings={results.data} everyPosting={all} hasNextPage={hasNextPage} />;
     } else {
       //TODO
       return <div>Ei hakutuloksia</div>;
     }
   };
+  console.log(results);
 
   const searchHandler = (queryParams: QueryParams) => {
     const searchQuery = {

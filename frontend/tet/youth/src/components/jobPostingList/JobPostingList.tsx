@@ -9,15 +9,18 @@ import { TetEvent, LinkedEventsPagedResponse } from 'tet-shared/types/linkedeven
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 import TetPosting from 'tet-shared/types/tetposting';
 import dynamic from 'next/dynamic';
+import { useQuery, UseQueryResult } from 'react-query';
+import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 
 const Map = dynamic(() => import('tet-shared/components/map/Map'), { ssr: false });
 
 type Props = {
   postings: LinkedEventsPagedResponse<TetEvent>;
   hasNextPage?: Boolean;
+  everyPosting: UseQueryResult<LinkedEventsPagedResponse<TetEvent>>;
 };
 
-const JobPostingList: React.FC<Props> = ({ postings, hasNextPage }) => {
+const JobPostingList: React.FC<Props> = ({ postings, hasNextPage, everyPosting }) => {
   const { t } = useTranslation();
   const { eventToTetPosting } = useEventPostingTransformation();
   const eventsToPostings = (events: TetEvent[]) => events.map((event) => eventToTetPosting(event));
@@ -37,6 +40,12 @@ const JobPostingList: React.FC<Props> = ({ postings, hasNextPage }) => {
     setCurrentPage((prevState) => prevState + 1);
   };
 
+  const MapContainer = everyPosting.isLoading ? (
+    <PageLoadingSpinner />
+  ) : (
+    <Map height={'1000px'} postings={allPostings} showLink={true} />
+  );
+
   return (
     <Container>
       {showMap ? (
@@ -46,7 +55,7 @@ const JobPostingList: React.FC<Props> = ({ postings, hasNextPage }) => {
       )}
       <h2>{t('common:postings.searchResults', { count: total })}</h2>
       {showMap ? (
-        <Map height={'1000px'} postings={allPostings} showLink={true} />
+        MapContainer
       ) : (
         <Fragment>
           {shownPostings().map((posting) => (
