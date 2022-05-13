@@ -489,7 +489,8 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = YouthApplication
         vtj_data_fields = [
-            "encrypted_vtj_json",
+            "encrypted_original_vtj_json",
+            "encrypted_handler_vtj_json",
         ]
         read_only_fields = [
             "id",
@@ -520,7 +521,12 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
         required=False, default=False, write_only=True
     )
 
-    encrypted_vtj_json = serializers.SerializerMethodField("get_encrypted_vtj_json")
+    encrypted_original_vtj_json = serializers.SerializerMethodField(
+        "get_encrypted_original_vtj_json"
+    )
+    encrypted_handler_vtj_json = serializers.SerializerMethodField(
+        "get_encrypted_handler_vtj_json"
+    )
     handler = serializers.PrimaryKeyRelatedField(
         required=False,
         allow_null=True,
@@ -532,17 +538,24 @@ class YouthApplicationSerializer(serializers.ModelSerializer):
             del validated_data["request_additional_information"]
         return super().create(validated_data)
 
-    def get_encrypted_vtj_json(self, obj):
+    def get_encrypted_char_field_as_json(self, obj, field_name):
         """
-        Return encrypted_vtj_json as JSON object, converting None & empty string to {}.
+        Return EncryptedCharField as JSON object, converting None & empty string to {}.
+        """
+        if not hasattr(obj, field_name):
+            raise ValueError(f"Invalid field name {field_name}")
 
-        The reason for this function is that encrypted_vtj_json field is
-        EncryptedCharField, not JSONField.
-        """
-        if obj.encrypted_vtj_json in [None, ""]:
+        field_value = getattr(obj, field_name)
+        if field_value in [None, ""]:
             return {}
         else:
-            return json.loads(obj.encrypted_vtj_json)
+            return json.loads(field_value)
+
+    def get_encrypted_original_vtj_json(self, obj):
+        return self.get_encrypted_char_field_as_json(obj, "encrypted_original_vtj_json")
+
+    def get_encrypted_handler_vtj_json(self, obj):
+        return self.get_encrypted_char_field_as_json(obj, "encrypted_handler_vtj_json")
 
 
 class YouthApplicationStatusSerializer(serializers.ModelSerializer):
@@ -580,4 +593,24 @@ class YouthApplicationAdditionalInfoSerializer(serializers.ModelSerializer):
         fields = [
             "additional_info_user_reasons",
             "additional_info_description",
+        ]
+
+
+class YouthApplicationHandlingSerializer(serializers.ModelSerializer):
+    encrypted_handler_vtj_json = serializers.JSONField(write_only=True)
+
+    def to_internal_value(self, data):
+        """
+        Dict of native values <- Dict of primitive datatypes.
+        """
+        result = super().to_internal_value(data)
+        result["encrypted_handler_vtj_json"] = json.dumps(
+            result["encrypted_handler_vtj_json"]
+        )
+        return result
+
+    class Meta:
+        model = YouthApplication
+        fields = [
+            "encrypted_handler_vtj_json",
         ]

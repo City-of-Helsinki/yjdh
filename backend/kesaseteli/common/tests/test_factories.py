@@ -126,6 +126,7 @@ def test_youth_application_factory(  # noqa: C901
             youth_application.can_set_additional_info
             == is_additional_information_requested_status
         )
+        assert youth_application.is_handled == is_handled_status
         assert (youth_application.handler is not None) == is_handled_status
         assert (youth_application.handled_at is not None) == is_handled_status
         assert youth_application.has_youth_summer_voucher == is_accepted_status
@@ -151,13 +152,16 @@ def test_youth_application_factory(  # noqa: C901
 
             if vtj_test_case == VtjTestCase.NO_ANSWER:
                 with pytest.raises(ReadTimeout):
-                    youth_application.encrypted_vtj_json = (
-                        youth_application.fetch_vtj_json()
+                    youth_application.encrypted_original_vtj_json = (
+                        youth_application.fetch_vtj_json(end_user="")
                     )
             else:
-                youth_application.encrypted_vtj_json = (
-                    youth_application.fetch_vtj_json()
+                youth_application.encrypted_original_vtj_json = (
+                    youth_application.fetch_vtj_json(end_user="")
                 )
+            youth_application.encrypted_handler_vtj_json = (
+                youth_application.encrypted_original_vtj_json
+            )
 
             if vtj_test_case == VtjTestCase.DEAD:
                 assert youth_application.is_applicant_dead_according_to_vtj
@@ -168,7 +172,7 @@ def test_youth_application_factory(  # noqa: C901
                     not youth_application.is_social_security_number_valid_according_to_vtj
                 )
             elif vtj_test_case == VtjTestCase.NO_ANSWER:
-                assert youth_application.encrypted_vtj_json in [None, ""]
+                assert youth_application.encrypted_original_vtj_json is None
             elif vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI:
                 assert youth_application.vtj_home_municipality == "Helsinki"
                 assert youth_application.is_helsinkian
