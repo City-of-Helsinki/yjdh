@@ -286,12 +286,16 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
         )
         list(same_persons_apps)  # Force evaluation of queryset to lock its rows
 
-        if same_persons_apps.active().exists():
-            if youth_application.is_active and youth_application.need_additional_info:
+        if same_persons_apps.active().non_rejected().exists():
+            if (
+                youth_application.is_active
+                and not youth_application.is_rejected
+                and youth_application.need_additional_info
+            ):
                 return HttpResponseRedirect(
                     youth_application.additional_info_page_url(pk=youth_application.pk)
                 )
-            else:  # not the active one or does not need additional info
+            else:  # not the active non-rejected one or does not need additional info
                 return HttpResponseRedirect(
                     youth_application.already_activated_page_url()
                 )
