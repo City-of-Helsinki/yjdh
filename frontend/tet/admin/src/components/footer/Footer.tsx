@@ -1,6 +1,7 @@
 import { Footer } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { IconLinkExternal } from 'hds-react';
 
 // import { $FooterWrapper } from './Footer.sc';
 
@@ -19,6 +20,7 @@ const FooterSection: React.FC = () => {
           href={t('common:footer.accessibilityStatementLink')}
           label={t('common:footer.accessibilityStatement')}
           aria-label={`${t('common:footer.accessibilityStatement')} - ${t('common:footer.newTab')}`}
+          icon={<IconLinkExternal />}
         />
         <Footer.Item
           as="a"
@@ -27,6 +29,7 @@ const FooterSection: React.FC = () => {
           href={t('common:footer.privacyPolicyLink')}
           label={t('common:footer.privacyPolicy')}
           aria-label={`${t('common:footer.privacyPolicy')} - ${t('common:footer.newTab')}`}
+          icon={<IconLinkExternal />}
         />
         <Footer.Item
           as="a"
@@ -35,6 +38,7 @@ const FooterSection: React.FC = () => {
           href={t('common:footer.feedbackLink')}
           label={t('common:footer.feedback')}
           aria-label={`${t('common:footer.feedback')} - ${t('common:footer.newTab')}`}
+          icon={<IconLinkExternal />}
         />
       </Footer.Base>
     </Footer>
