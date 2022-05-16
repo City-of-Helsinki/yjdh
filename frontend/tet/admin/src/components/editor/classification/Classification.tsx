@@ -23,7 +23,7 @@ const Classification: React.FC = () => {
   const { getValues } = useFormContext<TetPosting>();
   const methodsAndFeatures = useKeywordType();
 
-  const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search));
+  const keywordsResults = useQuery(['keywords', search], () => getWorkKeywords(search), { enabled: !!search });
 
   const keywords = React.useMemo(() => {
     return !keywordsResults.isLoading && keywordsResults.data

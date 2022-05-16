@@ -7,9 +7,7 @@ import {
   expectAuthorizedReply,
   expectAttributesFromLinkedEvents,
   expectWorkingMethodsFromLinkedEvents,
-  expectKeyWordsFromLinkedEvents,
   expectToGetSingleEventFromBackend,
-  expectPlacesFromLinkedEvents,
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
 import renderPage from 'tet/admin/__tests__/utils/components/render-page';
 import getTetAdminTranslationsApi from 'tet/admin/__tests__/utils/i18n/get-tet-admin-translations-api';
@@ -17,6 +15,7 @@ import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import getFormPageApi from 'tet/admin/__tests__/utils/components/get-form-page-api';
 import { fakeTetEvent } from 'tet-shared/__tests__/utils/fake-objects';
 import { screen, userEvent, within, waitFor } from 'shared/__tests__/utils/test-utils';
+import { TetEvent } from 'tet-shared/types/linkedevents';
 
 const {
   translations: { [DEFAULT_LANGUAGE]: translations },
@@ -44,15 +43,16 @@ describe('frontend/tet/admin/src/pages/editstatic.tsx', () => {
   });
 
   it('should render page', async () => {
-    //expectAuthorizedReply();
-    //expectToGetSingleEventFromBackend(event);
-    //expectAttributesFromLinkedEvents();
-    //expectWorkingMethodsFromLinkedEvents();
-    //expectKeyWordsFromLinkedEvents();
-    //expectPlacesFromLinkedEvents();
-    //const spyPush = jest.fn();
-    //await renderPage(EditStaticPage, { push: spyPush, query: { id: event.id } });
-    //const formApi = getFormPageApi();
-    //await formApi.expectations.pageIsLoaded('Testing');
+    expectAuthorizedReply();
+    expectWorkingMethodsFromLinkedEvents();
+    expectAttributesFromLinkedEvents();
+    expectToGetSingleEventFromBackend(event);
+
+    const spyPush = jest.fn();
+    await renderPage(EditStaticPage, { push: spyPush, query: { id: event.id } });
+    await waitFor(async () => {
+      const formApi = getFormPageApi();
+      await formApi.expectations.pageIsLoaded(translations.editor.editTitle);
+    });
   });
 });

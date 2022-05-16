@@ -19,7 +19,9 @@ const EditStaticPage: NextPage = () => {
   const router = useRouter();
   const { eventToTetPosting, keywordResult } = useEventPostingTransformation();
   const id = router.query.id as string;
-  const { isLoading, data, error } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`);
+  const { isLoading, data, error } = useQuery<TetEvent>(`${BackendEndpoint.TET_POSTINGS}${id}`, {
+    enabled: router.isReady,
+  });
 
   if (isLoading || keywordResult.isLoading) {
     return <PageLoadingSpinner />;

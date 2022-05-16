@@ -22,7 +22,9 @@ const CompanyInfo: React.FC = () => {
   const { getLocalizedString } = useEventPostingTransformation();
   const { getValues } = useFormContext<TetPosting>();
 
-  const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
+  const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch), {
+    enabled: !!addressSearch,
+  });
 
   const keywords: LocationType[] = React.useMemo(() => {
     return keywordsResults.data

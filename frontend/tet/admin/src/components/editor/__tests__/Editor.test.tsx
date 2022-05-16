@@ -6,10 +6,8 @@ import getEditorApi from 'tet/admin/__tests__/utils/components/get-editor-api';
 import {
   expectAttributesFromLinkedEvents,
   expectWorkingMethodsFromLinkedEvents,
-  expectKeyWordsFromLinkedEvents,
-  expectPlacesFromLinkedEvents,
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
-import { screen } from 'shared/__tests__/utils/test-utils';
+import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 import { prettyDOM, logRoles } from '@testing-library/react';
 
 const posting = fakeTetPosting({
@@ -25,9 +23,9 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
   it('should show field values in form components', async () => {
     expectWorkingMethodsFromLinkedEvents();
     expectAttributesFromLinkedEvents();
-    //expectKeyWordsFromLinkedEvents();
-    expectPlacesFromLinkedEvents();
+
     renderComponent(<Editor initialValue={posting} />);
+
     const editorApi = getEditorApi(posting);
     //Location details
     await editorApi.expectations.inputValueIsPresent('title');
@@ -50,8 +48,7 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
     it(`shows errors if empty values on required fields`, async () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
-      //expectKeyWordsFromLinkedEvents();
-      expectPlacesFromLinkedEvents();
+
       const {
         renderResult: { container },
       } = renderComponent(<Editor />);
@@ -74,13 +71,15 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
     it('shows error notification if form is not valid', async () => {
       expectWorkingMethodsFromLinkedEvents();
       expectAttributesFromLinkedEvents();
-      //expectKeyWordsFromLinkedEvents();
-      expectPlacesFromLinkedEvents();
+
       renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
-      await screen.findByRole('heading', {
-        name: new RegExp('täytä puuttuvat tai virheelliset tiedot', 'i'),
+
+      await waitFor(async () => {
+        await screen.findByRole('heading', {
+          name: new RegExp('täytä puuttuvat tai virheelliset tiedot', 'i'),
+        });
       });
     });
   });
