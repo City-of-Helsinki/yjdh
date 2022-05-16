@@ -1,6 +1,7 @@
 import logging
-from datetime import date
+from datetime import date, datetime, timezone
 from email.mime.image import MIMEImage
+from functools import partial
 from typing import List, Optional
 
 from django.core.exceptions import ValidationError
@@ -145,3 +146,7 @@ def getattr_nested(obj, attrs: list):
             with translation.override("fi"):
                 value = getattr(obj, f"get_{attr}_display")()
         return value
+
+
+# Create datetime with UTC timezone
+utc_datetime = partial(datetime, tzinfo=timezone.utc)
