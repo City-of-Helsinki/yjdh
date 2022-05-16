@@ -25,7 +25,11 @@ const addressIsValid = (address: VtjAddress): boolean =>
   });
 
 export const mapVtjData = (application: ActivatedYouthApplication): VtjInfo => {
-  const { encrypted_vtj_json: vtjData, last_name, postcode } = application;
+  const {
+    encrypted_handler_vtj_json: vtjData,
+    last_name,
+    postcode,
+  } = application;
   const notFound =
     vtjData.Henkilo?.Henkilotunnus?.['@voimassaolokoodi'] !== '1';
   const providedAt = vtjData.Asiakasinfo?.InfoS ?? '';

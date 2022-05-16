@@ -292,7 +292,7 @@ export const fakeVtjData = (
         },
       },
     },
-    override?.encrypted_vtj_json ?? {}
+    override?.encrypted_handler_vtj_json ?? {}
   );
 
 export const fakeActivatedYouthApplication = (
@@ -313,7 +313,7 @@ export const fakeActivatedYouthApplication = (
               override?.additional_info_provided_at ?? faker.date.past()
             )
           : undefined,
-      encrypted_vtj_json: fakeVtjData(application),
+      encrypted_handler_vtj_json: fakeVtjData(application),
     },
     override
   );

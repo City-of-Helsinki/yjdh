@@ -5,7 +5,7 @@ import Accordion from 'shared/components/accordion/Accordion';
 import { useTheme } from 'styled-components';
 
 type Props = {
-  data: ActivatedYouthApplication['encrypted_vtj_json'];
+  data: ActivatedYouthApplication['encrypted_handler_vtj_json'];
 };
 const VtjRawDataAccordion: React.FC<Props> = ({ data }) => {
   const { t } = useTranslation();
