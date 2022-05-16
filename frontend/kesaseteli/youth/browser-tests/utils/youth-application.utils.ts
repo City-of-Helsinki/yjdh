@@ -57,6 +57,7 @@ export const is9thGraderAge = (): Pick<
   YouthApplication,
   'social_security_number'
 > => ({ social_security_number: fakeNinethGraderSSN() });
+
 export const isUpperSecondaryEducation1stYearStudentAge = (): Pick<
   YouthApplication,
   'social_security_number'

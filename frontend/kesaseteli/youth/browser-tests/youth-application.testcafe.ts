@@ -411,8 +411,11 @@ if (!isRealIntegrationsEnabled()) {
     await new HandlerForm().rejectApplication();
   });
 
-  test('If I accidentally register application with wrong information, handler can reject it and I can sen another application with same ssn', async (t) => {
-    const application = applicationNeedsAdditionalInfo();
+  test('If I accidentally register application with wrong information, handler can reject it. Then I can send another application with same ssn', async (t) => {
+    const application = autoAcceptedApplication({
+      ...livesOutsideHelsinki,
+      ...attendsUnlistedSchool,
+    });
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
     const applicationId = await thankYouPage.clickActivationLink();
