@@ -91,6 +91,7 @@ class EmployerSummerVoucherFactory(factory.django.DjangoModelFactory):
     hired_without_voucher_assessment = factory.Faker(
         "random_element", elements=HiredWithoutVoucherAssessment.values
     )
+    is_exported = False
 
     class Meta:
         model = EmployerSummerVoucher
