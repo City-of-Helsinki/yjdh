@@ -428,6 +428,7 @@ if (!isRealIntegrationsEnabled()) {
         social_security_number: application.social_security_number,
       })
     );
+    await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
     await new NotificationPage('accepted').isLoaded();
   });
@@ -449,6 +450,7 @@ if (!isRealIntegrationsEnabled()) {
         email: application.email,
       })
     );
+    await thankYouPage.isLoaded();
     await thankYouPage.clickActivationLink();
     await new NotificationPage('accepted').isLoaded();
   });
