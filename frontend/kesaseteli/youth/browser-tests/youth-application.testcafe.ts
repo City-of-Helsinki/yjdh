@@ -411,7 +411,7 @@ if (!isRealIntegrationsEnabled()) {
     await new HandlerForm().rejectApplication();
   });
 
-  test.skip('If I accidentally register application with wrong information, handler can reject it and I can sen another application with same ssn', async (t) => {
+  test('If I accidentally register application with wrong information, handler can reject it and I can sen another application with same ssn', async (t) => {
     const application = applicationNeedsAdditionalInfo();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
@@ -432,7 +432,7 @@ if (!isRealIntegrationsEnabled()) {
     await new NotificationPage('accepted').isLoaded();
   });
 
-  test.skip('If I accidentally register application with wrong information, handler can reject it and I can sen another application with same email', async (t) => {
+  test('If I accidentally register application with wrong information, handler can reject it and I can sen another application with same email', async (t) => {
     const application = applicationNeedsAdditionalInfo();
     await youthForm.sendYouthApplication(application);
     await thankYouPage.isLoaded();
