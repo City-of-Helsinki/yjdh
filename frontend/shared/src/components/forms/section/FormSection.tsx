@@ -18,9 +18,14 @@ const FormSection: React.FC<FormSectionProps> = ({
   role,
   loading,
   'aria-label': ariaLabel,
+  'data-testid': dataTestId,
   ...rest
 }) => (
-  <$Section paddingBottom={paddingBottom} aria-label={ariaLabel ?? header}>
+  <$Section
+    paddingBottom={paddingBottom}
+    aria-label={ariaLabel ?? header}
+    data-testid={dataTestId}
+  >
     {action && <$Action>{action}</$Action>}
     {header && <Heading header={header} loading={loading} {...rest} />}
     {children && (

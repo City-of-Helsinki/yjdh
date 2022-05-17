@@ -137,6 +137,11 @@
       "message": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!",
       "goToFrontendPage": ""
     },
+    "accepted" : {
+      "title": "EN Hienoa! Olet lähettänyt tietosi järjestelmään",
+      "message": "EN Saat pian kesäsetelin ohjeineen sähköpostiisi",
+      "goToFrontendPage": ""
+    },
     "expired" : {
       "title": "Oops! The confirmation link has expired",
       "message": "Unfortunately, it has been more than {{ expirationHours }} hours since your registration was confirmed. Please fill in the registration form again.",

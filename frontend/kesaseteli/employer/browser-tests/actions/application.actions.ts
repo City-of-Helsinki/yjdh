@@ -58,9 +58,7 @@ export const fillStep2EmployeeForm = async (
   const step2 = getStep2Components(t);
 
   const addButton = await step2.addEmploymentButton();
-  if (index > 0) {
-    await addButton.actions.click();
-  }
+  await addButton.actions.click();
   const step2Employment = await step2.employmentAccordion(index);
   await step2Employment.actions.fillEmployeeName(employment.employee_name);
   await step2Employment.actions.fillSsn(employment.employee_ssn);
@@ -115,19 +113,14 @@ export const loginAndfillApplication = async (
 ): Promise<UserAndApplicationData> => {
   const urlUtils = getUrlUtils(t);
   const suomiFiData = await doEmployerLogin(t);
-  const applicationId = await urlUtils.expectations.urlChangedToApplicationPage(
-    'fi'
-  );
-  if (!applicationId) {
-    throw new Error('application id is missing');
-  }
+  const wizard = await getWizardComponents(t);
+  const applicationId =
+    await urlUtils.expectations.urlChangedToApplicationPage();
   const application = fakeApplication(
     applicationId,
     suomiFiData?.company,
     true
   );
-
-  const wizard = await getWizardComponents(t);
   // if there is existing draft application on step 2 or 3, then move to step 1.
   await wizard.actions.clickGoToStep1Button();
   if (toStep >= 1) {

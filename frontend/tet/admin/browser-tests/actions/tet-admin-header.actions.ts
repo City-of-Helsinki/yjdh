@@ -1,8 +1,9 @@
 import { doLogin, SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
+import Header from '@frontend/shared/browser-tests/page-models/Header';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import User from '@frontend/shared/src/types/user';
 import TestController from 'testcafe';
+
 import getTetAdminTranslationsApi from '../../src/__tests__/utils/i18n/get-tet-admin-translations-api';
 
 export const doTetAdminLogin = async (
@@ -10,9 +11,8 @@ export const doTetAdminLogin = async (
   lang = DEFAULT_LANGUAGE,
   cachedUser?: User,
 ): Promise<SuomiFiData> => {
-  const { translations } = getTetAdminTranslationsApi();
-  const headerUser = getHeaderComponents(t, translations).headerUser();
-  await headerUser.expectations.userIsLoggedOut();
-  await headerUser.actions.clickloginButton();
+  const headerUser = new Header(getTetAdminTranslationsApi());
+  await headerUser.userIsLoggedOut();
+  await headerUser.clickLoginButton();
   return doLogin(t, lang, cachedUser);
 };

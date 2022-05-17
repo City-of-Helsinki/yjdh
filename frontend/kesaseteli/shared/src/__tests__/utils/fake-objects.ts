@@ -18,6 +18,7 @@ import merge from 'lodash/merge';
 import { ADDITIONAL_INFO_REASON_TYPE } from '../../constants/additional-info-reason-type';
 import ActivatedYouthApplication from '../../types/activated-youth-application';
 import AdditionalInfoApplication from '../../types/additional-info-application';
+import AdditionalInfoReasonType from '../../types/additional-info-reason-type';
 import CreatedYouthApplication from '../../types/created-youth-application';
 import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
@@ -103,27 +104,83 @@ export const fakeSchools: string[] = [
   'Östersundom skola',
 ];
 
+const ninethGraderYear = new Date().getFullYear() - 16;
+const upperSecondaryEducation1stYearStudentYear = new Date().getFullYear() - 17;
+
+/**
+ * A bit complicated algorithm that tries to find ssn with certain year of birth using `FinnishSSN.createWithAge` function.
+ * We use FinnishSSN library because it's easier and less error-prone than build a custom ssn function.
+ * The problem with the function is that if today is 01.06.22 and
+ * - we use value `FinnishSSN.createWithAge(16)` then valid birthdays would be 2.6.2005-31.5.2006
+ * - we use value `FinnishSSN.createWithAge(15)` then valid birthdays would be 1.6.2006-31.5.2007
+ * The idea is to generate ssns with `FinnishSSN.createWithAge` function for 15-16 year old
+ * multiple times until we find first SSN with birth year of 2006
+ */
+export const fakeSSN = (yearOfBirth: number): string => {
+  const yearOfBirthAge = new Date().getFullYear() - yearOfBirth;
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < 100; i++) {
+    const ssn = FinnishSSN.createWithAge(
+      faker.datatype.number({ min: yearOfBirthAge - 1, max: yearOfBirthAge })
+    );
+    const { dateOfBirth } = FinnishSSN.parse(ssn);
+    if (dateOfBirth.getFullYear() === yearOfBirth) {
+      return ssn;
+    }
+  }
+  throw new Error("Something went wrong, couldn't find any suitable ssn!");
+};
+
+export const fakeNinethGraderSSN = (): string => fakeSSN(ninethGraderYear);
+
+export const fakeUpperSecondaryEducation1stYearStudentSSN = (): string =>
+  fakeSSN(upperSecondaryEducation1stYearStudentYear);
+
+export const fakeYouthTargetGroupAgeSSN = (): string =>
+  fakeSSN(
+    faker.datatype.number({
+      min: upperSecondaryEducation1stYearStudentYear,
+      max: ninethGraderYear,
+    })
+  );
+
+type TargetGroupData = {
+  social_security_number: string;
+  age: number;
+};
+
+export const fakeYouthTargetGroupAge = (): TargetGroupData => {
+  const social_security_number = fakeYouthTargetGroupAgeSSN();
+  const { ageInYears } = FinnishSSN.parse(social_security_number);
+  return {
+    social_security_number,
+    age: ageInYears,
+  };
+};
+
 export const fakeYouthApplication = (
   override?: DeepPartial<YouthApplication>
 ): YouthApplication => {
-  const { isUnlistedSchool } = { isUnlistedSchool: false, ...override };
+  const { is_unlisted_school } = {
+    is_unlisted_school: faker.datatype.boolean(),
+    ...override,
+  };
   return {
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
-    social_security_number: FinnishSSN.createWithAge(
-      faker.datatype.number({ min: 15, max: 16 })
-    ),
+    social_security_number: fakeYouthTargetGroupAgeSSN(),
     postcode: faker.datatype.number({ min: 10_000, max: 99_999 }).toString(),
-    school: isUnlistedSchool
+    school: is_unlisted_school
       ? faker.commerce.department()
       : faker.random.arrayElement(fakeSchools),
-    is_unlisted_school: isUnlistedSchool,
+    is_unlisted_school,
     phone_number: faker.phone.phoneNumber('+358#########'),
     email: faker.internet.email(),
     language: DEFAULT_LANGUAGE,
     ...override,
   };
 };
+
 export const fakeCreatedYouthApplication = (
   override?: DeepPartial<CreatedYouthApplication>
 ): CreatedYouthApplication =>
@@ -142,9 +199,11 @@ export const fakeAdditionalInfoApplication = (
   merge(
     {
       id: faker.datatype.uuid(),
-      additional_info_user_reasons: getRandomSubArray(
-        ADDITIONAL_INFO_REASON_TYPE
-      ),
+      additional_info_user_reasons:
+        (override &&
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          (override.additional_info_user_reasons as AdditionalInfoReasonType[])) ||
+        getRandomSubArray(ADDITIONAL_INFO_REASON_TYPE),
       additional_info_description: faker.lorem.paragraph(1),
       additional_info_attachments: [],
       language: override?.language ?? DEFAULT_LANGUAGE,
@@ -210,10 +269,7 @@ export const fakeVtjData = (
         Henkilotunnus: {
           '@voimassaolokoodi': '1',
           '#text':
-            override?.social_security_number ??
-            FinnishSSN.createWithAge(
-              faker.datatype.number({ min: 15, max: 16 })
-            ),
+            override?.social_security_number ?? fakeYouthTargetGroupAgeSSN(),
         },
         NykyinenSukunimi: {
           Sukunimi: override?.last_name ?? faker.name.lastName(),
@@ -236,7 +292,7 @@ export const fakeVtjData = (
         },
       },
     },
-    override?.vtj_data
+    override?.encrypted_handler_vtj_json ?? {}
   );
 
 export const fakeActivatedYouthApplication = (
@@ -257,7 +313,7 @@ export const fakeActivatedYouthApplication = (
               override?.additional_info_provided_at ?? faker.date.past()
             )
           : undefined,
-      vtj_data: fakeVtjData(application),
+      encrypted_handler_vtj_json: fakeVtjData(application),
     },
     override
   );

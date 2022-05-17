@@ -145,20 +145,20 @@ class Step2 extends WizardStep {
     ssn: string,
     phoneNumber: string
   ): Promise<void> {
-    await Step2.fillInput(this.firstName, firstName);
-    await Step2.fillInput(this.lastName, lastName);
-    await Step2.fillInput(this.ssn, ssn);
-    await Step2.fillInput(this.phoneNumber, phoneNumber);
-    await Step2.clickSelectRadioButton(this.isLivingInHelsinkiCheckbox);
+    await this.fillInput(this.firstName, firstName);
+    await this.fillInput(this.lastName, lastName);
+    await this.fillInput(this.ssn, ssn);
+    await this.fillInput(this.phoneNumber, phoneNumber);
+    await this.clickSelectRadioButton(this.isLivingInHelsinkiCheckbox);
   }
 
   public async fillPaidSubsidyGrant(): Promise<void> {
-    await Step2.clickSelectRadioButton(this.paidSubsidyTrue);
+    await this.clickSelectRadioButton(this.paidSubsidyTrue);
     await t.click(this.paidSubsidySelect);
     await t.click(this.fiftyPercent);
     await t.click(this.additionalPaidSubsidySelect);
     await t.click(this.thirtyPercent);
-    await Step2.clickSelectRadioButton(this.apprenticeshipProgramFalse);
+    await this.clickSelectRadioButton(this.apprenticeshipProgramFalse);
   }
 
   public async selectBenefitType(
@@ -166,14 +166,14 @@ class Step2 extends WizardStep {
   ): Promise<void> {
     switch (benefitType) {
       case 'employment':
-        await Step2.clickSelectRadioButton(this.benefitTypeEmployment);
+        await this.clickSelectRadioButton(this.benefitTypeEmployment);
         break;
       case 'salary':
-        await Step2.clickSelectRadioButton(this.benefitTypeSalary);
+        await this.clickSelectRadioButton(this.benefitTypeSalary);
         break;
       case 'commission':
       default:
-        await Step2.clickSelectRadioButton(this.benefitTypeCommission);
+        await this.clickSelectRadioButton(this.benefitTypeCommission);
         break;
     }
   }
@@ -182,8 +182,8 @@ class Step2 extends WizardStep {
     startDate: string,
     endDate: string
   ): Promise<void> {
-    await Step2.fillInput(this.startDate, startDate);
-    await Step2.fillInput(this.endDate, endDate);
+    await this.fillInput(this.startDate, startDate);
+    await this.fillInput(this.endDate, endDate);
   }
 
   public async fillEmploymentInfo(
@@ -194,15 +194,15 @@ class Step2 extends WizardStep {
     otherExpenses: string,
     vacationMoney: string
   ) {
-    await Step2.fillInput(this.jobTitle, jobTitle);
-    await Step2.fillInput(this.workingHours, workingHours);
-    await Step2.fillInput(
+    await this.fillInput(this.jobTitle, jobTitle);
+    await this.fillInput(this.workingHours, workingHours);
+    await this.fillInput(
       this.collectiveBargainingAgreement,
       collectiveBargainingAgreement
     );
-    await Step2.fillInput(this.monthlyPay, monthlyPay);
-    await Step2.fillInput(this.otherExpenses, otherExpenses);
-    await Step2.fillInput(this.vacationMoney, vacationMoney);
+    await this.fillInput(this.monthlyPay, monthlyPay);
+    await this.fillInput(this.otherExpenses, otherExpenses);
+    await this.fillInput(this.vacationMoney, vacationMoney);
   }
 }
 

@@ -1,14 +1,15 @@
-import { getBackendDomain } from '@frontend/te-admn/src/backend-api/backend-api';
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
+import { doEmployerLogin } from '@frontend/employer/browser-tests/actions/employer-header.actions';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
+import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, { filterLoggedRequests } from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
+import { getBackendDomain } from '@frontend/te-admn/src/backend-api/backend-api';
 
 import getTetAdminTranslationsApi from '../../src/__tests__/utils/i18n/get-tet-admin-translations-api';
-import { doTetAdminLogin } from '../actions/tet-admin-header.actions';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
+const translationsApi = getTetAdminTranslationsApi();
 
 fixture('Frontpage')
   .page(url)
@@ -22,22 +23,21 @@ fixture('Frontpage')
   );
 
 test('user can authenticate and log out', async (t) => {
-  const { translations } = getTetAdminTranslationsApi();
-  await doTetAdminLogin(t, 'fi');
-  const headerComponents = getHeaderComponents(t, translations);
-  const headerUser = headerComponents.headerUser();
-  await headerUser.actions.clicklogoutButton();
-  await headerUser.expectations.userIsLoggedOut();
+  await doEmployerLogin(t, 'fi');
+  const header = new Header(translationsApi);
+  await header.clickLogoutButton();
+  await header.userIsLoggedOut();
 });
 
 test('user can change languages', async (t) => {
-  const { translations } = getTetAdminTranslationsApi();
-  const headerComponents = getHeaderComponents(t, translations);
-  await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('sv');
-  await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('en');
-  await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('fi');
-  await headerComponents.header().expectations.isPresent();
+  const header = new Header(translationsApi);
+  await header.isLoaded();
+  await header.changeLanguage('sv');
+  const headerSv = new Header(translationsApi, 'sv');
+  await headerSv.isLoaded();
+  await headerSv.changeLanguage('en');
+  const headerEn = new Header(translationsApi, 'en');
+  await headerEn.isLoaded();
+  await headerEn.changeLanguage('fi');
+  await new Header(translationsApi, 'fi').isLoaded();
 });
