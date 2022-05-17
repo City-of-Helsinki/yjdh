@@ -70,6 +70,7 @@ def test_excel_view_download_annual(
     assert response.status_code == 200
     submitted_summer_voucher.refresh_from_db()
     assert submitted_summer_voucher.is_exported is False
+
     # Cannot decode an xlsx file
     with pytest.raises(UnicodeDecodeError):
         response.content.decode()
