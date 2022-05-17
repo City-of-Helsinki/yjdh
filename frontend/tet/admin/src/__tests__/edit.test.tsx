@@ -16,6 +16,7 @@ import getFormPageApi from 'tet/admin/__tests__/utils/components/get-form-page-a
 import { fakeTetEvent } from 'tet-shared/__tests__/utils/fake-objects';
 import { screen, userEvent, within, waitFor } from 'shared/__tests__/utils/test-utils';
 import { TetEvent } from 'tet-shared/types/linkedevents';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
 const {
   translations: { [DEFAULT_LANGUAGE]: translations },
@@ -50,9 +51,10 @@ describe('frontend/tet/admin/src/pages/editstatic.tsx', () => {
 
     const spyPush = jest.fn();
     await renderPage(EditStaticPage, { push: spyPush, query: { id: event.id } });
-    await waitFor(async () => {
-      const formApi = getFormPageApi();
-      await formApi.expectations.pageIsLoaded(translations.editor.editTitle);
-    });
+
+    await waitForBackendRequestsToComplete();
+
+    const formApi = getFormPageApi();
+    await formApi.expectations.pageIsLoaded(translations.editor.editTitle);
   });
 });

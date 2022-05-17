@@ -49,6 +49,7 @@ const SelectionGroup: React.FC<Props> = ({ fieldId, label, options, required, ru
         >
           {options.map((option) => (
             <Checkbox
+              key={option.value}
               id={option.value}
               label={option.label}
               checked={value && Array.isArray(value) ? value.some((item) => item.value === option.value) : false}

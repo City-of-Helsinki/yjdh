@@ -9,6 +9,7 @@ import {
 } from 'tet/admin/__tests__/utils/backend/backend-nocks';
 import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
 import { prettyDOM, logRoles } from '@testing-library/react';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
 const posting = fakeTetPosting({
   end_date: '12-12-2022',
@@ -26,6 +27,8 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
 
     renderComponent(<Editor initialValue={posting} />);
 
+    await waitForBackendRequestsToComplete();
+
     const editorApi = getEditorApi(posting);
     //Location details
     await editorApi.expectations.inputValueIsPresent('title');
@@ -41,7 +44,7 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
     await editorApi.expectations.inputValueIsPresent('description');
     await editorApi.expectations.inputValueIsPresent('spots');
     await editorApi.expectations.languageValuesArePresent();
-    //await editorApi.expectations.keywordsArePresent();
+    // await editorApi.expectations.keywordsArePresent();
   });
 
   describe('when submiting form', () => {
@@ -54,14 +57,19 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       } = renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
+
+      await waitForBackendRequestsToComplete();
+
       //Location details
       await editorApi.expectations.textInputHasError('title');
-      //await editorApi.expectations.comboboxHasError('Osoite');
+      await editorApi.expectations.comboboxHasError('Osoite');
+
       //Contact details
       await editorApi.expectations.textInputHasError('contact_first_name');
       await editorApi.expectations.textInputHasError('contact_last_name');
       await editorApi.expectations.textInputHasError('contact_email');
       await editorApi.expectations.textInputHasError('contact_phone');
+
       //Posting details
       await editorApi.expectations.textInputHasError('org_name');
       await editorApi.expectations.textInputHasError('start_date');
@@ -76,10 +84,10 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
 
-      await waitFor(async () => {
-        await screen.findByRole('heading', {
-          name: new RegExp('täytä puuttuvat tai virheelliset tiedot', 'i'),
-        });
+      await waitForBackendRequestsToComplete();
+
+      await screen.findByRole('heading', {
+        name: /täytä puuttuvat tai virheelliset tiedot/i,
       });
     });
   });
