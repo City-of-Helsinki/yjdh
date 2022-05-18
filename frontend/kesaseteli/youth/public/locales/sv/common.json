@@ -58,7 +58,7 @@
       "last_name": "Efternamn",
       "social_security_number": "Personbeteckning",
       "postcode": "Post nummer",
-      "schoolsDropdown": "Skola",
+      "selectedSchool": "Skola",
       "schoolsLoading": "Laddar upp alternativ...",
       "schoolsPlaceholder": "Välj din skola från listan",
       "is_unlisted_school": "Skolan finns inte i listan",
@@ -75,7 +75,8 @@
     },
     "checkNotification" : {
       "label" : "SWE Hups! Jokin tiedoista ei ole oikein",
-      "message" : "SWE Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi."
+      "recheck" : "SWE Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
+      "validation": "SWE Tarkista seuraavat kentät: {{ fields}}"
     }
   },
   "additionalInfo": {

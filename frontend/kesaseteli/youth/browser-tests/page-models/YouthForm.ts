@@ -29,7 +29,7 @@ class YouthForm extends YouthPageComponent {
   );
 
   private schoolsDropdown = this.component.findByRole('combobox', {
-    name: this.regexp(this.translations.youthApplication.form.schoolsDropdown),
+    name: this.regexp(this.translations.youthApplication.form.selectedSchool),
   });
 
   private school(schoolName: string): SelectorPromise {

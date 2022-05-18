@@ -58,7 +58,7 @@
       "last_name": "Sukunimi",
       "social_security_number": "Henkilötunnus",
       "postcode": "Postinumero",
-      "schoolsDropdown": "Koulu",
+      "selectedSchool": "Koulu",
       "schoolsLoading": "Ladataan vaihtoehtoja...",
       "schoolsPlaceholder": "Valitse koulusi listalta",
       "is_unlisted_school": "Koulua ei löydy listalta",
@@ -75,7 +75,8 @@
     },
     "checkNotification" : {
       "label" : "Hups! Jokin tiedoista ei ole oikein",
-      "message" : "Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi."
+      "recheck" : "Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
+      "validation": "Tarkista seuraavat kentät: {{ fields}}"
     }
   },
   "additionalInfo": {

@@ -58,9 +58,9 @@ const YouthFormFields: React.FC = () => {
       />
       <TextInput<YouthFormData>
         {...register('email', {
+          required: true,
           maxLength: 254,
           pattern: EMAIL_REGEX,
-          required: true,
         })}
       />
       <$GridCell $colSpan={2}>
