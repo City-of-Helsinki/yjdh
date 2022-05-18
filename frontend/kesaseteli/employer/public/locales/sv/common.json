@@ -95,6 +95,7 @@
         "contact_person_name": "Kontakt personens namn",
         "contact_person_email": "Kontakt personens epost",
         "street_address": "Arbetsplatsens gatuadress",
+        "bank_account_number": "SWE Tilinumero",
         "contact_person_phone_number": "Telefonnummer",
         "is_separate_invoicer": "Faktureringen sköts av en annan person",
         "invoicer_name": "Kontakt person för faktureringen",
@@ -133,7 +134,8 @@
         "validate": "Den inmatade uppgiftern är i fel format",
         "selectionGroups": "Välj något alternativ",
         "checkboxRequired": "Obligatoriskt val",
-        "attachments": "Lägg till åtminstone en fil"
+        "attachments": "Lägg till åtminstone en fil",
+        "employmentsRequired": "SWE Lisää ainakin yksi työsuhde"
       },
       "notification": {
         "title": "Fyll i de uppgifter som fattas eller är felaktiga"

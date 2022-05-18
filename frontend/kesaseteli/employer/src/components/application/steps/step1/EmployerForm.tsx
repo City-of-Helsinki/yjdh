@@ -43,6 +43,10 @@ const EmployerForm: React.FC = () => {
           id="street_address"
           validation={{ required: true, maxLength: 256 }}
         />
+        <TextInput
+          id="bank_account_number"
+          validation={{ required: true, maxLength: 34 }}
+        />
         <Checkbox
           $colSpan={2}
           id="is_separate_invoicer"

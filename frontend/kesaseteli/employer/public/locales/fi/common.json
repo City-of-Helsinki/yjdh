@@ -95,6 +95,7 @@
         "contact_person_name": "Yhteyshenkilön nimi",
         "contact_person_email": "Yhteyshenkilön sähköposti",
         "street_address": "Työpaikan lähiosoite",
+        "bank_account_number": "Tilinumero",
         "contact_person_phone_number": "Yhteyshenkilön puhelinnumero",
         "is_separate_invoicer": "Laskutusta hoitaa yrityksessä eri yhteyshenkilö",
         "invoicer_name": "Laskutuksen yhteyshenkilön nimi",
@@ -133,7 +134,8 @@
         "validate": "Syöttämäsi tieto on virheellistä muotoa",
         "selectionGroups": "Valitse jokin vaihtoehto",
         "checkboxRequired": "Valinta on pakollinen",
-        "attachments": "Liitä ainakin yksi tiedosto"
+        "attachments": "Liitä ainakin yksi tiedosto",
+        "employmentsRequired": "Lisää ainakin yksi työsuhde"
       },
       "notification": {
         "title": "Täytä puuttuvat tai virheelliset tiedot"

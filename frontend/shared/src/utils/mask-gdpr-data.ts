@@ -57,6 +57,7 @@ export const ATTRIBUTES_TO_MASK = [
   'contact_person_email',
   'contact_person_phone_number',
   'street_address',
+  'bank_account_number',
   'invoicer_email',
   'invoicer_name',
   'invoicer_phone_number',

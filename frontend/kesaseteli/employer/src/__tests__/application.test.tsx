@@ -109,6 +109,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
             'street_address',
             required
           );
+          applicationPage.step1.actions.typeBankAccountNumber('');
+          await applicationPage.step1.expectations.inputHasError(
+            'bank_account_number',
+            required
+          );
           applicationPage.step1.actions.typeContactPersonPhone('');
           await applicationPage.step1.expectations.inputHasError(
             'contact_person_phone_number',
@@ -116,7 +121,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           );
         });
 
-        it('shows validation errors when invalid values', async () => {
+        it('shows validation errors when value is too long', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
           await renderPage(ApplicationPage, { query: { id } });
@@ -135,6 +140,11 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           applicationPage.step1.actions.typeStreetAddress('s'.repeat(257)); // max limit is 64
           await applicationPage.step1.expectations.inputHasError(
             'street_address',
+            /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
+          );
+          applicationPage.step1.actions.typeBankAccountNumber('s'.repeat(35)); // max limit is 34
+          await applicationPage.step1.expectations.inputHasError(
+            'bank_account_number',
             /(syöttämäsi tieto on liian pitkä)|(errors.maxlength)/i
           );
           applicationPage.step1.actions.typeContactPersonPhone('1'.repeat(65)); // max limit is 64
@@ -164,6 +174,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           const contact_person_email = 'john@doe.com';
           const contact_person_phone_number = '+358503758288';
           const street_address = 'Pohjoisesplanadi 11-13, 00170 Helsinki';
+          const bank_account_number = 'FI8485742595649319';
           applicationPage.step1.actions.typeContactPersonName(
             contact_person_name
           );
@@ -171,6 +182,9 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
             contact_person_email
           );
           applicationPage.step1.actions.typeStreetAddress(street_address);
+          applicationPage.step1.actions.typeBankAccountNumber(
+            bank_account_number
+          );
           applicationPage.step1.actions.typeContactPersonPhone(
             contact_person_phone_number
           );

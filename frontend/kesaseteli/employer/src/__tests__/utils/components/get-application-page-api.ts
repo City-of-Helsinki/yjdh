@@ -7,7 +7,7 @@ import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/compone
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/application';
-import ContactPerson from 'shared/types/contact_person';
+import ContactPerson from 'shared/types/contact-info';
 
 type StepExpections = {
   stepIsLoaded: () => Promise<void>;
@@ -32,6 +32,7 @@ type Step1Api = {
     typeContactPersonEmail: (email: string) => void;
     typeStreetAddress: (streetAddress: string) => void;
     typeContactPersonPhone: (phoneNumber: string) => void;
+    typeBankAccountNumber: (bankAccountNumber: string) => void;
   };
 };
 
@@ -220,6 +221,12 @@ const getApplicationPageApi = (
             'street_address',
             /(työpaikan lähiosoite)|(inputs.street_address)/i,
             streetAddress
+          ),
+        typeBankAccountNumber: (bankAccountNumber: string) =>
+          typeInput(
+            'bank_account_number',
+            /(tilinumero)|(inputs.bank_account_number)/i,
+            bankAccountNumber
           ),
         typeContactPersonPhone: (phoneNumber: string) =>
           typeInput(

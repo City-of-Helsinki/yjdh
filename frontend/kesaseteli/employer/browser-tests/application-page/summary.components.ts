@@ -6,7 +6,7 @@ import {
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import Application from '@frontend/shared/src/types/application';
 import Company from '@frontend/shared/src/types/company';
-import ContactPerson from '@frontend/shared/src/types/contact_person';
+import ContactInfo from '@frontend/shared/src/types/contact-info';
 import Employment from '@frontend/shared/src/types/employment';
 import Invoicer from '@frontend/shared/src/types/invoicer';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
@@ -50,9 +50,7 @@ export const getSummaryComponents = async (t: TestController) => {
       companyHeading() {
         return findEmployerField('company-heading');
       },
-      employerField(
-        field: keyof Company | keyof ContactPerson | keyof Invoicer
-      ) {
+      employerField(field: keyof Company | keyof ContactInfo | keyof Invoicer) {
         return findEmployerField(`${String(field)}`);
       },
     };
@@ -81,7 +79,7 @@ export const getSummaryComponents = async (t: TestController) => {
       },
       async isFulFilledWith(application: Application) {
         const expectFieldHasValue = async (
-          field: keyof ContactPerson | keyof Invoicer,
+          field: keyof ContactInfo | keyof Invoicer,
           value?: string | number
         ) =>
           expectElementHasValue(

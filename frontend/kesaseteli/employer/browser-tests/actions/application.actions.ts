@@ -24,6 +24,7 @@ export const fillStep1Form = async (
     contact_person_name,
     contact_person_email,
     street_address,
+    bank_account_number,
     contact_person_phone_number,
     is_separate_invoicer,
     invoicer_name,
@@ -34,6 +35,7 @@ export const fillStep1Form = async (
   await step1Form.actions.fillContactPersonEmail(contact_person_email);
   await step1Form.actions.fillContactPersonPhone(contact_person_phone_number);
   await step1Form.actions.fillStreetAddress(street_address);
+  await step1Form.actions.fillBankAccountNumber(street_address);
   if (is_separate_invoicer) {
     await step1Form.actions.selectSeparateInvoicerCheckbox();
     await step1Form.actions.fillInvoicerName(invoicer_name);

@@ -15,7 +15,7 @@ import { DEFAULT_LANGUAGE, Language } from '../../i18n/i18n';
 import type Application from '../../types/application';
 import { AttachmentType, KesaseteliAttachment } from '../../types/attachment';
 import type Company from '../../types/company';
-import ContactPerson from '../../types/contact_person';
+import ContactPerson from '../../types/contact-info';
 import type Employment from '../../types/employment';
 import type Invoicer from '../../types/invoicer';
 import type User from '../../types/user';
@@ -68,11 +68,12 @@ export const fakeCompany: Company = {
   company_form: 'oy',
 };
 
-export const fakeContactPerson = (): ContactPerson => ({
+export const fakeContactInfo = (): ContactPerson => ({
   contact_person_name: faker.name.findName(),
   contact_person_email: faker.internet.email(),
   contact_person_phone_number: faker.phone.phoneNumber(),
   street_address: faker.address.streetAddress(),
+  bank_account_number: faker.finance.iban(),
 });
 
 export const fakeInvoicer = (): Required<Invoicer> => ({
@@ -148,7 +149,7 @@ export const fakeApplication = (
     status: 'draft',
 
     summer_vouchers: fakeEmployments(2),
-    ...fakeContactPerson(),
+    ...fakeContactInfo(),
     is_separate_invoicer: invoicer || false,
     submitted_at: formatDate(new Date(), DATE_FORMATS.BACKEND_DATE),
     ...(invoicer && fakeInvoicer()),

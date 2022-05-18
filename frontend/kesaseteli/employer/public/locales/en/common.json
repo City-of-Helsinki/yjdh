@@ -133,7 +133,8 @@
         "validate": "The information you entered is in an incorrect format",
         "selectionGroups": "Select an option",
         "checkboxRequired": "Selection is mandatory",
-        "attachments": "Add at least one file"
+        "attachments": "Add at least one file",
+        "employmentsRequired": "ENG Lisää ainakin yksi työsuhde"
       },
       "notification": {
         "title": "Fill in the missing or incorrect information"
