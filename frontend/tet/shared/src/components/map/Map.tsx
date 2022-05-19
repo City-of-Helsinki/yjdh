@@ -1,4 +1,4 @@
-import { Link } from 'hds-react';
+import { Link, Button } from 'hds-react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { LatLngExpression } from 'leaflet';
 import { useTranslation } from 'next-i18next';
@@ -15,6 +15,8 @@ import {
   $Title,
 } from 'tet-shared/components/map/Map.sc';
 import TetPosting from 'tet-shared/types/tetposting';
+import { useRouter } from 'next/router';
+import { useTheme } from 'styled-components';
 
 import { Icon } from './MapIcon';
 
@@ -49,6 +51,8 @@ const Map: React.FC<Props> = ({
   showLink,
 }) => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const theme = useTheme();
 
   const centerPosition =
     postings.length === 1 && zoomToPosition
@@ -57,6 +61,12 @@ const Map: React.FC<Props> = ({
           postings[0].location.position.coordinates[0],
         ]
       : center;
+  const readMoreHandler = (id: string) => {
+    void router.push({
+      pathname: '/postings/show',
+      query: { id },
+    });
+  };
 
   return (
     <$MapWrapper>
@@ -86,9 +96,19 @@ const Map: React.FC<Props> = ({
                 <$Date>{getDateString(posting)}</$Date>
                 <$Address>{getAddressString(posting)}</$Address>
                 {showLink && (
-                  <Link href={`/postings/show?id=${posting.id}`} size="L">
-                    {t(`common:map.readMore`)}
-                  </Link>
+                  <Button
+                    style={{
+                      fontSize: '20px',
+                      backgroundColor: `${theme.colors.black60}`,
+                      borderColor: `${theme.colors.black60}`,
+                    }}
+                    role="link"
+                    size="small"
+                    type="button"
+                    onClick={() => readMoreHandler(posting.id)}
+                  >
+                    {t('common:map.readMore')}
+                  </Button>
                 )}
               </Popup>
             </Marker>

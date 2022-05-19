@@ -8,6 +8,7 @@ import { QueryClientProvider } from 'react-query';
 import BaseApp from 'shared/components/app/BaseApp';
 import Header from 'tet/youth/components/header/Header';
 import Footer from 'tet/youth/components/footer/Footer';
+import '../styles.css';
 
 const queryClient = createQueryClient();
 
