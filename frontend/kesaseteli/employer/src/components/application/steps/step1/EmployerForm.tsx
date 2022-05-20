@@ -1,5 +1,6 @@
 import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyInfo/CompanyInfo';
 import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
+import IbanInput from 'kesaseteli/employer/components/application/form/IbanInput';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
 import ContactInputs from 'kesaseteli/employer/components/application/steps/step1/ContactInputs';
 import EmployerErrorSummary from 'kesaseteli/employer/components/application/steps/step1/EmployerErrorSummary';
@@ -43,10 +44,7 @@ const EmployerForm: React.FC = () => {
           id="street_address"
           validation={{ required: true, maxLength: 256 }}
         />
-        <TextInput
-          id="bank_account_number"
-          validation={{ required: true, maxLength: 34 }}
-        />
+       <IbanInput />
         <Checkbox
           $colSpan={2}
           id="is_separate_invoicer"

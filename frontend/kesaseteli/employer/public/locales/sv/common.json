@@ -125,7 +125,8 @@
         "format": "Använd ett format",
         "attachments": "Du kan lägga till upp till 5 bilagor. Tillåtna filformat: pdf, jpg och png. Maximal storlek 10 MB",
         "employment_contract": "Bifoga här arbetskontraktet för sommarjobbaren du anställt med Sommarjobbsedeln.",
-        "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln."
+        "payslip": "Bifoga här löneintyget för sommarjobbaren du anställt med Sommarjobbsedeln.",
+        "bank_account": "SWE Syötä IBAN-muodossa"
       },
       "errors": {
         "required": "Uppgifter fattas eller är ofullständiga",
@@ -135,7 +136,14 @@
         "selectionGroups": "Välj något alternativ",
         "checkboxRequired": "Obligatoriskt val",
         "attachments": "Lägg till åtminstone en fil",
-        "employmentsRequired": "SWE Lisää ainakin yksi työsuhde"
+        "employmentsRequired": "SWE Lisää ainakin yksi työsuhde",
+        "NoIBANProvided": "SWE Tilinumero puuttuu",
+        "NoIBANCountry": "SWE Maakoodi puuttuu",
+        "WrongBBANLength": "SWE Tarkista tilinumeron pituus",
+        "WrongBBANFormat": "SWE Tarkista tilinumero",
+        "ChecksumNotNumber": "SWE Tarkista tilinumero",
+        "WrongIBANChecksum":"SWE Tarkista tilinumero",
+        "WrongAccountBankBranchChecksum": "SWE Tarkista tilinumero"
       },
       "notification": {
         "title": "Fyll i de uppgifter som fattas eller är felaktiga"

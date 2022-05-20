@@ -124,7 +124,8 @@
         "format": "Use format",
         "attachments": "You may add a maximum of 5 attachments. The approved file forms are: pdf, jpg, png. The maximum size 10MB.",
         "employment_contract": "Attach here the employment contract of the youth employed with the Summer Job Voucher.",
-        "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher."
+        "payslip": "Attach here the pay statement of the youth employed with the Summer Job Voucher.",
+        "bank_account": "ENG Syötä IBAN-muodossa"
       },
       "errors": {
         "required": "Information is missing or is incorrect",
@@ -134,7 +135,14 @@
         "selectionGroups": "Select an option",
         "checkboxRequired": "Selection is mandatory",
         "attachments": "Add at least one file",
-        "employmentsRequired": "ENG Lisää ainakin yksi työsuhde"
+        "employmentsRequired": "ENG Lisää ainakin yksi työsuhde",
+        "NoIBANProvided": "ENG Tilinumero puuttuu",
+        "NoIBANCountry": "ENG Maakoodi puuttuu",
+        "WrongBBANLength": "ENG Tarkista tilinumeron pituus",
+        "WrongBBANFormat": "ENG Tarkista tilinumero",
+        "ChecksumNotNumber": "ENG Tarkista tilinumero",
+        "WrongIBANChecksum":"ENG Tarkista tilinumero",
+        "WrongAccountBankBranchChecksum": "ENG Tarkista tilinumero"
       },
       "notification": {
         "title": "Fill in the missing or incorrect information"

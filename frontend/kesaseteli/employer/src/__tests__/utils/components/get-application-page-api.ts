@@ -32,7 +32,6 @@ type Step1Api = {
     typeContactPersonEmail: (email: string) => void;
     typeStreetAddress: (streetAddress: string) => void;
     typeContactPersonPhone: (phoneNumber: string) => void;
-    typeBankAccountNumber: (bankAccountNumber: string) => void;
   };
 };
 
@@ -221,12 +220,6 @@ const getApplicationPageApi = (
             'street_address',
             /(työpaikan lähiosoite)|(inputs.street_address)/i,
             streetAddress
-          ),
-        typeBankAccountNumber: (bankAccountNumber: string) =>
-          typeInput(
-            'bank_account_number',
-            /(tilinumero)|(inputs.bank_account_number)/i,
-            bankAccountNumber
           ),
         typeContactPersonPhone: (phoneNumber: string) =>
           typeInput(

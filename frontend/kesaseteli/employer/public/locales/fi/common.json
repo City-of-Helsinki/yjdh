@@ -125,7 +125,8 @@
         "format": "Käytä muotoa",
         "attachments": "Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
         "employment_contract": "Liitä tähän Kesäsetelillä palkatun nuoren työsopimus.",
-        "payslip": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus."
+        "payslip": "Liitä tähän Kesäsetelin avulla palkatun nuoren palkkatodistus.",
+        "bank_account": "Syötä IBAN-muodossa"
       },
       "errors": {
         "required": "Tieto puuttuu tai on virheellinen",
@@ -135,7 +136,14 @@
         "selectionGroups": "Valitse jokin vaihtoehto",
         "checkboxRequired": "Valinta on pakollinen",
         "attachments": "Liitä ainakin yksi tiedosto",
-        "employmentsRequired": "Lisää ainakin yksi työsuhde"
+        "employmentsRequired": "Lisää ainakin yksi työsuhde",
+        "NoIBANProvided": "Tilinumero puuttuu",
+        "NoIBANCountry": "Maakoodi puuttuu",
+        "WrongBBANLength": "Tarkista tilinumeron pituus",
+        "WrongBBANFormat": "Tarkista tilinumero",
+        "ChecksumNotNumber": "Tarkista tilinumero",
+        "WrongIBANChecksum":"Tarkista tilinumero",
+        "WrongAccountBankBranchChecksum": "Tarkista tilinumero"
       },
       "notification": {
         "title": "Täytä puuttuvat tai virheelliset tiedot"
