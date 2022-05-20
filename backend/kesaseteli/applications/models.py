@@ -1,7 +1,8 @@
 import json
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from email.mime.image import MIMEImage
 from pathlib import Path
+from typing import Optional
 from urllib.parse import quote, urljoin
 
 import jsonpath_ng
@@ -16,6 +17,7 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
+from localflavor.generic.models import IBANField
 from requests.exceptions import ReadTimeout
 from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
 from shared.common.validators import (
@@ -935,6 +937,10 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         blank=True,
         verbose_name=_("invoicer work address"),
     )
+    bank_account_number = IBANField(
+        verbose_name=_("bank account number"),
+        blank=True,
+    )
 
     # contact information
     contact_person_name = models.CharField(
@@ -1075,6 +1081,23 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     ordering = models.IntegerField(default=0)
+
+    @property
+    def last_submitted_at(self) -> Optional[datetime]:
+        if (
+            last_submitted_history_entry := self.history.filter(
+                pk=self.pk, application__status=EmployerApplicationStatus.SUBMITTED
+            )
+            .order_by("-modified_at")
+            .first()
+        ):
+            return last_submitted_history_entry.modified_at
+        else:
+            return (
+                self.modified_at
+                if self.application.status == EmployerApplicationStatus.SUBMITTED
+                else None
+            )
 
     class Meta:
         verbose_name = _("summer voucher")

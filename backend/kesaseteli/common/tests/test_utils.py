@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 import pytest
 from django.core.exceptions import ValidationError
 
@@ -8,6 +10,7 @@ from common.utils import (
     is_uppercase,
     normalize_for_string_comparison,
     normalize_whitespace,
+    utc_datetime,
     validate_finnish_social_security_number,
     validate_optional_finnish_social_security_number,
 )
@@ -135,3 +138,20 @@ def test_are_same_texts(test_value_1, test_value_2, expected_result):
 )
 def test_are_same_text_lists(test_value_1, test_value_2, expected_result):
     assert are_same_text_lists(test_value_1, test_value_2) == expected_result
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        (2021, 10, 22),
+        (2022, 2, 8),
+        (2021, 10, 22, 12, 30, 10),
+        (2022, 2, 8, 19, 55, 59),
+        (2021, 10, 22, 12, 30, 10, 9999),
+        (2022, 2, 8, 19, 55, 59, 9999),
+    ],
+)
+def test_utc_datetime(args):
+    result = utc_datetime(*args)
+    assert result == datetime(*args, tzinfo=timezone.utc)
+    assert result.tzinfo == timezone.utc

@@ -19,13 +19,21 @@
             {% trans 'Luo uusi excel tiedosto kaikista järjestelmän käsittelemättömistä hakemuksista. Kun hakemus lisätään käsittelemättömien hakemusten excel tiedostoon, se merkataan järjestelmässä "käsitellyiksi" eikä sitä tuoda enää seuraavaan käsittelemättömien hakemusten exceliin.' %}
         </p>
         <div class="col-xs-6">
-            <a href="{% url 'excel-download' %}?download=unhandled" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Excel tiedosto käsittelemättömistä hakemuksista' %}</a>
+            <a href="{% url 'excel-download' %}?download=unhandled&columns=reporting" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa raportointi-Excel käsittelemättömistä hakemuksista' %}</a>
+        </div>
+        <br/>
+        <div class="col-xs-6">
+            <a href="{% url 'excel-download' %}?download=unhandled&columns=talpa" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel käsittelemättömistä hakemuksista' %}</a>
         </div>
         <hr/>
         <p>
             {% trans 'Luo uusi excel tiedosto kaikista järjestelmän tämän vuoden hakemuksista. Tiedosto sisältää myös kaikki käsitellyt hakemukset.' %}
         </p>
         <div class="col-xs-6">
-            <a href="{% url 'excel-download' %}?download=annual" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Excel tiedosto kaikista tämän vuoden hakemuksista' %}</a>
+            <a href="{% url 'excel-download' %}?download=annual&columns=reporting" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa raportointi-Excel kaikista tämän vuoden hakemuksista' %}</a>
+        </div>
+        <br/>
+        <div class="col-xs-6">
+            <a href="{% url 'excel-download' %}?download=annual&columns=talpa" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">{% trans 'Lataa Talpa-Excel kaikista tämän vuoden hakemuksista' %}</a>
         </div>
 </div>

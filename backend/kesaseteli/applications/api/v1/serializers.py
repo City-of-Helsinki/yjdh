@@ -298,6 +298,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
             "id",
             "status",
             "street_address",
+            "bank_account_number",
             "contact_person_name",
             "contact_person_email",
             "contact_person_phone_number",
@@ -379,6 +380,7 @@ class EmployerApplicationSerializer(serializers.ModelSerializer):
     # must be filled before submitting the application for processing
     REQUIRED_FIELDS_FOR_SUBMITTED_APPLICATIONS = [
         "street_address",
+        "bank_account_number",
         "contact_person_name",
         "contact_person_email",
         "contact_person_phone_number",

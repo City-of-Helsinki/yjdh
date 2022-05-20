@@ -26,6 +26,15 @@ def get_supported_languages() -> Tuple[str]:
     return list(zip(*APPLICATION_LANGUAGE_CHOICES))[0]
 
 
+class ExcelColumns(models.TextChoices):
+    """
+    Excel export output column set choices
+    """
+
+    REPORTING = "reporting", _("Reporting")
+    TALPA = "talpa", _("Talpa")
+
+
 class EmployerApplicationStatus(models.TextChoices):
     DRAFT = "draft", _("Draft")
     SUBMITTED = "submitted", _("Submitted")
