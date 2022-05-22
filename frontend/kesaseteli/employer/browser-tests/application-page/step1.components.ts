@@ -178,7 +178,7 @@ export const getStep1Components = (t: TestController) => {
         return fillInput(
           t,
           'street_address',
-          selectors.streetAddessInput(),
+          selectors.bankAccountNumberInput(),
           address
         );
       },

@@ -20,18 +20,17 @@ export type IbanInputProps = {
 const IbanInput: React.FC<GridCellProps> = ({ ...$gridCellProps }) => {
   const { t } = useTranslation();
 
-  const { getValue, control, setValue } = useApplicationFormField<string>(
+  const { getValue } = useApplicationFormField<string>(
     'bank_account_number'
   );
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [errorText, setErrorText] = React.useState<string | null>(null);
-  const [cursor, setCursor] = React.useState<number | null>(null);
+  const [cursor] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     const input = inputRef.current;
     if (input) {
-      console.log('setSelectionRange', cursor);
       input.setSelectionRange(cursor, cursor);
     }
   }, [inputRef, cursor]);

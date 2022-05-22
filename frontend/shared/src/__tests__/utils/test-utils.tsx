@@ -1,5 +1,4 @@
 import {
-  fireEvent,
   render,
   RenderResult,
   waitFor as _waitFor,

@@ -91,6 +91,7 @@ export const getSummaryComponents = async (t: TestController) => {
         await expectFieldHasValue('contact_person_email');
         await expectFieldHasValue('contact_person_phone_number');
         await expectFieldHasValue('street_address');
+        await expectFieldHasValue('bank_account_number');
         if (application.is_separate_invoicer) {
           await expectFieldHasValue('invoicer_name');
           await expectFieldHasValue('invoicer_email');
