@@ -3,6 +3,7 @@ export const BackendEndpoint = {
   LOGIN: '/oauth2/login',
   LOGOUT: '/oauth2/logout',
   USER: '/userinfo/',
+  IMAGE: '/v1/images/',
 } as const;
 
 export const BackendEndPoints = Object.values(BackendEndpoint);

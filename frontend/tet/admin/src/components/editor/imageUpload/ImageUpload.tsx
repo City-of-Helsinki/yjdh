@@ -15,11 +15,6 @@ const ImageUpload = () => {
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
 
-  const setImage = (file) => {
-    console.log(file);
-    setValue('image', file);
-  };
-
   return (
     <FormSection>
       <$GridCell $colSpan={6}>
@@ -31,7 +26,7 @@ const ImageUpload = () => {
           maxSize={4000000}
           language={locale}
           accept=".png,.jpg"
-          onChange={setImage}
+          onChange={(files) => setValue('image', files[0])}
         />
       </$GridCell>
     </FormSection>

@@ -46,10 +46,17 @@ export const isoDateToHdsFormat = (date: string | null): string => {
   }.${newDate.getFullYear()}`;
 };
 
-export const tetPostingToEvent = (
-  posting: TetPosting,
-  publish = false
-): TetEventPayload => ({
+type PostingToEventArguments = {
+  posting: TetPosting;
+  publish?: boolean;
+  imageId?: string;
+};
+
+export const tetPostingToEvent = ({
+  posting,
+  publish = false,
+  imageId,
+}: PostingToEventArguments): TetEventPayload => ({
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
   description: setLocalizedString(posting.description),
@@ -75,4 +82,5 @@ export const tetPostingToEvent = (
   date_published: publish
     ? new Date().toISOString()
     : posting.date_published || null,
+  images: imageId ? [{ '@id': imageId }] : [],
 });

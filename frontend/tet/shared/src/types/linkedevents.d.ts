@@ -77,6 +77,7 @@ export type TetEventPayload = {
   date_published: string | null;
   publication_status?: string;
   in_language: IdObject[];
+  images: IdObject[];
 };
 
 export type TetUpsert = {
