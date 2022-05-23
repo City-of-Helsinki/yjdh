@@ -20,9 +20,8 @@ export type IbanInputProps = {
 const IbanInput: React.FC<GridCellProps> = ({ ...$gridCellProps }) => {
   const { t } = useTranslation();
 
-  const { getValue } = useApplicationFormField<string>(
-    'bank_account_number'
-  );
+  const { getValue, getErrorText: getDefaultErrorText } =
+    useApplicationFormField<string>('bank_account_number');
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [errorText, setErrorText] = React.useState<string | null>(null);
@@ -72,7 +71,7 @@ const IbanInput: React.FC<GridCellProps> = ({ ...$gridCellProps }) => {
           }}
           id="bank_account_number"
           placeholder={t('common:application.form.helpers.bank_account')}
-          errorText={errorText}
+          errorText={errorText ?? getDefaultErrorText()}
           label={t(`common:application.form.inputs.bank_account_number`)}
           {...$gridCellProps}
         />

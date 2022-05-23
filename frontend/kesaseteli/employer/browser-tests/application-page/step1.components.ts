@@ -6,6 +6,7 @@ import {
 } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 import Company from '@frontend/shared/src/types/company';
 import ContactInfo from '@frontend/shared/src/types/contact-info';
+import { friendlyFormatIBAN } from 'ibantools';
 import TestController from 'testcafe';
 
 export const getStep1Components = (t: TestController) => {
@@ -134,7 +135,10 @@ export const getStep1Components = (t: TestController) => {
           .eql(street_address, await getErrorMessage(t));
         await t
           .expect(selectors.bankAccountNumberInput().value)
-          .eql(bank_account_number, await getErrorMessage(t));
+          .eql(
+            friendlyFormatIBAN(bank_account_number),
+            await getErrorMessage(t)
+          );
         await t
           .expect(selectors.contactPersonPhoneInput().value)
           .eql(contact_person_phone_number, await getErrorMessage(t));
