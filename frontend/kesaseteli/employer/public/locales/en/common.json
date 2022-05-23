@@ -95,6 +95,7 @@
         "contact_person_name": "Name of the contact person",
         "contact_person_email": "Email of the contact person",
         "street_address": "Company street address",
+        "bank_account_number": "ENG Tilinumero",
         "contact_person_phone_number": "Telephone number",
         "is_separate_invoicer": "The billing is handled by an other person",
         "invoicer_name": "Name of the billing contact person",
