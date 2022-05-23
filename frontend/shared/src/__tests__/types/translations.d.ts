@@ -9,3 +9,5 @@ type TranslationsApi<Translations> = {
   replaced: typeof replaceValues;
   regexp: typeof containsRegexp;
 };
+
+export default TranslationsApi;

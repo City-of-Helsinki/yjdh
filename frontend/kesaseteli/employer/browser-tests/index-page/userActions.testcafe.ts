@@ -1,6 +1,6 @@
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
-import { getHeaderComponents } from '@frontend/shared/browser-tests/components/header.components';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
+import Header from '@frontend/shared/browser-tests/page-models/Header';
 import requestLogger, {
   filterLoggedRequests,
 } from '@frontend/shared/browser-tests/utils/request-logger';
@@ -11,6 +11,7 @@ import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getFrontendUrl } from '../utils/url.utils';
 
 const url = getFrontendUrl('/');
+const translationsApi = getEmployerTranslationsApi();
 
 fixture('Frontpage')
   .page(url)
@@ -24,22 +25,21 @@ fixture('Frontpage')
   );
 
 test('user can authenticate and logout', async (t) => {
-  const { translations } = getEmployerTranslationsApi();
   await doEmployerLogin(t, 'fi');
-  const headerComponents = getHeaderComponents(t, translations);
-  const headerUser = headerComponents.headerUser();
-  await headerUser.actions.clicklogoutButton();
-  await headerUser.expectations.userIsLoggedOut();
+  const header = new Header(translationsApi);
+  await header.clickLogoutButton();
+  await header.userIsLoggedOut();
 });
 
-test('can change to languages', async (t) => {
-  const { translations } = getEmployerTranslationsApi();
-  const headerComponents = getHeaderComponents(t, translations);
-  await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('sv');
-  await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('en');
-  await headerComponents.header().expectations.isPresent();
-  await headerComponents.languageDropdown().actions.changeLanguage('fi');
-  await headerComponents.header().expectations.isPresent();
+test('can change to languages', async () => {
+  const header = new Header(translationsApi);
+  await header.isLoaded();
+  await header.changeLanguage('sv');
+  const headerSv = new Header(translationsApi, 'sv');
+  await headerSv.isLoaded();
+  await headerSv.changeLanguage('en');
+  const headerEn = new Header(translationsApi, 'en');
+  await headerEn.isLoaded();
+  await headerEn.changeLanguage('fi');
+  await new Header(translationsApi, 'fi').isLoaded();
 });

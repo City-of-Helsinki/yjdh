@@ -58,7 +58,7 @@
       "last_name": "Last name",
       "social_security_number": "Personal identity code",
       "postcode": "Postal code",
-      "schoolsDropdown": "School",
+      "selectedSchool": "School",
       "schoolsLoading": "Loading up options...",
       "schoolsPlaceholder": "Choose your school from the list",
       "is_unlisted_school": "School not found on the list",
@@ -75,7 +75,8 @@
     },
     "checkNotification" : {
       "label" : "ENG Hups! Jokin tiedoista ei ole oikein",
-      "message" : "ENG Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi."
+      "recheck" : "ENG Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
+      "validation": "ENG Tarkista seuraavat kentät: {{ fields}}"
     }
   },
   "additionalInfo": {
@@ -135,6 +136,11 @@
     "activated" : {
       "title": "Confirmation succeeded",
       "message": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!",
+      "goToFrontendPage": ""
+    },
+    "accepted" : {
+      "title": "EN Hienoa! Olet lähettänyt tietosi järjestelmään",
+      "message": "EN Saat pian kesäsetelin ohjeineen sähköpostiisi",
       "goToFrontendPage": ""
     },
     "expired" : {

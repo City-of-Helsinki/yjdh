@@ -16,7 +16,8 @@ class UserInfoView(View):
                 "email": user.email,
                 "name": f"{user.first_name} {user.last_name}",
                 "industry": "",
-                "username": user.username,
+                "username": user.username,  # TODO check if this can be removed
+                "is_ad_login": user.is_staff,
             }
 
             if not (userinfo["given_name"] or userinfo["family_name"]):

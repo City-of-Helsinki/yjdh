@@ -43,16 +43,11 @@ export const getUrlUtils = (t: TestController) => {
         .expect(getCurrentPathname())
         .eql(`/${locale}/login`, await getErrorMessage(t));
     },
-    async urlChangedToApplicationPage(
-      locale: Language = 'fi',
-      expectedApplicationId?: string
-    ) {
-      await t
-        .expect(getCurrentPathname())
-        .eql(`/${locale}/application`, await getErrorMessage(t), {
-          timeout: 60_000,
-        });
+    async urlChangedToApplicationPage(expectedApplicationId?: string) {
       const applicationId = (await getUrlParam('id')) ?? undefined;
+      if (!applicationId) {
+        throw new Error('No application id found!');
+      }
       if (expectedApplicationId) {
         await t
           .expect(applicationId)

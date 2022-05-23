@@ -2,6 +2,7 @@ import getYouthTranslationsApi from 'kesaseteli/youth/__tests__/utils/i18n/get-y
 import YouthTranslations from 'kesaseteli/youth/__tests__/utils/i18n/youth-translations';
 import YouthApplication from 'kesaseteli-shared/types/youth-application';
 import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
+import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';
 import { convertFormDataToApplication } from 'kesaseteli-shared/utils/youth-form-data.utils';
 import nock from 'nock';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
@@ -20,88 +21,120 @@ const getIndexPageApi = (lang?: Language) => {
   const {
     translations: { [lang ?? DEFAULT_LANGUAGE]: translations },
     regexp,
+    replaced,
   } = getYouthTranslationsApi();
 
   const youthFormData: Partial<YouthFormData> = {};
   return {
     expectations: {
-      pageIsLoaded: async () => {
+      async pageIsLoaded() {
         await screen.findByRole('heading', {
           name: translations.youthApplication.title,
         });
       },
-      inputIsPresent: async (key: InputKey): Promise<void> => {
+      async inputIsPresent (key: YouthFormFields): Promise<void> {
         await screen.findByRole('textbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
       },
-      inputIsNotPresent: async (key: InputKey): Promise<void> => {
+      async inputIsNotPresent(key: YouthFormFields): Promise<void> {
         expect(
           screen.queryByRole('textbox', {
-            name: regexp(translations.youthApplication.form[key]),
+            name: regexp(translations.youthApplication.form[key as InputKey]),
           })
         ).not.toBeInTheDocument();
       },
-      schoolsDropdownIsDisabled: async (): Promise<void> => {
+      async selectedSchoolIsDisabled(): Promise<void> {
         const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.schoolsDropdown),
+          name: regexp(translations.youthApplication.form.selectedSchool),
         });
         expect(input).toBeDisabled();
       },
-      schoolsDropdownIsEnabled: async (): Promise<void> => {
+      async selectedSchoolIsEnabled(): Promise<void> {
         const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.schoolsDropdown),
+          name: regexp(translations.youthApplication.form.selectedSchool),
         });
         expect(input).toBeEnabled();
       },
-      textInputHasError: async (
-        key: InputKey,
+      async textInputHasError(
+        key: YouthFormFields,
         errorType: ErrorType
-      ): Promise<void> => {
-        const input = await screen.findByRole('textbox', {
-          name: regexp(translations.youthApplication.form[key]),
-        });
-        expect(input).toBeInvalid();
-        expect(
-          input.parentElement?.parentElement?.parentElement
-        ).toHaveTextContent(translations.errors[errorType]);
+      ): Promise<void> {
+        if (key === 'selectedSchool') {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          await this.selectedSchoolHasError(errorType);
+        } else {
+          const input = await screen.findByRole('textbox', {
+            name: regexp(translations.youthApplication.form[key as InputKey]),
+          });
+          expect(input).toBeInvalid();
+          expect(
+            input.parentElement?.parentElement?.parentElement
+          ).toHaveTextContent(translations.errors[errorType]);
+        }
       },
-      schoolsDropdownHasError: async (errorType: ErrorType): Promise<void> => {
+      async selectedSchoolHasError(errorType: ErrorType): Promise<void> {
         const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.schoolsDropdown),
+          name: regexp(translations.youthApplication.form.selectedSchool),
         });
         expect(input).toBeInvalid();
         const errorElement = await screen.findByTestId(`selectedSchool-error`);
         expect(errorElement).toHaveTextContent(translations.errors[errorType]);
       },
-      schoolsDropdownIsValid: async (): Promise<void> => {
+      async textInputIsValid(key: YouthFormFields): Promise<void> {
+        if (key === 'selectedSchool') {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+          await this.selectedSchoolIsValid();
+        } else {
+          const input = await screen.findByRole('textbox', {
+            name: regexp(translations.youthApplication.form[key as InputKey]),
+          });
+          expect(input).toBeValid();
+        }
+      },
+      async selectedSchoolIsValid(): Promise<void> {
         const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.schoolsDropdown),
+          name: regexp(translations.youthApplication.form.selectedSchool),
         });
         expect(input).toBeValid();
       },
-      checkboxHasError: async (
-        key: Extract<InputKey, 'termsAndConditions' | 'is_unlisted_school'>,
+      async checkboxHasError(
+        key: Extract<
+          YouthFormFields,
+          'termsAndConditions' | 'is_unlisted_school'
+        >,
         errorType: ErrorType
-      ): Promise<void> => {
+      ): Promise<void> {
         const checkbox = await screen.findByRole('checkbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
         expect(checkbox.parentElement).toHaveTextContent(
           translations.errors[errorType]
         );
       },
-      checkFormSummaryIsPresent: async (): Promise<void> => {
-        await screen.findByRole('heading', {
-          name: translations.youthApplication.checkNotification.label,
-        });
+      async pleaseRecheckNotificationIsPresent(): Promise<void> {
+        await screen.findByText(
+          translations.youthApplication.checkNotification.recheck
+        );
       },
-      forceSubmitLinkIsPresent: async (): Promise<void> => {
+      async validationErrorNotificationIsPresent(
+        fields: YouthFormFields[]
+      ): Promise<void> {
+        const fieldNamesList = fields
+          .map((name) => translations.youthApplication.form[name as InputKey])
+          .join(', ');
+        await screen.findByText(
+          replaced(translations.youthApplication.checkNotification.validation, {
+            fields: fieldNamesList,
+          })
+        );
+      },
+      async forceSubmitLinkIsPresent(): Promise<void> {
         await screen.findByRole('button', {
           name: translations.youthApplication.form.forceSubmitLink,
         });
       },
-      forceSubmitLinkIsNotPresent: (): void => {
+      forceSubmitLinkIsNotPresent(): void {
         const forceSubmitLink = screen.queryByRole('button', {
           name: translations.youthApplication.form.forceSubmitLink,
         });
@@ -109,9 +142,9 @@ const getIndexPageApi = (lang?: Language) => {
       },
     },
     actions: {
-      typeInput(key: InputKey, value: string) {
+      typeInput(key: YouthFormFields, value: string): void {
         const input = screen.getByRole('textbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
         userEvent.clear(input);
         if (value?.length > 0) {
@@ -127,9 +160,9 @@ const getIndexPageApi = (lang?: Language) => {
       async typeAndSelectSchoolFromDropdown(
         value: string,
         expectedOption?: string
-      ) {
+      ): Promise<void> {
         const input = await screen.findByRole('combobox', {
-          name: regexp(translations.youthApplication.form.schoolsDropdown),
+          name: regexp(translations.youthApplication.form.selectedSchool),
         });
         await waitFor(
           () => {
@@ -145,16 +178,22 @@ const getIndexPageApi = (lang?: Language) => {
         expect(input).toHaveValue(option);
         youthFormData.selectedSchool = { name: option ?? value };
       },
-      async toggleCheckbox(
-        key: Extract<InputKey, 'termsAndConditions' | 'is_unlisted_school'>
-      ) {
+      toggleCheckbox(
+        key: Extract<
+          YouthFormFields,
+          'termsAndConditions' | 'is_unlisted_school'
+        >
+      ): void {
         const checkbox = screen.getByRole('checkbox', {
-          name: regexp(translations.youthApplication.form[key]),
+          name: regexp(translations.youthApplication.form[key as InputKey]),
         });
         userEvent.click(checkbox);
         youthFormData[key] = Boolean(checkbox.getAttribute('value'));
       },
-      async clickSaveButton({ language, backendExpectation }: SaveParams = {}) {
+      async clickSaveButton({
+        language,
+        backendExpectation,
+      }: SaveParams = {}): Promise<void> {
         let response: nock.Scope;
         if (backendExpectation) {
           const application = {
@@ -176,10 +215,10 @@ const getIndexPageApi = (lang?: Language) => {
           });
         }
       },
-      clickForceSubmitLink: async ({
+      async clickForceSubmitLink({
         language,
         backendExpectation,
-      }: SaveParams = {}): Promise<void> => {
+      }: SaveParams = {}): Promise<void> {
         let response: nock.Scope;
         if (backendExpectation) {
           const application: YouthApplication = {
@@ -202,7 +241,9 @@ const getIndexPageApi = (lang?: Language) => {
         }
       },
       /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
-      async fillTheFormWithListedSchoolAndSave(saveParams: SaveParams) {
+      async fillTheFormWithListedSchoolAndSave(
+        saveParams: SaveParams
+      ): Promise<void> {
         this.typeInput('first_name', 'Helinä');
         this.typeInput('last_name', "O'Hara");
         this.typeInput('social_security_number', '111111-111c');
@@ -216,7 +257,9 @@ const getIndexPageApi = (lang?: Language) => {
         await this.toggleCheckbox('termsAndConditions');
         await this.clickSaveButton(saveParams);
       },
-      async fillTheFormWithUnlistedSchoolAndSave(saveParams: SaveParams) {
+      async fillTheFormWithUnlistedSchoolAndSave(
+        saveParams: SaveParams
+      ): Promise<void> {
         this.typeInput('first_name', 'Helinä');
         this.typeInput('last_name', "O'Hara");
         this.typeInput('social_security_number', '111111-111c');

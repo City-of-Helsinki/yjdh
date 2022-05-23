@@ -151,17 +151,17 @@ const getIndexPageApi = async (
       screen.findByRole('heading', {
         name: translations.handlerApplication.notification[status],
       }),
-    showsConfirmDialog: async (type: CompleteOperation) => {
+    showsConfirmDialog: async (type: CompleteOperation['type']) => {
       const dialog = await screen.findByRole('dialog');
       return within(dialog).findByText(translations.dialog[type].content);
     },
   };
   const actions = {
-    clickCompleteButton: (type: CompleteOperation): void => {
+    clickCompleteButton: (type: CompleteOperation['type']): void => {
       userEvent.click(screen.getByTestId(`${type}-button`));
     },
     clickConfirmButton: async (
-      type: CompleteOperation,
+      type: CompleteOperation['type'],
       errorCode?: 400 | 500
     ) => {
       if (!expectedApplication) {
@@ -172,11 +172,11 @@ const getIndexPageApi = async (
       if (errorCode) {
         expectToPatchYouthApplicationError(
           type,
-          expectedApplication.id,
+          expectedApplication,
           errorCode
         );
       } else {
-        expectToPatchYouthApplication(type, expectedApplication.id);
+        expectToPatchYouthApplication(type, expectedApplication);
         expectToGetYouthApplication({
           ...expectedApplication,
           status: type === 'accept' ? 'accepted' : 'rejected',

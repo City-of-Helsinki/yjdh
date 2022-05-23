@@ -51,6 +51,8 @@ In `backend/kesaseteli/`:
 
     * `pip-compile requirements.in`
     * `pip-compile requirements-dev.in`
+    * If the above [fail with ImportError](https://github.com/jazzband/pip-tools/issues/1617) you may need an older pip installed:
+      * `pip install --upgrade pip==22.0.1`
 
 4. If you want to update dependencies to their newest versions, run:
 
