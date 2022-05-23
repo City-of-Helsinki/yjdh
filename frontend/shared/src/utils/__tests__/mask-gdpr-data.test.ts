@@ -1,10 +1,11 @@
 import faker from 'faker';
 import { FinnishSSN } from 'finnish-ssn';
-import {
-  fakeApplication,
-  fakeCompany,
-} from 'shared/__tests__/utils/fake-objects';
+import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import maskGDPRData from 'shared/utils/mask-gdpr-data';
+
+// Let's not uuid's because there is a fair chance that randomly generated uuid contains valid finnish ssn and thus
+// is partially masked causing tests to fail
+const fakeObjectFactory = new FakeObjectFactory({ useUuid: false });
 
 const masked = (str?: string): string => '*'.repeat(str?.length ?? 0);
 
@@ -34,7 +35,9 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
   });
 
   it('employer application', () => {
-    const application = fakeApplication('1234', fakeCompany, true);
+    const application = fakeObjectFactory.fakeApplication(
+      fakeObjectFactory.fakeCompany
+    );
     expect(maskGDPRData(application)).toEqual({
       ...application,
       company: {
@@ -48,9 +51,6 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
       ),
       street_address: masked(application.street_address),
       bank_account_number: masked(application.bank_account_number),
-      invoicer_name: masked(application.invoicer_name),
-      invoicer_email: masked(application.invoicer_email),
-      invoicer_phone_number: masked(application.invoicer_phone_number),
       summer_vouchers: application.summer_vouchers.map((voucher) => ({
         ...voucher,
         employee_name: masked(voucher.employee_name),

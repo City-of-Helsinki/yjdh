@@ -91,26 +91,6 @@ export const getStep1Components = (t: TestController) => {
           name: /^tilinumero/i,
         });
       },
-      separateInvoicerCheckbox() {
-        return withinForm().getByLabelText(
-          /^laskutusta hoitaa yrityksessä eri yhteyshenkilö/i
-        );
-      },
-      invoicerNameInput() {
-        return withinForm().findByRole('textbox', {
-          name: /^laskutuksen yhteyshenkilön nimi/i,
-        });
-      },
-      invoicerEmailInput() {
-        return withinForm().findByRole('textbox', {
-          name: /^laskutuksen yhteyshenkilön sähköposti/i,
-        });
-      },
-      invoicerPhoneInput() {
-        return withinForm().findByRole('textbox', {
-          name: /^laskutuksen yhteyshenkilön puhelinnumero/i,
-        });
-      },
     };
     const expectations = {
       async isPresent() {
@@ -184,36 +164,6 @@ export const getStep1Components = (t: TestController) => {
           'street_address',
           selectors.bankAccountNumberInput(),
           address
-        );
-      },
-      async selectSeparateInvoicerCheckbox(expectedValue = true) {
-        const currentValue = await selectors.separateInvoicerCheckbox().checked;
-        if (currentValue !== expectedValue) {
-          await t.click(selectors.separateInvoicerCheckbox());
-        }
-      },
-      fillInvoicerName(name?: string) {
-        return fillInput(
-          t,
-          'invoicer_name',
-          selectors.invoicerNameInput(),
-          name
-        );
-      },
-      fillInvoicerEmail(email?: string) {
-        return fillInput(
-          t,
-          'invoicer_email',
-          selectors.invoicerEmailInput(),
-          email
-        );
-      },
-      fillInvoicerPhone(phone?: string) {
-        return fillInput(
-          t,
-          'invoicer_phone_number',
-          selectors.invoicerPhoneInput(),
-          phone
         );
       },
     };

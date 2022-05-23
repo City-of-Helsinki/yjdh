@@ -27,10 +27,6 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
       contact_person_phone_number,
       street_address,
       bank_account_number,
-      is_separate_invoicer,
-      invoicer_email,
-      invoicer_name,
-      invoicer_phone_number,
       summer_vouchers,
     } = applicationQuery.data;
 
@@ -88,25 +84,6 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
             {t('common:application.form.inputs.bank_account_number')}:{' '}
             {friendlyFormatIBAN(bank_account_number)}
           </$ApplicationSummaryField>
-          {is_separate_invoicer && (
-            <>
-              <$ApplicationSummaryField data-testid="is_separate_invoicer">
-                {t('common:application.form.inputs.is_separate_invoicer')}:
-              </$ApplicationSummaryField>
-              <$ApplicationSummaryField data-testid="invoicer_name">
-                {t('common:application.form.inputs.invoicer_name')}:{' '}
-                {invoicer_name}
-              </$ApplicationSummaryField>
-              <$ApplicationSummaryField data-testid="invoicer_email">
-                {t('common:application.form.inputs.invoicer_email')}:{' '}
-                {invoicer_email}
-              </$ApplicationSummaryField>
-              <$ApplicationSummaryField data-testid="invoicer_phone_number">
-                {t('common:application.form.inputs.invoicer_phone_number')}:{' '}
-                {invoicer_phone_number}
-              </$ApplicationSummaryField>
-            </>
-          )}
         </FormSection>
         <FormSection
           header={t('common:application.step3.employmentTitle')}

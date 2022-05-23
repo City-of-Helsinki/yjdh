@@ -11,9 +11,11 @@ import {
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import React from 'react';
-import { fakeApplication } from 'shared/__tests__/utils/fake-objects';
+import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+
+const fakeObjectFactory = new FakeObjectFactory();
 
 describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
   afterEach(() => clearLocalStorage('application'));
@@ -26,8 +28,8 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
   });
 
   describe('loading data', () => {
-    const id = '1234';
-    const application = fakeApplication('1234');
+    const application = fakeObjectFactory.fakeApplication();
+    const { id } = application;
 
     it('Should redirect when unauthorized', async () => {
       expectUnauthorizedReply();

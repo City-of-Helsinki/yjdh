@@ -4,10 +4,12 @@ import {
 } from 'kesaseteli-shared/backend-api/backend-api';
 import nock from 'nock';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
-import { fakeUser } from 'shared/__tests__/utils/fake-objects';
+import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { DEFAULT_LANGUAGE } from 'shared/i18n/i18n';
 import type Application from 'shared/types/application';
 import type DraftApplication from 'shared/types/draft-application';
+
+const fakeObjectFactory = new FakeObjectFactory();
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
@@ -33,7 +35,9 @@ afterEach(async () => {
 
 nock.disableNetConnect();
 
-export const expectAuthorizedReply = (expectedUser = fakeUser()): nock.Scope =>
+export const expectAuthorizedReply = (
+  expectedUser = fakeObjectFactory.fakeUser()
+): nock.Scope =>
   nock(getBackendDomain())
     .get(BackendEndpoint.USER)
     .reply(200, expectedUser, { 'Access-Control-Allow-Origin': '*' });
@@ -49,7 +53,9 @@ export const expectToLogin = (): nock.Scope =>
     .get(BackendEndpoint.LOGIN)
     .reply(200, 'OK', { 'Access-Control-Allow-Origin': '*' });
 
-export const expectToLogout = (expectedUser = fakeUser()): nock.Scope =>
+export const expectToLogout = (
+  expectedUser = fakeObjectFactory.fakeUser()
+): nock.Scope =>
   nock(getBackendDomain())
     .post(BackendEndpoint.LOGOUT)
     .reply(200, expectedUser, { 'Access-Control-Allow-Origin': '*' });
