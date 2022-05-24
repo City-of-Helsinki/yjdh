@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
   IconCalendarClock,
+  IconGlobe,
   IconInfoCircle,
   IconLocation,
-  IconGlobe,
   Tag,
 } from 'hds-react';
 import dynamic from 'next/dynamic';
@@ -12,18 +12,19 @@ import { useTranslation } from 'next-i18next';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import React from 'react';
 import Container from 'shared/components/container/Container';
+import { useTheme } from 'styled-components';
 import {
   $Body,
   $ContentWrapper,
   $Hr,
   $InfoWrapper,
-  $Title,
   $Keywords,
+  $Title,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import MapScripts from 'tet-shared/components/MapScripts';
-import TetPosting from 'tet-shared/types/tetposting';
 import { OptionType } from 'tet-shared/types/classification';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
@@ -42,7 +43,7 @@ const keywordList = (list: OptionType[], color: string): JSX.Element => (
       <li>
         <Tag
           theme={{
-            '--tag-background': `var(--color-${color})`,
+            '--tag-background': `${color}`,
             '--tag-color': 'var(--color-black-90)',
             '--tag-focus-outline-color': 'var(--color-black-90)',
           }}
@@ -56,6 +57,7 @@ const keywordList = (list: OptionType[], color: string): JSX.Element => (
 
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const addressList = posting.location
     ? [
         posting.location.name,
@@ -103,12 +105,15 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
             icon={<IconGlobe />}
           />
           <$Keywords>
-            {keywordList(posting.keywords_working_methods, 'success-light')}
+            {keywordList(
+              posting.keywords_working_methods,
+              theme.colors.successLight
+            )}
             {keywordList(
               posting.keywords_attributes,
-              'coat-of-arms-medium-light'
+              theme.colors.coatOfArmsMediumLight
             )}
-            {keywordList(posting.keywords, 'engel-medium-light')}
+            {keywordList(posting.keywords, theme.colors.engelMediumLight)}
           </$Keywords>
         </$InfoWrapper>
       </$ContentWrapper>

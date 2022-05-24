@@ -1,4 +1,4 @@
-import { IconArrowLeft, IconLocation, Tag } from 'hds-react';
+import { IconArrowLeft, IconLocation } from 'hds-react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';

@@ -1,14 +1,14 @@
+import { containsRegexp } from '@frontend/shared/src/__tests__/utils/translation-utils';
 import { render, screen } from '@testing-library/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import React from 'react';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 import {
-  fakeTetPosting,
   fakeLocation,
+  fakeTetPosting,
 } from 'tet-shared/__tests__/utils/fake-objects';
 import TetPosting from 'tet-shared/types/tetposting';
-import { containsRegexp } from '@frontend/shared/src/__tests__/utils/translation-utils';
 
 import PostingHero from '../PostingHero';
 
@@ -34,7 +34,7 @@ const testPosting = {
   contact_last_name: 'Sukunimi',
   contact_phone: '0455548885',
   contact_email: 'tester@mail.com',
-  location: location,
+  location,
 };
 
 const renderComponent = (props?: Partial<Props>): ReturnType<typeof render> =>

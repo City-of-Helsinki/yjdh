@@ -1,15 +1,15 @@
-import { render, screen, within, prettyDOM } from '@testing-library/react';
+import { containsRegexp } from '@frontend/shared/src/__tests__/utils/translation-utils';
+import { render, screen, within } from '@testing-library/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import React from 'react';
 import theme from 'shared/styles/theme';
 import { ThemeProvider } from 'styled-components';
 import {
+  fakeLocation,
   fakeOptions,
   fakeTetPosting,
-  fakeLocation,
 } from 'tet-shared/__tests__/utils/fake-objects';
 import TetPosting from 'tet-shared/types/tetposting';
-import { containsRegexp } from '@frontend/shared/src/__tests__/utils/translation-utils';
 
 import PostingContent from '../PostingContent';
 
@@ -35,18 +35,22 @@ const testPosting = {
   end_date: '10.5.2022',
   contact_phone: '0455548885',
   contact_email: 'tester@mail.com',
-  location: location,
+  location,
   languages: [{ value: 'fi', label: 'Suomi', name: 'Suomi' }],
   keywords: fakeOptions(keywords),
   keywords_working_methods: fakeOptions(method_keywords),
   keywords_attributes: fakeOptions(attribute_keywords),
 };
 
-const infoHasData = async (title: string, contents: string[]) => {
+const infoHasData = async (
+  title: string,
+  contents: string[]
+): Promise<void> => {
   const heading = await screen.findByRole('heading', {
     name: title,
   });
   for (const content of contents) {
+    // eslint-disable-next-line testing-library/no-node-access
     await within(heading?.parentElement).findByText(containsRegexp(content));
   }
 };
@@ -91,7 +95,6 @@ test('it should render side colunmn info', async () => {
 
 test('it should show a map with a marker', async () => {
   const { container } = renderComponent();
-  expect(container.getElementsByClassName('leaflet-marker-icon').length).toBe(
-    1
-  );
+  // eslint-disable-next-line testing-library/no-node-access, testing-library/no-container
+  expect(container.querySelectorAll('.leaflet-marker-icon')).toHaveLength(1);
 });
