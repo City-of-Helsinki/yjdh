@@ -1,4 +1,4 @@
-import { getHandlerFormPageComponents } from '@frontend/kesaseteli-shared/browser-tests/handler-form-page/handlerFormPage.components';
+import HandlerForm from '@frontend/kesaseteli-shared/browser-tests/page-models/HandlerForm';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
 import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
 import requestLogger, {
@@ -21,7 +21,7 @@ fixture('Handler form')
     console.log(filterLoggedRequests(requestLogger))
   );
 
-test('handler form is not found without id', async (t) => {
-  const handlerFormPage = await getHandlerFormPageComponents(t);
-  await handlerFormPage.expectations.applicationNotFound();
+test('handler form is not found without id', async () => {
+  const handlerFormPage = new HandlerForm();
+  await handlerFormPage.applicationNotFound();
 });

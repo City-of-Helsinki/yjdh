@@ -81,6 +81,7 @@
 		"preview": "Preview",
     "loadingError": "Error while loading the event. Please try again later.",
     "language": "Language of the TET workplace",
+		"leaveConfirm": "No changes have been saved. Do you still want to leave?",
     "employerInfo": {
 			"contactPerson": "Contact person",
       "header": "Unit details",
@@ -144,7 +145,8 @@
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Give feedback",
-    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
+    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback",
+		"newTab": "link opens in a new tab"
   },
   "languages": {
     "fi": "Suomeksi",

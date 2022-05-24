@@ -1,13 +1,12 @@
 import { WithinSelectors } from '@testing-library/testcafe';
-import { Selector, t } from 'testcafe';
+import { ClientFunction, Selector, t } from 'testcafe';
 
-import { TranslationsApi } from '../../src/__tests__/types/translations';
 import {
   containsRegexp,
   replaceValues,
 } from '../../src/__tests__/utils/translation-utils';
 import { MAIN_CONTENT_ID } from '../../src/constants';
-import { DEFAULT_LANGUAGE, Language } from '../../src/i18n/i18n';
+import { Language } from '../../src/i18n/i18n';
 import {
   getErrorMessage,
   screenContext,
@@ -17,13 +16,10 @@ import {
 export type Options = {
   datatestId?: string;
   lang?: Language;
+  selector?: Selector;
 };
 
-abstract class PageComponent<Translations> {
-  protected lang: Language;
-
-  protected translations!: Translations;
-
+abstract class PageComponent {
   private readonly componentSelector: Selector;
 
   protected readonly component: WithinSelectors;
@@ -36,22 +32,22 @@ abstract class PageComponent<Translations> {
 
   protected replaced = replaceValues;
 
-  protected abstract getTranslationsApi(): TranslationsApi<Translations>;
+  /**
+   * Enforce click html element when t.click doesn't work
+   * https://github.com/DevExpress/testcafe/issues/4146#issuecomment-521216775
+   * @param cssSelector
+   */
+  protected htmlElementClick = ClientFunction(
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    (cssSelector: string) =>
+      document.querySelector<HTMLElement>(cssSelector)?.click()
+  );
 
-  protected constructor(options?: Options) {
+  protected constructor(datatestId?: string) {
     this.componentSelector = this.screen.findByTestId(
-      options?.datatestId ?? MAIN_CONTENT_ID
+      datatestId ?? MAIN_CONTENT_ID
     );
     this.component = this.within(this.componentSelector);
-    this.lang = options?.lang ?? DEFAULT_LANGUAGE;
-    this.setTranslations(this.lang);
-  }
-
-  public setTranslations(lang: Language): void {
-    const {
-      translations: { [lang]: translations },
-    } = this.getTranslationsApi();
-    this.translations = translations;
   }
 
   loadingSpinners = this.screen.findAllByTestId('hidden-loading-indicator');
@@ -71,25 +67,43 @@ abstract class PageComponent<Translations> {
    */
   public async isLoaded(timeout?: number): Promise<void> {
     await this.isLoadingSpinnerNoMorePresent(timeout);
+    return this.expect(this.componentSelector);
+  }
+
+  /** expectation utility */
+  /* eslint-disable class-methods-use-this */
+  protected async expect(
+    selector: Selector | SelectorPromise,
+    timeout?: number
+  ): Promise<void> {
     return (
       t
         // eslint-disable-next-line security/detect-non-literal-fs-filename
-        .expect(this.componentSelector.exists)
+        .expect(selector.exists)
         .ok(await getErrorMessage(t), { timeout })
+    );
+  }
+
+  protected async expectNotPresent(
+    selector: Selector | SelectorPromise,
+    timeout?: number
+  ): Promise<void> {
+    return (
+      t
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        .expect(selector.exists)
+        .notOk(await getErrorMessage(t), { timeout })
     );
   }
 
   /**
    * Utility that clears the possible previous value from input and
    * types a new one
-   * @param selector
-   * @param value
-   * @protected
    */
-  protected static fillInput(
+  protected fillInput(
     selector: Selector | SelectorPromise,
     value?: string
-  ): Promise<void> {
+  ): TestControllerPromise {
     return t
       .click(selector)
       .pressKey('ctrl+a delete')
@@ -100,11 +114,12 @@ abstract class PageComponent<Translations> {
    * Utility to click radio button without waiting timeout
    * https://stackoverflow.com/questions/66246885/slow-performance-with-testcafe-and-ids-and-custom-radio-buttons
    */
-  protected static clickSelectRadioButton(
+  protected clickSelectRadioButton(
     selector: Selector | SelectorPromise
-  ): Promise<void> {
+  ): TestControllerPromise {
     return t.click(Selector(selector, { timeout: 0 }));
   }
+  /* eslint-enable class-methods-use-this */
 }
 
 export default PageComponent;

@@ -26,7 +26,6 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const {
-    id,
     receipt_confirmed_at,
     first_name,
     last_name,
@@ -135,7 +134,10 @@ const HandlerForm: React.FC<Props> = ({ application }) => {
         </>
       )}
       {waitingForHandlerAction ? (
-        <ActionButtons id={id} $rowSpan={additionalInfoProvided ? 12 : 8} />
+        <ActionButtons
+          application={application}
+          $rowSpan={additionalInfoProvided ? 12 : 8}
+        />
       ) : (
         <$GridCell>
           <$Notification

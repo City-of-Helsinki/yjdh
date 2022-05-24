@@ -59,7 +59,10 @@
     "privacyPolicy": "Privacy policy",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Give feedback",
-    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback"
+    "feedbackLink": "https://www.hel.fi/helsinki/en/administration/participate/feedback",
+		"moreInfo": "More information",
+		"moreInfoLink": "https://nuorten.hel.fi/en/",
+		"newTab": "link opens in a new tab"
   },
   "languages": {
     "fi": "Suomeksi",
