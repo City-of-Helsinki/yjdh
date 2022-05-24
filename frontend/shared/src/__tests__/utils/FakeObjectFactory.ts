@@ -155,9 +155,9 @@ class FakeObjectFactory {
     return generateArray(() => this.fakeEmployment(), count);
   }
 
-  public fakeApplication(company?: Company, language?: Language): Application {
+  public fakeApplication(company?: Company, language?: Language, id?: string): Application {
     return getFormApplication({
-      id: this.generateId(),
+      id: id ?? this.generateId(),
       company: company ?? this.fakeCompany,
       status: 'draft',
       summer_vouchers: this.fakeEmployments(2),
