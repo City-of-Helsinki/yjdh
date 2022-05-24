@@ -45,7 +45,7 @@ env:
   NEXT_PUBLIC_SENTRY_ENVIRONMENT: ${{ secrets.NEXT_PUBLIC_SENTRY_ENVIRONMENT }}
   NEXT_PUBLIC_ACTIVATION_LINK_EXPIRATION_SECONDS: 60
   CORS_ALLOW_ALL_ORIGINS: 1
-  DISABLE_VTJ: 1
+  DISABLE_VTJ: 0
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}

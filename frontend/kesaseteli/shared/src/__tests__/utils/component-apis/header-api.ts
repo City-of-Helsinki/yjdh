@@ -20,10 +20,10 @@ const languageMenuButtonAriaLabels = {
 };
 
 const expectations = {
-  userIsLoggedIn: async (expectedUser: User): Promise<void> => {
+  userIsLoggedIn: async (expectedUser?: User): Promise<void> => {
     await screen.findByRole('button', {
       name: new RegExp(
-        `(käyttäjä)|(header.userAriaLabelPrefix) ${expectedUser.name}`,
+        `(käyttäjä)|(header.userAriaLabelPrefix) ${expectedUser?.name ?? ''}`,
         'i'
       ),
     });

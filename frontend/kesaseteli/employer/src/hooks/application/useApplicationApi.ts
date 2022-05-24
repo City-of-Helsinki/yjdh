@@ -2,7 +2,6 @@ import useApplicationQuery from 'kesaseteli/employer/hooks/backend/useApplicatio
 import useUpdateApplicationQuery from 'kesaseteli/employer/hooks/backend/useUpdateApplicationQuery';
 import { clearLocalStorage } from 'kesaseteli/employer/utils/localstorage.utils';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
-import isEmpty from 'lodash/isEmpty';
 import noop from 'lodash/noop';
 import React from 'react';
 import { UseMutationResult, useQueryClient, UseQueryResult } from 'react-query';
@@ -94,19 +93,15 @@ const useApplicationApi = <T = Application>(
 
   const updateApplication: ApplicationApi<T>['updateApplication'] =
     React.useCallback(
-      (draftApplication: DraftApplication, onSuccess = noop) => {
-        if (isEmpty(draftApplication.summer_vouchers)) {
-          return addEmployment(draftApplication, onSuccess);
-        }
-        return updateApplicationQuery.mutate(
+      (draftApplication: DraftApplication, onSuccess = noop) =>
+        updateApplicationQuery.mutate(
           { ...draftApplication, status: 'draft' },
           {
             onSuccess,
             onError,
           }
-        );
-      },
-      [updateApplicationQuery, addEmployment, onError]
+        ),
+      [updateApplicationQuery, onError]
     );
 
   const sendApplication: ApplicationApi<T>['sendApplication'] =

@@ -32,6 +32,7 @@ from shared.common.tests.conftest import (
     staff_superuser_client,
     superuser_client,
 )
+from shared.common.tests.factories import UserFactory
 from shared.common.tests.test_validators import get_invalid_postcode_values
 
 from applications.api.v1.serializers import YouthApplicationSerializer
@@ -42,6 +43,7 @@ from applications.enums import (
     YouthApplicationStatus,
 )
 from applications.models import YouthApplication, YouthSummerVoucher
+from applications.tests.data.mock_vtj import mock_vtj_person_id_query_not_found_content
 from common.permissions import HandlerPermission
 from common.tests.conftest import (
     api_client,
@@ -50,10 +52,12 @@ from common.tests.conftest import (
 from common.tests.factories import (
     AcceptableYouthApplicationFactory,
     AcceptedYouthApplicationFactory,
+    AdditionalInfoProvidedYouthApplicationFactory,
     AdditionalInfoRequestedYouthApplicationFactory,
     AwaitingManualProcessingYouthApplicationFactory,
     InactiveNeedAdditionalInfoYouthApplicationFactory,
     InactiveNoNeedAdditionalInfoYouthApplicationFactory,
+    InactiveYouthApplicationFactory,
     RejectedYouthApplicationFactory,
     UnhandledYouthApplicationFactory,
     YouthApplicationFactory,
@@ -90,10 +94,18 @@ def get_random_pk() -> uuid.UUID:
     return uuid.uuid4()
 
 
-def test_additional_info() -> dict:
+def get_test_additional_info() -> dict:
     return {
         "additional_info_user_reasons": [AdditionalInfoUserReason.UNDERAGE_OR_OVERAGE],
         "additional_info_description": "Test text",
+    }
+
+
+def get_test_handling_data() -> dict:
+    return {
+        "encrypted_handler_vtj_json": json.loads(
+            mock_vtj_person_id_query_not_found_content(test="This is a test")
+        )
     }
 
 
@@ -142,7 +154,8 @@ def get_read_only_fields() -> List[str]:
         "created_at",
         "modified_at",
         "receipt_confirmed_at",
-        "encrypted_vtj_json",
+        "encrypted_original_vtj_json",
+        "encrypted_handler_vtj_json",
         "status",
         "handler",
         "handled_at",
@@ -157,6 +170,43 @@ def get_handler_fields() -> List[str]:
     Fields that should be viewable by a youth application's handler.
     """
     return get_required_fields() + get_optional_fields() + get_read_only_fields()
+
+
+def test_youth_application_encrypted_fields():
+    """
+    Test that YouthApplication's encrypted fields are categorized correctly.
+
+    If this test breaks then check and update the following:
+     - YouthApplication's fields
+     - This test itself if YouthApplication's fields change
+     - YouthApplicationSerializer.Meta.read_only_fields
+     - YouthApplicationSerializer.Meta.vtj_data_fields
+    """
+    # Explicitly ensure "encrypted_(original|handler)_vtj_json" are in vtj_data_fields
+    assert (
+        "encrypted_original_vtj_json" in YouthApplicationSerializer.Meta.vtj_data_fields
+    )
+    assert (
+        "encrypted_handler_vtj_json" in YouthApplicationSerializer.Meta.vtj_data_fields
+    )
+
+    for field in YouthApplication._meta.get_fields():
+        field_type = field.get_internal_type()
+        # Check all encrypted fields of YouthApplication
+        if (
+            "encrypted" in field_type.lower()  # e.g. "EncryptedCharField"
+            or "encrypted" in field.name.lower()  # e.g. "encrypted_original_vtj_json"
+        ):
+            # YouthApplication's encrypted read-only fields should be in vtj_data_fields
+            if field.name in YouthApplicationSerializer.Meta.read_only_fields:
+                assert field.name in YouthApplicationSerializer.Meta.vtj_data_fields
+            else:
+                # Because the applicant gives the social security number it can be
+                # returned to them
+                assert field.name in [
+                    "encrypted_social_security_number",
+                    "social_security_number",
+                ]
 
 
 def test_youth_application_serializer_fields():
@@ -506,34 +556,142 @@ def test_youth_applications_detail_response_field(api_client, youth_application,
 @pytest.mark.django_db
 @override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
 @pytest.mark.parametrize(
-    "input_encrypted_vtj_json,expected_output_encrypted_vtj_json",
+    "youth_application_factory,expect_encrypted_handler_vtj_json_update",
+    [
+        (InactiveYouthApplicationFactory, True),
+        (AwaitingManualProcessingYouthApplicationFactory, True),
+        (AdditionalInfoRequestedYouthApplicationFactory, True),
+        (AdditionalInfoProvidedYouthApplicationFactory, True),
+        (AcceptedYouthApplicationFactory, False),
+        (RejectedYouthApplicationFactory, False),
+    ],
+)
+def test_youth_applications_detail_update_encrypted_handler_vtj_json(
+    api_client, youth_application_factory, expect_encrypted_handler_vtj_json_update
+):
+    youth_application = youth_application_factory.create()
+    old_encrypted_handler_vtj_json = youth_application.encrypted_handler_vtj_json
+
+    with mock.patch(
+        "applications.models.YouthApplication.fetch_vtj_json",
+        return_value='{"test": "override"}',
+    ) as mock_fetch_vtj_json:
+        response = api_client.get(get_detail_url(pk=youth_application.pk))
+        if expect_encrypted_handler_vtj_json_update:
+            mock_fetch_vtj_json.assert_called_once()
+        else:
+            mock_fetch_vtj_json.assert_not_called()
+
+    youth_application.refresh_from_db()
+
+    if expect_encrypted_handler_vtj_json_update:
+        assert response.data["encrypted_handler_vtj_json"] == {"test": "override"}
+        assert youth_application.encrypted_handler_vtj_json == '{"test": "override"}'
+    else:
+        assert response.data["encrypted_handler_vtj_json"] == json.loads(
+            old_encrypted_handler_vtj_json
+        )
+        assert (
+            youth_application.encrypted_handler_vtj_json
+            == old_encrypted_handler_vtj_json
+        )
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+@pytest.mark.parametrize(
+    "username,user_pk,expected_end_user",
+    [
+        parameter_values
+        for user_pk in ["1234"]
+        for ad_login_uuid in ["a9c9ecc3-67db-4b13-bf55-48552787b1c8"]  # random
+        for parameter_values in [
+            # Username is not a UUID
+            ("", user_pk, user_pk),
+            ("test@example.com", user_pk, user_pk),
+            ("Matti Meikäläinen", user_pk, user_pk),
+            (ad_login_uuid + "5", user_pk, user_pk),
+            (ad_login_uuid[:-1], user_pk, user_pk),
+            # Username is a UUID
+            (ad_login_uuid, user_pk, ad_login_uuid),
+        ]
+    ],
+)
+def test_youth_applications_detail_fetch_vtj_json_end_user(
+    api_client, username, user_pk, expected_end_user
+):
+    user = UserFactory(pk=user_pk, username=username)
+    user.refresh_from_db()
+    assert str(user.pk) == user_pk
+    api_client.force_authenticate(user=user)
+
+    youth_application = AwaitingManualProcessingYouthApplicationFactory.create()
+
+    with mock.patch(
+        "applications.models.YouthApplication.fetch_vtj_json",
+        return_value='{"test": "override"}',
+    ) as mock_fetch_vtj_json:
+        api_client.get(get_detail_url(pk=youth_application.pk))
+        mock_fetch_vtj_json.assert_called_once_with(end_user=expected_end_user)
+
+
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    DISABLE_VTJ=False,
+)
+@pytest.mark.django_db
+def test_youth_application_post_fetch_vtj_json_empty_end_user(api_client):
+    youth_application = InactiveNoNeedAdditionalInfoYouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    with mock.patch(
+        "applications.models.YouthApplication.fetch_vtj_json",
+        return_value=youth_application.encrypted_original_vtj_json,
+    ) as mock_fetch_vtj_json:
+        response = api_client.post(get_list_url(), data)
+        assert response.status_code == status.HTTP_201_CREATED
+        mock_fetch_vtj_json.assert_called_once_with(end_user="")
+
+
+@pytest.mark.django_db
+@override_settings(NEXT_PUBLIC_MOCK_FLAG=True)
+@pytest.mark.parametrize(
+    "vtj_json_field_name", YouthApplicationSerializer.Meta.vtj_data_fields
+)
+@pytest.mark.parametrize(
+    "input_vtj_json_field_value,expected_output_vtj_json_field_value",
     [
         (None, {}),
         ("", {}),
         (json.dumps(get_test_vtj_json()), get_test_vtj_json()),
     ],
 )
-def test_youth_applications_detail_encrypted_vtj_json(
+def test_youth_applications_detail_vtj_data_fields(
     api_client,
-    input_encrypted_vtj_json,
-    expected_output_encrypted_vtj_json,
+    vtj_json_field_name,
+    input_vtj_json_field_value,
+    expected_output_vtj_json_field_value,
 ):
-    app = YouthApplicationFactory.create(encrypted_vtj_json=input_encrypted_vtj_json)
+    YouthApplication._meta.get_field(vtj_json_field_name)  # Check that field exists
+    app = YouthApplicationFactory.create(
+        **{vtj_json_field_name: input_vtj_json_field_value}
+    )
     response = api_client.get(get_detail_url(pk=app.pk))
-    output_encrypted_vtj_json = response.data["encrypted_vtj_json"]
-    assert output_encrypted_vtj_json == expected_output_encrypted_vtj_json
+    output_vtj_json_field_value = response.data[vtj_json_field_name]
+    assert output_vtj_json_field_value == expected_output_vtj_json_field_value
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,expected_status_code",
+    "language,disable_vtj,rejected_application_exists,expected_status_code",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             status.HTTP_302_FOUND if disable_vtj else status.HTTP_501_NOT_IMPLEMENTED,
         )
         for language in get_supported_languages()
+        for rejected_application_exists in [False, True]
         for disable_vtj in [True]
     ],
 )
@@ -543,6 +701,7 @@ def test_youth_applications_activate_unexpired_inactive(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     expected_status_code,
 ):
     settings.DISABLE_VTJ = disable_vtj
@@ -555,6 +714,12 @@ def test_youth_applications_activate_unexpired_inactive(
     assert not inactive_youth_application.is_active
     assert not inactive_youth_application.has_activation_link_expired
     assert inactive_youth_application.language == language
+
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=inactive_youth_application.email,
+            social_security_number=inactive_youth_application.social_security_number,
+        )
 
     response = api_client.get(get_activation_url(inactive_youth_application.pk))
 
@@ -580,14 +745,16 @@ def test_youth_applications_activate_unexpired_inactive(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,youth_application_factory",
+    "language,disable_vtj,rejected_application_exists,youth_application_factory",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             youth_application_factory,
         )
         for language in get_supported_languages()
+        for rejected_application_exists in [False, True]
         for disable_vtj in [True]
         for youth_application_factory in [
             AwaitingManualProcessingYouthApplicationFactory,
@@ -601,6 +768,7 @@ def test_youth_applications_activate_unexpired_active(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     youth_application_factory,
 ):
     settings.DISABLE_VTJ = disable_vtj
@@ -615,6 +783,12 @@ def test_youth_applications_activate_unexpired_active(
     assert active_youth_application.language == language
     assert not active_youth_application.has_additional_info
     assert not active_youth_application.has_youth_summer_voucher
+
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=active_youth_application.email,
+            social_security_number=active_youth_application.social_security_number,
+        )
 
     response = api_client.get(get_activation_url(active_youth_application.pk))
 
@@ -637,16 +811,18 @@ def test_youth_applications_activate_unexpired_active(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,youth_application_factory,need_additional_info",
+    "language,disable_vtj,rejected_application_exists,youth_application_factory,need_additional_info",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             youth_application_factory,
             need_additional_info,
         )
         for language in get_supported_languages()
         for disable_vtj in [True]
+        for rejected_application_exists in [False, True]
         for youth_application_factory, need_additional_info in [
             (InactiveNoNeedAdditionalInfoYouthApplicationFactory, False),
             (InactiveNeedAdditionalInfoYouthApplicationFactory, True),
@@ -659,6 +835,7 @@ def test_youth_applications_activate_expired_inactive(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     youth_application_factory,
     need_additional_info,
 ):
@@ -675,6 +852,12 @@ def test_youth_applications_activate_expired_inactive(
     assert not inactive_youth_application.has_additional_info
     assert not inactive_youth_application.has_youth_summer_voucher
 
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=inactive_youth_application.email,
+            social_security_number=inactive_youth_application.social_security_number,
+        )
+
     response = api_client.get(get_activation_url(inactive_youth_application.pk))
 
     assert response.status_code == status.HTTP_302_FOUND
@@ -690,15 +873,17 @@ def test_youth_applications_activate_expired_inactive(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "language,disable_vtj,youth_application_factory",
+    "language,disable_vtj,rejected_application_exists,youth_application_factory",
     [
         (
             language,
             disable_vtj,
+            rejected_application_exists,
             youth_application_factory,
         )
         for language in get_supported_languages()
         for disable_vtj in [True]
+        for rejected_application_exists in [False, True]
         for youth_application_factory in [
             AwaitingManualProcessingYouthApplicationFactory,
             AdditionalInfoRequestedYouthApplicationFactory,
@@ -711,6 +896,7 @@ def test_youth_applications_activate_expired_active(
     settings,
     language,
     disable_vtj,
+    rejected_application_exists,
     youth_application_factory,
 ):
     settings.DISABLE_VTJ = disable_vtj
@@ -725,6 +911,12 @@ def test_youth_applications_activate_expired_active(
     assert active_youth_application.language == language
     assert not active_youth_application.has_additional_info
     assert not active_youth_application.has_youth_summer_voucher
+
+    if rejected_application_exists:
+        RejectedYouthApplicationFactory.create(
+            email=active_youth_application.email,
+            social_security_number=active_youth_application.social_security_number,
+        )
 
     response = api_client.get(get_activation_url(active_youth_application.pk))
 
@@ -815,6 +1007,22 @@ def test_youth_application_post_valid_social_security_number(api_client, test_va
     assert "social_security_number" in response.data
 
 
+@override_settings(
+    NEXT_PUBLIC_MOCK_FLAG=False,
+    DISABLE_VTJ=True,
+)
+@pytest.mark.django_db
+def test_youth_application_post_response_excludes_vtj_data_fields(api_client):
+    youth_application = YouthApplicationFactory.build()
+    data = YouthApplicationSerializer(youth_application).data
+    response = api_client.post(get_list_url(), data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+    for vtj_data_field in YouthApplicationSerializer.Meta.vtj_data_fields:
+        assert vtj_data_field not in response.data
+
+
 @freeze_time()
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
@@ -852,7 +1060,13 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
     assert response.status_code == status.HTTP_201_CREATED
 
     # Partition the checkable fields
-    manually_checked_fields = ["id", "created_at", "modified_at", "encrypted_vtj_json"]
+    manually_checked_fields = [
+        "id",
+        "created_at",
+        "modified_at",
+        "encrypted_original_vtj_json",
+        "encrypted_handler_vtj_json",
+    ]
     required_fields = sorted(set(get_required_fields()) - set(manually_checked_fields))
     optional_fields = sorted(set(get_optional_fields()) - set(manually_checked_fields))
     read_only_fields = sorted(
@@ -881,8 +1095,12 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
             assert (
                 datetime.fromisoformat(response.data["modified_at"]) == timezone.now()
             )
-        elif manually_checked_field == "encrypted_vtj_json":
-            assert response.data["encrypted_vtj_json"] == {}
+        elif manually_checked_field == "encrypted_original_vtj_json":
+            # VTJ data should not be shown to the applicant
+            assert "encrypted_original_vtj_json" not in response.data
+        elif manually_checked_field == "encrypted_handler_vtj_json":
+            # VTJ data should not be shown to the applicant
+            assert "encrypted_handler_vtj_json" not in response.data
         else:
             assert False, f"Please add manual check for field {manually_checked_field}"
 
@@ -914,8 +1132,14 @@ def test_youth_application_post_valid_random_data(  # noqa: C901
             assert created_app.created_at == timezone.now()
         elif manually_checked_field == "modified_at":
             assert created_app.modified_at == timezone.now()
-        elif manually_checked_field == "encrypted_vtj_json":
-            assert created_app.encrypted_vtj_json is None
+        elif manually_checked_field == "encrypted_original_vtj_json":
+            assert created_app.encrypted_original_vtj_json is None or isinstance(
+                json.loads(created_app.encrypted_original_vtj_json), dict
+            )
+        elif manually_checked_field == "encrypted_handler_vtj_json":
+            assert created_app.encrypted_handler_vtj_json is None or isinstance(
+                json.loads(created_app.encrypted_handler_vtj_json), dict
+            )
         else:
             assert False, f"Please add manual check for field {manually_checked_field}"
 
@@ -1073,7 +1297,7 @@ def test_youth_application_activation_email_sending(
     start_mail_count = len(mail.outbox)
     with mock.patch(
         "applications.models.YouthApplication.fetch_vtj_json",
-        return_value=youth_application.encrypted_vtj_json,
+        return_value=youth_application.encrypted_original_vtj_json,
     ) as mock_fetch_vtj_json:
         api_client.post(reverse("v1:youthapplication-list"), data)
         mock_fetch_vtj_json.assert_called_once()
@@ -1102,7 +1326,7 @@ def test_youth_application_additional_info_request_email_sending(api_client, lan
     start_mail_count = len(mail.outbox)
     with mock.patch(
         "applications.models.YouthApplication.fetch_vtj_json",
-        return_value=youth_application.encrypted_vtj_json,
+        return_value=youth_application.encrypted_original_vtj_json,
     ) as mock_fetch_vtj_json:
         api_client.post(reverse("v1:youthapplication-list"), data)
         mock_fetch_vtj_json.assert_called_once()
@@ -1210,7 +1434,7 @@ def test_youth_application_processing_email_sending_after_additional_info(
     start_mail_count = len(mail.outbox)
     api_client.post(
         get_additional_info_url(youth_application.pk),
-        data=json.dumps(test_additional_info()),
+        data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
     if expect_success:
@@ -1299,7 +1523,7 @@ def test_youth_application_processing_email_language_after_additional_info(
     start_mail_count = len(mail.outbox)
     api_client.post(
         get_additional_info_url(youth_application.pk),
-        data=json.dumps(test_additional_info()),
+        data=json.dumps(get_test_additional_info()),
         content_type="application/json",
     )
     if expect_success:
@@ -1319,7 +1543,11 @@ def test_youth_application_processing_email_language_after_additional_info(
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_summer_voucher_email_language(api_client, language):
     acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
-    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    api_client.patch(
+        get_accept_url(acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
+    )
     assert len(mail.outbox) > 0
     youth_summer_voucher_email = mail.outbox[-1]
     normalized_subject = normalize_whitespace(
@@ -1354,7 +1582,11 @@ def test_youth_summer_voucher_email_language(api_client, language):
 def test_youth_summer_voucher_email_sending(api_client, language):
     acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
     start_mail_count = len(mail.outbox)
-    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    api_client.patch(
+        get_accept_url(acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
+    )
     assert len(mail.outbox) == start_mail_count + 1
     youth_summer_voucher_email = mail.outbox[-1]
     assert (
@@ -1375,7 +1607,11 @@ def test_youth_summer_voucher_email_sending(api_client, language):
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_summer_voucher_email_type(api_client, language):
     acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
-    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    api_client.patch(
+        get_accept_url(acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
+    )
     assert len(mail.outbox) > 0
     youth_summer_voucher_email = mail.outbox[-1]
     assert youth_summer_voucher_email.content_subtype == "plain"
@@ -1393,7 +1629,11 @@ def test_youth_summer_voucher_email_type(api_client, language):
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_summer_voucher_email_plaintext_html_similarity(api_client, language):
     acceptable_youth_application = AcceptableYouthApplicationFactory(language=language)
-    api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    api_client.patch(
+        get_accept_url(acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
+    )
     assert len(mail.outbox) > 0
     youth_summer_voucher_email = mail.outbox[-1]
     normalized_plaintext_message = normalize_whitespace(
@@ -1426,8 +1666,17 @@ def test_youth_applications_accept_acceptable_with_invalid_smtp_server(
         email="test@example.com", language=language
     )
     assert not acceptable_youth_application.is_accepted
-    assert acceptable_youth_application.can_accept_manually(handler=AnonymousUser())
-    response = api_client.patch(get_accept_url(acceptable_youth_application.pk))
+    assert acceptable_youth_application.can_accept_manually(
+        handler=AnonymousUser(),
+        encrypted_handler_vtj_json=json.dumps(
+            get_test_handling_data()["encrypted_handler_vtj_json"]
+        ),
+    )
+    response = api_client.patch(
+        get_accept_url(acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
+    )
     acceptable_youth_application.refresh_from_db()
     assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
     assert not acceptable_youth_application.is_accepted
@@ -1665,7 +1914,9 @@ def test_youth_applications_accept_acceptable(
     old_youth_summer_voucher_count = YouthSummerVoucher.objects.count()
     assert not acceptable_youth_application.has_youth_summer_voucher
     response = client_fixture.patch(
-        reverse_youth_application_action("accept", acceptable_youth_application.pk)
+        reverse_youth_application_action("accept", acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
     )
     assert response.status_code == expected_status_code
 
@@ -1673,6 +1924,9 @@ def test_youth_applications_accept_acceptable(
 
     if response.status_code == status.HTTP_200_OK:
         assert acceptable_youth_application.status == YouthApplicationStatus.ACCEPTED
+        assert acceptable_youth_application.encrypted_handler_vtj_json == json.dumps(
+            get_test_handling_data()["encrypted_handler_vtj_json"]
+        )
         assert acceptable_youth_application.has_youth_summer_voucher
         assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
         assert (
@@ -1751,11 +2005,13 @@ def test_youth_applications_handle_handled(
     settings.NEXT_PUBLIC_MOCK_FLAG = mock_flag
     client_fixture = request.getfixturevalue(client_fixture_func.__name__)
     handled_youth_application = handled_youth_application_factory()
-    assert handled_youth_application.status in YouthApplicationStatus.handled_values()
+    assert handled_youth_application.is_handled
     old_status = handled_youth_application.status
     old_modified_at = handled_youth_application.modified_at
     response = client_fixture.patch(
-        reverse_youth_application_action(handling_action, handled_youth_application.pk)
+        reverse_youth_application_action(handling_action, handled_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
     )
     assert response.status_code == expected_status_code
 
@@ -1804,7 +2060,9 @@ def test_youth_applications_reject_rejectable(
     old_modified_at = rejectable_youth_application.modified_at
     assert not rejectable_youth_application.has_youth_summer_voucher
     response = client_fixture.patch(
-        reverse_youth_application_action("reject", rejectable_youth_application.pk)
+        reverse_youth_application_action("reject", rejectable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()),
+        content_type="application/json",
     )
     assert response.status_code == expected_status_code
 
@@ -1813,6 +2071,9 @@ def test_youth_applications_reject_rejectable(
 
     if response.status_code == status.HTTP_200_OK:
         assert rejectable_youth_application.status == YouthApplicationStatus.REJECTED
+        assert rejectable_youth_application.encrypted_handler_vtj_json == json.dumps(
+            get_test_handling_data()["encrypted_handler_vtj_json"]
+        )
         audit_event = AuditLogEntry.objects.first().message["audit_event"]
         assert audit_event["status"] == "SUCCESS"
         assert audit_event["operation"] == "UPDATE"
@@ -1891,7 +2152,7 @@ def test_youth_applications_set_excess_additional_info(
     assert source_app.can_set_additional_info
     old_extra_field_value = getattr(source_app, extra_field_name, None)
 
-    post_data = test_additional_info()
+    post_data = get_test_additional_info()
     post_data[extra_field_name] = extra_field_value
 
     response = client_fixture.post(
@@ -2119,7 +2380,7 @@ def test_youth_applications_set_partial_additional_info(
     old_additional_info_provided_at = source_app.additional_info_provided_at
     old_modified_at = source_app.modified_at
 
-    post_data = test_additional_info()
+    post_data = get_test_additional_info()
 
     for missing_field in missing_fields:
         del post_data[missing_field]
