@@ -4,6 +4,7 @@ flake8
 isort
 langdetect
 openpyxl
+pip-tools
 pytest
 pytest-cov
 pytest-django
