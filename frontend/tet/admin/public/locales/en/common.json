@@ -81,6 +81,7 @@
 		"preview": "Preview",
     "loadingError": "Error while loading the event. Please try again later.",
     "language": "Language of the TET workplace",
+		"leaveConfirm": "No changes have been saved. Do you still want to leave?",
     "employerInfo": {
 			"contactPerson": "Contact person",
       "header": "Unit details",

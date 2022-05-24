@@ -81,6 +81,7 @@
 		"preview": "Förhandsgranskning",
     "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
     "language": "PRAO-platsens språk",
+		"leaveConfirm": "Inga ändringar har sparats. Vill du fortfarande lämna?",
     "employerInfo": {
 			"contactPerson": "Kontaktperson",
       "header": "Uppgifter om verksamhetsställe",
