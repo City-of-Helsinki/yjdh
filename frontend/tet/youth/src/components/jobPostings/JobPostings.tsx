@@ -57,7 +57,14 @@ const Postings: React.FC = () => {
     }
 
     if (results.data) {
-      return <JobPostingList initMap={initMap} postings={results.data} everyPosting={all} hasNextPage={hasNextPage} />;
+      return (
+        <JobPostingList
+          initMap={initMap}
+          firstPostingsPage={results.data}
+          allPostings={all}
+          hasNextPage={hasNextPage}
+        />
+      );
     } else {
       //TODO
       return <div>Ei hakutuloksia</div>;

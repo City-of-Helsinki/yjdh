@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo, memo } from 'react';
 import { LoadingSpinner, IconMap, IconLayers } from 'hds-react';
 import JobPostingCard from 'tet/youth/components/jobPostingCard/JobPostingCard';
 import { useTranslation } from 'next-i18next';
@@ -15,38 +15,45 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 const Map = dynamic(() => import('tet-shared/components/map/Map'), { ssr: false });
 
 type Props = {
-  postings: LinkedEventsPagedResponse<TetEvent>;
+  firstPostingsPage: LinkedEventsPagedResponse<TetEvent>;
   hasNextPage?: Boolean;
-  everyPosting: UseQueryResult<LinkedEventsPagedResponse<TetEvent>>;
+  allPostings: UseQueryResult<LinkedEventsPagedResponse<TetEvent>>;
   initMap: Boolean;
 };
 
-const JobPostingList: React.FC<Props> = ({ postings, hasNextPage, everyPosting, initMap }) => {
+const JobPostingList: React.FC<Props> = ({ firstPostingsPage, hasNextPage, allPostings, initMap }) => {
   const { t } = useTranslation();
   const { eventToTetPosting } = useEventPostingTransformation();
   const eventsToPostings = (events: TetEvent[]) => events.map((event) => eventToTetPosting(event));
-  const total = postings?.meta.count;
+  const total = firstPostingsPage?.meta.count;
   const [showMap, setShowMap] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const everyPostingData = everyPosting.isLoading || everyPosting.error ? [] : eventsToPostings(everyPosting.data.data);
-  const allPostings = eventsToPostings(postings.data);
-  const lastShown = currentPage * 10 <= allPostings.length - 1 ? currentPage * 10 : allPostings.length;
+  const firstPagePostingsList = useMemo(() => {
+    return eventsToPostings(firstPostingsPage.data);
+  }, [firstPostingsPage]);
+  const allPostingsList = useMemo(() => {
+    return allPostings.isLoading || allPostings.error ? [] : eventsToPostings(allPostings.data.data);
+  }, [allPostings]);
+  const lastShown = currentPage * 10 <= total - 1 ? currentPage * 10 : total;
+
+  const usedList = allPostings.isSuccess ? allPostingsList : firstPagePostingsList;
+  console.log(lastShown, total, 'vertaus');
 
   const shownPostings = (): TetPosting[] => {
-    return allPostings.slice(0, lastShown);
+    return usedList.slice(0, lastShown);
   };
 
   const onShowMore = (): void => {
     setCurrentPage((prevState) => prevState + 1);
   };
 
-  const MapContainer = everyPosting.isLoading ? (
+  const MapContainer = allPostings.isLoading ? (
     <PageLoadingSpinner />
   ) : (
-    <Map height={'1000px'} postings={allPostings} showLink={true} />
+    <Map height={'1000px'} postings={allPostingsList} showLink={true} />
   );
-
+  console.log(usedList);
   return (
     <Container>
       <$MapButtonWrapper>
@@ -70,13 +77,15 @@ const JobPostingList: React.FC<Props> = ({ postings, hasNextPage, everyPosting, 
           ))}
         </Fragment>
       )}
-      {lastShown !== allPostings.length && !showMap && (
+      {lastShown !== total && !showMap && (
         <$ButtonLoaderContainer>
-          <Button onClick={onShowMore}>{t('common:postings.showMore')}</Button>
+          <Button onClick={onShowMore} isLoading={allPostings.isLoading}>
+            {t('common:postings.showMore')}
+          </Button>
         </$ButtonLoaderContainer>
       )}
     </Container>
   );
 };
 
-export default JobPostingList;
+export default memo(JobPostingList);
