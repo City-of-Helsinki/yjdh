@@ -136,7 +136,7 @@ export const getStep1Components = (t: TestController) => {
         await t
           .expect(selectors.bankAccountNumberInput().value)
           .eql(
-            friendlyFormatIBAN(bank_account_number),
+            friendlyFormatIBAN(bank_account_number) ?? '',
             await getErrorMessage(t)
           );
         await t
