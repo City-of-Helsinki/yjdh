@@ -5,8 +5,6 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { useRouter } from 'next/router';
 import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
-import { getEvents, getWorkFeatures } from 'tet-shared/backend-api/linked-events-api';
-import { useQueries, useQuery } from 'react-query';
 import NoResults from 'tet/youth/components/noResults/NoResults';
 
 const Postings: React.FC = () => {
