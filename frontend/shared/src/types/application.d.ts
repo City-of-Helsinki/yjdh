@@ -2,7 +2,7 @@ import { Language } from 'shared/i18n/i18n';
 
 import type Status from './application-status';
 import type Company from './company';
-import type ContactPerson from './contact_person';
+import type ContactPerson from './contact-info';
 import type Employment from './employment';
 import type Invoicer from './invoicer';
 

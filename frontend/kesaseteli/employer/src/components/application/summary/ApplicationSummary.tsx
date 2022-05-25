@@ -1,3 +1,4 @@
+import { friendlyFormatIBAN } from 'ibantools';
 import { $ApplicationSummaryField } from 'kesaseteli/employer/components/application/summary/ApplicationSummary.sc';
 import EmploymentSummary from 'kesaseteli/employer/components/application/summary/EmploymentSummary';
 import useApplicationApi from 'kesaseteli/employer/hooks/application/useApplicationApi';
@@ -25,6 +26,7 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
       contact_person_email,
       contact_person_phone_number,
       street_address,
+      bank_account_number,
       is_separate_invoicer,
       invoicer_email,
       invoicer_name,
@@ -81,6 +83,10 @@ const ApplicationSummary: React.FC<Props> = ({ header, tooltip }) => {
           <$ApplicationSummaryField data-testid="street_address">
             {t('common:application.form.inputs.street_address')}:{' '}
             {street_address}
+          </$ApplicationSummaryField>
+          <$ApplicationSummaryField data-testid="bank_account_number">
+            {t('common:application.form.inputs.bank_account_number')}:{' '}
+            {friendlyFormatIBAN(bank_account_number)}
           </$ApplicationSummaryField>
           {is_separate_invoicer && (
             <>

@@ -116,7 +116,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
           );
         });
 
-        it('shows validation errors when invalid values', async () => {
+        it('shows validation errors when value is too long', async () => {
           expectAuthorizedReply();
           expectToGetApplicationFromBackend(application);
           await renderPage(ApplicationPage, { query: { id } });

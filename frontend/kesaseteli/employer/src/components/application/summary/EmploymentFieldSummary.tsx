@@ -19,11 +19,13 @@ const EmploymentFieldSummary: React.FC<Props> = ({
   select,
 }) => {
   const label = useGetApplicationFormFieldLabel(fieldName);
-  const { applicationQuery } = useApplicationApi<string>((application) => {
-    if (select) {
-      return select(application);
-    }
-    return application.summer_vouchers[index][fieldName]?.toString() ?? '-';
+  const { applicationQuery } = useApplicationApi<string>({
+    select: (application) => {
+      if (select) {
+        return select(application);
+      }
+      return application.summer_vouchers[index][fieldName]?.toString() ?? '-';
+    },
   });
   const value = applicationQuery.isSuccess ? applicationQuery.data : '-';
   return (

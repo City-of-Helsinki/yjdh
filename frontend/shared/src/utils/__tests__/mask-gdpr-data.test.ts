@@ -47,6 +47,7 @@ describe('frontend/shared/src/utils/masked-gdpr-data.ts', () => {
         application.contact_person_phone_number
       ),
       street_address: masked(application.street_address),
+      bank_account_number: masked(application.bank_account_number),
       invoicer_name: masked(application.invoicer_name),
       invoicer_email: masked(application.invoicer_email),
       invoicer_phone_number: masked(application.invoicer_phone_number),
