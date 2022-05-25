@@ -15,18 +15,16 @@ const ImageUpload = () => {
   const {
     setValue,
     getValues,
-    getFieldState,
-    trigger,
     watch,
     formState: { isSubmitting },
   } = useFormContext<TetPosting>();
   const [file, setFile] = React.useState<File>(); // TODO needed?
+  const [uploaded, setUploaded] = React.useState<boolean>(false);
 
   watch('image_url', 'image');
 
   const image_url = getValues('image_url') as string;
   const image = getValues('image');
-  const uploaded = !!getValues('image_id');
 
   const onChange = (files: File[]) => {
     setFile(files[0]);
@@ -38,31 +36,41 @@ const ImageUpload = () => {
     console.log(uploadedImage);
     setValue('image_url', uploadedImage.url, { shouldDirty: true });
     setValue('image_id', uploadedImage['@id']);
+    setUploaded(true);
   };
 
   console.log(image_url);
 
+  const deleteImage = () => {
+    setUploaded(false);
+    setValue('image_url', '');
+    // TODO also imageId needs to be reset
+  };
+
   return (
     <FormSection>
       <$GridCell $colSpan={6}>
-        <FileInput
-          dragAndDrop
-          label={t('common:editor.posting.imageUpload.label')}
-          helperText={t('common:editor.posting.imageUpload.helperText')}
-          id="file-input"
-          maxSize={4000000}
-          language={locale}
-          accept=".png,.jpg"
-          onChange={onChange}
-        />
-        {image && <Button onClick={upload}>Tallenna kuva ilmoitukselle</Button>}
+        {!image_url && (
+          <>
+            <FileInput
+              dragAndDrop
+              label={t('common:editor.posting.imageUpload.label')}
+              helperText={t('common:editor.posting.imageUpload.helperText')}
+              id="file-input"
+              maxSize={4000000}
+              language={locale}
+              accept=".png,.jpg"
+              onChange={onChange}
+            />
+            {image && <Button onClick={upload}>Tallenna kuva ilmoitukselle</Button>}
+          </>
+        )}
       </$GridCell>
       <$GridCell $colSpan={6}>
         {uploaded && <p>Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen.</p>}
         {image && !uploaded && <p>Ilmoitukselle ollaan lisäämässä uusi kuva.</p>}
         <$ImageContainer>{image_url && <img src={image_url} width="100%" height="100%" />}</$ImageContainer>
-
-        {image_url && !uploaded && <Button>Poista kuva ilmoitukselta</Button>}
+        {image_url && <Button onClick={deleteImage}>Poista tai vaihda kuva</Button>}
       </$GridCell>
     </FormSection>
   );
