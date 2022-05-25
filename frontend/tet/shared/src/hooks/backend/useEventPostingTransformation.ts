@@ -53,8 +53,11 @@ const useEventPostingTransformation = (): Transformations => {
     const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
     const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
-    const image_url =
-      event.images && event.images.length ? event.images[0].url : undefined;
+    const imageFields: any = {};
+    if (event.images && event.images.length) {
+      imageFields.image_url = event.images[0].url;
+      imageFields.image_id = event.images[0]['@id'];
+    }
 
     return {
       id: event.id,
@@ -119,7 +122,7 @@ const useEventPostingTransformation = (): Transformations => {
           })
         : [],
       spots,
-      image_url,
+      ...imageFields,
     };
   };
 
