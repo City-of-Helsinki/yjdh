@@ -12,19 +12,21 @@ HELSINKI_MUNICIPALITY = Municipality(91, "Helsinki", "Helsingfors", "00100")
 OTHER_MUNICIPALITY = Municipality(890, "Utsjoki", "Utsjoki", "99990")
 
 
-def mock_vtj_person_id_query_not_found_content() -> str:
+def mock_vtj_person_id_query_not_found_content(**kwargs) -> str:
     """
     Mock VTJ person's ID query's (i.e. henkilön tunnuskysely in Finnish) result content
     when no data is found.
 
+    :param kwargs: Keyword arguments to add or override values in result
+
     Endpoint: /api/HenkilonTunnuskysely
     """
-    return json.dumps(
-        {
-            "@xmlns": "http://xml.vrk.fi/ws/vtj/vtjkysely/1",
-            "#text": "Hakuperusteella ei löydy tietoja vtj:stä",
-        }
-    )
+    result = {
+        "@xmlns": "http://xml.vrk.fi/ws/vtj/vtjkysely/1",
+        "#text": "Hakuperusteella ei löydy tietoja vtj:stä",
+    }
+    result.update(**kwargs)
+    return json.dumps(result)
 
 
 def mock_vtj_person_id_query_found_content(

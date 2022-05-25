@@ -80,6 +80,7 @@
 		"preview": "Esikatselu",
     "loadingError": "Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
     "language": "TET-paikan kielisyys",
+		"leaveConfirm": "Muutoksia ei ole tallennettu. Haluatko silti poistua?",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
       "header": "Toimipisteen tiedot",
@@ -143,7 +144,8 @@
     "privacyPolicy": "Rekisteriseloste",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Anna palautetta",
-    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute"
+    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute",
+		"newTab": "linkki avautuu uuteen välilehteen"
   },
   "languages": {
     "fi": "Suomeksi",

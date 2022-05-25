@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "audit": "npx lerna-audit --level=high --groups=dependencies",
+    "build": "npx lerna run build",
     "ks-empl:build": "npx lerna run --scope @frontend/employer --stream build",
     "ks-hdlr:build": "npx lerna run --scope @frontend/ks-handler --stream build",
     "ks-youth:build": "npx lerna run --scope @frontend/youth --stream build",

@@ -1,4 +1,4 @@
-import { Selector, t } from 'testcafe';
+import { t } from 'testcafe';
 
 import WizardStep from './WizardStep';
 

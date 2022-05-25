@@ -81,7 +81,7 @@ class LinkedEventsClient:
         else:
             return r.json()
 
-    def list_ongoing_events_authenticated(self, publisher=None):
+    def list_ongoing_events_authenticated(self, publisher=None, text=None):
         events = []
         nexturl = None
         while True:
@@ -98,6 +98,9 @@ class LinkedEventsClient:
                 }
                 if publisher:
                     params["publisher_ancestor"] = publisher
+
+                if text:
+                    params["text"] = text
 
                 r = requests.get(
                     urljoin(settings.LINKEDEVENTS_URL, "event/"),

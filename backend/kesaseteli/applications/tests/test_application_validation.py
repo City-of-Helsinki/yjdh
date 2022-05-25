@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from applications.api.v1.serializers import (
     EmployerApplicationSerializer,
     EmployerSummerVoucherSerializer,
+    YouthApplicationSerializer,
 )
 from applications.enums import AttachmentType, EmployerApplicationStatus
 from applications.models import School, validate_name, YouthApplication
@@ -30,7 +31,10 @@ def test_validate_name_with_valid_unlisted_school(name):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "value,expect_error",
+    "vtj_json_field_name", YouthApplicationSerializer.Meta.vtj_data_fields
+)
+@pytest.mark.parametrize(
+    "vtj_json_field_value,expect_error",
     [
         # Valid JSON values
         ("{}", False),
@@ -48,23 +52,25 @@ def test_validate_name_with_valid_unlisted_school(name):
         ("", False),
     ],
 )
-def test_validate_youth_application_vtj_json(
+def test_validate_youth_application_vtj_data_fields(
     active_youth_application,
-    value,
+    vtj_json_field_name,
+    vtj_json_field_value,
     expect_error,
 ):
-    active_youth_application.encrypted_vtj_json = value
+    YouthApplication._meta.get_field(vtj_json_field_name)  # Check that field exists
+    setattr(active_youth_application, vtj_json_field_name, vtj_json_field_value)
 
-    def clean_encrypted_vtj_json_field():
+    def clean_vtj_json_field():
         active_youth_application.clean_fields(
-            exclude=list(set(YouthApplication._meta.fields) - {"encrypted_vtj_json"})
+            exclude=list(set(YouthApplication._meta.fields) - {vtj_json_field_name})
         )
 
     if expect_error:
         with pytest.raises(ValidationError):
-            clean_encrypted_vtj_json_field()
+            clean_vtj_json_field()
     else:
-        clean_encrypted_vtj_json_field()
+        clean_vtj_json_field()
 
 
 @pytest.mark.django_db

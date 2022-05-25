@@ -1,4 +1,4 @@
-import { TranslationsApi } from '@frontend/shared/src/__tests__/types/translations';
+import TranslationsApi from '@frontend/shared/src/__tests__/types/translations';
 import {
   containsRegexp,
   replaceValues,

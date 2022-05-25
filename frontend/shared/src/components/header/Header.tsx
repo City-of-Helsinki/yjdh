@@ -78,84 +78,86 @@ const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <Navigation
-      theme={theme}
-      menuOpen={menuOpen}
-      onMenuToggle={toggleMenu}
-      menuToggleAriaLabel={menuToggleAriaLabel || ''}
-      skipTo={`#${MAIN_CONTENT_ID}`}
-      skipToContentLabel={skipToContentLabel}
-      logoLanguage={logoLang as LogoLanguage}
-      title={title}
-      titleUrl={titleUrl}
-      titleAriaLabel={title}
-      onTitleClick={onTitleClick}
-    >
-      {isNavigationVisible && navigationItems && (
-        <Navigation.Row variant={navigationVariant || 'default'}>
-          {navigationItems?.map((item) => (
-            <Navigation.Item
-              key={item.url}
-              active={isTabActive(item.url)}
-              href={item.url}
-              label={item.label}
-              onClick={() => handleClickLink(item.url)}
-              icon={item.icon}
-            />
-          ))}
-        </Navigation.Row>
-      )}
-
-      <Navigation.Actions>
-        {customItems?.map((item, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Navigation.Item key={`custom-nav-item-${index}`}>
-            {item}
-          </Navigation.Item>
-        ))}
-        {login && (
-          <Navigation.User
-            authenticated={login.isAuthenticated}
-            buttonAriaLabel={
-              login.userName
-                ? `${login.userAriaLabelPrefix} ${login.userName}`
-                : ''
-            }
-            label={login.loginLabel}
-            onSignIn={handleLogin}
-            userName={login.userName}
-          >
-            <Navigation.Item
-              href="#"
-              onClick={handleLogout}
-              variant="supplementary"
-              label={login.logoutLabel}
-              icon={<IconSignout aria-hidden />}
-            />
-          </Navigation.User>
-        )}
-        {languages && onLanguageChange && (
-          <Navigation.LanguageSelector
-            buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
-            label={locale?.toUpperCase()}
-            icon={<IconGlobe />}
-            closeOnItemClick
-          >
-            {languages.map((option) => (
+    <div data-testid="header">
+      <Navigation
+        theme={theme}
+        menuOpen={menuOpen}
+        onMenuToggle={toggleMenu}
+        menuToggleAriaLabel={menuToggleAriaLabel || ''}
+        skipTo={`#${MAIN_CONTENT_ID}`}
+        skipToContentLabel={skipToContentLabel}
+        logoLanguage={logoLang as LogoLanguage}
+        title={title}
+        titleUrl={titleUrl}
+        titleAriaLabel={title}
+        onTitleClick={onTitleClick}
+      >
+        {isNavigationVisible && navigationItems && (
+          <Navigation.Row variant={navigationVariant || 'default'}>
+            {navigationItems?.map((item) => (
               <Navigation.Item
-                key={option.value}
-                href="#"
-                lang={option.value}
-                label={option.label}
-                onClick={(e: React.SyntheticEvent<unknown>) =>
-                  onLanguageChange(e, option)
-                }
+                key={item.url}
+                active={isTabActive(item.url)}
+                href={item.url}
+                label={item.label}
+                onClick={() => handleClickLink(item.url)}
+                icon={item.icon}
               />
             ))}
-          </Navigation.LanguageSelector>
+          </Navigation.Row>
         )}
-      </Navigation.Actions>
-    </Navigation>
+
+        <Navigation.Actions>
+          {customItems?.map((item, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Navigation.Item key={`custom-nav-item-${index}`}>
+              {item}
+            </Navigation.Item>
+          ))}
+          {login && (
+            <Navigation.User
+              authenticated={login.isAuthenticated}
+              buttonAriaLabel={
+                login.userName
+                  ? `${login.userAriaLabelPrefix} ${login.userName}`
+                  : ''
+              }
+              label={login.loginLabel}
+              onSignIn={handleLogin}
+              userName={login.userName}
+            >
+              <Navigation.Item
+                href="#"
+                onClick={handleLogout}
+                variant="supplementary"
+                label={login.logoutLabel}
+                icon={<IconSignout aria-hidden />}
+              />
+            </Navigation.User>
+          )}
+          {languages && onLanguageChange && (
+            <Navigation.LanguageSelector
+              buttonAriaLabel={t('common:header.languageMenuButtonAriaLabel')}
+              label={locale?.toUpperCase()}
+              icon={<IconGlobe />}
+              closeOnItemClick
+            >
+              {languages.map((option) => (
+                <Navigation.Item
+                  key={option.value}
+                  href="#"
+                  lang={option.value}
+                  label={option.label}
+                  onClick={(e: React.SyntheticEvent<unknown>) =>
+                    onLanguageChange(e, option)
+                  }
+                />
+              ))}
+            </Navigation.LanguageSelector>
+          )}
+        </Navigation.Actions>
+      </Navigation>
+    </div>
   );
 };
 
