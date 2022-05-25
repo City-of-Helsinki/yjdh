@@ -58,6 +58,9 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const city = posting?.location?.city ? `, ${posting.location.city}` : '';
   const name = posting?.location?.name ?? '';
   const address = name + street_address + postal_code + city;
+  const imageUrl =
+    posting?.image_url ??
+    'https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg';
 
   const backButtonHandler = (): void => {
     // TODO we should know that the user hasn't navigated to this page via a
@@ -74,7 +77,7 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               <IconArrowLeft size="m" />
             </$BackButton>
           )}
-          <$ImageContainer imageUrl="https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg">
+          <$ImageContainer imageUrl={imageUrl}>
             <Image
               width="100%"
               height="100%"

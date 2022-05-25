@@ -38,6 +38,8 @@ const Editor: React.FC<EditorProps> = ({ initialValue }) => {
       <FormProvider {...methods}>
         <form aria-label="add/modify tet posting">
           <HiddenIdInput id="id" initialValue={initialValue?.id} />
+          <HiddenIdInput id="image_url" initialValue={initialValue?.image_url} />
+          <HiddenIdInput id="image_id" initialValue={initialValue?.image_id} />
           <EditorErrorNotification />
           <p>* {t('common:editor.requiredInfo')}</p>
           <EmployerInfo />

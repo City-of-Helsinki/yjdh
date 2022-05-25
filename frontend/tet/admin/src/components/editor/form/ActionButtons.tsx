@@ -12,10 +12,17 @@ import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import TetPosting from 'tet-shared/types/tetposting';
 import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
+import { ImageObject } from 'tet-shared/types/linkedevents';
 
 // TODO When TETP-222 is implemented, we can replace this with an API call to backend,
 // which returns a URL representing the image object.
-const uploadImage = async (image?: File) => 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/image/4232/';
+export const uploadImage = async (image?: File): Promise<ImageObject> => {
+  await new Promise((r) => setTimeout(r, 2000));
+  return {
+    url: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/media/images/testimage.png',
+    '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/image/4234/',
+  };
+};
 
 const ActionButtons: React.FC = () => {
   const { setPreviewVisibility, setTetPostingData, setFormValid } = useContext(PreviewContext);
@@ -62,17 +69,17 @@ const ActionButtons: React.FC = () => {
   const saveHandler = async (validatedPosting: TetPosting): void => {
     console.log(validatedPosting);
     // Upload image if user has selected a new image
-    const imageId = validatedPosting.image ? await uploadImage(validatedPosting.image) : undefined;
+    // const imageId = validatedPosting.image ? await uploadImage(validatedPosting.image)['@id'] : undefined;
 
     const event = tetPostingToEvent({
       posting: validatedPosting,
-      imageId,
+      // imageId,
     });
     console.log(event);
-    // upsertTetPosting.mutate({
-    //   id: validatedPosting.id,
-    //   event,
-    // });
+    upsertTetPosting.mutate({
+      id: validatedPosting.id,
+      event,
+    });
   };
 
   const publishPostingHandler = async (validatedPosting: TetPosting): Promise<void> => {

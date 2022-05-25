@@ -120,6 +120,7 @@ export const fakeTetEvent = (overrides?: Partial<TetEvent>): TetEvent =>
       publication_status: 'public',
       event_status: 'EventScheduled',
       in_language: [{ '@id': faker.internet.url() }],
+      images: [],
     },
     overrides
   );

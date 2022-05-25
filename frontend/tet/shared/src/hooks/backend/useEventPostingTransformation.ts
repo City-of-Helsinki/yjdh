@@ -53,6 +53,9 @@ const useEventPostingTransformation = (): Transformations => {
     const parsedSpots = parseInt(event.custom_data?.spots || '', 10);
     const spots = parsedSpots >= 0 ? parsedSpots : 1;
 
+    const image_url =
+      event.images && event.images.length ? event.images[0].url : undefined;
+
     return {
       id: event.id,
       title: getLocalizedString(event.name),
@@ -116,6 +119,7 @@ const useEventPostingTransformation = (): Transformations => {
           })
         : [],
       spots,
+      image_url,
     };
   };
 

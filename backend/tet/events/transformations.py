@@ -111,6 +111,7 @@ def reduce_get_event(event):
             "custom_data",
             "publication_status",
             "in_language",
+            "images",
         ),
     )
 

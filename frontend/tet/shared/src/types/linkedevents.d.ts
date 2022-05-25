@@ -48,6 +48,10 @@ export type CustomData = {
   editor_email?: string;
 };
 
+export type ImageObject = IdObject & {
+  url: string;
+};
+
 export type TetEvent = {
   id: string;
   name: LocalizedObject;
@@ -64,6 +68,7 @@ export type TetEvent = {
   event_status: string;
   publication_status: string;
   in_language: IdObject[];
+  images: ImageObject[];
 };
 
 export type TetEventPayload = {
