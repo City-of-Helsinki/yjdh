@@ -16,6 +16,19 @@ const ShowPostingPage: NextPage = () => {
   const id = router.query.id as string;
   const { isLoading, data, error } = useGetSingePosting(id);
 
+  const returnHandler = (): void => {
+    const params = router.query;
+    if (params && Object.prototype.hasOwnProperty.call(params, 'id')) {
+      delete params.id;
+    }
+    void router.push({
+      pathname: '/postings',
+      query: {
+        ...params,
+      },
+    });
+  };
+
   if (isLoading || keywordResult.isLoading) {
     return <PageLoadingSpinner />;
   }
@@ -28,7 +41,7 @@ const ShowPostingPage: NextPage = () => {
     return (
       <>
         <HeaderLinks />
-        <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} />;
+        <PostingContainer posting={eventToTetPosting(data)} showBackButton={true} onReturnClick={returnHandler} />;
       </>
     );
   } else {

@@ -25,6 +25,7 @@ import TetPosting from 'tet-shared/types/tetposting';
 type Props = {
   posting: TetPosting;
   showBackButton: boolean;
+  onReturnClick?: () => void;
 };
 
 const keywordList = (list: OptionType[], color: string): JSX.Element => (
@@ -45,7 +46,11 @@ const keywordList = (list: OptionType[], color: string): JSX.Element => (
   </>
 );
 
-const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
+const PostingHero: React.FC<Props> = ({
+  posting,
+  showBackButton = false,
+  onReturnClick,
+}) => {
   const { t } = useTranslation();
   const router = useRouter();
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
@@ -59,18 +64,12 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const name = posting?.location?.name ?? '';
   const address = name + street_address + postal_code + city;
 
-  const backButtonHandler = (): void => {
-    // TODO we should know that the user hasn't navigated to this page via a
-    // link from another site
-    void router.back();
-  };
-
   return (
     <$PostingHero>
       <Container>
         <$HeroWrapper>
           {showBackButton && (
-            <$BackButton id="backButton" onClick={backButtonHandler}>
+            <$BackButton id="backButton" onClick={onReturnClick}>
               <IconArrowLeft size="m" />
             </$BackButton>
           )}
