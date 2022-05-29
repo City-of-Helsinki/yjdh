@@ -115,7 +115,10 @@
 			},
 			"imageUpload": {
 				"label": "Upload an image of a workplace or task by dragging it below",
-				"helperText": "Width min 400px, max 2000px. Size max 4MB*.jpg*.png"
+				"helperText": "Width min 400px, max 2000px. Size max 4MB*.jpg*.png",
+				"saveImage": "Save the image for advertisement",
+				"deleteImage": "Delete or change image",
+				"uploadSuccess": "Image upload was successful and will be saved when you save the advertisement"
 			}
     },
 		"classification": {

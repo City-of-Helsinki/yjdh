@@ -115,7 +115,10 @@
 			},
 			"imageUpload": {
 				"label": "Ladda ner en bild av en arbetsplats eller uppgift genom att dra den nedan",
-				"helperText": "Bredd min 400px, max 2000px. Storlek max 4MB*.jpg*.png"
+				"helperText": "Bredd min 400px, max 2000px. Storlek max 4MB*.jpg*.png",
+				"saveImage": "SV Tallenna kuva ilmoitukselle",
+				"deleteImage": "SV Poista tai vaihda kuva",
+				"uploadSuccess": "SV Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen."
 			}
     },
 		"classification": {

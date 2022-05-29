@@ -19,7 +19,7 @@ import { ImageObject } from 'tet-shared/types/linkedevents';
 export const uploadImage = async (image?: File): Promise<ImageObject> => {
   await new Promise((r) => setTimeout(r, 2000));
   return {
-    url: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/media/images/testimage.png',
+    url: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/media/images/testimage_9gcuSik.png',
     '@id': 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/image/4234/',
   };
 };

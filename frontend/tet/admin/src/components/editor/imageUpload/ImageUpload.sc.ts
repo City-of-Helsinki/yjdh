@@ -10,3 +10,14 @@ export const $ImageContainer = styled.div<ImageProps>`
     width: 60%;
   }
 `;
+
+export const $ButtonContainer = styled.div`
+  margin-top: ${(props) => props.theme.spacing.m};
+`;
+
+export const $SpinnerWrapper = styled.div`
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  min-height: 300px;
+`;

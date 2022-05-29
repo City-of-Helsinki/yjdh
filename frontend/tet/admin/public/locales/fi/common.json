@@ -114,7 +114,10 @@
 			},
 			"imageUpload": {
 				"label": "Lataa kuva toimipisteestä tai työtehtävästä raahaamalla se alle",
-				"helperText": "Leveys min 400px, max 2000px. Koko max 4MB*.jpg*.png"
+				"helperText": "Leveys min 400px, max 2000px. Koko max 4MB*.jpg*.png",
+				"saveImage": "Tallenna kuva ilmoitukselle",
+				"deleteImage": "Poista tai vaihda kuva",
+				"uploadSuccess": "Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen."
 			}
     },
 		"classification": {
