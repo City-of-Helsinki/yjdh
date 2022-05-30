@@ -12,10 +12,10 @@ import {
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
 const fakeObjectFactory = new FakeObjectFactory();
 
