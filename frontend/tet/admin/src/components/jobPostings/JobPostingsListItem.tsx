@@ -27,6 +27,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
 
   const startDate = posting.start_date;
   const endDate = posting.end_date;
+  const imageUrl = posting?.image_url?.length ? posting.image_url : '/event_placeholder_B.jpg';
 
   return (
     <$PostingCard>
@@ -36,7 +37,7 @@ const JobPostingsListItem: React.FC<JobPostingsListItemProps> = ({ posting }) =>
           height="100%"
           layout="responsive"
           objectFit="cover"
-          src="/event_placeholder_B.jpg"
+          src={imageUrl}
           alt="event placeholder"
           priority={true}
         />

@@ -31,12 +31,9 @@ const ImageUpload = () => {
   const image_url = getValues('image_url') as string;
   const image = getValues('image');
 
-  const onChange = (files: File[]) => {
+  const onChange = async (files: File[]) => {
     setFile(files[0]);
     setValue('image', files[0]); // setting this makes it possible to upload the image when saving the form
-  };
-
-  const upload = async () => {
     setIsUploading(true);
     const uploadedImage = await uploadImage(file);
     console.log(uploadedImage);
@@ -80,7 +77,6 @@ const ImageUpload = () => {
           </>
         ) : (
           <>
-            {uploaded && <p>{t('common:editor.posting.imageUpload.uploadSuccess')}</p>}
             <$ImageContainer>{image_url && <img src={image_url} width="100%" height="100%" />}</$ImageContainer>
             {image_url && (
               <$ButtonContainer>
