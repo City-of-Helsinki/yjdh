@@ -40,28 +40,28 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
 
   it(`shows error toast when backend returns bad request`, async () => {
     expectToGetYouthApplicationError('123-abc', 400);
-    await renderPage(HandlerIndex, { query: { id: '123-abc' } });
+    renderPage(HandlerIndex, { query: { id: '123-abc' } });
     await headerApi.expectations.errorToastIsShown();
   });
 
   it(`redirects to 500 -error page when backend returns unexpected error`, async () => {
     expectToGetYouthApplicationError('123-abc', 500);
     const spyPush = jest.fn();
-    await renderPage(HandlerIndex, { push: spyPush, query: { id: '123-abc' } });
+    renderPage(HandlerIndex, { push: spyPush, query: { id: '123-abc' } });
     await waitFor(() =>
       expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
     );
   });
 
   it(`shows that application is not found when id query param is not present`, async () => {
-    await renderPage(HandlerIndex, { query: {} });
+    renderPage(HandlerIndex, { query: {} });
     const indexPageApi = await getIndexPageApi();
     await indexPageApi.expectations.applicationWasNotFound();
   });
 
   it(`shows that application is not found when backend returns 404`, async () => {
     expectToGetYouthApplicationError('123-abc', 404);
-    await renderPage(HandlerIndex, { query: { id: '123-abc' } });
+    renderPage(HandlerIndex, { query: { id: '123-abc' } });
     const indexPageApi = await getIndexPageApi();
     await indexPageApi.expectations.applicationWasNotFound();
   });
@@ -69,7 +69,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
   it(`shows youth application data`, async () => {
     const application = fakeActivatedYouthApplication();
     expectToGetYouthApplication(application);
-    await renderPage(HandlerIndex, { query: { id: application.id } });
+    renderPage(HandlerIndex, { query: { id: application.id } });
     const indexPageApi = await getIndexPageApi(application);
     await indexPageApi.expectations.pageIsLoaded();
     await indexPageApi.expectations.fieldValueIsPresent(
@@ -92,7 +92,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       is_unlisted_school: true,
     });
     expectToGetYouthApplication(application);
-    await renderPage(HandlerIndex, {
+    renderPage(HandlerIndex, {
       query: { id: application.id },
     });
     const indexPageApi = await getIndexPageApi(application);
@@ -108,7 +108,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       status: 'additional_information_provided',
     });
     expectToGetYouthApplication(application);
-    await renderPage(HandlerIndex, {
+    renderPage(HandlerIndex, {
       query: { id: application.id },
     });
     const indexPageApi = await getIndexPageApi(application);
@@ -131,7 +131,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         social_security_number,
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -173,7 +173,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -192,7 +192,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -211,7 +211,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
           social_security_number: fakeSSN(classYear),
         });
         expectToGetYouthApplication(application);
-        await renderPage(HandlerIndex, {
+        renderPage(HandlerIndex, {
           query: { id: application.id },
         });
         const indexPageApi = await getIndexPageApi(application);
@@ -243,7 +243,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -267,7 +267,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -290,7 +290,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -308,7 +308,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -327,7 +327,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -347,7 +347,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -366,7 +366,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -383,7 +383,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         },
       });
       expectToGetYouthApplication(application);
-      await renderPage(HandlerIndex, {
+      renderPage(HandlerIndex, {
         query: { id: application.id },
       });
       const indexPageApi = await getIndexPageApi(application);
@@ -396,7 +396,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         it('shows accept and reject buttons', async () => {
           const application = fakeActivatedYouthApplication({ status });
           expectToGetYouthApplication(application);
-          await renderPage(HandlerIndex, {
+          renderPage(HandlerIndex, {
             query: { id: application.id },
           });
           const indexPageApi = await getIndexPageApi(application);
@@ -411,7 +411,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
       it('shows notification message and buttons are not present', async () => {
         const application = fakeActivatedYouthApplication({ status });
         expectToGetYouthApplication(application);
-        await renderPage(HandlerIndex, {
+        renderPage(HandlerIndex, {
           query: { id: application.id },
         });
         const indexPageApi = await getIndexPageApi(application);
@@ -429,7 +429,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);
-        await renderPage(HandlerIndex, {
+        renderPage(HandlerIndex, {
           query: { id: application.id },
         });
         const indexPageApi = await getIndexPageApi(application);
@@ -446,7 +446,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);
-        await renderPage(HandlerIndex, {
+        renderPage(HandlerIndex, {
           query: { id: application.id },
         });
         const indexPageApi = await getIndexPageApi(application);
@@ -462,7 +462,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
           status: 'awaiting_manual_processing',
         });
         expectToGetYouthApplication(application);
-        await renderPage(HandlerIndex, {
+        renderPage(HandlerIndex, {
           query: { id: application.id },
         });
         const indexPageApi = await getIndexPageApi(application);
@@ -479,7 +479,7 @@ describe('frontend/kesaseteli/handler/src/pages/index.tsx', () => {
         });
         expectToGetYouthApplication(application);
         const spyPush = jest.fn();
-        await renderPage(HandlerIndex, {
+        renderPage(HandlerIndex, {
           push: spyPush,
           query: { id: application.id },
         });

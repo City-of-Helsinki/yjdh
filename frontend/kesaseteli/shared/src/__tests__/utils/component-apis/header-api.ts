@@ -52,12 +52,13 @@ const expectations = {
   },
 };
 const actions = {
-  clickLoginButton: (): Promise<void> =>
-    userEvent.click(
+  clickLoginButton: async (): Promise<void> => {
+    await userEvent.click(
       screen.getAllByRole('button', {
         name: /(kirjaudu palveluun)|(header.loginlabel)/i,
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
-    ),
+    );
+  },
   clickLogoutButton: async (user: User): Promise<void> => {
     await userEvent.click(
       screen.getByRole('button', {

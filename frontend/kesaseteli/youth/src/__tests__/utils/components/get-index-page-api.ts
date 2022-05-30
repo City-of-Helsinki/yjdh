@@ -5,7 +5,13 @@ import YouthFormData from 'kesaseteli-shared/types/youth-form-data';
 import YouthFormFields from 'kesaseteli-shared/types/youth-form-fields';
 import { convertFormDataToApplication } from 'kesaseteli-shared/utils/youth-form-data.utils';
 import nock from 'nock';
-import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
+import {
+  fireEvent,
+  screen,
+  userEvent,
+  waitFor,
+} from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 type SaveParams = {
@@ -32,7 +38,7 @@ const getIndexPageApi = (lang?: Language) => {
           name: translations.youthApplication.title,
         });
       },
-      async inputIsPresent (key: YouthFormFields): Promise<void> {
+      async inputIsPresent(key: YouthFormFields): Promise<void> {
         await screen.findByRole('textbox', {
           name: regexp(translations.youthApplication.form[key as InputKey]),
         });
@@ -54,7 +60,7 @@ const getIndexPageApi = (lang?: Language) => {
         const input = await screen.findByRole('combobox', {
           name: regexp(translations.youthApplication.form.selectedSchool),
         });
-        expect(input).toBeEnabled();
+        await waitFor(() => expect(input).toBeEnabled());
       },
       async textInputHasError(
         key: YouthFormFields,
@@ -67,17 +73,19 @@ const getIndexPageApi = (lang?: Language) => {
           const input = await screen.findByRole('textbox', {
             name: regexp(translations.youthApplication.form[key as InputKey]),
           });
-          expect(input).toBeInvalid();
-          expect(
-            input.parentElement?.parentElement?.parentElement
-          ).toHaveTextContent(translations.errors[errorType]);
+          await waitFor(() => expect(input).toBeInvalid());
+          await waitFor(() =>
+            expect(
+              input.parentElement?.parentElement?.parentElement
+            ).toHaveTextContent(translations.errors[errorType])
+          );
         }
       },
       async selectedSchoolHasError(errorType: ErrorType): Promise<void> {
         const input = await screen.findByRole('combobox', {
           name: regexp(translations.youthApplication.form.selectedSchool),
         });
-        expect(input).toBeInvalid();
+        await waitFor(() => expect(input).toBeInvalid());
         const errorElement = await screen.findByTestId(`selectedSchool-error`);
         expect(errorElement).toHaveTextContent(translations.errors[errorType]);
       },
@@ -142,14 +150,13 @@ const getIndexPageApi = (lang?: Language) => {
       },
     },
     actions: {
-      typeInput(key: YouthFormFields, value: string): Promise<void> {
-        const input = screen.getByRole('textbox', {
+      async typeInput(key: YouthFormFields, value: string): Promise<void> {
+        const input = await screen.findByRole<HTMLInputElement>('textbox', {
           name: regexp(translations.youthApplication.form[key as InputKey]),
         });
-        await userEvent.clear(input);
-        if (value?.length > 0) {
-          await userEvent.type(input, value);
-        }
+        // for some reason userEvent.type(input,value) does not work
+        fireEvent.change(input, { target: { value } });
+        expect(input).toHaveValue(value);
         if (key === 'social_security_number') {
           youthFormData.social_security_number = value?.toUpperCase();
         } else {
@@ -170,7 +177,6 @@ const getIndexPageApi = (lang?: Language) => {
           },
           { timeout: 10_000 }
         );
-        await userEvent.clear(input);
         await userEvent.type(input, value);
         const option = expectedOption ?? value;
         const schoolOption = await screen.findByText(new RegExp(option, 'i'));
@@ -178,12 +184,12 @@ const getIndexPageApi = (lang?: Language) => {
         expect(input).toHaveValue(option);
         youthFormData.selectedSchool = { name: option ?? value };
       },
-      toggleCheckbox(
+      async toggleCheckbox(
         key: Extract<
           YouthFormFields,
           'termsAndConditions' | 'is_unlisted_school'
         >
-      ): void {
+      ): Promise<void> {
         const checkbox = screen.getByRole('checkbox', {
           name: regexp(translations.youthApplication.form[key as InputKey]),
         });
@@ -208,12 +214,12 @@ const getIndexPageApi = (lang?: Language) => {
           name: regexp(translations.youthApplication.form.sendButton),
         });
         await userEvent.click(button);
-
         if (backendExpectation) {
           await waitFor(() => {
             response.done();
           });
         }
+        await waitForLoadingCompleted();
       },
       async clickForceSubmitLink({
         language,
@@ -239,6 +245,7 @@ const getIndexPageApi = (lang?: Language) => {
             response.done();
           });
         }
+        await waitForLoadingCompleted();
       },
       /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
       async fillTheFormWithListedSchoolAndSave(

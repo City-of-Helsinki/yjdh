@@ -35,10 +35,7 @@ const renderPage =
     AuthProvider,
     confirmDialog,
   }: Props) =>
-  async (
-    Page: NextPage,
-    router: Partial<NextRouter> = {}
-  ): Promise<QueryClient> => {
+  (Page: NextPage, router: Partial<NextRouter> = {}): QueryClient => {
     const axios = createAxiosTestContext(backendUrl);
     const queryClient = createReactQueryTestClient(axios, backendUrl);
     const children = (

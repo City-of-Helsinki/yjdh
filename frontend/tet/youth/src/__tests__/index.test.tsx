@@ -45,7 +45,7 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
   describe('when user searches', () => {
     it('should include text and start in query', async () => {
       const spyPush = jest.fn();
-      await renderPage(IndexPage, { push: spyPush });
+      renderPage(IndexPage, { push: spyPush });
 
       const text = faker.lorem.paragraph();
       const start = isoDateToHdsFormat(faker.date.soon().toISOString());
@@ -73,7 +73,7 @@ describe('frontend/tet/youth/src/pages/index.tsx', () => {
 
     it('should work with empty search', async () => {
       const spyPush = jest.fn();
-      await renderPage(IndexPage, { push: spyPush });
+      renderPage(IndexPage, { push: spyPush });
 
       await userEvent.click(
         screen.getByRole('button', {

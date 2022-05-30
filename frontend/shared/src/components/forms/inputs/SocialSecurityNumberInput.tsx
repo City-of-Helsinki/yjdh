@@ -77,7 +77,7 @@ const SocialSecurityNumberInput = <T,>({
         errorText={errorText}
         label={label}
         invalid={Boolean(errorText)}
-        onChange={handleChange}
+        {...(process.env.NODE_ENV !== 'test' && { onChange: handleChange })}
         aria-invalid={Boolean(errorText)}
       />
     </$GridCell>

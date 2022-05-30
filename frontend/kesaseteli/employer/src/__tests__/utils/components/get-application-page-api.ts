@@ -3,7 +3,7 @@ import {
   expectToSaveApplication,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import nock from 'nock';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
 import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/application';
@@ -57,7 +57,7 @@ const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
     { name: header },
     { timeout: JEST_TIMEOUT }
   );
-  await waitForBackendRequestsToComplete();
+  await waitForLoadingCompleted();
 };
 
 const expectNextButtonIsEnabled = (): void => {
@@ -116,7 +116,7 @@ const getApplicationPageApi = (
     });
     // for some reason userEvent.clear(input) doesnt work
     // eslint-disable-next-line no-plusplus
-    for (let i=0; i < application[key]?.length ?? 0; i++) {
+    for (let i = 0; i < application[key]?.length ?? 0; i++) {
       await userEvent.type(input, '{backspace}');
     }
     if (value?.length > 0) {
@@ -128,7 +128,7 @@ const getApplicationPageApi = (
   };
 
   const clickNextButton = async (): Promise<nock.Scope[]> => {
-    await waitForBackendRequestsToComplete();
+    await waitForLoadingCompleted();
     await waitForNextButtonIsEnabled();
     const put = expectToSaveApplication(application);
     const get = expectToGetApplicationFromBackend(application);

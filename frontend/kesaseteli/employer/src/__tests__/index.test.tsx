@@ -15,6 +15,7 @@ import React from 'react';
 import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
 
 const fakeObjectFactory = new FakeObjectFactory();
 
@@ -30,7 +31,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   it('Should redirect when unauthorized', async () => {
     expectUnauthorizedReply();
     const spyPush = jest.fn();
-    await renderPage(IndexPage, { push: spyPush });
+    renderPage(IndexPage, { push: spyPush });
     await waitFor(() =>
       expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/login`)
     );
@@ -42,7 +43,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectAuthorizedReply();
         expectToGetApplicationsErrorFromBackend();
         const spyPush = jest.fn();
-        await renderPage(IndexPage, { push: spyPush });
+        renderPage(IndexPage, { push: spyPush });
         await waitFor(() =>
           expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
         );
@@ -52,7 +53,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationErrorFromBackend();
         const spyPush = jest.fn();
-        await renderPage(IndexPage, { push: spyPush });
+        renderPage(IndexPage, { push: spyPush });
         await waitFor(() =>
           expect(spyPush).toHaveBeenCalledWith(`${DEFAULT_LANGUAGE}/500`)
         );
@@ -66,7 +67,8 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationToBackend(newApplication);
         const spyPush = jest.fn();
-        const queryClient = await renderPage(IndexPage, { push: spyPush });
+        const queryClient = renderPage(IndexPage, { push: spyPush });
+        await waitForBackendRequestsToComplete();
         await waitFor(() => {
           expect(
             queryClient.getQueryData(
@@ -88,10 +90,11 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationToBackend(newApplication);
         const spyPush = jest.fn();
-        const queryClient = await renderPage(IndexPage, {
+        const queryClient = renderPage(IndexPage, {
           push: spyPush,
           defaultLocale: locale,
         });
+        await waitForBackendRequestsToComplete();
         await waitFor(() => {
           expect(
             queryClient.getQueryData(
@@ -117,10 +120,11 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
         expectToGetApplicationsFromBackend(applications);
         const locale: Language = 'en';
         const spyPush = jest.fn();
-        await renderPage(IndexPage, {
+        renderPage(IndexPage, {
           push: spyPush,
           defaultLocale: locale,
         });
+        await waitForBackendRequestsToComplete();
         await waitFor(() =>
           expect(spyPush).toHaveBeenCalledWith(`sv/application?id=${id}`)
         );

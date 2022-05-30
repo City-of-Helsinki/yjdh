@@ -9,8 +9,11 @@ import AdditionalInfoApplication from 'kesaseteli-shared/types/additional-info-a
 import AdditionalInfoFormData from 'kesaseteli-shared/types/additional-info-form-data';
 import AdditionalInfoReasonType from 'kesaseteli-shared/types/additional-info-reason-type';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
-import { fireEvent,screen, userEvent } from 'shared/__tests__/utils/test-utils';
+import {
+  waitForBackendRequestsToComplete,
+  waitForLoadingCompleted,
+} from 'shared/__tests__/utils/component.utils';
+import { screen, userEvent } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
 
 type NotificationType =
@@ -33,11 +36,13 @@ const getAdditionalInfoPageApi = (
   return {
     expectations: {
       async formIsPresent() {
+        await waitForLoadingCompleted();
         await screen.findByRole('heading', {
           name: translations.additionalInfo.title,
         });
       },
       async notificationIsPresent(type: NotificationType) {
+        await waitForBackendRequestsToComplete();
         await screen.findByRole('heading', {
           name: translations.additionalInfo.notification[type],
         });
@@ -73,6 +78,7 @@ const getAdditionalInfoPageApi = (
           );
           option.click();
         }
+        await userEvent.click(dropdownToggle);
         application.additional_info_user_reasons = reasons;
       },
       async inputDescription(description: string) {
@@ -112,7 +118,7 @@ const getAdditionalInfoPageApi = (
             name: translations.additionalInfo.form.sendButton,
           })
         );
-        await waitForBackendRequestsToComplete();
+        await waitForLoadingCompleted();
       },
     },
   };

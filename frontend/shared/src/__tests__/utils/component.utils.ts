@@ -1,22 +1,28 @@
 import nock from 'nock';
-import { screen, waitFor } from 'shared/__tests__/utils/test-utils';
+import {
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from 'shared/__tests__/utils/test-utils';
 
-export const expectBackendRequestsToComplete = (): void => {
-  expect(
-    screen.queryByTestId('hidden-loading-indicator')
-  ).not.toBeInTheDocument();
+export const waitForLoadingCompleted = async (): Promise<void> => {
+  const isLoading =
+    screen.queryAllByTestId('hidden-loading-indicator').length > 0;
+  if (isLoading) {
+    await waitForElementToBeRemoved(() =>
+      screen.queryByTestId('hidden-loading-indicator')
+    );
+  }
 };
-
 /**
  * This should wait until all backend requests to complete
  */
 export const waitForBackendRequestsToComplete = async (): Promise<void> => {
-  const isLoading =
-    screen.queryAllByTestId('hidden-loading-indicator').length > 0;
-  if (isLoading) {
-    await waitFor(expectBackendRequestsToComplete);
-  }
+  await waitForLoadingCompleted();
   if (nock.pendingMocks()) {
+    if (nock.pendingMocks().length>0) {
+      console.log('pending nocks', nock.pendingMocks());
+    }
     // eslint-disable-next-line testing-library/prefer-find-by
     await waitFor(() => {
       expect(nock.isDone()).toBeTruthy();

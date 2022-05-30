@@ -7,7 +7,7 @@ import getHandlerTranslationsApi from 'kesaseteli/handler/__tests__/utils/i18n/g
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import VtjExceptionType from 'kesaseteli/handler/types/vtj-exception-type';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
-import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
+import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
 import {
   BoundFunctions,
   queries,
@@ -34,7 +34,7 @@ const getIndexPageApi = async (
       await screen.findByRole('heading', {
         name: translations.handlerApplication.title,
       });
-      await waitForBackendRequestsToComplete();
+      await waitForLoadingCompleted();
     },
     applicationWasNotFound: async () => {
       await screen.findByRole('heading', {
@@ -157,7 +157,8 @@ const getIndexPageApi = async (
     },
   };
   const actions = {
-    clickCompleteButton: (type: CompleteOperation['type']) => userEvent.click(screen.getByTestId(`${type}-button`)),
+    clickCompleteButton: (type: CompleteOperation['type']) =>
+      userEvent.click(screen.getByTestId(`${type}-button`)),
     clickConfirmButton: async (
       type: CompleteOperation['type'],
       errorCode?: 400 | 500
@@ -186,7 +187,7 @@ const getIndexPageApi = async (
           name: translations.dialog[type].submit,
         })
       );
-      await waitForBackendRequestsToComplete();
+      await waitForLoadingCompleted();
     },
     clickCancelButton: async (): Promise<void> => {
       const dialog = await screen.findByRole('dialog');

@@ -15,22 +15,29 @@ const useLoadDraftOrCreateNewApplicationEffect = (
   const goToApplicationPage = React.useCallback(
     (application: Application) => {
       const locale = application.language ?? language;
+      console.log('go to apllicaion page', locale, application.id);
       void router.push(`${locale}/application?id=${application.id}`);
     },
     [router, language]
   );
 
   React.useEffect(() => {
+    console.log('use effect');
     if (draftApplicationQuery.isSuccess) {
+      console.log('draftApplicationQuery.isSuccess');
       const draftApplication = draftApplicationQuery.data;
       if (draftApplication) {
+        console.log('draftApplication');
         goToApplicationPage(draftApplication);
       } else if (createApplicationQuery.isSuccess) {
+        console.log('createApplicationQuery.isSuccess', createApplicationQuery);
         const newApplication = createApplicationQuery.data;
         if (newApplication) {
+          console.log('newApplication');
           goToApplicationPage(newApplication);
         }
       } else if (createApplicationQuery.isIdle) {
+        console.log('createApplicationQuery.isIdle');
         createApplicationQuery.mutate(undefined, { onError });
       }
     }
