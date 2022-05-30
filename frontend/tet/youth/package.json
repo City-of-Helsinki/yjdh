@@ -24,7 +24,7 @@
     "leaflet": "^1.7.1",
     "leaflet.markercluster": "^1.5.3",
     "dotenv": "^16.0.0",
-    "hds-react": "^1.14.0",
+    "hds-react": "^1.15.0",
     "next": "^11.1.4",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^10.5.0",
