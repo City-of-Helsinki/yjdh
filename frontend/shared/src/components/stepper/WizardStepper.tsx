@@ -3,7 +3,7 @@ import * as React from 'react';
 import WizardStep from 'shared/components/stepper/WizardStep';
 import useWizard from 'shared/hooks/useWizard';
 
-import { $Divider, $StepsContainer } from './Stepper.sc';
+import { $Divider, $StepsContainer } from './WizardStepper.sc';
 
 const WizardStepper: React.FC = () => {
   const { steps, activeStep } = useWizard();

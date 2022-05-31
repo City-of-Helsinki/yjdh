@@ -1,5 +1,5 @@
 import type { SuomiFiData } from '@frontend/shared/browser-tests/actions/login-action';
-import { fakeApplication } from '@frontend/shared/src/__tests__/utils/fake-objects';
+import FakeObjectFactory from '@frontend/shared/src/__tests__/utils/FakeObjectFactory';
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import type Application from '@frontend/shared/src/types/application';
 import Employment from '@frontend/shared/src/types/employment';
@@ -15,6 +15,8 @@ import { doEmployerLogin } from './employer-header.actions';
 
 type UserAndApplicationData = Application & SuomiFiData;
 
+const fakeObjectFactory = new FakeObjectFactory();
+
 export const fillStep1Form = async (
   t: TestController,
   application: Application
@@ -24,22 +26,14 @@ export const fillStep1Form = async (
     contact_person_name,
     contact_person_email,
     street_address,
+    bank_account_number,
     contact_person_phone_number,
-    is_separate_invoicer,
-    invoicer_name,
-    invoicer_email,
-    invoicer_phone_number,
   } = application;
   await step1Form.actions.fillContactPersonName(contact_person_name);
   await step1Form.actions.fillContactPersonEmail(contact_person_email);
   await step1Form.actions.fillContactPersonPhone(contact_person_phone_number);
   await step1Form.actions.fillStreetAddress(street_address);
-  if (is_separate_invoicer) {
-    await step1Form.actions.selectSeparateInvoicerCheckbox();
-    await step1Form.actions.fillInvoicerName(invoicer_name);
-    await step1Form.actions.fillInvoicerEmail(invoicer_email);
-    await step1Form.actions.fillInvoicerPhone(invoicer_phone_number);
-  }
+  await step1Form.actions.fillBankAccountNumber(bank_account_number);
 };
 
 export const removeStep2ExistingForms = async (
@@ -116,10 +110,10 @@ export const loginAndfillApplication = async (
   const wizard = await getWizardComponents(t);
   const applicationId =
     await urlUtils.expectations.urlChangedToApplicationPage();
-  const application = fakeApplication(
-    applicationId,
+  const application = fakeObjectFactory.fakeApplication(
     suomiFiData?.company,
-    true
+    'fi',
+    applicationId
   );
   // if there is existing draft application on step 2 or 3, then move to step 1.
   await wizard.actions.clickGoToStep1Button();

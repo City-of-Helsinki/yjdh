@@ -1,6 +1,5 @@
-import { IconArrowLeft, IconLocation, Tag } from 'hds-react';
+import { IconArrowLeft, IconLocation } from 'hds-react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import Container from 'tet-shared/components/container/Container';
@@ -13,13 +12,11 @@ import {
   $HeroContentWrapper,
   $HeroWrapper,
   $ImageContainer,
-  $Keywords,
   $PostingHero,
   $Spots,
   $Subtitle,
   $Title,
 } from 'tet-shared/components/posting/postingHero/PostingHero.sc';
-import { OptionType } from 'tet-shared/types/classification';
 import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
@@ -28,31 +25,12 @@ type Props = {
   onReturnClick?: () => void;
 };
 
-const keywordList = (list: OptionType[], color: string): JSX.Element => (
-  <>
-    {list.map((keyword: OptionType) => (
-      <li>
-        <Tag
-          theme={{
-            '--tag-background': `var(--color-${color})`,
-            '--tag-color': 'var(--color-black-90)',
-            '--tag-focus-outline-color': 'var(--color-black-90)',
-          }}
-        >
-          {keyword.name}
-        </Tag>
-      </li>
-    ))}
-  </>
-);
-
 const PostingHero: React.FC<Props> = ({
   posting,
   showBackButton = false,
   onReturnClick,
 }) => {
   const { t } = useTranslation();
-  const router = useRouter();
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
   const street_address = posting?.location?.street_address
     ? `, ${posting.location.street_address}`
@@ -85,14 +63,6 @@ const PostingHero: React.FC<Props> = ({
             />
           </$ImageContainer>
           <$HeroContentWrapper>
-            <$Keywords>
-              {keywordList(posting.keywords_working_methods, 'success-light')}
-              {keywordList(
-                posting.keywords_attributes,
-                'coat-of-arms-medium-light'
-              )}
-              {keywordList(posting.keywords, 'engel-medium-light')}
-            </$Keywords>
             <$Title>{posting.org_name}</$Title>
             <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
             <$Date>{date}</$Date>
