@@ -16,6 +16,7 @@ type Step = {
  * Loosely based on https://github.com/devrnt/react-use-wizard
  */
 const Wizard: React.FC<WizardProps> = React.memo(
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   ({ initialStep = 0, header, children, footer }) => {
     const [step, setStep] = React.useState<Step>({
       active: initialStep,
