@@ -1,4 +1,6 @@
+import { LoadingSpinner } from 'hds-react';
 import React from 'react';
+import { $HiddenLoadingIndicator } from 'shared/components/hidden-loading-indicator/HiddenLoadingIndicator.sc';
 import WizardContext, {
   Handler,
   WizardProps,
@@ -117,7 +119,13 @@ const Wizard: React.FC<WizardProps> = React.memo(
     return (
       <WizardContext.Provider value={wizardValue}>
         {header}
-        {activeStepContent}
+        {isLoading ? (
+          <$HiddenLoadingIndicator>
+            <LoadingSpinner data-testid="hidden-loading-indicator" />
+          </$HiddenLoadingIndicator>
+        ) : (
+          activeStepContent
+        )}
         {footer}
       </WizardContext.Provider>
     );

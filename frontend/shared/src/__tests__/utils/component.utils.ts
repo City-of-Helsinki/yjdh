@@ -19,13 +19,12 @@ export const waitForLoadingCompleted = async (): Promise<void> => {
  */
 export const waitForBackendRequestsToComplete = async (): Promise<void> => {
   await waitForLoadingCompleted();
-  if (nock.pendingMocks()) {
-    if (nock.pendingMocks().length>0) {
-      console.log('pending nocks', nock.pendingMocks());
-    }
+  if (nock.pendingMocks().length > 0) {
+    console.log('pending nocks', nock.pendingMocks());
     // eslint-disable-next-line testing-library/prefer-find-by
     await waitFor(() => {
       expect(nock.isDone()).toBeTruthy();
     });
+    console.log('no more pending nocks');
   }
 };

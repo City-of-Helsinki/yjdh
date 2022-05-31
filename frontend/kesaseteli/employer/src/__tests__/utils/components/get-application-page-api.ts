@@ -3,9 +3,17 @@ import {
   expectToSaveApplication,
 } from 'kesaseteli-shared/__tests__/utils/backend/backend-nocks';
 import nock from 'nock';
-import { waitForLoadingCompleted } from 'shared/__tests__/utils/component.utils';
+import {
+  waitForBackendRequestsToComplete,
+  waitForLoadingCompleted,
+} from 'shared/__tests__/utils/component.utils';
 import JEST_TIMEOUT from 'shared/__tests__/utils/jest-timeout';
-import { screen, userEvent, waitFor } from 'shared/__tests__/utils/test-utils';
+import {
+  fireEvent,
+  screen,
+  userEvent,
+  waitFor,
+} from 'shared/__tests__/utils/test-utils';
 import Application from 'shared/types/application';
 import ContactPerson from 'shared/types/contact-info';
 
@@ -57,7 +65,7 @@ const waitForHeaderTobeVisible = async (header: RegExp): Promise<void> => {
     { name: header },
     { timeout: JEST_TIMEOUT }
   );
-  await waitForLoadingCompleted();
+  await waitForBackendRequestsToComplete();
 };
 
 const expectNextButtonIsEnabled = (): void => {
@@ -120,7 +128,8 @@ const getApplicationPageApi = (
       await userEvent.type(input, '{backspace}');
     }
     if (value?.length > 0) {
-      await userEvent.type(input, value);
+      // for some reason userEvent.type(input,value) does not work
+      fireEvent.change(input, { target: { value } });
     }
     expect(input).toHaveValue(value ?? '');
     application[key] = value ?? '';

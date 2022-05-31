@@ -31,7 +31,7 @@ describe('frontend/kesaseteli/employer/src/pages/application.tsx', () => {
     const application = fakeObjectFactory.fakeApplication();
     const { id } = application;
 
-    it('Should redirect when unauthorized', async () => {
+    it('Should redirect to login when unauthorized', async () => {
       expectUnauthorizedReply();
       const spyPush = jest.fn();
       renderPage(ApplicationPage, { push: spyPush });

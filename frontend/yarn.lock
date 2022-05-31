@@ -7542,7 +7542,7 @@ hds-core@1.15.0:
   resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-1.15.0.tgz#9ffd51e5b75c6ef16dc9afa1366ac474c9d95a18"
   integrity sha512-+eroRfvXK5hVMLcOshJcLkag11YnlCQlz4VxiTpiCkIcfoP70V10e3NI5c/NsChz/8VNcfqfeIjgZf2q2UxFWw==
 
-hds-react@^1.15.0:
+hds-react@^1.10.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-1.15.0.tgz#68d1e184052908c97f047ee8d26d452c0af7294f"
   integrity sha512-Plod/29C4J/quVyCiN7oIZpxPL+jUwwMfOL5eOLQRlo2hbWzSzid0/0b/TYWUmiYP9moV072OcZ9t5FymDAjRw==
