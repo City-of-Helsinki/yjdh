@@ -1,12 +1,14 @@
-import { Link, Button } from 'hds-react';
+import { Button } from 'hds-react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { LatLngExpression } from 'leaflet';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { useTheme } from 'styled-components';
 import {
   $Address,
   $Date,
@@ -15,8 +17,6 @@ import {
   $Title,
 } from 'tet-shared/components/map/Map.sc';
 import TetPosting from 'tet-shared/types/tetposting';
-import { useRouter } from 'next/router';
-import { useTheme } from 'styled-components';
 
 import { Icon } from './MapIcon';
 
@@ -61,7 +61,7 @@ const Map: React.FC<Props> = ({
           postings[0].location.position.coordinates[0],
         ]
       : center;
-  const readMoreHandler = (id: string) => {
+  const readMoreHandler = (id: string): void => {
     void router.push({
       pathname: '/postings/show',
       query: { id },
