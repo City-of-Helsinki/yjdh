@@ -1,5 +1,5 @@
 import React, { Fragment, useMemo, memo } from 'react';
-import { LoadingSpinner, IconMap, IconLayers } from 'hds-react';
+import { IconMap, IconLayers } from 'hds-react';
 import JobPostingCard from 'tet/youth/components/jobPostingCard/JobPostingCard';
 import { useTranslation } from 'next-i18next';
 import Container from 'shared/components/container/Container';
@@ -9,16 +9,16 @@ import { TetEvent, LinkedEventsPagedResponse } from 'tet-shared/types/linkedeven
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
 import TetPosting from 'tet-shared/types/tetposting';
 import dynamic from 'next/dynamic';
-import { useQuery, UseQueryResult } from 'react-query';
+import { UseQueryResult } from 'react-query';
 import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 
 const Map = dynamic(() => import('tet-shared/components/map/Map'), { ssr: false });
 
 type Props = {
   firstPostingsPage: LinkedEventsPagedResponse<TetEvent>;
-  hasNextPage?: Boolean;
+  hasNextPage?: boolean;
   allPostings: UseQueryResult<LinkedEventsPagedResponse<TetEvent>>;
-  initMap: Boolean;
+  initMap: boolean;
 };
 
 const JobPostingList: React.FC<Props> = ({ firstPostingsPage, hasNextPage, allPostings, initMap }) => {
@@ -29,6 +29,10 @@ const JobPostingList: React.FC<Props> = ({ firstPostingsPage, hasNextPage, allPo
   const [showMap, setShowMap] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
 
+  React.useEffect(() => {
+    setShowMap(initMap);
+  }, [initMap]);
+
   const firstPagePostingsList = useMemo(() => {
     return eventsToPostings(firstPostingsPage.data);
   }, [firstPostingsPage]);
@@ -38,7 +42,6 @@ const JobPostingList: React.FC<Props> = ({ firstPostingsPage, hasNextPage, allPo
   const lastShown = currentPage * 10 <= total - 1 ? currentPage * 10 : total;
 
   const usedList = allPostings.isSuccess ? allPostingsList : firstPagePostingsList;
-  console.log(lastShown, total, 'vertaus');
 
   const shownPostings = (): TetPosting[] => {
     return usedList.slice(0, lastShown);
@@ -53,7 +56,6 @@ const JobPostingList: React.FC<Props> = ({ firstPostingsPage, hasNextPage, allPo
   ) : (
     <Map height={'1000px'} postings={allPostingsList} showLink={true} />
   );
-  console.log(usedList);
   return (
     <Container>
       <$MapButtonWrapper>
@@ -68,7 +70,7 @@ const JobPostingList: React.FC<Props> = ({ firstPostingsPage, hasNextPage, allPo
         )}
       </$MapButtonWrapper>
       <h2>{t('common:postings.searchResults', { count: total })}</h2>
-      {showMap || initMap ? (
+      {showMap ? (
         MapContainer
       ) : (
         <Fragment>
