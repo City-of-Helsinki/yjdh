@@ -13,7 +13,6 @@ import Footer from 'tet/admin/components/footer/Footer';
 import Header from 'tet/admin/components/header/Header';
 import createQueryClient from 'tet/admin/query-client/create-query-client';
 import PreviewContextProvider from 'tet/admin/store/PreviewContext';
-import '../styles.css';
 
 const queryClient = createQueryClient();
 
