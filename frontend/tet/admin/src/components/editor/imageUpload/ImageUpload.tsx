@@ -11,7 +11,8 @@ import {
   $ButtonContainer,
   $SpinnerWrapper,
 } from 'tet/admin/components/editor/imageUpload/ImageUpload.sc';
-import { uploadImage } from 'tet/admin/components/editor/form/ActionButtons';
+import { uploadImage } from 'tet/admin/backend-api/backend-api';
+import useLinkedEventsErrorHandler from 'tet/admin/hooks/backend/useLinkedEventsErrorHandler';
 
 const ImageUpload = () => {
   const { t } = useTranslation();
@@ -25,6 +26,10 @@ const ImageUpload = () => {
   const [file, setFile] = React.useState<File>(); // TODO needed?
   const [uploaded, setUploaded] = React.useState<boolean>(false);
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
+  const handleUploadError = useLinkedEventsErrorHandler({
+    errorTitle: t('common:api.saveErrorTitle'),
+    errorMessage: t('common:api.saveErrorTitle'),
+  });
 
   watch('image_url', 'image');
 
@@ -35,15 +40,18 @@ const ImageUpload = () => {
     setFile(files[0]);
     setValue('image', files[0]); // setting this makes it possible to upload the image when saving the form
     setIsUploading(true);
-    const uploadedImage = await uploadImage(file);
-    console.log(uploadedImage);
-    setValue('image_url', uploadedImage.url, { shouldDirty: true });
-    setValue('image_id', uploadedImage['@id']);
-    setIsUploading(false);
-    setUploaded(true);
+    try {
+      const uploadedImage = await uploadImage(file);
+      console.log(uploadedImage);
+      setValue('image_url', uploadedImage.url, { shouldDirty: true });
+      setValue('image_id', uploadedImage['@id']);
+      setIsUploading(false);
+      setUploaded(true);
+    } catch (err) {
+      handleUploadError(err);
+      setIsUploading(false);
+    }
   };
-
-  console.log(image_url);
 
   const deleteImage = () => {
     setUploaded(false);
@@ -71,9 +79,6 @@ const ImageUpload = () => {
               accept=".png,.jpg"
               onChange={onChange}
             />
-            <$ButtonContainer>
-              {image && <Button onClick={upload}>{t('common:editor.posting.imageUpload.saveImage')}</Button>}
-            </$ButtonContainer>
           </>
         ) : (
           <>
