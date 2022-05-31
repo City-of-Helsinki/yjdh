@@ -1,4 +1,3 @@
-import { getRandomSubArray } from '@frontend/shared/src/__tests__/utils/fake-objects';
 import { DEFAULT_LANGUAGE } from '@frontend/shared/src/i18n/i18n';
 import DeepPartial from '@frontend/shared/src/types/common/deep-partial';
 import {
@@ -25,6 +24,19 @@ import VtjAddress from '../../types/vtj-address';
 import VtjData from '../../types/vtj-data';
 import YouthApplication from '../../types/youth-application';
 import YouthApplicationValidationError from '../../types/youth-application-validation-error';
+
+// https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
+const getRandomSubArray = <T>(
+  array: readonly T[],
+  minLength?: number,
+  maxLength?: number
+): T[] => {
+  const size = faker.datatype.number({
+    min: minLength ?? 1,
+    max: maxLength ?? array.length,
+  });
+  return [...array].sort(() => 0.5 - Math.random()).slice(0, size);
+};
 
 export const fakeSchools: string[] = [
   'Aleksis Kiven peruskoulu',

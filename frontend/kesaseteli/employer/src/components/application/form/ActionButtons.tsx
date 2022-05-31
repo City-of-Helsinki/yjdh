@@ -18,6 +18,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
   const { t } = useTranslation();
   const {
     handleSubmit,
+    setError,
     formState: { isSubmitting },
   } = useFormContext<Application>();
   const {
@@ -29,7 +30,7 @@ const ActionButtons: React.FC<Props> = ({ onAfterLastStep = noop }) => {
     isLoading: isWizardLoading,
   } = useWizard();
   const { updateApplication, sendApplication, updateApplicationQuery } =
-    useApplicationApi();
+    useApplicationApi({ setBackendValidationError: setError });
 
   const handleSuccess = React.useCallback(
     (validatedApplication: Application) => {
