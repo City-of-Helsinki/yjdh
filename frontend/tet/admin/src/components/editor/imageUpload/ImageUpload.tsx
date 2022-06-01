@@ -43,7 +43,7 @@ const ImageUpload = () => {
     setValue('image', files[0]); // setting this makes it possible to upload the image when saving the form
     setIsUploading(true);
     try {
-      const uploadedImage = await uploadImage(file, 'Testi Kuvaaja');
+      const uploadedImage = await uploadImage(files[0], 'Testi Kuvaaja');
       console.log(uploadedImage);
       setValue('image_url', uploadedImage.url, { shouldDirty: true });
       setValue('image_id', uploadedImage['@id']);

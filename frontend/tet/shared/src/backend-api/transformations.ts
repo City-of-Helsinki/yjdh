@@ -55,7 +55,6 @@ type PostingToEventArguments = {
 export const tetPostingToEvent = ({
   posting,
   publish = false,
-  imageId,
 }: PostingToEventArguments): TetEventPayload => ({
   name: setLocalizedString(posting.title),
   location: { '@id': posting.location.value },
@@ -82,5 +81,5 @@ export const tetPostingToEvent = ({
   date_published: publish
     ? new Date().toISOString()
     : posting.date_published || null,
-  images: imageId ? [{ '@id': imageId }] : [],
+  images: posting.image_id ? [{ '@id': posting.image_id }] : [],
 });
