@@ -39,3 +39,15 @@ export const $Hr = styled.hr`
   margin-bottom: ${(props) => props.theme.spacing.xl};
   width: 100%;
 `;
+
+export const $Keywords = styled.ul`
+  display: inline-flex;
+  flex-flow: row wrap;
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0;
+  li {
+    margin-right: ${(props) => props.theme.spacing.xs};
+    margin-top: ${(props) => props.theme.spacing.xs};
+  }
+`;
