@@ -1,9 +1,7 @@
 import AppContext from 'benefit/handler/context/AppContext';
 import useApplicationQuery from 'benefit/handler/hooks/useApplicationQuery';
-import {
-  Application,
-  HandledAplication,
-} from 'benefit/handler/types/application';
+import { HandledAplication } from 'benefit/handler/types/application';
+import { Application } from 'benefit-shared/types/application';
 import camelcaseKeys from 'camelcase-keys';
 import { useRouter } from 'next/router';
 import { TFunction, useTranslation } from 'next-i18next';

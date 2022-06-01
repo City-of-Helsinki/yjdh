@@ -1,4 +1,4 @@
-import { ApplicationListItemData } from 'benefit/handler/types/application';
+import { ApplicationListItemData } from 'benefit-shared/types/application';
 import * as React from 'react';
 import LoadingSkeleton from 'react-loading-skeleton';
 import Container from 'shared/components/container/Container';

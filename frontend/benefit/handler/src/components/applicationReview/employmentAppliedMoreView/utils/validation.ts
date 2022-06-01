@@ -1,6 +1,8 @@
-import { CALCULATION_EMPLOYMENT_KEYS } from 'benefit/handler/constants';
-import { CalculationCommon } from 'benefit/handler/types/application';
-import { VALIDATION_MESSAGE_KEYS } from 'benefit-shared/constants';
+import {
+  CALCULATION_EMPLOYMENT_KEYS,
+  VALIDATION_MESSAGE_KEYS,
+} from 'benefit-shared/constants';
+import { CalculationCommon } from 'benefit-shared/types/application';
 import * as Yup from 'yup';
 
 export const getValidationSchema = (): Yup.SchemaOf<CalculationCommon> =>

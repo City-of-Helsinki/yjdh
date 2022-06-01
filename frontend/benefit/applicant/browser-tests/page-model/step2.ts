@@ -200,9 +200,9 @@ class Step2 extends WizardStep {
       this.collectiveBargainingAgreement,
       collectiveBargainingAgreement
     );
-    await this.fillInput(this.monthlyPay, monthlyPay);
+    await this.fillInput(this.monthlyPay, String(monthlyPay));
     await this.fillInput(this.otherExpenses, otherExpenses);
-    await this.fillInput(this.vacationMoney, vacationMoney);
+    await this.fillInput(this.vacationMoney, String(vacationMoney));
   }
 }
 
