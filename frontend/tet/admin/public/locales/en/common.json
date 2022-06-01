@@ -118,7 +118,10 @@
 				"helperText": "Width min 400px, max 2000px. Size max 4MB*.jpg*.png",
 				"saveImage": "Save the image for advertisement",
 				"deleteImage": "Delete or change image",
-				"uploadSuccess": "Image upload was successful and will be saved when you save the advertisement"
+				"uploadSuccess": "Image upload was successful and will be saved when you save the advertisement",
+				"deleteConfirmTitle": "EN Haluatko varmasti poistaa kuvan?",
+				"deleteConfirmContent": "EN Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
+				"deleteButton": "EN Poista kuva"
 			}
     },
 		"classification": {

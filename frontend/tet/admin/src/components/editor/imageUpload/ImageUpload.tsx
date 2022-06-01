@@ -13,10 +13,12 @@ import {
 } from 'tet/admin/components/editor/imageUpload/ImageUpload.sc';
 import { uploadImage } from 'tet/admin/backend-api/backend-api';
 import useLinkedEventsErrorHandler from 'tet/admin/hooks/backend/useLinkedEventsErrorHandler';
+import useConfirm from 'shared/hooks/useConfirm';
 
 const ImageUpload = () => {
   const { t } = useTranslation();
   const locale = useLocale();
+  const { confirm } = useConfirm();
   const {
     setValue,
     getValues,
@@ -53,11 +55,20 @@ const ImageUpload = () => {
     }
   };
 
-  const deleteImage = () => {
-    setUploaded(false);
-    setValue('image_url', '');
-    setValue('image_id', '');
-    setValue('image', null);
+  const deleteImage = async () => {
+    const isConfirmed = await confirm({
+      header: t('common:editor.posting.imageUpload.deleteConfirmTitle'),
+      content: t('common:editor.posting.imageUpload.deleteConfirmContent'),
+      submitButtonLabel: t('common:editor.posting.imageUpload.deleteButton'),
+      submitButtonVariant: 'danger',
+    });
+
+    if (isConfirmed) {
+      setUploaded(false);
+      setValue('image_url', '');
+      setValue('image_id', '');
+      setValue('image', null);
+    }
   };
 
   return (

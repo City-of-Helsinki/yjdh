@@ -117,7 +117,10 @@
 				"helperText": "Leveys min 400px, max 2000px. Koko max 4MB*.jpg*.png",
 				"saveImage": "Tallenna kuva ilmoitukselle",
 				"deleteImage": "Poista tai vaihda kuva",
-				"uploadSuccess": "Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen."
+				"uploadSuccess": "Kuva ladattu onnistuneesti ja tallentuu ilmoitukselle, kun tallennat ilmoituksen.",
+				"deleteConfirmTitle": "Haluatko varmasti poistaa kuvan?",
+				"deleteConfirmContent": "Kuva poistetaan ilmoitukselta kokonaan. Toiminto on peruuttamaton",
+				"deleteButton": "Poista kuva"
 			}
     },
 		"classification": {
