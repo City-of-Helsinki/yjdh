@@ -3,7 +3,7 @@ from datetime import date
 
 from django.conf import settings
 from django.http import HttpRequest
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from events.linkedevents import LinkedEventsClient
 from events.transformations import (
@@ -161,3 +161,34 @@ class ServiceClient:
     def delete_event(self, event_id, request: HttpRequest):
         self._get_event_and_raise_for_unauthorized(request, event_id)
         return self.client.delete_event(event_id)
+
+    def upload_image(self, request: HttpRequest):
+        # We rely on Linked Events to perform validation
+        # The only thing we check is that the file is under MAX_UPLOAD_SIZE
+        # to avoid uploading large files.
+        # TODO check photographer name length as well?
+        image = request.FILES.get("image")
+
+        if image is None:
+            raise ValidationError(detail="Image not set")
+
+        if image.size > settings.MAX_UPLOAD_SIZE:
+            raise ValidationError(detail="File size too big")
+
+        if image.content_type == "image/heic":
+            # `image.content_type` can be spoofed, but if the image is not of the correct format
+            # the transformation will fail and cause a 400 error
+            # TODO implement heic -> jpeg transformation
+            raise ValidationError(detail="Transformation from heic not implemented")
+
+        photographer = request.POST.get("photographer_name")
+
+        uploaded_image = self.client.upload_image(
+            {"photographer_name": photographer},
+            {"image": (image.name, image.file, image.content_type)},
+        )
+
+        return {
+            "@id": uploaded_image["@id"],
+            "url": uploaded_image["url"],
+        }
