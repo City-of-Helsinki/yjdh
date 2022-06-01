@@ -194,3 +194,42 @@ class LinkedEventsClient:
             resource_id=image_id,
             json=image,
         )
+
+    def delete_image(self, id):
+        params = {
+            "data_source": "tet",
+            "nocache": True,
+        }
+        r = requests.delete(
+            urljoin(settings.LINKEDEVENTS_URL, f"image/{id}"),
+            headers=self._headers(),
+            params=params,
+            timeout=settings.LINKEDEVENTS_TIMEOUT,
+        )
+        return r.status_code
+
+    def get_images(self):
+        """
+        Used by the job clean_unused_images
+
+        Returns a generator that yields one page of images at a time.
+        """
+        r = requests.get(
+            urljoin(settings.LINKEDEVENTS_URL, "image/"),
+            params={
+                "data_source": "tet",
+                "nocache": True,
+            },
+            timeout=settings.LINKEDEVENTS_TIMEOUT,
+        )
+        r.raise_for_status()
+        data = r.json()
+        yield data["data"]
+
+        while data["meta"]["next"] is not None:
+            r = requests.get(
+                data["meta"]["next"], timeout=settings.LINKEDEVENTS_TIMEOUT
+            )
+            r.raise_for_status()
+            data = r.json()
+            yield data["data"]
