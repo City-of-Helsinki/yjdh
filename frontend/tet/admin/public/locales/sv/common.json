@@ -97,6 +97,7 @@
       "workHoursNotice": "Arbetstiden är alltid densamma, 30 timmar i veckan.",
       "startDateLabel": "Börjar",
       "endDateLabel": "Slutar",
+			"endDateHelperText": "SV Jos TET-paikka on jatkuva, jätä päättymisaika tyhjäksi",
       "spotsLabel": "Arbetspraktikplatser",
 			"contactFirstName": "Förnamn",
 			"contactLastName": "Efternamn",

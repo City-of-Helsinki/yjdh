@@ -12,13 +12,13 @@ import { PreviewContext } from 'tet/admin/store/PreviewContext';
 import TetPosting from 'tet-shared/types/tetposting';
 import { tetPostingToEvent } from 'tet-shared/backend-api/transformations';
 import useUpsertTetPosting from 'tet/admin/hooks/backend/useUpsertTetPosting';
+import InfoDialog from 'tet/admin/components/InfoDialog';
 
 const ActionButtons: React.FC = () => {
   const { setPreviewVisibility, setTetPostingData, setFormValid } = useContext(PreviewContext);
   const deleteTetPosting = useDeleteTetPosting();
   const upsertTetPosting = useUpsertTetPosting();
   const { confirm } = useConfirm();
-
   const { t } = useTranslation();
   const {
     getValues,
@@ -28,6 +28,7 @@ const ActionButtons: React.FC = () => {
   } = useFormContext<TetPosting>();
   const theme = useTheme();
   const posting = getValues();
+  const [showInfoDialog, setShowInfoDialog] = React.useState(false);
 
   const allowPublish = posting.date_published === null;
   const allowDelete = !!posting.id;
@@ -63,6 +64,20 @@ const ActionButtons: React.FC = () => {
     });
   };
 
+  const saveDraftHandler = (): void => {
+    const values = getValues();
+    if (values.title === '' || values.org_name === '' || values.location?.value === '' || values.location === null) {
+      setShowInfoDialog(true);
+    } else {
+      const event = tetPostingToEvent(values, true);
+
+      upsertTetPosting.mutate({
+        id: values.id,
+        event,
+      });
+    }
+  };
+
   const publishPostingHandler = async (validatedPosting: TetPosting): Promise<void> => {
     const isConfirmed = await confirm({
       header: t('common:publish.confirmation', { posting: posting.title }),
@@ -87,7 +102,7 @@ const ActionButtons: React.FC = () => {
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={3}>
           <Button
-            onClick={handleSubmit(saveHandler)}
+            onClick={saveDraftHandler}
             disabled={isSubmitting}
             iconLeft={<IconSaveDiskette />}
             css={`
@@ -135,6 +150,7 @@ const ActionButtons: React.FC = () => {
           </$GridCell>
         )}
       </$GridCell>
+      <InfoDialog isOpen={showInfoDialog} close={() => setShowInfoDialog(false)} />
     </FormSection>
   );
 };
