@@ -21,7 +21,7 @@ const InfoDialog: React.FC<Props> = ({ isOpen, close }) => {
       <Dialog.Header id={titleId} title="Täytä vaaditut kentät" iconLeft={<IconInfoCircle aria-hidden="true" />} />
       <Dialog.Content>
         <p id={descriptionId} className="text-body">
-          Tehtävänimike, toimipiste ja osoite tulee olla täytettynä keskeneräiseen ilmoitukseen
+          <b>Tehtävänimike</b>, <b>toimipiste</b> ja <b>osoite</b> tulevat olla täytettyinä keskeneräiseen ilmoitukseen
         </p>
       </Dialog.Content>
       <Dialog.ActionButtons>
