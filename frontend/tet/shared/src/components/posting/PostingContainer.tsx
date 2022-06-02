@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import noop from 'lodash/noop';
 import React from 'react';
 import PostingContent from 'tet-shared/components/posting/postingContent/PostingContent';
 import PostingHero from 'tet-shared/components/posting/postingHero/PostingHero';
@@ -27,6 +28,11 @@ const PostingContainer: React.FC<Props> = ({
 
 PostingContainer.defaultProps = {
   showBackButton: false,
+};
+
+PostingContainer.defaultProps = {
+  showBackButton: false,
+  onReturnClick: () => noop,
 };
 
 export default PostingContainer;

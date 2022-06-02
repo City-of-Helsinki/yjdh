@@ -1,4 +1,5 @@
 import { IconArrowLeft, IconLocation } from 'hds-react';
+import noop from 'lodash/noop';
 import Image from 'next/image';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
@@ -21,13 +22,13 @@ import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
-  showBackButton: boolean;
+  showBackButton?: boolean;
   onReturnClick?: () => void;
 };
 
 const PostingHero: React.FC<Props> = ({
   posting,
-  showBackButton = false,
+  showBackButton,
   onReturnClick,
 }) => {
   const { t } = useTranslation();
@@ -86,6 +87,11 @@ const PostingHero: React.FC<Props> = ({
       </Container>
     </$PostingHero>
   );
+};
+
+PostingHero.defaultProps = {
+  showBackButton: false,
+  onReturnClick: () => noop,
 };
 
 export default PostingHero;
