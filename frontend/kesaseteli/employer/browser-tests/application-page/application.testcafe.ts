@@ -49,7 +49,7 @@ if (isRealIntegrationsEnabled()) {
     await step1Form.expectations.isFulFilledWith(application);
   });
 } else {
-  test('Fills up invoicer form and retrieves its data when reloading page', async (t: TestController) => {
+  test('Fills up employer form and retrieves its data when reloading page', async (t: TestController) => {
     const { id: applicationId, ...step1FormData } =
       await loginAndfillApplication(t, 1);
     const wizard = await getWizardComponents(t);

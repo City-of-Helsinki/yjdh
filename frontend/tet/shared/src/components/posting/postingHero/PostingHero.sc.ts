@@ -51,19 +51,6 @@ export const $HeroContentWrapper = styled.div`
   }
 `;
 
-export const $Keywords = styled.ul`
-  display: inline-flex;
-  flex-flow: row wrap;
-  list-style: none;
-  padding-left: 0;
-  margin-top: 0;
-
-  li {
-    margin-right: ${(props) => props.theme.spacing.xs};
-    margin-top: ${(props) => props.theme.spacing.xs};
-  }
-`;
-
 export const $Title = styled.h1`
   font-size: ${(props) => props.theme.fontSize.heading.l};
 `;

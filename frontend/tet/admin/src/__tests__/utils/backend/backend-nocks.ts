@@ -2,7 +2,9 @@ import { BackendEndpoint, getBackendDomain } from 'tet/admin/backend-api/backend
 import nock from 'nock';
 import { TetEvent, TetEvents } from 'tet-shared/types/linkedevents';
 import { waitForBackendRequestsToComplete } from 'shared/__tests__/utils/component.utils';
-import { fakeUser } from 'shared/__tests__/utils/fake-objects';
+import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
+
+const fakeObjectFactory = new FakeObjectFactory();
 
 // disable unnecessary axios' expected error messages
 // https://stackoverflow.com/questions/44467657/jest-better-way-to-disable-console-inside-unit-tests
@@ -24,7 +26,7 @@ afterEach(async () => {
 
 nock.disableNetConnect();
 
-export const expectAuthorizedReply = (expectedUser = fakeUser()): nock.Scope =>
+export const expectAuthorizedReply = (expectedUser = fakeObjectFactory.fakeUser()): nock.Scope =>
   nock(getBackendDomain()).get(BackendEndpoint.USER).reply(200, expectedUser, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectUnauthorizedReply = (): nock.Scope => {

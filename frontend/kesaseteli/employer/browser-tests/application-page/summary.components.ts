@@ -6,10 +6,10 @@ import {
 import isRealIntegrationsEnabled from '@frontend/shared/src/flags/is-real-integrations-enabled';
 import Application from '@frontend/shared/src/types/application';
 import Company from '@frontend/shared/src/types/company';
-import ContactPerson from '@frontend/shared/src/types/contact_person';
+import ContactInfo from '@frontend/shared/src/types/contact-info';
 import Employment from '@frontend/shared/src/types/employment';
-import Invoicer from '@frontend/shared/src/types/invoicer';
 import { convertToUIDateFormat } from '@frontend/shared/src/utils/date.utils';
+import { friendlyFormatIBAN } from 'ibantools';
 import TestController from 'testcafe';
 
 import {
@@ -50,9 +50,7 @@ export const getSummaryComponents = async (t: TestController) => {
       companyHeading() {
         return findEmployerField('company-heading');
       },
-      employerField(
-        field: keyof Company | keyof ContactPerson | keyof Invoicer
-      ) {
+      employerField(field: keyof Company | keyof ContactInfo) {
         return findEmployerField(`${String(field)}`);
       },
     };
@@ -81,7 +79,7 @@ export const getSummaryComponents = async (t: TestController) => {
       },
       async isFulFilledWith(application: Application) {
         const expectFieldHasValue = async (
-          field: keyof ContactPerson | keyof Invoicer,
+          field: keyof ContactInfo,
           value?: string | number
         ) =>
           expectElementHasValue(
@@ -93,11 +91,10 @@ export const getSummaryComponents = async (t: TestController) => {
         await expectFieldHasValue('contact_person_email');
         await expectFieldHasValue('contact_person_phone_number');
         await expectFieldHasValue('street_address');
-        if (application.is_separate_invoicer) {
-          await expectFieldHasValue('invoicer_name');
-          await expectFieldHasValue('invoicer_email');
-          await expectFieldHasValue('invoicer_phone_number');
-        }
+        await expectFieldHasValue(
+          'bank_account_number',
+          friendlyFormatIBAN(application.bank_account_number) ?? ''
+        );
       },
     };
     await expectations.isPresent();

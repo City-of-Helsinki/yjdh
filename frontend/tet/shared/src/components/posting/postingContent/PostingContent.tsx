@@ -1,20 +1,29 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { IconCalendarClock, IconInfoCircle, IconLocation } from 'hds-react';
+import {
+  IconCalendarClock,
+  IconGlobe,
+  IconInfoCircle,
+  IconLocation,
+  Tag,
+} from 'hds-react';
 import dynamic from 'next/dynamic';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useTranslation } from 'next-i18next';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import React from 'react';
 import Container from 'shared/components/container/Container';
+import { useTheme } from 'styled-components';
 import {
   $Body,
   $ContentWrapper,
   $Hr,
   $InfoWrapper,
+  $Keywords,
   $Title,
 } from 'tet-shared//components/posting/postingContent/PostingContent.sc';
 import PostingInfoItem from 'tet-shared//components/posting/postingInfoItem/PostingInfoItem';
 import MapScripts from 'tet-shared/components/MapScripts';
+import { OptionType } from 'tet-shared/types/classification';
 import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
@@ -28,8 +37,27 @@ const LocationMap = dynamic(
   }
 );
 
+const keywordList = (list: OptionType[], color: string): JSX.Element => (
+  <>
+    {list.map((keyword: OptionType) => (
+      <li>
+        <Tag
+          theme={{
+            '--tag-background': `${color}`,
+            '--tag-color': 'var(--color-black-90)',
+            '--tag-focus-outline-color': 'var(--color-black-90)',
+          }}
+        >
+          {keyword.name}
+        </Tag>
+      </li>
+    ))}
+  </>
+);
+
 const PostingContent: React.FC<Props> = ({ posting }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const addressList = posting.location
     ? [
         posting.location.name,
@@ -74,8 +102,19 @@ const PostingContent: React.FC<Props> = ({ posting }) => {
           <PostingInfoItem
             title={t('common:postingTemplate.languages')}
             body={languages}
-            icon={<IconInfoCircle />}
+            icon={<IconGlobe />}
           />
+          <$Keywords>
+            {keywordList(
+              posting.keywords_working_methods,
+              theme.colors.successLight
+            )}
+            {keywordList(
+              posting.keywords_attributes,
+              theme.colors.coatOfArmsMediumLight
+            )}
+            {keywordList(posting.keywords, theme.colors.engelMediumLight)}
+          </$Keywords>
         </$InfoWrapper>
       </$ContentWrapper>
       <MapScripts />
