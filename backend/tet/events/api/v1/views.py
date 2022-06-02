@@ -65,3 +65,16 @@ class ImageView(CreateAPIView):
     def create(self, request):
         response = ServiceClient().upload_image(request)
         return Response(response)
+
+
+class UpdatePostingImageView(UpdateAPIView):
+    permission_classes = [TetAPIPermission]
+
+    def update(self, request, pk=None):
+        if pk is not None:
+            serializer = TetUpsertEventSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            event = ServiceClient().update_job_posting_image(pk, serializer.data, request)
+            return Response(event)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)

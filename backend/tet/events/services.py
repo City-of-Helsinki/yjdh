@@ -151,6 +151,13 @@ class ServiceClient:
 
         return reduce_get_event(updated_event)
 
+    def update_job_posting_image(self, event_id, validated_data, request: HttpRequest):
+        event = self._get_event_and_raise_for_unauthorized(request, event_id)
+        event["images"] = validated_data["images"]
+        updated_event = self.client.update_event(event_id, event)
+
+        return reduce_get_event(updated_event)
+
     def update_tet_event(self, event_id, validated_data, request: HttpRequest):
         self._get_event_and_raise_for_unauthorized(request, event_id)
         event = enrich_update_event(validated_data, request.user)
