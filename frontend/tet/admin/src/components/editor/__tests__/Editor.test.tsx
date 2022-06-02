@@ -83,12 +83,8 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
-
       await waitForBackendRequestsToComplete();
-
-      await screen.findByRole('heading', {
-        name: /täytä puuttuvat tai virheelliset tiedot/i,
-      });
+      await editorApi.expectations.errorNotificationIsShown();
     });
   });
 });

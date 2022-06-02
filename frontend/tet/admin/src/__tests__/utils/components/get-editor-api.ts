@@ -22,7 +22,7 @@ const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
       expect(field).toHaveValue(value);
     },
     languageValuesArePresent: async (): Promise<void> => {
-      const select = await screen.findByText(/Tet-jaksolla käytetty kieli/i);
+      const select = await screen.findByText(regexp(translations.editor.posting.contactLanguage));
       const parent = select?.parentElement;
       await within(parent).findByText(regexp(translations.editor.posting.contactLanguageFi));
       await within(parent).findByText(regexp(translations.editor.posting.contactLanguageSv));
@@ -47,7 +47,12 @@ const getEditorApi = (expectedPosting?: TetPosting, lang?: Language) => {
       await within(parent).findByText(requiredText);
     },
     selectionGroupHasError: async (labelText: string): Promise<void> => {
-      await screen.findByText(regexp('Työtapa'));
+      await screen.findByText(regexp(translations.editor.classification.workMethod));
+    },
+    errorNotificationIsShown: async (): Promise<void> => {
+      await screen.findByRole('heading', {
+        name: regexp(translations.editor.notificationTitle),
+      });
     },
   };
   const actions = {
