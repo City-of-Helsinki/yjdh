@@ -1,9 +1,12 @@
+import itertools
 import operator
 from typing import List
 
 import pytest
+from django.core import mail
 from django.db import transaction
 from django.db.utils import IntegrityError
+from django.test import override_settings
 from freezegun import freeze_time
 
 from applications.enums import EmployerApplicationStatus
@@ -12,6 +15,7 @@ from common.tests.factories import (
     AwaitingManualProcessingYouthApplicationFactory,
     EmployerApplicationFactory,
     EmployerSummerVoucherFactory,
+    YouthSummerVoucherFactory,
 )
 from common.utils import utc_datetime
 
@@ -240,3 +244,55 @@ def test_youth_summer_voucher_sequentiality_complex_transaction_nesting():
             "summer_voucher_serial_number", flat=True
         )
     ) == list(range(1, 11))
+
+
+@pytest.mark.django_db
+@override_settings(
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
+)
+@pytest.mark.parametrize(
+    "to_youth,to_handler", itertools.product((True, False), repeat=2)
+)
+def test_youth_summer_voucher_sending(to_youth, to_handler):
+    usv = YouthSummerVoucherFactory()
+
+    usv.send_youth_summer_voucher_email(
+        language=usv.youth_application.language,
+        send_to_youth=to_youth,
+        send_to_handler=to_handler,
+    )
+
+    if not to_youth and not to_handler:
+        assert len(mail.outbox) == 0
+    else:
+        assert len(mail.outbox) == 1
+        m = mail.outbox[0]
+
+        assert m.from_email == "Test sender <testsender@hel.fi>"
+        if to_youth:
+            assert m.to == [usv.youth_application.email]
+        else:
+            assert m.to == []
+
+        if to_handler:
+            assert m.bcc == ["Test handler <testhandler@hel.fi>"]
+        else:
+            assert m.bcc == []
+
+
+@pytest.mark.django_db
+@override_settings(
+    DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
+)
+def test_youth_summer_voucher_sending__no_optional_arguments():
+    usv = YouthSummerVoucherFactory()
+
+    usv.send_youth_summer_voucher_email(language=usv.youth_application.language)
+
+    assert len(mail.outbox) == 1
+    m = mail.outbox[0]
+    assert m.from_email == "Test sender <testsender@hel.fi>"
+    assert m.to == [usv.youth_application.email]
+    assert m.bcc == ["Test handler <testhandler@hel.fi>"]

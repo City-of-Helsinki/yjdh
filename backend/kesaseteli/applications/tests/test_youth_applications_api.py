@@ -1577,6 +1577,7 @@ def test_youth_summer_voucher_email_language(api_client, language):
     NEXT_PUBLIC_MOCK_FLAG=True,
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="Test sender <testsender@hel.fi>",
+    HANDLER_EMAIL="Test handler <testhandler@hel.fi>",
 )
 @pytest.mark.parametrize("language", get_supported_languages())
 def test_youth_summer_voucher_email_sending(api_client, language):
@@ -1597,6 +1598,7 @@ def test_youth_summer_voucher_email_sending(api_client, language):
     )
     assert youth_summer_voucher_email.from_email == "Test sender <testsender@hel.fi>"
     assert youth_summer_voucher_email.to == [acceptable_youth_application.email]
+    assert youth_summer_voucher_email.bcc == ["Test handler <testhandler@hel.fi>"]
 
 
 @pytest.mark.django_db

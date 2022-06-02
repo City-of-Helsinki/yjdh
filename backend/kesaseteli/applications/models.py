@@ -874,13 +874,23 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             content_id="helsinki_logo",
         )
 
-    def send_youth_summer_voucher_email(self, language) -> bool:
+    def send_youth_summer_voucher_email(
+        self, language, send_to_youth=True, send_to_handler=True
+    ) -> bool:
         """
         Send youth summer voucher email with given language to the applicant.
 
         :param language: The language to be used in the email
+        :param send_to_youth: Send the voucher to youth's email
+        :param send_to_handler: Send a copy of the voucher to the handler email
         :return: True if email was sent, otherwise False.
         """
+        recipient_list = [self.youth_application.email] if send_to_youth else None
+        bcc = [settings.HANDLER_EMAIL] if send_to_handler else None
+
+        if not (recipient_list or bcc):
+            return False
+
         with translation.override(language):
             context = {
                 "first_name": self.youth_application.first_name,
@@ -896,7 +906,8 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                 subject=self.email_subject(language),
                 message=get_template("youth_summer_voucher_email.txt").render(context),
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[self.youth_application.email],
+                recipient_list=recipient_list,
+                bcc=bcc,
                 error_message=_("Unable to send youth summer voucher email"),
                 html_message=get_template("youth_summer_voucher_email.html").render(
                     context
