@@ -25,9 +25,11 @@ const useCompleteYouthApplicationQuery = (
   const queryClient = useQueryClient();
   const { onSuccess, ...restOptions } = options ?? {};
   return useMutation({
-    mutationFn: (operation: CompleteOperation) =>
+    mutationFn: ({ type, encrypted_handler_vtj_json }) =>
       handleResponse<ActivatedYouthApplication>(
-        axios.patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
+        axios.patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${type}/`, {
+          encrypted_handler_vtj_json,
+        })
       ),
     onSuccess: (data, operation, context) => {
       void queryClient.invalidateQueries(getYouthApplicationQueryKey(id));

@@ -1,11 +1,10 @@
-import { OptionType } from 'tet-shared/types/classification';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 export const linkedEventsUrl =
   process.env.NEXT_PUBLIC_LINKEDEVENTS_URL || 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1/';
 
 export const BackendEndpoint = {
-  EVENT: 'event/?include=location,keywords&page_size=10&sort=-name',
+  EVENT: 'event/?include=location,keywords&sort=-name',
   PLACE: 'place/',
   KEYWORD: 'keyword/',
 } as const;

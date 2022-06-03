@@ -1,6 +1,7 @@
 import logging
-from datetime import date
+from datetime import date, datetime, timezone
 from email.mime.image import MIMEImage
+from functools import partial
 from typing import List, Optional
 
 from django.core.exceptions import ValidationError
@@ -28,12 +29,39 @@ def is_uppercase(value):
     return value == value.upper()
 
 
+def normalize_for_string_comparison(text):
+    """
+    Normalize text for string comparison. Converts None to an empty string, strips
+    leading and trailing whitespace, and makes result case-insensitive by folding case.
+    """
+    return "" if text is None else str(text).strip().casefold()
+
+
+def are_same_texts(a, b) -> bool:
+    """
+    Are the two given values same when compared after first normalizing them using
+    normalize_for_string_comparison?
+    """
+    return normalize_for_string_comparison(a) == normalize_for_string_comparison(b)
+
+
+def are_same_text_lists(a, b) -> bool:
+    """
+    Are the two given value lists same when compared after first normalizing their
+    values using normalize_for_string_comparison?
+    """
+    return list(map(normalize_for_string_comparison, a)) == list(
+        map(normalize_for_string_comparison, b)
+    )
+
+
 def send_mail_with_error_logging(
     subject,
     message,
     from_email,
     recipient_list,
     error_message,
+    bcc=None,
     html_message=None,
     images: Optional[List[MIMEImage]] = None,
 ) -> bool:
@@ -45,6 +73,7 @@ def send_mail_with_error_logging(
     :param from_email: Email address of the email's sender
     :param recipient_list: List of email recipients
     :param error_message: Error message to be logged in case of failure
+    :param bcc: Send a hidden copy of the message to the list of recipients
     :param html_message: Optional html message. If provided the resulting email will be
                          a multipart/alternative email with message as the text/plain
                          content type and html_message as the text/html content type.
@@ -55,7 +84,7 @@ def send_mail_with_error_logging(
     """
     connection = get_connection(fail_silently=True)
     mail = EmailMultiAlternatives(
-        subject, message, from_email, recipient_list, connection=connection
+        subject, message, from_email, to=recipient_list, bcc=bcc, connection=connection
     )
     if html_message:
         mail.attach_alternative(html_message, "text/html")
@@ -119,3 +148,7 @@ def getattr_nested(obj, attrs: list):
             with translation.override("fi"):
                 value = getattr(obj, f"get_{attr}_display")()
         return value
+
+
+# Create datetime with UTC timezone
+utc_datetime = partial(datetime, tzinfo=timezone.utc)

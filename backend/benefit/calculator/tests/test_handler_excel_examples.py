@@ -1,14 +1,15 @@
 import datetime
 import os
 
+from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
+
 from applications.enums import ApplicationStatus, BenefitType
 from applications.tests.factories import ApplicationFactory
 from calculator.models import Calculation, STATE_AID_MAX_PERCENTAGE_CHOICES
 from calculator.tests.factories import PaySubsidyFactory, TrainingCompensationFactory
 from common.utils import nested_setattr, to_decimal
 from helsinkibenefit.tests.conftest import *  # noqa
-from openpyxl import load_workbook
-from openpyxl.utils import get_column_letter
 
 
 class CaseNotFound(Exception):

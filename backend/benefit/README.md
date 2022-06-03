@@ -1,17 +1,18 @@
+## DEBUGGING
+
 ## Development without Docker
 
 Prerequisites:
 
-* PostgreSQL 12
-* Python 3.8
-
+- PostgreSQL 12
+- Python 3.8
 
 ### Installing Python requirements
 
-* Run `pip install -r requirements.txt`
-* Run `pip install -r requirements-dev.txt` (development requirements)
-* If you are not using Docker image, in order to export application batch as PDF (via `pdfkit`), it's required to install
- `wkhtmltopdf`. Run: `sudo apt-get install wkhtmltopdf`
+- Run `pip install -r requirements.txt`
+- Run `pip install -r requirements-dev.txt` (development requirements)
+- If you are not using Docker image, in order to export application batch as PDF (via `pdfkit`), it's required to install
+  `wkhtmltopdf`. Run: `sudo apt-get install wkhtmltopdf`
 
 ### Database
 
@@ -61,19 +62,19 @@ also their .env files, see instructions in the frontend folder
 
 ### Daily running without Docker
 
-* Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
-* Set the `DEBUG` environment variable to `1`.
-* Run `python manage.py migrate`
-* Run `python manage.py compilemessages`
-* Run `python manage.py runserver 0:8000`
+- Inside the backend project root folder (backend/benefit), create `.env` file: `touch .env`
+- Set the `DEBUG` environment variable to `1`.
+- Run `python manage.py migrate`
+- Run `python manage.py compilemessages`
+- Run `python manage.py runserver 0:8000`
 
 The project is now running at [localhost:8000](https://localhost:8000)
 
 ### Updating translations
 
 In `backend/benefit/`:
-* Run `python manage.py makemessages --no-location -l fi -l sv -l en`
-* Run `python manage.py compilemessages`
+- Run `python manage.py makemessages --no-location -l fi -l sv -l en`
+- Run `python manage.py compilemessages`
 
 ### Testing and debugging
 
@@ -85,24 +86,22 @@ company_form parameters.
 
 1. Install `pip-tools`:
 
-    * `pip install pip-tools`
+   - `pip install pip-tools`
 
 2. Add new packages to `requirements.in` or `requirements-dev.in`
 
 3. Update `.txt` file for the changed requirements file:
 
-    * `pip-compile requirements.in`
-    * `pip-compile requirements-dev.in`
+   - `pip-compile requirements.in`
+   - `pip-compile requirements-dev.in`
 
 4. If you want to update dependencies to their newest versions, run:
 
-    * `pip-compile --upgrade requirements.in`
+   - `pip-compile --upgrade requirements.in`
 
 5. To install Python requirements run:
 
-    * `pip-sync requirements.txt requirements-dev.txt`
-   
-
+   - `pip-sync requirements.txt requirements-dev.txt`
 
 ## Documentation
 
@@ -163,8 +162,8 @@ black config, without any modifications.
 
 Basic `black` commands:
 
-* To let `black` do its magic: `black .`
-* To see which files `black` would change: `black --check .`
+- To let `black` do its magic: `black .`
+- To see which files `black` would change: `black --check .`
 
 ## Storages
 

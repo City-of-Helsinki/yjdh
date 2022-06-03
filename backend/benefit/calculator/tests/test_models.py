@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+
 from applications.enums import ApplicationStatus, BenefitType
 from applications.tests.conftest import *  # noqa
 from calculator.models import (

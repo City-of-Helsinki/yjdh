@@ -46,6 +46,7 @@ env = environ.Env(
     CORS_ALLOW_ALL_ORIGINS=(bool, False),
     CSRF_COOKIE_DOMAIN=(str, "localhost"),
     CSRF_TRUSTED_ORIGINS=(list, []),
+    CSRF_COOKIE_NAME=(str, "yjdhcsrftoken"),
     YTJ_BASE_URL=(str, "http://avoindata.prh.fi/opendata/tr/v1"),
     YTJ_TIMEOUT=(int, 30),
     NEXT_PUBLIC_MOCK_FLAG=(bool, False),
@@ -104,6 +105,13 @@ env = environ.Env(
         12 * 60 * 60,
     ),
     DISABLE_VTJ=(bool, False),
+    VTJ_PERSONAL_ID_QUERY_URL=(
+        str,
+        "https://vtj-integration-test.agw.arodevtest.hel.fi/api/HenkilonTunnuskysely",
+    ),
+    VTJ_USERNAME=(str, ""),
+    VTJ_PASSWORD=(str, ""),
+    VTJ_TIMEOUT=(int, 30),
 )
 if os.path.exists(env_file):
     env.read_env(env_file)
@@ -118,6 +126,10 @@ ENCRYPTION_KEY = env.str("ENCRYPTION_KEY")
 SOCIAL_SECURITY_NUMBER_HASH_KEY = env.str("SOCIAL_SECURITY_NUMBER_HASH_KEY")
 ENABLE_ADMIN = env.bool("ENABLE_ADMIN")
 DISABLE_VTJ = env.bool("DISABLE_VTJ")
+VTJ_PERSONAL_ID_QUERY_URL = env.str("VTJ_PERSONAL_ID_QUERY_URL")
+VTJ_USERNAME = env.str("VTJ_USERNAME")
+VTJ_PASSWORD = env.str("VTJ_PASSWORD")
+VTJ_TIMEOUT = env.int("VTJ_TIMEOUT")
 
 DB_PREFIX = {
     None: env.str("DB_PREFIX"),
@@ -235,6 +247,7 @@ CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS")
 CSRF_COOKIE_DOMAIN = env.str("CSRF_COOKIE_DOMAIN")
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+CSRF_COOKIE_NAME = env.str("CSRF_COOKIE_NAME")
 CSRF_COOKIE_SECURE = True
 
 # Audit logging

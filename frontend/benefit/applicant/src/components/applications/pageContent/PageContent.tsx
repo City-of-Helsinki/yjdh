@@ -127,7 +127,7 @@ const PageContent: React.FC = () => {
   }
 
   return (
-    <Container>
+    <Container data-testid={`step-${currentStep}`}>
       <$PageHeader>
         <$HeaderItem>
           <$PageHeading>

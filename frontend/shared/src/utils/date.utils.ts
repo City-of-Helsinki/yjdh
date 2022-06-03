@@ -6,7 +6,11 @@ import { enGB as en, fi, sv } from 'date-fns/locale';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
 
-import { DATE_BACKEND_REGEX, DATE_UI_REGEX } from '../constants';
+import {
+  DATE_BACKEND_REGEX,
+  DATE_UI_REGEX,
+  DATE_VTJ_REGEX,
+} from '../constants';
 import { DEFAULT_LANGUAGE, Language } from '../i18n/i18n';
 import { isString } from './type-guards';
 
@@ -14,10 +18,13 @@ export const DATE_FORMATS = {
   UI_DATE: 'd.M.yyyy',
   DATE_AND_TIME: 'd.M.yyyy. HH:mm',
   BACKEND_DATE: 'yyyy-MM-dd',
-  UTC: 'yyyy-MM-ddTHH:mm:ss.sssZ',
+  ISO_8601: 'yyyy-MM-ddTHH:mm:ss.sssZ',
+  VTJ: 'yyyyMMdd',
 };
 
 const locales: Record<Language, Locale> = { fi, sv, en };
+
+type AnyDate = string | Date | number | undefined;
 
 export const isValidDate = (date?: string | number | Date | null): boolean =>
   date ? isValid(new Date(date)) : false;
@@ -50,47 +57,50 @@ const getFormat = (dateAsString: string): string | undefined => {
   if (DATE_BACKEND_REGEX.test(dateAsString)) {
     return DATE_FORMATS.BACKEND_DATE;
   }
+  if (DATE_VTJ_REGEX.test(dateAsString)) {
+    return DATE_FORMATS.VTJ;
+  }
   if (isValidDate(parseISO(dateAsString))) {
-    return DATE_FORMATS.UTC;
+    return DATE_FORMATS.ISO_8601;
   }
   return undefined;
 };
 
-export const parseDate = (dateAsString?: string | null): Date | undefined => {
-  if (!dateAsString) {
+export const parseDate = (date: AnyDate): Date | undefined => {
+  if (!date) {
     return undefined;
   }
-  const format = getFormat(dateAsString);
+  if (!isString(date)) {
+    return new Date(date);
+  }
+  const format = getFormat(date);
   if (!format) {
     return undefined;
   }
-  if (format === DATE_FORMATS.UTC) {
-    return parseISO(dateAsString);
+  if (format === DATE_FORMATS.ISO_8601) {
+    return parseISO(date);
   }
-  return parse(dateAsString, format, new Date());
+  return parse(date, format, new Date());
 };
 
 export const isFuture = (date: Date): boolean => isFutureFn(date);
 
 export const convertDateFormat = (
-  date: string | Date | number | undefined,
+  date: AnyDate,
   toFormat = DATE_FORMATS.BACKEND_DATE
 ): string => {
-  const parsedDate = isString(date) ? parseDate(date) : date;
+  const parsedDate = parseDate(date);
   return formatDate(parsedDate, toFormat);
 };
 
-export const convertToUIDateFormat = (
-  date: string | Date | number | undefined
-): string => convertDateFormat(date, DATE_FORMATS.UI_DATE);
+export const convertToUIDateFormat = (date: AnyDate): string =>
+  convertDateFormat(date, DATE_FORMATS.UI_DATE);
 
-export const convertToBackendDateFormat = (
-  date: string | Date | number | undefined
-): string => convertDateFormat(date, DATE_FORMATS.BACKEND_DATE);
+export const convertToBackendDateFormat = (date: AnyDate): string =>
+  convertDateFormat(date, DATE_FORMATS.BACKEND_DATE);
 
-export const convertToUIDateAndTimeFormat = (
-  date: string | Date | number | undefined
-): string => convertDateFormat(date, DATE_FORMATS.DATE_AND_TIME);
+export const convertToUIDateAndTimeFormat = (date: AnyDate): string =>
+  convertDateFormat(date, DATE_FORMATS.DATE_AND_TIME);
 
 export const isLeapYear = (year: number): boolean =>
   (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -173,9 +183,9 @@ export const diffMonths = (
 };
 
 export const getCorrectEndDate = (
-  startDate: string,
-  endDate: string
-): string | undefined => {
+  startDate: AnyDate,
+  endDate: AnyDate
+): AnyDate => {
   const parsedStartDate = parseDate(startDate);
   const parsedEndDate = parseDate(endDate);
 
@@ -187,8 +197,18 @@ export const getCorrectEndDate = (
 };
 
 export const validateDateIsFromCurrentYearOnwards = (
-  date: string | undefined | null
+  date: AnyDate
 ): boolean => {
   const parsedDate = parseDate(date);
   return parsedDate ? parsedDate >= startOfYear(new Date()) : false;
+};
+
+export const isWithinInterval = (
+  currDate: AnyDate,
+  { startDate, endDate }: { startDate?: AnyDate; endDate?: AnyDate }
+): boolean => {
+  const curr = parseDate(currDate) ?? 0;
+  const start = parseDate(startDate) ?? 0;
+  const end = parseDate(endDate) ?? 0;
+  return (!start || start <= curr) && (curr <= end || !end);
 };

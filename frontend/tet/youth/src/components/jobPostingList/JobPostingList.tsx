@@ -6,42 +6,57 @@ import Container from 'shared/components/container/Container';
 import { Button } from 'hds-react';
 import { $ButtonLoaderContainer } from './JobPostingList.sc';
 import { TetEvent, LinkedEventsPagedResponse } from 'tet-shared/types/linkedevents';
-import { InfiniteData } from 'react-query';
 import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import TetPosting from 'tet-shared/types/tetposting';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('tet-shared/components/map/Map'), { ssr: false });
 
 type Props = {
-  postings: InfiniteData<LinkedEventsPagedResponse<TetEvent>>;
-  onShowMore: () => void;
-  isFetchingNextPage: Boolean;
+  postings: LinkedEventsPagedResponse<TetEvent>;
   hasNextPage?: Boolean;
 };
 
-const JobPostingList: React.FC<Props> = ({ postings, onShowMore, isFetchingNextPage, hasNextPage }) => {
+const JobPostingList: React.FC<Props> = ({ postings, hasNextPage }) => {
   const { t } = useTranslation();
   const { eventToTetPosting } = useEventPostingTransformation();
   const eventsToPostings = (events: TetEvent[]) => events.map((event) => eventToTetPosting(event));
-  const total = postings?.pages[0].meta.count;
+  const total = postings?.meta.count;
+  const [showMap, setShowMap] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const allPostings = eventsToPostings(postings.data);
+  const lastShown = currentPage * 10 <= allPostings.length - 1 ? currentPage * 10 : allPostings.length;
+
+  console.log(lastShown, allPostings.length);
+  const shownPostings = (): TetPosting[] => {
+    return allPostings.slice(0, lastShown);
+  };
+
+  const onShowMore = (): void => {
+    setCurrentPage((prevState) => prevState + 1);
+  };
 
   return (
     <Container>
+      {showMap ? (
+        <Button onClick={() => setShowMap(false)}>{t('common:map.showList')}</Button>
+      ) : (
+        <Button onClick={() => setShowMap(true)}>{t('common:map.showMap')}</Button>
+      )}
       <h2>{t('common:postings.searchResults', { count: total })}</h2>
-      {postings?.pages.map((group: LinkedEventsPagedResponse<TetEvent>, i: number) => {
-        console.log('group', group);
-        return (
-          <Fragment key={i}>
-            {eventsToPostings(group.data).map((posting) => (
-              <JobPostingCard jobPosting={posting} />
-            ))}
-          </Fragment>
-        );
-      })}
-      {hasNextPage && (
+      {showMap ? (
+        <Map height={'1000px'} postings={allPostings} showLink={true} />
+      ) : (
+        <Fragment>
+          {shownPostings().map((posting) => (
+            <JobPostingCard jobPosting={posting} />
+          ))}
+        </Fragment>
+      )}
+      {lastShown !== allPostings.length && !showMap && (
         <$ButtonLoaderContainer>
-          {isFetchingNextPage ? (
-            <LoadingSpinner />
-          ) : (
-            <Button onClick={onShowMore}>{t('common:postings.showMore')}</Button>
-          )}
+          <Button onClick={onShowMore}>{t('common:postings.showMore')}</Button>
         </$ButtonLoaderContainer>
       )}
     </Container>

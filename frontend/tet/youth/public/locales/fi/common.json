@@ -1,5 +1,10 @@
 {
   "appName": "TET-paikat",
+  "header": {
+    "linkSkipToContent": "Siirry sisältöön",
+    "menuToggleAriaLabel": "Valikko",
+    "languageMenuButtonAriaLabel": "Valitse kieli"
+  },
   "errorPage": {
     "title": "Tapahtui odottamaton virhe",
     "message": "Jokin meni pieleen. Sivun uudelleenlataaminen saattaa auttaa.",
@@ -25,12 +30,19 @@
 		"askLinkContent": "Onko sinulla kysyttävää palvelusta tai huomasitko jotain outoa ilmoituksissa? Ota yhteyttä!"
 	},
 	"filters": {
-		"searchPlaceholder": "Kirjoita hakusana tai paikan nimi",
-		"workMethod": "Valitse työtapa",
+		"searchJobs": "Hae TET-paikkoja",
+		"searchPlaceholder": "Kirjoita hakusana",
+		"workMethod": "Työtapa",
+		"workFeatures": "Työn ominaisuudet",
 		"startDate": "Alkamispäivä",
 		"endDate": "Päättymispäivä",
 		"language": "Valitse kieli",
-		"clearFilters": "Tyhjennä hakuehdot"
+		"clearFilters": "Tyhjennä hakuehdot",
+    "combobox": {
+      "toggleButtonAriaLabel": "Näytä/piilota vaihtoehdot",
+      "clearButtonAriaLabel": "Tyhjennä valinnat",
+      "selectedItemRemoveButtonAriaLabel": "Poista valinta"
+    }
 	},
 	"postings": {
 		"searchResults_one": "{{count}} hakutulos",
@@ -47,7 +59,10 @@
     "privacyPolicy": "Rekisteriseloste",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Perusopetuksen opintohallinnon rekisteri.pdf",
     "feedback": "Anna palautetta",
-    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute"
+    "feedbackLink": "https://www.hel.fi/helsinki/fi/kaupunki-ja-hallinto/osallistu-ja-vaikuta/palaute",
+		"moreInfo": "Lisää tietoa",
+		"moreInfoLink": "https://nuorten.hel.fi/",
+		"newTab": "linkki avautuu uuteen välilehteen"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -76,5 +91,11 @@
 		"dateAndTime": "Päivä ja aika",
 		"location": "Paikka",
 		"languages": "TET-paikassa käytettävät kielet"
+	},
+	"map": {
+		"readMore": "Lue lisää",
+		"showList": "Näytä tulokset listana",
+		"showMap": "Näytä tulokset kartalla",
+    "helsinkiCity": "Helsingin kaupunki"
 	}
 }

@@ -12,12 +12,11 @@ import {
 import renderComponent from 'kesaseteli-shared/__tests__/utils/components/render-component';
 import { BackendEndpoint } from 'kesaseteli-shared/backend-api/backend-api';
 import React from 'react';
-import {
-  fakeApplication,
-  fakeApplications,
-} from 'shared/__tests__/utils/fake-objects';
+import FakeObjectFactory from 'shared/__tests__/utils/FakeObjectFactory';
 import { waitFor } from 'shared/__tests__/utils/test-utils';
 import { DEFAULT_LANGUAGE, Language } from 'shared/i18n/i18n';
+
+const fakeObjectFactory = new FakeObjectFactory();
 
 describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
   it('test for accessibility violations', async () => {
@@ -62,7 +61,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
 
     describe('when user does not have previous applications', () => {
       it('Should create a new application and redirect to its page with default language', async () => {
-        const newApplication = fakeApplication('123-foo-bar');
+        const newApplication = fakeObjectFactory.fakeApplication();
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend([]);
         expectToCreateApplicationToBackend(newApplication);
@@ -81,10 +80,8 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
       });
       it('Should create a new application and redirect to its page with router locale', async () => {
         const locale: Language = 'en';
-        const newApplication = fakeApplication(
-          '123-foo-bar',
+        const newApplication = fakeObjectFactory.fakeApplication(
           undefined,
-          false,
           locale
         );
         expectAuthorizedReply();
@@ -110,8 +107,12 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
 
     describe('when user has previous applications', () => {
       it("Should redirect to latest application page with application's locale", async () => {
-        const application = fakeApplication('my-id', undefined, false, 'sv');
-        const applications = [application, ...fakeApplications(4)];
+        const application = fakeObjectFactory.fakeApplication(undefined, 'sv');
+        const { id } = application;
+        const applications = [
+          application,
+          ...fakeObjectFactory.fakeApplications(4),
+        ];
         expectAuthorizedReply();
         expectToGetApplicationsFromBackend(applications);
         const locale: Language = 'en';
@@ -121,7 +122,7 @@ describe('frontend/kesaseteli/employer/src/pages/index.tsx', () => {
           defaultLocale: locale,
         });
         await waitFor(() =>
-          expect(spyPush).toHaveBeenCalledWith(`sv/application?id=my-id`)
+          expect(spyPush).toHaveBeenCalledWith(`sv/application?id=${id}`)
         );
       });
     });

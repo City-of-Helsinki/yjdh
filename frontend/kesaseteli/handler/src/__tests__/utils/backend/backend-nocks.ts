@@ -1,6 +1,8 @@
+import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
 import {
   BackendEndpoint,
   getBackendDomain,
+  getYouthApplicationQueryKey,
 } from 'kesaseteli-shared/backend-api/backend-api';
 import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
@@ -34,7 +36,7 @@ export const expectToGetYouthApplication = (
   expectedApplication: CreatedYouthApplication | ActivatedYouthApplication
 ): nock.Scope =>
   nock(getBackendDomain())
-    .get(`${BackendEndpoint.YOUTH_APPLICATIONS}${expectedApplication.id}/`)
+    .get(getYouthApplicationQueryKey(expectedApplication.id))
     .reply(200, expectedApplication, { 'Access-Control-Allow-Origin': '*' });
 
 export const expectToGetYouthApplicationError = (
@@ -43,7 +45,7 @@ export const expectToGetYouthApplicationError = (
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .get(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/`)
+    .get(getYouthApplicationQueryKey(id))
     .reply(
       errorCode,
       'This is a youthapplications backend test error. Please ignore this error message.'
@@ -51,11 +53,13 @@ export const expectToGetYouthApplicationError = (
 };
 
 export const expectToPatchYouthApplication = (
-  operation: 'accept' | 'reject',
-  id: ActivatedYouthApplication['id']
+  operation: CompleteOperation['type'],
+  { id, encrypted_handler_vtj_json }: ActivatedYouthApplication
 ): nock.Scope =>
   nock(getBackendDomain())
-    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
+    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`, {
+      encrypted_handler_vtj_json,
+    })
     .reply(
       200,
       { status: operation === 'accept' ? 'accepted' : 'rejected' },
@@ -63,13 +67,15 @@ export const expectToPatchYouthApplication = (
     );
 
 export const expectToPatchYouthApplicationError = (
-  operation: 'accept' | 'reject',
-  id: ActivatedYouthApplication['id'],
+  operation: CompleteOperation['type'],
+  { id, encrypted_handler_vtj_json }: ActivatedYouthApplication,
   errorCode: 400 | 404 | 500
 ): nock.Scope => {
   consoleSpy = jest.spyOn(console, 'error').mockImplementation();
   return nock(getBackendDomain())
-    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`)
+    .patch(`${BackendEndpoint.YOUTH_APPLICATIONS}${id}/${operation}/`, {
+      encrypted_handler_vtj_json,
+    })
     .reply(
       errorCode,
       `This is a youthapplications ${operation} backend test error. Please ignore this error message.`

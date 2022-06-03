@@ -1,11 +1,14 @@
-from datetime import date, timedelta
+import json
+from datetime import date, datetime, timedelta
 from email.mime.image import MIMEImage
 from pathlib import Path
+from typing import Optional
 from urllib.parse import quote, urljoin
 
+import jsonpath_ng
 import sequences
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.db.models import Q
@@ -14,8 +17,11 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext, gettext_lazy as _
 from encrypted_fields.fields import EncryptedCharField, SearchField
+from localflavor.generic.models import IBANField
+from requests.exceptions import ReadTimeout
 from shared.common.utils import MatchesAnyOfQuerySet, social_security_number_birthdate
 from shared.common.validators import (
+    validate_json,
     validate_name,
     validate_optional_json,
     validate_phone_number,
@@ -23,6 +29,7 @@ from shared.common.validators import (
 )
 from shared.models.abstract_models import HistoricalModel, TimeStampedModel, UUIDModel
 from shared.models.mixins import LockForUpdateMixin
+from shared.vtj.vtj_client import VTJClient
 
 from applications.api.v1.validators import validate_additional_info_user_reasons
 from applications.enums import (
@@ -32,11 +39,18 @@ from applications.enums import (
     EmployerApplicationStatus,
     HiredWithoutVoucherAssessment,
     SummerVoucherExceptionReason,
+    VtjTestCase,
     YouthApplicationStatus,
+)
+from applications.tests.data.mock_vtj import (
+    mock_vtj_person_id_query_found_content,
+    mock_vtj_person_id_query_not_found_content,
 )
 from common.permissions import HandlerPermission
 from common.urls import handler_youth_application_processing_url
 from common.utils import (
+    are_same_text_lists,
+    are_same_texts,
     send_mail_with_error_logging,
     validate_finnish_social_security_number,
 )
@@ -106,6 +120,12 @@ class YouthApplicationQuerySet(MatchesAnyOfQuerySet, models.QuerySet):
         """
         return self.filter(self._active_q_filter())
 
+    def non_rejected(self):
+        """
+        Return non-rejected youth applications
+        """
+        return self.exclude(status=YouthApplicationStatus.REJECTED.value)
+
 
 class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     first_name = models.CharField(
@@ -154,11 +174,20 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     receipt_confirmed_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("timestamp of receipt confirmation")
     )
-    encrypted_vtj_json = EncryptedCharField(
+    encrypted_original_vtj_json = EncryptedCharField(
         null=True,
         blank=True,
         max_length=1024 * 1024,
-        verbose_name=_("vtj json"),
+        verbose_name=_("original vtj json"),
+        help_text=_("VTJ JSON used for automatic processing of new youth application"),
+        validators=[validate_optional_json],
+    )
+    encrypted_handler_vtj_json = EncryptedCharField(
+        null=True,
+        blank=True,
+        max_length=1024 * 1024,
+        verbose_name=_("handler vtj json"),
+        help_text=_("VTJ JSON used for accepting/rejecting by human or machine"),
         validators=[validate_optional_json],
     )
     status = models.CharField(
@@ -195,6 +224,81 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     )
     objects = YouthApplicationQuerySet.as_manager()
 
+    @property
+    def is_vtj_test_case(self) -> bool:
+        return (
+            are_same_texts(self.first_name, VtjTestCase.first_name())
+            and self.vtj_test_case
+        )
+
+    @property
+    def vtj_test_case(self) -> str:
+        """
+        If last name is found in VtjTestCase.values then return it, otherwise return "".
+        """
+        for vtj_test_case in VtjTestCase.values:
+            if are_same_texts(self.last_name, vtj_test_case):
+                return vtj_test_case
+        return ""
+
+    @staticmethod
+    def get_mocked_vtj_json_for_vtj_test_case(
+        vtj_test_case, first_name, last_name, social_security_number
+    ):
+        if vtj_test_case == VtjTestCase.NOT_FOUND.value:
+            return mock_vtj_person_id_query_not_found_content()
+        elif vtj_test_case == VtjTestCase.NO_ANSWER.value:
+            return None
+        else:
+            return mock_vtj_person_id_query_found_content(
+                first_name=first_name,
+                last_name=(
+                    "VTJ-palvelun palauttama eri sukunimi"
+                    if vtj_test_case == VtjTestCase.WRONG_LAST_NAME.value
+                    else last_name
+                ),
+                social_security_number=social_security_number,
+                is_alive=vtj_test_case != VtjTestCase.DEAD.value,
+                is_home_municipality_helsinki=(
+                    vtj_test_case == VtjTestCase.HOME_MUNICIPALITY_HELSINKI.value
+                ),
+            )
+
+    def fetch_vtj_json(self, end_user: str):
+        if settings.DISABLE_VTJ:
+            # Not fetching data because VTJ integration is disabled and not mocked
+            return None
+        elif settings.NEXT_PUBLIC_MOCK_FLAG:
+            # VTJ integration enabled and mocked
+            if self.is_vtj_test_case:
+                if self.vtj_test_case == VtjTestCase.NO_ANSWER.value:
+                    raise ReadTimeout()
+                else:
+                    return YouthApplication.get_mocked_vtj_json_for_vtj_test_case(
+                        vtj_test_case=self.vtj_test_case,
+                        first_name=self.first_name,
+                        last_name=self.last_name,
+                        social_security_number=self.social_security_number,
+                    )
+            else:
+                return mock_vtj_person_id_query_not_found_content()
+        else:
+            # VTJ integration is enabled and not mocked
+            return json.dumps(
+                VTJClient().get_personal_info(self.social_security_number, end_user)
+            )
+
+    def _vtj_values(self, jsonpath_expression) -> list:
+        try:
+            vtj_json = json.loads(self.encrypted_original_vtj_json)
+        except (json.decoder.JSONDecodeError, TypeError):
+            return []
+
+        return [
+            match.value
+            for match in jsonpath_ng.parse(jsonpath_expression).find(vtj_json)
+        ]
+
     def handler_processing_url(self):
         return handler_youth_application_processing_url(self.pk)
 
@@ -211,6 +315,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
 
     def activated_page_url(self):
         return self._localized_frontend_page_url("activated")
+
+    def accepted_page_url(self):
+        return self._localized_frontend_page_url("accepted")
 
     def expired_page_url(self):
         return self._localized_frontend_page_url("expired")
@@ -274,7 +381,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                 "Kiitos! Ystävällisin terveisin, Kesäseteli-tiimi"
             ) % {"activation_link": activation_link}
 
-    def _processing_email_subject(self):
+    def processing_email_subject(self):
         with translation.override("fi"):
             return gettext("Nuoren kesäsetelihakemus: %(first_name)s %(last_name)s") % {
                 "first_name": self.first_name,
@@ -352,7 +459,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         :return: True if email was sent, otherwise False.
         """
         return send_mail_with_error_logging(
-            subject=self._processing_email_subject(),
+            subject=self.processing_email_subject(),
             message=self._processing_email_message(self._processing_link(request)),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[settings.HANDLER_EMAIL],
@@ -381,28 +488,39 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
             self.save()
         return self.is_active
 
-    def _set_handler(self, handler):
+    def _set_handler(self, handler, automatic_handling):
         try:
             self.handler = handler
         except ValueError:  # e.g. cannot assign AnonymousUser: Must be a User instance
             self.handler = None
-        if self.handler is None and not HandlerPermission.allow_empty_handler():
-            raise ValueError("Forbidden empty handler")
+        if self.handler is None:
+            if not (automatic_handling or HandlerPermission.allow_empty_handler()):
+                raise ValueError("Forbidden empty handler")
 
     @transaction.atomic
-    def _handle(self, status: YouthApplicationStatus, handler):
+    def _handle(
+        self,
+        status: YouthApplicationStatus,
+        handler,
+        encrypted_handler_vtj_json,
+        automatic_handling,
+    ):
         """
-        Handle the youth application by setting the status, handler and handled_at.
+        Handle the youth application by setting the status, encrypted_handler_vtj_json,
+        handler and handled_at.
 
         :param status: The target status
         :type status: YouthApplicationStatus
+        :param encrypted_handler_vtj_json: The VTJ JSON the handler used for handling
+        :type encrypted_handler_vtj_json: str
         :param handler: Handler user
         :type handler: None | AnonymousUser | User
         """
         if status not in YouthApplicationStatus.handled_values():
             raise ValueError(f"Invalid handle status: {status}")
         self.status = status
-        self._set_handler(handler)
+        self._set_handler(handler, automatic_handling)
+        self.encrypted_handler_vtj_json = encrypted_handler_vtj_json
         self.handled_at = timezone.now()
         self.save()
 
@@ -422,26 +540,67 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         )
 
     @property
+    def is_handled(self) -> bool:
+        return self.status in YouthApplicationStatus.handled_values()
+
+    @property
     def is_accepted(self) -> bool:
         return self.status == YouthApplicationStatus.ACCEPTED
 
-    def can_accept(self, handler) -> bool:
+    def can_accept_manually(self, handler, encrypted_handler_vtj_json) -> bool:
         return (
             self.status in YouthApplicationStatus.acceptable_values()
             and HandlerPermission.has_user_permission(handler)
+            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
             and not self.has_youth_summer_voucher
         )
 
     @transaction.atomic
-    def accept(self, handler) -> bool:
+    def accept_automatically(self) -> bool:
         """
-        Accept this youth application using given handler user if possible.
+        Accept this youth application automatically without handler if possible.
         Create related YouthSummerVoucher if changed to accepted.
 
         :return: self.is_accepted
         """
-        if self.can_accept(handler=handler):
-            self._handle(status=YouthApplicationStatus.ACCEPTED, handler=handler)
+        if self.can_accept_automatically:
+            self._handle(
+                status=YouthApplicationStatus.ACCEPTED,
+                handler=None,
+                encrypted_handler_vtj_json=self.encrypted_original_vtj_json,
+                automatic_handling=True,
+            )
+            self.create_youth_summer_voucher()
+        return self.is_accepted
+
+    @classmethod
+    def is_valid_encrypted_handler_vtj_json(cls, encrypted_handler_vtj_json):
+        try:
+            validate_json(encrypted_handler_vtj_json)
+        except ValidationError:
+            return False
+        vtj_json_dict = json.loads(encrypted_handler_vtj_json)
+        return (
+            "@xmlns" in vtj_json_dict and "vtjkysely" in vtj_json_dict["@xmlns"]
+        ) or (vtj_json_dict == {} and settings.DISABLE_VTJ)
+
+    @transaction.atomic
+    def accept_manually(self, handler, encrypted_handler_vtj_json) -> bool:
+        """
+        Accept this youth application manually using given handler user and handler VTJ
+        JSON if possible. Create related YouthSummerVoucher if changed to accepted.
+
+        :return: self.is_accepted
+        """
+        if self.can_accept_manually(
+            handler=handler, encrypted_handler_vtj_json=encrypted_handler_vtj_json
+        ):
+            self._handle(
+                status=YouthApplicationStatus.ACCEPTED,
+                handler=handler,
+                encrypted_handler_vtj_json=encrypted_handler_vtj_json,
+                automatic_handling=False,
+            )
             self.create_youth_summer_voucher()
         return self.is_accepted
 
@@ -449,21 +608,30 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
     def is_rejected(self) -> bool:
         return self.status == YouthApplicationStatus.REJECTED
 
-    def can_reject(self, handler) -> bool:
+    def can_reject(self, handler, encrypted_handler_vtj_json) -> bool:
         return (
             self.status in YouthApplicationStatus.rejectable_values()
             and HandlerPermission.has_user_permission(handler)
+            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
         )
 
     @transaction.atomic
-    def reject(self, handler) -> bool:
+    def reject(self, handler, encrypted_handler_vtj_json) -> bool:
         """
-        Reject youth application using given handler user if possible.
+        Reject youth application using given handler user and handler VTJ JSON if
+        possible.
 
         :return: self.is_rejected
         """
-        if self.can_reject(handler=handler):
-            self._handle(status=YouthApplicationStatus.REJECTED, handler=handler)
+        if self.can_reject(
+            handler=handler, encrypted_handler_vtj_json=encrypted_handler_vtj_json
+        ):
+            self._handle(
+                status=YouthApplicationStatus.REJECTED,
+                handler=handler,
+                encrypted_handler_vtj_json=encrypted_handler_vtj_json,
+                automatic_handling=False,
+            )
         return self.is_rejected
 
     @property
@@ -474,6 +642,76 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         return social_security_number_birthdate(self.social_security_number)
 
     @property
+    def is_9th_grader_age(self) -> bool:
+        """
+        If applicant's age correct for a ninth grader ("9. luokkalainen" in Finnish)?
+        """
+        return (self.created_at.year - self.birthdate.year) == 16  # e.g. 2022 - 2006
+
+    @property
+    def is_upper_secondary_education_1st_year_student_age(self) -> bool:
+        """
+        If applicant's age correct for an upper secondary education first year student
+        ("Toisen asteen ensimmäisen vuoden opiskelija" in Finnish)?
+        """
+        return (self.created_at.year - self.birthdate.year) == 17  # e.g. 2022 - 2005
+
+    @property
+    def is_social_security_number_valid_according_to_vtj(self) -> bool:
+        return are_same_text_lists(
+            self._vtj_values("$.Henkilo.Henkilotunnus.['@voimassaolokoodi', '#text']"),
+            ["1", self.social_security_number],
+        )
+
+    @property
+    def is_applicant_dead_according_to_vtj(self) -> bool:
+        return "1" in self._vtj_values("$.Henkilo.Kuolintiedot.Kuollut") or (
+            len(self._vtj_values("$.Henkilo.Kuolintiedot.Kuolinpvm")) > 0
+            and set(self._vtj_values("$.Henkilo.Kuolintiedot.Kuolinpvm")) != {None}
+        )
+
+    @property
+    def vtj_last_name(self):
+        if vtj_last_names := self._vtj_values("$.Henkilo.NykyinenSukunimi.Sukunimi"):
+            return vtj_last_names[0]
+        return None
+
+    @property
+    def attends_helsinkian_school(self) -> bool:
+        return not self.is_unlisted_school
+
+    @property
+    def vtj_home_municipality(self):
+        if vtj_home_municipality := self._vtj_values("$.Henkilo.Kotikunta.KuntaS"):
+            return vtj_home_municipality[0]
+        return ""
+
+    @property
+    def is_helsinkian(self) -> bool:
+        return are_same_texts(self.vtj_home_municipality, "Helsinki")
+
+    @property
+    def is_last_name_as_in_vtj(self) -> bool:
+        return are_same_texts(self.last_name, self.vtj_last_name)
+
+    @property
+    def is_applicant_in_target_group(self) -> bool:
+        if self.is_9th_grader_age:
+            return self.is_helsinkian or self.attends_helsinkian_school
+        elif self.is_upper_secondary_education_1st_year_student_age:
+            return self.is_helsinkian
+        return False
+
+    @property
+    def can_accept_automatically(self) -> bool:
+        return (
+            self.is_active
+            and not self.is_handled
+            and not self.need_additional_info
+            and not self.has_youth_summer_voucher
+        )
+
+    @property
     def need_additional_info(self) -> bool:
         """
         Does the youth application initially need additional info to be processed?
@@ -482,7 +720,12 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                  otherwise False. Note that this value does NOT change based on whether
                  additional info has been provided or not.
         """
-        return self.is_unlisted_school
+        return (
+            self.is_applicant_dead_according_to_vtj
+            or not self.is_social_security_number_valid_according_to_vtj
+            or not self.is_last_name_as_in_vtj
+            or not self.is_applicant_in_target_group
+        )
 
     @property
     def has_additional_info(self) -> bool:
@@ -523,29 +766,38 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         cls, email, social_security_number
     ) -> bool:
         """
-        Is there an active youth application created that uses the same email or social
-        security number as this youth application?
+        Is there an active non-rejected youth application created that uses the same
+        email or social security number as this youth application?
 
         :return: True if this youth application's email or social security number are
-                 used by at least one active youth application, otherwise False.
+                 used by at least one active non-rejected youth application, otherwise
+                 False.
         """
         return (
             cls.objects.matches_email_or_social_security_number(
                 email, social_security_number
             )
             .active()
+            .non_rejected()
             .exists()
         )
 
     @classmethod
     def is_email_used(cls, email) -> bool:
         """
-        Is this youth application's email used by unexpired or active youth application?
+        Is this youth application's email used by unexpired or active youth application
+        which has not been rejected?
 
         :return: True if this youth application's email is used by at least one
-                 unexpired or active youth application, otherwise False.
+                 unexpired or active youth application which has not been rejected,
+                 otherwise False.
         """
-        return cls.objects.filter(email=email).unexpired_or_active().exists()
+        return (
+            cls.objects.filter(email=email)
+            .unexpired_or_active()
+            .non_rejected()
+            .exists()
+        )
 
     @property
     def name(self):
@@ -597,7 +849,7 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     def year(self) -> int:
         return self.youth_application.created_at.year
 
-    def _email_subject(self, language):
+    def email_subject(self, language):
         with translation.override(language):
             return gettext("Vuoden %(year)s Kesäsetelisi") % {"year": self.year}
 
@@ -622,13 +874,23 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
             content_id="helsinki_logo",
         )
 
-    def send_youth_summer_voucher_email(self, language) -> bool:
+    def send_youth_summer_voucher_email(
+        self, language, send_to_youth=True, send_to_handler=True
+    ) -> bool:
         """
         Send youth summer voucher email with given language to the applicant.
 
         :param language: The language to be used in the email
+        :param send_to_youth: Send the voucher to youth's email
+        :param send_to_handler: Send a copy of the voucher to the handler email
         :return: True if email was sent, otherwise False.
         """
+        recipient_list = [self.youth_application.email] if send_to_youth else None
+        bcc = [settings.HANDLER_EMAIL] if send_to_handler else None
+
+        if not (recipient_list or bcc):
+            return False
+
         with translation.override(language):
             context = {
                 "first_name": self.youth_application.first_name,
@@ -641,10 +903,11 @@ class YouthSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
                 "year": self.year,
             }
             return send_mail_with_error_logging(
-                subject=self._email_subject(language),
+                subject=self.email_subject(language),
                 message=get_template("youth_summer_voucher_email.txt").render(context),
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[self.youth_application.email],
+                recipient_list=recipient_list,
+                bcc=bcc,
                 error_message=_("Unable to send youth summer voucher email"),
                 html_message=get_template("youth_summer_voucher_email.html").render(
                     context
@@ -684,6 +947,10 @@ class EmployerApplication(HistoricalModel, TimeStampedModel, UUIDModel):
         max_length=256,
         blank=True,
         verbose_name=_("invoicer work address"),
+    )
+    bank_account_number = IBANField(
+        verbose_name=_("bank account number"),
+        blank=True,
     )
 
     # contact information
@@ -825,6 +1092,23 @@ class EmployerSummerVoucher(HistoricalModel, TimeStampedModel, UUIDModel):
     )
 
     ordering = models.IntegerField(default=0)
+
+    @property
+    def last_submitted_at(self) -> Optional[datetime]:
+        if (
+            last_submitted_history_entry := self.history.filter(
+                pk=self.pk, application__status=EmployerApplicationStatus.SUBMITTED
+            )
+            .order_by("-modified_at")
+            .first()
+        ):
+            return last_submitted_history_entry.modified_at
+        else:
+            return (
+                self.modified_at
+                if self.application.status == EmployerApplicationStatus.SUBMITTED
+                else None
+            )
 
     class Meta:
         verbose_name = _("summer voucher")

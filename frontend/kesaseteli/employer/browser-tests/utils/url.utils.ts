@@ -4,6 +4,7 @@ import {
   getCurrentPathname,
   getUrl,
   getUrlParam,
+  goToUrl,
 } from '@frontend/shared/browser-tests/utils/url.utils';
 import { Language } from '@frontend/shared/src/i18n/i18n';
 import TestController, { ClientFunction } from 'testcafe';
@@ -19,15 +20,15 @@ export const getUrlUtils = (t: TestController) => {
 
   const actions = {
     async navigateToIndexPage() {
-      await t.navigateTo(getFrontendUrl(`/`));
+      await goToUrl(t, getFrontendUrl(`/`));
       await pageIsLoaded();
     },
     async navigateToLoginPage() {
-      await t.navigateTo(getFrontendUrl(`/login`));
+      await goToUrl(t, getFrontendUrl(`/login`));
       await pageIsLoaded();
     },
     async navigateToCompanyPage() {
-      await t.navigateTo(getFrontendUrl(`/company`));
+      await goToUrl(t, getFrontendUrl(`/company`));
       await pageIsLoaded();
     },
     async refreshPage() {
@@ -42,16 +43,11 @@ export const getUrlUtils = (t: TestController) => {
         .expect(getCurrentPathname())
         .eql(`/${locale}/login`, await getErrorMessage(t));
     },
-    async urlChangedToApplicationPage(
-      locale: Language = 'fi',
-      expectedApplicationId?: string
-    ) {
-      await t
-        .expect(getCurrentPathname())
-        .eql(`/${locale}/application`, await getErrorMessage(t), {
-          timeout: 60_000,
-        });
+    async urlChangedToApplicationPage(expectedApplicationId?: string) {
       const applicationId = (await getUrlParam('id')) ?? undefined;
+      if (!applicationId) {
+        throw new Error('No application id found!');
+      }
       if (expectedApplicationId) {
         await t
           .expect(applicationId)

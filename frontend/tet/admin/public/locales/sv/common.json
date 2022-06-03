@@ -81,6 +81,7 @@
 		"preview": "Förhandsgranskning",
     "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
     "language": "PRAO-platsens språk",
+		"leaveConfirm": "Inga ändringar har sparats. Vill du fortfarande lämna?",
     "employerInfo": {
 			"contactPerson": "Kontaktperson",
       "header": "Uppgifter om verksamhetsställe",
@@ -144,7 +145,8 @@
     "privacyPolicy": "Registerbeskrivning",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "Ge feedback",
-    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
+    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
+		"newTab": "länken öppnas i en ny flik"
   },
   "languages": {
     "fi": "Suomeksi",
@@ -207,5 +209,11 @@
         "remove": "Ta bort filen"
       }
     }
-  }
+  },
+	"map": {
+		"readMore": "Läs mer",
+		"showList": "visa resultat i en lista",
+		"showMap": "Visa resultat på en karta",
+    "helsinkiCity": "Helsingfors stad"
+	}
 }

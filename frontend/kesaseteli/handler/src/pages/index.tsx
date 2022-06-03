@@ -32,7 +32,7 @@ const handlerIndex: NextPage = () => {
       <Head>
         <title>{t(`common:appName`)}</title>
       </Head>
-      <FormSection columns={2} withoutDivider>
+      <FormSection columns={2} withoutDivider data-testid="handler-form">
         <FormSectionHeading
           $colSpan={2}
           size="s"

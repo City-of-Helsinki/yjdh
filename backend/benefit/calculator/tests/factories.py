@@ -3,6 +3,7 @@ import random
 from datetime import date, timedelta
 
 import factory
+
 from applications.tests.factories import ApplicationFactory
 from calculator.enums import RowType
 from calculator.models import (

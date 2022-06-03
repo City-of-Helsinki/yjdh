@@ -1,9 +1,10 @@
-from applications.enums import ApplicationStatus
-from applications.models import Application
 from django.utils.translation import gettext_lazy as _
-from messages.models import Message, MessageType
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound, PermissionDenied
+
+from applications.enums import ApplicationStatus
+from applications.models import Application
+from messages.models import Message, MessageType
 from users.utils import get_company_from_request, get_request_user_from_context
 
 

@@ -17,8 +17,11 @@ export const EMAIL_REGEX =
 
 export const DATE_UI_REGEX =
   /^(0?[1-9]|[12]\d|3[01])\.(0?[1-9]|1[0-2])\.\d{4}$/;
+
 export const DATE_BACKEND_REGEX =
   /^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$/;
+
+export const DATE_VTJ_REGEX = /^\d{4}(0?[1-9]|1[0-2])(0?[1-9]|[12]\d|3[01])$/;
 
 // a modification of finnish ssn regex https://regex101.com/library/HPFWw6 that does not accept "fake" (keinotunnus) ssn's:
 // https://www.tuomas.salste.net/doc/tunnus/henkilotunnus.html#keinotunnus (more info only in finnish)

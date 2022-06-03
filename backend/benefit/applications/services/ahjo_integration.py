@@ -4,8 +4,9 @@ from io import BytesIO
 
 import jinja2
 import pdfkit
-from applications.enums import ApplicationStatus, OrganizationType
 from django.utils import timezone
+
+from applications.enums import ApplicationStatus, OrganizationType
 
 PDF_PATH = os.path.join(os.path.dirname(__file__) + "/pdf_templates")
 TEMPLATE_ID_BENEFIT_WITH_DE_MINIMIS_AID = "benefit_with_de_minimis_aid"

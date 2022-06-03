@@ -1,51 +1,45 @@
-import requestLogger from '@frontend/kesaseteli-shared/browser-tests/utils/request-logger';
 import { getBackendDomain } from '@frontend/kesaseteli-shared/src/backend-api/backend-api';
-import {
-  getHeaderComponents,
-  Translation,
-} from '@frontend/shared/browser-tests/components/header.components';
-import { HttpRequestHook } from '@frontend/shared/browser-tests/hooks/http-request-hook';
+import { HttpRequestHook } from '@frontend/shared/browser-tests/http-utils/http-request-hook';
+import Header from '@frontend/shared/browser-tests/page-models/Header';
+import requestLogger, {
+  filterLoggedRequests,
+} from '@frontend/shared/browser-tests/utils/request-logger';
 import { clearDataToPrintOnFailure } from '@frontend/shared/browser-tests/utils/testcafe.utils';
 
+import getEmployerTranslationsApi from '../../src/__tests__/utils/i18n/get-employer-translations-api';
 import { doEmployerLogin } from '../actions/employer-header.actions';
 import { getFrontendUrl } from '../utils/url.utils';
 
-const appNameTranslation: Translation = {
-  fi: 'Kesäseteli',
-  en: 'Summer job voucher',
-  sv: 'Sommarsedeln',
-};
-
 const url = getFrontendUrl('/');
-let headerComponents: ReturnType<typeof getHeaderComponents>;
+const translationsApi = getEmployerTranslationsApi();
 
 fixture('Frontpage')
   .page(url)
   .requestHooks(requestLogger, new HttpRequestHook(url, getBackendDomain()))
   .beforeEach(async (t) => {
     clearDataToPrintOnFailure(t);
-    headerComponents = getHeaderComponents(t, appNameTranslation);
   })
   .afterEach(async () =>
     // eslint-disable-next-line no-console
-    console.log(requestLogger.requests)
+    console.log(filterLoggedRequests(requestLogger))
   );
 
 test('user can authenticate and logout', async (t) => {
   await doEmployerLogin(t, 'fi');
-  const headerUser = await headerComponents.headerUser();
-  await headerUser.actions.clicklogoutButton();
-  await headerUser.expectations.userIsLoggedOut();
+  const header = new Header(translationsApi);
+  await header.clickLogoutButton();
+  await header.userIsLoggedOut();
 });
 
 test('can change to languages', async () => {
-  const languageDropdown = await headerComponents.languageDropdown();
-  const header = await headerComponents.header();
-  await header.expectations.titleIsTranslatedAs('fi');
-  await languageDropdown.actions.changeLanguage('fi', 'sv');
-  await header.expectations.titleIsTranslatedAs('sv');
-  await languageDropdown.actions.changeLanguage('sv', 'en');
-  await header.expectations.titleIsTranslatedAs('en');
-  await languageDropdown.actions.changeLanguage('en', 'fi');
-  await header.expectations.titleIsTranslatedAs('fi');
+  const header = new Header(translationsApi);
+  await header.isLoaded();
+  await header.changeLanguage('sv');
+  const headerSv = new Header(translationsApi, 'sv');
+  await headerSv.isLoaded();
+  await headerSv.changeLanguage('en');
+  const headerEn = new Header(translationsApi, 'en');
+  await headerEn.isLoaded();
+  await headerEn.changeLanguage('fi');
+  await new Header(translationsApi, 'fi').isLoaded();
 });

@@ -1,26 +1,24 @@
+import { IconArrowLeft, IconLocation } from 'hds-react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import TetPosting from 'tet-shared/types/tetposting';
-import Container from 'tet-shared//components/container/Container';
+import Container from 'tet-shared/components/container/Container';
 import {
-  $PostingHero,
-  $ImageContainer,
-  $HeroWrapper,
-  $HeroContentWrapper,
-  $Keywords,
-  $Title,
-  $Subtitle,
-  $Date,
-  $Spots,
   $Address,
-  $ContactTitle,
   $BackButton,
   $ContactInfo,
-} from 'tet-shared//components/posting/postingHero/PostingHero.sc';
-import { useTranslation } from 'next-i18next';
-import { OptionType } from 'tet-shared/types/classification';
-import { IconLocation, IconArrowLeft, Tag } from 'hds-react';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+  $ContactTitle,
+  $Date,
+  $HeroContentWrapper,
+  $HeroWrapper,
+  $ImageContainer,
+  $PostingHero,
+  $Spots,
+  $Subtitle,
+  $Title,
+} from 'tet-shared/components/posting/postingHero/PostingHero.sc';
+import TetPosting from 'tet-shared/types/tetposting';
 
 type Props = {
   posting: TetPosting;
@@ -31,37 +29,20 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const date = `${posting.start_date} - ${posting.end_date ?? ''}`;
-  const street_address = posting.location.street_address
+  const street_address = posting?.location?.street_address
     ? `, ${posting.location.street_address}`
     : '';
-  const postal_code = posting.location.postal_code
+  const postal_code = posting?.location?.postal_code
     ? `, ${posting.location.postal_code}`
     : '';
-  const city = posting.location.city ? `, ${posting.location.city}` : '';
-  const address = posting.location.name + street_address + postal_code + city;
+  const city = posting?.location?.city ? `, ${posting.location.city}` : '';
+  const name = posting?.location?.name ?? '';
+  const address = name + street_address + postal_code + city;
 
-  const backButtonHandler = () => {
-    void router.push('/postings');
-  };
-
-  const keywordList = (list: OptionType[], color: string) => {
-    return (
-      <>
-        {list.map((keyword: OptionType) => (
-          <li>
-            <Tag
-              theme={{
-                '--tag-background': `var(--color-${color})`,
-                '--tag-color': 'var(--color-black-90)',
-                '--tag-focus-outline-color': 'var(--color-black-90)',
-              }}
-            >
-              {keyword.name}
-            </Tag>
-          </li>
-        ))}
-      </>
-    );
+  const backButtonHandler = (): void => {
+    // TODO we should know that the user hasn't navigated to this page via a
+    // link from another site
+    void router.back();
   };
 
   return (
@@ -69,15 +50,11 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
       <Container>
         <$HeroWrapper>
           {showBackButton && (
-            <$BackButton onClick={backButtonHandler}>
+            <$BackButton id="backButton" onClick={backButtonHandler}>
               <IconArrowLeft size="m" />
             </$BackButton>
           )}
-          <$ImageContainer
-            imageUrl={
-              'https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg'
-            }
-          >
+          <$ImageContainer imageUrl="https://kirkanta.kirjastot.fi/files/images/medium/kallio-4f901aa2.jpg">
             <Image
               width="100%"
               height="100%"
@@ -85,20 +62,12 @@ const PostingHero: React.FC<Props> = ({ posting, showBackButton = false }) => {
               objectFit="cover"
               src="/event_placeholder_B.jpg"
               alt="event placeholder"
-              priority={true}
+              priority
             />
           </$ImageContainer>
           <$HeroContentWrapper>
-            <$Keywords>
-              {keywordList(posting.keywords_working_methods, 'success-light')}
-              {keywordList(
-                posting.keywords_attributes,
-                'coat-of-arms-medium-light'
-              )}
-              {keywordList(posting.keywords, 'engel-medium-light')}
-            </$Keywords>
             <$Title>{posting.org_name}</$Title>
-            <$Subtitle>{posting.title}</$Subtitle>
+            <$Subtitle id="postingTitle">{posting.title}</$Subtitle>
             <$Date>{date}</$Date>
             <$Spots>
               {t('common:postingTemplate.spots')}: {posting.spots}

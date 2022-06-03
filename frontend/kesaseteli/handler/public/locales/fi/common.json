@@ -25,9 +25,6 @@
       "text": " Yritä myöhemmin uudelleen"
     }
   },
-  "vtj": {
-    "title": "Tiedot väestötietojärjestelmästä"
-  },
   "handlerApplication": {
     "title": "Hakemuksen tiedot",
     "name": "Nimi",
@@ -49,6 +46,22 @@
       "additional_information_requested": "Nuori ei ole vielä täyttänyt lisätietohakemusta",
       "accepted": "Hyväksytty",
       "rejected": "Hylätty"
+    },
+    "vtjInfo": {
+      "title": "Tiedot väestötietojärjestelmästä",
+      "name": "Nimi",
+      "ssn": "Henkilötunnus",
+      "address": "Osoite",
+      "showRawData": "Näytä kaikki raakadata"
+    },
+    "vtjException": {
+      "notFound": "Väestötietojärjestelmästä ei löytynyt tietoja henkilötunnuksella: {{ social_security_number }}!",
+      "differentLastName": "Sukunimi poikkeaa hakemukselle syötetystä sukunimestä ({{ last_name }})",
+      "notInTargetAgeGroup": "Henkilö ei kuulu iän puolesta kohderyhmään ({{ age }}-vuotias)",
+      "addressNotFound": "Osoitetietoja ei löytynyt!",
+      "differentPostCode": "Postikoodi poikkeaa hakemukselle syötetystä postikoodista ({{ postcode }})",
+      "outsideHelsinki": "Henkilö ei asu Helsingissä",
+      "isDead": "Henkilö on kuollut!"
     }
   },
   "reasons": {
@@ -64,9 +77,6 @@
     "maxLength": "Syöttämäsi tieto on liian pitkä",
     "pattern": "Syöttämäsi tieto on virheellistä muotoa",
     "validate": "Syöttämäsi tieto on virheellistä muotoa"
-  },
-  "assistive": {
-    "toggleMenu": "Avaa valikko"
   },
   "dialog": {
     "cancel": "Peruuta",

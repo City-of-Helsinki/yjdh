@@ -58,18 +58,52 @@
       "last_name": "Last name",
       "social_security_number": "Personal identity code",
       "postcode": "Postal code",
-      "schoolsDropdown": "School",
-      "schoolsLoading": "Loading up options ...",
+      "selectedSchool": "School",
+      "schoolsLoading": "Loading up options...",
       "schoolsPlaceholder": "Choose your school from the list",
       "is_unlisted_school": "School not found on the list",
-      "schoolName": "Name of the school",
-      "schoolNamePlaceholder": "E.g. International School of Helsinki",
+      "unlistedSchool": "Name of the school",
+      "unlistedSchoolPlaceholder": "E.g. International School of Helsinki",
       "email": "Email address",
       "phone_number": "Phone number",
       "termsAndConditions": "I have read and accept the <a>terms of use</a>.",
       "termsAndConditionsLink": "https://nuorten.helsinki/en/studies-and-work/the-summer-job-voucher/for-summer-job-seekers/",
       "sendButton": "Submit information",
-      "requiredInfo": "All fields marked with * are required"
+      "requiredInfo": "All fields marked with * are required",
+      "sendItAnyway": "ENG Mikäli tiedot ovat mielestäsi oikein, voit lähettää ne meille tarkastettavaksi. Palaamme asiaan kun olemme käsitelleet tietosi.",
+      "forceSubmitLink": "ENG Lähetä"
+    },
+    "checkNotification" : {
+      "label" : "ENG Hups! Jokin tiedoista ei ole oikein",
+      "recheck" : "ENG Tarkistathan, että olet kirjoittanut nimesi ja henkilötunnuksesi kuten ne ovat Kela-kortissasi.",
+      "validation": "ENG Tarkista seuraavat kentät: {{ fields}}"
+    }
+  },
+  "additionalInfo": {
+    "title": "ENG Tarkenna hakemustasi",
+    "notification" : {
+      "confirmed": "ENG Sähköpostiosoite on vahvistettu",
+      "confirmedDescription": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "sent" : "ENG Kiitos! Tarkennus lähetetty!",
+      "notFound": "ENG Hakemusta ei löytynyt"
+    },
+    "paragraph_1": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "paragraph_2": "ENG Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "form" : {
+      "reasons": "ENG Otsikko",
+      "reasonsPlaceholder": "ENG Valitse seuraavista vaihtoehdoista",
+      "additional_info_description": "ENG Lisätiedot",
+      "additional_info_attachments": "ENG Liitetiedostot",
+      "additional_info_attachmentsHelper": "ENG Voit lisätä korkeintaan 5 liitetiedostoa. Sallitut tiedostomuodot: pdf, jpg ja png. Maksimikoko 10MB",
+      "sendButton": "Lähetä tiedot"
+    },
+    "reasons": {
+      "unlisted_school": "ENG Kouluani ei löytynyt listalta",
+      "student_in_helsinki_but_not_resident": "ENG En asu Helsingissä, mutta käyn Helsinkiläistä koulua",
+      "moving_to_helsinki": "ENG En asu vielä Helsingissä, mutta olen muuttamassa Helsinkiin",
+      "underage_or_overage": "ENG En kuulu iän puolesta kohderyhmään, mutta vuosiluokan puolesta kyllä",
+      "personal_info_differs_from_vtj": "ENG Henkilötietoni poikkeavat väestötietojärjestelmän tiedoista",
+      "other": "ENG Muu, kerro alla"
     }
   },
   "errors": {
@@ -80,35 +114,49 @@
     "validate": "The information you entered is in an incorrect format"
   },
   "assistive": {
-    "toggleMenu": "Open the menu"
+    "clearChoice": "ENG Tyhjennä valinta",
+    "clearAllChoices": "ENG Tyhjennä kaikki valinnat"
   },
-  "thankyouPage" : {
-    "title": "Thank You!",
-    "notificationTitle": "Excellent! You sent your information to the Summer Job Vouchers´ digital system.",
-    "notificationMessage": "You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
-    "goToFrontendPage": "Go to the Summer Job Voucher front page"
-  },
-  "activationErrorPage" : {
-    "goToFrontendPage": "Check your information and send again"
-  },
-  "emailInUsePage" : {
-    "title": "Oops! The email is already in use.",
-    "notificationMessage": " If you made a mistake, please wait {{ expirationHours }} hours and try again."
-  },
-  "alreadyAssignedPage" : {
-    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
-  },
-  "activatedPage" : {
-    "title": "Your Summer Job Voucher has been activated!",
-    "notificationTitle": "Confirmation succeeded",
-    "notificationMessage": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!"
-  },
-  "expiredPage" : {
-    "title": "Oops! The confirmation link has expired",
-    "notificationMessage": "Unfortunately, it has been more than {{ expirationHours }} hours since your registration was confirmed. Please fill in the registration form again.",
-    "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
-  },
-  "alreadyActivatedPage" : {
-    "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now."
+  "notificationPages": {
+    "thankyou" : {
+      "title": "Excellent! You sent your information to the Summer Job Vouchers´ digital system.",
+      "message": "You have received an email with an activation link for your Summer Job Voucher, which must be activated within {{ expirationHours }} hours.",
+      "goToFrontendPage": "Go to the Summer Job Voucher front page"
+    },
+    "emailInUse" : {
+      "title": "Oops! The email is already in use.",
+      "message": " If you made a mistake, please wait {{ expirationHours }} hours and try again.",
+      "goToFrontendPage": "ENG Tarkista tiedot ja lähetä kesäseteli uudelleen"
+    },
+    "alreadyAssigned" : {
+      "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "activated" : {
+      "title": "Confirmation succeeded",
+      "message": "Great! You have submitted your information to the system and your application will be processed as soon as possible - within one month at the latest. You will receive the Summer Voucher and instructions for use by e-mail once your application has been checked!",
+      "goToFrontendPage": ""
+    },
+    "accepted" : {
+      "title": "EN Hienoa! Olet lähettänyt tietosi järjestelmään",
+      "message": "EN Saat pian kesäsetelin ohjeineen sähköpostiisi",
+      "goToFrontendPage": ""
+    },
+    "expired" : {
+      "title": "Oops! The confirmation link has expired",
+      "message": "Unfortunately, it has been more than {{ expirationHours }} hours since your registration was confirmed. Please fill in the registration form again.",
+      "goToFrontendPage": "Register yourself and send the Summer Job Voucher again"
+    },
+    "alreadyActivated" : {
+      "title": "Oops! You already sent a Summer Job Voucher application, which is being processed now.",
+      "message": "",
+      "goToFrontendPage": ""
+    },
+    "inadmissibleData" : {
+      "title": "ENG Hups! Antamillasi tiedoilla ei voi hakea Kesäseteliä.",
+      "message": "ENG Tarkistahan tietosi ja lähetä rekisteröitymislomake uudestaan.",
+      "goToFrontendPage": "ENG Tarkista tiedot ja lähetä kesäseteli uudelleen"
+    }
   }
 }

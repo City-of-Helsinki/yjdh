@@ -1,4 +1,4 @@
-name: Kesaseteli-shared Lint, Unit and Component tests
+name: (TET) Shared Frontend Lint, Unit and Component tests
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 defaults:
   run:
-    working-directory: ./frontend/kesaseteli/shared
+    working-directory: ./frontend/tet/shared
 jobs:
   test:
     name: Test
@@ -42,7 +42,7 @@ jobs:
       - name: Run tests
         run: yarn test:coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3
       - name: Shared test failure slack notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -50,6 +50,6 @@ jobs:
           SLACK_COLOR: ${{ job.status }}
           SLACK_USERNAME: GitHub-Alerts
           SLACK_TITLE: ${{ github.workflow }} has *FAILED*!
-          SLACK_MESSAGE: "*Kesaseteli-shared tests have failed on ${{ github.ref }}!*"
+          SLACK_MESSAGE: "*TET-shared tests have failed on ${{ github.ref }}!*"
           SLACK_CHANNEL: yjdh-alerts
         if: failure() && (contains(github.ref, 'develop') || contains(github.ref, 'main'))

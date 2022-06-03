@@ -1,10 +1,5 @@
 import logging
 
-from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
-from companies.api.v1.serializers import CompanySerializer
-from companies.models import Company
-from companies.services import get_or_create_organisation_with_business_id
-from companies.tests.data.company_data import get_dummy_company_data
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpRequest
@@ -13,8 +8,13 @@ from requests.exceptions import HTTPError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from shared.oidc.utils import get_organization_roles
+
+from common.permissions import BFIsAuthenticated, TermsOfServiceAccepted
+from companies.api.v1.serializers import CompanySerializer
+from companies.models import Company
+from companies.services import get_or_create_organisation_with_business_id
+from companies.tests.data.company_data import get_dummy_company_data
 
 LOGGER = logging.getLogger(__name__)
 
@@ -46,12 +46,21 @@ class GetCompanyView(APIView):
     @transaction.atomic
     def get_mock(self, request: HttpRequest, format: str = None) -> Response:
         # This mocked get method will be used for testing purposes for the frontend.
+        # If the dummy company does not already exist in the database, create it,
+        # so that the validation logic in the API works.
         session_id = request.META.get("HTTP_SESSION_ID")
         if session_id == "-1":
             return self.ytj_api_error
 
-        company = Company(**get_dummy_company_data())
-        company_data = CompanySerializer(company).data
+        dummy_data = get_dummy_company_data()
+        dummy_company = Company.objects.filter(
+            business_id=dummy_data["business_id"]
+        ).first()
+        if not dummy_company:
+            del dummy_data["id"]
+            dummy_company = Company(**dummy_data)
+            dummy_company.save()
+        company_data = CompanySerializer(dummy_company).data
 
         return Response(company_data)
 

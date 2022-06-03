@@ -8,6 +8,7 @@ type CommonAccordionProps = React.PropsWithChildren<{
   initiallyOpen?: boolean;
   onToggle: (isOpen: boolean) => void;
   hasError?: boolean;
+  style?: React.CSSProperties;
 }>;
 
 type CardAccordionProps = Omit<CommonAccordionProps, 'card' | 'border'> & {

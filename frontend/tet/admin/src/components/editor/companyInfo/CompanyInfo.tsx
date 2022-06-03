@@ -11,32 +11,33 @@ import useValidationRules from 'tet/admin/hooks/translation/useValidationRules';
 import { LocationType, OptionType } from 'tet-shared/types/classification';
 import ComboboxSingleSelect from 'tet/admin/components/editor/ComboboxSingleSelect';
 import TetPosting from 'tet-shared/types/tetposting';
-import { getLocalizedString } from 'tet-shared/backend-api/transformations';
-import { Language } from 'shared/i18n/i18n';
+import useEventPostingTransformation from 'tet-shared/hooks/backend/useEventPostingTransformation';
+import { useFormContext } from 'react-hook-form';
 
 const CompanyInfo: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const theme = useTheme();
   const [addressSearch, setAddressSearch] = React.useState('');
   const { name } = useValidationRules();
+  const { getLocalizedString } = useEventPostingTransformation();
+  const { getValues } = useFormContext<TetPosting>();
 
   const keywordsResults = useQuery(['keywords', addressSearch], () => getAddressList(addressSearch));
-  const locale = i18n.language as Language;
 
   const keywords: LocationType[] = React.useMemo(() => {
     return keywordsResults.data
       ? keywordsResults.data.map(
           (keyword) =>
             ({
-              name: getLocalizedString(keyword.name, locale),
-              label: `${getLocalizedString(keyword.name, locale)}, ${getLocalizedString(
-                keyword.street_address,
-                locale,
-              )}, ${keyword.postal_code ?? ''}`,
+              name: getLocalizedString(keyword.name),
+              label: `${getLocalizedString(keyword.name)}, ${getLocalizedString(keyword.street_address)}, ${
+                keyword.postal_code ?? ''
+              }`,
               value: keyword['@id'],
-              street_address: getLocalizedString(keyword.street_address, locale),
+              street_address: getLocalizedString(keyword.street_address),
               postal_code: keyword.postal_code ?? '',
-              city: getLocalizedString(keyword.address_locality, locale),
+              position: keyword.position,
+              city: getLocalizedString(keyword.address_locality),
             } as LocationType),
         )
       : [];
@@ -50,6 +51,10 @@ const CompanyInfo: React.FC = () => {
   const addressFilterHandler = (options: OptionType[], search: string): OptionType[] => {
     filterSetter(search);
     return options;
+  };
+
+  const locationRequired = () => {
+    return getValues('location')?.value.length > 0 ? true : t('common:editor.posting.validation.required');
   };
 
   return (
@@ -79,7 +84,7 @@ const CompanyInfo: React.FC = () => {
               options={keywords}
               optionLabelField={'label'}
               filter={addressFilterHandler}
-              validation={{ required: { value: true, message: t('common:editor.posting.validation.required') } }}
+              validation={{ validate: locationRequired }}
             ></ComboboxSingleSelect>
           </$GridCell>
         </$GridCell>

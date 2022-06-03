@@ -44,12 +44,23 @@ const TextInput = <T,>({
   errorText,
   registerOptions = {},
   onChange,
-  ...$gridCellProps
+  ...rest
 }: TextInputProps<T>): React.ReactElement<T> => {
-  const { register } = useFormContext<T>();
+  const { $colSpan,$rowSpan, $colStart, alignSelf,justifySelf } = rest;
+  const $gridCellProps = { $colSpan,$rowSpan, $colStart, alignSelf,justifySelf};
+  const { register, watch } = useFormContext<T>();
+  const value = watch(id) as string;
   const preventScrolling = React.useCallback(
     (event: React.WheelEvent<HTMLInputElement>) => event.currentTarget.blur(),
     []
+  );
+
+  const lengthIndicator = React.useMemo(
+    () =>
+      type === 'textArea' && registerOptions.maxLength && value?.length > 0
+        ? `${value?.length}/${registerOptions.maxLength as number}`
+        : undefined,
+    [registerOptions.maxLength, type, value?.length]
   );
 
   return (
@@ -68,6 +79,7 @@ const TextInput = <T,>({
             ? String(registerOptions.maxLength)
             : undefined
         }
+        helperText={lengthIndicator}
         defaultValue={initialValue}
         onWheel={preventScrolling}
         errorText={errorText}

@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+
 from applications.api.v1.serializers import ApplicantApplicationSerializer
 from applications.enums import BenefitType
 from applications.tests.conftest import *  # noqa

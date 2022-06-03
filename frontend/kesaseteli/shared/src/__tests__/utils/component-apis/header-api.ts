@@ -20,10 +20,10 @@ const languageMenuButtonAriaLabels = {
 };
 
 const expectations = {
-  userIsLoggedIn: async (expectedUser: User): Promise<void> => {
+  userIsLoggedIn: async (expectedUser?: User): Promise<void> => {
     await screen.findByRole('button', {
       name: new RegExp(
-        `(käyttäjä)|(header.userAriaLabelPrefix) ${expectedUser.name}`,
+        `(käyttäjä)|(header.userAriaLabelPrefix) ${expectedUser?.name ?? ''}`,
         'i'
       ),
     });
@@ -59,7 +59,7 @@ const actions = {
       })[0] // this is due to ssr bug in hds header component, it's in the dom twice after ssr and before csr
     );
   },
-  clickLogoutButton: async (user: User): Promise<void> => {
+  clickLogoutButton: (user: User): void => {
     userEvent.click(
       screen.getByRole('button', {
         name: new RegExp(

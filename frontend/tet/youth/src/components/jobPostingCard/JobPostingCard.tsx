@@ -73,9 +73,10 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
               backgroundColor: `${theme.colors.black60}`,
               borderColor: `${theme.colors.black60}`,
             }}
-            onClick={readMoreHandler}
+            role="link"
             size="small"
             type="button"
+            onClick={readMoreHandler}
           >
             {t('common:postings.readMore')}
           </Button>

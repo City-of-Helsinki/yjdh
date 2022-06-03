@@ -3,6 +3,8 @@ import random
 from datetime import date, timedelta
 
 import factory
+from shared.service_bus.enums import YtjOrganizationCode
+
 from applications.enums import ApplicationStatus, ApplicationStep, BenefitType
 from applications.models import (
     AhjoDecision,
@@ -16,8 +18,6 @@ from applications.models import (
 from calculator.models import Calculation
 from companies.tests.factories import CompanyFactory
 from users.tests.factories import HandlerFactory
-
-from shared.service_bus.enums import YtjOrganizationCode
 
 
 class DeMinimisAidFactory(factory.django.DjangoModelFactory):

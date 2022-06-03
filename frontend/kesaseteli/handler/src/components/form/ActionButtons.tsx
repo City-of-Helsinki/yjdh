@@ -1,7 +1,7 @@
 import { Button, IconCheck, IconCross } from 'hds-react';
 import useCompleteYouthApplicationQuery from 'kesaseteli/handler/hooks/backend/useCompleteYouthApplicationQuery';
 import CompleteOperation from 'kesaseteli/handler/types/complete-operation';
-import CreatedYouthApplication from 'kesaseteli-shared/types/created-youth-application';
+import ActivatedYouthApplication from 'kesaseteli-shared/types/activated-youth-application';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import {
@@ -12,15 +12,17 @@ import useConfirm from 'shared/hooks/useConfirm';
 import { useTheme } from 'styled-components';
 
 type Props = GridCellProps & {
-  id: CreatedYouthApplication['id'];
+  application: ActivatedYouthApplication;
 };
 
-const HandlerForm: React.FC<Props> = ({ id, ...gridCellprops }) => {
+const ActionButtons: React.FC<Props> = ({ application, ...gridCellprops }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const { id, encrypted_handler_vtj_json } = application;
   const { confirm } = useConfirm();
   const { isLoading, mutate } = useCompleteYouthApplicationQuery(id);
-
+  const vtjDataNotFound =
+    !encrypted_handler_vtj_json || !('Henkilo' in encrypted_handler_vtj_json);
   const icon = React.useMemo(
     () => ({
       accept: <IconCheck aria-hidden />,
@@ -29,24 +31,18 @@ const HandlerForm: React.FC<Props> = ({ id, ...gridCellprops }) => {
     []
   );
 
-  const complete = React.useCallback(
-    async (type: CompleteOperation) => {
-      const isConfirmed = await confirm({
-        header: t(`common:dialog.${type}.title`),
-        content: t(`common:dialog.${type}.content`),
-        submitButtonLabel: t(`common:dialog.${type}.submit`),
-        submitButtonIcon: icon[type],
-        submitButtonVariant: type === 'reject' ? 'danger' : 'primary',
-      });
-      if (isConfirmed) {
-        mutate(type);
-      }
-    },
-    [confirm, icon, mutate, t]
-  );
-
-  const accept = React.useCallback(() => complete('accept'), [complete]);
-  const reject = React.useCallback(() => complete('reject'), [complete]);
+  const complete = async (type: CompleteOperation['type']): Promise<void> => {
+    const isConfirmed = await confirm({
+      header: t(`common:dialog.${type}.title`),
+      content: t(`common:dialog.${type}.content`),
+      submitButtonLabel: t(`common:dialog.${type}.submit`),
+      submitButtonIcon: icon[type],
+      submitButtonVariant: type === 'reject' ? 'danger' : 'primary',
+    });
+    if (isConfirmed) {
+      mutate({ type, encrypted_handler_vtj_json });
+    }
+  };
 
   return (
     <$GridCell {...gridCellprops}>
@@ -54,9 +50,9 @@ const HandlerForm: React.FC<Props> = ({ id, ...gridCellprops }) => {
         theme="coat"
         data-testid="accept-button"
         iconLeft={icon.accept}
-        onClick={accept}
+        onClick={() => complete('accept')}
         isLoading={isLoading}
-        disabled={isLoading}
+        disabled={vtjDataNotFound || isLoading}
         css={`
           margin-right: ${theme.spacing.l};
         `}
@@ -67,10 +63,10 @@ const HandlerForm: React.FC<Props> = ({ id, ...gridCellprops }) => {
         variant="danger"
         data-testid="reject-button"
         iconLeft={icon.reject}
-        onClick={reject}
+        onClick={() => complete('reject')}
         loadingText={t(`common:handlerApplication.saving`)}
         isLoading={isLoading}
-        disabled={isLoading}
+        disabled={vtjDataNotFound || isLoading}
       >
         {t(`common:handlerApplication.reject`)}
       </Button>
@@ -78,4 +74,4 @@ const HandlerForm: React.FC<Props> = ({ id, ...gridCellprops }) => {
   );
 };
 
-export default HandlerForm;
+export default ActionButtons;

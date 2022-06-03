@@ -1,32 +1,15 @@
 import CompanyInfoGrid from 'kesaseteli/employer/components/application/companyInfo/CompanyInfo';
-import Checkbox from 'kesaseteli/employer/components/application/form/Checkbox';
+import IbanInput from 'kesaseteli/employer/components/application/form/IbanInput';
 import TextInput from 'kesaseteli/employer/components/application/form/TextInput';
-import ContactInputs from 'kesaseteli/employer/components/application/steps/step1/ContactInputs';
 import EmployerErrorSummary from 'kesaseteli/employer/components/application/steps/step1/EmployerErrorSummary';
-import useInvoicerToggle from 'kesaseteli/employer/hooks/application/useInvoicerToggle';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
 import FormSection from 'shared/components/forms/section/FormSection';
-import useWizard from 'shared/hooks/useWizard';
-import Application from 'shared/types/application-form-data';
+import { EMAIL_REGEX } from 'shared/constants';
 
 const EmployerForm: React.FC = () => {
   const { t } = useTranslation();
   const stepTitle = t('common:application.step1.header');
-
-  const { trigger, formState } = useFormContext<Application>();
-
-  const [showInvoicer, toggleInvoicer] = useInvoicerToggle();
-  const { clearStepHistory } = useWizard();
-
-  const onToggleInvoicer = React.useCallback(() => {
-    if (formState.isSubmitted) {
-      void trigger();
-    }
-    toggleInvoicer();
-    clearStepHistory();
-  }, [formState.isSubmitted, toggleInvoicer, trigger, clearStepHistory]);
 
   return (
     <>
@@ -38,18 +21,27 @@ const EmployerForm: React.FC = () => {
       <CompanyInfoGrid />
       <EmployerErrorSummary />
       <FormSection columns={2}>
-        <ContactInputs type="contact_person" />
+        <TextInput
+          id="contact_person_name"
+          validation={{ required: true, maxLength: 256 }}
+        />
+        <TextInput
+          id="contact_person_email"
+          validation={{
+            required: true,
+            maxLength: 254,
+            pattern: EMAIL_REGEX,
+          }}
+        />
+        <TextInput
+          id="contact_person_phone_number"
+          validation={{ required: true, maxLength: 64 }}
+        />
         <TextInput
           id="street_address"
           validation={{ required: true, maxLength: 256 }}
         />
-        <Checkbox
-          $colSpan={2}
-          id="is_separate_invoicer"
-          onChange={onToggleInvoicer}
-          initialValue={showInvoicer}
-        />
-        {showInvoicer && <ContactInputs type="invoicer" />}
+       <IbanInput />
       </FormSection>
     </>
   );

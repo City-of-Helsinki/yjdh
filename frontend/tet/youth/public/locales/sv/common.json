@@ -1,5 +1,10 @@
 {
   "appName": "PRAO-platser",
+  "header": {
+    "linkSkipToContent": "Gå till innehållet",
+    "menuToggleAriaLabel": "Menyn",
+    "languageMenuButtonAriaLabel": "Ändra språk"
+  },
   "errorPage": {
     "title": "Ett oförväntat fel skedde",
     "message": "Något gick fel. Det kan hjälpa att ladda sidan på nytt.",
@@ -25,12 +30,19 @@
 		"askLinkContent": "Har du några frågor om tjänsten eller märkte du något konstigt i annonserna? Ta kontakt!"
 	},
 	"filters": {
-		"searchPlaceholder": "Uppge sökord eller platsnamn",
+		"searchJobs": "Sök efter PRAO-platser",
+		"searchPlaceholder": "Uppge sökord",
 		"workMethod": "Välj arbetssätt",
+		"workFeatures": "Arbetets karaktär",
 		"startDate": "Startdatum",
 		"endDate": "Slutdatum",
 		"language": "Välj språk",
-		"clearFilters": "Töm sökkriterier"
+		"clearFilters": "Töm sökkriterier",
+    "combobox": {
+      "toggleButtonAriaLabel": "Visa/dölj alternativ",
+      "clearButtonAriaLabel": "Rensa valen",
+      "selectedItemRemoveButtonAriaLabel": "Ta bort valet"
+    }
 	},
 	"postings": {
 		"searchResults_one": "{{count}} sökresultat",
@@ -47,7 +59,10 @@
     "privacyPolicy": "Registerbeskrivning",
     "privacyPolicyLink": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Kasko/Register för administration av grundläggande utbildning.pdf",
     "feedback": "Ge feedback",
-    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback"
+    "feedbackLink": "https://www.hel.fi/helsinki/sv/stad-och-forvaltning/delta/feedback",
+		"moreInfo": "Mer information",
+		"moreInfoLink": "https://nuorten.hel.fi/sv/",
+		"newTab": "länken öppnas i en ny flik"
   },
   "languages": {
     "fi": "På finska",
@@ -60,7 +75,7 @@
       "label": "Ett okänt fel inträffade.",
       "text": "Försök igen senare."
     }
-  },	
+  },
 	"editor": {
 		"posting": {
 			"contactLanguageFi": "Finska",
@@ -76,5 +91,11 @@
 		"dateAndTime": "Datum och tid",
 		"location": "Plats",
 		"languages": "Språk som används på PRAO-platsen"
+	},
+	"map": {
+		"readMore": "Läs mer",
+		"showList": "visa resultat i en lista",
+		"showMap": "Visa resultat på en karta",
+    "helsinkiCity": "Helsingfors stad"
 	}
 }

@@ -17,9 +17,7 @@ export const getThankYouPageComponents = (t: TestController) => {
     };
     const expectations = {
       async isPresent() {
-        await t
-          .expect(selectors.header().exists)
-          .ok(await getErrorMessage(t), { timeout: 60_000 });
+        await t.expect(selectors.header().exists).ok(await getErrorMessage(t));
       },
     };
     await expectations.isPresent();
