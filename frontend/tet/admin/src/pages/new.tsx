@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { GetStaticProps, NextPage } from 'next';
 import getServerSideTranslations from 'shared/i18n/get-server-side-translations';

@@ -83,8 +83,10 @@ describe('frontend/tet/admin/src/components/editor/Editor', () => {
       renderComponent(<Editor />);
       const editorApi = getEditorApi(posting);
       await editorApi.actions.clickSendButton();
+      await waitFor(async () => {
+        await editorApi.expectations.errorNotificationIsShown();
+      });
       await waitForBackendRequestsToComplete();
-      await editorApi.expectations.errorNotificationIsShown();
     });
   });
 });
