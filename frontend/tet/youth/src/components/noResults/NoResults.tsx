@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'hds-react';
 import { $Title, $Links } from './NoResults.sc';
 import { QueryParams } from 'tet/youth/types/queryparams';
+import { useTranslation } from 'next-i18next';
 
 type Props = {
   params: QueryParams;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 const NoResults: React.FC<Props> = ({ params, onSearchByFilters, zeroResults }) => {
+  const { t } = useTranslation();
   const searchHandler = (searchText: string) => {
     onSearchByFilters({
       ...params,
@@ -36,6 +38,8 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, zeroResults }) 
     'mutta',
     'vaan',
     'sillä',
+    'and',
+    'och',
   ];
   const searchWords = () => {
     if (params && params.hasOwnProperty('text')) {
@@ -51,11 +55,9 @@ const NoResults: React.FC<Props> = ({ params, onSearchByFilters, zeroResults }) 
   return (
     <>
       {zeroResults ? (
-        <$Title>
-          Valitsemillasi hakuehdoilla ei löytynyt yhtään tapahtumaa. Kokeile vaikka klikkaamalla jotain näistä:
-        </$Title>
+        <$Title>{t('common:postings.noResultsLinks')}</$Title>
       ) : (
-        <$Title>Kokeile hakua myös vain seuraavilla rajauksilla:</$Title>
+        <$Title>{t('common:postings.fewResultsLinks')}</$Title>
       )}
       <$Links>
         {searchWords().map((word) => (
