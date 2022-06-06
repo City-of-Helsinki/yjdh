@@ -19,7 +19,9 @@ class CustomDataSerializer(Serializer):
 
 class TetUpsertEventSerializer(Serializer):
     name = DictField(child=CharField(max_length=200))
-    description = DictField(child=CharField(max_length=3000, allow_blank=True), allow_empty=True)
+    description = DictField(
+        child=CharField(max_length=3000, allow_blank=True), allow_empty=True
+    )
     location = DictField(child=URLField())
     keywords = ListField(child=DictField(child=URLField()), min_length=0, max_length=30)
     start_time = CharField(max_length=30, allow_null=True)
