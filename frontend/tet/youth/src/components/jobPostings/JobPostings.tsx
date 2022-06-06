@@ -5,30 +5,21 @@ import PageLoadingSpinner from 'shared/components/pages/PageLoadingSpinner';
 import { QueryParams } from 'tet/youth/types/queryparams';
 import { useRouter } from 'next/router';
 import useGetPostings from 'tet/youth/hooks/backend/useGetPostings';
+import NoResults from 'tet/youth/components/noResults/NoResults';
 
 const Postings: React.FC = () => {
   const router = useRouter();
-  const params = router.query;
-  const { isLoading, data, error } = useGetPostings(params);
+  const initMap = Object.prototype.hasOwnProperty.call(router.query, 'init_map') && Boolean(router.query.init_map);
+  const params = { ...router.query };
+  delete params['init_map'];
+  const results = useGetPostings({ page_size: 10, ...params });
+  const all = useGetPostings({ ...params });
 
-  const postings = () => {
-    const hasNextPage = false;
-    if (isLoading) {
-      return <PageLoadingSpinner />;
-    }
-
-    if (error) {
-      //TODO
-      return <div>Virhe datan latauksessa</div>;
-    }
-
-    if (data) {
-      return <JobPostingList postings={data} hasNextPage={hasNextPage} />;
-    } else {
-      //TODO
-      return <div>Ei hakutuloksia</div>;
-    }
-  };
+  const searchParams = { ...params };
+  if (Object.prototype.hasOwnProperty.call(params, 'keyword_AND')) {
+    searchParams['keyword'] = searchParams['keyword_AND'];
+    delete searchParams['keyword_AND'];
+  }
 
   const searchHandler = (queryParams: QueryParams) => {
     const searchQuery = {
@@ -52,16 +43,50 @@ const Postings: React.FC = () => {
     );
   };
 
-  const searchParams = { ...params };
-  if (Object.prototype.hasOwnProperty.call(params, 'keyword_AND')) {
-    searchParams['keyword'] = searchParams['keyword_AND'];
-    delete searchParams['keyword_AND'];
-  }
+  const postings = () => {
+    const hasNextPage = false;
+    if (results.isLoading) {
+      return <PageLoadingSpinner />;
+    }
+
+    if (results.error) {
+      //TODO
+      return <div>Virhe datan latauksessa</div>;
+    }
+
+    if (results.data) {
+      return (
+        <JobPostingList
+          initMap={initMap}
+          firstPostingsPage={results.data}
+          allPostings={all}
+          hasNextPage={hasNextPage}
+        />
+      );
+    } else {
+      //TODO
+      return <div>Ei hakutuloksia</div>;
+    }
+  };
+
+  const showNoResults =
+    searchParams &&
+    results.isSuccess &&
+    searchParams.text &&
+    searchParams.text.indexOf(' ') >= 0 &&
+    results?.data.meta.count < 5;
 
   return (
     <div>
       <JobPostingSearch initParams={searchParams} onSearchByFilters={searchHandler}></JobPostingSearch>
       {postings()}
+      {showNoResults && (
+        <NoResults
+          zeroResults={results.data.meta.count === 0}
+          params={searchParams}
+          onSearchByFilters={searchHandler}
+        />
+      )}
     </div>
   );
 };

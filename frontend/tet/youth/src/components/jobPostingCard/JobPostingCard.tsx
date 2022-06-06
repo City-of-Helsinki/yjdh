@@ -54,7 +54,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
   };
 
   return (
-    <$PostingCard>
+    <$PostingCard onClick={readMoreHandler}>
       <$ImageContainer>
         <Image
           width="100%"
@@ -86,7 +86,6 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
             role="link"
             size="small"
             type="button"
-            onClick={readMoreHandler}
           >
             {t('common:postings.readMore')}
           </Button>
