@@ -18,9 +18,7 @@ const ShowPostingPage: NextPage = () => {
 
   const returnHandler = (): void => {
     const params = router.query;
-    if (params && Object.prototype.hasOwnProperty.call(params, 'id')) {
-      delete params.id;
-    }
+    delete params?.id;
     void router.push({
       pathname: '/postings',
       query: {
