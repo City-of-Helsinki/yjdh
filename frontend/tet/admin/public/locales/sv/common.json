@@ -82,6 +82,9 @@
     "loadingError": "Ett fel inträffade när händelsen skulle laddas. Vänligen försök igen senare.",
     "language": "PRAO-platsens språk",
 		"leaveConfirm": "Inga ändringar har sparats. Vill du fortfarande lämna?",
+		"draftInfoHeader": "Täytä vaaditut kentät",
+		"draftInfoContent": "Täytä <strong>Tehtävänimike</strong>, <strong>toimipiste</strong> ja <strong>osoite</strong> tallentaaksesi keskeneräisen ilmoituksen",
+		"close": "stänga",
     "employerInfo": {
 			"contactPerson": "Kontaktperson",
       "header": "Uppgifter om verksamhetsställe",

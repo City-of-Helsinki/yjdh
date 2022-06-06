@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Dialog, IconInfoCircle } from 'hds-react';
+import { useTranslation, Trans } from 'next-i18next';
 
 type Props = {
   isOpen: boolean;
@@ -9,6 +10,8 @@ type Props = {
 const InfoDialog: React.FC<Props> = ({ isOpen, close }) => {
   const titleId = 'info-dialog-title';
   const descriptionId = 'info-dialog-content';
+  const { t } = useTranslation();
+
   return (
     <Dialog
       id="info-dialog"
@@ -16,16 +19,26 @@ const InfoDialog: React.FC<Props> = ({ isOpen, close }) => {
       aria-describedby={descriptionId}
       isOpen={isOpen}
       close={close}
-      closeButtonLabelText="Sulje"
+      closeButtonLabelText={t('common:editor.close')}
+      variant="danger"
     >
-      <Dialog.Header id={titleId} title="Täytä vaaditut kentät" iconLeft={<IconInfoCircle aria-hidden="true" />} />
+      <Dialog.Header
+        id={titleId}
+        title={t('common:editor.draftInfoHeader')}
+        iconLeft={<IconInfoCircle aria-hidden="true" />}
+      />
       <Dialog.Content>
         <p id={descriptionId} className="text-body">
-          <b>Tehtävänimike</b>, <b>toimipiste</b> ja <b>osoite</b> tulevat olla täytettyinä keskeneräiseen ilmoitukseen
+          <Trans i18nKey="common:editor.draftInfoContent">
+            Täytä <strong>Tehtävänimike</strong>, <strong>toimipiste</strong> ja <strong>osoite</strong> tallentaaksesi
+            keskeneräisen ilmoituksen
+          </Trans>
         </p>
       </Dialog.Content>
       <Dialog.ActionButtons>
-        <Button onClick={close}>Sulje</Button>
+        <Button onClick={close} variant="danger">
+          {t('common:editor.close')}
+        </Button>
       </Dialog.ActionButtons>
     </Dialog>
   );

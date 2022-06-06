@@ -81,6 +81,8 @@
     "loadingError": "Tapahtuman latauksessa tapahtui virhe. Yritäthän myöhemmin uudestaan.",
     "language": "TET-paikan kielisyys",
 		"leaveConfirm": "Muutoksia ei ole tallennettu. Haluatko silti poistua?",
+		"draftInfoHeader": "Täytä vaaditut kentät",
+		"draftInfoContent": "Täytä <1>Tehtävänimike</1>, <1>toimipiste</1> ja <1>osoite</1> tallentaaksesi keskeneräisen ilmoituksen", "close": "Sulje",
     "employerInfo": {
 			"contactPerson": "Yhteyshenkilö",
       "header": "TET-paikan tiedot",

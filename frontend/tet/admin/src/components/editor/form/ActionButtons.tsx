@@ -25,6 +25,7 @@ const ActionButtons: React.FC = () => {
     handleSubmit,
     trigger,
     formState: { isSubmitting },
+    reset,
   } = useFormContext<TetPosting>();
   const theme = useTheme();
   const posting = getValues();
@@ -65,14 +66,19 @@ const ActionButtons: React.FC = () => {
   };
 
   const saveDraftHandler = (): void => {
-    const values = getValues();
-    if (values.title === '' || values.org_name === '' || values.location?.value === '' || values.location === null) {
+    reset({ ...posting }, { keepValues: true });
+    if (
+      posting.title === '' ||
+      posting.org_name === '' ||
+      posting.location?.value === '' ||
+      posting.location === null
+    ) {
       setShowInfoDialog(true);
     } else {
-      const event = tetPostingToEvent(values, false);
+      const event = tetPostingToEvent(posting, false);
 
       upsertTetPosting.mutate({
-        id: values.id,
+        id: posting.id,
         event,
       });
     }
@@ -101,18 +107,33 @@ const ActionButtons: React.FC = () => {
     <FormSection withoutDivider>
       <$GridCell as={$Grid} $colSpan={12}>
         <$GridCell $colSpan={3}>
-          <Button
-            onClick={saveDraftHandler}
-            disabled={isSubmitting}
-            iconLeft={<IconSaveDiskette />}
-            css={`
-              background-color: transparent;
-              color: ${theme.colors.black90};
-              border: ${theme.colors.black90} !important;
-            `}
-          >
-            {allowPublish ? t('common:editor.saveDraft') : t('common:editor.savePublished')}
-          </Button>
+          {allowPublish ? (
+            <Button
+              onClick={saveDraftHandler}
+              disabled={isSubmitting}
+              iconLeft={<IconSaveDiskette />}
+              css={`
+                background-color: transparent;
+                color: ${theme.colors.black90};
+                border: ${theme.colors.black90} !important;
+              `}
+            >
+              {t('common:editor.saveDraft')}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSubmit(saveHandler)}
+              disabled={isSubmitting}
+              iconLeft={<IconSaveDiskette />}
+              css={`
+                background-color: transparent;
+                color: ${theme.colors.black90};
+                border: ${theme.colors.black90} !important;
+              `}
+            >
+              {t('common:editor.savePublished')}
+            </Button>
+          )}
         </$GridCell>
         {allowDelete ? (
           <$GridCell $colSpan={3}>
