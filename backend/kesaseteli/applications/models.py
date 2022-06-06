@@ -720,6 +720,9 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
                  otherwise False. Note that this value does NOT change based on whether
                  additional info has been provided or not.
         """
+        if settings.DISABLE_VTJ:
+            return not self.is_applicant_in_target_group
+
         return (
             self.is_applicant_dead_according_to_vtj
             or not self.is_social_security_number_valid_according_to_vtj

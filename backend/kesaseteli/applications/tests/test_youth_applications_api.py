@@ -978,6 +978,31 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     assert response_2.url == app_2.already_activated_page_url()
 
 
+@pytest.mark.django_db
+@override_settings(DISABLE_VTJ=True)
+def test_youth_applications_reactivate_unexpired_inactive(
+    api_client,
+    make_youth_application_activation_link_unexpired,
+):
+    """
+    User tries to reactivate the already active application, he/she should
+    get redirected to the already_activated page.
+    """
+    app = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
+        # Activated i.e. waiting for processing
+        status=YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
+        # Disabled VTJ means there's no VTJ data
+        encrypted_original_vtj_json=None,
+        encrypted_handler_vtj_json=None,
+    )
+
+    response = api_client.get(get_activation_url(app.pk))
+
+    app.refresh_from_db()
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == app.already_activated_page_url()
+
+
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
     DISABLE_VTJ=True,
