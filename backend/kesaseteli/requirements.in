@@ -12,6 +12,7 @@ django-storages[azure]
 elasticsearch
 factory-boy
 filetype
+ipython
 jsonpath-ng
 mozilla-django-oidc
 Pillow
