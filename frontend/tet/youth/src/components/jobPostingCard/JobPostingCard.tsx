@@ -47,6 +47,7 @@ const JobPostingCard: React.FC<Props> = ({ jobPosting }) => {
         },
       },
       {
+        pathname: '/postings/show',
         query: { id: jobPosting.id },
       },
     );
