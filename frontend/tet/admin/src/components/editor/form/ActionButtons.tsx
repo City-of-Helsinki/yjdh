@@ -69,7 +69,7 @@ const ActionButtons: React.FC = () => {
     if (values.title === '' || values.org_name === '' || values.location?.value === '' || values.location === null) {
       setShowInfoDialog(true);
     } else {
-      const event = tetPostingToEvent(values, true);
+      const event = tetPostingToEvent(values, false);
 
       upsertTetPosting.mutate({
         id: values.id,
