@@ -1001,6 +1001,8 @@ def test_youth_applications_reactivate_unexpired_inactive(
     app.refresh_from_db()
     assert response.status_code == status.HTTP_302_FOUND
     assert response.url == app.already_activated_page_url()
+    assert app.encrypted_original_vtj_json is None
+    assert app.encrypted_handler_vtj_json is None
 
 
 @override_settings(
