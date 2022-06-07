@@ -209,21 +209,24 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def accept(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        try:
-            serializer = YouthApplicationHandlingSerializer(
-                data=request.data, context=self.get_serializer_context()
-            )
-            serializer.is_valid(raise_exception=True)
-        except ValidationError as e:
-            LOGGER.error(
-                f"Youth application was not changed to accepted state because of "
-                f"validation error. Validation error codes: {str(e.get_codes())}"
-            )
-            raise
+        if settings.DISABLE_VTJ:
+            encrypted_handler_vtj_json = None
+        else:
+            try:
+                serializer = YouthApplicationHandlingSerializer(
+                    data=request.data, context=self.get_serializer_context()
+                )
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as e:
+                LOGGER.error(
+                    f"Youth application was not changed to accepted state because of "
+                    f"validation error. Validation error codes: {str(e.get_codes())}"
+                )
+                raise
 
-        encrypted_handler_vtj_json = serializer.validated_data[
-            "encrypted_handler_vtj_json"
-        ]
+            encrypted_handler_vtj_json = serializer.validated_data[
+                "encrypted_handler_vtj_json"
+            ]
 
         if not youth_application.is_accepted and youth_application.accept_manually(
             handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
@@ -251,21 +254,24 @@ class YouthApplicationViewSet(AuditLoggingModelViewSet):
     def reject(self, request, *args, **kwargs) -> HttpResponse:
         youth_application: YouthApplication = self.get_object().lock_for_update()
 
-        try:
-            serializer = YouthApplicationHandlingSerializer(
-                data=request.data, context=self.get_serializer_context()
-            )
-            serializer.is_valid(raise_exception=True)
-        except ValidationError as e:
-            LOGGER.error(
-                f"Youth application was not changed to rejected state because of "
-                f"validation error. Validation error codes: {str(e.get_codes())}"
-            )
-            raise
+        if settings.DISABLE_VTJ:
+            encrypted_handler_vtj_json = None
+        else:
+            try:
+                serializer = YouthApplicationHandlingSerializer(
+                    data=request.data, context=self.get_serializer_context()
+                )
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as e:
+                LOGGER.error(
+                    f"Youth application was not changed to rejected state because of "
+                    f"validation error. Validation error codes: {str(e.get_codes())}"
+                )
+                raise
 
-        encrypted_handler_vtj_json = serializer.validated_data[
-            "encrypted_handler_vtj_json"
-        ]
+            encrypted_handler_vtj_json = serializer.validated_data[
+                "encrypted_handler_vtj_json"
+            ]
 
         if not youth_application.is_rejected and youth_application.reject(
             handler=request.user, encrypted_handler_vtj_json=encrypted_handler_vtj_json
