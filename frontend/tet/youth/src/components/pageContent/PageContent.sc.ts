@@ -20,6 +20,13 @@ export const $ImageWrapper = styled.div`
   }
 `;
 
+export const $ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: ${(props) => props.theme.spacing.l};
+  margin-bottom: ${(props) => props.theme.spacing.l};
+`;
+
 export const $Textbox = styled.div`
   background-color: ${(props) => props.theme.colors.tramLight};
   font-size: ${(props) => props.theme.fontSize.body.m};

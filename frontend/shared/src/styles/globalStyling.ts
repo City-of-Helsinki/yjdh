@@ -22,5 +22,9 @@ const GlobalStyle = createGlobalStyle`
     margin: ${(props) => props.theme.spacing.s} 0;
     font-size: ${(props) => props.theme.fontSize.heading.s};
   }
+
+	div#hds-tag {
+		border-radius: 15px;
+	}
 `;
 export default GlobalStyle;

@@ -5,4 +5,5 @@ export type QueryParams = {
   keyword?: string;
   language?: string;
   page?: number;
+  page_size?: number;
 };

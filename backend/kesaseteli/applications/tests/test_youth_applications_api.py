@@ -978,6 +978,33 @@ def test_youth_applications_dual_activate_unexpired_inactive(
     assert response_2.url == app_2.already_activated_page_url()
 
 
+@pytest.mark.django_db
+@override_settings(DISABLE_VTJ=True)
+def test_youth_applications_reactivate_unexpired_inactive(
+    api_client,
+    make_youth_application_activation_link_unexpired,
+):
+    """
+    User tries to reactivate the already active application, he/she should
+    get redirected to the already_activated page.
+    """
+    app = InactiveNoNeedAdditionalInfoYouthApplicationFactory(
+        # Activated i.e. waiting for processing
+        status=YouthApplicationStatus.AWAITING_MANUAL_PROCESSING,
+        # Disabled VTJ means there's no VTJ data
+        encrypted_original_vtj_json=None,
+        encrypted_handler_vtj_json=None,
+    )
+
+    response = api_client.get(get_activation_url(app.pk))
+
+    app.refresh_from_db()
+    assert response.status_code == status.HTTP_302_FOUND
+    assert response.url == app.already_activated_page_url()
+    assert app.encrypted_original_vtj_json is None
+    assert app.encrypted_handler_vtj_json is None
+
+
 @override_settings(
     NEXT_PUBLIC_MOCK_FLAG=False,
     DISABLE_VTJ=True,
@@ -1906,6 +1933,7 @@ def test_youth_applications_accept_acceptable(
     expected_status_code,
     expected_redirect_to,
 ):
+    settings.DISABLE_VTJ = False
     assert (expected_status_code == status.HTTP_302_FOUND) == (
         expected_redirect_to is not None
     )
@@ -1965,6 +1993,41 @@ def test_youth_applications_accept_acceptable(
         assert response.url == RedirectTo.get_redirect_url(
             expected_redirect_to, "accept", acceptable_youth_application.pk
         )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("send_vtj_data", [True, False])
+def test_youth_applications_accept_acceptable__vtj_disabled(
+    acceptable_youth_application, settings, staff_client, send_vtj_data
+):
+    """
+    When VTJ integration has been disabled do not expect any input to
+    encrypted_handler_vtj_json field and store it as an empty JSON object.
+    """
+    settings.DISABLE_VTJ = True
+    acceptable_youth_application.encrypted_original_vtj_json = None
+    acceptable_youth_application.encrypted_handler_vtj_json = None
+    acceptable_youth_application.save()
+    old_youth_summer_voucher_count = YouthSummerVoucher.objects.count()
+    assert not acceptable_youth_application.has_youth_summer_voucher
+
+    response = staff_client.patch(
+        reverse_youth_application_action("accept", acceptable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()) if send_vtj_data else None,
+        content_type="application/json",
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    acceptable_youth_application.refresh_from_db()
+    assert acceptable_youth_application.status == YouthApplicationStatus.ACCEPTED
+    assert acceptable_youth_application.encrypted_original_vtj_json is None
+    assert acceptable_youth_application.encrypted_handler_vtj_json is None
+    assert acceptable_youth_application.has_youth_summer_voucher
+    assert YouthSummerVoucher.objects.count() == old_youth_summer_voucher_count + 1
+    assert (
+        acceptable_youth_application.youth_summer_voucher.summer_voucher_serial_number
+        == YouthSummerVoucher.objects.count()
+    )
 
 
 @pytest.mark.django_db
@@ -2053,6 +2116,7 @@ def test_youth_applications_reject_rejectable(
     expected_status_code,
     expected_redirect_to,
 ):
+    settings.DISABLE_VTJ = False
     assert (expected_status_code == status.HTTP_302_FOUND) == (
         expected_redirect_to is not None
     )
@@ -2104,6 +2168,35 @@ def test_youth_applications_reject_rejectable(
         assert response.url == RedirectTo.get_redirect_url(
             expected_redirect_to, "reject", rejectable_youth_application.pk
         )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("send_vtj_data", [True, False])
+def test_youth_applications_reject_rejectable__vtj_disabled(
+    rejectable_youth_application, settings, staff_client, send_vtj_data
+):
+    """
+    When VTJ integration has been disabled do not expect any input to
+    encrypted_handler_vtj_json field and store it as an empty JSON object.
+    """
+    settings.DISABLE_VTJ = True
+    rejectable_youth_application.encrypted_original_vtj_json = None
+    rejectable_youth_application.encrypted_handler_vtj_json = None
+    rejectable_youth_application.save()
+    assert not rejectable_youth_application.has_youth_summer_voucher
+
+    response = staff_client.patch(
+        reverse_youth_application_action("reject", rejectable_youth_application.pk),
+        data=json.dumps(get_test_handling_data()) if send_vtj_data else None,
+        content_type="application/json",
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+    rejectable_youth_application.refresh_from_db()
+    assert rejectable_youth_application.status == YouthApplicationStatus.REJECTED
+    assert rejectable_youth_application.encrypted_original_vtj_json is None
+    assert rejectable_youth_application.encrypted_handler_vtj_json is None
+    assert not rejectable_youth_application.has_youth_summer_voucher
 
 
 @freeze_time()
