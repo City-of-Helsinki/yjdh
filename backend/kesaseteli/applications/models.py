@@ -551,7 +551,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         return (
             self.status in YouthApplicationStatus.acceptable_values()
             and HandlerPermission.has_user_permission(handler)
-            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            and (
+                settings.DISABLE_VTJ
+                or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            )
             and not self.has_youth_summer_voucher
         )
 
@@ -580,9 +583,7 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         except ValidationError:
             return False
         vtj_json_dict = json.loads(encrypted_handler_vtj_json)
-        return (
-            "@xmlns" in vtj_json_dict and "vtjkysely" in vtj_json_dict["@xmlns"]
-        ) or (vtj_json_dict == {} and settings.DISABLE_VTJ)
+        return "@xmlns" in vtj_json_dict and "vtjkysely" in vtj_json_dict["@xmlns"]
 
     @transaction.atomic
     def accept_manually(self, handler, encrypted_handler_vtj_json) -> bool:
@@ -612,7 +613,10 @@ class YouthApplication(LockForUpdateMixin, TimeStampedModel, UUIDModel):
         return (
             self.status in YouthApplicationStatus.rejectable_values()
             and HandlerPermission.has_user_permission(handler)
-            and self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            and (
+                settings.DISABLE_VTJ
+                or self.is_valid_encrypted_handler_vtj_json(encrypted_handler_vtj_json)
+            )
         )
 
     @transaction.atomic
